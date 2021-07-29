@@ -1,0 +1,1047 @@
+{
+    "coredata": {
+      "prismUrl": "https://api.elsevier.com/content/abstract/scopus_id/47749102521",
+      "dcIdentifier": "SCOPUS_ID:47749102521",
+      "pubmedId": null,
+      "pii": null,
+      "prismDoi": "10.1109/ICSC.2007.43",
+      "dcTitle": "A semantic matching algorithm for discovery in UDDI",
+      "prismAggregationType": "Conference Proceeding",
+      "srctype": "p",
+      "citedbyCount": "16",
+      "prismPublicationName": "ICSC 2007 International Conference on Semantic Computing",
+      "prismIssn": null,
+      "prismVolume": null,
+      "prismIssueIdentifier": null,
+      "prismStartingPage": "751",
+      "prismEndingPage": "758",
+      "prismPageRange": "751-758",
+      "prismCoverDate": "2007-12-01",
+      "dcCreator": {
+        "author": [
+          {
+            "fa": "true",
+            "auid": "24474286200",
+            "seq": "1",
+            "ceInitials": "U.",
+            "ceIndexedName": "Aguilera U.",
+            "ceSurname": "Aguilera",
+            "preferredName": {
+              "source": null,
+              "initials": null,
+              "indexedName": null,
+              "surname": null,
+              "givenName": null,
+              "name": null
+            },
+            "authorUrl": "https://api.elsevier.com/content/author/author_id/24474286200"
+          }
+        ]
+      },
+      "dcDescription": "One of the key objectives of web service technology is to construct processes that enable service providers to interconnect with their clients. The industry has developed the UDDI registry to enable the register of services and to make them available to their users. However, the keyword-based search of UDDI frequently return no results because there is no relation between the concepts used by the providers and those used by the clients. This paper presents an UDDI registry extended with semantic functionality by means of a generic semantic discovery algorithm that is not bound to any specific ontology or concepts from it. It enables to match instances and properties without specifically knowing the ontologies being matched. Furthermore, we present an ontology which represents the information associated with a business entity in UDDI, and which enables users to register and search business information semantically also using the former algorithm. © 2007 IEEE.",
+      "intid": null
+    },
+    "authors": {
+      "author": [
+        {
+          "fa": "true",
+          "auid": "24474286200",
+          "seq": "1",
+          "ceInitials": "U.",
+          "ceIndexedName": "Aguilera U.",
+          "ceSurname": "Aguilera",
+          "preferredName": {
+            "source": null,
+            "initials": null,
+            "indexedName": null,
+            "surname": null,
+            "givenName": null,
+            "name": null
+          },
+          "authorUrl": "https://api.elsevier.com/content/author/author_id/24474286200"
+        },
+        {
+          "fa": "true",
+          "auid": "23395995800",
+          "seq": "2",
+          "ceInitials": "J.",
+          "ceIndexedName": "Abaitua J.",
+          "ceSurname": "Abaitua",
+          "preferredName": {
+            "source": null,
+            "initials": null,
+            "indexedName": null,
+            "surname": null,
+            "givenName": null,
+            "name": null
+          },
+          "authorUrl": "https://api.elsevier.com/content/author/author_id/23395995800"
+        },
+        {
+          "fa": "true",
+          "auid": "35605673000",
+          "seq": "3",
+          "ceInitials": "J.",
+          "ceIndexedName": "Diaz J.",
+          "ceSurname": "Díaz",
+          "preferredName": {
+            "source": null,
+            "initials": null,
+            "indexedName": null,
+            "surname": null,
+            "givenName": null,
+            "name": null
+          },
+          "authorUrl": "https://api.elsevier.com/content/author/author_id/35605673000"
+        },
+        {
+          "fa": "true",
+          "auid": "24474045300",
+          "seq": "4",
+          "ceInitials": "D.",
+          "ceIndexedName": "Bujan D.",
+          "ceSurname": "Buján",
+          "preferredName": {
+            "source": null,
+            "initials": null,
+            "indexedName": null,
+            "surname": null,
+            "givenName": null,
+            "name": null
+          },
+          "authorUrl": "https://api.elsevier.com/content/author/author_id/24474045300"
+        },
+        {
+          "fa": "true",
+          "auid": "13006436900",
+          "seq": "5",
+          "ceInitials": "D.L.",
+          "ceIndexedName": "De Ipina D.L.",
+          "ceSurname": "De Ipiña",
+          "preferredName": {
+            "source": null,
+            "initials": null,
+            "indexedName": null,
+            "surname": null,
+            "givenName": null,
+            "name": null
+          },
+          "authorUrl": "https://api.elsevier.com/content/author/author_id/13006436900"
+        }
+      ]
+    },
+    "language": {
+      "xmlLang": "eng"
+    },
+    "authkeywords": null,
+    "idxterms": {
+      "mainterm": [
+        {
+          "candidate": "n",
+          "weight": "a",
+          "name": "Business information"
+        },
+        {
+          "candidate": "n",
+          "weight": "a",
+          "name": "International conferences"
+        },
+        {
+          "candidate": "n",
+          "weight": "a",
+          "name": "Keyword-based search"
+        },
+        {
+          "candidate": "n",
+          "weight": "a",
+          "name": "Semantic discovery"
+        },
+        {
+          "candidate": "n",
+          "weight": "a",
+          "name": "Semantic matching algorithm"
+        },
+        {
+          "candidate": "n",
+          "weight": "a",
+          "name": "Service providers"
+        },
+        {
+          "candidate": "n",
+          "weight": "a",
+          "name": "Web Service technologies"
+        }
+      ]
+    },
+    "subjectAreas": {
+      "subjectArea": [
+        {
+          "fa": "true",
+          "abbrev": "COMP",
+          "code": "1700",
+          "name": "Computer Science (all)"
+        },
+        {
+          "fa": "true",
+          "abbrev": "COMP",
+          "code": "1706",
+          "name": "Computer Science Applications"
+        }
+      ]
+    },
+    "item": {
+      "bibrecord": {
+        "itemInfo": {
+          "copyright": {
+            "type": "Elsevier",
+            "name": "Copyright 2008 Elsevier B.V., All rights reserved."
+          },
+          "itemidlist": {
+            "cePii": null,
+            "ceDoi": "10.1109/ICSC.2007.43",
+            "itemid": [
+              {
+                "idtype": "PUI",
+                "name": "352023870"
+              },
+              {
+                "idtype": "CPX",
+                "name": "20083111407891"
+              },
+              {
+                "idtype": "SCP",
+                "name": "47749102521"
+              },
+              {
+                "idtype": "SGR",
+                "name": "47749102521"
+              }
+            ]
+          },
+          "history": {
+            "dateCreated": {
+              "year": "2008",
+              "month": "07",
+              "day": "28"
+            }
+          },
+          "dbcollection": [
+            {
+              "name": "CPX"
+            },
+            {
+              "name": "SCOPUS"
+            },
+            {
+              "name": "Scopusbase"
+            }
+          ]
+        },
+        "head": {
+          "citationInfo": {
+            "citationType": {
+              "code": "cp"
+            },
+            "citationLanguage": {
+              "xmlLang": "eng"
+            },
+            "abstractLanguage": {
+              "xmlLang": "eng"
+            },
+            "authorKeywords": null
+          },
+          "citationTitle": "A semantic matching algorithm for discovery in UDDI",
+          "correspondence": {
+            "person": {
+              "fa": null,
+              "auid": null,
+              "seq": null,
+              "ceInitials": "U.",
+              "ceIndexedName": "Aguilera U.",
+              "ceSurname": "Aguilera",
+              "preferredName": null,
+              "authorUrl": null
+            },
+            "ceEAddress": null
+          },
+          "abstracts": "One of the key objectives of web service technology is to construct processes that enable service providers to interconnect with their clients. The industry has developed the UDDI registry to enable the register of services and to make them available to their users. However, the keyword-based search of UDDI frequently return no results because there is no relation between the concepts used by the providers and those used by the clients. This paper presents an UDDI registry extended with semantic functionality by means of a generic semantic discovery algorithm that is not bound to any specific ontology or concepts from it. It enables to match instances and properties without specifically knowing the ontologies being matched. Furthermore, we present an ontology which represents the information associated with a business entity in UDDI, and which enables users to register and search business information semantically also using the former algorithm. © 2007 IEEE.",
+          "source": {
+            "country": "usa",
+            "srcid": "12000154344",
+            "type": "p",
+            "sourcetitle": "ICSC 2007 International Conference on Semantic Computing",
+            "sourcetitleAbbrev": "ICSC Int. Conf. Semant. Comput.",
+            "issn": null,
+            "codencode": null,
+            "volisspag": {
+              "voliss": null,
+              "pagerange": {
+                "first": "751",
+                "last": "758"
+              }
+            },
+            "publicationyear": {
+              "first": "2007"
+            },
+            "publicationdate": {
+              "year": "2007",
+              "month": null,
+              "day": null,
+              "dateText": {
+                "xfabAdded": "true",
+                "name": "2007"
+              }
+            }
+          },
+          "enhancement": {
+            "descriptorgroup": null,
+            "manufacturergroup": null,
+            "chemicalgroup": null
+          }
+        },
+        "tail": {
+          "bibliography": {
+            "refcount": "18",
+            "reference": [
+              {
+                "id": "1",
+                "refInfo": {
+                  "refdItemidlist": {
+                    "itemid": {
+                      "idtype": "SGR",
+                      "name": "47749131777"
+                    }
+                  },
+                  "refAuthors": null,
+                  "refSourcetitle": null,
+                  "refPublicationyear": null,
+                  "refVolisspag": null,
+                  "refText": "OASIS, Organization for the Advancement of Structured Information Standards"
+                }
+              },
+              {
+                "id": "2",
+                "refInfo": {
+                  "refdItemidlist": {
+                    "itemid": {
+                      "idtype": "SGR",
+                      "name": "47749110096"
+                    }
+                  },
+                  "refAuthors": null,
+                  "refSourcetitle": null,
+                  "refPublicationyear": null,
+                  "refVolisspag": null,
+                  "refText": "OASIS, UDDI Committee Specification [Julio 2002] UDDI Version 2.04 API, Specification, (http://uddi.org/pubs/ProgrammersAPI-V2.04-Published-20020719. htm)"
+                }
+              },
+              {
+                "id": "3",
+                "refInfo": {
+                  "refdItemidlist": {
+                    "itemid": {
+                      "idtype": "SGR",
+                      "name": "33646685866"
+                    }
+                  },
+                  "refAuthors": {
+                    "author": [
+                      {
+                        "fa": "true",
+                        "auid": null,
+                        "seq": "1",
+                        "ceInitials": "N.",
+                        "ceIndexedName": "Srinivasan N.",
+                        "ceSurname": "Srinivasan",
+                        "preferredName": null,
+                        "authorUrl": null
+                      },
+                      {
+                        "fa": "true",
+                        "auid": null,
+                        "seq": "2",
+                        "ceInitials": "M.",
+                        "ceIndexedName": "Paolucci M.",
+                        "ceSurname": "Paolucci",
+                        "preferredName": null,
+                        "authorUrl": null
+                      },
+                      {
+                        "fa": "true",
+                        "auid": null,
+                        "seq": "3",
+                        "ceInitials": "K.",
+                        "ceIndexedName": "Sycara K.",
+                        "ceSurname": "Sycara",
+                        "preferredName": null,
+                        "authorUrl": null
+                      }
+                    ]
+                  },
+                  "refSourcetitle": "Proc. 1st Intl. Workshop on Semantic Web Services and Web Process Composition (SWSWPC",
+                  "refPublicationyear": {
+                    "first": "2004"
+                  },
+                  "refVolisspag": {
+                    "voliss": null,
+                    "pagerange": {
+                      "first": "6",
+                      "last": "9"
+                    }
+                  },
+                  "refText": null
+                }
+              },
+              {
+                "id": "4",
+                "refInfo": {
+                  "refdItemidlist": {
+                    "itemid": {
+                      "idtype": "SGR",
+                      "name": "47749084137"
+                    }
+                  },
+                  "refAuthors": null,
+                  "refSourcetitle": "W3C, World Wide Web Consortium OWL Web Ontology Language Overview - W3C Recommendation",
+                  "refPublicationyear": {
+                    "first": "2004"
+                  },
+                  "refVolisspag": null,
+                  "refText": null
+                }
+              },
+              {
+                "id": "5",
+                "refInfo": {
+                  "refdItemidlist": {
+                    "itemid": {
+                      "idtype": "SGR",
+                      "name": "47749155488"
+                    }
+                  },
+                  "refAuthors": null,
+                  "refSourcetitle": "W3C, World Wide Web Consortium OWL Web Ontology Language Reference - W3C Recommendation",
+                  "refPublicationyear": {
+                    "first": "2004"
+                  },
+                  "refVolisspag": null,
+                  "refText": null
+                }
+              },
+              {
+                "id": "6",
+                "refInfo": {
+                  "refdItemidlist": {
+                    "itemid": {
+                      "idtype": "SGR",
+                      "name": "47749111552"
+                    }
+                  },
+                  "refAuthors": null,
+                  "refSourcetitle": null,
+                  "refPublicationyear": null,
+                  "refVolisspag": null,
+                  "refText": "W3C, World Wide Web Consortium OWL-S Semantic Markup for Web Services - W3C Member Submission, 2004."
+                }
+              },
+              {
+                "id": "7",
+                "refInfo": {
+                  "refdItemidlist": {
+                    "itemid": {
+                      "idtype": "SGR",
+                      "name": "0142105656"
+                    }
+                  },
+                  "refAuthors": {
+                    "author": [
+                      {
+                        "fa": "true",
+                        "auid": null,
+                        "seq": "1",
+                        "ceInitials": "M.",
+                        "ceIndexedName": "Paolucci M.",
+                        "ceSurname": "Paolucci",
+                        "preferredName": null,
+                        "authorUrl": null
+                      },
+                      {
+                        "fa": "true",
+                        "auid": null,
+                        "seq": "2",
+                        "ceInitials": "T.",
+                        "ceIndexedName": "Kawamura T.",
+                        "ceSurname": "Kawamura",
+                        "preferredName": null,
+                        "authorUrl": null
+                      },
+                      {
+                        "fa": "true",
+                        "auid": null,
+                        "seq": "3",
+                        "ceInitials": "T.",
+                        "ceIndexedName": "Payne T.",
+                        "ceSurname": "Payne",
+                        "preferredName": null,
+                        "authorUrl": null
+                      },
+                      {
+                        "fa": "true",
+                        "auid": null,
+                        "seq": "4",
+                        "ceInitials": "K.",
+                        "ceIndexedName": "Sycara K.",
+                        "ceSurname": "Sycara",
+                        "preferredName": null,
+                        "authorUrl": null
+                      }
+                    ]
+                  },
+                  "refSourcetitle": "Proceedings of the Workshop of Web Services, E-Business, and the Semantic Web",
+                  "refPublicationyear": {
+                    "first": "2002"
+                  },
+                  "refVolisspag": null,
+                  "refText": null
+                }
+              },
+              {
+                "id": "8",
+                "refInfo": {
+                  "refdItemidlist": {
+                    "itemid": {
+                      "idtype": "SGR",
+                      "name": "33746088340"
+                    }
+                  },
+                  "refAuthors": {
+                    "author": [
+                      {
+                        "fa": "true",
+                        "auid": null,
+                        "seq": "1",
+                        "ceInitials": "N.",
+                        "ceIndexedName": "Srinivasan N.",
+                        "ceSurname": "Srinivasan",
+                        "preferredName": null,
+                        "authorUrl": null
+                      },
+                      {
+                        "fa": "true",
+                        "auid": null,
+                        "seq": "2",
+                        "ceInitials": "M.",
+                        "ceIndexedName": "Paolucci M.",
+                        "ceSurname": "Paolucci",
+                        "preferredName": null,
+                        "authorUrl": null
+                      },
+                      {
+                        "fa": "true",
+                        "auid": null,
+                        "seq": "3",
+                        "ceInitials": "K.",
+                        "ceIndexedName": "Sycara K.",
+                        "ceSurname": "Sycara",
+                        "preferredName": null,
+                        "authorUrl": null
+                      }
+                    ]
+                  },
+                  "refSourcetitle": "First International Workshop on Semantic Web Services and Web Process Composition (SWSWPC",
+                  "refPublicationyear": {
+                    "first": "2004"
+                  },
+                  "refVolisspag": {
+                    "voliss": null,
+                    "pagerange": {
+                      "first": "6",
+                      "last": "9"
+                    }
+                  },
+                  "refText": "San Diego, California, USA"
+                }
+              },
+              {
+                "id": "9",
+                "refInfo": {
+                  "refdItemidlist": {
+                    "itemid": {
+                      "idtype": "SGR",
+                      "name": "84877326946"
+                    }
+                  },
+                  "refAuthors": {
+                    "author": [
+                      {
+                        "fa": "true",
+                        "auid": null,
+                        "seq": "1",
+                        "ceInitials": "M.",
+                        "ceIndexedName": "Paolucci M.",
+                        "ceSurname": "Paolucci",
+                        "preferredName": null,
+                        "authorUrl": null
+                      },
+                      {
+                        "fa": "true",
+                        "auid": null,
+                        "seq": "2",
+                        "ceInitials": "T.",
+                        "ceIndexedName": "Kawamura T.",
+                        "ceSurname": "Kawamura",
+                        "preferredName": null,
+                        "authorUrl": null
+                      },
+                      {
+                        "fa": "true",
+                        "auid": null,
+                        "seq": "3",
+                        "ceInitials": "T.R.",
+                        "ceIndexedName": "Payne T.R.",
+                        "ceSurname": "Payne",
+                        "preferredName": null,
+                        "authorUrl": null
+                      },
+                      {
+                        "fa": "true",
+                        "auid": null,
+                        "seq": "4",
+                        "ceInitials": "K.",
+                        "ceIndexedName": "Sycara K.",
+                        "ceSurname": "Sycara",
+                        "preferredName": null,
+                        "authorUrl": null
+                      }
+                    ]
+                  },
+                  "refSourcetitle": "Proceedings of the 1st International Semantic Web Conference (ISWC2002)",
+                  "refPublicationyear": null,
+                  "refVolisspag": null,
+                  "refText": null
+                }
+              },
+              {
+                "id": "10",
+                "refInfo": {
+                  "refdItemidlist": {
+                    "itemid": {
+                      "idtype": "SGR",
+                      "name": "35048882422"
+                    }
+                  },
+                  "refAuthors": {
+                    "author": [
+                      {
+                        "fa": "true",
+                        "auid": null,
+                        "seq": "1",
+                        "ceInitials": "T.",
+                        "ceIndexedName": "Kawamura T.",
+                        "ceSurname": "Kawamura",
+                        "preferredName": null,
+                        "authorUrl": null
+                      },
+                      {
+                        "fa": "true",
+                        "auid": null,
+                        "seq": "2",
+                        "ceInitials": "J.D.",
+                        "ceIndexedName": "Blasio J.D.",
+                        "ceSurname": "Blasio",
+                        "preferredName": null,
+                        "authorUrl": null
+                      },
+                      {
+                        "fa": "true",
+                        "auid": null,
+                        "seq": "3",
+                        "ceInitials": "T.",
+                        "ceIndexedName": "Hasegawa T.",
+                        "ceSurname": "Hasegawa",
+                        "preferredName": null,
+                        "authorUrl": null
+                      },
+                      {
+                        "fa": "true",
+                        "auid": null,
+                        "seq": "4",
+                        "ceInitials": "M.",
+                        "ceIndexedName": "Paolucci M.",
+                        "ceSurname": "Paolucci",
+                        "preferredName": null,
+                        "authorUrl": null
+                      },
+                      {
+                        "fa": "true",
+                        "auid": null,
+                        "seq": "5",
+                        "ceInitials": "K.",
+                        "ceIndexedName": "Sycara K.",
+                        "ceSurname": "Sycara",
+                        "preferredName": null,
+                        "authorUrl": null
+                      }
+                    ]
+                  },
+                  "refSourcetitle": "LNCS",
+                  "refPublicationyear": {
+                    "first": "2004"
+                  },
+                  "refVolisspag": {
+                    "voliss": {
+                      "issue": null,
+                      "volume": "3298"
+                    },
+                    "pagerange": {
+                      "first": "752",
+                      "last": "766"
+                    }
+                  },
+                  "refText": "Proceedings of 3rd International Semantic Web Conference ISWC"
+                }
+              },
+              {
+                "id": "11",
+                "refInfo": {
+                  "refdItemidlist": {
+                    "itemid": {
+                      "idtype": "SGR",
+                      "name": "0036271789"
+                    }
+                  },
+                  "refAuthors": {
+                    "author": [
+                      {
+                        "fa": "true",
+                        "auid": null,
+                        "seq": "1",
+                        "ceInitials": "K.",
+                        "ceIndexedName": "Sycara K.",
+                        "ceSurname": "Sycara",
+                        "preferredName": null,
+                        "authorUrl": null
+                      },
+                      {
+                        "fa": "true",
+                        "auid": null,
+                        "seq": "2",
+                        "ceInitials": "S.",
+                        "ceIndexedName": "Widoff S.",
+                        "ceSurname": "Widoff",
+                        "preferredName": null,
+                        "authorUrl": null
+                      },
+                      {
+                        "fa": "true",
+                        "auid": null,
+                        "seq": "3",
+                        "ceInitials": "M.",
+                        "ceIndexedName": "Klusch M.",
+                        "ceSurname": "Klusch",
+                        "preferredName": null,
+                        "authorUrl": null
+                      },
+                      {
+                        "fa": "true",
+                        "auid": null,
+                        "seq": "4",
+                        "ceInitials": "J.",
+                        "ceIndexedName": "Lu J.",
+                        "ceSurname": "Lu",
+                        "preferredName": null,
+                        "authorUrl": null
+                      }
+                    ]
+                  },
+                  "refSourcetitle": "Autonomous agents and multi-agent systems",
+                  "refPublicationyear": {
+                    "first": "2002"
+                  },
+                  "refVolisspag": {
+                    "voliss": {
+                      "issue": null,
+                      "volume": "5"
+                    },
+                    "pagerange": {
+                      "first": "173",
+                      "last": "203"
+                    }
+                  },
+                  "refText": null
+                }
+              },
+              {
+                "id": "12",
+                "refInfo": {
+                  "refdItemidlist": {
+                    "itemid": {
+                      "idtype": "SGR",
+                      "name": "4544288149"
+                    }
+                  },
+                  "refAuthors": {
+                    "author": [
+                      {
+                        "fa": "true",
+                        "auid": null,
+                        "seq": "1",
+                        "ceInitials": "R.",
+                        "ceIndexedName": "Akkiraju R.",
+                        "ceSurname": "Akkiraju",
+                        "preferredName": null,
+                        "authorUrl": null
+                      },
+                      {
+                        "fa": "true",
+                        "auid": null,
+                        "seq": "2",
+                        "ceInitials": "R.",
+                        "ceIndexedName": "Goodwin R.",
+                        "ceSurname": "Goodwin",
+                        "preferredName": null,
+                        "authorUrl": null
+                      },
+                      {
+                        "fa": "true",
+                        "auid": null,
+                        "seq": "3",
+                        "ceInitials": "P.",
+                        "ceIndexedName": "Doshi P.",
+                        "ceSurname": "Doshi",
+                        "preferredName": null,
+                        "authorUrl": null
+                      },
+                      {
+                        "fa": "true",
+                        "auid": null,
+                        "seq": "4",
+                        "ceInitials": "S.",
+                        "ceIndexedName": "Roeder S.",
+                        "ceSurname": "Roeder",
+                        "preferredName": null,
+                        "authorUrl": null
+                      }
+                    ]
+                  },
+                  "refSourcetitle": "In Proceedings of the Workshop on Information Integration on the Web",
+                  "refPublicationyear": {
+                    "first": "2003"
+                  },
+                  "refVolisspag": {
+                    "voliss": null,
+                    "pagerange": {
+                      "first": "87",
+                      "last": "92"
+                    }
+                  },
+                  "refText": "August"
+                }
+              },
+              {
+                "id": "13",
+                "refInfo": {
+                  "refdItemidlist": {
+                    "itemid": {
+                      "idtype": "SGR",
+                      "name": "84864486684"
+                    }
+                  },
+                  "refAuthors": {
+                    "author": [
+                      {
+                        "fa": "true",
+                        "auid": null,
+                        "seq": "1",
+                        "ceInitials": "M.",
+                        "ceIndexedName": "Paolucci M.",
+                        "ceSurname": "Paolucci",
+                        "preferredName": null,
+                        "authorUrl": null
+                      },
+                      {
+                        "fa": "true",
+                        "auid": null,
+                        "seq": "2",
+                        "ceInitials": "T.",
+                        "ceIndexedName": "Kawmura T.",
+                        "ceSurname": "Kawmura",
+                        "preferredName": null,
+                        "authorUrl": null
+                      },
+                      {
+                        "fa": "true",
+                        "auid": null,
+                        "seq": "3",
+                        "ceInitials": "T.",
+                        "ceIndexedName": "Payne T.",
+                        "ceSurname": "Payne",
+                        "preferredName": null,
+                        "authorUrl": null
+                      },
+                      {
+                        "fa": "true",
+                        "auid": null,
+                        "seq": "4",
+                        "ceInitials": "K.",
+                        "ceIndexedName": "Sycara K.",
+                        "ceSurname": "Sycara",
+                        "preferredName": null,
+                        "authorUrl": null
+                      }
+                    ]
+                  },
+                  "refSourcetitle": "First International Semantic Web Conference",
+                  "refPublicationyear": {
+                    "first": "2002"
+                  },
+                  "refVolisspag": null,
+                  "refText": "In The"
+                }
+              },
+              {
+                "id": "14",
+                "refInfo": {
+                  "refdItemidlist": {
+                    "itemid": {
+                      "idtype": "SGR",
+                      "name": "4544222307"
+                    }
+                  },
+                  "refAuthors": {
+                    "author": [
+                      {
+                        "fa": "true",
+                        "auid": null,
+                        "seq": "1",
+                        "ceInitials": "J.",
+                        "ceIndexedName": "Colgrave J.",
+                        "ceSurname": "Colgrave",
+                        "preferredName": null,
+                        "authorUrl": null
+                      },
+                      {
+                        "fa": "true",
+                        "auid": null,
+                        "seq": "2",
+                        "ceInitials": "R.",
+                        "ceIndexedName": "Akkiraju R.",
+                        "ceSurname": "Akkiraju",
+                        "preferredName": null,
+                        "authorUrl": null
+                      },
+                      {
+                        "fa": "true",
+                        "auid": null,
+                        "seq": "3",
+                        "ceInitials": "R.",
+                        "ceIndexedName": "Goodwin R.",
+                        "ceSurname": "Goodwin",
+                        "preferredName": null,
+                        "authorUrl": null
+                      }
+                    ]
+                  },
+                  "refSourcetitle": "Intl. Conference on Web Services",
+                  "refPublicationyear": {
+                    "first": "2004"
+                  },
+                  "refVolisspag": null,
+                  "refText": null
+                }
+              },
+              {
+                "id": "15",
+                "refInfo": {
+                  "refdItemidlist": {
+                    "itemid": {
+                      "idtype": "SGR",
+                      "name": "33845450917"
+                    }
+                  },
+                  "refAuthors": {
+                    "author": [
+                      {
+                        "fa": "true",
+                        "auid": null,
+                        "seq": "1",
+                        "ceInitials": "B.",
+                        "ceIndexedName": "Parsia B.",
+                        "ceSurname": "Parsia",
+                        "preferredName": null,
+                        "authorUrl": null
+                      },
+                      {
+                        "fa": "true",
+                        "auid": null,
+                        "seq": "2",
+                        "ceInitials": "E.",
+                        "ceIndexedName": "Sirin E.",
+                        "ceSurname": "Sirin",
+                        "preferredName": null,
+                        "authorUrl": null
+                      }
+                    ]
+                  },
+                  "refSourcetitle": "Third International Semantic Web Conference (ISWC2004)",
+                  "refPublicationyear": {
+                    "first": "2004"
+                  },
+                  "refVolisspag": null,
+                  "refText": "Poster In, Hiroshima, Japan, November"
+                }
+              },
+              {
+                "id": "16",
+                "refInfo": {
+                  "refdItemidlist": {
+                    "itemid": {
+                      "idtype": "SGR",
+                      "name": "47749089987"
+                    }
+                  },
+                  "refAuthors": null,
+                  "refSourcetitle": null,
+                  "refPublicationyear": null,
+                  "refVolisspag": null,
+                  "refText": "jUDDI http://ws.apache.org/juddi/"
+                }
+              },
+              {
+                "id": "17",
+                "refInfo": {
+                  "refdItemidlist": {
+                    "itemid": {
+                      "idtype": "SGR",
+                      "name": "47749114817"
+                    }
+                  },
+                  "refAuthors": null,
+                  "refSourcetitle": null,
+                  "refPublicationyear": null,
+                  "refVolisspag": null,
+                  "refText": "UDDI4J http://uddi4j.sourceforge.net/"
+                }
+              },
+              {
+                "id": "18",
+                "refInfo": {
+                  "refdItemidlist": {
+                    "itemid": {
+                      "idtype": "SGR",
+                      "name": "47749119420"
+                    }
+                  },
+                  "refAuthors": null,
+                  "refSourcetitle": null,
+                  "refPublicationyear": null,
+                  "refVolisspag": null,
+                  "refText": "Yonglei Yao, Sen Su, Fangchun Yang. Service Matching Based on Semantic Descriptions, Advanced International Conference on Telecommunications and International Conference on Internet and Web Applications and Services (AICT-ICIW'06), February 2006, pp. 126."
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  }

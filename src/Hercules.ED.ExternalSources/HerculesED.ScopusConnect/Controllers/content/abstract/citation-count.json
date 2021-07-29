@@ -1,0 +1,31 @@
+{ 
+    "citation-count-response": {
+        "document": {
+            "@status": "found",
+            "dc:identifier": "SCOPUS_ID:49549114022",
+            "prism:url": "http://api.elsevier.com/content/abstract/scopus_id/49549114022",
+            "prism:doi": "10.1016/j.envsoft.2008.06.011",
+            "pii": "S1364815208001072",
+            "pubmed_id": null,
+            "eid": "2-s2.0-49549114022",
+            "citation-count": "13",
+            "link": [
+                {
+                    "@_fa": "true",
+                    "@href": "http://www.scopus.com/inward/record.url?partnerID=HzOxMe3b&scp=49549114022&origin=inward",
+                    "@rel": "scopus"
+                },
+                {
+                    "@_fa": "true",
+                    "@href": "http://www.scopus.com/inward/citedby.url?partnerID=HzOxMe3b&scp=49549114022&origin=inward",
+                    "@rel": "scopus-citedby"
+                },
+                {
+                    "@_fa": "true",
+                    "@href": "http://api.elsevier.com/content/search/scopus?query=refeid%282-s2.0-49549114022%29",
+                    "@rel": "citedby"
+                }
+            ]
+        }
+    }
+}
