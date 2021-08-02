@@ -8,6 +8,7 @@
         <TituloDoc EntidadID="http://xmlns.com/foaf/0.1/Person">http://xmlns.com/foaf/0.1/name</TituloDoc>
         <DescripcionDoc EntidadID="http://xmlns.com/foaf/0.1/Person">http://xmlns.com/foaf/0.1/name</DescripcionDoc>
         <HtmlNuevo>true</HtmlNuevo>
+		<CategorizacionTesauroGnossObligatoria>false</CategorizacionTesauroGnossObligatoria>
     </ConfiguracionGeneral>
     <EspefPropiedad>
         <Propiedad  ID="http://xmlns.com/foaf/0.1/nick" EntidadID="http://xmlns.com/foaf/0.1/Person">
@@ -43,12 +44,12 @@
                 <Grupo class="formtheme02">
                     <Grupo class="fieldset">
                         <Grupo Tipo="fieldset" class="mediumLabels">
-                            <NameProp>http://xmlns.com/foaf/0.1/nick</NameProp> 
-                            <NameProp>http://xmlns.com/foaf/0.1/firstName</NameProp> 
-                            <NameProp>http://xmlns.com/foaf/0.1/familyName</NameProp> 
+                            <NameProp>http://xmlns.com/foaf/0.1/firstName</NameProp>
+							<NameProp>http://xmlns.com/foaf/0.1/lastName</NameProp>
+                            <NameProp>http://xmlns.com/foaf/0.1/familyName</NameProp>
+							<NameProp>http://xmlns.com/foaf/0.1/nick</NameProp> 
                             <NameProp>http://w3id.org/roh/ORCID</NameProp> 
                             <NameProp>http://xmlns.com/foaf/0.1/name</NameProp> 
-                            <NameProp>http://xmlns.com/foaf/0.1/lastName</NameProp>
                         </Grupo>
                     </Grupo>
                 </Grupo>
@@ -68,12 +69,12 @@
                     <Grupo classLectura="group group_info">
                         <AtrNombreGrupo>Propiedades</AtrNombreGrupo>
                         <Grupo classLectura="contentGroup">
-                            <NameProp>http://xmlns.com/foaf/0.1/nick</NameProp> 
-                            <NameProp>http://xmlns.com/foaf/0.1/firstName</NameProp> 
-                            <NameProp>http://xmlns.com/foaf/0.1/familyName</NameProp> 
+                            <NameProp>http://xmlns.com/foaf/0.1/firstName</NameProp>
+							<NameProp>http://xmlns.com/foaf/0.1/lastName</NameProp>
+                            <NameProp>http://xmlns.com/foaf/0.1/familyName</NameProp>
+							<NameProp>http://xmlns.com/foaf/0.1/nick</NameProp> 
                             <NameProp>http://w3id.org/roh/ORCID</NameProp> 
-                            <NameProp>http://xmlns.com/foaf/0.1/name</NameProp> 
-                            <NameProp>http://xmlns.com/foaf/0.1/lastName</NameProp>
+                            <NameProp>http://xmlns.com/foaf/0.1/name</NameProp>
                         </Grupo>
                     </Grupo>
                 </Grupo>

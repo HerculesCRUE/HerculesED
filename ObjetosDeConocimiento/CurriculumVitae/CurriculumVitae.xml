@@ -8,6 +8,7 @@
         <TituloDoc EntidadID="http://w3id.org/roh/CV">http://xmlns.com/foaf/0.1/name</TituloDoc>
 		<DescripcionDoc EntidadID="http://w3id.org/roh/CV">http://xmlns.com/foaf/0.1/name</DescripcionDoc>
 		<HtmlNuevo>true</HtmlNuevo>
+		<CategorizacionTesauroGnossObligatoria>false</CategorizacionTesauroGnossObligatoria>
     </ConfiguracionGeneral>
     <EspefPropiedad>
         <Propiedad  ID="http://xmlns.com/foaf/0.1/primaryTopic" EntidadID="http://xmlns.com/foaf/0.1/Document">
@@ -113,8 +114,15 @@
             <AtrNombreLectura>Documento identificativo</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://xmlns.com/foaf/0.1/img" EntidadID="http://w3id.org/roh/PersonalData">
+			<TipoCampo>Imagen</TipoCampo>
             <AtrNombre>Imagen</AtrNombre>
             <AtrNombreLectura>Imagen</AtrNombreLectura>
+			<ImgMiniVP>
+				<Size Tipo="RecorteCuadrado">
+					<Alto>234</Alto>
+					<Ancho>234</Ancho>
+				</Size>
+			</ImgMiniVP>
         </Propiedad>
         <Propiedad  ID="http://xmlns.com/foaf/0.1/gender" EntidadID="http://w3id.org/roh/PersonalData">
             <AtrNombre>Sexo</AtrNombre>
@@ -282,8 +290,8 @@
                 <Grupo class="formtheme02">
                     <Grupo class="fieldset">
                         <Grupo Tipo="fieldset" class="mediumLabels">
+							<NameProp>http://vivoweb.org/ontology/core#relatedBy</NameProp> 
                             <NameProp>http://w3id.org/roh/isPublic</NameProp> 
-                            <NameProp>http://vivoweb.org/ontology/core#relatedBy</NameProp> 
                             <NameProp>http://w3id.org/roh/order</NameProp>
                         </Grupo>
                     </Grupo>
@@ -304,8 +312,8 @@
                     <Grupo classLectura="group group_info">
                         <AtrNombreGrupo>Propiedades</AtrNombreGrupo>
                         <Grupo classLectura="contentGroup">
-                            <NameProp>http://w3id.org/roh/isPublic</NameProp> 
                             <NameProp>http://vivoweb.org/ontology/core#relatedBy</NameProp> 
+                            <NameProp>http://w3id.org/roh/isPublic</NameProp> 
                             <NameProp>http://w3id.org/roh/order</NameProp>
                         </Grupo>
                     </Grupo>
@@ -319,9 +327,9 @@
                 <Grupo class="formtheme02">
                     <Grupo class="fieldset">
                         <Grupo Tipo="fieldset" class="mediumLabels">
-                            <NameProp>http://w3id.org/roh/hasExtension</NameProp> 
-                            <NameProp>https://www.w3.org/2006/vcard/ns#hasValue</NameProp> 
-                            <NameProp>http://w3id.org/roh/hasInternationalCode</NameProp>
+							<NameProp>http://w3id.org/roh/hasInternationalCode</NameProp>
+							<NameProp>https://www.w3.org/2006/vcard/ns#hasValue</NameProp> 
+                            <NameProp>http://w3id.org/roh/hasExtension</NameProp>
                         </Grupo>
                     </Grupo>
                 </Grupo>
@@ -341,9 +349,9 @@
                     <Grupo classLectura="group group_info">
                         <AtrNombreGrupo>Propiedades</AtrNombreGrupo>
                         <Grupo classLectura="contentGroup">
-                            <NameProp>http://w3id.org/roh/hasExtension</NameProp> 
-                            <NameProp>https://www.w3.org/2006/vcard/ns#hasValue</NameProp> 
                             <NameProp>http://w3id.org/roh/hasInternationalCode</NameProp>
+							<NameProp>https://www.w3.org/2006/vcard/ns#hasValue</NameProp> 
+                            <NameProp>http://w3id.org/roh/hasExtension</NameProp>
                         </Grupo>
                     </Grupo>
                 </Grupo>
@@ -391,19 +399,19 @@
                 <Grupo class="formtheme02">
                     <Grupo class="fieldset">
                         <Grupo Tipo="fieldset" class="mediumLabels">
+							<NameProp>http://xmlns.com/foaf/0.1/gender</NameProp>
+							<NameProp>https://www.w3.org/2006/vcard/ns#birth-date</NameProp>
+							<NameProp>http://xmlns.com/foaf/0.1/openid</NameProp>
+							<NameProp>https://www.w3.org/2006/vcard/ns#email</NameProp>
+							<NameProp>https://www.w3.org/2006/vcard/ns#hasTelephone</NameProp>
+							<NameProp>http://w3id.org/roh/hasFax</NameProp>
+							<NameProp>http://xmlns.com/foaf/0.1/img</NameProp>
+							<NameProp>http://xmlns.com/foaf/0.1/homepage</NameProp>
+							<NameProp>http://vivoweb.org/ontology/core#researcherId</NameProp>
+							<NameProp>http://w3id.org/roh/hasMobilePhone</NameProp>
+							<NameProp>https://www.w3.org/2006/vcard/ns#address</NameProp> 
                             <NameProp>http://www.schema.org/nationality</NameProp> 
-                            <NameProp>http://vivoweb.org/ontology/core#researcherId</NameProp> 
-                            <NameProp>https://www.w3.org/2006/vcard/ns#hasTelephone</NameProp> 
-                            <NameProp>http://w3id.org/roh/hasFax</NameProp> 
-                            <NameProp>http://w3id.org/roh/birthplace</NameProp> 
-                            <NameProp>https://www.w3.org/2006/vcard/ns#address</NameProp> 
-                            <NameProp>https://www.w3.org/2006/vcard/ns#email</NameProp> 
-                            <NameProp>http://xmlns.com/foaf/0.1/openid</NameProp> 
-                            <NameProp>http://xmlns.com/foaf/0.1/img</NameProp> 
-                            <NameProp>http://xmlns.com/foaf/0.1/gender</NameProp> 
-                            <NameProp>http://xmlns.com/foaf/0.1/homepage</NameProp> 
-                            <NameProp>https://www.w3.org/2006/vcard/ns#birth-date</NameProp> 
-                            <NameProp>http://w3id.org/roh/hasMobilePhone</NameProp>
+							<NameProp>http://w3id.org/roh/birthplace</NameProp> 
                         </Grupo>
                     </Grupo>
                 </Grupo>
@@ -423,19 +431,19 @@
                     <Grupo classLectura="group group_info">
                         <AtrNombreGrupo>Propiedades</AtrNombreGrupo>
                         <Grupo classLectura="contentGroup">
+                            <NameProp>http://xmlns.com/foaf/0.1/gender</NameProp>
+							<NameProp>https://www.w3.org/2006/vcard/ns#birth-date</NameProp>
+							<NameProp>http://xmlns.com/foaf/0.1/openid</NameProp>
+							<NameProp>https://www.w3.org/2006/vcard/ns#email</NameProp>
+							<NameProp>https://www.w3.org/2006/vcard/ns#hasTelephone</NameProp>
+							<NameProp>http://w3id.org/roh/hasFax</NameProp>
+							<NameProp>http://xmlns.com/foaf/0.1/img</NameProp>
+							<NameProp>http://xmlns.com/foaf/0.1/homepage</NameProp>
+							<NameProp>http://vivoweb.org/ontology/core#researcherId</NameProp>
+							<NameProp>http://w3id.org/roh/hasMobilePhone</NameProp>
+							<NameProp>https://www.w3.org/2006/vcard/ns#address</NameProp> 
                             <NameProp>http://www.schema.org/nationality</NameProp> 
-                            <NameProp>http://vivoweb.org/ontology/core#researcherId</NameProp> 
-                            <NameProp>https://www.w3.org/2006/vcard/ns#hasTelephone</NameProp> 
-                            <NameProp>http://w3id.org/roh/hasFax</NameProp> 
-                            <NameProp>http://w3id.org/roh/birthplace</NameProp> 
-                            <NameProp>https://www.w3.org/2006/vcard/ns#address</NameProp> 
-                            <NameProp>https://www.w3.org/2006/vcard/ns#email</NameProp> 
-                            <NameProp>http://xmlns.com/foaf/0.1/openid</NameProp> 
-                            <NameProp>http://xmlns.com/foaf/0.1/img</NameProp> 
-                            <NameProp>http://xmlns.com/foaf/0.1/gender</NameProp> 
-                            <NameProp>http://xmlns.com/foaf/0.1/homepage</NameProp> 
-                            <NameProp>https://www.w3.org/2006/vcard/ns#birth-date</NameProp> 
-                            <NameProp>http://w3id.org/roh/hasMobilePhone</NameProp>
+							<NameProp>http://w3id.org/roh/birthplace</NameProp> 
                         </Grupo>
                     </Grupo>
                 </Grupo>
@@ -448,11 +456,11 @@
                 <Grupo class="formtheme02">
                     <Grupo class="fieldset">
                         <Grupo Tipo="fieldset" class="mediumLabels">
-                            <NameProp>http://w3id.org/roh/cvOf</NameProp> 
-                            <NameProp>http://w3id.org/roh/scientificExperience</NameProp> 
-                            <NameProp>http://w3id.org/roh/personalData</NameProp> 
-                            <NameProp>http://w3id.org/roh/gnossUser</NameProp> 
-                            <NameProp>http://xmlns.com/foaf/0.1/name</NameProp>
+							<NameProp>http://xmlns.com/foaf/0.1/name</NameProp>
+                            <NameProp>http://w3id.org/roh/cvOf</NameProp>
+							<NameProp>http://w3id.org/roh/gnossUser</NameProp> 
+							<NameProp>http://w3id.org/roh/personalData</NameProp> 
+                            <NameProp>http://w3id.org/roh/scientificExperience</NameProp>
                         </Grupo>
                     </Grupo>
                 </Grupo>
@@ -488,12 +496,12 @@
             <OrdenEntidad>
                 <Grupo class="formtheme02">
                     <Grupo class="fieldset">
-                        <Grupo Tipo="fieldset" class="mediumLabels">
-                            <NameProp>https://www.w3.org/2006/vcard/ns#postal-code</NameProp> 
-                            <NameProp>https://www.w3.org/2006/vcard/ns#hasCountryName</NameProp> 
-                            <NameProp>https://www.w3.org/2006/vcard/ns#extended-address</NameProp> 
-                            <NameProp>https://www.w3.org/2006/vcard/ns#street-address</NameProp> 
-                            <NameProp>https://www.w3.org/2006/vcard/ns#locality</NameProp> 
+                        <Grupo Tipo="fieldset" class="mediumLabels"> 
+                            <NameProp>https://www.w3.org/2006/vcard/ns#street-address</NameProp>
+							<NameProp>https://www.w3.org/2006/vcard/ns#extended-address</NameProp> 
+							<NameProp>https://www.w3.org/2006/vcard/ns#postal-code</NameProp>
+                            <NameProp>https://www.w3.org/2006/vcard/ns#locality</NameProp>
+							<NameProp>https://www.w3.org/2006/vcard/ns#hasCountryName</NameProp>							
                             <NameProp>https://www.w3.org/2006/vcard/ns#hasRegion</NameProp> 
                             <NameProp>http://w3id.org/roh/hasProvince</NameProp>
                         </Grupo>
@@ -515,11 +523,11 @@
                     <Grupo classLectura="group group_info">
                         <AtrNombreGrupo>Propiedades</AtrNombreGrupo>
                         <Grupo classLectura="contentGroup">
-                            <NameProp>https://www.w3.org/2006/vcard/ns#postal-code</NameProp> 
-                            <NameProp>https://www.w3.org/2006/vcard/ns#hasCountryName</NameProp> 
-                            <NameProp>https://www.w3.org/2006/vcard/ns#extended-address</NameProp> 
-                            <NameProp>https://www.w3.org/2006/vcard/ns#street-address</NameProp> 
-                            <NameProp>https://www.w3.org/2006/vcard/ns#locality</NameProp> 
+                            <NameProp>https://www.w3.org/2006/vcard/ns#street-address</NameProp>
+							<NameProp>https://www.w3.org/2006/vcard/ns#extended-address</NameProp> 
+							<NameProp>https://www.w3.org/2006/vcard/ns#postal-code</NameProp>
+                            <NameProp>https://www.w3.org/2006/vcard/ns#locality</NameProp>
+							<NameProp>https://www.w3.org/2006/vcard/ns#hasCountryName</NameProp>							
                             <NameProp>https://www.w3.org/2006/vcard/ns#hasRegion</NameProp> 
                             <NameProp>http://w3id.org/roh/hasProvince</NameProp>
                         </Grupo>
