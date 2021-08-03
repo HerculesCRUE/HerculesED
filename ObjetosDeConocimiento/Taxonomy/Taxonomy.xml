@@ -1,0 +1,83 @@
+<config>
+    <ConfiguracionGeneral>
+        <namespace>Taxonomy</namespace>
+        <idiomasOnto>
+            <idiomaOnto>es</idiomaOnto>
+        </idiomasOnto>
+        <TituloDoc EntidadID="http://www.w3.org/2004/02/skos/core#Collection">http://purl.org/dc/elements/1.1/source</TituloDoc>
+        <HtmlNuevo>true</HtmlNuevo>
+    </ConfiguracionGeneral>
+    <EspefPropiedad>
+        <Propiedad  ID="http://www.w3.org/2004/02/skos/core#member" EntidadID="http://www.w3.org/2004/02/skos/core#Collection">
+            <AtrNombre>Miembro</AtrNombre>
+            <AtrNombreLectura>Miembro</AtrNombreLectura>
+        </Propiedad>
+        <Propiedad  ID="http://www.w3.org/2004/02/skos/core#scopeNote" EntidadID="http://www.w3.org/2004/02/skos/core#Collection">
+            <AtrNombre>Nota alcance</AtrNombre>
+            <AtrNombreLectura>Nota alcance</AtrNombreLectura>
+        </Propiedad>
+        <Propiedad  ID="http://purl.org/dc/elements/1.1/source" EntidadID="http://www.w3.org/2004/02/skos/core#Collection">
+            <AtrNombre>Fuente</AtrNombre>
+            <AtrNombreLectura>Fuente</AtrNombreLectura>
+        </Propiedad>
+        <Propiedad  ID="http://www.w3.org/2004/02/skos/core#narrower" EntidadID="http://www.w3.org/2004/02/skos/core#Concept">
+            <AtrNombre>Específico</AtrNombre>
+            <AtrNombreLectura>Específico</AtrNombreLectura>
+        </Propiedad>
+        <Propiedad  ID="http://www.w3.org/2004/02/skos/core#broader" EntidadID="http://www.w3.org/2004/02/skos/core#Concept">
+            <AtrNombre>Genérico</AtrNombre>
+            <AtrNombreLectura>Genérico</AtrNombreLectura>
+        </Propiedad>
+        <Propiedad  ID="http://www.w3.org/2004/02/skos/core#prefLabel" EntidadID="http://www.w3.org/2004/02/skos/core#Concept">
+            <AtrNombre>Etiqueta preferente</AtrNombre>
+            <AtrNombreLectura>Etiqueta preferente</AtrNombreLectura>
+        </Propiedad>
+        <Propiedad  ID="http://www.w3.org/2004/02/skos/core#symbol" EntidadID="http://www.w3.org/2004/02/skos/core#Concept">
+            <AtrNombre>Símbolo</AtrNombre>
+            <AtrNombreLectura>Símbolo</AtrNombreLectura>
+        </Propiedad>
+        <Propiedad  ID="http://purl.org/dc/elements/1.1/identifier" EntidadID="http://www.w3.org/2004/02/skos/core#Concept">
+            <AtrNombre>Identificador</AtrNombre>
+            <AtrNombreLectura>Identificador</AtrNombreLectura>
+        </Propiedad>
+        <Propiedad  ID="http://purl.org/dc/elements/1.1/source" EntidadID="http://www.w3.org/2004/02/skos/core#Concept">
+            <AtrNombre>Fuente</AtrNombre>
+            <AtrNombreLectura>Fuente</AtrNombreLectura>
+        </Propiedad>
+    </EspefPropiedad>
+    <EspefEntidad>
+        <Entidad  ID="http://www.w3.org/2004/02/skos/core#Collection">
+            <AtrNombre>Colección</AtrNombre>
+            <AtrNombreLectura>Colección</AtrNombreLectura>
+            <OrdenEntidad>
+                <Grupo class="formtheme02">
+                    <Grupo class="fieldset">
+                        <Grupo Tipo="fieldset" class="mediumLabels">
+                            <NameProp>http://purl.org/dc/elements/1.1/source</NameProp>
+                            <NameProp>http://www.w3.org/2004/02/skos/core#scopeNote</NameProp>
+							<NameProp>http://www.w3.org/2004/02/skos/core#member</NameProp>  
+                        </Grupo>
+                    </Grupo>
+                </Grupo>
+            </OrdenEntidad>
+        </Entidad>
+        <Entidad  ID="http://www.w3.org/2004/02/skos/core#Concept">
+            <AtrNombre>Concepto</AtrNombre>
+            <AtrNombreLectura>Concepto</AtrNombreLectura>
+            <OrdenEntidad>
+                <Grupo class="formtheme02">
+                    <Grupo class="fieldset">
+                        <Grupo Tipo="fieldset" class="mediumLabels">
+							<NameProp>http://purl.org/dc/elements/1.1/identifier</NameProp>
+							<NameProp>http://purl.org/dc/elements/1.1/source</NameProp>
+                            <NameProp>http://www.w3.org/2004/02/skos/core#broader</NameProp>
+							<NameProp>http://www.w3.org/2004/02/skos/core#narrower</NameProp>
+                            <NameProp>http://www.w3.org/2004/02/skos/core#prefLabel</NameProp> 
+                            <NameProp>http://www.w3.org/2004/02/skos/core#symbol</NameProp> 
+                        </Grupo>
+                    </Grupo>
+                </Grupo>
+            </OrdenEntidad>
+        </Entidad>
+    </EspefEntidad>
+</config>
