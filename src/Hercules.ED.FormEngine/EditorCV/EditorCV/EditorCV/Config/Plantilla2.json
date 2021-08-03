@@ -1,0 +1,61 @@
+{
+    "rdftype": "http://purl.org/roh/mirror/bibo#Document",
+    "ontologyName": "asiodocument",
+    "eid": "A8747-45684-8576847-8567567-56875",
+    "sections": [
+        {
+            "title": "",
+            "class": [],
+            "tag": "div",
+            "id": "main_tabs",
+            "type": "tabs",
+            "sections": [
+                {
+                    "title": "Datos de identificación",
+                    "class": [],
+                    "tag": "div",
+                    "type": "tab",
+                    "entities": [
+                        {
+                            "rdftype": "http://purl.org/roh/mirror/foaf#Person",
+                            "ontologyName": "asioperson",
+                            "sections": null,
+                            "properties": [
+                                {
+                                    "property": "http://purl.org/roh#title",
+                                    "title": "Título del documento",
+                                    "min": 1,
+                                    "max": 1,
+                                    "multiLanguage": false,
+                                    "fieldType": "text"
+                                },
+                                {
+                                    "property": "http://purl.org/roh/mirror/vivo#dateTime",
+                                    "title": "Fecha",
+                                    "min": 0,
+                                    "max": 1,
+                                    "multiLanguage": false,
+                                    "fieldType": "datetime"
+                                },
+                                {
+                                    "property": "http://purl.org/roh/mirror/bibo#authorList",
+                                    "entityReference": "http://purl.org/roh#ListItem",
+                                    "rdfType": "http://purl.org/roh/mirror/foaf#Person",
+                                    "orderRdf": "http://purl.org/roh#index",
+                                    "itemRdf": "http://purl.org/roh#item",
+                                    "title": "Autores",
+                                    "min": 1,
+                                    "max": -1,
+                                    "listItems": [],
+                                    "multiLanguage": false,
+                                    "fieldType": "orderedlist"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "items": {}
+}

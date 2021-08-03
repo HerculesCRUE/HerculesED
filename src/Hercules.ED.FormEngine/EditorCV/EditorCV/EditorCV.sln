@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30804.86
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EditorCV", "EditorCV\EditorCV.csproj", "{273B744E-7A2C-43C9-AB74-7EA8ECE85281}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gnoss.Apiwrapper", "..\Gnoss.Api.DotNetWrapper\Gnoss.Api.DotNetWrapper\Gnoss.Apiwrapper.csproj", "{E27D6FF5-88F1-4AC7-A055-DFBC351BF566}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{273B744E-7A2C-43C9-AB74-7EA8ECE85281}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{273B744E-7A2C-43C9-AB74-7EA8ECE85281}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{273B744E-7A2C-43C9-AB74-7EA8ECE85281}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{273B744E-7A2C-43C9-AB74-7EA8ECE85281}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E27D6FF5-88F1-4AC7-A055-DFBC351BF566}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E27D6FF5-88F1-4AC7-A055-DFBC351BF566}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E27D6FF5-88F1-4AC7-A055-DFBC351BF566}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E27D6FF5-88F1-4AC7-A055-DFBC351BF566}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5AADC352-0B31-40BE-9147-572295786A5D}
+	EndGlobalSection
+EndGlobal
