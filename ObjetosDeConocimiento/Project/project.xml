@@ -159,6 +159,19 @@
         <Propiedad  ID="http://w3id.org/roh/dedicationRegime" EntidadID="http://purl.obolibrary.org/obo/BFO_0000023">
             <AtrNombre>Régimen de dedicación</AtrNombre>
             <AtrNombreLectura>Régimen de dedicación</AtrNombreLectura>
+			<SeleccionEntidad>
+                <TipoSeleccion>Autocompletar</TipoSeleccion>
+                <Grafo>dedicationregime.owl</Grafo>
+                <UrlTipoEntSolicitada>http://w3id.org/roh/DedicationRegime</UrlTipoEntSolicitada>              
+                <PropsEntEdicion>
+                    <NameProp>http://purl.org/dc/elements/1.1/title</NameProp>
+                </PropsEntEdicion>
+                <PropsEntLectura>
+                    <Propiedad ID="http://purl.org/dc/elements/1.1/title" EntidadID="http://w3id.org/roh/DedicationRegime">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+                </PropsEntLectura>
+            </SeleccionEntidad>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/roleOf" EntidadID="http://purl.obolibrary.org/obo/BFO_0000023">
             <AtrNombre>Rol de</AtrNombre>
