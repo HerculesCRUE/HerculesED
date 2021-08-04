@@ -27,6 +27,43 @@
             <AtrNombre>Público</AtrNombre>
             <AtrNombreLectura>Público</AtrNombreLectura>
         </Propiedad>
+        <Propiedad  ID="http://w3id.org/roh/worksSubmittedConferences" EntidadID="http://w3id.org/roh/ScientificActivity">
+            <AtrNombre>Trabajos presentados en congresos</AtrNombre>
+            <AtrNombreLectura>Trabajos presentados en congresos</AtrNombreLectura>
+        </Propiedad>
+        <Propiedad  ID="http://w3id.org/roh/otherDisseminationActivities" EntidadID="http://w3id.org/roh/ScientificActivity">
+            <AtrNombre>Otras actividades de divulgación</AtrNombre>
+            <AtrNombreLectura>Otras actividades de divulgación</AtrNombreLectura>
+        </Propiedad>
+        <Propiedad  ID="http://w3id.org/roh/scientificPublications" EntidadID="http://w3id.org/roh/ScientificActivity">
+            <AtrNombre>Publicaciones, documentos científicos y técnicos</AtrNombre>
+            <AtrNombreLectura>Publicaciones, documentos científicos y técnicos</AtrNombreLectura>
+        </Propiedad>
+        <Propiedad  ID="http://w3id.org/roh/worksSubmittedSeminars" EntidadID="http://w3id.org/roh/ScientificActivity">
+            <AtrNombre>Trabajos presentados en jornadas, seminarios, talleres de trabajo y/o cursos</AtrNombre>
+            <AtrNombreLectura>Trabajos presentados en jornadas, seminarios, talleres de trabajo y/o cursos</AtrNombreLectura>
+        </Propiedad>
+        <Propiedad  ID="http://w3id.org/roh/relatedDocument" EntidadID="http://w3id.org/roh/RelatedDocuments">
+            <AtrNombre>Publicaciones relacionadas</AtrNombre>
+            <AtrNombreLectura>Publicaciones relacionadas</AtrNombreLectura>
+			<SeleccionEntidad>
+                <TipoSeleccion>Autocompletar</TipoSeleccion>
+                <Grafo>document.owl</Grafo>
+                <UrlTipoEntSolicitada>http://purl.org/ontology/bibo/Document</UrlTipoEntSolicitada>              
+                <PropsEntEdicion>
+                    <NameProp>http://w3id.org/roh/title</NameProp>
+                </PropsEntEdicion>
+                <PropsEntLectura>
+                    <Propiedad ID="http://w3id.org/roh/title" EntidadID="http://purl.org/ontology/bibo/Document">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+                </PropsEntLectura>
+            </SeleccionEntidad>
+        </Propiedad>
+        <Propiedad  ID="http://w3id.org/roh/isPublic" EntidadID="http://w3id.org/roh/RelatedDocuments">
+            <AtrNombre>Público</AtrNombre>
+            <AtrNombreLectura>Público</AtrNombreLectura>
+        </Propiedad>
         <Propiedad  ID="http://vivoweb.org/ontology/core#relatedBy" EntidadID="http://w3id.org/roh/RelatedProjects">
             <AtrNombre>Relacionado con</AtrNombre>
             <AtrNombreLectura>Relacionado con</AtrNombreLectura>
@@ -44,9 +81,9 @@
                 </PropsEntLectura>
             </SeleccionEntidad>
         </Propiedad>
-        <Propiedad  ID="http://w3id.org/roh/order" EntidadID="http://w3id.org/roh/RelatedProjects">
-            <AtrNombre>Posición</AtrNombre>
-            <AtrNombreLectura>Posición</AtrNombreLectura>
+        <Propiedad  ID="http://w3id.org/roh/isPublic" EntidadID="http://w3id.org/roh/RelatedProjects">
+            <AtrNombre>Público</AtrNombre>
+            <AtrNombreLectura>Público</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/hasExtension" EntidadID="https://www.w3.org/2006/vcard/ns#TelephoneType">
             <AtrNombre>Extensión</AtrNombre>
@@ -283,6 +320,80 @@
                 </Grupo>
             </OrdenEntidadLectura>
         </Entidad>
+        <Entidad  ID="http://w3id.org/roh/ScientificActivity">
+            <AtrNombre>Actividad científica</AtrNombre>
+            <AtrNombreLectura>Actividad científica</AtrNombreLectura>
+            <OrdenEntidad>
+                <Grupo class="formtheme02">
+                    <Grupo class="fieldset">
+                        <Grupo Tipo="fieldset" class="mediumLabels">
+                            <NameProp>http://w3id.org/roh/scientificPublications</NameProp>
+                            <NameProp>http://w3id.org/roh/worksSubmittedConferences</NameProp>
+							<NameProp>http://w3id.org/roh/worksSubmittedSeminars</NameProp>							
+                            <NameProp>http://w3id.org/roh/otherDisseminationActivities</NameProp> 
+                        </Grupo>
+                    </Grupo>
+                </Grupo>
+            </OrdenEntidad>
+            <OrdenEntidadLectura>
+                <Grupo classLectura="contentGroup contenidoPrincipal">
+                    <Grupo classLectura="group title">
+                        <Grupo Tipo="titulo">
+                            <NameProp>@@@TITULO</NameProp>
+                        </Grupo>
+                        <Grupo Tipo="subtitulo">
+                            <NameProp>@@@SUBTITULO</NameProp>
+                        </Grupo>
+                    </Grupo>
+                </Grupo>
+                <Grupo classLectura="group content semanticView">
+                    <Grupo classLectura="group group_info">
+                        <AtrNombreGrupo>Propiedades</AtrNombreGrupo>
+                        <Grupo classLectura="contentGroup">
+							<NameProp>http://w3id.org/roh/scientificPublications</NameProp>
+                            <NameProp>http://w3id.org/roh/worksSubmittedConferences</NameProp>
+							<NameProp>http://w3id.org/roh/worksSubmittedSeminars</NameProp>							
+                            <NameProp>http://w3id.org/roh/otherDisseminationActivities</NameProp> 
+                        </Grupo>
+                    </Grupo>
+                </Grupo>
+            </OrdenEntidadLectura>
+        </Entidad>
+        <Entidad  ID="http://w3id.org/roh/RelatedDocuments">
+            <AtrNombre>Publicaciones relacionadas</AtrNombre>
+            <AtrNombreLectura>Publicaciones relacionadas</AtrNombreLectura>
+            <OrdenEntidad>
+                <Grupo class="formtheme02">
+                    <Grupo class="fieldset">
+                        <Grupo Tipo="fieldset" class="mediumLabels">
+                            <NameProp>http://w3id.org/roh/relatedDocument</NameProp> 
+                            <NameProp>http://w3id.org/roh/isPublic</NameProp>
+                        </Grupo>
+                    </Grupo>
+                </Grupo>
+            </OrdenEntidad>
+            <OrdenEntidadLectura>
+                <Grupo classLectura="contentGroup contenidoPrincipal">
+                    <Grupo classLectura="group title">
+                        <Grupo Tipo="titulo">
+                            <NameProp>@@@TITULO</NameProp>
+                        </Grupo>
+                        <Grupo Tipo="subtitulo">
+                            <NameProp>@@@SUBTITULO</NameProp>
+                        </Grupo>
+                    </Grupo>
+                </Grupo>
+                <Grupo classLectura="group content semanticView">
+                    <Grupo classLectura="group group_info">
+                        <AtrNombreGrupo>Propiedades</AtrNombreGrupo>
+                        <Grupo classLectura="contentGroup">
+                            <NameProp>http://w3id.org/roh/relatedDocument</NameProp> 
+                            <NameProp>http://w3id.org/roh/isPublic</NameProp>
+                        </Grupo>
+                    </Grupo>
+                </Grupo>
+            </OrdenEntidadLectura>
+        </Entidad>
         <Entidad  ID="http://w3id.org/roh/RelatedProjects">
             <AtrNombre>Proyectos relacionados</AtrNombre>
             <AtrNombreLectura>Proyectos relacionados</AtrNombreLectura>
@@ -292,7 +403,6 @@
                         <Grupo Tipo="fieldset" class="mediumLabels">
 							<NameProp>http://vivoweb.org/ontology/core#relatedBy</NameProp> 
                             <NameProp>http://w3id.org/roh/isPublic</NameProp> 
-                            <NameProp>http://w3id.org/roh/order</NameProp>
                         </Grupo>
                     </Grupo>
                 </Grupo>
@@ -314,7 +424,6 @@
                         <Grupo classLectura="contentGroup">
                             <NameProp>http://vivoweb.org/ontology/core#relatedBy</NameProp> 
                             <NameProp>http://w3id.org/roh/isPublic</NameProp> 
-                            <NameProp>http://w3id.org/roh/order</NameProp>
                         </Grupo>
                     </Grupo>
                 </Grupo>
@@ -461,6 +570,7 @@
 							<NameProp>http://w3id.org/roh/gnossUser</NameProp> 
 							<NameProp>http://w3id.org/roh/personalData</NameProp> 
                             <NameProp>http://w3id.org/roh/scientificExperience</NameProp>
+							<NameProp>http://w3id.org/roh/scientificActivity</NameProp>
                         </Grupo>
                     </Grupo>
                 </Grupo>
@@ -482,6 +592,7 @@
                         <Grupo classLectura="contentGroup">
                             <NameProp>http://w3id.org/roh/cvOf</NameProp> 
                             <NameProp>http://w3id.org/roh/scientificExperience</NameProp> 
+                            <NameProp>http://w3id.org/roh/scientificActivity</NameProp> 
                             <NameProp>http://w3id.org/roh/personalData</NameProp> 
                             <NameProp>http://w3id.org/roh/gnossUser</NameProp> 
                             <NameProp>http://xmlns.com/foaf/0.1/name</NameProp>
