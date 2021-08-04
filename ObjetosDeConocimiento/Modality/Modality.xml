@@ -5,16 +5,19 @@
             <idiomaOnto>es</idiomaOnto>
         </idiomasOnto>
         <TituloDoc EntidadID="http://w3id.org/roh/Modality">http://purl.org/dc/elements/1.1/title</TituloDoc>
+		<MultiIdioma></MultiIdioma>
         <HtmlNuevo>true</HtmlNuevo>
     </ConfiguracionGeneral>
     <EspefPropiedad>
         <Propiedad  ID="http://purl.org/dc/elements/1.1/title" EntidadID="http://w3id.org/roh/Modality">
             <AtrNombre>Modalidad</AtrNombre>
             <AtrNombreLectura>Modalidad</AtrNombreLectura>
+			<MultiIdioma></MultiIdioma>
         </Propiedad>
         <Propiedad  ID="http://purl.org/dc/elements/1.1/identifier" EntidadID="http://w3id.org/roh/Modality">
             <AtrNombre>Identificador de modalidad</AtrNombre>
             <AtrNombreLectura>Identificador de modalidad</AtrNombreLectura>
+			<MultiIdioma>false</MultiIdioma>
         </Propiedad>
     </EspefPropiedad>
     <EspefEntidad>

@@ -5,16 +5,19 @@
             <idiomaOnto>es</idiomaOnto>
         </idiomasOnto>
         <TituloDoc EntidadID="http://w3id.org/roh/ParticipationType">http://purl.org/dc/elements/1.1/title</TituloDoc>
-        <HtmlNuevo>true</HtmlNuevo>
+        <MultiIdioma></MultiIdioma>
+		<HtmlNuevo>true</HtmlNuevo>
     </ConfiguracionGeneral>
     <EspefPropiedad>
         <Propiedad  ID="http://purl.org/dc/elements/1.1/title" EntidadID="http://w3id.org/roh/ParticipationType">
             <AtrNombre>Tipo de participación</AtrNombre>
             <AtrNombreLectura>Tipo de participación</AtrNombreLectura>
+			<MultiIdioma></MultiIdioma>
         </Propiedad>
         <Propiedad  ID="http://purl.org/dc/elements/1.1/identifier" EntidadID="http://w3id.org/roh/ParticipationType">
             <AtrNombre>Identificador tipo de participación</AtrNombre>
             <AtrNombreLectura>Identificador tipo de participación</AtrNombreLectura>
+			<MultiIdioma>false</MultiIdioma>
         </Propiedad>
     </EspefPropiedad>
     <EspefEntidad>

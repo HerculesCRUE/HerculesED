@@ -5,16 +5,19 @@
             <idiomaOnto>es</idiomaOnto>
         </idiomasOnto>
         <TituloDoc EntidadID="http://w3id.org/roh/ContributionGrade">http://purl.org/dc/elements/1.1/title</TituloDoc>
-        <HtmlNuevo>true</HtmlNuevo>
+        <MultiIdioma></MultiIdioma>
+		<HtmlNuevo>true</HtmlNuevo>
     </ConfiguracionGeneral>
     <EspefPropiedad>
         <Propiedad  ID="http://purl.org/dc/elements/1.1/title" EntidadID="http://w3id.org/roh/ContributionGrade">
             <AtrNombre>Grado de contribución</AtrNombre>
             <AtrNombreLectura>Grado de contribución</AtrNombreLectura>
+			<MultiIdioma></MultiIdioma>
         </Propiedad>
         <Propiedad  ID="http://purl.org/dc/elements/1.1/identifier" EntidadID="http://w3id.org/roh/ContributionGrade">
             <AtrNombre>Identificador del grado de contribución</AtrNombre>
             <AtrNombreLectura>Identificador del grado de contribución</AtrNombreLectura>
+			<MultiIdioma>false</MultiIdioma>
         </Propiedad>
     </EspefPropiedad>
     <EspefEntidad>
