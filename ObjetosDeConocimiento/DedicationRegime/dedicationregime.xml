@@ -17,7 +17,7 @@
         <Propiedad  ID="http://purl.org/dc/elements/1.1/identifier" EntidadID="http://w3id.org/roh/DedicationRegime">
             <AtrNombre>Identificador del régimen de dedicación</AtrNombre>
             <AtrNombreLectura>Identificador del régimen de dedicación</AtrNombreLectura>
-			<MultiIdioma></MultiIdioma>
+			<MultiIdioma>false</MultiIdioma>
         </Propiedad>
     </EspefPropiedad>
     <EspefEntidad>
