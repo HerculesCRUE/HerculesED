@@ -1,6 +1,6 @@
 <config>
     <ConfiguracionGeneral>
-        <namespace>Person</namespace>
+        <namespace>person</namespace>
         <idiomasOnto>
             <idiomaOnto>es</idiomaOnto>
         </idiomasOnto>

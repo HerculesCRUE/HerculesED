@@ -1,6 +1,6 @@
 <config>
     <ConfiguracionGeneral>
-        <namespace>Project</namespace>
+        <namespace>project</namespace>
         <idiomasOnto>
             <idiomaOnto>es</idiomaOnto>
         </idiomasOnto>
@@ -16,7 +16,7 @@
             <AtrNombreLectura>Entidad/es participante/s</AtrNombreLectura>
 			<SeleccionEntidad>
                 <TipoSeleccion>Autocompletar</TipoSeleccion>
-                <Grafo>Organization.owl</Grafo>
+                <Grafo>organization.owl</Grafo>
                 <UrlTipoEntSolicitada>http://xmlns.com/foaf/0.1/Organization</UrlTipoEntSolicitada>              
                 <PropsEntEdicion>
                     <NameProp>http://w3id.org/roh/title</NameProp>
@@ -33,7 +33,7 @@
             <AtrNombreLectura>Entidad/es financiadora/s</AtrNombreLectura>
 			<SeleccionEntidad>
                 <TipoSeleccion>Autocompletar</TipoSeleccion>
-                <Grafo>Organization.owl</Grafo>
+                <Grafo>organization.owl</Grafo>
                 <UrlTipoEntSolicitada>http://xmlns.com/foaf/0.1/Organization</UrlTipoEntSolicitada>              
                 <PropsEntEdicion>
                     <NameProp>http://w3id.org/roh/title</NameProp>
@@ -90,7 +90,7 @@
             <AtrNombreLectura>Ámbito geográfico</AtrNombreLectura>
 			<SeleccionEntidad>
                 <TipoSeleccion>Autocompletar</TipoSeleccion>
-                <Grafo>GeographicRegion.owl</Grafo>
+                <Grafo>geographicregion.owl</Grafo>
                 <UrlTipoEntSolicitada>http://w3id.org/roh/GeographicRegion</UrlTipoEntSolicitada>              
                 <PropsEntEdicion>
                     <NameProp>http://purl.org/dc/elements/1.1/title</NameProp>
@@ -119,7 +119,7 @@
             <AtrNombreLectura>Entidad de realización</AtrNombreLectura>
 			<SeleccionEntidad>
                 <TipoSeleccion>Autocompletar</TipoSeleccion>
-                <Grafo>Organization.owl</Grafo>
+                <Grafo>organization.owl</Grafo>
                 <UrlTipoEntSolicitada>http://xmlns.com/foaf/0.1/Organization</UrlTipoEntSolicitada>              
                 <PropsEntEdicion>
                     <NameProp>http://w3id.org/roh/title</NameProp>
@@ -144,7 +144,7 @@
             <AtrNombreLectura>Modalidad de proyecto</AtrNombreLectura>
 			<SeleccionEntidad>
                 <TipoSeleccion>Autocompletar</TipoSeleccion>
-                <Grafo>Modality.owl</Grafo>
+                <Grafo>modality.owl</Grafo>
                 <UrlTipoEntSolicitada>http://w3id.org/roh/Modality</UrlTipoEntSolicitada>              
                 <PropsEntEdicion>
                     <NameProp>http://purl.org/dc/elements/1.1/title</NameProp>
@@ -165,7 +165,7 @@
             <AtrNombreLectura>Rol de</AtrNombreLectura>
 			<SeleccionEntidad>
                 <TipoSeleccion>Autocompletar</TipoSeleccion>
-                <Grafo>Person.owl</Grafo>
+                <Grafo>person.owl</Grafo>
                 <UrlTipoEntSolicitada>http://xmlns.com/foaf/0.1/Person</UrlTipoEntSolicitada>              
                 <PropsEntEdicion>
                     <NameProp>http://xmlns.com/foaf/0.1/name</NameProp>
@@ -182,7 +182,7 @@
             <AtrNombreLectura>Grado de contribución</AtrNombreLectura>
 			<SeleccionEntidad>
                 <TipoSeleccion>Autocompletar</TipoSeleccion>
-                <Grafo>ContributionGrade.owl</Grafo>
+                <Grafo>contributiongrade.owl</Grafo>
                 <UrlTipoEntSolicitada>http://w3id.org/roh/ContributionGrade</UrlTipoEntSolicitada>              
                 <PropsEntEdicion>
                     <NameProp>http://purl.org/dc/elements/1.1/title</NameProp>
@@ -203,7 +203,7 @@
             <AtrNombreLectura>Tipo de participación</AtrNombreLectura>
 			<SeleccionEntidad>
                 <TipoSeleccion>Autocompletar</TipoSeleccion>
-                <Grafo>ParticipationType.owl</Grafo>
+                <Grafo>participationtype.owl</Grafo>
                 <UrlTipoEntSolicitada>http://w3id.org/roh/ParticipationType</UrlTipoEntSolicitada>              
                 <PropsEntEdicion>
                     <NameProp>http://purl.org/dc/elements/1.1/title</NameProp>
@@ -256,7 +256,7 @@
             <AtrNombreLectura>Nodo de clasificación del proyecto</AtrNombreLectura>
 			<SeleccionEntidad>
                 <TipoSeleccion>Autocompletar</TipoSeleccion>
-                <Grafo>Taxonomy.owl</Grafo>
+                <Grafo>taxonomy.owl</Grafo>
                 <UrlTipoEntSolicitada>http://www.w3.org/2004/02/skos/core#Concept</UrlTipoEntSolicitada>              
                 <PropsEntEdicion>
                     <NameProp>http://purl.org/dc/elements/1.1/source</NameProp>

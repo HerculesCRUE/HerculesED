@@ -1,6 +1,6 @@
 <config>
     <ConfiguracionGeneral>
-        <namespace>Feature</namespace>
+        <namespace>feature</namespace>
         <idiomasOnto>
             <idiomaOnto>es</idiomaOnto>
         </idiomasOnto>
@@ -14,7 +14,7 @@
             <AtrNombreLectura>Rasgo padre</AtrNombreLectura>
 			<SeleccionEntidad>
                 <TipoSeleccion>Autocompletar</TipoSeleccion>
-                <Grafo>Feature.owl</Grafo>
+                <Grafo>feature.owl</Grafo>
                 <UrlTipoEntSolicitada>http://www.geonames.org/ontology#Feature</UrlTipoEntSolicitada>              
                 <PropsEntEdicion>
                     <NameProp>http://www.geonames.org/ontology#name</NameProp>

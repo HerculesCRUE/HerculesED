@@ -1,6 +1,6 @@
 <config>
     <ConfiguracionGeneral>
-        <namespace>OrganizationType</namespace>
+        <namespace>organizationtype</namespace>
         <idiomasOnto>
             <idiomaOnto>es</idiomaOnto>
         </idiomasOnto>

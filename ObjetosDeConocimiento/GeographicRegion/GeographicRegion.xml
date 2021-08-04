@@ -1,6 +1,6 @@
 <config>
     <ConfiguracionGeneral>
-        <namespace>GeographicRegion</namespace>
+        <namespace>geographicregion</namespace>
         <idiomasOnto>
             <idiomaOnto>es</idiomaOnto>
         </idiomasOnto>

@@ -1,6 +1,6 @@
 <config>
     <ConfiguracionGeneral>
-        <namespace>Taxonomy</namespace>
+        <namespace>taxonomy</namespace>
         <idiomasOnto>
             <idiomaOnto>es</idiomaOnto>
         </idiomasOnto>

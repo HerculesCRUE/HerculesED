@@ -1,6 +1,6 @@
 <config>
     <ConfiguracionGeneral>
-        <namespace>CurriculumVitae</namespace>
+        <namespace>curriculumvitae</namespace>
         <idiomasOnto>
             <idiomaOnto>es</idiomaOnto>
         </idiomasOnto>
@@ -32,7 +32,7 @@
             <AtrNombreLectura>Relacionado con</AtrNombreLectura>
 			<SeleccionEntidad>
                 <TipoSeleccion>Autocompletar</TipoSeleccion>
-                <Grafo>Project.owl</Grafo>
+                <Grafo>project.owl</Grafo>
                 <UrlTipoEntSolicitada>http://vivoweb.org/ontology/core#Project</UrlTipoEntSolicitada>              
                 <PropsEntEdicion>
                     <NameProp>http://vivoweb.org/ontology/core#name</NameProp>
@@ -73,7 +73,7 @@
             <AtrNombreLectura>Nacionalidad</AtrNombreLectura>
 			<SeleccionEntidad>
                 <TipoSeleccion>Autocompletar</TipoSeleccion>
-                <Grafo>Feature.owl</Grafo>
+                <Grafo>feature.owl</Grafo>
                 <UrlTipoEntSolicitada>http://www.geonames.org/ontology#Feature</UrlTipoEntSolicitada>              
                 <PropsEntEdicion>
                     <NameProp>http://www.geonames.org/ontology#name</NameProp>
@@ -146,7 +146,7 @@
             <AtrNombreLectura>Currículum de</AtrNombreLectura>
 			<SeleccionEntidad>
                 <TipoSeleccion>Autocompletar</TipoSeleccion>
-                <Grafo>Person.owl</Grafo>
+                <Grafo>person.owl</Grafo>
                 <UrlTipoEntSolicitada>http://xmlns.com/foaf/0.1/Person</UrlTipoEntSolicitada>              
                 <PropsEntEdicion>
                     <NameProp>http://xmlns.com/foaf/0.1/name</NameProp>
@@ -186,7 +186,7 @@
             <AtrNombreLectura>País</AtrNombreLectura>
 			<SeleccionEntidad>
                 <TipoSeleccion>Autocompletar</TipoSeleccion>
-                <Grafo>Feature.owl</Grafo>
+                <Grafo>feature.owl</Grafo>
                 <UrlTipoEntSolicitada>http://www.geonames.org/ontology#Feature</UrlTipoEntSolicitada>              
                 <PropsEntEdicion>
                     <NameProp>http://www.geonames.org/ontology#name</NameProp>
@@ -215,7 +215,7 @@
             <AtrNombreLectura>C. Autón./Reg.</AtrNombreLectura>
 			<SeleccionEntidad>
                 <TipoSeleccion>Autocompletar</TipoSeleccion>
-                <Grafo>Feature.owl</Grafo>
+                <Grafo>feature.owl</Grafo>
                 <UrlTipoEntSolicitada>http://www.geonames.org/ontology#Feature</UrlTipoEntSolicitada>              
                 <PropsEntEdicion>
                     <NameProp>http://www.geonames.org/ontology#name</NameProp>
@@ -232,7 +232,7 @@
             <AtrNombreLectura>Provincia</AtrNombreLectura>
 			<SeleccionEntidad>
                 <TipoSeleccion>Autocompletar</TipoSeleccion>
-                <Grafo>Feature.owl</Grafo>
+                <Grafo>feature.owl</Grafo>
                 <UrlTipoEntSolicitada>http://www.geonames.org/ontology#Feature</UrlTipoEntSolicitada>              
                 <PropsEntEdicion>
                     <NameProp>http://www.geonames.org/ontology#name</NameProp>

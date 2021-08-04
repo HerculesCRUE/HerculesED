@@ -1,6 +1,6 @@
 <config>
     <ConfiguracionGeneral>
-        <namespace>ParticipationType</namespace>
+        <namespace>participationtype</namespace>
         <idiomasOnto>
             <idiomaOnto>es</idiomaOnto>
         </idiomasOnto>

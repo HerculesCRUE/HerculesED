@@ -1,6 +1,6 @@
 <config>
     <ConfiguracionGeneral>
-        <namespace>Modality</namespace>
+        <namespace>modality</namespace>
         <idiomasOnto>
             <idiomaOnto>es</idiomaOnto>
         </idiomasOnto>
