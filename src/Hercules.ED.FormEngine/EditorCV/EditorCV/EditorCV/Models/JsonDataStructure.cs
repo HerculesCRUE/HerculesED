@@ -98,6 +98,7 @@ namespace EditorCV.Models
     public class Section
     {
         public string title { get; set; }
+        public string eid { get; set; }
         public List<string> @class { get; set; }
         public string tag { get; set; }
         public string id { get; set; }
