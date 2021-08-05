@@ -11,9 +11,14 @@
   <owl:Ontology rdf:about=""/>
   <owl:Class rdf:about="http://w3id.org/roh/GeographicRegion"/>
   <owl:FunctionalProperty rdf:about="http://purl.org/dc/elements/1.1/title">
+    <rdfs:domain rdf:resource="http://w3id.org/roh/GeographicRegion"/>
     <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:about="http://purl.org/dc/elements/1.1/identifier">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
     <rdfs:domain rdf:resource="http://w3id.org/roh/GeographicRegion"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
   </owl:FunctionalProperty>
 </rdf:RDF>
 

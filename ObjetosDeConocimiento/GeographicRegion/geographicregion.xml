@@ -5,12 +5,21 @@
             <idiomaOnto>es</idiomaOnto>
         </idiomasOnto>
         <TituloDoc EntidadID="http://w3id.org/roh/GeographicRegion">http://purl.org/dc/elements/1.1/title</TituloDoc>
+		<MultiIdioma></MultiIdioma>
         <HtmlNuevo>true</HtmlNuevo>
     </ConfiguracionGeneral>
     <EspefPropiedad>
         <Propiedad  ID="http://purl.org/dc/elements/1.1/title" EntidadID="http://w3id.org/roh/GeographicRegion">
             <AtrNombre>Ámbito geográfico</AtrNombre>
             <AtrNombreLectura>Ámbito geográfico</AtrNombreLectura>
+			<MultiIdioma></MultiIdioma>
+        </Propiedad>
+    </EspefPropiedad>
+	<EspefPropiedad>
+        <Propiedad  ID="http://purl.org/dc/elements/1.1/identifier" EntidadID="http://w3id.org/roh/GeographicRegion">
+            <AtrNombre>Identificador del ámbito geográfico</AtrNombre>
+            <AtrNombreLectura>Identificador del ámbito geográfico</AtrNombreLectura>
+			<MultiIdioma>false</MultiIdioma>
         </Propiedad>
     </EspefPropiedad>
     <EspefEntidad>
