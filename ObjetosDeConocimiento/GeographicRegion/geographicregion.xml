@@ -31,6 +31,7 @@
                     <Grupo class="fieldset">
                         <Grupo Tipo="fieldset" class="mediumLabels">
                             <NameProp>http://purl.org/dc/elements/1.1/title</NameProp>
+							<NameProp>http://purl.org/dc/elements/1.1/identifier</NameProp>
                         </Grupo>
                     </Grupo>
                 </Grupo>
