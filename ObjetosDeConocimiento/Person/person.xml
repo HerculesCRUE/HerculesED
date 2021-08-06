@@ -1,0 +1,84 @@
+<config>
+    <ConfiguracionGeneral>
+        <namespace>person</namespace>
+        <idiomasOnto>
+            <idiomaOnto>es</idiomaOnto>
+        </idiomasOnto>
+        <ocultarTituloDescpImgDoc></ocultarTituloDescpImgDoc>
+        <TituloDoc EntidadID="http://xmlns.com/foaf/0.1/Person">http://xmlns.com/foaf/0.1/name</TituloDoc>
+        <DescripcionDoc EntidadID="http://xmlns.com/foaf/0.1/Person">http://xmlns.com/foaf/0.1/name</DescripcionDoc>
+        <HtmlNuevo>true</HtmlNuevo>
+		<CategorizacionTesauroGnossObligatoria>false</CategorizacionTesauroGnossObligatoria>
+    </ConfiguracionGeneral>
+    <EspefPropiedad>
+        <Propiedad  ID="http://xmlns.com/foaf/0.1/nick" EntidadID="http://xmlns.com/foaf/0.1/Person">
+            <AtrNombre>Firma</AtrNombre>
+            <AtrNombreLectura>Firma</AtrNombreLectura>
+        </Propiedad>
+        <Propiedad  ID="http://xmlns.com/foaf/0.1/firstName" EntidadID="http://xmlns.com/foaf/0.1/Person">
+            <AtrNombre>Nombre</AtrNombre>
+            <AtrNombreLectura>Nombre</AtrNombreLectura>
+        </Propiedad>
+        <Propiedad  ID="http://xmlns.com/foaf/0.1/familyName" EntidadID="http://xmlns.com/foaf/0.1/Person">
+            <AtrNombre>Segundo apellido</AtrNombre>
+            <AtrNombreLectura>Segundo apellido</AtrNombreLectura>
+        </Propiedad>
+        <Propiedad  ID="http://w3id.org/roh/ORCID" EntidadID="http://xmlns.com/foaf/0.1/Person">
+            <AtrNombre>ORCID</AtrNombre>
+            <AtrNombreLectura>ORCID</AtrNombreLectura>
+        </Propiedad>
+        <Propiedad  ID="http://xmlns.com/foaf/0.1/name" EntidadID="http://xmlns.com/foaf/0.1/Person">
+            <AtrNombre>Nombre completo</AtrNombre>
+            <AtrNombreLectura>Nombre completo</AtrNombreLectura>
+        </Propiedad>
+        <Propiedad  ID="http://xmlns.com/foaf/0.1/lastName" EntidadID="http://xmlns.com/foaf/0.1/Person">
+            <AtrNombre>Primer apellido</AtrNombre>
+            <AtrNombreLectura>Primer apellido</AtrNombreLectura>
+        </Propiedad>
+    </EspefPropiedad>
+    <EspefEntidad>
+        <Entidad  ID="http://xmlns.com/foaf/0.1/Person">
+            <AtrNombre>Persona</AtrNombre>
+            <AtrNombreLectura>Persona</AtrNombreLectura>
+            <OrdenEntidad>
+                <Grupo class="formtheme02">
+                    <Grupo class="fieldset">
+                        <Grupo Tipo="fieldset" class="mediumLabels">
+                            <NameProp>http://xmlns.com/foaf/0.1/firstName</NameProp>
+							<NameProp>http://xmlns.com/foaf/0.1/lastName</NameProp>
+                            <NameProp>http://xmlns.com/foaf/0.1/familyName</NameProp>
+							<NameProp>http://xmlns.com/foaf/0.1/nick</NameProp> 
+                            <NameProp>http://w3id.org/roh/ORCID</NameProp> 
+                            <NameProp>http://xmlns.com/foaf/0.1/name</NameProp> 
+                        </Grupo>
+                    </Grupo>
+                </Grupo>
+            </OrdenEntidad>
+            <OrdenEntidadLectura>
+                <Grupo classLectura="contentGroup contenidoPrincipal">
+                    <Grupo classLectura="group title">
+                        <Grupo Tipo="titulo">
+                            <NameProp>@@@TITULO</NameProp>
+                        </Grupo>
+                        <Grupo Tipo="subtitulo">
+                            <NameProp>@@@SUBTITULO</NameProp>
+                        </Grupo>
+                    </Grupo>
+                </Grupo>
+                <Grupo classLectura="group content semanticView">
+                    <Grupo classLectura="group group_info">
+                        <AtrNombreGrupo>Propiedades</AtrNombreGrupo>
+                        <Grupo classLectura="contentGroup">
+                            <NameProp>http://xmlns.com/foaf/0.1/firstName</NameProp>
+							<NameProp>http://xmlns.com/foaf/0.1/lastName</NameProp>
+                            <NameProp>http://xmlns.com/foaf/0.1/familyName</NameProp>
+							<NameProp>http://xmlns.com/foaf/0.1/nick</NameProp> 
+                            <NameProp>http://w3id.org/roh/ORCID</NameProp> 
+                            <NameProp>http://xmlns.com/foaf/0.1/name</NameProp>
+                        </Grupo>
+                    </Grupo>
+                </Grupo>
+            </OrdenEntidadLectura>
+        </Entidad>
+    </EspefEntidad>
+</config>
