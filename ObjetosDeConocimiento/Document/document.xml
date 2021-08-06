@@ -29,6 +29,19 @@
         <Propiedad  ID="http://w3id.org/roh/metricName" EntidadID="http://w3id.org/roh/PublicationMetric">
             <AtrNombre>Nombre de la métrica</AtrNombre>
             <AtrNombreLectura>Nombre de la métrica</AtrNombreLectura>
+			<SeleccionEntidad>
+                <TipoSeleccion>Combo</TipoSeleccion>
+                <Grafo>referencesource.owl</Grafo>
+                <UrlTipoEntSolicitada>http://purl.org/ontology/bibo/ReferenceSource</UrlTipoEntSolicitada>              
+                <PropsEntEdicion>
+                    <NameProp>http://purl.org/dc/elements/1.1/title</NameProp>
+                </PropsEntEdicion>
+                <PropsEntLectura>
+                    <Propiedad ID="http://purl.org/dc/elements/1.1/title" EntidadID="http://purl.org/ontology/bibo/ReferenceSource">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+                </PropsEntLectura>
+            </SeleccionEntidad>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/citationCount" EntidadID="http://w3id.org/roh/PublicationMetric">
             <AtrNombre>Número de citas</AtrNombre>
@@ -363,10 +376,36 @@
         <Propiedad  ID="https://www.w3.org/2006/vcard/ns#hasCountryName" EntidadID="https://www.w3.org/2006/vcard/ns#Address">
             <AtrNombre>País</AtrNombre>
             <AtrNombreLectura>País</AtrNombreLectura>
+			<SeleccionEntidad>
+                <TipoSeleccion>Autocompletar</TipoSeleccion>
+                <Grafo>feature.owl</Grafo>
+                <UrlTipoEntSolicitada>http://www.geonames.org/ontology#Feature</UrlTipoEntSolicitada>              
+                <PropsEntEdicion>
+                    <NameProp>http://www.geonames.org/ontology#name</NameProp>
+                </PropsEntEdicion>
+                <PropsEntLectura>
+                    <Propiedad ID="http://www.geonames.org/ontology#name" EntidadID="http://www.geonames.org/ontology#Feature">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+                </PropsEntLectura>
+            </SeleccionEntidad>
         </Propiedad>
         <Propiedad  ID="https://www.w3.org/2006/vcard/ns#hasRegion" EntidadID="https://www.w3.org/2006/vcard/ns#Address">
             <AtrNombre>C. Autón./Reg.</AtrNombre>
             <AtrNombreLectura>C. Autón./Reg.</AtrNombreLectura>
+			<SeleccionEntidad>
+                <TipoSeleccion>Autocompletar</TipoSeleccion>
+                <Grafo>feature.owl</Grafo>
+                <UrlTipoEntSolicitada>http://www.geonames.org/ontology#Feature</UrlTipoEntSolicitada>              
+                <PropsEntEdicion>
+                    <NameProp>http://www.geonames.org/ontology#name</NameProp>
+                </PropsEntEdicion>
+                <PropsEntLectura>
+                    <Propiedad ID="http://www.geonames.org/ontology#name" EntidadID="http://www.geonames.org/ontology#Feature">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+                </PropsEntLectura>
+            </SeleccionEntidad>
         </Propiedad>
         <Propiedad  ID="https://www.w3.org/2006/vcard/ns#locality" EntidadID="https://www.w3.org/2006/vcard/ns#Address">
             <AtrNombre>Ciudad</AtrNombre>
