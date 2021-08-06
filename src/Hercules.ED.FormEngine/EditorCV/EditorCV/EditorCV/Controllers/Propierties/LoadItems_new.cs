@@ -10,7 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
-namespace EditorCV.Controllers.Propierties
+namespace EditorCV.Controllers.Properties
 {
     public class LoadItems2
     {
@@ -18,6 +18,8 @@ namespace EditorCV.Controllers.Propierties
         private JsonStructure jsonData;
         
         private ResourceApi resourceApi;
+
+        private Dictionary<string, List<ListItemsData>> loadedEntities;
         private string id;
 
         public LoadItems2(string id)
@@ -33,36 +35,11 @@ namespace EditorCV.Controllers.Propierties
             // string wanted_path = Path.GetDirectoryName(Path.GetDirectoryName(System.IO.Directory.GetCurrentDirectory()));
             string jsonPath = Path.Combine(basePath, config);
             resourceApi = new ResourceApi(jsonPath, null, new LogHelperFile("c:\\logs\\", "logCV"));
-        }
+
+            // Inicialite loaded entities
+            loadedEntities = new Dictionary<string, List<ListItemsData>>();
 
 
-        public List<List<Dictionary<string, Data>>> CargarEntidadOld(string pId, string pGraph)
-        {
-            SparqlObject result = new SparqlObject();
-            List<List<Dictionary<string, Data>>> listResult = new List<List<Dictionary<string, Data>>>();
-            
-            try
-            {
-                
-                if (resourceApi.ApiUrl.GetType() != typeof(Exception))
-                {
-                    result = resourceApi.VirtuosoQuery("select distinct ?entity", $"where{{?s <http://gnoss/hasEntidad> <{pId}>.?s <http://gnoss/hasEntidad> ?entity}}", pGraph);
-                }
-
-
-                foreach (Dictionary<string, Data> fila in result.results.bindings)
-                {
-                    SparqlObject result2 = resourceApi.VirtuosoQuery("select distinct ?p ?o", $"where{{<{fila["entity"].value}> ?p ?o}}", pGraph);
-                    listResult.Add(result2.results.bindings);
-                }
-
-            }
-            catch (System.Exception)
-            {
-                throw;
-            }
-
-            return listResult;
         }
 
 
@@ -100,11 +77,11 @@ namespace EditorCV.Controllers.Propierties
         {
             SparqlObject result = new SparqlObject();
 
-            if (jsonData.entities != null)
+            if (jsonData.entities != null && jsonData.structure != null)
             {
                 // Get the main Document index
                 // var mainKeyEntity = jsonData.entities.FindIndex(e => e.rdftype == "http://purl.org/roh/mirror/bibo#Document");
-                var mainKeyEntity = "http://purl.org/roh/mirror/bibo#Document";
+                var mainKeyEntity = jsonData.structure.rdfType;
                 
 
                 if (jsonData.entities[mainKeyEntity] != null)
@@ -112,17 +89,27 @@ namespace EditorCV.Controllers.Propierties
                     
                     jsonData.entities[mainKeyEntity].items = new Dictionary<string, EntityItem>();
 
-                    string sectionsJson = JsonConvert.SerializeObject(jsonData.entities[mainKeyEntity].sections);
+                    string sectionsJson = JsonConvert.SerializeObject(jsonData.entities[mainKeyEntity].properties);
                     
                     jsonData.entities[mainKeyEntity].items.Add(id, new EntityItem() {
                         id = id,
-                        sections = JsonConvert.DeserializeObject<List<Section>>(sectionsJson)
+                        properties = null
                     });
 
-                    var dbEntityData = GetValEntity(id, jsonData.entities[mainKeyEntity].rdfType, jsonData.entities[mainKeyEntity].ontologyName);
 
+                    var dbEntityData = GetValEntity(id, jsonData.structure.rdfType, jsonData.structure.ontologyName);
+                    
+                    jsonData.entities[mainKeyEntity].items[id].properties = GetFields(dbEntityData, JsonConvert.DeserializeObject<List<Property>>(sectionsJson));
+                    
+                    loadedEntities.Add(jsonData.structure.relation.eid, new List<ListItemsData>() {
+                        new ListItemsData() {
+                            id = id,
+                            dbEntityData = dbEntityData
+                        }
+                    });
 
-                    jsonData.entities[mainKeyEntity].items[id].sections = GetSections(id, JsonConvert.DeserializeObject<List<Section>>(sectionsJson), jsonData.entities[mainKeyEntity], dbEntityData);
+                    // jsonData.entities[mainKeyEntity].items[id].sections = GetSections(id, JsonConvert.DeserializeObject<List<Section>>(sectionsJson), jsonData.entities[mainKeyEntity], dbEntityData);
+                    jsonData.structure.sections = GetSections(id, jsonData.structure.sections, jsonData.structure, dbEntityData);
                 }
                 
             }
@@ -144,9 +131,14 @@ namespace EditorCV.Controllers.Propierties
             {
                 // var dbEntityData = GetValEntity(id, jsonData.entities[i].rdftype, jsonData.entities[i].ontologiaName);
 
-                if (sections[i].properties != null)
+                // if (sections[i].properties != null)
+                // {
+                //     sections[i].properties = GetFields(dbEntityData, sections[i].properties);
+                // }
+
+                if (sections[i].entities != null)
                 {
-                    sections[i].properties = GetFields(dbEntityData, sections[i].properties);
+                    sections[i].entities = GetEntities(id, dbEntityData, sections[i].entities);
                 }
                 
                 if (sections[i].sections != null)
@@ -161,13 +153,41 @@ namespace EditorCV.Controllers.Propierties
             return sections;
         }
 
+        // /// <summary>
+        // /// Go through the all sections to find the properties
+        // /// </summary>
+        // /// <param name="sections">Current section</param>
+        // /// <param name="entity">The current entity</param>
+        // /// <returns></returns>
+        // public List<Section> GetSections(string id, List<Section> sections, Entity entity, Dictionary<string, List<Dictionary<string, Data>>> dbEntityData) 
+        // {
+        //     for (int i = 0; i < sections.Count(); i++)
+        //     {
+        //         // var dbEntityData = GetValEntity(id, jsonData.entities[i].rdftype, jsonData.entities[i].ontologiaName);
+
+        //         if (sections[i].properties != null)
+        //         {
+        //             sections[i].properties = GetFields(dbEntityData, sections[i].properties);
+        //         }
+
+        //         if (sections[i].sections != null)
+        //         {
+        //             // sections[i].sections.ForEach(e => GetSections(id, e, entity));
+
+        //             sections[i].sections = GetSections(id, sections[i].sections, entity, dbEntityData);
+        //         }
+
+        //     }
+
+        //     return sections;
+        // }
+
+
+        /// Needs to be changed when call to loadList for the dbEntityData and loadedEntities origin
+        /// Or not...
         protected List<Property> GetFields(Dictionary<string, List<Dictionary<string, Data>>> dbEntityData, List<Property> properties)
         {
 
-            var dbText = JsonConvert.SerializeObject(dbEntityData.ToArray());
-
-
-            // 
             foreach (KeyValuePair<string, List<Dictionary<string, Data>>> item in dbEntityData)
             {
 
@@ -194,19 +214,19 @@ namespace EditorCV.Controllers.Propierties
                                 properties[i].value = el["o"].value;
 
                                 // 
-                                if (properties[i].entityReference != null && properties[i].entityReference != "")
+                                if (properties[i].relation.entityReference != null && properties[i].relation.entityReference != "")
                                 {
 
-                                    string listItemUri = loadList(item.Key, properties[i], el["o"].value, dbEntityData);
+                                    string listItemUri = LoadList(item.Key, properties[i], el["o"].value, dbEntityData);
                                     
                                     properties[i].id = el["o"].value;
-                                    properties[i].options = loadEntity(listItemUri, properties[i]);
+                                    properties[i].options = GetEntity(listItemUri, properties[i].relation);
                                 }
 
                                 // Get order
-                                if (properties[i].orderRdf != null && properties[i].orderRdf != "")
+                                if (properties[i].relation.orderRdf != null && properties[i].relation.orderRdf != "")
                                 {
-                                    var orderIndex = item.Value.FindIndex(e => el["p"].value == properties[i].orderRdf);
+                                    var orderIndex = item.Value.FindIndex(e => el["p"].value == properties[i].relation.orderRdf);
                                     
                                 }
                             }
@@ -223,7 +243,7 @@ namespace EditorCV.Controllers.Propierties
             return properties;
         }
 
-        protected string loadList(string entityId, Property property, string listItemId, Dictionary<string, List<Dictionary<string, Data>>> dbEntityData)
+        protected string LoadList(string entityId, Property property, string listItemId, Dictionary<string, List<Dictionary<string, Data>>> dbEntityData)
         {
 
             var listItemUri = "";
@@ -255,14 +275,14 @@ namespace EditorCV.Controllers.Propierties
 
                     foreach (var item in dbEntityData[listItemId])
                     {
-                        if (item["p"].type == "uri" && item["p"].value == property.orderRdf)
+                        if (item["p"].type == "uri" && item["p"].value == property.relation.orderRdf)
                         {
                             lItemNew.order = int.Parse(item["o"].value);
                         }
 
-                        if (item["p"].type == "uri" && item["p"].value == property.itemRdf)
+                        if (item["p"].type == "uri" && item["p"].value == property.relation.itemRdf)
                         {
-                            lItemNew.value = item["o"].value;
+                            lItemNew.id = item["o"].value;
                             listItemUri = item["o"].value;
                         }
                     }
@@ -281,18 +301,141 @@ namespace EditorCV.Controllers.Propierties
         }
 
 
-        protected List<dynamic> loadEntity(string entityUri, Property property)
+        protected List<Entity> GetEntities(string id, Dictionary<string, List<Dictionary<string, Data>>> dbEntityData, List<Entity> entities)
+        {
+
+            // Item to return
+            List<Entity> resEntities = new List<Entity>();
+            foreach (var entity in entities)
+            {
+                
+                // var keyEntity = jsonData.entities.FindIndex(e => e.rdfType == property.rdfType);
+
+                var keyEntity = entity.rdfType;
+
+
+                // get the related item
+                if (entity.relation.itemRdf != null)
+                {
+                    // Get the current eid
+                    string eid = entity.relation.eid;
+
+                    if (entity.listItems == null)
+                    {
+                        entity.listItems = new Dictionary<string, List<ListItems>>();
+                    }
+
+                    // Check if the entityparent has loaded (should be loaded)
+                    if (loadedEntities.ContainsKey(entity.relation.eidRel)) {
+
+                        loadedEntities[entity.relation.eidRel].ForEach(e => {
+                            
+                            try
+                            {
+                                // Search for the ids of the list item
+                                var idsData = e.dbEntityData[e.id].FindAll(el => el["p"].value == entity.relation.property);
+                                List<string> ids = new List<string>();
+
+                                // Go over each listItem id
+                                idsData.ForEach(cid => {
+
+                                    var litid = cid["o"].value;
+
+                                    // Check if the listItem Id exist in the data
+                                    if (e.dbEntityData.ContainsKey(litid))
+                                    {
+                                        
+                                        // Get the item element ID
+                                        var dbEntityDataItem = e.dbEntityData[litid].Find(el => el["p"].value == entity.relation.itemRdf);
+                                        var itemId = dbEntityDataItem["o"].value;
+
+                                        // if (jsonData.entities[entityRdf] != null)
+                                        // if (jsonData.entities.ContainsKey(entityRdf))
+                                        // Check if the Id given is not null & if the entity rdftype is not null
+                                        if (itemId != null && jsonData.entities.ContainsKey(keyEntity))
+                                        {
+                                            if (entity.listItems == null)
+                                            {
+                                                entity.listItems = new Dictionary<string, List<ListItems>>();
+                                            }
+
+                                            if (!entity.listItems.ContainsKey(e.id))
+                                            {
+                                                entity.listItems.Add(e.id, new List<ListItems>());
+                                                
+                                            }
+
+                                            // Start a list item & set the parent Id
+                                            var lItemNew = new ListItems()
+                                            {
+                                                parentId = e.id,
+                                            };
+
+                                            // Set the id
+                                            lItemNew.id = itemId;
+
+                                            // Add the Id into the list
+                                            ids.Add(itemId);
+
+                                            // Set the order value
+                                            var dbOrderDataItem = e.dbEntityData[cid["o"].value].Find(el => el["p"].value == entity.relation.orderRdf);
+                                            var itemOrderValue = dbOrderDataItem["o"].value;
+                                            lItemNew.order = int.Parse(itemOrderValue);
+
+                                            // foreach (var item in dbEntityData[cid["o"].value])
+                                            // {
+                                            //     if (item["p"].type == "uri" && item["p"].value == entity.orderRdf)
+                                            //     {
+                                            //         lItemNew.order = int.Parse(item["o"].value);
+                                            //     }
+
+                                            //     if (item["p"].type == "uri" && item["p"].value == entity.itemRdf)
+                                            //     {
+                                            //         lItemNew.id = item["o"].value;
+                                            //     }
+                                            // }
+
+                                            GetEntity(itemId, entity.relation);
+
+                                            entity.listItems[e.id].Add(lItemNew);
+
+                                        }
+                                    }
+
+                                });
+
+
+                            }
+                            catch (System.Exception)
+                            {
+                                throw;
+                            }
+                        });
+                    }
+
+                } else
+                {
+                    
+                }
+
+                resEntities.Add(entity);
+            }
+
+
+
+            return resEntities;
+        }
+
+
+        protected List<dynamic> GetEntity(string entityUri, EntityRelation relation)
         {
 
             // Item to return
             List<dynamic> options = new List<dynamic>();
 
             // var keyEntity = jsonData.entities.FindIndex(e => e.rdfType == property.rdfType);
-            var keyEntity = property.rdfType;
+            var keyEntity = relation.rdfType;
 
-
-            // Load the entity
-            var dbEntityData = GetValEntity(entityUri, property.rdfType, jsonData.entities[keyEntity].ontologyName);
 
             
             try
@@ -311,25 +454,53 @@ namespace EditorCV.Controllers.Propierties
                     // Check if exist and the item, if exist, don't load the item again
                     if (!jsonData.entities[keyEntity].items.ContainsKey(entityUri))
                     {
+                        // Load the entity calling to the DB
+                        var dbEntityData = GetValEntity(entityUri, relation.rdfType, jsonData.entities[keyEntity].ontologyName);
+
+
+                        // Check if exist the loaded Entity & the current element and add this into the loaded entities local variable
+                        if (loadedEntities.ContainsKey(jsonData.structure.relation.eid))
+                        {
+                            loadedEntities[jsonData.structure.relation.eid].Add(new ListItemsData() {
+                                id = id,
+                                dbEntityData = dbEntityData
+                            });
+                        } else {
+                            loadedEntities.Add(jsonData.structure.relation.eid, new List<ListItemsData>() {
+                                new ListItemsData() {
+                                    id = id,
+                                    dbEntityData = dbEntityData
+                                }
+                            });
+                        }
+
+                        // Add new entity item
                         jsonData.entities[keyEntity].items.Add(entityUri, new EntityItem());
 
+                        // // Serialize to remove the reference in the loop
+                        // string sectionsJson = JsonConvert.SerializeObject(jsonData.entities[keyEntity].sections);
+
+                        // // Set the id & the sections
+                        // jsonData.entities[keyEntity].items[entityUri].id = entityUri;
+                        // jsonData.entities[keyEntity].items[entityUri].sections = (jsonData.entities[keyEntity].sections != null) ? GetSections(entityUri, JsonConvert.DeserializeObject<List<Section>>(sectionsJson), jsonData.entities[keyEntity], dbEntityData) : null;
+
+
                         // Serialize to remove the reference in the loop
-                        string sectionsJson = JsonConvert.SerializeObject(jsonData.entities[keyEntity].sections);
+                        string PropertiesJson = JsonConvert.SerializeObject(jsonData.entities[keyEntity].properties);
 
                         // Set the id & the sections
                         jsonData.entities[keyEntity].items[entityUri].id = entityUri;
-                        jsonData.entities[keyEntity].items[entityUri].sections = (jsonData.entities[keyEntity].sections != null) ? GetSections(entityUri, JsonConvert.DeserializeObject<List<Section>>(sectionsJson), jsonData.entities[keyEntity], dbEntityData) : null;
-                        
+                        jsonData.entities[keyEntity].items[entityUri].properties = (jsonData.entities[keyEntity].properties != null) ? GetFields(dbEntityData, JsonConvert.DeserializeObject<List<Property>>(PropertiesJson)) : null;
+
+
                     }
 
                 }
 
             }
             catch (System.Exception e) {
-                var sdad = e.ToString();
                 throw;
             }
-
 
             return options;
         }
@@ -416,14 +587,15 @@ namespace EditorCV.Controllers.Propierties
             // var jsonFile = "Config/Plantilla.json";
             jsonData = new JsonStructure();
             jsonData.entities = new Dictionary<string, Entity>();
-            jsonData.startEntity = "http://purl.org/roh/mirror/bibo#Document";
-            jsonData.startItem = "http://gnoss.com/items/Document_6c5ad967-1775-4960-896b-932a2e407d97_dfd9016f-a9b5-4023-9b22-85c760f187d1";
+            // jsonData.startEntity = "http://purl.org/roh/mirror/bibo#Document";
+            // jsonData.startItem = "http://gnoss.com/items/Document_6c5ad967-1775-4960-896b-932a2e407d97_dfd9016f-a9b5-4023-9b22-85c760f187d1";
 
             string[] jsonFiles = {"Config/PDocumento.json", "Config/PPersona.json"};
+            string MainjsonFiles = "Config/Plantilla2.json";
 
-            foreach (var json in jsonFiles)
+            KeyValuePair<string, Entity> addEntity(string json)
             {
-                
+
                 string jsonPath = Path.Combine(AppContext.BaseDirectory, json);
 
                 try
@@ -434,13 +606,24 @@ namespace EditorCV.Controllers.Propierties
                     string text = file.ReadToEnd();
                     // Deserialize the json
                     var newEntity = JsonConvert.DeserializeObject<Entity>(text);
-                    jsonData.entities.Add(newEntity.rdfType, JsonConvert.DeserializeObject<Entity>(text));
-                } 
+                    return new KeyValuePair<string, Entity>(newEntity.rdfType, JsonConvert.DeserializeObject<Entity>(text));
+                    
+                }
                 catch (System.Exception)
                 {
                     throw new Exception("Error during read and deserialize the json file config");
                 }
             }
+
+            // Get each json file
+            foreach (var json in jsonFiles)
+            {
+                var entityRes = addEntity(json);
+                jsonData.entities.Add(entityRes.Key, entityRes.Value);
+            }
+            var el = addEntity(MainjsonFiles);
+            // Get the main structure (Main json)
+            jsonData.structure = el.Value;
 
         }
 

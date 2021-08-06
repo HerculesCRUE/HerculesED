@@ -9,7 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using EditorCV.Controllers.Propierties;
+using EditorCV.Controllers.Properties;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;

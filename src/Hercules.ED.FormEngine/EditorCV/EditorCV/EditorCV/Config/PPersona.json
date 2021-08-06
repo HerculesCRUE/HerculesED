@@ -2,39 +2,14 @@
   "rdftype": "http://purl.org/roh/mirror/foaf#Person",
   "ontologyName": "asioperson",
   
-  "sections": [
+  "properties": [
     {
-      "title": "Datos generales",
-      "class": ["row"],
-      "tag": "div",
-      "id": "general_data",
-      "type": "default",
-      "sections": [
-        {
-          "title": "",
-          "class": ["col", "col-12"],
-          "tag": "div",
-          "type": "default",
-          "properties": [
-            {
-              "property": "http://purl.org/roh/mirror/foaf#name",
-              "title": "Nombre",
-              "min": 1,
-              "max": 1,
-              "multiLanguage": false,
-              "fieldType": "text"
-            },
-            {
-              "property": "http://purl.org/roh/mirror/foaf#order",
-              "title": "Orden",
-              "min": 0,
-              "max": 1,
-              "multiLanguage": false,
-              "fieldType": "number"
-            }
-          ]
-        }
-      ]
+      "property": "http://purl.org/roh/mirror/foaf#name",
+      "title": "Nombre",
+      "min": 1,
+      "max": 1,
+      "multiLanguage": false,
+      "fieldType": "text"
     }
   ],
   "items": {},

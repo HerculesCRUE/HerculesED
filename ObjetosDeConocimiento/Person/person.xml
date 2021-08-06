@@ -19,10 +19,6 @@
             <AtrNombre>Nombre</AtrNombre>
             <AtrNombreLectura>Nombre</AtrNombreLectura>
         </Propiedad>
-        <Propiedad  ID="http://xmlns.com/foaf/0.1/familyName" EntidadID="http://xmlns.com/foaf/0.1/Person">
-            <AtrNombre>Segundo apellido</AtrNombre>
-            <AtrNombreLectura>Segundo apellido</AtrNombreLectura>
-        </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/ORCID" EntidadID="http://xmlns.com/foaf/0.1/Person">
             <AtrNombre>ORCID</AtrNombre>
             <AtrNombreLectura>ORCID</AtrNombreLectura>
@@ -32,8 +28,8 @@
             <AtrNombreLectura>Nombre completo</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://xmlns.com/foaf/0.1/lastName" EntidadID="http://xmlns.com/foaf/0.1/Person">
-            <AtrNombre>Primer apellido</AtrNombre>
-            <AtrNombreLectura>Primer apellido</AtrNombreLectura>
+            <AtrNombre>Apellidos</AtrNombre>
+            <AtrNombreLectura>Apellidos</AtrNombreLectura>
         </Propiedad>
     </EspefPropiedad>
     <EspefEntidad>
@@ -46,7 +42,6 @@
                         <Grupo Tipo="fieldset" class="mediumLabels">
                             <NameProp>http://xmlns.com/foaf/0.1/firstName</NameProp>
 							<NameProp>http://xmlns.com/foaf/0.1/lastName</NameProp>
-                            <NameProp>http://xmlns.com/foaf/0.1/familyName</NameProp>
 							<NameProp>http://xmlns.com/foaf/0.1/nick</NameProp> 
                             <NameProp>http://w3id.org/roh/ORCID</NameProp> 
                             <NameProp>http://xmlns.com/foaf/0.1/name</NameProp> 
@@ -71,7 +66,6 @@
                         <Grupo classLectura="contentGroup">
                             <NameProp>http://xmlns.com/foaf/0.1/firstName</NameProp>
 							<NameProp>http://xmlns.com/foaf/0.1/lastName</NameProp>
-                            <NameProp>http://xmlns.com/foaf/0.1/familyName</NameProp>
 							<NameProp>http://xmlns.com/foaf/0.1/nick</NameProp> 
                             <NameProp>http://w3id.org/roh/ORCID</NameProp> 
                             <NameProp>http://xmlns.com/foaf/0.1/name</NameProp>
