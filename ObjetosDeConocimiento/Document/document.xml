@@ -23,20 +23,20 @@
             <AtrNombreLectura>Tipo identificador</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/metricNameOther" EntidadID="http://w3id.org/roh/PublicationMetric">
-            <AtrNombre>Nombre de la mÈtrica, otros</AtrNombre>
-            <AtrNombreLectura>Nombre de la mÈtrica, otros</AtrNombreLectura>
+            <AtrNombre>Nombre de la m√©trica, otros</AtrNombre>
+            <AtrNombreLectura>Nombre de la m√©trica, otros</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/metricName" EntidadID="http://w3id.org/roh/PublicationMetric">
-            <AtrNombre>Nombre de la mÈtrica</AtrNombre>
-            <AtrNombreLectura>Nombre de la mÈtrica</AtrNombreLectura>
+            <AtrNombre>Nombre de la m√©trica</AtrNombre>
+            <AtrNombreLectura>Nombre de la m√©trica</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/citationCount" EntidadID="http://w3id.org/roh/PublicationMetric">
-            <AtrNombre>N˙mero de citas</AtrNombre>
-            <AtrNombreLectura>N˙mero de citas</AtrNombreLectura>
+            <AtrNombre>N√∫mero de citas</AtrNombre>
+            <AtrNombreLectura>N√∫mero de citas</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/impactCategory" EntidadID="http://w3id.org/roh/ImpactIndex">
-            <AtrNombre>CategorÌa del Ìndice de impacto</AtrNombre>
-            <AtrNombreLectura>CategorÌa del Ìndice de impacto</AtrNombreLectura>
+            <AtrNombre>Categor√≠a del √≠ndice de impacto</AtrNombre>
+            <AtrNombreLectura>Categor√≠a del √≠ndice de impacto</AtrNombreLectura>
 			<SeleccionEntidad>
                 <TipoSeleccion>Autocompletar</TipoSeleccion>
                 <Grafo>impactindexcategory.owl</Grafo>
@@ -52,20 +52,20 @@
             </SeleccionEntidad>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/impactIndexInYear" EntidadID="http://w3id.org/roh/ImpactIndex">
-            <AtrNombre>Õndice de impacto en aÒo de publicaciÛn</AtrNombre>
-            <AtrNombreLectura>Õndice de impacto en aÒo de publicaciÛn</AtrNombreLectura>
+            <AtrNombre>√çndice de impacto en a√±o de publicaci√≥n</AtrNombre>
+            <AtrNombreLectura>√çndice de impacto en a√±o de publicaci√≥n</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/impactSourceOther" EntidadID="http://w3id.org/roh/ImpactIndex">
             <AtrNombre>Fuente de impacto, otros</AtrNombre>
             <AtrNombreLectura>Fuente de impacto, otros</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/journalNumberInCat" EntidadID="http://w3id.org/roh/ImpactIndex">
-            <AtrNombre>N˙mero de revistas en la categorÌa</AtrNombre>
-            <AtrNombreLectura>N˙mero de revistas en la categorÌa</AtrNombreLectura>
+            <AtrNombre>N√∫mero de revistas en la categor√≠a</AtrNombre>
+            <AtrNombreLectura>N√∫mero de revistas en la categor√≠a</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/publicationPosition" EntidadID="http://w3id.org/roh/ImpactIndex">
-            <AtrNombre>PosiciÛn de publicaciÛn</AtrNombre>
-            <AtrNombreLectura>PosiciÛn de publicaciÛn</AtrNombreLectura>
+            <AtrNombre>Posici√≥n de publicaci√≥n</AtrNombre>
+            <AtrNombreLectura>Posici√≥n de publicaci√≥n</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/journalTop25" EntidadID="http://w3id.org/roh/ImpactIndex">
             <AtrNombre>Revista dentro del 25%</AtrNombre>
@@ -106,8 +106,8 @@
             </SeleccionEntidad>
         </Propiedad>
         <Propiedad  ID="http://vivoweb.org/ontology/core#geographicFocus" EntidadID="http://purl.org/ontology/bibo/Event">
-            <AtrNombre>¡mbito geogr·fico</AtrNombre>
-            <AtrNombreLectura>¡mbito geogr·fico</AtrNombreLectura>
+            <AtrNombre>√Åmbito geogr√°fico</AtrNombre>
+            <AtrNombreLectura>√Åmbito geogr√°fico</AtrNombreLectura>
 			<SeleccionEntidad>
                 <TipoSeleccion>Autocompletar</TipoSeleccion>
                 <Grafo>geographicregion.owl</Grafo>
@@ -123,24 +123,24 @@
             </SeleccionEntidad>
         </Propiedad>
         <Propiedad  ID="https://www.w3.org/2006/vcard/ns#address" EntidadID="http://purl.org/ontology/bibo/Event">
-            <AtrNombre>DirecciÛn</AtrNombre>
-            <AtrNombreLectura>DirecciÛn</AtrNombreLectura>
+            <AtrNombre>Direcci√≥n</AtrNombre>
+            <AtrNombreLectura>Direcci√≥n</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/geographicFocusOther" EntidadID="http://purl.org/ontology/bibo/Event">
-            <AtrNombre>¡mbito geogr·fico, otros</AtrNombre>
-            <AtrNombreLectura>¡mbito geogr·fico, otros</AtrNombreLectura>
+            <AtrNombre>√Åmbito geogr√°fico, otros</AtrNombre>
+            <AtrNombreLectura>√Åmbito geogr√°fico, otros</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://vivoweb.org/ontology/core#start" EntidadID="http://purl.org/ontology/bibo/Event">
-            <AtrNombre>Fecha de celebraciÛn</AtrNombre>
-            <AtrNombreLectura>Fecha de celebraciÛn</AtrNombreLectura>
+            <AtrNombre>Fecha de celebraci√≥n</AtrNombre>
+            <AtrNombreLectura>Fecha de celebraci√≥n</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/withExternalAdmissionsCommittee" EntidadID="http://purl.org/ontology/bibo/Event">
-            <AtrNombre>Con comitÈ de admisiÛn externo</AtrNombre>
-            <AtrNombreLectura>Con comitÈ de admisiÛn externo</AtrNombreLectura>
+            <AtrNombre>Con comit√© de admisi√≥n externo</AtrNombre>
+            <AtrNombreLectura>Con comit√© de admisi√≥n externo</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://vivoweb.org/ontology/core#end" EntidadID="http://purl.org/ontology/bibo/Event">
-            <AtrNombre>Fecha de finalizaciÛn</AtrNombre>
-            <AtrNombreLectura>Fecha de finalizaciÛn</AtrNombreLectura>
+            <AtrNombre>Fecha de finalizaci√≥n</AtrNombre>
+            <AtrNombreLectura>Fecha de finalizaci√≥n</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://purl.org/dc/elements/1.1/title" EntidadID="http://purl.org/ontology/bibo/Event">
             <AtrNombre>Nombre del evento</AtrNombre>
@@ -164,8 +164,8 @@
             </SeleccionEntidad>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/motivatedBy" EntidadID="http://purl.obolibrary.org/obo/BFO_0000023">
-            <AtrNombre>Forma de inscripciÛn</AtrNombre>
-            <AtrNombreLectura>Forma de inscripciÛn</AtrNombreLectura>
+            <AtrNombre>Forma de inscripci√≥n</AtrNombre>
+            <AtrNombreLectura>Forma de inscripci√≥n</AtrNombreLectura>
 			<SeleccionEntidad>
                 <TipoSeleccion>Autocompletar</TipoSeleccion>
                 <Grafo>motivation.owl</Grafo>
@@ -181,8 +181,8 @@
             </SeleccionEntidad>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/contributionGrade" EntidadID="http://purl.obolibrary.org/obo/BFO_0000023">
-            <AtrNombre>Grado de contribuciÛn</AtrNombre>
-            <AtrNombreLectura>Grado de contribuciÛn</AtrNombreLectura>
+            <AtrNombre>Grado de contribuci√≥n</AtrNombre>
+            <AtrNombreLectura>Grado de contribuci√≥n</AtrNombreLectura>
 			<SeleccionEntidad>
                 <TipoSeleccion>Autocompletar</TipoSeleccion>
                 <Grafo>contributiongradedocument.owl</Grafo>
@@ -202,12 +202,12 @@
             <AtrNombreLectura>Autor de correspondencia</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/relevantPublication" EntidadID="http://purl.obolibrary.org/obo/BFO_0000023">
-            <AtrNombre>PublicaciÛn relevante</AtrNombre>
-            <AtrNombreLectura>PublicaciÛn relevante</AtrNombreLectura>
+            <AtrNombre>Publicaci√≥n relevante</AtrNombre>
+            <AtrNombreLectura>Publicaci√≥n relevante</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/motivatedByOther" EntidadID="http://purl.obolibrary.org/obo/BFO_0000023">
-            <AtrNombre>Forma de inscripciÛn, otros</AtrNombre>
-            <AtrNombreLectura>Forma de inscripciÛn, otros</AtrNombreLectura>
+            <AtrNombre>Forma de inscripci√≥n, otros</AtrNombre>
+            <AtrNombreLectura>Forma de inscripci√≥n, otros</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://www.w3.org/1999/02/22-rdf-syntax-ns#member" EntidadID="http://purl.obolibrary.org/obo/BFO_0000023">
             <AtrNombre>Autor</AtrNombre>
@@ -227,12 +227,12 @@
             </SeleccionEntidad>
         </Propiedad>
         <Propiedad  ID="http://www.w3.org/1999/02/22-rdf-syntax-ns#comment" EntidadID="http://purl.obolibrary.org/obo/BFO_0000023">
-            <AtrNombre>PosiciÛn</AtrNombre>
-            <AtrNombreLectura>PosiciÛn</AtrNombreLectura>
+            <AtrNombre>Posici√≥n</AtrNombre>
+            <AtrNombreLectura>Posici√≥n</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://purl.org/ontology/bibo/identifier" EntidadID="http://purl.org/ontology/bibo/Document">
-            <AtrNombre>Identificador de la publicaciÛn</AtrNombre>
-            <AtrNombreLectura>Identificador de la publicaciÛn</AtrNombreLectura>
+            <AtrNombre>Identificador de la publicaci√≥n</AtrNombre>
+            <AtrNombreLectura>Identificador de la publicaci√≥n</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="https://www.w3.org/2006/vcard/ns#hasLanguage" EntidadID="http://purl.org/ontology/bibo/Document">
             <AtrNombre>Traducciones</AtrNombre>
@@ -256,44 +256,44 @@
             <AtrNombreLectura>Lista de autores</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/impactIndex" EntidadID="http://purl.org/ontology/bibo/Document">
-            <AtrNombre>Õndice de impacto</AtrNombre>
-            <AtrNombreLectura>Õndice de impacto</AtrNombreLectura>
+            <AtrNombre>√çndice de impacto</AtrNombre>
+            <AtrNombreLectura>√çndice de impacto</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="https://www.w3.org/2006/vcard/ns#address" EntidadID="http://purl.org/ontology/bibo/Document">
-            <AtrNombre>Lugar de publicaciÛn</AtrNombre>
-            <AtrNombreLectura>Lugar de publicaciÛn</AtrNombreLectura>
+            <AtrNombre>Lugar de publicaci√≥n</AtrNombre>
+            <AtrNombreLectura>Lugar de publicaci√≥n</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/hasMetric" EntidadID="http://purl.org/ontology/bibo/Document">
-            <AtrNombre>MÈtrica</AtrNombre>
-            <AtrNombreLectura>MÈtrica</AtrNombreLectura>
+            <AtrNombre>M√©trica</AtrNombre>
+            <AtrNombreLectura>M√©trica</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://purl.org/ontology/bibo/presentedAt" EntidadID="http://purl.org/ontology/bibo/Document">
             <AtrNombre>Presentado en</AtrNombre>
             <AtrNombreLectura>Presentado en</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/legalDeposit" EntidadID="http://purl.org/ontology/bibo/Document">
-            <AtrNombre>DepÛsito legal</AtrNombre>
-            <AtrNombreLectura>DepÛsito legal</AtrNombreLectura>
+            <AtrNombre>Dep√≥sito legal</AtrNombre>
+            <AtrNombreLectura>Dep√≥sito legal</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/publicationTitle" EntidadID="http://purl.org/ontology/bibo/Document">
-            <AtrNombre>TÌtulo de la publicaciÛn</AtrNombre>
-            <AtrNombreLectura>TÌtulo de la publicaciÛn</AtrNombreLectura>
+            <AtrNombre>T√≠tulo de la publicaci√≥n</AtrNombre>
+            <AtrNombreLectura>T√≠tulo de la publicaci√≥n</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/authorsNumber" EntidadID="http://purl.org/ontology/bibo/Document">
-            <AtrNombre>N˙mero de autores</AtrNombre>
-            <AtrNombreLectura>N˙mero de autores</AtrNombreLectura>
+            <AtrNombre>N√∫mero de autores</AtrNombre>
+            <AtrNombreLectura>N√∫mero de autores</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/congressProceedingsPublication" EntidadID="http://purl.org/ontology/bibo/Document">
-            <AtrNombre>PublicaciÛn en acta congreso</AtrNombre>
-            <AtrNombreLectura>PublicaciÛn en acta congreso</AtrNombreLectura>
+            <AtrNombre>Publicaci√≥n en acta congreso</AtrNombre>
+            <AtrNombreLectura>Publicaci√≥n en acta congreso</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://purl.org/ontology/bibo/isbn" EntidadID="http://purl.org/ontology/bibo/Document">
             <AtrNombre>ISBN</AtrNombre>
             <AtrNombreLectura>ISBN</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://purl.org/ontology/bibo/issue" EntidadID="http://purl.org/ontology/bibo/Document">
-            <AtrNombre>N˙mero</AtrNombre>
-            <AtrNombreLectura>N˙mero</AtrNombreLectura>
+            <AtrNombre>N√∫mero</AtrNombre>
+            <AtrNombreLectura>N√∫mero</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://purl.org/ontology/bibo/volume" EntidadID="http://purl.org/ontology/bibo/Document">
             <AtrNombre>Volumen</AtrNombre>
@@ -304,40 +304,40 @@
             <AtrNombreLectura>Editorial</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://purl.org/dc/terms/issued" EntidadID="http://purl.org/ontology/bibo/Document">
-            <AtrNombre>Fecha de publicaciÛn</AtrNombre>
-            <AtrNombreLectura>Fecha de publicaciÛn</AtrNombreLectura>
+            <AtrNombre>Fecha de publicaci√≥n</AtrNombre>
+            <AtrNombreLectura>Fecha de publicaci√≥n</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://purl.org/ontology/bibo/issn" EntidadID="http://purl.org/ontology/bibo/Document">
             <AtrNombre>ISSN</AtrNombre>
             <AtrNombreLectura>ISSN</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://purl.org/ontology/bibo/pageStart" EntidadID="http://purl.org/ontology/bibo/Document">
-            <AtrNombre>P·gina inicial</AtrNombre>
-            <AtrNombreLectura>P·gina inicial</AtrNombreLectura>
+            <AtrNombre>P√°gina inicial</AtrNombre>
+            <AtrNombreLectura>P√°gina inicial</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="https://www.w3.org/2006/vcard/ns#url" EntidadID="http://purl.org/ontology/bibo/Document">
             <AtrNombre>URL</AtrNombre>
             <AtrNombreLectura>URL</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://purl.org/ontology/bibo/pageEnd" EntidadID="http://purl.org/ontology/bibo/Document">
-            <AtrNombre>P·gina final</AtrNombre>
-            <AtrNombreLectura>P·gina final</AtrNombreLectura>
+            <AtrNombre>P√°gina final</AtrNombre>
+            <AtrNombreLectura>P√°gina final</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/collection" EntidadID="http://purl.org/ontology/bibo/Document">
-            <AtrNombre>ColecciÛn</AtrNombre>
-            <AtrNombreLectura>ColecciÛn</AtrNombreLectura>
+            <AtrNombre>Colecci√≥n</AtrNombre>
+            <AtrNombreLectura>Colecci√≥n</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/relevantPublication" EntidadID="http://purl.org/ontology/bibo/Document">
-            <AtrNombre>PublicaciÛn relevante</AtrNombre>
-            <AtrNombreLectura>PublicaciÛn relevante</AtrNombreLectura>
+            <AtrNombre>Publicaci√≥n relevante</AtrNombre>
+            <AtrNombreLectura>Publicaci√≥n relevante</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/citationCount" EntidadID="http://purl.org/ontology/bibo/Document">
-            <AtrNombre>N˙mero de citas</AtrNombre>
-            <AtrNombreLectura>N˙mero de citas</AtrNombreLectura>
+            <AtrNombre>N√∫mero de citas</AtrNombre>
+            <AtrNombreLectura>N√∫mero de citas</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://purl.org/dc/elements/1.1/type" EntidadID="http://purl.org/ontology/bibo/Document">
-            <AtrNombre>Tipo de producciÛn</AtrNombre>
-            <AtrNombreLectura>Tipo de producciÛn</AtrNombreLectura>
+            <AtrNombre>Tipo de producci√≥n</AtrNombre>
+            <AtrNombreLectura>Tipo de producci√≥n</AtrNombreLectura>
 			<SeleccionEntidad>
                 <TipoSeleccion>Autocompletar</TipoSeleccion>
                 <Grafo>publicationtype.owl</Grafo>
@@ -353,20 +353,20 @@
             </SeleccionEntidad>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/workTitle" EntidadID="http://purl.org/ontology/bibo/Document">
-            <AtrNombre>TÌtulo del trabajo</AtrNombre>
-            <AtrNombreLectura>TÌtulo del trabajo</AtrNombreLectura>
+            <AtrNombre>T√≠tulo del trabajo</AtrNombre>
+            <AtrNombreLectura>T√≠tulo del trabajo</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/title" EntidadID="http://purl.org/ontology/bibo/Document">
-            <AtrNombre>TÌtulo de la publicaciÛn</AtrNombre>
-            <AtrNombreLectura>TÌtulo de la publicaciÛn</AtrNombreLectura>
+            <AtrNombre>T√≠tulo de la publicaci√≥n</AtrNombre>
+            <AtrNombreLectura>T√≠tulo de la publicaci√≥n</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="https://www.w3.org/2006/vcard/ns#hasCountryName" EntidadID="https://www.w3.org/2006/vcard/ns#Address">
-            <AtrNombre>PaÌs</AtrNombre>
-            <AtrNombreLectura>PaÌs</AtrNombreLectura>
+            <AtrNombre>Pa√≠s</AtrNombre>
+            <AtrNombreLectura>Pa√≠s</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="https://www.w3.org/2006/vcard/ns#hasRegion" EntidadID="https://www.w3.org/2006/vcard/ns#Address">
-            <AtrNombre>C. AutÛn./Reg.</AtrNombre>
-            <AtrNombreLectura>C. AutÛn./Reg.</AtrNombreLectura>
+            <AtrNombre>C. Aut√≥n./Reg.</AtrNombre>
+            <AtrNombreLectura>C. Aut√≥n./Reg.</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="https://www.w3.org/2006/vcard/ns#locality" EntidadID="https://www.w3.org/2006/vcard/ns#Address">
             <AtrNombre>Ciudad</AtrNombre>
@@ -412,8 +412,8 @@
             </OrdenEntidadLectura>
         </Entidad>
         <Entidad  ID="http://w3id.org/roh/PublicationMetric">
-            <AtrNombre>MÈtrica de publicaciÛn</AtrNombre>
-            <AtrNombreLectura>MÈtrica de publicaciÛn</AtrNombreLectura>
+            <AtrNombre>M√©trica de publicaci√≥n</AtrNombre>
+            <AtrNombreLectura>M√©trica de publicaci√≥n</AtrNombreLectura>
             <OrdenEntidad>
                 <Grupo class="formtheme02">
                     <Grupo class="fieldset">
@@ -449,8 +449,8 @@
             </OrdenEntidadLectura>
         </Entidad>
         <Entidad  ID="http://w3id.org/roh/ImpactIndex">
-            <AtrNombre>Õndice de impacto</AtrNombre>
-            <AtrNombreLectura>Õndice de impacto</AtrNombreLectura>
+            <AtrNombre>√çndice de impacto</AtrNombre>
+            <AtrNombreLectura>√çndice de impacto</AtrNombreLectura>
             <OrdenEntidad>
                 <Grupo class="formtheme02">
                     <Grupo class="fieldset">
@@ -592,8 +592,8 @@
             </OrdenEntidadLectura>
         </Entidad>
         <Entidad  ID="http://purl.org/ontology/bibo/Document">
-            <AtrNombre>PublicaciÛn</AtrNombre>
-            <AtrNombreLectura>PublicaciÛn</AtrNombreLectura>
+            <AtrNombre>Publicaci√≥n</AtrNombre>
+            <AtrNombreLectura>Publicaci√≥n</AtrNombreLectura>
             <OrdenEntidad>
                 <Grupo class="formtheme02">
                     <Grupo class="fieldset">
@@ -671,8 +671,8 @@
             </OrdenEntidadLectura>
         </Entidad>
         <Entidad  ID="https://www.w3.org/2006/vcard/ns#Address">
-            <AtrNombre>DirecciÛn</AtrNombre>
-            <AtrNombreLectura>DirecciÛn</AtrNombreLectura>
+            <AtrNombre>Direcci√≥n</AtrNombre>
+            <AtrNombreLectura>Direcci√≥n</AtrNombreLectura>
             <OrdenEntidad>
                 <Grupo class="formtheme02">
                     <Grupo class="fieldset">
