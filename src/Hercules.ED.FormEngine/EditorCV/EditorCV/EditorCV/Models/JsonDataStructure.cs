@@ -1,59 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using Newtonsoft.Json.Converters;
+using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
 namespace EditorCV.Models
 {
 
-    // public class JsonStructure
-    // {
-    //     public List<Entity> entities { get; set; }
-    //     public List<Property> properties { get; set; }
-    // }
-
-    // public class Entity
-    // {
-    //     public string rdgtype { get; set; }
-    //     public string ontologiaName { get; set; }
-    //     public string name { get; set; }
-    //     public int[] nitems { get; set; }
-    //     public string[] relation { get; set; }
-    //     public List<EntityItem> items { get; set; }
-    // }
-
-    // public class EntityItem
-    // {
-    //     public string id { get; set; }
-    //     public List<Entity> entities { get; set; }
-    //     public List<Property> properties { get; set; }
-    // }
-
-
-    // public class Section
-    // {
-    //     public string title { get; set; }
-    //     public List<string> @class { get; set; }
-    //     public string id { get; set; }
-    //     public string type { get; set; }
-    //     public List<Property> properties { get; set; }
-    // }
-
-    // public class Property
-    // {
-    //     public string uri { get; set; }
-    //     public string id { get; set; }
-    //     public string fid { get; set; }
-    //     public int[] nitems { get; set; }
-    //     public dynamic defaultValue { get; set; }
-    //     public dynamic value { get; set; }
-    //     public string name { get; set; }
-    //     public string type { get; set; }
-    //     public bool show { get; set; }
-    //     public bool required { get; set; }
-    //     public bool multiLanguage { get; set; }
-    //     public bool multiple { get; set; }
-    //     public List<dynamic> options { get; set; }
-    // }
     public class DataJsonStructure
     {
         public JsonStructure data { get; set; }
@@ -66,6 +18,7 @@ namespace EditorCV.Models
         public string startEntity { get; set; }
         public string startItem { get; set; }
         public List<Property> properties { get; set; }
+        public Entity structure { get; set; }
     }
 
 
@@ -77,13 +30,42 @@ namespace EditorCV.Models
 
     public class Entity
     {
+        // Rdf type of the entity
         public string rdfType { get; set; }
         public string ontologyName { get; set; }
+        //////////////////////////////////
+        // START RELATION
+        // Property of the entity with the re
+        public EntityRelation relation { get; set; }
+        // Unique identificator of the entity
+        public string id { get; set; }
         public string name { get; set; }
-        // public List<EntityItem> items { get; set; }
+        // You only can choose between design or make the structure
+        public string design { get; set; }
+        // List of the sections of the Entity (Only for the structure JSON)
         public List<Section> sections { get; set; }
+        // Properties of the entity
+        public List<Property> properties { get; set; }
+        // Custom designs for standarstructures
+        public Dictionary<string, Section> designs { get; set; }
+        // Each entity, only for the Entity model
         public Dictionary<string, EntityItem> items { get; set; }
+        // List items for the structure section, parentId, items child
+        public Dictionary<string, List<ListItems>> listItems { get; set; }
         public View view { get; set; }
+    }
+
+
+    public class EntityRelation
+    {
+        // Rdf type of the entity
+        public string rdfType { get; set; }
+        public string property { get; set; }
+        public string entityReference { get; set; }
+        public string orderRdf { get; set; }
+        public string itemRdf { get; set; }
+        public string eidRel { get; set; }
+        public string eid { get; set; }
     }
 
 
@@ -98,24 +80,22 @@ namespace EditorCV.Models
     public class Section
     {
         public string title { get; set; }
-        public string eid { get; set; }
         public List<string> @class { get; set; }
         public string tag { get; set; }
         public string id { get; set; }
         public string type { get; set; }
         public List<Section> sections { get; set; }
         public List<Property> properties { get; set; }
+        public List<Entity> entities { get; set; }
     }
 
 
     public class Property
     {
+        // Property of the entity with the re
         public string property { get; set; }
-        public string entityReference { get; set; }
         public string id { get; set; }
-        public string rdfType { get; set; }
-        public string orderRdf { get; set; }
-        public string itemRdf { get; set; }
+        public EntityRelation relation { get; set; }
         public string label { get; set; }
         public string title { get; set; }
         public int? min { get; set; }
@@ -123,6 +103,7 @@ namespace EditorCV.Models
         public dynamic defaultValue { get; set; }
         public dynamic value { get; set; }
         public string name { get; set; }
+        public string viewMode { get; set; }
         public string fieldType { get; set; }
         public dynamic show { get; set; }
         public bool couldBeDisabled { get; set; }
@@ -164,8 +145,16 @@ namespace EditorCV.Models
     public class ListItems
     {
         public string id { get; set; }
+        public string parentId { get; set; }
         public int? order { get; set; }
-        public dynamic value { get; set; }
+    }
+
+
+    public class ListItemsData
+    {
+        public string id { get; set; }
+        public string parentId { get; set; }
+        public Dictionary<string, List<Dictionary<string, Data>>> dbEntityData { get; set; }
     }
 
 

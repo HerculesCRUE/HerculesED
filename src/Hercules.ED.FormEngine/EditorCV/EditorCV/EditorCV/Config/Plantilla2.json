@@ -1,7 +1,9 @@
 {
-    "rdftype": "http://purl.org/roh/mirror/cv#Cv",
-    "ontologyName": "asiocv",
-    "eid": "5097c6b6-f454-11eb-9a03-0242ac130003",
+    "rdftype": "http://purl.org/roh/mirror/bibo#Document",
+    "ontologyName": "asiodocument",
+    "relation": {
+        "eid": "5097c6b6-f454-11eb-9a03-0242ac130003"
+    },
     "sections": [
         {
             "id": "main_tabs",
@@ -20,13 +22,14 @@
                                     "title": "Datos personales",
                                     "class": ["col", "col12"],
                                     "tag": "div",
-                                    "entity": {
-                                        "property": "http://purl.org/roh/mirror/bibo#authorList",
+                                    "entity": [{
+                                        "rdfType": "http://purl.org/roh/mirror/foaf#Person",
                                         "entityReference": "http://purl.org/roh#ListItem",
+                                        "property": "http://purl.org/roh/mirror/bibo#authorList",
                                         "orderRdf": "http://purl.org/roh#index",
                                         "itemRdf": "http://purl.org/roh#item",
-                                        "rdfType": "http://purl.org/roh/mirror/foaf#Person",
                                         "eid": "98af28fa-7a1d-445e-bf69-825a2a076092",
+                                        "eidRel": "5097c6b6-f454-11eb-9a03-0242ac130003",
                                         "ontologyName": "asioperson",
                                         "sections": [
                                             {
@@ -114,7 +117,7 @@
                                                 ]
                                             }
                                         ]
-                                    },
+                                    }],
                                     "properties": [
                                         {
                                             "property": "http://purl.org/roh#title",
@@ -148,9 +151,107 @@
                                     ],
                                     "entities": [
                                         {
-                                            "rdftype": "http://purl.org/roh/mirror/foaf#Person",
-                                            "ontologyName": "asioperson",
-                                            "sections": null,
+                                            "rdfType": "http://purl.org/roh/mirror/foaf#Person",
+                                            "relation": {
+                                                "property": "http://purl.org/roh/mirror/bibo#authorList",
+                                                "rdfType": "http://purl.org/roh/mirror/foaf#Person",
+                                                "entityReference": "http://purl.org/roh#ListItem",
+                                                "orderRdf": "http://purl.org/roh#index",
+                                                "itemRdf": "http://purl.org/roh#item",
+                                                "eid": "98af28fa-7a1d-445e-bf69-825a2a076092",
+                                                "eidRel": "5097c6b6-f454-11eb-9a03-0242ac130003"
+                                            },
+                                            "sections": [
+                                                {
+                                                    "title": "",
+                                                    "class": [
+                                                        "row"
+                                                    ],
+                                                    "tag": "div",
+                                                    "sections": [
+                                                        {
+                                                            "title": "",
+                                                            "class": [
+                                                                "col",
+                                                                "col-sm-6",
+                                                                "col-md-4"
+                                                            ],
+                                                            "tag": "div",
+                                                            "properties": [
+                                                                {
+                                                                    "property": "http://purl.org/roh#title",
+                                                                    "title": "Título del documento",
+                                                                    "min": 1,
+                                                                    "max": 1,
+                                                                    "multiLanguage": false,
+                                                                    "fieldType": "text",
+                                                                    "viewMode": "readOnly"
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "title": "",
+                                                            "class": [
+                                                                "col",
+                                                                "col-sm-6",
+                                                                "col-md-4"
+                                                            ],
+                                                            "tag": "div",
+                                                            "properties": [
+                                                                {
+                                                                    "property": "http://purl.org/roh/mirror/foaf#familyName",
+                                                                    "viewMode": "readOnly"
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "title": "",
+                                                            "class": [
+                                                                "col",
+                                                                "col-sm-6",
+                                                                "col-md-4"
+                                                            ],
+                                                            "tag": "div",
+                                                            "properties": [
+                                                                {
+                                                                    "property": "http://purl.org/roh/mirror/foaf#firstName",
+                                                                    "viewMode": "readOnly"
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "title": "",
+                                                            "class": [
+                                                                "col",
+                                                                "col-sm-6",
+                                                                "col-md-4"
+                                                            ],
+                                                            "tag": "div",
+                                                            "properties": [
+                                                                {
+                                                                    "property": "http://purl.org/roh/mirror/foaf#nick",
+                                                                    "viewMode": "readOnly"
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "title": "",
+                                                            "class": [
+                                                                "col",
+                                                                "col-sm-6",
+                                                                "col-md-4"
+                                                            ],
+                                                            "tag": "div",
+                                                            "properties": [
+                                                                {
+                                                                    "property": "http://purl.org/roh#ORCID",
+                                                                    "viewMode": "readOnly"
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ],
                                             "properties": [
                                                 {
                                                     "property": "http://purl.org/roh#title",
@@ -170,10 +271,14 @@
                                                 },
                                                 {
                                                     "property": "http://purl.org/roh/mirror/bibo#authorList",
-                                                    "entityReference": "http://purl.org/roh#ListItem",
-                                                    "rdfType": "http://purl.org/roh/mirror/foaf#Person",
-                                                    "orderRdf": "http://purl.org/roh#index",
-                                                    "itemRdf": "http://purl.org/roh#item",
+                                                    "relation": {
+                                                        "property": "http://purl.org/roh/mirror/bibo#authorList",
+                                                        "rdfType": "http://purl.org/roh/mirror/foaf#Person",
+                                                        "entityReference": "http://purl.org/roh#ListItem",
+                                                        "orderRdf": "http://purl.org/roh#index",
+                                                        "itemRdf": "http://purl.org/roh#item",
+                                                        "eidRel": "5097c6b6-f454-11eb-9a03-0242ac130003"
+                                                    },
                                                     "title": "Autores",
                                                     "min": 1,
                                                     "max": -1,
