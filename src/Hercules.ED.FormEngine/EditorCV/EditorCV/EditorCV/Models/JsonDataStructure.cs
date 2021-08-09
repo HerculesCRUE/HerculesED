@@ -19,6 +19,7 @@ namespace EditorCV.Models
         public string startItem { get; set; }
         public List<Property> properties { get; set; }
         public Entity structure { get; set; }
+        public Dictionary<string, Entity> sections { get; set; }
     }
 
 
@@ -84,6 +85,7 @@ namespace EditorCV.Models
         public string tag { get; set; }
         public string id { get; set; }
         public string type { get; set; }
+        public string fileName { get; set; }
         public List<Section> sections { get; set; }
         public List<Property> properties { get; set; }
         public List<Entity> entities { get; set; }
