@@ -8,6 +8,7 @@
         <TituloDoc EntidadID="http://purl.org/ontology/bibo/Document">http://w3id.org/roh/title</TituloDoc>
         <DescripcionDoc EntidadID="http://purl.org/ontology/bibo/Document">http://w3id.org/roh/title</DescripcionDoc>
         <HtmlNuevo>true</HtmlNuevo>
+		<CategorizacionTesauroGnossObligatoria>false</CategorizacionTesauroGnossObligatoria>
     </ConfiguracionGeneral>
     <EspefPropiedad>
         <Propiedad  ID="http://xmlns.com/foaf/0.1/topic" EntidadID="http://xmlns.com/foaf/0.1/Document">
