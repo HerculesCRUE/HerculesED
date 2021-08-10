@@ -1,11 +1,19 @@
 {
-  "rdftype": "http://purl.org/roh/mirror/foaf#Person",
-  "ontologyName": "asioperson",
+  "rdftype": "http://w3id.org/roh/PersonalData",
+  "ontologyName": "curriculumvitae",
   
   "properties": [
     {
       "property": "http://purl.org/roh/mirror/foaf#name",
       "title": "Nombre",
+      "min": 1,
+      "max": 1,
+      "multiLanguage": false,
+      "fieldType": "text"
+    },
+    {
+      "property": "http://xmlns.com/foaf/0.1/homepage",
+      "title": "Página web",
       "min": 1,
       "max": 1,
       "multiLanguage": false,

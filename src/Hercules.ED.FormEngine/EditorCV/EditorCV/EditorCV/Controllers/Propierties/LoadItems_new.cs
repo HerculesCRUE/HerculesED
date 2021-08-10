@@ -101,12 +101,14 @@ namespace EditorCV.Controllers.Properties
                     
                     jsonData.entities[mainKeyEntity].items[id].properties = GetFields(dbEntityData, JsonConvert.DeserializeObject<List<Property>>(sectionsJson));
                     
-                    loadedEntities.Add(jsonData.structure.relation.eid, new List<ListItemsData>() {
-                        new ListItemsData() {
-                            id = id,
-                            dbEntityData = dbEntityData
-                        }
-                    });
+                    if(!loadedEntities.ContainsKey(jsonData.structure.relation.eid)) {
+                        loadedEntities.Add(jsonData.structure.relation.eid, new List<ListItemsData>() {
+                            new ListItemsData() {
+                                id = id,
+                                dbEntityData = dbEntityData
+                            }
+                        });
+                    }
 
                     // jsonData.entities[mainKeyEntity].items[id].sections = GetSections(id, JsonConvert.DeserializeObject<List<Section>>(sectionsJson), jsonData.entities[mainKeyEntity], dbEntityData);
                     jsonData.structure.sections = GetSections(id, jsonData.structure.sections, jsonData.structure, dbEntityData);
@@ -590,10 +592,11 @@ namespace EditorCV.Controllers.Properties
             // jsonData.startEntity = "http://purl.org/roh/mirror/bibo#Document";
             // jsonData.startItem = "http://gnoss.com/items/Document_6c5ad967-1775-4960-896b-932a2e407d97_dfd9016f-a9b5-4023-9b22-85c760f187d1";
 
-            string[] jsonFiles = {"Config/PDocumento.json", "Config/PPersona.json"};
-            string MainjsonFiles = "Config/Plantilla2.json";
+            string jsonTemplateFolder = "Config/Templates";
+            string jsonSectionsFolder = "Config/Sections";
+            string mainjsonFile = "Config/Plantilla2.json";
 
-            KeyValuePair<string, Entity> addEntity(string json)
+            KeyValuePair<string, Entity> readOnlyJsonFile(string json)
             {
 
                 string jsonPath = Path.Combine(AppContext.BaseDirectory, json);
@@ -615,15 +618,59 @@ namespace EditorCV.Controllers.Properties
                 }
             }
 
-            // Get each json file
-            foreach (var json in jsonFiles)
+            Dictionary<string, Entity> readJsonFiles(string jsonFolder)
             {
-                var entityRes = addEntity(json);
-                jsonData.entities.Add(entityRes.Key, entityRes.Value);
+                Dictionary<string, string> filesTexts = new Dictionary<string, string>();
+                Dictionary<string, Entity> jsons = new Dictionary<string, Entity>();
+                // string jsonPath = Path.Combine(AppContext.BaseDirectory, jsonFiles);
+
+                string jsonPath = Path.Combine(AppContext.BaseDirectory, jsonFolder);
+                var directoryInfo = new DirectoryInfo(jsonPath);
+
+                if (directoryInfo.Exists)
+                {
+                    FileInfo[] info = directoryInfo.GetFiles("*.json");
+
+                    foreach (var file in info)
+                    {
+                        // Read the file
+                        StreamReader contentsText = file.OpenText();
+
+                        string text = contentsText.ReadToEnd();
+
+                        filesTexts.Add(file.Name, text);
+                    }
+
+                    try
+                    {
+                        foreach (var item in filesTexts)
+                        {
+                            jsons.Add(item.Key, JsonConvert.DeserializeObject<Entity>(item.Value));
+                        }
+                    }
+                    catch (System.Exception)
+                    {
+                        throw new Exception("Error during read and deserialize the json file config");
+                    }
+                }
+                return jsons;
+
             }
-            var el = addEntity(MainjsonFiles);
+
+            // Get each json model template file
+            var entityRes = readJsonFiles(jsonTemplateFolder);
+            foreach (var jsonItem in entityRes)
+            {
+                jsonData.entities.Add(jsonItem.Value.rdfType, jsonItem.Value);
+            }
+
             // Get the main structure (Main json)
+            var el = readOnlyJsonFile(mainjsonFile);
             jsonData.structure = el.Value;
+
+            // Get the sections
+            var sectionsList = readJsonFiles(jsonSectionsFolder);
+            jsonData.sections = sectionsList;
 
         }
 

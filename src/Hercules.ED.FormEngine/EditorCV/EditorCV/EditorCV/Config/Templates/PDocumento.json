@@ -1,5 +1,6 @@
 {
   "rdftype": "http://purl.org/roh/mirror/bibo#Document",
+  "rdftype": "http://w3id.org/roh/CV",
   "ontologyName": "asiodocument",
   "properties": [
     {
