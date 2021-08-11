@@ -1,4 +1,3 @@
-@*[security|||curriculumvitae|||hercules]*@
 @using System.Reflection;
 @model ResourceViewModel
 @{
@@ -12,6 +11,8 @@
         Html.GetListaJS().Add($"{urlPersonalizacion}/{FichaDocumento.ItemLinked.ToString()}.js?v= {FichaDocumento.ItemLinkedFotoVersion}");
         Html.GetListaCSS().Add($"{urlPersonalizacion}/{FichaDocumento.ItemLinked.ToString()}.css?v= {FichaDocumento.ItemLinkedFotoVersion}");
     }
+	string urlJS=$"{Html.GetBaseUrlContent()}/imagenes/proyectos/personalizacion/{Comunidad.Key.ToString()}/theme/edicioncv.js";
+	Html.GetListaJS().Add(urlJS);
     SemanticResourceModel semCmsModel = Model.SemanticFrom;
     GnossOCBase.LanguageEnum idiomaUsuario = (GnossOCBase.LanguageEnum)Enum.Parse(typeof(GnossOCBase.LanguageEnum), Html.GetUtilIdiomas().LanguageCode.ToLower());
     CV pCV = new CV(semCmsModel, idiomaUsuario);

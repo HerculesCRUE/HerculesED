@@ -11,6 +11,10 @@
 		<CategorizacionTesauroGnossObligatoria>false</CategorizacionTesauroGnossObligatoria>
     </ConfiguracionGeneral>
     <EspefPropiedad>
+		<Propiedad  ID="http://w3id.org/roh/crisIdentifier" EntidadID="http://xmlns.com/foaf/0.1/Document">
+            <AtrNombre>Identificador</AtrNombre>
+            <AtrNombreLectura>Identificador</AtrNombreLectura>
+        </Propiedad>
         <Propiedad  ID="http://xmlns.com/foaf/0.1/topic" EntidadID="http://xmlns.com/foaf/0.1/Document">
             <AtrNombre>Tipo identificador, otros</AtrNombre>
             <AtrNombreLectura>Tipo identificador, otros</AtrNombreLectura>
@@ -183,7 +187,7 @@
             <AtrNombre>Autor</AtrNombre>
             <AtrNombreLectura>Autor</AtrNombreLectura>
 			<SeleccionEntidad>
-                <TipoSeleccion>Autocompletar</TipoSeleccion>
+                <TipoSeleccion>Combo</TipoSeleccion>
                 <Grafo>person.owl</Grafo>
                 <UrlTipoEntSolicitada>http://xmlns.com/foaf/0.1/Person</UrlTipoEntSolicitada>              
                 <PropsEntEdicion>
@@ -415,6 +419,19 @@
             <AtrNombre>Etiquetas</AtrNombre>
             <AtrNombreLectura>Etiquetas</AtrNombreLectura>
         </Propiedad>
+		<Propiedad  ID="http://w3id.org/roh/hasKnowledgeArea" EntidadID="http://purl.org/ontology/bibo/Document">
+			<AtrNombre>Categorías</AtrNombre>
+			<AtrNombreLectura></AtrNombreLectura>			
+		</Propiedad>
+		<Propiedad  ID="http://w3id.org/roh/categoryNode" EntidadID="http://w3id.org/roh/CategoryPath">
+			<AtrNombre></AtrNombre>
+			<AtrNombreLectura></AtrNombreLectura>
+			<SeleccionEntidad>
+				<TipoSeleccion>Tesauro</TipoSeleccion>
+				<Grafo>taxonomy.owl</Grafo>				
+				<UrlPropiedad>um</UrlPropiedad>                
+			</SeleccionEntidad>
+		</Propiedad>
         <Propiedad  ID="https://www.w3.org/2006/vcard/ns#hasCountryName" EntidadID="https://www.w3.org/2006/vcard/ns#Address">
             <AtrNombre>País</AtrNombre>
             <AtrNombreLectura>País</AtrNombreLectura>
@@ -712,6 +729,7 @@
                 <Grupo class="formtheme02">
                     <Grupo class="fieldset">
                         <Grupo Tipo="fieldset" class="mediumLabels">
+							<NameProp>http://w3id.org/roh/crisIdentifier</NameProp>
 							<NameProp>http://purl.org/dc/elements/1.1/type</NameProp>
 							<NameProp>http://w3id.org/roh/title</NameProp>
 							<NameProp>http://w3id.org/roh/workTitle</NameProp> 
@@ -737,7 +755,7 @@
                             <NameProp>http://purl.org/ontology/bibo/presentedAt</NameProp> 
                             <NameProp>http://w3id.org/roh/congressProceedingsPublication</NameProp>
 							<NameProp>http://vivoweb.org/ontology/core#freeTextKeyword</NameProp>
-							
+							<NameProp>http://w3id.org/roh/hasKnowledgeArea</NameProp>							
                         </Grupo>
                     </Grupo>
                 </Grupo>
@@ -757,6 +775,7 @@
                     <Grupo classLectura="group group_info">
                         <AtrNombreGrupo>Propiedades</AtrNombreGrupo>
                         <Grupo classLectura="contentGroup">
+							<NameProp>http://w3id.org/roh/crisIdentifier</NameProp>
                             <NameProp>http://purl.org/dc/elements/1.1/type</NameProp>
 							<NameProp>http://w3id.org/roh/title</NameProp>
 							<NameProp>http://w3id.org/roh/workTitle</NameProp> 
@@ -782,6 +801,7 @@
                             <NameProp>http://purl.org/ontology/bibo/presentedAt</NameProp> 
                             <NameProp>http://w3id.org/roh/congressProceedingsPublication</NameProp>
 							<NameProp>http://vivoweb.org/ontology/core#freeTextKeyword</NameProp>
+							<NameProp>http://w3id.org/roh/hasKnowledgeArea</NameProp>
                         </Grupo>
                     </Grupo>
                 </Grupo>
@@ -824,5 +844,6 @@
                 </Grupo>
             </OrdenEntidadLectura>
         </Entidad>
-    </EspefEntidad>
+		
+	</EspefEntidad>
 </config>

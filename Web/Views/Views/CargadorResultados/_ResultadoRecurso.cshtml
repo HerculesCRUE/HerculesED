@@ -22,7 +22,7 @@
     }
 
     // Publicaciones
-    if (Model.RdfTypeName == "asiodocument")
+    if (Model.RdfTypeName == "Document")
     {
         <article class="resource publicacion" id="resource_@Model.Key" typeof="sioc_t:Item" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:sioc_t="http://rdfs.org/sioc/types#" xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:sioc="http://rdfs.org/sioc/ns#">
             <div class="wrap">
@@ -60,214 +60,123 @@
                     </div>
                     <div class="content-wrap">
                         <div class="description-wrap">
-                            @{
-                                if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
-                                {
-                                    string propiedad = "titulo";
-                                    foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
-                                    {
-                                        if (item.Rows != null && item.Rows.Count > 0 && item.Rows[0].ContainsKey(propiedad))
+                            <h3>
+                                <span>
+                                    @{
+                                        if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
                                         {
-                                            <h3>@item.Rows[0][propiedad]</h3>
-                                        }
-                                    }
-
-                                }
-                            }
-                            <div class="list-wrap authors">
-                                @{
-                                    if (Model.ViewSettings != null && Model.ViewSettings.SemanticProperties != null && Model.ViewSettings.SemanticProperties.Count > 0)
-                                    {
-                                        string stringAutores = "";
-                                        List<Es.Riam.Gnoss.Web.MVC.Models.SemanticPropertieModel> lista = Model.ViewSettings.SemanticProperties["bibo:authorList@@@roh:item@@@rohfoaf:name"];
-
-                                        if (lista != null && lista.Count > 0)
-                                        {
-                                            foreach (Es.Riam.Gnoss.Web.MVC.Models.SemanticPropertieModel item in lista)
+                                            string propiedad = "fecha";
+                                            foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
                                             {
-                                                stringAutores += ", " + item.Name;
+                                                if (item.Rows != null && item.Rows.Count > 0 && item.Rows[0].ContainsKey(propiedad))
+                                                {
+                                                    <span>@item.Rows[0][propiedad].Substring(0, 4)</span>
+                                                }
                                             }
-
-                                            stringAutores = stringAutores.Trim().Substring(1);
                                         }
-                                        <a>@stringAutores</a>
                                     }
-                                }
+                                </span>
+                                TODO: Educational Psychology Review
+                            </h3>
+                            <div class="list-wrap authors">
+                                <ul>  
+                                    <li>
+                                        <a href="javascript: void(0);">Karina L. Cela</a>
+                                        <sup>1</sup>
+                                        <sup>2</sup>
+                                    </li>
+                                    <li>
+                                        <a href="javascript: void(0);">Miguel Ángel Sicilia</a>
+                                        <sup class="active">2</sup>
+                                    </li>
+                                    <li>
+                                        <a href="javascript: void(0);">Salvador Sánchez</a>
+                                        <sup>2</sup>
+                                    </li>
+                                </ul>
                             </div>
-                            <div class="desc">
-                                @if ((Model.ViewSettings == null) || (!Model.MapView && (Model.ViewSettings.DescriptionOnList || Model.ViewSettings.DescriptionOnMosaic)) || (Model.MapView && Model.ViewSettings.DescriptionOnMap))
-                                {
-                                    if ((Model.Description.Contains("<p ") || Model.Description.Contains("<p>")) && Model.Description.Contains("</p>"))
-                                    {
-                                        <p>@MvcHtmlString.Create(Model.Description)</p>
-                                    }
-                                    else
-                                    {
-                                        <p>@MvcHtmlString.Create(Model.Description)</p>
-                                    }
-                                }
-                                else
-                                {
-                                    <p>El recurso no tiene descripción.</p>
-                                }
-                            </div>
-                        </div>
-
-                        @{
-                            string imagen = "theme/resources/persona-default.png";
-                        }
-                        @if (!ViewBag.EsCatalogo && !string.IsNullOrEmpty(Model.UrlPreview))
-                        {
-                            <div class="miniatura">
-                                <img title="@Model.Title" alt="@Model.Title" src="@Model.UrlPreview">
-                            </div>
-                        }
-                    </div>
-                </div>
-            </div>
-
-
-        </article>
-    }
-    else if (Model.RdfTypeName == "asioperson")
-    {
-        //Investitgadores
-        <article class="resource investigador" id="resource_@Model.Key" typeof="sioc_t:Item" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:sioc_t="http://rdfs.org/sioc/types#" xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:sioc="http://rdfs.org/sioc/ns#">
-            <div class="wrap">
-                <div class="middle-wrap">
-                    <div class="title-wrap">
-                        <h2 class="resource-title">
-                            <a href="@Model.CompletCardLink">@Model.Title</a>
-                        </h2>
-
-                        <div class="acciones-recurso-listado">
-                            <div class="dropdown">
-                                <a href="#" class="dropdown-toggle" role="button" id="dropdownMasOpciones" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <span class="material-icons">more_vert</span>
-                                </a>
-                                <div class="dropdown-menu basic-dropdown dropdown-icons dropdown-menu-right" aria-labelledby="dropdownMasOpciones" style="">
-                                    <p class="dropdown-title">Acciones</p>
-                                    <ul class="no-list-style">
-                                        <li>
-                                            <a class="item-dropdown">
-                                                <span class="material-icons">folder_open</span>
-                                                <span class="texto">TODO: Guardar en favoritos</span>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="item-dropdown" data-toggle="modal" data-target="#modal-enviar">
-                                                <span class="material-icons">person_add_alt_1</span>
-                                                <span class="texto">TODO: Añadir a clúster</span>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="content-wrap">
-                        <div class="description-wrap">
-                            <h3>TODO: Subtítulo</h3>
-                            <div class="list-wrap categories">
+                            <div class="list-wrap colleges">
                                 <ul>
                                     <li>
-                                        @{
-                                            string propiedad = "numDoc";
-                                            if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+                                        <sup>1</sup>
+                                        <a href="javascript: void(0);">Escuela Politécnica del Ejército</a>
+                                    </li>
+                                    <li>
+                                        <sup class="active">2</sup>
+                                        <a href="javascript: void(0);">University of Alcalá</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="list-wrap tags">
+                                <p class="title">Área de conocimiento</p>
+                                <ul>
+                                    @{
+                                        if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+                                        {
+                                            string propiedad = "titulo";
+                                            foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
                                             {
-                                                foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+                                                if (item.Rows != null && item.Rows.Count > 0 && item.Rows[0].ContainsKey(propiedad))
                                                 {
-                                                    if (item.Rows != null && item.Rows.Count > 0)
+                                                    <li>
+                                                        <a href="javascript: void(0);">
+                                                             <span class="texto">@item.Rows[0][propiedad]</span>
+                                                        </a>
+                                                    </li>
+                                                }
+                                            }
+                                        }
+                                    }
+                                </ul>
+                                <!--<p class="moreResults">
+                                    <a href="javascript: void(0);" class="ver-mas" style="display: flex;">Ver más</a>
+                                    <a href="javascript: void(0);" class="ver-menos" style="display: none;">Ver menos</a>
+                                </p>-->
+                            </div>
+                            <div class="list-wrap tags">
+                                <p class="title">Etiquetas</p>
+                                <ul>
+                                    @{
+                                        if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+                                        {
+                                            string propiedad = "freeTextWords";
+                                            foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+                                            {
+                                                if (item.Rows != null && item.Rows.Count > 0 && item.Rows[0].ContainsKey(propiedad))
+                                                {
+                                                    foreach (Dictionary<string, string> keyWord in item.Rows)
                                                     {
-                                                        foreach (Dictionary<string, string> itemConsulta in item.Rows)
+                                                        foreach (KeyValuePair<string, string> claveValor in keyWord)
                                                         {
-                                                            if (itemConsulta.ContainsKey(propiedad))
+                                                            if (claveValor.Key == "freeTextWords")
                                                             {
-                                                                <a>Publicaciones (@itemConsulta[propiedad])</a>
+                                                                <li>
+                                                                    <a href="javascript: void(0);">
+                                                                        <span class="texto">@claveValor.Value</span>
+                                                                    </a>
+                                                                </li>
                                                             }
                                                         }
                                                     }
                                                 }
                                             }
-                                            else
-                                            {
-                                                <a>Publicaciones (0)</a>
-                                            }
                                         }
-                                    </li>
-                                    <li>
-                                        <a href="javascript: void(0);">TODO: H-index (52)</a>
-                                    </li>
+                                    }
                                 </ul>
+                                <!--<p class="moreResults">
+                                    <a href="javascript: void(0);" class="ver-mas" style="display: flex;">Ver más</a>
+                                    <a href="javascript: void(0);" class="ver-menos" style="display: none;">Ver menos</a>
+                                </p>-->
                             </div>
                             <div class="desc">
-                                @if ((Model.ViewSettings == null) || (!Model.MapView && (Model.ViewSettings.DescriptionOnList || Model.ViewSettings.DescriptionOnMosaic)) || (Model.MapView && Model.ViewSettings.DescriptionOnMap))
-                                {
-                                    if ((Model.Description.Contains("<p ") || Model.Description.Contains("<p>")) && Model.Description.Contains("</p>"))
-                                    {
-                                        <p>@MvcHtmlString.Create(Model.Description)</p>
-                                    }
-                                    else
-                                    {
-                                        <p>@MvcHtmlString.Create(Model.Description)</p>
-                                    }
-                                }
-                                else
-                                {
-                                    <p>El recurso no tiene descripción.</p>
-                                }
-                            </div>
-                        </div>
-
-                        @{
-                            string imagen = "theme/resources/persona-default.png";
-                        }
-                        @if (!ViewBag.EsCatalogo && !string.IsNullOrEmpty(Model.UrlPreview))
-                        {
-                            <div class="miniatura">
-                                <img title="@Model.Title" alt="@Model.Title" src="@Model.UrlPreview">
-                            </div>
-                        }
-                    </div>
-                </div>
-            </div>
-        </article>
-    }
-    else
-    {
-        <article class="resource publicacion" id="resource_@Model.Key" typeof="sioc_t:Item" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:sioc_t="http://rdfs.org/sioc/types#" xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:sioc="http://rdfs.org/sioc/ns#">
-            <div class="wrap">
-                <div class="middle-wrap">
-                    <div class="title-wrap">
-                        <h2 class="resource-title">
-                            <a href="@Model.CompletCardLink">@Model.Title</a>
-                        </h2>
-                    </div>
-                    <div class="content-wrap">
-                        <div class="description-wrap">
-                            <div class="desc">
-                                @if ((Model.ViewSettings == null) || (!Model.MapView && (Model.ViewSettings.DescriptionOnList || Model.ViewSettings.DescriptionOnMosaic)) || (Model.MapView && Model.ViewSettings.DescriptionOnMap))
-                                {
-                                    if ((Model.Description.Contains("<p ") || Model.Description.Contains("<p>")) && Model.Description.Contains("</p>"))
-                                    {
-                                        <p>@MvcHtmlString.Create(Model.Description)</p>
-                                    }
-                                    else
-                                    {
-                                        <p>@MvcHtmlString.Create(Model.Description)</p>
-                                    }
-                                }
-                                else
-                                {
-                                    <p>El recurso no tiene descripción.</p>
-                                }
+                                <p>TODO: E-learning occupies an increasingly prominent place in education. It provides the learner with a rich virtual network where he or she can exchange ideas and information and create synergies through interactions with other members of the network, whether fellow learners or teachers. Social network analysis (SNA) has proven extremely powerful at describing and analysing network behaviours in business, economics and medicine, but its application to e-learning has been relatively limited.</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+
         </article>
     }
-
-
 }

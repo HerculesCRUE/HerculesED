@@ -11,7 +11,7 @@
 		<CategorizacionTesauroGnossObligatoria>false</CategorizacionTesauroGnossObligatoria>
     </ConfiguracionGeneral>
     <EspefPropiedad>
-        <Propiedad  ID="http://vivoweb.org/ontology/core#identifier" EntidadID="http://xmlns.com/foaf/0.1/Organization">
+		<Propiedad  ID="http://w3id.org/roh/crisIdentifier" EntidadID="http://xmlns.com/foaf/0.1/Organization">
             <AtrNombre>Identificador</AtrNombre>
             <AtrNombreLectura>Identificador</AtrNombreLectura>
         </Propiedad>
@@ -91,8 +91,8 @@
                 <Grupo class="formtheme02">
                     <Grupo class="fieldset">
                         <Grupo Tipo="fieldset" class="mediumLabels">
+							<NameProp>http://w3id.org/roh/crisIdentifier</NameProp>
 							<NameProp>http://w3id.org/roh/title</NameProp>
-                            <NameProp>http://vivoweb.org/ontology/core#identifier</NameProp> 
                             <NameProp>https://www.w3.org/2006/vcard/ns#hasAddress</NameProp>
 							<NameProp>http://purl.org/dc/elements/1.1/type</NameProp> 
                             <NameProp>http://w3id.org/roh/otherTypeMoreInfo</NameProp>
@@ -115,8 +115,8 @@
                     <Grupo classLectura="group group_info">
                         <AtrNombreGrupo>Propiedades</AtrNombreGrupo>
                         <Grupo classLectura="contentGroup">
+							<NameProp>http://w3id.org/roh/crisIdentifier</NameProp>
                             <NameProp>http://w3id.org/roh/title</NameProp>
-                            <NameProp>http://vivoweb.org/ontology/core#identifier</NameProp> 
                             <NameProp>https://www.w3.org/2006/vcard/ns#hasAddress</NameProp>
 							<NameProp>http://purl.org/dc/elements/1.1/type</NameProp> 
                             <NameProp>http://w3id.org/roh/otherTypeMoreInfo</NameProp>
