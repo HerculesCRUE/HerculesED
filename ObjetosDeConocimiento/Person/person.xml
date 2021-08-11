@@ -11,6 +11,10 @@
 		<CategorizacionTesauroGnossObligatoria>false</CategorizacionTesauroGnossObligatoria>
     </ConfiguracionGeneral>
     <EspefPropiedad>
+		<Propiedad  ID="http://w3id.org/roh/crisIdentifier" EntidadID="http://xmlns.com/foaf/0.1/Person">
+            <AtrNombre>Identificador</AtrNombre>
+            <AtrNombreLectura>Identificador</AtrNombreLectura>
+        </Propiedad>
         <Propiedad  ID="http://xmlns.com/foaf/0.1/nick" EntidadID="http://xmlns.com/foaf/0.1/Person">
             <AtrNombre>Firma</AtrNombre>
             <AtrNombreLectura>Firma</AtrNombreLectura>
@@ -31,6 +35,23 @@
             <AtrNombre>Apellidos</AtrNombre>
             <AtrNombreLectura>Apellidos</AtrNombreLectura>
         </Propiedad>
+		<Propiedad  ID="http://w3id.org/roh/hasRole" EntidadID="http://xmlns.com/foaf/0.1/Person">
+            <AtrNombre>Tiene rol</AtrNombre>
+            <AtrNombreLectura>Tiene rol</AtrNombreLectura>
+			<SeleccionEntidad>
+                <TipoSeleccion>Combo</TipoSeleccion>
+                <Grafo>organization.owl</Grafo>
+                <UrlTipoEntSolicitada>http://xmlns.com/foaf/0.1/Organization</UrlTipoEntSolicitada>              
+                <PropsEntEdicion>
+                    <NameProp>http://w3id.org/roh/title</NameProp>
+                </PropsEntEdicion>
+                <PropsEntLectura>
+                    <Propiedad ID="http://w3id.org/roh/title" EntidadID="http://xmlns.com/foaf/0.1/Organization">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+                </PropsEntLectura>
+            </SeleccionEntidad>
+        </Propiedad>
     </EspefPropiedad>
     <EspefEntidad>
         <Entidad  ID="http://xmlns.com/foaf/0.1/Person">
@@ -40,11 +61,13 @@
                 <Grupo class="formtheme02">
                     <Grupo class="fieldset">
                         <Grupo Tipo="fieldset" class="mediumLabels">
+							<NameProp>http://w3id.org/roh/crisIdentifier</NameProp>
                             <NameProp>http://xmlns.com/foaf/0.1/firstName</NameProp>
 							<NameProp>http://xmlns.com/foaf/0.1/lastName</NameProp>
 							<NameProp>http://xmlns.com/foaf/0.1/nick</NameProp> 
                             <NameProp>http://w3id.org/roh/ORCID</NameProp> 
                             <NameProp>http://xmlns.com/foaf/0.1/name</NameProp> 
+							<NameProp>http://w3id.org/roh/hasRole</NameProp>
                         </Grupo>
                     </Grupo>
                 </Grupo>
@@ -64,11 +87,13 @@
                     <Grupo classLectura="group group_info">
                         <AtrNombreGrupo>Propiedades</AtrNombreGrupo>
                         <Grupo classLectura="contentGroup">
+							<NameProp>http://w3id.org/roh/crisIdentifier</NameProp>
                             <NameProp>http://xmlns.com/foaf/0.1/firstName</NameProp>
 							<NameProp>http://xmlns.com/foaf/0.1/lastName</NameProp>
 							<NameProp>http://xmlns.com/foaf/0.1/nick</NameProp> 
                             <NameProp>http://w3id.org/roh/ORCID</NameProp> 
                             <NameProp>http://xmlns.com/foaf/0.1/name</NameProp>
+							<NameProp>http://w3id.org/roh/hasRole</NameProp>
                         </Grupo>
                     </Grupo>
                 </Grupo>
