@@ -13,11 +13,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Gnoss.Api.DotNetWrapper\Gnoss.Api.DotNetWrapper\Gnoss.Apiwrapper.csproj" />
+    <PackageReference Include="System.Net.Http.Json" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Net.Http.Json" Version="5.0.0" />
+    <ProjectReference Include="..\..\Gnoss.Api.DotNetWrapper\Gnoss.Api.DotNetWrapper\Gnoss.Apiwrapper.csproj" />
   </ItemGroup>
 
 
