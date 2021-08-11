@@ -20,6 +20,13 @@ namespace EditorCV.Models
         optgroup,
         checkbox,
         search,
+        autocomplete,
+    }
+    public enum ViewMode
+    {
+        readOnly,
+        onlyText,
+        @default,
     }
 
     public enum TypeSelect

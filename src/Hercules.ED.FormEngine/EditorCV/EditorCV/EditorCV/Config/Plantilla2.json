@@ -301,6 +301,51 @@
                             ]
                         }
                     ]
+                },
+                {
+                    "title": "Situación profesional",
+                    "type": "tab",
+                    "outSection": {
+                        "section": "SectionTab2",
+                        "defaultLoaded": false,
+                        "loadOnce": true
+                    }
+                },
+                {
+                    "title": "Formación recibida",
+                    "type": "tab",
+                    "outSection": {
+                        "section": "SectionTab3",
+                        "defaultLoaded": false,
+                        "loadOnce": true
+                    }
+                },
+                {
+                    "title": "Actividad docente",
+                    "type": "tab",
+                    "outSection": {
+                        "section": "SectionTab4",
+                        "defaultLoaded": false,
+                        "loadOnce": true
+                    }
+                },
+                {
+                    "title": "Experiencia científica y tecnológica",
+                    "type": "tab",
+                    "outSection": {
+                        "section": "SectionTab5",
+                        "defaultLoaded": false,
+                        "loadOnce": true
+                    }
+                },
+                {
+                    "title": "Resumen de texto libre",
+                    "type": "tab",
+                    "outSection": {
+                        "section": "SectionTab6",
+                        "defaultLoaded": false,
+                        "loadOnce": true
+                    }
                 }
             ]
         }

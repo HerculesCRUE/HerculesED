@@ -1,14 +1,10 @@
 {
-    "rdftype": "http://purl.org/roh/mirror/bibo#Document",
-    "ontologyName": "asiodocument",
+    "rdftype": "http://w3id.org/roh/scientificExperience",
     "uniqueLoaded": false,
     "relation": {
-        "property": "http://purl.org/roh/mirror/bibo#authorList",
-        "rdfType": "http://purl.org/roh/mirror/foaf#Person",
-        "entityReference": "http://purl.org/roh#ListItem",
-        "orderRdf": "http://purl.org/roh#index",
-        "itemRdf": "http://purl.org/roh#item",
-        "eid": "c50cf230-0f5a-4921-9fc4-f0a7eb4342e0",
+        "property": "http://w3id.org/roh/scientificExperience",
+        "rdfType": "http://w3id.org/roh/scientificExperience",
+        "eid": "cdaeb3b2-d96e-48fc-bc89-00ba8c63b27d",
         "eidRel": "5097c6b6-f454-11eb-9a03-0242ac130003"
     },
     "sections": [
@@ -27,6 +23,6 @@
                     ]
                 }
             ]
-        } 
+        }
     ]
 }

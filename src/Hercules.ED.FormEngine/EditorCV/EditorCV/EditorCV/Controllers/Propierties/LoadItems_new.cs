@@ -429,20 +429,18 @@ namespace EditorCV.Controllers.Properties
         }
 
 
-        protected List<dynamic> GetEntity(string entityUri, EntityRelation relation)
+        protected Dictionary<string, Dictionary<string, string>> GetEntity(string entityUri, EntityRelation relation, Property property = null)
         {
 
             // Item to return
-            List<dynamic> options = new List<dynamic>();
+            var options = new Dictionary<string, Dictionary<string, string>>();
 
             // var keyEntity = jsonData.entities.FindIndex(e => e.rdfType == property.rdfType);
             var keyEntity = relation.rdfType;
 
-
             
             try
             {
-
                 // Check if exist the entity
                 if (jsonData.entities.ContainsKey(keyEntity))
                 {
@@ -494,6 +492,18 @@ namespace EditorCV.Controllers.Properties
                         jsonData.entities[keyEntity].items[entityUri].id = entityUri;
                         jsonData.entities[keyEntity].items[entityUri].properties = (jsonData.entities[keyEntity].properties != null) ? GetFields(dbEntityData, JsonConvert.DeserializeObject<List<Property>>(PropertiesJson)) : null;
 
+                        // Fill the options
+                        options.Add(jsonData.entities[keyEntity].items[entityUri].id, new Dictionary<string, string>() {
+                            {"id", jsonData.entities[keyEntity].items[entityUri].id}
+                        });
+                        
+                        if (property != null && property.fieldsDB != null)
+                        {
+                            // Get all values from each element into the select options
+                            property.fieldsDB.ForEach(e => {
+                                options[jsonData.entities[keyEntity].items[entityUri].id].Add(e.rdfType, jsonData.entities[keyEntity].items[entityUri].properties.Find(el => el.property == e.rdfType).value);
+                            });
+                        }
 
                     }
 
