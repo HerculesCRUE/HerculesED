@@ -216,7 +216,7 @@ namespace EditorCV.Controllers.Properties
                                 properties[i].value = el["o"].value;
 
                                 // 
-                                if (properties[i].relation.entityReference != null && properties[i].relation.entityReference != "")
+                                if (properties[i].relation != null && properties[i].relation.entityReference != null && properties[i].relation.entityReference != "")
                                 {
 
                                     string listItemUri = LoadList(item.Key, properties[i], el["o"].value, dbEntityData);
@@ -226,7 +226,7 @@ namespace EditorCV.Controllers.Properties
                                 }
 
                                 // Get order
-                                if (properties[i].relation.orderRdf != null && properties[i].relation.orderRdf != "")
+                                if (properties[i].relation != null && properties[i].relation.orderRdf != null && properties[i].relation.orderRdf != "")
                                 {
                                     var orderIndex = item.Value.FindIndex(e => el["p"].value == properties[i].relation.orderRdf);
                                     
