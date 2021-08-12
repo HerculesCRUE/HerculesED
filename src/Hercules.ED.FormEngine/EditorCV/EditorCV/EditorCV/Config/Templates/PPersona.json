@@ -1,7 +1,7 @@
 {
-  "rdftype": "http://w3id.org/roh/PersonalData",
-  "ontologyName": "curriculumvitae",
-  
+  "rdftype": "http://xmlns.com/foaf/0.1/Person",
+  "ontologyName": "person",
+
   "properties": [
     {
       "property": "http://purl.org/roh/mirror/foaf#name",
@@ -22,7 +22,7 @@
   ],
   "items": {},
   "view": {
-    "properties":[
+    "properties": [
       "http://purl.org/roh/mirror/foaf#name"
     ]
   }

@@ -1,0 +1,104 @@
+
+{
+    "rdftype": "http://w3id.org/roh/CV",
+    "ontologyName": "curriculumvitae",
+    "properties": [
+        {
+            "property": "http://xmlns.com/foaf/0.1/name",
+            "title": "Nombre",
+            "min": 1,
+            "max": 1,
+            "multiLanguage": false,
+            "fieldType": "text"
+        },
+        {
+            "property": "http://w3id.org/roh/cvOf",
+            "relation": {
+                "entityReference": "",
+                "rdfType": "http://w3id.org/roh/gnossUser",
+                "orderRdf": "",
+                "itemRdf": ""
+            },
+            "title": "cvOf",
+            "min": 0,
+            "max": 1,
+            "multiLanguage": false,
+            "fieldType": "datetime"
+        },
+        {
+            "property": "http://purl.org/roh/mirror/bibo#authorList",
+            "relation": {
+                "entityReference": "http://purl.org/roh#ListItem",
+                "rdfType": "http://purl.org/roh/mirror/foaf#Person",
+                "orderRdf": "http://purl.org/roh#index",
+                "itemRdf": "http://purl.org/roh#item"
+            },
+            "title": "Autores",
+            "min": 1,
+            "max": -1,
+            "listItems": [],
+            "multiLanguage": false,
+            "fieldType": "orderedlist"
+        }
+    ],
+    "designs": {
+        "design1": {
+            "sections": [
+                {
+                    "title": "Datos generales",
+                    "class": [
+                        "row"
+                    ],
+                    "tag": "div",
+                    "id": "general_data",
+                    "type": "default",
+                    "sections": [
+                        {
+                            "title": "",
+                            "class": [
+                                "col",
+                                "col-12"
+                            ],
+                            "tag": "div",
+                            "type": "default",
+                            "properties": [
+                                {
+                                    "property": "http://purl.org/roh#title",
+                                    "title": "Título del documento",
+                                    "min": 1,
+                                    "max": 1,
+                                    "multiLanguage": false,
+                                    "fieldType": "text"
+                                },
+                                {
+                                    "property": "http://purl.org/roh/mirror/vivo#dateTime",
+                                    "title": "Fecha",
+                                    "min": 0,
+                                    "max": 1,
+                                    "multiLanguage": false,
+                                    "fieldType": "datetime"
+                                },
+                                {
+                                    "property": "http://purl.org/roh/mirror/bibo#authorList",
+                                    "relation": {
+                                        "entityReference": "http://purl.org/roh#ListItem",
+                                        "rdfType": "http://purl.org/roh/mirror/foaf#Person",
+                                        "orderRdf": "http://purl.org/roh#index",
+                                        "itemRdf": "http://purl.org/roh#item"
+                                    },
+                                    "title": "Autores",
+                                    "min": 1,
+                                    "max": -1,
+                                    "listItems": [],
+                                    "multiLanguage": false,
+                                    "fieldType": "orderedlist"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    "items": {}
+}

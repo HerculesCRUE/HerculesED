@@ -1,0 +1,35 @@
+{
+  "SEARCH": {
+    "es": "SEARCH"
+  },
+  "COOKIES": {
+    "es": "COOKIES"
+  },
+  "COPYRIGHT": {
+    "es": "COPYRIGHT"
+  },
+  "ERDF": {
+    "es": "ERDF"
+  },
+  "ERDF_DESCRIPTION": {
+    "es": "ERDF_DESCRIPTION"
+  },
+  "ERDF_TITLE": {
+    "es": "ERDF_TITLE"
+  },
+  "LEGAL_WARNING": {
+    "es": "LEGAL_WARNING"
+  },
+  "SECURITY": {
+    "es": "SECURITY"
+  },
+  "COMPACT": {
+    "es": "COMPACT"
+  },
+  "LIST": {
+    "es": "LIST"
+  },
+  "VISUALIZE": {
+    "es": "VISUALIZE"
+  }
+}

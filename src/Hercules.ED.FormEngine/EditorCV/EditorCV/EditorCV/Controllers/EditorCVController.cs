@@ -48,14 +48,14 @@ namespace EditorCV.Controllers
             // Este método debería leer el fichero json de configuración y realizar consultas a la API para recuperar los datos de la entidad.
 
             id = "http://gnoss.com/items/Document_6c5ad967-1775-4960-896b-932a2e407d97_dfd9016f-a9b5-4023-9b22-85c760f187d1";
-            id = "http://gnoss.com/items/PersonalData_1fca886e-da0b-770e-1171-963e7ca03db8_9c1538e9-a693-4b20-8ca4-24d3d488832f";
+            id = "http://gnoss.com/items/CV_1fca886e-da0b-770e-1171-963e7ca03db8_2eb3851b-5489-47b2-b541-f99b37d83922";
             // id = "http://gnoss.com/items/DocumentCategoryPath_6c5ad967-1775-4960-896b-932a2e407d97_e361a558-3769-47aa-bd20-accd6ae01647";
             rdftype = "http://purl.org/roh/mirror/bibo#Document";
             // string onto = "asiodocument";
             //Gnoss.ApiWrapper.ApiModel.
             //OAuthInfo oAuthInfo=new OAuthInfo()
 
-            var lItems = new LoadItems2(id);
+            var lItems = new LoadItems(id);
 
             return lItems.GetMainEntity();
             // return null;

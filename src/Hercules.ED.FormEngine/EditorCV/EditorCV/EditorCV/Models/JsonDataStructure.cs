@@ -34,10 +34,10 @@ namespace EditorCV.Models
         // Rdf type of the entity
         public string rdfType { get; set; }
         public string ontologyName { get; set; }
-        //////////////////////////////////
-        // START RELATION
-        // Property of the entity with the re
+        // Property of the entity with the relation
         public EntityRelation relation { get; set; }
+        public bool loadedAll { get; set; }
+        public bool uniqueLoaded { get; set; }
         // Unique identificator of the entity
         public string id { get; set; }
         public string name { get; set; }
@@ -83,6 +83,8 @@ namespace EditorCV.Models
         public string title { get; set; }
         public List<string> @class { get; set; }
         public string tag { get; set; }
+        public OutSection outSection { get; set; }
+        public string load { get; set; }
         public string id { get; set; }
         public string type { get; set; }
         public string fileName { get; set; }
@@ -91,12 +93,21 @@ namespace EditorCV.Models
         public List<Entity> entities { get; set; }
     }
 
+    public class OutSection
+    {
+        public string section { get; set; }
+        public bool defaultLoaded { get; set; }
+        // Load once like ti
+        public bool loadOnce { get; set; }
+    }
+
 
     public class Property
     {
         // Property of the entity with the re
         public string property { get; set; }
-        public string id { get; set; }
+        public string id { get; set; } // "all" for all items
+        public Dictionary<string, string> filters { get; set; }
         public EntityRelation relation { get; set; }
         public string label { get; set; }
         public string title { get; set; }
@@ -111,8 +122,18 @@ namespace EditorCV.Models
         public bool couldBeDisabled { get; set; }
         public bool multiLanguage { get; set; }
         public bool multiple { get; set; }
-        public List<dynamic> options { get; set; }
+        // List of "theId" => {id: "theId", rdfType: "value"}
+        public Dictionary<string, Dictionary<string,string>> options { get; set; }
+        public List<FieldsDB> fieldsDB { get; set; }
         public List<ListItems> listItems { get; set; }
+    }
+
+
+    public class FieldsDB
+    {
+        public string rdfType { get; set; }
+        public string name { get; set; }
+        public bool main { get; set; }
     }
 
 
@@ -158,6 +179,4 @@ namespace EditorCV.Models
         public string parentId { get; set; }
         public Dictionary<string, List<Dictionary<string, Data>>> dbEntityData { get; set; }
     }
-
-
 }
