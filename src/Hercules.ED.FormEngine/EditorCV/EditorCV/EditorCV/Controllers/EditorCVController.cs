@@ -55,7 +55,7 @@ namespace EditorCV.Controllers
             //Gnoss.ApiWrapper.ApiModel.
             //OAuthInfo oAuthInfo=new OAuthInfo()
 
-            var lItems = new LoadItems2(id);
+            var lItems = new LoadItems(id);
 
             return lItems.GetMainEntity();
             // return null;
