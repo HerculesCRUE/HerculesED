@@ -22,7 +22,7 @@
     if (IdentidadActual.IsProyectAdmin && Request.RequestContext.RouteData.Values["admin"] != null && Request.RequestContext.RouteData.Values["admin"].Equals("true"))
     {
         Html.GetListaCSS().Add(Html.GetBaseUrlStatic() + "/cssNuevo/administracion.css?v=" + Html.GetVersion());
-    }    
+    }
 }
 
 <!-- Ruta de páginas -->
@@ -122,7 +122,7 @@
         </div>
 
         <!-- Resultados -->
-        <div class="resource-list listView reso,urce-list">
+        <div class="resource-list listView resource-list-buscador">
             <div id="panResultados" class="resource-list-wrap">
                 @if (string.IsNullOrEmpty(htmlResultados) && Model.JSONResourceList != null)
                 {

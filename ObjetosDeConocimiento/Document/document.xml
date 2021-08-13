@@ -394,7 +394,7 @@
             <AtrNombre>Tipo de producción</AtrNombre>
             <AtrNombreLectura>Tipo de producción</AtrNombreLectura>
 			<SeleccionEntidad>
-                <TipoSeleccion>Autocompletar</TipoSeleccion>
+                <TipoSeleccion>Combo</TipoSeleccion>
                 <Grafo>publicationtype.owl</Grafo>
                 <UrlTipoEntSolicitada>http://w3id.org/roh/PublicationType</UrlTipoEntSolicitada>              
                 <PropsEntEdicion>
@@ -407,9 +407,22 @@
                 </PropsEntLectura>
             </SeleccionEntidad>
         </Propiedad>
-        <Propiedad  ID="http://w3id.org/roh/workTitle" EntidadID="http://purl.org/ontology/bibo/Document">
-            <AtrNombre>Título del trabajo</AtrNombre>
-            <AtrNombreLectura>Título del trabajo</AtrNombreLectura>
+		<Propiedad  ID="http://w3id.org/roh/supportType" EntidadID="http://purl.org/ontology/bibo/Document">
+            <AtrNombre>Tipo de soporte</AtrNombre>
+            <AtrNombreLectura>Tipo de soporte</AtrNombreLectura>
+			<SeleccionEntidad>
+                <TipoSeleccion>Combo</TipoSeleccion>
+                <Grafo>supporttype.owl</Grafo>
+                <UrlTipoEntSolicitada>http://w3id.org/roh/SupportType</UrlTipoEntSolicitada>              
+                <PropsEntEdicion>
+                    <NameProp>http://purl.org/dc/elements/1.1/title</NameProp>
+                </PropsEntEdicion>
+                <PropsEntLectura>
+                    <Propiedad ID="http://purl.org/dc/elements/1.1/title" EntidadID="http://w3id.org/roh/SupportType">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+                </PropsEntLectura>
+            </SeleccionEntidad>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/title" EntidadID="http://purl.org/ontology/bibo/Document">
             <AtrNombre>Título de la publicación</AtrNombre>
@@ -418,6 +431,10 @@
 		<Propiedad  ID="http://vivoweb.org/ontology/core#freeTextKeyword" EntidadID="http://purl.org/ontology/bibo/Document">
             <AtrNombre>Etiquetas</AtrNombre>
             <AtrNombreLectura>Etiquetas</AtrNombreLectura>
+        </Propiedad>
+		<Propiedad  ID="http://vivoweb.org/ontology/core#hasPublicationVenue" EntidadID="http://purl.org/ontology/bibo/Document">
+            <AtrNombre>Publicado en</AtrNombre>
+            <AtrNombreLectura>Publicado en</AtrNombreLectura>
         </Propiedad>
 		<Propiedad  ID="http://w3id.org/roh/hasKnowledgeArea" EntidadID="http://purl.org/ontology/bibo/Document">
 			<AtrNombre>Categorías</AtrNombre>
@@ -732,7 +749,6 @@
 							<NameProp>http://w3id.org/roh/crisIdentifier</NameProp>
 							<NameProp>http://purl.org/dc/elements/1.1/type</NameProp>
 							<NameProp>http://w3id.org/roh/title</NameProp>
-							<NameProp>http://w3id.org/roh/workTitle</NameProp> 
 							<NameProp>http://purl.org/dc/terms/issued</NameProp>
 							<NameProp>http://w3id.org/roh/publicationTitle</NameProp>
 							<NameProp>http://purl.org/ontology/bibo/editor</NameProp>
@@ -778,7 +794,6 @@
 							<NameProp>http://w3id.org/roh/crisIdentifier</NameProp>
                             <NameProp>http://purl.org/dc/elements/1.1/type</NameProp>
 							<NameProp>http://w3id.org/roh/title</NameProp>
-							<NameProp>http://w3id.org/roh/workTitle</NameProp> 
 							<NameProp>http://purl.org/dc/terms/issued</NameProp>
 							<NameProp>http://w3id.org/roh/publicationTitle</NameProp>
 							<NameProp>http://purl.org/ontology/bibo/editor</NameProp>
