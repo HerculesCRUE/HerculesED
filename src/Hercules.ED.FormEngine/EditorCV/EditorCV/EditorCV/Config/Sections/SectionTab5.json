@@ -1,12 +1,12 @@
 {
-    "rdftype": "http://w3id.org/roh/scientificExperience",
-    "uniqueLoaded": false,
-    "relation": {
-        "property": "http://w3id.org/roh/scientificExperience",
-        "rdfType": "http://w3id.org/roh/scientificExperience",
-        "eid": "cdaeb3b2-d96e-48fc-bc89-00ba8c63b27d",
-        "eidRel": "5097c6b6-f454-11eb-9a03-0242ac130003"
-    },
+  "rdftype": "http://w3id.org/roh/scientificExperience",
+  "uniqueLoaded": false,
+  "relation": {
+    "property": "http://w3id.org/roh/scientificExperience",
+    "entityReference": "http://w3id.org/roh/scientificExperience",
+    "eid": "cdaeb3b2-d96e-48fc-bc89-00ba8c63b27d",
+    "eidRel": "5097c6b6-f454-11eb-9a03-0242ac130003"
+  },
     "sections": [
         {
             "title": "",

@@ -45,6 +45,8 @@ namespace EditorCV.Models
         public string design { get; set; }
         // List of the sections of the Entity (Only for the structure JSON)
         public List<Section> sections { get; set; }
+        // List of entities related under hiself
+        public List<Entity> entities { get; set; }
         // Properties of the entity
         public List<Property> properties { get; set; }
         // Custom designs for standarstructures
@@ -96,6 +98,7 @@ namespace EditorCV.Models
     public class OutSection
     {
         public string section { get; set; }
+        public string currentId { get; set; }
         public bool defaultLoaded { get; set; }
         // Load once like ti
         public bool loadOnce { get; set; }
