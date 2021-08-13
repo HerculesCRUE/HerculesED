@@ -1,3 +1,4 @@
+@*[security|||curriculumvitae|||hercules]*@
 @using System.Reflection;
 @model ResourceViewModel
 @{
@@ -11,8 +12,14 @@
         Html.GetListaJS().Add($"{urlPersonalizacion}/{FichaDocumento.ItemLinked.ToString()}.js?v= {FichaDocumento.ItemLinkedFotoVersion}");
         Html.GetListaCSS().Add($"{urlPersonalizacion}/{FichaDocumento.ItemLinked.ToString()}.css?v= {FichaDocumento.ItemLinkedFotoVersion}");
     }
-	string urlJS=$"{Html.GetBaseUrlContent()}/imagenes/proyectos/personalizacion/{Comunidad.Key.ToString()}/theme/edicioncv.js";
-	Html.GetListaJS().Add(urlJS);
+
+    Html.GetListaJS().Add("https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js");
+    Html.GetListaJS().Add("https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js");
+    Html.GetListaJS().Add("https://unpkg.com/vuejs-datepicker");
+    Html.GetListaJS().Add("https://unpkg.com/vuejs-datepicker/dist/locale/translations/es.js");
+
+    string urlJS = $"{Html.GetBaseUrlContent()}/imagenes/proyectos/personalizacion/{Comunidad.Key.ToString()}/theme/edicioncv.js";
+    Html.GetListaJS().Add(urlJS);
     SemanticResourceModel semCmsModel = Model.SemanticFrom;
     GnossOCBase.LanguageEnum idiomaUsuario = (GnossOCBase.LanguageEnum)Enum.Parse(typeof(GnossOCBase.LanguageEnum), Html.GetUtilIdiomas().LanguageCode.ToLower());
     CV pCV = new CV(semCmsModel, idiomaUsuario);
@@ -30,6 +37,7 @@
     </div>
     <div class="col col-12 col-contenido">
         <div class="wrapCol">
+
             <div class="cabecera-cv">
                 <div class="upper-wrap">
                     <div class="h1-container">
@@ -95,7 +103,41 @@
                     </div>
                 </div>
             </div>
-            <div class="contenido-cv">
+
+            <div id="app">
+
+                <template v-if="data && data.startEntity && data.startItem && data.entities && data.entities[data.startEntity].items[data.startItem]">
+
+                    <div class="entity">
+                        <h2 v-if="data.entities[data.startEntity].name" class="title_entity">${data.entities[data.startEntity].items[data.startItem].name}</h2>
+
+                        <div class="entity">
+                            <template v-for="item, n in data.entities[data.startEntity].items[data.startItem].sections" v-if="data.entities[data.startEntity].items[data.startItem].sections != null">
+                                <entity-sections :item="item"
+                                                 :i="n+1"
+                                                 :key="n+1"
+                                                 :rdf-entity="data.startEntity"
+                                                 :id-entity="data.startItem"></entity-sections>
+                            </template>
+                            <template v-for="item, i in item.properties" v-else-if="data.entities[data.startEntity].items[data.startItem].properties != null">
+                                <text-imput :item="item"
+                                            :i="n+1"
+                                            :key="n+1"
+                                            :rdf-entity="data.startEntity"
+                                            :id-entity="data.startItem"></text-imput>
+                                <input type="text" required="false">
+                            </template>
+                        </div>
+
+                    </div>
+                    <!-- <a class="btn btn-primary" @click="submitDataForm()">Enviar</a> -->
+
+                </template>
+
+            </div>
+
+
+            <!-- <div class="contenido-cv">
                 <div class="tab-paneles-cv">
                     <ul class="nav nav-tabs" id="navegacion-cv" role="tablist">
                         <li class="nav-item" role="presentation">
@@ -213,10 +255,623 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
         </div>
+
+
     </div>
 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+
+
+    /**
+        * Component that show all sections and after call other sections or all inputs if have those
+        */
+    Vue.component('entity-sections', {
+        props: {
+            item: {
+                type: Object,
+                required: true
+            },
+            i: {
+                type: Number,
+            },
+            rdfEntity: {
+                type: String,
+            },
+            idEntity: {
+                type: String,
+            },
+        },
+        delimiters: ['$[{', '}]'],
+        template: `
+            <component :is="item.type ? item.type : (item.tag ? item.tag : 'div')" :class="item.class.concat(' ')" :id="item.id">
+                <h3 v-if="item.title" class="title_section">$[{item.title}]</h3>
+
+                <all-imputs
+                v-if="item.properties"
+                :properties="item.properties"
+                :i="i"
+                :id-entity="idEntity"
+                :rdf-entity="rdfEntity"
+                ></all-imputs>
+
+                <template v-for="el, n in item.sections" v-if="item.sections">
+                    <entity-sections
+                    :item="el"
+                    :key="n**(i+1)"
+                    :i="n**i"
+                    :id-entity="idEntity"
+                    :rdf-entity="rdfEntity"
+                    ></entity-sections>
+                </template>
+
+            </component>
+        `,
+    });
+
+
+    Vue.component('tabs', {
+        props: {
+            item: {
+                type: Object,
+                required: true
+            }, component
+            rdfEntity: {
+                type: String,
+            },
+            idEntity: {
+                type: String,
+            },
+        },
+        delimiters: ['$[{', '}]'],
+        template: `
+            <div class="contenido-cv">
+                <div class="tab-paneles-cv">
+                    <ul class="nav nav-tabs" :id="'navegacion-' + item.id" role="tablist">
+                        <li v-for="el, n in item.sections" v-if="item.sections && el.type == 'tab'" class="nav-item" role="presentation">
+                            <a class="nav-link" :class="{'active': n == 0}" :id="el.id + 'tab'" data-toggle="tab" :href="'#' + el.id"
+                                role="tab" :aria-controls="el.id" aria-selected="true">$[{el.title}]</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content" :id="'paneles-' + item.id>
+                        <div v-for="el, n in item.sections" v-if="item.sections && el.type == 'tab'" class="tab-pane fade show" :class="{'active': n == 0}" :id="el.id" role="tabpanel"
+                            :aria-labelledby="el.id + 'tab'">
+
+                            <h3 v-if="el.title" class="title_section">$[{el.title}]</h3>
+
+                            <all-imputs
+                            v-if="el.properties"
+                            :properties="el.properties"
+                            :i="i"
+                            :id-entity="idEntity"
+                            :rdf-entity="rdfEntity"
+                            ></all-imputs>
+
+                            <template v-for="elem, n in el.sections" v-if="el.sections">
+                                <entity-sections
+                                :item="elem"
+                                :key="n**(i+1)"
+                                :i="n**i"
+                                :id-entity="idEntity"
+                                :rdf-entity="rdfEntity"
+                                ></entity-sections>
+                            </template>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <template v-if="elem.type != 'tab' && elem.type != ''" v-for="elem, index in item.section">
+                <h3 v-if="item.title" class="title_section">$[{item.title}]</h3>
+
+                <entity-sections
+                v-if="elem"
+                :properties="elem.properties"
+                :i="index"
+                :id-entity="idEntity"
+                :rdf-entity="rdfEntity"
+                ></entity-sections>
+
+            </template>
+        `,
+    });
+
+
+    /**
+        * Component that show all inputs in their type of input
+        */
+    Vue.component('all-imputs', {
+        props: {
+            properties: {
+                type: Array
+            },
+            i: {
+                type: Number,
+            },
+            rdfEntity: {
+                type: String,
+            },
+            idEntity: {
+                type: String,
+            },
+        },
+        data() {
+            return {
+                typesNormalInputs: [],
+                typesSpecialInputs: [],
+            }
+        },
+        mounted: function mounted() {
+
+            var self = this;
+            self.typesSpecialInputs = {
+                textarea: "textarea-field",
+                select: "select-field",
+                datetime: "datetime-field",
+                orderedlist: "orderedlist",
+                list: "list",
+                table: "table",
+                texteditor: "textarea-field",
+                option: "",
+                button: "button-field",
+                optgroup: "optgroup-field",
+                checkbox: "checkbox-field",
+            }
+
+            self.typesNormalInputs = [
+                "button",
+                "checkbox",
+                "color",
+                "date",
+                "datetime-local",
+                "email",
+                "file",
+                "hidden",
+                "image",
+                "month",
+                "number",
+                "password",
+                "range",
+                "reset",
+                "search",
+                "submit",
+                "tel",
+                "text",
+                "time",
+                "url",
+                "week",
+            ]
+
+        },
+        delimiters: ['$[{', '}]'],
+        template: `
+            <div class="d-block list-fields">
+                <template v-for="item, n in properties">
+                    <template v-if="typesNormalInputs.includes(item.fieldType)">
+                        <!-- input type fields -->
+                        <input-field :item="item" :key="idEntity + '_' + n + '_' + i" :i="i" :id-entity="idEntity" :rdf-entity="rdfEntity" :itype="item.fieldType"
+                        ></input-field>
+                    </template>
+                    <template v-else-if="typesSpecialInputs.hasOwnProperty(item.fieldType)">
+                        <!-- input type fields -->
+                        <component :is="typesSpecialInputs[item.fieldType]" :item="item" :key="idEntity + '_' + n + '_' + i" :i="i" :id-entity="idEntity" :rdf-entity="rdfEntity" itype="datetime-local"
+                        ></component>
+                    </template>
+                </template>
+            </div>
+        `,
+
+    });
+
+    /**
+        * Component that show all inputs type field (Less checkbox & radio)
+        */
+    Vue.component('datetime-field', {
+        props: {
+            item: {
+                type: Object
+            },
+            i: {
+                type: Number,
+            },
+            itype: {
+                type: String,
+                default: "text"
+            },
+            rdfEntity: {
+                type: String,
+            },
+            idEntity: {
+                type: String,
+            },
+        },
+        delimiters: ['$[{', '}]'],
+        data() {
+            return {
+                es: vdp_translation_es.js
+            }
+        },
+        mounted: function mounted() {
+            var self = this;
+        },
+        components: {
+            vuejsDatepicker
+        },
+        template: `
+            <div class="d-block">
+                <label class="label-input" :class="'label-' + itype" :for="idEntity + '.' + item.property">$[{item.title}]</label>
+                <vuejs-datepicker :language="es" v-model="item.value" :id="idEntity + '.' + item.property" :class="{require : item.min == 1}" name="item.property"></vuejs-datepicker>
+            </div>
+        `,
+        methods: {
+            customFormatter(date) {
+                // return moment(date).format('yyyyMMddhhmm');
+            }
+        }
+    });
+
+    /**
+        * Component that show all inputs type field (Less checkbox & radio)
+        */
+    Vue.component('input-field', {
+        props: {
+            item: {
+                type: Object
+            },
+            i: {
+                type: Number,
+            },
+            itype: {
+                type: String,
+                default: "text"
+            },
+            rdfEntity: {
+                type: String,
+            },
+            idEntity: {
+                type: String,
+            },
+        },
+        delimiters: ['$[{', '}]'],
+        template: `
+            <div class="d-block">
+                <label class="label-input" :class="'label-' + itype" :for="idEntity + '.' + item.property">$[{item.title}]</label>
+                <input :class="{require : item.min == 1}" :placeholder="item.placeholder"  v-model="item.value" :type="itype" :id="idEntity + '.' + item.property" :name="item.property">
+            </div>
+        `,
+    });
+
+    /**
+        * Component that show a textarea
+        */
+    Vue.component('textarea-field', {
+        props: {
+            item: {
+                type: Object
+            },
+            i: {
+                type: Number,
+            },
+            itype: {
+                type: String,
+                default: "text"
+            },
+            rdfEntity: {
+                type: String,
+            },
+            idEntity: {
+                type: String,
+            },
+        },
+        delimiters: ['$[{', '}]'],
+        template: `
+            <div class="d-block">
+                <label class="label-input" :class="'label-' + itype" :for="idEntity + '.' + item.property">$[{item.title}]</label>
+                <textarea :class="{require : item.min == 1}" :placeholder="item.placeholder" v-model="item.value" :type="itype" :id="idEntity + '.' + item.property" :name="item.property">
+                </textarea>
+            </div>
+        `,
+    });
+
+
+    Vue.component('radio-field', {
+        props: {
+            item: {
+                type: Object
+            },
+            i: {
+                type: Number,
+            },
+            itype: {
+                type: String,
+                default: "text"
+            },
+            rdfEntity: {
+                type: String,
+            },
+            idEntity: {
+                type: String,
+            },
+        },
+        delimiters: ['$[{', '}]'],
+        template: `
+            <div class="d-block">
+                <input :class="{require : item.min == 1}" v-model="item.value" :type="itype" :id="idEntity + '.' + item.property" :name="item.property">
+                <label class="label-input" :class="'label-' + itype + ' ' + (item.min == 1 ? 'require' : '')" :for="idEntity + '.' + item.property">$[{item.title}]</label>
+            </div>
+        `,
+    });
+
+
+    Vue.component('checkbox-field', {
+        props: {
+            item: {
+                type: Object
+            },
+            i: {
+                type: Number,
+            },
+            itype: {
+                type: String,
+                default: "text"
+            },
+            rdfEntity: {
+                type: String,
+            },
+            idEntity: {
+                type: String,
+            },
+        },
+        delimiters: ['$[{', '}]'],
+        template: `
+            <div class="d-block">
+                <input :class="{require : item.min == 1}" v-model="item.value" :type="itype" :id="idEntity + '.' + item.property" :name="item.property">
+                <label class="label-input" :class="'label-' + itype + ' ' + (item.min == 1 ? 'require' : '')" :for="idEntity + '.' + item.property">$[{item.title}]</label>
+            </div>
+        `,
+    });
+
+
+    Vue.component('select-field', {
+        props: {
+            item: {
+                type: Object
+            },
+            i: {
+                type: Number,
+            },
+            itype: {
+                type: String,
+                default: "text"
+            },
+            rdfEntity: {
+                type: String,
+            },
+            idEntity: {
+                type: String,
+            },
+        },
+        delimiters: ['$[{', '}]'],
+        template: `
+            <div class="d-block">
+                <label class="label-input" :class="'label-' + itype" :for="idEntity + '.' + item.property">$[{item.title}]</label>
+                <select :class="{require : item.min == 1}" v-model="item.value" :id="idEntity + '.' + item.property" :name="item.property">
+                    <option disabled value="">Selecciona una opción</option>
+                    <option v-if="item.options" v-for="el, pos in item.options">$[{el}]</option>
+                </select>
+            </div>
+        `,
+    });
+
+
+    Vue.component('orderedlist', {
+        props: {
+            item: {
+                type: Object
+            },
+            i: {
+                type: Number,
+            },
+            itype: {
+                type: String,
+                default: "text"
+            },
+            rdfEntity: {
+                type: String,
+            },
+            idEntity: {
+                type: String,
+            },
+        },
+        delimiters: ['$[{', '}]'],
+        template: `
+            <div class="d-block">
+                <label class="label-orderedlist">$[{item.title}]</label>
+                <ol>
+                    <li v-for="el in item.options">$[{el}]</li>
+                </ol>
+
+            </div>
+        `,
+    });
+
+
+    Vue.component('button-field', {
+        props: {
+            item: {
+                type: Object
+            },
+            i: {
+                type: Number,
+            },
+            itype: {
+                type: String,
+                default: "text"
+            },
+            rdfEntity: {
+                type: String,
+            },
+            idEntity: {
+                type: String,
+            },
+        },
+        delimiters: ['$[{', '}]'],
+        template: `
+            <div class="d-block">
+                <button></button>
+
+            </div>
+        `,
+    });
+
+
+    Vue.component('list', {
+        props: {
+            item: {
+                type: Object
+            },
+            i: {
+                type: Number,
+            },
+            itype: {
+                type: String,
+                default: "text"
+            },
+            rdfEntity: {
+                type: String,
+            },
+            idEntity: {
+                type: String,
+            },
+        },
+        delimiters: ['$[{', '}]'],
+        template: `
+            <div class="d-block">
+                <label class="label-list" + itype">$[{item.title}]</label>
+                <ul>
+                    <li v-for="el, item.options">$[{el}]</li>
+                </ul>
+
+            </div>
+        `,
+    });
+
+
+
+    // Vue app
+    var app = new Vue({
+        delimiters: ['${', '}'],
+        el: '#app',
+        components: {
+            vuejsDatepicker
+        },
+        data: {
+            data: {},
+            api_url: "",
+            currentItemId: "@pSemCmsModel.Entity.Uri"
+        },
+        mounted: function mounted() {
+
+            var self = this;
+            self.api_url = "https://localhost:5001/EditorCV";
+
+            self.getAjaxAxiosElements("1", function () {
+
+            });
+
+            Vue.nextTick(function (e) {
+            });
+
+        },
+
+        filters: {
+
+            subStr: function (string, start, end) {
+                return string.substring(start, end);
+            }
+
+        },
+        methods: {
+
+            /**
+            * The ajax call (using axios) to the API
+            */
+            getAjaxAxiosElements: function getAjaxAxiosElements(section, callback = function (e) { return void (0) }) {
+                let self = this;
+
+                let urlQuery = new URL(self.api_url);
+
+                // Set the query
+                urlQuery.searchParams.append('section', section);
+                urlQuery.searchParams.append('id', currentItemId);
+
+                // Make the ajax call
+                axios
+                    .get(urlQuery.toString())
+                    .then(response => {
+                        if (response.status == 200) {
+                            // self.data = Object.assign({}, self.data, response.data);
+                            self.data = { ...response.data };
+                            console.log("self.data", self.data);
+
+                            // Vue.nextTick(function (e) {
+                            // });
+                            callback();
+                        } else {
+                            alert("Ha habido un error en su petición, intentelo más tarde");
+                            callback();
+                        }
+                    });
+            },
+
+            submitDataForm: function submitDataForm(callback = function (e) { return void (0) }) {
+                console.log("datos enviados");
+                let self = this;
+
+                // var dataStr = JSON.stringify(self.data);
+
+                let urlQuery = new URL(self.api_url);
+
+                // Make the ajax post call
+                axios.post(urlQuery.toString(), {
+                    data: self.data
+                })
+                    .then(function (response) {
+                        console.log("response: ", response);
+                        Vue.nextTick(function (e) {
+                        });
+                        callback();
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        callback();
+                    });
+            }
+        }
+    })
+
+
+</script>
+
+
+
+
 @functions{
 
     public class RDFPropertyAttribute : Attribute
