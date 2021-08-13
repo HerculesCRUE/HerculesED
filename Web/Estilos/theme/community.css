@@ -131,13 +131,75 @@ body.scrolling.comunidad header #community-menu { display: block; }
 /**/
 
 
+/* MODAL RESULTADOS */
+.modal-resultados { }
+.modal-resultados .modal-content .modal-header { }
+.modal-resultados .modal-content .modal-header h2 { line-height: 25px; text-transform: uppercase; margin-bottom: 0; }
+.modal-resultados .modal-content .modal-body { padding: 0; }
+.modal-resultados .modal-content .modal-body .cargando { margin-bottom: 40px; text-align: center; }
+.modal-resultados .modal-content .modal-body .buscador-coleccion { border-bottom: 1px solid var(--c-gris-borde); }
+.modal-resultados .modal-content .modal-body .buscador-coleccion form { margin: 0; }
+.modal-resultados .modal-content .modal-body .buscador-coleccion .buscar.lupa { padding: 10px 25px; display: block; position: relative; }
+.modal-resultados .modal-content .modal-body .buscador-coleccion .buscar.lupa input { margin: 0 auto; display: block; width: 100%; border: 0; padding: 5px 10px; padding-left: 50px; font-size: 1rem; font-weight: 400; color: var(--c-texto-medio); outline: none; }
+.modal-resultados .modal-content .modal-body .buscador-coleccion .buscar.lupa a { position: absolute; top: 50%; transform: translateY(-50%); font-size: 0; }
+.modal-resultados .modal-content .modal-body .buscador-coleccion .buscar.lupa a::before { display: inline-block; font-family: 'Material Icons'; content: '\E8B6'; font-size: 30px; color: var(--c-texto-claro); }
+.modal-resultados .modal-content .modal-body .indice-lista { padding: 30px; position: relative; overflow-y: auto; }
+.modal-resultados .modal-content .modal-body .indice-lista ul { padding: 0; width: calc(50% - 60px); margin: 0 30px; float: left; }
+.modal-resultados .modal-content .modal-body .indice-lista ul li { list-style: none; padding: 0; padding-bottom: 10px; }
+.modal-resultados .modal-content .modal-body .indice-lista ul li a { position: relative; display: flex; align-items: center; font-size: 1.067rem; font-weight: 300; color: var(--c-texto-oscuro); text-decoration: none; margin: 0; }
+.modal-resultados .modal-content .modal-body .indice-lista ul li a span.resultado { width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 20px; }
+.modal-resultados .modal-content .modal-body .indice-lista ul li a span.numResult { font-weight: 700; }
+.modal-resultados .modal-content .modal-body .flecha { cursor: pointer; background-color: var(--c-negro); opacity: .5; height: 30px; width: 30px; position: absolute; top: 50%; margin-top: -15px; text-indent: -9999em; background-position: center !important; font-size: 0; }
+.modal-resultados .modal-content .modal-body .flecha::before { width: 100%; display: inline-block; font-family: 'Material Icons'; font-size: 20px; color: var(--white); height: 30px; text-align: center; }
+.modal-resultados .modal-content .modal-body .flecha.disabled { opacity: .3; }
+.modal-resultados .modal-content .modal-body .flecha.mas { right: 0; }
+.modal-resultados .modal-content .modal-body .flecha.mas::before { content: '\E409'; }
+.modal-resultados .modal-content .modal-body .flecha.menos { left: 0; }
+.modal-resultados .modal-content .modal-body .flecha.menos::before { content: '\E408'; }
+
+@media (max-width: 1024px){
+	.modal-resultados .modal-content { margin: 0 auto; padding: 0; }
+	.modal-resultados .modal-content .modal-body .indice-lista ul { width: calc(100% - 20px); margin: 0 10px; }
+}
+
+@media (max-width: 767px){
+	.modal-resultados .modal-content .modal-header h2 { padding: 20px 15px; font-size: 16px; }
+	.modal-resultados .modal-content .modal-body .buscador-coleccion .buscar.lupa { padding: 5px 10px; }
+}
+/**/
+
+
+/* MODAL CATEGORIAS */
+.modal-categorias{}
+.modal-categorias .modal-dialog .modal-content .indice-lista{}
+.modal-categorias .modal-dialog .modal-content .indice-lista .listadoFacetas{ margin: 0; width: 100%; padding-left: 45px; }
+.modal-categorias .modal-dialog .modal-content .indice-lista .listadoFacetas li{ position: relative; list-style: none; margin-bottom: 0; padding-right: 20px; padding-bottom: 0; }
+.modal-categorias .modal-dialog .modal-content .indice-lista .listadoFacetas li a.faceta{ margin-bottom: 10px; }
+.modal-categorias .modal-dialog .modal-content .indice-lista .listadoFacetas li a.faceta.applied { color: var(--c-texto-oscuro); }
+.modal-categorias .modal-dialog .modal-content .indice-lista .listadoFacetas li .desplegarSubFaceta { }
+.modal-categorias .modal-dialog .modal-content .indice-lista .listadoFacetas li .desplegarSubFaceta.oculto { display: none; }
+.modal-categorias .modal-dialog .modal-content .indice-lista .listadoFacetas li .desplegarSubFaceta i{ cursor: pointer; display: block; font-size: 22px; font-weight: bold; color: #666; }
+.modal-categorias .modal-dialog .modal-content .indice-lista .listadoFacetas li a.faceta.applied + .desplegarSubFaceta i{color: var(--c-texto-medio); }
+.modal-categorias .modal-dialog .modal-content .indice-lista .listadoFacetas li ul { width: calc(100% + 20px); margin: 0; padding-left: 15px; float: none; }
+
+@media (max-width: 767px){
+	.modal-categorias .modal-dialog .modal-content .indice-lista{padding: 15px; }
+	.modal-categorias .modal-dialog .modal-content .indice-lista .listadoFacetas{width: 100%; margin: 0; padding: 0; }
+}
+/**/
+
+
+/* SPINNER MATERIAL */
+.spinner-layer { border-color: var(--c-primario); }
+/**/
+
+
 /* CUSTOM SCROLL CSS BAR*/
 .custom-css-scroll::-webkit-scrollbar { width: 6px;}
 .custom-css-scroll { scrollbar-width: thin; scrollbar-color: var(--c-texto-claro) rgba(0,0,0,0.08);}
 .custom-css-scroll::-webkit-scrollbar-track { background: rgba(0,0,0,0.08); border-radius: 0px;}
 .custom-css-scroll::-webkit-scrollbar-thumb { background-color: var(--c-texto-claro) ; border-radius: 0px; border: none; }
 /**/
-
 
 
 /* SIMPLE COLLAPSE */
@@ -707,7 +769,7 @@ body.scrolling.comunidad header #community-menu { display: block; }
 /**/
 
 
-/* CV SecciÃ³n Datos de identificacion */
+/* CV Sección Datos de identificacion */
 .datos-identificacion {}
 
 .datos-identificacion .actions { display: flex; }
