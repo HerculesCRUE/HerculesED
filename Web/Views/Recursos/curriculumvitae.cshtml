@@ -11,8 +11,14 @@
         Html.GetListaJS().Add($"{urlPersonalizacion}/{FichaDocumento.ItemLinked.ToString()}.js?v= {FichaDocumento.ItemLinkedFotoVersion}");
         Html.GetListaCSS().Add($"{urlPersonalizacion}/{FichaDocumento.ItemLinked.ToString()}.css?v= {FichaDocumento.ItemLinkedFotoVersion}");
     }
-	string urlJS=$"{Html.GetBaseUrlContent()}/imagenes/proyectos/personalizacion/{Comunidad.Key.ToString()}/theme/edicioncv.js";
-	Html.GetListaJS().Add(urlJS);
+
+    Html.GetListaJS().Add("https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js");
+    Html.GetListaJS().Add("https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js");
+    Html.GetListaJS().Add("https://unpkg.com/vuejs-datepicker");
+    Html.GetListaJS().Add("https://unpkg.com/vuejs-datepicker/dist/locale/translations/es.js");
+
+    string urlJS = $"{Html.GetBaseUrlContent()}/imagenes/proyectos/personalizacion/{Comunidad.Key.ToString()}/theme/edicioncv.js";
+    Html.GetListaJS().Add(urlJS);
     SemanticResourceModel semCmsModel = Model.SemanticFrom;
     GnossOCBase.LanguageEnum idiomaUsuario = (GnossOCBase.LanguageEnum)Enum.Parse(typeof(GnossOCBase.LanguageEnum), Html.GetUtilIdiomas().LanguageCode.ToLower());
     CV pCV = new CV(semCmsModel, idiomaUsuario);
@@ -30,6 +36,7 @@
     </div>
     <div class="col col-12 col-contenido">
         <div class="wrapCol">
+
             <div class="cabecera-cv">
                 <div class="upper-wrap">
                     <div class="h1-container">
@@ -95,585 +102,1234 @@
                     </div>
                 </div>
             </div>
-            <div class="contenido-cv">
-                <div class="tab-paneles-cv">
-                    <ul class="nav nav-tabs" id="navegacion-cv" role="tablist">
-                        <li class="nav-item" role="presentation">
-                            <a class="nav-link active" id="identificacion-tab" data-toggle="tab" href="#identificacion-panel" role="tab" aria-controls="identificacion-panel" aria-selected="true">Datos de identificación</a>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <a class="nav-link" id="situacion-tab" data-toggle="tab" href="#situacion-panel" role="tab" aria-controls="situacion-panel" aria-selected="true">Situación profesional</a>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <a class="nav-link" id="formacion-tab" data-toggle="tab" href="#formacion-panel" role="tab" aria-controls="formacion-panel" aria-selected="true">Formación recibida</a>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <a class="nav-link " id="experiencia-tab" data-toggle="tab" href="#experiencia-panel" role="tab" aria-controls="experiencia-panel" aria-selected="true">Experiencia científica y tecnológica</a>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <a class="nav-link" id="actividad-tab" data-toggle="tab" href="#actividad-panel" role="tab" aria-controls="actividad-panel" aria-selected="true">Actividad científica y tecnológica</a>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <a class="nav-link" id="resumen-tab" data-toggle="tab" href="#resumen-panel" role="tab" aria-controls="resumen-panel" aria-selected="true">Resumen de texto libre</a>
-                        </li>
-                    </ul>
-                    <div class="tab-content" id="paneles-cv">
-                        <div class="tab-pane fade show active" id="identificacion-panel" role="tabpanel" aria-labelledby="identificacion-tab">
-                            <div class="row" about="@pCV.Roh_personalData.GNOSSID" property="http://w3id.org/roh/personalData">
-                                <div class="col col-12 col-contenido">
-                                    <div class="datos-identificacion  p-4">
-                                        <div class="bloque bloque-title">
-                                            <div class="title">
-                                                Datos personales
-                                            </div>
-                                            <div class="actions">
-                                                <ul class="no-list-style d-flex align-items-center">
-                                                    <li>
-                                                        <a class="btn btn-outline-grey" data-toggle="modal" data-target="#modal-editar-datos-identificacion">
-                                                            <span class="texto">Editar</span>
-                                                            <span class="material-icons">edit</span>
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                                <div class="dropdown">
-                                                    <a class="dropdown-toggle btn btn-outline-grey no-flecha" data-toggle="dropdown" aria-expanded="false">
-                                                        <span class="texto">Acciones</span>
-                                                        <span class="material-icons">more_vert</span>
-                                                    </a>
-                                                    <div class="dropdown-menu basic-dropdown dropdown-menu-right" style="will-change: transform;">
-                                                        <a href="javascript: void(0)" class="item-dropdown">Acción 1</a>
-                                                        <a href="javascript: void(0)" class="item-dropdown">Acción 2</a>
-                                                        <a href="javascript: void(0)" class="item-dropdown">Acción 3</a>
+
+            <div id="app">
+
+                <template v-if="data && data.startEntity && data.startItem && data.entities && data.entities[data.startEntity].items[data.startItem]">
+
+                    <div class="entity">
+                        <h2 v-if="data.entities[data.startEntity].name" class="title_entity">${data.entities[data.startEntity].items[data.startItem].name}</h2>
+
+                        <div class="entity">
+                            <template v-for="item, n in data.entities[data.startEntity].items[data.startItem].sections" v-if="data.entities[data.startEntity].items[data.startItem].sections != null">
+                                <entity-sections :item="item"
+                                                 :i="n+1"
+                                                 :key="n+1"
+                                                 :rdf-entity="data.startEntity"
+                                                 :id-entity="data.startItem"></entity-sections>
+                            </template>
+                            <template v-for="item, i in item.properties" v-else-if="data.entities[data.startEntity].items[data.startItem].properties != null">
+                                <text-imput :item="item"
+                                            :i="n+1"
+                                            :key="n+1"
+                                            :rdf-entity="data.startEntity"
+                                            :id-entity="data.startItem"></text-imput>
+                                <input type="text" required="false">
+                            </template>
+                        </div>
+
+                    </div>
+                    @*<a class="btn btn-primary" @click="submitDataForm()">Enviar</a>*@
+
+                </template>
+
+            </div>
+
+
+            @*<div class="contenido-cv">
+                        <div class="tab-paneles-cv">
+                            <ul class="nav nav-tabs" id="navegacion-cv" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <a class="nav-link active" id="identificacion-tab" data-toggle="tab" href="#identificacion-panel" role="tab" aria-controls="identificacion-panel" aria-selected="true">Datos de identificación</a>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <a class="nav-link" id="situacion-tab" data-toggle="tab" href="#situacion-panel" role="tab" aria-controls="situacion-panel" aria-selected="true">Situación profesional</a>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <a class="nav-link" id="formacion-tab" data-toggle="tab" href="#formacion-panel" role="tab" aria-controls="formacion-panel" aria-selected="true">Formación recibida</a>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <a class="nav-link " id="experiencia-tab" data-toggle="tab" href="#experiencia-panel" role="tab" aria-controls="experiencia-panel" aria-selected="true">Experiencia científica y tecnológica</a>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <a class="nav-link" id="actividad-tab" data-toggle="tab" href="#actividad-panel" role="tab" aria-controls="actividad-panel" aria-selected="true">Actividad científica y tecnológica</a>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <a class="nav-link" id="resumen-tab" data-toggle="tab" href="#resumen-panel" role="tab" aria-controls="resumen-panel" aria-selected="true">Resumen de texto libre</a>
+                                </li>
+                            </ul>
+                            <div class="tab-content" id="paneles-cv">
+                                <div class="tab-pane fade show active" id="identificacion-panel" role="tabpanel" aria-labelledby="identificacion-tab">
+                                    <div class="row" about="@pCV.Roh_personalData.GNOSSID" property="http://w3id.org/roh/personalData">
+                                        <div class="col col-12 col-contenido">
+                                            <div class="datos-identificacion  p-4">
+                                                <div class="bloque bloque-title">
+                                                    <div class="title">
+                                                        Datos personales
+                                                    </div>
+                                                    <div class="actions">
+                                                        <ul class="no-list-style d-flex align-items-center">
+                                                            <li>
+                                                                <a class="btn btn-outline-grey" data-toggle="modal" data-target="#modal-editar-datos-identificacion">
+                                                                    <span class="texto">Editar</span>
+                                                                    <span class="material-icons">edit</span>
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+                                                        <div class="dropdown">
+                                                            <a class="dropdown-toggle btn btn-outline-grey no-flecha" data-toggle="dropdown" aria-expanded="false">
+                                                                <span class="texto">Acciones</span>
+                                                                <span class="material-icons">more_vert</span>
+                                                            </a>
+                                                            <div class="dropdown-menu basic-dropdown dropdown-menu-right" style="will-change: transform;">
+                                                                <a href="javascript: void(0)" class="item-dropdown">Acción 1</a>
+                                                                <a href="javascript: void(0)" class="item-dropdown">Acción 2</a>
+                                                                <a href="javascript: void(0)" class="item-dropdown">Acción 3</a>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="tab-pane fade" id="situacion-panel" role="tabpanel" aria-labelledby="situacion-tab">
-                            <div class="row">
-                                <div class="col col-12 col-section-title">
-                                    <div class="wrapCol">
-                                        <p>2 - Situación profesional</p>
-                                    </div>
-                                </div>
-                                <div class="col col-12 col-contenido">
+                                <div class="tab-pane fade" id="situacion-panel" role="tabpanel" aria-labelledby="situacion-tab">
+                                    <div class="row">
+                                        <div class="col col-12 col-section-title">
+                                            <div class="wrapCol">
+                                                <p>2 - Situación profesional</p>
+                                            </div>
+                                        </div>
+                                        <div class="col col-12 col-contenido">
 
-                                </div>
-                            </div>
-                        </div>
-                        <div class="tab-pane fade" id="formacion-panel" role="tabpanel" aria-labelledby="formacion-tab">
-                            <div class="row">
-                                <div class="col col-12 col-section-title">
-                                    <div class="wrapCol">
-                                        <p>3 - Formación recibida</p>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col col-12 col-contenido">
+                                <div class="tab-pane fade" id="formacion-panel" role="tabpanel" aria-labelledby="formacion-tab">
+                                    <div class="row">
+                                        <div class="col col-12 col-section-title">
+                                            <div class="wrapCol">
+                                                <p>3 - Formación recibida</p>
+                                            </div>
+                                        </div>
+                                        <div class="col col-12 col-contenido">
 
-                                </div>
-                            </div>
-                        </div>
-                        <div class="tab-pane fade " id="experiencia-panel" role="tabpanel" aria-labelledby="experiencia-tab">
-                            <div class="row" about="@pCV.Roh_scientificExperience.GNOSSID" property="http://w3id.org/roh/scientificExperience">
-                                <div class="col col-12 col-section-title">
-                                    <div class="wrapCol">
-                                        <p>4 - Experiencia científica y tecnológica</p>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col col-12 col-contenido">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="tab-pane fade" id="actividad-panel" role="tabpanel" aria-labelledby="actividad-tab">
-                            <div class="row"  about="@pCV.Roh_scientificActivity.GNOSSID" property="http://w3id.org/roh/scientificEActivity">
-                                <div class="col col-12 col-section-title">
-                                    <div class="wrapCol">
-                                        <p>5 - Actividad científica y tecnológica</p>
+                                <div class="tab-pane fade " id="experiencia-panel" role="tabpanel" aria-labelledby="experiencia-tab">
+                                    <div class="row" about="@pCV.Roh_scientificExperience.GNOSSID" property="http://w3id.org/roh/scientificExperience">
+                                        <div class="col col-12 col-section-title">
+                                            <div class="wrapCol">
+                                                <p>4 - Experiencia científica y tecnológica</p>
+                                            </div>
+                                        </div>
+                                        <div class="col col-12 col-contenido">
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col col-12 col-contenido">
+                                <div class="tab-pane fade" id="actividad-panel" role="tabpanel" aria-labelledby="actividad-tab">
+                                    <div class="row"  about="@pCV.Roh_scientificActivity.GNOSSID" property="http://w3id.org/roh/scientificEActivity">
+                                        <div class="col col-12 col-section-title">
+                                            <div class="wrapCol">
+                                                <p>5 - Actividad científica y tecnológica</p>
+                                            </div>
+                                        </div>
+                                        <div class="col col-12 col-contenido">
 
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="resumen-panel" role="tabpanel" aria-labelledby="resumen-tab">
+                                    <div class="row">
+                                        <div class="col col-12 col-section-title">
+                                            <div class="wrapCol">
+                                                <p>6 - Resumen de texto libre</p>
+                                            </div>
+                                        </div>
+                                        <div class="col col-12 col-contenido">
+
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-pane fade" id="resumen-panel" role="tabpanel" aria-labelledby="resumen-tab">
-                            <div class="row">
-                                <div class="col col-12 col-section-title">
-                                    <div class="wrapCol">
-                                        <p>6 - Resumen de texto libre</p>
-                                    </div>
-                                </div>
-                                <div class="col col-12 col-contenido">
+                    </div> *@
+                </div>
+
+
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+        <script type="text/javascript">
+
+
+            /**
+                * Component that show all sections and after call other sections or all inputs if have those
+                */
+            Vue.component('entity-sections', {
+                props: {
+                    item: {
+                        type: Object,
+                        required: true
+                    },
+                    i: {
+                        type: Number,
+                    },
+                    rdfEntity: {
+                        type: String,
+                    },
+                    idEntity: {
+                        type: String,
+                    },
+                },
+                delimiters: ['$[{', '}]'],
+                template: `
+                    <component :is="item.type ? item.type : (item.tag ? item.tag : 'div')" :class="item.class.concat(' ')" :id="item.id">
+                        <h3 v-if="item.title" class="title_section">$[{item.title}]</h3>
+
+                        <all-imputs
+                        v-if="item.properties"
+                        :properties="item.properties"
+                        :i="i"
+                        :id-entity="idEntity"
+                        :rdf-entity="rdfEntity"
+                        ></all-imputs>
+
+                        <template v-for="el, n in item.sections" v-if="item.sections">
+                            <entity-sections
+                            :item="el"
+                            :key="n**(i+1)"
+                            :i="n**i"
+                            :id-entity="idEntity"
+                            :rdf-entity="rdfEntity"
+                            ></entity-sections>
+                        </template>
+
+                    </component>
+                `,
+            });
+
+
+            Vue.component('tabs', {
+                props: {
+                    item: {
+                        type: Object,
+                        required: true
+                    },
+                    rdfEntity: {
+                        type: String,
+                    },
+                    idEntity: {
+                        type: String,
+                    },
+                },
+                delimiters: ['$[{', '}]'],
+                template: `
+                    <div class="contenido-cv">
+                        <div class="tab-paneles-cv">
+                            <ul class="nav nav-tabs" :id="'navegacion-' + item.id" role="tablist">
+                                <li v-for="el, n in item.sections" v-if="item.sections && el.type == 'tab'" class="nav-item" role="presentation">
+                                    <a class="nav-link" :class="{'active': n == 0}" :id="el.id + 'tab'" data-toggle="tab" :href="'#' + el.id"
+                                        role="tab" :aria-controls="el.id" aria-selected="true">$[{el.title}]</a>
+                                </li>
+                            </ul>
+                            <div class="tab-content" :id="'paneles-' + item.id>
+                                <div v-for="el, n in item.sections" v-if="item.sections && el.type == 'tab'" class="tab-pane fade show" :class="{'active': n == 0}" :id="el.id" role="tabpanel"
+                                    :aria-labelledby="el.id + 'tab'">
+
+                                    <h3 v-if="el.title" class="title_section">$[{el.title}]</h3>
+
+                                    <all-imputs
+                                    v-if="el.properties"
+                                    :properties="el.properties"
+                                    :i="i"
+                                    :id-entity="idEntity"
+                                    :rdf-entity="rdfEntity"
+                                    ></all-imputs>
+
+                                    <template v-for="elem, n in el.sections" v-if="el.sections">
+                                        <entity-sections
+                                        :item="elem"
+                                        :key="n**(i+1)"
+                                        :i="n**i"
+                                        :id-entity="idEntity"
+                                        :rdf-entity="rdfEntity"
+                                        ></entity-sections>
+                                    </template>
 
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-@functions{
 
-    public class RDFPropertyAttribute : Attribute
-    {
-        public RDFPropertyAttribute(string pRDFA)
-        {
-            mRDFA = pRDFA;
-        }
-        protected string mRDFA;
-        public string RDFProperty
-        {
-            get { return mRDFA; }
-        }
-    }
 
-    [AttributeUsage(AttributeTargets.All, AllowMultiple = true)]
-    public class LABELAttribute : Attribute
-    {
-        private GnossOCBase.LanguageEnum IdiomaDefecto = GnossOCBase.LanguageEnum.es;
-        private GnossOCBase.LanguageEnum midioma;
-        private string mlabel;
-        public LABELAttribute(GnossOCBase.LanguageEnum idioma, string label)
-        {
-            mlabel = label;
-            midioma = idioma;
-        }
-        public string LABEL(GnossOCBase.LanguageEnum pLang)
-        {
-            if (midioma.Equals(pLang))
-            {
-                return mlabel;
-            }
-            return "";
-        }
-    }
 
-    public class GnossOCBase
-    {
-        public enum LanguageEnum
-        {
-            es,
-            en,
-            pt,
-            ca,
-            eu,
-            gl,
-            fr,
-            de,
-            it,
-        }
-        internal List<string> prefList = new List<string>();
-        internal string mGNOSSID;
-        internal string mURL;
-        internal Guid resourceID;
-        internal Guid articleID;
-        private static List<string> NoEnIdiomas = new List<string> { "No", "Non", "Ez", "Nein", "No" };
-        public GnossOCBase()
-        {
-            prefList.Add("xmlns:roh=\"http://w3id.org/roh/\"");
-            prefList.Add("xmlns:foaf=\"http://xmlns.com/foaf/0.1/\"");
-            prefList.Add("xmlns:vivo=\"http://vivoweb.org/ontology/core#\"");
-            prefList.Add("xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"");
-            prefList.Add("xmlns:xsd=\"http://www.w3.org/2001/XMLSchema#\"");
-            prefList.Add("xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\"");
-            prefList.Add("xmlns:owl=\"http://www.w3.org/2002/07/owl#\"");
-            prefList.Add("xmlns:vcard=\"https://www.w3.org/2006/vcard/ns#\"");
-            prefList.Add("xmlns:dc=\"http://purl.org/dc/elements/1.1/\"");
+                    <template v-if="elem.type != 'tab' && elem.type != ''" v-for="elem, index in item.section">
+                        <h3 v-if="item.title" class="title_section">$[{item.title}]</h3>
 
-            this.resourceID = Guid.NewGuid();
-            this.articleID = Guid.NewGuid();
-        }
+                        <entity-sections
+                        v-if="elem"
+                        :properties="elem.properties"
+                        :i="index"
+                        :id-entity="idEntity"
+                        :rdf-entity="rdfEntity"
+                        ></entity-sections>
 
-        public string GNOSSID
-        {
-            get { return mGNOSSID; }
-            set
-            {
-                this.mGNOSSID = value;
-                var GnossIDSplit = this.mGNOSSID.Split('_');
-                Guid nuevoResource = Guid.Parse(GnossIDSplit[GnossIDSplit.Count() - 2]);
-                Guid nuevoArticle = Guid.Parse(GnossIDSplit.Last());
-                if (!this.ResourceID.Equals(nuevoResource))
-                {
-                    this.resourceID = nuevoResource;
-                }
-                if (!this.ArticleID.Equals(nuevoArticle))
-                {
-                    this.articleID = nuevoArticle;
-                }
-            }
-        }
-        public string URL
-        {
-            get { return mURL; }
-        }
+                    </template>
+                `,
+            });
 
-        public Guid ResourceID
-        {
-            get { return resourceID; }
-            set
-            {
-                this.resourceID = value;
-                string primeraParte = this.mGNOSSID.Substring(0, this.mGNOSSID.LastIndexOf('/') + 1);
-                string antiguoGuid = this.mGNOSSID.Substring(this.mGNOSSID.LastIndexOf('/') + 1, this.mGNOSSID.LastIndexOf('_'));
-                string ultimaParte = this.mGNOSSID.Substring(this.mGNOSSID.LastIndexOf('_') + 1);
-                if (!antiguoGuid.Equals(this.resourceID.ToString()))
-                {
-                    this.mGNOSSID = $"{primeraParte}{this.resourceID.ToString()}{ultimaParte}";
-                }
-            }
-        }
 
-        public Guid ArticleID
-        {
-            get { return articleID; }
-            set
-            {
-                this.articleID = value;
-                string primeraParte = this.mGNOSSID.Substring(0, this.mGNOSSID.LastIndexOf('_') + 1);
-                string antiguoGuid = this.mGNOSSID.Substring(this.mGNOSSID.LastIndexOf('_') + 1);
-                if (!antiguoGuid.Equals(this.articleID.ToString()))
-                {
-                    this.mGNOSSID = $"{primeraParte}{this.articleID.ToString()}";
-                }
-            }
-        }
-
-        public static string GetPropertyValueSemCms(SemanticPropertyModel pProperty)
-        {
-            if (pProperty != null && pProperty.PropertyValues.Count > 0)
-            {
-                return pProperty.PropertyValues[0].Value;
-            }
-            return "";
-        }
-
-        public static int? GetNumberIntPropertyValueSemCms(SemanticPropertyModel pProperty)
-        {
-            if (pProperty != null && pProperty.PropertyValues.Count > 0 && !string.IsNullOrEmpty(pProperty.PropertyValues[0].Value))
-            {
-                return int.Parse(pProperty.PropertyValues[0].Value);
-            }
-            return 0;
-        }
-
-        public static int? GetNumberIntPropertyMultipleValueSemCms(SemanticPropertyModel.PropertyValue pProperty)
-        {
-            if (pProperty != null && !string.IsNullOrEmpty(pProperty.Value))
-            {
-                return int.Parse(pProperty.Value);
-            }
-            return 0;
-        }
-
-        public static float? GetNumberFloatPropertyValueSemCms(SemanticPropertyModel pProperty)
-        {
-            if (pProperty != null && pProperty.PropertyValues.Count > 0 && !string.IsNullOrEmpty(pProperty.PropertyValues[0].Value))
-            {
-                return float.Parse(pProperty.PropertyValues[0].Value.Replace('.', ','));
-            }
-            return 0;
-        }
-
-        public static DateTime? GetDateValuePropertySemCms(SemanticPropertyModel pProperty)
-        {
-            string stringDate = GetPropertyValueSemCms(pProperty);
-            if (!string.IsNullOrEmpty(stringDate))
-            {
-                int year = 0;
-                int month = 0;
-                int day = 0;
-                if (stringDate.Contains('/'))
-                {
-                    day = int.Parse(stringDate.Split('/')[0]);
-                    month = int.Parse(stringDate.Split('/')[1]);
-                    year = int.Parse(stringDate.Split('/')[2].Split(' ')[0]);
-                }
-                else
-                {
-                    year = int.Parse(stringDate.Substring(0, 4));
-                    month = int.Parse(stringDate.Substring(4, 2));
-                    day = int.Parse(stringDate.Substring(6, 2));
-                }
-                if (stringDate.Length == 14)
-                {
-                    if (month == 0 || day == 0)
-                    {
-                        return new DateTime(year);
+            /**
+                * Component that show all inputs in their type of input
+                */
+            Vue.component('all-imputs', {
+                props: {
+                    properties: {
+                        type: Array
+                    },
+                    i: {
+                        type: Number,
+                    },
+                    rdfEntity: {
+                        type: String,
+                    },
+                    idEntity: {
+                        type: String,
+                    },
+                },
+                data() {
+                    return {
+                        typesNormalInputs: [],
+                        typesSpecialInputs: [],
                     }
-                    else
-                    {
-                        int hour = int.Parse(stringDate.Substring(8, 2));
-                        int minute = int.Parse(stringDate.Substring(10, 2));
-                        int second = int.Parse(stringDate.Substring(12, 2));
-                        return new DateTime(year, month, day, hour, minute, second);
+                },
+                mounted: function mounted() {
+
+                    var self = this;
+                    self.typesSpecialInputs = {
+                        textarea: "textarea-field",
+                        select: "select-field",
+                        datetime: "datetime-field",
+                        orderedlist: "orderedlist",
+                        list: "list",
+                        table: "table",
+                        texteditor: "textarea-field",
+                        option: "",
+                        button: "button-field",
+                        optgroup: "optgroup-field",
+                        checkbox: "checkbox-field",
+                    }
+
+                    self.typesNormalInputs = [
+                        "button",
+                        "checkbox",
+                        "color",
+                        "date",
+                        "datetime-local",
+                        "email",
+                        "file",
+                        "hidden",
+                        "image",
+                        "month",
+                        "number",
+                        "password",
+                        "range",
+                        "reset",
+                        "search",
+                        "submit",
+                        "tel",
+                        "text",
+                        "time",
+                        "url",
+                        "week",
+                    ]
+
+                },
+                delimiters: ['$[{', '}]'],
+                template: `
+                    <div class="d-block list-fields">
+                        <template v-for="item, n in properties">
+                            <template v-if="typesNormalInputs.includes(item.fieldType)">
+                                <!-- input type fields -->
+                                <input-field :item="item" :key="idEntity + '_' + n + '_' + i" :i="i" :id-entity="idEntity" :rdf-entity="rdfEntity" :itype="item.fieldType"
+                                ></input-field>
+                            </template>
+                            <template v-else-if="typesSpecialInputs.hasOwnProperty(item.fieldType)">
+                                <!-- input type fields -->
+                                <component :is="typesSpecialInputs[item.fieldType]" :item="item" :key="idEntity + '_' + n + '_' + i" :i="i" :id-entity="idEntity" :rdf-entity="rdfEntity" itype="datetime-local"
+                                ></component>
+                            </template>
+                        </template>
+                    </div>
+                `,
+
+            });
+
+            /**
+                * Component that show all inputs type field (Less checkbox & radio)
+                */
+            Vue.component('datetime-field', {
+                props: {
+                    item: {
+                        type: Object
+                    },
+                    i: {
+                        type: Number,
+                    },
+                    itype: {
+                        type: String,
+                        default: "text"
+                    },
+                    rdfEntity: {
+                        type: String,
+                    },
+                    idEntity: {
+                        type: String,
+                    },
+                },
+                delimiters: ['$[{', '}]'],
+                data() {
+                    return {
+                        es: vdp_translation_es.js
+                    }
+                },
+                mounted: function mounted() {
+                    var self = this;
+                },
+                components: {
+                    vuejsDatepicker
+                },
+                template: `
+                    <div class="d-block">
+                        <label class="label-input" :class="'label-' + itype" :for="idEntity + '.' + item.property">$[{item.title}]</label>
+                        <vuejs-datepicker :language="es" v-model="item.value" :id="idEntity + '.' + item.property" :class="{require : item.min == 1}" name="item.property"></vuejs-datepicker>
+                    </div>
+                `,
+                methods: {
+                    customFormatter(date) {
+                        // return moment(date).format('yyyyMMddhhmm');
                     }
                 }
-                else
+            });
+
+            /**
+                * Component that show all inputs type field (Less checkbox & radio)
+                */
+            Vue.component('input-field', {
+                props: {
+                    item: {
+                        type: Object
+                    },
+                    i: {
+                        type: Number,
+                    },
+                    itype: {
+                        type: String,
+                        default: "text"
+                    },
+                    rdfEntity: {
+                        type: String,
+                    },
+                    idEntity: {
+                        type: String,
+                    },
+                },
+                delimiters: ['$[{', '}]'],
+                template: `
+                    <div class="d-block">
+                        <label class="label-input" :class="'label-' + itype" :for="idEntity + '.' + item.property">$[{item.title}]</label>
+                        <input :class="{require : item.min == 1}" :placeholder="item.placeholder"  v-model="item.value" :type="itype" :id="idEntity + '.' + item.property" :name="item.property">
+                    </div>
+                `,
+            });
+
+            /**
+                * Component that show a textarea
+                */
+            Vue.component('textarea-field', {
+                props: {
+                    item: {
+                        type: Object
+                    },
+                    i: {
+                        type: Number,
+                    },
+                    itype: {
+                        type: String,
+                        default: "text"
+                    },
+                    rdfEntity: {
+                        type: String,
+                    },
+                    idEntity: {
+                        type: String,
+                    },
+                },
+                delimiters: ['$[{', '}]'],
+                template: `
+                    <div class="d-block">
+                        <label class="label-input" :class="'label-' + itype" :for="idEntity + '.' + item.property">$[{item.title}]</label>
+                        <textarea :class="{require : item.min == 1}" :placeholder="item.placeholder" v-model="item.value" :type="itype" :id="idEntity + '.' + item.property" :name="item.property">
+                        </textarea>
+                    </div>
+                `,
+            });
+
+
+            Vue.component('radio-field', {
+                props: {
+                    item: {
+                        type: Object
+                    },
+                    i: {
+                        type: Number,
+                    },
+                    itype: {
+                        type: String,
+                        default: "text"
+                    },
+                    rdfEntity: {
+                        type: String,
+                    },
+                    idEntity: {
+                        type: String,
+                    },
+                },
+                delimiters: ['$[{', '}]'],
+                template: `
+                    <div class="d-block">
+                        <input :class="{require : item.min == 1}" v-model="item.value" :type="itype" :id="idEntity + '.' + item.property" :name="item.property">
+                        <label class="label-input" :class="'label-' + itype + ' ' + (item.min == 1 ? 'require' : '')" :for="idEntity + '.' + item.property">$[{item.title}]</label>
+                    </div>
+                `,
+            });
+
+
+            Vue.component('checkbox-field', {
+                props: {
+                    item: {
+                        type: Object
+                    },
+                    i: {
+                        type: Number,
+                    },
+                    itype: {
+                        type: String,
+                        default: "text"
+                    },
+                    rdfEntity: {
+                        type: String,
+                    },
+                    idEntity: {
+                        type: String,
+                    },
+                },
+                delimiters: ['$[{', '}]'],
+                template: `
+                    <div class="d-block">
+                        <input :class="{require : item.min == 1}" v-model="item.value" :type="itype" :id="idEntity + '.' + item.property" :name="item.property">
+                        <label class="label-input" :class="'label-' + itype + ' ' + (item.min == 1 ? 'require' : '')" :for="idEntity + '.' + item.property">$[{item.title}]</label>
+                    </div>
+                `,
+            });
+
+
+            Vue.component('select-field', {
+                props: {
+                    item: {
+                        type: Object
+                    },
+                    i: {
+                        type: Number,
+                    },
+                    itype: {
+                        type: String,
+                        default: "text"
+                    },
+                    rdfEntity: {
+                        type: String,
+                    },
+                    idEntity: {
+                        type: String,
+                    },
+                },
+                delimiters: ['$[{', '}]'],
+                template: `
+                    <div class="d-block">
+                        <label class="label-input" :class="'label-' + itype" :for="idEntity + '.' + item.property">$[{item.title}]</label>
+                        <select :class="{require : item.min == 1}" v-model="item.value" :id="idEntity + '.' + item.property" :name="item.property">
+                            <option disabled value="">Selecciona una opción</option>
+                            <option v-if="item.options" v-for="el, pos in item.options">$[{el}]</option>
+                        </select>
+                    </div>
+                `,
+            });
+
+
+            Vue.component('orderedlist', {
+                props: {
+                    item: {
+                        type: Object
+                    },
+                    i: {
+                        type: Number,
+                    },
+                    itype: {
+                        type: String,
+                        default: "text"
+                    },
+                    rdfEntity: {
+                        type: String,
+                    },
+                    idEntity: {
+                        type: String,
+                    },
+                },
+                delimiters: ['$[{', '}]'],
+                template: `
+                    <div class="d-block">
+                        <label class="label-orderedlist">$[{item.title}]</label>
+                        <ol>
+                            <li v-for="el in item.options">$[{el}]</li>
+                        </ol>
+
+                    </div>
+                `,
+            });
+
+
+            Vue.component('button-field', {
+                props: {
+                    item: {
+                        type: Object
+                    },
+                    i: {
+                        type: Number,
+                    },
+                    itype: {
+                        type: String,
+                        default: "text"
+                    },
+                    rdfEntity: {
+                        type: String,
+                    },
+                    idEntity: {
+                        type: String,
+                    },
+                },
+                delimiters: ['$[{', '}]'],
+                template: `
+                    <div class="d-block">
+                        <button></button>
+
+                    </div>
+                `,
+            });
+
+
+            Vue.component('list', {
+                props: {
+                    item: {
+                        type: Object
+                    },
+                    i: {
+                        type: Number,
+                    },
+                    itype: {
+                        type: String,
+                        default: "text"
+                    },
+                    rdfEntity: {
+                        type: String,
+                    },
+                    idEntity: {
+                        type: String,
+                    },
+                },
+                delimiters: ['$[{', '}]'],
+                template: `
+                    <div class="d-block">
+                        <label class="label-list" + itype">$[{item.title}]</label>
+                        <ul>
+                            <li v-for="el, item.options">$[{el}]</li>
+                        </ul>
+
+                    </div>
+                `,
+            });
+
+
+
+            // Vue app
+            var app = new Vue({
+                delimiters: ['${', '}'],
+                el: '#app',
+                components: {
+                    vuejsDatepicker
+                },
+                data: {
+                    data: {},
+                    api_url: "",
+                    api_port: 44331,
+
+                    currentItemId: "@semCmsModel.RootEntities[0].Entity.Uri"
+                },
+                mounted: function mounted() {
+
+                    var self = this;
+                    self.api_url = "https://localhost:" + self.api_port + "/EditorCV";
+
+                    self.getAjaxAxiosElements("1", function () {
+
+                    });
+
+                    Vue.nextTick(function (e) {
+                    });
+
+                },
+
+                filters: {
+
+                    subStr: function (string, start, end) {
+                        return string.substring(start, end);
+                    }
+
+                },
+                methods: {
+
+                    /**
+                    * The ajax call (using axios) to the API
+                    */
+                    getAjaxAxiosElements: function getAjaxAxiosElements(section, callback = function (e) { return void (0) }) {
+                        let self = this;
+
+                        let urlQuery = new URL(self.api_url);
+
+                        // Set the query
+                        urlQuery.searchParams.append('section', section);
+                        urlQuery.searchParams.append('id', self.currentItemId);
+
+                        // Make the ajax call
+                        axios
+                            .get(urlQuery.toString())
+                            .then(response => {
+                                if (response.status == 200) {
+                                    // self.data = Object.assign({}, self.data, response.data);
+                                    self.data = { ...response.data };
+                                    console.log("self.data", self.data);
+
+                                    // Vue.nextTick(function (e) {
+                                    // });
+                                    callback();
+                                } else {
+                                    alert("Ha habido un error en su petición, intentelo más tarde");
+                                    callback();
+                                }
+                            });
+                    },
+
+                    submitDataForm: function submitDataForm(callback = function (e) { return void (0) }) {
+                        console.log("datos enviados");
+                        let self = this;
+
+                        // var dataStr = JSON.stringify(self.data);
+
+                        let urlQuery = new URL(self.api_url);
+
+                        // Make the ajax post call
+                        axios.post(urlQuery.toString(), {
+                            data: self.data
+                        })
+                            .then(function (response) {
+                                console.log("response: ", response);
+                                Vue.nextTick(function (e) {
+                                });
+                                callback();
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                                callback();
+                            });
+                    }
+                }
+            })
+
+
+        </script>
+
+
+
+
+        @functions{
+
+            public class RDFPropertyAttribute : Attribute
+            {
+                public RDFPropertyAttribute(string pRDFA)
                 {
-                    return new DateTime(year, month, day);
+                    mRDFA = pRDFA;
+                }
+                protected string mRDFA;
+                public string RDFProperty
+                {
+                    get { return mRDFA; }
                 }
             }
-            return null;
-        }
 
-        public static bool GetBooleanPropertyValueSemCms(SemanticPropertyModel pProperty)
-        {
-            bool resultado = false;
-            if (pProperty != null && pProperty.PropertyValues.Count > 0 && !string.IsNullOrEmpty(pProperty.PropertyValues[0].Value))
+            [AttributeUsage(AttributeTargets.All, AllowMultiple = true)]
+            public class LABELAttribute : Attribute
             {
-                if (!bool.TryParse(pProperty.PropertyValues[0].Value, out resultado))
+                private GnossOCBase.LanguageEnum IdiomaDefecto = GnossOCBase.LanguageEnum.es;
+                private GnossOCBase.LanguageEnum midioma;
+                private string mlabel;
+                public LABELAttribute(GnossOCBase.LanguageEnum idioma, string label)
                 {
-                    resultado = !NoEnIdiomas.Contains(pProperty.PropertyValues[0].Value);
+                    mlabel = label;
+                    midioma = idioma;
                 }
-            }
-            return resultado;
-        }
-
-        internal string GetExtension(string file)
-        {
-            return file.Substring(file.LastIndexOf('.'));
-        }
-
-
-        public string GetPropertyURI(string nombrePropiedad)
-        {
-            Type type = this.GetType();
-            PropertyInfo mInfo = type.GetProperty(nombrePropiedad);
-            if (mInfo != null)
-            {
-                Attribute attr = Attribute.GetCustomAttribute(mInfo, typeof(RDFPropertyAttribute));
-                if (attr != null)
+                public string LABEL(GnossOCBase.LanguageEnum pLang)
                 {
-                    return ((RDFPropertyAttribute)attr).RDFProperty;
-                }
-            }
-            return "";
-        }
-
-
-
-        public string GetLabel(string nombrePropiedad, LanguageEnum pLang)
-        {
-            Type type = this.GetType();
-            PropertyInfo mInfo = type.GetProperty(nombrePropiedad);
-
-            if (mInfo != null)
-            {
-                Attribute[] attr = Attribute.GetCustomAttributes(mInfo, typeof(LABELAttribute));
-                {
-                    foreach (Attribute atributo in attr)
+                    if (midioma.Equals(pLang))
                     {
-                        if (atributo != null)
+                        return mlabel;
+                    }
+                    return "";
+                }
+            }
+
+            public class GnossOCBase
+            {
+                public enum LanguageEnum
+                {
+                    es,
+                    en,
+                    pt,
+                    ca,
+                    eu,
+                    gl,
+                    fr,
+                    de,
+                    it,
+                }
+                internal List<string> prefList = new List<string>();
+                internal string mGNOSSID;
+                internal string mURL;
+                internal Guid resourceID;
+                internal Guid articleID;
+                private static List<string> NoEnIdiomas = new List<string> { "No", "Non", "Ez", "Nein", "No" };
+                public GnossOCBase()
+                {
+                    prefList.Add("xmlns:roh=\"http://w3id.org/roh/\"");
+                    prefList.Add("xmlns:foaf=\"http://xmlns.com/foaf/0.1/\"");
+                    prefList.Add("xmlns:vivo=\"http://vivoweb.org/ontology/core#\"");
+                    prefList.Add("xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"");
+                    prefList.Add("xmlns:xsd=\"http://www.w3.org/2001/XMLSchema#\"");
+                    prefList.Add("xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\"");
+                    prefList.Add("xmlns:owl=\"http://www.w3.org/2002/07/owl#\"");
+                    prefList.Add("xmlns:vcard=\"https://www.w3.org/2006/vcard/ns#\"");
+                    prefList.Add("xmlns:dc=\"http://purl.org/dc/elements/1.1/\"");
+
+                    this.resourceID = Guid.NewGuid();
+                    this.articleID = Guid.NewGuid();
+                }
+
+                public string GNOSSID
+                {
+                    get { return mGNOSSID; }
+                    set
+                    {
+                        this.mGNOSSID = value;
+                        var GnossIDSplit = this.mGNOSSID.Split('_');
+                        Guid nuevoResource = Guid.Parse(GnossIDSplit[GnossIDSplit.Count() - 2]);
+                        Guid nuevoArticle = Guid.Parse(GnossIDSplit.Last());
+                        if (!this.ResourceID.Equals(nuevoResource))
                         {
-                            if (!((LABELAttribute)atributo).LABEL(pLang).Equals(""))
-                            {
-                                return ((LABELAttribute)atributo).LABEL(pLang);
-                            }
+                            this.resourceID = nuevoResource;
+                        }
+                        if (!this.ArticleID.Equals(nuevoArticle))
+                        {
+                            this.articleID = nuevoArticle;
                         }
                     }
                 }
-            }
-
-            return "";
-        }
-
-        public int GetID() { return 0; }
-    }
-
-
-    public class CV : GnossOCBase
-    {
-        public CV() : base() { }
-
-        public CV(SemanticResourceModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
-        {
-            this.mGNOSSID = pSemCmsModel.RootEntities[0].Entity.Uri;
-            SemanticPropertyModel propRoh_scientificExperience = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/scientificExperience");
-            if (propRoh_scientificExperience != null && propRoh_scientificExperience.PropertyValues.Count > 0)
-            {
-                this.Roh_scientificExperience = new ScientificExperience(propRoh_scientificExperience.PropertyValues[0].RelatedEntity, idiomaUsuario);
-            }
-            SemanticPropertyModel propRoh_scientificActivity = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/scientificActivity");
-            if (propRoh_scientificActivity != null && propRoh_scientificActivity.PropertyValues.Count > 0)
-            {
-                this.Roh_scientificActivity = new ScientificActivity(propRoh_scientificActivity.PropertyValues[0].RelatedEntity, idiomaUsuario);
-            }
-            SemanticPropertyModel propRoh_cvOf = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/cvOf");
-            if (propRoh_cvOf != null && propRoh_cvOf.PropertyValues.Count > 0)
-            {
-                this.Roh_cvOf = new Person(propRoh_cvOf.PropertyValues[0].RelatedEntity, idiomaUsuario);
-            }
-            SemanticPropertyModel propRoh_personalData = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/personalData");
-            if (propRoh_personalData != null && propRoh_personalData.PropertyValues.Count > 0)
-            {
-                this.Roh_personalData = new PersonalData(propRoh_personalData.PropertyValues[0].RelatedEntity, idiomaUsuario);
-            }
-            this.Foaf_name = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/name"));
-        }
-
-        public CV(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
-        {
-            this.mGNOSSID = pSemCmsModel.Entity.Uri;
-            this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
-            SemanticPropertyModel propRoh_scientificExperience = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/scientificExperience");
-            if (propRoh_scientificExperience != null && propRoh_scientificExperience.PropertyValues.Count > 0)
-            {
-                this.Roh_scientificExperience = new ScientificExperience(propRoh_scientificExperience.PropertyValues[0].RelatedEntity, idiomaUsuario);
-            }
-            SemanticPropertyModel propRoh_scientificActivity = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/scientificActivity");
-            if (propRoh_scientificActivity != null && propRoh_scientificActivity.PropertyValues.Count > 0)
-            {
-                this.Roh_scientificActivity = new ScientificActivity(propRoh_scientificActivity.PropertyValues[0].RelatedEntity, idiomaUsuario);
-            }
-            SemanticPropertyModel propRoh_cvOf = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/cvOf");
-            if (propRoh_cvOf != null && propRoh_cvOf.PropertyValues.Count > 0)
-            {
-                this.Roh_cvOf = new Person(propRoh_cvOf.PropertyValues[0].RelatedEntity, idiomaUsuario);
-            }
-            SemanticPropertyModel propRoh_personalData = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/personalData");
-            if (propRoh_personalData != null && propRoh_personalData.PropertyValues.Count > 0)
-            {
-                this.Roh_personalData = new PersonalData(propRoh_personalData.PropertyValues[0].RelatedEntity, idiomaUsuario);
-            }
-            this.Foaf_name = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/name"));
-        }
-
-        [LABEL(LanguageEnum.es, "Experiencia científica y tecnológica")]
-        [RDFProperty("http://w3id.org/roh/scientificExperience")]
-        public ScientificExperience Roh_scientificExperience { get; set; }
-
-        [LABEL(LanguageEnum.es, "Experiencia científica y tecnológica")]
-        [RDFProperty("http://w3id.org/roh/scientificExperience")]
-        public ScientificActivity Roh_scientificActivity { get; set; }
-
-        [LABEL(LanguageEnum.es, "Currículum de")]
-        [RDFProperty("http://w3id.org/roh/cvOf")]
-        public Person Roh_cvOf { get; set; }
-        public string IdRoh_cvOf { get; set; }
-
-        [LABEL(LanguageEnum.es, "Datos personales")]
-        [RDFProperty("http://w3id.org/roh/personalData")]
-        public PersonalData Roh_personalData { get; set; }
-
-        [LABEL(LanguageEnum.es, "Usuario Gnoss")]
-        [RDFProperty("http://w3id.org/roh/gnossUser")]
-        public string Roh_gnossUser { get; set; }
-
-        [LABEL(LanguageEnum.es, "Nombre")]
-        [RDFProperty("http://xmlns.com/foaf/0.1/name")]
-        public string Foaf_name { get; set; }
-
-
-    }
-    public class Person : GnossOCBase
-    {
-        public Person() : base() { }
-
-        public Person(SemanticResourceModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
-        {
-            this.mGNOSSID = pSemCmsModel.RootEntities[0].Entity.Uri;
-            this.Foaf_familyName = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/familyName"));
-            this.Roh_ORCID = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/ORCID"));
-            SemanticPropertyModel propFoaf_nick = pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/nick");
-            this.Foaf_nick = new List<string>();
-            if (propFoaf_nick != null && propFoaf_nick.PropertyValues.Count > 0)
-            {
-                foreach (SemanticPropertyModel.PropertyValue propValue in propFoaf_nick.PropertyValues)
+                public string URL
                 {
-                    this.Foaf_nick.Add(propValue.Value);
+                    get { return mURL; }
+                }
+
+                public Guid ResourceID
+                {
+                    get { return resourceID; }
+                    set
+                    {
+                        this.resourceID = value;
+                        string primeraParte = this.mGNOSSID.Substring(0, this.mGNOSSID.LastIndexOf('/') + 1);
+                        string antiguoGuid = this.mGNOSSID.Substring(this.mGNOSSID.LastIndexOf('/') + 1, this.mGNOSSID.LastIndexOf('_'));
+                        string ultimaParte = this.mGNOSSID.Substring(this.mGNOSSID.LastIndexOf('_') + 1);
+                        if (!antiguoGuid.Equals(this.resourceID.ToString()))
+                        {
+                            this.mGNOSSID = $"{primeraParte}{this.resourceID.ToString()}{ultimaParte}";
+                        }
+                    }
+                }
+
+                public Guid ArticleID
+                {
+                    get { return articleID; }
+                    set
+                    {
+                        this.articleID = value;
+                        string primeraParte = this.mGNOSSID.Substring(0, this.mGNOSSID.LastIndexOf('_') + 1);
+                        string antiguoGuid = this.mGNOSSID.Substring(this.mGNOSSID.LastIndexOf('_') + 1);
+                        if (!antiguoGuid.Equals(this.articleID.ToString()))
+                        {
+                            this.mGNOSSID = $"{primeraParte}{this.articleID.ToString()}";
+                        }
+                    }
+                }
+
+                public static string GetPropertyValueSemCms(SemanticPropertyModel pProperty)
+                {
+                    if (pProperty != null && pProperty.PropertyValues.Count > 0)
+                    {
+                        return pProperty.PropertyValues[0].Value;
+                    }
+                    return "";
+                }
+
+                public static int? GetNumberIntPropertyValueSemCms(SemanticPropertyModel pProperty)
+                {
+                    if (pProperty != null && pProperty.PropertyValues.Count > 0 && !string.IsNullOrEmpty(pProperty.PropertyValues[0].Value))
+                    {
+                        return int.Parse(pProperty.PropertyValues[0].Value);
+                    }
+                    return 0;
+                }
+
+                public static int? GetNumberIntPropertyMultipleValueSemCms(SemanticPropertyModel.PropertyValue pProperty)
+                {
+                    if (pProperty != null && !string.IsNullOrEmpty(pProperty.Value))
+                    {
+                        return int.Parse(pProperty.Value);
+                    }
+                    return 0;
+                }
+
+                public static float? GetNumberFloatPropertyValueSemCms(SemanticPropertyModel pProperty)
+                {
+                    if (pProperty != null && pProperty.PropertyValues.Count > 0 && !string.IsNullOrEmpty(pProperty.PropertyValues[0].Value))
+                    {
+                        return float.Parse(pProperty.PropertyValues[0].Value.Replace('.', ','));
+                    }
+                    return 0;
+                }
+
+                public static DateTime? GetDateValuePropertySemCms(SemanticPropertyModel pProperty)
+                {
+                    string stringDate = GetPropertyValueSemCms(pProperty);
+                    if (!string.IsNullOrEmpty(stringDate))
+                    {
+                        int year = 0;
+                        int month = 0;
+                        int day = 0;
+                        if (stringDate.Contains('/'))
+                        {
+                            day = int.Parse(stringDate.Split('/')[0]);
+                            month = int.Parse(stringDate.Split('/')[1]);
+                            year = int.Parse(stringDate.Split('/')[2].Split(' ')[0]);
+                        }
+                        else
+                        {
+                            year = int.Parse(stringDate.Substring(0, 4));
+                            month = int.Parse(stringDate.Substring(4, 2));
+                            day = int.Parse(stringDate.Substring(6, 2));
+                        }
+                        if (stringDate.Length == 14)
+                        {
+                            if (month == 0 || day == 0)
+                            {
+                                return new DateTime(year);
+                            }
+                            else
+                            {
+                                int hour = int.Parse(stringDate.Substring(8, 2));
+                                int minute = int.Parse(stringDate.Substring(10, 2));
+                                int second = int.Parse(stringDate.Substring(12, 2));
+                                return new DateTime(year, month, day, hour, minute, second);
+                            }
+                        }
+                        else
+                        {
+                            return new DateTime(year, month, day);
+                        }
+                    }
+                    return null;
+                }
+
+                public static bool GetBooleanPropertyValueSemCms(SemanticPropertyModel pProperty)
+                {
+                    bool resultado = false;
+                    if (pProperty != null && pProperty.PropertyValues.Count > 0 && !string.IsNullOrEmpty(pProperty.PropertyValues[0].Value))
+                    {
+                        if (!bool.TryParse(pProperty.PropertyValues[0].Value, out resultado))
+                        {
+                            resultado = !NoEnIdiomas.Contains(pProperty.PropertyValues[0].Value);
+                        }
+                    }
+                    return resultado;
+                }
+
+                internal string GetExtension(string file)
+                {
+                    return file.Substring(file.LastIndexOf('.'));
+                }
+
+
+                public string GetPropertyURI(string nombrePropiedad)
+                {
+                    Type type = this.GetType();
+                    PropertyInfo mInfo = type.GetProperty(nombrePropiedad);
+                    if (mInfo != null)
+                    {
+                        Attribute attr = Attribute.GetCustomAttribute(mInfo, typeof(RDFPropertyAttribute));
+                        if (attr != null)
+                        {
+                            return ((RDFPropertyAttribute)attr).RDFProperty;
+                        }
+                    }
+                    return "";
+                }
+
+
+
+                public string GetLabel(string nombrePropiedad, LanguageEnum pLang)
+                {
+                    Type type = this.GetType();
+                    PropertyInfo mInfo = type.GetProperty(nombrePropiedad);
+
+                    if (mInfo != null)
+                    {
+                        Attribute[] attr = Attribute.GetCustomAttributes(mInfo, typeof(LABELAttribute));
+                        {
+                            foreach (Attribute atributo in attr)
+                            {
+                                if (atributo != null)
+                                {
+                                    if (!((LABELAttribute)atributo).LABEL(pLang).Equals(""))
+                                    {
+                                        return ((LABELAttribute)atributo).LABEL(pLang);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    return "";
+                }
+
+                public int GetID() { return 0; }
+            }
+
+
+            public class CV : GnossOCBase
+            {
+                public CV() : base() { }
+
+                public CV(SemanticResourceModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
+                {
+                    this.mGNOSSID = pSemCmsModel.RootEntities[0].Entity.Uri;
+                    SemanticPropertyModel propRoh_scientificExperience = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/scientificExperience");
+                    if (propRoh_scientificExperience != null && propRoh_scientificExperience.PropertyValues.Count > 0)
+                    {
+                        this.Roh_scientificExperience = new ScientificExperience(propRoh_scientificExperience.PropertyValues[0].RelatedEntity, idiomaUsuario);
+                    }
+                    SemanticPropertyModel propRoh_scientificActivity = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/scientificActivity");
+                    if (propRoh_scientificActivity != null && propRoh_scientificActivity.PropertyValues.Count > 0)
+                    {
+                        this.Roh_scientificActivity = new ScientificActivity(propRoh_scientificActivity.PropertyValues[0].RelatedEntity, idiomaUsuario);
+                    }
+                    SemanticPropertyModel propRoh_cvOf = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/cvOf");
+                    if (propRoh_cvOf != null && propRoh_cvOf.PropertyValues.Count > 0)
+                    {
+                        this.Roh_cvOf = new Person(propRoh_cvOf.PropertyValues[0].RelatedEntity, idiomaUsuario);
+                    }
+                    SemanticPropertyModel propRoh_personalData = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/personalData");
+                    if (propRoh_personalData != null && propRoh_personalData.PropertyValues.Count > 0)
+                    {
+                        this.Roh_personalData = new PersonalData(propRoh_personalData.PropertyValues[0].RelatedEntity, idiomaUsuario);
+                    }
+                    this.Foaf_name = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/name"));
+                }
+
+                public CV(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
+                {
+                    this.mGNOSSID = pSemCmsModel.Entity.Uri;
+                    this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
+                    SemanticPropertyModel propRoh_scientificExperience = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/scientificExperience");
+                    if (propRoh_scientificExperience != null && propRoh_scientificExperience.PropertyValues.Count > 0)
+                    {
+                        this.Roh_scientificExperience = new ScientificExperience(propRoh_scientificExperience.PropertyValues[0].RelatedEntity, idiomaUsuario);
+                    }
+                    SemanticPropertyModel propRoh_scientificActivity = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/scientificActivity");
+                    if (propRoh_scientificActivity != null && propRoh_scientificActivity.PropertyValues.Count > 0)
+                    {
+                        this.Roh_scientificActivity = new ScientificActivity(propRoh_scientificActivity.PropertyValues[0].RelatedEntity, idiomaUsuario);
+                    }
+                    SemanticPropertyModel propRoh_cvOf = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/cvOf");
+                    if (propRoh_cvOf != null && propRoh_cvOf.PropertyValues.Count > 0)
+                    {
+                        this.Roh_cvOf = new Person(propRoh_cvOf.PropertyValues[0].RelatedEntity, idiomaUsuario);
+                    }
+                    SemanticPropertyModel propRoh_personalData = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/personalData");
+                    if (propRoh_personalData != null && propRoh_personalData.PropertyValues.Count > 0)
+                    {
+                        this.Roh_personalData = new PersonalData(propRoh_personalData.PropertyValues[0].RelatedEntity, idiomaUsuario);
+                    }
+                    this.Foaf_name = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/name"));
+                }
+
+                [LABEL(LanguageEnum.es, "Experiencia científica y tecnológica")]
+                [RDFProperty("http://w3id.org/roh/scientificExperience")]
+                public ScientificExperience Roh_scientificExperience { get; set; }
+
+                [LABEL(LanguageEnum.es, "Experiencia científica y tecnológica")]
+                [RDFProperty("http://w3id.org/roh/scientificExperience")]
+                public ScientificActivity Roh_scientificActivity { get; set; }
+
+                [LABEL(LanguageEnum.es, "Currículum de")]
+                [RDFProperty("http://w3id.org/roh/cvOf")]
+                public Person Roh_cvOf { get; set; }
+                public string IdRoh_cvOf { get; set; }
+
+                [LABEL(LanguageEnum.es, "Datos personales")]
+                [RDFProperty("http://w3id.org/roh/personalData")]
+                public PersonalData Roh_personalData { get; set; }
+
+                [LABEL(LanguageEnum.es, "Usuario Gnoss")]
+                [RDFProperty("http://w3id.org/roh/gnossUser")]
+                public string Roh_gnossUser { get; set; }
+
+                [LABEL(LanguageEnum.es, "Nombre")]
+                [RDFProperty("http://xmlns.com/foaf/0.1/name")]
+                public string Foaf_name { get; set; }
+
+
+            }
+            public class Person : GnossOCBase
+            {
+                public Person() : base() { }
+
+                public Person(SemanticResourceModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
+                {
+                    this.mGNOSSID = pSemCmsModel.RootEntities[0].Entity.Uri;
+                    this.Foaf_familyName = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/familyName"));
+                    this.Roh_ORCID = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/ORCID"));
+                    SemanticPropertyModel propFoaf_nick = pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/nick");
+                    this.Foaf_nick = new List<string>();
+                    if (propFoaf_nick != null && propFoaf_nick.PropertyValues.Count > 0)
+                    {
+                        foreach (SemanticPropertyModel.PropertyValue propValue in propFoaf_nick.PropertyValues)
+                        {
+                            this.Foaf_nick.Add(propValue.Value);
+                        }
+                    }
+                    this.Foaf_firstName = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/firstName"));
+                    this.Foaf_name = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/name"));
+                    this.Foaf_lastName = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/lastName"));
+                }
+
+                public Person(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
+                {
+                    this.mGNOSSID = pSemCmsModel.Entity.Uri;
+                    this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
+                    this.Foaf_familyName = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/familyName"));
+                    this.Roh_ORCID = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/ORCID"));
+                    SemanticPropertyModel propFoaf_nick = pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/nick");
+                    this.Foaf_nick = new List<string>();
+                    if (propFoaf_nick != null && propFoaf_nick.PropertyValues.Count > 0)
+                    {
+                        foreach (SemanticPropertyModel.PropertyValue propValue in propFoaf_nick.PropertyValues)
+                        {
+                            this.Foaf_nick.Add(propValue.Value);
+                        }
+                    }
+                    this.Foaf_firstName = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/firstName"));
+                    this.Foaf_name = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/name"));
+                    this.Foaf_lastName = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/lastName"));
+                }
+
+                [LABEL(LanguageEnum.es, "Segundo apellido")]
+                [RDFProperty("http://xmlns.com/foaf/0.1/familyName")]
+                public string Foaf_familyName { get; set; }
+
+                [LABEL(LanguageEnum.es, "ORCID")]
+                [RDFProperty("http://w3id.org/roh/ORCID")]
+                public string Roh_ORCID { get; set; }
+
+                [LABEL(LanguageEnum.es, "Firma")]
+                [RDFProperty("http://xmlns.com/foaf/0.1/nick")]
+                public List<string> Foaf_nick { get; set; }
+
+                [LABEL(LanguageEnum.es, "Nombre")]
+                [RDFProperty("http://xmlns.com/foaf/0.1/firstName")]
+                public string Foaf_firstName { get; set; }
+
+                [LABEL(LanguageEnum.es, "Nombre completo")]
+                [RDFProperty("http://xmlns.com/foaf/0.1/name")]
+                public string Foaf_name { get; set; }
+
+                [LABEL(LanguageEnum.es, "Primer apellido")]
+                [RDFProperty("http://xmlns.com/foaf/0.1/lastName")]
+                public string Foaf_lastName { get; set; }
+            }
+
+            public class PersonalData : GnossOCBase
+            {
+
+                public PersonalData() : base() { }
+
+                public PersonalData(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
+                {
+                    this.mGNOSSID = pSemCmsModel.Entity.Uri;
+                    this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
                 }
             }
-            this.Foaf_firstName = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/firstName"));
-            this.Foaf_name = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/name"));
-            this.Foaf_lastName = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/lastName"));
-        }
 
-        public Person(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
-        {
-            this.mGNOSSID = pSemCmsModel.Entity.Uri;
-            this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
-            this.Foaf_familyName = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/familyName"));
-            this.Roh_ORCID = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/ORCID"));
-            SemanticPropertyModel propFoaf_nick = pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/nick");
-            this.Foaf_nick = new List<string>();
-            if (propFoaf_nick != null && propFoaf_nick.PropertyValues.Count > 0)
+            public class ScientificExperience : GnossOCBase
             {
-                foreach (SemanticPropertyModel.PropertyValue propValue in propFoaf_nick.PropertyValues)
+
+                public ScientificExperience() : base() { }
+
+                public ScientificExperience(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
                 {
-                    this.Foaf_nick.Add(propValue.Value);
+                    this.mGNOSSID = pSemCmsModel.Entity.Uri;
+                    this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
+
                 }
             }
-            this.Foaf_firstName = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/firstName"));
-            this.Foaf_name = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/name"));
-            this.Foaf_lastName = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/lastName"));
+
+            public class ScientificActivity : GnossOCBase
+            {
+
+                public ScientificActivity() : base() { }
+
+                public ScientificActivity(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
+                {
+                    this.mGNOSSID = pSemCmsModel.Entity.Uri;
+                    this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
+
+                }
+            }
         }
-
-        [LABEL(LanguageEnum.es, "Segundo apellido")]
-        [RDFProperty("http://xmlns.com/foaf/0.1/familyName")]
-        public string Foaf_familyName { get; set; }
-
-        [LABEL(LanguageEnum.es, "ORCID")]
-        [RDFProperty("http://w3id.org/roh/ORCID")]
-        public string Roh_ORCID { get; set; }
-
-        [LABEL(LanguageEnum.es, "Firma")]
-        [RDFProperty("http://xmlns.com/foaf/0.1/nick")]
-        public List<string> Foaf_nick { get; set; }
-
-        [LABEL(LanguageEnum.es, "Nombre")]
-        [RDFProperty("http://xmlns.com/foaf/0.1/firstName")]
-        public string Foaf_firstName { get; set; }
-
-        [LABEL(LanguageEnum.es, "Nombre completo")]
-        [RDFProperty("http://xmlns.com/foaf/0.1/name")]
-        public string Foaf_name { get; set; }
-
-        [LABEL(LanguageEnum.es, "Primer apellido")]
-        [RDFProperty("http://xmlns.com/foaf/0.1/lastName")]
-        public string Foaf_lastName { get; set; }
-    }
-
-    public class PersonalData : GnossOCBase
-    {
-
-        public PersonalData() : base() { }
-
-        public PersonalData(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
-        {
-            this.mGNOSSID = pSemCmsModel.Entity.Uri;
-            this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
-        }
-    }
-
-    public class ScientificExperience : GnossOCBase
-    {
-
-        public ScientificExperience() : base() { }
-
-        public ScientificExperience(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
-        {
-            this.mGNOSSID = pSemCmsModel.Entity.Uri;
-            this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
-
-        }
-    }
-
-    public class ScientificActivity : GnossOCBase
-    {
-
-        public ScientificActivity() : base() { }
-
-        public ScientificActivity(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
-        {
-            this.mGNOSSID = pSemCmsModel.Entity.Uri;
-            this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
-
-        }
-    }
-}
