@@ -648,7 +648,10 @@ namespace EditorCV.Controllers.Properties
 
                         string text = contentsText.ReadToEnd();
 
-                        filesTexts.Add(file.Name, text);
+                        // Set the name of the section
+                        string fileName = file.Name.Split('.')[0];
+
+                        filesTexts.Add(fileName, text);
                     }
 
                     try

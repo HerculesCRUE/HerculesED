@@ -12,6 +12,7 @@
         {
           "title": "Datos de identificación",
           "type": "tab",
+          "id": "datos_identificacion",
           "sections": [
             {
               "title": "",
@@ -19,7 +20,7 @@
               "tag": "div",
               "sections": [
                 {
-                  "title": "Datos personales",
+                  "title": "Datos personales" ,
                   "class": [ "col", "col12" ],
                   "tag": "div",
                   "entity": [
@@ -305,6 +306,7 @@
         {
           "title": "Situación profesional",
           "type": "tab",
+          "id": "situacion_profesional",
           "outSection": {
             "section": "SectionTab2",
             "defaultLoaded": false,
@@ -314,6 +316,7 @@
         {
           "title": "Formación recibida",
           "type": "tab",
+          "id": "formacion_recibida",
           "outSection": {
             "section": "SectionTab3",
             "defaultLoaded": false,
@@ -323,6 +326,7 @@
         {
           "title": "Actividad docente",
           "type": "tab",
+          "id": "actividad_docente",
           "outSection": {
             "section": "SectionTab4",
             "defaultLoaded": false,
@@ -332,6 +336,7 @@
         {
           "title": "Experiencia científica y tecnológica",
           "type": "tab",
+          "id": "experiencia_cientifica_tecnologica",
           "outSection": {
             "section": "SectionTab5",
             "defaultLoaded": false,
@@ -341,6 +346,7 @@
         {
           "title": "Resumen de texto libre",
           "type": "tab",
+          "id": "resumen_texto_libre",
           "outSection": {
             "section": "SectionTab6",
             "defaultLoaded": false,
