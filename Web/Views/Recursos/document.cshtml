@@ -25,6 +25,9 @@
         <li>
             <a href="javascript: void(0);">Artículos</a>
         </li>
+        <li>
+            <a>@pDocument.Roh_title</a>
+        </li>
     </ul>
 </div>
 
@@ -143,7 +146,12 @@
                 </div>
                 <div class="bloque">
                     <div class="label">@Html.Translate("TIPO_SOPORTE")</div>
-                    <div class="value">TODO: Revista</div>
+                    @{
+                        if (pDocument.Roh_supportType != null)
+                        {
+                            <div class="value">@pDocument.Roh_supportType.Dc_title[idiomaUsuario]</div>
+                        }
+                    }
                 </div>
                 <div class="bloque">
                     <div class="label">@Html.Translate("WEBS")</div>
@@ -2678,6 +2686,7 @@
     var depuracion = false; // TODO:
 
     var comportamientoPaginaInvestigador = {
+        filtroOculto: null,
         tabActive: null,
         init: function () {
             this.config();
@@ -2708,7 +2717,7 @@
             $('#referencias-panel .panNumResultadosAux').attr('id', 'panNumResultados');
             $('#referencias-panel .panFacetasAux').attr('id', 'panFacetas');
             $('#referencias-panel .panListadoFiltrosAux').attr('id', 'panListadoFiltros');
-
+            $('.etiquetas.panFiltrosAux').append('<ul class="facetedSearch tags" id="panListadoFiltros"></ul>');
 
             urlComunidad = '@Comunidad.Url';
             urlCargarAccionesRecursos = '@Comunidad.Url/load-resource-actions';
@@ -2766,20 +2775,76 @@
         }
 
         if (comportamientoPaginaInvestigador.tabActive == "referencias") {
-            @*filtro += "|bibo:authorList@@@@@@roh:item=http://gnoss/@pDocument.GNOSSID.Split('_')[1].ToUpper()";*@
+            comportamientoPaginaInvestigador.filtroOculto ="|searchRelacionadosDocumento=@pDocument.GNOSSID.Split('_')[1].ToUpper()";
+            filtro += "|searchRelacionadosDocumento=@pDocument.GNOSSID.Split('_')[1].ToUpper()";
             var parametros = ObtenerHash2();
             if (parametros.startsWith("URL=")) {
                 parametros = parametros.substring(parametros.indexOf('submit=Cargar') + 13);
             }
         }
 
+        //TODO: Filtros.
+        //if ($('.etiquetas.panFiltrosAux ul li').hasClass("@pDocument.GNOSSID.Split('_')[1].ToUpper()")) {
+            //$('.etiquetas.panFiltrosAux ul li."@pDocument.GNOSSID.Split('_')[1].ToUpper()"').remove();
+        //}
+
         return FiltrarPorFacetasGenerico(filtro);
     }
 
+    MontarResultadosScroll.peticionScrollResultados= function () {
+        var defr = $.Deferred();
+        //Realizamos la peticion
+        if (this.pagActual == null) {
+            this.pagActual = 1;
+        }
+        this.pagActual++;
+        //var servicio = new WS($('input.inpt_UrlServicioResultados').val(), WSDataType.jsonp);
+        var filtros = ObtenerHash2().replace(/&/g, '|');
+        filtros += comportamientoPaginaInvestigador.filtroOculto;
+        if (typeof (filtroDePag) != 'undefined' && filtroDePag != '') {
+            if (filtros != '') {
+                filtros = filtroDePag + '|' + filtros;
+            }
+            else {
+                filtros = filtroDePag;
+            }
+        }
 
-    @*function comportamientoCargaFacetasComunidad() {
-        $('#panListadoFiltros li[class="http://gnoss/@pDocument.GNOSSID.Split('_')[1].ToUpper()"]').remove();
-    }*@
+        filtros += "|pagina=" + this.pagActual;
+        var params = {};
+
+        params['pUsarMasterParaLectura'] = bool_usarMasterParaLectura;
+        params['pProyectoID'] = $('input.inpt_proyID').val();
+        params['pEsUsuarioInvitado'] = $('input.inpt_bool_esUsuarioInvitado').val() == 'True';
+        params['pIdentidadID'] = $('input.inpt_identidadID').val();
+        params['pParametros'] = '' + filtros.replace('#', '');
+        params['pLanguageCode'] = $('input.inpt_Idioma').val();
+        params['pPrimeraCarga'] = false;
+        params['pAdministradorVeTodasPersonas'] = false;
+        params['pTipoBusqueda'] = tipoBusqeda;
+        params['pNumeroParteResultados'] = 1;
+        params['pGrafo'] = grafo;
+        params['pFiltroContexto'] = filtroContexto;
+        params['pParametros_adiccionales'] = parametros_adiccionales;
+        params['cont'] = contResultados;
+
+
+        $.post(obtenerUrl($('input.inpt_UrlServicioResultados').val()) + "/CargarResultados", params, function (response) {
+            if (params['cont'] == contResultados) {
+                var data = response
+                if (response.Value != null) {
+                    data = response.Value;
+                }
+                defr.resolve(data);
+            }
+        }, "json");
+        return defr;
+    }
+
+
+    //function comportamientoCargaFacetasComunidad() {
+        //$('#panListadoFiltros li[class="http://gnoss/@pDocument.GNOSSID.Split('_')[1].ToUpper()"]').remove();
+    //}
 
     // TODO: Cambiar.
         //function MontarResultados(pFiltros, pPrimeraCarga, pNumeroResultados, pPanelID, pTokenAfinidad) {
@@ -3390,7 +3455,7 @@
             SemanticPropertyModel propRoh_supportType = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/supportType");
             if (propRoh_supportType != null && propRoh_supportType.PropertyValues.Count > 0)
             {
-                //this.Roh_supportType = new SupportType(propRoh_supportType.PropertyValues[0].RelatedEntity, idiomaUsuario);
+                this.Roh_supportType = new SupportType(propRoh_supportType.PropertyValues[0].RelatedEntity, idiomaUsuario);
             }
             SemanticPropertyModel propBibo_identifier = pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/identifier");
             if (propBibo_identifier != null && propBibo_identifier.PropertyValues.Count > 0)
@@ -3647,10 +3712,10 @@
         [RDFProperty("http://w3id.org/roh/dataAuthor")]
         public List<DataAuthor> Roh_dataAuthor { get; set; }
 
-        //[LABEL(LanguageEnum.es, "Tipo de soporte")]
-        //[RDFProperty("http://w3id.org/roh/supportType")]
-        //public SupportType Roh_supportType { get; set; }
-        //public string IdRoh_supportType { get; set; }
+        [LABEL(LanguageEnum.es, "Tipo de soporte")]
+        [RDFProperty("http://w3id.org/roh/supportType")]
+        public SupportType Roh_supportType { get; set; }
+        public string IdRoh_supportType { get; set; }
 
         [LABEL(LanguageEnum.es, "Identificador de la publicación")]
         [RDFProperty("http://purl.org/ontology/bibo/identifier")]
@@ -3757,13 +3822,39 @@
 
         [LABEL(LanguageEnum.es, "Tipo de producción")]
         [RDFProperty("http://purl.org/dc/elements/1.1/type")]
-        
+
         public PublicationType Dc_type { get; set; }
         public string IdDc_type { get; set; }
 
         [LABEL(LanguageEnum.es, "Título de la publicación")]
         [RDFProperty("http://w3id.org/roh/title")]
         public string Roh_title { get; set; }
+    }
+
+    public class SupportType : GnossOCBase
+    {
+
+        public SupportType() : base() { }
+
+        public SupportType(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
+        {
+            this.mGNOSSID = pSemCmsModel.Entity.Uri;
+            this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
+            this.Dc_title = new Dictionary<LanguageEnum, string>();
+            this.Dc_title.Add(idiomaUsuario, GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/dc/elements/1.1/title")));
+
+            this.Dc_identifier = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/dc/elements/1.1/identifier"));
+        }
+
+        public virtual string RdfType { get { return "http://w3id.org/roh/SupportType"; } }
+        public virtual string RdfsLabel { get { return "http://w3id.org/roh/SupportType"; } }
+        [LABEL(LanguageEnum.es, "Tipo de soporte")]
+        [RDFProperty("http://purl.org/dc/elements/1.1/title")]
+        public Dictionary<LanguageEnum, string> Dc_title { get; set; }
+
+        [LABEL(LanguageEnum.es, "Identificador del tipo de soporte")]
+        [RDFProperty("http://purl.org/dc/elements/1.1/identifier")]
+        public string Dc_identifier { get; set; }
     }
 
     public class CategoryPath : GnossOCBase
@@ -3921,7 +4012,8 @@
         [LABEL(LanguageEnum.es, "Firma")]
         [RDFProperty("http://xmlns.com/foaf/0.1/nick")]
         public List<string>
-            Foaf_nick { get; set; }
+            Foaf_nick
+        { get; set; }
 
         [LABEL(LanguageEnum.es, "Nombre")]
         [RDFProperty("http://xmlns.com/foaf/0.1/firstName")]
@@ -4057,7 +4149,8 @@
         [LABEL(LanguageEnum.es, "Categor�a del �ndice de impacto")]
         [RDFProperty("http://purl.org/dc/elements/1.1/title")]
         public Dictionary<LanguageEnum, string>
-            Dc_title { get; set; }
+            Dc_title
+        { get; set; }
 
         [LABEL(LanguageEnum.es, "Identificador de la categor�a del �ndice de impacto")]
         [RDFProperty("http://purl.org/dc/elements/1.1/identifier")]
@@ -4145,7 +4238,8 @@
         [LABEL(LanguageEnum.es, "Fuente de referencia")]
         [RDFProperty("http://purl.org/dc/elements/1.1/title")]
         public Dictionary<LanguageEnum, string>
-            Dc_title { get; set; }
+            Dc_title
+        { get; set; }
 
         [LABEL(LanguageEnum.es, "http://purl.org/dc/elements/1.1/identifier")]
         [RDFProperty("http://purl.org/dc/elements/1.1/identifier")]
@@ -4208,7 +4302,8 @@
         [LABEL(LanguageEnum.es, "Idioma")]
         [RDFProperty("http://purl.org/dc/elements/1.1/title")]
         public Dictionary<LanguageEnum, string>
-            Dc_title { get; set; }
+            Dc_title
+        { get; set; }
 
         [LABEL(LanguageEnum.es, "Identificador de idioma")]
         [RDFProperty("http://purl.org/dc/elements/1.1/identifier")]
@@ -4236,7 +4331,8 @@
         [LABEL(LanguageEnum.es, "Tipo de publicaci�n")]
         [RDFProperty("http://purl.org/dc/elements/1.1/title")]
         public Dictionary<LanguageEnum, string>
-            Dc_title { get; set; }
+            Dc_title
+        { get; set; }
 
         [LABEL(LanguageEnum.es, "Identificador del tipo de publicaci�n")]
         [RDFProperty("http://purl.org/dc/elements/1.1/identifier")]
