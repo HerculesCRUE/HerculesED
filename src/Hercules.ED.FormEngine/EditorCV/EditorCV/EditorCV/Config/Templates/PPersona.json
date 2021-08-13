@@ -27,6 +27,13 @@
       "fieldType": "text"
     },
     {
+      "property": "http://purl.org/roh/mirror/foaf#familyName",
+      "title": "Apellido",
+      "min": 1,
+      "max": 1,
+      "fieldType": "text"
+    },
+    {
       "property": "http://w3id.org/roh/ORCID",
       "title": "Orcid",
       "min": 1,

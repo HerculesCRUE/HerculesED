@@ -7,22 +7,99 @@
     "eid": "cdaeb3b2-d96e-48fc-bc89-00ba8c63b27d",
     "eidRel": "5097c6b6-f454-11eb-9a03-0242ac130003"
   },
-    "sections": [
+  "sections": [
+    {
+      "title": "",
+      "class": [
+        ""
+      ],
+      "tag": "div",
+      "sections": [
         {
-            "title": "",
-            "class": [
-                "row"
-            ],
-            "tag": "div",
-            "sections": [
+          "title": "5 - Experiencia científica y tecnológica",
+          "class": [
+            "col",
+            "col12"
+          ]
+        },
+        {
+          "tag": "div",
+          "entities": [
+            {
+              "rdftype": "http://w3id.org/roh/competitiveProjects",
+              "uniqueLoaded": false,
+              "relation": {
+                "property": "http://w3id.org/roh/competitiveProjects",
+                "entityReference": "http://w3id.org/roh/RelatedProjects",
+                "eid": "c692a1a3-f2a9-44e6-a062-29ad4b60cf69",
+                "eidRel": "cdaeb3b2-d96e-48fc-bc89-00ba8c63b27d"
+              },
+              "sections": [
                 {
-                    "title": "Datos personales",
-                    "class": [
-                        "col",
-                        "col12"
-                    ]
+                  "title": "",
+                  "class": [],
+                  "tag": "div",
+                  "entities": [
+                    {
+                      "rdftype": "http://vivoweb.org/ontology/core#relatedBy",
+                      "uniqueLoaded": false,
+                      "relation": {
+                        "property": "http://vivoweb.org/ontology/core#relatedBy",
+                        "entityReference": "http://w3id.org/roh/RelatedProjects",
+                        "eid": "c692a1a3-f2a9-44e6-a062-29ad4b60cf69",
+                        "eidRel": "c692a1a3-f2a9-44e6-a062-29ad4b60cf69"
+                      },
+                      "sections": [
+                        {
+                          "title": "",
+                          "class": [
+                            ""
+                          ],
+                          "tag": "div",
+                          "entities": [
+                            {
+                              "rdftype": "http://vivoweb.org/ontology/core#relatedBy",
+                              "uniqueLoaded": false,
+                              "relation": {
+                                "property": "http://vivoweb.org/ontology/core#relatedBy",
+                                "entityReference": "http://w3id.org/roh/RelatedProjects",
+                                "eid": "c692a1a3-f2a9-44e6-a062-29ad4b60cf69",
+                                "eidRel": "c692a1a3-f2a9-44e6-a062-29ad4b60cf69"
+                              },
+                              "sections": [
+                                {
+                                  "title": "",
+                                  "class": [ "row" ],
+                                  "tag": "div",
+                                  "sections": [
+
+                                  ],
+                                  "properties": [
+                                    {
+                                      "property": "http://purl.org/roh#title",
+                                      "title": "Título del documento",
+                                      "min": 1,
+                                      "max": 1,
+                                      "multiLanguage": false,
+                                      "fieldType": "text",
+                                      "viewMode": "readOnly"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
                 }
-            ]
+              ]
+            }
+          ]
         }
-    ]
+      ]
+    }
+  ],
+  
 }

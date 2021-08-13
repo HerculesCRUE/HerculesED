@@ -87,8 +87,8 @@
                               "tag": "div",
                               "properties": [
                                 {
-                                  "property": "http://purl.org/roh#title",
-                                  "title": "Título del documento",
+                                  "property": "http://xmlns.com/foaf/0.1/firstName",
+                                  "title": "Nombre",
                                   "min": 1,
                                   "max": 1,
                                   "multiLanguage": false,
@@ -107,8 +107,10 @@
                               "tag": "div",
                               "properties": [
                                 {
-                                  "property": "http://purl.org/roh/mirror/foaf#familyName",
-                                  "viewMode": "readOnly"
+                                  "property": "http://xmlns.com/foaf/0.1/lastName",
+                                  "title": "Apellido",
+                                  "viewMode": "readOnly",
+                                  "fieldType": "text"
                                 }
                               ]
                             },
@@ -122,23 +124,10 @@
                               "tag": "div",
                               "properties": [
                                 {
-                                  "property": "http://purl.org/roh/mirror/foaf#firstName",
-                                  "viewMode": "readOnly"
-                                }
-                              ]
-                            },
-                            {
-                              "title": "",
-                              "class": [
-                                "col",
-                                "col-sm-6",
-                                "col-md-4"
-                              ],
-                              "tag": "div",
-                              "properties": [
-                                {
-                                  "property": "http://purl.org/roh/mirror/foaf#nick",
-                                  "viewMode": "readOnly"
+                                  "property": "http://xmlns.com/foaf/0.1/nick",
+                                  "title": "Nick",
+                                  "viewMode": "readOnly",
+                                  "fieldType": "text"
                                 }
                               ]
                             },
@@ -153,7 +142,9 @@
                               "properties": [
                                 {
                                   "property": "http://purl.org/roh#ORCID",
-                                  "viewMode": "readOnly"
+                                  "title": "ORCID",
+                                  "viewMode": "readOnly",
+                                  "fieldType": "text"
                                 }
                               ]
                             }
@@ -173,7 +164,7 @@
           "type": "tab",
           "id": "situacion_profesional",
           "outSection": {
-            "section": "SectionTab2.json",
+            "section": "SectionTab2",
             "defaultLoaded": false,
             "loadOnce": true
           }
@@ -183,7 +174,7 @@
           "type": "tab",
           "id": "formacion_recibida",
           "outSection": {
-            "section": "SectionTab2.json",
+            "section": "SectionTab2",
             "defaultLoaded": false,
             "loadOnce": true
           }
@@ -193,7 +184,7 @@
           "type": "tab",
           "id": "actividad_docente",
           "outSection": {
-            "section": "SectionTab2.json",
+            "section": "SectionTab2",
             "defaultLoaded": false,
             "loadOnce": true
           }
@@ -203,7 +194,7 @@
           "type": "tab",
           "id": "experiencia_cientifica_tecnologica",
           "outSection": {
-            "section": "SectionTab5.json",
+            "section": "SectionTab5",
             "defaultLoaded": true,
             "loadOnce": true
           }
@@ -213,7 +204,7 @@
           "type": "tab",
           "id": "resumen_texto_libre",
           "outSection": {
-            "section": "SectionTab2.json",
+            "section": "SectionTab2",
             "defaultLoaded": false,
             "loadOnce": true
           }
