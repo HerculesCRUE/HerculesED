@@ -141,7 +141,7 @@
                               "tag": "div",
                               "properties": [
                                 {
-                                  "property": "http://purl.org/roh#ORCID",
+                                  "property": "http://w3id.org/roh/ORCID",
                                   "title": "ORCID",
                                   "viewMode": "readOnly",
                                   "fieldType": "text"
@@ -195,7 +195,7 @@
           "id": "experiencia_cientifica_tecnologica",
           "outSection": {
             "section": "SectionTab5",
-            "defaultLoaded": true,
+            "defaultLoaded": false,
             "loadOnce": true
           }
         },
