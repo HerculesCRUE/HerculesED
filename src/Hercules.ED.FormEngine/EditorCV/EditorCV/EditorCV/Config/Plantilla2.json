@@ -44,6 +44,7 @@
                       "property": "http://purl.org/roh/mirror/bibo#authorList",
                       "relation": {
                         "property": "http://purl.org/roh/mirror/bibo#authorList",
+                        "ontologyName": "person",
                         "rdfType": "http://purl.org/roh/mirror/foaf#Person",
                         "entityReference": "http://purl.org/roh#ListItem",
                         "orderRdf": "http://purl.org/roh#index",
@@ -64,6 +65,7 @@
                       "ontologyName": "person",
                       "relation": {
                         "property": "http://w3id.org/roh/cvOf",
+                        "ontologyName": "person",
                         "rdfType": "http://xmlns.com/foaf/0.1/Person",
                         "entityReference": "http://xmlns.com/foaf/0.1/Person",
                         "eid": "c50cf230-0f5a-4921-9fc4-f0a7eb4342e0",
@@ -151,7 +153,6 @@
                           ]
                         }
                       ]
-                      
                     }
                   ]
                 }
@@ -195,6 +196,16 @@
           "id": "experiencia_cientifica_tecnologica",
           "outSection": {
             "section": "SectionTab5",
+            "defaultLoaded": false,
+            "loadOnce": true
+          }
+        },
+        {
+          "title": "Actividad científica",
+          "type": "tab",
+          "id": "actividad_cientifica",
+          "outSection": {
+            "section": "SectionTab6",
             "defaultLoaded": false,
             "loadOnce": true
           }

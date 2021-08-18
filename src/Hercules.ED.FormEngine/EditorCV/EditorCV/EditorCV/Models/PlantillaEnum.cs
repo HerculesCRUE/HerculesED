@@ -22,6 +22,7 @@ namespace EditorCV.Models
         search,
         autocomplete,
     }
+    
     public enum ViewMode
     {
         readOnly,

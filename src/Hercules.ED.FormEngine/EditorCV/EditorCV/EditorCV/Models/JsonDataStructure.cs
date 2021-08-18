@@ -68,6 +68,7 @@ namespace EditorCV.Models
         public string itemRdf { get; set; }
         public string eidRel { get; set; }
         public string eid { get; set; }
+        public string ontologyName { get; set; }
     }
 
 

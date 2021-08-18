@@ -1,12 +1,12 @@
 {
-  "rdftype": "http://w3id.org/roh/scientificExperience",
+  "rdftype": "http://w3id.org/roh/ScientificActivity",
   "ontologyName": "curriculumvitae",
   "uniqueLoaded": false,
   "relation": {
-    "property": "http://w3id.org/roh/scientificExperience",
-    "entityReference": "http://w3id.org/roh/scientificExperience",
+    "property": "http://w3id.org/roh/ScientificActivity",
     "ontologyName": "curriculumvitae",
-    "eid": "cdaeb3b2-d96e-48fc-bc89-00ba8c63b27d",
+    "entityReference": "http://w3id.org/roh/ScientificActivity",
+    "eid": "85d2d0d8-07c8-4441-92d9-1004486d1e32",
     "eidRel": "5097c6b6-f454-11eb-9a03-0242ac130003"
   },
   "sections": [
@@ -18,7 +18,7 @@
       "tag": "div",
       "sections": [
         {
-          "title": "5 - Experiencia científica y tecnológica",
+          "title": "6 - Experiencia científica",
           "class": [
             "col",
             "col12"
@@ -30,26 +30,26 @@
             {
               "rdftype": "http://w3id.org/roh/competitiveProjects",
               "relation": {
-                "property": "http://w3id.org/roh/competitiveProjects",
-                "entityReference": "http://w3id.org/roh/RelatedProjects",
-                "ontologyName": "curriculumvitae",
-                "eid": "c692a1a3-f2a9-44e6-a062-29ad4b60cf69",
-                "eidRel": "cdaeb3b2-d96e-48fc-bc89-00ba8c63b27d"
+                  "property": "http://w3id.org/roh/scientificPublications",
+                  "ontologyName": "curriculumvitae",
+                  "entityReference": "http://w3id.org/roh/RelatedDocuments",
+                  "eid": "6ab754f4-d56d-464d-9941-c096ff29cd51",
+                  "eidRel": "85d2d0d8-07c8-4441-92d9-1004486d1e32"
               },
               "sections": [
                 {
                   "title": "",
-                  "class": [],
+                  "class": ["sad"],
                   "tag": "div",
                   "entities": [
                     {
-                      "rdftype": "http://vivoweb.org/ontology/core#relatedBy",
+                      "rdftype": "http://w3id.org/roh/RelatedDocuments",
                       "relation": {
-                        "property": "http://vivoweb.org/ontology/core#relatedBy",
+                        "property": "http://w3id.org/roh/RelatedDocuments",
                         "ontologyName": "curriculumvitae",
-                        "entityReference": "http://w3id.org/roh/RelatedProjects",
-                        "eid": "c692a1a3-f2a9-44e6-a062-29ad4b60cf69",
-                        "eidRel": "c692a1a3-f2a9-44e6-a062-29ad4b60cf69"
+                        "entityReference": "http://purl.org/ontology/bibo/Document",
+                        "eid": "41cc7cfd-01bf-4913-9024-edecda0ec740",
+                        "eidRel": "6ab754f4-d56d-464d-9941-c096ff29cd51"
                       },
                       "sections": [
                         {
@@ -60,13 +60,11 @@
                           "tag": "div",
                           "entities": [
                             {
-                              "rdftype": "http://vivoweb.org/ontology/core#relatedBy",
+                              "rdftype": "http://purl.org/ontology/bibo/Document",
                               "relation": {
                                 "property": "http://vivoweb.org/ontology/core#relatedBy",
                                 "entityReference": "http://w3id.org/roh/RelatedProjects",
-                                "ontologyName": "curriculumvitae",
-                                "eid": "c692a1a3-f2a9-44e6-a062-29ad4b60cf69",
-                                "eidRel": "c692a1a3-f2a9-44e6-a062-29ad4b60cf69"
+                                "ontologyName": "document"
                               },
                               "sections": [
                                 {

@@ -54,7 +54,6 @@ namespace EditorCV.Controllers.Properties
                     result = resourceApi.VirtuosoQuery("select distinct ?entity", $"where{{?s <http://gnoss/hasEntidad> <{pId}>.?s <http://gnoss/hasEntidad> ?entity}}", pGraph);
                 }
 
-
                 foreach (Dictionary<string, Data> fila in result.results.bindings)
                 {
                     SparqlObject result2 = resourceApi.VirtuosoQuery("select distinct ?p ?o", $"where{{<{fila["entity"].value}> ?p ?o}}", pGraph);
@@ -80,16 +79,18 @@ namespace EditorCV.Controllers.Properties
                 // Get the main Document index
                 // var mainKeyEntity = jsonData.entities.FindIndex(e => e.rdftype == "http://purl.org/roh/mirror/bibo#Document");
                 var mainKeyEntity = jsonData.structure.rdfType;
+                var ontologyName = jsonData.structure.ontologyName;
+                var mTKE = ontologyName + "." + mainKeyEntity;
                 
 
-                if (jsonData.entities[mainKeyEntity] != null)
+                if (jsonData.entities[mTKE] != null)
                 {
                     
-                    jsonData.entities[mainKeyEntity].items = new Dictionary<string, EntityItem>();
+                    jsonData.entities[mTKE].items = new Dictionary<string, EntityItem>();
 
-                    string sectionsJson = JsonConvert.SerializeObject(jsonData.entities[mainKeyEntity].properties);
+                    string sectionsJson = JsonConvert.SerializeObject(jsonData.entities[mTKE].properties);
                     
-                    jsonData.entities[mainKeyEntity].items.Add(id, new EntityItem() {
+                    jsonData.entities[mTKE].items.Add(id, new EntityItem() {
                         id = id,
                         properties = null
                     });
@@ -101,7 +102,7 @@ namespace EditorCV.Controllers.Properties
                     {
                         listFields.Add(e.property, e);
                     });
-                    jsonData.entities[mainKeyEntity].items[id].properties = listFields;
+                    jsonData.entities[mTKE].items[id].properties = listFields;
                     
                     if(!loadedEntities.ContainsKey(jsonData.structure.relation.eid)) {
                         loadedEntities.Add(jsonData.structure.relation.eid, new List<ListItemsData>() {
@@ -112,7 +113,7 @@ namespace EditorCV.Controllers.Properties
                         });
                     }
 
-                    // jsonData.entities[mainKeyEntity].items[id].sections = GetSections(id, JsonConvert.DeserializeObject<List<Section>>(sectionsJson), jsonData.entities[mainKeyEntity], dbEntityData);
+                    // jsonData.entities[mTKE].items[id].sections = GetSections(id, JsonConvert.DeserializeObject<List<Section>>(sectionsJson), jsonData.entities[mTKE], dbEntityData);
                     jsonData.structure.sections = GetSections(id, jsonData.structure.sections, jsonData.structure, dbEntityData);
                 }
                 
@@ -138,20 +139,22 @@ namespace EditorCV.Controllers.Properties
                 // var mainKeyEntity = jsonData.entities.FindIndex(e => e.rdftype == "http://purl.org/roh/mirror/bibo#Document");
                 // var mainKeyEntity = jsonData.structure.rdfType;
                 var keyEntity = jsonData.sections[section].rdfType;
+                var ontologyName = jsonData.sections[section].ontologyName;
+                var mTKE = ontologyName + "." + keyEntity;
 
 
-                if (jsonData.entities[keyEntity] != null)
+                if (jsonData.entities[mTKE] != null)
                 {
-                    if (jsonData.entities[keyEntity].items == null)
+                    if (jsonData.entities[mTKE].items == null)
                     {
-                        jsonData.entities[keyEntity].items = new Dictionary<string, EntityItem>();
+                        jsonData.entities[mTKE].items = new Dictionary<string, EntityItem>();
                     }
 
-                    string sectionsJson = JsonConvert.SerializeObject(jsonData.entities[keyEntity].properties);
+                    string sectionsJson = JsonConvert.SerializeObject(jsonData.entities[mTKE].properties);
 
-                    if (!jsonData.entities[keyEntity].items.ContainsKey(idSection))
+                    if (!jsonData.entities[mTKE].items.ContainsKey(idSection))
                     {
-                        jsonData.entities[keyEntity].items.Add(idSection, new EntityItem()
+                        jsonData.entities[mTKE].items.Add(idSection, new EntityItem()
                         {
                             id = idSection,
                             properties = null
@@ -159,7 +162,7 @@ namespace EditorCV.Controllers.Properties
                     }
 
 
-                    var dbEntityData = GetValEntity(idSection, section, jsonData.entities[keyEntity].ontologyName);
+                    var dbEntityData = GetValEntity(idSection, section, jsonData.entities[mTKE].ontologyName);
 
 
                     var listFields = new Dictionary<string, Property>();
@@ -167,7 +170,7 @@ namespace EditorCV.Controllers.Properties
                     {
                         listFields.Add(e.property, e);
                     });
-                    jsonData.entities[keyEntity].items[idSection].properties = listFields;
+                    jsonData.entities[mTKE].items[idSection].properties = listFields;
 
                     // Add the loaded items into the object to get it after
                     if (!loadedEntities.ContainsKey(jsonData.sections[section].relation.eid))
@@ -356,7 +359,7 @@ namespace EditorCV.Controllers.Properties
             {
                 // Get the current entityRdfType
                 var dbEntityDataItem = dbEntityData[entityId].Find(e => e["p"].value == "http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
-                var entityRdf = dbEntityDataItem["o"].value;
+                var entityRdf = property.relation.ontologyName + "." + dbEntityDataItem["o"].value;
 
                 // Check if exist a list of items
                 if (jsonData.entities[entityRdf] != null && property.listItems != null)
@@ -414,19 +417,16 @@ namespace EditorCV.Controllers.Properties
             {
 
                 // var keyEntity = jsonData.entities.FindIndex(e => e.rdfType == property.rdfType);
-                string keyEntity;
+                string keyEntity = null;
                 if (entity.relation != null)
                 {
-                    keyEntity = entity.relation.entityReference;
-                }
-                else
-                {
-                    keyEntity = entity.rdfType;
+                    // keyEntity = entity.relation.entityReference;
+                    keyEntity = entity.relation.ontologyName + "." + entity.relation.entityReference;
                 }
 
 
                 // get the related item
-                if (entity.relation != null && entity.relation.itemRdf != null)
+                if (keyEntity != null && entity.relation != null && entity.relation.itemRdf != null)
                 {
                     // Get the current eid
                     string eid = entity.relation.eid;
@@ -760,25 +760,27 @@ namespace EditorCV.Controllers.Properties
 
             // var keyEntity = jsonData.entities.FindIndex(e => e.rdfType == property.rdfType);
             var keyEntity = relation.entityReference;
+            var ontologyName = relation.ontologyName;
+            var mTKE = ontologyName + "." + keyEntity;
 
             
             try
             {
                 // Check if exist the entity
-                if (jsonData.entities.ContainsKey(keyEntity))
+                if (jsonData.entities.ContainsKey(mTKE))
                 {
                     
                     // Start the items dictionary if is undefined
-                    if (jsonData.entities[keyEntity].items == null)
+                    if (jsonData.entities[mTKE].items == null)
                     {
-                        jsonData.entities[keyEntity].items = new Dictionary<string, EntityItem>();
+                        jsonData.entities[mTKE].items = new Dictionary<string, EntityItem>();
                     }
 
                     // Check if exist and the item, if exist, don't load the item again
-                    if (!jsonData.entities[keyEntity].items.ContainsKey(entityUri))
+                    if (!jsonData.entities[mTKE].items.ContainsKey(entityUri))
                     {
                         // Load the entity calling to the DB
-                        var dbEntityData = GetValEntity(entityUri, keyEntity, jsonData.entities[keyEntity].ontologyName);
+                        var dbEntityData = GetValEntity(entityUri, keyEntity, jsonData.entities[mTKE].ontologyName);
 
 
                         // Check if exist the loaded Entity & the current element and add this into the loaded entities local variable
@@ -798,39 +800,39 @@ namespace EditorCV.Controllers.Properties
                         }
 
                         // Add new entity item
-                        jsonData.entities[keyEntity].items.Add(entityUri, new EntityItem());
+                        jsonData.entities[mTKE].items.Add(entityUri, new EntityItem());
 
                         // // Serialize to remove the reference in the loop
-                        // string sectionsJson = JsonConvert.SerializeObject(jsonData.entities[keyEntity].sections);
+                        // string sectionsJson = JsonConvert.SerializeObject(jsonData.entities[mTKE].sections);
 
                         // // Set the id & the sections
-                        // jsonData.entities[keyEntity].items[entityUri].id = entityUri;
-                        // jsonData.entities[keyEntity].items[entityUri].sections = (jsonData.entities[keyEntity].sections != null) ? GetSections(entityUri, JsonConvert.DeserializeObject<List<Section>>(sectionsJson), jsonData.entities[keyEntity], dbEntityData) : null;
+                        // jsonData.entities[mTKE].items[entityUri].id = entityUri;
+                        // jsonData.entities[mTKE].items[entityUri].sections = (jsonData.entities[mTKE].sections != null) ? GetSections(entityUri, JsonConvert.DeserializeObject<List<Section>>(sectionsJson), jsonData.entities[mTKE], dbEntityData) : null;
 
 
                         // Serialize to remove the reference in the loop
-                        string PropertiesJson = JsonConvert.SerializeObject(jsonData.entities[keyEntity].properties);
+                        string PropertiesJson = JsonConvert.SerializeObject(jsonData.entities[mTKE].properties);
 
                         // Set the id & the sections
-                        jsonData.entities[keyEntity].items[entityUri].id = entityUri;
+                        jsonData.entities[mTKE].items[entityUri].id = entityUri;
                         var listFields = new Dictionary<string, Property>();
                         GetFields(dbEntityData, JsonConvert.DeserializeObject<List<Property>>(PropertiesJson)).ForEach(e =>
                         {
                             listFields.Add(e.property, e);
                         });
-                        jsonData.entities[keyEntity].items[entityUri].properties = listFields;
-                        // jsonData.entities[keyEntity].items[entityUri].properties = (jsonData.entities[keyEntity].properties != null) ? GetFields(dbEntityData, JsonConvert.DeserializeObject<Dictionary<string,Property>>(PropertiesJson)) : null;
+                        jsonData.entities[mTKE].items[entityUri].properties = listFields;
+                        // jsonData.entities[mTKE].items[entityUri].properties = (jsonData.entities[mTKE].properties != null) ? GetFields(dbEntityData, JsonConvert.DeserializeObject<Dictionary<string,Property>>(PropertiesJson)) : null;
 
                         // Fill the options
-                        options.Add(jsonData.entities[keyEntity].items[entityUri].id, new Dictionary<string, string>() {
-                            {"id", jsonData.entities[keyEntity].items[entityUri].id}
+                        options.Add(jsonData.entities[mTKE].items[entityUri].id, new Dictionary<string, string>() {
+                            {"id", jsonData.entities[mTKE].items[entityUri].id}
                         });
                         
                         if (property != null && property.fieldsDB != null)
                         {
                             // Get all values from each element into the select options
                             property.fieldsDB.ForEach(e => {
-                                options[jsonData.entities[keyEntity].items[entityUri].id].Add(e.rdfType, jsonData.entities[keyEntity].items[entityUri].properties[e.rdfType].value);
+                                options[jsonData.entities[mTKE].items[entityUri].id].Add(e.rdfType, jsonData.entities[mTKE].items[entityUri].properties[e.rdfType].value);
                             });
                         }
 
@@ -938,81 +940,6 @@ namespace EditorCV.Controllers.Properties
         }
 
 
-        // protected List<dynamic> loadEntity(Property property)
-        // {
-
-        //     List<dynamic> options = new List<dynamic>();
-
-        //     // var keyEntity = jsonData.entities.FindIndex(e => e.rdftype == property.rdftype);
-        //     var keyEntity = property.rdfType;
-
-        //     // for (int i = 0; i < jsonData.entities[keyEntity].sections.Count(); i++)
-        //     // {
-        //     //     if (jsonData.entities[keyEntity] != null)
-        //     //     {
-        //     //         jsonData.entities[keyEntity].sections[i] = GetSections(property.id, jsonData.entities[keyEntity].sections[i], jsonData.entities[keyEntity]);
-        //     //     }
-        //     // }
-
-
-        //     // var dbEntityData = GetValEntity(property.id, jsonData.entities[keyEntity].rdftype, jsonData.entities[keyEntity].ontologyName);
-        //     var dbEntityData = GetValEntity(property.id, property.property, jsonData.entities[keyEntity].ontologyName);
-
-        //     // List<List<Dictionary<string, Data>>> newDbEntityData;
-
-
-        //     try
-        //     {
-
-        //         List<Dictionary<string,Property>> propiedades = new List<Dictionary<string,Property>>();
-        //         if (jsonData.entities[keyEntity].items == null)
-        //         {
-        //             jsonData.entities[keyEntity].items = new Dictionary<string, EntityItem>();
-        //         }
-
-        //         // Not get the first element
-        //         foreach (var itemKeyPar in dbEntityData)
-        //         {
-        //             foreach (var el in itemKeyPar.Value)
-        //             {
-
-        //                 if (el != null)
-        //                 {    
-
-        //                     var tfs = el["p"].value;
-        //                     if (el["p"].type == "uri" && el["p"].value == property.rdfType)
-        //                     {
-
-
-        //                         // Check if exist
-        //                         // var keyItemFound = jsonData.entities[keyEntity].items.FindIndex(e => e.id == el["o"].value);
-        //                         var keyItemFound = jsonData.entities[keyEntity].items[el["o"].value];
-        //                         var dfsdfsd = el["o"].value;
-
-
-        //                         if (jsonData.entities[keyEntity].items[el["o"].value] != null)
-        //                         {
-        //                             // Load new entity data value
-        //                             jsonData.entities[keyEntity].items.Add(el["o"].value, new EntityItem {
-        //                                 id = el["o"].value,
-        //                                 sections = (jsonData.entities[keyEntity].sections != null) ? GetSections(el["o"].value, jsonData.entities[keyEntity].sections, jsonData.entities[keyEntity], dbEntityData) : null,
-        //                                 // entities = (newDbEntityData != null && jsonData.entities[keyEntity].entities != null) ? GetEntities(el["o"].value, newDbEntityData, entityItem.entities) : null,
-        //                             });
-        //                         }
-
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //     }
-        //     catch (System.Exception) {
-        //         throw;
-        //     }
-
-
-        //     return options;
-        // }
-
         public void DeserialiceTemplate()
         {
             // var jsonFile = "Config/Template.json";
@@ -1094,7 +1021,7 @@ namespace EditorCV.Controllers.Properties
             var entityRes = readJsonFiles(jsonTemplateFolder);
             foreach (var jsonItem in entityRes)
             {
-                jsonData.entities.Add(jsonItem.Value.rdfType, jsonItem.Value);
+                jsonData.entities.Add(jsonItem.Value.ontologyName + "." + jsonItem.Value.rdfType, jsonItem.Value);
             }
 
             // Get the main structure (Main json)
