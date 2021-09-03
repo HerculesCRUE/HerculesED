@@ -1,5 +1,5 @@
 {
-    "rdftype": "http://w3id.org/roh/ScientificActivity",
+    "rdftype": "http://w3id.org/roh/scientificActivity",
     "ontologyName": "curriculumvitae",
     "properties": [
         {

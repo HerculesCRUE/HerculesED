@@ -1,5 +1,5 @@
 {
-  "rdftype": "http://purl.org/roh/mirror/bibo#Document",
+  "rdftype": "http://purl.org/ontology/bibo/Document",
   "ontologyName": "document",
   "properties": [
     {
