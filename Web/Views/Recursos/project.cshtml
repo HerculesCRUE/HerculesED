@@ -1,0 +1,479 @@
+@using ProjectOntology;
+@using OrganizationOntology;
+@using OrganizationOntology;
+@using GeographicregionOntology;
+@using OrganizationOntology;
+@using ModalityOntology;
+@using DedicationregimeOntology;
+@using PersonOntology;
+@using ContributiongradeOntology;
+@using ParticipationtypeOntology;
+@using TaxonomyOntology;
+@using GnossBase;
+@model ResourceViewModel
+@{
+	ResourceModel FichaDocumento = Model.Resource;
+	CommunityModel Comunidad = Html.GetComunidad();
+	UserIdentityModel IdentidadActual = Html.GetIdentidadActual();
+	Html.AddBodyClass(" ProjectModel ");
+	if (FichaDocumento.ItemLinkedFotoVersion != 0 && !string.IsNullOrEmpty(FichaDocumento.ItemLinked.ToString()) && FichaDocumento.ItemLinked != Guid.Empty)
+	{
+	string urlPersonalizacion = $"{Html.GetBaseUrlContent()}/{Es.Riam.Util.UtilArchivos.ContentOntologias}/Archivos/{FichaDocumento.ItemLinked.ToString().Substring(0, 3)}";
+	Html.GetListaJS().Add($"{urlPersonalizacion}/{FichaDocumento.ItemLinked.ToString()}.js?v= {FichaDocumento.ItemLinkedFotoVersion}");
+	Html.GetListaCSS().Add($"{urlPersonalizacion}/{FichaDocumento.ItemLinked.ToString()}.css?v= {FichaDocumento.ItemLinkedFotoVersion}");
+	}
+	SemanticResourceModel semCmsModel = Model.SemanticFrom;
+	 GnossOCBase.LanguageEnum idiomaUsuario = (GnossOCBase.LanguageEnum)Enum.Parse(typeof(GnossOCBase.LanguageEnum), Html.GetUtilIdiomas().LanguageCode.ToLower());
+	Project pProject = new Project(semCmsModel,idiomaUsuario);
+}
+<div class="row">
+<div class="col01 col col-12 col-lg-9">
+<div typeof="http://vivoweb.org/ontology/core#Project:project">
+<div class="contentGroup contenidoPrincipal">
+<div class="group title">
+</div>
+</div>
+<div class="group content semanticView">
+<div class="group group_info">
+<div class="contentGroup">
+@if(!string.IsNullOrEmpty(pProject.Roh_crisIdentifier))
+{
+<div>
+		<strong>@pProject.GetLabel(nameof(pProject.Roh_crisIdentifier),idiomaUsuario)</strong>
+<span class="values">
+		<p property="@pProject.GetPropertyURI(nameof(pProject.Roh_crisIdentifier))"> @pProject.Roh_crisIdentifier[idiomaUsuario] </p>
+</span>
+</div>
+}
+<div>
+		<strong>@pProject.GetLabel(nameof(pProject.Roh_title),idiomaUsuario)</strong>
+<span class="values">
+		<p property="@pProject.GetPropertyURI(nameof(pProject.Roh_title))"> @pProject.Roh_title[idiomaUsuario] </p>
+</span>
+</div>
+@if(pProject.Roh_researchersNumber!=null)
+{
+<div>
+		<strong>@pProject.GetLabel(nameof(pProject.Roh_researchersNumber),idiomaUsuario)</strong>
+<span class="values">
+		<p property="@pProject.GetPropertyURI(nameof(pProject.Roh_researchersNumber))"> @pProject.Roh_researchersNumber </p>
+</span>
+</div>
+}
+@if(pProject.Vivo_relates!=null)
+{
+<div>
+	@foreach(BFO_0000023 prop in pProject.Vivo_relates)
+	{
+		@PintarBFO_0000023(prop,idiomaUsuario)
+	}
+</div>
+}
+@if(pProject.Roh_conductedBy!=null)
+{
+<div>
+	@PintarOrganization(pProject.Roh_conductedBy,idiomaUsuario)
+</div>
+}
+@if(pProject.Roh_grantedBy!=null)
+{
+<div>
+	@foreach(Organization prop in pProject.Roh_grantedBy)
+	{
+		@PintarOrganization(prop,idiomaUsuario)
+	}
+</div>
+}
+@if(pProject.Vivo_start!=null)
+{
+<div>
+		<strong>@pProject.GetLabel(nameof(pProject.Vivo_start),idiomaUsuario)</strong>
+<span class="values">
+		<p property="@pProject.GetPropertyURI(nameof(pProject.Vivo_start))"> @pProject.Vivo_start </p>
+</span>
+</div>
+}
+@if(pProject.Vivo_end!=null)
+{
+<div>
+		<strong>@pProject.GetLabel(nameof(pProject.Vivo_end),idiomaUsuario)</strong>
+<span class="values">
+		<p property="@pProject.GetPropertyURI(nameof(pProject.Vivo_end))"> @pProject.Vivo_end </p>
+</span>
+</div>
+}
+@if(pProject.Roh_monetaryAmount!=null)
+{
+<div>
+		<strong>@pProject.GetLabel(nameof(pProject.Roh_monetaryAmount),idiomaUsuario)</strong>
+<span class="values">
+		<p property="@pProject.GetPropertyURI(nameof(pProject.Roh_monetaryAmount))"> @pProject.Roh_monetaryAmount </p>
+</span>
+</div>
+}
+@if(!string.IsNullOrEmpty(pProject.Roh_durationYears))
+{
+<div>
+		<strong>@pProject.GetLabel(nameof(pProject.Roh_durationYears),idiomaUsuario)</strong>
+<span class="values">
+		<p property="@pProject.GetPropertyURI(nameof(pProject.Roh_durationYears))"> @pProject.Roh_durationYears[idiomaUsuario] </p>
+</span>
+</div>
+}
+@if(!string.IsNullOrEmpty(pProject.Roh_durationMonths))
+{
+<div>
+		<strong>@pProject.GetLabel(nameof(pProject.Roh_durationMonths),idiomaUsuario)</strong>
+<span class="values">
+		<p property="@pProject.GetPropertyURI(nameof(pProject.Roh_durationMonths))"> @pProject.Roh_durationMonths[idiomaUsuario] </p>
+</span>
+</div>
+}
+@if(!string.IsNullOrEmpty(pProject.Roh_durationDays))
+{
+<div>
+		<strong>@pProject.GetLabel(nameof(pProject.Roh_durationDays),idiomaUsuario)</strong>
+<span class="values">
+		<p property="@pProject.GetPropertyURI(nameof(pProject.Roh_durationDays))"> @pProject.Roh_durationDays[idiomaUsuario] </p>
+</span>
+</div>
+}
+@if(pProject.Roh_hasProjectClassification!=null)
+{
+<div>
+	@foreach(ProjectClassification prop in pProject.Roh_hasProjectClassification)
+	{
+		@PintarProjectClassification(prop,idiomaUsuario)
+	}
+</div>
+}
+@if(pProject.Roh_modality!=null)
+{
+<div>
+	@PintarModality(pProject.Roh_modality,idiomaUsuario)
+</div>
+}
+@if(pProject.Vivo_geographicFocus!=null)
+{
+<div>
+	@PintarGeographicRegion(pProject.Vivo_geographicFocus,idiomaUsuario)
+</div>
+}
+@if(!string.IsNullOrEmpty(pProject.Roh_geographicFocusOther))
+{
+<div>
+		<strong>@pProject.GetLabel(nameof(pProject.Roh_geographicFocusOther),idiomaUsuario)</strong>
+<span class="values">
+		<p property="@pProject.GetPropertyURI(nameof(pProject.Roh_geographicFocusOther))"> @pProject.Roh_geographicFocusOther[idiomaUsuario] </p>
+</span>
+</div>
+}
+@if(pProject.Roh_peopleYearNumber!=null)
+{
+<div>
+		<strong>@pProject.GetLabel(nameof(pProject.Roh_peopleYearNumber),idiomaUsuario)</strong>
+<span class="values">
+		<p property="@pProject.GetPropertyURI(nameof(pProject.Roh_peopleYearNumber))"> @pProject.Roh_peopleYearNumber </p>
+</span>
+</div>
+}
+@if(pProject.Roh_isSupportedBy!=null)
+{
+<div>
+	@PintarFunding(pProject.Roh_isSupportedBy,idiomaUsuario)
+</div>
+}
+@if(!string.IsNullOrEmpty(pProject.Roh_relevantResults))
+{
+<div>
+		<strong>@pProject.GetLabel(nameof(pProject.Roh_relevantResults),idiomaUsuario)</strong>
+<span class="values">
+		<p property="@pProject.GetPropertyURI(nameof(pProject.Roh_relevantResults))"> @pProject.Roh_relevantResults[idiomaUsuario] </p>
+</span>
+</div>
+}
+@if(pProject.Roh_hasResultsProjectClassification!=null)
+{
+<div>
+	@foreach(ProjectClassification prop in pProject.Roh_hasResultsProjectClassification)
+	{
+		@PintarProjectClassification(prop,idiomaUsuario)
+	}
+</div>
+}
+@if(pProject.Roh_participates!=null)
+{
+<div>
+	@foreach(Organization prop in pProject.Roh_participates)
+	{
+		@PintarOrganization(prop,idiomaUsuario)
+	}
+</div>
+}
+</div>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+
+@helper PintarBFO_0000023(BFO_0000023 pBFO_0000023,GnossOCBase.LanguageEnum idiomaUsuario){
+<div typeof="http://purl.obolibrary.org/obo/BFO_0000023:bfo_0000023">
+<div class="contentGroup contenidoPrincipal">
+<div class="group title">
+</div>
+</div>
+<div class="group content semanticView">
+<div class="group group_info">
+<div class="contentGroup">
+<div>
+	@PintarPerson(pBFO_0000023.Roh_roleOf,idiomaUsuario)
+</div>
+<div>
+		<strong>@pBFO_0000023.GetLabel(nameof(pBFO_0000023.Roh_order),idiomaUsuario)</strong>
+<span class="values">
+		<p property="@pBFO_0000023.GetPropertyURI(nameof(pBFO_0000023.Roh_order))"> @pBFO_0000023.Roh_order[idiomaUsuario] </p>
+</span>
+</div>
+@if(pBFO_0000023.Roh_contributionGrade!=null)
+{
+<div>
+	@Pintarobject(pBFO_0000023.Roh_contributionGrade,idiomaUsuario)
+</div>
+}
+@if(!string.IsNullOrEmpty(pBFO_0000023.Roh_contributionGradeOther))
+{
+<div>
+		<strong>@pBFO_0000023.GetLabel(nameof(pBFO_0000023.Roh_contributionGradeOther),idiomaUsuario)</strong>
+<span class="values">
+		<p property="@pBFO_0000023.GetPropertyURI(nameof(pBFO_0000023.Roh_contributionGradeOther))"> @pBFO_0000023.Roh_contributionGradeOther[idiomaUsuario] </p>
+</span>
+</div>
+}
+@if(pBFO_0000023.Roh_participationType!=null)
+{
+<div>
+	@PintarParticipationType(pBFO_0000023.Roh_participationType,idiomaUsuario)
+</div>
+}
+@if(!string.IsNullOrEmpty(pBFO_0000023.Roh_participationTypeOther))
+{
+<div>
+		<strong>@pBFO_0000023.GetLabel(nameof(pBFO_0000023.Roh_participationTypeOther),idiomaUsuario)</strong>
+<span class="values">
+		<p property="@pBFO_0000023.GetPropertyURI(nameof(pBFO_0000023.Roh_participationTypeOther))"> @pBFO_0000023.Roh_participationTypeOther[idiomaUsuario] </p>
+</span>
+</div>
+}
+@if(pBFO_0000023.Roh_dedicationRegime!=null)
+{
+<div>
+	@PintarDedicationRegime(pBFO_0000023.Roh_dedicationRegime,idiomaUsuario)
+</div>
+}
+@if(!string.IsNullOrEmpty(pBFO_0000023.Roh_applicantContribution))
+{
+<div>
+		<strong>@pBFO_0000023.GetLabel(nameof(pBFO_0000023.Roh_applicantContribution),idiomaUsuario)</strong>
+<span class="values">
+		<p property="@pBFO_0000023.GetPropertyURI(nameof(pBFO_0000023.Roh_applicantContribution))"> @pBFO_0000023.Roh_applicantContribution[idiomaUsuario] </p>
+</span>
+</div>
+}
+</div>
+</div>
+</div>
+
+</div>
+
+}
+@helper PintarFunding(Funding pFunding,GnossOCBase.LanguageEnum idiomaUsuario){
+<div typeof="http://w3id.org/roh/Funding:funding">
+<div class="contentGroup contenidoPrincipal">
+<div class="group title">
+</div>
+</div>
+<div class="group content semanticView">
+<div class="group group_info">
+<div class="contentGroup">
+@if(!string.IsNullOrEmpty(pFunding.Vivo_description))
+{
+<div>
+		<strong>@pFunding.GetLabel(nameof(pFunding.Vivo_description),idiomaUsuario)</strong>
+<span class="values">
+		<p property="@pFunding.GetPropertyURI(nameof(pFunding.Vivo_description))"> @pFunding.Vivo_description[idiomaUsuario] </p>
+</span>
+</div>
+}
+@if(!string.IsNullOrEmpty(pFunding.Vivo_identifier))
+{
+<div>
+		<strong>@pFunding.GetLabel(nameof(pFunding.Vivo_identifier),idiomaUsuario)</strong>
+<span class="values">
+		<p property="@pFunding.GetPropertyURI(nameof(pFunding.Vivo_identifier))"> @pFunding.Vivo_identifier[idiomaUsuario] </p>
+</span>
+</div>
+}
+@if(pFunding.Roh_monetaryAmount!=null)
+{
+<div>
+		<strong>@pFunding.GetLabel(nameof(pFunding.Roh_monetaryAmount),idiomaUsuario)</strong>
+<span class="values">
+		<p property="@pFunding.GetPropertyURI(nameof(pFunding.Roh_monetaryAmount))"> @pFunding.Roh_monetaryAmount </p>
+</span>
+</div>
+}
+@if(pFunding.Roh_grantsPercentage!=null)
+{
+<div>
+		<strong>@pFunding.GetLabel(nameof(pFunding.Roh_grantsPercentage),idiomaUsuario)</strong>
+<span class="values">
+		<p property="@pFunding.GetPropertyURI(nameof(pFunding.Roh_grantsPercentage))"> @pFunding.Roh_grantsPercentage </p>
+</span>
+</div>
+}
+@if(pFunding.Roh_creditPercentage!=null)
+{
+<div>
+		<strong>@pFunding.GetLabel(nameof(pFunding.Roh_creditPercentage),idiomaUsuario)</strong>
+<span class="values">
+		<p property="@pFunding.GetPropertyURI(nameof(pFunding.Roh_creditPercentage))"> @pFunding.Roh_creditPercentage </p>
+</span>
+</div>
+}
+@if(pFunding.Roh_mixedPercentage!=null)
+{
+<div>
+		<strong>@pFunding.GetLabel(nameof(pFunding.Roh_mixedPercentage),idiomaUsuario)</strong>
+<span class="values">
+		<p property="@pFunding.GetPropertyURI(nameof(pFunding.Roh_mixedPercentage))"> @pFunding.Roh_mixedPercentage </p>
+</span>
+</div>
+}
+</div>
+</div>
+</div>
+
+</div>
+
+}
+@helper PintarProjectClassification(ProjectClassification pProjectClassification,GnossOCBase.LanguageEnum idiomaUsuario){
+<div typeof="http://w3id.org/roh/ProjectClassification:projectclassification">
+<div class="contentGroup contenidoPrincipal">
+<div class="group title">
+</div>
+</div>
+<div class="group content semanticView">
+<div class="group group_info">
+<div class="contentGroup">
+@if(pProjectClassification.Roh_projectClassificationNode!=null)
+{
+<div>
+	@foreach(Concept prop in pProjectClassification.Roh_projectClassificationNode)
+	{
+		@PintarConcept(prop,idiomaUsuario)
+	}
+</div>
+}
+</div>
+</div>
+</div>
+
+</div>
+
+}
+@helper PintarOrganization(Organization pOrganization, GnossOCBase.LanguageEnum idiomaUsuario) {
+
+if(pOrganization.Roh_title!=null)
+{
+<div>
+		<strong>@pOrganization.GetLabel(nameof(pOrganization.Roh_title),idiomaUsuario)</strong>
+<span>
+<p property ="@pOrganization.GetPropertyURI(nameof(pOrganization.Roh_title))"> @pOrganization.Roh_title </p>
+</span>
+</div>
+}
+}
+@helper PintarOrganization(Organization pOrganization, GnossOCBase.LanguageEnum idiomaUsuario) {
+
+if(pOrganization.Roh_title!=null)
+{
+<div>
+		<strong>@pOrganization.GetLabel(nameof(pOrganization.Roh_title),idiomaUsuario)</strong>
+<span>
+<p property ="@pOrganization.GetPropertyURI(nameof(pOrganization.Roh_title))"> @pOrganization.Roh_title </p>
+</span>
+</div>
+}
+}
+@helper PintarModality(Modality pModality, GnossOCBase.LanguageEnum idiomaUsuario) {
+
+if(pModality.Dc_title[idiomaUsuario]!=null)
+{
+<div>
+		<strong>@pModality.GetLabel(nameof(pModality.Dc_title),idiomaUsuario)</strong>
+<span>
+<p property ="@pModality.GetPropertyURI(nameof(pModality.Dc_title))"> @pModality.Dc_title[idiomaUsuario] </p>
+</span>
+</div>
+}
+}
+@helper PintarGeographicRegion(GeographicRegion pGeographicRegion, GnossOCBase.LanguageEnum idiomaUsuario) {
+
+}
+@helper PintarOrganization(Organization pOrganization, GnossOCBase.LanguageEnum idiomaUsuario) {
+
+if(pOrganization.Roh_title!=null)
+{
+<div>
+		<strong>@pOrganization.GetLabel(nameof(pOrganization.Roh_title),idiomaUsuario)</strong>
+<span>
+<p property ="@pOrganization.GetPropertyURI(nameof(pOrganization.Roh_title))"> @pOrganization.Roh_title </p>
+</span>
+</div>
+}
+}
+@helper PintarPerson(Person pPerson, GnossOCBase.LanguageEnum idiomaUsuario) {
+
+if(pPerson.Foaf_name!=null)
+{
+<div>
+		<strong>@pPerson.GetLabel(nameof(pPerson.Foaf_name),idiomaUsuario)</strong>
+<span>
+<p property ="@pPerson.GetPropertyURI(nameof(pPerson.Foaf_name))"> @pPerson.Foaf_name </p>
+</span>
+</div>
+}
+}
+@helper Pintarobject(object pobject, GnossOCBase.LanguageEnum idiomaUsuario) {
+
+}
+@helper PintarParticipationType(ParticipationType pParticipationType, GnossOCBase.LanguageEnum idiomaUsuario) {
+
+if(pParticipationType.Dc_title[idiomaUsuario]!=null)
+{
+<div>
+		<strong>@pParticipationType.GetLabel(nameof(pParticipationType.Dc_title),idiomaUsuario)</strong>
+<span>
+<p property ="@pParticipationType.GetPropertyURI(nameof(pParticipationType.Dc_title))"> @pParticipationType.Dc_title[idiomaUsuario] </p>
+</span>
+</div>
+}
+}
+@helper PintarDedicationRegime(DedicationRegime pDedicationRegime, GnossOCBase.LanguageEnum idiomaUsuario) {
+
+if(pDedicationRegime.Dc_title[idiomaUsuario]!=null)
+{
+<div>
+		<strong>@pDedicationRegime.GetLabel(nameof(pDedicationRegime.Dc_title),idiomaUsuario)</strong>
+<span>
+<p property ="@pDedicationRegime.GetPropertyURI(nameof(pDedicationRegime.Dc_title))"> @pDedicationRegime.Dc_title[idiomaUsuario] </p>
+</span>
+</div>
+}
+}
+@helper PintarConcept(Concept pConcept, GnossOCBase.LanguageEnum idiomaUsuario) {
+
+}
+}

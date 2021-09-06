@@ -1,3 +1,4 @@
+@*[security|||document|||hercules]*@
 @using System.Reflection;
 @model ResourceViewModel
 @{
@@ -26,7 +27,7 @@
             <a href="javascript: void(0);">Artículos</a>
         </li>
         <li>
-            <a>@pDocument.Roh_title</a>
+            @pDocument.Roh_title
         </li>
     </ul>
 </div>
@@ -222,7 +223,8 @@
                     TODO: Descripción del artículo.
                 </p>
             </div>
-        </div>                        <div class="contenido-ficha contenido-publicacion">
+        </div>                        
+        <div class="contenido-ficha contenido-publicacion">
             <div class="tab-paneles-ficha">
                 <ul class="nav nav-tabs" id="navegacion-recurso" role="tablist">
                     <li class="nav-item" role="presentation">
