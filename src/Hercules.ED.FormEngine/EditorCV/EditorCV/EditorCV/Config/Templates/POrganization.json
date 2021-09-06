@@ -1,0 +1,133 @@
+{
+    "rdftype": "http://xmlns.com/foaf/0.1/Organization",
+    "ontologyName": "organization",
+    "properties": [
+        {
+            "property": "http://w3id.org/roh/title",
+            "title": "Nombre",
+            "min": 1,
+            "max": 1,
+            "multiLanguage": false,
+            "fieldType": "text"
+        },
+        {
+            "property": "http://w3id.org/roh/crisIdentifier",
+            "title": "Identificador",
+            "min": 0,
+            "max": 1,
+            "multiLanguage": false,
+            "fieldType": "text"
+        },
+        {
+            "property": "https://www.w3.org/2006/vcard/ns#hasAddress",
+            "title": "Dirección",
+            "min": 0,
+            "max": 1,
+            "multiLanguage": false,
+            "fieldType": "text"
+        },
+        {
+            "property": "http://w3id.org/roh/participates",
+            "relation": {
+                "property": "http://w3id.org/roh/participates",
+                "entityReference": "http://xmlns.com/foaf/0.1/Organization"
+            },
+            "title": "Entidad/es participante/s",
+            "min": 0,
+            "max": -1,
+            "multiLanguage": false,
+            "fieldsDB": [
+                {
+                    "rdfType": "http://w3id.org/roh/title",
+                    "name": "title",
+                    "main": true
+                }
+            ],
+            "fieldType": "autocomplete"
+        },
+        {
+            "property": "http://w3id.org/roh/grantedBy",
+            "relation": {
+                "property": "http://w3id.org/roh/grantedBy",
+                "entityReference": "http://xmlns.com/foaf/0.1/Organization"
+            },
+            "title": "Entidad/es financiadora/s",
+            "min": 0,
+            "max": -1,
+            "multiLanguage": false,
+            "fieldsDB": [
+                {
+                    "rdfType": "http://w3id.org/roh/title",
+                    "name": "title",
+                    "main": true
+                }
+            ],
+            "fieldType": "autocomplete"
+        },
+        {
+            "property": "http://w3id.org/roh/hasProjectClassification",
+            "relation": {
+                "property": "http://w3id.org/roh/hasProjectClassification",
+                "entityReference": "http://w3id.org/roh/ProjectClassification"
+            },
+            "title": "Clasificación del proyecto",
+            "min": 0,
+            "max": -1,
+            "multiLanguage": false,
+            "fieldsDB": [
+                {
+                    "rdfType": "http://w3id.org/roh/title",
+                    "name": "title",
+                    "main": true
+                }
+            ],
+            "fieldType": "autocomplete"
+        },
+        {
+            "property": "http://w3id.org/roh/durationMonths",
+            "title": "Duración (meses)",
+            "min": 1,
+            "max": 1,
+            "multiLanguage": false,
+            "fieldType": "text"
+        },
+        {
+            "property": "http://w3id.org/roh/durationDays",
+            "title": "Duración (días)",
+            "min": 1,
+            "max": 1,
+            "multiLanguage": false,
+            "fieldType": "text"
+        },
+        {
+            "property": "http://w3id.org/roh/researchersNumber",
+            "title": "Nº de investigadores/as",
+            "min": 1,
+            "max": 1,
+            "multiLanguage": false,
+            "fieldType": "number"
+        },
+        {
+            "property": "http://vivoweb.org/ontology/core#start",
+            "title": "Fecha de inicio",
+            "min": 1,
+            "max": 1,
+            "multiLanguage": false,
+            "fieldType": "date"
+        },
+        {
+            "property": "http://vivoweb.org/ontology/core#end",
+            "title": "Fecha de finalización",
+            "min": 1,
+            "max": 1,
+            "multiLanguage": false,
+            "fieldType": "date"
+        }
+    ],
+    "items": {},
+    "view": {
+        "properties": [
+            "http://w3id.org/roh/title"
+        ]
+    }
+}

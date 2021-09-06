@@ -1,0 +1,484 @@
+@model SearchViewModel
+@{
+    CommunityModel Comunidad = Html.GetComunidad();
+    UserIdentityModel IdentidadActual = Html.GetIdentidadActual();
+    string jsExtra = Html.GetJSExtra();
+
+    string nombrePestanyaActual = Model.PageName;
+    string htmlResultados = Model.HTMLResourceList;
+    string htmlFacetas = Model.HTMLFaceted;
+    Dictionary<string, string> listaFiltrosOrden = Model.FilterOrderList;
+    string FiltroOrdenSeleccionado = Model.FilterOrderSelected;
+
+    Html.SetBodyClass("layout02 comunidad listado"); // Clases del body por defecto.
+
+    Html.SetPintarH1(false);
+
+    if (Comunidad.ProyectType == CommunityModel.TypeProyect.Catalogo || Comunidad.ProyectType == CommunityModel.TypeProyect.CatalogoNoSocial)
+    {
+        Html.SetBodyClass(Html.GetBodyClass() + " listadoCatalogo ");
+    }
+
+    if (IdentidadActual.IsProyectAdmin && Request.RequestContext.RouteData.Values["admin"] != null && Request.RequestContext.RouteData.Values["admin"].Equals("true"))
+    {
+        Html.GetListaCSS().Add(Html.GetBaseUrlStatic() + "/cssNuevo/administracion.css?v=" + Html.GetVersion());
+    }
+}
+
+<!-- Ruta de páginas -->
+<div class="col col-12 col-breadcrumb">
+    <ul>
+        <li>
+            <a href="@Comunidad.Url">Home</a>
+        </li>
+        <li>@nombrePestanyaActual</li>
+    </ul>
+</div>
+
+<div class="col col-12 col-xl-3 col-facetas col-lateral izquierda">
+    <!-- Facetas -->
+    <div class="wrapCol">
+        <div class="header-facetas">
+            <p>Filtros</p>
+            <a href="javascript: void(0);" class="cerrar">
+                <span class="material-icons">close</span>
+            </a>
+        </div>
+        <div id="panFacetas" class="facetas-wrap pmd-scrollbar mCustomScrollbar" data-mcs-theme="minimal-dark">
+
+            @if (Model.FacetedVisible)
+            {
+                if (string.IsNullOrEmpty(htmlFacetas) && Model.JSONFaceted != null)
+                {
+                    @Html.PartialView("../CargadorFacetas/CargarFacetas", Model.JSONFaceted);
+                }
+                else
+                {
+                    @MvcHtmlString.Create(htmlFacetas)
+                }
+            }
+
+        </div>
+    </div>
+</div>
+
+<div class="col col-12 col-xl-9 col-contenido derecha">
+    <div class="wrapCol">
+        <div class="header-contenido">
+            <!-- Número de resultados -->
+            <div class="h1-container">
+                <h1>@nombrePestanyaActual <span id="panNumResultados" class="numResultados"></span></h1>
+            </div>
+
+            <!-- Desplegables derecha -->
+            <div class="acciones-listado">
+                <div class="wrap">
+
+                    <!-- Filtros de ordenación -->
+                    @if (listaFiltrosOrden != null && listaFiltrosOrden.Count > 0)
+                    {
+                        <div class="ordenar dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                <span class="material-icons">swap_vert</span>
+                                <span class="texto">@Html.GetText("BANDEJAENTRADA", "ORDENADOPOR")</span>
+                            </a>
+                            <div class="dropdown-menu basic-dropdown dropdown-menu-right" style="will-change: transform;">
+                                @foreach (string filtro in listaFiltrosOrden.Keys)
+                                {
+                                    <a class="item-dropdown filtro" @if (FiltroOrdenSeleccionado == filtro) { MvcHtmlString.Create("selected=\"selected\""); }>@filtro</a>
+                                }
+                            </div>
+                        </div>
+                    }
+
+                    <!-- Modo de visualización -->
+                    <div class="visualizacion dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                            <span class="material-icons">view_agenda</span>
+                            <span class="texto">@Html.Translate("VISUALIZE")</span>
+                        </a>
+                        <div class="dropdown-menu basic-dropdown .dropdown-icons dropdown-menu-right" style="will-change: transform;">
+                            <a class="item-dropdown aCompacView" data-class-resource-list="compacView">
+                                <span class="material-icons">reorder</span>
+                                <span class="texto">@Html.Translate("COMPACT")</span>
+                            </a>
+                            <a class="item-dropdown aListView" data-class-resource-list="listView">
+                                <span class="material-icons">view_agenda</span>
+                                <span class="texto">@Html.Translate("LIST")</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Etiquetas de filtros -->
+            <div class="etiquetas" id="panFiltros">
+                <ul class="facetedSearch tags" id="panListadoFiltros">
+                    <li class="borrarFiltros-wrap">
+                        <a class="borrarFiltros" href="#" onclick="event.preventDefault();LimpiarFiltros();">Borrar</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Resultados -->
+        <div class="resource-list listView resource-list-buscador">
+            <div id="panResultados" class="resource-list-wrap">
+                @if (string.IsNullOrEmpty(htmlResultados) && Model.JSONResourceList != null)
+                {
+                    @Html.PartialView("../CargadorResultados/CargarResultados", Model.JSONResourceList);
+                }
+                else
+                {
+                    @MvcHtmlString.Create(htmlResultados)
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section javascript{
+    <script type="text/javascript">
+        //TODO cambiar
+        var limiteLongitudFacetas = {
+            init: function () {
+            }
+        };
+        //TODO cambiar
+        function MontarResultados(pFiltros, pPrimeraCarga, pNumeroResultados, pPanelID, pTokenAfinidad) {
+            contResultados = contResultados + 1;
+            if (document.getElementById('ctl00_ctl00_CPH1_CPHContenido_txtRecursosSeleccionados') != null) {
+                document.getElementById('ctl00_ctl00_CPH1_CPHContenido_txtRecursosSeleccionados').value = '';
+                document.getElementById('ctl00_ctl00_CPH1_CPHContenido_lblErrorMisRecursos').style.display = 'none';
+            }
+            var servicio = new WS($('input.inpt_UrlServicioResultados').val(), WSDataType.jsonp);
+
+            var paramAdicional = parametros_adiccionales;
+
+            /*
+            if ($('li.mapView').attr('class') == "mapView activeView") {
+                paramAdicional += 'busquedaTipoMapa=true';
+            }*/
+            /*
+            if ($('.chartView').attr('class') == "chartView activeView") {
+                paramAdicional = 'busquedaTipoChart=' + chartActivo + '|' + paramAdicional;
+            }*/
+
+            if ($('li.mapView').hasClass('activeView')) {
+                paramAdicional += 'busquedaTipoMapa=true';
+            }
+
+
+            if ($('.chartView').hasClass('activeView')) {
+                paramAdicional = 'busquedaTipoChart=' + chartActivo + '|' + paramAdicional;
+            }
+
+            var metodo = 'CargarResultados';
+            var params = {};
+
+            if (bool_usarMasterParaLectura) {
+                if (finUsoMaster == null) {
+                    finUsoMaster = new Date();
+                    finUsoMaster.setMinutes(finUsoMaster.getMinutes() + 1);
+                }
+                else {
+                    var fechaActual = new Date();
+                    if (fechaActual > finUsoMaster) {
+                        bool_usarMasterParaLectura = false;
+                        finUsoMaster = null;
+                    }
+                }
+            }
+
+            params['pUsarMasterParaLectura'] = bool_usarMasterParaLectura;
+            params['pProyectoID'] = $('input.inpt_proyID').val();
+            params['pEsUsuarioInvitado'] = $('input.inpt_bool_esUsuarioInvitado').val() == 'True';
+
+            if (typeof (identOrg) != 'undefined') {
+
+                params['pIdentidadID'] = identOrg;
+            }
+            else {
+
+                params['pIdentidadID'] = $('input.inpt_identidadID').val();
+            }
+            params['pParametros'] = '' + pFiltros;
+            params['pLanguageCode'] = $('input.inpt_Idioma').val();
+            params['pPrimeraCarga'] = pPrimeraCarga == "True";
+            params['pAdministradorVeTodasPersonas'] = adminVePersonas == "True";
+            params['pTipoBusqueda'] = tipoBusqeda;
+            params['pNumeroParteResultados'] = pNumeroResultados;
+            params['pGrafo'] = grafo;
+            params['pFiltroContexto'] = filtroContexto;
+            params['pParametros_adiccionales'] = paramAdicional;
+            params['cont'] = contResultados;
+            params['tokenAfinidad'] = pTokenAfinidad;
+
+            $.post(obtenerUrl($('input.inpt_UrlServicioResultados').val()) + "/" + metodo, params, function (response) {
+                if (params['cont'] == contResultados) {
+                    var data = response
+                    if (response.Value != null) {
+                        data = response.Value;
+                    }
+
+                    var vistaMapa = (params['pParametros_adiccionales'].indexOf('busquedaTipoMapa=true') != -1);
+                    var vistaChart = (params['pParametros_adiccionales'].indexOf('busquedaTipoChart=') != -1);
+
+                    var descripcion = data;
+
+                    var funcionJS = '';
+                    if (descripcion.indexOf('###ejecutarFuncion###') != -1) {
+                        var funcionJS = descripcion.substring(descripcion.indexOf('###ejecutarFuncion###') + '###ejecutarFuncion###'.length);
+                        funcionJS = funcionJS.substring(0, funcionJS.indexOf('###ejecutarFuncion###'));
+
+                        descripcion = descripcion.replace('###ejecutarFuncion###' + funcionJS + '###ejecutarFuncion###', '');
+                    }
+
+                    if (tipoBusqeda == 12) {
+                        var panelListado = $(pPanelID).parent();
+                        panelListado.html('<div id="' + pPanelID.replace('#', '') + '"></div><div id="' + panResultados.replace('#', '') + '"></div>')
+
+                        var panel = $(pPanelID);
+                        panel.css('display', 'none');
+                        panel.html(descripcion);
+                        panelListado.append(panel.find('.resource-list').html())
+                        panel.find('.resource-list').html('');
+                    } else if (!vistaMapa && !vistaChart) {
+                        $(pPanelID).append(descripcion);
+                    }
+                    else {
+                        var arraydatos = descripcion.split('|||');
+
+                        if ($('#panAuxMapa').length == 0) {
+                            $(pPanelID).parent().html($(pPanelID).parent().html() + '<div id="panAuxMapa" style="display:none;"></div>');
+                        }
+
+                        if (vistaMapa) {
+                            $('#panAuxMapa').html('<div id="numResultadosRemover">' + arraydatos[0] + '</div>');
+                        }
+
+                        if (vistaChart) {
+                            datosChartActivo = arraydatos;
+                            $(pPanelID).html('<div id="divContChart"></div>');
+                            eval(jsChartActivo);
+                        }
+                        else {
+                            utilMapas.MontarMapaResultados(pPanelID, arraydatos);
+                        }
+                    }
+                    FinalizarMontarResultados(paramAdicional, funcionJS, pNumeroResultados, pPanelID);
+                }
+                if (MontarResultadosScroll.pagActual != null) {
+                    MontarResultadosScroll.pagActual = 1;
+                    MontarResultadosScroll.cargarScroll();
+                }
+            }, "json");
+        }
+
+        //TODO cambiar
+        function MontarFacetas(pFiltros, pPrimeraCarga, pNumeroFacetas, pPanelID, pFaceta, pTokenAfinidad) {
+            pFiltros = pFiltros.replace(/&/g, '|');
+            if (mostrarFacetas) {
+                //contFacetas = contFacetas + 1;
+
+                var verMas = false;
+
+                if (pFaceta != null && pFaceta.indexOf('|vermas') != -1) {
+                    verMas = true;
+                    pFaceta = pFaceta.substring(0, pFaceta.lastIndexOf('|'));
+                }
+
+                var servicio = new WS($('input.inpt_UrlServicioFacetas').val(), WSDataType.jsonp);
+
+                var paramAdicional = parametros_adiccionales;
+
+                if ($('li.mapView').attr('class') == "mapView activeView") {
+                    paramAdicional += 'busquedaTipoMapa=true';
+                }
+
+                var metodo = 'CargarFacetas';
+                var params = {};
+
+
+                params['pProyectoID'] = $('input.inpt_proyID').val();
+                params['pEstaEnProyecto'] = $('input.inpt_bool_estaEnProyecto').val() == 'True';
+                params['pEsUsuarioInvitado'] = $('input.inpt_bool_esUsuarioInvitado').val() == 'True';
+                params['pIdentidadID'] = $('input.inpt_identidadID').val();
+                params['pParametros'] = '' + pFiltros;
+                params['pLanguageCode'] = $('input.inpt_Idioma').val();
+                params['pPrimeraCarga'] = pPrimeraCarga.toString().toLowerCase() == "true";
+                params['pAdministradorVeTodasPersonas'] = adminVePersonas.toString().toLowerCase() == "true";
+                params['pTipoBusqueda'] = tipoBusqeda;
+                params['pGrafo'] = grafo;
+                params['pFiltroContexto'] = filtroContexto;
+                if (typeof urlBusqueda != "undefined") {
+                    params['pUrlPaginaActual'] = urlBusqueda;
+                }
+                params['pParametros_adiccionales'] = paramAdicional;
+                params['pUbicacionBusqueda'] = ubicacionBusqueda;
+                params['pNumeroFacetas'] = pNumeroFacetas;
+                params['pUsarMasterParaLectura'] = bool_usarMasterParaLectura;
+                params['pFaceta'] = pFaceta;
+                params['tokenAfinidad'] = pTokenAfinidad;
+
+                $.post(obtenerUrl($('input.inpt_UrlServicioFacetas').val()) + "/" + metodo, params, function (data) {
+                    if (decodeURI(pFiltros) == decodeURI(filtrosPeticionActual) || pFiltros == replaceAll(filtrosPeticionActual, '&', '|') || (typeof filtrosDeInicio !== "undefined" && (pFiltros == filtrosDeInicio || pFiltros == replaceAll(filtrosDeInicio, '|', '&'))) /*|| pFiltros.indexOf(filtrosPeticionActual) >= 0 Esto hace que al quitar filtros se amontonen facetas*/) {
+                        if (pFaceta == null && (pNumeroFacetas == 1 || pNumeroFacetas == 2)) {
+                            MontarFacetas(pFiltros, pPrimeraCarga, pNumeroFacetas + 1, pPanelID, pFaceta, pTokenAfinidad);
+                        }
+                        var descripcion = data;
+                        if (descripcion.indexOf("class=\"box") != -1 && document.getElementById('facetaEncuentra') != null) {
+                            document.getElementById('facetaEncuentra').style.display = '';
+                        }
+                        $(pPanelID).show();
+
+                        if (pFaceta != null && data != "" && pNumeroFacetas == -1) {
+                            var divFacetaID = pFaceta.replace(/\:/g, '_').replace(/\@@/g, '-');
+                            var divFacetaID_out = '#out_' + divFacetaID;
+                            if ($(divFacetaID_out).length > 0) {
+                                $(divFacetaID_out).show();
+                            }
+                            else {
+                                //No existe el panel out_faceta. Inserto en el panel original el contenido del resultante.
+                                $('#' + divFacetaID).replaceWith(data);
+                            }
+                        }
+
+                        if (pFaceta == null || pFaceta == '' || pNumeroFacetas == 1) {
+					        if( pNumeroFacetas == 1)
+					        {
+						        $('#' + panFacetas).html('');
+					        }
+                            var panelFacetas = pPanelID;
+                            if ($('#facetedSearch').length) {
+                                panelFacetas = '#facetedSearch';
+                                descripcion = $('<div>' + descripcion + '</div>').find("#facetedSearch").html();
+                            }
+
+                            if (pNumeroFacetas > 1 && $(".listadoAgrupado").length) {
+                                panelFacetas = "#" + $(".listadoAgrupado").attr("aux");
+                            }
+
+                            if (pNumeroFacetas == 1) {
+                                if (!descripcion.replace('<div id="facetedSearch" class="facetedSearch">', '').replace('</div>', '').replace('</div>', '').trim().startsWith('<div id="panelFiltros" style="display:none">')) {
+                                    $('#facetedSearch').css('display', 'block');
+                                } else {
+                                    //Ocultamos el panel de facetas
+                                    if ($('#facetedSearch').length == 0) {
+                                        $('#facetedSearch').css('display', 'none')
+                                    }
+                                    $(panelFacetas).css('display', 'none')
+                                }
+                            }
+                            $(panelFacetas).append(descripcion);
+
+                            facetedSearch.init();
+                        }
+                        else {
+                            //Si viene el par�metro pFaceta, se est� rellenando una faceta, hay que sustituir el contenido anterior por el actual.
+
+                            if (verMas) {
+                                descripcion = $('#' + divFacetaID, $(data.trim())).html();
+                                var htmlVerMas = $('p.moreResults', $(pPanelID)).html();
+                                if (typeof (htmlVerMas) != 'undefined') {
+                                    htmlVerMas = htmlVerMas.substring(0, htmlVerMas.indexOf('>') + 1) + form.vermenos + '</a>';
+                                    descripcion += '<p class="moreResults">' + htmlVerMas + '</p>';
+                                }
+                                if (descripcion == null) {
+
+                                    descripcion = data.trim();
+                                }
+                            }
+
+                            if (descripcion.indexOf('id="' + pPanelID.substr(1) + '"') != -1) {
+                                //La descripci�n ya contiene el panel, lo sustituyo.
+                                $(pPanelID).replaceWith(descripcion);
+                            }
+                            else {
+                                $(pPanelID).html(descripcion);
+                            }
+                            facetedSearch.init();
+                        }
+
+                        if (pNumeroFacetas == 1) { MontarPanelFiltros(); }
+                        /* presentacion facetas */
+                        limiteLongitudFacetas.init();
+                        //}
+
+                        if (pNumeroFacetas == 3) {
+                            if ($(".filtroFacetaFecha").length > 0) {
+
+                                $(".filtroFacetaFecha").datepicker();
+                            }
+
+                            if ($("div.divdatepicker").length > 0) {
+                                IniciarFacetaCalendario();
+                            }
+                        } else if (pNumeroFacetas == -1 && $("div.divdatepicker").length > 0) {
+                            IniciarFacetaCalendario(pFiltros);
+                        }
+
+
+                        if (enlazarJavascriptFacetas) {
+                            enlazarFacetasBusqueda();
+                        }
+                        else {
+                            enlazarFacetasNoBusqueda();
+                        }
+
+                        if ((typeof CompletadaCargaFacetas != 'undefined')) {
+                            /* En los listados de Inevery, hay que ejecutar este script */
+                            CompletadaCargaFacetas();
+                        }
+
+                        if (funcionExtraFacetas != "") {
+                            eval(funcionExtraFacetas);
+                        }
+                    }
+                });
+            }
+            else {
+                var col1 = document.getElementById('col01');
+                if (col1 != null) {
+                    $('#col01').css('display', 'none');
+                    $('#col02').css('float', 'left');
+                }
+            }
+            primeraCargaDeFacetas = false;
+        }
+
+
+
+
+
+        @MvcHtmlString.Create(jsExtra)
+
+
+        @if (string.IsNullOrEmpty(htmlFacetas) && Model.JSONFaceted != null && string.IsNullOrEmpty(htmlResultados) && Model.JSONResourceList != null)
+        {
+
+        }
+        else
+        {
+            <text>
+                $(document).ready(function () {
+                    FiltrarPorFacetas(filtrosDeInicio);
+                });
+            </text>
+        }
+
+
+
+
+
+        @if (!string.IsNullOrEmpty(Html.GetJSMapa()))
+        {
+            @MvcHtmlString.Create(Html.GetJSMapa())
+        }
+
+        @if (!string.IsNullOrEmpty(Html.GetJSGraficos()))
+        {
+            @MvcHtmlString.Create(Html.GetJSGraficos())
+        }
+    </script>
+}

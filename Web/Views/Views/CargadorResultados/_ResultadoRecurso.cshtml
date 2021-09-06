@@ -1,0 +1,260 @@
+@model ResourceModel
+
+@if (Model != null)
+{
+    string recursoDocumento = "resource-documento";
+    string recursoImagen = "resource-imagen";
+    string recursoVideo = "resource-video";
+    string recursoPDF = "resource-pdf";
+
+    string resoourceType = recursoDocumento;
+    if (Model.TypeDocument.ToString().Equals("pdf") || Model.TypeDocument.ToString().Equals("Pdf"))
+    {
+        resoourceType = recursoPDF;
+    }
+    else if (Model.TypeDocument.ToString().Equals("Imagen") || Model.TypeDocument.ToString().Equals("imagen"))
+    {
+        resoourceType = recursoImagen;
+    }
+    else if (Model.TypeDocument.ToString().Equals("Video") || Model.TypeDocument.ToString().Equals("video"))
+    {
+        resoourceType = recursoVideo;
+    }
+
+    // Publicaciones
+    if (Model.RdfTypeName == "Document")
+    {
+        <article class="resource publicacion" id="resource_@Model.Key" typeof="sioc_t:Item" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:sioc_t="http://rdfs.org/sioc/types#" xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:sioc="http://rdfs.org/sioc/ns#">
+            <div class="wrap">
+                <div class="middle-wrap">
+                    <div class="title-wrap">
+
+                        <h2 class="resource-title">
+                            <a href="@Model.CompletCardLink">@Model.Title</a>
+                        </h2>
+
+                        <div class="acciones-recurso-listado">
+                            <div class="dropdown">
+                                <a href="#" class="dropdown-toggle" role="button" id="dropdownMasOpciones" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <span class="material-icons">more_vert</span>
+                                </a>
+                                <div class="dropdown-menu basic-dropdown dropdown-icons dropdown-menu-right" aria-labelledby="dropdownMasOpciones" style="">
+                                    <p class="dropdown-title">Acciones</p>
+                                    <ul class="no-list-style">
+                                        <li>
+                                            <a class="item-dropdown">
+                                                <span class="material-icons">folder_open</span>
+                                                <span class="texto">TODO: Guardar en favoritos</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="item-dropdown" data-toggle="modal" data-target="#modal-enviar">
+                                                <span class="material-icons">person_add_alt_1</span>
+                                                <span class="texto">TODO: Añadir a clúster</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="content-wrap">
+                        <div class="description-wrap">
+                            <h3>
+                                <span>
+                                    @{
+                                        if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+                                        {
+                                            string propiedad = "fecha";
+                                            foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+                                            {
+                                                if (item.Rows != null && item.Rows.Count > 0 && item.Rows[0].ContainsKey(propiedad))
+                                                {
+                                                    <span>@item.Rows[0][propiedad].Substring(0, 4)</span>
+                                                }
+                                            }
+                                        }
+                                    }
+                                </span>
+                                @{
+                                    if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+                                    {
+                                        string propiedad = "nombre";
+                                        foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+                                        {
+                                            if (item.Rows != null && item.Rows.Count > 0 && item.Rows[0].ContainsKey(propiedad))
+                                            {
+                                                @item.Rows[0][propiedad]
+                                            }
+                                        }
+                                    }
+                                }
+                            </h3>
+                            <div class="list-wrap authors">
+                                <ul>
+                                    @{
+                                        Dictionary<string, List<string>> dicAutoresOrg = new Dictionary<string, List<string>>();
+
+                                        if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+                                        {
+                                            string propiedadPersona = "firma";
+                                            string propiedadOrg = "tituloOrg";
+
+                                            foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+                                            {
+                                                foreach (Dictionary<string, string> dic in item.Rows)
+                                                {
+                                                    if (dic != null && dic.Count > 0 && dic.ContainsKey(propiedadOrg))
+                                                    {
+                                                        if (!dicAutoresOrg.ContainsKey(dic[propiedadOrg]))
+                                                        {
+                                                            dicAutoresOrg.Add(dic[propiedadOrg], new List<string>());
+                                                        }
+                                                    }
+
+                                                    if (dic != null && dic.Count > 0 && dic.ContainsKey(propiedadPersona))
+                                                    {
+                                                        dicAutoresOrg[dic[propiedadOrg]].Add(dic[propiedadPersona]);
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        int contador = 1;
+                                        foreach (KeyValuePair<string, List<string>> item in dicAutoresOrg)
+                                        {
+                                            foreach (string autor in item.Value)
+                                            {
+                                                <li>
+                                                    <a href="javascript: void(0);">@autor</a>
+                                                    <sup>@contador</sup>
+                                                </li>
+                                            }
+                                            contador++;
+                                        }
+                                    }
+                                </ul>
+                            </div>
+                            <div class="list-wrap colleges">
+                                <ul>
+                                    @{
+                                        contador = 1;
+                                        foreach (KeyValuePair<string, List<string>> item in dicAutoresOrg)
+                                        {
+                                            <li>
+                                                <sup>@contador</sup>
+                                                <a href="javascript: void(0);">@item.Key</a>
+                                            </li>
+                                            contador++;
+                                        }
+                                    }
+                                </ul>
+                            </div>
+                            <div class="list-wrap tags">
+                                <p class="title">@Html.Translate("AREAS_CONOCIMIENTO")</p>
+                                <ul>
+                                    @{
+                                        if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+                                        {
+                                            string propiedad = "titulo";
+                                            foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+                                            {
+                                                if (item.Rows != null && item.Rows.Count > 0 && item.Rows[0].ContainsKey(propiedad))
+                                                {
+                                                    <li>
+                                                        <a href="javascript: void(0);">
+                                                            <span class="texto">@item.Rows[0][propiedad]</span>
+                                                        </a>
+                                                    </li>
+                                                }
+                                            }
+                                        }
+                                    }
+                                </ul>
+                                <!--<p class="moreResults">
+                                    <a href="javascript: void(0);" class="ver-mas" style="display: flex;">Ver más</a>
+                                    <a href="javascript: void(0);" class="ver-menos" style="display: none;">Ver menos</a>
+                                </p>-->
+                            </div>
+                            <div class="list-wrap tags">
+                                <p class="title">@Html.Translate("ETIQUETAS")</p>
+                                <ul>
+                                    @{
+                                        if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+                                        {
+                                            string propiedad = "freeTextWords";
+                                            foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+                                            {
+                                                if (item.Rows != null && item.Rows.Count > 0 && item.Rows[0].ContainsKey(propiedad))
+                                                {
+                                                    foreach (Dictionary<string, string> keyWord in item.Rows)
+                                                    {
+                                                        foreach (KeyValuePair<string, string> claveValor in keyWord)
+                                                        {
+                                                            if (claveValor.Key == "freeTextWords")
+                                                            {
+                                                                <li>
+                                                                    <a href="javascript: void(0);">
+                                                                        <span class="texto">@claveValor.Value</span>
+                                                                    </a>
+                                                                </li>
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                </ul>
+                                <!--<p class="moreResults">
+                                    <a href="javascript: void(0);" class="ver-mas" style="display: flex;">Ver más</a>
+                                    <a href="javascript: void(0);" class="ver-menos" style="display: none;">Ver menos</a>
+                                </p>-->
+                            </div>
+                            <div class="desc">
+                                <p>TODO: Descripción del artículo.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </article>
+    }
+    else
+    {
+        <article class="resource publicacion" id="resource_@Model.Key" typeof="sioc_t:Item" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:sioc_t="http://rdfs.org/sioc/types#" xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:sioc="http://rdfs.org/sioc/ns#">
+            <div class="wrap">
+                <div class="middle-wrap">
+                    <div class="title-wrap">
+                        <h2 class="resource-title">
+                            <a href="@Model.CompletCardLink">@Model.Title</a>
+                        </h2>
+                    </div>
+                    <div class="content-wrap">
+                        <div class="description-wrap">
+                            <div class="desc">
+                                @if ((Model.ViewSettings == null) || (!Model.MapView && (Model.ViewSettings.DescriptionOnList || Model.ViewSettings.DescriptionOnMosaic)) || (Model.MapView && Model.ViewSettings.DescriptionOnMap))
+                                {
+                                    if ((Model.Description.Contains("<p ") || Model.Description.Contains("<p>")) && Model.Description.Contains("</p>"))
+                                    {
+                                        <p>@MvcHtmlString.Create(Model.Description)</p>
+                                    }
+                                    else
+                                    {
+                                        <p>@MvcHtmlString.Create(Model.Description)</p>
+                                    }
+                                }
+                                else
+                                {
+                                    <p>El recurso no tiene descripción.</p>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
+    }
+}

@@ -1,0 +1,226 @@
+{
+  "rdftype": "http://w3id.org/roh/CV",
+  "ontologyName": "curriculumvitae",
+  "relation": {
+    "eid": "5097c6b6-f454-11eb-9a03-0242ac130003"
+  },
+  "sections": [
+    {
+      "id": "main_tabs",
+      "type": "tabs",
+      "sections": [
+        {
+          "title": "Datos de identificación",
+          "type": "tab",
+          "id": "datos_identificacion",
+          "sections": [
+            {
+              "title": "",
+              "class": [ "row" ],
+              "tag": "div",
+              "sections": [
+                {
+                  "title": "Datos personales" ,
+                  "class": [ "col", "col12" ],
+                  "tag": "div",
+                  "properties": [
+                    {
+                      "property": "http://purl.org/roh#title",
+                      "title": "Título del documento",
+                      "min": 1,
+                      "max": 1,
+                      "multiLanguage": false,
+                      "fieldType": "text"
+                    },
+                    {
+                      "property": "http://purl.org/roh/mirror/vivo#dateTime",
+                      "title": "Fecha",
+                      "min": 0,
+                      "max": 1,
+                      "multiLanguage": false,
+                      "fieldType": "datetime"
+                    },
+                    {
+                      "property": "http://purl.org/roh/mirror/bibo#authorList",
+                      "relation": {
+                        "property": "http://purl.org/roh/mirror/bibo#authorList",
+                        "ontologyName": "person",
+                        "rdfType": "http://purl.org/roh/mirror/foaf#Person",
+                        "entityReference": "http://purl.org/roh#ListItem",
+                        "orderRdf": "http://purl.org/roh#index",
+                        "itemRdf": "http://purl.org/roh#item",
+                        "eidRel": "5097c6b6-f454-11eb-9a03-0242ac130003"
+                      },
+                      "title": "Autores",
+                      "min": 1,
+                      "max": -1,
+                      "listItems": [],
+                      "multiLanguage": false,
+                      "fieldType": "orderedlist"
+                    }
+                  ],
+                  "entities": [
+                    {
+                      "property": "http://w3id.org/roh/cvOf",
+                      "ontologyName": "person",
+                      "relation": {
+                        "property": "http://w3id.org/roh/cvOf",
+                        "ontologyName": "person",
+                        "rdfType": "http://xmlns.com/foaf/0.1/Person",
+                        "entityReference": "http://xmlns.com/foaf/0.1/Person",
+                        "eid": "c50cf230-0f5a-4921-9fc4-f0a7eb4342e0",
+                        "eidRel": "5097c6b6-f454-11eb-9a03-0242ac130003"
+                      },
+                      "sections": [
+                        {
+                          "title": "",
+                          "class": [
+                            "row"
+                          ],
+                          "tag": "div",
+                          "sections": [
+                            {
+                              "title": "",
+                              "class": [
+                                "col",
+                                "col-sm-6",
+                                "col-md-4"
+                              ],
+                              "tag": "div",
+                              "properties": [
+                                {
+                                  "property": "http://xmlns.com/foaf/0.1/firstName",
+                                  "title": "Nombre",
+                                  "min": 1,
+                                  "max": 1,
+                                  "multiLanguage": false,
+                                  "fieldType": "text",
+                                  "viewMode": "readOnly"
+                                }
+                              ]
+                            },
+                            {
+                              "title": "",
+                              "class": [
+                                "col",
+                                "col-sm-6",
+                                "col-md-4"
+                              ],
+                              "tag": "div",
+                              "properties": [
+                                {
+                                  "property": "http://xmlns.com/foaf/0.1/lastName",
+                                  "title": "Apellido",
+                                  "viewMode": "readOnly",
+                                  "fieldType": "text"
+                                }
+                              ]
+                            },
+                            {
+                              "title": "",
+                              "class": [
+                                "col",
+                                "col-sm-6",
+                                "col-md-4"
+                              ],
+                              "tag": "div",
+                              "properties": [
+                                {
+                                  "property": "http://xmlns.com/foaf/0.1/nick",
+                                  "title": "Nick",
+                                  "viewMode": "readOnly",
+                                  "fieldType": "text"
+                                }
+                              ]
+                            },
+                            {
+                              "title": "",
+                              "class": [
+                                "col",
+                                "col-sm-6",
+                                "col-md-4"
+                              ],
+                              "tag": "div",
+                              "properties": [
+                                {
+                                  "property": "http://w3id.org/roh/ORCID",
+                                  "title": "ORCID",
+                                  "viewMode": "readOnly",
+                                  "fieldType": "text"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Situación profesional",
+          "type": "tab",
+          "id": "situacion_profesional",
+          "outSection": {
+            "section": "SectionTab2",
+            "defaultLoaded": false,
+            "loadOnce": true
+          }
+        },
+        {
+          "title": "Formación recibida",
+          "type": "tab",
+          "id": "formacion_recibida",
+          "outSection": {
+            "section": "SectionTab2",
+            "defaultLoaded": false,
+            "loadOnce": true
+          }
+        },
+        {
+          "title": "Actividad docente",
+          "type": "tab",
+          "id": "actividad_docente",
+          "outSection": {
+            "section": "SectionTab2",
+            "defaultLoaded": false,
+            "loadOnce": true
+          }
+        },
+        {
+          "title": "Experiencia científica y tecnológica",
+          "type": "tab",
+          "id": "experiencia_cientifica_tecnologica",
+          "outSection": {
+            "section": "SectionTab5",
+            "defaultLoaded": false,
+            "loadOnce": true
+          }
+        },
+        {
+          "title": "Actividad científica",
+          "type": "tab",
+          "id": "actividad_cientifica",
+          "outSection": {
+            "section": "SectionTab6",
+            "defaultLoaded": false,
+            "loadOnce": true
+          }
+        },
+        {
+          "title": "Resumen de texto libre",
+          "type": "tab",
+          "id": "resumen_texto_libre",
+          "outSection": {
+            "section": "SectionTab2",
+            "defaultLoaded": false,
+            "loadOnce": true
+          }
+        }
+      ]
+    }
+  ]
+}

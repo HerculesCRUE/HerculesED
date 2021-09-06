@@ -1,0 +1,34 @@
+{
+    "rdftype": "http://w3id.org/roh/scientificExperience",
+    "ontologyName": "curriculumvitae",
+    "properties": [
+        {
+            "property": "http://w3id.org/roh/competitiveProjects",
+            "relation": {
+                "property": "http://w3id.org/roh/scientificExperience",
+                "entityReference": "http://w3id.org/roh/scientificExperience"
+            },
+            "title": "Proyectos Competitivos",
+            "min": 0,
+            "max": 1,
+            "multiLanguage": false
+        },
+        {
+            "property": "http://w3id.org/roh/nonCompetitiveProjects",
+            "relation": {
+                "property": "http://w3id.org/roh/nonCompetitiveProjects",
+                "entityReference": "http://w3id.org/roh/nonCompetitiveProjects"
+            },
+            "title": "Proyectos no Competitivos",
+            "min": 0,
+            "max": 1,
+            "multiLanguage": false
+        }
+    ],
+    "items": {},
+    "view": {
+        "properties": [
+            "http://purl.org/roh/mirror/foaf#name"
+        ]
+    }
+}

@@ -1,0 +1,31 @@
+{
+    "rdftype": "http://w3id.org/roh/ProjectClassification",
+    "ontologyName": "project",
+    "properties": [
+        {
+            "property": "http://www.w3.org/2004/02/skos/core#Concept",
+            "relation": {
+                "property": "http://w3id.org/roh/projectClassificationNode",
+                "entityReference": "http://www.w3.org/2004/02/skos/core#Concept"
+            },
+            "title": "Nodo de clasificación del proyecto",
+            "min": 0,
+            "max": -1,
+            "multiLanguage": false,
+            "fieldsDB": [
+                {
+                    "rdfType": "http://purl.org/dc/elements/1.1/source",
+                    "name": "title",
+                    "main": true
+                }
+            ],
+            "fieldType": "autocomplete"
+        }
+    ],
+    "items": {},
+    "view": {
+        "properties": [
+            "http://purl.org/dc/elements/1.1/source"
+        ]
+    }
+}

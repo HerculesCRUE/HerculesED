@@ -1,0 +1,46 @@
+{
+    "rdftype": "http://w3id.org/roh/scientificActivity",
+    "ontologyName": "curriculumvitae",
+    "properties": [
+        {
+            "property": "http://w3id.org/roh/scientificPublications",
+            "relation": {
+                "property": "http://w3id.org/roh/scientificPublications",
+                "entityReference": "http://w3id.org/roh/RelatedDocuments"
+            },
+            "title": "Publicaciones, documentos científicos y técnicos",
+            "min": 0,
+            "max": -1,
+            "multiLanguage": false
+        },
+        {
+            "property": "http://w3id.org/roh/worksSubmittedConferences",
+            "relation": {
+                "property": "http://w3id.org/roh/worksSubmittedConferences",
+                "entityReference": "http://w3id.org/roh/RelatedDocuments"
+            },
+            "title": "Trabajos presentados en congresos",
+            "min": 0,
+            "max": -1,
+            "multiLanguage": false
+        },
+        {
+            "property": "http://w3id.org/roh/worksSubmittedSeminars",
+            "relation": {
+                "property": "http://w3id.org/roh/worksSubmittedSeminars",
+                "entityReference": "http://w3id.org/roh/RelatedDocuments"
+            },
+            "title": "Trabajos presentados en congresos",
+            "min": 0,
+            "max": -1,
+            "multiLanguage": false
+        }
+        
+    ],
+    "items": {},
+    "view": {
+        "properties": [
+            "http://purl.org/roh/mirror/foaf#name"
+        ]
+    }
+}

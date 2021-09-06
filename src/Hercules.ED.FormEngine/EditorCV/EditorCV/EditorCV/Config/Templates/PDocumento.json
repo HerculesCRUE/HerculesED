@@ -1,0 +1,293 @@
+{
+  "rdftype": "http://purl.org/ontology/bibo/Document",
+  "ontologyName": "document",
+  "properties": [
+    {
+      "property": "http://w3id.org/roh/title",
+      "title": "Título de la publicación",
+      "min": 1,
+      "max": 1,
+      "multiLanguage": false,
+      "fieldType": "text"
+    },
+    {
+      "property": "http://w3id.org/roh/crisIdentifier",
+      "title": "Identificador de la publicación",
+      "min": 0,
+      "max": 1,
+      "multiLanguage": false,
+      "fieldType": "text"
+    },
+    {
+      "property": "http://w3id.org/roh/impactIndex",
+      "title": "Índice de impacto",
+      "min": 0,
+      "max": -1,
+      "multiLanguage": false,
+      "fieldType": "text"
+    },
+    {
+      "property": "http://w3id.org/roh/hasMetric",
+      "title": "Métrica de la publicación",
+      "min": 0,
+      "max": -1,
+      "multiLanguage": false,
+      "fieldType": "text"
+    },
+    {
+      "property": "http://w3id.org/roh/workTitle",
+      "title": "Título del trabajo",
+      "min": 1,
+      "max": 1,
+      "multiLanguage": false,
+      "fieldType": "text"
+    },
+    {
+      "property": "http://w3id.org/roh/legalDeposit",
+      "title": "Depósito legal",
+      "min": 0,
+      "max": 1,
+      "multiLanguage": false,
+      "fieldType": "text"
+    },
+    {
+      "property": "http://w3id.org/roh/authorsNumber",
+      "title": "Número de autores",
+      "min": 0,
+      "max": 1,
+      "multiLanguage": false,
+      "fieldType": "number"
+    },
+    {
+      "property": "http://purl.org/ontology/bibo/issue",
+      "title": "Número",
+      "min": 0,
+      "max": 1,
+      "multiLanguage": false,
+      "fieldType": "text"
+    },
+    {
+      "property": "http://w3id.org/roh/congressProceedingsPublication",
+      "title": "Publicación en acta de congreso",
+      "min": 0,
+      "max": 1,
+      "multiLanguage": false,
+      "fieldType": "text"
+    },
+    {
+      "property": "http://purl.org/ontology/bibo/isbn",
+      "title": "ISBN",
+      "min": 0,
+      "max": 1,
+      "multiLanguage": false,
+      "fieldType": "text"
+    },
+    {
+      "property": "http://purl.org/ontology/bibo/volume",
+      "title": "Volumen",
+      "min": 0,
+      "max": 1,
+      "multiLanguage": false,
+      "fieldType": "text"
+    },
+    {
+      "property": "http://purl.org/ontology/bibo/editor",
+      "title": "Editorial",
+      "min": 0,
+      "max": 1,
+      "multiLanguage": false,
+      "fieldType": "text"
+    },
+    {
+      "property": "http://purl.org/ontology/bibo/issn",
+      "title": "ISSN",
+      "min": 0,
+      "max": 1,
+      "multiLanguage": false,
+      "fieldType": "text"
+    },
+    {
+      "property": "http://purl.org/ontology/bibo/pageStart",
+      "title": "Página inicial",
+      "min": 0,
+      "max": 1,
+      "multiLanguage": false,
+      "fieldType": "number"
+    },
+    {
+      "property": "http://purl.org/ontology/bibo/pageEnd",
+      "title": "Página final",
+      "min": 0,
+      "max": 1,
+      "multiLanguage": false,
+      "fieldType": "number"
+    },
+    {
+      "property": "https://www.w3.org/2006/vcard/ns#url",
+      "title": "URL",
+      "min": 0,
+      "max": 1,
+      "multiLanguage": false,
+      "fieldType": "text"
+    },
+    {
+      "property": "http://w3id.org/roh/collection",
+      "title": "Colección",
+      "min": 0,
+      "max": 1,
+      "multiLanguage": false,
+      "fieldType": "text"
+    },
+    {
+      "property": "http://w3id.org/roh/relevantPublication",
+      "title": "Publicación relevante",
+      "min": 0,
+      "max": 1,
+      "multiLanguage": false,
+      "fieldType": "text"
+    },
+    {
+      "property": "http://w3id.org/roh/citationCount",
+      "title": "Número de citas",
+      "min": 0,
+      "max": 1,
+      "multiLanguage": false,
+      "fieldType": "text"
+    },
+    {
+      "property": "http://purl.org/dc/elements/1.1/type",
+      "relation": {
+        "entityReference": "http://w3id.org/roh/PublicationType",
+        "rdfType": "http://w3id.org/roh/PublicationType"
+      },
+      "title": "Tipo de producción",
+      "min": 0,
+      "max": 1,
+      "multiLanguage": false,
+      "fieldsDB": [
+        {
+          "rdfType": "http://purl.org/dc/elements/1.1/title",
+          "name": "title",
+          "main": true
+        }
+      ],
+      "fieldType": "text"
+    },
+    {
+      "property": "http://w3id.org/roh/citationCount",
+      "title": "Número de citas",
+      "min": 0,
+      "max": 1,
+      "multiLanguage": false,
+      "fieldType": "text"
+    },
+    {
+      "property": "http://vivoweb.org/ontology/core#freeTextKeyword",
+      "title": "Número de citas",
+      "min": 0,
+      "max": 1,
+      "multiLanguage": false,
+      "fieldType": "text"
+    },
+    {
+      "property": "http://purl.org/dc/terms/issued",
+      "title": "Fecha de publicación",
+      "min": 0,
+      "max": 1,
+      "multiLanguage": false,
+      "fieldType": "datetime"
+    },
+    {
+      "property": "http://purl.org/ontology/bibo/presentedAt",
+      "title": "Presentado en",
+      "min": 0,
+      "max": 1,
+      "multiLanguage": false,
+      "fieldType": "datetime"
+    },
+    {
+      "property": "http://purl.org/roh/mirror/vivo#dateTime",
+      "title": "Fecha",
+      "min": 0,
+      "max": 1,
+      "multiLanguage": false,
+      "fieldType": "datetime"
+    },
+    {
+      "property": "http://purl.org/roh/mirror/bibo#authorList",
+      "relation": {
+        "entityReference": "http://purl.org/roh#ListItem",
+        "rdfType": "http://purl.org/roh/mirror/foaf#Person",
+        "orderRdf": "http://purl.org/roh#index",
+        "itemRdf": "http://purl.org/roh#item"
+      },
+      "id": "all",
+      "title": "Autores",
+      "min": 1,
+      "max": -1,
+      "listItems": [],
+      "multiLanguage": false,
+      "fieldType": "orderedlist"
+    }
+  ],
+  "designs": {
+    "design1": {
+      "sections": [
+        {
+          "title": "Datos generales",
+          "class": [
+            "row"
+          ],
+          "tag": "div",
+          "id": "general_data",
+          "type": "default",
+          "sections": [
+            {
+              "title": "",
+              "class": [
+                "col",
+                "col-12"
+              ],
+              "tag": "div",
+              "type": "default",
+              "properties": [
+                {
+                  "property": "http://purl.org/roh/title",
+                  "title": "Título del documento",
+                  "min": 1,
+                  "max": 1,
+                  "multiLanguage": false,
+                  "fieldType": "text"
+                },
+                {
+                  "property": "http://purl.org/roh/mirror/vivo#dateTime",
+                  "title": "Fecha",
+                  "min": 0,
+                  "max": 1,
+                  "multiLanguage": false,
+                  "fieldType": "datetime"
+                },
+                {
+                  "property": "http://purl.org/roh/mirror/bibo#authorList",
+                  "relation": {
+                    "entityReference": "http://purl.org/roh#ListItem",
+                    "rdfType": "http://purl.org/roh/mirror/foaf#Person",
+                    "orderRdf": "http://purl.org/roh#index",
+                    "itemRdf": "http://purl.org/roh#item"
+                  },
+                  "title": "Autores",
+                  "min": 1,
+                  "max": -1,
+                  "listItems": [],
+                  "multiLanguage": false,
+                  "fieldType": "orderedlist"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "items": {}
+}
