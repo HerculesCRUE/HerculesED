@@ -1,0 +1,2361 @@
+[
+  {
+    "url": [
+      {
+        "link": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85110238217&origin=inward",
+        "description": "scopus"
+      }
+    ],
+    "description": null,
+    "hasKnowledgeArea": [
+      {
+        "name": "Analytical Chemistry",
+        "abbreviation": "CHEM",
+        "hasCode": "1602"
+      },
+      {
+        "name": "Information Systems",
+        "abbreviation": "COMP",
+        "hasCode": "1710"
+      },
+      {
+        "name": "Atomic and Molecular Physics, and Optics",
+        "abbreviation": "PHYS",
+        "hasCode": "3107"
+      },
+      {
+        "name": "Biochemistry",
+        "abbreviation": "BIOC",
+        "hasCode": "1303"
+      },
+      {
+        "name": "Instrumentation",
+        "abbreviation": "PHYS",
+        "hasCode": "3105"
+      },
+      {
+        "name": "Electrical and Electronic Engineering",
+        "abbreviation": "ENGI",
+        "hasCode": "2208"
+      }
+    ],
+    "dataIssued": {
+      "datimeTime": "2021-07-02"
+    },
+    "correspondingAuthor": {
+      "name": [
+        "Bilbao-Jayo A.",
+        "Aritz",
+        "A."
+      ],
+      "surname": "Bilbao-Jayo",
+      "identifier": "Scopus-id: 57204671327",
+      "link": [
+        {
+          "link": "https://www.scopus.com/authid/detail.uri?authorId=57204671327",
+          "description": "Scopus profile"
+        }
+      ]
+    },
+    "eanucc13": null,
+    "pageEnd": null,
+    "doi": "10.3390/s21144839",
+    "seqOfAuthors": [
+      {
+        "name": [
+          "Bilbao-Jayo A.",
+          "Aritz",
+          "A."
+        ],
+        "surname": "Bilbao-Jayo",
+        "identifier": "Scopus-id: 57204671327",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=57204671327",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Almeida A.",
+          "Aitor",
+          "A."
+        ],
+        "surname": "Almeida",
+        "identifier": "Scopus-id: 13006716300",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=13006716300",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Sergi I.",
+          "Ilaria",
+          "I."
+        ],
+        "surname": "Sergi",
+        "identifier": "Scopus-id: 55512097200",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=55512097200",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Montanaro T.",
+          "Teodoro",
+          "T."
+        ],
+        "surname": "Montanaro",
+        "identifier": "Scopus-id: 56285236200",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=56285236200",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Fasano L.",
+          "Luca",
+          "L."
+        ],
+        "surname": "Fasano",
+        "identifier": "Scopus-id: 57220056308",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=57220056308",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Emaldi M.",
+          "Mikel",
+          "M."
+        ],
+        "surname": "Emaldi",
+        "identifier": "Scopus-id: 54980449300",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=54980449300",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Patrono L.",
+          "Luigi",
+          "L."
+        ],
+        "surname": "Patrono",
+        "identifier": "Scopus-id: 6507173572",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=6507173572",
+            "description": "Scopus profile"
+          }
+        ]
+      }
+    ],
+    "correspondingOrganization": null,
+    "pageStart": null,
+    "documentStatus": null,
+    "title": "Behavior modeling for a beacon-based indoor location system",
+    "freetextKeyword": [
+      "Ambient assisted living",
+      "Indoor positioning",
+      "Internet of things",
+      "Performance",
+      "Smartphone",
+      "Smartwatch",
+      "Wearable device"
+    ],
+    "abstract": "© 2021 by the authors. Licensee MDPI, Basel, Switzerland.In this work we performed a comparison between two different approaches to track a person in indoor environments using a locating system based on BLE technology with a smartphone and a smartwatch as monitoring devices. To do so, we provide the system architecture we designed and describe how the different elements of the proposed system interact with each other. Moreover, we have evaluated the system’s performance by computing the mean percentage error in the detection of the indoor position. Finally, we present a novel location prediction system based on neural embeddings, and a soft-attention mechanism, which is able to predict user’s next location with 67% accuracy.",
+    "language": "eng",
+    "hasPublicationVenue": {
+      "hasMetric": null,
+      "abbreviation": null,
+      "publisher": null,
+      "issn": "14248220",
+      "name": "Sensors",
+      "eissn": null,
+      "oclcnum": null
+    },
+    "hasMetric": {
+      "citationCount": "0",
+      "metricName": "Scopus"
+    },
+    "bibliografia": []
+  },
+  {
+    "url": [
+      {
+        "link": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85096672567&origin=inward",
+        "description": "scopus"
+      }
+    ],
+    "description": null,
+    "hasKnowledgeArea": [
+      {
+        "name": "Artificial Intelligence",
+        "abbreviation": "COMP",
+        "hasCode": "1702"
+      },
+      {
+        "name": "Computer Networks and Communications",
+        "abbreviation": "COMP",
+        "hasCode": "1705"
+      },
+      {
+        "name": "Energy Engineering and Power Technology",
+        "abbreviation": "ENER",
+        "hasCode": "2102"
+      },
+      {
+        "name": "Renewable Energy, Sustainability and the Environment",
+        "abbreviation": "ENER",
+        "hasCode": "2105"
+      },
+      {
+        "name": "Control and Optimization",
+        "abbreviation": "MATH",
+        "hasCode": "2606"
+      },
+      {
+        "name": "Instrumentation",
+        "abbreviation": "PHYS",
+        "hasCode": "3105"
+      },
+      {
+        "name": "Transportation",
+        "abbreviation": "SOCI",
+        "hasCode": "3313"
+      },
+      {
+        "name": "Automotive Engineering",
+        "abbreviation": "ENGI",
+        "hasCode": "2203"
+      }
+    ],
+    "dataIssued": {
+      "datimeTime": "2020-09-23"
+    },
+    "correspondingAuthor": {
+      "name": [
+        "Emaldi M.",
+        "Mikel",
+        "M."
+      ],
+      "surname": "Emaldi",
+      "identifier": "Scopus-id: 54980449300",
+      "link": [
+        {
+          "link": "https://www.scopus.com/authid/detail.uri?authorId=54980449300",
+          "description": "Scopus profile"
+        }
+      ]
+    },
+    "eanucc13": null,
+    "pageEnd": null,
+    "doi": "10.23919/SpliTech49282.2020.9243734",
+    "seqOfAuthors": [
+      {
+        "name": [
+          "Emaldi M.",
+          "Mikel",
+          "M."
+        ],
+        "surname": "Emaldi",
+        "identifier": "Scopus-id: 54980449300",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=54980449300",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Zabaleta K.",
+          "Koldo",
+          "K."
+        ],
+        "surname": "Zabaleta",
+        "identifier": "Scopus-id: 55932759000",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=55932759000",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Guillen I.",
+          "Ibai",
+          "I."
+        ],
+        "surname": "Guillen",
+        "identifier": "Scopus-id: 57220056287",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=57220056287",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Lopez-De-Ipina D.",
+          "Diego",
+          "D."
+        ],
+        "surname": "Lopez-De-Ipina",
+        "identifier": "Scopus-id: 13006436900",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=13006436900",
+            "description": "Scopus profile"
+          }
+        ]
+      }
+    ],
+    "correspondingOrganization": null,
+    "pageStart": null,
+    "documentStatus": null,
+    "title": "Blockchain-mediated Collaboration of Citizens in Open Government Processes",
+    "freetextKeyword": [
+      "Blockchain",
+      "crowdsourcing",
+      "Open Data",
+      "Open Government"
+    ],
+    "abstract": "© 2020 University of Split, FESB.This work explores how sustainable citizen collaboration to foster Open Government can be achieved by means of Blockchain-based solution. The technical feasibility and economic viability of a set of extensions of CKAN tool, bringing together Internet of People (IoP) related technologies such as Blockchain and crowdsourcing, to address sustainability in Open Government Portals is analysed. For that, a use case validation is performed, and the costs of its deployment assessed. The aim is to show how IoP promoting technologies enhance Public Administration (PA) and citizen collaboration to meet common interest objectives.",
+    "language": "eng",
+    "hasPublicationVenue": {
+      "hasMetric": null,
+      "abbreviation": null,
+      "publisher": null,
+      "issn": null,
+      "name": "2020 5th International Conference on Smart and Sustainable Technologies, SpliTech 2020",
+      "eissn": null,
+      "oclcnum": null
+    },
+    "hasMetric": {
+      "citationCount": "1",
+      "metricName": "Scopus"
+    },
+    "bibliografia": []
+  },
+  {
+    "url": [
+      {
+        "link": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85054169107&origin=inward",
+        "description": "scopus"
+      }
+    ],
+    "description": null,
+    "hasKnowledgeArea": [
+      {
+        "name": "Computer Science (all)",
+        "abbreviation": "COMP",
+        "hasCode": "1700"
+      }
+    ],
+    "dataIssued": {
+      "datimeTime": "2018-01-01"
+    },
+    "correspondingAuthor": {
+      "name": [
+        "Lopez-De-Ipina D.",
+        "Diego",
+        "D."
+      ],
+      "surname": "López-De-Ipiña",
+      "identifier": "Scopus-id: 13006436900",
+      "link": [
+        {
+          "link": "https://www.scopus.com/authid/detail.uri?authorId=13006436900",
+          "description": "Scopus profile"
+        }
+      ]
+    },
+    "eanucc13": null,
+    "pageEnd": "173",
+    "doi": null,
+    "seqOfAuthors": [
+      {
+        "name": [
+          "Lopez-De-Ipina D.",
+          "Diego",
+          "D."
+        ],
+        "surname": "López-De-Ipiña",
+        "identifier": "Scopus-id: 13006436900",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=13006436900",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Misikangas P.",
+          "Pauli",
+          "P."
+        ],
+        "surname": "Misikangas",
+        "identifier": "Scopus-id: 6506722806",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=6506722806",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Emaldi M.",
+          "Mikel",
+          "M."
+        ],
+        "surname": "Emaldi",
+        "identifier": "Scopus-id: 54980449300",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=54980449300",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Aguilera U.",
+          "Unai",
+          "U."
+        ],
+        "surname": "Aguilera",
+        "identifier": "Scopus-id: 24474286200",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=24474286200",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Drajic D.",
+          "Dejan",
+          "D."
+        ],
+        "surname": "Drajic",
+        "identifier": "Scopus-id: 6603148347",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=6603148347",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Sillaurren S.",
+          "Sara",
+          "S."
+        ],
+        "surname": "Sillaurren",
+        "identifier": "Scopus-id: 24483785400",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=24483785400",
+            "description": "Scopus profile"
+          }
+        ]
+      }
+    ],
+    "correspondingOrganization": null,
+    "pageStart": "162",
+    "documentStatus": null,
+    "title": "Empowering citizens into co-creators of demand-driven public services",
+    "freetextKeyword": [
+      "CO-CREATION",
+      "Open Data",
+      "Open Government",
+      "Open Services",
+      "Smart City"
+    ],
+    "abstract": "© 2018 CURRAN-CONFERENCE. All rights reserved.Open Government aims to enhance the transparency, participation and collaboration of city stakeholders in order to give place to Smarter Cities. This paper describes the WeLive co-creation fostering methodology together with its associated co-creation tools and a wide range of resulting co-created artefacts. This combination of co-creation methodology, platform and assets have been used to foster higher and better public-private partnerships for addressing citizen needs through new user demand-driven public services in four pilots across Europe. The lessons learned from this piloting on the value of co-creation to enhance participation and collaboration among distinct Smart Cities stakeholders are described.",
+    "language": "eng",
+    "hasPublicationVenue": {
+      "hasMetric": null,
+      "abbreviation": null,
+      "publisher": null,
+      "issn": null,
+      "name": "MCCSIS 2018 - Multi Conference on Computer Science and Information Systems; Proceedings of the International Conferences on Big Data Analytics, Data Mining and Computational Intelligence 2018, Theory and Practice in Modern Computing 2018 and Connected Smart Cities 2018",
+      "eissn": null,
+      "oclcnum": null
+    },
+    "hasMetric": {
+      "citationCount": "1",
+      "metricName": "Scopus"
+    },
+    "bibliografia": []
+  },
+  {
+    "url": [
+      {
+        "link": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85020445728&origin=inward",
+        "description": "scopus"
+      }
+    ],
+    "description": null,
+    "hasKnowledgeArea": [
+      {
+        "name": "Analytical Chemistry",
+        "abbreviation": "CHEM",
+        "hasCode": "1602"
+      },
+      {
+        "name": "Biochemistry",
+        "abbreviation": "BIOC",
+        "hasCode": "1303"
+      },
+      {
+        "name": "Atomic and Molecular Physics, and Optics",
+        "abbreviation": "PHYS",
+        "hasCode": "3107"
+      },
+      {
+        "name": "Instrumentation",
+        "abbreviation": "PHYS",
+        "hasCode": "3105"
+      },
+      {
+        "name": "Electrical and Electronic Engineering",
+        "abbreviation": "ENGI",
+        "hasCode": "2208"
+      }
+    ],
+    "dataIssued": {
+      "datimeTime": "2017-06-01"
+    },
+    "correspondingAuthor": {
+      "name": [
+        "Emaldi M.",
+        "Mikel",
+        "M."
+      ],
+      "surname": "Emaldi",
+      "identifier": "Scopus-id: 54980449300",
+      "link": [
+        {
+          "link": "https://www.scopus.com/authid/detail.uri?authorId=54980449300",
+          "description": "Scopus profile"
+        }
+      ]
+    },
+    "eanucc13": null,
+    "pageEnd": null,
+    "doi": "10.3390/s17061265",
+    "seqOfAuthors": [
+      {
+        "name": [
+          "Emaldi M.",
+          "Mikel",
+          "M."
+        ],
+        "surname": "Emaldi",
+        "identifier": "Scopus-id: 54980449300",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=54980449300",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Aguilera U.",
+          "Unai",
+          "U."
+        ],
+        "surname": "Aguilera",
+        "identifier": "Scopus-id: 24474286200",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=24474286200",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Lopez-de-Ipina D.",
+          "Diego",
+          "D."
+        ],
+        "surname": "López-de-Ipiña",
+        "identifier": "Scopus-id: 13006436900",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=13006436900",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Perez-Velasco J.",
+          "Jorge",
+          "J."
+        ],
+        "surname": "Pérez-Velasco",
+        "identifier": "Scopus-id: 55819826200",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=55819826200",
+            "description": "Scopus profile"
+          }
+        ]
+      }
+    ],
+    "correspondingOrganization": null,
+    "pageStart": null,
+    "documentStatus": null,
+    "title": "Towards citizen co-created public service apps",
+    "freetextKeyword": [
+      "Open data",
+      "Open government",
+      "Open innovation",
+      "Open services"
+    ],
+    "abstract": "© 2017 by the authors. Licensee MDPI, Basel, Switzerland.WeLive project’s main objective is about transforming the current e-government approach by providing a new paradigm based on a new open model oriented towards the design, production and deployment of public services and mobile apps based on the collaboration of different stakeholders. These stakeholders form the quadruple helix, i.e., citizens, private companies, research institutes and public administrations. Through the application of open innovation, open data and open services paradigms, the framework developed within the WeLive project enables the co-creation of urban apps. In this paper, we extend the description of the WeLive platform presented at, plus the preliminary results of the first pilot phase. The two-phase evaluation methodology designed and the evaluation results of first pilot sub-phase are also presented.",
+    "language": "eng",
+    "hasPublicationVenue": {
+      "hasMetric": null,
+      "abbreviation": null,
+      "publisher": null,
+      "issn": "14248220",
+      "name": "Sensors (Switzerland)",
+      "eissn": null,
+      "oclcnum": null
+    },
+    "hasMetric": {
+      "citationCount": "9",
+      "metricName": "Scopus"
+    },
+    "bibliografia": []
+  },
+  {
+    "url": [
+      {
+        "link": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85013127727&origin=inward",
+        "description": "scopus"
+      }
+    ],
+    "description": null,
+    "hasKnowledgeArea": [
+      {
+        "name": "Hardware and Architecture",
+        "abbreviation": "COMP",
+        "hasCode": "1708"
+      },
+      {
+        "name": "Computer Science Applications",
+        "abbreviation": "COMP",
+        "hasCode": "1706"
+      },
+      {
+        "name": "Management Science and Operations Research",
+        "abbreviation": "DECI",
+        "hasCode": "1803"
+      }
+    ],
+    "dataIssued": {
+      "datimeTime": "2017-06-01"
+    },
+    "correspondingAuthor": {
+      "name": [
+        "Lopez-Novoa U.",
+        "Unai",
+        "U."
+      ],
+      "surname": "Lopez-Novoa",
+      "identifier": "Scopus-id: 56405616800",
+      "link": [
+        {
+          "link": "https://www.scopus.com/authid/detail.uri?authorId=56405616800",
+          "description": "Scopus profile"
+        }
+      ]
+    },
+    "eanucc13": null,
+    "pageEnd": "519",
+    "doi": "10.1007/s00779-017-1012-6",
+    "seqOfAuthors": [
+      {
+        "name": [
+          "Lopez-Novoa U.",
+          "Unai",
+          "U."
+        ],
+        "surname": "Lopez-Novoa",
+        "identifier": "Scopus-id: 56405616800",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=56405616800",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Aguilera U.",
+          "Unai",
+          "U."
+        ],
+        "surname": "Aguilera",
+        "identifier": "Scopus-id: 24474286200",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=24474286200",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Emaldi M.",
+          "Mikel",
+          "M."
+        ],
+        "surname": "Emaldi",
+        "identifier": "Scopus-id: 54980449300",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=54980449300",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Lopez-de-Ipina D.",
+          "Diego",
+          "D."
+        ],
+        "surname": "López-de-Ipiña",
+        "identifier": "Scopus-id: 13006436900",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=13006436900",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Perez-de-Albeniz I.",
+          "Iker",
+          "I."
+        ],
+        "surname": "Pérez-de-Albeniz",
+        "identifier": "Scopus-id: 57193330848",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=57193330848",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Valerdi D.",
+          "David",
+          "D."
+        ],
+        "surname": "Valerdi",
+        "identifier": "Scopus-id: 36992630400",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=36992630400",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Iturricha I.",
+          "Ibai",
+          "I."
+        ],
+        "surname": "Iturricha",
+        "identifier": "Scopus-id: 26422300400",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=26422300400",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Arza E.",
+          "Eneko",
+          "E."
+        ],
+        "surname": "Arza",
+        "identifier": "Scopus-id: 57193338590",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=57193338590",
+            "description": "Scopus profile"
+          }
+        ]
+      }
+    ],
+    "correspondingOrganization": null,
+    "pageStart": "507",
+    "documentStatus": null,
+    "title": "Overcrowding detection in indoor events using scalable technologies",
+    "freetextKeyword": [
+      "Indoor location",
+      "Overcrowding detection",
+      "Scalable data processing"
+    ],
+    "abstract": "© 2017, Springer-Verlag London.The increase in the number of large-scale events held indoors (i.e., conferences and business events) opens new opportunities for crowd monitoring and access controlling as a way to prevent risks and provide further information about the event’s development. In addition, the availability of already connectable devices among attendees allows to perform non-intrusive positioning during the event, without the need of specific tracking devices. We present an algorithm for overcrowding detection based on passive Wi-Fi requests capture and a platform for event monitoring that integrates this algorithm. The platform offers access control management, attendees monitoring and the analysis and visualization of the captured information, using a scalable software architecture. In this paper, we evaluate the algorithm in two ways: First, we test its accuracy with data captured in a real event, and then we analyze the scalability of the code in a multi-core Apache Spark-based environment. The experiments show that the algorithm provides accurate results with the captured data, and that the code scales properly.",
+    "language": "eng",
+    "hasPublicationVenue": {
+      "hasMetric": null,
+      "abbreviation": null,
+      "publisher": null,
+      "issn": "16174909",
+      "name": "Personal and Ubiquitous Computing",
+      "eissn": null,
+      "oclcnum": null
+    },
+    "hasMetric": {
+      "citationCount": "5",
+      "metricName": "Scopus"
+    },
+    "bibliografia": []
+  },
+  {
+    "url": [
+      {
+        "link": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85013191684&origin=inward",
+        "description": "scopus"
+      }
+    ],
+    "description": null,
+    "hasKnowledgeArea": [
+      {
+        "name": "Artificial Intelligence",
+        "abbreviation": "COMP",
+        "hasCode": "1702"
+      },
+      {
+        "name": "Computer Networks and Communications",
+        "abbreviation": "COMP",
+        "hasCode": "1705"
+      },
+      {
+        "name": "Computer Science Applications",
+        "abbreviation": "COMP",
+        "hasCode": "1706"
+      },
+      {
+        "name": "Computer Vision and Pattern Recognition",
+        "abbreviation": "COMP",
+        "hasCode": "1707"
+      }
+    ],
+    "dataIssued": {
+      "datimeTime": "2017-01-12"
+    },
+    "correspondingAuthor": {
+      "name": [
+        "Aguilera U.",
+        "Unai",
+        "U."
+      ],
+      "surname": "Aguilera",
+      "identifier": "Scopus-id: 24474286200",
+      "link": [
+        {
+          "link": "https://www.scopus.com/authid/detail.uri?authorId=24474286200",
+          "description": "Scopus profile"
+        }
+      ]
+    },
+    "eanucc13": null,
+    "pageEnd": "276",
+    "doi": "10.1109/UIC-ATC-ScalCom-CBDCom-IoP-SmartWorld.2016.0058",
+    "seqOfAuthors": [
+      {
+        "name": [
+          "Aguilera U.",
+          "Unai",
+          "U."
+        ],
+        "surname": "Aguilera",
+        "identifier": "Scopus-id: 24474286200",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=24474286200",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Lopez-Novoa U.",
+          "Unai",
+          "U."
+        ],
+        "surname": "Lopez-Novoa",
+        "identifier": "Scopus-id: 56405616800",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=56405616800",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Emaldi M.",
+          "Mikel",
+          "M."
+        ],
+        "surname": "Emaldi",
+        "identifier": "Scopus-id: 54980449300",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=54980449300",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Lopez-De-Ipina D.",
+          "Diego",
+          "D."
+        ],
+        "surname": "Lopez-De-Ipina",
+        "identifier": "Scopus-id: 13006436900",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=13006436900",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Perez-De-Albeniz I.",
+          "Iker",
+          "I."
+        ],
+        "surname": "Perez-De-Albeniz",
+        "identifier": "Scopus-id: 57193330848",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=57193330848",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Valerdi D.",
+          "David",
+          "D."
+        ],
+        "surname": "Valerdi",
+        "identifier": "Scopus-id: 36992630400",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=36992630400",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Iturricha I.",
+          "Ibai",
+          "I."
+        ],
+        "surname": "Iturricha",
+        "identifier": "Scopus-id: 26422300400",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=26422300400",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Arza E.",
+          "Eneko",
+          "E."
+        ],
+        "surname": "Arza",
+        "identifier": "Scopus-id: 57193338590",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=57193338590",
+            "description": "Scopus profile"
+          }
+        ]
+      }
+    ],
+    "correspondingOrganization": null,
+    "pageStart": "269",
+    "documentStatus": null,
+    "title": "A Platform for Overcrowding Detection in Indoor Events Using Scalable Technologies",
+    "freetextKeyword": [
+      "Hadoop",
+      "Indoor",
+      "Overcrowding detection",
+      "Scalable",
+      "Wi-fi"
+    ],
+    "abstract": "© 2016 IEEE.The increase in the number of large scale events held indoors (i.e. conferences, business events) opens new opportunities for crowd monitoring, access controlling as a way to prevent risks, provide further information about the event's development. In addition, the availability of already connectable devices among attendees allows to perform non-intrusive positioning during the event, without the need of specific tracking devices. We present a platform that integrates the access control management, attendees monitoring based on passive Wi-Fi requests detection, the analysis, visualization of the captured information using an scalable software architecture. The analysis of the captured information enables to detect crowded zones, the attendance status during the event's performance, after its ending. In addition, the proposed platform has been evaluated using information captured in a real event.",
+    "language": "eng",
+    "hasPublicationVenue": {
+      "hasMetric": null,
+      "abbreviation": null,
+      "publisher": null,
+      "issn": null,
+      "name": "Proceedings - 13th IEEE International Conference on Ubiquitous Intelligence and Computing, 13th IEEE International Conference on Advanced and Trusted Computing, 16th IEEE International Conference on Scalable Computing and Communications, IEEE International Conference on Cloud and Big Data Computing, IEEE International Conference on Internet of People and IEEE Smart World Congress and Workshops, UIC-ATC-ScalCom-CBDCom-IoP-SmartWorld 2016",
+      "eissn": null,
+      "oclcnum": null
+    },
+    "hasMetric": {
+      "citationCount": "0",
+      "metricName": "Scopus"
+    },
+    "bibliografia": []
+  },
+  {
+    "url": [
+      {
+        "link": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85009770864&origin=inward",
+        "description": "scopus"
+      }
+    ],
+    "description": null,
+    "hasKnowledgeArea": [
+      {
+        "name": "Theoretical Computer Science",
+        "abbreviation": "MATH",
+        "hasCode": "2614"
+      },
+      {
+        "name": "Computer Science (all)",
+        "abbreviation": "COMP",
+        "hasCode": "1700"
+      }
+    ],
+    "dataIssued": {
+      "datimeTime": "2016-01-01"
+    },
+    "correspondingAuthor": {
+      "name": [
+        "Lopez-De-Ipina D.",
+        "Diego",
+        "D."
+      ],
+      "surname": "López-De-Ipiña",
+      "identifier": "Scopus-id: 13006436900",
+      "link": [
+        {
+          "link": "https://www.scopus.com/authid/detail.uri?authorId=13006436900",
+          "description": "Scopus profile"
+        }
+      ]
+    },
+    "eanucc13": null,
+    "pageEnd": "481",
+    "doi": "10.1007/978-3-319-48799-1_51",
+    "seqOfAuthors": [
+      {
+        "name": [
+          "Lopez-De-Ipina D.",
+          "Diego",
+          "D."
+        ],
+        "surname": "López-De-Ipiña",
+        "identifier": "Scopus-id: 13006436900",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=13006436900",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Emaldi M.",
+          "Mikel",
+          "M."
+        ],
+        "surname": "Emaldi",
+        "identifier": "Scopus-id: 54980449300",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=54980449300",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Aguilera U.",
+          "Unai",
+          "U."
+        ],
+        "surname": "Aguilera",
+        "identifier": "Scopus-id: 24474286200",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=24474286200",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Perez-Velasco J.",
+          "Jorge",
+          "J."
+        ],
+        "surname": "Pérez-Velasco",
+        "identifier": "Scopus-id: 55819826200",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=55819826200",
+            "description": "Scopus profile"
+          }
+        ]
+      }
+    ],
+    "correspondingOrganization": null,
+    "pageStart": "469",
+    "documentStatus": null,
+    "title": "Towards citizen co-created public service apps",
+    "freetextKeyword": [
+      "Open data",
+      "Open government",
+      "Open innovation",
+      "Open services"
+    ],
+    "abstract": "© Springer International Publishing AG 2016.This paper describes the WeLive framework, a set of tools to enable co-created urban apps by means of bringing together Open Innovation, Open Data and Open Services paradigms. It proposes a more holistic involvement of stakeholders across service ideation, creation and exploitation. The WeLive co-creation process applied to three new urban apps in the city of Bilbao is described. The two-phase evaluation methodology designed and the evaluation results of pre-pilot sub-phase are also presented. As a result, an early user experience evaluation for WeLive has been obtained.",
+    "language": "eng",
+    "hasPublicationVenue": {
+      "hasMetric": null,
+      "abbreviation": null,
+      "publisher": null,
+      "issn": "16113349 03029743",
+      "name": "Lecture Notes in Computer Science (including subseries Lecture Notes in Artificial Intelligence and Lecture Notes in Bioinformatics)",
+      "eissn": null,
+      "oclcnum": null
+    },
+    "hasMetric": {
+      "citationCount": "6",
+      "metricName": "Scopus"
+    },
+    "bibliografia": []
+  },
+  {
+    "url": [
+      {
+        "link": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=84975721177&origin=inward",
+        "description": "scopus"
+      }
+    ],
+    "description": null,
+    "hasKnowledgeArea": [
+      {
+        "name": "Modeling and Simulation",
+        "abbreviation": "MATH",
+        "hasCode": "2611"
+      },
+      {
+        "name": "Medical Assisting and Transcription",
+        "abbreviation": "HEAL",
+        "hasCode": "3606"
+      },
+      {
+        "name": "Applied Mathematics",
+        "abbreviation": "MATH",
+        "hasCode": "2604"
+      }
+    ],
+    "dataIssued": {
+      "datimeTime": "2015-01-01"
+    },
+    "correspondingAuthor": {
+      "name": [
+        "Emaldi M.",
+        "Mikel",
+        "M."
+      ],
+      "surname": "Emaldi",
+      "identifier": "Scopus-id: 54980449300",
+      "link": [
+        {
+          "link": "https://www.scopus.com/authid/detail.uri?authorId=54980449300",
+          "description": "Scopus profile"
+        }
+      ]
+    },
+    "eanucc13": null,
+    "pageEnd": "472",
+    "doi": "10.1007/978-3-319-09177-8_18",
+    "seqOfAuthors": [
+      {
+        "name": [
+          "Emaldi M.",
+          "Mikel",
+          "M."
+        ],
+        "surname": "Emaldi",
+        "identifier": "Scopus-id: 54980449300",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=54980449300",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Pena O.",
+          "Oscar",
+          "O."
+        ],
+        "surname": "Peña",
+        "identifier": "Scopus-id: 55810432700",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=55810432700",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Lazaro J.",
+          "Jon",
+          "J."
+        ],
+        "surname": "Lázaro",
+        "identifier": "Scopus-id: 55508300000",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=55508300000",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Lopez-De-Ipina D.",
+          "Diego",
+          "D."
+        ],
+        "surname": "López-De-Ipiña",
+        "identifier": "Scopus-id: 13006436900",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=13006436900",
+            "description": "Scopus profile"
+          }
+        ]
+      }
+    ],
+    "correspondingOrganization": null,
+    "pageStart": "443",
+    "documentStatus": null,
+    "title": "Linked Open Data as the Fuel for Smarter Cities",
+    "freetextKeyword": null,
+    "abstract": "© 2015 Springer International Publishing Switzerland.In the last decade big efforts have been carried out in order to move towards the Smart City concept, from both the academic and industrial points of view, encouraging researchers and data stakeholders to find new solutions on how to cope with the huge amount of generated data. Meanwhile, Open Data has arisen as a way to freely share contents to be consumed without restrictions from copyright, patents or other mechanisms of control. Nowadays, Open Data is an achievable concept thanks to the World Wide Web, and has been re-defined for its application in different domains. Regarding public administrations, the concept of Open Government has found an ally in Open Data concepts, defending citizens' right to access data, documentation and proceedings of the governments. We propose the use of Linked Open Data, a set of best practices to publish data on the Web recommended by the W3C, in a new data life cycle management model, allowing governments and individuals to handle better their data, easing its consumption by anybody, including both companies and third parties interested in the exploitation of the data, and citizens as end users receiving relevant curated information and reports about their city. In summary, Linked Open Data uses the previous Openness concepts to evolve from an infrastructure thought for humans, to an architecture for the automatic consumption of big amounts of data, providing relevant and high-quality data to end users with low maintenance costs. Consequently, smart data can now be achievable in smart cities.",
+    "language": "eng",
+    "hasPublicationVenue": {
+      "hasMetric": null,
+      "abbreviation": null,
+      "publisher": null,
+      "issn": "21967334 21967326",
+      "name": "Modeling and Optimization in Science and Technologies",
+      "eissn": null,
+      "oclcnum": null
+    },
+    "hasMetric": {
+      "citationCount": "5",
+      "metricName": "Scopus"
+    },
+    "bibliografia": []
+  },
+  {
+    "url": [
+      {
+        "link": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=84954527783&origin=inward",
+        "description": "scopus"
+      }
+    ],
+    "description": null,
+    "hasKnowledgeArea": [
+      {
+        "name": "Computer Science (all)",
+        "abbreviation": "COMP",
+        "hasCode": "1700"
+      }
+    ],
+    "dataIssued": {
+      "datimeTime": "2015-01-01"
+    },
+    "correspondingAuthor": {
+      "name": [
+        "Emaldi M.",
+        "Mikel",
+        "M."
+      ],
+      "surname": "Emaldi",
+      "identifier": "Scopus-id: 54980449300",
+      "link": [
+        {
+          "link": "https://www.scopus.com/authid/detail.uri?authorId=54980449300",
+          "description": "Scopus profile"
+        }
+      ]
+    },
+    "eanucc13": null,
+    "pageEnd": null,
+    "doi": null,
+    "seqOfAuthors": [
+      {
+        "name": [
+          "Emaldi M.",
+          "Mikel",
+          "M."
+        ],
+        "surname": "Emaldi",
+        "identifier": "Scopus-id: 54980449300",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=54980449300",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Corcho O.",
+          "Oscar",
+          "O."
+        ],
+        "surname": "Corcho",
+        "identifier": "Scopus-id: 14010357000",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=14010357000",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Lopez-de-ipina D.",
+          "Diego",
+          "D."
+        ],
+        "surname": "López-de-ipiña",
+        "identifier": "Scopus-id: 13006436900",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=13006436900",
+            "description": "Scopus profile"
+          }
+        ]
+      }
+    ],
+    "correspondingOrganization": null,
+    "pageStart": null,
+    "documentStatus": null,
+    "title": "Detection of related semantic datasets based on frequent subgraph mining",
+    "freetextKeyword": null,
+    "abstract": "We describe an approach to find similarities between RDF datasets, which may be applicable to tasks such as link discovery, dataset summarization or dataset understanding. Our approach builds on the assumption that similar datasets should have a similar structure and include semantically similar resources and relationships. It is based on the combination of Frequent Subgraph Mining (FSM) techniques, used to synthesize the datasets and find similarities among them. The result of this work can be applied for easing the task of data interlinking and for promoting data reusing in the Semantic Web.",
+    "language": "eng",
+    "hasPublicationVenue": {
+      "hasMetric": null,
+      "abbreviation": null,
+      "publisher": null,
+      "issn": "16130073",
+      "name": "CEUR Workshop Proceedings",
+      "eissn": null,
+      "oclcnum": null
+    },
+    "hasMetric": {
+      "citationCount": "0",
+      "metricName": "Scopus"
+    },
+    "bibliografia": []
+  },
+  {
+    "url": [
+      {
+        "link": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=84893258223&origin=inward",
+        "description": "scopus"
+      }
+    ],
+    "description": null,
+    "hasKnowledgeArea": [
+      {
+        "name": "Software",
+        "abbreviation": "COMP",
+        "hasCode": "1712"
+      },
+      {
+        "name": "Education",
+        "abbreviation": "SOCI",
+        "hasCode": "3304"
+      },
+      {
+        "name": "Computer Science Applications",
+        "abbreviation": "COMP",
+        "hasCode": "1706"
+      }
+    ],
+    "dataIssued": {
+      "datimeTime": "2013-12-01"
+    },
+    "correspondingAuthor": {
+      "name": [
+        "Orduna P.",
+        "Pablo",
+        "P."
+      ],
+      "surname": "Orduña",
+      "identifier": "Scopus-id: 14834289400",
+      "link": [
+        {
+          "link": "https://www.scopus.com/authid/detail.uri?authorId=14834289400",
+          "description": "Scopus profile"
+        }
+      ]
+    },
+    "eanucc13": null,
+    "pageEnd": "1378",
+    "doi": "10.1109/FIE.2013.6685057",
+    "seqOfAuthors": [
+      {
+        "name": [
+          "Orduna P.",
+          "Pablo",
+          "P."
+        ],
+        "surname": "Orduña",
+        "identifier": "Scopus-id: 14834289400",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=14834289400",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Uribe S.B.",
+          "Sergio Botero",
+          "S.B."
+        ],
+        "surname": "Uribe",
+        "identifier": "Scopus-id: 56022362100",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=56022362100",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Isaza N.H.",
+          "Nicolas Hock",
+          "N.H."
+        ],
+        "surname": "Isaza",
+        "identifier": "Scopus-id: 57212780870",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=57212780870",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Sancristobal E.",
+          "Elio",
+          "E."
+        ],
+        "surname": "Sancristobal",
+        "identifier": "Scopus-id: 6508164379",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=6508164379",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Emaldi M.",
+          "Mikel",
+          "M."
+        ],
+        "surname": "Emaldi",
+        "identifier": "Scopus-id: 54980449300",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=54980449300",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Martin A.P.",
+          "Alberto Pesquera",
+          "A.P."
+        ],
+        "surname": "Martin",
+        "identifier": "Scopus-id: 55476814400",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=55476814400",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "DeLong K.",
+          "Kimberley",
+          "K."
+        ],
+        "surname": "DeLong",
+        "identifier": "Scopus-id: 26030390500",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=26030390500",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Bailey P.",
+          "Philip",
+          "P."
+        ],
+        "surname": "Bailey",
+        "identifier": "Scopus-id: 9037253000",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=9037253000",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Lopez-De-Ipina D.",
+          "Diego",
+          "D."
+        ],
+        "surname": "López-De-Ipiña",
+        "identifier": "Scopus-id: 13006436900",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=13006436900",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Castro M.",
+          "Manuel",
+          "M."
+        ],
+        "surname": "Castro",
+        "identifier": "Scopus-id: 26643374700",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=26643374700",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Garcia-Zubia J.",
+          "Javier",
+          "J."
+        ],
+        "surname": "Garcia-Zubia",
+        "identifier": "Scopus-id: 14833837400",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=14833837400",
+            "description": "Scopus profile"
+          }
+        ]
+      }
+    ],
+    "correspondingOrganization": null,
+    "pageStart": "1372",
+    "documentStatus": null,
+    "title": "Generic integration of remote laboratories in learning and content management systems through federation protocols",
+    "freetextKeyword": null,
+    "abstract": "Educational remote laboratories are a software and hardware tool that allows students to remotely access real equipment located in universities as if they were in a hands-on-lab session. Their integration in Content and Learning Management Systems (CMSs or LMSs) has been an active research topic for years, supporting mainly ad hoc solutions. A notable exception has been the use of federation protocols -commonly used for sharing laboratories from one university to other-, for actually sharing laboratories from a remote laboratory system to a C/LMS. This approach opened new doors in the simplification of the process, since it did not require the remote laboratories to make any type of change. The focus of this contribution is to provide a solution to decrease the number of functionalities required for creating an integration by providing a software component that reuses them. As shown in the contribution, this component has been implemented and two remote laboratory management systems (which provide access to multiple remote laboratories) are already supported, and a third one is under development. In the C/LMS side, all the LMSs supporting IMS LTI are supported, and HTTP APIs are provided for being supported by other systems. Indeed, the contribution describes its support in the Joomla CMS and in the Moodle 1.9 and dotLRN LMSs which do not support IMS LTI. The solution, called gateway4labs, is an open source initiative which targets to be used in production. © 2013 IEEE.",
+    "language": "eng",
+    "hasPublicationVenue": {
+      "hasMetric": null,
+      "abbreviation": null,
+      "publisher": null,
+      "issn": "15394565",
+      "name": "Proceedings - Frontiers in Education Conference, FIE",
+      "eissn": null,
+      "oclcnum": null
+    },
+    "hasMetric": {
+      "citationCount": "24",
+      "metricName": "Scopus"
+    },
+    "bibliografia": []
+  },
+  {
+    "url": [
+      {
+        "link": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=84924348584&origin=inward",
+        "description": "scopus"
+      }
+    ],
+    "description": null,
+    "hasKnowledgeArea": [
+      {
+        "name": "Computer Science (all)",
+        "abbreviation": "COMP",
+        "hasCode": "1700"
+      }
+    ],
+    "dataIssued": {
+      "datimeTime": "2013-01-01"
+    },
+    "correspondingAuthor": {
+      "name": [
+        "Emaldi M.",
+        "Mikel",
+        "M."
+      ],
+      "surname": "Emaldi",
+      "identifier": "Scopus-id: 54980449300",
+      "link": [
+        {
+          "link": "https://www.scopus.com/authid/detail.uri?authorId=54980449300",
+          "description": "Scopus profile"
+        }
+      ]
+    },
+    "eanucc13": null,
+    "pageEnd": "71",
+    "doi": null,
+    "seqOfAuthors": [
+      {
+        "name": [
+          "Emaldi M.",
+          "Mikel",
+          "M."
+        ],
+        "surname": "Emaldi",
+        "identifier": "Scopus-id: 54980449300",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=54980449300",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Lopezdeipina D.",
+          "Diego",
+          "D."
+        ],
+        "surname": "Lópezdeipiña",
+        "identifier": "Scopus-id: 13006436900",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=13006436900",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Pena O.",
+          "Oscar",
+          "O."
+        ],
+        "surname": "Peña",
+        "identifier": "Scopus-id: 55810432700",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=55810432700",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Vanhecke S.",
+          "Sacha",
+          "S."
+        ],
+        "surname": "Vanhecke",
+        "identifier": "Scopus-id: 55818999500",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=55818999500",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Lazaro J.",
+          "Jon",
+          "J."
+        ],
+        "surname": "Lázaro",
+        "identifier": "Scopus-id: 55508300000",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=55508300000",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Mannens E.",
+          "Erik",
+          "E."
+        ],
+        "surname": "Mannens",
+        "identifier": "Scopus-id: 24464045700",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=24464045700",
+            "description": "Scopus profile"
+          }
+        ]
+      }
+    ],
+    "correspondingOrganization": null,
+    "pageStart": "68",
+    "documentStatus": null,
+    "title": "To trust, or not to trust: Highlighting the need for data provenance in mobile apps for smart cities",
+    "freetextKeyword": null,
+    "abstract": "The popularity of smartphones makes them the most suitable devices to ensure access to services provided by smart cities; furthermore, as one of the main features of the smart cities is the participation of the citizens in their governance, it is not unusual that these citizens generate and share their own data through their smartphones. But, how can we know if these data are reliable? How can identify if a given user and, consequently, the data generated by him/her, can be trusted? On this paper, we present how the IES Cities' platform integrates the PROV Data Model and the related PROV-O ontology, allowing the exchange of provenance information about user-generated data in the context of smart cities.",
+    "language": "eng",
+    "hasPublicationVenue": {
+      "hasMetric": null,
+      "abbreviation": null,
+      "publisher": null,
+      "issn": "16130073",
+      "name": "CEUR Workshop Proceedings",
+      "eissn": null,
+      "oclcnum": null
+    },
+    "hasMetric": {
+      "citationCount": "2",
+      "metricName": "Scopus"
+    },
+    "bibliografia": []
+  },
+  {
+    "url": [
+      {
+        "link": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=84870355948&origin=inward",
+        "description": "scopus"
+      }
+    ],
+    "description": null,
+    "hasKnowledgeArea": [
+      {
+        "name": "Theoretical Computer Science",
+        "abbreviation": "MATH",
+        "hasCode": "2614"
+      },
+      {
+        "name": "Computer Science (all)",
+        "abbreviation": "COMP",
+        "hasCode": "1700"
+      }
+    ],
+    "dataIssued": {
+      "datimeTime": "2012-12-06"
+    },
+    "correspondingAuthor": {
+      "name": [
+        "Emaldi M.",
+        "Mikel",
+        "M."
+      ],
+      "surname": "Emaldi",
+      "identifier": "Scopus-id: 54980449300",
+      "link": [
+        {
+          "link": "https://www.scopus.com/authid/detail.uri?authorId=54980449300",
+          "description": "Scopus profile"
+        }
+      ]
+    },
+    "eanucc13": null,
+    "pageEnd": "378",
+    "doi": "10.1007/978-3-642-35377-2_52",
+    "seqOfAuthors": [
+      {
+        "name": [
+          "Emaldi M.",
+          "Mikel",
+          "M."
+        ],
+        "surname": "Emaldi",
+        "identifier": "Scopus-id: 54980449300",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=54980449300",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Lazaro J.",
+          "Jon",
+          "J."
+        ],
+        "surname": "Lázaro",
+        "identifier": "Scopus-id: 55508300000",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=55508300000",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Laiseca X.",
+          "Xabier",
+          "X."
+        ],
+        "surname": "Laiseca",
+        "identifier": "Scopus-id: 25930953600",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=25930953600",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Lopez-De-Ipina D.",
+          "Diego",
+          "D."
+        ],
+        "surname": "López-De-Ipiña",
+        "identifier": "Scopus-id: 13006436900",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=13006436900",
+            "description": "Scopus profile"
+          }
+        ]
+      }
+    ],
+    "correspondingOrganization": null,
+    "pageStart": "371",
+    "documentStatus": null,
+    "title": "LinkedQR: Improving tourism experience through linked data and QR codes",
+    "freetextKeyword": null,
+    "abstract": "Since Sir Tim Berners-Lee announced the best practices to publish semantic data through the Web, Linked Data principles have been introduced into a wide variety of application domains. This usage of Linked Data eases the enrichment of offered data in a grade that the semantic data that not applies the Linked Data principles never would achieve. In this paper, we present LinkedQR, a tool to improve the collaboration between QR codes and Linked Data; and a case study based on the tourism sector located into an art gallery. © 2012 Springer-Verlag.",
+    "language": "eng",
+    "hasPublicationVenue": {
+      "hasMetric": null,
+      "abbreviation": null,
+      "publisher": null,
+      "issn": "03029743 16113349",
+      "name": "Lecture Notes in Computer Science (including subseries Lecture Notes in Artificial Intelligence and Lecture Notes in Bioinformatics)",
+      "eissn": null,
+      "oclcnum": null
+    },
+    "hasMetric": {
+      "citationCount": "8",
+      "metricName": "Scopus"
+    },
+    "bibliografia": []
+  },
+  {
+    "url": [
+      {
+        "link": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=84892376900&origin=inward",
+        "description": "scopus"
+      }
+    ],
+    "description": null,
+    "hasKnowledgeArea": [
+      {
+        "name": "Computer Science (all)",
+        "abbreviation": "COMP",
+        "hasCode": "1700"
+      }
+    ],
+    "dataIssued": {
+      "datimeTime": "2012-12-01"
+    },
+    "correspondingAuthor": {
+      "name": [
+        "Emaldi M.",
+        "Mikel",
+        "M."
+      ],
+      "surname": "Emaldi",
+      "identifier": "Scopus-id: 54980449300",
+      "link": [
+        {
+          "link": "https://www.scopus.com/authid/detail.uri?authorId=54980449300",
+          "description": "Scopus profile"
+        }
+      ]
+    },
+    "eanucc13": null,
+    "pageEnd": "120",
+    "doi": null,
+    "seqOfAuthors": [
+      {
+        "name": [
+          "Emaldi M.",
+          "Mikel",
+          "M."
+        ],
+        "surname": "Emaldi",
+        "identifier": "Scopus-id: 54980449300",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=54980449300",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Lazaro J.",
+          "Jon",
+          "J."
+        ],
+        "surname": "Lázaro",
+        "identifier": "Scopus-id: 55508300000",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=55508300000",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Aguilera U.",
+          "Unai",
+          "U."
+        ],
+        "surname": "Aguilera",
+        "identifier": "Scopus-id: 24474286200",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=24474286200",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Pena O.",
+          "Oscar",
+          "O."
+        ],
+        "surname": "Peña",
+        "identifier": "Scopus-id: 55810432700",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=55810432700",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "De Ipina D.L.",
+          "Diego López",
+          "D.L."
+        ],
+        "surname": "De Ipiña",
+        "identifier": "Scopus-id: 13006436900",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=13006436900",
+            "description": "Scopus profile"
+          }
+        ]
+      }
+    ],
+    "correspondingOrganization": null,
+    "pageStart": "115",
+    "documentStatus": null,
+    "title": "Short paper: Semantic annotations for sensor Open Data",
+    "freetextKeyword": null,
+    "abstract": "Since the creation of the Open Data Euskadi (ODE) initiative in 2009, one of its challenges has been the publication of government Open Data following the Linked Data principles. On the other hand, one of the challenges for the Semantic Sensor Web is the integration and fusion of data from heterogeneous sensor networks. In this short paper we present the efforts made at the Bizkaisense1 project on the alignment of different ontologies with the objective to fulfil these two challenges.",
+    "language": "eng",
+    "hasPublicationVenue": {
+      "hasMetric": null,
+      "abbreviation": null,
+      "publisher": null,
+      "issn": "16130073",
+      "name": "CEUR Workshop Proceedings",
+      "eissn": null,
+      "oclcnum": null
+    },
+    "hasMetric": {
+      "citationCount": "1",
+      "metricName": "Scopus"
+    },
+    "bibliografia": []
+  },
+  {
+    "url": [
+      {
+        "link": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=84874753341&origin=inward",
+        "description": "scopus"
+      }
+    ],
+    "description": null,
+    "hasKnowledgeArea": [
+      {
+        "name": "Software",
+        "abbreviation": "COMP",
+        "hasCode": "1712"
+      },
+      {
+        "name": "Education",
+        "abbreviation": "SOCI",
+        "hasCode": "3304"
+      },
+      {
+        "name": "Computer Science Applications",
+        "abbreviation": "COMP",
+        "hasCode": "1706"
+      }
+    ],
+    "dataIssued": {
+      "datimeTime": "2012-12-01"
+    },
+    "correspondingAuthor": {
+      "name": [
+        "Orduna P.",
+        "Pablo",
+        "P."
+      ],
+      "surname": "Orduna",
+      "identifier": "Scopus-id: 14834289400",
+      "link": [
+        {
+          "link": "https://www.scopus.com/authid/detail.uri?authorId=14834289400",
+          "description": "Scopus profile"
+        }
+      ]
+    },
+    "eanucc13": null,
+    "pageEnd": null,
+    "doi": "10.1109/FIE.2012.6462220",
+    "seqOfAuthors": [
+      {
+        "name": [
+          "Orduna P.",
+          "Pablo",
+          "P."
+        ],
+        "surname": "Orduna",
+        "identifier": "Scopus-id: 14834289400",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=14834289400",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Sancristobal E.",
+          "Elio",
+          "E."
+        ],
+        "surname": "Sancristobal",
+        "identifier": "Scopus-id: 6508164379",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=6508164379",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Emaldi M.",
+          "Mikel",
+          "M."
+        ],
+        "surname": "Emaldi",
+        "identifier": "Scopus-id: 54980449300",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=54980449300",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Castro M.",
+          "Manuel",
+          "M."
+        ],
+        "surname": "Castro",
+        "identifier": "Scopus-id: 26643374700",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=26643374700",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Lopez-De-Ipina D.",
+          "Diego",
+          "D."
+        ],
+        "surname": "Lopez-De-Ipina",
+        "identifier": "Scopus-id: 13006436900",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=13006436900",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Garcia-Zubia J.",
+          "Javier",
+          "J."
+        ],
+        "surname": "Garcia-Zubia",
+        "identifier": "Scopus-id: 14833837400",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=14833837400",
+            "description": "Scopus profile"
+          }
+        ]
+      }
+    ],
+    "correspondingOrganization": null,
+    "pageStart": null,
+    "documentStatus": null,
+    "title": "Modelling remote laboratories integrations in e-learning tools through remote laboratories federation protocols",
+    "freetextKeyword": null,
+    "abstract": "An educational remote laboratory is a software and hardware tool that allows students to remotely access real equipment located in the university as if they were in a hands-on-lab session. Federations of remote laboratories have existed for years: they are based on enabling two universities to exchange remote laboratories directly, without registering students of the latter on the former university. Integration of remote laboratories on Learning Management Systems (LMS) or Content Management Systems (CMS) have also been addressed in the past, enabling institutions to delegate the authentication or authorization of the experiments to the LMS/CMS. However, these integrations are usually achieved in an ad hoc way, integrating each particular laboratory to a LMS/CMS. This contribution studies the use of federation models to integrate remote laboratory management systems in LMS/CMSs, since both approaches (integrating a laboratory on an a external electronic learning tool, and integrating a laboratory on other laboratory) are essentially equivalent. The contribution defines two case studies to evaluate this approach, showing how this integration is achieved on a LMS (Moodle) and on a CMS (Joomla). © 2012 IEEE.",
+    "language": "eng",
+    "hasPublicationVenue": {
+      "hasMetric": null,
+      "abbreviation": null,
+      "publisher": null,
+      "issn": "15394565",
+      "name": "Proceedings - Frontiers in Education Conference, FIE",
+      "eissn": null,
+      "oclcnum": null
+    },
+    "hasMetric": {
+      "citationCount": "10",
+      "metricName": "Scopus"
+    },
+    "bibliografia": []
+  },
+  {
+    "url": [
+      {
+        "link": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=84856928491&origin=inward",
+        "description": "scopus"
+      }
+    ],
+    "description": null,
+    "hasKnowledgeArea": [
+      {
+        "name": "Electrical and Electronic Engineering",
+        "abbreviation": "ENGI",
+        "hasCode": "2208"
+      }
+    ],
+    "dataIssued": {
+      "datimeTime": "2011-12-01"
+    },
+    "correspondingAuthor": {
+      "name": [
+        "Gomez-Goiri A.",
+        "Aitor",
+        "A."
+      ],
+      "surname": "Gómez-Goiri",
+      "identifier": "Scopus-id: 36662064600",
+      "link": [
+        {
+          "link": "https://www.scopus.com/authid/detail.uri?authorId=36662064600",
+          "description": "Scopus profile"
+        }
+      ]
+    },
+    "eanucc13": null,
+    "pageEnd": "654",
+    "doi": "10.1109/ICSENS.2011.6127316",
+    "seqOfAuthors": [
+      {
+        "name": [
+          "Gomez-Goiri A.",
+          "Aitor",
+          "A."
+        ],
+        "surname": "Gómez-Goiri",
+        "identifier": "Scopus-id: 36662064600",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=36662064600",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Orduna P.",
+          "Pablo",
+          "P."
+        ],
+        "surname": "Orduña",
+        "identifier": "Scopus-id: 14834289400",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=14834289400",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Ausin D.",
+          "David",
+          "D."
+        ],
+        "surname": "Ausín",
+        "identifier": "Scopus-id: 39460916000",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=39460916000",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Emaldi M.",
+          "Mikel",
+          "M."
+        ],
+        "surname": "Emaldi",
+        "identifier": "Scopus-id: 54980449300",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=54980449300",
+            "description": "Scopus profile"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Lopez-De-Ipina D.",
+          "Diego",
+          "D."
+        ],
+        "surname": "López-De-Ipiña",
+        "identifier": "Scopus-id: 13006436900",
+        "link": [
+          {
+            "link": "https://www.scopus.com/authid/detail.uri?authorId=13006436900",
+            "description": "Scopus profile"
+          }
+        ]
+      }
+    ],
+    "correspondingOrganization": null,
+    "pageStart": "651",
+    "documentStatus": null,
+    "title": "Collaboration of sensors and actuators through triple spaces",
+    "freetextKeyword": null,
+    "abstract": "In recent years, projects and initiatives under Internet of Things have focused mainly on establishing connectivity in a variety of challenging and constrained networking environments. Hence, a promising next step should be to build interaction models on top of this network connectivity and thus focus on the application layer, i.e. how to achieve useful aggregated functionality out of these Internet-connected ecosystems of sensors and actuators. This work analyses the adoption of Triple Spaces coordination language by very heterogeneous and resource-constrained devices and outlines how its primitives can help to develop fully distributed and very decoupled scenarios. © 2011 IEEE.",
+    "language": "eng",
+    "hasPublicationVenue": {
+      "hasMetric": null,
+      "abbreviation": null,
+      "publisher": null,
+      "issn": null,
+      "name": "Proceedings of IEEE Sensors",
+      "eissn": null,
+      "oclcnum": null
+    },
+    "hasMetric": {
+      "citationCount": "3",
+      "metricName": "Scopus"
+    },
+    "bibliografia": []
+  }
+]

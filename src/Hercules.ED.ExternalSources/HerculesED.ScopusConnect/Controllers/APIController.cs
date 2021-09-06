@@ -30,6 +30,7 @@ namespace ScopusConnect.Controllers
         ///     GET /scopus/GetROs?user=githubuser&amp;userToken=djhrdfjhdfg_dhretuefhdfgdjeru56jd5jemndskqqhgd&amp;appToken=djhrdfjhdfg_dhretuefhdfgdjeru56jd5jemndskqqhgd
         /// </remarks>
         /// <param name="author_id">The user id in the application</param>
+                /// <param year="year">The user id in the application</param>
         /// <returns></returns>
         /// <response code="200">Ok</response>
         /// <response code="400">Invalid app</response> 
@@ -51,61 +52,20 @@ namespace ScopusConnect.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public Author_maite GetROs([FromQuery][Required] string author_id)
+        public List<Publication> GetROs([FromQuery][Required] string author_id,string year)
         {
             ROScopusController ScopusObject = new ROScopusController("https://api.elsevier.com/", "75f4ab3fac56f42ac83cdeb7c98882ca");
-            Author_maite author = ScopusObject.Author(author_id);
+            //Author_maite author = ScopusObject.Author(author_id);
+            List<Publication> publication = ScopusObject.getPublications(author_id,year);
+
 
             //List<Publication> publications = ScopusObject.getAllPublication(user_orcid);
-            var respublications = JsonConvert.SerializeObject(author);
+            //var respublications = JsonConvert.SerializeObject(author);
             // Return the repository
-            Console.Write(author);
-            return author;
-        }
-        /// </remarks>
-        /// <param name="doi">The user id in the application</param>
-        /// <returns></returns>
-        /// <response code="200">Ok</response>
-        /// <response code="400">Invalid app</response> 
-        /// <response code="500">Oops! Something went wrong</response> 
-    
-        [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public Publication Publication([FromQuery][Required] string doi)
-        {
-            ROScopusController ScopusObject = new ROScopusController("https://api.elsevier.com/", "75f4ab3fac56f42ac83cdeb7c98882ca");
-            Publication publication = ScopusObject.Publication(doi);
-
-            //List<Publication> publications = ScopusObject.getAllPublication(user_orcid);
-            var respublications = JsonConvert.SerializeObject(publication);
-            // Return the repository
-            
+            //Console.Write(author);
             return publication;
         }
+        
     
-     /// </remarks>
-        /// <param name="name_2">The user id in the application</param>
-        /// <returns></returns>
-        /// <response code="200">Ok</response>
-        /// <response code="400">Invalid app</response> 
-        /// <response code="500">Oops! Something went wrong</response> 
-    
-        [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public Publication Publication_2([FromQuery][Required] string name)
-        {
-            ROScopusController ScopusObject = new ROScopusController("https://api.elsevier.com/", "75f4ab3fac56f42ac83cdeb7c98882ca");
-            Publication publication = ScopusObject.Publication_2(name);
-
-            //List<Publication> publications = ScopusObject.getAllPublication(user_orcid);
-            var respublications = JsonConvert.SerializeObject(publication);
-            // Return the repository
-            
-            return publication;
-        }
     }}
 
