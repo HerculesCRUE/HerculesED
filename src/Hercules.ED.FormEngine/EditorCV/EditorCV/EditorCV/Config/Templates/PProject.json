@@ -62,7 +62,7 @@
         {
             "property": "http://w3id.org/roh/durationYears",
             "title": "Duración (años)",
-            "min": 1,
+            "min": 0,
             "max": 1,
             "multiLanguage": false,
             "fieldType": "text"
@@ -70,7 +70,7 @@
         {
             "property": "http://w3id.org/roh/durationMonths",
             "title": "Duración (meses)",
-            "min": 1,
+            "min": 0,
             "max": 1,
             "multiLanguage": false,
             "fieldType": "text"
@@ -78,7 +78,7 @@
         {
             "property": "http://w3id.org/roh/durationDays",
             "title": "Duración (días)",
-            "min": 1,
+            "min": 0,
             "max": 1,
             "multiLanguage": false,
             "fieldType": "text"
@@ -86,7 +86,7 @@
         {
             "property": "http://w3id.org/roh/researchersNumber",
             "title": "Nº de investigadores/as",
-            "min": 1,
+            "min": 0,
             "max": 1,
             "multiLanguage": false,
             "fieldType": "number"
@@ -94,7 +94,7 @@
         {
             "property": "http://vivoweb.org/ontology/core#start",
             "title": "Fecha de inicio",
-            "min": 1,
+            "min": 0,
             "max": 1,
             "multiLanguage": false,
             "fieldType": "date"
@@ -102,7 +102,7 @@
         {
             "property": "http://vivoweb.org/ontology/core#end",
             "title": "Fecha de finalización",
-            "min": 1,
+            "min": 0,
             "max": 1,
             "multiLanguage": false,
             "fieldType": "date"

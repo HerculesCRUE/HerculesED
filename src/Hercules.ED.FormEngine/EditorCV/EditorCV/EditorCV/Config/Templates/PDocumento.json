@@ -22,7 +22,7 @@
       "property": "http://w3id.org/roh/impactIndex",
       "title": "Índice de impacto",
       "min": 0,
-      "max": 1,
+      "max": -1,
       "multiLanguage": false,
       "fieldType": "text"
     },
@@ -68,7 +68,7 @@
     },
     {
       "property": "http://w3id.org/roh/congressProceedingsPublication",
-      "title": "Publicación en acta congreso",
+      "title": "Publicación en acta de congreso",
       "min": 0,
       "max": 1,
       "multiLanguage": false,
@@ -85,7 +85,7 @@
     {
       "property": "http://purl.org/ontology/bibo/volume",
       "title": "Volumen",
-      "min": 1,
+      "min": 0,
       "max": 1,
       "multiLanguage": false,
       "fieldType": "text"
@@ -93,7 +93,7 @@
     {
       "property": "http://purl.org/ontology/bibo/editor",
       "title": "Editorial",
-      "min": 1,
+      "min": 0,
       "max": 1,
       "multiLanguage": false,
       "fieldType": "text"
@@ -109,7 +109,7 @@
     {
       "property": "http://purl.org/ontology/bibo/pageStart",
       "title": "Página inicial",
-      "min": 1,
+      "min": 0,
       "max": 1,
       "multiLanguage": false,
       "fieldType": "number"
@@ -117,7 +117,7 @@
     {
       "property": "http://purl.org/ontology/bibo/pageEnd",
       "title": "Página final",
-      "min": 1,
+      "min": 0,
       "max": 1,
       "multiLanguage": false,
       "fieldType": "number"
@@ -149,14 +149,6 @@
     {
       "property": "http://w3id.org/roh/citationCount",
       "title": "Número de citas",
-      "min": 0,
-      "max": 1,
-      "multiLanguage": false,
-      "fieldType": "text"
-    },
-    {
-      "property": "http://w3id.org/roh/workTitle",
-      "title": "Título del trabajo",
       "min": 0,
       "max": 1,
       "multiLanguage": false,
@@ -199,7 +191,7 @@
     },
     {
       "property": "http://purl.org/dc/terms/issued",
-      "title": "Fecha del issue",
+      "title": "Fecha de publicación",
       "min": 0,
       "max": 1,
       "multiLanguage": false,
