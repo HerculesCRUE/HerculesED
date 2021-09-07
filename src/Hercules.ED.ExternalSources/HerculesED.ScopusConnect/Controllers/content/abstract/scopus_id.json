@@ -2362,10 +2362,10 @@
                                 "@id": "22",
                                 "ref-info": {
                                     "refd-itemidlist": {
-                                        "itemid": {
+                                        "itemid": [{
                                             "@idtype": "SGR",
                                             "$": "0003449930"
-                                        }
+                                        }]
                                     },
                                     "ref-authors": {
                                         "author": {

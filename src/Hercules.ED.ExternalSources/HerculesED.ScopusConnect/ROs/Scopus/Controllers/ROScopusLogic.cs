@@ -12,6 +12,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using ScopusConnect.ROs.Scopus;
 using ScopusConnect.ROs.Scopus.Models;
+using ScopusConnect.ROs.Scopus.Models.Inicial;
 using System.Web;
 using System.Text.Json;
 using Newtonsoft.Json.Linq;
@@ -24,16 +25,17 @@ namespace ScopusConnect.ROs.Scopus.Controllers
     public class ROScopusLogic : ScopusInterface
     {
         protected string bareer;
-        ROScopusControllerJSON info = new ROScopusControllerJSON();
+        //ROScopusControllerJSON info = new ROScopusControllerJSON();
         protected string baseUri { get; set; }
 
 
-       // protected List<Publication> publications = new List<Publication>();
+        // protected List<Publication> publications = new List<Publication>();
         protected Dictionary<string, string> headers = new Dictionary<string, string>();
         public ROScopusLogic(string baseUri, string bareer)
         {
             this.baseUri = baseUri;
             this.bareer = bareer;
+
         }
 
         // TODO: Esto no se si abra que cambiarlo o no.... 
@@ -87,136 +89,43 @@ namespace ScopusConnect.ROs.Scopus.Controllers
 
         }
 
-        
+
         /// <summary>
         /// Main function from get all repositories from the RO account
         /// </summary>
-        /// <param name="user_orcid">The user of the repositories</param>
-        /// <param name="uri">The uri for the call</param>
+        /// <param name="ID">The user of the repositories</param>
+        /// <param uri="uri">The uri for the call</param>
+        // AU-ID ( "Buján, David"   24474045300 )
         /// <returns></returns>
-        public List<Publication> getAllPublication(string user_orcid, string uri = "content/author/orcid/{0}")
+        public string getStringPublication(string name, string uri = "content/abstract/scopus_id/{0}")//AU-ID?{0}")
         {
-            List<Publication> hey = new List<Publication>();
-            return hey;
+            Uri url = new Uri(baseUri + string.Format(uri, name));
+            string info_publicationn = httpCall(url.ToString(), "GET", headers).Result;
+            return info_publicationn;
         }
-
 
         /// <summary>
         /// Main function from get all repositories from the RO account
         /// </summary>
-        /// <param name="author_id">The user of the repositories</param>
-        /// <param name="uri">The uri for the call</param>
+        /// <param id="scopus_ID">The user of the repositories</param>
+        /// <param year="year">The user of the repositories</param>
+        /// <param uri="uri">The uri for the call</param>
+        // AU-ID ( "Buján, David"   24474045300 )
         /// <returns></returns>
-        public Author_maite Author(string author_id, string uri = "content/author/author_id/{0}")
-        { 
-
-            Uri url = new Uri(baseUri + string.Format(uri, author_id));
-            Console.Write(url);
-            string info_author = httpCall(url.ToString(), "GET", headers).Result;
-            Console.Write(info_author);
-            JObject data = JObject.Parse(info_author);
-
-            string objecto_aModelar = info.getInfoAuthor(data);
-            
-            //Console.Write(objecto_aModelar);
-            //data["author-retrieval-response"];
-            //JObject json = JObject.Parse(info_author);
-
-            //Console.Write( data["author-retrieval-response"][0]);
-            Author_maite correspondingAuthor = new Author_maite();
-            //Console.Write(correspondingAuthor);
-            //List<AuthorRetrievalResponse> a = new  List<AuthorRetrievalResponse>();
-
-            try
-            {
-                correspondingAuthor = JsonConvert.DeserializeObject<Author_maite>(objecto_aModelar);
-                //Console.Write(correspondingAuthor);
-               // a= correspondingAuthor.AuthorRetrievalResponse;
-                
-            }
-            catch (System.Exception)
-            {
-                throw new Exception("Error when deserialize the respositories: " + objecto_aModelar);
-            }
-            // Get all data from each repository
-            //for (int i = 0; i < publications.Count; i++)
-            //{
-            //    //publications[i].
-            //}
-            return correspondingAuthor;
-        }
-         /// <summary>
-        /// Main function from get all repositories from the RO account
-        /// </summary>
-        /// <param name="doi">The user of the repositories</param>
-        /// <param name="uri">The uri for the call</param>
-        /// <returns></returns>
-     //   public Publication Publication(string name, string uri = "")//
-       public Publication Publication(string doi, string uri = "content/abstract/doi/{0}")
-    { 
-
-            Uri url = new Uri(baseUri + string.Format(uri, doi));
-            Console.Write(url);
-            string info_publication = httpCall(url.ToString(), "GET", headers).Result;
-            Console.Write(info_publication);
-            //info_publication.
-            //JObject json = JObject.Parse(info_author);
-            //Console.Write(info_publication);
-            Root_Publication publication_info = new Root_Publication();
-            Console.Write(info_publication);
-            Publication a = new  Publication();
-
-            try
-            {
-                publication_info = JsonConvert.DeserializeObject<Root_Publication>(info_publication);
-                //Console.Write(publication_info);
-                a= publication_info.AbstractsRetrievalResponse;
-               
-                
-            }
-            catch (System.Exception)
-            {
-                throw new Exception("Error when deserialize the respositories: " + info_publication);
-            }
-
-            return a;
-        }
-        public Publication Publication_2(string name, string uri = "content/search/scopus?query=AU-ID?{0}")
-    { 
-
-            Uri url = new Uri(baseUri + string.Format(uri, name));
+        public List<Publication> getPublications(string name, string year = "1500", string uri = "content/search/scopus?query=AU-ID ( {0})&AFT({1})")//AU-ID?{0}")
+        {
+            Uri url = new Uri(baseUri + string.Format(uri, name, year));
             //Console.Write(url);
             string info_publication = httpCall(url.ToString(), "GET", headers).Result;
-            Console.Write(info_publication);
-            //info_publication.
-            //JObject json = JObject.Parse(info_author);
-            //Console.Write(info_publication);
-            Root_Publication publication_info = new Root_Publication();
-            Console.Write(info_publication);
-            Publication a = new  Publication();
-
-            try
-            {
-                publication_info = JsonConvert.DeserializeObject<Root_Publication>(info_publication);
-                //Console.Write(publication_info);
-                a= publication_info.AbstractsRetrievalResponse;
-               
-                
-            }
-            catch (System.Exception)
-            {
-                throw new Exception("Error when deserialize the respositories: " + info_publication);
-            }
-
-            return a;
+            
+            //aqui hay que añadir segun el modelo del repo del que extraigas cosas el .cs necesario de cambio de modelo!!! 
+            //por tanto hay que añadir un IF que verifique que repositorio es!
+            //TODO!
+            ROScopusControllerJSON info = new ROScopusControllerJSON(this);
+            List<Publication> sol = info.getListPublicatio(info_publication);
+            return sol;
         }
-
-
-        public JsonResult getRepositoryLastUpdate(string repositoryId)
-        {
-            return new JsonResult("");
-        }
-
+        
 
     }
 }

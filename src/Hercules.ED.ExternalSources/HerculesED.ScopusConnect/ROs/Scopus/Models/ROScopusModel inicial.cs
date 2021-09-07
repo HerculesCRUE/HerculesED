@@ -2,7 +2,7 @@ using System;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace ScopusConnect.ROs.Scopus.Models
+namespace ScopusConnect.ROs.Scopus.Models.two
 {
     public class Coredata
     {

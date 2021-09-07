@@ -7,8 +7,7 @@ namespace ScopusConnect.ROs.Scopus
 {
    interface ScopusInterface
     {
-      
-        List<Publication> getAllPublication(string userId, string uri);
+        List<Publication> getPublications(string userId, string year, string uri);
 
     }
 }
