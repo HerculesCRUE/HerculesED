@@ -22,6 +22,8 @@ namespace EditorCV.Controllers.Properties
         private Dictionary<string, List<ListItemsData>> loadedEntities;
         private string id;
 
+        private int calls;
+
         public LoadItems(string id)
         {
             
@@ -65,6 +67,7 @@ namespace EditorCV.Controllers.Properties
             {
                 throw;
             }
+            calls ++;
 
             return listResult;
         }
@@ -129,7 +132,7 @@ namespace EditorCV.Controllers.Properties
             jsonData = data.data;
         }
 
-        public JsonStructure GetSection(string idSection, string section)
+        public JsonStructure GetAsyncSection(string idSection, string section)
         {
             SparqlObject result = new SparqlObject();
 
@@ -162,7 +165,7 @@ namespace EditorCV.Controllers.Properties
                     }
 
 
-                    var dbEntityData = GetValEntity(idSection, section, jsonData.entities[mTKE].ontologyName);
+                    var dbEntityData = GetValEntity(idSection, keyEntity, jsonData.entities[mTKE].ontologyName);
 
 
                     var listFields = new Dictionary<string, Property>();
@@ -184,7 +187,7 @@ namespace EditorCV.Controllers.Properties
                     }
 
                     // Init the loop into the sections
-                    jsonData.sections[section].sections = GetSections(idSection, jsonData.sections[section].sections, jsonData.sections[section], dbEntityData);
+                    jsonData.sections[section].sections = GetSections(idSection, jsonData.sections[section].sections, jsonData.sections[section], dbEntityData, true);
                     jsonData.sections[section].uniqueLoaded = true;
                 }
 
@@ -195,15 +198,13 @@ namespace EditorCV.Controllers.Properties
         }
 
 
-
-
         /// <summary>
         /// Go through the all sections to find the properties
         /// </summary>
         /// <param name="sections">Current section</param>
         /// <param name="entity">The current entity</param>
         /// <returns></returns>
-        public List<Section> GetSections(string id, List<Section> sections, Entity entity, Dictionary<string, List<Dictionary<string, Data>>> dbEntityData) 
+        public List<Section> GetSections(string id, List<Section> sections, Entity entity, Dictionary<string, List<Dictionary<string, Data>>> dbEntityData, bool externalSection = false) 
         {
             for (int i = 0; i < sections.Count(); i++)
             {
@@ -260,35 +261,6 @@ namespace EditorCV.Controllers.Properties
             return sections;
         }
 
-        // /// <summary>
-        // /// Go through the all sections to find the properties
-        // /// </summary>
-        // /// <param name="sections">Current section</param>
-        // /// <param name="entity">The current entity</param>
-        // /// <returns></returns>
-        // public List<Section> GetSections(string id, List<Section> sections, Entity entity, Dictionary<string, List<Dictionary<string, Data>>> dbEntityData) 
-        // {
-        //     for (int i = 0; i < sections.Count(); i++)
-        //     {
-        //         // var dbEntityData = GetValEntity(id, jsonData.entities[i].rdftype, jsonData.entities[i].ontologiaName);
-
-        //         if (sections[i].properties != null)
-        //         {
-        //             sections[i].properties = GetFields(dbEntityData, sections[i].properties);
-        //         }
-
-        //         if (sections[i].sections != null)
-        //         {
-        //             // sections[i].sections.ForEach(e => GetSections(id, e, entity));
-
-        //             sections[i].sections = GetSections(id, sections[i].sections, entity, dbEntityData);
-        //         }
-
-        //     }
-
-        //     return sections;
-        // }
-
 
         /// Needs to be changed when call to loadList for the dbEntityData and loadedEntities origin
         /// Or not...
@@ -327,7 +299,11 @@ namespace EditorCV.Controllers.Properties
                                     string listItemUri = LoadList(item.Key, properties[i], el["o"].value, dbEntityData);
                                     
                                     properties[i].id = el["o"].value;
-                                    properties[i].options = GetEntity(listItemUri, properties[i].relation);
+
+                                    // Load the options
+                                    var options = new Dictionary<string, Dictionary<string, string>>();
+                                    GetEntity(listItemUri, properties[i].relation, new Entity(), ref options, dbEntityData);
+                                    properties[i].options = options;
                                 }
 
                                 // Get order
@@ -350,6 +326,14 @@ namespace EditorCV.Controllers.Properties
             return properties;
         }
 
+        /// <summary>
+        /// Load a list of items of elements 
+        /// </summary>
+        /// <param name="entityId"></param>
+        /// <param name="property"></param>
+        /// <param name="listItemId"></param>
+        /// <param name="dbEntityData">Database data</param>
+        /// <returns></returns>
         protected string LoadList(string entityId, Property property, string listItemId, Dictionary<string, List<Dictionary<string, Data>>> dbEntityData)
         {
 
@@ -371,10 +355,7 @@ namespace EditorCV.Controllers.Properties
                         property.listItems = new List<ListItems>();
 
                     }
-                    // if (!property.listItems.ContainsKey(entityId))
-                    // {
-                    //     property.listItems.Add(entityId, new List<ListItems>());
-                    // }
+                    
                     var lItemNew = new ListItems()
                     {
                         id = listItemId,
@@ -407,7 +388,13 @@ namespace EditorCV.Controllers.Properties
 
         }
 
-
+        /// <summary>
+        /// Get all entities from a section
+        /// </summary>
+        /// <param name="id">Entity id parent</param>
+        /// <param name="dbEntityData">Database data</param>
+        /// <param name="entities">The entities array objects</param>
+        /// <returns></returns>
         protected List<Entity> GetEntities(string id, Dictionary<string, List<Dictionary<string, Data>>> dbEntityData, List<Entity> entities)
         {
 
@@ -507,7 +494,8 @@ namespace EditorCV.Controllers.Properties
                                             //     }
                                             // }
 
-                                            GetEntity(itemId, entity.relation);
+                                            var options = new Dictionary<string, Dictionary<string, string>>();
+                                            resEntities.Add(GetEntity(itemId, entity.relation, entity, ref options));
 
                                             entity.listItems[e.id].Add(lItemNew);
 
@@ -579,7 +567,9 @@ namespace EditorCV.Controllers.Properties
                                         var itemOrderValue = dbOrderDataItem["o"].value;
                                         lItemNew.order = int.Parse(itemOrderValue);
 
-                                        GetEntity(itemId, entity.relation);
+                                        // Get entity
+                                        var options = new Dictionary<string, Dictionary<string, string>>();
+                                        resEntities.Add(GetEntity(itemId, entity.relation, entity, ref options));
 
                                         entity.listItems[id].Add(lItemNew);
 
@@ -652,7 +642,9 @@ namespace EditorCV.Controllers.Properties
                                         // Add the Id into the list
                                         ids.Add(theId);
 
-                                        GetEntity(theId, entity.relation);
+                                        // Get entity
+                                        var options = new Dictionary<string, Dictionary<string, string>>();
+                                        resEntities.Add(GetEntity(theId, entity.relation, entity, ref options));
 
                                         entity.listItems[e.id].Add(lItemNew);
 
@@ -724,8 +716,10 @@ namespace EditorCV.Controllers.Properties
                                         var itemOrderValue = dbOrderDataItem["o"].value;
                                         lItemNew.order = int.Parse(itemOrderValue);
 
-                                        GetEntity(itemId, entity.relation);
-
+                                        // Get the entity and add the reference
+                                        var options = new Dictionary<string, Dictionary<string, string>>();
+                                        resEntities.Add(GetEntity(itemId, entity.relation, entity, ref options));
+                                        
                                         entity.listItems[id].Add(lItemNew);
 
                                     }
@@ -743,7 +737,14 @@ namespace EditorCV.Controllers.Properties
                     }
                 }
 
-                resEntities.Add(entity);
+                // // Check if the entities has sections
+                // if (entity.sections != null)
+                // {
+                //     // Get all sections from entity
+                //     entity.sections = GetSections(id, entity.sections, entity, dbEntityData);
+                // }
+
+                // resEntities.Add(entity);
             }
 
 
@@ -752,11 +753,10 @@ namespace EditorCV.Controllers.Properties
         }
 
 
-        protected Dictionary<string, Dictionary<string, string>> GetEntity(string entityUri, EntityRelation relation, Property property = null)
+        protected Entity GetEntity(string entityUri, EntityRelation relation, Entity entity, ref Dictionary<string, Dictionary<string, string>> options, Dictionary<string, List<Dictionary<string, Data>>> dbEntityData = null)
         {
 
             // Item to return
-            var options = new Dictionary<string, Dictionary<string, string>>();
 
             // var keyEntity = jsonData.entities.FindIndex(e => e.rdfType == property.rdfType);
             var keyEntity = relation.entityReference;
@@ -780,20 +780,23 @@ namespace EditorCV.Controllers.Properties
                     if (!jsonData.entities[mTKE].items.ContainsKey(entityUri))
                     {
                         // Load the entity calling to the DB
-                        var dbEntityData = GetValEntity(entityUri, keyEntity, jsonData.entities[mTKE].ontologyName);
+                        if (dbEntityData == null)
+                        {
+                            dbEntityData = GetValEntity(entityUri, keyEntity, jsonData.entities[mTKE].ontologyName);
+                        }
 
 
                         // Check if exist the loaded Entity & the current element and add this into the loaded entities local variable
                         if (loadedEntities.ContainsKey(relation.eid))
                         {
                             loadedEntities[relation.eid].Add(new ListItemsData() {
-                                id = id,
+                                id = entityUri,
                                 dbEntityData = dbEntityData
                             });
                         } else {
                             loadedEntities.Add(relation.eid, new List<ListItemsData>() {
                                 new ListItemsData() {
-                                    id = id,
+                                    id = entityUri,
                                     dbEntityData = dbEntityData
                                 }
                             });
@@ -802,12 +805,16 @@ namespace EditorCV.Controllers.Properties
                         // Add new entity item
                         jsonData.entities[mTKE].items.Add(entityUri, new EntityItem());
 
-                        // // Serialize to remove the reference in the loop
-                        // string sectionsJson = JsonConvert.SerializeObject(jsonData.entities[mTKE].sections);
+                        if (entity.sections != null)
+                        {
+                            // Serialize to remove the reference in the loop
+                            // string sectionsJson = JsonConvert.SerializeObject(jsonData.entities[mTKE].sections);
 
-                        // // Set the id & the sections
-                        // jsonData.entities[mTKE].items[entityUri].id = entityUri;
-                        // jsonData.entities[mTKE].items[entityUri].sections = (jsonData.entities[mTKE].sections != null) ? GetSections(entityUri, JsonConvert.DeserializeObject<List<Section>>(sectionsJson), jsonData.entities[mTKE], dbEntityData) : null;
+                            // Set the id & the sections
+                            entity.id = entityUri;
+                            // entity.sections = (jsonData.entities[mTKE].sections != null) ? GetSections(entityUri, entity.sections, entity, dbEntityData) : null;
+                            entity.sections = GetSections(entityUri, entity.sections, entity, dbEntityData);
+                        }
 
 
                         // Serialize to remove the reference in the loop
@@ -816,10 +823,16 @@ namespace EditorCV.Controllers.Properties
                         // Set the id & the sections
                         jsonData.entities[mTKE].items[entityUri].id = entityUri;
                         var listFields = new Dictionary<string, Property>();
+
+                        // Get the fields of each item
                         GetFields(dbEntityData, JsonConvert.DeserializeObject<List<Property>>(PropertiesJson)).ForEach(e =>
                         {
-                            listFields.Add(e.property, e);
+                            if (e.property != null && !listFields.ContainsKey(e.property))
+                            {
+                                listFields.Add(e.property, e);
+                            }
                         });
+
                         jsonData.entities[mTKE].items[entityUri].properties = listFields;
                         // jsonData.entities[mTKE].items[entityUri].properties = (jsonData.entities[mTKE].properties != null) ? GetFields(dbEntityData, JsonConvert.DeserializeObject<Dictionary<string,Property>>(PropertiesJson)) : null;
 
@@ -828,13 +841,13 @@ namespace EditorCV.Controllers.Properties
                             {"id", jsonData.entities[mTKE].items[entityUri].id}
                         });
                         
-                        if (property != null && property.fieldsDB != null)
-                        {
-                            // Get all values from each element into the select options
-                            property.fieldsDB.ForEach(e => {
-                                options[jsonData.entities[mTKE].items[entityUri].id].Add(e.rdfType, jsonData.entities[mTKE].items[entityUri].properties[e.rdfType].value);
-                            });
-                        }
+                        // if (property != null && property.fieldsDB != null)
+                        // {
+                        //     // Get all values from each element into the select options
+                        //     property.fieldsDB.ForEach(e => {
+                        //         options[jsonData.entities[mTKE].items[entityUri].id].Add(e.rdfType, jsonData.entities[mTKE].items[entityUri].properties[e.rdfType].value);
+                        //     });
+                        // }
 
                     }
 
@@ -845,7 +858,7 @@ namespace EditorCV.Controllers.Properties
                 throw;
             }
 
-            return options;
+            return entity;
         }
 
 
