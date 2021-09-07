@@ -52,7 +52,7 @@ namespace EditorCV.Controllers
                 if (section != null && data != null)
                 {
                     lItems.AddNewJson(data);
-                    return lItems.GetSection(idSection, section);
+                    return lItems.GetAsyncSection(idSection, section);
                 }
                 else
                 {
