@@ -75,13 +75,11 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                     //try{
                     for (int j = 0; j < objInicial.AbstractsRetrievalResponse.item.bibrecord.tail.bibliography.reference.Count; j++)
                     {
-
                         //    string scopus_id = null;
                         //Console.Write(info_publicacion_root.item.bibrecord.tail.bibliography.reference[j].RefInfo.RefdItemidlist.itemid.Idtype);
                         if (objInicial.AbstractsRetrievalResponse.item.bibrecord.tail.bibliography.reference[j].RefInfo.RefdItemidlist != null)
                         {
                             //Console.Write("hola!");
-
                             string scopus_id = null;
                             try{
                                 //Console.Write(objInicial.AbstractsRetrievalResponse.item.bibrecord.tail.bibliography.reference[j].RefInfo.RefdItemidlist.itemid.ToString());
@@ -94,8 +92,8 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                                 JArray hey = JsonConvert.DeserializeObject<JArray>(objInicial.AbstractsRetrievalResponse.item.bibrecord.tail.bibliography.reference[j].RefInfo.RefdItemidlist.itemid.ToString());
                                 foreach(JContainer var in hey){
                                         Itemid ee = JsonConvert.DeserializeObject<Itemid>(var.ToString());
-                                        //TODO
-                                        scopus_id = ee.a;
+                                        if (ee.Idtype == "SGR" ^ee.Idtype=="SCOPUS"){
+                                        scopus_id = ee.a;}
                                 }
                             }
                             //Console.Write(scopus_id);
