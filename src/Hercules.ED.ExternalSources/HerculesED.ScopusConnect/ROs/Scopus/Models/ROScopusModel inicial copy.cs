@@ -270,6 +270,7 @@ public class Affiliation
     {
         [JsonProperty("author-keyword")]
         public List<AuthorKeyword> AuthorKeyword { get; set; }
+        //TODO Pasa lo mismo que con Itemid, que  a veces es una lista y a veces un AuthorKeyword.... 
     }
 
   /*   public class Mainterm //commented in phase 1
@@ -379,15 +380,15 @@ public class Affiliation
         public string  a { get; set; }
     }
 
-    public class Itemidlist //commented in phase 1
-    {
-        [JsonProperty("ce:pii")]
-        public string CePii { get; set; }
+  //  public class Itemidlist //commented in phase 1
+   // {
+        //[JsonProperty("ce:pii")]
+        //public string CePii { get; set; }
 
-        [JsonProperty("ce:doi")]
-        public string CeDoi { get; set; }
-        public List<Itemid> itemid { get; set; }
-    } 
+        //[JsonProperty("ce:doi")]
+        //public string CeDoi { get; set; }
+        //public List<Itemid> itemid { get; set; }
+    //} 
 
 /*     public class DateCreated //commented in phase 1
     {
@@ -416,8 +417,8 @@ public class Affiliation
     public class ItemInfo   //commented in phase 1
     {
        // public List<Copyright> copyright { get; set; }
-        [JsonProperty("itemidlist")]
-        public Itemidlist itemidlist { get; set; }
+        //[JsonProperty("itemidlist")]
+        //public Itemidlist itemidlist { get; set; }
         //public History history { get; set; }
         //public List<Dbcollection> dbcollection { get; set; }
     } 
@@ -684,8 +685,9 @@ public class Affiliation
 
  public class RefdItemidlist
     {
-        public Itemid itemid{ get; set;}
-        /* set{       
+        public Object itemid{ get; set;}
+        //public List<Itemid> itemid { get; set;}
+        /*set{       
             //public dynamic hey;
             try{
                 itemid = new List<Itemid>();
@@ -702,8 +704,6 @@ public class Affiliation
         } }    */
 
     }
-
-
     public class RefInfo
     {
         [JsonProperty("refd-itemidlist")]
@@ -725,8 +725,8 @@ public class Affiliation
 
     public class Bibliography
     {
-        [JsonProperty("@refcount")]
-        public string Refcount { get; set; }
+        //[JsonProperty("@refcount")]
+       // public string Refcount { get; set; }
         public List<Reference> reference { get; set; }
     }
 
@@ -760,8 +760,8 @@ public class Affiliation
 
     public class Bibrecord
     {
-        [JsonProperty("item-info")] //commented in phase 1
-         public ItemInfo ItemInfo { get; set; } //commented in phase 1
+        //[JsonProperty("item-info")] //commented in phase 1
+        // public ItemInfo ItemInfo { get; set; } //commented in phase 1
         //       public Head head { get; set; } //commented in phase 1
         public Tail tail { get; set; }
     }
@@ -792,9 +792,6 @@ public class Affiliation
         [JsonProperty("abstracts-retrieval-response")]
         public AbstractsRetrievalResponse AbstractsRetrievalResponse { get; set; }
     }
-
-
-
 
     
 }

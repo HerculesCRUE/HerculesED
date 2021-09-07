@@ -101,6 +101,7 @@ namespace ScopusConnect.ROs.Scopus.Controllers
         {
             Uri url = new Uri(baseUri + string.Format(uri, name));
             string info_publicationn = httpCall(url.ToString(), "GET", headers).Result;
+            //Console.Write(info_publicationn);
             return info_publicationn;
         }
 
@@ -117,15 +118,12 @@ namespace ScopusConnect.ROs.Scopus.Controllers
             Uri url = new Uri(baseUri + string.Format(uri, name, year));
             //Console.Write(url);
             string info_publication = httpCall(url.ToString(), "GET", headers).Result;
-            
-            //aqui hay que añadir segun el modelo del repo del que extraigas cosas el .cs necesario de cambio de modelo!!! 
-            //por tanto hay que añadir un IF que verifique que repositorio es!
-            //TODO!
+
             ROScopusControllerJSON info = new ROScopusControllerJSON(this);
             List<Publication> sol = info.getListPublicatio(info_publication);
             return sol;
         }
-        
+
 
     }
 }

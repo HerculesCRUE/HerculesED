@@ -18,13 +18,11 @@ namespace ScopusConnect.ROs.Scopus.Controllers
 
         }
 
-
         public List<Publication> getListPublicatio(string stringInicial)
         {
-
-
-
+            //Console.Write(stringInicial);
             Root objInicial = JsonConvert.DeserializeObject<Root>(stringInicial);
+            //Console.Write(objInicial);
             List<Publication> sol = new List<Publication>();
 
             //---modificacion en otro repo!  ---------------------------------------------------------
@@ -37,8 +35,9 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                 string[] id_code = entidad.DcIdentifier.Split(':');
                 string id = id_code[1];
                 Publication_root info_publicacion_root = getPublication(this.scopusLogic.getStringPublication(id));
+                
                 //------------------------------------------------------------------------
-
+                //Console.Write(id);
                 if (info_publicacion_root != null)
                 {
                     if (entidad.subtype == "cp")
@@ -66,40 +65,41 @@ namespace ScopusConnect.ROs.Scopus.Controllers
 
         public List<Publication> getBibliografia(Publication_root objInicial)
         {
+            if(objInicial.AbstractsRetrievalResponse!=null){
             if (objInicial.AbstractsRetrievalResponse.item.bibrecord.tail != null)
             {
+                //Console.Write("Punto inicial");
                 List<Publication> bibliografia = new List<Publication>();
                 if (objInicial.AbstractsRetrievalResponse.item.bibrecord.tail.bibliography.reference != null)
                 {
                     //try{
                     for (int j = 0; j < objInicial.AbstractsRetrievalResponse.item.bibrecord.tail.bibliography.reference.Count; j++)
-                   {
-                    //    string scopus_id = null;
+                    {
+
+                        //    string scopus_id = null;
                         //Console.Write(info_publicacion_root.item.bibrecord.tail.bibliography.reference[j].RefInfo.RefdItemidlist.itemid.Idtype);
                         if (objInicial.AbstractsRetrievalResponse.item.bibrecord.tail.bibliography.reference[j].RefInfo.RefdItemidlist != null)
                         {
-                            //try
-                            //{
-                            //    for (int k = 0; k < objInicial.AbstractsRetrievalResponse.item.bibrecord.tail.bibliography.reference[j].RefInfo.RefdItemidlist.itemid.Count; k++)
-                            //    {
-                                    //    Console.Write("hey");
-                            //        if (objInicial.AbstractsRetrievalResponse.item.bibrecord.tail.bibliography.reference[j].RefInfo.RefdItemidlist.itemid[k].Idtype == "SRG" ^
-                             //       objInicial.AbstractsRetrievalResponse.item.bibrecord.tail.bibliography.reference[j].RefInfo.RefdItemidlist.itemid[k].Idtype == "SCOPUS")
-                            //        {
-                            //            scopus_id = objInicial.AbstractsRetrievalResponse.item.bibrecord.tail.bibliography.reference[j].RefInfo.RefdItemidlist.itemid[k].a;
-                            //            Console.Write(scopus_id);
-                            //            Console.Write("------");
+                            //Console.Write("hola!");
 
-                          /*           }
+                            string scopus_id = null;
+                            try{
+                                //Console.Write(objInicial.AbstractsRetrievalResponse.item.bibrecord.tail.bibliography.reference[j].RefInfo.RefdItemidlist.itemid.ToString());
+                                Itemid hey = JsonConvert.DeserializeObject<Itemid>(objInicial.AbstractsRetrievalResponse.item.bibrecord.tail.bibliography.reference[j].RefInfo.RefdItemidlist.itemid.ToString());
+                                scopus_id = hey.a;
+                                //Console.Write(scopus_id);
+                                //Console.Write("------");
+                            } catch{
+                                //Console.Write(objInicial.AbstractsRetrievalResponse.item.bibrecord.tail.bibliography.reference[j].RefInfo.RefdItemidlist.itemid.GetType());
+                                JArray hey = JsonConvert.DeserializeObject<JArray>(objInicial.AbstractsRetrievalResponse.item.bibrecord.tail.bibliography.reference[j].RefInfo.RefdItemidlist.itemid.ToString());
+                                foreach(JContainer var in hey){
+                                        Itemid ee = JsonConvert.DeserializeObject<Itemid>(var.ToString());
+                                        //TODO
+                                        scopus_id = ee.a;
                                 }
                             }
-                            catch
-                            { */
-                                string scopus_id = objInicial.AbstractsRetrievalResponse.item.bibrecord.tail.bibliography.reference[j].RefInfo.RefdItemidlist.itemid.a;
-                                Console.Write(scopus_id);
-                                Console.Write("------");
-                           // }
-
+                            //Console.Write(scopus_id);
+                            //Console.Write("------");
                             Publication_root obj_inicial = null;
                             if (scopus_id != null)
                             {
@@ -109,7 +109,6 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                             if (obj_inicial != null)
                             {
                                 Publication publication_def = getGenericPublication(obj_inicial);
-
                                 bibliografia.Add(publication_def);
                             }
                         }
@@ -119,82 +118,31 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                 else { return null; }
             }
             else { return null; }
+            }else{return null;}
         }
 
         public Publication_root getPublication(string stringPublication)
         {
-            System.IO.StreamWriter files = System.IO.File.CreateText(@"C:\Users\mpuer\Desktop\inicio.json");
-            files.Write(stringPublication);
-            /* string[] separatingStrings = { "\"itemid\":" };
-            string[] words = stringPublication.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
-            string final = "";
-            List<String> result = new List<string>();
-            //lista de string
-            foreach (string i in words)
-            {
-                result.Add(i);
-            }
-            //-----
-            for (int i = 0; i < result.Count; i++)
-            {
-                if (i == 0)
-                {
-                    final = final + result[i]; //el primero es el inicio
-                }
-                else
-                {
-                    if (result[i].Substring(0, 2) == " {")
-                    {
-                        Console.Write("paso 2");
-                        string[] intermedio = result[i].Split("\"@idtype\": \"SGR\"", 2);
 
-                        //foreach(string j in intermedio){Console.Write(j);Console.Write("-------------f-----");}
-
-                        List<String> result_2 = new List<string>();
-                        foreach (string j in intermedio)
-                        {
-                            result_2.Add(j);
-                        }
-                        //Console.Write(result_2.Count);
-                        //Console.Write(result_2[1].Substring(2));
-                        //Console.Write("------");
-                        final = final + "\"itemid\": [" + result_2[0] + "\"@idtype\": \"SGR\" } ] }, " + result_2[1].Substring(result_2[1].IndexOf("}") + 4);
-        */
-            /*  for (int j = 0; j < result_2.Count; j++)
-             {
-                 if (j > 0)
-                 {
-                     final = final +" }"+ result_2[j];
-                 }
-             } 
-             }else{final=final+"\"itemid\":" + result[i];} */
-            /* }
-        }
-        } */
 
             Publication_root info_publicacion = new Publication_root();
-           // try
-            //{
-           /*  System.IO.StreamWriter file = System.IO.File.CreateText(@"C:\Users\mpuer\Desktop\mirar.json");
-            file.Write(stringPublication);
-            file.Close(); */
-            info_publicacion = JsonConvert.DeserializeObject<Publication_root>(stringPublication);
-
-           // }
-           // catch
-            //{
-            //System.IO.StreamWriter file = System.IO.File.CreateText();
-            //file.WriteLine(stringPublication);
-            //  info_publicacion = null;
-            //  Console.Write("ex--");
-            //}
+            try 
+            {
+                info_publicacion = JsonConvert.DeserializeObject<Publication_root>(stringPublication);
+            }
+            catch
+            {
+                //HABLAR!!!!
+                info_publicacion = null;
+                Console.Write("Error de deserializacion del articulo.");
+            }
             return info_publicacion;
         }
 
         //-----------------------------------------
         private string getAbstract(Publication_root objInicial)
         {
-            if (objInicial != null)
+            if (objInicial.AbstractsRetrievalResponse != null)
             {
                 string abstractt = objInicial.AbstractsRetrievalResponse.coredata.DcDescription;
                 return abstractt;
@@ -208,7 +156,7 @@ namespace ScopusConnect.ROs.Scopus.Controllers
         //extraccion de pageEnd en el modelo inicial! 
         private string getPageEnd(Publication_root objInicial)
         {
-            if (objInicial != null)
+            if (objInicial.AbstractsRetrievalResponse != null)
             {
                 string pageEnd = objInicial.AbstractsRetrievalResponse.coredata.PrismEndingPage;
                 return pageEnd;
@@ -222,7 +170,7 @@ namespace ScopusConnect.ROs.Scopus.Controllers
         // extraccion del string de page star en el modelo inicial.
         public string getPageStart(Publication_root objInicial)
         {
-            if (objInicial != null)
+            if (objInicial.AbstractsRetrievalResponse != null)
             {
                 string pageStart = objInicial.AbstractsRetrievalResponse.coredata.PrismStartingPage;
                 return pageStart;
@@ -235,7 +183,7 @@ namespace ScopusConnect.ROs.Scopus.Controllers
         }
         public string getTitle(Publication_root objInicial)
         {
-            if (objInicial != null)
+            if (objInicial != null & objInicial.AbstractsRetrievalResponse != null)
             {
                 string title = objInicial.AbstractsRetrievalResponse.coredata.DcTitle;
                 return title;
@@ -249,7 +197,7 @@ namespace ScopusConnect.ROs.Scopus.Controllers
 
         public List<Url> getLinks(Publication_root objInicial)
         {
-            if (objInicial != null)
+            if (objInicial.AbstractsRetrievalResponse != null)
             {
                 List<Url> url = new List<Url>();
                 if (objInicial.AbstractsRetrievalResponse.coredata.link != null)
@@ -280,7 +228,7 @@ namespace ScopusConnect.ROs.Scopus.Controllers
         }
         public string getDoi(Publication_root objInicial)
         {
-            if (objInicial != null)
+            if (objInicial.AbstractsRetrievalResponse != null)
             {
                 string doi = objInicial.AbstractsRetrievalResponse.coredata.PrismDoi;
                 return doi;
@@ -293,7 +241,7 @@ namespace ScopusConnect.ROs.Scopus.Controllers
         }
         public List<KnowledgeArea> getKnowledgeAreas(Publication_root objInicial)
         {
-            if (objInicial != null)
+            if (objInicial.AbstractsRetrievalResponse != null)
             {
                 List<KnowledgeArea> knowledgeAreas = new List<KnowledgeArea>();
                 if (objInicial.AbstractsRetrievalResponse.SubjectAreas != null)
@@ -321,7 +269,7 @@ namespace ScopusConnect.ROs.Scopus.Controllers
         }
         public Person getAuthorPrincipal(Publication_root objInicial)
         {
-            if (objInicial != null)
+            if (objInicial.AbstractsRetrievalResponse != null)
             {
                 if (objInicial.AbstractsRetrievalResponse.coredata.DcCreator != null)
                 {
@@ -337,7 +285,7 @@ namespace ScopusConnect.ROs.Scopus.Controllers
         }
         public List<Person> getAuthors(Publication_root objInicial)
         {
-            if (objInicial != null)
+            if (objInicial.AbstractsRetrievalResponse != null)
             {
                 List<Person> authores = new List<Person>();
                 if (objInicial.AbstractsRetrievalResponse.authors != null)
@@ -358,7 +306,7 @@ namespace ScopusConnect.ROs.Scopus.Controllers
         }
         public Journal getJournal(Publication_root objInicial)
         {
-            if (objInicial != null)
+            if (objInicial.AbstractsRetrievalResponse != null)
             {
                 Journal journal = new Journal();
                 journal.name = objInicial.AbstractsRetrievalResponse.coredata.PrismPublicationName;
@@ -373,7 +321,7 @@ namespace ScopusConnect.ROs.Scopus.Controllers
         }
         public DateTimeValue getDate(Publication_root objInicial)
         {
-            if (objInicial != null)
+            if (objInicial.AbstractsRetrievalResponse != null)
             {
                 DateTimeValue date = new DateTimeValue();
                 date.datimeTime = objInicial.AbstractsRetrievalResponse.coredata.PrismCoverDate;
@@ -386,7 +334,7 @@ namespace ScopusConnect.ROs.Scopus.Controllers
         }
         public string getLanguage(Publication_root objInicial)
         {
-            if (objInicial != null)
+            if (objInicial.AbstractsRetrievalResponse != null)
             {
                 if (objInicial.AbstractsRetrievalResponse.language != null)
                 {
@@ -401,7 +349,7 @@ namespace ScopusConnect.ROs.Scopus.Controllers
         }
         public List<String> getFreetextKeyword(Publication_root objInicial)
         {
-            if (objInicial != null)
+            if (objInicial.AbstractsRetrievalResponse != null)
             {
                 List<String> freetextKeyword = new List<string>();
                 if (objInicial.AbstractsRetrievalResponse.authkeywords != null)
@@ -421,7 +369,7 @@ namespace ScopusConnect.ROs.Scopus.Controllers
         }
         public PublicationMetric getPublicationMetric(Publication_root objInicial)
         {
-            if (objInicial != null)
+            if (objInicial.AbstractsRetrievalResponse != null)
             {
                 PublicationMetric publicationMetric = new PublicationMetric();
                 publicationMetric.citationCount = objInicial.AbstractsRetrievalResponse.coredata.CitedbyCount;
@@ -473,14 +421,11 @@ namespace ScopusConnect.ROs.Scopus.Controllers
 
         }
 
-
         /// no se deberian necesitar de modificar en otros modelos!!!!!!
 
         public Publication getGenericPublication(Publication_root objInicial)
         {
             Publication publicacion = new Publication();
-
-
             //publicacion.bibliografia = getBibliografia(objInicial);
             //title--------------------------------------------------------------------
             publicacion.title = getTitle(objInicial);
