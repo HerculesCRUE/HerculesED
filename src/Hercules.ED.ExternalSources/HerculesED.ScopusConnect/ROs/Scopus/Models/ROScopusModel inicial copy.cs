@@ -269,7 +269,7 @@ public class Affiliation
     public class Authkeywords
     {
         [JsonProperty("author-keyword")]
-        public List<AuthorKeyword> AuthorKeyword { get; set; }
+        public Object AuthorKeyword { get; set; }
         //TODO Pasa lo mismo que con Itemid, que  a veces es una lista y a veces un AuthorKeyword.... 
     }
 

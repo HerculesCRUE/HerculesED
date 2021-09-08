@@ -24,18 +24,15 @@ namespace ScopusConnect.ROs.Scopus.Controllers
             Root objInicial = JsonConvert.DeserializeObject<Root>(stringInicial);
             //Console.Write(objInicial);
             List<Publication> sol = new List<Publication>();
-
             //---modificacion en otro repo!  ---------------------------------------------------------
             List<Entry> lista_item = objInicial.SearchResults.entry;
             for (int i = 0; i < lista_item.Count; i++)
             {
                 Publication a = new Publication();
                 Entry entidad = lista_item[i];
-
                 string[] id_code = entidad.DcIdentifier.Split(':');
                 string id = id_code[1];
                 Publication_root info_publicacion_root = getPublication(this.scopusLogic.getStringPublication(id));
-                
                 //------------------------------------------------------------------------
                 //Console.Write(id);
                 if (info_publicacion_root != null)
@@ -44,18 +41,21 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                     {
                         ConferencePaper conferencePaper = getConferencePaper(info_publicacion_root);
                         conferencePaper.bibliografia = getBibliografia(info_publicacion_root);
+                        conferencePaper.typeOfPublication = "ConferencePaper";
                         sol.Add(conferencePaper);
                     }
                     else if (entidad.subtype == "ar")
                     {
                         JournalArticle conferencePaper = getJournalArticle(info_publicacion_root);
                         conferencePaper.bibliografia = getBibliografia(info_publicacion_root);
+                        conferencePaper.typeOfPublication ="JournalArticle";
                         sol.Add(conferencePaper);
                     }
                     else
                     {
                         Publication publicacion = getGenericPublication(info_publicacion_root);
                         publicacion.bibliografia = getBibliografia(info_publicacion_root);
+                        publicacion.typeOfPublication = "AcademicArticle"; // TODO no tengo claro si aqui seria Article o Academic Article 
                         sol.Add(publicacion);
                     }
                 }
@@ -65,58 +65,55 @@ namespace ScopusConnect.ROs.Scopus.Controllers
 
         public List<Publication> getBibliografia(Publication_root objInicial)
         {
-            if(objInicial.AbstractsRetrievalResponse!=null){
-            if (objInicial.AbstractsRetrievalResponse.item.bibrecord.tail != null)
+            if (objInicial.AbstractsRetrievalResponse != null)
             {
-                //Console.Write("Punto inicial");
-                List<Publication> bibliografia = new List<Publication>();
-                if (objInicial.AbstractsRetrievalResponse.item.bibrecord.tail.bibliography.reference != null)
+                if (objInicial.AbstractsRetrievalResponse.item.bibrecord.tail != null)
                 {
-                    //try{
-                    for (int j = 0; j < objInicial.AbstractsRetrievalResponse.item.bibrecord.tail.bibliography.reference.Count; j++)
+                    List<Publication> bibliografia = new List<Publication>();
+                    if (objInicial.AbstractsRetrievalResponse.item.bibrecord.tail.bibliography.reference != null)
                     {
-                        //    string scopus_id = null;
-                        //Console.Write(info_publicacion_root.item.bibrecord.tail.bibliography.reference[j].RefInfo.RefdItemidlist.itemid.Idtype);
-                        if (objInicial.AbstractsRetrievalResponse.item.bibrecord.tail.bibliography.reference[j].RefInfo.RefdItemidlist != null)
+                        for (int j = 0; j < objInicial.AbstractsRetrievalResponse.item.bibrecord.tail.bibliography.reference.Count; j++)
                         {
-                            //Console.Write("hola!");
-                            string scopus_id = null;
-                            try{
-                                //Console.Write(objInicial.AbstractsRetrievalResponse.item.bibrecord.tail.bibliography.reference[j].RefInfo.RefdItemidlist.itemid.ToString());
-                                Itemid hey = JsonConvert.DeserializeObject<Itemid>(objInicial.AbstractsRetrievalResponse.item.bibrecord.tail.bibliography.reference[j].RefInfo.RefdItemidlist.itemid.ToString());
-                                scopus_id = hey.a;
-                                //Console.Write(scopus_id);
-                                //Console.Write("------");
-                            } catch{
-                                //Console.Write(objInicial.AbstractsRetrievalResponse.item.bibrecord.tail.bibliography.reference[j].RefInfo.RefdItemidlist.itemid.GetType());
-                                JArray hey = JsonConvert.DeserializeObject<JArray>(objInicial.AbstractsRetrievalResponse.item.bibrecord.tail.bibliography.reference[j].RefInfo.RefdItemidlist.itemid.ToString());
-                                foreach(JContainer var in hey){
+                            if (objInicial.AbstractsRetrievalResponse.item.bibrecord.tail.bibliography.reference[j].RefInfo.RefdItemidlist != null)
+                            {
+                                string scopus_id = null;
+                                try
+                                {
+                                    Itemid hey = JsonConvert.DeserializeObject<Itemid>(objInicial.AbstractsRetrievalResponse.item.bibrecord.tail.bibliography.reference[j].RefInfo.RefdItemidlist.itemid.ToString());
+                                    scopus_id = hey.a;
+                                }
+                                catch
+                                {
+                                    JArray hey = JsonConvert.DeserializeObject<JArray>(objInicial.AbstractsRetrievalResponse.item.bibrecord.tail.bibliography.reference[j].RefInfo.RefdItemidlist.itemid.ToString());
+                                    foreach (JContainer var in hey)
+                                    {
                                         Itemid ee = JsonConvert.DeserializeObject<Itemid>(var.ToString());
-                                        if (ee.Idtype == "SGR" ^ee.Idtype=="SCOPUS"){
-                                        scopus_id = ee.a;}
+                                        if (ee.Idtype == "SGR" ^ ee.Idtype == "SCOPUS")
+                                        {
+                                            scopus_id = ee.a;
+                                        }
+                                    }
+                                }
+                                Publication_root obj_inicial = null;
+                                if (scopus_id != null)
+                                {
+                                    string publicacion_ref = this.scopusLogic.getStringPublication(scopus_id);
+                                    obj_inicial = getPublication(publicacion_ref);
+                                }
+                                if (obj_inicial != null)
+                                {
+                                    Publication publication_def = getGenericPublication(obj_inicial);
+                                    bibliografia.Add(publication_def);
                                 }
                             }
-                            //Console.Write(scopus_id);
-                            //Console.Write("------");
-                            Publication_root obj_inicial = null;
-                            if (scopus_id != null)
-                            {
-                                string publicacion_ref = this.scopusLogic.getStringPublication(scopus_id);
-                                obj_inicial = getPublication(publicacion_ref);
-                            }
-                            if (obj_inicial != null)
-                            {
-                                Publication publication_def = getGenericPublication(obj_inicial);
-                                bibliografia.Add(publication_def);
-                            }
                         }
+                        return bibliografia;
                     }
-                    return bibliografia;
+                    else { return null; }
                 }
                 else { return null; }
             }
             else { return null; }
-            }else{return null;}
         }
 
         public Publication_root getPublication(string stringPublication)
@@ -124,13 +121,13 @@ namespace ScopusConnect.ROs.Scopus.Controllers
 
 
             Publication_root info_publicacion = new Publication_root();
-            try 
+            try
             {
                 info_publicacion = JsonConvert.DeserializeObject<Publication_root>(stringPublication);
             }
             catch
             {
-                //HABLAR!!!!
+                //Todo: comentar si quieren hacer algo aqui con esta extepcion. 
                 info_publicacion = null;
                 Console.Write("Error de deserializacion del articulo.");
             }
@@ -339,11 +336,7 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                     return objInicial.AbstractsRetrievalResponse.language.XmlLang;
                 }
                 else { return null; }
-            }
-            else
-            {
-                return null;
-            }
+            } else { return null; }
         }
         public List<String> getFreetextKeyword(Publication_root objInicial)
         {
@@ -352,18 +345,22 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                 List<String> freetextKeyword = new List<string>();
                 if (objInicial.AbstractsRetrievalResponse.authkeywords != null)
                 {
-                    for (int i = 0; i < objInicial.AbstractsRetrievalResponse.authkeywords.AuthorKeyword.Count; i++)
+                    try
                     {
-                        freetextKeyword.Add(objInicial.AbstractsRetrievalResponse.authkeywords.AuthorKeyword[i].a);
+                        AuthorKeyword palabraClave = JsonConvert.DeserializeObject<AuthorKeyword>(objInicial.AbstractsRetrievalResponse.authkeywords.AuthorKeyword.ToString());
+                        freetextKeyword.Add(palabraClave.a);
+                    } catch 
+                    {
+                        JArray hey = JsonConvert.DeserializeObject<JArray>(objInicial.AbstractsRetrievalResponse.authkeywords.AuthorKeyword.ToString());
+                        foreach (JContainer var in hey)
+                        {
+                            AuthorKeyword palabraClave = JsonConvert.DeserializeObject<AuthorKeyword>(var.ToString());
+                            freetextKeyword.Add(palabraClave.a);
+                        }
                     }
                     return freetextKeyword;
-                }
-                else { return null; }
-            }
-            else
-            {
-                return null;
-            }
+                } else { return null; }
+            } else { return null;}
         }
         public PublicationMetric getPublicationMetric(Publication_root objInicial)
         {
@@ -373,13 +370,11 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                 publicationMetric.citationCount = objInicial.AbstractsRetrievalResponse.coredata.CitedbyCount;
                 publicationMetric.metricName = "Scopus";
                 return publicationMetric;
-            }
-            else
+            } else
             {
                 PublicationMetric publicationMetric = null;
                 return publicationMetric;
             }
-
         }
 
         public Person getPerson(Author info_person)
@@ -399,7 +394,6 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                 author.link = listAuthorUrl;
             }
             else { author.link = null; }
-
 
             // names-------------
             List<string> names = new List<string>();
@@ -424,7 +418,6 @@ namespace ScopusConnect.ROs.Scopus.Controllers
         public Publication getGenericPublication(Publication_root objInicial)
         {
             Publication publicacion = new Publication();
-            //publicacion.bibliografia = getBibliografia(objInicial);
             //title--------------------------------------------------------------------
             publicacion.title = getTitle(objInicial);
             //links-----------------------------------------------------------------------------
@@ -459,8 +452,6 @@ namespace ScopusConnect.ROs.Scopus.Controllers
         public JournalArticle getJournalArticle(Publication_root objInicial)
         {
             JournalArticle publicacion = new JournalArticle();
-            // publicacion.bibliografia = getBibliografia(objInicial);
-
             //title--------------------------------------------------------------------
             publicacion.title = getTitle(objInicial);
             //links-----------------------------------------------------------------------------
@@ -488,7 +479,6 @@ namespace ScopusConnect.ROs.Scopus.Controllers
             publicacion.pageEnd = getPageEnd(objInicial);
             // publication metric --------------------------------
             publicacion.hasMetric = getPublicationMetric(objInicial);
-
             return publicacion;
 
         }
@@ -497,8 +487,6 @@ namespace ScopusConnect.ROs.Scopus.Controllers
         {
 
             ConferencePaper publicacion = new ConferencePaper();
-            //publicacion.bibliografia = getBibliografia(objInicial);
-
             //title--------------------------------------------------------------------
             publicacion.title = getTitle(objInicial);
             //links-----------------------------------------------------------------------------
@@ -526,11 +514,8 @@ namespace ScopusConnect.ROs.Scopus.Controllers
             publicacion.pageEnd = getPageEnd(objInicial);
             // publication metric --------------------------------
             publicacion.hasMetric = getPublicationMetric(objInicial);
-
             return publicacion;
         }
-
     }
-
 
 }

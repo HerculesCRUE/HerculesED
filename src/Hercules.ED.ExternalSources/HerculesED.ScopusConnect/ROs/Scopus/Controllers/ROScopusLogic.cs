@@ -101,7 +101,6 @@ namespace ScopusConnect.ROs.Scopus.Controllers
         {
             Uri url = new Uri(baseUri + string.Format(uri, name));
             string info_publicationn = httpCall(url.ToString(), "GET", headers).Result;
-            //Console.Write(info_publicationn);
             return info_publicationn;
         }
 
@@ -116,14 +115,10 @@ namespace ScopusConnect.ROs.Scopus.Controllers
         public List<Publication> getPublications(string name, string year = "1500", string uri = "content/search/scopus?query=AU-ID ( {0})&AFT({1})")//AU-ID?{0}")
         {
             Uri url = new Uri(baseUri + string.Format(uri, name, year));
-            //Console.Write(url);
             string info_publication = httpCall(url.ToString(), "GET", headers).Result;
-
             ROScopusControllerJSON info = new ROScopusControllerJSON(this);
             List<Publication> sol = info.getListPublicatio(info_publication);
             return sol;
         }
-
-
     }
 }

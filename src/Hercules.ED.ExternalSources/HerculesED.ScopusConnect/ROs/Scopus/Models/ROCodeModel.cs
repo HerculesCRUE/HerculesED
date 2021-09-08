@@ -11,7 +11,7 @@ public class Url
 public class Publication 
 {
     public List<Url> url { get; set; }
-    public string description { get; set; }
+    public string typeOfPublication { get; set; } //no es un atributo de la ontologia!!
     public List<KnowledgeArea> hasKnowledgeArea { get; set; }
     public DateTimeValue dataIssued { get; set; }
     public Person correspondingAuthor { get; set; }
