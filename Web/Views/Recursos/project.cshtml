@@ -172,7 +172,7 @@
                     <li class="nav-item" role="presentation">
                         <a class="nav-link active" id="referencias-tab" data-toggle="tab" href="#referencias-panel" role="tab" aria-controls="referencias-panel" aria-selected="true">
                             <div class="bloque">
-                                <div class="data">@Html.Translate("REFERENCIAS")</div>
+                                <div class="data">Participantes</div>
                                 <!--<div class="label">@Html.Translate("REFERENCIAS")</div>-->
                                 <!--<div class="data">TODO</div>-->
                             </div>
@@ -182,9 +182,12 @@
                 <div class="tab-content" id="paneles-recurso">
                     <div class="tab-pane fade show active" id="referencias-panel" role="tabpanel" aria-labelledby="referencias-tab">
                         <div class="row">
+                            <div class="col col-12 col-grafo mb-5">
+                                <div class="wrapCol" id="graficaCytoscape" style="width: 1224px; height: 500px;"></div>
+                            </div>
                             <div class="col col-12 col-section-title font-weight-bold">
                                 <div class="wrapCol">
-                                    <p>@Html.Translate("LISTADO_PUBLICACIONES")</p>
+                                    <p>Personas</p>
                                 </div>
                             </div>
 
@@ -206,7 +209,7 @@
                                     <div class="header-contenido">
                                         <!-- Número de resultados -->
                                         <div class="h1-container">
-                                            <h1>@Html.Translate("PUBLICACIONES") <span @*id="panNumResultados"*@ class="numResultados panNumResultadosAux"></span></h1>
+                                            <h1>Personas <span @*id="panNumResultados"*@ class="numResultados panNumResultadosAux"></span></h1>
                                         </div>
 
                                         <!-- Desplegables derecha -->
@@ -2627,7 +2630,80 @@
 
 <!-- JAVASCRIPT -->
 <script type="text/javascript">
-    var depuracion = false; // TODO:
+    var depuracion = true; // TODO:
+
+    // Datos gráfica colaboradores.
+    function CargarGraficaColaboradores(idproyecto, parametros) {
+        var url = "http://servicioshercules.gnoss.net/servicioexternohercules/Hercules/DatosGraficaRedColaboradores?pIdProyecto=" + "@pProject.GNOSSID.Split('_')[1].ToUpper()"
+        if (depuracion) {
+            url = "https://localhost:44367/Hercules/DatosGraficaRedColaboradores?pIdProyecto=" + "@pProject.GNOSSID.Split('_')[1].ToUpper()"
+        }
+        var arg = {};
+        arg.pIdPersona = idproyecto;
+        arg.pParametros = parametros;
+        $.get(url, arg, function (data) {
+            $('#graficaCytoscape').empty();
+
+            var cy = window.cy = cytoscape({
+                // Contenedor
+                container: document.getElementById('graficaCytoscape'),
+                // Layout
+                layout: {
+                    name: 'cose',
+                    idealEdgeLength: 100,
+                    nodeOverlap: 20,
+                    refresh: 20,
+                    fit: true,
+                    padding: 30,
+                    randomize: false,
+                    componentSpacing: 100,
+                    nodeRepulsion: 400000,
+                    edgeElasticity: 100,
+                    nestingFactor: 5,
+                    gravity: 80,
+                    numIter: 1000,
+                    initialTemp: 200,
+                    coolingFactor: 0.95,
+                    minTemp: 1.0
+                },
+                // Estilos
+                style: [{
+                    "selector": "node",
+                    "style": {
+                        "width": "mapData(score, 0, 25, 30, 70)",
+                        "height": "mapData(score, 0, 25, 30, 70)",
+                        "content": "data(name)",
+                        "font-size": "12px",
+                        "text-valign": "center",
+                        "text-halign": "center",
+                        "background-color": "#c2c2c2",
+                        "text-outline-color": "#555",
+                        "text-outline-width": "2px",
+                        "color": "#fff",
+                        "overlay-padding": "6px",
+                        "z-index": "10"
+                    }
+                }, {
+                    "selector": "edge",
+                    "style": {
+                        "curve-style": "haystack",
+                        "haystack-radius": "0.5",
+                        "opacity": "0.4",
+                        "line-color": "#EC0000",
+                        "width": "mapData(weight, 0, 1, 1, 8)",
+                        "overlay-padding": "3px"
+                    }
+                }],
+                // Datos
+                elements: data
+            });
+
+            cy.on('mouseover', 'edges', function (event) {
+                $('#numRelaciones').text('(' + event.target.id().split("~")[2] + ')');
+            });
+        });
+    }
+
 
     var comportamientoPaginaInvestigador = {
         filtroOculto: null,
@@ -2635,13 +2711,14 @@
         init: function () {
             this.config();
             $('#referencias-tab').click();
+            CargarGraficaColaboradores("@pProject.GNOSSID", "");
             return;
         },
         config: function () {
             var that = this;
             $('#referencias-tab').unbind().click(function (e) {
                 e.preventDefault();
-                that.tabActive = "referencias";
+                that.tabActive = "participantes";
                 that.comportamientoReferencias();
             });
             return;
@@ -2683,11 +2760,11 @@
             suplementoFiltros = '';
             primeraCargaDeFacetas = false;
             @{
-                string idTab = Html.Translate("ID_BUSQUEDA_DOCUMENTOS");
+                string idTab = Html.Translate("ID_BUSQUEDA_PERSONAS");
             }
 
             //parametros_adiccionales = 'PestanyaActualID=@idTab|rdf:type=asiodocument|orden=asc|ordenarPor=vivo:dateTimeValue';
-            parametros_adiccionales = 'PestanyaActualID=@idTab|rdf:type=document';
+            parametros_adiccionales = 'PestanyaActualID=@idTab|rdf:type=person';
             mostrarFacetas = true;
             mostrarCajaBusqueda = true;
             FiltrarPorFacetas("");
@@ -2718,9 +2795,9 @@
             return ProcesarFiltro(filtro);
         }
 
-        if (comportamientoPaginaInvestigador.tabActive == "referencias") {
-            comportamientoPaginaInvestigador.filtroOculto ="|searchRelacionadosDocumento=@pProject.GNOSSID.Split('_')[1].ToUpper()";
-            filtro += "|searchRelacionadosDocumento=@pProject.GNOSSID.Split('_')[1].ToUpper()";
+        if (comportamientoPaginaInvestigador.tabActive == "participantes") {
+            comportamientoPaginaInvestigador.filtroOculto ="|searchPersonasRelacionadasConProyecto=@pProject.GNOSSID.Split('_')[1].ToUpper()";
+            filtro += "|searchPersonasRelacionadasConProyecto=@pProject.GNOSSID.Split('_')[1].ToUpper()";
             var parametros = ObtenerHash2();
             if (parametros.startsWith("URL=")) {
                 parametros = parametros.substring(parametros.indexOf('submit=Cargar') + 13);
