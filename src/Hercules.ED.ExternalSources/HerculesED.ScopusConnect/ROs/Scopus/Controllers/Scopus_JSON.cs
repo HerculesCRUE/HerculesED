@@ -203,7 +203,6 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                         if (objInicial.AbstractsRetrievalResponse.coredata.link[i].Rel == "scopus")
                         {
                             link.link = objInicial.AbstractsRetrievalResponse.coredata.link[i].Href;
-                            link.description = "scopus"; //this is needed!!!!!! 
                             url.Add(link);
                         }
                     }
@@ -389,7 +388,7 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                 List<Url> listAuthorUrl = new List<Url>();
                 Url linkScopus = new Url();
                 linkScopus.link = "https://www.scopus.com/authid/detail.uri?authorId=" + info_person.Auid;
-                linkScopus.description = "Scopus profile";
+                //linkScopus.description = "Scopus profile";
                 listAuthorUrl.Add(linkScopus);
                 author.link = listAuthorUrl;
             }
@@ -445,7 +444,6 @@ namespace ScopusConnect.ROs.Scopus.Controllers
             publicacion.pageEnd = getPageEnd(objInicial);
             // publication metric --------------------------------
             publicacion.hasMetric = getPublicationMetric(objInicial);
-
             return publicacion;
         }
 
