@@ -1,10 +1,10 @@
 {
-  "rdftype": "http://w3id.org/roh/scientificActivity",
+  "rdftype": "http://w3id.org/roh/ScientificActivity",
   "ontologyName": "curriculumvitae",
-  "uniqueLoaded": false,
+  "uniqueLoadedsection": false,
   "relation": {
     "property": "http://w3id.org/roh/scientificActivity",
-    "entityReference": "http://w3id.org/roh/scientificActivity",
+    "entityReference": "http://w3id.org/roh/ScientificActivity",
     "ontologyName": "curriculumvitae",
     "eid": "85d2d0d8-07c8-4441-92d9-1004486d1e32",
     "eidRel": "5097c6b6-f454-11eb-9a03-0242ac130003"
@@ -13,7 +13,8 @@
     {
       "title": "",
       "class": [
-        ""
+        "row",
+        "p-3"
       ],
       "tag": "div",
       "sections": [
@@ -21,11 +22,14 @@
           "title": "6 - Experiencia científica",
           "class": [
             "col",
-            "col12"
+            "col-12"
           ]
         },
         {
-          "tag": "div",
+          "class": [
+            "col",
+            "col-12"
+          ],
           "entities": [
             {
               "rdftype": "http://w3id.org/roh/RelatedDocuments",
@@ -38,9 +42,6 @@
               },
               "sections": [
                 {
-                  "title": "",
-                  "class": ["sad"],
-                  "tag": "div",
                   "entities": [
                     {
                       "rdftype": "http://purl.org/ontology/bibo/Document",
@@ -48,33 +49,48 @@
                         "property": "http://w3id.org/roh/relatedDocument",
                         "entityReference": "http://purl.org/ontology/bibo/Document",
                         "ontologyName": "document",
+                        "mode": "full",
                         "eid": "41cc7cfd-01bf-4913-9024-edecda0ec740",
                         "eidRel": "6ab754f4-d56d-464d-9941-c096ff29cd51"
                       },
                       "sections": [
                         {
-                          "title": "",
-                          "class": [
-                            ""
-                          ],
-                          "tag": "div",
-                              
+                          "class": ["row"],
                           "sections": [
                             {
                               "title": "",
-                              "class": [ "row" ],
+                              "class": [ "col-6" ],
                               "tag": "div",
                               "sections": [
 
                               ],
                               "properties": [
                                 {
-                                  "property": "http://purl.org/roh#title",
+                                  "property": "http://w3id.org/roh/title",
                                   "title": "Título del documento",
                                   "min": 1,
                                   "max": 1,
                                   "multiLanguage": false,
                                   "fieldType": "text",
+                                  "viewMode": "readOnly"
+                                }
+                              ]
+                            },
+                            {
+                              "title": "",
+                              "class": [ "col-6" ],
+                              "tag": "div",
+                              "sections": [
+
+                              ],
+                              "properties": [
+                                {
+                                  "property": "http://purl.org/roh/mirror/vivo#dateTime",
+                                  "title": "Fecha",
+                                  "min": 1,
+                                  "max": 1,
+                                  "multiLanguage": false,
+                                  "fieldType": "datetime",
                                   "viewMode": "readOnly"
                                 }
                               ]
