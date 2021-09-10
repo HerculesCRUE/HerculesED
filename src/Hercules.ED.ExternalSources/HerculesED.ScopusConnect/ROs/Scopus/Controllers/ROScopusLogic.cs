@@ -115,17 +115,10 @@ namespace ScopusConnect.ROs.Scopus.Controllers
         public List<Publication> getPublications(string name, string year = "1500", string uri = "content/search/scopus?query=AU-ID ( {0})&AFT({1})")//AU-ID?{0}")
         {
             Uri url = new Uri(baseUri + string.Format(uri, name, year));
-            //Console.Write(url);
             string info_publication = httpCall(url.ToString(), "GET", headers).Result;
-            
-            //aqui hay que añadir segun el modelo del repo del que extraigas cosas el .cs necesario de cambio de modelo!!! 
-            //por tanto hay que añadir un IF que verifique que repositorio es!
-            //TODO!
             ROScopusControllerJSON info = new ROScopusControllerJSON(this);
             List<Publication> sol = info.getListPublicatio(info_publication);
             return sol;
         }
-        
-
     }
 }

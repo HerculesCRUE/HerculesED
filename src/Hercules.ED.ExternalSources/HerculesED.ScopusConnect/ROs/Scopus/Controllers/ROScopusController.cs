@@ -12,6 +12,7 @@ namespace ScopusConnect.ROs.Scopus.Controllers
             // _bareer = new Guid("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");
             this.baseUri = baseUri;
             this.bareer = bareer;
+            //headers.Add("view","COMPLETE");
             //headers.Add("User-Agent", "http://developer.github.com/v3/#user-agent-required");
             //headers.Add("Accept", "application/vnd.github.mercy-preview+json");
         }

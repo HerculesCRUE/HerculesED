@@ -15,7 +15,6 @@
     SemanticResourceModel semCmsModel = Model.SemanticFrom;
     GnossOCBase.LanguageEnum idiomaUsuario = (GnossOCBase.LanguageEnum)Enum.Parse(typeof(GnossOCBase.LanguageEnum), Html.GetUtilIdiomas().LanguageCode.ToLower());
     Document pDocument = new Document(semCmsModel, idiomaUsuario);
-    var x = 0;
 }
 
 <div class="col col-12 col-breadcrumb">
@@ -223,7 +222,7 @@
                     TODO: Descripción del artículo.
                 </p>
             </div>
-        </div>                        
+        </div>
         <div class="contenido-ficha contenido-publicacion">
             <div class="tab-paneles-ficha">
                 <ul class="nav nav-tabs" id="navegacion-recurso" role="tablist">
@@ -2687,6 +2686,13 @@
 <script type="text/javascript">
     var depuracion = false; // TODO:
 
+    //TODO: Filtros.
+    $(document).ready(function () {
+        if ($('.etiquetas.panFiltrosAux ul li').hasClass("@pDocument.GNOSSID.Split('_')[1].ToUpper()")) {
+          $('.etiquetas.panFiltrosAux ul li.@pDocument.GNOSSID.Split('_')[1].ToUpper()').remove();
+        }
+    });
+
     var comportamientoPaginaInvestigador = {
         filtroOculto: null,
         tabActive: null,
@@ -2784,11 +2790,6 @@
                 parametros = parametros.substring(parametros.indexOf('submit=Cargar') + 13);
             }
         }
-
-        //TODO: Filtros.
-        //if ($('.etiquetas.panFiltrosAux ul li').hasClass("@pDocument.GNOSSID.Split('_')[1].ToUpper()")) {
-            //$('.etiquetas.panFiltrosAux ul li."@pDocument.GNOSSID.Split('_')[1].ToUpper()"').remove();
-        //}
 
         return FiltrarPorFacetasGenerico(filtro);
     }

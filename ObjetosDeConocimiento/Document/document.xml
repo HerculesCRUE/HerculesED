@@ -487,6 +487,25 @@
             <AtrNombre>Ciudad</AtrNombre>
             <AtrNombreLectura>Ciudad</AtrNombreLectura>
         </Propiedad>
+		
+		<Propiedad ID="http://w3id.org/roh/project" EntidadID="http://xmlns.com/foaf/0.1/Document">
+            <AtrNombre>Proyectos participantes</AtrNombre>
+            <AtrNombreLectura>Proyectos participantes</AtrNombreLectura>
+			<SeleccionEntidad>
+                <TipoSeleccion>Autocompletar</TipoSeleccion>
+                <Grafo>project.owl</Grafo>
+                <UrlTipoEntSolicitada>http://vivoweb.org/ontology/core#Project</UrlTipoEntSolicitada>              
+                <PropsEntEdicion>
+                    <NameProp>http://w3id.org/roh/title</NameProp>
+                </PropsEntEdicion>
+                <PropsEntLectura>
+                    <Propiedad ID="http://w3id.org/roh/title" EntidadID="http://vivoweb.org/ontology/core#Project">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+                </PropsEntLectura>
+            </SeleccionEntidad>
+        </Propiedad>
+		
     </EspefPropiedad>
     <EspefEntidad>
         <Entidad  ID="http://xmlns.com/foaf/0.1/Document">
@@ -771,7 +790,8 @@
                             <NameProp>http://purl.org/ontology/bibo/presentedAt</NameProp> 
                             <NameProp>http://w3id.org/roh/congressProceedingsPublication</NameProp>
 							<NameProp>http://vivoweb.org/ontology/core#freeTextKeyword</NameProp>
-							<NameProp>http://w3id.org/roh/hasKnowledgeArea</NameProp>							
+							<NameProp>http://w3id.org/roh/hasKnowledgeArea</NameProp>	
+							<NameProp>http://w3id.org/roh/project</NameProp>
                         </Grupo>
                     </Grupo>
                 </Grupo>
@@ -817,6 +837,7 @@
                             <NameProp>http://w3id.org/roh/congressProceedingsPublication</NameProp>
 							<NameProp>http://vivoweb.org/ontology/core#freeTextKeyword</NameProp>
 							<NameProp>http://w3id.org/roh/hasKnowledgeArea</NameProp>
+							<NameProp>http://w3id.org/roh/project</NameProp>
                         </Grupo>
                     </Grupo>
                 </Grupo>

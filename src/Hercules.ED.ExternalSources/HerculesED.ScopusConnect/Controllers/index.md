@@ -21,7 +21,9 @@ Indice:
     * author.json --> varios autores e informacion basica de ellos! 
 
 
-
+Citas--> api:
+    https://dev.elsevier.com/documentation/AbstractCitationAPI.wadl
+    
 
 glosario
 

@@ -1,3 +1,4 @@
+@*[security|||shared/head/_ficherosjavascript.cshtml|||hercules]*@
 @{
     CommunityModel Comunidad = Html.GetComunidad();
     string versionCSS = ViewBag.Version;
@@ -52,6 +53,11 @@
 
 <!-- CHARTS.JS -->
 <script type="text/javascript" src="@urlPersonalizacion/theme/libraries/chart/chart.js"></script>
+
+<!-- CYTOSCAPE -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.18.2/cytoscape.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/cytoscape-qtip@2.8.0/cytoscape-qtip.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape-popper/2.0.0/cytoscape-popper.js"></script>
 
 <!-- PERSONALIZACION TEMA -->
 <script type="text/javascript" src="@urlPersonalizacion/theme/theme.js"></script>

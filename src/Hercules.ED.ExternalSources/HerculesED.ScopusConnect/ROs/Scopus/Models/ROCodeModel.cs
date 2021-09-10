@@ -6,12 +6,12 @@ namespace ScopusConnect.ROs.Scopus.Models
 public class Url 
 {
     public string link { get; set; }
-    public string description { get; set; }
+   // public string description { get; set; }
 }
 public class Publication 
 {
     public List<Url> url { get; set; }
-    public string description { get; set; }
+    public string typeOfPublication { get; set; } //no es un atributo de la ontologia!!
     public List<KnowledgeArea> hasKnowledgeArea { get; set; }
     public DateTimeValue dataIssued { get; set; }
     public Person correspondingAuthor { get; set; }
@@ -81,10 +81,7 @@ public class Status
     public string status { get; set; }
     public DateTimeValue dateIssued { get; set; }
 }
-public class Seq
-{
-    public List<Person> authors { get; set; }
-}
+
 public class Person
 {
     //public DateTimeValue birthdate { get; set; }
