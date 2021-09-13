@@ -160,7 +160,7 @@
         "entityReference": "http://w3id.org/roh/PublicationType",
         "rdfType": "http://w3id.org/roh/PublicationType"
       },
-      "title": "Tipo de producción",
+      "title": "Tipo de publicacion",
       "min": 0,
       "max": 1,
       "multiLanguage": false,

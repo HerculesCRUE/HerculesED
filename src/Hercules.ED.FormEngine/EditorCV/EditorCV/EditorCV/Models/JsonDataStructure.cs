@@ -17,6 +17,7 @@ namespace EditorCV.Models
         public Dictionary<string, Entity> entities { get; set; }
         public string startEntity { get; set; }
         public string startItem { get; set; }
+        public string parentSaveId { get; set; }
         public Entity structure { get; set; }
         public Dictionary<string, Entity> sections { get; set; }
     }
@@ -40,9 +41,7 @@ namespace EditorCV.Models
         // Unique identificator of the entity
         public string id { get; set; }
         public string name { get; set; }
-        // You only can choose between design or make the structure
-        public string design { get; set; }
-        // List of the sections of the Entity (Only for the structure JSON)
+        // You only can chooserdfTypes of the Entity (Only for the structure JSON)
         public List<Section> sections { get; set; }
         // List of entities related under hiself
         public List<Entity> entities { get; set; }
@@ -69,6 +68,18 @@ namespace EditorCV.Models
         public string eidRel { get; set; }
         public string eid { get; set; }
         public string ontologyName { get; set; }
+        public string mode { get; set; }
+        public List<ModeChild> modeChilds { get; set; }
+    }
+
+
+    public class ModeChild
+    {
+        // Rdf type of the entity
+        public string rdfType { get; set; }
+        public string property { get; set; }
+        public string ontologyName { get; set; }
+        public string eid { get; set; }
     }
 
 
@@ -86,6 +97,7 @@ namespace EditorCV.Models
         public List<string> @class { get; set; }
         public string tag { get; set; }
         public OutSection outSection { get; set; }
+        public List<Dictionary<string, string>> sectionProperties { get; set; }
         public string load { get; set; }
         public string id { get; set; }
         public string type { get; set; }

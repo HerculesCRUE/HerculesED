@@ -1,12 +1,12 @@
 {
-    "rdftype": "http://w3id.org/roh/scientificExperience",
+    "rdftype": "http://w3id.org/roh/ScientificExperience",
     "ontologyName": "curriculumvitae",
     "properties": [
         {
             "property": "http://w3id.org/roh/competitiveProjects",
             "relation": {
                 "property": "http://w3id.org/roh/scientificExperience",
-                "entityReference": "http://w3id.org/roh/scientificExperience"
+                "entityReference": "http://w3id.org/roh/ScientificExperience"
             },
             "title": "Proyectos Competitivos",
             "min": 0,
