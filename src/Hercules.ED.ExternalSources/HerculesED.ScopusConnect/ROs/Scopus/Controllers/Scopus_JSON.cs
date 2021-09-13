@@ -4,6 +4,8 @@ using ScopusConnect.ROs.Scopus.Models.Inicial;
 
 using Newtonsoft.Json.Linq;
 using System;
+using System.Threading;
+
 using Newtonsoft.Json;
 
 
@@ -20,9 +22,8 @@ namespace ScopusConnect.ROs.Scopus.Controllers
 
         public List<Publication> getListPublicatio(string stringInicial)
         {
-            //Console.Write(stringInicial);
+            
             Root objInicial = JsonConvert.DeserializeObject<Root>(stringInicial);
-            //Console.Write(objInicial);
             List<Publication> sol = new List<Publication>();
             //---modificacion en otro repo!  ---------------------------------------------------------
             List<Entry> lista_item = objInicial.SearchResults.entry;
@@ -32,7 +33,10 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                 Entry entidad = lista_item[i];
                 string[] id_code = entidad.DcIdentifier.Split(':');
                 string id = id_code[1];
-                Publication_root info_publicacion_root = getPublication(this.scopusLogic.getStringPublication(id));
+                Thread.Sleep(3000);
+                string informacion= this.scopusLogic.getStringPublication(id);
+                Console.Write(informacion);
+                Publication_root info_publicacion_root = getPublication(informacion);
                 //------------------------------------------------------------------------
                 //Console.Write(id);
                 if (info_publicacion_root != null)
@@ -43,6 +47,7 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                         conferencePaper.bibliografia = getBibliografia(info_publicacion_root);
                         conferencePaper.typeOfPublication = "ConferencePaper";
                         sol.Add(conferencePaper);
+                        Console.Write(conferencePaper.doi);
                     }
                     else if (entidad.subtype == "ar")
                     {
@@ -50,6 +55,8 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                         conferencePaper.bibliografia = getBibliografia(info_publicacion_root);
                         conferencePaper.typeOfPublication ="JournalArticle";
                         sol.Add(conferencePaper);
+                         Console.Write(conferencePaper.doi);
+
                     }
                     else
                     {
@@ -57,8 +64,10 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                         publicacion.bibliografia = getBibliografia(info_publicacion_root);
                         publicacion.typeOfPublication = "AcademicArticle"; // TODO no tengo claro si aqui seria Article o Academic Article 
                         sol.Add(publicacion);
+                                                Console.Write(publicacion.doi);
+
                     }
-                }
+                }else{Console.Write("QUE COJONEs");}
             }
             return sol;
         }
