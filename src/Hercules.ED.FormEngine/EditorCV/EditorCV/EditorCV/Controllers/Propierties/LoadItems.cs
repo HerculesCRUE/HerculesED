@@ -111,7 +111,7 @@ namespace EditorCV.Controllers.Properties
         }
 
 
-        public Dictionary<string, List<Dictionary<string, Data>>> GetValEntityFastMulti(string[] pIds, string rdf, string pGraph)
+        public Dictionary<string, List<Dictionary<string, Data>>> GetValEntityFastMulti(List<string> pIds, string rdf, string pGraph)
         {
             SparqlObject result = new SparqlObject();
             Dictionary<string, List<Dictionary<string, Data>>> listResult = new Dictionary<string, List<Dictionary<string, Data>>>();
@@ -119,8 +119,8 @@ namespace EditorCV.Controllers.Properties
             try
             {
                 // Get the ids
-                string[] tmpArr = new string[pIds.Length];
-                for (int i = 0; i < pIds.Length; i++)
+                string[] tmpArr = new string[pIds.Count];
+                for (int i = 0; i < pIds.Count; i++)
                 {
                     tmpArr[i] = "<" + pIds[i] + ">";
                 }
@@ -128,7 +128,15 @@ namespace EditorCV.Controllers.Properties
 
                 if (resourceApi.ApiUrl.GetType() != typeof(Exception))
                 {
-                    result = resourceApi.VirtuosoQuery("select distinct ?entity ?p ?o", $"where{{?s <http://gnoss/hasEntidad> ?entities. ?s <http://gnoss/hasEntidad> ?entity. ?entity ?p ?o. filter (?entity in ({strIdsJoin}) && ?entities in ({strIdsJoin}))}}", pGraph);
+                    var query = $"where{{?s <http://gnoss/hasEntidad> ?entities. ?s <http://gnoss/hasEntidad> ?entity. ?entity ?p ?o. filter (?entity in ({strIdsJoin}))}}";
+                    result = resourceApi.VirtuosoQuery("select distinct ?entity ?p ?o", query, pGraph);
+
+                    foreach (var item in pIds)
+                    {
+                        var listItems = result.results.bindings.FindAll(el => el["entity"].value == item);
+                        listResult.Add(item, listItems);
+                    }
+
                 }
 
                 // listResult.Add(pId, result.results.bindings);
@@ -182,7 +190,6 @@ namespace EditorCV.Controllers.Properties
 
             return listResult;
         }
-
 
 
         public Dictionary<string, List<Dictionary<string, Data>>> GetValEntityFull(string pId, string rdf, string rdfParent, string pGraph)
@@ -599,35 +606,132 @@ namespace EditorCV.Controllers.Properties
                 {
                     // keyEntity = entity.relation.entityReference;
                     keyEntity = entity.relation.ontologyName + "." + entity.relation.entityReference;
-                }
-                // Mode of the call
-                switch (entity.relation.mode)
-                {
-                    case "full":
-                        var options = new Dictionary<string, Dictionary<string, string>>();
 
-                        resEntities.Add(GetEntityFull(entId, entity.relation, entity, ref options));
-                        break;
-                    default:
-                        // get the related item
-                        if (keyEntity != null && entity.relation != null && entity.relation.itemRdf != null)
-                        {
-                            // Get the current eid
-                            string eid = entity.relation.eid;
+                    // Mode of the call
+                    var options = new Dictionary<string, Dictionary<string, string>>();
+                    
+                    switch (entity.relation.mode)
+                    {
+                        case "full":
 
-                            if (entity.listItems == null)
+                            resEntities.Add(GetEntityFull(entId, entity.relation, entity, ref options));
+                            break;
+                        case "fullChild":
+
+                            resEntities.Add(GetEntityFullChild(entId, entity.relation, entity, ref options));
+                            break;
+                        default:
+                            // get the related item
+                            if (keyEntity != null && entity.relation != null && entity.relation.itemRdf != null)
                             {
-                                entity.listItems = new Dictionary<string, List<ListItems>>();
-                            }
+                                // Get the current eid
+                                string eid = entity.relation.eid;
 
-                            // Check if the entityparent has loaded (should be loaded)
-                            if (loadedEntities.ContainsKey(entity.relation.eidRel))
-                            {
-                                loadedEntities[entity.relation.eidRel].ForEach(e => {
+                                if (entity.listItems == null)
+                                {
+                                    entity.listItems = new Dictionary<string, List<ListItems>>();
+                                }
+
+                                // Check if the entityparent has loaded (should be loaded)
+                                if (loadedEntities.ContainsKey(entity.relation.eidRel))
+                                {
+                                    loadedEntities[entity.relation.eidRel].ForEach(e => {
+                                        try
+                                        {
+                                            // Search for the ids of the list item
+                                            var idsData = e.dbEntityData[e.id].FindAll(el => el["p"].value == entity.relation.property);
+                                            List<string> ids = new List<string>();
+
+                                            // Go over each listItem id
+                                            idsData.ForEach(cid => {
+
+                                                var litid = cid["o"].value;
+
+                                                // Check if the listItem Id exist in the data
+                                                if (e.dbEntityData.ContainsKey(litid))
+                                                {
+
+                                                    // Get the item element ID
+                                                    var dbEntityDataItem = e.dbEntityData[litid].Find(el => el["p"].value == entity.relation.itemRdf);
+                                                    var itemId = dbEntityDataItem["o"].value;
+
+                                                    // if (jsonData.entities[entityRdf] != null)
+                                                    // if (jsonData.entities.ContainsKey(keyEntity))
+                                                    // Check if the Id given is not null & if the entity rdftype is not null
+                                                    if (itemId != null && jsonData.entities.ContainsKey(keyEntity))
+                                                    {
+
+                                                        // Add a new item in the entity
+                                                        if (entity.listItems == null)
+                                                        {
+                                                            entity.listItems = new Dictionary<string, List<ListItems>>();
+                                                        }
+
+                                                        if (!entity.listItems.ContainsKey(e.id))
+                                                        {
+                                                            entity.listItems.Add(e.id, new List<ListItems>());
+                                                        }
+
+
+                                                        // Start a list item & set the parent Id
+                                                        var lItemNew = new ListItems()
+                                                        {
+                                                            parentId = e.id,
+                                                        };
+
+                                                        // Set the id
+                                                        lItemNew.id = itemId;
+
+                                                        // Add the Id into the list
+                                                        ids.Add(itemId);
+
+                                                        // Set the order value
+                                                        var dbOrderDataItem = e.dbEntityData[cid["o"].value].Find(el => el["p"].value == entity.relation.orderRdf);
+                                                        var itemOrderValue = dbOrderDataItem["o"].value;
+                                                        lItemNew.order = int.Parse(itemOrderValue);
+
+                                                        // foreach (var item in dbEntityData[cid["o"].value])
+                                                        // {
+                                                        //     if (item["p"].type == "uri" && item["p"].value == entity.orderRdf)
+                                                        //     {
+                                                        //         lItemNew.order = int.Parse(item["o"].value);
+                                                        //     }
+
+                                                        //     if (item["p"].type == "uri" && item["p"].value == entity.itemRdf)
+                                                        //     {
+                                                        //         lItemNew.id = item["o"].value;
+                                                        //     }
+                                                        // }
+
+                                                        var options = new Dictionary<string, Dictionary<string, string>>();
+                                                        tmpEntity = GetEntity(itemId, entity.relation, entity, ref options);
+                                                        // resEntities.Add(GetEntity(itemId, entity.relation, entity, ref options));
+
+                                                        if (entity.listItems[e.id].FindIndex(e => e.id == itemId) == -1)
+                                                        {
+                                                            entity.listItems[e.id].Add(lItemNew);
+                                                        }
+
+                                                    }
+                                                }
+
+                                            });
+
+
+                                        }
+                                        catch (System.Exception)
+                                        {
+                                            throw;
+                                        }
+                                    });
+                                }
+                                else
+                                {
+                                    // In the case that not exist the current db data in loadedEntities
                                     try
                                     {
                                         // Search for the ids of the list item
-                                        var idsData = e.dbEntityData[e.id].FindAll(el => el["p"].value == entity.relation.property);
+                                        var idsData = dbEntityData[entId].FindAll(el => el["p"].value == entity.relation.property);
                                         List<string> ids = new List<string>();
 
                                         // Go over each listItem id
@@ -636,35 +740,33 @@ namespace EditorCV.Controllers.Properties
                                             var litid = cid["o"].value;
 
                                             // Check if the listItem Id exist in the data
-                                            if (e.dbEntityData.ContainsKey(litid))
+                                            if (dbEntityData.ContainsKey(litid))
                                             {
 
                                                 // Get the item element ID
-                                                var dbEntityDataItem = e.dbEntityData[litid].Find(el => el["p"].value == entity.relation.itemRdf);
+                                                var dbEntityDataItem = dbEntityData[litid].Find(el => el["p"].value == entity.relation.itemRdf);
                                                 var itemId = dbEntityDataItem["o"].value;
 
                                                 // if (jsonData.entities[entityRdf] != null)
-                                                // if (jsonData.entities.ContainsKey(keyEntity))
+                                                // if (jsonData.entities.ContainsKey(entityRdf))
                                                 // Check if the Id given is not null & if the entity rdftype is not null
                                                 if (itemId != null && jsonData.entities.ContainsKey(keyEntity))
                                                 {
-
-                                                    // Add a new item in the entity
                                                     if (entity.listItems == null)
                                                     {
                                                         entity.listItems = new Dictionary<string, List<ListItems>>();
                                                     }
 
-                                                    if (!entity.listItems.ContainsKey(e.id))
+                                                    if (!entity.listItems.ContainsKey(entId))
                                                     {
-                                                        entity.listItems.Add(e.id, new List<ListItems>());
-                                                    }
+                                                        entity.listItems.Add(entId, new List<ListItems>());
 
+                                                    }
 
                                                     // Start a list item & set the parent Id
                                                     var lItemNew = new ListItems()
                                                     {
-                                                        parentId = e.id,
+                                                        parentId = entId,
                                                     };
 
                                                     // Set the id
@@ -674,30 +776,176 @@ namespace EditorCV.Controllers.Properties
                                                     ids.Add(itemId);
 
                                                     // Set the order value
-                                                    var dbOrderDataItem = e.dbEntityData[cid["o"].value].Find(el => el["p"].value == entity.relation.orderRdf);
+                                                    var dbOrderDataItem = dbEntityData[cid["o"].value].Find(el => el["p"].value == entity.relation.orderRdf);
                                                     var itemOrderValue = dbOrderDataItem["o"].value;
                                                     lItemNew.order = int.Parse(itemOrderValue);
 
-                                                    // foreach (var item in dbEntityData[cid["o"].value])
-                                                    // {
-                                                    //     if (item["p"].type == "uri" && item["p"].value == entity.orderRdf)
-                                                    //     {
-                                                    //         lItemNew.order = int.Parse(item["o"].value);
-                                                    //     }
-
-                                                    //     if (item["p"].type == "uri" && item["p"].value == entity.itemRdf)
-                                                    //     {
-                                                    //         lItemNew.id = item["o"].value;
-                                                    //     }
-                                                    // }
-
+                                                    // Get entity
                                                     var options = new Dictionary<string, Dictionary<string, string>>();
                                                     tmpEntity = GetEntity(itemId, entity.relation, entity, ref options);
                                                     // resEntities.Add(GetEntity(itemId, entity.relation, entity, ref options));
 
-                                                    if (entity.listItems[e.id].FindIndex(e => e.id == itemId) == -1)
+                                                    if (entity.listItems[entId].FindIndex(e => e.id == itemId) == -1)
+                                                    {
+                                                        entity.listItems[entId].Add(lItemNew);
+                                                    }
+
+                                                }
+                                            }
+
+                                        });
+
+                                    }
+                                    catch (System.Exception)
+                                    {
+                                        throw;
+                                    }
+                                }
+
+                            }
+                            else if (entity.relation != null && entity.relation.entityReference != null)
+                            {
+                                // Get the current eid
+                                string eid = entity.relation.eid;
+
+                                if (entity.listItems == null)
+                                {
+                                    entity.listItems = new Dictionary<string, List<ListItems>>();
+                                }
+
+                                // Check if the entityparent has loaded (should be loaded)
+                                if (loadedEntities.ContainsKey(entity.relation.eidRel))
+                                {
+
+                                    loadedEntities[entity.relation.eidRel].ForEach(e => {
+
+                                        try
+                                        {
+                                            // Search for the ids of the list item
+                                            var idsData = e.dbEntityData[e.id].FindAll(el => el["p"].value == entity.relation.property);
+                                            List<string> ids = new List<string>();
+
+                                            // Go over each id (Should be only one)
+                                            idsData.ForEach(cid => {
+
+                                                // The id
+                                                var theId = cid["o"].value;
+
+
+                                                // Check if the Id given is not null & if the entity rdftype is not null
+                                                if (theId != null && jsonData.entities.ContainsKey(keyEntity))
+                                                {
+                                                    if (entity.listItems == null)
+                                                    {
+                                                        entity.listItems = new Dictionary<string, List<ListItems>>();
+                                                    }
+
+                                                    if (!entity.listItems.ContainsKey(e.id))
+                                                    {
+                                                        entity.listItems.Add(e.id, new List<ListItems>());
+
+                                                    }
+
+                                                    // Start a list item & set the parent Id
+                                                    var lItemNew = new ListItems()
+                                                    {
+                                                        parentId = e.id,
+                                                    };
+
+                                                    // Set the id
+                                                    lItemNew.id = theId;
+
+                                                    // Add the Id into the list
+                                                    ids.Add(theId);
+
+                                                    // Get entity
+                                                    var options = new Dictionary<string, Dictionary<string, string>>();
+                                                    tmpEntity = GetEntity(theId, entity.relation, entity, ref options);
+                                                    // resEntities.Add(GetEntity(theId, entity.relation, entity, ref options));
+
+                                                    if (entity.listItems[e.id].FindIndex(e => e.id == theId) == -1)
                                                     {
                                                         entity.listItems[e.id].Add(lItemNew);
+                                                    }
+                                                    
+
+                                                }
+
+                                            });
+
+
+                                        }
+                                        catch (System.Exception)
+                                        {
+                                            throw;
+                                        }
+                                    });
+                                }
+                                else
+                                {
+
+                                    // In the case that not exist the current db data in loadedEntities
+                                    try
+                                    {
+                                        // Search for the ids of the list item
+                                        var idsData = dbEntityData[entId].FindAll(el => el["p"].value == entity.relation.property);
+                                        List<string> ids = new List<string>();
+
+                                        // Go over each listItem id
+                                        idsData.ForEach(cid => {
+
+                                            var litid = cid["o"].value;
+
+                                            // Check if the listItem Id exist in the data
+                                            if (dbEntityData.ContainsKey(litid))
+                                            {
+
+                                                // Get the item element ID
+                                                var dbEntityDataItem = dbEntityData[litid].Find(el => el["p"].value == entity.relation.itemRdf);
+                                                var itemId = dbEntityDataItem["o"].value;
+
+                                                // if (jsonData.entities[entityRdf] != null)
+                                                // if (jsonData.entities.ContainsKey(entityRdf))
+                                                // Check if the Id given is not null & if the entity rdftype is not null
+                                                if (itemId != null && jsonData.entities.ContainsKey(keyEntity))
+                                                {
+                                                    if (entity.listItems == null)
+                                                    {
+                                                        entity.listItems = new Dictionary<string, List<ListItems>>();
+                                                    }
+
+                                                    if (!entity.listItems.ContainsKey(entId))
+                                                    {
+                                                        entity.listItems.Add(entId, new List<ListItems>());
+
+                                                    }
+
+                                                    // Start a list item & set the parent Id
+                                                    var lItemNew = new ListItems()
+                                                    {
+                                                        parentId = entId,
+                                                    };
+
+                                                    // Set the id
+                                                    lItemNew.id = itemId;
+
+                                                    // Add the Id into the list
+                                                    ids.Add(itemId);
+
+                                                    // Set the order value
+                                                    var dbOrderDataItem = dbEntityData[cid["o"].value].Find(el => el["p"].value == entity.relation.orderRdf);
+                                                    var itemOrderValue = dbOrderDataItem["o"].value;
+                                                    lItemNew.order = int.Parse(itemOrderValue);
+
+                                                    // Get the entity and add the reference
+                                                    var options = new Dictionary<string, Dictionary<string, string>>();
+                                                    tmpEntity = GetEntity(itemId, entity.relation, entity, ref options);
+                                                    // resEntities.Add(GetEntity(itemId, entity.relation, entity, ref options));
+
+
+                                                    if (entity.listItems[entId].FindIndex(e => e.id == itemId) == -1)
+                                                    {
+                                                        entity.listItems[entId].Add(lItemNew);
                                                     }
 
                                                 }
@@ -711,254 +959,19 @@ namespace EditorCV.Controllers.Properties
                                     {
                                         throw;
                                     }
-                                });
-                            }
-                            else
-                            {
-                                // In the case that not exist the current db data in loadedEntities
-                                try
-                                {
-                                    // Search for the ids of the list item
-                                    var idsData = dbEntityData[entId].FindAll(el => el["p"].value == entity.relation.property);
-                                    List<string> ids = new List<string>();
-
-                                    // Go over each listItem id
-                                    idsData.ForEach(cid => {
-
-                                        var litid = cid["o"].value;
-
-                                        // Check if the listItem Id exist in the data
-                                        if (dbEntityData.ContainsKey(litid))
-                                        {
-
-                                            // Get the item element ID
-                                            var dbEntityDataItem = dbEntityData[litid].Find(el => el["p"].value == entity.relation.itemRdf);
-                                            var itemId = dbEntityDataItem["o"].value;
-
-                                            // if (jsonData.entities[entityRdf] != null)
-                                            // if (jsonData.entities.ContainsKey(entityRdf))
-                                            // Check if the Id given is not null & if the entity rdftype is not null
-                                            if (itemId != null && jsonData.entities.ContainsKey(keyEntity))
-                                            {
-                                                if (entity.listItems == null)
-                                                {
-                                                    entity.listItems = new Dictionary<string, List<ListItems>>();
-                                                }
-
-                                                if (!entity.listItems.ContainsKey(entId))
-                                                {
-                                                    entity.listItems.Add(entId, new List<ListItems>());
-
-                                                }
-
-                                                // Start a list item & set the parent Id
-                                                var lItemNew = new ListItems()
-                                                {
-                                                    parentId = entId,
-                                                };
-
-                                                // Set the id
-                                                lItemNew.id = itemId;
-
-                                                // Add the Id into the list
-                                                ids.Add(itemId);
-
-                                                // Set the order value
-                                                var dbOrderDataItem = dbEntityData[cid["o"].value].Find(el => el["p"].value == entity.relation.orderRdf);
-                                                var itemOrderValue = dbOrderDataItem["o"].value;
-                                                lItemNew.order = int.Parse(itemOrderValue);
-
-                                                // Get entity
-                                                var options = new Dictionary<string, Dictionary<string, string>>();
-                                                tmpEntity = GetEntity(itemId, entity.relation, entity, ref options);
-                                                // resEntities.Add(GetEntity(itemId, entity.relation, entity, ref options));
-
-                                                if (entity.listItems[entId].FindIndex(e => e.id == itemId) == -1)
-                                                {
-                                                    entity.listItems[entId].Add(lItemNew);
-                                                }
-
-                                            }
-                                        }
-
-                                    });
 
                                 }
-                                catch (System.Exception)
-                                {
-                                    throw;
-                                }
                             }
-
-                        }
-                        else if (entity.relation != null && entity.relation.entityReference != null)
-                        {
-                            // Get the current eid
-                            string eid = entity.relation.eid;
-
-                            if (entity.listItems == null)
-                            {
-                                entity.listItems = new Dictionary<string, List<ListItems>>();
-                            }
-
-                            // Check if the entityparent has loaded (should be loaded)
-                            if (loadedEntities.ContainsKey(entity.relation.eidRel))
-                            {
-
-                                loadedEntities[entity.relation.eidRel].ForEach(e => {
-
-                                    try
-                                    {
-                                        // Search for the ids of the list item
-                                        var idsData = e.dbEntityData[e.id].FindAll(el => el["p"].value == entity.relation.property);
-                                        List<string> ids = new List<string>();
-
-                                        // Go over each id (Should be only one)
-                                        idsData.ForEach(cid => {
-
-                                            // The id
-                                            var theId = cid["o"].value;
-
-
-                                            // Check if the Id given is not null & if the entity rdftype is not null
-                                            if (theId != null && jsonData.entities.ContainsKey(keyEntity))
-                                            {
-                                                if (entity.listItems == null)
-                                                {
-                                                    entity.listItems = new Dictionary<string, List<ListItems>>();
-                                                }
-
-                                                if (!entity.listItems.ContainsKey(e.id))
-                                                {
-                                                    entity.listItems.Add(e.id, new List<ListItems>());
-
-                                                }
-
-                                                // Start a list item & set the parent Id
-                                                var lItemNew = new ListItems()
-                                                {
-                                                    parentId = e.id,
-                                                };
-
-                                                // Set the id
-                                                lItemNew.id = theId;
-
-                                                // Add the Id into the list
-                                                ids.Add(theId);
-
-                                                // Get entity
-                                                var options = new Dictionary<string, Dictionary<string, string>>();
-                                                tmpEntity = GetEntity(theId, entity.relation, entity, ref options);
-                                                // resEntities.Add(GetEntity(theId, entity.relation, entity, ref options));
-
-                                                if (entity.listItems[e.id].FindIndex(e => e.id == theId) == -1)
-                                                {
-                                                    entity.listItems[e.id].Add(lItemNew);
-                                                }
-                                                
-
-                                            }
-
-                                        });
-
-
-                                    }
-                                    catch (System.Exception)
-                                    {
-                                        throw;
-                                    }
-                                });
-                            }
-                            else
-                            {
-
-                                // In the case that not exist the current db data in loadedEntities
-                                try
-                                {
-                                    // Search for the ids of the list item
-                                    var idsData = dbEntityData[entId].FindAll(el => el["p"].value == entity.relation.property);
-                                    List<string> ids = new List<string>();
-
-                                    // Go over each listItem id
-                                    idsData.ForEach(cid => {
-
-                                        var litid = cid["o"].value;
-
-                                        // Check if the listItem Id exist in the data
-                                        if (dbEntityData.ContainsKey(litid))
-                                        {
-
-                                            // Get the item element ID
-                                            var dbEntityDataItem = dbEntityData[litid].Find(el => el["p"].value == entity.relation.itemRdf);
-                                            var itemId = dbEntityDataItem["o"].value;
-
-                                            // if (jsonData.entities[entityRdf] != null)
-                                            // if (jsonData.entities.ContainsKey(entityRdf))
-                                            // Check if the Id given is not null & if the entity rdftype is not null
-                                            if (itemId != null && jsonData.entities.ContainsKey(keyEntity))
-                                            {
-                                                if (entity.listItems == null)
-                                                {
-                                                    entity.listItems = new Dictionary<string, List<ListItems>>();
-                                                }
-
-                                                if (!entity.listItems.ContainsKey(entId))
-                                                {
-                                                    entity.listItems.Add(entId, new List<ListItems>());
-
-                                                }
-
-                                                // Start a list item & set the parent Id
-                                                var lItemNew = new ListItems()
-                                                {
-                                                    parentId = entId,
-                                                };
-
-                                                // Set the id
-                                                lItemNew.id = itemId;
-
-                                                // Add the Id into the list
-                                                ids.Add(itemId);
-
-                                                // Set the order value
-                                                var dbOrderDataItem = dbEntityData[cid["o"].value].Find(el => el["p"].value == entity.relation.orderRdf);
-                                                var itemOrderValue = dbOrderDataItem["o"].value;
-                                                lItemNew.order = int.Parse(itemOrderValue);
-
-                                                // Get the entity and add the reference
-                                                var options = new Dictionary<string, Dictionary<string, string>>();
-                                                tmpEntity = GetEntity(itemId, entity.relation, entity, ref options);
-                                                // resEntities.Add(GetEntity(itemId, entity.relation, entity, ref options));
-
-
-                                                if (entity.listItems[entId].FindIndex(e => e.id == itemId) == -1)
-                                                {
-                                                    entity.listItems[entId].Add(lItemNew);
-                                                }
-
-                                            }
-                                        }
-
-                                    });
-
-
-                                }
-                                catch (System.Exception)
-                                {
-                                    throw;
-                                }
-
-                            }
-                        }
-                        break;
+                            break;
+                    }
+                    // // Check if the entities has sections
+                    // if (entity.sections != null)
+                    // {
+                    //     // Get all sections from entity
+                    //     entity.sections = GetSections(entId, entity.sections, entity, dbEntityData);
+                    // }
                 }
-                // // Check if the entities has sections
-                // if (entity.sections != null)
-                // {
-                //     // Get all sections from entity
-                //     entity.sections = GetSections(entId, entity.sections, entity, dbEntityData);
-                // }
-
+                
                 resEntities.Add(tmpEntity);
             }
 
@@ -1076,9 +1089,7 @@ namespace EditorCV.Controllers.Properties
                         // }
 
                     }
-
                 }
-
             }
             catch (System.Exception e) {
                 throw;
@@ -1302,7 +1313,6 @@ namespace EditorCV.Controllers.Properties
                     {
                         // Search for the ids of the list item
                         var idsData = dbEntityData[entId].FindAll(el => el["p"].value == entity.relation.property);
-                        List<string> ids = new List<string>();
 
                         if (!entity.listItems.ContainsKey(entId))
                         {
@@ -1340,7 +1350,6 @@ namespace EditorCV.Controllers.Properties
                                     lItemNew.id = itemId;
 
                                     // Add the Id into the list
-                                    ids.Add(itemId);
 
                                     // Set the order value
                                     var dbOrderDataItem = dbEntityData[cid["o"].value].Find(el => el["p"].value == entity.relation.orderRdf);
@@ -1367,8 +1376,8 @@ namespace EditorCV.Controllers.Properties
                 }
             }
             
-
-            var entityUri = "";
+            // Ids of the elements
+            List<string> ids = new List<string>();
 
             try
             {
@@ -1388,68 +1397,561 @@ namespace EditorCV.Controllers.Properties
                         // Load the entity calling to the DB
                         if (dbEntityData == null && entity.listItems.ContainsKey(entId))
                         {
-                            var ids = entity.listItems[entId].Select(item => item.id).ToArray<string>();
+                            ids = entity.listItems[entId].Select(item => item.id).ToList<string>();
                             dbEntityData = GetValEntityFastMulti(ids, keyEntity, jsonData.entities[mTKE].ontologyName);
+
+                            
                             // dbEntityData = GetValEntityFull(entId, keyEntity, relation.property, jsonData.entities[mTKE].ontologyName);
                         }
 
 
-                        // Check if exist the loaded Entity & the current element and add this into the loaded entities local variable
-                        if (loadedEntities.ContainsKey(relation.eid))
-                        {
-                            loadedEntities[relation.eid].Add(new ListItemsData()
+                        // Check every item into the data
+                        foreach (var aid in ids)
+                        {    
+                            // Check if exist the loaded Entity & the current element and add this into the loaded entities local variable
+                            if (loadedEntities.ContainsKey(relation.eid))
                             {
-                                id = entityUri,
-                                dbEntityData = dbEntityData
+                                loadedEntities[relation.eid].Add(new ListItemsData()
+                                {
+                                    id = aid,
+                                    dbEntityData = new Dictionary<string, List<Dictionary<string, Data>>>() { { aid, dbEntityData[aid] } }
+                                });
+                            }
+                            else
+                            {
+                                loadedEntities.Add(relation.eid, new List<ListItemsData>() {
+                                    new ListItemsData() {
+                                        id = aid,
+                                        dbEntityData = new Dictionary<string, List<Dictionary<string, Data>>>(){{ aid, dbEntityData[aid] }}
+                                    }
+                                });
+                            }
+
+                            // Add new entity item
+                            if (!jsonData.entities[mTKE].items.ContainsKey(aid)) {
+                                jsonData.entities[mTKE].items.Add(aid, new EntityItem());
+                            }
+
+                            if (entity.sections != null)
+                            {
+                                // Serialize to remove the reference in the loop
+                                // string sectionsJson = JsonConvert.SerializeObject(jsonData.entities[mTKE].sections);
+
+                                // Set the id & the sections
+                                entity.id = aid;
+                                // entity.sections = (jsonData.entities[mTKE].sections != null) ? GetSections(aid, entity.sections, entity, dbEntityData) : null;
+                                entity.sections = GetSections(aid, entity.sections, entity, new Dictionary<string, List<Dictionary<string, Data>>>() { { aid, dbEntityData[aid] } });
+                            }
+
+
+                            // Serialize to remove the reference in the loop
+                            string PropertiesJson = JsonConvert.SerializeObject(jsonData.entities[mTKE].properties);
+
+                            // Set the id & the sections
+                            jsonData.entities[mTKE].items[aid].id = aid;
+                            var listFields = new Dictionary<string, Property>();
+
+                            // Get the fields of each item
+                            GetFields(new Dictionary<string, List<Dictionary<string, Data>>>(){{ aid, dbEntityData[aid] }}, JsonConvert.DeserializeObject<List<Property>>(PropertiesJson)).ForEach(e =>
+                            {
+                                if (e.property != null && !listFields.ContainsKey(e.property))
+                                {
+                                    listFields.Add(e.property, e);
+                                }
                             });
+
+                            jsonData.entities[mTKE].items[aid].properties = listFields;
+                            
+                            // Fill the options
+                            options.Add(jsonData.entities[mTKE].items[aid].id, new Dictionary<string, string>() {
+                                {"id", jsonData.entities[mTKE].items[aid].id}
+                            });
+
                         }
-                        else
+
+                    }
+
+                }
+
+            }
+            catch (System.Exception e)
+            {
+                throw;
+            }
+
+            return entity;
+        }
+
+
+        protected Entity GetEntityFullChild(string entId, EntityRelation relation, Entity entity, ref Dictionary<string, Dictionary<string, string>> options, Dictionary<string, List<Dictionary<string, Data>>> dbEntityData = null)
+        {
+            // var keyEntity = jsonData.entities.FindIndex(e => e.rdfType == property.rdfType);
+            var keyEntity = relation.entityReference;
+            var ontologyName = relation.ontologyName;
+            var mTKE = ontologyName + "." + keyEntity;
+            
+            // Set the items into the entity
+            if (keyEntity != null && entity.relation != null && entity.relation.itemRdf != null)
+            {
+                // Get the current eid
+                string eid = entity.relation.eid;
+
+                if (entity.listItems == null)
+                {
+                    entity.listItems = new Dictionary<string, List<ListItems>>();
+                }
+
+
+                // Check if the entityparent has loaded (should be loaded)
+                if (loadedEntities.ContainsKey(entity.relation.eidRel))
+                {
+                    loadedEntities[entity.relation.eidRel].ForEach(e =>
+                    {
+                        try
                         {
-                            loadedEntities.Add(relation.eid, new List<ListItemsData>() {
-                                new ListItemsData() {
-                                    id = entityUri,
-                                    dbEntityData = dbEntityData
+
+                            // Inicialize the listItems if is required
+                            if (!entity.listItems.ContainsKey(e.id))
+                            {
+                                entity.listItems.Add(e.id, new List<ListItems>());
+                            }
+
+                            // Start a list item & set the parent Id
+                            var lItemNew = new ListItems()
+                            {
+                                parentId = e.id,
+                            };
+
+                            // Search for the ids of the list item
+                            var idsData = e.dbEntityData[e.id].FindAll(el => el["p"].value == entity.relation.property);
+
+                            // Go over each listItem id
+                            idsData.ForEach(cid =>
+                            {
+                                var litid = cid["o"].value;
+
+                                // Check if the listItem Id exist in the data
+                                if (e.dbEntityData.ContainsKey(litid))
+                                {
+
+                                    // Get the item element ID
+                                    var dbEntityDataItem = e.dbEntityData[litid].Find(el => el["p"].value == entity.relation.itemRdf);
+                                    var itemId = dbEntityDataItem["o"].value;
+
+                                    // Check if the Id given is not null & if the entity rdftype is not null
+                                    if (itemId != null && jsonData.entities.ContainsKey(mTKE))
+                                    {
+
+                                        // Set the id
+                                        lItemNew.id = itemId;
+
+                                        // Set the order value
+                                        var dbOrderDataItem = e.dbEntityData[cid["o"].value].Find(el => el["p"].value == entity.relation.orderRdf);
+                                        var itemOrderValue = dbOrderDataItem["o"].value;
+                                        lItemNew.order = int.Parse(itemOrderValue);
+
+                                        if (entity.listItems[e.id].FindIndex(e => e.id == itemId) == -1)
+                                        {
+                                            entity.listItems[e.id].Add(lItemNew);
+                                        }
+
+                                    }
+                                }
+
+                            });
+
+
+                        }
+                        catch (System.Exception)
+                        {
+                            throw;
+                        }
+                    });
+                }
+                else
+                {
+                    // In the case that not exist the current db data in loadedEntities
+                    try
+                    {
+                        // Search for the ids of the list item
+                        var idsData = dbEntityData[entId].FindAll(el => el["p"].value == entity.relation.property);
+
+                        // Go over each listItem id
+                        idsData.ForEach(cid =>
+                        {
+
+                            var litid = cid["o"].value;
+
+                            // Check if the listItem Id exist in the data
+                            if (dbEntityData.ContainsKey(litid))
+                            {
+
+                                // Get the item element ID
+                                var dbEntityDataItem = dbEntityData[litid].Find(el => el["p"].value == entity.relation.itemRdf);
+                                var itemId = dbEntityDataItem["o"].value;
+
+                                // if (jsonData.entities[entityRdf] != null)
+                                // if (jsonData.entities.ContainsKey(entityRdf))
+                                // Check if the Id given is not null & if the entity rdftype is not null
+                                if (itemId != null && jsonData.entities.ContainsKey(keyEntity))
+                                {
+
+                                    // Start a list item & set the parent Id
+                                    var lItemNew = new ListItems()
+                                    {
+                                        parentId = entId,
+                                    };
+
+                                    // Set the id
+                                    lItemNew.id = itemId;
+
+                                    // Set the order value
+                                    var dbOrderDataItem = dbEntityData[cid["o"].value].Find(el => el["p"].value == entity.relation.orderRdf);
+                                    var itemOrderValue = dbOrderDataItem["o"].value;
+                                    lItemNew.order = int.Parse(itemOrderValue);
+
+                                    if (entity.listItems[entId].FindIndex(e => e.id == itemId) == -1)
+                                    {
+                                        entity.listItems[entId].Add(lItemNew);
+                                    }
+
+                                }
+                            }
+
+                        });
+
+                    }
+                    catch (System.Exception)
+                    {
+                        throw;
+                    }
+                }
+
+            }
+            else if (entity.relation != null && entity.relation.entityReference != null)
+            {
+                // Get the current eid
+                string eid = entity.relation.eid;
+
+                if (entity.listItems == null)
+                {
+                    entity.listItems = new Dictionary<string, List<ListItems>>();
+                }
+
+                // Check if the entityparent has loaded (should be loaded)
+                if (loadedEntities.ContainsKey(entity.relation.eidRel))
+                {
+
+                    loadedEntities[entity.relation.eidRel].ForEach(e =>
+                    {
+
+                        try
+                        {
+                            // Search for the ids of the list item
+                            var idsData = e.dbEntityData[e.id].FindAll(el => el["p"].value == entity.relation.property);
+
+                            // Inicialite ListItems[e.id]
+                            if (!entity.listItems.ContainsKey(e.id))
+                            {
+                                entity.listItems.Add(e.id, new List<ListItems>());
+                            }
+
+                            // Go over each id (Should be only one)
+                            idsData.ForEach(cid =>
+                            {
+
+                                // The id
+                                var theId = cid["o"].value;
+
+                                // Check if the Id given is not null & if the entity rdftype is not null
+                                if (theId != null && jsonData.entities.ContainsKey(mTKE))
+                                {
+
+                                    // Start a list item & set the parent Id
+                                    var lItemNew = new ListItems()
+                                    {
+                                        parentId = e.id,
+                                    };
+
+                                    // Set the id
+                                    lItemNew.id = theId;
+
+                                    if (entity.listItems[e.id].FindIndex(e => e.id == theId) == -1)
+                                    {
+                                        entity.listItems[e.id].Add(lItemNew);
+                                    }
                                 }
                             });
                         }
-
-                        // Add new entity item
-                        jsonData.entities[mTKE].items.Add(entityUri, new EntityItem());
-
-                        if (entity.sections != null)
+                        catch (System.Exception)
                         {
-                            // Serialize to remove the reference in the loop
-                            // string sectionsJson = JsonConvert.SerializeObject(jsonData.entities[mTKE].sections);
+                            throw;
+                        }
+                    });
+                }
+                else
+                {
 
-                            // Set the id & the sections
-                            entity.id = entityUri;
-                            // entity.sections = (jsonData.entities[mTKE].sections != null) ? GetSections(entityUri, entity.sections, entity, dbEntityData) : null;
-                            entity.sections = GetSections(entityUri, entity.sections, entity, dbEntityData);
+                    // In the case that not exist the current db data in loadedEntities
+                    try
+                    {
+                        // Search for the ids of the list item
+                        var idsData = dbEntityData[entId].FindAll(el => el["p"].value == entity.relation.property);
+
+                        if (!entity.listItems.ContainsKey(entId))
+                        {
+                            entity.listItems.Add(entId, new List<ListItems>());
+                        }
+
+                        // Go over each listItem id
+                        idsData.ForEach(cid =>
+                        {
+
+                            var litid = cid["o"].value;
+
+                            // Check if the listItem Id exist in the data
+                            if (dbEntityData.ContainsKey(litid))
+                            {
+
+                                // Get the item element ID
+                                var dbEntityDataItem = dbEntityData[litid].Find(el => el["p"].value == entity.relation.itemRdf);
+                                var itemId = dbEntityDataItem["o"].value;
+
+                                // if (jsonData.entities[entityRdf] != null)
+                                // if (jsonData.entities.ContainsKey(mTKE))
+                                // Check if the Id given is not null & if the entity rdftype is not null
+                                if (itemId != null && jsonData.entities.ContainsKey(mTKE))
+                                {
+
+
+                                    // Start a list item & set the parent Id
+                                    var lItemNew = new ListItems()
+                                    {
+                                        parentId = entId,
+                                    };
+
+                                    // Set the id
+                                    lItemNew.id = itemId;
+
+                                    // Add the Id into the list
+
+                                    // Set the order value
+                                    var dbOrderDataItem = dbEntityData[cid["o"].value].Find(el => el["p"].value == entity.relation.orderRdf);
+                                    var itemOrderValue = dbOrderDataItem["o"].value;
+                                    lItemNew.order = int.Parse(itemOrderValue);
+
+                                    if (entity.listItems[entId].FindIndex(e => e.id == itemId) == -1)
+                                    {
+                                        entity.listItems[entId].Add(lItemNew);
+                                    }
+
+                                }
+                            }
+
+                        });
+
+
+                    }
+                    catch (System.Exception)
+                    {
+                        throw;
+                    }
+
+                }
+            }
+            
+            // Ids of the elements
+            List<string> ids = new List<string>();
+
+            try
+            {
+                // Check if exist the entity
+                if (jsonData.entities.ContainsKey(mTKE))
+                {
+
+                    // Start the items dictionary if is undefined
+                    if (jsonData.entities[mTKE].items == null)
+                    {
+                        jsonData.entities[mTKE].items = new Dictionary<string, EntityItem>();
+                    }
+
+                    // Check if exist and the item, if exist, don't load the item again
+                    if (!jsonData.entities[mTKE].items.ContainsKey(entId))
+                    {
+                        // Load the entity calling to the DB
+                        if (dbEntityData == null && entity.listItems.ContainsKey(entId))
+                        {
+                            ids = entity.listItems[entId].Select(item => item.id).ToList<string>();
+                            dbEntityData = GetValEntityFastMulti(ids, keyEntity, jsonData.entities[mTKE].ontologyName);
+
+                            // dbEntityData = GetValEntityFull(entId, keyEntity, relation.property, jsonData.entities[mTKE].ontologyName);
                         }
 
 
-                        // Serialize to remove the reference in the loop
-                        string PropertiesJson = JsonConvert.SerializeObject(jsonData.entities[mTKE].properties);
-
-                        // Set the id & the sections
-                        jsonData.entities[mTKE].items[entityUri].id = entityUri;
-                        var listFields = new Dictionary<string, Property>();
-
-                        // Get the fields of each item
-                        GetFields(dbEntityData, JsonConvert.DeserializeObject<List<Property>>(PropertiesJson)).ForEach(e =>
-                        {
-                            if (e.property != null && !listFields.ContainsKey(e.property))
+                        // Check every item into the data
+                        foreach (var aid in ids)
+                        {    
+                            // Check if exist the loaded Entity & the current element and add this into the loaded entities local variable
+                            if (loadedEntities.ContainsKey(relation.eid))
                             {
-                                listFields.Add(e.property, e);
+                                loadedEntities[relation.eid].Add(new ListItemsData()
+                                {
+                                    id = aid,
+                                    dbEntityData = new Dictionary<string, List<Dictionary<string, Data>>>() { { aid, dbEntityData[aid] } }
+                                });
                             }
-                        });
+                            else
+                            {
+                                loadedEntities.Add(relation.eid, new List<ListItemsData>() {
+                                    new ListItemsData() {
+                                        id = aid,
+                                        dbEntityData = new Dictionary<string, List<Dictionary<string, Data>>>(){{ aid, dbEntityData[aid] }}
+                                    }
+                                });
+                            }
 
-                        jsonData.entities[mTKE].items[entityUri].properties = listFields;
-                        
-                        // Fill the options
-                        options.Add(jsonData.entities[mTKE].items[entityUri].id, new Dictionary<string, string>() {
-                            {"id", jsonData.entities[mTKE].items[entityUri].id}
-                        });
+                            // Add new entity item
+                            if (!jsonData.entities[mTKE].items.ContainsKey(aid)) {
+                                jsonData.entities[mTKE].items.Add(aid, new EntityItem());
+                            }
+
+
+                            // Serialize to remove the reference in the loop
+                            string PropertiesJson = JsonConvert.SerializeObject(jsonData.entities[mTKE].properties);
+
+                            // Set the id & the sections
+                            jsonData.entities[mTKE].items[aid].id = aid;
+                            var listFields = new Dictionary<string, Property>();
+
+                            // Get the fields of each item
+                            GetFields(new Dictionary<string, List<Dictionary<string, Data>>>() { { aid, dbEntityData[aid] } }, JsonConvert.DeserializeObject<List<Property>>(PropertiesJson)).ForEach(e =>
+                               {
+                                   if (e.property != null && !listFields.ContainsKey(e.property))
+                                   {
+                                       listFields.Add(e.property, e);
+                                   }
+                               });
+
+                            jsonData.entities[mTKE].items[aid].properties = listFields;
+
+                            // Fill the options
+                            options.Add(jsonData.entities[mTKE].items[aid].id, new Dictionary<string, string>() {
+                                {"id", jsonData.entities[mTKE].items[aid].id}
+                            });
+
+
+                        }
+
+
+
+                        // Get the childs ids
+                        var listIdsChild = new Dictionary<string, List<string>>();
+                        foreach (var aid in ids)
+                        {
+                            // Load all childs
+                            entity.relation.modeChilds.ForEach(elm => {
+
+                                if (!listIdsChild.ContainsKey(elm.property))
+                                {
+                                    listIdsChild.Add(elm.property, new List<string>());
+                                }
+
+                                // Get all data from the database of a specify propierty
+                                var currentData = dbEntityData[aid].FindAll(dbel => dbel["p"].value == elm.property);
+
+                                currentData.ForEach(cdItem => {
+                                    listIdsChild[elm.property].Add(cdItem["o"].value);
+                                });
+
+                            });
+
+                        }
+
+                        // Load the child ids
+                        foreach (var item in entity.relation.modeChilds)
+                        {
+
+                            var cmTKE = item.ontologyName + "." + item.rdfType;
+
+                            var dbEntityDataChild = GetValEntityFastMulti(listIdsChild[item.property], item.rdfType, jsonData.entities[cmTKE].ontologyName);
+
+
+
+                            // Check every item into the data
+                            foreach (var aid in listIdsChild[item.property])
+                            {
+                                // Check if exist the loaded Entity & the current element and add this into the loaded entities local variable
+                                if (loadedEntities.ContainsKey(item.eid))
+                                {
+                                    loadedEntities[item.eid].Add(new ListItemsData()
+                                    {
+                                        id = aid,
+                                        dbEntityData = new Dictionary<string, List<Dictionary<string, Data>>>() { { aid, dbEntityDataChild[aid] } }
+                                    });
+                                }
+                                else
+                                {
+                                    loadedEntities.Add(item.eid, new List<ListItemsData>() {
+                                        new ListItemsData() {
+                                            id = aid,
+                                            dbEntityData = new Dictionary<string, List<Dictionary<string, Data>>>(){{ aid, dbEntityDataChild[aid] }}
+                                        }
+                                    });
+                                }
+
+                                // Add new entity item
+                                if (!jsonData.entities[cmTKE].items.ContainsKey(aid))
+                                {
+                                    jsonData.entities[cmTKE].items.Add(aid, new EntityItem());
+                                }
+
+
+                                // Serialize to remove the reference in the loop
+                                string PropertiesJson = JsonConvert.SerializeObject(jsonData.entities[cmTKE].properties);
+
+                                // Set the id & the sections
+                                jsonData.entities[cmTKE].items[aid].id = aid;
+                                var listFields = new Dictionary<string, Property>();
+
+                                // Get the fields of each item
+                                GetFields(new Dictionary<string, List<Dictionary<string, Data>>>() { { aid, dbEntityDataChild[aid] } }, JsonConvert.DeserializeObject<List<Property>>(PropertiesJson)).ForEach(e =>
+                                   {
+                                       if (e.property != null && !listFields.ContainsKey(e.property))
+                                       {
+                                           listFields.Add(e.property, e);
+                                       }
+                                   });
+
+                                jsonData.entities[cmTKE].items[aid].properties = listFields;
+
+                                // Fill the options
+                                options.Add(jsonData.entities[cmTKE].items[aid].id, new Dictionary<string, string>() {
+                                    {"id", jsonData.entities[cmTKE].items[aid].id}
+                                });
+
+                            }
+                        }
+
+
+                        foreach (var aid in ids)
+                        {
+
+                            
+                            
+                            // Get the sections of the parent
+                            if (entity.sections != null)
+                            {
+                                // Serialize to remove the reference in the loop
+                                // string sectionsJson = JsonConvert.SerializeObject(jsonData.entities[mTKE].sections);
+
+                                // Set the id & the sections
+                                entity.id = aid;
+                                // entity.sections = (jsonData.entities[mTKE].sections != null) ? GetSections(aid, entity.sections, entity, dbEntityData) : null;
+                                entity.sections = GetSections(aid, entity.sections, entity, new Dictionary<string, List<Dictionary<string, Data>>>() { { aid, dbEntityData[aid] } });
+                            }
+
+                        }
+
 
 
                     }
