@@ -1,0 +1,419 @@
+{
+    "search-results": {
+        "opensearch:totalResults": "1322026",
+        "opensearch:startIndex": "0",
+        "opensearch:itemsPerPage": "5",
+        "opensearch:Query": {
+            "@role": "request",
+            "@searchTerms": "heart",
+            "@startPage": "0"
+        },
+        "link": [
+            {
+                "@_fa": "true",
+                "@ref": "self",
+                "@href": "http://api.elsevier.com:80/content/search/scidir?start=0&count=5&query=heart&view=COMPLETE&ver=new",
+                "@type": "application/json"
+            },
+            {
+                "@_fa": "true",
+                "@ref": "first",
+                "@href": "http://api.elsevier.com:80/content/search/scidir?start=0&count=5&query=heart&view=COMPLETE&ver=new",
+                "@type": "application/json"
+            }
+        ],
+        "entry": [
+            {
+                "@_fa": "true",
+                "link": [
+                    {
+                        "@_fa": "true",
+                        "@ref": "self",
+                        "@href": "http://api.elsevier.com/content/article/doi/10.1016/j.hfc.2013.09.003"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "scidir",
+                        "@href": "http://www.sciencedirect.com/science/article/pii/S1551713613000883"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "abstract",
+                        "@href": "http://api.elsevier.com/content/abstract/scopus_id/84888023719"
+                    }
+                ],
+                "dc:identifier": "DOI:10.1016/j.hfc.2013.09.003",
+                "prism:url": "http://api.elsevier.com/content/article/doi/10.1016/j.hfc.2013.09.003",
+                "dc:title": "Psychosocial Functioning and Quality of Life in Adults with Congenital Heart Disease and Heart Failure",
+                "dc:creator": "Adrienne H., Kovacs",
+                "prism:publicationName": "Heart Failure Clinics",
+                "prism:issueName": "Heart Failure in Adult Congenital Heart Disease",
+                "prism:isbn": "9780323263924",
+                "prism:issn": "15517136",
+                "prism:volume": "10",
+                "prism:issueIdentifier": "1",
+                "prism:coverDate": [
+                    {
+                        "@_fa": "true",
+                        "$": "2014-01-01"
+                    },
+                    {
+                        "@_fa": "true",
+                        "$": "2014-01-31"
+                    }
+                ],
+                "prism:coverDisplayDate": "January 2014",
+                "prism:startingPage": "35",
+                "prism:endingPage": "42",
+                "prism:doi": "10.1016/j.hfc.2013.09.003",
+                "openaccess": "0",
+                "openaccessFlag": false,
+                "prism:aggregationType": "Journal",
+                "prism:copyright": "Copyright � 2014 Elsevier Inc. All rights reserved.",
+                "pii": "S1551-7136(13)00088-3",
+                "authors": {
+                    "author": [
+                        {
+                            "@_fa": "true",
+                            "given-name": "Adrienne H.",
+                            "surname": "Kovacs"
+                        },
+                        {
+                            "@_fa": "true",
+                            "given-name": "Philip",
+                            "surname": "Moons"
+                        }
+                    ]
+                },
+                "authkeywords": "Adult | Heart defects | Congenital | Quality of life | Psychosocial | Heart failure",
+                "scopus-id": "84888023719",
+                "scopus-eid": "2-s2.0-84888023719",
+                "prism:teaser": "Complex congenital heart disease (CHD) is a chronic medical condition to which patients are expected to adapt throughout their lives. Many patients are at risk of developing heart failure in adulthood and their comprehensive care requires an interdisciplinary approach. North American studies indicate that adults with CHD are at increased risk of psychosocial difficulties. Research suggests that adults with heart failure caused by acquired heart disease are also likely to experience impaired psychosocial functioning and quality of life (QOL). Thus, adults with CHD who develop heart failure are a particularly vulnerable group with regard to psychosocial functioning and QOL."
+            },
+            {
+                "@_fa": "true",
+                "link": [
+                    {
+                        "@_fa": "true",
+                        "@ref": "self",
+                        "@href": "http://api.elsevier.com/content/article/doi/10.1016/j.hfc.2013.09.007"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "scidir",
+                        "@href": "http://www.sciencedirect.com/science/article/pii/S1551713613000986"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "abstract",
+                        "@href": "http://api.elsevier.com/content/abstract/scopus_id/84888075098"
+                    }
+                ],
+                "dc:identifier": "DOI:10.1016/j.hfc.2013.09.007",
+                "prism:url": "http://api.elsevier.com/content/article/doi/10.1016/j.hfc.2013.09.007",
+                "dc:title": "Heart Transplantation in Adults with Congenital Heart Disease",
+                "dc:creator": "Garrick C., Stewart",
+                "prism:publicationName": "Heart Failure Clinics",
+                "prism:issueName": "Heart Failure in Adult Congenital Heart Disease",
+                "prism:isbn": "9780323263924",
+                "prism:issn": "15517136",
+                "prism:volume": "10",
+                "prism:issueIdentifier": "1",
+                "prism:coverDate": [
+                    {
+                        "@_fa": "true",
+                        "$": "2014-01-01"
+                    },
+                    {
+                        "@_fa": "true",
+                        "$": "2014-01-31"
+                    }
+                ],
+                "prism:coverDisplayDate": "January 2014",
+                "prism:startingPage": "207",
+                "prism:endingPage": "218",
+                "prism:doi": "10.1016/j.hfc.2013.09.007",
+                "openaccess": "0",
+                "openaccessFlag": false,
+                "prism:aggregationType": "Journal",
+                "prism:copyright": "Copyright � 2014 Elsevier Inc. All rights reserved.",
+                "pii": "S1551-7136(13)00098-6",
+                "authors": {
+                    "author": [
+                        {
+                            "@_fa": "true",
+                            "given-name": "Garrick C.",
+                            "surname": "Stewart"
+                        },
+                        {
+                            "@_fa": "true",
+                            "given-name": "John E.",
+                            "surname": "Mayer"
+                        }
+                    ]
+                },
+                "authkeywords": "Heart transplantation | Heart defects | Congenital | Heart failure | Patient selection",
+                "scopus-id": "84888075098",
+                "scopus-eid": "2-s2.0-84888075098",
+                "prism:teaser": "Heart transplantation has become an increasingly common and effective therapy for adults with end-stage congenital heart disease (CHD) because of advances in patient selection and surgical technique. Indications for transplantation in CHD are similar to other forms of heart failure. Pretransplant assessment of CHD patients emphasizes evaluation of cardiac anatomy, pulmonary vascular disease, allosensitization, hepatic dysfunction, and neuropsychiatric status. CHD patients experience longer waitlist times and higher waitlist mortality than other transplant candidates. Adult CHD patients undergoing transplantation carry an early hazard for mortality compared with non-CHD recipients, but by 10�years posttransplant, CHD patients have a slight actuarial survival advantage."
+            },
+            {
+                "@_fa": "true",
+                "link": [
+                    {
+                        "@_fa": "true",
+                        "@ref": "self",
+                        "@href": "http://api.elsevier.com/content/article/doi/10.1016/j.jchf.2013.08.005"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "scidir",
+                        "@href": "http://www.sciencedirect.com/science/article/pii/S2213177913003156"
+                    }
+                ],
+                "dc:identifier": "DOI:10.1016/j.jchf.2013.08.005",
+                "prism:url": "http://api.elsevier.com/content/article/doi/10.1016/j.jchf.2013.08.005",
+                "dc:title": "The Prognostic Significance of Heart Rate in Patients Hospitalized for Heart Failure With Reduced Ejection Fraction in Sinus Rhythm Insights From the EVEREST (Efficacy of Vasopressin Antagonism in Heart Failure: Outcome Study With Tolvaptan) Trial",
+                "dc:creator": "Stephen J., Greene",
+                "dc:description": "ObjectivesThe purpose of this study was to characterize the relationship between heart rate and post-discharge outcomes in patients with hospitalization for heart failure (HHF) with reduced ejection fraction (EF) in sinus rhythm.BackgroundA reduction in heart rate improves clinical outcomes in patients with chronic heart failure and in sinus rhythm, but the association between heart rate and post-discharge outcomes in patients with HHF is presently unclear.MethodsThis post-hoc analysis of the EVEREST (Efficacy of Vasopressin Antagonism in Heart Failure: Outcome Study With Tolvaptan) trial examined 1,947 patients with HHF and EF�=40% not in atrial fibrillation/flutter or pacemaker dependent.ResultsThe median follow-up period was 9.9 months. At baseline, patients with a higher heart rate tended to be younger with lower EF and were more likely to have worse New York Heart Association functional class and higher natriuretic peptide levels. After adjustment for clinical risk factors, baseline heart rate was not predictive of all-cause mortality (p�= 0.066). However, at�=70 beats/min, every 5-beat increase in 1-week post-discharge heart rate was independently associated with increased all-cause mortality (hazard ratio: 1.13 [95% confidence interval: 1.05 to 1.22]; p�= 0.002). Similarly, every 5-beat increase�=70 beats/min in 4-week post-discharge heart rate was predictive of all-cause mortality (hazard ratio: 1.12 [95% confidence interval: 1.05 to 1.19]; p�= 0.001).ConclusionsIn this large cohort of patients with HHF with reduced EF and in sinus rhythm, baseline heart rate did not correlate with all-cause mortality. In contrast, at�=70 beats/min, higher heart rate in the early post-discharge period was independently predictive of death during subsequent follow-up. Further study of post-discharge heart rate as a potential therapeutic target in this high-risk population is encouraged.",
+                "prism:publicationName": "JACC: Heart Failure",
+                "prism:issn": "22131779",
+                "prism:volume": "1",
+                "prism:issueIdentifier": "6",
+                "prism:coverDate": [
+                    {
+                        "@_fa": "true",
+                        "$": "2013-12-01"
+                    },
+                    {
+                        "@_fa": "true",
+                        "$": "2013-12-31"
+                    }
+                ],
+                "prism:coverDisplayDate": "December 2013",
+                "prism:startingPage": "488",
+                "prism:endingPage": "496",
+                "prism:doi": "10.1016/j.jchf.2013.08.005",
+                "openaccess": "0",
+                "openaccessFlag": false,
+                "prism:aggregationType": "Journal",
+                "prism:copyright": "Copyright � 2013 American College of Cardiology Foundation. Published by Elsevier Inc. All rights reserved.",
+                "pubType": "Clinical Research",
+                "pii": "S2213-1779(13)00315-6",
+                "authors": {
+                    "author": [
+                        {
+                            "@_fa": "true",
+                            "given-name": "Stephen J.",
+                            "surname": "Greene"
+                        },
+                        {
+                            "@_fa": "true",
+                            "given-name": "Muthiah",
+                            "surname": "Vaduganathan"
+                        },
+                        {
+                            "@_fa": "true",
+                            "given-name": "Jane E.",
+                            "surname": "Wilcox"
+                        },
+                        {
+                            "@_fa": "true",
+                            "given-name": "Matthew E.",
+                            "surname": "Harinstein"
+                        },
+                        {
+                            "@_fa": "true",
+                            "given-name": "Aldo P.",
+                            "surname": "Maggioni"
+                        },
+                        {
+                            "@_fa": "true",
+                            "given-name": "Haris",
+                            "surname": "Subacius"
+                        },
+                        {
+                            "@_fa": "true",
+                            "given-name": "Faiez",
+                            "surname": "Zannad"
+                        },
+                        {
+                            "@_fa": "true",
+                            "given-name": "Marvin A.",
+                            "surname": "Konstam"
+                        },
+                        {
+                            "@_fa": "true",
+                            "given-name": "Ovidiu",
+                            "surname": "Chioncel"
+                        },
+                        {
+                            "@_fa": "true",
+                            "given-name": "Clyde W.",
+                            "surname": "Yancy"
+                        },
+                        {
+                            "@_fa": "true",
+                            "given-name": "Karl",
+                            "surname": "Swedberg"
+                        },
+                        {
+                            "@_fa": "true",
+                            "given-name": "Javed",
+                            "surname": "Butler"
+                        },
+                        {
+                            "@_fa": "true",
+                            "given-name": "Robert O.",
+                            "surname": "Bonow"
+                        },
+                        {
+                            "@_fa": "true",
+                            "given-name": "Mihai",
+                            "surname": "Gheorghiade"
+                        }
+                    ]
+                },
+                "authkeywords": "heart failure | heart rate | hospitalization | mortality | prognosis"
+            },
+            {
+                "@_fa": "true",
+                "link": [
+                    {
+                        "@_fa": "true",
+                        "@ref": "self",
+                        "@href": "http://api.elsevier.com/content/article/doi/10.1016/j.hfc.2013.09.004"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "scidir",
+                        "@href": "http://www.sciencedirect.com/science/article/pii/S1551713613000895"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "abstract",
+                        "@href": "http://api.elsevier.com/content/abstract/scopus_id/84888032950"
+                    }
+                ],
+                "dc:identifier": "DOI:10.1016/j.hfc.2013.09.004",
+                "prism:url": "http://api.elsevier.com/content/article/doi/10.1016/j.hfc.2013.09.004",
+                "dc:title": "The Actual Role of Cardiocirculatory Assistance in Heart-Failure Treatment as Destination Therapy and Bridge to Life",
+                "dc:creator": "Massimo, Bonacchi",
+                "prism:publicationName": "Heart Failure Clinics",
+                "prism:issueName": "Ventricular Assist Devices in Advanced Heart Failure",
+                "prism:issn": "15517136",
+                "prism:volume": "10",
+                "prism:issueIdentifier": "1",
+                "prism:coverDate": [
+                    {
+                        "@_fa": "true",
+                        "$": "2014-01-01"
+                    },
+                    {
+                        "@_fa": "true",
+                        "$": "2014-01-31"
+                    }
+                ],
+                "prism:coverDisplayDate": "January 2014",
+                "prism:startingPage": "S13",
+                "prism:endingPage": "S25",
+                "prism:doi": "10.1016/j.hfc.2013.09.004",
+                "openaccess": "0",
+                "openaccessFlag": false,
+                "prism:aggregationType": "Journal",
+                "prism:copyright": "Copyright � 2014 Elsevier Inc. All rights reserved.",
+                "pii": "S1551-7136(13)00089-5",
+                "authors": {
+                    "author": [
+                        {
+                            "@_fa": "true",
+                            "given-name": "Massimo",
+                            "surname": "Bonacchi"
+                        },
+                        {
+                            "@_fa": "true",
+                            "given-name": "Guy",
+                            "surname": "Harmelin"
+                        },
+                        {
+                            "@_fa": "true",
+                            "given-name": "Guido",
+                            "surname": "Sani"
+                        }
+                    ]
+                },
+                "authkeywords": "End-stage heart failure | Ventricular assist devices | Heart transplantation | Destination therapy | Bridge to transplantation | Bridge to recovery | Bridge to life",
+                "scopus-id": "84888032950",
+                "scopus-eid": "2-s2.0-84888032950",
+                "prism:teaser": "Patients with end-stage heart failure have poor quality of life and a poor prognosis, and are usually burdened by symptoms at rest, need for frequent hospital admissions, complex pharmacologic therapies, and 1-year mortality rate of about 50%. Therapeutic options are scarce and not amenable to all. Only few patients can be transplanted. In recent years, technological progress has made available mechanical devices capable of providing short/medium- and long-term circulatory assistance. Clinical evidence of long-term survival without device-related adverse events using latest-generation small axial pumps allows evaluation of its use in patients with contraindications or inaccessibility to transplantation."
+            },
+            {
+                "@_fa": "true",
+                "link": [
+                    {
+                        "@_fa": "true",
+                        "@ref": "self",
+                        "@href": "http://api.elsevier.com/content/article/doi/10.1016/j.hfc.2013.09.006"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "scidir",
+                        "@href": "http://www.sciencedirect.com/science/article/pii/S1551713613000974"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "abstract",
+                        "@href": "http://api.elsevier.com/content/abstract/scopus_id/84888043638"
+                    }
+                ],
+                "dc:identifier": "DOI:10.1016/j.hfc.2013.09.006",
+                "prism:url": "http://api.elsevier.com/content/article/doi/10.1016/j.hfc.2013.09.006",
+                "dc:title": "Medical Therapy in Adults with Congenital Heart Disease",
+                "dc:creator": "Wendy M., Book",
+                "prism:publicationName": "Heart Failure Clinics",
+                "prism:issueName": "Heart Failure in Adult Congenital Heart Disease",
+                "prism:isbn": "9780323263924",
+                "prism:issn": "15517136",
+                "prism:volume": "10",
+                "prism:issueIdentifier": "1",
+                "prism:coverDate": [
+                    {
+                        "@_fa": "true",
+                        "$": "2014-01-01"
+                    },
+                    {
+                        "@_fa": "true",
+                        "$": "2014-01-31"
+                    }
+                ],
+                "prism:coverDisplayDate": "January 2014",
+                "prism:startingPage": "167",
+                "prism:endingPage": "178",
+                "prism:doi": "10.1016/j.hfc.2013.09.006",
+                "openaccess": "0",
+                "openaccessFlag": false,
+                "prism:aggregationType": "Journal",
+                "prism:copyright": "Copyright � 2014 Elsevier Inc. All rights reserved.",
+                "pii": "S1551-7136(13)00097-4",
+                "authors": {
+                    "author": [
+                        {
+                            "@_fa": "true",
+                            "given-name": "Wendy M.",
+                            "surname": "Book"
+                        },
+                        {
+                            "@_fa": "true",
+                            "given-name": "Robert E.",
+                            "surname": "Shaddy"
+                        }
+                    ]
+                },
+                "authkeywords": "Heart failure | Congenital heart disease | Medical therapy | �-blockers | Angiotensin-converting enzyme inhibitor",
+                "scopus-id": "84888043638",
+                "scopus-eid": "2-s2.0-84888043638",
+                "prism:teaser": "Heart failure is a common late complication in adults with congenital heart defects, both repaired and unrepaired. The onset of clinical heart failure is associated with increased morbidity and mortality. Some patients with congenital heart disease may benefit from medications shown to improve survival in the population with acquired heart failure, but these same therapies may be of no benefit to other patients. Further studies are needed to better guide the choice of medical therapies."
+            }
+        ]
+    }
+}

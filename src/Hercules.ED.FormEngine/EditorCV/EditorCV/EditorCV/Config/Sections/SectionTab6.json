@@ -43,7 +43,29 @@
           "ontologyName": "document",
           "eid": "41cc7cfd-01bf-4913-9024-edecda0ec740"
         }
-
+      ],
+      "sections":[
+        {
+          "title": "Añadir",
+          "type": "popup",
+          "id": "add-document",
+          "outSection": {
+            "section": "PopupDocumento",
+            "defaultLoaded": false,
+            "loadOnce": false
+          }
+        }
+      ],
+      "actions":[
+        {
+          "title": "Editar",
+          "type": "popup",
+          "outSection": {
+            "section": "PopupDocumento",
+            "defaultLoaded": false,
+            "loadOnce": false
+          }
+        }
       ],
       "entities": [
         {
@@ -94,6 +116,15 @@
                           "relation": {
                             "property": "http://purl.org/ontology/bibo/authorList",
                             "entityReference": "http://purl.obolibrary.org/obo/BFO_0000023",
+                            "mode": "fullChild",
+                            "modeChilds": [
+                              {
+                                "property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
+                                "rdftype": "http://xmlns.com/foaf/0.1/Person",
+                                "ontologyName": "person",
+                                "eid": "90d6fb6c-c315-4caf-97f7-970723ed440e"
+                              }
+                            ],
                             "ontologyName": "document",
                             "eid": "1b2e06c0-2edd-46bc-9d71-475820a00c8e",
                             "eidRel": "41cc7cfd-01bf-4913-9024-edecda0ec740"
@@ -102,6 +133,14 @@
                             {
                               "entities": [
                                 {
+                                  "rdftype": "http://xmlns.com/foaf/0.1/Person",
+                                  "relation": {
+                                    "property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
+                                    "entityReference": "http://xmlns.com/foaf/0.1/Person",
+                                    "ontologyName": "person",
+                                    "eid": "90d6fb6c-c315-4caf-97f7-970723ed440e",
+                                    "eidRel": "1b2e06c0-2edd-46bc-9d71-475820a00c8e"
+                                  }
                                 }
                               ]
                             }

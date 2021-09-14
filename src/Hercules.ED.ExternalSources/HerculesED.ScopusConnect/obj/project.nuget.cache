@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "dgSpecHash": "Fy1eyai9o2Fg4kt4xhPaG2LfcW3ntmzv0K3m2PHWyoiIf5M/roigW+ZBHOpeEKY6pqFKkS0lt3pOoYqU6nN5kw==",
+  "success": true,
+  "projectFilePath": "/home/daniel/trabajo/proyectos/hercules/HerculesED/src/Hercules.ED.ExternalSources/HerculesED.ScopusConnect/ScopusAPI.csproj",
+  "expectedPackageFiles": [
+    "/home/daniel/.nuget/packages/microsoft.extensions.apidescription.server/3.0.0/microsoft.extensions.apidescription.server.3.0.0.nupkg.sha512",
+    "/home/daniel/.nuget/packages/microsoft.openapi/1.2.3/microsoft.openapi.1.2.3.nupkg.sha512",
+    "/home/daniel/.nuget/packages/newtonsoft.json/13.0.1/newtonsoft.json.13.0.1.nupkg.sha512",
+    "/home/daniel/.nuget/packages/swashbuckle.aspnetcore/6.2.1/swashbuckle.aspnetcore.6.2.1.nupkg.sha512",
+    "/home/daniel/.nuget/packages/swashbuckle.aspnetcore.swagger/6.2.1/swashbuckle.aspnetcore.swagger.6.2.1.nupkg.sha512",
+    "/home/daniel/.nuget/packages/swashbuckle.aspnetcore.swaggergen/6.2.1/swashbuckle.aspnetcore.swaggergen.6.2.1.nupkg.sha512",
+    "/home/daniel/.nuget/packages/swashbuckle.aspnetcore.swaggerui/6.2.1/swashbuckle.aspnetcore.swaggerui.6.2.1.nupkg.sha512",
+    "/home/daniel/.nuget/packages/system.net.http.json/5.0.0/system.net.http.json.5.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
