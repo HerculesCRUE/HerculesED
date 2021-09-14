@@ -37,7 +37,8 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                 string informacion= this.scopusLogic.getStringPublication(id);
                 Publication_root info_publicacion_root = getPublication(informacion);
                 //------------------------------------------------------------------------
-                //Console.Write(id);
+                Console.Write(id);
+                Console.Write("-------");
                 if (info_publicacion_root != null)
                 {
                     if (entidad.subtype == "cp")
@@ -132,7 +133,7 @@ namespace ScopusConnect.ROs.Scopus.Controllers
             }
             catch
             {
-                //Todo: comentar si quieren hacer algo aqui con esta extepcion. 
+                //Todo: comentar si quieren hacer algo aqui con esta excepción. 
                 info_publicacion = null;
                 Console.Write("Error de deserializacion del articulo.");
             }

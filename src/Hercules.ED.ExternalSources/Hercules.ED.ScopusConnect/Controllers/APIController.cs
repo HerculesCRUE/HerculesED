@@ -54,7 +54,7 @@ namespace ScopusConnect.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public List<Publication> GetROs([FromQuery][Required] string author_id,string year="1800")
         {
-            ROScopusController ScopusObject = new ROScopusController("https://api.elsevier.com/", "adf94bebeeba8c3042ad5193455740e2");
+            ROScopusController ScopusObject = new ROScopusController("https://api.elsevier.com/", "75f4ab3fac56f42ac83cdeb7c98882ca");//"adf94bebeeba8c3042ad5193455740e2");
             //Author_maite author = ScopusObject.Author(author_id);
             List<Publication> publication = ScopusObject.getPublications(author_id,year);
             //System.IO.StreamWriter outputFile = new System.IO.StreamWriter("ejemplo.txt");
