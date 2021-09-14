@@ -1044,18 +1044,6 @@ namespace EditorCV.Controllers.Properties
                         // Add new entity item
                         jsonData.entities[mTKE].items.Add(entityUri, new EntityItem());
 
-                        if (entity.sections != null)
-                        {
-                            // Serialize to remove the reference in the loop
-                            // string sectionsJson = JsonConvert.SerializeObject(jsonData.entities[mTKE].sections);
-
-                            // Set the id & the sections
-                            entity.id = entityUri;
-                            // entity.sections = (jsonData.entities[mTKE].sections != null) ? GetSections(entityUri, entity.sections, entity, dbEntityData) : null;
-                            entity.sections = GetSections(entityUri, entity.sections, entity, dbEntityData);
-                        }
-
-
                         // Serialize to remove the reference in the loop
                         string PropertiesJson = JsonConvert.SerializeObject(jsonData.entities[mTKE].properties);
 
@@ -1088,6 +1076,18 @@ namespace EditorCV.Controllers.Properties
                         //     });
                         // }
 
+                    }
+
+                    // Load the sections if the item has been loaded or not
+                    if (entity.sections != null)
+                    {
+                        // Serialize to remove the reference in the loop
+                        // string sectionsJson = JsonConvert.SerializeObject(jsonData.entities[mTKE].sections);
+
+                        // Set the id & the sections
+                        entity.id = entityUri;
+                        // entity.sections = (jsonData.entities[mTKE].sections != null) ? GetSections(entityUri, entity.sections, entity, dbEntityData) : null;
+                        entity.sections = GetSections(entityUri, entity.sections, entity, dbEntityData);
                     }
                 }
             }
