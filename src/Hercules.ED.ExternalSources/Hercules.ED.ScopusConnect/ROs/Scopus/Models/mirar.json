@@ -1,0 +1,6 @@
+{
+    "error-response": {
+        "error-code": "TOO_MANY_REQUESTS",
+        "error-message": "Request has been placed in time-out for exceeding quota or rate limits. Please reference HTTP header X-RateLimit-Reset for when requests can resubmitted."
+    }
+}

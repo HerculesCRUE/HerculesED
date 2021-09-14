@@ -118,6 +118,7 @@ namespace ScopusConnect.ROs.Scopus.Controllers
             string info_publication = httpCall(url.ToString(), "GET", headers).Result;
             ROScopusControllerJSON info = new ROScopusControllerJSON(this);
             List<Publication> sol = info.getListPublicatio(info_publication);
+            
             return sol;
         }
     }
