@@ -12,6 +12,7 @@
   "sections": [
     {
       "type": "list-accordion",
+      "id": "accordion-publicaciones",
       "title": "Publicaciones, documentos científicos y técnicos",
       "sectionProperties": [
         {
