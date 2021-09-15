@@ -26,8 +26,7 @@ namespace ScopusConnect.Controllers
         /// <remarks>
         /// Sample request:
         ///
-        ///     GET /scopus/GetROs?user=danijmj&amp;userToken=djtrdfjhdfg_dhretuhefhdfgjeru56jd5jemndskqqhgd&amp;appToken=djtrdfjhdfg_dhretuhefhdfgjeru56jd5jemndskqqhgd
-        ///     GET /scopus/GetROs?user=githubuser&amp;userToken=djhrdfjhdfg_dhretuefhdfgdjeru56jd5jemndskqqhgd&amp;appToken=djhrdfjhdfg_dhretuefhdfgdjeru56jd5jemndskqqhgd
+        ///     GET /scopus/GetROs?author_id=SCOPUS_ID&amp;year=2020
         /// </remarks>
         /// <param name="author_id">The user id in the application</param>
                 /// <param year="year">The user id in the application</param>
