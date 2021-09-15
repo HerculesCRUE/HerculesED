@@ -1,0 +1,71 @@
+[
+    {
+        "url": "https://api.github.com/repos/HerculesCRUE/GnossDeustoBackend/issues/19",
+        "repository_url": "https://api.github.com/repos/HerculesCRUE/GnossDeustoBackend",
+        "labels_url": "https://api.github.com/repos/HerculesCRUE/GnossDeustoBackend/issues/19/labels{/name}",
+        "comments_url": "https://api.github.com/repos/HerculesCRUE/GnossDeustoBackend/issues/19/comments",
+        "events_url": "https://api.github.com/repos/HerculesCRUE/GnossDeustoBackend/issues/19/events",
+        "html_url": "https://github.com/HerculesCRUE/GnossDeustoBackend/pull/19",
+        "id": 947535709,
+        "node_id": "MDExOlB1bGxSZXF1ZXN0NjkyNTAzOTMy",
+        "number": 19,
+        "title": "Bump RestSharp from 106.10.1 to 106.12.0 in /src/Hercules.Asio.CVN2OAI_PMH/OAI_PMH_CVN",
+        "user": {
+            "login": "dependabot[bot]",
+            "id": 49699333,
+            "node_id": "MDM6Qm90NDk2OTkzMzM=",
+            "avatar_url": "https://avatars.githubusercontent.com/in/29110?v=4",
+            "gravatar_id": "",
+            "url": "https://api.github.com/users/dependabot%5Bbot%5D",
+            "html_url": "https://github.com/apps/dependabot",
+            "followers_url": "https://api.github.com/users/dependabot%5Bbot%5D/followers",
+            "following_url": "https://api.github.com/users/dependabot%5Bbot%5D/following{/other_user}",
+            "gists_url": "https://api.github.com/users/dependabot%5Bbot%5D/gists{/gist_id}",
+            "starred_url": "https://api.github.com/users/dependabot%5Bbot%5D/starred{/owner}{/repo}",
+            "subscriptions_url": "https://api.github.com/users/dependabot%5Bbot%5D/subscriptions",
+            "organizations_url": "https://api.github.com/users/dependabot%5Bbot%5D/orgs",
+            "repos_url": "https://api.github.com/users/dependabot%5Bbot%5D/repos",
+            "events_url": "https://api.github.com/users/dependabot%5Bbot%5D/events{/privacy}",
+            "received_events_url": "https://api.github.com/users/dependabot%5Bbot%5D/received_events",
+            "type": "Bot",
+            "site_admin": false
+        },
+        "labels": [
+            {
+                "id": 2423855129,
+                "node_id": "MDU6TGFiZWwyNDIzODU1MTI5",
+                "url": "https://api.github.com/repos/HerculesCRUE/GnossDeustoBackend/labels/dependencies",
+                "name": "dependencies",
+                "color": "0366d6",
+                "default": false,
+                "description": "Pull requests that update a dependency file"
+            },
+            {
+                "id": 3181554025,
+                "node_id": "MDU6TGFiZWwzMTgxNTU0MDI1",
+                "url": "https://api.github.com/repos/HerculesCRUE/GnossDeustoBackend/labels/.NET",
+                "name": ".NET",
+                "color": "7121c6",
+                "default": false,
+                "description": "Pull requests that update .net code"
+            }
+        ],
+        "state": "open",
+        "locked": false,
+        "assignee": null,
+        "assignees": [],
+        "milestone": null,
+        "comments": 1,
+        "created_at": "2021-07-19T11:04:42Z",
+        "updated_at": "2021-07-19T11:10:46Z",
+        "closed_at": null,
+        "author_association": "NONE",
+        "active_lock_reason": null,
+        "pull_request": {
+            "url": "https://api.github.com/repos/HerculesCRUE/GnossDeustoBackend/pulls/19",
+            "html_url": "https://github.com/HerculesCRUE/GnossDeustoBackend/pull/19",
+            "diff_url": "https://github.com/HerculesCRUE/GnossDeustoBackend/pull/19.diff",
+            "patch_url": "https://github.com/HerculesCRUE/GnossDeustoBackend/pull/19.patch"
+        },
+        "body":"",
+        "performed_via_github_app":null}]
