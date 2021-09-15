@@ -59,7 +59,6 @@ namespace ServicioWinPubFuentesExternas
                         GuardarFechaProceso(ahora, "diasLanzarObtencionPublicaciones");
                     } */
                     string id = "7004419066";
-
                     string fecha ="2020";
                     //Todo: Obtener scopus_id del la cadena de arriba... 
                     List<Publication> listOfPublication =  mUtilidadesWeb.getPublicacionesByScopusID(id,fecha);

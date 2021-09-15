@@ -27,10 +27,11 @@ namespace ServicioWinPubFuentesExternas.Utilidades
             urlRestService = pUrlRestServicePradoMuseum;
         }
 
-        public List<Publication> getPublicacionesByScopusID(string scopusID, string fecha)
+        public List<Publication> getPublicacionesByScopusID(string scopusID, string fecha=1500)
         {
             //Generate get request
-            string url_1 = urlRestService + "/scopus/GetROs?author_id=" + scopusID+""+fecha;
+    
+            string url_1 = urlRestService + "/scopus/GetROs?author_id=" + scopusID+"&year="+fecha;
             HttpWebRequest GETRequest = (HttpWebRequest)WebRequest.Create(url_1);
             GETRequest.UserAgent = @"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.0.4) Gecko/20060508 Firefox/1.5.0.4";
             try
