@@ -103,6 +103,7 @@ namespace EditorCV.Models
         public string type { get; set; }
         public string fileName { get; set; }
         public List<Section> sections { get; set; }
+        public List<Actions> actions { get; set; }
         public List<Property> properties { get; set; }
         public List<Entity> entities { get; set; }
     }
@@ -156,6 +157,8 @@ namespace EditorCV.Models
     {
         // Property of the target, like a order button
         public List<string> propertyTarget { get; set; }
+        public bool @new { get; set; }
+        public List<string> @class { get; set; }
         // asc or desc
         public string order { get; set; }
         // entity referenc of the action

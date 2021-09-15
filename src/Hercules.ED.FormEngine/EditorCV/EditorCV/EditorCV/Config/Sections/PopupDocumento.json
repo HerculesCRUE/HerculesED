@@ -21,89 +21,107 @@
                     },
                     "sections": [
                         {
-                            "entities": [
+                            "type": "simple-collapse",
+                            "title": "Publicación",
+                            "sections": [
                                 {
-                                    "rdftype": "http://w3id.org/roh/PublicationType",
-                                    "relation": {
-                                        "property": "http://purl.org/dc/elements/1.1/type",
-                                        "entityReference": "http://w3id.org/roh/PublicationType",
-                                        "ontologyName": "document",
-                                        "eid": "fe4700d1-d27a-417f-bfe8-01b714f83572",
-                                        "eidRel": "41cc7cfd-01bf-4913-9024-edecda0ec740"
-                                    }
-                                },
-                                {
-                                    "rdftype": "http://purl.obolibrary.org/obo/BFO_0000023",
-                                    "relation": {
-                                        "property": "http://purl.org/ontology/bibo/authorList",
-                                        "entityReference": "http://purl.obolibrary.org/obo/BFO_0000023",
-                                        "mode": "fullChild",
-                                        "modeChilds": [
-                                            {
-                                                "property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
-                                                "rdftype": "http://xmlns.com/foaf/0.1/Person",
-                                                "ontologyName": "person",
-                                                "eid": "90d6fb6c-c315-4caf-97f7-970723ed440e"
-                                            }
-                                        ],
-                                        "ontologyName": "document",
-                                        "eid": "1b2e06c0-2edd-46bc-9d71-475820a00c8e",
-                                        "eidRel": "41cc7cfd-01bf-4913-9024-edecda0ec740"
-                                    },
-                                    "sections": [
+                                    "entities": [
                                         {
-                                            "entities": [
-                                                {
-                                                    "rdftype": "http://xmlns.com/foaf/0.1/Person",
-                                                    "relation": {
+                                            "rdftype": "http://w3id.org/roh/PublicationType",
+                                            "relation": {
+                                                "property": "http://purl.org/dc/elements/1.1/type",
+                                                "entityReference": "http://w3id.org/roh/PublicationType",
+                                                "ontologyName": "document",
+                                                "eid": "fe4700d1-d27a-417f-bfe8-01b714f83572",
+                                                "eidRel": "41cc7cfd-01bf-4913-9024-edecda0ec740"
+                                            }
+                                        },
+                                        {
+                                            "rdftype": "http://purl.obolibrary.org/obo/BFO_0000023",
+                                            "relation": {
+                                                "property": "http://purl.org/ontology/bibo/authorList",
+                                                "entityReference": "http://purl.obolibrary.org/obo/BFO_0000023",
+                                                "mode": "fullChild",
+                                                "modeChilds": [
+                                                    {
                                                         "property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
-                                                        "entityReference": "http://xmlns.com/foaf/0.1/Person",
+                                                        "rdftype": "http://xmlns.com/foaf/0.1/Person",
                                                         "ontologyName": "person",
-                                                        "eid": "90d6fb6c-c315-4caf-97f7-970723ed440e",
-                                                        "eidRel": "1b2e06c0-2edd-46bc-9d71-475820a00c8e"
+                                                        "eid": "90d6fb6c-c315-4caf-97f7-970723ed440e"
                                                     }
+                                                ],
+                                                "ontologyName": "document",
+                                                "eid": "1b2e06c0-2edd-46bc-9d71-475820a00c8e",
+                                                "eidRel": "41cc7cfd-01bf-4913-9024-edecda0ec740"
+                                            },
+                                            "sections": [
+                                                {
+                                                    "entities": [
+                                                        {
+                                                            "rdftype": "http://xmlns.com/foaf/0.1/Person",
+                                                            "relation": {
+                                                                "property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
+                                                                "entityReference": "http://xmlns.com/foaf/0.1/Person",
+                                                                "ontologyName": "person",
+                                                                "eid": "90d6fb6c-c315-4caf-97f7-970723ed440e",
+                                                                "eidRel": "1b2e06c0-2edd-46bc-9d71-475820a00c8e"
+                                                            }
+                                                        }
+                                                    ]
                                                 }
                                             ]
                                         }
-                                    ]
-                                }
-                            ],
-                            "sections": [
-                                {
-                                    "title": "",
-                                    "class": [
-                                        "col-6"
                                     ],
-                                    "tag": "div",
-                                    "sections": [],
-                                    "properties": [
+                                    "sections": [
                                         {
-                                            "property": "http://w3id.org/roh/title",
-                                            "title": "Título del documento",
-                                            "min": 1,
-                                            "max": 1,
-                                            "multiLanguage": false,
-                                            "fieldType": "text",
-                                            "viewMode": "readOnly"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "title": "",
-                                    "class": [
-                                        "col-6"
-                                    ],
-                                    "tag": "div",
-                                    "sections": [],
-                                    "properties": [
+                                            "class": [
+                                                "custom-form-row"
+                                            ],
+                                            "sections": [
+                                                {
+                                                    "title": "",
+                                                    "class": [
+                                                        "form-group full-group"
+                                                    ],
+                                                    "tag": "div",
+                                                    "sections": [],
+                                                    "properties": [
+                                                        {
+                                                            "property": "http://w3id.org/roh/title",
+                                                            "title": "Título",
+                                                            "min": 1,
+                                                            "max": 1,
+                                                            "multiLanguage": false,
+                                                            "fieldType": "text"
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        },
                                         {
-                                            "property": "http://purl.org/roh/mirror/vivo#dateTime",
-                                            "title": "Fecha",
-                                            "min": 1,
-                                            "max": 1,
-                                            "multiLanguage": false,
-                                            "fieldType": "datetime",
-                                            "viewMode": "readOnly"
+                                            "class": [
+                                                "custom-form-row"
+                                            ],
+                                            "sections": [
+                                                {
+                                                    "title": "",
+                                                    "class": [
+                                                        "form-group full-group"
+                                                    ],
+                                                    "tag": "div",
+                                                    "sections": [],
+                                                    "properties": [
+                                                        {
+                                                            "property": "http://w3id.org/roh/title",
+                                                            "title": "Título",
+                                                            "min": 1,
+                                                            "max": 1,
+                                                            "multiLanguage": false,
+                                                            "fieldType": "text"
+                                                        }
+                                                    ]
+                                                }
+                                            ]
                                         }
                                     ]
                                 }

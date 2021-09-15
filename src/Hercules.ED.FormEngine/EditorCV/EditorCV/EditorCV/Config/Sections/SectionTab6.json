@@ -47,11 +47,13 @@
       "sections":[
         {
           "title": "Añadir",
+          "class": ["modal-wide"],
           "type": "popup",
+          "new": true,
           "id": "add-document",
           "outSection": {
             "section": "PopupDocumento",
-            "defaultLoaded": false,
+            "defaultLoaded": true,
             "loadOnce": false
           }
         }
@@ -60,6 +62,7 @@
         {
           "title": "Editar",
           "type": "popup",
+          "class": ["modal-wide"],
           "outSection": {
             "section": "PopupDocumento",
             "defaultLoaded": false,
