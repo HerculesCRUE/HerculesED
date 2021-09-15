@@ -1,0 +1,120 @@
+{
+    "subjectAreas": {
+      "subjectArea": [
+        {
+          "abbrev": "CHEM",
+          "code": "1602",
+          "area": "Analytical Chemistry"
+        },
+        {
+          "abbrev": "MATH",
+          "code": "2614",
+          "area": "Theoretical Computer Science"
+        },
+        {
+          "abbrev": "PHYS",
+          "code": "3105",
+          "area": "Instrumentation"
+        },
+        {
+          "abbrev": "COMP",
+          "code": "1700",
+          "area": "Computer Science (all)"
+        },
+        {
+          "abbrev": "BIOC",
+          "code": "1303",
+          "area": "Biochemistry"
+        },
+        {
+          "abbrev": "COMP",
+          "code": "1706",
+          "area": "Computer Science Applications"
+        },
+        {
+          "abbrev": "COMP",
+          "code": "1705",
+          "area": "Computer Networks and Communications"
+        },
+        {
+          "abbrev": "ENGI",
+          "code": "2208",
+          "area": "Electrical and Electronic Engineering"
+        },
+        {
+          "abbrev": "COMP",
+          "code": "1702",
+          "area": "Artificial Intelligence"
+        },
+        {
+          "abbrev": "PHYS",
+          "code": "3107",
+          "area": "Atomic and Molecular Physics, and Optics"
+        }
+      ]
+    },
+    "coredata": {
+      "dcIdentifier": null,
+      "eid": "9-s2.0-24474045300",
+      "documentCount": "6",
+      "citedByCount": "28",
+      "citationCount": "28"
+    },
+    "hasCurrentPosition": {
+      "id": null,
+      "href": null,
+      "affiliation": {
+        "id": null,
+        "affiliationId": "122901006",
+        "source": "internal-ani",
+        "ipDoc": {
+          "id": "122901006",
+          "type": "dept",
+          "relationship": "author",
+          "afnameid": null,
+          "afdispname": "Universidad de Deusto, DeustoTech-INTERNET",
+          "preferredName": {
+            "source": "internal-ani",
+            "initials": null,
+            "indexedName": null,
+            "surname": null,
+            "givenName": null,
+            "name": "DeustoTech-INTERNET"
+          },
+          "sortName": "DeustoTech-INTERNET",
+          "address": {
+            "addressPart": "Avenida de las Universidades, 24",
+            "city": "Bilbao",
+            "state": "Madrid",
+            "postalCode": "28006",
+            "country": "Spain"
+          },
+          "orgDomain": "deusto.es",
+          "orgURL": "http://www.deusto.es/cs/Satellite/deusto/en/university-deusto?cambioidioma=si",
+          "parentPreferredName": {
+            "source": "corrapi-external",
+            "name": "Universidad de Deusto"
+          }
+        },
+        "parent": "60006565"
+      }
+    },
+    "publicationRange": {
+      "start": "2007",
+      "end": "2014"
+    },
+    "status": "update",
+    "dateCreated": {
+      "year": "2008",
+      "month": "08",
+      "day": "07"
+    },
+    "preferredName": {
+      "source": "internal-ani",
+      "initials": "D.",
+      "indexedName": "Buján D.",
+      "surname": "Buján",
+      "givenName": "David",
+      "name": null
+    }
+  }

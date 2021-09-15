@@ -1,0 +1,117 @@
+{
+    "rdftype": "http://w3id.org/roh/RelatedDocuments",
+    "relation": {
+        "property": "http://w3id.org/roh/scientificPublications",
+        "entityReference": "http://w3id.org/roh/RelatedDocuments",
+        "ontologyName": "curriculumvitae",
+        "eid": "6ab754f4-d56d-464d-9941-c096ff29cd51",
+        "eidRel": "85d2d0d8-07c8-4441-92d9-1004486d1e32"
+    },
+    "sections": [
+        {
+            "entities": [
+                {
+                    "rdftype": "http://purl.org/ontology/bibo/Document",
+                    "relation": {
+                        "property": "http://w3id.org/roh/relatedDocument",
+                        "entityReference": "http://purl.org/ontology/bibo/Document",
+                        "ontologyName": "document",
+                        "eid": "41cc7cfd-01bf-4913-9024-edecda0ec740",
+                        "eidRel": "6ab754f4-d56d-464d-9941-c096ff29cd51"
+                    },
+                    "sections": [
+                        {
+                            "entities": [
+                                {
+                                    "rdftype": "http://w3id.org/roh/PublicationType",
+                                    "relation": {
+                                        "property": "http://purl.org/dc/elements/1.1/type",
+                                        "entityReference": "http://w3id.org/roh/PublicationType",
+                                        "ontologyName": "document",
+                                        "eid": "fe4700d1-d27a-417f-bfe8-01b714f83572",
+                                        "eidRel": "41cc7cfd-01bf-4913-9024-edecda0ec740"
+                                    }
+                                },
+                                {
+                                    "rdftype": "http://purl.obolibrary.org/obo/BFO_0000023",
+                                    "relation": {
+                                        "property": "http://purl.org/ontology/bibo/authorList",
+                                        "entityReference": "http://purl.obolibrary.org/obo/BFO_0000023",
+                                        "mode": "fullChild",
+                                        "modeChilds": [
+                                            {
+                                                "property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
+                                                "rdftype": "http://xmlns.com/foaf/0.1/Person",
+                                                "ontologyName": "person",
+                                                "eid": "90d6fb6c-c315-4caf-97f7-970723ed440e"
+                                            }
+                                        ],
+                                        "ontologyName": "document",
+                                        "eid": "1b2e06c0-2edd-46bc-9d71-475820a00c8e",
+                                        "eidRel": "41cc7cfd-01bf-4913-9024-edecda0ec740"
+                                    },
+                                    "sections": [
+                                        {
+                                            "entities": [
+                                                {
+                                                    "rdftype": "http://xmlns.com/foaf/0.1/Person",
+                                                    "relation": {
+                                                        "property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
+                                                        "entityReference": "http://xmlns.com/foaf/0.1/Person",
+                                                        "ontologyName": "person",
+                                                        "eid": "90d6fb6c-c315-4caf-97f7-970723ed440e",
+                                                        "eidRel": "1b2e06c0-2edd-46bc-9d71-475820a00c8e"
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ],
+                            "sections": [
+                                {
+                                    "title": "",
+                                    "class": [
+                                        "col-6"
+                                    ],
+                                    "tag": "div",
+                                    "sections": [],
+                                    "properties": [
+                                        {
+                                            "property": "http://w3id.org/roh/title",
+                                            "title": "Título del documento",
+                                            "min": 1,
+                                            "max": 1,
+                                            "multiLanguage": false,
+                                            "fieldType": "text",
+                                            "viewMode": "readOnly"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "title": "",
+                                    "class": [
+                                        "col-6"
+                                    ],
+                                    "tag": "div",
+                                    "sections": [],
+                                    "properties": [
+                                        {
+                                            "property": "http://purl.org/roh/mirror/vivo#dateTime",
+                                            "title": "Fecha",
+                                            "min": 1,
+                                            "max": 1,
+                                            "multiLanguage": false,
+                                            "fieldType": "datetime",
+                                            "viewMode": "readOnly"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

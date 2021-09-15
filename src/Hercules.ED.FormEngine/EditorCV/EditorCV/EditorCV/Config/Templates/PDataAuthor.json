@@ -1,0 +1,63 @@
+{
+    "rdftype": "http://w3id.org/roh/DataAuthor",
+    "ontologyName": "document",
+    "properties": [
+        {
+            "property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
+            "title": "Autor",
+            "min": 1,
+            "max": 1,
+            "multiLanguage": false,
+            "fieldType": "text"
+        },
+        {
+            "property": "http://w3id.org/roh/motivatedBy",
+            "title": "Forma de inscripción",
+            "min": 0,
+            "max": 1,
+            "multiLanguage": false,
+            "fieldType": "text"
+        },
+        {
+            "property": "http://w3id.org/roh/contributionGrade",
+            "title": "Grado de contribución",
+            "min": 0,
+            "max": 1,
+            "multiLanguage": false,
+            "fieldType": "text"
+        },
+        {
+            "property": "http://w3id.org/roh/correspondingAuthor",
+            "title": "Autor de correspondencia",
+            "min": 0,
+            "max": 1,
+            "multiLanguage": false,
+            "fieldType": "text"
+        },
+        {
+            "property": "http://w3id.org/roh/relevantPublication",
+            "title": "Publicación relevante",
+            "min": 0,
+            "max": 1,
+            "multiLanguage": false,
+            "fieldType": "text"
+        },
+        {
+            "property": "http://w3id.org/roh/relevantResults",
+            "title": "Resultados relevantes",
+            "min": 0,
+            "max": 1,
+            "multiLanguage": false,
+            "fieldType": "text"
+        },
+        {
+            "property": "http://w3id.org/roh/motivatedByOther",
+            "title": "Forma de inscripción, otros",
+            "min": 0,
+            "max": 1,
+            "multiLanguage": false,
+            "fieldType": "text"
+        }
+    ],
+    "items": {}
+}

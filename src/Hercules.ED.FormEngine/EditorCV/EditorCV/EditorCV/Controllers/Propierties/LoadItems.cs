@@ -130,7 +130,7 @@ namespace EditorCV.Controllers.Properties
                 {
                     var query = $"where{{?s <http://gnoss/hasEntidad> ?entities. ?s <http://gnoss/hasEntidad> ?entity. ?entity ?p ?o. filter (?entity in ({strIdsJoin}))}}";
                     result = resourceApi.VirtuosoQuery("select distinct ?entity ?p ?o", query, pGraph);
-
+                    var tmp = "";
                     foreach (var item in pIds)
                     {
                         var listItems = result.results.bindings.FindAll(el => el["entity"].value == item);
@@ -271,7 +271,7 @@ namespace EditorCV.Controllers.Properties
 
                     var dbEntityData = GetValEntityFast(id, jsonData.structure.rdfType, jsonData.structure.ontologyName);
                     var listFields = new Dictionary<string, Property>();
-                    GetFields(dbEntityData, JsonConvert.DeserializeObject<List<Property>>(sectionsJson)).ForEach(e =>
+                    GetFields(dbEntityData, JsonConvert.DeserializeObject<List<Property>>(sectionsJson), id).ForEach(e =>
                     {
                         listFields.Add(e.property, e);
                     });
@@ -334,16 +334,17 @@ namespace EditorCV.Controllers.Properties
                         });
                     }
 
-
+                    // Serielize the properties to avoid the reference
                     var dbEntityData = GetValEntityFast(idSection, keyEntity, jsonData.entities[mTKE].ontologyName);
 
-
+                    // Get the fields of the item
                     var listFields = new Dictionary<string, Property>();
-                    GetFields(dbEntityData, JsonConvert.DeserializeObject<List<Property>>(sectionsJson)).ForEach(e =>
+                    GetFields(dbEntityData, JsonConvert.DeserializeObject<List<Property>>(sectionsJson), idSection).ForEach(e =>
                     {
                         listFields.Add(e.property, e);
                     });
                     jsonData.entities[mTKE].items[idSection].properties = listFields;
+
 
                     // Add the loaded items into the object to get it after
                     if (!loadedEntities.ContainsKey(jsonData.sections[section].relation.eid))
@@ -458,7 +459,7 @@ namespace EditorCV.Controllers.Properties
 
         /// Needs to be changed when call to loadList for the dbEntityData and loadedEntities origin
         /// Or not...
-        protected List<Property> GetFields(Dictionary<string, List<Dictionary<string, Data>>> dbEntityData, List<Property> properties)
+        protected List<Property> GetFields(Dictionary<string, List<Dictionary<string, Data>>> dbEntityData, List<Property> properties, string id)
         {
 
             foreach (KeyValuePair<string, List<Dictionary<string, Data>>> item in dbEntityData)
@@ -490,14 +491,22 @@ namespace EditorCV.Controllers.Properties
                                 if (properties[i].relation != null && properties[i].relation.entityReference != null && properties[i].relation.entityReference != "")
                                 {
 
-                                    string listItemUri = LoadList(item.Key, properties[i], el["o"].value, dbEntityData);
+                                    // string listItemUri = LoadList(item.Key, properties[i], el["o"].value, dbEntityData);
                                     
                                     properties[i].id = el["o"].value;
+                                    if (properties[i].listItems == null)
+                                    {
+                                        properties[i].listItems = new List<ListItems>();
+                                    }
+                                    properties[i].listItems.Add(new ListItems() {
+                                        id = el["o"].value,
+                                        parentId = id
+                                    });
 
-                                    // Load the options
-                                    var options = new Dictionary<string, Dictionary<string, string>>();
-                                    GetEntity(listItemUri, properties[i].relation, new Entity(), ref options, dbEntityData);
-                                    properties[i].options = options;
+                                    // // Load the options
+                                    // var options = new Dictionary<string, Dictionary<string, string>>();
+                                    // GetEntity(listItemUri, properties[i].relation, new Entity(), ref options, dbEntityData);
+                                    // properties[i].options = options;
                                 }
 
                                 // Get order
@@ -1044,18 +1053,6 @@ namespace EditorCV.Controllers.Properties
                         // Add new entity item
                         jsonData.entities[mTKE].items.Add(entityUri, new EntityItem());
 
-                        if (entity.sections != null)
-                        {
-                            // Serialize to remove the reference in the loop
-                            // string sectionsJson = JsonConvert.SerializeObject(jsonData.entities[mTKE].sections);
-
-                            // Set the id & the sections
-                            entity.id = entityUri;
-                            // entity.sections = (jsonData.entities[mTKE].sections != null) ? GetSections(entityUri, entity.sections, entity, dbEntityData) : null;
-                            entity.sections = GetSections(entityUri, entity.sections, entity, dbEntityData);
-                        }
-
-
                         // Serialize to remove the reference in the loop
                         string PropertiesJson = JsonConvert.SerializeObject(jsonData.entities[mTKE].properties);
 
@@ -1064,7 +1061,7 @@ namespace EditorCV.Controllers.Properties
                         var listFields = new Dictionary<string, Property>();
 
                         // Get the fields of each item
-                        GetFields(dbEntityData, JsonConvert.DeserializeObject<List<Property>>(PropertiesJson)).ForEach(e =>
+                        GetFields(dbEntityData, JsonConvert.DeserializeObject<List<Property>>(PropertiesJson), entityUri).ForEach(e =>
                         {
                             if (e.property != null && !listFields.ContainsKey(e.property))
                             {
@@ -1088,6 +1085,18 @@ namespace EditorCV.Controllers.Properties
                         //     });
                         // }
 
+                    }
+
+                    // Load the sections if the item has been loaded or not
+                    if (entity.sections != null)
+                    {
+                        // Serialize to remove the reference in the loop
+                        // string sectionsJson = JsonConvert.SerializeObject(jsonData.entities[mTKE].sections);
+
+                        // Set the id & the sections
+                        entity.id = entityUri;
+                        // entity.sections = (jsonData.entities[mTKE].sections != null) ? GetSections(entityUri, entity.sections, entity, dbEntityData) : null;
+                        entity.sections = GetSections(entityUri, entity.sections, entity, dbEntityData);
                     }
                 }
             }
@@ -1452,7 +1461,7 @@ namespace EditorCV.Controllers.Properties
                             var listFields = new Dictionary<string, Property>();
 
                             // Get the fields of each item
-                            GetFields(new Dictionary<string, List<Dictionary<string, Data>>>(){{ aid, dbEntityData[aid] }}, JsonConvert.DeserializeObject<List<Property>>(PropertiesJson)).ForEach(e =>
+                            GetFields(new Dictionary<string, List<Dictionary<string, Data>>>(){{ aid, dbEntityData[aid] }}, JsonConvert.DeserializeObject<List<Property>>(PropertiesJson), aid).ForEach(e =>
                             {
                                 if (e.property != null && !listFields.ContainsKey(e.property))
                                 {
@@ -1824,7 +1833,7 @@ namespace EditorCV.Controllers.Properties
                             var listFields = new Dictionary<string, Property>();
 
                             // Get the fields of each item
-                            GetFields(new Dictionary<string, List<Dictionary<string, Data>>>() { { aid, dbEntityData[aid] } }, JsonConvert.DeserializeObject<List<Property>>(PropertiesJson)).ForEach(e =>
+                            GetFields(new Dictionary<string, List<Dictionary<string, Data>>>() { { aid, dbEntityData[aid] } }, JsonConvert.DeserializeObject<List<Property>>(PropertiesJson), aid).ForEach(e =>
                                {
                                    if (e.property != null && !listFields.ContainsKey(e.property))
                                    {
@@ -1873,63 +1882,67 @@ namespace EditorCV.Controllers.Properties
 
                             var cmTKE = item.ontologyName + "." + item.rdfType;
 
-                            var dbEntityDataChild = GetValEntityFastMulti(listIdsChild[item.property], item.rdfType, jsonData.entities[cmTKE].ontologyName);
-
-
-
-                            // Check every item into the data
-                            foreach (var aid in listIdsChild[item.property])
+                            if (jsonData.entities.ContainsKey(cmTKE))
                             {
-                                // Check if exist the loaded Entity & the current element and add this into the loaded entities local variable
-                                if (loadedEntities.ContainsKey(item.eid))
+                                var dbEntityDataChild = GetValEntityFastMulti(listIdsChild[item.property], item.rdfType, jsonData.entities[cmTKE].ontologyName);
+                                
+                                // Check every item into the data
+                                foreach (var aid in listIdsChild[item.property])
                                 {
-                                    loadedEntities[item.eid].Add(new ListItemsData()
+                                    // Check if exist the loaded Entity & the current element and add this into the loaded entities local variable
+                                    if (loadedEntities.ContainsKey(item.eid))
                                     {
-                                        id = aid,
-                                        dbEntityData = new Dictionary<string, List<Dictionary<string, Data>>>() { { aid, dbEntityDataChild[aid] } }
-                                    });
-                                }
-                                else
-                                {
-                                    loadedEntities.Add(item.eid, new List<ListItemsData>() {
-                                        new ListItemsData() {
+                                        loadedEntities[item.eid].Add(new ListItemsData()
+                                        {
                                             id = aid,
-                                            dbEntityData = new Dictionary<string, List<Dictionary<string, Data>>>(){{ aid, dbEntityDataChild[aid] }}
+                                            dbEntityData = new Dictionary<string, List<Dictionary<string, Data>>>() { { aid, dbEntityDataChild[aid] } }
+                                        });
+                                    }
+                                    else
+                                    {
+                                        loadedEntities.Add(item.eid, new List<ListItemsData>() {
+                                            new ListItemsData() {
+                                                id = aid,
+                                                dbEntityData = new Dictionary<string, List<Dictionary<string, Data>>>(){{ aid, dbEntityDataChild[aid] }}
+                                            }
+                                        });
+                                    }
+
+                                    // Add new entity item
+                                    if (!jsonData.entities[cmTKE].items.ContainsKey(aid))
+                                    {
+                                        jsonData.entities[cmTKE].items.Add(aid, new EntityItem());
+                                    }
+
+
+                                    // Serialize to remove the reference in the loop
+                                    string PropertiesJson = JsonConvert.SerializeObject(jsonData.entities[cmTKE].properties);
+
+                                    // Set the id & the sections
+                                    jsonData.entities[cmTKE].items[aid].id = aid;
+                                    var listFields = new Dictionary<string, Property>();
+
+                                    // Get the fields of each item
+                                    GetFields(new Dictionary<string, List<Dictionary<string, Data>>>() { { aid, dbEntityDataChild[aid] } }, JsonConvert.DeserializeObject<List<Property>>(PropertiesJson), aid).ForEach(e =>
+                                    {
+                                        if (e.property != null && !listFields.ContainsKey(e.property))
+                                        {
+                                            listFields.Add(e.property, e);
                                         }
                                     });
+
+                                    jsonData.entities[cmTKE].items[aid].properties = listFields;
+
+                                    // Fill the options
+                                    options.Add(jsonData.entities[cmTKE].items[aid].id, new Dictionary<string, string>() {
+                                        {"id", jsonData.entities[cmTKE].items[aid].id}
+                                    });
+
                                 }
-
-                                // Add new entity item
-                                if (!jsonData.entities[cmTKE].items.ContainsKey(aid))
-                                {
-                                    jsonData.entities[cmTKE].items.Add(aid, new EntityItem());
-                                }
-
-
-                                // Serialize to remove the reference in the loop
-                                string PropertiesJson = JsonConvert.SerializeObject(jsonData.entities[cmTKE].properties);
-
-                                // Set the id & the sections
-                                jsonData.entities[cmTKE].items[aid].id = aid;
-                                var listFields = new Dictionary<string, Property>();
-
-                                // Get the fields of each item
-                                GetFields(new Dictionary<string, List<Dictionary<string, Data>>>() { { aid, dbEntityDataChild[aid] } }, JsonConvert.DeserializeObject<List<Property>>(PropertiesJson)).ForEach(e =>
-                                   {
-                                       if (e.property != null && !listFields.ContainsKey(e.property))
-                                       {
-                                           listFields.Add(e.property, e);
-                                       }
-                                   });
-
-                                jsonData.entities[cmTKE].items[aid].properties = listFields;
-
-                                // Fill the options
-                                options.Add(jsonData.entities[cmTKE].items[aid].id, new Dictionary<string, string>() {
-                                    {"id", jsonData.entities[cmTKE].items[aid].id}
-                                });
-
                             }
+
+
+
                         }
 
 

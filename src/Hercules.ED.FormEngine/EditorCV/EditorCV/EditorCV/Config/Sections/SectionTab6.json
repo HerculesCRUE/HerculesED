@@ -17,33 +17,55 @@
         {
           "searchBy": true,
           "type": "title",
-          "property": "http://w3id.org/roh/relatedDocument",
+          "property": "http://w3id.org/roh/title",
           "rdftype": "http://purl.org/ontology/bibo/Document",
           "ontologyName": "document",
           "eid": "41cc7cfd-01bf-4913-9024-edecda0ec740"
         },
-        {
+        { 
           "type": "isPublic",
-          "property": "http://w3id.org/roh/RelatedDocuments",
+          "property": "http://w3id.org/roh/isPublic",
           "rdftype": "http://w3id.org/roh/RelatedDocuments",
           "ontologyName": "curriculumvitae",
-          "eid": "41cc7cfd-01bf-4913-9024-edecda0ec740"
+          "eid": "6ab754f4-d56d-464d-9941-c096ff29cd51"
         },
         {
           "type": "namePub",
-          "property": "http://w3id.org/roh/relatedDocument",
+          "property": "http://purl.org/ontology/bibo/volume",
           "rdftype": "http://purl.org/ontology/bibo/Document",
           "ontologyName": "document",
           "eid": "41cc7cfd-01bf-4913-9024-edecda0ec740"
         },
         {
-          "type": "namePub",
-          "property": "http://purl.org/roh/mirror/vivo#dateTime",
+          "type": "datePub",
+          "property": "http://purl.org/dc/terms/issued",
           "rdftype": "http://purl.org/ontology/bibo/Document",
           "ontologyName": "document",
           "eid": "41cc7cfd-01bf-4913-9024-edecda0ec740"
         }
-
+      ],
+      "sections":[
+        {
+          "title": "Añadir",
+          "type": "popup",
+          "id": "add-document",
+          "outSection": {
+            "section": "PopupDocumento",
+            "defaultLoaded": false,
+            "loadOnce": false
+          }
+        }
+      ],
+      "actions":[
+        {
+          "title": "Editar",
+          "type": "popup",
+          "outSection": {
+            "section": "PopupDocumento",
+            "defaultLoaded": false,
+            "loadOnce": false
+          }
+        }
       ],
       "entities": [
         {
@@ -54,11 +76,11 @@
               "ontologyName": "curriculumvitae",
               "mode": "fullChild",
               "modeChilds": [
-                {
-                  "property": "http://w3id.org/roh/relatedDocument", 
-                  "rdftype": "http://purl.org/ontology/bibo/Document", 
-                  "ontologyName": "document", 
-                  "eid": "41cc7cfd-01bf-4913-9024-edecda0ec740"
+                  {
+                    "property": "http://w3id.org/roh/relatedDocument", 
+                    "rdftype": "http://purl.org/ontology/bibo/Document", 
+                    "ontologyName": "document", 
+                    "eid": "41cc7cfd-01bf-4913-9024-edecda0ec740"
                   }
                 ],
               "eid": "6ab754f4-d56d-464d-9941-c096ff29cd51",
@@ -88,6 +110,41 @@
                             "eid": "fe4700d1-d27a-417f-bfe8-01b714f83572",
                             "eidRel": "41cc7cfd-01bf-4913-9024-edecda0ec740"
                           }
+                        },
+                        {
+                          "rdftype": "http://purl.obolibrary.org/obo/BFO_0000023",
+                          "relation": {
+                            "property": "http://purl.org/ontology/bibo/authorList",
+                            "entityReference": "http://purl.obolibrary.org/obo/BFO_0000023",
+                            "mode": "fullChild",
+                            "modeChilds": [
+                              {
+                                "property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
+                                "rdftype": "http://xmlns.com/foaf/0.1/Person",
+                                "ontologyName": "person",
+                                "eid": "90d6fb6c-c315-4caf-97f7-970723ed440e"
+                              }
+                            ],
+                            "ontologyName": "document",
+                            "eid": "1b2e06c0-2edd-46bc-9d71-475820a00c8e",
+                            "eidRel": "41cc7cfd-01bf-4913-9024-edecda0ec740"
+                          },
+                          "sections": [
+                            {
+                              "entities": [
+                                {
+                                  "rdftype": "http://xmlns.com/foaf/0.1/Person",
+                                  "relation": {
+                                    "property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
+                                    "entityReference": "http://xmlns.com/foaf/0.1/Person",
+                                    "ontologyName": "person",
+                                    "eid": "90d6fb6c-c315-4caf-97f7-970723ed440e",
+                                    "eidRel": "1b2e06c0-2edd-46bc-9d71-475820a00c8e"
+                                  }
+                                }
+                              ]
+                            }
+                          ]
                         }
                       ],
                       "sections": [
