@@ -33,11 +33,7 @@ namespace EditorCV.Controllers.Properties
             this.id = id;
 
             string config = "Config/ConfigOauth/OAuthV3.config";
-            string basePath = AppContext.BaseDirectory.Substring(0, AppContext.BaseDirectory.IndexOf("bin"));
-            // basePath = AppDomain.CurrentDomain.BaseDirectory;
-            // string wanted_path = Path.GetDirectoryName(Path.GetDirectoryName(System.IO.Directory.GetCurrentDirectory()));
-            string jsonPath = Path.Combine(basePath, config);
-            resourceApi = new ResourceApi(jsonPath, null, new LogHelperFile("c:\\logs\\", "logCV"));
+            resourceApi = new ResourceApi(config, null, new LogHelperFile("c:\\logs\\", "logCV"));
 
             // Inicialite loaded entities
             loadedEntities = new Dictionary<string, List<ListItemsData>>();
