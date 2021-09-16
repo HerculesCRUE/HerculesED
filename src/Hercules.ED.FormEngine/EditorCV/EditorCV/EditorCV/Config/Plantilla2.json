@@ -16,81 +16,46 @@
           "sections": [
             {
               "title": "",
-              "class": [ "row" ],
+              "class": ["datos-identificacion", "p-4" ],
               "tag": "div",
               "sections": [
                 {
-                  "title": "Datos personales" ,
-                  "class": [ "col", "col12" ],
+                  "title": "",
+                  "class": ["bloque", "bloque-title"],
                   "tag": "div",
-                  "properties": [
+                  "sections": [
                     {
-                      "property": "http://purl.org/roh#title",
-                      "title": "Título del documento",
-                      "min": 1,
-                      "max": 1,
-                      "multiLanguage": false,
-                      "fieldType": "text"
-                    },
-                    {
-                      "property": "http://purl.org/roh/mirror/vivo#dateTime",
-                      "title": "Fecha",
-                      "min": 0,
-                      "max": 1,
-                      "multiLanguage": false,
-                      "fieldType": "datetime"
-                    },
-                    {
-                      "property": "http://purl.org/roh/mirror/bibo#authorList",
-                      "relation": {
-                        "property": "http://purl.org/roh/mirror/bibo#authorList",
-                        "ontologyName": "person",
-                        "rdfType": "http://purl.org/roh/mirror/foaf#Person",
-                        "entityReference": "http://purl.org/roh#ListItem",
-                        "orderRdf": "http://purl.org/roh#index",
-                        "itemRdf": "http://purl.org/roh#item",
-                        "eidRel": "5097c6b6-f454-11eb-9a03-0242ac130003"
-                      },
-                      "title": "Autores",
-                      "min": 1,
-                      "max": -1,
-                      "listItems": [],
-                      "multiLanguage": false,
-                      "fieldType": "orderedlist"
+                      "title": "Datos personales",
+                      "class": ["title"],
+                      "tag": "div"
                     }
-                  ],
-                  "entities": [
+                  ]
+                },
+                {
+                  "title": "",
+                  "class": ["bloque", "bloque-datos-personales"],
+                  "tag": "div",
+                  "sections": [
                     {
-                      "property": "http://w3id.org/roh/cvOf",
-                      "ontologyName": "person",
-                      "relation": {
-                        "property": "http://w3id.org/roh/cvOf",
-                        "ontologyName": "person",
-                        "rdfType": "http://xmlns.com/foaf/0.1/Person",
-                        "entityReference": "http://xmlns.com/foaf/0.1/Person",
-                        "eid": "c50cf230-0f5a-4921-9fc4-f0a7eb4342e0",
-                        "eidRel": "5097c6b6-f454-11eb-9a03-0242ac130003"
-                      },
+                      "title": "",
+                      "class": ["table-alike-wrapper"],
+                      "tag": "div",
                       "sections": [
                         {
                           "title": "",
-                          "class": [
-                            "row"
-                          ],
+                          "class": ["table-alike"],
                           "tag": "div",
                           "sections": [
                             {
                               "title": "",
-                              "class": [
-                                "col",
-                                "col-sm-6",
-                                "col-md-4"
-                              ],
                               "tag": "div",
+                              "class": [
+                                "item"
+                              ],
                               "properties": [
                                 {
-                                  "property": "http://xmlns.com/foaf/0.1/firstName",
-                                  "title": "Nombre",
+                                  "property": "http://purl.org/roh#title",
+                                  "title": "Título del documento",
                                   "min": 1,
                                   "max": 1,
                                   "multiLanguage": false,
@@ -101,52 +66,121 @@
                             },
                             {
                               "title": "",
-                              "class": [
-                                "col",
-                                "col-sm-6",
-                                "col-md-4"
-                              ],
                               "tag": "div",
+                              "class": [
+                                "item"
+                              ],
                               "properties": [
                                 {
-                                  "property": "http://xmlns.com/foaf/0.1/lastName",
-                                  "title": "Apellido",
-                                  "viewMode": "readOnly",
-                                  "fieldType": "text"
+                                  "property": "http://purl.org/roh/mirror/vivo#dateTime",
+                                  "title": "Fecha",
+                                  "min": 0,
+                                  "max": 1,
+                                  "multiLanguage": false,
+                                  "fieldType": "datetime",
+                                  "viewMode": "readOnly"
                                 }
                               ]
                             },
                             {
                               "title": "",
-                              "class": [
-                                "col",
-                                "col-sm-6",
-                                "col-md-4"
-                              ],
                               "tag": "div",
+                              "class": [
+                                "item"
+                              ],
                               "properties": [
                                 {
-                                  "property": "http://xmlns.com/foaf/0.1/nick",
-                                  "title": "Nick",
-                                  "viewMode": "readOnly",
-                                  "fieldType": "text"
+                                  "property": "http://purl.org/roh/mirror/bibo#authorList",
+                                  "relation": {
+                                    "property": "http://purl.org/roh/mirror/bibo#authorList",
+                                    "ontologyName": "person",
+                                    "rdfType": "http://purl.org/roh/mirror/foaf#Person",
+                                    "entityReference": "http://purl.org/roh#ListItem",
+                                    "orderRdf": "http://purl.org/roh#index",
+                                    "itemRdf": "http://purl.org/roh#item",
+                                    "eidRel": "5097c6b6-f454-11eb-9a03-0242ac130003"
+                                  },
+                                  "title": "Autores",
+                                  "min": 1,
+                                  "max": -1,
+                                  "listItems": [],
+                                  "multiLanguage": false,
+                                  "fieldType": "orderedlist",
+                                  "viewMode": "readOnly"
                                 }
                               ]
-                            },
+                            }
+                          ],
+                          "entities": [
                             {
-                              "title": "",
-                              "class": [
-                                "col",
-                                "col-sm-6",
-                                "col-md-4"
-                              ],
-                              "tag": "div",
-                              "properties": [
+                              "property": "http://w3id.org/roh/cvOf",
+                              "ontologyName": "person",
+                              "relation": {
+                                "property": "http://w3id.org/roh/cvOf",
+                                "ontologyName": "person",
+                                "rdfType": "http://xmlns.com/foaf/0.1/Person",
+                                "entityReference": "http://xmlns.com/foaf/0.1/Person",
+                                "eid": "c50cf230-0f5a-4921-9fc4-f0a7eb4342e0",
+                                "eidRel": "5097c6b6-f454-11eb-9a03-0242ac130003"
+                              },  
+                              "sections": [
                                 {
-                                  "property": "http://w3id.org/roh/ORCID",
-                                  "title": "ORCID",
-                                  "viewMode": "readOnly",
-                                  "fieldType": "text"
+                                  "title": "",
+                                  "class": [
+                                    "item"
+                                  ],
+                                  "properties": [
+                                    {
+                                      "property": "http://xmlns.com/foaf/0.1/firstName",
+                                      "title": "Nombre",
+                                      "min": 1,
+                                      "max": 1,
+                                      "multiLanguage": false,
+                                      "fieldType": "text",
+                                      "viewMode": "readOnly"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "title": "",
+                                  "class": [
+                                    "item"
+                                  ],
+                                  "properties": [
+                                    {
+                                      "property": "http://xmlns.com/foaf/0.1/lastName",
+                                      "title": "Apellido",
+                                      "viewMode": "readOnly",
+                                      "fieldType": "text"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "title": "",
+                                  "class": [
+                                    "item"
+                                  ],
+                                  "properties": [
+                                    {
+                                      "property": "http://xmlns.com/foaf/0.1/nick",
+                                      "title": "Nick",
+                                      "viewMode": "readOnly",
+                                      "fieldType": "text"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "class": [
+                                    "item"
+                                  ],
+                                  "properties": [
+                                    {
+                                      "property": "http://w3id.org/roh/ORCID",
+                                      "title": "ORCID",
+                                      "viewMode": "readOnly",
+                                      "fieldType": "text"
+                                    }
+                                  ]
                                 }
                               ]
                             }
