@@ -58,7 +58,7 @@ namespace ServicioWinPubFuentesExternas
                         //TODO: Completar proceso
                         GuardarFechaProceso(ahora, "diasLanzarObtencionPublicaciones");
                     } */
-                    string id = "7004419066";
+                    string id = "57190210928";
                     string fecha ="2020";
                     //Todo: Obtener scopus_id del la cadena de arriba... 
                     List<Publication> listOfPublication =  mUtilidadesWeb.getPublicacionesByScopusID(id,fecha);
@@ -67,6 +67,9 @@ namespace ServicioWinPubFuentesExternas
                     {
                        Notification notification = new Notification();
                         notification.Dc_source= "Scopus";
+                        notification.Roh_gnossUser = "http://gnoss/D7711FD2-41D2-464B-8838-E42C52213927";
+
+
                         notification.Dc_type="Publication";
                         notification.Dc_description =JsonConvert.SerializeObject(publication);
                         DateTime ahora = DateTime.UtcNow;
