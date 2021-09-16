@@ -12,6 +12,14 @@
     },
     {
       "property": "http://w3id.org/roh/crisIdentifier",
+      "title": "Identificador",
+      "min": 0,
+      "max": 1,
+      "multiLanguage": false,
+      "fieldType": "text"
+    },
+    {
+      "property": "http://purl.org/ontology/bibo/identifier",
       "title": "Identificador de la publicación",
       "min": 0,
       "max": 1,
