@@ -112,7 +112,7 @@ namespace ScopusConnect.ROs.Scopus.Controllers
         /// <param uri="uri">The uri for the call</param>
         // AU-ID ( "Buján, David"   24474045300 )
         /// <returns></returns>
-        public List<Publication> getPublications(string name, string year = "1500", string uri = "content/search/scopus?query=AU-ID ( {0})&AFT({1})")//AU-ID?{0}")
+        public List<Publication> getPublications(string name, string year = "1500", string uri = "content/search/scopus?query=AU-ID( {0})& PUBYEAR>({1})")//AU-ID?{0}")
         {
             Uri url = new Uri(baseUri + string.Format(uri, name, year));
             string info_publication = httpCall(url.ToString(), "GET", headers).Result;

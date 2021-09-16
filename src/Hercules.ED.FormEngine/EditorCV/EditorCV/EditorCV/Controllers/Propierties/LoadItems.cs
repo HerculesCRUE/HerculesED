@@ -1787,7 +1787,10 @@ namespace EditorCV.Controllers.Properties
                         if (dbEntityData == null && entity.listItems.ContainsKey(entId))
                         {
                             ids = entity.listItems[entId].Select(item => item.id).ToList<string>();
-                            dbEntityData = GetValEntityFastMulti(ids, keyEntity, jsonData.entities[mTKE].ontologyName);
+                            if (ids.Count > 0)
+                            {
+                                dbEntityData = GetValEntityFastMulti(ids, keyEntity, jsonData.entities[mTKE].ontologyName);
+                            }
 
                             // dbEntityData = GetValEntityFull(entId, keyEntity, relation.property, jsonData.entities[mTKE].ontologyName);
                         }
@@ -1878,7 +1881,7 @@ namespace EditorCV.Controllers.Properties
 
                             var cmTKE = item.ontologyName + "." + item.rdfType;
 
-                            if (jsonData.entities.ContainsKey(cmTKE))
+                            if (jsonData.entities.ContainsKey(cmTKE) && listIdsChild.Count>0)
                             {
                                 var dbEntityDataChild = GetValEntityFastMulti(listIdsChild[item.property], item.rdfType, jsonData.entities[cmTKE].ontologyName);
                                 

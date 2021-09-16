@@ -27,7 +27,7 @@ namespace ServicioWinPubFuentesExternas.Utilidades
             urlRestService = pUrlRestServicePradoMuseum;
         }
 
-        public List<Publication> getPublicacionesByScopusID(string scopusID, string fecha=1500)
+        public List<Publication> getPublicacionesByScopusID(string scopusID, string fecha="1500")
         {
             //Generate get request
     
