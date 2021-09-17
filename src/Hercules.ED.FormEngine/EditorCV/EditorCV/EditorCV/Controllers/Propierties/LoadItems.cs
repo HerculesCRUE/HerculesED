@@ -2087,6 +2087,7 @@ namespace EditorCV.Controllers.Properties
 
         }
 
+
         private void ReadAddQueryFiles(string jsonFolder)
         {
             Dictionary<string, string> filesTexts = new Dictionary<string, string>();
@@ -2132,6 +2133,7 @@ namespace EditorCV.Controllers.Properties
             // return jsons;
 
         }
+
 
         public void DeserialiceTemplate()
         {
@@ -2226,7 +2228,6 @@ namespace EditorCV.Controllers.Properties
             jsonData.sections = sectionsList;
 
         }
-
 
 
     }
