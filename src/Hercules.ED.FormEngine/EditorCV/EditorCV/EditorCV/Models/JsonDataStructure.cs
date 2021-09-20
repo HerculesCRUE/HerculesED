@@ -80,6 +80,7 @@ namespace EditorCV.Models
         public string property { get; set; }
         public string ontologyName { get; set; }
         public string eid { get; set; }
+        public List<ModeChild> childs { get; set; }
     }
 
 
