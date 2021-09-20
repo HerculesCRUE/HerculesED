@@ -170,8 +170,11 @@ namespace GitHubAPI.ROs.Codes.Controllers
         /// <returns></returns>
         public Person getAuthorPrincipal(Repository_inicial respository)
         {
+            
             Person autor_principal = new Person();
-
+                 List<string> names = new List<string>();
+                if (respository.owner.login != null) { names.Add(respository.owner.login); }
+                    autor_principal.name = names;
                 autor_principal.identifier = "GitHub_id: " + respository.owner.login;
                 List<Url> links = new List<Url>();
                 Url link = new Url();
@@ -190,6 +193,7 @@ namespace GitHubAPI.ROs.Codes.Controllers
         public InfoForks getInfoFork(Repository_inicial respository)
         {
             InfoForks infoForks = new InfoForks();
+            Console.Write(respository.forks_count);
             infoForks.nForks= respository.forks_count;
             infoForks.isFork=respository.fork;
             return infoForks;

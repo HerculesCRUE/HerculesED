@@ -1,0 +1,927 @@
+[
+  {
+    "title": "GnossDeustoBackend",
+    "description": "GitHub_id:367262107",
+    "correspondingAuthor": {
+      "name": [
+        "mpuerta004"
+      ],
+      "surname": null,
+      "identifier": "GitHub_id: mpuerta004",
+      "link": [
+        {
+          "link": "https://avatars.githubusercontent.com/u/60791579?v=4"
+        }
+      ]
+    },
+    "seqOfAuthors": [
+      {
+        "name": [
+          "alvaropalacios-gnoss"
+        ],
+        "surname": null,
+        "identifier": "GitHub_id: 60385160",
+        "link": [
+          {
+            "link": "https://api.github.com/users/alvaropalacios-gnoss"
+          }
+        ]
+      },
+      {
+        "name": [
+          "estebansota-gnoss"
+        ],
+        "surname": null,
+        "identifier": "GitHub_id: 22471630",
+        "link": [
+          {
+            "link": "https://api.github.com/users/estebansota-gnoss"
+          }
+        ]
+      },
+      {
+        "name": [
+          "iapellaniz"
+        ],
+        "surname": null,
+        "identifier": "GitHub_id: 16291012",
+        "link": [
+          {
+            "link": "https://api.github.com/users/iapellaniz"
+          }
+        ]
+      },
+      {
+        "name": [
+          "juanvaler-gnoss"
+        ],
+        "surname": null,
+        "identifier": "GitHub_id: 36291900",
+        "link": [
+          {
+            "link": "https://api.github.com/users/juanvaler-gnoss"
+          }
+        ]
+      },
+      {
+        "name": [
+          "galomp"
+        ],
+        "surname": null,
+        "identifier": "GitHub_id: 29867712",
+        "link": [
+          {
+            "link": "https://api.github.com/users/galomp"
+          }
+        ]
+      },
+      {
+        "name": [
+          "Javier-RSP"
+        ],
+        "surname": null,
+        "identifier": "GitHub_id: 45351419",
+        "link": [
+          {
+            "link": "https://api.github.com/users/Javier-RSP"
+          }
+        ]
+      },
+      {
+        "name": [
+          "memaldi"
+        ],
+        "surname": null,
+        "identifier": "GitHub_id: 1871269",
+        "link": [
+          {
+            "link": "https://api.github.com/users/memaldi"
+          }
+        ]
+      },
+      {
+        "name": [
+          "AdriaJulia"
+        ],
+        "surname": null,
+        "identifier": "GitHub_id: 78137498",
+        "link": [
+          {
+            "link": "https://api.github.com/users/AdriaJulia"
+          }
+        ]
+      },
+      {
+        "name": [
+          "dipina"
+        ],
+        "surname": null,
+        "identifier": "GitHub_id: 2203371",
+        "link": [
+          {
+            "link": "https://api.github.com/users/dipina"
+          }
+        ]
+      },
+      {
+        "name": [
+          "mdaquin"
+        ],
+        "surname": null,
+        "identifier": "GitHub_id: 765241",
+        "link": [
+          {
+            "link": "https://api.github.com/users/mdaquin"
+          }
+        ]
+      },
+      {
+        "name": [
+          "dataethicsire"
+        ],
+        "surname": null,
+        "identifier": "GitHub_id: 61551700",
+        "link": [
+          {
+            "link": "https://api.github.com/users/dataethicsire"
+          }
+        ]
+      },
+      {
+        "name": [
+          "alexdma"
+        ],
+        "surname": null,
+        "identifier": "GitHub_id: 3514338",
+        "link": [
+          {
+            "link": "https://api.github.com/users/alexdma"
+          }
+        ]
+      },
+      {
+        "name": [
+          "HerculesCRUE"
+        ],
+        "surname": null,
+        "identifier": "GitHub_id: 57436563",
+        "link": [
+          {
+            "link": "https://api.github.com/users/HerculesCRUE"
+          }
+        ]
+      }
+    ],
+    "fileFolder": [
+      {
+        "path": ".github",
+        "name": ".github"
+      },
+      {
+        "path": ".gitignore",
+        "name": ".gitignore"
+      },
+      {
+        "path": "Builds",
+        "name": "Builds"
+      },
+      {
+        "path": "Configuracion-e-Instalacion.md",
+        "name": "Configuracion-e-Instalacion.md"
+      },
+      {
+        "path": "Docs",
+        "name": "Docs"
+      },
+      {
+        "path": "Formacion",
+        "name": "Formacion"
+      },
+      {
+        "path": "LICENSE",
+        "name": "LICENSE"
+      },
+      {
+        "path": "README.md",
+        "name": "README.md"
+      },
+      {
+        "path": "_config.yml",
+        "name": "_config.yml"
+      },
+      {
+        "path": "_plugins",
+        "name": "_plugins"
+      },
+      {
+        "path": "codecov.yml",
+        "name": "codecov.yml"
+      },
+      {
+        "path": "data",
+        "name": "data"
+      },
+      {
+        "path": "src",
+        "name": "src"
+      },
+      {
+        "path": "validation-questions",
+        "name": "validation-questions"
+      }
+    ],
+    "hasReadme": {
+      "url": [
+        {
+          "link": "https://api.github.com/repos/mpuerta004/GnossDeustoBackend/contents/README.md?ref=master"
+        }
+      ],
+      "typeOfPublication": "README",
+      "title": "README.md"
+    },
+    "tags": [
+      {
+        "name": "1.0-total-abril",
+        "links": [
+          {
+            "link": "https://api.github.com/repos/mpuerta004/GnossDeustoBackend/tarball/refs/tags/1.0-total-abril"
+          },
+          {
+            "link": "https://api.github.com/repos/mpuerta004/GnossDeustoBackend/zipball/refs/tags/1.0-total-abril"
+          }
+        ]
+      },
+      {
+        "name": "0.40-total-enero",
+        "links": [
+          {
+            "link": "https://api.github.com/repos/mpuerta004/GnossDeustoBackend/tarball/refs/tags/0.40-total-enero"
+          },
+          {
+            "link": "https://api.github.com/repos/mpuerta004/GnossDeustoBackend/zipball/refs/tags/0.40-total-enero"
+          }
+        ]
+      },
+      {
+        "name": "0.30-total-diciembre",
+        "links": [
+          {
+            "link": "https://api.github.com/repos/mpuerta004/GnossDeustoBackend/tarball/refs/tags/0.30-total-diciembre"
+          },
+          {
+            "link": "https://api.github.com/repos/mpuerta004/GnossDeustoBackend/zipball/refs/tags/0.30-total-diciembre"
+          }
+        ]
+      },
+      {
+        "name": "0.20-parcial-octubre",
+        "links": [
+          {
+            "link": "https://api.github.com/repos/mpuerta004/GnossDeustoBackend/tarball/refs/tags/0.20-parcial-octubre"
+          },
+          {
+            "link": "https://api.github.com/repos/mpuerta004/GnossDeustoBackend/zipball/refs/tags/0.20-parcial-octubre"
+          }
+        ]
+      }
+    ],
+    "hasKnowledgeArea": null,
+    "hasLicense": {
+      "title": [
+        "LICENSE",
+        "GNU General Public License v3.0"
+      ],
+      "hasKnowledgeArea": null,
+      "dataIssued": null,
+      "description": null,
+      "dateIssued": null,
+      "hasGoverningAuthority": null,
+      "url": [
+        {
+          "link": "https://api.github.com/repos/mpuerta004/GnossDeustoBackend/git/blobs/f288702d2fa16d3cdf0035b15a9fcbc552cd88e7"
+        },
+        {
+          "link": "https://github.com/mpuerta004/GnossDeustoBackend/blob/master/LICENSE"
+        },
+        {
+          "link": "https://api.github.com/repos/mpuerta004/GnossDeustoBackend/contents/LICENSE?ref=master"
+        },
+        {
+          "link": "https://api.github.com/licenses/gpl-3.0"
+        }
+      ]
+    },
+    "repositoryStatus": {
+      "dateTimeInterval": null,
+      "typeStatus": "Closed"
+    },
+    "language": [
+      "C#",
+      "JavaScript",
+      "CSS",
+      "HTML",
+      "Python",
+      "TeX",
+      "Java",
+      "Ruby",
+      "Dockerfile",
+      "Shell"
+    ],
+    "commit": {
+      "nCommit": "30",
+      "lastCommit": {
+        "datimeTime": "2021-05-12T22:04:45Z"
+      }
+    },
+    "infoIssues": {
+      "nIssues": 0,
+      "nIssuesOpen": 0,
+      "nIssuesClosed": 0,
+      "issues": [],
+      "lastIssuedOpen": {
+        "datimeTime": null
+      },
+      "lastIssuedClosed": null
+    },
+    "freetextKeyword": null,
+    "dataIssued": {
+      "datimeTime": "14/05/2021 0:00:00"
+    },
+    "infoforks": {
+      "nForks": 0,
+      "isFork": true
+    }
+  },
+  {
+    "title": "GnossDeustoOnto",
+    "description": "GitHub_id:351426581",
+    "correspondingAuthor": {
+      "name": [
+        "mpuerta004"
+      ],
+      "surname": null,
+      "identifier": "GitHub_id: mpuerta004",
+      "link": [
+        {
+          "link": "https://avatars.githubusercontent.com/u/60791579?v=4"
+        }
+      ]
+    },
+    "seqOfAuthors": [
+      {
+        "name": [
+          "dipina"
+        ],
+        "surname": null,
+        "identifier": "GitHub_id: 2203371",
+        "link": [
+          {
+            "link": "https://api.github.com/users/dipina"
+          }
+        ]
+      },
+      {
+        "name": [
+          "memaldi"
+        ],
+        "surname": null,
+        "identifier": "GitHub_id: 1871269",
+        "link": [
+          {
+            "link": "https://api.github.com/users/memaldi"
+          }
+        ]
+      },
+      {
+        "name": [
+          "estebansota-gnoss"
+        ],
+        "surname": null,
+        "identifier": "GitHub_id: 22471630",
+        "link": [
+          {
+            "link": "https://api.github.com/users/estebansota-gnoss"
+          }
+        ]
+      },
+      {
+        "name": [
+          "iapellaniz"
+        ],
+        "surname": null,
+        "identifier": "GitHub_id: 16291012",
+        "link": [
+          {
+            "link": "https://api.github.com/users/iapellaniz"
+          }
+        ]
+      },
+      {
+        "name": [
+          "ocorcho"
+        ],
+        "surname": null,
+        "identifier": "GitHub_id: 1067341",
+        "link": [
+          {
+            "link": "https://api.github.com/users/ocorcho"
+          }
+        ]
+      },
+      {
+        "name": [
+          "HerculesCRUE"
+        ],
+        "surname": null,
+        "identifier": "GitHub_id: 57436563",
+        "link": [
+          {
+            "link": "https://api.github.com/users/HerculesCRUE"
+          }
+        ]
+      }
+    ],
+    "fileFolder": [
+      {
+        "path": ".github",
+        "name": ".github"
+      },
+      {
+        "path": ".gitignore",
+        "name": ".gitignore"
+      },
+      {
+        "path": "CompanyClassification.owl",
+        "name": "CompanyClassification.owl"
+      },
+      {
+        "path": "Documentation",
+        "name": "Documentation"
+      },
+      {
+        "path": "ExpenseClassification.owl",
+        "name": "ExpenseClassification.owl"
+      },
+      {
+        "path": "FundingProgramClassification.owl",
+        "name": "FundingProgramClassification.owl"
+      },
+      {
+        "path": "HumanResourceClassification.owl",
+        "name": "HumanResourceClassification.owl"
+      },
+      {
+        "path": "LICENSE",
+        "name": "LICENSE"
+      },
+      {
+        "path": "PatentClassification.owl",
+        "name": "PatentClassification.owl"
+      },
+      {
+        "path": "ProjectClassification.owl",
+        "name": "ProjectClassification.owl"
+      },
+      {
+        "path": "README.md",
+        "name": "README.md"
+      },
+      {
+        "path": "equivalencias.ttl",
+        "name": "equivalencias.ttl"
+      },
+      {
+        "path": "examples",
+        "name": "examples"
+      },
+      {
+        "path": "roh-v2.owl",
+        "name": "roh-v2.owl"
+      },
+      {
+        "path": "rohes-v2.owl",
+        "name": "rohes-v2.owl"
+      },
+      {
+        "path": "rohum.owl",
+        "name": "rohum.owl"
+      },
+      {
+        "path": "scripts",
+        "name": "scripts"
+      },
+      {
+        "path": "unesco-individuals.rdf",
+        "name": "unesco-individuals.rdf"
+      },
+      {
+        "path": "widoco",
+        "name": "widoco"
+      }
+    ],
+    "hasReadme": {
+      "url": [
+        {
+          "link": "https://api.github.com/repos/mpuerta004/GnossDeustoOnto/contents/README.md?ref=master"
+        }
+      ],
+      "typeOfPublication": "README",
+      "title": "README.md"
+    },
+    "tags": [],
+    "hasKnowledgeArea": null,
+    "hasLicense": {
+      "title": [
+        "LICENSE",
+        "GNU General Public License v3.0"
+      ],
+      "hasKnowledgeArea": null,
+      "dataIssued": null,
+      "description": null,
+      "dateIssued": null,
+      "hasGoverningAuthority": null,
+      "url": [
+        {
+          "link": "https://api.github.com/repos/mpuerta004/GnossDeustoOnto/git/blobs/f288702d2fa16d3cdf0035b15a9fcbc552cd88e7"
+        },
+        {
+          "link": "https://github.com/mpuerta004/GnossDeustoOnto/blob/master/LICENSE"
+        },
+        {
+          "link": "https://api.github.com/repos/mpuerta004/GnossDeustoOnto/contents/LICENSE?ref=master"
+        },
+        {
+          "link": "https://api.github.com/licenses/gpl-3.0"
+        }
+      ]
+    },
+    "repositoryStatus": {
+      "dateTimeInterval": null,
+      "typeStatus": "Closed"
+    },
+    "language": [
+      "Shell",
+      "Python"
+    ],
+    "commit": {
+      "nCommit": "30",
+      "lastCommit": {
+        "datimeTime": "2021-03-16T13:46:48Z"
+      }
+    },
+    "infoIssues": {
+      "nIssues": 0,
+      "nIssuesOpen": 0,
+      "nIssuesClosed": 0,
+      "issues": [],
+      "lastIssuedOpen": {
+        "datimeTime": null
+      },
+      "lastIssuedClosed": null
+    },
+    "freetextKeyword": null,
+    "dataIssued": {
+      "datimeTime": "25/03/2021 0:00:00"
+    },
+    "infoforks": {
+      "nForks": 0,
+      "isFork": true
+    }
+  },
+  {
+    "title": "Protege",
+    "description": "GitHub_id:336252148",
+    "correspondingAuthor": {
+      "name": [
+        "mpuerta004"
+      ],
+      "surname": null,
+      "identifier": "GitHub_id: mpuerta004",
+      "link": [
+        {
+          "link": "https://avatars.githubusercontent.com/u/60791579?v=4"
+        }
+      ]
+    },
+    "seqOfAuthors": [
+      {
+        "name": [
+          "mpuerta004"
+        ],
+        "surname": null,
+        "identifier": "GitHub_id: 60791579",
+        "link": [
+          {
+            "link": "https://api.github.com/users/mpuerta004"
+          }
+        ]
+      }
+    ],
+    "fileFolder": [
+      {
+        "path": ".github",
+        "name": ".github"
+      },
+      {
+        "path": "README.md",
+        "name": "README.md"
+      },
+      {
+        "path": "ejemplo.owl",
+        "name": "ejemplo.owl"
+      },
+      {
+        "path": "pom.xml",
+        "name": "pom.xml"
+      },
+      {
+        "path": "src",
+        "name": "src"
+      }
+    ],
+    "hasReadme": {
+      "url": [
+        {
+          "link": "https://api.github.com/repos/mpuerta004/Protege/contents/README.md?ref=main"
+        }
+      ],
+      "typeOfPublication": "README",
+      "title": "README.md"
+    },
+    "tags": [],
+    "hasKnowledgeArea": null,
+    "hasLicense": null,
+    "repositoryStatus": {
+      "dateTimeInterval": null,
+      "typeStatus": "Closed"
+    },
+    "language": [
+      "Java"
+    ],
+    "commit": {
+      "nCommit": "7",
+      "lastCommit": {
+        "datimeTime": "2021-02-05T11:48:11Z"
+      }
+    },
+    "infoIssues": {
+      "nIssues": 0,
+      "nIssuesOpen": 0,
+      "nIssuesClosed": 0,
+      "issues": [],
+      "lastIssuedOpen": {
+        "datimeTime": null
+      },
+      "lastIssuedClosed": null
+    },
+    "freetextKeyword": null,
+    "dataIssued": {
+      "datimeTime": "05/02/2021 0:00:00"
+    },
+    "infoforks": {
+      "nForks": 0,
+      "isFork": false
+    }
+  },
+  {
+    "title": "ROH",
+    "description": "GitHub_id:351427894",
+    "correspondingAuthor": {
+      "name": [
+        "mpuerta004"
+      ],
+      "surname": null,
+      "identifier": "GitHub_id: mpuerta004",
+      "link": [
+        {
+          "link": "https://avatars.githubusercontent.com/u/60791579?v=4"
+        }
+      ]
+    },
+    "seqOfAuthors": [
+      {
+        "name": [
+          "brianjlowe"
+        ],
+        "surname": null,
+        "identifier": "GitHub_id: 2677238",
+        "link": [
+          {
+            "link": "https://api.github.com/users/brianjlowe"
+          }
+        ]
+      },
+      {
+        "name": [
+          "memaldi"
+        ],
+        "surname": null,
+        "identifier": "GitHub_id: 1871269",
+        "link": [
+          {
+            "link": "https://api.github.com/users/memaldi"
+          }
+        ]
+      },
+      {
+        "name": [
+          "dipina"
+        ],
+        "surname": null,
+        "identifier": "GitHub_id: 2203371",
+        "link": [
+          {
+            "link": "https://api.github.com/users/dipina"
+          }
+        ]
+      },
+      {
+        "name": [
+          "HerculesCRUE"
+        ],
+        "surname": null,
+        "identifier": "GitHub_id: 57436563",
+        "link": [
+          {
+            "link": "https://api.github.com/users/HerculesCRUE"
+          }
+        ]
+      },
+      {
+        "name": [
+          "equipo-um"
+        ],
+        "surname": null,
+        "identifier": "GitHub_id: 57892693",
+        "link": [
+          {
+            "link": "https://api.github.com/users/equipo-um"
+          }
+        ]
+      }
+    ],
+    "fileFolder": [
+      {
+        "path": ".DS_Store",
+        "name": ".DS_Store"
+      },
+      {
+        "path": ".github",
+        "name": ".github"
+      },
+      {
+        "path": ".gitignore",
+        "name": ".gitignore"
+      },
+      {
+        "path": "README.md",
+        "name": "README.md"
+      },
+      {
+        "path": "roh",
+        "name": "roh"
+      },
+      {
+        "path": "validation-data",
+        "name": "validation-data"
+      },
+      {
+        "path": "validation-questions",
+        "name": "validation-questions"
+      }
+    ],
+    "hasReadme": {
+      "url": [
+        {
+          "link": "https://api.github.com/repos/mpuerta004/ROH/contents/README.md?ref=main"
+        }
+      ],
+      "typeOfPublication": "README",
+      "title": "README.md"
+    },
+    "tags": [],
+    "hasKnowledgeArea": null,
+    "hasLicense": null,
+    "repositoryStatus": {
+      "dateTimeInterval": null,
+      "typeStatus": "Closed"
+    },
+    "language": [
+      "HTML",
+      "CSS",
+      "Java",
+      "Batchfile"
+    ],
+    "commit": {
+      "nCommit": "30",
+      "lastCommit": {
+        "datimeTime": "2021-03-25T11:24:32Z"
+      }
+    },
+    "infoIssues": {
+      "nIssues": 0,
+      "nIssuesOpen": 0,
+      "nIssuesClosed": 0,
+      "issues": [],
+      "lastIssuedOpen": {
+        "datimeTime": null
+      },
+      "lastIssuedClosed": null
+    },
+    "freetextKeyword": null,
+    "dataIssued": {
+      "datimeTime": "25/03/2021 0:00:00"
+    },
+    "infoforks": {
+      "nForks": 0,
+      "isFork": true
+    }
+  },
+  {
+    "title": "sistemasMultiagente",
+    "description": "GitHub_id:238987699",
+    "correspondingAuthor": {
+      "name": [
+        "mpuerta004"
+      ],
+      "surname": null,
+      "identifier": "GitHub_id: mpuerta004",
+      "link": [
+        {
+          "link": "https://avatars.githubusercontent.com/u/60791579?v=4"
+        }
+      ]
+    },
+    "seqOfAuthors": [
+      {
+        "name": [
+          "mpuerta004"
+        ],
+        "surname": null,
+        "identifier": "GitHub_id: 60791579",
+        "link": [
+          {
+            "link": "https://api.github.com/users/mpuerta004"
+          }
+        ]
+      }
+    ],
+    "fileFolder": [
+      {
+        "path": ".gitignore",
+        "name": ".gitignore"
+      },
+      {
+        "path": "out",
+        "name": "out"
+      },
+      {
+        "path": "playground.iml",
+        "name": "playground.iml"
+      },
+      {
+        "path": "sistemasMultiagente.iml",
+        "name": "sistemasMultiagente.iml"
+      },
+      {
+        "path": "src",
+        "name": "src"
+      }
+    ],
+    "hasReadme": null,
+    "tags": [],
+    "hasKnowledgeArea": null,
+    "hasLicense": null,
+    "repositoryStatus": {
+      "dateTimeInterval": null,
+      "typeStatus": "Closed"
+    },
+    "language": [
+      "Java"
+    ],
+    "commit": {
+      "nCommit": "20",
+      "lastCommit": {
+        "datimeTime": "2020-04-24T09:52:35Z"
+      }
+    },
+    "infoIssues": {
+      "nIssues": 0,
+      "nIssuesOpen": 0,
+      "nIssuesClosed": 0,
+      "issues": [],
+      "lastIssuedOpen": {
+        "datimeTime": null
+      },
+      "lastIssuedClosed": null
+    },
+    "freetextKeyword": null,
+    "dataIssued": {
+      "datimeTime": "07/02/2020 0:00:00"
+    },
+    "infoforks": {
+      "nForks": 0,
+      "isFork": false
+    }
+  }
+]

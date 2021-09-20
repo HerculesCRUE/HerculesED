@@ -10,22 +10,26 @@ public class Url
 }
 public class Publication 
 {
-    public List<Url> url { get; set; }
     public string typeOfPublication { get; set; } //no es un atributo de la ontologia!!
-    public List<KnowledgeArea> hasKnowledgeArea { get; set; }
-    public DateTimeValue dataIssued { get; set; }
-    public Person correspondingAuthor { get; set; }
-    public string eanucc13 { get; set; }
-    public string pageEnd { get; set; }
-    public string doi { get; set; }
-    public List<Person> seqOfAuthors { get; set; }
-    public Organization correspondingOrganization { get; set; }
-    public string pageStart { get; set; }
-    public Status documentStatus { get; set; }
     public string title { get; set; }
     public List<string> freetextKeyword { get; set; }
     public string Abstract { get; set; }
     public string language { get; set; } 
+    public string doi { get; set; }
+    public DateTimeValue dataIssued { get; set; }
+
+    public List<Url> url { get; set; }
+    public Person correspondingAuthor { get; set; }
+
+    public List<Person> seqOfAuthors { get; set; }
+    public Organization correspondingOrganization { get; set; }
+    public List<KnowledgeArea> hasKnowledgeArea { get; set; }
+    public string pageEnd { get; set; }
+
+    public string pageStart { get; set; }
+    public Status documentStatus { get; set; }
+    public string eanucc13 { get; set; }
+
     public Journal hasPublicationVenue { get; set; }
     public PublicationMetric hasMetric { get; set; }
     // TODO preguntar equipo!!1

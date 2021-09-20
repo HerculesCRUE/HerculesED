@@ -20,10 +20,11 @@ namespace ScopusConnect.ROs.Scopus.Controllers
 
         }
 
-        public List<Publication> getListPublicatio(string stringInicial)
+        public List<Publication> getListPublicatio(string stringInicial,string Date)
         {
-            
+            //Console.Write(stringInicial);
             Root objInicial = JsonConvert.DeserializeObject<Root>(stringInicial);
+            
             List<Publication> sol = new List<Publication>();
             //---modificacion en otro repo!  ---------------------------------------------------------
             List<Entry> lista_item = objInicial.SearchResults.entry;
@@ -32,26 +33,32 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                 Publication a = new Publication();
                 Entry entidad = lista_item[i];
                 string[] id_code = entidad.DcIdentifier.Split(':');
+                string fechaPublicacion = entidad.PrismCoverDate;
+                if (DateTime.Parse(fechaPublicacion)> DateTime.Parse(Date) ){
+                 Console.Write(entidad.PrismCoverDate);
+                 Console.Write("---");
+                 //Console.Write(entidad.PrismCoverDisplayDate);
+
                 string id = id_code[1];
                 //Thread.Sleep(3000);
                 string informacion= this.scopusLogic.getStringPublication(id);
                 Publication_root info_publicacion_root = getPublication(informacion);
                 //------------------------------------------------------------------------
-                Console.Write(id);
-                Console.Write("-------");
+                //Console.Write(id);
+                //Console.Write("-------");
                 if (info_publicacion_root != null)
                 {
                     if (entidad.subtype == "cp")
                     {
                         ConferencePaper conferencePaper = getConferencePaper(info_publicacion_root);
-                        conferencePaper.bibliografia = getBibliografia(info_publicacion_root);
+                        //conferencePaper.bibliografia = getBibliografia(info_publicacion_root);
                         conferencePaper.typeOfPublication = "ConferencePaper";
                         sol.Add(conferencePaper);
                     }
                     else if (entidad.subtype == "ar")
                     {
                         JournalArticle conferencePaper = getJournalArticle(info_publicacion_root);
-                        conferencePaper.bibliografia = getBibliografia(info_publicacion_root);
+                        //conferencePaper.bibliografia = getBibliografia(info_publicacion_root);
                         conferencePaper.typeOfPublication ="JournalArticle";
                         sol.Add(conferencePaper);
 
@@ -59,13 +66,13 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                     else
                     {
                         Publication publicacion = getGenericPublication(info_publicacion_root);
-                        publicacion.bibliografia = getBibliografia(info_publicacion_root);
+                        //publicacion.bibliografia = getBibliografia(info_publicacion_root);
                         publicacion.typeOfPublication = "AcademicArticle"; // TODO no tengo claro si aqui seria Article o Academic Article 
                         sol.Add(publicacion);
 
                     }
                 }
-            }
+            }}
             return sol;
         }
 
@@ -124,8 +131,6 @@ namespace ScopusConnect.ROs.Scopus.Controllers
 
         public Publication_root getPublication(string stringPublication)
         {
-
-
             Publication_root info_publicacion = new Publication_root();
             try
             {

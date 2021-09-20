@@ -5,21 +5,24 @@ namespace GitHubAPI.ROs.Codes.Models
 {
  public class repositorio_roh 
  {
-    public List<FileFolderFinal> fileFolder {get; set;}
+     public string title { get; set; }
+    public string description {get;set;}
+   
+
     public Person correspondingAuthor { get; set; }
+        public List<Person> seqOfAuthors { get; set; }
+ public List<FileFolderFinal> fileFolder {get; set;}
+        public Readmee hasReadme {get; set;}
     public List<TagsFinal> tags { get; set; }
 
     public List<KnowledgeArea> hasKnowledgeArea { get; set; }
     public vivoLicense hasLicense {get; set;}
     // mirar bien esto! 
-    public repositorio_roh hasPredecessor {get; set;}
-    public Readmee hasReadme {get; set;}
+   // public repositorio_roh hasPredecessor {get; set;}
     public Status repositoryStatus {get; set;}
     public List<string> language { get; set; } 
 
-    public List<Person> seqOfAuthors { get; set; }
-    public string title { get; set; }
-    public string description {get;set;}
+    
     public InfoCommits commit {get; set;}
 
     //public string Abstract { get; set; }
