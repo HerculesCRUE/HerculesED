@@ -28,6 +28,7 @@ namespace ScopusConnect.ROs.Scopus.Controllers
             List<Publication> sol = new List<Publication>();
             //---modificacion en otro repo!  ---------------------------------------------------------
             List<Entry> lista_item = objInicial.SearchResults.entry;
+            
             for (int i = 0; i < lista_item.Count; i++)
             {
                 Publication a = new Publication();
