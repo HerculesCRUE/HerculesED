@@ -107,7 +107,7 @@ namespace ScopusConnect.ROs.Scopus.Controllers
         /// <summary>
         /// Main function from get all repositories from the RO account
         /// </summary>
-        /// <param id="scopus_ID">The user of the repositories</param>
+        /// <param name="scopus_ID">The user of the repositories</param>
         /// <param date="date">year-month-day</param>
         // AU-ID ( "Buján, David"   24474045300 )
         /// <returns></returns>

@@ -28,8 +28,8 @@ namespace ScopusConnect.Controllers
         ///
         ///     GET /scopus/GetROs?author_id=SCOPUS_ID&amp;year=2020
         /// </remarks>
-        /// <param name="author_id">The user id in the application</param>
-                /// <param year="year">Year-month-day</param>
+        /// <param name="Scopus_ID">The user id</param>
+        /// <param date="date">Year-month-day</param>
         /// <returns></returns>
         /// <response code="200">Ok</response>
         /// <response code="400">Invalid app</response> 
@@ -51,11 +51,11 @@ namespace ScopusConnect.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public List<Publication> GetROs([FromQuery][Required] string author_id,string date = "1800-01-01")
+        public List<Publication> GetROs([FromQuery][Required] string Scopus_ID,string date = "1800-01-01")
         {
             ROScopusController ScopusObject = new ROScopusController("https://api.elsevier.com/", "75f4ab3fac56f42ac83cdeb7c98882ca");//"adf94bebeeba8c3042ad5193455740e2");
             //Author_maite author = ScopusObject.Author(author_id);
-            List<Publication> publication = ScopusObject.getPublications(author_id,date);
+            List<Publication> publication = ScopusObject.getPublications(Scopus_ID,date);
             //System.IO.StreamWriter outputFile = new System.IO.StreamWriter("ejemplo.txt");
             //outputFile.Write(publication.ToString());
             //outputFile.Close();
@@ -64,8 +64,6 @@ namespace ScopusConnect.Controllers
             //var respublications = JsonConvert.SerializeObject(author);
             // Return the repository
             //Console.Write(author);
-            Console.Write("-----------------------------------------------------");
-            Console.Write(publication.Count);
             return publication;
         }
         
