@@ -20,60 +20,66 @@ namespace ScopusConnect.ROs.Scopus.Controllers
 
         }
 
-        public List<Publication> getListPublicatio(string stringInicial,string Date)
+        public List<Publication> getListPublicatio(string stringInicial, string Date)
         {
             //Console.Write(stringInicial);
             Root objInicial = JsonConvert.DeserializeObject<Root>(stringInicial);
-            
+
             List<Publication> sol = new List<Publication>();
             //---modificacion en otro repo!  ---------------------------------------------------------
             List<Entry> lista_item = objInicial.SearchResults.entry;
-            
+
             for (int i = 0; i < lista_item.Count; i++)
             {
                 Publication a = new Publication();
                 Entry entidad = lista_item[i];
+                //Console.Write("---------------------------");
+
+                //Console.Write(entidad.DcIdentifier);
+                //Console.Write("---------------------------");
                 string[] id_code = entidad.DcIdentifier.Split(':');
                 string fechaPublicacion = entidad.PrismCoverDate;
-                if (DateTime.Parse(fechaPublicacion)> DateTime.Parse(Date) ){
-                 Console.Write(entidad.PrismCoverDate);
-                 Console.Write("---");
-                 //Console.Write(entidad.PrismCoverDisplayDate);
-
-                string id = id_code[1];
-                //Thread.Sleep(3000);
-                string informacion= this.scopusLogic.getStringPublication(id);
-                Publication_root info_publicacion_root = getPublication(informacion);
-                //------------------------------------------------------------------------
-                //Console.Write(id);
-                //Console.Write("-------");
-                if (info_publicacion_root != null)
+                if (DateTime.Parse(fechaPublicacion) > DateTime.Parse(Date))
                 {
-                    if (entidad.subtype == "cp")
-                    {
-                        ConferencePaper conferencePaper = getConferencePaper(info_publicacion_root);
-                        //conferencePaper.bibliografia = getBibliografia(info_publicacion_root);
-                        conferencePaper.typeOfPublication = "ConferencePaper";
-                        sol.Add(conferencePaper);
-                    }
-                    else if (entidad.subtype == "ar")
-                    {
-                        JournalArticle conferencePaper = getJournalArticle(info_publicacion_root);
-                        //conferencePaper.bibliografia = getBibliografia(info_publicacion_root);
-                        conferencePaper.typeOfPublication ="JournalArticle";
-                        sol.Add(conferencePaper);
+                    //Console.Write(entidad.PrismCoverDate);
+                    //Console.Write("---");
+                    //Console.Write(entidad.PrismCoverDisplayDate);
 
-                    }
-                    else
+                    string id = id_code[1];
+                    //Thread.Sleep(3000);
+                    string informacion = this.scopusLogic.getStringPublication(id);
+                    Publication_root info_publicacion_root = getPublication(informacion);
+                    //------------------------------------------------------------------------
+                    //Console.Write(id);
+                    //Console.Write("-------");
+                    if (info_publicacion_root != null)
                     {
-                        Publication publicacion = getGenericPublication(info_publicacion_root);
-                        //publicacion.bibliografia = getBibliografia(info_publicacion_root);
-                        publicacion.typeOfPublication = "AcademicArticle"; // TODO no tengo claro si aqui seria Article o Academic Article 
-                        sol.Add(publicacion);
+                        if (entidad.subtype == "cp")
+                        {
+                            ConferencePaper conferencePaper = getConferencePaper(info_publicacion_root);
+                            //conferencePaper.bibliografia = getBibliografia(info_publicacion_root);
+                            conferencePaper.typeOfPublication = "ConferencePaper";
+                            sol.Add(conferencePaper);
+                        }
+                        else if (entidad.subtype == "ar")
+                        {
+                            JournalArticle conferencePaper = getJournalArticle(info_publicacion_root);
+                            //conferencePaper.bibliografia = getBibliografia(info_publicacion_root);
+                            conferencePaper.typeOfPublication = "JournalArticle";
+                            sol.Add(conferencePaper);
 
+                        }
+                        else
+                        {
+                            Publication publicacion = getGenericPublication(info_publicacion_root);
+                            //publicacion.bibliografia = getBibliografia(info_publicacion_root);
+                            publicacion.typeOfPublication = "AcademicArticle"; // TODO no tengo claro si aqui seria Article o Academic Article 
+                            sol.Add(publicacion);
+
+                        }
                     }
                 }
-            }}
+            }
             return sol;
         }
 
@@ -347,7 +353,8 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                     return objInicial.AbstractsRetrievalResponse.language.XmlLang;
                 }
                 else { return null; }
-            } else { return null; }
+            }
+            else { return null; }
         }
         public List<String> getFreetextKeyword(Publication_root objInicial)
         {
@@ -360,7 +367,8 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                     {
                         AuthorKeyword palabraClave = JsonConvert.DeserializeObject<AuthorKeyword>(objInicial.AbstractsRetrievalResponse.authkeywords.AuthorKeyword.ToString());
                         freetextKeyword.Add(palabraClave.a);
-                    } catch 
+                    }
+                    catch
                     {
                         JArray hey = JsonConvert.DeserializeObject<JArray>(objInicial.AbstractsRetrievalResponse.authkeywords.AuthorKeyword.ToString());
                         foreach (JContainer var in hey)
@@ -370,8 +378,10 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                         }
                     }
                     return freetextKeyword;
-                } else { return null; }
-            } else { return null;}
+                }
+                else { return null; }
+            }
+            else { return null; }
         }
         public PublicationMetric getPublicationMetric(Publication_root objInicial)
         {
@@ -381,7 +391,8 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                 publicationMetric.citationCount = objInicial.AbstractsRetrievalResponse.coredata.CitedbyCount;
                 publicationMetric.metricName = "Scopus";
                 return publicationMetric;
-            } else
+            }
+            else
             {
                 PublicationMetric publicationMetric = null;
                 return publicationMetric;

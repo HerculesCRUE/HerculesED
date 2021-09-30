@@ -28,7 +28,7 @@ namespace ScopusConnect.Controllers
         ///
         ///     GET /scopus/GetROs?author_id=SCOPUS_ID&amp;year=2020
         /// </remarks>
-        /// <param name="Scopus_ID">The user id</param>
+        /// <param name="orcid">Orcid</param>
         /// <param date="date">Year-month-day</param>
         /// <returns></returns>
         /// <response code="200">Ok</response>
