@@ -1,0 +1,506 @@
+//Representa el template de una pestaña del CV
+{
+  //rdf:type de la entidad representante de la pestaña
+  "rdftype": "http://w3id.org/roh/ScientificActivity",
+  //propiedad que apunta a la entidad de la pestaña
+  "property": "http://w3id.org/roh/scientificActivity",
+  //Secciones de la pestaña
+  "sections": [
+    {
+      //rdf:type de la entidad auxiliar
+      "rdftype": "http://w3id.org/roh/RelatedDocuments",
+      //Propiedad que apunta a la sección
+      "property": "http://w3id.org/roh/scientificPublications",
+      //Presentacion de la sección
+      "presentation": {
+        //Tipo de presentación de una sección
+        //Tiene los soguientes valores disponibles:
+        //-table (valor por defecto)
+        "type": "table",
+        //Título de la sección
+        "title": {
+          "es": "Publicaciones, documentos científicos y técnicos"
+        },
+        //Datos de configuración para los items del listado de la tabla
+        "listItemConfig": {
+          //Propiedad para pintar el título del ítem
+          "propertyTitle": {
+            //Propiedad
+            "property": "http://w3id.org/roh/relatedDocument",
+            //Grafo en el que buscar los hijos
+            "graph": "document",
+            "child": {
+              "property": "http://w3id.org/roh/title"
+            }
+          },
+          //Órdenes disponibles en el listado (no es obligatorio, por defecto será el título del ítem ascendente)
+          "orders": [
+            {
+              //Nombre
+              "name": {
+                "es": "Ordenar por fecha más reciente"
+              },
+              //Propiedades utilizadas para los órdenes
+              "properties": [
+                {
+                  "property": "http://w3id.org/roh/relatedDocument",
+                  "graph": "document",
+                  "child": {
+                    "property": "http://purl.org/dc/terms/issued"
+                  },
+                  //TRUE para orden ascendente
+                  "asc": false
+                },
+                {
+                  "property": "http://w3id.org/roh/relatedDocument",
+                  "graph": "document",
+                  "child": {
+                    "property": "http://w3id.org/roh/title"
+                  },
+                  "asc": true
+                }
+              ]
+            },
+            {
+              "name": {
+                "es": "Ordenar por fecha más antigua"
+              },
+              "properties": [
+                {
+                  "property": "http://w3id.org/roh/relatedDocument",
+                  "graph": "document",
+                  "child": {
+                    "property": "http://purl.org/dc/terms/issued"
+                  },
+                  "asc": true
+                },
+                {
+                  "property": "http://w3id.org/roh/relatedDocument",
+                  "graph": "document",
+                  "child": {
+                    "property": "http://w3id.org/roh/title"
+                  },
+                  "asc": true
+                }
+              ]
+            }
+
+          ],
+          //Listado con las propiedades a pintar en el listado
+          "properties": [
+            {
+              //Nombre de la propiedad
+              "name": {
+                "es": "Fecha de publicación"
+              },
+              //Indica si se muestra en la minificha en negrita(sin desplegar)
+              "showMiniBold": true,
+              //Tipo de la propiedad a pintar
+              //Tiene los soguientes valores disponibles:
+              //-text (valor por defecto)
+              //-date
+              "type": "date",
+              //Propiedad a pintar
+              "child": {
+                "property": "http://w3id.org/roh/relatedDocument",
+                "graph": "document",
+                "child": {
+                  "property": "http://purl.org/dc/terms/issued"
+                }
+              }
+            },
+            {
+              "name": {
+                "es": "Nombre de la publicación"
+              },
+              "child": {
+                "property": "http://w3id.org/roh/relatedDocument",
+                "graph": "document",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#hasPublicationVenue"
+                }
+              }
+            },
+            {
+              "name": {
+                "es": "Autores/as (p. o. de firma)"
+              },
+              //Indica si se muestra en la minificha (sin desplegar)
+              "showMini": true,
+              //Propiedades a pintar de forma alternativa (si no está la primera se pinta la siguiente y así sucesivamente)
+              "childOR": [
+                {
+                  "property": "http://w3id.org/roh/relatedDocument",
+                  "graph": "document",
+                  "order": "http://www.w3.org/1999/02/22-rdf-syntax-ns#comment",
+                  "child": {
+                    "property": "http://purl.org/ontology/bibo/authorList",
+
+                    "child": {
+                      "property": "http://xmlns.com/foaf/0.1/nick"
+                    }
+                  }
+                },
+                {
+                  "property": "http://w3id.org/roh/relatedDocument",
+                  "graph": "document",
+                  "order": "http://www.w3.org/1999/02/22-rdf-syntax-ns#comment",
+                  "child": {
+                    "property": "http://purl.org/ontology/bibo/authorList",
+                    "child": {
+                      "property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
+                      "graph": "person",
+                      "child": {
+                        "property": "http://xmlns.com/foaf/0.1/name"
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "name": {
+                "es": "Tipo de producción"
+              },
+              "child": {
+                "property": "http://w3id.org/roh/relatedDocument",
+                "graph": "document",
+                "child": {
+                  "property": "http://purl.org/dc/elements/1.1/type",
+                  "graph": "publicationtype",
+                  "child": {
+                    "property": "http://purl.org/dc/elements/1.1/title"
+                  }
+                }
+              }
+            },
+            {
+              "name": {
+                "es": "Tipo de soporte"
+              },
+              "child": {
+                "property": "http://w3id.org/roh/relatedDocument",
+                "graph": "document",
+                "child": {
+                  "property": "http://w3id.org/roh/supportType",
+                  "graph": "supporttype",
+                  "child": {
+                    "property": "http://purl.org/dc/elements/1.1/title"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        //Datos de configuración de edición para los items del listado de la tabla
+        "listItemEdit": {
+          "property": "http://w3id.org/roh/relatedDocument",
+          "graph": "document",
+          "proptitle": "http://w3id.org/roh/title",
+          "propdescription": "http://purl.org/ontology/bibo/abstract",
+          "rdftype": "http://purl.org/ontology/bibo/Document",
+          "sections": [
+            {
+              "title": {
+                "es": "Publicación"
+              },
+              "rows": [
+                {
+                  "properties": [
+                    {
+                      "title": {
+                        "es": "Título"
+                      },
+                      "placeholder": {
+                        "es": "Introduce el título"
+                      },
+                      "required": true,
+                      "property": "http://w3id.org/roh/title",
+                      "width": 3
+                    }
+                  ]
+                },
+                {
+                  "properties": [
+                    {
+                      "title": {
+                        "es": "Nombre de la publicación"
+                      },
+                      "placeholder": {
+                        "es": "Introduce el nombre de la publicación"
+                      },
+                      "property": "http://vivoweb.org/ontology/core#hasPublicationVenue",
+                      "width": 2
+                    },
+                    {
+                      "title": {
+                        "es": "Editorial"
+                      },
+                      "placeholder": {
+                        "es": "Introduce el editorial"
+                      },
+                      "property": "http://purl.org/ontology/bibo/editor",
+                      "width": 1
+                    }
+                  ]
+                },
+                {
+                  "properties": [
+                    {
+                      "title": {
+                        "es": "Tipo de soporte"
+                      },
+                      "property": "http://w3id.org/roh/supportType",
+                      "combo": {
+                        "rdftype": "http://w3id.org/roh/SupportType",
+                        "graph": "supporttype",
+                        "property": {
+                          "property": "http://purl.org/dc/elements/1.1/title"
+                        }
+                      },
+                      "type": "selectCombo",
+                      "width": 1
+                    },
+                    {
+                      "title": {
+                        "es": "Tipo de publicación"
+                      },
+                      "property": "http://purl.org/dc/elements/1.1/type",
+                      "combo": {
+                        "rdftype": "http://w3id.org/roh/PublicationType",
+                        "graph": "publicationtype",
+                        "property": {
+                          "property": "http://purl.org/dc/elements/1.1/title"
+                        }
+                      },
+                      "type": "selectCombo",
+                      "width": 1
+                    },
+                    {
+                      "title": {
+                        "es": "Fecha de la publicación"
+                      },
+                      "placeholder": {
+                        "es": "Introduce la fecha de pubicación"
+                      },
+                      "property": "http://purl.org/dc/terms/issued",
+                      "type": "date",
+                      "width": 1
+                    }
+                  ]
+                },
+                {
+                  "properties": [
+                    {
+                      "title": {
+                        "es": "Descripción"
+                      },
+                      "placeholder": {
+                        "es": "Introduce la descripción"
+                      },
+                      "property": "http://purl.org/ontology/bibo/abstract",
+                      "type": "textarea",
+                      "width": 3
+                    }
+                  ]
+                },
+                {
+                  "properties": [
+                    {
+                      "title": {
+                        "es": "Etiquetas"
+                      },
+                      "placeholder": {
+                        "es": "Introduce la etiqueta"
+                      },
+                      "property": "http://vivoweb.org/ontology/core#freeTextKeyword",
+                      "multiple": true,
+                      "type": "text",
+                      "width": 1
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "title": {
+                "es": "Volumen"
+              },
+              "rows": [
+                {
+                  "properties": [
+                    {
+                      "title": {
+                        "es": "Volumen"
+                      },
+                      "placeholder": {
+                        "es": "Introduce el volumen"
+                      },
+                      "property": "http://purl.org/ontology/bibo/volume",
+                      "width": 1
+                    },
+                    {
+                      "title": {
+                        "es": "Número"
+                      },
+                      "placeholder": {
+                        "es": "Introduce el número"
+                      },
+                      "property": "http://purl.org/ontology/bibo/issue",
+                      "width": 1
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "title": {
+                "es": "Páginas"
+              },
+              "rows": [
+                {
+                  "properties": [
+                    {
+                      "title": {
+                        "es": "Página inicial"
+                      },
+                      "type": "number",
+                      "placeholder": {
+                        "es": "Introduce la página inicial"
+                      },
+                      "property": "http://purl.org/ontology/bibo/pageStart",
+                      "width": 1
+                    },
+                    {
+                      "title": {
+                        "es": "Página final"
+                      },
+                      "type": "number",
+                      "placeholder": {
+                        "es": "Introduce la página final"
+                      },
+                      "property": "http://purl.org/ontology/bibo/pageEnd",
+                      "width": 1
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "title": {
+                "es": "Autores"
+              },
+              "rows": [
+                {
+                  "properties": [
+                    {
+                      "property": "http://purl.org/ontology/bibo/authorList",
+                      "type": "auxEntity",
+                      "title": {
+                        "es": "Lista de autores"
+                      },
+                      "required": true,
+                      "multiple": true,
+                      "width": 3,
+                      "auxEntityData": {
+                        "rdftype": "http://purl.obolibrary.org/obo/BFO_0000023",
+                        "propertyOrder": "http://www.w3.org/1999/02/22-rdf-syntax-ns#comment",
+                        "propertyTitle": {
+                          "property": "http://xmlns.com/foaf/0.1/nick"
+                        },
+                        "properties": [
+                          {
+                            "name": {
+                              "es": "Nombre"
+                            },
+                            "child": {
+                              "property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
+                              "graph": "person",
+                              "child": {
+                                "property": "http://xmlns.com/foaf/0.1/name"
+                              }
+                            }
+                          },
+                          {
+                            "name": {
+                              "es": "ORCID"
+                            },
+                            "child": {
+                              "property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
+                              "graph": "person",
+                              "child": {
+                                "property": "http://w3id.org/roh/ORCID"
+                              }
+                            }
+                          }
+                          
+                        ],
+                        "rows": [
+                          {
+                            "properties": [
+                              {
+                                "title": {
+                                  "es": "Firma"
+                                },
+                                "type": "text",
+                                "placeholder": {
+                                  "es": "Introduce la firma"
+                                },
+                                "required": true,
+                                "property": "http://xmlns.com/foaf/0.1/nick",
+                                "width": 3
+                              }
+                            ]
+                          },
+                          {
+                            "properties": [
+                              {
+                                "title": {
+                                  "es": "Persona"
+                                },
+                                "type": "entity",
+                                "multiple": false,
+                                "required": true,
+                                "property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
+                                "entityData": {
+                                  "rdftype": "http://xmlns.com/foaf/0.1/Person",
+                                  "graph": "person",
+                                  "propertyTitle": {
+                                    "property": "http://xmlns.com/foaf/0.1/name"
+                                  },
+                                  "properties": [
+                                    {
+                                      "name": {
+                                        "es": "ORCID"
+                                      },
+                                      "child": {
+                                        "property": "http://w3id.org/roh/ORCID"
+                                      }
+                                    },
+                                    {
+                                      "name": {
+                                        "es": "Firstname"
+                                      },
+                                      "child": {
+                                        "property": "http://xmlns.com/foaf/0.1/firstName"
+                                      }
+                                    }
+                                  ]
+                                },
+                                "width": 3
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ]
+} 
