@@ -75,13 +75,14 @@ public class Affiliation
         public string PrismVolume { get; set; } */
 
        /*  [JsonProperty("prism:pageRange")]
-        public string PrismPageRange { get; set; }
+        public string PrismPageRange { get; set; }*/
 
         [JsonProperty("prism:coverDate")]
         public string PrismCoverDate { get; set; }
 
-        [JsonProperty("prism:coverDisplayDate")] */
-       /*  public string PrismCoverDisplayDate { get; set; }
+        [JsonProperty("prism:coverDisplayDate")] 
+          public string PrismCoverDisplayDate { get; set; }
+          /*
 
         [JsonProperty("citedby-count")]
         public string CitedbyCount { get; set; }

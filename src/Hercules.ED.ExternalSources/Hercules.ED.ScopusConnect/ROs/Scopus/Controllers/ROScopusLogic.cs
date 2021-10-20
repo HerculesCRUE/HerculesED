@@ -107,18 +107,34 @@ namespace ScopusConnect.ROs.Scopus.Controllers
         /// <summary>
         /// Main function from get all repositories from the RO account
         /// </summary>
-        /// <param id="scopus_ID">The user of the repositories</param>
-        /// <param year="year">The user of the repositories</param>
-        /// <param uri="uri">The uri for the call</param>
+        /// <param name="Orcid"></param>
+        /// <param date="date">year-month-day</param>
         // AU-ID ( "Buján, David"   24474045300 )
         /// <returns></returns>
-        public List<Publication> getPublications(string name, string year = "1500", string uri = "content/search/scopus?query=AU-ID( {0})& PUBYEAR>({1})")//AU-ID?{0}")
+        public List<Publication> getPublications(string name, string date = "1800-01-01", string uri = "content/search/scopus?query=ORCID(\"{0}\")&count=200&date={1}")//AU-ID?{0}")
         {
-            Uri url = new Uri(baseUri + string.Format(uri, name, year));
+            string date_scopus = date.Substring(0,4)+"-"+ DateTime.Now.Date.Year.ToString();
+            //Console.Write("\n");
+            //Console.Write(date_scopus);
+            Uri url = new Uri(baseUri + string.Format(uri, name,date_scopus));
             string info_publication = httpCall(url.ToString(), "GET", headers).Result;
             ROScopusControllerJSON info = new ROScopusControllerJSON(this);
-            List<Publication> sol = info.getListPublicatio(info_publication);
-            
+            List<Publication> sol = info.getListPublicatio(info_publication,date);
+            int n200 = 1;
+            while(sol.Count == n200*200){
+                int start = n200*200;
+                uri="content/search/scopus?query=ORCID(\"{0}\")&count=200&date={1}&start={2}";
+                 url = new Uri(baseUri + string.Format(uri, name,date_scopus,start.ToString()));
+                info_publication = httpCall(url.ToString(), "GET", headers).Result;
+                n200=n200+1;
+                List<Publication> list_1=info.getListPublicatio(info_publication,date);
+                sol.AddRange(list_1);
+                //foreach(Publication pub in list_1){sol.Add(pub);}
+                //for(int j=0; j<list_1.Count;j++){
+                //sol.Concat(info.getListPublicatio(info_publication,date));
+                //sol.Add(list_1[j]);
+                //}
+            }
             return sol;
         }
     }
