@@ -3,8 +3,11 @@ $(function () {
 });
 
 
-var urlEdicionCV = "https://localhost:44360/EdicionCV/";
-var urlGuardadoCV = "https://localhost:44360/GuardadoCV/";
+//var urlEdicionCV = "https://localhost:44360/EdicionCV/";
+//var urlGuardadoCV = "https://localhost:44360/GuardadoCV/";
+var urlEdicionCV = "http://serviciosedma.gnoss.com/edicioncv/EdicionCV/";
+var urlGuardadoCV = "http://serviciosedma.gnoss.com/edicioncv/GuardadoCV/";
+
 
 var edicionCV = {
     idCV: null,
