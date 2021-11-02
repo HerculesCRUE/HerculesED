@@ -64,6 +64,14 @@ namespace GuardadoCV.Models.Utils
                     int limit = paginacion;
                     while (limit == paginacion)
                     {
+                        if(File.Exists($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/configOAuth/OAuthV3.config"))
+                        {
+                            throw new Exception(File.ReadAllText($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/configOAuth/OAuthV3.config"));
+                        }else
+                        {
+                            throw new Exception("No existe");
+                        }
+
                         string select = "select * where{select distinct ?s ?p ?o ";
                         string where = $"where{{?s ?p ?o. FILTER( lang(?o) = '{pLang}' OR lang(?o) = '' OR !isLiteral(?o) )  FILTER(?s in(<{string.Join(">,<", list)}>)) FILTER(?p in(<{string.Join(">,<", pProperties.Where(x => string.IsNullOrEmpty(x.order)).Select(x => x.property).ToList())}>))}} order by asc(?o) asc(?p) asc(?s)}} limit {limit} offset {offset}";
                         SparqlObject sparqlObjectAux = mResourceApi.VirtuosoQuery(select, where, pGraph);
