@@ -315,10 +315,10 @@ namespace GuardadoCV.Models.Utils
         {
             get
             {
-                if (mTabTemplates == null || mTabTemplates.Count != System.IO.Directory.EnumerateFiles($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}config/tabtemplates").Count())
+                if (mTabTemplates == null || mTabTemplates.Count != System.IO.Directory.EnumerateFiles($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/TabTemplates").Count())
                 {
                     mTabTemplates = new List<Tab>();
-                    foreach (string file in System.IO.Directory.EnumerateFiles($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}config/tabtemplates"))
+                    foreach (string file in System.IO.Directory.EnumerateFiles($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/TabTemplates"))
                     {
                         Tab tab = JsonConvert.DeserializeObject<Tab>(System.IO.File.ReadAllText(file));
                         string nombreFicheo = new FileInfo(file).Name;
@@ -398,10 +398,10 @@ namespace GuardadoCV.Models.Utils
         {
             get
             {
-                if (mEntityTemplates == null || mEntityTemplates.Count != System.IO.Directory.EnumerateFiles($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}config/entitytemplates").Count())
+                if (mEntityTemplates == null || mEntityTemplates.Count != System.IO.Directory.EnumerateFiles($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/EntityTemplates").Count())
                 {
                     mEntityTemplates = new List<ItemEdit>();
-                    foreach (string file in System.IO.Directory.EnumerateFiles($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}config/entitytemplates"))
+                    foreach (string file in System.IO.Directory.EnumerateFiles($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/EntityTemplates"))
                     {
                         mEntityTemplates.Add(JsonConvert.DeserializeObject<ItemEdit>(System.IO.File.ReadAllText(file)));
                     }
