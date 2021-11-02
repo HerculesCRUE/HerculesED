@@ -66,7 +66,7 @@ namespace GuardadoCV.Models.Utils
                     {
                         if(File.Exists($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/configOAuth/OAuthV3.config"))
                         {
-                            throw new Exception("Existe");
+                            throw new Exception(File.ReadAllText($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/configOAuth/OAuthV3.config"));
                         }else
                         {
                             throw new Exception("No existe");
