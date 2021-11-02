@@ -23,7 +23,7 @@ namespace GuardadoCV.Models
         /// <summary>
         /// API
         /// </summary>
-        private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config\configOAuth\OAuthV3.config");
+        private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/configOAuth/OAuthV3.config");
 
         /// <summary>
         /// Cambia la privacidad de un item
