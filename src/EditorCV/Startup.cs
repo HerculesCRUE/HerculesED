@@ -46,9 +46,7 @@ namespace EditorCV
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
 
-            app.UseDeveloperExceptionPage();
-            app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("v1/swagger.json", "EditorCV v1"));
+            app.UseDeveloperExceptionPage();          
 
 
             app.UseHttpsRedirection();
@@ -57,7 +55,15 @@ namespace EditorCV
             app.UseCors();
 
             app.UseAuthorization();
-
+            app.UseSwagger(c =>
+            {
+                c.PreSerializeFilters.Add((swaggerDoc, httpReq) => swaggerDoc.Servers = new List<OpenApiServer>
+                      {
+                        new OpenApiServer { Url = $"/editorcv"},
+                        new OpenApiServer { Url = $"/" }
+                      });
+            });
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("v1/swagger.json", "EditorCV v1"));
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
