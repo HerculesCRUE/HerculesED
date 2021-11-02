@@ -28,7 +28,7 @@ namespace GuardadoCV.Controllers
             }
             catch (Exception ex)
             {
-                return Ok(new Models.API.Response.JsonResult() { error = ex.Message });
+                return Ok(new Models.API.Response.JsonResult() { error = ex.Message + " " + ex.StackTrace });
             }
         }
 
