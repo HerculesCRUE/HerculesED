@@ -10,7 +10,7 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
-COPY ["Gnoss.Web.Results.csproj", ""]
+COPY ["EditorCV.csproj", ""]
 RUN dotnet restore "./EditorCV.csproj"
 COPY . .
 WORKDIR "/src/."
