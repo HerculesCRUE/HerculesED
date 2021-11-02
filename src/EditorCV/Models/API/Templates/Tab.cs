@@ -1,0 +1,239 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace GuardadoCV.Models.API.Templates
+{
+    //Clases de configuración para la presetación de las pestañas
+
+    /// <summary>
+    /// Representa el template de una pestaña del CV
+    /// </summary>
+    public class Tab
+    {
+        /// <summary>
+        /// rdf:type de la entidad representante de la pestaña
+        /// </summary>
+        public string rdftype;
+        /// <summary>
+        /// propiedad que apunta a la entidad representante de la pestaña
+        /// </summary>
+        public string property;
+        /// <summary>
+        /// Secciones de la pestaña
+        /// </summary>
+        public List<TabSection> sections;
+    }
+
+    /// <summary>
+    /// Representa una sección de la pestaña
+    /// </summary>
+    public class TabSection
+    {
+        /// <summary>
+        /// Propiedad que apunta a la sección
+        /// </summary>
+        public string property;
+
+        /// <summary>
+        /// rdf:type de la entidad auxiliar
+        /// </summary>
+        public string rdftype;
+
+        /// <summary>
+        /// Presentacion de la sección
+        /// </summary>
+        public TabSectionPresentation presentation;
+
+        /// <summary>
+        /// Genera el PropertyData para recuperar los datos
+        /// </summary>
+        /// <param name="pGraph">grafo</param>
+        /// <returns></returns>
+        public Utils.PropertyData GenerarPropertyData(string pGraph)
+        {
+            switch (presentation.type)
+            {
+                case TabSectionPresentationType.listitems:
+                    Utils.PropertyData propertyData = this.presentation.listItemsPresentation.listItem.GenerarPropertyData(pGraph);
+                    propertyData.property = this.property;
+                    return propertyData;
+                default:
+                    throw new Exception("No está implementado la presentación del tipo " + presentation.type);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Datos de presentación de una sección
+    /// </summary>
+    public class TabSectionPresentation
+    {
+        /// <summary>
+        /// Tipo de presentación de una sección
+        /// </summary>
+        public TabSectionPresentationType type;
+        /// <summary>
+        /// Título de la sección
+        /// </summary>
+        public Dictionary<string, string> title;
+        /// <summary>
+        /// Configuración de la presentación para los listados de items
+        /// </summary>
+        public TabSectionPresentationListItems listItemsPresentation;
+    }
+
+    /// <summary>
+    /// Configuración de la presentación para los listados de items
+    /// </summary>
+    public class TabSectionPresentationListItems
+    {
+        /// <summary>
+        /// Propiedad para acceder a la entidad desde la minificha
+        /// </summary>
+        public string property;
+        /// <summary>
+        /// Datos de configuración para la presentación de los items del listado de la lista
+        /// </summary>
+        public TabSectionListItem listItem;
+        /// <summary>
+        /// Datos de configuración de edición para los items del listado de la lista
+        /// TODO CAMBIAR
+        /// </summary>
+        public ItemEdit listItemEdit;
+    }
+
+    /// <summary>
+    /// Datos de configuración para los items del listado de la lista
+    /// </summary>
+    public class TabSectionListItem
+    {
+        /// <summary>
+        /// Propiedad para pintar el título del ítem
+        /// TODO cambiar
+        /// </summary>
+        public PropertyDataTemplate propertyTitle;
+        /// <summary>
+        /// Órdenes disponibles en el listado
+        /// </summary>
+        public List<TabSectionListItemOrder> orders;
+        /// <summary>
+        /// Listado con las propiedades a pintar en el listado
+        /// </summary>
+        public List<TabSectionListItemProperty> properties;
+
+        public Utils.PropertyData GenerarPropertyData(string pGraph)
+        {
+            Utils.PropertyData propertyData = new Utils.PropertyData()
+            {
+                graph = pGraph,
+                childs = new List<Utils.PropertyData>()
+            };
+            if (orders != null)
+            {
+                foreach (TabSectionListItemOrder presentation in orders)
+                {
+                    foreach (TabSectionListItemOrderProperty presentationOrderProperty in presentation.properties)
+                    {
+                        propertyData.childs.Add(presentationOrderProperty.GenerarPropertyData(pGraph));
+                    }
+                }
+            }
+            if (propertyTitle != null)
+            {
+                propertyData.childs.Add(propertyTitle.GenerarPropertyData(pGraph));
+            }
+            Utils.PropertyData property = new Utils.PropertyData()
+            {
+                property = Utils.UtilityCV.PropertyIspublic,
+                childs = new List<Utils.PropertyData>()
+            };
+            if (!propertyData.childs.Exists(x => x.property == property.property))
+            {
+                propertyData.childs.Add(property);
+            }
+            foreach (TabSectionListItemProperty prop in properties)
+            {
+                if (prop.child != null)
+                {
+                    propertyData.childs.Add(prop.child.GenerarPropertyData(pGraph));
+                }
+                else if (prop.childOR != null)
+                {
+                    foreach (PropertyDataTemplate propOR in prop.childOR)
+                    {
+                        propertyData.childs.Add(propOR.GenerarPropertyData(pGraph));
+                    }
+                }
+            }
+            Utils.UtilityCV.CleanPropertyData(ref propertyData);
+            return propertyData;
+        }
+    }
+
+    /// <summary>
+    /// Configuración de un orden de presentación para el listado
+    /// </summary>
+    public class TabSectionListItemOrder
+    {
+        /// <summary>
+        /// Nombre
+        /// </summary>
+        public Dictionary<string, string> name;
+        /// <summary>
+        /// Propiedades utilizadas para los órdenes
+        /// </summary>
+        public List<TabSectionListItemOrderProperty> properties;
+    }
+
+
+    /// <summary>
+    /// Configuración de una propiedad utilizada para los órdenes
+    /// </summary>
+    public class TabSectionListItemOrderProperty : PropertyDataTemplate
+    {
+        /// <summary>
+        /// TRUE para orden ascendente
+        /// </summary>
+        public bool asc;
+    }
+
+
+    /// <summary>
+    /// Propiedad a pintar en el listado 
+    /// </summary>
+    public class TabSectionListItemProperty
+    {
+        /// <summary>
+        /// Tipo de la propiedad a pintar
+        /// TODO
+        /// </summary>
+        public DataTypeListItem type;
+        /// <summary>
+        /// Nombre de la propiedad
+        /// </summary>
+        public Dictionary<string, string> name;
+        /// <summary>
+        /// Indica si se muestra en la minificha (sin desplegar)
+        /// </summary>
+        public bool showMini;
+        /// <summary>
+        /// Indica si se muestra en la minificha en negrita(sin desplegar)
+        /// </summary>
+        public bool showMiniBold;
+        /// <summary>
+        /// Propiedad a pintar
+        /// //TODO
+        /// </summary>
+        public PropertyDataTemplate child;
+        /// <summary>
+        /// Propiedades a pintar de forma alternativa (si no está la primera se pinta la siguiente y así sucesivamente)
+        /// //TODO
+        /// </summary>
+        public List<PropertyDataTemplate> childOR;
+    }
+
+}
+
+

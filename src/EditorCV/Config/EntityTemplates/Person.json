@@ -1,0 +1,73 @@
+{
+  "graph": "person",
+  "proptitle": "http://xmlns.com/foaf/0.1/name",
+  "propdescription": "",
+  "rdftype": "http://xmlns.com/foaf/0.1/Person",
+  "sections": [
+    {
+      "title": {
+        "es": "Persona"
+      },
+      "rows": [
+        {
+          "properties": [
+            {
+              "title": {
+                "es": "Nombre completo"
+              },
+              "required": true,
+              "property": "http://xmlns.com/foaf/0.1/name",
+              "compossed": "http://xmlns.com/foaf/0.1/firstName http://xmlns.com/foaf/0.1/lastName",
+              "width": 3
+            }
+          ]
+        },
+        {
+          "properties": [
+            {
+              "title": {
+                "es": "ORCID"
+              },
+              "placeholder": {
+                "es": "Introduce el código ORCID"
+              },
+              "required": false,
+              "property": "http://w3id.org/roh/ORCID",
+              "width": 3
+            }
+          ]
+        },
+        {
+          "properties": [
+            {
+              "title": {
+                "es": "Nombre"
+              },
+              "placeholder": {
+                "es": "Introduce el nombre"
+              },
+              "required": true,
+              "property": "http://xmlns.com/foaf/0.1/firstName",
+              "width": 3
+            }
+          ]
+        },
+        {
+          "properties": [
+            {
+              "title": {
+                "es": "Apellidos"
+              },
+              "placeholder": {
+                "es": "Introduce los apellidos"
+              },
+              "required": true,
+              "property": "http://xmlns.com/foaf/0.1/lastName",
+              "width": 3
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
