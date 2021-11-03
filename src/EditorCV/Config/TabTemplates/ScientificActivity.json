@@ -488,7 +488,7 @@
 									"property": "http://vivoweb.org/ontology/core#relatedBy",
 									"graph": "document",
 									"child": {
-										"property": "http://purl.org/ontology/bibo/presentedAt"
+										"property": "http://purl.org/ontology/bibo/presentedAt",
 										"child": {
 											"property": "http://purl.org/dc/elements/1.1/title"
 										}
