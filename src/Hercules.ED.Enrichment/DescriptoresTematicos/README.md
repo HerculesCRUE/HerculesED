@@ -1,6 +1,8 @@
+# Description
+
 This module contains two different systems to train and evaluate multilabel classifiers to predict thematic descriptors from research objects. One of the systems is based on traditional machine learning techniques like Logistic Regression and SVM. The other system is a neural classifier based on Multilabel Bert language model.
 
-Note: The datasets are currently in a private storage bucket and are not available yet.
+**Note**: The datasets are currently in a private storage bucket and are not available yet.
 
 
 # Logistic Regression and SVM based classifiers
