@@ -636,71 +636,16 @@
 												"title": {
 													"es": "Fecha de celebración"
 												},
+												"placeholder": {
+													"es": "Introduce la fecha de celebración"
+												},
 												"multiple": true,
 												"width": 3,
 												"auxEntityData": {
 													"rdftype": "http://purl.org/ontology/bibo/Event",
 													"propertyTitle": {
 														"property": "http://vivoweb.org/ontology/core#start"
-													},
-													"properties": [
-														{
-															"name": {
-																"es": "Nombre"
-															},
-															"child": {
-																"property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
-																"graph": "person",
-																"child": {
-																	"property": "http://xmlns.com/foaf/0.1/name"
-																}
-															}
-														},
-														{
-															"name": {
-																"es": "ORCID"
-															},
-															"child": {
-																"property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
-																"graph": "person",
-																"child": {
-																	"property": "http://w3id.org/roh/ORCID"
-																}
-															}
-														}
-													],
-													"rows": [
-														{
-															"properties": [
-																{
-																	"title": {
-																		"es": "Firma"
-																	},
-																	"type": "text",
-																	"placeholder": {
-																		"es": "Introduce la firma"
-																	},
-																	"required": true,
-																	"property": "http://xmlns.com/foaf/0.1/nick",
-																	"width": 3
-																}
-															]
-														},
-														{
-															"properties": [
-																{
-																	"title": {
-																		"es": "Persona"
-																	},
-																	"type": "entity",
-																	"multiple": false,
-																	"required": true,
-																	"property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
-																	"width": 3
-																}
-															]
-														}
-													]
+													}
 												}
 											}
 										]
