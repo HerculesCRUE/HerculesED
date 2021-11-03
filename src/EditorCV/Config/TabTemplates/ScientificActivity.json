@@ -576,13 +576,21 @@
 									{
 										"properties": [
 											{
+												"property": "http://purl.org/ontology/bibo/presentedAt",
+												"type": "auxEntity",
 												"title": {
 													"es": "Fecha de celebración"
 												},
+												"width": 1,
 												"placeholder": {
 													"es": "Introduce la fecha de celebración"
 												},
-												"property": "http://purl.org/dc/terms/issued",
+												"auxEntityData": {
+													"rdftype": "http://purl.org/ontology/bibo/Event",
+													"propertyTitle": {
+														"property": "http://vivoweb.org/ontology/core#start"
+													}
+												},
 												"type": "date",
 												"width": 1
 											},
