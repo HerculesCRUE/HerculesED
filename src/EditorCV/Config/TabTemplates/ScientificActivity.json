@@ -536,7 +536,7 @@
               {
                 //Nombre de la propiedad
                 "name": {
-                  "es": "Fecha de celebración"
+                  "es": "Fecha de publicación"
                 },
                 //Indica si se muestra en la minificha en negrita(sin desplegar)
                 "showMiniBold": true,
@@ -556,19 +556,24 @@
               },
               {
                 "name": {
-                  "es": "Nombre de la publicación"
+                  "es": "Nombre del congreso"
                 },
-                "child": {
-                  "property": "http://vivoweb.org/ontology/core#relatedBy",
-                  "graph": "document",
-                  "child": {
-                    "property": "http://vivoweb.org/ontology/core#hasPublicationVenue",
-					"graph": "maindocument",
-					"child": {
-                        "property": "http://w3id.org/roh/title"
+                //Indica si se muestra en la minificha (sin desplegar)
+                "showMini": true,
+                //Propiedad a pintar
+                "child": [
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "document",
+                    "child": {
+                      "property": "http://purl.org/ontology/bibo/presentedAt",
+
+                      "child": {
+                        "property": "http://purl.org/dc/elements/1.1/title"
                       }
+                    }
                   }
-                }
+                ]
               },
               {
                 "name": {
@@ -609,7 +614,7 @@
               },
               {
                 "name": {
-                  "es": "Tipo de producción"
+                  "es": "Forma de contribución"
                 },
                 "child": {
                   "property": "http://vivoweb.org/ontology/core#relatedBy",
@@ -655,7 +660,7 @@
                     "properties": [                      
                       {
                         "title": {
-                          "es": "Tipo de publicación"
+                          "es": "Forma de contribución"
                         },
                         "property": "http://purl.org/dc/elements/1.1/type",
                         "combo": {
