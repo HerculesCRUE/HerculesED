@@ -625,24 +625,23 @@
 							},
 							{
 								"title": {
-									"es": "Autores"
+									"es": "Más campos"
 								},
 								"rows": [
 									{
 										"properties": [
 											{
-												"property": "http://purl.org/ontology/bibo/authorList",
+												"property": "http://purl.org/ontology/bibo/presentedAt",
 												"type": "auxEntity",
 												"title": {
-													"es": "Lista de autores"
+													"es": "Fecha de celebración"
 												},
 												"multiple": true,
 												"width": 3,
 												"auxEntityData": {
-													"rdftype": "http://purl.obolibrary.org/obo/BFO_0000023",
-													"propertyOrder": "http://www.w3.org/1999/02/22-rdf-syntax-ns#comment",
+													"rdftype": "http://purl.org/ontology/bibo/Event",
 													"propertyTitle": {
-														"property": "http://xmlns.com/foaf/0.1/nick"
+														"property": "http://vivoweb.org/ontology/core#start"
 													},
 													"properties": [
 														{
@@ -697,23 +696,6 @@
 																	"multiple": false,
 																	"required": true,
 																	"property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
-																	"entityData": {
-																		"rdftype": "http://xmlns.com/foaf/0.1/Person",
-																		"graph": "person",
-																		"propertyTitle": {
-																			"property": "http://xmlns.com/foaf/0.1/name"
-																		},
-																		"properties": [
-																			{
-																				"name": {
-																					"es": "ORCID"
-																				},
-																				"child": {
-																					"property": "http://w3id.org/roh/ORCID"
-																				}
-																			}
-																		]
-																	},
 																	"width": 3
 																}
 															]
