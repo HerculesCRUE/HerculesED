@@ -450,8 +450,8 @@
       //rdftype: Rdf:type de la entidad auxiliar (obligatorio)
       //property: Propiedad que apunta a la sección (obligatorio)
       //presentation: Presentacion de la sección (obligatorio)
-      "rdftype": "http://w3id.org/roh/RelatedOtherDisseminationActivity",
-      "property": "http://w3id.org/roh/otherDisseminationActivities",
+      "rdftype": "http://w3id.org/roh/RelatedWorkSubmittedConferences",
+      "property": "http://w3id.org/roh/worksSubmittedConferences",
       "presentation": {
         //type: Tipo de presentación de una sección
         //  Tiene los siguientes valores disponibles:
@@ -460,7 +460,7 @@
         //listItemsPresentation: Datos de configuración para los items del listado de la tabla (obligatorio)
         "type": "listitems",
         "title": {
-          "es": "Otras actividades de divulgación"
+          "es": "Trabajos presentados en congresos nacionales o internacionales"
         },
         "listItemsPresentation": {
           //property: Propiedad para acceder al item (obligatorio)
@@ -536,7 +536,7 @@
               {
                 //Nombre de la propiedad
                 "name": {
-                  "es": "Fecha de publicación"
+                  "es": "Fecha de celebración"
                 },
                 //Indica si se muestra en la minificha en negrita(sin desplegar)
                 "showMiniBold": true,
