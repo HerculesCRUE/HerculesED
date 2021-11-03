@@ -488,23 +488,9 @@
 									"property": "http://vivoweb.org/ontology/core#relatedBy",
 									"graph": "document",
 									"child": {
-										"property": "http://purl.org/dc/terms/issued"
-										"child":
-									}
-								}
-							},
-							{
-								"name": {
-									"es": "Nombre del congreso"
-								},
-								"child": {
-									"property": "http://vivoweb.org/ontology/core#relatedBy",
-									"graph": "document",
-									"child": {
-										"property": "http://vivoweb.org/ontology/core#hasPublicationVenue",
-										"graph": "maindocument",
+										"property": "http://purl.org/ontology/bibo/presentedAt",
 										"child": {
-											"property": "http://w3id.org/roh/title"
+											"property": "http://vivoweb.org/ontology/core#start"
 										}
 									}
 								}
@@ -545,7 +531,7 @@
 							},
 							{
 								"name": {
-									"es": "Tipo de producción"
+									"es": "Forma de contribución"
 								},
 								"child": {
 									"property": "http://vivoweb.org/ontology/core#relatedBy",
@@ -591,25 +577,21 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Tipo de publicación"
+													"es": "Fecha de celebración"
 												},
-												"property": "http://purl.org/dc/elements/1.1/type",
-												"combo": {
-													"rdftype": "http://w3id.org/roh/PublicationType",
-													"graph": "publicationtype",
-													"property": {
-														"property": "http://purl.org/dc/elements/1.1/title"
-													}
+												"placeholder": {
+													"es": "Introduce la fecha de celebración"
 												},
-												"type": "selectCombo",
+												"property": "http://purl.org/dc/terms/issued",
+												"type": "date",
 												"width": 1
 											},
 											{
 												"title": {
-													"es": "Fecha de la publicación"
+													"es": "Fecha de finalización"
 												},
 												"placeholder": {
-													"es": "Introduce la fecha de pubicación"
+													"es": "Introduce la fecha de finalización"
 												},
 												"property": "http://purl.org/dc/terms/issued",
 												"type": "date",
@@ -621,30 +603,13 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Descripción"
+													"es": "Nombre del evento"
 												},
 												"placeholder": {
-													"es": "Introduce la descripción"
+													"es": "Introduce el nombre del evento"
 												},
 												"property": "http://purl.org/ontology/bibo/abstract",
-												"type": "textarea",
 												"width": 3
-											}
-										]
-									},
-									{
-										"properties": [
-											{
-												"title": {
-													"es": "Etiquetas"
-												},
-												"placeholder": {
-													"es": "Introduce la etiqueta"
-												},
-												"property": "http://vivoweb.org/ontology/core#freeTextKeyword",
-												"multiple": true,
-												"type": "text",
-												"width": 1
 											}
 										]
 									}
@@ -652,165 +617,30 @@
 							},
 							{
 								"title": {
-									"es": "Volumen"
+									"es": "Más campos"
 								},
 								"rows": [
 									{
 										"properties": [
 											{
 												"title": {
-													"es": "Volumen"
+													"es": "Tipo de evento"
 												},
 												"placeholder": {
-													"es": "Introduce el volumen"
+													"es": "Introduce el tipo de evento"
 												},
 												"property": "http://purl.org/ontology/bibo/volume",
 												"width": 1
 											},
 											{
 												"title": {
-													"es": "Número"
+													"es": "Tipo"
 												},
 												"placeholder": {
-													"es": "Introduce el número"
+													"es": "Introduce el tipo"
 												},
 												"property": "http://purl.org/ontology/bibo/issue",
 												"width": 1
-											}
-										]
-									}
-								]
-							},
-							{
-								"title": {
-									"es": "Páginas"
-								},
-								"rows": [
-									{
-										"properties": [
-											{
-												"title": {
-													"es": "Página inicial"
-												},
-												"type": "number",
-												"placeholder": {
-													"es": "Introduce la página inicial"
-												},
-												"property": "http://purl.org/ontology/bibo/pageStart",
-												"width": 1
-											},
-											{
-												"title": {
-													"es": "Página final"
-												},
-												"type": "number",
-												"placeholder": {
-													"es": "Introduce la página final"
-												},
-												"property": "http://purl.org/ontology/bibo/pageEnd",
-												"width": 1
-											}
-										]
-									}
-								]
-							},
-							{
-								"title": {
-									"es": "Autores"
-								},
-								"rows": [
-									{
-										"properties": [
-											{
-												"property": "http://purl.org/ontology/bibo/authorList",
-												"type": "auxEntity",
-												"title": {
-													"es": "Lista de autores"
-												},
-												"multiple": true,
-												"width": 3,
-												"auxEntityData": {
-													"rdftype": "http://purl.obolibrary.org/obo/BFO_0000023",
-													"propertyOrder": "http://www.w3.org/1999/02/22-rdf-syntax-ns#comment",
-													"propertyTitle": {
-														"property": "http://xmlns.com/foaf/0.1/nick"
-													},
-													"properties": [
-														{
-															"name": {
-																"es": "Nombre"
-															},
-															"child": {
-																"property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
-																"graph": "person",
-																"child": {
-																	"property": "http://xmlns.com/foaf/0.1/name"
-																}
-															}
-														},
-														{
-															"name": {
-																"es": "ORCID"
-															},
-															"child": {
-																"property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
-																"graph": "person",
-																"child": {
-																	"property": "http://w3id.org/roh/ORCID"
-																}
-															}
-														}
-													],
-													"rows": [
-														{
-															"properties": [
-																{
-																	"title": {
-																		"es": "Firma"
-																	},
-																	"type": "text",
-																	"placeholder": {
-																		"es": "Introduce la firma"
-																	},
-																	"required": true,
-																	"property": "http://xmlns.com/foaf/0.1/nick",
-																	"width": 3
-																}
-															]
-														},
-														{
-															"properties": [
-																{
-																	"title": {
-																		"es": "Persona"
-																	},
-																	"type": "entity",
-																	"multiple": false,
-																	"required": true,
-																	"property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
-																	"entityData": {
-																		"rdftype": "http://xmlns.com/foaf/0.1/Person",
-																		"graph": "person",
-																		"propertyTitle": {
-																			"property": "http://xmlns.com/foaf/0.1/name"
-																		},
-																		"properties": [
-																			{
-																				"name": {
-																					"es": "ORCID"
-																				},
-																				"child": {
-																					"property": "http://w3id.org/roh/ORCID"
-																				}
-																			}
-																		]
-																	},
-																	"width": 3
-																}
-															]
-														}
-													]
-												}
 											}
 										]
 									}
