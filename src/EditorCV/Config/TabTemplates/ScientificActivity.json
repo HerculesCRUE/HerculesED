@@ -20,7 +20,7 @@
         //listItemsPresentation: Datos de configuración para los items del listado de la tabla (obligatorio)
         "type": "listitems",
         "title": {
-          "es": "Publicaciones, documentos científicos y técnicos"
+          "es": "Publicaciones, documentos científicos y técnicos X"
         },
         "listItemsPresentation": {
           //property: Propiedad para acceder al item (obligatorio)
