@@ -556,27 +556,6 @@
               },
               {
                 "name": {
-                  "es": "Nombre del congreso"
-                },
-                //Indica si se muestra en la minificha (sin desplegar)
-                "showMini": true,
-                //Propiedad a pintar
-                "child": [
-                  {
-                    "property": "http://vivoweb.org/ontology/core#relatedBy",
-                    "graph": "document",
-                    "child": {
-                      "property": "http://purl.org/ontology/bibo/presentedAt",
-
-                      "child": {
-                        "property": "http://purl.org/dc/elements/1.1/title"
-                      }
-                    }
-                  }
-                ]
-              },
-              {
-                "name": {
                   "es": "Autores/as (p. o. de firma)"
                 },
                 //Indica si se muestra en la minificha (sin desplegar)
