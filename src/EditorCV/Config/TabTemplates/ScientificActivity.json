@@ -536,7 +536,7 @@
               {
                 //Nombre de la propiedad
                 "name": {
-                  "es": "Fecha de publicación"
+                  "es": "Fecha de celebración"
                 },
                 //Indica si se muestra en la minificha en negrita(sin desplegar)
                 "showMiniBold": true,
@@ -556,24 +556,19 @@
               },
               {
                 "name": {
-                  "es": "Nombre del congreso"
+                  "es": "Nombre de la publicación"
                 },
-                //Indica si se muestra en la minificha (sin desplegar)
-                "showMini": true,
-                //Propiedad a pintar
-                "child": [
-                  {
-                    "property": "http://vivoweb.org/ontology/core#relatedBy",
-                    "graph": "document",
-                    "child": {
-                      "property": "http://purl.org/ontology/bibo/presentedAt",
-
-                      "child": {
-                        "property": "http://purl.org/dc/elements/1.1/title"
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "document",
+                  "child": {
+                    "property": "http://vivoweb.org/ontology/core#hasPublicationVenue",
+					"graph": "maindocument",
+					"child": {
+                        "property": "http://w3id.org/roh/title"
                       }
-                    }
                   }
-                ]
+                }
               },
               {
                 "name": {
@@ -614,7 +609,7 @@
               },
               {
                 "name": {
-                  "es": "Forma de contribución"
+                  "es": "Tipo de producción"
                 },
                 "child": {
                   "property": "http://vivoweb.org/ontology/core#relatedBy",
