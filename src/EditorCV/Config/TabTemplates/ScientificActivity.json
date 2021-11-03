@@ -204,26 +204,34 @@
 												"required": true,
 												"property": "http://w3id.org/roh/title",
 												"width": 2
-											},
+											},											
 											{
 												"title": {
-													"es": "Tipo de soporte"
+													"es": "Contenedor"
 												},
-												"property": "http://purl.org/dc/elements/1.1/type",
-												"combo": {
+												"type": "entity",
+												"multiple": false,
+												"required": false,
+												"property": "http://vivoweb.org/ontology/core#hasPublicationVenue",
+												"entityData": {
 													"rdftype": "http://w3id.org/roh/MainDocument",
 													"graph": "maindocument",
-													"property": {
-														"property": "http://w3id.org/roh/format",
-														"graph": "documentformat",
-														"child": {
-															"property": "http://w3id.org/roh/format"
+													"propertyTitle": {
+														"property": "http://w3id.org/roh/title"
+													},
+													"properties": [
+														{
+															"name": {
+																"es": "Editorial"
+															},
+															"child": {
+																"property": "http://purl.org/ontology/bibo/editor"
+															}
 														}
-													}
+													]
 												},
-												"type": "selectCombo",
-												"width": 1
-											},
+												"width": 3
+											}
 										]
 									},
 									{
@@ -256,78 +264,7 @@
 												"width": 1
 											}
 										]
-									}
-								]
-							},
-							{
-								"title": {
-									"es": "Volumen"
-								},
-								"rows": [
-									{
-										"properties": [
-											{
-												"title": {
-													"es": "Volumen"
-												},
-												"placeholder": {
-													"es": "Introduce el volumen"
-												},
-												"property": "http://purl.org/ontology/bibo/volume",
-												"width": 1
-											},
-											{
-												"title": {
-													"es": "Número"
-												},
-												"placeholder": {
-													"es": "Introduce el número"
-												},
-												"property": "http://purl.org/ontology/bibo/issue",
-												"width": 1
-											}
-										]
-									}
-								]
-							},
-							{
-								"title": {
-									"es": "Páginas"
-								},
-								"rows": [
-									{
-										"properties": [
-											{
-												"title": {
-													"es": "Página inicial"
-												},
-												"type": "number",
-												"placeholder": {
-													"es": "Introduce la página inicial"
-												},
-												"property": "http://purl.org/ontology/bibo/pageStart",
-												"width": 1
-											},
-											{
-												"title": {
-													"es": "Página final"
-												},
-												"type": "number",
-												"placeholder": {
-													"es": "Introduce la página final"
-												},
-												"property": "http://purl.org/ontology/bibo/pageEnd",
-												"width": 1
-											}
-										]
-									}
-								]
-							},
-							{
-								"title": {
-									"es": "Autores"
-								},
-								"rows": [
+									},
 									{
 										"properties": [
 											{
