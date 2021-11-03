@@ -20,7 +20,7 @@
         //listItemsPresentation: Datos de configuración para los items del listado de la tabla (obligatorio)
         "type": "listitems",
         "title": {
-          "es": "Publicaciones, documentos científicos y técnicos X"
+          "es": "Publicaciones, documentos científicos y técnicos"
         },
         "listItemsPresentation": {
           //property: Propiedad para acceder al item (obligatorio)
@@ -122,7 +122,11 @@
                   "property": "http://vivoweb.org/ontology/core#relatedBy",
                   "graph": "document",
                   "child": {
-                    "property": "http://vivoweb.org/ontology/core#hasPublicationVenue"
+                    "property": "http://vivoweb.org/ontology/core#hasPublicationVenue",
+					"graph": "maindocument",
+					"child": {
+                        "property": "http://w3id.org/roh/title"
+                      }
                   }
                 }
               },
