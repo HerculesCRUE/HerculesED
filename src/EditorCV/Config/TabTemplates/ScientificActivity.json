@@ -159,29 +159,14 @@
 						"sections": [
 							{
 								"title": {
-									"es": "Publicación"
+									"es": "Información general"
 								},
 								"rows": [
 									{
 										"properties": [
 											{
 												"title": {
-													"es": "Título"
-												},
-												"placeholder": {
-													"es": "Introduce el título"
-												},
-												"required": true,
-												"property": "http://w3id.org/roh/title",
-												"width": 3
-											}
-										]
-									},
-									{
-										"properties": [
-											{
-												"title": {
-													"es": "Tipo de publicación"
+													"es": "Tipo de producción"
 												},
 												"property": "http://purl.org/dc/elements/1.1/type",
 												"combo": {
@@ -196,15 +181,49 @@
 											},
 											{
 												"title": {
-													"es": "Fecha de la publicación"
+													"es": "Fecha de publicación"
 												},
 												"placeholder": {
-													"es": "Introduce la fecha de pubicación"
+													"es": "Introduce la fecha de publicación"
 												},
 												"property": "http://purl.org/dc/terms/issued",
 												"type": "date",
 												"width": 1
 											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Título de la publicación"
+												},
+												"placeholder": {
+													"es": "Introduce el título de la publicación"
+												},
+												"required": true,
+												"property": "http://w3id.org/roh/title",
+												"width": 2
+											},
+											{
+												"title": {
+													"es": "Tipo de soporte"
+												},
+												"property": "http://purl.org/dc/elements/1.1/type",
+												"combo": {
+													"rdftype": "http://w3id.org/roh/MainDocument",
+													"graph": "maindocument",
+													"property": {
+														"property": "http://w3id.org/roh/format",
+														"graph": "documentformat",
+														"child": {
+															"property": "http://w3id.org/roh/format"
+														}
+													}
+												},
+												"type": "selectCombo",
+												"width": 1
+											},
 										]
 									},
 									{
