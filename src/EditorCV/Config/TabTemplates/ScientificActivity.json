@@ -337,37 +337,6 @@
 																	"width": 1
 																}
 															]
-														},
-														{
-															"properties": [
-																{
-																	"title": {
-																		"es": "Tipo de soporte"
-																	},
-																	"type": "entity",
-																	"multiple": false,
-																	"required": false,
-																	"property": "http://w3id.org/roh/format",
-																	"entityData": {
-																		"rdftype": "http://w3id.org/roh/DocumentFormat",
-																		"graph": "documentformat",
-																		"propertyTitle": {
-																			"property": "http://purl.org/dc/elements/1.1/title"
-																		},
-																		"properties": [
-																			{
-																				"name": {
-																					"es": "Tipo de soporte"
-																				},
-																				"child": {
-																					"property": "http://purl.org/dc/elements/1.1/title"
-																				}
-																			}
-																		]
-																	},
-																	"width": 3
-																}
-															]
 														}
 													]
 												}
@@ -1153,7 +1122,7 @@
 																				}
 																			}
 																		]
-																	},
+																	}
 																}
 															]
 														}
