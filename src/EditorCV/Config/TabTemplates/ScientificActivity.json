@@ -561,10 +561,167 @@
 												"placeholder": {
 													"es": "Introduce el depósito legal"
 												},
-												"property": "http://vivoweb.org/ontology/core#freeTextKeyword",
-												"multiple": true,
+												"property": "http://w3id.org/roh/legalDeposit",
 												"type": "text",
 												"width": 1
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Colección"
+												},
+												"placeholder": {
+													"es": "Introduce la colección"
+												},
+												"property": "http://w3id.org/roh/collection",
+												"type": "text",
+												"width": 1
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "URL"
+												},
+												"placeholder": {
+													"es": "Introduce la URL"
+												},
+												"property": "https://www.w3.org/2006/vcard/ns#url",
+												"type": "number",
+												"width": 1
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"property": "https://www.w3.org/2006/vcard/ns#address",
+												"type": "auxEntity",
+												"title": {
+													"es": "Lugar de publicación"
+												},
+												"width": 3,
+												"auxEntityData": {
+													"rdftype": "https://www.w3.org/2006/vcard/ns#Address",
+													"propertyTitle": {
+														"property": "https://www.w3.org/2006/vcard/ns#locality"
+													},
+													"properties": [
+														{
+															"name": {
+																"es": "Ciudad de publicación"
+															},
+															"child": {
+																"property": "https://www.w3.org/2006/vcard/ns#locality"
+															}
+														},
+														{
+															"name": {
+																"es": "C. Autón./Reg. de publicación"
+															},
+															"child": {
+																"property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+																"graph": "feature",
+																"child": {
+																	"property": "http://www.geonames.org/ontology#name"
+																}
+															}
+														},
+														{
+															"name": {
+																"es": "País de publicación"
+															},
+															"child": {
+																"property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+																"graph": "feature",
+																"child": {
+																	"property": "http://www.geonames.org/ontology#name"
+																}
+															}
+														}
+													],
+													"rows": [
+														{
+															"properties": [
+																{
+																	"title": {
+																		"es": "Ciudad de publicación"
+																	},
+																	"type": "text",
+																	"placeholder": {
+																		"es": "Introduce la ciudad de publicación"
+																	},
+																	"required": false,
+																	"property": "https://www.w3.org/2006/vcard/ns#locality",
+																	"width": 1
+																}
+															]
+														},
+														{
+															"properties": [
+																{
+																	"title": {
+																		"es": "Región de publicación"
+																	},
+																	"type": "entity",
+																	"multiple": false,
+																	"required": false,
+																	"property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+																	"entityData": {
+																		"rdftype": "http://www.geonames.org/ontology#Feature",
+																		"graph": "feature",
+																		"propertyTitle": {
+																			"property": "http://www.geonames.org/ontology#name"
+																		},
+																		"properties": [
+																			{
+																				"name": {
+																					"es": "Región de publicación"
+																				},
+																				"child": {
+																					"property": "http://www.geonames.org/ontology#name"
+																				}
+																			}
+																		]
+																	},
+																	"width": 1
+																},
+																{
+																	"title": {
+																		"es": "País de publicación"
+																	},
+																	"type": "entity",
+																	"multiple": false,
+																	"required": false,
+																	"property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+																	"entityData": {
+																		"rdftype": "http://www.geonames.org/ontology#Feature",
+																		"graph": "feature",
+																		"propertyTitle": {
+																			"property": "http://www.geonames.org/ontology#name"
+																		},
+																		"properties": [
+																			{
+																				"name": {
+																					"es": "País de publicación"
+																				},
+																				"child": {
+																					"property": "http://www.geonames.org/ontology#name"
+																				}
+																			}
+																		]
+																	},
+																	"width": 1
+																}
+															]
+														}
+													]
+												}
 											}
 										]
 									}
