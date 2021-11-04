@@ -747,7 +747,7 @@
 							"property": "http://vivoweb.org/ontology/core#relatedBy",
 							"graph": "document",
 							"child": {
-								"property": "http://w3id.org/roh/workTitle"
+								"property": "http://w3id.org/roh/title"
 							}
 						},
 						"orders": [
@@ -885,7 +885,7 @@
 					},
 					"listItemEdit": {
 						"graph": "document",
-						"proptitle": "http://w3id.org/roh/workTitle",
+						"proptitle": "http://w3id.org/roh/title",
 						"propdescription": "http://purl.org/ontology/bibo/abstract",
 						"rdftype": "http://purl.org/ontology/bibo/Document",
 						"sections": [
@@ -903,7 +903,7 @@
 												"placeholder": {
 													"es": "Introduce el título del trabajo"
 												},
-												"property": "http://w3id.org/roh/workTitle",
+												"property": "http://w3id.org/roh/title",
 												"required": true,
 												"type": "text",
 												"width": 3
