@@ -44,21 +44,6 @@
 							"required": false,
 							"property": "http://purl.org/ontology/bibo/issn",
 							"width": 1
-						}
-					]
-				},
-				{
-					"properties": [
-						{
-							"title": {
-								"es": "Tipo de soporte"
-							},
-							"placeholder": {
-								"es": "Introduce la editorial"
-							},
-							"required": false,
-							"property": "http://purl.org/ontology/bibo/editor",
-							"width": 2
 						},
 						{
 							"title": {
@@ -69,6 +54,26 @@
 							},
 							"required": false,
 							"property": "http://purl.org/ontology/bibo/editor",
+							"width": 1
+						}
+					]
+				},
+				{
+					"properties": [
+						{
+							"title": {
+								"es": "Tipo de soporte"
+							},
+							"required": false,
+							"property": "http://w3id.org/roh/format",
+							"combo": {
+								"rdftype": "http://w3id.org/roh/DocumentFormat",
+								"graph": "documentformat",
+								"property": {
+									"property": "http://purl.org/dc/elements/1.1/title"
+								}
+							},
+							"type": "selectCombo",
 							"width": 1
 						}
 					]
