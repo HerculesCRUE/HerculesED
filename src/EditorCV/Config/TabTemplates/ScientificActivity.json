@@ -1136,6 +1136,7 @@
 																	"multiple": false,
 																	"required": false,
 																	"property": "http://w3id.org/roh/format",
+																	"width": 3,
 																	"entityData": {
 																		"rdftype": "http://w3id.org/roh/DocumentFormat",
 																		"graph": "documentformat",
@@ -1153,7 +1154,6 @@
 																			}
 																		]
 																	},
-																	"width": 3
 																}
 															]
 														}
