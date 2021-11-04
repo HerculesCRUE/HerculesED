@@ -196,18 +196,7 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Título de la publicación"
-												},
-												"placeholder": {
-													"es": "Introduce el título de la publicación"
-												},
-												"required": true,
-												"property": "http://w3id.org/roh/title",
-												"width": 2
-											},											
-											{
-												"title": {
-													"es": "Contenedor"
+													"es": "Publicación principal"
 												},
 												"type": "entity",
 												"multiple": false,
@@ -222,15 +211,138 @@
 													"properties": [
 														{
 															"name": {
+																"es": "Nombre de la publicación"
+															},
+															"child": {
+																"property": "http://w3id.org/roh/title"
+															}
+														},
+														{
+															"name": {
+																"es": "ISBN"
+															},
+															"child": {
+																"property": "http://w3id.org/roh/isbn",
+															}
+														},
+														{
+															"name": {
+																"es": "ISSN"
+															},
+															"child": {
+																"property": "http://w3id.org/roh/issn",
+															}
+														},
+														{
+															"name": {
 																"es": "Editorial"
 															},
 															"child": {
-																"property": "http://purl.org/ontology/bibo/editor"
+																"property": "http://w3id.org/roh/editor",
 															}
+														},
+															"name": {
+																"es": "Tipo de soporte"
+															},
+															"child": {
+																"property": "http://w3id.org/roh/format",
+																"graph": "documentformat",
+																"child": {
+																	"property": "http://purl.org/dc/elements/1.1/title"
+																}
+															}
+														
+													],
+													"rows": [
+														{
+															"properties": [
+																{
+																	"title": {
+																		"es": "Nombre de la publicación"
+																	},
+																	"type": "text",
+																	"placeholder": {
+																		"es": "Introduce el nombre de la publicación"
+																	},
+																	"required": true,
+																	"property": "http://w3id.org/roh/title",
+																	"width": 3
+																}
+															]
+														},
+														{
+															"properties": [
+																{
+																	"title": {
+																		"es": "ISBN"
+																	},
+																	"type": "text",
+																	"placeholder": {
+																		"es": "Introduce el ISBN"
+																	},
+																	"required": false,
+																	"property": "http://w3id.org/roh/isbn",
+																	"width": 1
+																},
+																{
+																	"title": {
+																		"es": "ISSN"
+																	},
+																	"type": "text",
+																	"placeholder": {
+																		"es": "Introduce el ISSN"
+																	},
+																	"required": false,
+																	"property": "http://w3id.org/roh/issn",
+																	"width": 1
+																},
+																{
+																	"title": {
+																		"es": "Editorial"
+																	},
+																	"type": "text",
+																	"placeholder": {
+																		"es": "Introduce la editorial"
+																	},
+																	"required": false,
+																	"property": "http://w3id.org/roh/editor",
+																	"width": 1
+																},
+															]
+														},
+														{
+															"properties": [
+																{
+																	"title": {
+																		"es": "Tipo de soporte"
+																	},
+																	"type": "entity",
+																	"multiple": false,
+																	"required": false,
+																	"property": "http://w3id.org/roh/format",
+																	"entityData": {
+																		"rdftype": "http://w3id.org/roh/DocumentFormat",
+																		"graph": "documentformat",
+																		"propertyTitle": {
+																			"property": "http://purl.org/dc/elements/1.1/title"
+																		},
+																		"properties": [
+																			{
+																				"name": {
+																					"es": "Tipo de soporte"
+																				},
+																				"child": {
+																					"property": "http://purl.org/dc/elements/1.1/title"
+																				}
+																			}
+																		]
+																	},
+																	"width": 3
+																}
+															]
 														}
 													]
 												},
-												"width": 3
 											}
 										]
 									},

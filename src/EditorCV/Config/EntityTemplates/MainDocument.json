@@ -1,0 +1,79 @@
+{
+	"graph": "maindocument",
+	"proptitle": "http://w3id.org/roh/title",
+	"propdescription": "",
+	"rdftype": "http://w3id.org/roh/MainDocument",
+	"sections": [
+		{
+			"title": {
+				"es": "Publicación principal"
+			},
+			"rows": [
+				{
+					"properties": [
+						{
+							"title": {
+								"es": "Nombre de la publicación"
+							},
+							"required": true,
+							"property": "http://w3id.org/roh/title",
+							"width": 3
+						}
+					]
+				},
+				{
+					"properties": [
+						{
+							"title": {
+								"es": "ISBN"
+							},
+							"placeholder": {
+								"es": "Introduce el ISBN"
+							},
+							"required": false,
+							"property": "http://purl.org/ontology/bibo/isbn",
+							"width": 1
+						},
+						{
+							"title": {
+								"es": "ISSN"
+							},
+							"placeholder": {
+								"es": "Introduce el ISSN"
+							},
+							"required": false,
+							"property": "http://purl.org/ontology/bibo/issn",
+							"width": 1
+						}
+					]
+				},
+				{
+					"properties": [
+						{
+							"title": {
+								"es": "Tipo de soporte"
+							},
+							"placeholder": {
+								"es": "Introduce la editorial"
+							},
+							"required": false,
+							"property": "http://purl.org/ontology/bibo/editor",
+							"width": 2
+						},
+						{
+							"title": {
+								"es": "Editorial"
+							},
+							"placeholder": {
+								"es": "Introduce la editorial"
+							},
+							"required": false,
+							"property": "http://purl.org/ontology/bibo/editor",
+							"width": 1
+						}
+					]
+				}
+			]
+		}
+	]
+}
