@@ -166,6 +166,22 @@
 										"properties": [
 											{
 												"title": {
+													"es": "Título de la publicación"
+												},
+												"placeholder": {
+													"es": "Introduce el título de la publicación"
+												},
+												"property": "http://w3id.org/roh/title",
+												"required": true,
+												"type": "text",
+												"width": 3
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
 													"es": "Tipo de producción"
 												},
 												"property": "http://purl.org/dc/elements/1.1/type",
@@ -263,7 +279,7 @@
 																	"property": "http://purl.org/dc/elements/1.1/title"
 																}
 															}
-														},
+														}
 													],
 													"rows": [
 														{
