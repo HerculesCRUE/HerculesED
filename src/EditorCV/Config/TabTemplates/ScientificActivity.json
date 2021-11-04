@@ -222,7 +222,7 @@
 																"es": "ISBN"
 															},
 															"child": {
-																"property": "http://w3id.org/roh/isbn",
+																"property": "http://w3id.org/roh/isbn"
 															}
 														},
 														{
@@ -230,7 +230,7 @@
 																"es": "ISSN"
 															},
 															"child": {
-																"property": "http://w3id.org/roh/issn",
+																"property": "http://w3id.org/roh/issn"
 															}
 														},
 														{
@@ -238,9 +238,10 @@
 																"es": "Editorial"
 															},
 															"child": {
-																"property": "http://w3id.org/roh/editor",
+																"property": "http://w3id.org/roh/editor"
 															}
 														},
+														{
 															"name": {
 																"es": "Tipo de soporte"
 															},
@@ -251,7 +252,7 @@
 																	"property": "http://purl.org/dc/elements/1.1/title"
 																}
 															}
-														
+														}
 													],
 													"rows": [
 														{
@@ -307,7 +308,7 @@
 																	"required": false,
 																	"property": "http://w3id.org/roh/editor",
 																	"width": 1
-																},
+																}
 															]
 														},
 														{
@@ -342,7 +343,7 @@
 															]
 														}
 													]
-												},
+												}
 											}
 										]
 									},
@@ -384,7 +385,7 @@
 												"property": "http://purl.org/ontology/bibo/issue",
 												"type": "text",
 												"width": 1
-											},
+											}
 										]
 									},
 									{
@@ -410,7 +411,7 @@
 												"property": "http://purl.org/ontology/bibo/pageEnd",
 												"type": "number",
 												"width": 1
-											},
+											}
 										]
 									},
 									{
@@ -524,6 +525,22 @@
 											}
 										]
 									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Depósito legal"
+												},
+												"placeholder": {
+													"es": "Introduce el depósito legal"
+												},
+												"property": "http://vivoweb.org/ontology/core#freeTextKeyword",
+												"multiple": true,
+												"type": "text",
+												"width": 1
+											}
+										]
+									}
 								]
 							}
 						]
