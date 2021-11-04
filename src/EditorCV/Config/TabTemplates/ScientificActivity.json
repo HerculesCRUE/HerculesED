@@ -734,7 +734,7 @@
 		},
 		{
 			"rdftype": "http://w3id.org/roh/RelatedWorkSubmittedConferences",
-			"property": "http://w3id.org/roh/scientificPublications",
+			"property": "http://w3id.org/roh/worksSubmittedConferences",
 			"presentation": {
 				"type": "listitems",
 				"title": {
@@ -801,7 +801,7 @@
 						"properties": [
 							{
 								"name": {
-									"es": "Fecha del evento"
+									"es": "Fecha de celebración"
 								},
 								"showMiniBold": true,
 								"type": "date",
@@ -818,7 +818,7 @@
 							},
 							{
 								"name": {
-									"es": "Nombre del evento"
+									"es": "Nombre del congreso"
 								},
 								"child": {
 									"property": "http://vivoweb.org/ontology/core#relatedBy",
