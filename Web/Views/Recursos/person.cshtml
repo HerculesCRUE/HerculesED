@@ -1,0 +1,944 @@
+﻿@*[security|||person|||hercules]*@
+@using Es.Riam.Gnoss.Web.MVC.Models
+@using Es.Riam.Gnoss.Web.MVC.Controles.Helper
+@using Es.Riam.Gnoss.Web.MVC.Models.ViewModels
+@using Es.Riam.Gnoss.Web.MVC.Models.Administracion
+@using Es.Riam.Gnoss.AD.ServiciosGenerales
+@using Es.Riam.Gnoss.Web.MVC.Controllers
+@using Es.Riam.Gnoss.Web.MVC.Controllers.Administracion
+@using Es.Riam.Gnoss.Web.Controles
+@using Newtonsoft.Json
+@using System.Reflection;
+
+@model ResourceViewModel
+@{ ResourceModel FichaDocumento = Model.Resource;
+    CommunityModel Comunidad = Html.GetComunidad();
+    UserIdentityModel IdentidadActual = Html.GetIdentidadActual();
+    Html.AddBodyClass(" PersonModel ");
+    if (FichaDocumento.ItemLinkedFotoVersion != 0 && !string.IsNullOrEmpty(FichaDocumento.ItemLinked.ToString()) && FichaDocumento.ItemLinked != Guid.Empty)
+    {
+        string urlPersonalizacion = $"{Html.GetBaseUrlContent()}/{Es.Riam.Util.UtilArchivos.ContentOntologias}/Archivos/{FichaDocumento.ItemLinked.ToString().Substring(0, 3)}";
+        Html.GetListaJS().Add($"{urlPersonalizacion}/{FichaDocumento.ItemLinked.ToString()}.js?v= {FichaDocumento.ItemLinkedFotoVersion}");
+        Html.GetListaCSS().Add($"{urlPersonalizacion}/{FichaDocumento.ItemLinked.ToString()}.css?v= {FichaDocumento.ItemLinkedFotoVersion}");
+    }
+    string urlJS = $"{Html.GetBaseUrlContent()}/imagenes/proyectos/personalizacion/{Comunidad.Key.ToString()}/theme/ficharecurso.js";
+    Html.GetListaJS().Add(urlJS);
+    SemanticResourceModel semCmsModel = Model.SemanticFrom;
+    GnossOCBase.LanguageEnum idiomaUsuario = (GnossOCBase.LanguageEnum)Enum.Parse(typeof(GnossOCBase.LanguageEnum), Html.GetUtilIdiomas().LanguageCode.ToLower());
+    Person pPerson = new Person(semCmsModel, idiomaUsuario); }
+
+<div class="col col-12 col-breadcrumb">
+    <ul>
+        <li>
+            <a href="@Comunidad.Url">Home</a>
+        </li>
+        <li>
+            @{string urlProyectos = Comunidad.Url + "/personas"; }
+            <a href="@urlProyectos">Personas</a>
+        </li>
+        @{ if (!string.IsNullOrEmpty(pPerson.Foaf_name))
+            {
+                <li>@pPerson.Foaf_name</li>
+            }
+            else
+            {
+                <li>---</li>
+
+            }
+        }
+    </ul>
+</div>
+
+<div class="col col-12 col-xl-12 col-contenido">
+    <div class="wrapCol">
+        <div class="cabecera-ficha cabecera-proyecto">
+            <div class="user-miniatura">
+                <div class="imagen-usuario-wrap">
+                    <span class="material-icons">person</span>
+                </div>
+                <div class="nombre-usuario-wrap">
+                    @{ if (!string.IsNullOrEmpty(pPerson.Foaf_name))
+                        {
+                            <p class="nombre">@pPerson.Foaf_name</p> }
+                        else
+                        {
+                            <p class="nombre">---</p>
+                        }
+                    }
+                </div>
+                <div class="acciones-usuario-wrap">
+                    <ul class="no-list-style d-flex">
+                        <li>
+                            <a class="btn btn-outline-grey d-none d-xl-flex">
+                                <span class="material-icons">folder</span>
+                                <span>TODO: Guardar en Espacio Personal</span>
+                            </a>
+                        </li>
+                        <li>
+                            <div class="acciones-recurso-listado">
+                                <div class="dropdown">
+                                    <a href="#" class="dropdown-toggle btn btn-outline-grey no-flecha" role="button" id="dropdownMasOpciones" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <span class="material-icons">more_vert</span>
+                                    </a>
+                                    <div class="dropdown-menu basic-dropdown dropdown-icons dropdown-menu-right" aria-labelledby="dropdownMasOpciones">
+                                        <p class="dropdown-title">Acciones</p>
+                                        <ul class="no-list-style">
+                                            <li>
+                                                <a class="item-dropdown">
+                                                    <span class="texto">TODO: Añadir áreas de conocimiento</span>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="item-dropdown">
+                                                    <span class="texto">TODO: Añadir etiquetas</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="list-wrap">
+                <ul>
+                    @if (pPerson.Roh_hasRole != null)
+                    {
+                        <li>
+                            @{
+                                PintarOrganization(pPerson.Roh_hasRole, idiomaUsuario);
+                            }
+                        </li>
+                    }
+                </ul>
+            </div>
+            <div class="info-proyecto">
+                <div class="bloque">
+                    <div class="label">Grupos de investigación</div>
+                    <div class="descripcion">
+                        <p id="idGrupoInvestigacion">---</p>
+                    </div>
+                </div>
+            </div>
+            <div class="info-proyecto">
+                <div class="bloque">
+                    <div class="descripcion">
+                        <p>TODO: Descripción</p>
+                    </div>
+                </div>
+            </div>
+            <div class="list-wrap tags">
+                <div class="label">Topics</div>
+                <ul id="idListaCategorias">
+                </ul>
+                @*@{
+                if (contadorCategorias > 3)
+                {
+                    <p class="moreResults">
+                        <a href="javascript: void(0);" class="ver-mas" style="display: flex;">@Html.Translate("VER_MAS")</a>
+                        <a href="javascript: void(0);" class="ver-menos" style="display: none;">@Html.Translate("VER_MENOS")</a>
+                    </p>
+                }
+            }*@
+            </div>
+            <div class="list-wrap tags">
+                <div class="bloque">
+                    <div class="label">Página web</div>
+                    <a href="#">TODO: ---</a>
+                </div>
+            </div>
+            <hr />
+            <div class="info-proyecto">
+                <div class="bloque">
+                    <div class="info-proyecto">
+                        <div class="bloque">
+                            <div class="descripcion">
+                                <p>Contacto</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fila">
+                        <div class="bloque">
+                            <div class="label">Correo electrónico</div>
+                            <a href="#">TODO: ---</a>
+                        </div>
+                        <div class="bloque">
+                            <div class="label">Teléfono fijo</div>
+                            <div class="value">TODO: ---</div>
+                        </div>
+                        <div class="bloque">
+                            <div class="label">Dirección de contacto</div>
+                            <div class="value">TODO: ---</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="contenido-ficha contenido-proyecto">
+            <div class="tab-paneles-ficha">
+
+                <div class="tabs">
+                    <ul class="nav nav-tabs" id="navegacion-recurso" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link active" id="publicaciones-tab" data-toggle="tab" href="#publicaciones-panel" role="tab" aria-controls="publicaciones-panel" aria-selected="true">
+                                <div class="bloque">
+                                    <div class="label">@Html.Translate("PUBLICACIONES")</div>
+                                    <div class="data">---</div>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="proyectos-tab" data-toggle="tab" href="#proyectos-panel" role="tab" aria-controls="proyectos-panel" aria-selected="false">
+                                <div class="bloque">
+                                    <div class="label">Proyectos</div>
+                                    <div class="data">---</div>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="otros-tab" data-toggle="tab" href="#otros-panel" role="tab" aria-controls="otros-panel" aria-selected="false">
+                                <div class="bloque">
+                                    <div class="label">Otros resultados</div>
+                                    <div class="data">---</div>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="topics-tab" data-toggle="tab" href="#topics-panel" role="tab" aria-controls="topics-panel" aria-selected="false">
+                                <div class="bloque">
+                                    <div class="label">@Html.Translate("TOPICS")</div>
+                                    <div class="data">---</div>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="colaboraciones-tab" data-toggle="tab" href="#colaboraciones-panel" role="tab" aria-controls="colaboraciones-panel" aria-selected="false">
+                                <div class="bloque">
+                                    <div class="label">Colaboraciones</div>
+                                    <div class="data">---</div>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="otros-meritos-tab" data-toggle="tab" href="#otros-meritos-panel" role="tab" aria-controls="otros-meritos-panel" aria-selected="false">
+                                <div class="bloque">
+                                    <div class="label">Otros méritos</div>
+                                    <div class="data">---</div>
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+
+                <div class="tab-content" id="paneles-recurso">
+                    <div class="tab-pane fade show active" id="publicaciones-panel" role="tabpanel" aria-labelledby="publicaciones-tab">
+                        <div class="row" id="contenedorBuscadorPublicaciones">
+                            <div class="col col-12 col-section-title font-weight-bold">
+                                <div class="wrapCol">
+                                    <p></p>
+                                </div>
+                            </div>
+                            <div class="col col-12 col-chart">
+                                <div class="wrapCol">
+                                    <div class="chart-wrap chart-publicaciones">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col col-12 col-section-title font-weight-bold searcherTitle">
+                                <div class="wrapCol">
+                                    <p>@Html.Translate("LISTADO_PUBLICACIONES")</p>
+                                </div>
+                            </div>
+                        </div>       
+                    </div>
+
+                    <div class="tab-pane fade" id="proyectos-panel" role="tabpanel" aria-labelledby="proyectos-tab">
+                        <div class="row" id="contenedorBuscadorProyectos">
+                            <div class="col col-12 col-section-title font-weight-bold">
+                                <div class="wrapCol">
+                                    <p></p>
+                                </div>
+                            </div>
+                            <div class="col col-12 col-section-title font-weight-bold searcherTitle">
+                                <div class="wrapCol">
+                                    <p>Listado proyectos</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="otros-panel" role="tabpanel" aria-labelledby="otros-tab">
+                        <div class="row">
+                            <div class="col col-12 col-section-title font-weight-bold">
+                                <div class="wrapCol">
+                                </div>
+                            </div>
+                            <div class="col col-12 col-chart">
+                                <div class="wrapCol">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="topics-panel" role="tabpanel" aria-labelledby="topics-tab">
+                        <div class="row">
+                            <div class="col col-12 col-section-title font-weight-bold">
+                                <div class="wrapCol">
+                                </div>
+                            </div>
+                            <div class="col col-12 col-chart">
+                                <div class="wrapCol">
+                                    <div class="chart-wrap chart-publicaciones-horizontal">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="colaboraciones-panel" role="tabpanel" aria-labelledby="colaboraciones-tab">
+                        <div class="row">
+                            <div class="col col-12 col-grafo mb-5">
+                                <div class="wrapCol" id="graficaCytoscape" style="width: 1224px; height: 500px;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="otros-meritos-panel" role="tabpanel" aria-labelledby="otros-meritos-tab">
+                        <div class="row">
+                            <div class="col col-12 col-section-title font-weight-bold">
+                                <div class="wrapCol">
+                                </div>
+                            </div>
+                            <div class="col col-12 col-chart">
+                                <div class="wrapCol">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JAVASCRIPT -->
+<script type="text/javascript">
+    var depuracion = false; // TODO:
+
+    var comportamientoPaginaInvestigador = {
+        filtroOculto: null,
+        tabActive: null,
+        init: function () {
+            this.config();
+            $('#publicaciones-tab').click();
+            return;
+        },
+        config: function () {
+            var that = this;
+            $('#publicaciones-tab').unbind().click(function (e) {
+                e.preventDefault();
+                that.tabActive = "publicaciones";
+                //CargarGraficaPublicaciones("@pPerson.GNOSSID.Split('_')[1].ToUpper()", "");
+                buscadorPersonalizado.init("@Html.Translate("PUBLICACIONES")", "#contenedorBuscadorPublicaciones", "bibo:authorList@@@@@@rdf:member=http://gnoss/@pPerson.GNOSSID.Split('_')[1].ToUpper()", "dct:issued", "rdf:type=document", "@Comunidad.Url", "@Comunidad.Key.ToString()");
+            });
+            $('#proyectos-tab').unbind().click(function (e) {
+                e.preventDefault();
+                that.tabActive = "proyectos";
+                buscadorPersonalizado.init("Proyectos", "#contenedorBuscadorProyectos", "vivo:relates@@@@@@roh:roleOf=http://gnoss/@pPerson.GNOSSID.Split('_')[1].ToUpper()", "", "rdf:type=project", "@Comunidad.Url", "@Comunidad.Key.ToString()");
+            });
+            $('#topics-tab').unbind().click(function (e) {
+                e.preventDefault();
+                that.tabActive = "topics";
+                CargarGraficaPublicacionesHorizontal("@pPerson.GNOSSID.Split('_')[1].ToUpper()", "");
+            });
+            $('#colaboraciones-tab').unbind().click(function (e) {
+                e.preventDefault();
+                that.tabActive = "colaboradores";
+                CargarGraficaColaboradores("@pPerson.GNOSSID.Split('_')[1].ToUpper()", "@pPerson.Foaf_name");
+            });
+            return;
+        }
+    };
+
+    $(function () {
+        comportamientoPaginaInvestigador.init();
+    });
+
+    // Datos cabeceras de las fichas.
+    var url = "http://serviciosedma.gnoss.com/servicioexterno/Hercules/DatosFichaPersona"
+    if (depuracion) {
+        url = "https://localhost:44382/Hercules/DatosFichaPersona"
+    }
+    var arg = {};
+    arg.pIdPersona = "@pPerson.GNOSSID";
+    $.get(url, arg, function (data) {
+        $("#publicaciones-tab div div.data").text(data["Publicaciones"]);
+        $("#proyectos-tab div div.data").text(data["Proyectos"]);
+        $("#topics-tab div div.data").text(data["Categorias"]);
+        $("#colaboraciones-tab div div.data").text(data["Colaboradores"]);
+    });
+
+    // Datos del Grupo de Investigación.
+    var url = "http://serviciosedma.gnoss.com/servicioexterno/Hercules/DatosGruposPersona"
+    if (depuracion) {
+        url = "https://localhost:44382/Hercules/DatosGruposPersona"
+    }
+    var arg = {};
+    arg.pIdPersona = "@pPerson.GNOSSID";
+    $.get(url, arg, function (data) {
+        var grupos = "";
+
+        data.forEach(function (valor, indice, array) {
+            grupos += valor;
+        });
+
+        if (grupos != "")
+        {
+            $("#idGrupoInvestigacion").text(grupos);
+        }
+    });
+
+    // Datos de los Topics.
+    var url = "http://serviciosedma.gnoss.com/servicioexterno/Hercules/DatosCategoriasPersona"
+    if (depuracion) {
+        url = "https://localhost:44382/Hercules/DatosCategoriasPersona"
+    }
+    var arg = {};
+    arg.pIdPersona = "@pPerson.GNOSSID";
+    $.get(url, arg, function (data) {
+        data.forEach(function (valor, indice, array) {
+            $("#idListaCategorias").append("<li><a><span>" + valor + "</span></a></li>");
+        });
+    });
+
+    // Datos gráfica publicaciones.
+    function CargarGraficaPublicaciones(idpersona, parametros) {
+        var url = "http://serviciosedma.gnoss.com/servicioexterno/Hercules/DatosGraficaPublicacionesPersona"
+        if (depuracion) {
+            url = "https://localhost:44382/Hercules/DatosGraficaPublicacionesPersona"
+        }
+        var arg = {};
+        arg.pIdPersona = idpersona;
+        arg.pParametros = parametros;
+
+        $.get(url, arg, function (data) {
+            $('#chart-publicaciones').remove();
+            $('div.chart-publicaciones').append($('<canvas id="chart-publicaciones" class="js-chart"></canvas>'));
+            var ctx = document.getElementById('chart-publicaciones');
+            var parent = ctx.parentElement;
+            var height = parent.offsetHeight;
+            ctx.setAttribute('height', 100);
+            var myChart = new Chart(ctx, data);
+        });
+    }
+
+    // Datos gráfica publicaciones horizontal.
+    function CargarGraficaPublicacionesHorizontal(idproyecto, parametros) {
+        var url = "http://serviciosedma.gnoss.com/servicioexterno/Hercules/DatosGraficaHorizontalPersonas"
+        if (depuracion) {
+            url = "https://localhost:44382/Hercules/DatosGraficaHorizontalPersonas"
+        }
+        var arg = {};
+        arg.pIdProyecto = idproyecto;
+        arg.pParametros = parametros;
+        $.get(url, arg, function (data) {
+
+            // Porcentajes en parte inferior.
+            data.options.scales.x.ticks.callback = function (value) { return value + "%" }
+            var altura = data.data.labels.length * 50;
+
+            $('#chart-publicaciones-horizontal').remove();
+            $('div.chart-publicaciones-horizontal').removeAttr("style");
+            $('div.chart-publicaciones-horizontal').css("height", altura + 50);
+
+            $('div.chart-publicaciones-horizontal').append($('<canvas id="chart-publicaciones-horizontal" class="js-chart" width="600" height="' + altura + '"></canvas>'));
+            var ctx = document.getElementById('chart-publicaciones-horizontal');
+            var parent = ctx.parentElement;
+            var width = parent.offsetWidth;
+            ctx.setAttribute('width', width);
+            var height = parent.offsetHeight;
+            ctx.setAttribute('height', height);
+            var myChart = new Chart(ctx, data);
+        });
+    }
+
+    // Datos gráfica colaboradores.
+    function CargarGraficaColaboradores(idpersona, parametros) {
+        var url = "http://serviciosedma.gnoss.com/servicioexterno/Hercules/DatosGraficaColaboradoresPersonas"
+        if (depuracion) {
+            url = "https://localhost:44382/Hercules/DatosGraficaColaboradoresPersonas"
+        }
+        var arg = {};
+        arg.pIdPersona = idpersona;
+        arg.pParametros = parametros;
+        $('#graficaCytoscape').empty();
+        $.get(url, arg, function (data) {
+            $('#graficaCytoscape').empty();
+
+            var cy = window.cy = cytoscape({
+                // Contenedor
+                container: document.getElementById('graficaCytoscape'),
+                // Layout
+                layout: {
+                    name: 'cose',
+                    idealEdgeLength: 100,
+                    nodeOverlap: 20,
+                    refresh: 20,
+                    padding: 30,
+                    randomize: false,
+                    componentSpacing: 100,
+                    nodeRepulsion: 400000,
+                    edgeElasticity: 100,
+                    nestingFactor: 5,
+                    gravity: 80,
+                    numIter: 1000,
+                    initialTemp: 200,
+                    coolingFactor: 0.95,
+                    minTemp: 1.0
+
+                }, pan: { x: 350, y: 50 },
+                // Estilos
+                style: [{
+                    "selector": "node",
+                    "style": {
+
+                        "width": "mapData(score, 0, 25, 30, 70)",
+                        "height": "mapData(score, 0, 25, 30, 70)",
+                        "content": "data(name)",
+                        "font-size": "12px",
+                        "font-family": 'Roboto',
+                        "font-color": "#999999",
+                        "background-color": "#c2c2c2",
+
+                        "text-outline-width": "0px",
+
+                        "overlay-padding": "6px",
+                        "z-index": "10"
+                    }
+                }, {
+                    "selector": "edge",
+                    "style": {
+                        "curve-style": "haystack",
+                        "haystack-radius": "0.5",
+                        "opacity": "0.4",
+                        "line-color": "#E1E1E1",
+                        "width": "5",
+                        "overlay-padding": "1px",
+                        "font-family": 'Arial Black',
+                        "font-color": 'black'
+                    }
+                }],
+                // Datos
+                elements: data
+            });
+            cy.zoomingEnabled(false);
+
+            var array = []
+            var nodos = cy.nodes()
+
+            //Quita el nombre de la publicación.
+            array.push(nodos[0]._private.data.name);
+            cy.nodes()[0]._private.data.name = "";
+
+            cy.nodes()[0].style({
+                'border-width': '2px',
+                'border-color': 'black',
+                'shape': 'circle'
+            });
+
+            var f = cy.nodes().length
+
+            for (i = 1; i < cy.nodes().length; i++) { //starts loop
+                array.push(nodos[i]._private.data.name);
+                //cy.nodes()[i]._private.data.name="";
+                cy.nodes()[i].style({
+                    'background-color': 'white',
+                    'background-image': 'https://cdn.iconscout.com/icon/free/png-256/user-1648810-1401302.png',
+                    'background-fit': 'cover',
+                    'border-width': '2px',
+                    'border-color': 'rgb(4,184,209)',
+                    'shape': 'circle'
+                })
+            };
+
+            cy.on('mouseover', 'edges', function (event) {
+                $('#numRelaciones').text('(' + event.target.id().split("~")[2] + ')');
+            });
+
+            cy.on('click', 'node', function (e) {
+                e = e.target;
+                var indice = cy.nodes().indexOf(e)
+                if (e._private.data.name === "") {
+                    e._private.data.name = array[indice]
+                    //nodo proyect.
+                    if (indice === 0) {
+                        e.style('border-color', 'rgb(12,121,212)')
+                    }
+                    else {
+                        e.style('border-color', 'rgb(4,184,209)')
+                    }
+                }
+                else {
+                    e._private.data.name = ""
+                    if (indice == 0) e.style('border-color', 'black');
+                    else e.style('border-color', 'grey');
+                }
+            })
+        });
+    }
+
+    // Acciones al llevar a cabo en el filtrado
+    function accionFiltrado() {
+        if (comportamientoPaginaInvestigador.tabActive == "publicaciones") {
+            var parametros = ObtenerHash2();
+            CargarGraficaPublicaciones("@pPerson.GNOSSID.Split('_')[1].ToUpper()", parametros);
+        }
+        else if (comportamientoPaginaInvestigador.tabActive == "proyectos")
+        {
+            var parametros = ObtenerHash2();
+        }
+    }
+
+</script>
+
+@functions
+{
+    void PintarOrganization(Organization pOrganization, GnossOCBase.LanguageEnum idiomaUsuario)
+    {
+
+        if (pOrganization.Roh_title != null)
+        {
+            <div>
+                <span>
+                    <p property="@pOrganization.GetPropertyURI(nameof(pOrganization.Roh_title))"> @pOrganization.Roh_title </p>
+                </span>
+            </div>}
+    }
+}
+
+@functions
+{
+    public class RDFPropertyAttribute : Attribute
+    {
+        public RDFPropertyAttribute(string pRDFA)
+        {
+            mRDFA = pRDFA;
+        }
+        protected string mRDFA;
+        public string RDFProperty
+        {
+            get { return mRDFA; }
+        }
+    }
+
+    [AttributeUsage(AttributeTargets.All, AllowMultiple = true)]
+    public class LABELAttribute : Attribute
+    {
+        private GnossOCBase.LanguageEnum IdiomaDefecto = GnossOCBase.LanguageEnum.es;
+        private GnossOCBase.LanguageEnum midioma;
+        private string mlabel;
+        public LABELAttribute(GnossOCBase.LanguageEnum idioma, string label)
+        {
+            mlabel = label;
+            midioma = idioma;
+        }
+        public string LABEL(GnossOCBase.LanguageEnum pLang)
+        {
+            if (midioma.Equals(pLang))
+            {
+                return mlabel;
+            }
+            return "";
+        }
+    }
+
+    public class GnossOCBase
+    {
+        public enum LanguageEnum
+        {
+            es,
+            en,
+        }
+        internal List<string> prefList = new List<string>();
+        internal string mGNOSSID;
+        internal string mURL;
+        internal Guid resourceID;
+        internal Guid articleID;
+        private static List<string> NoEnIdiomas = new List<string> { "Não", "Non", "Ez", "Nein", "No" };
+        public List<string> tagList = new List<string>();
+        public GnossOCBase()
+        {
+            prefList.Add("xmlns:foaf=\"http://xmlns.com/foaf/0.1/\"");
+            prefList.Add("xmlns:vivo=\"http://vivoweb.org/ontology/core#\"");
+            prefList.Add("xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\"");
+            prefList.Add("xmlns:owl=\"http://www.w3.org/2002/07/owl#\"");
+            prefList.Add("xmlns:bibo=\"http://purl.org/ontology/bibo/\"");
+            prefList.Add("xmlns:roh=\"http://w3id.org/roh/\"");
+            prefList.Add("xmlns:dct=\"http://purl.org/dc/terms/\"");
+            prefList.Add("xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"");
+            prefList.Add("xmlns:xsd=\"http://www.w3.org/2001/XMLSchema#\"");
+            prefList.Add("xmlns:obo=\"http://purl.obolibrary.org/obo/\"");
+            prefList.Add("xmlns:vcard=\"https://www.w3.org/2006/vcard/ns#\"");
+            prefList.Add("xmlns:dc=\"http://purl.org/dc/elements/1.1/\"");
+
+            this.resourceID = Guid.NewGuid();
+            this.articleID = Guid.NewGuid();
+        }
+
+        public string GNOSSID
+        {
+            get { return mGNOSSID; }
+            set
+            {
+                this.mGNOSSID = value;
+                var GnossIDSplit = this.mGNOSSID.Split('_');
+                Guid nuevoResource = Guid.Parse(GnossIDSplit[GnossIDSplit.Count() - 2]);
+                Guid nuevoArticle = Guid.Parse(GnossIDSplit.Last());
+                if (!this.ResourceID.Equals(nuevoResource))
+                {
+                    this.resourceID = nuevoResource;
+                }
+                if (!this.ArticleID.Equals(nuevoArticle))
+                {
+                    this.articleID = nuevoArticle;
+                }
+            }
+        }
+        public string URL
+        {
+            get { return mURL; }
+        }
+
+        public Guid ResourceID
+        {
+            get { return resourceID; }
+            set
+            {
+                this.resourceID = value;
+                string primeraParte = this.mGNOSSID.Substring(0, this.mGNOSSID.LastIndexOf('/') + 1);
+                string antiguoGuid = this.mGNOSSID.Substring(this.mGNOSSID.LastIndexOf('/') + 1, this.mGNOSSID.LastIndexOf('_'));
+                string ultimaParte = this.mGNOSSID.Substring(this.mGNOSSID.LastIndexOf('_') + 1);
+                if (!antiguoGuid.Equals(this.resourceID.ToString()))
+                {
+                    this.mGNOSSID = $"{primeraParte}{this.resourceID.ToString()}{ultimaParte}";
+                }
+            }
+        }
+
+        public Guid ArticleID
+        {
+            get { return articleID; }
+            set
+            {
+                this.articleID = value;
+                string primeraParte = this.mGNOSSID.Substring(0, this.mGNOSSID.LastIndexOf('_') + 1);
+                string antiguoGuid = this.mGNOSSID.Substring(this.mGNOSSID.LastIndexOf('_') + 1);
+                if (!antiguoGuid.Equals(this.articleID.ToString()))
+                {
+                    this.mGNOSSID = $"{primeraParte}{this.articleID.ToString()}";
+                }
+            }
+        }
+
+        public static string GetPropertyValueSemCms(SemanticPropertyModel pProperty)
+        {
+            if (pProperty != null && pProperty.PropertyValues.Count > 0)
+            {
+                return pProperty.PropertyValues[0].Value;
+            }
+            return "";
+        }
+
+        public static int? GetNumberIntPropertyValueSemCms(SemanticPropertyModel pProperty)
+        {
+            if (pProperty != null && pProperty.PropertyValues.Count > 0 && !string.IsNullOrEmpty(pProperty.PropertyValues[0].Value))
+            {
+                return int.Parse(pProperty.PropertyValues[0].Value);
+            }
+            return 0;
+        }
+
+        public static int? GetNumberIntPropertyMultipleValueSemCms(SemanticPropertyModel.PropertyValue pProperty)
+        {
+            if (pProperty != null && !string.IsNullOrEmpty(pProperty.Value))
+            {
+                return int.Parse(pProperty.Value);
+            }
+            return 0;
+        }
+
+        public static float? GetNumberFloatPropertyValueSemCms(SemanticPropertyModel pProperty)
+        {
+            if (pProperty != null && pProperty.PropertyValues.Count > 0 && !string.IsNullOrEmpty(pProperty.PropertyValues[0].Value))
+            {
+                return float.Parse(pProperty.PropertyValues[0].Value.Replace('.', ','));
+            }
+            return 0;
+        }
+
+        public static DateTime? GetDateValuePropertySemCms(SemanticPropertyModel pProperty)
+        {
+            string stringDate = GetPropertyValueSemCms(pProperty);
+            if (!string.IsNullOrEmpty(stringDate))
+            {
+                int year = 0;
+                int month = 0;
+                int day = 0;
+                if (stringDate.Contains('/'))
+                {
+                    day = int.Parse(stringDate.Split('/')[0]);
+                    month = int.Parse(stringDate.Split('/')[1]);
+                    year = int.Parse(stringDate.Split('/')[2].Split(' ')[0]);
+                }
+                else
+                {
+                    year = int.Parse(stringDate.Substring(0, 4));
+                    month = int.Parse(stringDate.Substring(4, 2));
+                    day = int.Parse(stringDate.Substring(6, 2));
+                }
+                if (stringDate.Length == 14)
+                {
+                    if (month == 0 || day == 0)
+                    {
+                        return new DateTime(year);
+                    }
+                    else
+                    {
+                        int hour = int.Parse(stringDate.Substring(8, 2));
+                        int minute = int.Parse(stringDate.Substring(10, 2));
+                        int second = int.Parse(stringDate.Substring(12, 2));
+                        return new DateTime(year, month, day, hour, minute, second);
+                    }
+                }
+                else
+                {
+                    return new DateTime(year, month, day);
+                }
+            }
+            return null;
+        }
+
+        public static bool GetBooleanPropertyValueSemCms(SemanticPropertyModel pProperty)
+        {
+            bool resultado = false;
+            if (pProperty != null && pProperty.PropertyValues.Count > 0 && !string.IsNullOrEmpty(pProperty.PropertyValues[0].Value))
+            {
+                if (!bool.TryParse(pProperty.PropertyValues[0].Value, out resultado))
+                {
+                    resultado = !NoEnIdiomas.Contains(pProperty.PropertyValues[0].Value);
+                }
+            }
+            return resultado;
+        }
+
+
+
+        public string GetPropertyURI(string nombrePropiedad)
+        {
+            Type type = this.GetType();
+            PropertyInfo mInfo = type.GetProperty(nombrePropiedad);
+            if (mInfo != null)
+            {
+                Attribute attr = Attribute.GetCustomAttribute(mInfo, typeof(RDFPropertyAttribute));
+                if (attr != null)
+                {
+                    return ((RDFPropertyAttribute)attr).RDFProperty;
+                }
+            }
+            return "";
+        }
+
+
+
+        public string GetLabel(string nombrePropiedad, LanguageEnum pLang)
+        {
+            Type type = this.GetType();
+            PropertyInfo mInfo = type.GetProperty(nombrePropiedad);
+
+            if (mInfo != null)
+            {
+                Attribute[] attr = Attribute.GetCustomAttributes(mInfo, typeof(LABELAttribute));
+                {
+                    foreach (Attribute atributo in attr)
+                    {
+                        if (atributo != null)
+                        {
+                            if (!((LABELAttribute)atributo).LABEL(pLang).Equals(""))
+                            {
+                                return ((LABELAttribute)atributo).LABEL(pLang);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return "";
+        }
+    }
+
+    public class Person : GnossOCBase
+    {
+
+        public Person() : base() { }
+
+        public Person(SemanticResourceModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
+        {
+            this.mGNOSSID = pSemCmsModel.RootEntities[0].Entity.Uri;
+            SemanticPropertyModel propRoh_hasRole = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/hasRole");
+            if (propRoh_hasRole != null && propRoh_hasRole.PropertyValues.Count > 0)
+            {
+                this.Roh_hasRole = new Organization(propRoh_hasRole.PropertyValues[0].RelatedEntity, idiomaUsuario);
+            }
+            this.Foaf_name = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/name"));
+        }
+
+        public Person(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
+        {
+            this.mGNOSSID = pSemCmsModel.Entity.Uri;
+            this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
+            SemanticPropertyModel propRoh_hasRole = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/hasRole");
+            if (propRoh_hasRole != null && propRoh_hasRole.PropertyValues.Count > 0)
+            {
+                this.Roh_hasRole = new Organization(propRoh_hasRole.PropertyValues[0].RelatedEntity, idiomaUsuario);
+            }
+            this.Foaf_name = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/name"));
+        }
+
+        public virtual string RdfType { get { return "http://xmlns.com/foaf/0.1/Person"; } }
+        public virtual string RdfsLabel { get { return "http://xmlns.com/foaf/0.1/Person"; } }
+        [LABEL(LanguageEnum.es, "Tiene rol")]
+        [RDFProperty("http://w3id.org/roh/hasRole")]
+        public Organization Roh_hasRole { get; set; }
+        public string IdRoh_hasRole { get; set; }
+
+        [LABEL(LanguageEnum.es, "Nombre completo")]
+        [RDFProperty("http://xmlns.com/foaf/0.1/name")]
+        public string Foaf_name { get; set; }
+    }
+
+    public class Organization : GnossOCBase
+    {
+
+        public Organization() : base() { }
+
+        public Organization(SemanticResourceModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
+        {
+            this.mGNOSSID = pSemCmsModel.RootEntities[0].Entity.Uri;
+            this.Roh_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/title"));
+        }
+
+        public Organization(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
+        {
+            this.mGNOSSID = pSemCmsModel.Entity.Uri;
+            this.Roh_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/title"));
+        }
+
+        [LABEL(LanguageEnum.es, "Nombre")]
+        [RDFProperty("http://w3id.org/roh/title")]
+        public string Roh_title { get; set; }
+
+    }
+}

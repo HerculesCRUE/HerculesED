@@ -1,6 +1,6 @@
 <config>
     <ConfiguracionGeneral>
-        <namespace>contributiongrade</namespace>
+        <namespace>contributiongradeproject</namespace>
         <idiomasOnto>
             <idiomaOnto>es</idiomaOnto>
         </idiomasOnto>

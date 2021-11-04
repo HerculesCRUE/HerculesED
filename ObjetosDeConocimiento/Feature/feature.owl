@@ -10,6 +10,7 @@
   xml:base="http://www.owl-ontologies.com/Ontology1627465478.owl">
   <owl:Ontology rdf:about=""/>
   <owl:Class rdf:about="http://www.geonames.org/ontology#Feature">
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
     <rdfs:subClassOf>
       <owl:Restriction>
         <owl:onProperty>
@@ -19,7 +20,6 @@
         >1</owl:maxCardinality>
       </owl:Restriction>
     </rdfs:subClassOf>
-    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
   </owl:Class>
   <owl:ObjectProperty rdf:about="http://www.geonames.org/ontology#parentFeature">
     <rdfs:domain rdf:resource="http://www.geonames.org/ontology#Feature"/>
@@ -36,8 +36,8 @@
   </owl:FunctionalProperty>
   <owl:FunctionalProperty rdf:about="http://www.geonames.org/ontology#featureCode">
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
-    <rdfs:domain rdf:resource="http://www.geonames.org/ontology#Feature"/>
     <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="http://www.geonames.org/ontology#Feature"/>
   </owl:FunctionalProperty>
 </rdf:RDF>
 

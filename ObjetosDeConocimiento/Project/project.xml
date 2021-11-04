@@ -11,13 +11,13 @@
 		<CategorizacionTesauroGnossObligatoria>false</CategorizacionTesauroGnossObligatoria>
     </ConfiguracionGeneral>
     <EspefPropiedad>
-		<Propiedad  ID="http://w3id.org/roh/crisIdentifier" EntidadID="http://vivoweb.org/ontology/core#Project">
-            <AtrNombre>Identificador</AtrNombre>
-            <AtrNombreLectura>Identificador</AtrNombreLectura>
+        <Propiedad  ID="http://w3id.org/roh/isSupportedBy" EntidadID="http://vivoweb.org/ontology/core#Project">
+            <AtrNombre>http://w3id.org/roh/isSupportedBy</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/isSupportedBy</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/participates" EntidadID="http://vivoweb.org/ontology/core#Project">
-            <AtrNombre>Entidad/es participante/s</AtrNombre>
-            <AtrNombreLectura>Entidad/es participante/s</AtrNombreLectura>
+            <AtrNombre>http://w3id.org/roh/participates</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/participates</AtrNombreLectura>
 			<SeleccionEntidad>
                 <TipoSeleccion>Autocompletar</TipoSeleccion>
                 <Grafo>organization.owl</Grafo>
@@ -32,9 +32,52 @@
                 </PropsEntLectura>
             </SeleccionEntidad>
         </Propiedad>
+        <Propiedad  ID="http://w3id.org/roh/conductedBy" EntidadID="http://vivoweb.org/ontology/core#Project">
+            <AtrNombre>http://w3id.org/roh/conductedBy</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/conductedBy</AtrNombreLectura>
+			<SeleccionEntidad>
+                <TipoSeleccion>Autocompletar</TipoSeleccion>
+                <Grafo>organization.owl</Grafo>
+                <UrlTipoEntSolicitada>http://xmlns.com/foaf/0.1/Organization</UrlTipoEntSolicitada>              
+                <PropsEntEdicion>
+                    <NameProp>http://w3id.org/roh/title</NameProp>
+                </PropsEntEdicion>
+                <PropsEntLectura>
+                    <Propiedad ID="http://w3id.org/roh/title" EntidadID="http://xmlns.com/foaf/0.1/Organization">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+                </PropsEntLectura>
+            </SeleccionEntidad>
+        </Propiedad>
+        <Propiedad  ID="http://vivoweb.org/ontology/core#geographicFocus" EntidadID="http://vivoweb.org/ontology/core#Project">
+            <AtrNombre>http://vivoweb.org/ontology/core#geographicFocus</AtrNombre>
+            <AtrNombreLectura>http://vivoweb.org/ontology/core#geographicFocus</AtrNombreLectura>
+			<SeleccionEntidad>
+                <TipoSeleccion>Autocompletar</TipoSeleccion>
+                <Grafo>geographicregion.owl</Grafo>
+                <UrlTipoEntSolicitada>http://w3id.org/roh/GeographicRegion</UrlTipoEntSolicitada>              
+                <PropsEntEdicion>
+                    <NameProp>http://purl.org/dc/elements/1.1/title</NameProp>
+                </PropsEntEdicion>
+                <PropsEntLectura>
+                    <Propiedad ID="http://purl.org/dc/elements/1.1/title" EntidadID="http://w3id.org/roh/GeographicRegion">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+                </PropsEntLectura>
+            </SeleccionEntidad>
+        </Propiedad>
+        <Propiedad  ID="http://w3id.org/roh/classificationCVN" EntidadID="http://vivoweb.org/ontology/core#Project">
+            <AtrNombre>Clasificación CVN</AtrNombre>
+            <AtrNombreLectura>Clasificación CVN</AtrNombreLectura>
+			<ValoresCombo valorDefecto="Clasificación CVN">
+			<ValorCombo>competitivos</ValorCombo>
+			<ValorCombo>no-competitivos</ValorCombo>
+			<ValorCombo>ayudas</ValorCombo>
+			</ValoresCombo>
+        </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/grantedBy" EntidadID="http://vivoweb.org/ontology/core#Project">
-            <AtrNombre>Entidad/es financiadora/s</AtrNombre>
-            <AtrNombreLectura>Entidad/es financiadora/s</AtrNombreLectura>
+            <AtrNombre>http://w3id.org/roh/grantedBy</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/grantedBy</AtrNombreLectura>
 			<SeleccionEntidad>
                 <TipoSeleccion>Autocompletar</TipoSeleccion>
                 <Grafo>organization.owl</Grafo>
@@ -50,136 +93,114 @@
             </SeleccionEntidad>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/hasResultsProjectClassification" EntidadID="http://vivoweb.org/ontology/core#Project">
-            <AtrNombre>Resultados de la clasificación del proyecto</AtrNombre>
-            <AtrNombreLectura>Resultados de la clasificación del proyecto</AtrNombreLectura>
+            <AtrNombre>http://w3id.org/roh/hasResultsProjectClassification</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/hasResultsProjectClassification</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/hasProjectClassification" EntidadID="http://vivoweb.org/ontology/core#Project">
-            <AtrNombre>Clasificación del proyecto</AtrNombre>
-            <AtrNombreLectura>Clasificación del proyecto</AtrNombreLectura>
+            <AtrNombre>http://w3id.org/roh/hasProjectClassification</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/hasProjectClassification</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://vivoweb.org/ontology/core#relates" EntidadID="http://vivoweb.org/ontology/core#Project">
-            <AtrNombre>Relacionado con</AtrNombre>
-            <AtrNombreLectura>Relacionado con</AtrNombreLectura>
+            <AtrNombre>http://vivoweb.org/ontology/core#relates</AtrNombre>
+            <AtrNombreLectura>http://vivoweb.org/ontology/core#relates</AtrNombreLectura>
         </Propiedad>
-        <Propiedad  ID="http://w3id.org/roh/isSupportedBy" EntidadID="http://vivoweb.org/ontology/core#Project">
-            <AtrNombre>Financiación</AtrNombre>
-            <AtrNombreLectura>Financiación</AtrNombreLectura>
-        </Propiedad>
-        <Propiedad  ID="http://w3id.org/roh/relevantResults" EntidadID="http://vivoweb.org/ontology/core#Project">
-            <AtrNombre>Resultados relevantes</AtrNombre>
-            <AtrNombreLectura>Resultados relevantes</AtrNombreLectura>
-        </Propiedad>
-        <Propiedad  ID="http://w3id.org/roh/peopleYearNumber" EntidadID="http://vivoweb.org/ontology/core#Project">
-            <AtrNombre>Nº de personas/año</AtrNombre>
-            <AtrNombreLectura>Nº de personas/año</AtrNombreLectura>
-        </Propiedad>
-        <Propiedad  ID="http://w3id.org/roh/geographicFocusOther" EntidadID="http://vivoweb.org/ontology/core#Project">
-            <AtrNombre>Ámbito geográfico, otros</AtrNombre>
-            <AtrNombreLectura>Ámbito geográfico, otros</AtrNombreLectura>
-        </Propiedad>
-        <Propiedad  ID="http://w3id.org/roh/durationDays" EntidadID="http://vivoweb.org/ontology/core#Project">
-            <AtrNombre>Duración (días)</AtrNombre>
-            <AtrNombreLectura>Duración (días)</AtrNombreLectura>
-        </Propiedad>
-        <Propiedad  ID="http://vivoweb.org/ontology/core#start" EntidadID="http://vivoweb.org/ontology/core#Project">
-            <AtrNombre>Fecha de inicio</AtrNombre>
-            <AtrNombreLectura>Fecha de inicio</AtrNombreLectura>
-        </Propiedad>
-        <Propiedad  ID="http://w3id.org/roh/title" EntidadID="http://vivoweb.org/ontology/core#Project">
-            <AtrNombre>Nombre del proyecto</AtrNombre>
-            <AtrNombreLectura>Nombre del proyecto</AtrNombreLectura>
-        </Propiedad>
-        <Propiedad  ID="http://vivoweb.org/ontology/core#geographicFocus" EntidadID="http://vivoweb.org/ontology/core#Project">
-            <AtrNombre>Ámbito geográfico</AtrNombre>
-            <AtrNombreLectura>Ámbito geográfico</AtrNombreLectura>
+		<Propiedad  ID="http://w3id.org/roh/projectType" EntidadID="http://vivoweb.org/ontology/core#Project">
+            <AtrNombre>http://w3id.org/roh/projectType</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/projectType</AtrNombreLectura>
 			<SeleccionEntidad>
                 <TipoSeleccion>Autocompletar</TipoSeleccion>
-                <Grafo>geographicregion.owl</Grafo>
-                <UrlTipoEntSolicitada>http://w3id.org/roh/GeographicRegion</UrlTipoEntSolicitada>              
+                <Grafo>projecttype.owl</Grafo>
+                <UrlTipoEntSolicitada>http://w3id.org/roh/ProjectType</UrlTipoEntSolicitada>              
                 <PropsEntEdicion>
                     <NameProp>http://purl.org/dc/elements/1.1/title</NameProp>
                 </PropsEntEdicion>
                 <PropsEntLectura>
-                    <Propiedad ID="http://purl.org/dc/elements/1.1/title" EntidadID="http://w3id.org/roh/GeographicRegion">
+                    <Propiedad ID="http://purl.org/dc/elements/1.1/title" EntidadID="http://w3id.org/roh/ProjectType">
                         <AtrNombreLectura></AtrNombreLectura>
                     </Propiedad>
                 </PropsEntLectura>
             </SeleccionEntidad>
-        </Propiedad>
-        <Propiedad  ID="http://w3id.org/roh/durationMonths" EntidadID="http://vivoweb.org/ontology/core#Project">
-            <AtrNombre>Duración (meses)</AtrNombre>
-            <AtrNombreLectura>Duración (meses)</AtrNombreLectura>
-        </Propiedad>
-        <Propiedad  ID="http://w3id.org/roh/researchersNumber" EntidadID="http://vivoweb.org/ontology/core#Project">
-            <AtrNombre>Nº de investigadores/as</AtrNombre>
-            <AtrNombreLectura>Nº de investigadores/as</AtrNombreLectura>
-        </Propiedad>
-        <Propiedad  ID="http://w3id.org/roh/durationYears" EntidadID="http://vivoweb.org/ontology/core#Project">
-            <AtrNombre>Duración (años)</AtrNombre>
-            <AtrNombreLectura>Duración (años)</AtrNombreLectura>
-        </Propiedad>
-        <Propiedad  ID="http://w3id.org/roh/conductedBy" EntidadID="http://vivoweb.org/ontology/core#Project">
-            <AtrNombre>Entidad de realización</AtrNombre>
-            <AtrNombreLectura>Entidad de realización</AtrNombreLectura>
-			<SeleccionEntidad>
-                <TipoSeleccion>Autocompletar</TipoSeleccion>
-                <Grafo>organization.owl</Grafo>
-                <UrlTipoEntSolicitada>http://xmlns.com/foaf/0.1/Organization</UrlTipoEntSolicitada>              
-                <PropsEntEdicion>
-                    <NameProp>http://w3id.org/roh/title</NameProp>
-                </PropsEntEdicion>
-                <PropsEntLectura>
-                    <Propiedad ID="http://w3id.org/roh/title" EntidadID="http://xmlns.com/foaf/0.1/Organization">
-                        <AtrNombreLectura></AtrNombreLectura>
-                    </Propiedad>
-                </PropsEntLectura>
-            </SeleccionEntidad>
-        </Propiedad>
-        <Propiedad  ID="http://vivoweb.org/ontology/core#end" EntidadID="http://vivoweb.org/ontology/core#Project">
-            <AtrNombre>Fecha de finalización</AtrNombre>
-            <AtrNombreLectura>Fecha de finalización</AtrNombreLectura>
-        </Propiedad>
-        <Propiedad  ID="http://w3id.org/roh/monetaryAmount" EntidadID="http://vivoweb.org/ontology/core#Project">
-            <AtrNombre>Cuantía total</AtrNombre>
-            <AtrNombreLectura>Cuantía total</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/modality" EntidadID="http://vivoweb.org/ontology/core#Project">
-            <AtrNombre>Modalidad de proyecto</AtrNombre>
-            <AtrNombreLectura>Modalidad de proyecto</AtrNombreLectura>
+            <AtrNombre>http://w3id.org/roh/modality</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/modality</AtrNombreLectura>
 			<SeleccionEntidad>
                 <TipoSeleccion>Autocompletar</TipoSeleccion>
-                <Grafo>modality.owl</Grafo>
-                <UrlTipoEntSolicitada>http://w3id.org/roh/Modality</UrlTipoEntSolicitada>              
+                <Grafo>projectmodality.owl</Grafo>
+                <UrlTipoEntSolicitada>http://w3id.org/roh/ProjectModality</UrlTipoEntSolicitada>              
                 <PropsEntEdicion>
                     <NameProp>http://purl.org/dc/elements/1.1/title</NameProp>
                 </PropsEntEdicion>
                 <PropsEntLectura>
-                    <Propiedad ID="http://purl.org/dc/elements/1.1/title" EntidadID="http://w3id.org/roh/Modality">
+                    <Propiedad ID="http://purl.org/dc/elements/1.1/title" EntidadID="http://w3id.org/roh/ProjectModality">
                         <AtrNombreLectura></AtrNombreLectura>
                     </Propiedad>
                 </PropsEntLectura>
             </SeleccionEntidad>
         </Propiedad>
-        <Propiedad  ID="http://w3id.org/roh/dedicationRegime" EntidadID="http://purl.obolibrary.org/obo/BFO_0000023">
-            <AtrNombre>Régimen de dedicación</AtrNombre>
-            <AtrNombreLectura>Régimen de dedicación</AtrNombreLectura>
-			<SeleccionEntidad>
-                <TipoSeleccion>Autocompletar</TipoSeleccion>
-                <Grafo>dedicationregime.owl</Grafo>
-                <UrlTipoEntSolicitada>http://w3id.org/roh/DedicationRegime</UrlTipoEntSolicitada>              
-                <PropsEntEdicion>
-                    <NameProp>http://purl.org/dc/elements/1.1/title</NameProp>
-                </PropsEntEdicion>
-                <PropsEntLectura>
-                    <Propiedad ID="http://purl.org/dc/elements/1.1/title" EntidadID="http://w3id.org/roh/DedicationRegime">
-                        <AtrNombreLectura></AtrNombreLectura>
-                    </Propiedad>
-                </PropsEntLectura>
-            </SeleccionEntidad>
+        <Propiedad  ID="http://w3id.org/roh/relevantResults" EntidadID="http://vivoweb.org/ontology/core#Project">
+            <AtrNombre>http://w3id.org/roh/relevantResults</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/relevantResults</AtrNombreLectura>
+        </Propiedad>
+        <Propiedad  ID="http://w3id.org/roh/peopleYearNumber" EntidadID="http://vivoweb.org/ontology/core#Project">
+            <AtrNombre>http://w3id.org/roh/peopleYearNumber</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/peopleYearNumber</AtrNombreLectura>
+        </Propiedad>
+        <Propiedad  ID="http://w3id.org/roh/durationMonths" EntidadID="http://vivoweb.org/ontology/core#Project">
+            <AtrNombre>http://w3id.org/roh/durationMonths</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/durationMonths</AtrNombreLectura>
+        </Propiedad>
+        <Propiedad  ID="http://w3id.org/roh/geographicFocusOther" EntidadID="http://vivoweb.org/ontology/core#Project">
+            <AtrNombre>http://w3id.org/roh/geographicFocusOther</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/geographicFocusOther</AtrNombreLectura>
+        </Propiedad>
+        <Propiedad  ID="http://w3id.org/roh/durationDays" EntidadID="http://vivoweb.org/ontology/core#Project">
+            <AtrNombre>http://w3id.org/roh/durationDays</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/durationDays</AtrNombreLectura>
+        </Propiedad>
+        <Propiedad  ID="http://w3id.org/roh/researchersNumber" EntidadID="http://vivoweb.org/ontology/core#Project">
+            <AtrNombre>http://w3id.org/roh/researchersNumber</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/researchersNumber</AtrNombreLectura>
+        </Propiedad>
+        <Propiedad  ID="http://vivoweb.org/ontology/core#start" EntidadID="http://vivoweb.org/ontology/core#Project">
+            <AtrNombre>http://vivoweb.org/ontology/core#start</AtrNombre>
+            <AtrNombreLectura>http://vivoweb.org/ontology/core#start</AtrNombreLectura>
+        </Propiedad>
+        <Propiedad  ID="http://w3id.org/roh/durationYears" EntidadID="http://vivoweb.org/ontology/core#Project">
+            <AtrNombre>http://w3id.org/roh/durationYears</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/durationYears</AtrNombreLectura>
+        </Propiedad>
+        <Propiedad  ID="http://w3id.org/roh/crisIdentifier" EntidadID="http://vivoweb.org/ontology/core#Project">
+            <AtrNombre>http://w3id.org/roh/crisIdentifier</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/crisIdentifier</AtrNombreLectura>
+        </Propiedad>
+        <Propiedad  ID="http://vivoweb.org/ontology/core#end" EntidadID="http://vivoweb.org/ontology/core#Project">
+            <AtrNombre>http://vivoweb.org/ontology/core#end</AtrNombre>
+            <AtrNombreLectura>http://vivoweb.org/ontology/core#end</AtrNombreLectura>
+        </Propiedad>
+        <Propiedad  ID="http://w3id.org/roh/monetaryAmount" EntidadID="http://vivoweb.org/ontology/core#Project">
+            <AtrNombre>http://w3id.org/roh/monetaryAmount</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/monetaryAmount</AtrNombreLectura>
+        </Propiedad>
+        <Propiedad  ID="http://vivoweb.org/ontology/core#abbreviation" EntidadID="http://vivoweb.org/ontology/core#Project">
+            <AtrNombre>http://vivoweb.org/ontology/core#abbreviation</AtrNombre>
+            <AtrNombreLectura>http://vivoweb.org/ontology/core#abbreviation</AtrNombreLectura>
+        </Propiedad>
+        <Propiedad  ID="http://w3id.org/roh/isSynchronized" EntidadID="http://vivoweb.org/ontology/core#Project">
+            <AtrNombre>http://w3id.org/roh/isSynchronized</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/isSynchronized</AtrNombreLectura>
+        </Propiedad>
+        <Propiedad  ID="http://w3id.org/roh/title" EntidadID="http://vivoweb.org/ontology/core#Project">
+            <AtrNombre>http://w3id.org/roh/title</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/title</AtrNombreLectura>
+        </Propiedad>
+        <Propiedad  ID="http://vivoweb.org/ontology/core#preferredDisplayOrder" EntidadID="http://purl.obolibrary.org/obo/BFO_0000023">
+            <AtrNombre>http://vivoweb.org/ontology/core#preferredDisplayOrder</AtrNombre>
+            <AtrNombreLectura>http://vivoweb.org/ontology/core#preferredDisplayOrder</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/roleOf" EntidadID="http://purl.obolibrary.org/obo/BFO_0000023">
-            <AtrNombre>Rol de</AtrNombre>
-            <AtrNombreLectura>Rol de</AtrNombreLectura>
+            <AtrNombre>http://w3id.org/roh/roleOf</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/roleOf</AtrNombreLectura>
 			<SeleccionEntidad>
                 <TipoSeleccion>Autocompletar</TipoSeleccion>
                 <Grafo>person.owl</Grafo>
@@ -194,83 +215,62 @@
                 </PropsEntLectura>
             </SeleccionEntidad>
         </Propiedad>
-        <Propiedad  ID="http://w3id.org/roh/contributionGrade" EntidadID="http://purl.obolibrary.org/obo/BFO_0000023">
-            <AtrNombre>Grado de contribución</AtrNombre>
-            <AtrNombreLectura>Grado de contribución</AtrNombreLectura>
-			<SeleccionEntidad>
-                <TipoSeleccion>Autocompletar</TipoSeleccion>
-                <Grafo>contributiongrade.owl</Grafo>
-                <UrlTipoEntSolicitada>http://w3id.org/roh/ContributionGrade</UrlTipoEntSolicitada>              
-                <PropsEntEdicion>
-                    <NameProp>http://purl.org/dc/elements/1.1/title</NameProp>
-                </PropsEntEdicion>
-                <PropsEntLectura>
-                    <Propiedad ID="http://purl.org/dc/elements/1.1/title" EntidadID="http://w3id.org/roh/ContributionGrade">
-                        <AtrNombreLectura></AtrNombreLectura>
-                    </Propiedad>
-                </PropsEntLectura>
-            </SeleccionEntidad>
-        </Propiedad>
-        <Propiedad  ID="http://w3id.org/roh/participationTypeOther" EntidadID="http://purl.obolibrary.org/obo/BFO_0000023">
-            <AtrNombre>Tipo de participación, otros</AtrNombre>
-            <AtrNombreLectura>Tipo de participación, otros</AtrNombreLectura>
-        </Propiedad>
-        <Propiedad  ID="http://w3id.org/roh/participationType" EntidadID="http://purl.obolibrary.org/obo/BFO_0000023">
-            <AtrNombre>Tipo de participación</AtrNombre>
-            <AtrNombreLectura>Tipo de participación</AtrNombreLectura>
-			<SeleccionEntidad>
-                <TipoSeleccion>Autocompletar</TipoSeleccion>
-                <Grafo>participationtype.owl</Grafo>
-                <UrlTipoEntSolicitada>http://w3id.org/roh/ParticipationType</UrlTipoEntSolicitada>              
-                <PropsEntEdicion>
-                    <NameProp>http://purl.org/dc/elements/1.1/title</NameProp>
-                </PropsEntEdicion>
-                <PropsEntLectura>
-                    <Propiedad ID="http://purl.org/dc/elements/1.1/title" EntidadID="http://w3id.org/roh/ParticipationType">
-                        <AtrNombreLectura></AtrNombreLectura>
-                    </Propiedad>
-                </PropsEntLectura>
-            </SeleccionEntidad>
-        </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/order" EntidadID="http://purl.obolibrary.org/obo/BFO_0000023">
-            <AtrNombre>Posición</AtrNombre>
-            <AtrNombreLectura>Posición</AtrNombreLectura>
+            <AtrNombre>http://w3id.org/roh/order</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/order</AtrNombreLectura>
         </Propiedad>
-        <Propiedad  ID="http://w3id.org/roh/applicantContribution" EntidadID="http://purl.obolibrary.org/obo/BFO_0000023">
-            <AtrNombre>Aportación del solicitante</AtrNombre>
-            <AtrNombreLectura>Aportación del solicitante</AtrNombreLectura>
+        <Propiedad  ID="http://w3id.org/roh/title" EntidadID="http://purl.obolibrary.org/obo/BFO_0000023">
+            <AtrNombre>http://w3id.org/roh/title</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/title</AtrNombreLectura>
         </Propiedad>
-        <Propiedad  ID="http://w3id.org/roh/contributionGradeOther" EntidadID="http://purl.obolibrary.org/obo/BFO_0000023">
-            <AtrNombre>Grado de contribución, otros</AtrNombre>
-            <AtrNombreLectura>Grado de contribución, otros</AtrNombreLectura>
+        <Propiedad  ID="http://w3id.org/roh/promotedBy" EntidadID="http://w3id.org/roh/FundingProgram">
+            <AtrNombre>http://w3id.org/roh/promotedBy</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/promotedBy</AtrNombreLectura>
+			<SeleccionEntidad>
+                <TipoSeleccion>Autocompletar</TipoSeleccion>
+                <Grafo>organization.owl</Grafo>
+                <UrlTipoEntSolicitada>http://xmlns.com/foaf/0.1/Organization</UrlTipoEntSolicitada>              
+                <PropsEntEdicion>
+                    <NameProp>http://w3id.org/roh/title</NameProp>
+                </PropsEntEdicion>
+                <PropsEntLectura>
+                    <Propiedad ID="http://w3id.org/roh/title" EntidadID="http://xmlns.com/foaf/0.1/Organization">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+                </PropsEntLectura>
+            </SeleccionEntidad>
+        </Propiedad>
+        <Propiedad  ID="http://vivoweb.org/ontology/core#identifier" EntidadID="http://w3id.org/roh/FundingProgram">
+            <AtrNombre>http://vivoweb.org/ontology/core#identifier</AtrNombre>
+            <AtrNombreLectura>http://vivoweb.org/ontology/core#identifier</AtrNombreLectura>
+        </Propiedad>
+        <Propiedad  ID="http://w3id.org/roh/title" EntidadID="http://w3id.org/roh/FundingProgram">
+            <AtrNombre>http://w3id.org/roh/title</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/title</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/mixedPercentage" EntidadID="http://w3id.org/roh/Funding">
-            <AtrNombre>Porcentaje mixto</AtrNombre>
-            <AtrNombreLectura>Porcentaje mixto</AtrNombreLectura>
+            <AtrNombre>http://w3id.org/roh/mixedPercentage</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/mixedPercentage</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/creditPercentage" EntidadID="http://w3id.org/roh/Funding">
-            <AtrNombre>Porcentaje en crédito</AtrNombre>
-            <AtrNombreLectura>Porcentaje en crédito</AtrNombreLectura>
+            <AtrNombre>http://w3id.org/roh/creditPercentage</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/creditPercentage</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://vivoweb.org/ontology/core#identifier" EntidadID="http://w3id.org/roh/Funding">
-            <AtrNombre>Cód. según financiadora</AtrNombre>
-            <AtrNombreLectura>Cód. según financiadora</AtrNombreLectura>
+            <AtrNombre>http://vivoweb.org/ontology/core#identifier</AtrNombre>
+            <AtrNombreLectura>http://vivoweb.org/ontology/core#identifier</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/grantsPercentage" EntidadID="http://w3id.org/roh/Funding">
-            <AtrNombre>Porcentaje en subvención</AtrNombre>
-            <AtrNombreLectura>Porcentaje en subvención</AtrNombreLectura>
-        </Propiedad>
-        <Propiedad  ID="http://vivoweb.org/ontology/core#description" EntidadID="http://w3id.org/roh/Funding">
-            <AtrNombre>Descripción del programa</AtrNombre>
-            <AtrNombreLectura>Descripción del programa</AtrNombreLectura>
+            <AtrNombre>http://w3id.org/roh/grantsPercentage</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/grantsPercentage</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/monetaryAmount" EntidadID="http://w3id.org/roh/Funding">
-            <AtrNombre>Cuantía del programa</AtrNombre>
-            <AtrNombreLectura>Cuantía del programa</AtrNombreLectura>
+            <AtrNombre>http://w3id.org/roh/monetaryAmount</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/monetaryAmount</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/projectClassificationNode" EntidadID="http://w3id.org/roh/ProjectClassification">
-            <AtrNombre>Nodo de clasificación del proyecto</AtrNombre>
-            <AtrNombreLectura>Nodo de clasificación del proyecto</AtrNombreLectura>
+            <AtrNombre>http://w3id.org/roh/projectClassificationNode</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/projectClassificationNode</AtrNombreLectura>
 			<SeleccionEntidad>
                 <TipoSeleccion>Autocompletar</TipoSeleccion>
                 <Grafo>taxonomy.owl</Grafo>
@@ -288,33 +288,36 @@
     </EspefPropiedad>
     <EspefEntidad>
         <Entidad  ID="http://vivoweb.org/ontology/core#Project">
-            <AtrNombre>Proyecto</AtrNombre>
-            <AtrNombreLectura>Proyecto</AtrNombreLectura>
+            <AtrNombre>http://vivoweb.org/ontology/core#Project</AtrNombre>
+            <AtrNombreLectura>http://vivoweb.org/ontology/core#Project</AtrNombreLectura>
             <OrdenEntidad>
                 <Grupo class="formtheme02">
                     <Grupo class="fieldset">
                         <Grupo Tipo="fieldset" class="mediumLabels">
-							<NameProp>http://w3id.org/roh/crisIdentifier</NameProp>
-							<NameProp>http://w3id.org/roh/title</NameProp> 
-							<NameProp>http://w3id.org/roh/researchersNumber</NameProp>
-							<NameProp>http://vivoweb.org/ontology/core#relates</NameProp>
-							<NameProp>http://w3id.org/roh/conductedBy</NameProp>
-							<NameProp>http://w3id.org/roh/grantedBy</NameProp>
-							<NameProp>http://vivoweb.org/ontology/core#start</NameProp>
-							<NameProp>http://vivoweb.org/ontology/core#end</NameProp>
-							<NameProp>http://w3id.org/roh/monetaryAmount</NameProp>
-							<NameProp>http://w3id.org/roh/durationYears</NameProp> 
-							<NameProp>http://w3id.org/roh/durationMonths</NameProp>
-							<NameProp>http://w3id.org/roh/durationDays</NameProp>
-							<NameProp>http://w3id.org/roh/hasProjectClassification</NameProp>
-							<NameProp>http://w3id.org/roh/modality</NameProp>
-							<NameProp>http://vivoweb.org/ontology/core#geographicFocus</NameProp>
-							<NameProp>http://w3id.org/roh/geographicFocusOther</NameProp>
-							<NameProp>http://w3id.org/roh/peopleYearNumber</NameProp> 
-							<NameProp>http://w3id.org/roh/isSupportedBy</NameProp>
-							<NameProp>http://w3id.org/roh/relevantResults</NameProp>
-							<NameProp>http://w3id.org/roh/hasResultsProjectClassification</NameProp>
-                            <NameProp>http://w3id.org/roh/participates</NameProp>
+                            <NameProp>http://w3id.org/roh/isSupportedBy</NameProp> 
+                            <NameProp>http://w3id.org/roh/participates</NameProp> 
+                            <NameProp>http://w3id.org/roh/conductedBy</NameProp> 
+                            <NameProp>http://vivoweb.org/ontology/core#geographicFocus</NameProp> 
+                            <NameProp>http://w3id.org/roh/classificationCVN</NameProp> 
+                            <NameProp>http://w3id.org/roh/grantedBy</NameProp> 
+                            <NameProp>http://w3id.org/roh/hasResultsProjectClassification</NameProp> 
+                            <NameProp>http://w3id.org/roh/hasProjectClassification</NameProp> 
+                            <NameProp>http://vivoweb.org/ontology/core#relates</NameProp> 
+                            <NameProp>http://w3id.org/roh/modality</NameProp> 
+                            <NameProp>http://w3id.org/roh/relevantResults</NameProp> 
+                            <NameProp>http://w3id.org/roh/peopleYearNumber</NameProp> 
+                            <NameProp>http://w3id.org/roh/durationMonths</NameProp> 
+                            <NameProp>http://w3id.org/roh/geographicFocusOther</NameProp> 
+                            <NameProp>http://w3id.org/roh/durationDays</NameProp> 
+                            <NameProp>http://w3id.org/roh/researchersNumber</NameProp> 
+                            <NameProp>http://vivoweb.org/ontology/core#start</NameProp> 
+                            <NameProp>http://w3id.org/roh/durationYears</NameProp> 
+                            <NameProp>http://w3id.org/roh/crisIdentifier</NameProp> 
+                            <NameProp>http://vivoweb.org/ontology/core#end</NameProp> 
+                            <NameProp>http://w3id.org/roh/monetaryAmount</NameProp> 
+                            <NameProp>http://vivoweb.org/ontology/core#abbreviation</NameProp> 
+                            <NameProp>http://w3id.org/roh/isSynchronized</NameProp> 
+                            <NameProp>http://w3id.org/roh/title</NameProp>
                         </Grupo>
                     </Grupo>
                 </Grupo>
@@ -334,47 +337,46 @@
                     <Grupo classLectura="group group_info">
                         <AtrNombreGrupo>Propiedades</AtrNombreGrupo>
                         <Grupo classLectura="contentGroup">
-							<NameProp>http://w3id.org/roh/crisIdentifier</NameProp>
-                            <NameProp>http://w3id.org/roh/title</NameProp> 
-							<NameProp>http://w3id.org/roh/researchersNumber</NameProp>
-							<NameProp>http://vivoweb.org/ontology/core#relates</NameProp>
-							<NameProp>http://w3id.org/roh/conductedBy</NameProp>
-							<NameProp>http://w3id.org/roh/grantedBy</NameProp>
-							<NameProp>http://vivoweb.org/ontology/core#start</NameProp>
-							<NameProp>http://vivoweb.org/ontology/core#end</NameProp>
-							<NameProp>http://w3id.org/roh/monetaryAmount</NameProp>
-							<NameProp>http://w3id.org/roh/durationYears</NameProp> 
-							<NameProp>http://w3id.org/roh/durationMonths</NameProp>
-							<NameProp>http://w3id.org/roh/durationDays</NameProp>
-							<NameProp>http://w3id.org/roh/hasProjectClassification</NameProp>
-							<NameProp>http://w3id.org/roh/modality</NameProp>
-							<NameProp>http://vivoweb.org/ontology/core#geographicFocus</NameProp>
-							<NameProp>http://w3id.org/roh/geographicFocusOther</NameProp>
-							<NameProp>http://w3id.org/roh/peopleYearNumber</NameProp> 
-							<NameProp>http://w3id.org/roh/isSupportedBy</NameProp>
-							<NameProp>http://w3id.org/roh/relevantResults</NameProp>
-							<NameProp>http://w3id.org/roh/hasResultsProjectClassification</NameProp>
-                            <NameProp>http://w3id.org/roh/participates</NameProp>
+                            <NameProp>http://w3id.org/roh/isSupportedBy</NameProp> 
+                            <NameProp>http://w3id.org/roh/participates</NameProp> 
+                            <NameProp>http://w3id.org/roh/conductedBy</NameProp> 
+                            <NameProp>http://vivoweb.org/ontology/core#geographicFocus</NameProp> 
+                            <NameProp>http://w3id.org/roh/classificationCVN</NameProp> 
+                            <NameProp>http://w3id.org/roh/grantedBy</NameProp> 
+                            <NameProp>http://w3id.org/roh/hasResultsProjectClassification</NameProp> 
+                            <NameProp>http://w3id.org/roh/hasProjectClassification</NameProp> 
+                            <NameProp>http://vivoweb.org/ontology/core#relates</NameProp> 
+                            <NameProp>http://w3id.org/roh/modality</NameProp> 
+                            <NameProp>http://w3id.org/roh/relevantResults</NameProp> 
+                            <NameProp>http://w3id.org/roh/peopleYearNumber</NameProp> 
+                            <NameProp>http://w3id.org/roh/durationMonths</NameProp> 
+                            <NameProp>http://w3id.org/roh/geographicFocusOther</NameProp> 
+                            <NameProp>http://w3id.org/roh/durationDays</NameProp> 
+                            <NameProp>http://w3id.org/roh/researchersNumber</NameProp> 
+                            <NameProp>http://vivoweb.org/ontology/core#start</NameProp> 
+                            <NameProp>http://w3id.org/roh/durationYears</NameProp> 
+                            <NameProp>http://w3id.org/roh/crisIdentifier</NameProp> 
+                            <NameProp>http://vivoweb.org/ontology/core#end</NameProp> 
+                            <NameProp>http://w3id.org/roh/monetaryAmount</NameProp> 
+                            <NameProp>http://vivoweb.org/ontology/core#abbreviation</NameProp> 
+                            <NameProp>http://w3id.org/roh/isSynchronized</NameProp> 
+                            <NameProp>http://w3id.org/roh/title</NameProp>
                         </Grupo>
                     </Grupo>
                 </Grupo>
             </OrdenEntidadLectura>
         </Entidad>
         <Entidad  ID="http://purl.obolibrary.org/obo/BFO_0000023">
-            <AtrNombre>Rol</AtrNombre>
-            <AtrNombreLectura>Rol</AtrNombreLectura>
+            <AtrNombre>http://purl.obolibrary.org/obo/BFO_0000023</AtrNombre>
+            <AtrNombreLectura>http://purl.obolibrary.org/obo/BFO_0000023</AtrNombreLectura>
             <OrdenEntidad>
                 <Grupo class="formtheme02">
                     <Grupo class="fieldset">
-                        <Grupo Tipo="fieldset" class="mediumLabels"> 
-                            <NameProp>http://w3id.org/roh/roleOf</NameProp>
-							<NameProp>http://w3id.org/roh/order</NameProp> 							
-                            <NameProp>http://w3id.org/roh/contributionGrade</NameProp>
-							<NameProp>http://w3id.org/roh/contributionGradeOther</NameProp>							 
-                            <NameProp>http://w3id.org/roh/participationType</NameProp>
-							<NameProp>http://w3id.org/roh/participationTypeOther</NameProp>
-							<NameProp>http://w3id.org/roh/dedicationRegime</NameProp>
-							<NameProp>http://w3id.org/roh/applicantContribution</NameProp>    
+                        <Grupo Tipo="fieldset" class="mediumLabels">
+                            <NameProp>http://vivoweb.org/ontology/core#preferredDisplayOrder</NameProp> 
+                            <NameProp>http://w3id.org/roh/roleOf</NameProp> 
+                            <NameProp>http://w3id.org/roh/order</NameProp> 
+                            <NameProp>http://w3id.org/roh/title</NameProp>
                         </Grupo>
                     </Grupo>
                 </Grupo>
@@ -394,32 +396,64 @@
                     <Grupo classLectura="group group_info">
                         <AtrNombreGrupo>Propiedades</AtrNombreGrupo>
                         <Grupo classLectura="contentGroup">
-                            <NameProp>http://w3id.org/roh/roleOf</NameProp>
-							<NameProp>http://w3id.org/roh/order</NameProp> 							
-                            <NameProp>http://w3id.org/roh/contributionGrade</NameProp>
-							<NameProp>http://w3id.org/roh/contributionGradeOther</NameProp>							 
-                            <NameProp>http://w3id.org/roh/participationType</NameProp>
-							<NameProp>http://w3id.org/roh/participationTypeOther</NameProp>
-							<NameProp>http://w3id.org/roh/dedicationRegime</NameProp>
-							<NameProp>http://w3id.org/roh/applicantContribution</NameProp>
+                            <NameProp>http://vivoweb.org/ontology/core#preferredDisplayOrder</NameProp> 
+                            <NameProp>http://w3id.org/roh/roleOf</NameProp> 
+                            <NameProp>http://w3id.org/roh/order</NameProp> 
+                            <NameProp>http://w3id.org/roh/title</NameProp>
+                        </Grupo>
+                    </Grupo>
+                </Grupo>
+            </OrdenEntidadLectura>
+        </Entidad>
+        <Entidad  ID="http://w3id.org/roh/FundingProgram">
+            <AtrNombre>http://w3id.org/roh/FundingProgram</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/FundingProgram</AtrNombreLectura>
+            <OrdenEntidad>
+                <Grupo class="formtheme02">
+                    <Grupo class="fieldset">
+                        <Grupo Tipo="fieldset" class="mediumLabels">
+                            <NameProp>http://w3id.org/roh/promotedBy</NameProp> 
+                            <NameProp>http://vivoweb.org/ontology/core#identifier</NameProp> 
+                            <NameProp>http://w3id.org/roh/title</NameProp>
+                        </Grupo>
+                    </Grupo>
+                </Grupo>
+            </OrdenEntidad>
+            <OrdenEntidadLectura>
+                <Grupo classLectura="contentGroup contenidoPrincipal">
+                    <Grupo classLectura="group title">
+                        <Grupo Tipo="titulo">
+                            <NameProp>@@@TITULO</NameProp>
+                        </Grupo>
+                        <Grupo Tipo="subtitulo">
+                            <NameProp>@@@SUBTITULO</NameProp>
+                        </Grupo>
+                    </Grupo>
+                </Grupo>
+                <Grupo classLectura="group content semanticView">
+                    <Grupo classLectura="group group_info">
+                        <AtrNombreGrupo>Propiedades</AtrNombreGrupo>
+                        <Grupo classLectura="contentGroup">
+                            <NameProp>http://w3id.org/roh/promotedBy</NameProp> 
+                            <NameProp>http://vivoweb.org/ontology/core#identifier</NameProp> 
+                            <NameProp>http://w3id.org/roh/title</NameProp>
                         </Grupo>
                     </Grupo>
                 </Grupo>
             </OrdenEntidadLectura>
         </Entidad>
         <Entidad  ID="http://w3id.org/roh/Funding">
-            <AtrNombre>Programa de financiación</AtrNombre>
-            <AtrNombreLectura>Programa de financiación</AtrNombreLectura>
+            <AtrNombre>http://w3id.org/roh/Funding</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/Funding</AtrNombreLectura>
             <OrdenEntidad>
                 <Grupo class="formtheme02">
                     <Grupo class="fieldset">
                         <Grupo Tipo="fieldset" class="mediumLabels">
-							<NameProp>http://vivoweb.org/ontology/core#description</NameProp>
-							<NameProp>http://vivoweb.org/ontology/core#identifier</NameProp>
-							<NameProp>http://w3id.org/roh/monetaryAmount</NameProp>
-							<NameProp>http://w3id.org/roh/grantsPercentage</NameProp>
-							<NameProp>http://w3id.org/roh/creditPercentage</NameProp>
                             <NameProp>http://w3id.org/roh/mixedPercentage</NameProp> 
+                            <NameProp>http://w3id.org/roh/creditPercentage</NameProp> 
+                            <NameProp>http://vivoweb.org/ontology/core#identifier</NameProp> 
+                            <NameProp>http://w3id.org/roh/grantsPercentage</NameProp> 
+                            <NameProp>http://w3id.org/roh/monetaryAmount</NameProp>
                         </Grupo>
                     </Grupo>
                 </Grupo>
@@ -439,20 +473,19 @@
                     <Grupo classLectura="group group_info">
                         <AtrNombreGrupo>Propiedades</AtrNombreGrupo>
                         <Grupo classLectura="contentGroup">
-                            <NameProp>http://vivoweb.org/ontology/core#description</NameProp>
-							<NameProp>http://vivoweb.org/ontology/core#identifier</NameProp>
-							<NameProp>http://w3id.org/roh/monetaryAmount</NameProp>
-							<NameProp>http://w3id.org/roh/grantsPercentage</NameProp>
-							<NameProp>http://w3id.org/roh/creditPercentage</NameProp>
                             <NameProp>http://w3id.org/roh/mixedPercentage</NameProp> 
+                            <NameProp>http://w3id.org/roh/creditPercentage</NameProp> 
+                            <NameProp>http://vivoweb.org/ontology/core#identifier</NameProp> 
+                            <NameProp>http://w3id.org/roh/grantsPercentage</NameProp> 
+                            <NameProp>http://w3id.org/roh/monetaryAmount</NameProp>
                         </Grupo>
                     </Grupo>
                 </Grupo>
             </OrdenEntidadLectura>
         </Entidad>
         <Entidad  ID="http://w3id.org/roh/ProjectClassification">
-            <AtrNombre>Clasificación del proyecto</AtrNombre>
-            <AtrNombreLectura>Clasificación del proyecto</AtrNombreLectura>
+            <AtrNombre>http://w3id.org/roh/ProjectClassification</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/ProjectClassification</AtrNombreLectura>
             <OrdenEntidad>
                 <Grupo class="formtheme02">
                     <Grupo class="fieldset">

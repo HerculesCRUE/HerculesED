@@ -1,8 +1,16 @@
-﻿@*[security|||project|||hercules]*@
+@*[security|||project|||hercules]*@
+@using Es.Riam.Gnoss.Web.MVC.Models
+@using Es.Riam.Gnoss.Web.MVC.Controles.Helper
+@using Es.Riam.Gnoss.Web.MVC.Models.ViewModels
+@using Es.Riam.Gnoss.Web.MVC.Models.Administracion
+@using Es.Riam.Gnoss.AD.ServiciosGenerales
+@using Es.Riam.Gnoss.Web.MVC.Controllers
+@using Es.Riam.Gnoss.Web.MVC.Controllers.Administracion
+@using Es.Riam.Gnoss.Web.Controles
+@using Newtonsoft.Json
 @using System.Reflection;
 @model ResourceViewModel
-@{
-    ResourceModel FichaDocumento = Model.Resource;
+@{ ResourceModel FichaDocumento = Model.Resource;
     CommunityModel Comunidad = Html.GetComunidad();
     UserIdentityModel IdentidadActual = Html.GetIdentidadActual();
     Html.AddBodyClass(" ProjectModel ");
@@ -12,22 +20,32 @@
         Html.GetListaJS().Add($"{urlPersonalizacion}/{FichaDocumento.ItemLinked.ToString()}.js?v= {FichaDocumento.ItemLinkedFotoVersion}");
         Html.GetListaCSS().Add($"{urlPersonalizacion}/{FichaDocumento.ItemLinked.ToString()}.css?v= {FichaDocumento.ItemLinkedFotoVersion}");
     }
+	string urlJS = $"{Html.GetBaseUrlContent()}/imagenes/proyectos/personalizacion/{Comunidad.Key.ToString()}/theme/ficharecurso.js";
+    Html.GetListaJS().Add(urlJS);
+	
     SemanticResourceModel semCmsModel = Model.SemanticFrom;
     GnossOCBase.LanguageEnum idiomaUsuario = (GnossOCBase.LanguageEnum)Enum.Parse(typeof(GnossOCBase.LanguageEnum), Html.GetUtilIdiomas().LanguageCode.ToLower());
     Project pProject = new Project(semCmsModel, idiomaUsuario);
-}
+    Html.AddBodyClass("fichaRecurso");
+    Html.AddBodyClass("fichaRecurso-proyecto"); }
 
 <div class="col col-12 col-breadcrumb">
     <ul>
         <li>
-            <a href="./home.php">Home</a>
+            <a href="@Comunidad.Url">Home</a>
         </li>
         <li>
-            <a href="javascript: void(0);">Proyectos</a>
+            @{string urlProyectos = Comunidad.Url + "/proyectos"; }
+            <a href="@urlProyectos">Proyectos</a>
         </li>
-        <li>
-            @pProject.Roh_title
-        </li>
+        @{ if (!string.IsNullOrEmpty(pProject.Roh_title))
+            {
+                <li>@pProject.Roh_title</li>
+            }
+            else
+            {
+                <li>---</li>
+            } }
     </ul>
 </div>
 
@@ -35,28 +53,23 @@
     <div class="wrapCol">
         <div class="cabecera-ficha cabecera-proyecto">
             <div class="user-miniatura">
+                <div class="imagen-usuario-wrap">
+                    <span class="material-icons">work</span>
+                </div>
                 <div class="nombre-usuario-wrap">
-                    <p class="nombre">
-                        @pProject.Roh_title
-                    </p>
-                    <p class="nombre-completo">
-                        TODO: Facultad de Ciencias Sociales y Humanas, DeustoTech BAJA, Deusto Business School, Facultad de Ingeniería, Facultad de Derecho
-                    </p>
+                    @{ if (!string.IsNullOrEmpty(pProject.Roh_title))
+                        {
+                            <p class="nombre">@pProject.Roh_title</p> }
+                        else
+                        {
+                            <p class="nombre">---</p> } }
                 </div>
                 <div class="acciones-usuario-wrap">
                     <ul class="no-list-style d-flex">
                         <li>
-                            <a class="btn btn-outline-grey d-none d-xl-flex btn-citar">
-                                <span class="citar">
-                                    <span class="material-icons">format_quote</span>
-                                    <span>Citar</span>
-                                </span>
-                            </a>
-                        </li>
-                        <li>
                             <a class="btn btn-outline-grey d-none d-xl-flex">
                                 <span class="material-icons">folder</span>
-                                <span>Guardar en Espacio Personal</span>
+                                <span>TODO: Guardar en Espacio Personal</span>
                             </a>
                         </li>
                         <li>
@@ -70,12 +83,12 @@
                                         <ul class="no-list-style">
                                             <li>
                                                 <a class="item-dropdown">
-                                                    <span class="texto">Añadir áreas de conocimiento</span>
+                                                    <span class="texto">TODO: Añadir áreas de conocimiento</span>
                                                 </a>
                                             </li>
                                             <li>
                                                 <a class="item-dropdown">
-                                                    <span class="texto">Añadir etiquetas</span>
+                                                    <span class="texto">TODO: Añadir etiquetas</span>
                                                 </a>
                                             </li>
                                         </ul>
@@ -86,200 +99,312 @@
                     </ul>
                 </div>
             </div>
-            <div class="title-wrap">
-                <p>Información general</p>
+            <div class="list-wrap">
+                <ul>
+                    @{ if (pProject.Roh_conductedBy != null && !string.IsNullOrEmpty(pProject.Roh_conductedBy.Roh_title))
+                        {
+                            <li>@pProject.Roh_conductedBy.Roh_title</li>
+                        }
+                        else
+                        {
+                            <li>---</li>
+                        } }
+
+                    @{ if (pProject.Roh_conductedBy != null && pProject.Roh_conductedBy.Vcard_hasAddress != null && pProject.Roh_conductedBy.Vcard_hasAddress.Vcard_hasCountryName != null)
+                        {
+                            <li>@pProject.Roh_conductedBy.Vcard_hasAddress.Vcard_locality</li>
+                        }
+                        else
+                        {
+                            //TODO: Ñapa
+                            if (pProject.GNOSSID == "http://gnoss.com/items/Project_831011de-5eb7-4ccf-bdd5-16e8082fd4ee_f23b1d04-d1c1-403a-bb4e-8df64ad8ff03")
+                            {
+                                <li>España</li>
+                            }
+                            else
+                            {
+                                <li>TODO: País</li>
+                            }
+                        } }
+                </ul>
             </div>
-            <div class="group-wrap">
+            <div class="list-wrap authors">
+                <div class="label">
+                    @Html.Translate("PERSONAL_INVESTIGADOR_PRINCIPAL")
+                    @{ if (pProject.Vivo_relates != null && pProject.Vivo_relates.Count > 0)
+                        {
+                            foreach (BFO_0000023 persona in pProject.Vivo_relates)
+                            {
+                                if (persona != null && persona.Roh_participationType != null)
+                                {
+                                    if (persona.Roh_participationType.Dc_title[GnossOCBase.LanguageEnum.es] == "Investigador principal" || persona.Roh_participationType.Dc_title[GnossOCBase.LanguageEnum.es] == "Altres")
+                                    {
+                                        @persona.Roh_roleOf.Foaf_name }
+                                }
+                            }
+                        } }
+                </div>
+            </div>
+            <div class="info-proyecto">
+                <div class="bloque">
+                    <div class="descripcion">
+                        @{ if (!string.IsNullOrEmpty(pProject.Vivo_description))
+                            {
+                                <p>@pProject.Vivo_description</p> }
+                            else
+                            {
+                                <p>---</p> } }
+                    </div>
+                </div>
                 <div class="bloque">
                     <div class="label">@Html.Translate("ENTIDAD_FINANCIADORA")</div>
-                    <div class="value">TODO: Entidad financiadora</div>
+                    @{ if (pProject.Roh_grantedBy != null && pProject.Roh_grantedBy.Count > 0)
+                        {
+                            foreach (Organization organizacion in pProject.Roh_grantedBy)
+                            {
+                                if (organizacion != null && !string.IsNullOrEmpty(organizacion.Roh_title))
+                                {
+                                    <div class="value">@organizacion.Roh_title</div> }
+                                else
+                                {
+                                    <div class="value">---</div> }
+                            }
+                        }
+                        else
+                        {
+                            <div class="value">---</div> } }
                 </div>
                 <div class="bloque">
                     <div class="label">@Html.Translate("PROGRAMA_FINANCIACION")</div>
-                    <div class="value">TODO: Programa de financiación</div>
+                    @{ if (pProject.Roh_isSupportedBy != null)
+                        {
+                            if (!string.IsNullOrEmpty(pProject.Roh_isSupportedBy.Vivo_description))
+                            {
+                                <div class="value">@pProject.Roh_isSupportedBy.Vivo_description</div> }
+                            else
+                            {
+                                <div class="value">---</div> }
+                        }
+                        else
+                        {
+                            <div class="value">---</div> } }
                 </div>
+                @*<div class="bloque">
+                        <div class="label">Tipo de proyecto</div>
+                        <div class="value">---</div>
+                    </div>*@
                 <div class="bloque">
-                    <div class="label">@Html.Translate("CODIGO_PROYECTO")</div>
-                    <div class="value">TODO: Código</div>
+                    <div class="label">@Html.Translate("MODALIDAD_PROYECTO")</div>
+                    @if (pProject.Roh_modality != null && pProject.Roh_modality.Dc_title != null && pProject.Roh_modality.Dc_title.Count > 0)
+                    {
+                        <div class="value">@pProject.Roh_modality.Dc_title[idiomaUsuario]</div> }
+                    else
+                    {
+                        <div class="value">---</div>}
                 </div>
-                <div class="bloque">
-                    <div class="label">@Html.Translate("PRESUPUESTO")</div>
-                    <div class="value">TODO: Presupuesto</div>
+                <div class="fila">
+                    @*<div class="bloque">
+                            <div class="label">@Html.Translate("CODIGO_PROYECTO")</div>
+                            @if (!string.IsNullOrEmpty(pProject.Roh_crisIdentifier))
+                            {
+                            <div class="value">@pProject.Roh_crisIdentifier</div>
+                            }
+                            else
+                            {
+                            <div class="value">---</div>
+                            }
+                        </div>*@
+                    <div class="bloque">
+                        <div class="label">@Html.Translate("AMBITO_GEOGRAFICO")</div>
+                        @if (pProject.Vivo_geographicFocus != null && pProject.Vivo_geographicFocus.Dc_title != null && pProject.Vivo_geographicFocus.Dc_title.Count > 0)
+                        {
+                            <div class="value">@pProject.Vivo_geographicFocus.Dc_title[idiomaUsuario]</div> }
+                        else
+                        {
+                            <div class="value">---</div>}
+                    </div>
+                    <div class="bloque">
+                        <div class="label">@Html.Translate("NUMERO_INVESTIGADORES")</div>
+                        @if (pProject.Roh_researchersNumber != null && pProject.Roh_researchersNumber.HasValue)
+                        {
+                            <div class="value">@pProject.Roh_researchersNumber</div> }
+                        else
+                        {
+                            <div class="value">---</div>}
+                    </div>
                 </div>
-                <div class="bloque">
-                    <div class="label">@Html.Translate("ESTADO")</div>
-                    <div class="value">TODO: Concedido</div>
-                </div>
-                <div class="bloque">
-                    <div class="label">@Html.Translate("FECHA_INICIO")</div>
-                    <div class="value">
-                        @{
+                <div class="fila">
+                    <div class="bloque">
+                        <div class="label">@Html.Translate("FECHA_INICIO")</div>
+                        @if (pProject.Vivo_start != null && pProject.Vivo_start.HasValue)
+                        {
                             string anioInicio = pProject.Vivo_start.Value.Year.ToString();
                             string mesInicio = pProject.Vivo_start.Value.Month.ToString();
                             string diaInicio = pProject.Vivo_start.Value.Day.ToString();
                             string fechaInicio = diaInicio + "/" + mesInicio + "/" + anioInicio;
-                            @fechaInicio
-                        }
+
+                            <div class="value">@fechaInicio</div>}
                     </div>
-                </div>
-                <div class="bloque">
-                    <div class="label">@Html.Translate("FECHA_FIN")</div>
-                    <div class="value">
-                        @{
+                    <div class="bloque">
+                        <div class="label">@Html.Translate("FECHA_FIN")</div>
+                        @if (pProject.Vivo_end != null && pProject.Vivo_end.HasValue)
+                        {
                             string anioFin = pProject.Vivo_end.Value.Year.ToString();
                             string mesFin = pProject.Vivo_end.Value.Month.ToString();
                             string diaFin = pProject.Vivo_end.Value.Day.ToString();
                             string fechaFin = diaFin + "/" + mesFin + "/" + anioFin;
-                            @fechaFin
-                        }
+                            <div class="value">@fechaFin</div>}
                     </div>
+                    @*<div class="bloque">
+                            <div class="label">Estado</div>
+                            <div class="value">---</div>
+                        </div>*@
                 </div>
-                <div class="bloque">
-                </div>
-                <div class="bloque">
-                    <div class="label">@Html.Translate("INVESTIGADOR_PRINCIPAL")</div>
-                    <div class="value">
-                        @{
-                            string nombres = string.Empty;
+            </div>
+            <div class="list-wrap tags">
+                <div class="label">@Html.Translate("TOPICS")</div>
+                <ul>
+                    @{ //TODO: Ñapa
+                        int contadorCategorias = 0;
+                        if (pProject.GNOSSID == "http://gnoss.com/items/Project_831011de-5eb7-4ccf-bdd5-16e8082fd4ee_f23b1d04-d1c1-403a-bb4e-8df64ad8ff03")
+                        {
+                            List<string> topicos = new List<string>();
+                            topicos.Add("ZOOLOGY");
+                            topicos.Add("IMMUNOLOGY");
+                            topicos.Add("IMMUNOLOGY AND MICROBIOLOGY");
+                            topicos.Add("VETERINARY");
+                            topicos.Add("VETERINARY SCIENCES");
+                            topicos.Add("BIOCHEMISTRY & MOLECULAR BIOLOGY");
+                            topicos.Add("CELL BIOLOGY");
+                            topicos.Add("ENDOCRINOLOGY & METABOLISM");
+                            topicos.Add("SIN CLASIFICAR");
+                            topicos.Add("PARASITOLOGY");
 
-                            if (pProject.Vivo_relates != null && pProject.Vivo_relates.Count > 0)
+                            foreach (string cat in topicos)
                             {
-                                foreach (BFO_0000023 persona in pProject.Vivo_relates)
+                                contadorCategorias++;
+                                if (contadorCategorias <= 3)
                                 {
-                                    nombres += persona.Roh_roleOf.Foaf_name + ", ";
+                                    <li>
+                                        <a>
+                                            <span class="texto">@cat</span>
+                                        </a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="ocultar" style="display: none;">
+                                        <a>
+                                            <span class="texto">@cat</span>
+                                        </a>
+                                    </li>
                                 }
                             }
+                        } }
+
+                    @if (pProject.Roh_hasProjectClassification != null && pProject.Roh_hasProjectClassification.Count > 0)
+                    {
+                        foreach (ProjectClassification clasificacion in pProject.Roh_hasProjectClassification)
+                        {
+                            if (clasificacion != null && clasificacion.IdsRoh_projectClassificationNode != null && clasificacion.IdsRoh_projectClassificationNode.Count > 0)
+                            {
+                                foreach (string nodo in clasificacion.IdsRoh_projectClassificationNode)
+                                {
+                                    if (!string.IsNullOrEmpty(nodo))
+                                    {
+                                        <li>
+                                            <a>
+                                                <span class="texto">@nodo</span>
+                                            </a>
+                                        </li>
+                                    }
+                                    else
+                                    {
+                                        <li>
+                                            <a>
+                                                <span class="texto">---</span>
+                                            </a>
+                                        </li>
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                <li>
+                                    <a>
+                                        <span class="texto">---</span>
+                                    </a>
+                                </li>
+                            }
                         }
-                        @nombres.Substring(0, nombres.Length - 2)
-                    </div>
-                </div>
-                <!--
-                <div class="bloque">
-                    <div class="label">@Html.Translate("COINVESTIGADOR_PRINCIPAL")</div>
-                    <div class="value">TODO: Coinvestigador principal</div>
-                </div>
-                -->
-            </div>
-            <div class="descripcion">
-                <p>
-                    TODO: Descripción del proyecto.
-                </p>
+                    }
+                    else
+                    {
+                        if (pProject.GNOSSID != "http://gnoss.com/items/Project_831011de-5eb7-4ccf-bdd5-16e8082fd4ee_f23b1d04-d1c1-403a-bb4e-8df64ad8ff03")
+                        {
+                            <li>
+                                <a>
+                                    <span class="texto">---</span>
+                                </a>
+                            </li>
+                        }
+                    }
+                </ul>
+                @{ if (contadorCategorias > 3)
+                    {
+                        <p class="moreResults">
+                            <a href="javascript: void(0);" class="ver-mas" style="display: flex;">@Html.Translate("VER_MAS")</a>
+                            <a href="javascript: void(0);" class="ver-menos" style="display: none;">@Html.Translate("VER_MENOS")</a>
+                        </p> } }
             </div>
         </div>
+
         <div class="contenido-ficha contenido-proyecto">
             <div class="tab-paneles-ficha">
-                <ul class="nav nav-tabs" id="navegacion-recurso" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <a class="nav-link active" id="participantes-tab" data-toggle="tab" href="#participantes-panel" role="tab" aria-controls="participantes-panel" aria-selected="true">
-                            <div class="bloque">
-                                <div class="label">Participantes</div>
-                                <div class="data"></div>
-                            </div>
-                        </a>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <a class="nav-link" id="publicaciones-tab" data-toggle="tab" href="#publicaciones-panel" role="tab" aria-controls="publicaciones-panel" aria-selected="false">
-                            <div class="bloque">
-                                <div class="label">Publicaciones</div>
-                                <div class="data"></div>
-                            </div>
-                        </a>
-                    </li>
-                </ul>
+
+                <div class="tabs">
+                    <ul class="nav nav-tabs" id="navegacion-recurso" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link active" id="participantes-tab" data-toggle="tab" href="#participantes-panel" role="tab" aria-controls="participantes-panel" aria-selected="true">
+                                <div class="bloque">
+                                    <div class="label">@Html.Translate("PARTICIPANTES")</div>
+                                    <div class="data"></div>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="publicaciones-tab" data-toggle="tab" href="#publicaciones-panel" role="tab" aria-controls="publicaciones-panel" aria-selected="false">
+                                <div class="bloque">
+                                    <div class="label">@Html.Translate("PUBLICACIONES")</div>
+                                    <div class="data"></div>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="temas-investigacion-tab" data-toggle="tab" href="#temas-investigacion-panel" role="tab" aria-controls="temas-investigacion-panel" aria-selected="false">
+                                <div class="bloque">
+                                    <div class="label">@Html.Translate("TOPICS")</div>
+                                    <div class="data"></div>
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+
                 <div class="tab-content" id="paneles-recurso">
                     <div class="tab-pane fade show active" id="participantes-panel" role="tabpanel" aria-labelledby="referencias-tab">
-                        <div class="row">
+                        <div class="row" id="contenedorBuscadorParticipantes">
                             <div class="col col-12 col-grafo mb-5">
                                 <div class="wrapCol" id="graficaCytoscape" style="width: 1224px; height: 500px;"></div>
                             </div>
-                            <div class="col col-12 col-section-title font-weight-bold">
-                                <div class="wrapCol">
-                                    <p>Personas</p>
-                                </div>
-                            </div>
-
-                            <div class="col col-12 col-xl-3 col-facetas col-lateral izquierda">
-                                <!-- Facetas -->
-                                <div class="wrapCol">
-                                    <div class="header-facetas">
-                                        <p>@Html.Translate("FILTROS")</p>
-                                        <a href="javascript: void(0);" class="cerrar">
-                                            <span class="material-icons">close</span>
-                                        </a>
-                                    </div>
-                                    <div @*id="panFacetas"*@ class="facetas-wrap pmd-scrollbar mCustomScrollbar panFacetasAux" data-mcs-theme="minimal-dark"></div>
-                                </div>
-                            </div>
-
-                            <div class="col col-12 col-xl-9 col-contenido derecha">
-                                <div class="wrapCol">
-                                    <div class="header-contenido">
-                                        <!-- Número de resultados -->
-                                        <div class="h1-container">
-                                            <h1>Personas <span @*id="panNumResultados"*@ class="numResultados panNumResultadosAux"></span></h1>
-                                        </div>
-
-                                        <!-- Desplegables derecha -->
-                                        <div class="acciones-listado">
-                                            <div class="wrap">
-
-                                                <!-- Filtros de ordenación -->
-                                                <div class="ordenar dropdown">
-                                                    <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                                        <span class="material-icons">swap_vert</span>
-                                                        <span class="texto">Ordenado por </span>
-                                                    </a>
-                                                    <div class="dropdown-menu basic-dropdown dropdown-menu-right" style="will-change: transform;">
-                                                        <a class="item-dropdown filtro">Fecha</a>
-                                                        <a class="item-dropdown filtro">Popularidad</a>
-                                                    </div>
-                                                </div>
-
-                                                <!-- Modo de visualización -->
-                                                <div class="visualizacion dropdown">
-                                                    <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                                        <span class="material-icons">view_agenda</span>
-                                                        <span class="texto">Visualizar</span>
-                                                    </a>
-                                                    <div class="dropdown-menu basic-dropdown .dropdown-icons dropdown-menu-right" style="will-change: transform;">
-                                                        <a class="item-dropdown aCompacView" data-class-resource-list="compacView">
-                                                            <span class="material-icons">reorder</span>
-                                                            <span class="texto">Compacto</span>
-                                                        </a>
-                                                        <a class="item-dropdown aListView" data-class-resource-list="listView">
-                                                            <span class="material-icons">view_agenda</span>
-                                                            <span class="texto">Lista</span>
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Etiquetas de filtros -->
-                                        <div class="etiquetas panFiltrosAux" @*id="panFiltros"*@>
-                                            <ul class="facetedSearch tags panListadoFiltrosAux" @*id="panListadoFiltros"*@>
-                                                <li class="borrarFiltros-wrap">
-                                                    <a class="borrarFiltros" href="#" onclick="event.preventDefault();LimpiarFiltros();">Borrar</a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-
-                                    <!-- Resultados -->
-                                    <div class="resource-list listView resource-list-buscador">
-                                        <div @*id="panResultados"*@ class="resource-list-wrap panResultadosAux">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
                         </div>
                     </div>
                     <div class="tab-pane fade" id="publicaciones-panel" role="tabpanel" aria-labelledby="publicaciones-tab">
-                        <div class="row">
+                        <div class="row" id="contenedorBuscadorPublicaciones">
                             <div class="col col-12 col-section-title font-weight-bold">
                                 <div class="wrapCol">
-                                    <p>Evolución temporal publicaciones relacionadas</p>
+                                    <p></p>
                                 </div>
                             </div>
                             <div class="col col-12 col-chart">
@@ -288,81 +413,22 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="col col-12 col-section-title font-weight-bold searcherTitle">
+                                <div class="wrapCol">
+                                    <p>@Html.Translate("LISTADO_PUBLICACIONES")</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="temas-investigacion-panel" role="tabpanel" aria-labelledby="temas-investigacion-tab">
+                        <div class="row">
                             <div class="col col-12 col-section-title font-weight-bold">
                                 <div class="wrapCol">
-                                    <p>Listado de publicaciones</p>
                                 </div>
                             </div>
-                            <div class="col col-12 col-xl-3 col-facetas col-lateral izquierda">
-                                <!-- Facetas -->
+                            <div class="col col-12 col-chart">
                                 <div class="wrapCol">
-                                    <div class="header-facetas">
-                                        <p>Filtros</p>
-                                        <a href="javascript: void(0);" class="cerrar">
-                                            <span class="material-icons">close</span>
-                                        </a>
-                                    </div>
-                                    <div @*id="panFacetas"*@ class="facetas-wrap pmd-scrollbar mCustomScrollbar panFacetasAux" data-mcs-theme="minimal-dark"></div>
-                                </div>
-                            </div>
-                            <div class="col col-12 col-xl-9 col-contenido derecha">
-                                <div class="wrapCol">
-                                    <div class="header-contenido">
-                                        <!-- Número de resultados -->
-                                        <div class="h1-container">
-                                            <h1>@Html.Translate("PUBLICACIONES") <span @*id="panNumResultados"*@ class="numResultados panNumResultadosAux"></span></h1>
-                                        </div>
-
-                                        <!-- Desplegables derecha -->
-                                        <div class="acciones-listado">
-                                            <div class="wrap">
-
-                                                <!-- Filtros de ordenación -->
-                                                <div class="ordenar dropdown">
-                                                    <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                                        <span class="material-icons">swap_vert</span>
-                                                        <span class="texto">Ordenado por </span>
-                                                    </a>
-                                                    <div class="dropdown-menu basic-dropdown dropdown-menu-right" style="will-change: transform;">
-                                                        <a class="item-dropdown filtro">Fecha</a>
-                                                        <a class="item-dropdown filtro">Popularidad</a>
-                                                    </div>
-                                                </div>
-
-                                                <!-- Modo de visualización -->
-                                                <div class="visualizacion dropdown">
-                                                    <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                                        <span class="material-icons">view_agenda</span>
-                                                        <span class="texto">Visualizar</span>
-                                                    </a>
-                                                    <div class="dropdown-menu basic-dropdown .dropdown-icons dropdown-menu-right" style="will-change: transform;">
-                                                        <a class="item-dropdown aCompacView" data-class-resource-list="compacView">
-                                                            <span class="material-icons">reorder</span>
-                                                            <span class="texto">Compacto</span>
-                                                        </a>
-                                                        <a class="item-dropdown aListView" data-class-resource-list="listView">
-                                                            <span class="material-icons">view_agenda</span>
-                                                            <span class="texto">Lista</span>
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Etiquetas de filtros -->
-                                        <div class="etiquetas panFiltrosAux" @*id="panFiltros"*@>
-                                            <ul class="facetedSearch tags panListadoFiltrosAux" @*id="panListadoFiltros"*@>
-                                                <li class="borrarFiltros-wrap">
-                                                    <a class="borrarFiltros" href="#" onclick="event.preventDefault();LimpiarFiltros();">Borrar</a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-
-                                    <!-- Resultados -->
-                                    <div class="resource-list listView resource-list-buscador">
-                                        <div @*id="panResultados"*@ class="resource-list-wrap panResultadosAux">
-                                        </div>
+                                    <div class="chart-wrap chart-publicaciones-horizontal">
                                     </div>
                                 </div>
                             </div>
@@ -376,29 +442,35 @@
 
 <!-- JAVASCRIPT -->
 <script type="text/javascript">
-    var depuracion = true; // TODO:
+    var depuracion = false; 
+
+    //Funciones propias de la ficha
 
     // Datos cabeceras de las fichas.
-    var url = "http://servicioshercules.gnoss.net/servicioexternohercules/Hercules/DatosFichaProyecto"
-    if (depuracion) {
-        url = "https://localhost:44367/Hercules/DatosFichaProyecto"
+    function CargarDatosCabeceras() {
+        var url = "http://serviciosedma.gnoss.com/servicioexterno/Hercules/DatosFichaProyecto"
+        if (depuracion) {
+            url = "https://localhost:44367/Hercules/DatosFichaProyecto"
+        }
+        var arg = {};
+        arg.pIdProyecto = "@pProject.GNOSSID";
+        $.get(url, arg, function (data) {
+            $("#participantes-tab div div.data").text(data["Participantes"]);
+            $("#publicaciones-tab div div.data").text(data["Publicaciones"]);
+            $("#temas-investigacion-tab div div.data").text(data["Categorias"]);
+        });
     }
-    var arg = {};
-    arg.pIdProyecto = "@pProject.GNOSSID";
-    $.get(url, arg, function (data) {
-        $("#participantes-tab div div.data").text(data["Participantes"]);
-        $("#publicaciones-tab div div.data").text(data["Publicaciones"]);
-    });
 
     // Datos gráfica colaboradores.
     function CargarGraficaColaboradores(idproyecto, parametros) {
-        var url = "http://servicioshercules.gnoss.net/servicioexternohercules/Hercules/DatosGraficaRedColaboradores"
+        var url = "http://serviciosedma.gnoss.com/servicioexterno/Hercules/DatosGraficaRedColaboradores"
         if (depuracion) {
             url = "https://localhost:44367/Hercules/DatosGraficaRedColaboradores"
         }
         var arg = {};
         arg.pIdProyecto = idproyecto;
         arg.pParametros = parametros;
+		$('#graficaCytoscape').empty();
         $.get(url, arg, function (data) {
             $('#graficaCytoscape').empty();
 
@@ -411,7 +483,6 @@
                     idealEdgeLength: 100,
                     nodeOverlap: 20,
                     refresh: 20,
-                    fit: true,
                     padding: 30,
                     randomize: false,
                     componentSpacing: 100,
@@ -423,21 +494,23 @@
                     initialTemp: 200,
                     coolingFactor: 0.95,
                     minTemp: 1.0
-                },
+
+                }, pan: { x: 350, y: 50 },
                 // Estilos
                 style: [{
                     "selector": "node",
                     "style": {
+
                         "width": "mapData(score, 0, 25, 30, 70)",
                         "height": "mapData(score, 0, 25, 30, 70)",
                         "content": "data(name)",
                         "font-size": "12px",
-                        "text-valign": "center",
-                        "text-halign": "center",
+                        "font-family": 'Roboto',
+                        "font-color": "#999999",
                         "background-color": "#c2c2c2",
-                        "text-outline-color": "#555",
-                        "text-outline-width": "2px",
-                        "color": "#fff",
+
+                        "text-outline-width": "0px",
+
                         "overlay-padding": "6px",
                         "z-index": "10"
                     }
@@ -447,45 +520,130 @@
                         "curve-style": "haystack",
                         "haystack-radius": "0.5",
                         "opacity": "0.4",
-                        "line-color": "#EC0000",
-                        "width": "mapData(weight, 0, 1, 1, 8)",
-                        "overlay-padding": "3px"
+                        "line-color": "#E1E1E1",
+                        "width": "5",
+                        "overlay-padding": "1px",
+                        "font-family": 'Arial Black',
+                        "font-color": 'black'
                     }
                 }],
                 // Datos
                 elements: data
             });
+            cy.zoomingEnabled(false);
+
+            var array = []
+            var nodos = cy.nodes()
+
+            //Quita el nombre de la publicación.
+            array.push(nodos[0]._private.data.name);
+            cy.nodes()[0]._private.data.name = "";
+
+            cy.nodes()[0].style({
+                'border-width': '2px',
+                'border-color': 'black',
+                'shape': 'circle'
+            });
+
+            var f = cy.nodes().length
+
+            for (i = 1; i < cy.nodes().length; i++) { //starts loop
+                array.push(nodos[i]._private.data.name);
+                //cy.nodes()[i]._private.data.name="";
+                cy.nodes()[i].style({
+                    'background-color': 'white',
+                    'background-image': 'https://cdn.iconscout.com/icon/free/png-256/user-1648810-1401302.png',
+                    'background-fit': 'cover',
+                    'border-width': '2px',
+                    'border-color': 'rgb(4,184,209)',
+                    'shape': 'circle'
+                })
+            };
 
             cy.on('mouseover', 'edges', function (event) {
                 $('#numRelaciones').text('(' + event.target.id().split("~")[2] + ')');
             });
+
+            cy.on('click', 'node', function (e) {
+                e = e.target;
+                var indice = cy.nodes().indexOf(e)
+                if (e._private.data.name === "") {
+                    e._private.data.name = array[indice]
+                    //nodo proyect.
+                    if (indice === 0) {
+                        e.style('border-color', 'rgb(12,121,212)')
+                    }
+                    else {
+                        e.style('border-color', 'rgb(4,184,209)')
+                    }
+                }
+                else {
+                    e._private.data.name = ""
+                    if (indice == 0) e.style('border-color', 'black');
+                    else e.style('border-color', 'grey');
+                }
+            })
         });
     }
 
     // Datos gráfica publicaciones.
     function CargarGraficaPublicaciones(idproyecto, parametros) {
-        var url = "http://servicioshercules.gnoss.net/servicioexternohercules/Hercules/DatosGraficaPublicaciones"
+		$('#chart-publicaciones').remove();
+        var url = "http://serviciosedma.gnoss.com/servicioexterno/Hercules/DatosGraficaPublicaciones"
         if (depuracion) {
             url = "https://localhost:44367/Hercules/DatosGraficaPublicaciones"
         }
         var arg = {};
         arg.pIdProyecto = idproyecto;
         arg.pParametros = parametros;
+
         $.get(url, arg, function (data) {
             $('#chart-publicaciones').remove();
-            $('div.chart-publicaciones').append($('<canvas id="chart-publicaciones" class="js-chart" width="600" height="400"></canvas>'));
+            $('div.chart-publicaciones').append($('<canvas id="chart-publicaciones" class="js-chart"></canvas>'));
             var ctx = document.getElementById('chart-publicaciones');
             var parent = ctx.parentElement;
-            var width = parent.offsetWidth;
-            ctx.setAttribute('width', width);
+            var height = parent.offsetHeight;
+            ctx.setAttribute('height', 100);
             var myChart = new Chart(ctx, data);
         });
     }
 
-    var comportamientoPaginaInvestigador = {
-        filtroOculto: null,
+    // Datos gráfica publicaciones horizontal.
+    function CargarGraficaPublicacionesHorizontal(idproyecto, parametros) {
+		$('#chart-publicaciones-horizontal').remove();
+        var url = "http://serviciosedma.gnoss.com/servicioexterno/Hercules/DatosGraficaPublicacionesHorizontal"
+        if (depuracion) {
+            url = "https://localhost:44367/Hercules/DatosGraficaPublicacionesHorizontal"
+        }
+        var arg = {};
+        arg.pIdProyecto = idproyecto;
+        arg.pParametros = parametros;
+        $.get(url, arg, function (data) {
+
+            // Porcentajes en parte inferior.
+            data.options.scales.x.ticks.callback = function (value) { return value + "%" }
+            var altura = data.data.labels.length * 50;
+
+            $('#chart-publicaciones-horizontal').remove();
+            $('div.chart-publicaciones-horizontal').removeAttr("style");
+            $('div.chart-publicaciones-horizontal').css("height", altura + 50);
+
+            $('div.chart-publicaciones-horizontal').append($('<canvas id="chart-publicaciones-horizontal" class="js-chart" width="600" height="' + altura + '"></canvas>'));
+            var ctx = document.getElementById('chart-publicaciones-horizontal');
+            var parent = ctx.parentElement;
+            var width = parent.offsetWidth;
+            ctx.setAttribute('width', width);
+            var height = parent.offsetHeight;
+            ctx.setAttribute('height', height);
+            var myChart = new Chart(ctx, data);
+        });
+    }
+
+    // Comportamiento página proyecto
+    var comportamientoPaginaProyecto = {
         tabActive: null,
         init: function () {
+            CargarDatosCabeceras();
             this.config();
             $('#participantes-tab').click();
             return;
@@ -495,521 +653,45 @@
             $('#participantes-tab').unbind().click(function (e) {
                 e.preventDefault();
                 that.tabActive = "participantes";
-                CargarGraficaColaboradores("@pProject.GNOSSID.Split('_')[1].ToUpper()", "");
-                that.comportamientoParticipantes();
+                //CargarGraficaColaboradores("@pProject.GNOSSID.Split('_')[1].ToUpper()", "");
+                buscadorPersonalizado.init("@Html.Translate("INVESTIGADORES")", "#contenedorBuscadorParticipantes", "searchPersonasRelacionadasConProyecto=@pProject.GNOSSID.Split('_')[1].ToUpper()", null, "PestanyaActualID=@Html.Translate("ID_BUSQUEDA_PERSONAS")|rdf:type=person", "@Comunidad.Url", "@Comunidad.Key.ToString()");
             });
             $('#publicaciones-tab').unbind().click(function (e) {
                 e.preventDefault();
                 that.tabActive = "publicaciones";
-                CargarGraficaPublicaciones("@pProject.GNOSSID.Split('_')[1].ToUpper()", "");
-                that.comportamientoPublicaciones();
+                //CargarGraficaPublicaciones("@pProject.GNOSSID.Split('_')[1].ToUpper()", "");
+                buscadorPersonalizado.init("@Html.Translate("PUBLICACIONES")", "#contenedorBuscadorPublicaciones", "searchDocumentosRelacionadosConProyecto=@pProject.GNOSSID.Split('_')[1].ToUpper()", "dct:issued", "PestanyaActualID=@Html.Translate("ID_BUSQUEDA_DOCUMENTOS")|rdf:type=document", "@Comunidad.Url", "@Comunidad.Key.ToString()");
+            });
+            $('#temas-investigacion-tab').unbind().click(function (e) {
+                e.preventDefault();
+                that.tabActive = "temas-investigacion";
+                CargarGraficaPublicacionesHorizontal("@pProject.GNOSSID.Split('_')[1].ToUpper()", "");
+                history.pushState('', 'New URL: ', ResetearURL());
             });
             return;
-        },
-        comportamientoParticipantes: function () {
-            // Limpia la URL.
-            history.pushState('', 'New URL: ', RefinarURL());
-            // TODO: Revisar tema de los filtros.
-            $('.facetedSearch').remove();
-            $('.panFiltrosAux').removeAttr('id');
-            $('.panResultadosAux').removeAttr('id');
-            $('.panNumResultadosAux').removeAttr('id');
-            $('.panFacetasAux').removeAttr('id');
-            $('.panListadoFiltrosAux').removeAttr('id');
-            $('#participantes-panel .panFiltrosAux').attr('id', 'panFiltros');
-            $('#participantes-panel .panResultadosAux').attr('id', 'panResultados');
-            $('#participantes-panel .panNumResultadosAux').attr('id', 'panNumResultados');
-            $('#participantes-panel .panFacetasAux').attr('id', 'panFacetas');
-            $('#participantes-panel .panListadoFiltrosAux').attr('id', 'panListadoFiltros');
-            $('.etiquetas.panFiltrosAux').append('<ul class="facetedSearch tags" id="panListadoFiltros"></ul>');
-
-            urlComunidad = '@Comunidad.Url';
-            urlCargarAccionesRecursos = '@Comunidad.Url/load-resource-actions';
-            panFacetas = 'panFacetas';
-            panResultados = 'panResultados';
-            numResultadosBusq = 'panNumResultados';
-            panFiltrosPulgarcito = 'panListadoFiltros';
-            updResultados = 'panResultados';
-            divFiltros = 'panFiltros';
-            ubicacionBusqueda = 'Meta';
-            grafo = '@Comunidad.Key.ToString().ToLower()';
-            adminVePersonas = 'False';
-            tipoBusqeda = 0;
-            idNavegadorBusqueda = 'panNavegador';
-            ordenPorDefecto = 'gnoss:hasfechapublicacion';
-            ordenEnSearch = 'gnoss:relevancia';
-            filtroContexto = "";
-            tiempoEsperaResultados = 0;
-            suplementoFiltros = '';
-            primeraCargaDeFacetas = false;
-            @{
-                string idTab = Html.Translate("ID_BUSQUEDA_PERSONAS");
-            }
-
-            //parametros_adiccionales = 'PestanyaActualID=@idTab|rdf:type=asiodocument|orden=asc|ordenarPor=vivo:dateTimeValue';
-            parametros_adiccionales = 'PestanyaActualID=@idTab|rdf:type=person';
-            mostrarFacetas = true;
-            mostrarCajaBusqueda = true;
-            FiltrarPorFacetas("");
-        },
-        comportamientoPublicaciones: function () {
-            // Limpia la URL.
-            history.pushState('', 'New URL: ', RefinarURL());
-            // TODO: Revisar tema de los filtros.
-            $('.facetedSearch').remove();
-            $('.panFiltrosAux').removeAttr('id');
-            $('.panResultadosAux').removeAttr('id');
-            $('.panNumResultadosAux').removeAttr('id');
-            $('.panFacetasAux').removeAttr('id');
-            $('.panListadoFiltrosAux').removeAttr('id');
-            $('#publicaciones-panel .panFiltrosAux').attr('id', 'panFiltros');
-            $('#publicaciones-panel .panResultadosAux').attr('id', 'panResultados');
-            $('#publicaciones-panel .panNumResultadosAux').attr('id', 'panNumResultados');
-            $('#publicaciones-panel .panFacetasAux').attr('id', 'panFacetas');
-            $('#publicaciones-panel .panListadoFiltrosAux').attr('id', 'panListadoFiltros');
-            $('.etiquetas.panFiltrosAux').append('<ul class="facetedSearch tags" id="panListadoFiltros"></ul>');
-
-            urlComunidad = '@Comunidad.Url';
-            urlCargarAccionesRecursos = '@Comunidad.Url/load-resource-actions';
-            panFacetas = 'panFacetas';
-            panResultados = 'panResultados';
-            numResultadosBusq = 'panNumResultados';
-            panFiltrosPulgarcito = 'panListadoFiltros';
-            updResultados = 'panResultados';
-            divFiltros = 'panFiltros';
-            ubicacionBusqueda = 'Meta';
-            grafo = '@Comunidad.Key.ToString().ToLower()';
-            adminVePersonas = 'False';
-            tipoBusqeda = 0;
-            idNavegadorBusqueda = 'panNavegador';
-            ordenPorDefecto = 'gnoss:hasfechapublicacion';
-            ordenEnSearch = 'gnoss:relevancia';
-            filtroContexto = "";
-            tiempoEsperaResultados = 0;
-            suplementoFiltros = '';
-            primeraCargaDeFacetas = false;
-            @{
-                idTab = Html.Translate("ID_BUSQUEDA_DOCUMENTOS");
-            }
-
-            //parametros_adiccionales = 'PestanyaActualID=@idTab|rdf:type=asiodocument|orden=asc|ordenarPor=vivo:dateTimeValue';
-            parametros_adiccionales = 'PestanyaActualID=@idTab|rdf:type=document';
-            mostrarFacetas = true;
-            mostrarCajaBusqueda = true;
-            FiltrarPorFacetas("");
         }
     };
-    comportamientoPaginaInvestigador.init();
 
-    function RefinarURL() {
-        var urlActual = window.location.href;
-        if (urlActual.includes("?")) {
-            urlActual = urlActual.split("?")[0];
-        }
-        return urlActual;
-    }
+    $(function () {
+        comportamientoPaginaProyecto.init();
+    });
 
-    function SubirPagina() {
-        //window.scroll(0, $('#panFacetas').offset().top - 50);
-    }
-
-    function FiltrarPorFacetas(filtro) {
-        if (typeof FiltrarBandejaMensajes != "undefined") {
-            return FiltrarBandejaMensajes(filtro);
-        }
-        else if (typeof FiltrarPerfilUsuario != "undefined") {
-            return FiltrarPerfilUsuario(filtro);
-        }
-        else if (typeof ProcesarFiltro != "undefined") {
-            return ProcesarFiltro(filtro);
-        }
-
-        if (comportamientoPaginaInvestigador.tabActive == "participantes") {
-            comportamientoPaginaInvestigador.filtroOculto ="|searchPersonasRelacionadasConProyecto=@pProject.GNOSSID.Split('_')[1].ToUpper()";
-            filtro += "|searchPersonasRelacionadasConProyecto=@pProject.GNOSSID.Split('_')[1].ToUpper()";
+    // Acciones al llevar a cabo en rl filtrado
+    function accionFiltrado() {
+        if (comportamientoPaginaProyecto.tabActive == "participantes") {
             var parametros = ObtenerHash2();
-            if (parametros.startsWith("URL=")) {
-                parametros = parametros.substring(parametros.indexOf('submit=Cargar') + 13);
-            }
+            CargarGraficaColaboradores("@pProject.GNOSSID.Split('_')[1].ToUpper()", parametros);
         }
-        else if (comportamientoPaginaInvestigador.tabActive == "publicaciones"){
-            comportamientoPaginaInvestigador.filtroOculto ="|searchDocumentosRelacionadosConProyecto=@pProject.GNOSSID.Split('_')[1].ToUpper()";
-            filtro += "|searchDocumentosRelacionadosConProyecto=@pProject.GNOSSID.Split('_')[1].ToUpper()";
+        else if (comportamientoPaginaProyecto.tabActive == "publicaciones") {
             var parametros = ObtenerHash2();
-            if (parametros.startsWith("URL=")) {
-                parametros = parametros.substring(parametros.indexOf('submit=Cargar') + 13);
-            }
+            CargarGraficaPublicaciones("@pProject.GNOSSID.Split('_')[1].ToUpper()", parametros);
         }
-
-        //TODO: Filtros.
-        //if ($('.etiquetas.panFiltrosAux ul li').hasClass("@pProject.GNOSSID.Split('_')[1].ToUpper()")) {
-            //$('.etiquetas.panFiltrosAux ul li."@pProject.GNOSSID.Split('_')[1].ToUpper()"').remove();
-        //}
-
-        return FiltrarPorFacetasGenerico(filtro);
-    }
-
-    MontarResultadosScroll.peticionScrollResultados= function () {
-        var defr = $.Deferred();
-        //Realizamos la peticion
-        if (this.pagActual == null) {
-            this.pagActual = 1;
-        }
-        this.pagActual++;
-        //var servicio = new WS($('input.inpt_UrlServicioResultados').val(), WSDataType.jsonp);
-        var filtros = ObtenerHash2().replace(/&/g, '|');
-        filtros += comportamientoPaginaInvestigador.filtroOculto;
-        if (typeof (filtroDePag) != 'undefined' && filtroDePag != '') {
-            if (filtros != '') {
-                filtros = filtroDePag + '|' + filtros;
-            }
-            else {
-                filtros = filtroDePag;
-            }
-        }
-
-        filtros += "|pagina=" + this.pagActual;
-        var params = {};
-
-        params['pUsarMasterParaLectura'] = bool_usarMasterParaLectura;
-        params['pProyectoID'] = $('input.inpt_proyID').val();
-        params['pEsUsuarioInvitado'] = $('input.inpt_bool_esUsuarioInvitado').val() == 'True';
-        params['pIdentidadID'] = $('input.inpt_identidadID').val();
-        params['pParametros'] = '' + filtros.replace('#', '');
-        params['pLanguageCode'] = $('input.inpt_Idioma').val();
-        params['pPrimeraCarga'] = false;
-        params['pAdministradorVeTodasPersonas'] = false;
-        params['pTipoBusqueda'] = tipoBusqeda;
-        params['pNumeroParteResultados'] = 1;
-        params['pGrafo'] = grafo;
-        params['pFiltroContexto'] = filtroContexto;
-        params['pParametros_adiccionales'] = parametros_adiccionales;
-        params['cont'] = contResultados;
-
-
-        $.post(obtenerUrl($('input.inpt_UrlServicioResultados').val()) + "/CargarResultados", params, function (response) {
-            if (params['cont'] == contResultados) {
-                var data = response
-                if (response.Value != null) {
-                    data = response.Value;
-                }
-                defr.resolve(data);
-            }
-        }, "json");
-        return defr;
     }
 
 
-    //function comportamientoCargaFacetasComunidad() {
-        //$('#panListadoFiltros li[class="http://gnoss/@pProject.GNOSSID.Split('_')[1].ToUpper()"]').remove();
-    //}
-
-    // TODO: Cambiar.
-        //function MontarResultados(pFiltros, pPrimeraCarga, pNumeroResultados, pPanelID, pTokenAfinidad) {
-        //    contResultados = contResultados + 1;
-        //    if (document.getElementById('ctl00_ctl00_CPH1_CPHContenido_txtRecursosSeleccionados') != null) {
-        //        document.getElementById('ctl00_ctl00_CPH1_CPHContenido_txtRecursosSeleccionados').value = '';
-        //        document.getElementById('ctl00_ctl00_CPH1_CPHContenido_lblErrorMisRecursos').style.display = 'none';
-        //    }
-        //    var servicio = new WS($('input.inpt_UrlServicioResultados').val(), WSDataType.jsonp);
-
-        //    var paramAdicional = parametros_adiccionales;
-
-        //    /*
-        //    if ($('li.mapView').attr('class') == "mapView activeView") {
-        //        paramAdicional += 'busquedaTipoMapa=true';
-        //    }*/
-        //    /*
-        //    if ($('.chartView').attr('class') == "chartView activeView") {
-        //        paramAdicional = 'busquedaTipoChart=' + chartActivo + '|' + paramAdicional;
-        //    }*/
-
-        //    if ($('li.mapView').hasClass('activeView')) {
-        //        paramAdicional += 'busquedaTipoMapa=true';
-        //    }
-
-
-        //    if ($('.chartView').hasClass('activeView')) {
-        //        paramAdicional = 'busquedaTipoChart=' + chartActivo + '|' + paramAdicional;
-        //    }
-
-        //    var metodo = 'CargarResultados';
-        //    var params = {};
-
-        //    if (bool_usarMasterParaLectura) {
-        //        if (finUsoMaster == null) {
-        //            finUsoMaster = new Date();
-        //            finUsoMaster.setMinutes(finUsoMaster.getMinutes() + 1);
-        //        }
-        //        else {
-        //            var fechaActual = new Date();
-        //            if (fechaActual > finUsoMaster) {
-        //                bool_usarMasterParaLectura = false;
-        //                finUsoMaster = null;
-        //            }
-        //        }
-        //    }
-
-        //    params['pUsarMasterParaLectura'] = bool_usarMasterParaLectura;
-        //    params['pProyectoID'] = $('input.inpt_proyID').val();
-        //    params['pEsUsuarioInvitado'] = $('input.inpt_bool_esUsuarioInvitado').val() == 'True';
-
-        //    if (typeof (identOrg) != 'undefined') {
-
-        //        params['pIdentidadID'] = identOrg;
-        //    }
-        //    else {
-
-        //        params['pIdentidadID'] = $('input.inpt_identidadID').val();
-        //    }
-        //    params['pParametros'] = '' + pFiltros;
-        //    params['pLanguageCode'] = $('input.inpt_Idioma').val();
-        //    params['pPrimeraCarga'] = pPrimeraCarga == "True";
-        //    params['pAdministradorVeTodasPersonas'] = adminVePersonas == "True";
-        //    params['pTipoBusqueda'] = tipoBusqeda;
-        //    params['pNumeroParteResultados'] = pNumeroResultados;
-        //    params['pGrafo'] = grafo;
-        //    params['pFiltroContexto'] = filtroContexto;
-        //    params['pParametros_adiccionales'] = paramAdicional;
-        //    params['cont'] = contResultados;
-        //    params['tokenAfinidad'] = pTokenAfinidad;
-
-        //    $.post(obtenerUrl($('input.inpt_UrlServicioResultados').val()) + "/" + metodo, params, function (response) {
-        //        if (params['cont'] == contResultados) {
-        //            var data = response
-        //            if (response.Value != null) {
-        //                data = response.Value;
-        //            }
-
-        //            var vistaMapa = (params['pParametros_adiccionales'].indexOf('busquedaTipoMapa=true') != -1);
-        //            var vistaChart = (params['pParametros_adiccionales'].indexOf('busquedaTipoChart=') != -1);
-
-        //            var descripcion = data;
-
-        //            var funcionJS = '';
-        //            if (descripcion.indexOf('###ejecutarFuncion###') != -1) {
-        //                var funcionJS = descripcion.substring(descripcion.indexOf('###ejecutarFuncion###') + '###ejecutarFuncion###'.length);
-        //                funcionJS = funcionJS.substring(0, funcionJS.indexOf('###ejecutarFuncion###'));
-
-        //                descripcion = descripcion.replace('###ejecutarFuncion###' + funcionJS + '###ejecutarFuncion###', '');
-        //            }
-
-        //            if (tipoBusqeda == 12) {
-        //                var panelListado = $(pPanelID).parent();
-        //                panelListado.html('<div id="' + pPanelID.replace('#', '') + '"></div><div id="' + panResultados.replace('#', '') + '"></div>')
-
-        //                var panel = $(pPanelID);
-        //                panel.css('display', 'none');
-        //                panel.html(descripcion);
-        //                panelListado.append(panel.find('.resource-list').html())
-        //                panel.find('.resource-list').html('');
-        //            } else if (!vistaMapa && !vistaChart) {
-        //                $(pPanelID).append(descripcion);
-        //            }
-        //            else {
-        //                var arraydatos = descripcion.split('|||');
-
-        //                if ($('#panAuxMapa').length == 0) {
-        //                    $(pPanelID).parent().html($(pPanelID).parent().html() + '<div id="panAuxMapa" style="display:none;"></div>');
-        //                }
-
-        //                if (vistaMapa) {
-        //                    $('#panAuxMapa').html('<div id="numResultadosRemover">' + arraydatos[0] + '</div>');
-        //                }
-
-        //                if (vistaChart) {
-        //                    datosChartActivo = arraydatos;
-        //                    $(pPanelID).html('<div id="divContChart"></div>');
-        //                    eval(jsChartActivo);
-        //                }
-        //                else {
-        //                    utilMapas.MontarMapaResultados(pPanelID, arraydatos);
-        //                }
-        //            }
-        //            FinalizarMontarResultados(paramAdicional, funcionJS, pNumeroResultados, pPanelID);
-        //        }
-        //        if (MontarResultadosScroll.pagActual != null) {
-        //            MontarResultadosScroll.pagActual = 1;
-        //            MontarResultadosScroll.cargarScroll();
-        //        }
-        //    }, "json");
-        //}
-
-        // TODO: Cambiar.
-        //function MontarFacetas(pFiltros, pPrimeraCarga, pNumeroFacetas, pPanelID, pFaceta, pTokenAfinidad) {
-        //    pFiltros = pFiltros.replace(/&/g, '|');
-        //    if (mostrarFacetas) {
-        //        //contFacetas = contFacetas + 1;
-
-        //        var verMas = false;
-
-        //        if (pFaceta != null && pFaceta.indexOf('|vermas') != -1) {
-        //            verMas = true;
-        //            pFaceta = pFaceta.substring(0, pFaceta.lastIndexOf('|'));
-        //        }
-
-        //        var servicio = new WS($('input.inpt_UrlServicioFacetas').val(), WSDataType.jsonp);
-
-        //        var paramAdicional = parametros_adiccionales;
-
-        //        if ($('li.mapView').attr('class') == "mapView activeView") {
-        //            paramAdicional += 'busquedaTipoMapa=true';
-        //        }
-
-        //        var metodo = 'CargarFacetas';
-        //        var params = {};
-
-
-        //        params['pProyectoID'] = $('input.inpt_proyID').val();
-        //        params['pEstaEnProyecto'] = $('input.inpt_bool_estaEnProyecto').val() == 'True';
-        //        params['pEsUsuarioInvitado'] = $('input.inpt_bool_esUsuarioInvitado').val() == 'True';
-        //        params['pIdentidadID'] = $('input.inpt_identidadID').val();
-        //        params['pParametros'] = '' + pFiltros;
-        //        params['pLanguageCode'] = $('input.inpt_Idioma').val();
-        //        params['pPrimeraCarga'] = pPrimeraCarga.toString().toLowerCase() == "true";
-        //        params['pAdministradorVeTodasPersonas'] = adminVePersonas.toString().toLowerCase() == "true";
-        //        params['pTipoBusqueda'] = tipoBusqeda;
-        //        params['pGrafo'] = grafo;
-        //        params['pFiltroContexto'] = filtroContexto;
-        //        if (typeof urlBusqueda != "undefined") {
-        //            params['pUrlPaginaActual'] = urlBusqueda;
-        //        }
-        //        params['pParametros_adiccionales'] = paramAdicional;
-        //        params['pUbicacionBusqueda'] = ubicacionBusqueda;
-        //        params['pNumeroFacetas'] = pNumeroFacetas;
-        //        params['pUsarMasterParaLectura'] = bool_usarMasterParaLectura;
-        //        params['pFaceta'] = pFaceta;
-        //        params['tokenAfinidad'] = pTokenAfinidad;
-
-        //        $.post(obtenerUrl($('input.inpt_UrlServicioFacetas').val()) + "/" + metodo, params, function (data) {
-        //            if (decodeURI(pFiltros) == decodeURI(filtrosPeticionActual) || pFiltros == replaceAll(filtrosPeticionActual, '&', '|') || (typeof filtrosDeInicio !== "undefined" && (pFiltros == filtrosDeInicio || pFiltros == replaceAll(filtrosDeInicio, '|', '&'))) /*|| pFiltros.indexOf(filtrosPeticionActual) >= 0 Esto hace que al quitar filtros se amontonen facetas*/) {
-        //                if (pFaceta == null && (pNumeroFacetas == 1 || pNumeroFacetas == 2)) {
-        //                    MontarFacetas(pFiltros, pPrimeraCarga, pNumeroFacetas + 1, pPanelID, pFaceta, pTokenAfinidad);
-        //                }
-        //                var descripcion = data;
-        //                if (descripcion.indexOf("class=\"box") != -1 && document.getElementById('facetaEncuentra') != null) {
-        //                    document.getElementById('facetaEncuentra').style.display = '';
-        //                }
-        //                $(pPanelID).show();
-
-        //                if (pFaceta != null && data != "" && pNumeroFacetas == -1) {
-        //                    var divFacetaID = pFaceta.replace(/\:/g, '_').replace(/\@@/g, '-');
-        //                    var divFacetaID_out = '#out_' + divFacetaID;
-        //                    if ($(divFacetaID_out).length > 0) {
-        //                        $(divFacetaID_out).show();
-        //                    }
-        //                    else {
-        //                        //No existe el panel out_faceta. Inserto en el panel original el contenido del resultante.
-        //                        $('#' + divFacetaID).replaceWith(data);
-        //                    }
-        //                }
-
-        //                if (pFaceta == null || pFaceta == '' || pNumeroFacetas == 1) {
-					   //     if( pNumeroFacetas == 1)
-					   //     {
-						  //      $('#' + panFacetas).html('');
-					   //     }
-        //                    var panelFacetas = pPanelID;
-        //                    if ($('#facetedSearch').length) {
-        //                        panelFacetas = '#facetedSearch';
-        //                        descripcion = $('<div>' + descripcion + '</div>').find("#facetedSearch").html();
-        //                    }
-
-        //                    if (pNumeroFacetas > 1 && $(".listadoAgrupado").length) {
-        //                        panelFacetas = "#" + $(".listadoAgrupado").attr("aux");
-        //                    }
-
-        //                    if (pNumeroFacetas == 1) {
-        //                        if (!descripcion.replace('<div id="facetedSearch" class="facetedSearch">', '').replace('</div>', '').replace('</div>', '').trim().startsWith('<div id="panelFiltros" style="display:none">')) {
-        //                            $('#facetedSearch').css('display', 'block');
-        //                        } else {
-        //                            //Ocultamos el panel de facetas
-        //                            if ($('#facetedSearch').length == 0) {
-        //                                $('#facetedSearch').css('display', 'none')
-        //                            }
-        //                            $(panelFacetas).css('display', 'none')
-        //                        }
-        //                    }
-        //                    $(panelFacetas).append(descripcion);
-
-        //                    facetedSearch.init();
-        //                }
-        //                else {
-        //                    //Si viene el par�metro pFaceta, se est� rellenando una faceta, hay que sustituir el contenido anterior por el actual.
-
-        //                    if (verMas) {
-        //                        descripcion = $('#' + divFacetaID, $(data.trim())).html();
-        //                        var htmlVerMas = $('p.moreResults', $(pPanelID)).html();
-        //                        if (typeof (htmlVerMas) != 'undefined') {
-        //                            htmlVerMas = htmlVerMas.substring(0, htmlVerMas.indexOf('>') + 1) + form.vermenos + '</a>';
-        //                            descripcion += '<p class="moreResults">' + htmlVerMas + '</p>';
-        //                        }
-        //                        if (descripcion == null) {
-
-        //                            descripcion = data.trim();
-        //                        }
-        //                    }
-
-        //                    if (descripcion.indexOf('id="' + pPanelID.substr(1) + '"') != -1) {
-        //                        //La descripci�n ya contiene el panel, lo sustituyo.
-        //                        $(pPanelID).replaceWith(descripcion);
-        //                    }
-        //                    else {
-        //                        $(pPanelID).html(descripcion);
-        //                    }
-        //                    facetedSearch.init();
-        //                }
-
-        //                if (pNumeroFacetas == 1) { MontarPanelFiltros(); }
-        //                /* presentacion facetas */
-        //                limiteLongitudFacetas.init();
-        //                //}
-
-        //                if (pNumeroFacetas == 3) {
-        //                    if ($(".filtroFacetaFecha").length > 0) {
-
-        //                        $(".filtroFacetaFecha").datepicker();
-        //                    }
-
-        //                    if ($("div.divdatepicker").length > 0) {
-        //                        IniciarFacetaCalendario();
-        //                    }
-        //                } else if (pNumeroFacetas == -1 && $("div.divdatepicker").length > 0) {
-        //                    IniciarFacetaCalendario(pFiltros);
-        //                }
-
-
-        //                if (enlazarJavascriptFacetas) {
-        //                    enlazarFacetasBusqueda();
-        //                }
-        //                else {
-        //                    enlazarFacetasNoBusqueda();
-        //                }
-
-        //                if ((typeof CompletadaCargaFacetas != 'undefined')) {
-        //                    /* En los listados de Inevery, hay que ejecutar este script */
-        //                    CompletadaCargaFacetas();
-        //                }
-
-        //                if (funcionExtraFacetas != "") {
-        //                    eval(funcionExtraFacetas);
-        //                }
-        //            }
-        //        });
-        //    }
-        //    else {
-        //        var col1 = document.getElementById('col01');
-        //        if (col1 != null) {
-        //            $('#col01').css('display', 'none');
-        //            $('#col02').css('float', 'left');
-        //        }
-        //    }
-        //    primeraCargaDeFacetas = false;
-        //}
 </script>
 
-@functions{
-    public class RDFPropertyAttribute : Attribute
+@functions{ public class RDFPropertyAttribute : Attribute
     {
         public RDFPropertyAttribute(string pRDFA)
         {
@@ -1296,6 +978,11 @@
         public Project(SemanticResourceModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
         {
             this.mGNOSSID = pSemCmsModel.RootEntities[0].Entity.Uri;
+            SemanticPropertyModel propRoh_isSupportedBy = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isSupportedBy");
+            if (propRoh_isSupportedBy != null && propRoh_isSupportedBy.PropertyValues.Count > 0)
+            {
+                this.Roh_isSupportedBy = new Funding(propRoh_isSupportedBy.PropertyValues[0].RelatedEntity, idiomaUsuario);
+            }
             this.Roh_grantedBy = new List<Organization>();
             SemanticPropertyModel propRoh_grantedBy = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/grantedBy");
             if (propRoh_grantedBy != null && propRoh_grantedBy.PropertyValues.Count > 0)
@@ -1309,16 +996,6 @@
                     }
                 }
             }
-            SemanticPropertyModel propRoh_isSupportedBy = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isSupportedBy");
-            if (propRoh_isSupportedBy != null && propRoh_isSupportedBy.PropertyValues.Count > 0)
-            {
-                this.Roh_isSupportedBy = new Funding(propRoh_isSupportedBy.PropertyValues[0].RelatedEntity, idiomaUsuario);
-            }
-            SemanticPropertyModel propRoh_conductedBy = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/conductedBy");
-            if (propRoh_conductedBy != null && propRoh_conductedBy.PropertyValues.Count > 0)
-            {
-                this.Roh_conductedBy = new Organization(propRoh_conductedBy.PropertyValues[0].RelatedEntity, idiomaUsuario);
-            }
             this.Roh_hasProjectClassification = new List<ProjectClassification>();
             SemanticPropertyModel propRoh_hasProjectClassification = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/hasProjectClassification");
             if (propRoh_hasProjectClassification != null && propRoh_hasProjectClassification.PropertyValues.Count > 0)
@@ -1329,29 +1006,6 @@
                     {
                         ProjectClassification roh_hasProjectClassification = new ProjectClassification(propValue.RelatedEntity, idiomaUsuario);
                         this.Roh_hasProjectClassification.Add(roh_hasProjectClassification);
-                    }
-                }
-            }
-            SemanticPropertyModel propVivo_geographicFocus = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#geographicFocus");
-            if (propVivo_geographicFocus != null && propVivo_geographicFocus.PropertyValues.Count > 0)
-            {
-                this.Vivo_geographicFocus = new GeographicRegion(propVivo_geographicFocus.PropertyValues[0].RelatedEntity, idiomaUsuario);
-            }
-            SemanticPropertyModel propRoh_modality = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/modality");
-            if (propRoh_modality != null && propRoh_modality.PropertyValues.Count > 0)
-            {
-                this.Roh_modality = new Modality(propRoh_modality.PropertyValues[0].RelatedEntity, idiomaUsuario);
-            }
-            this.Vivo_relates = new List<BFO_0000023>();
-            SemanticPropertyModel propVivo_relates = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#relates");
-            if (propVivo_relates != null && propVivo_relates.PropertyValues.Count > 0)
-            {
-                foreach (SemanticPropertyModel.PropertyValue propValue in propVivo_relates.PropertyValues)
-                {
-                    if (propValue.RelatedEntity != null)
-                    {
-                        BFO_0000023 vivo_relates = new BFO_0000023(propValue.RelatedEntity, idiomaUsuario);
-                        this.Vivo_relates.Add(vivo_relates);
                     }
                 }
             }
@@ -1381,17 +1035,46 @@
                     }
                 }
             }
+            SemanticPropertyModel propVivo_geographicFocus = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#geographicFocus");
+            if (propVivo_geographicFocus != null && propVivo_geographicFocus.PropertyValues.Count > 0)
+            {
+                this.Vivo_geographicFocus = new GeographicRegion(propVivo_geographicFocus.PropertyValues[0].RelatedEntity, idiomaUsuario);
+            }
+            SemanticPropertyModel propRoh_conductedBy = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/conductedBy");
+            if (propRoh_conductedBy != null && propRoh_conductedBy.PropertyValues.Count > 0)
+            {
+                this.Roh_conductedBy = new Organization(propRoh_conductedBy.PropertyValues[0].RelatedEntity, idiomaUsuario);
+            }
+            this.Vivo_relates = new List<BFO_0000023>();
+            SemanticPropertyModel propVivo_relates = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#relates");
+            if (propVivo_relates != null && propVivo_relates.PropertyValues.Count > 0)
+            {
+                foreach (SemanticPropertyModel.PropertyValue propValue in propVivo_relates.PropertyValues)
+                {
+                    if (propValue.RelatedEntity != null)
+                    {
+                        BFO_0000023 vivo_relates = new BFO_0000023(propValue.RelatedEntity, idiomaUsuario);
+                        this.Vivo_relates.Add(vivo_relates);
+                    }
+                }
+            }
+            SemanticPropertyModel propRoh_modality = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/modality");
+            if (propRoh_modality != null && propRoh_modality.PropertyValues.Count > 0)
+            {
+                this.Roh_modality = new Modality(propRoh_modality.PropertyValues[0].RelatedEntity, idiomaUsuario);
+            }
+            this.Roh_relevantResults = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/relevantResults"));
+            this.Roh_peopleYearNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/peopleYearNumber"));
+            this.Roh_durationMonths = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/durationMonths"));
             this.Roh_geographicFocusOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/geographicFocusOther"));
+            this.Roh_researchersNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/researchersNumber"));
             this.Roh_durationDays = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/durationDays"));
             this.Vivo_start = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#start"));
-            this.Roh_relevantResults = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/relevantResults"));
-            this.Roh_durationMonths = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/durationMonths"));
-            this.Vivo_end = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#end"));
-            this.Roh_crisIdentifier = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/crisIdentifier"));
-            this.Roh_monetaryAmount = GetNumberFloatPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/monetaryAmount"));
             this.Roh_durationYears = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/durationYears"));
-            this.Roh_researchersNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/researchersNumber"));
-            this.Roh_peopleYearNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/peopleYearNumber"));
+            this.Roh_crisIdentifier = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/crisIdentifier"));
+            this.Vivo_end = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#end"));
+            this.Vivo_description = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#description"));
+            this.Roh_monetaryAmount = GetNumberFloatPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/monetaryAmount"));
             this.Roh_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/title"));
         }
 
@@ -1399,6 +1082,11 @@
         {
             this.mGNOSSID = pSemCmsModel.Entity.Uri;
             this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
+            SemanticPropertyModel propRoh_isSupportedBy = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isSupportedBy");
+            if (propRoh_isSupportedBy != null && propRoh_isSupportedBy.PropertyValues.Count > 0)
+            {
+                this.Roh_isSupportedBy = new Funding(propRoh_isSupportedBy.PropertyValues[0].RelatedEntity, idiomaUsuario);
+            }
             this.Roh_grantedBy = new List<Organization>();
             SemanticPropertyModel propRoh_grantedBy = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/grantedBy");
             if (propRoh_grantedBy != null && propRoh_grantedBy.PropertyValues.Count > 0)
@@ -1412,16 +1100,6 @@
                     }
                 }
             }
-            SemanticPropertyModel propRoh_isSupportedBy = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isSupportedBy");
-            if (propRoh_isSupportedBy != null && propRoh_isSupportedBy.PropertyValues.Count > 0)
-            {
-                this.Roh_isSupportedBy = new Funding(propRoh_isSupportedBy.PropertyValues[0].RelatedEntity, idiomaUsuario);
-            }
-            SemanticPropertyModel propRoh_conductedBy = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/conductedBy");
-            if (propRoh_conductedBy != null && propRoh_conductedBy.PropertyValues.Count > 0)
-            {
-                this.Roh_conductedBy = new Organization(propRoh_conductedBy.PropertyValues[0].RelatedEntity, idiomaUsuario);
-            }
             this.Roh_hasProjectClassification = new List<ProjectClassification>();
             SemanticPropertyModel propRoh_hasProjectClassification = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/hasProjectClassification");
             if (propRoh_hasProjectClassification != null && propRoh_hasProjectClassification.PropertyValues.Count > 0)
@@ -1432,29 +1110,6 @@
                     {
                         ProjectClassification roh_hasProjectClassification = new ProjectClassification(propValue.RelatedEntity, idiomaUsuario);
                         this.Roh_hasProjectClassification.Add(roh_hasProjectClassification);
-                    }
-                }
-            }
-            SemanticPropertyModel propVivo_geographicFocus = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#geographicFocus");
-            if (propVivo_geographicFocus != null && propVivo_geographicFocus.PropertyValues.Count > 0)
-            {
-                this.Vivo_geographicFocus = new GeographicRegion(propVivo_geographicFocus.PropertyValues[0].RelatedEntity, idiomaUsuario);
-            }
-            SemanticPropertyModel propRoh_modality = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/modality");
-            if (propRoh_modality != null && propRoh_modality.PropertyValues.Count > 0)
-            {
-                this.Roh_modality = new Modality(propRoh_modality.PropertyValues[0].RelatedEntity, idiomaUsuario);
-            }
-            this.Vivo_relates = new List<BFO_0000023>();
-            SemanticPropertyModel propVivo_relates = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#relates");
-            if (propVivo_relates != null && propVivo_relates.PropertyValues.Count > 0)
-            {
-                foreach (SemanticPropertyModel.PropertyValue propValue in propVivo_relates.PropertyValues)
-                {
-                    if (propValue.RelatedEntity != null)
-                    {
-                        BFO_0000023 vivo_relates = new BFO_0000023(propValue.RelatedEntity, idiomaUsuario);
-                        this.Vivo_relates.Add(vivo_relates);
                     }
                 }
             }
@@ -1484,53 +1139,63 @@
                     }
                 }
             }
+            SemanticPropertyModel propVivo_geographicFocus = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#geographicFocus");
+            if (propVivo_geographicFocus != null && propVivo_geographicFocus.PropertyValues.Count > 0)
+            {
+                this.Vivo_geographicFocus = new GeographicRegion(propVivo_geographicFocus.PropertyValues[0].RelatedEntity, idiomaUsuario);
+            }
+            SemanticPropertyModel propRoh_conductedBy = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/conductedBy");
+            if (propRoh_conductedBy != null && propRoh_conductedBy.PropertyValues.Count > 0)
+            {
+                this.Roh_conductedBy = new Organization(propRoh_conductedBy.PropertyValues[0].RelatedEntity, idiomaUsuario);
+            }
+            this.Vivo_relates = new List<BFO_0000023>();
+            SemanticPropertyModel propVivo_relates = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#relates");
+            if (propVivo_relates != null && propVivo_relates.PropertyValues.Count > 0)
+            {
+                foreach (SemanticPropertyModel.PropertyValue propValue in propVivo_relates.PropertyValues)
+                {
+                    if (propValue.RelatedEntity != null)
+                    {
+                        BFO_0000023 vivo_relates = new BFO_0000023(propValue.RelatedEntity, idiomaUsuario);
+                        this.Vivo_relates.Add(vivo_relates);
+                    }
+                }
+            }
+            SemanticPropertyModel propRoh_modality = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/modality");
+            if (propRoh_modality != null && propRoh_modality.PropertyValues.Count > 0)
+            {
+                this.Roh_modality = new Modality(propRoh_modality.PropertyValues[0].RelatedEntity, idiomaUsuario);
+            }
+            this.Roh_relevantResults = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/relevantResults"));
+            this.Roh_peopleYearNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/peopleYearNumber"));
+            this.Roh_durationMonths = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/durationMonths"));
             this.Roh_geographicFocusOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/geographicFocusOther"));
+            this.Roh_researchersNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/researchersNumber"));
             this.Roh_durationDays = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/durationDays"));
             this.Vivo_start = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#start"));
-            this.Roh_relevantResults = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/relevantResults"));
-            this.Roh_durationMonths = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/durationMonths"));
-            this.Vivo_end = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#end"));
-            this.Roh_crisIdentifier = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/crisIdentifier"));
-            this.Roh_monetaryAmount = GetNumberFloatPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/monetaryAmount"));
             this.Roh_durationYears = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/durationYears"));
-            this.Roh_researchersNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/researchersNumber"));
-            this.Roh_peopleYearNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/peopleYearNumber"));
+            this.Roh_crisIdentifier = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/crisIdentifier"));
+            this.Vivo_end = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#end"));
+            this.Vivo_description = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#description"));
+            this.Roh_monetaryAmount = GetNumberFloatPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/monetaryAmount"));
             this.Roh_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/title"));
         }
 
         public virtual string RdfType { get { return "http://vivoweb.org/ontology/core#Project"; } }
         public virtual string RdfsLabel { get { return "http://vivoweb.org/ontology/core#Project"; } }
+        [LABEL(LanguageEnum.es, "Financiación")]
+        [RDFProperty("http://w3id.org/roh/isSupportedBy")]
+        public Funding Roh_isSupportedBy { get; set; }
+
         [LABEL(LanguageEnum.es, "Entidad/es financiadora/s")]
         [RDFProperty("http://w3id.org/roh/grantedBy")]
         public List<Organization> Roh_grantedBy { get; set; }
         public List<string> IdsRoh_grantedBy { get; set; }
 
-        [LABEL(LanguageEnum.es, "Financiación")]
-        [RDFProperty("http://w3id.org/roh/isSupportedBy")]
-        public Funding Roh_isSupportedBy { get; set; }
-
-        [LABEL(LanguageEnum.es, "Entidad de realización")]
-        [RDFProperty("http://w3id.org/roh/conductedBy")]
-        public Organization Roh_conductedBy { get; set; }
-        public string IdRoh_conductedBy { get; set; }
-
         [LABEL(LanguageEnum.es, "Clasificación del proyecto")]
         [RDFProperty("http://w3id.org/roh/hasProjectClassification")]
         public List<ProjectClassification> Roh_hasProjectClassification { get; set; }
-
-        [LABEL(LanguageEnum.es, "Ámbito geográfico")]
-        [RDFProperty("http://vivoweb.org/ontology/core#geographicFocus")]
-        public GeographicRegion Vivo_geographicFocus { get; set; }
-        public string IdVivo_geographicFocus { get; set; }
-
-        [LABEL(LanguageEnum.es, "Modalidad de proyecto")]
-        [RDFProperty("http://w3id.org/roh/modality")]
-        public Modality Roh_modality { get; set; }
-        public string IdRoh_modality { get; set; }
-
-        [LABEL(LanguageEnum.es, "Relacionado con")]
-        [RDFProperty("http://vivoweb.org/ontology/core#relates")]
-        public List<BFO_0000023> Vivo_relates { get; set; }
 
         [LABEL(LanguageEnum.es, "Resultados de la clasificación del proyecto")]
         [RDFProperty("http://w3id.org/roh/hasResultsProjectClassification")]
@@ -1541,9 +1206,44 @@
         public List<Organization> Roh_participates { get; set; }
         public List<string> IdsRoh_participates { get; set; }
 
+        [LABEL(LanguageEnum.es, "Ámbito geográfico")]
+        [RDFProperty("http://vivoweb.org/ontology/core#geographicFocus")]
+        public GeographicRegion Vivo_geographicFocus { get; set; }
+        public string IdVivo_geographicFocus { get; set; }
+
+        [LABEL(LanguageEnum.es, "Entidad de realización")]
+        [RDFProperty("http://w3id.org/roh/conductedBy")]
+        public Organization Roh_conductedBy { get; set; }
+        public string IdRoh_conductedBy { get; set; }
+
+        [LABEL(LanguageEnum.es, "Relacionado con")]
+        [RDFProperty("http://vivoweb.org/ontology/core#relates")]
+        public List<BFO_0000023> Vivo_relates { get; set; }
+
+        [LABEL(LanguageEnum.es, "Modalidad de proyecto")]
+        [RDFProperty("http://w3id.org/roh/modality")]
+        public Modality Roh_modality { get; set; }
+        public string IdRoh_modality { get; set; }
+
+        [LABEL(LanguageEnum.es, "Resultados relevantes")]
+        [RDFProperty("http://w3id.org/roh/relevantResults")]
+        public string Roh_relevantResults { get; set; }
+
+        [LABEL(LanguageEnum.es, "Nº de personas/año")]
+        [RDFProperty("http://w3id.org/roh/peopleYearNumber")]
+        public int? Roh_peopleYearNumber { get; set; }
+
+        [LABEL(LanguageEnum.es, "Duración (meses)")]
+        [RDFProperty("http://w3id.org/roh/durationMonths")]
+        public string Roh_durationMonths { get; set; }
+
         [LABEL(LanguageEnum.es, "Ámbito geográfico, otros")]
         [RDFProperty("http://w3id.org/roh/geographicFocusOther")]
         public string Roh_geographicFocusOther { get; set; }
+
+        [LABEL(LanguageEnum.es, "Nº de investigadores/as")]
+        [RDFProperty("http://w3id.org/roh/researchersNumber")]
+        public int? Roh_researchersNumber { get; set; }
 
         [LABEL(LanguageEnum.es, "Duración (días)")]
         [RDFProperty("http://w3id.org/roh/durationDays")]
@@ -1553,37 +1253,25 @@
         [RDFProperty("http://vivoweb.org/ontology/core#start")]
         public DateTime? Vivo_start { get; set; }
 
-        [LABEL(LanguageEnum.es, "Resultados relevantes")]
-        [RDFProperty("http://w3id.org/roh/relevantResults")]
-        public string Roh_relevantResults { get; set; }
-
-        [LABEL(LanguageEnum.es, "Duración (meses)")]
-        [RDFProperty("http://w3id.org/roh/durationMonths")]
-        public string Roh_durationMonths { get; set; }
-
-        [LABEL(LanguageEnum.es, "Fecha de finalización")]
-        [RDFProperty("http://vivoweb.org/ontology/core#end")]
-        public DateTime? Vivo_end { get; set; }
+        [LABEL(LanguageEnum.es, "Duración (años)")]
+        [RDFProperty("http://w3id.org/roh/durationYears")]
+        public string Roh_durationYears { get; set; }
 
         [LABEL(LanguageEnum.es, "Identificador")]
         [RDFProperty("http://w3id.org/roh/crisIdentifier")]
         public string Roh_crisIdentifier { get; set; }
 
+        [LABEL(LanguageEnum.es, "Fecha de finalización")]
+        [RDFProperty("http://vivoweb.org/ontology/core#end")]
+        public DateTime? Vivo_end { get; set; }
+
+        [LABEL(LanguageEnum.es, "Descripción del proyecto")]
+        [RDFProperty("http://vivoweb.org/ontology/core#description")]
+        public string Vivo_description { get; set; }
+
         [LABEL(LanguageEnum.es, "Cuantía total")]
         [RDFProperty("http://w3id.org/roh/monetaryAmount")]
         public float? Roh_monetaryAmount { get; set; }
-
-        [LABEL(LanguageEnum.es, "Duración (años)")]
-        [RDFProperty("http://w3id.org/roh/durationYears")]
-        public string Roh_durationYears { get; set; }
-
-        [LABEL(LanguageEnum.es, "Nº de investigadores/as")]
-        [RDFProperty("http://w3id.org/roh/researchersNumber")]
-        public int? Roh_researchersNumber { get; set; }
-
-        [LABEL(LanguageEnum.es, "Nº de personas/año")]
-        [RDFProperty("http://w3id.org/roh/peopleYearNumber")]
-        public int? Roh_peopleYearNumber { get; set; }
 
         [LABEL(LanguageEnum.es, "Nombre del proyecto")]
         [RDFProperty("http://w3id.org/roh/title")]
@@ -2073,5 +1761,4 @@
         [LABEL(LanguageEnum.es, "Tipo de entidad")]
         [RDFProperty("http://purl.org/dc/elements/1.1/title")]
         public Dictionary<LanguageEnum, string> Dc_title { get; set; }
-    }
-}
+    } }
