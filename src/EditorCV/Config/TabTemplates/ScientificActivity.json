@@ -365,16 +365,52 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Etiquetas"
+													"es": "Volumen"
 												},
 												"placeholder": {
-													"es": "Introduce la etiqueta"
+													"es": "Introduce el volumen"
 												},
-												"property": "http://vivoweb.org/ontology/core#freeTextKeyword",
-												"multiple": true,
+												"property": "http://purl.org/ontology/bibo/volume",
 												"type": "text",
 												"width": 1
-											}
+											},
+											{
+												"title": {
+													"es": "Número"
+												},
+												"placeholder": {
+													"es": "Introduce el número"
+												},
+												"property": "http://purl.org/ontology/bibo/issue",
+												"type": "text",
+												"width": 1
+											},
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Página inicial"
+												},
+												"placeholder": {
+													"es": "Introduce la página inicial"
+												},
+												"property": "http://purl.org/ontology/bibo/pageStart",
+												"type": "number",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Página final"
+												},
+												"placeholder": {
+													"es": "Introduce la página final"
+												},
+												"property": "http://purl.org/ontology/bibo/pageEnd",
+												"type": "number",
+												"width": 1
+											},
 										]
 									},
 									{
@@ -471,7 +507,23 @@
 												}
 											}
 										]
-									}
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Etiquetas"
+												},
+												"placeholder": {
+													"es": "Introduce la etiqueta"
+												},
+												"property": "http://vivoweb.org/ontology/core#freeTextKeyword",
+												"multiple": true,
+												"type": "text",
+												"width": 1
+											}
+										]
+									},
 								]
 							}
 						]
