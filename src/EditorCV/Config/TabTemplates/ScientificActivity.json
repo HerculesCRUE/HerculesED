@@ -918,7 +918,6 @@
 												"title": {
 													"es": "Evento"
 												},
-												"multiple": true,
 												"width": 3,
 												"auxEntityData": {
 													"rdftype": "http://purl.org/ontology/bibo/Event",
