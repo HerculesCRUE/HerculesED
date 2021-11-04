@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 
-namespace ScopusConnect.ROs.Scopus.Models
+namespace WoSConnect.ROs.WoS.Models
 {
-public class Url 
-{
-    public string link { get; set; }
-   // public string description { get; set; }
-}
+// public class Url 
+// {
+//     public string link { get; set; }
+//    // public string description { get; set; }
+// }
 public class Publication 
 {
     public string typeOfPublication { get; set; } //no es un atributo de la ontologia!!
@@ -19,7 +19,7 @@ public class Publication
     public string identifier {get;set;}
     public DateTimeValue dataIssued { get; set; }
 
-    public List<Url> url { get; set; }
+    public List<string> url { get; set; }
     public Person correspondingAuthor { get; set; }
 
     public List<Person> seqOfAuthors { get; set; }
@@ -30,12 +30,13 @@ public class Publication
     public string pageStart { get; set; }
     public Status documentStatus { get; set; }
     public string eanucc13 { get; set; }
+    public List<String> IDs {get;set;}
 
     public Journal hasPublicationVenue { get; set; }
     public PublicationMetric hasMetric { get; set; }
     // TODO preguntar equipo!!1
     public List<Publication> bibliografia { get; set; }
-   
+    public List<Publication> citas {get;set;}
 }
    
 public class ConferencePaper : Publication
@@ -96,7 +97,7 @@ public class Person
     public string ORCID {get;set;}
 
     public string identifier { get; set; }
-    public List<Url> link { get; set; }
+    public List<string> link { get; set; }
     //public string nick { get; set; }
 
 }

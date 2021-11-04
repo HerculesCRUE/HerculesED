@@ -57,66 +57,66 @@ public class Affiliation
 
         [JsonProperty("dc:identifier")]
         public string DcIdentifier { get; set; }
-       /*  public string eid { get; set; }
+        //public string eid { get; set; }
 
         [JsonProperty("dc:title")]
         public string DcTitle { get; set; }
 
-        [JsonProperty("dc:creator")]
-        public string DcCreator { get; set; } */
+        //[JsonProperty("dc:creator")]
+        //public string DcCreator { get; set; } 
 
-       /*  [JsonProperty("prism:publicationName")]
+        [JsonProperty("prism:publicationName")]
         public string PrismPublicationName { get; set; }
 
         [JsonProperty("prism:issn")]
         public string PrismIssn { get; set; }
 
         [JsonProperty("prism:volume")]
-        public string PrismVolume { get; set; } */
+        public string PrismVolume { get; set; } 
 
-       /*  [JsonProperty("prism:pageRange")]
-        public string PrismPageRange { get; set; }*/
+        [JsonProperty("prism:pageRange")]
+        public string PrismPageRange { get; set; }
 
         [JsonProperty("prism:coverDate")]
         public string PrismCoverDate { get; set; }
 
-        [JsonProperty("prism:coverDisplayDate")] 
-          public string PrismCoverDisplayDate { get; set; }
-          /*
+        //[JsonProperty("prism:coverDisplayDate")] 
+        //  public string PrismCoverDisplayDate { get; set; }
+          
 
         [JsonProperty("citedby-count")]
         public string CitedbyCount { get; set; }
-       // public List<Affiliation> affiliation { get; set; }
+      // public List<Affiliation> affiliation { get; set; }
 
         [JsonProperty("prism:aggregationType")]
-        public string PrismAggregationType { get; set; } */
+        public string PrismAggregationType { get; set; } 
         public string subtype { get; set; }
-      /*   public string subtypeDescription { get; set; }
+        public string subtypeDescription { get; set; }
 
         [JsonProperty("source-id")]
         public string SourceId { get; set; }
-        public string openaccess { get; set; }
- */       /*  public bool openaccessFlag { get; set; }
+       // public string openaccess { get; set; }
+  // public bool openaccessFlag { get; set; }
 
-        [JsonProperty("prism:isbn")]
-        public List<PrismIsbn> PrismIsbn { get; set; }
+      //  [JsonProperty("prism:isbn")]
+       // public List<PrismIsbn> PrismIsbn { get; set; }
 
         [JsonProperty("prism:doi")]
         public string PrismDoi { get; set; }
 
-        [JsonProperty("article-number")]
-        public string ArticleNumber { get; set; }
+      //  [JsonProperty("article-number")]
+        //public string ArticleNumber { get; set; }
 
-        [JsonProperty("prism:issueIdentifier")]
-        public string PrismIssueIdentifier { get; set; } */
+       // [JsonProperty("prism:issueIdentifier")]
+      //  public string PrismIssueIdentifier { get; set; } 
 
-      /*   [JsonProperty("pubmed-id")]
-        public string PubmedId { get; set; }
-        public Freetoread freetoread { get; set; }
-        public FreetoreadLabel freetoreadLabel { get; set; }
+//        [JsonProperty("pubmed-id")]
+  //      public string PubmedId { get; set; }
+        //public Freetoread freetoread { get; set; }
+        //public FreetoreadLabel freetoreadLabel { get; set; }
 
         [JsonProperty("prism:eIssn")]
-        public string PrismEIssn { get; set; } */
+        public string PrismEIssn { get; set; } 
     }
 
     public class SearchResults

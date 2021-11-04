@@ -1,0 +1,99 @@
+Esyte artivo es para almacenar los cambios de modelo y donde estan! 
+En el modelo inical partimo de la clase PublicacionInicial y en la otra desde publicacion
+Obtener el DOI----------------------------------
+
+
+Publication.doi = 
+PublicacionInicial.dynamic_data.cluster_related.identifiers[i].Identifier.value
+    identifiers es una lista y hay que encontrar dentro el elemento Identifier que tenga type == "doi",
+
+-------------------------------------------------------------
+publicacion.title = 
+
+static_data.summary.titles.title[i].content
+    title e suna lista de tipo Title y hay que asegurarse que dentro de sus elemento el eleguido es el que tiene type =="item"
+
+-------------------------------------------
+publicacion.Abstract 
+
+static_data.fullrecord_metadata.abstracts.@abstract.abstract_text.p
+Igual tmabien da problemas si tiene mas de un abstract pero no se que va a tener mas de un abstract
+
+--------------------------------------------------------
+
+publicacion.language 
+
+normalized_languages??? no se si sera esta 
+static_data.fullrecord_metadata.languages.language.content
+
+CUIDADO creo que esto puede dar problema si hay mas de un idioma!!!!
+
+
+-------------------------------------------------------------------------
+publication.ids=
+    UID
+
+publicacion.url 
+no hay... yo al menos no lo veo...
+
+---------------------------------------------------------
+
+publicacion.dataIssued 
+static_data.summary.pub_info.sortdate
+
+---------
+typo de publicacion static_data.summary.pub_info.pubtype 
+
+--------------------------------------------------------
+publicacion.pageStart
+
+(static_data.summary.pub_info.page.begin).ToString();
+
+publicacion.pageEnd
+
+(static_data.summary.pub_info.page.end).ToString();
+-----------------------
+
+publicacion.hasKnowledgeArea
+
+no las hago porque no se como se va a hacer esto! 
+
+----------------------------------------------------------------
+publicacion.freetextKeyword 
+
+static_data.fullrecord_metadata.keywords.Keyword es una lista ocmo lo que necesitamos 
+
+----------------------------------------------
+publicacion.correspondingAuthor 
+    names static_data.summary.names.name[i]....
+    ORCID  static_data.summary.names.name[i].orcid_id
+    links
+    id 
+
+--------------------------------------------------
+publicacion.seqOfAuthors 
+
+
+-------------------------------------------------
+publicacion.hasPublicationVenue 
+
+
+---------------------------------------------------------------
+publicacion.hasMetric
+       static_data.fullrecord_metadata.refs.count.ToString()
+
+
+
+
+publicacion.bibliografia = getBiblografia(objInicial);
+publicacion.citas = getCitas(objInicial);
+             
+
+
+
+
+
+
+static_data.summary.publishers.publisher.names.name.seq_n
+
+Cuidado aqui como ESTRUCTURA!!!!!!!

@@ -46,37 +46,98 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                     //Console.Write(entidad.PrismCoverDisplayDate);
 
                     string id = id_code[1];
-                    //Thread.Sleep(3000);
-                    string informacion = this.scopusLogic.getStringPublication(id);
-                    Publication_root info_publicacion_root = getPublication(informacion);
-                    //------------------------------------------------------------------------
-                    //Console.Write(id);
-                    //Console.Write("-------");
-                    if (info_publicacion_root != null)
+                    string informacion; //= this.scopusLogic.getStringPublication(id);
+                    Publication_root info_publicacion_root; //= getPublication(informacion);
+                                                            //------------------------------------------------------------------------
+                                                            //Console.Write(id);
+                                                            //Console.Write("-------");
+                                                            // if (info_publicacion_root != null)
+                                                            //{
+                    if (entidad.subtype == "cp")
                     {
-                        if (entidad.subtype == "cp")
-                        {
-                            ConferencePaper conferencePaper = getConferencePaper(info_publicacion_root);
-                            //conferencePaper.bibliografia = getBibliografia(info_publicacion_root);
-                            conferencePaper.typeOfPublication = "ConferencePaper";
-                            sol.Add(conferencePaper);
-                        }
-                        else if (entidad.subtype == "ar")
-                        {
-                            JournalArticle conferencePaper = getJournalArticle(info_publicacion_root);
-                            //conferencePaper.bibliografia = getBibliografia(info_publicacion_root);
-                            conferencePaper.typeOfPublication = "JournalArticle";
-                            sol.Add(conferencePaper);
+                        ConferencePaper conferencePaper = new ConferencePaper();
+                        conferencePaper.typeOfPublication = "ConferencePaper";
+                        conferencePaper.doi = getDoi_llamada_inicial(entidad);
+                        conferencePaper.title = getTitle_llamada_inicial(entidad);
+                        conferencePaper.dataIssued = getDate_llamada_inicial(entidad);
+                        conferencePaper.hasMetric = getPublicationMetric_llamada_inicial(entidad);
+                        List<String> paginas = getPageRage(entidad);
+                        conferencePaper.pageStart = paginas[0];
+                        conferencePaper.pageEnd = paginas[1];
+                        conferencePaper.hasPublicationVenue = getJournal_inicial(entidad);
 
-                        }
-                        else
-                        {
-                            Publication publicacion = getGenericPublication(info_publicacion_root);
-                            //publicacion.bibliografia = getBibliografia(info_publicacion_root);
-                            publicacion.typeOfPublication = "AcademicArticle"; // TODO no tengo claro si aqui seria Article o Academic Article 
-                            sol.Add(publicacion);
 
+                        //conferencePaper.bibliografia = getBibliografia(info_publicacion_root);
+                        Console.Write(conferencePaper.doi);
+                        Console.Write("hhh");
+                        Console.Write("-----------");
+                        informacion = this.scopusLogic.getStringPublication(id);
+                        info_publicacion_root = getPublication(informacion);
+                        if (info_publicacion_root != null)
+                        {
+                            ConferencePaper conferencePaper_completo = getConferencePaper(info_publicacion_root, conferencePaper);
+                            sol.Add(conferencePaper_completo);
                         }
+                    }
+                    else if (entidad.subtype == "ar")
+                    {
+                        JournalArticle conferencePaper = new JournalArticle();
+                        conferencePaper.typeOfPublication = "JournalArticle";
+                        conferencePaper.doi = getDoi_llamada_inicial(entidad);
+                        conferencePaper.title = getTitle_llamada_inicial(entidad);
+                        conferencePaper.dataIssued = getDate_llamada_inicial(entidad);
+                        conferencePaper.hasMetric = getPublicationMetric_llamada_inicial(entidad);
+                        List<string> paginas = getPageRage(entidad);
+                        conferencePaper.pageStart = paginas[0];
+                        conferencePaper.pageEnd = paginas[1];
+                        conferencePaper.hasPublicationVenue = getJournal_inicial(entidad);
+
+                         Console.Write(conferencePaper.doi);
+                                                 Console.Write("hhh");
+
+                        Console.Write("-----------");
+                        //conferencePaper.bibliografia = getBibliografia(info_publicacion_root);
+                        // Completamos los datos con la segunda llamada. 
+                        informacion = this.scopusLogic.getStringPublication(id);
+                        info_publicacion_root = getPublication(informacion);
+                        if (info_publicacion_root != null)
+                        {
+
+                            JournalArticle JournalArticle_completa = getJournalArticle(info_publicacion_root, conferencePaper);
+                            sol.Add(JournalArticle_completa);
+                        }
+
+                    }
+                    else
+                    {
+                        Publication publicacion = new Publication();
+                        publicacion.typeOfPublication = "AcademicArticle"; // TODO no tengo claro si aqui seria Article o Academic Article 
+                        publicacion.doi = getDoi_llamada_inicial(entidad);
+                        publicacion.title = getTitle_llamada_inicial(entidad);
+                        publicacion.dataIssued = getDate_llamada_inicial(entidad);
+                        publicacion.hasMetric = getPublicationMetric_llamada_inicial(entidad);
+                        publicacion.hasPublicationVenue = getJournal_inicial(entidad);
+                        //Console.Write(entidad.PrismPageRange);
+                        List<string> paginas = getPageRage(entidad);
+
+                        publicacion.pageStart = paginas[0];
+                        publicacion.pageEnd = paginas[1];
+                        Console.Write(publicacion.doi);
+                        Console.Write("hhh");
+                        Console.Write("-----------");
+                        //Console.Write(publicacion.doi);
+                        //publicacion.bibliografia = getBibliografia(info_publicacion_root);
+                        informacion = this.scopusLogic.getStringPublication(id);
+                        info_publicacion_root = getPublication(informacion);
+                        if (info_publicacion_root != null)
+                        {
+
+                            // Completamos los metadatos de la publicacion con la segunda llamada. 
+                            Publication publication_completa = Publication_inicial(info_publicacion_root, publicacion);
+                            sol.Add(publication_completa);
+                        }
+
+
                     }
                 }
             }
@@ -141,12 +202,17 @@ namespace ScopusConnect.ROs.Scopus.Controllers
             Publication_root info_publicacion = new Publication_root();
             try
             {
+                //Console.Write(stringPublication);
+                //string path = @"C:\Users\mpuer\Desktop\MyTest.txt";
+                //System.IO.File.WriteAllText(path, stringPublication);
                 info_publicacion = JsonConvert.DeserializeObject<Publication_root>(stringPublication);
             }
             catch
             {
+                string path = @"C:\Users\mpuer\Desktop\MyTest.txt";
+                System.IO.File.WriteAllText(path, stringPublication);
                 //Todo: comentar si quieren hacer algo aqui con esta excepción. 
-                info_publicacion = null;
+                //info_publicacion = null;
                 Console.Write("Error de deserializacion del articulo.");
             }
             return info_publicacion;
@@ -194,6 +260,52 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                 return pageStart;
             }
         }
+        public List<String> getPageRage(Entry objInicial)
+        {
+            List<String> paguinas = new List<string>();
+            if (objInicial != null & objInicial.PrismPageRange != null)
+            {
+                string coverPage = objInicial.PrismPageRange;
+                //Console.Write(coverPage);
+                //Console.Write("------------------------");
+                if (coverPage.Contains("-"))
+                {
+                    string[] pages = coverPage.Split("-");
+                    paguinas.Add(pages[0]);
+                    paguinas.Add(pages[1]);
+                    return paguinas;
+                }
+                else
+                {
+
+                    paguinas.Add(null);
+                    paguinas.Add(null);
+                    return paguinas;
+                }
+            }
+            else
+            {
+
+                paguinas.Add(null);
+                paguinas.Add(null);
+                return paguinas;
+            }
+        }
+
+
+        public string getTitle_llamada_inicial(Entry objInicial)
+        {
+            if (objInicial != null & objInicial.DcTitle != null)
+            {
+                string title = objInicial.DcTitle;
+                return title;
+            }
+            else
+            {
+                string title = null;
+                return title;
+            }
+        }
         public string getTitle(Publication_root objInicial)
         {
             if (objInicial != null & objInicial.AbstractsRetrievalResponse != null)
@@ -238,6 +350,21 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                 return url_null;
             }
         }
+        public string getDoi_llamada_inicial(Entry objInicial)
+        {
+            if (objInicial != null)
+            {
+                string doi = objInicial.PrismDoi;
+                return doi;
+            }
+            else
+            {
+                string doi = null;
+                return doi;
+            }
+        }
+
+
         public string getDoi(Publication_root objInicial)
         {
             if (objInicial.AbstractsRetrievalResponse != null)
@@ -251,6 +378,7 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                 return doi;
             }
         }
+
         public List<KnowledgeArea> getKnowledgeAreas(Publication_root objInicial)
         {
             if (objInicial.AbstractsRetrievalResponse != null)
@@ -331,12 +459,41 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                 return null;
             }
         }
+
+        public Journal getJournal_inicial(Entry objInicial)
+        {
+            if (objInicial != null)
+            {
+                Journal journal = new Journal();
+                journal.name = objInicial.PrismPublicationName;
+                journal.issn = objInicial.PrismIssn;
+                // TODO mas info sobre la revista
+                return journal;
+            }
+            else
+            {
+                return null;
+            }
+        }
         public DateTimeValue getDate(Publication_root objInicial)
         {
             if (objInicial.AbstractsRetrievalResponse != null)
             {
                 DateTimeValue date = new DateTimeValue();
                 date.datimeTime = objInicial.AbstractsRetrievalResponse.coredata.PrismCoverDate;
+                return date;
+            }
+            else
+            {
+                return null;
+            }
+        }
+        public DateTimeValue getDate_llamada_inicial(Entry objInicial)
+        {
+            if (objInicial != null)
+            {
+                DateTimeValue date = new DateTimeValue();
+                date.datimeTime = objInicial.PrismCoverDate;
                 return date;
             }
             else
@@ -398,6 +555,21 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                 return publicationMetric;
             }
         }
+        public PublicationMetric getPublicationMetric_llamada_inicial(Entry objInicial)
+        {
+            if (objInicial != null)
+            {
+                PublicationMetric publicationMetric = new PublicationMetric();
+                publicationMetric.citationCount = objInicial.CitedbyCount;
+                publicationMetric.metricName = "Scopus";
+                return publicationMetric;
+            }
+            else
+            {
+                PublicationMetric publicationMetric = null;
+                return publicationMetric;
+            }
+        }
 
         public Person getPerson(Author info_person)
         {
@@ -437,6 +609,36 @@ namespace ScopusConnect.ROs.Scopus.Controllers
 
         /// no se deberian necesitar de modificar en otros modelos!!!!!!
 
+        public Publication Publication_inicial(Publication_root objInicial, Publication publicacion)
+        {
+            //title--------------------------------------------------------------------
+            //links-----------------------------------------------------------------------------
+            publicacion.url = getLinks(objInicial);
+            //doi-----------------------------------------------------------------------------
+            //publicacion.doi = getDoi(objInicial);
+            //knowledgeAreas--------------------------------------------------------------------
+            publicacion.hasKnowledgeArea = getKnowledgeAreas(objInicial);
+            //corresponding author-----------------------------------------------------------
+            publicacion.correspondingAuthor = getAuthorPrincipal(objInicial);
+            // lisOfAuthors-------------------------------------------------------------------
+            publicacion.seqOfAuthors = getAuthors(objInicial);
+            //journal------------------------------------------------------
+            publicacion.hasPublicationVenue = getJournal(objInicial);
+            //date--------------------------------------------------------
+            //language --------------------------------------------------------
+            publicacion.language = getLanguage(objInicial);
+            // freetextKeyword ------------------------------------------------------
+            publicacion.freetextKeyword = getFreetextKeyword(objInicial);
+            //abstract------------------------------------------- 
+            publicacion.Abstract = getAbstract(objInicial);
+            if (publicacion.pageStart == null)
+            {
+                publicacion.pageStart = getPageStart(objInicial);
+                publicacion.pageEnd = getPageEnd(objInicial);
+            }
+            // publication metric --------------------------------
+            return publicacion;
+        }
         public Publication getGenericPublication(Publication_root objInicial)
         {
             Publication publicacion = new Publication();
@@ -470,15 +672,17 @@ namespace ScopusConnect.ROs.Scopus.Controllers
             return publicacion;
         }
 
-        public JournalArticle getJournalArticle(Publication_root objInicial)
+
+
+        public JournalArticle getJournalArticle(Publication_root objInicial, JournalArticle publicacion)
         {
-            JournalArticle publicacion = new JournalArticle();
+            //JournalArticle publicacion = new JournalArticle();
             //title--------------------------------------------------------------------
-            publicacion.title = getTitle(objInicial);
+            //publicacion.title = getTitle(objInicial);
             //links-----------------------------------------------------------------------------
             publicacion.url = getLinks(objInicial);
             //doi-----------------------------------------------------------------------------
-            publicacion.doi = getDoi(objInicial);
+            //publicacion.doi = getDoi(objInicial);
             //knowledgeAreas--------------------------------------------------------------------
             publicacion.hasKnowledgeArea = getKnowledgeAreas(objInicial);
             //corresponding author-----------------------------------------------------------
@@ -488,7 +692,6 @@ namespace ScopusConnect.ROs.Scopus.Controllers
             //journal------------------------------------------------------
             publicacion.hasPublicationVenue = getJournal(objInicial);
             //date--------------------------------------------------------
-            publicacion.dataIssued = getDate(objInicial);
             //language --------------------------------------------------------
             publicacion.language = getLanguage(objInicial);
             // freetextKeyword ------------------------------------------------------
@@ -496,24 +699,28 @@ namespace ScopusConnect.ROs.Scopus.Controllers
             //abstract------------------------------------------- 
             publicacion.Abstract = getAbstract(objInicial);
             //page start and page end ------------------------------------------
-            publicacion.pageStart = getPageStart(objInicial);
-            publicacion.pageEnd = getPageEnd(objInicial);
+            if (publicacion.pageStart == null)
+            {
+                publicacion.pageStart = getPageStart(objInicial);
+                publicacion.pageEnd = getPageEnd(objInicial);
+            }
             // publication metric --------------------------------
             publicacion.hasMetric = getPublicationMetric(objInicial);
+
             return publicacion;
 
         }
 
-        public ConferencePaper getConferencePaper(Publication_root objInicial)
+        public ConferencePaper getConferencePaper(Publication_root objInicial, ConferencePaper publicacion)
         {
 
-            ConferencePaper publicacion = new ConferencePaper();
+            //ConferencePaper publicacion = new ConferencePaper();
             //title--------------------------------------------------------------------
-            publicacion.title = getTitle(objInicial);
+            //publicacion.title = getTitle(objInicial);
             //links-----------------------------------------------------------------------------
             publicacion.url = getLinks(objInicial);
             //doi-----------------------------------------------------------------------------
-            publicacion.doi = getDoi(objInicial);
+            //publicacion.doi = getDoi(objInicial);
             //knowledgeAreas--------------------------------------------------------------------
             publicacion.hasKnowledgeArea = getKnowledgeAreas(objInicial);
             //corresponding author-----------------------------------------------------------
@@ -523,7 +730,6 @@ namespace ScopusConnect.ROs.Scopus.Controllers
             //journal------------------------------------------------------
             publicacion.hasPublicationVenue = getJournal(objInicial);
             //date--------------------------------------------------------
-            publicacion.dataIssued = getDate(objInicial);
             //language --------------------------------------------------------
             publicacion.language = getLanguage(objInicial);
             // freetextKeyword ------------------------------------------------------
@@ -531,10 +737,12 @@ namespace ScopusConnect.ROs.Scopus.Controllers
             //abstract------------------------------------------- 
             publicacion.Abstract = getAbstract(objInicial);
             //page start and page end ------------------------------------------
-            publicacion.pageStart = getPageStart(objInicial);
-            publicacion.pageEnd = getPageEnd(objInicial);
+            if (publicacion.pageStart == null)
+            {
+                publicacion.pageStart = getPageStart(objInicial);
+                publicacion.pageEnd = getPageEnd(objInicial);
+            }
             // publication metric --------------------------------
-            publicacion.hasMetric = getPublicationMetric(objInicial);
             return publicacion;
         }
     }
