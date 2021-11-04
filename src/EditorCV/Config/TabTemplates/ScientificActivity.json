@@ -252,7 +252,18 @@
 																	"property": "http://purl.org/dc/elements/1.1/title"
 																}
 															}
-														}
+														},
+														{
+															"name": {
+																"es": "Índice de impacto"
+															},
+															"child": {
+																"property": "http://w3id.org/roh/impactIndex",
+																"child": {
+																	"property": "http://purl.org/dc/elements/1.1/title"
+																}
+															}
+														},
 													],
 													"rows": [
 														{

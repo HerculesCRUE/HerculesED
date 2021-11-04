@@ -1,29 +1,28 @@
 <config>
     <ConfiguracionGeneral>
-        <namespace>modality</namespace>
+        <namespace>projectmodality</namespace>
         <idiomasOnto>
             <idiomaOnto>es</idiomaOnto>
         </idiomasOnto>
-        <TituloDoc EntidadID="http://w3id.org/roh/Modality">http://purl.org/dc/elements/1.1/title</TituloDoc>
+        <TituloDoc EntidadID="http://w3id.org/roh/ProjectModality">http://purl.org/dc/elements/1.1/title</TituloDoc>
 		<MultiIdioma></MultiIdioma>
         <HtmlNuevo>true</HtmlNuevo>
     </ConfiguracionGeneral>
     <EspefPropiedad>
-        <Propiedad  ID="http://purl.org/dc/elements/1.1/title" EntidadID="http://w3id.org/roh/Modality">
-            <AtrNombre>Modalidad</AtrNombre>
-            <AtrNombreLectura>Modalidad</AtrNombreLectura>
-			<MultiIdioma></MultiIdioma>
+        <Propiedad  ID="http://purl.org/dc/elements/1.1/title" EntidadID="http://w3id.org/roh/ProjectModality">
+            <AtrNombre>Modalidad de proyecto</AtrNombre>
+            <AtrNombreLectura>Modalidad de proyecto</AtrNombreLectura>
         </Propiedad>
-        <Propiedad  ID="http://purl.org/dc/elements/1.1/identifier" EntidadID="http://w3id.org/roh/Modality">
-            <AtrNombre>Identificador de modalidad</AtrNombre>
-            <AtrNombreLectura>Identificador de modalidad</AtrNombreLectura>
+        <Propiedad  ID="http://purl.org/dc/elements/1.1/identifier" EntidadID="http://w3id.org/roh/ProjectModality">
+            <AtrNombre>Identificador de modalidad de proyecto</AtrNombre>
+            <AtrNombreLectura>Identificador de modalidad de proyecto</AtrNombreLectura>
 			<MultiIdioma>false</MultiIdioma>
         </Propiedad>
     </EspefPropiedad>
     <EspefEntidad>
-        <Entidad  ID="http://w3id.org/roh/Modality">
-            <AtrNombre>Modalidad</AtrNombre>
-            <AtrNombreLectura>Modalidad</AtrNombreLectura>
+        <Entidad  ID="http://w3id.org/roh/ProjectModality">
+            <AtrNombre>Modalidad de proyecto</AtrNombre>
+            <AtrNombreLectura>Modalidad de proyecto</AtrNombreLectura>
             <OrdenEntidad>
                 <Grupo class="formtheme02">
                     <Grupo class="fieldset">

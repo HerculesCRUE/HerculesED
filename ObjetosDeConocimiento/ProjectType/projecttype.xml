@@ -1,29 +1,28 @@
 <config>
     <ConfiguracionGeneral>
-        <namespace>supporttype</namespace>
+        <namespace>projecttype</namespace>
         <idiomasOnto>
             <idiomaOnto>es</idiomaOnto>
         </idiomasOnto>
-        <TituloDoc EntidadID="http://w3id.org/roh/SupportType">http://purl.org/dc/elements/1.1/title</TituloDoc>
+        <TituloDoc EntidadID="http://w3id.org/roh/ProjectType">@@@TITULO</TituloDoc>
 		<MultiIdioma></MultiIdioma>
         <HtmlNuevo>true</HtmlNuevo>
     </ConfiguracionGeneral>
     <EspefPropiedad>
-        <Propiedad  ID="http://purl.org/dc/elements/1.1/title" EntidadID="http://w3id.org/roh/SupportType">
-            <AtrNombre>Tipo de soporte</AtrNombre>
-            <AtrNombreLectura>Tipo de soporte</AtrNombreLectura>
-			<MultiIdioma></MultiIdioma>
+        <Propiedad  ID="http://purl.org/dc/elements/1.1/title" EntidadID="http://w3id.org/roh/ProjectType">
+            <AtrNombre>http://purl.org/dc/elements/1.1/title</AtrNombre>
+            <AtrNombreLectura>http://purl.org/dc/elements/1.1/title</AtrNombreLectura>
         </Propiedad>
-        <Propiedad  ID="http://purl.org/dc/elements/1.1/identifier" EntidadID="http://w3id.org/roh/SupportType">
-            <AtrNombre>Identificador del tipo de soporte</AtrNombre>
-            <AtrNombreLectura>Identificador del tipo de soporte</AtrNombreLectura>
+        <Propiedad  ID="http://purl.org/dc/elements/1.1/identifier" EntidadID="http://w3id.org/roh/ProjectType">
+            <AtrNombre>http://purl.org/dc/elements/1.1/identifier</AtrNombre>
+            <AtrNombreLectura>http://purl.org/dc/elements/1.1/identifier</AtrNombreLectura>
 			<MultiIdioma>false</MultiIdioma>
         </Propiedad>
     </EspefPropiedad>
     <EspefEntidad>
-        <Entidad  ID="http://w3id.org/roh/SupportType">
-            <AtrNombre>Tipo de soporte</AtrNombre>
-            <AtrNombreLectura>Tipo de soporte</AtrNombreLectura>
+        <Entidad  ID="http://w3id.org/roh/ProjectType">
+            <AtrNombre>http://w3id.org/roh/ProjectType</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/ProjectType</AtrNombreLectura>
             <OrdenEntidad>
                 <Grupo class="formtheme02">
                     <Grupo class="fieldset">

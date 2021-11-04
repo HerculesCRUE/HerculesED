@@ -31,6 +31,14 @@
             <AtrNombre>Nombre completo</AtrNombre>
             <AtrNombreLectura>Nombre completo</AtrNombreLectura>
         </Propiedad>
+		<Propiedad  ID="http://vivoweb.org/ontology/core#scopusId" EntidadID="http://xmlns.com/foaf/0.1/Person">
+            <AtrNombre>ScopusId</AtrNombre>
+            <AtrNombreLectura>ScopusId</AtrNombreLectura>
+        </Propiedad>
+		<Propiedad  ID="http://w3id.org/roh/isSynchronized" EntidadID="http://xmlns.com/foaf/0.1/Person">
+            <AtrNombre>Sincronizado</AtrNombre>
+            <AtrNombreLectura>Sincronizado</AtrNombreLectura>
+        </Propiedad>
         <Propiedad  ID="http://xmlns.com/foaf/0.1/lastName" EntidadID="http://xmlns.com/foaf/0.1/Person">
             <AtrNombre>Apellidos</AtrNombre>
             <AtrNombreLectura>Apellidos</AtrNombreLectura>
@@ -66,8 +74,10 @@
 							<NameProp>http://xmlns.com/foaf/0.1/lastName</NameProp>
 							<NameProp>http://xmlns.com/foaf/0.1/nick</NameProp> 
                             <NameProp>http://w3id.org/roh/ORCID</NameProp> 
+							<NameProp>http://vivoweb.org/ontology/core#scopusId</NameProp> 
                             <NameProp>http://xmlns.com/foaf/0.1/name</NameProp> 
 							<NameProp>http://w3id.org/roh/hasRole</NameProp>
+							<NameProp>http://w3id.org/roh/isSynchronized</NameProp>
                         </Grupo>
                     </Grupo>
                 </Grupo>
@@ -92,8 +102,11 @@
 							<NameProp>http://xmlns.com/foaf/0.1/lastName</NameProp>
 							<NameProp>http://xmlns.com/foaf/0.1/nick</NameProp> 
                             <NameProp>http://w3id.org/roh/ORCID</NameProp> 
+							<NameProp>http://vivoweb.org/ontology/core#scopusId</NameProp>
+							<NameProp>http://w3id.org/roh/isSynchronized</NameProp>
                             <NameProp>http://xmlns.com/foaf/0.1/name</NameProp>
 							<NameProp>http://w3id.org/roh/hasRole</NameProp>
+							<NameProp>http://w3id.org/roh/isSynchronized</NameProp>
                         </Grupo>
                     </Grupo>
                 </Grupo>
