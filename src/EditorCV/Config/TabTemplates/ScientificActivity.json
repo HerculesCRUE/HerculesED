@@ -885,7 +885,7 @@
 					},
 					"listItemEdit": {
 						"graph": "document",
-						"proptitle": "http://w3id.org/roh/title",
+						"proptitle": "http://w3id.org/roh/workTitle",
 						"propdescription": "http://purl.org/ontology/bibo/abstract",
 						"rdftype": "http://purl.org/ontology/bibo/Document",
 						"sections": [
@@ -2461,7 +2461,7 @@
 					},
 					"listItemEdit": {
 						"graph": "document",
-						"proptitle": "http://w3id.org/roh/title",
+						"proptitle": "http://w3id.org/roh/workTitle",
 						"propdescription": "http://purl.org/ontology/bibo/abstract",
 						"rdftype": "http://purl.org/ontology/bibo/Document",
 						"sections": [
