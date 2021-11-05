@@ -504,7 +504,14 @@
 												}
 											}
 										]
-									},
+									}
+								]
+							},
+							{
+								"title": {
+									"es": "Más campos"
+								},
+								"rows": [
 									{
 										"properties": [
 											{
