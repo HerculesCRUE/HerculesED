@@ -593,6 +593,43 @@
 									{
 										"properties": [
 											{
+												"title": {
+													"es": "Depósito legal"
+												},
+												"placeholder": {
+													"es": "Introduce el depósito legal"
+												},
+												"property": "http://w3id.org/roh/legalDeposit",
+												"type": "text",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Colección"
+												},
+												"placeholder": {
+													"es": "Introduce la colección"
+												},
+												"property": "http://w3id.org/roh/collection",
+												"type": "text",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "URL"
+												},
+												"placeholder": {
+													"es": "Introduce la URL"
+												},
+												"property": "https://www.w3.org/2006/vcard/ns#url",
+												"type": "text",
+												"width": 1
+											}
+										]
+									},
+									{
+										"properties": [
+											{
 												"property": "http://w3id.org/roh/hasMetric",
 												"type": "auxEntity",
 												"title": {
@@ -688,34 +725,13 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Depósito legal"
+													"es": "Traducciones"
 												},
 												"placeholder": {
-													"es": "Introduce el depósito legal"
+													"es": "Introduce la traducción"
 												},
-												"property": "http://w3id.org/roh/legalDeposit",
-												"type": "text",
-												"width": 1
-											},
-											{
-												"title": {
-													"es": "Colección"
-												},
-												"placeholder": {
-													"es": "Introduce la colección"
-												},
-												"property": "http://w3id.org/roh/collection",
-												"type": "text",
-												"width": 1
-											},
-											{
-												"title": {
-													"es": "URL"
-												},
-												"placeholder": {
-													"es": "Introduce la URL"
-												},
-												"property": "https://www.w3.org/2006/vcard/ns#url",
+												"property": "https://www.w3.org/2006/vcard/ns#hasLanguage",
+												"multiple": true,
 												"type": "text",
 												"width": 1
 											}
