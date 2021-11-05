@@ -681,7 +681,11 @@
 														}
 													]
 												}
-											},
+											}
+										]
+									},
+									{
+										"properties": [
 											{
 												"title": {
 													"es": "Depósito legal"
