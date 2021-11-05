@@ -262,7 +262,22 @@
 												"width": 1
 											}
 										]
-									}
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Año"
+												},
+												"placeholder": {
+													"es": "Introduce el año"
+												},
+												"required": false,
+												"property": "http://w3id.org/roh/year",
+												"width": 1
+											}
+										]
+									},
 								]
 							}
 						}
