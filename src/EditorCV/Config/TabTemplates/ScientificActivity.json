@@ -515,6 +515,170 @@
 									{
 										"properties": [
 											{
+												"property": "http://purl.org/ontology/bibo/identifier",
+												"type": "auxEntity",
+												"title": {
+													"es": "Identificador publicación"
+												},
+												"multiple": true,
+												"width": 3,
+												"auxEntityData": {
+													"rdftype": "http://xmlns.com/foaf/0.1/Document",
+													"propertyTitle": {
+														"property": "http://xmlns.com/foaf/0.1/primaryTopic"
+													},
+													"properties": [
+														{
+															"name": {
+																"es": "Tipo identificador"
+															},
+															"child": {
+																"property": "http://xmlns.com/foaf/0.1/primaryTopic"
+															}
+														},
+														{
+															"name": {
+																"es": "Otros"
+															},
+															"child": {
+																"property": "http://xmlns.com/foaf/0.1/topic"
+															}
+														},
+														{
+															"name": {
+																"es": "Identificador publicación"
+															},
+															"child": {
+																"property": "http://purl.org/dc/elements/1.1/title"
+															}
+														}
+													],
+													"rows": [
+														{
+															"properties": [
+																{
+																	"title": {
+																		"es": "Tipo identificador"
+																	},
+																	"type": "text",
+																	"required": true,
+																	"property": "http://xmlns.com/foaf/0.1/primaryTopic",
+																	"width": 1
+																},
+																{
+																	"title": {
+																		"es": "Otros"
+																	},
+																	"type": "text",
+																	"required": false,
+																	"property": "http://xmlns.com/foaf/0.1/topic",
+																	"width": 1
+																},
+																{
+																	"title": {
+																		"es": "Identificador publicación"
+																	},
+																	"type": "text",
+																	"required": false,
+																	"property": "http://purl.org/dc/elements/1.1/title",
+																	"width": 1
+																}
+															]
+														}
+													]
+												}
+											},
+											{
+												"property": "http://w3id.org/roh/hasMetric",
+												"type": "auxEntity",
+												"title": {
+													"es": "Citas"
+												},
+												"multiple": true,
+												"width": 3,
+												"auxEntityData": {
+													"rdftype": "http://w3id.org/roh/PublicationMetric",
+													"propertyTitle": {
+														"property": "http://xmlns.com/foaf/0.1/metricName"
+													},
+													"properties": [
+														{
+															"name": {
+																"es": "Fuente de citas"
+															},
+															"child": {
+																"property": "http://xmlns.com/foaf/0.1/metricName",
+																"graph": "referencesource",
+																"child": {
+																	"property": "http://purl.org/dc/elements/1.1/title"
+																}
+															}
+														},
+														{
+															"name": {
+																"es": "Otros"
+															},
+															"child": {
+																"property": "http://xmlns.com/foaf/0.1/topic"
+															}
+														},
+														{
+															"name": {
+																"es": "Citas"
+															},
+															"child": {
+																"property": "http://purl.org/dc/elements/1.1/title"
+															}
+														}
+													],
+													"rows": [
+														{
+															"properties": [
+																{
+																	"title": {
+																		"es": "Fuente de citas"
+																	},
+																	"combo": {
+																		"rdftype": "http://purl.org/ontology/bibo/ReferenceSource",
+																		"graph": "referencesource",
+																		"property": {
+																			"property": "http://purl.org/dc/elements/1.1/title"
+																		}
+																	},
+																	"type": "selectCombo",
+																	"required": true,
+																	"width": 1
+																},
+																{
+																	"title": {
+																		"es": "Otros"
+																	},
+																	"placeholder": {
+																		"es": "Introduce la fuente de citas"
+																	},
+																	"type": "text",
+																	"required": false,
+																	"property": "http://xmlns.com/foaf/0.1/topic",
+																	"width": 1
+																},
+																{
+																	"title": {
+																		"es": "Citas"
+																	},
+																	"placeholder": {
+																		"es": "Introduce el número de citas"
+																	},
+																	"type": "number",
+																	"required": false,
+																	"property": "http://purl.org/dc/elements/1.1/title",
+																	"width": 1
+																}
+															]
+														}
+													]
+												}
+											},
+											{
 												"title": {
 													"es": "Depósito legal"
 												},
@@ -564,7 +728,7 @@
 												"width": 1
 											}
 										]
-									},
+									}
 								]
 							}
 						]
