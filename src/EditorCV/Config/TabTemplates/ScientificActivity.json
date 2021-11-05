@@ -533,7 +533,11 @@
 																"es": "Tipo identificador"
 															},
 															"child": {
-																"property": "http://xmlns.com/foaf/0.1/primaryTopic"
+																"property": "http://xmlns.com/foaf/0.1/primaryTopic",
+																"graph": "publicationidentifiertype",
+																"child": {
+																	"property": "http://purl.org/dc/elements/1.1/title"
+																}
 															}
 														},
 														{
@@ -560,9 +564,16 @@
 																	"title": {
 																		"es": "Tipo identificador"
 																	},
-																	"type": "text",
 																	"required": true,
 																	"property": "http://xmlns.com/foaf/0.1/primaryTopic",
+																	"combo": {
+																		"rdftype": "http://w3id.org/roh/PublicationIdentifierType",
+																		"graph": "publicationidentifiertype",
+																		"property": {
+																			"property": "http://purl.org/dc/elements/1.1/title"
+																		}
+																	},
+																	"type": "selectCombo",
 																	"width": 1
 																},
 																{
@@ -718,6 +729,21 @@
 														}
 													]
 												}
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Reseñas en revistas"
+												},
+												"placeholder": {
+													"es": "Introduce el número de reseñas en revistas"
+												},
+												"property": "http://purl.org/ontology/bibo/pageStart",
+												"type": "number",
+												"width": 1
 											}
 										]
 									},
