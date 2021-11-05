@@ -544,7 +544,7 @@
 													"es": "Introduce la URL"
 												},
 												"property": "https://www.w3.org/2006/vcard/ns#url",
-												"type": "number",
+												"type": "text",
 												"width": 1
 											}
 										]
