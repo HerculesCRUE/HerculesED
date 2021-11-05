@@ -587,7 +587,11 @@
 														}
 													]
 												}
-											},
+											}
+										]
+									},
+									{
+										"properties": [
 											{
 												"property": "http://w3id.org/roh/hasMetric",
 												"type": "auxEntity",
