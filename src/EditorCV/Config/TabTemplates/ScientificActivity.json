@@ -182,6 +182,21 @@
 										"properties": [
 											{
 												"title": {
+													"es": "Descripción"
+												},
+												"placeholder": {
+													"es": "Introduce la descripción"
+												},
+												"property": "http://purl.org/ontology/bibo/abstract",
+												"type": "textarea",
+												"width": 3
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
 													"es": "Tipo de producción"
 												},
 												"property": "http://purl.org/dc/elements/1.1/type",
@@ -340,21 +355,6 @@
 														}
 													]
 												}
-											}
-										]
-									},
-									{
-										"properties": [
-											{
-												"title": {
-													"es": "Descripción"
-												},
-												"placeholder": {
-													"es": "Introduce la descripción"
-												},
-												"property": "http://purl.org/ontology/bibo/abstract",
-												"type": "textarea",
-												"width": 3
 											}
 										]
 									},
