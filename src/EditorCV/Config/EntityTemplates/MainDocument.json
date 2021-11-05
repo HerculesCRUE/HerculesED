@@ -175,7 +175,7 @@
 												"title": {
 													"es": "Fuente de impacto"
 												},
-												"property": "http://purl.org/dc/elements/1.1/type",
+												"property": "http://w3id.org/roh/impactSource",
 												"combo": {
 													"rdftype": "http://purl.org/ontology/bibo/ReferenceSource",
 													"graph": "referencesource",
