@@ -258,6 +258,7 @@
 													"es": "Revista dentro del 25%"
 												},
 												"required": false,
+												"type": "boolean",
 												"property": "http://w3id.org/roh/journalTop25",
 												"width": 1
 											}
