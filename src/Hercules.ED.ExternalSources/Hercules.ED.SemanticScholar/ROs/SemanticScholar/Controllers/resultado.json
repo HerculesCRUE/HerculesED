@@ -1,0 +1,54 @@
+
+{
+    "paperId": "442401e7c520f815cd756ccedd4344b2152b64f2",
+    "externalIds": {
+      "MAG": "87118119",
+      "DOI": "10.1007/978-3-319-09177-8_18"
+    },
+    "url": "https://www.semanticscholar.org/paper/442401e7c520f815cd756ccedd4344b2152b64f2",
+    "title": "Linked Open Data as the Fuel for Smarter Cities",
+    "abstract": "In the last decade big efforts have been carried out in order to move towards the Smart City concept, from both the academic and industrial points of view, encouraging researchers and data stakeholders to find new solutions on how to cope with the huge amount of generated data. Meanwhile, Open Data has arisen as a way to freely share contents to be consumed without restrictions from copyright, patents or other mechanisms of control. Nowadays, Open Data is an achievable concept thanks to the World Wide Web, and has been re-defined for its application in different domains. Regarding public administrations, the concept of Open Government has found an ally in Open Data concepts, defending citizens’ right to access data, documentation and proceedings of the governments.",
+    "venue": "",
+    "year": 2015,
+    "referenceCount": 64,
+    "citationCount": 9,
+    "authors": [
+      {
+        "authorId": "2620091",
+        "externalIds": {
+          "DBLP": [
+            "Mikel Emaldi"
+          ]
+        },
+        "name": "M. Emaldi"
+      },
+      {
+        "authorId": "122709435",
+        "externalIds": {
+          "DBLP": [
+            "Oscar Peña"
+          ]
+        },
+        "name": "Oscar Peña"
+      },
+      {
+        "authorId": "17653160",
+        "externalIds": {
+          "DBLP": [
+            "Jon Lázaro"
+          ]
+        },
+        "name": "Jon Lázaro"
+      },
+      {
+        "authorId": "1383994527",
+        "externalIds": {
+          "DBLP": [
+            "Diego López de Ipiña",
+            "Diego López-de-Ipiña"
+          ]
+        },
+        "name": "D. López-de-Ipiña"
+      }
+    ]
+  }

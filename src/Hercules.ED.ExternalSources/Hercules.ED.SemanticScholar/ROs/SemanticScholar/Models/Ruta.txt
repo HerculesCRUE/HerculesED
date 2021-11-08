@@ -1,0 +1,16 @@
+ publicacion.IDs 
+
+                publicacion.title  objInicial.title
+                publicacion.Abstract ->objInicial.@abstract
+                publicacion.url -> objInicial.url
+                publicacion.dataIssued objInicial.year
+
+                publicacion.correspondingAuthor
+                publicacion.seqOfAuthors  
+                publicacion.hasPublicationVenue  -> objInicial.venue
+                publicacion.hasMetric -> objInicial.citationCount
+               
+               MAG
+               DBLP
+               ArXiv
+               PubMedCentral
