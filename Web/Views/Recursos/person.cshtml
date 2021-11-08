@@ -128,7 +128,7 @@
                     </div>
                 </div>
             </div>
-            <div class="list-wrap tags">
+            <div class="list-wrap tags" id="divTags">
                 <div class="label">Topics</div>
                 <ul id="idListaCategorias">
                 </ul>
@@ -299,9 +299,14 @@
                     </div>
 
                     <div class="tab-pane fade" id="colaboraciones-panel" role="tabpanel" aria-labelledby="colaboraciones-tab">
-                        <div class="row">
+                        <div class="row" id="contenedorBuscadorColaboradores">
                             <div class="col col-12 col-grafo mb-5">
                                 <div class="wrapCol" id="graficaCytoscape" style="width: 1224px; height: 500px;"></div>
+                            </div>
+                            <div class="col col-12 col-section-title font-weight-bold searcherTitle">
+                                <div class="wrapCol">
+                                    <p>Listado colaboradores</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -341,7 +346,6 @@
             $('#publicaciones-tab').unbind().click(function (e) {
                 e.preventDefault();
                 that.tabActive = "publicaciones";
-                //CargarGraficaPublicaciones("@pPerson.GNOSSID.Split('_')[1].ToUpper()", "");
                 buscadorPersonalizado.init("@Html.Translate("PUBLICACIONES")", "#contenedorBuscadorPublicaciones", "bibo:authorList@@@@@@rdf:member=http://gnoss/@pPerson.GNOSSID.Split('_')[1].ToUpper()", "dct:issued", "rdf:type=document", "@Comunidad.Url", "@Comunidad.Key.ToString()");
             });
             $('#proyectos-tab').unbind().click(function (e) {
@@ -357,7 +361,7 @@
             $('#colaboraciones-tab').unbind().click(function (e) {
                 e.preventDefault();
                 that.tabActive = "colaboradores";
-                CargarGraficaColaboradores("@pPerson.GNOSSID.Split('_')[1].ToUpper()", "@pPerson.Foaf_name");
+                buscadorPersonalizado.init("Colaboradores", "#contenedorBuscadorColaboradores", "searchPersonasRelacionadas=@pPerson.GNOSSID.Split('_')[1].ToUpper()", "", "rdf:type=person", "@Comunidad.Url", "@Comunidad.Key.ToString()");
             });
             return;
         }
@@ -408,12 +412,24 @@
     }
     var arg = {};
     arg.pIdPersona = "@pPerson.GNOSSID";
+    var contadorTags = 0;
     $.get(url, arg, function (data) {
         data.forEach(function (valor, indice, array) {
-            $("#idListaCategorias").append("<li><a><span>" + valor + "</span></a></li>");
+            if (contadorTags < 3) {
+                $("#idListaCategorias").append("<li><a><span>" + valor + "</span></a></li>");
+            } else {
+                $("#idListaCategorias").append("<li class='ocultar' style='display: none;'><a><span>" + valor + "</span></a></li>");
+            }
+            contadorTags++;
         });
-    });
 
+        if (contadorTags > 3)
+        {
+            $("#divTags").append('<p class="moreResults"><a href="javascript: void(0);" class="ver-mas" style="display: flex;">@Html.Translate("VER_MAS")</a><a href="javascript: void(0);" class="ver-menos" style="display: none;">@Html.Translate("VER_MENOS")</a></p>');
+        }
+
+        comportamientoVerMasVerMenosTags.init();
+    });
     // Datos gráfica publicaciones.
     function CargarGraficaPublicaciones(idpersona, parametros) {
         var url = "http://serviciosedma.gnoss.com/servicioexterno/Hercules/DatosGraficaPublicacionesPersona"
@@ -525,7 +541,7 @@
                         "haystack-radius": "0.5",
                         "opacity": "0.4",
                         "line-color": "#E1E1E1",
-                        "width": "5",
+                        "width": "mapData(weight, 0, 10, 0, 10)",
                         "overlay-padding": "1px",
                         "font-family": 'Arial Black',
                         "font-color": 'black'
@@ -596,9 +612,13 @@
             var parametros = ObtenerHash2();
             CargarGraficaPublicaciones("@pPerson.GNOSSID.Split('_')[1].ToUpper()", parametros);
         }
-        else if (comportamientoPaginaInvestigador.tabActive == "proyectos")
+        else if (comportamientoPaginaInvestigador.tabActive == "proyectos") {
+            var parametros = ObtenerHash2();
+        }
+        else if (comportamientoPaginaInvestigador.tabActive == "colaboradores")
         {
             var parametros = ObtenerHash2();
+            CargarGraficaColaboradores("@pPerson.GNOSSID.Split('_')[1].ToUpper()", "@pPerson.Foaf_name");
         }
     }
 
