@@ -1,0 +1,64 @@
+Esyte artivo es para almacenar los cambios de modelo y donde estan! 
+
+Obtener el DOI----------------------------------
+publicacion.doi -> ya lo tenemos. 
+
+-------------------------------------------------------------
+
+publicacion.IDs 
+publicacion.title -> objInicial.title
+publicacion.Abstract  
+
+publicacion.language -> objInicial.language
+publicacion.url -> objInicial.URL
+publicacion.dataIssued 
+
+publicacion.pageStart -> objInicial.page
+publicacion.pageEnd ->  objInicial.page
+publicacion.hasKnowledgeArea 
+publicacion.freetextKeyword 
+publicacion.correspondingAuthor 
+publicacion.seqOfAuthors 
+publicacion.hasPublicationVenue -> =objInicial.ISSN; objInicial.ContainerTitle
+publicacion.hasMetric -> objInicial.isReferenceByCount.ToString()
+
+
+publicacion.bibliografia = getBiblografia(objInicial);
+publicacion.citas = getCitas(objInicial);
+                
+
+
+
+
+
+
+static_data.summary.publishers.publisher.names.name.seq_n
+
+Cuidado aqui como ESTRUCTURA!!!!!!!
+
+
+
+   public string key { get; set; }
+        public string unstructured { get; set; }
+        public string issue { get; set; }
+
+        [JsonProperty("doi-asserted-by")]
+        public string DoiAssertedBy { get; set; }
+
+        [JsonProperty("first-page")]
+        public string FirstPage { get; set; }
+        public string DOI { get; set; }
+
+        [JsonProperty("article-title")]
+        public string ArticleTitle { get; set; }
+        public string volume { get; set; }
+        public string author { get; set; }
+        public string year { get; set; }
+
+        [JsonProperty("journal-title")]
+        public string JournalTitle { get; set; }
+
+        [JsonProperty("series-title")]
+        public string SeriesTitle { get; set; }
+    }
+

@@ -1,0 +1,399 @@
+{
+  "status": "ok",
+  "message-type": "work",
+  "message-version": "1.0.0",
+  "message": {
+    "indexed": {
+      "date-parts": [
+        [
+          2021,
+          5,
+          12
+        ]
+      ],
+      "date-time": "2021-05-12T06:01:02Z",
+      "timestamp": 1620799262963
+    },
+    "reference-count": 28,
+    "publisher": "Elsevier BV",
+    "license": [
+      {
+        "start": {
+          "date-parts": [
+            [
+              2016,
+              1,
+              1
+            ]
+          ],
+          "date-time": "2016-01-01T00:00:00Z",
+          "timestamp": 1451606400000
+        },
+        "content-version": "tdm",
+        "delay-in-days": 0,
+        "URL": "https://www.elsevier.com/tdm/userlicense/1.0/"
+      }
+    ],
+    "funder": [
+      {
+        "name": "University of Deusto"
+      }
+    ],
+    "content-domain": {
+      "domain": [
+        "elsevier.com",
+        "sciencedirect.com"
+      ],
+      "crossmark-restriction": true
+    },
+    "short-container-title": [
+      "Journal of Network and Computer Applications"
+    ],
+    "published-print": {
+      "date-parts": [
+        [
+          2016,
+          1
+        ]
+      ]
+    },
+    "DOI": "10.1016/j.jnca.2014.09.020",
+    "type": "journal-article",
+    "created": {
+      "date-parts": [
+        [
+          2014,
+          10,
+          16
+        ]
+      ],
+      "date-time": "2014-10-16T03:32:47Z",
+      "timestamp": 1413430367000
+    },
+    "page": "237-246",
+    "update-policy": "http://dx.doi.org/10.1016/elsevier_cm_policy",
+    "source": "Crossref",
+    "is-referenced-by-count": 2,
+    "title": [
+      "Making social networks a means to save energy"
+    ],
+    "prefix": "10.1016",
+    "volume": "59",
+    "author": [
+      {
+        "given": "Juan",
+        "family": "López-de-Armentia",
+        "sequence": "first",
+        "affiliation": []
+      },
+      {
+        "given": "Diego",
+        "family": "Casado-Mansilla",
+        "sequence": "additional",
+        "affiliation": []
+      },
+      {
+        "ORCID": "http://orcid.org/0000-0001-8055-6823",
+        "authenticated-orcid": false,
+        "given": "Diego",
+        "family": "López-de-Ipiña",
+        "sequence": "additional",
+        "affiliation": []
+      }
+    ],
+    "member": "78",
+    "reference": [
+      {
+        "key": "10.1016/j.jnca.2014.09.020_bib1",
+        "unstructured": "DECC 2013 CRC Energy Efficiency Scheme—Department and Climate Change [Online] Accessed on 21/02/2014, url: 〈https://www.gov.uk/crc-energy-efficiency-scheme〉."
+      },
+      {
+        "key": "10.1016/j.jnca.2014.09.020_bib2",
+        "unstructured": "Efficiency E, Energy R, 2008. Energy efficiency trends in residential and commercial buildings, Technical report, U.S. DoE."
+      },
+      {
+        "key": "10.1016/j.jnca.2014.09.020_bib3",
+        "unstructured": "Carbontrust: Employee awareness and office energy efficiency [Online], accessed on 07/10/2013, url: 〈http://tiny.cc/o5p5tw〉."
+      },
+      {
+        "issue": "1",
+        "key": "10.1016/j.jnca.2014.09.020_bib4",
+        "doi-asserted-by": "crossref",
+        "first-page": "79",
+        "DOI": "10.1155/2014/956135",
+        "article-title": "Reducing energy waste through eco-aware everyday things",
+        "volume": "10",
+        "author": "López-de-Armentia",
+        "year": "2014",
+        "journal-title": "Mobile Inf Syst"
+      },
+      {
+        "key": "10.1016/j.jnca.2014.09.020_bib5",
+        "doi-asserted-by": "crossref",
+        "unstructured": "Koehler C, Ziebart B, Mankoff J, Dey A. Therml: Occupancy prediction for thermostat control. In: Proceedings of the 2013 ACM International Joint Conference on Pervasive and Ubiquitous Computing, ACM, 2013. p. 103–12.",
+        "DOI": "10.1145/2493432.2493441"
+      },
+      {
+        "key": "10.1016/j.jnca.2014.09.020_bib6",
+        "unstructured": "Danesh I, Steve W, Calton P. Study of trend-stuffing on twitter through text classification. In: Collaboration, Electronic messaging, Anti‐Abuse and Spam Conference (CEAS), 2010."
+      },
+      {
+        "key": "10.1016/j.jnca.2014.09.020_bib7",
+        "doi-asserted-by": "crossref",
+        "unstructured": "Klein B, Laiseca X, Casado-Mansilla D, López-deIpiña D, Nespral A. Detection and extracting of emergency knowledge from twitter streams. In: Proceedings of the 6th international conference on Ubiquitous Computing and Ambient Intelligence, UCAmI12׳, Springer-Verlag, 2012. p. 462–69.",
+        "DOI": "10.1007/978-3-642-35377-2_64"
+      },
+      {
+        "key": "10.1016/j.jnca.2014.09.020_bib8",
+        "first-page": "10",
+        "article-title": "Measuring user influence in twitter",
+        "volume": "10",
+        "author": "Cha",
+        "year": "2010",
+        "journal-title": "Int Conf Weblogs Soc Media"
+      },
+      {
+        "key": "10.1016/j.jnca.2014.09.020_bib9",
+        "series-title": "The wisdom of crowds",
+        "author": "Surowiecki",
+        "year": "2005"
+      },
+      {
+        "key": "10.1016/j.jnca.2014.09.020_bib10",
+        "unstructured": "Holmquist L, Mattern F, Schiele B, Alahuhta P, Beigl5 M, Gellersen H. Smart-its friends: a technique for users to easily establish connections between smart artefacts. In: Ubicomp 2001: Ubiquitous Computing, vol. 2201, 2001. p. 116–22."
+      },
+      {
+        "key": "10.1016/j.jnca.2014.09.020_bib11",
+        "first-page": "1",
+        "article-title": "Title",
+        "author": "Bleecker",
+        "year": "2005",
+        "journal-title": "Media"
+      },
+      {
+        "key": "10.1016/j.jnca.2014.09.020_bib12",
+        "doi-asserted-by": "crossref",
+        "unstructured": "Nazzi E, Sokoler T. Walky for embodied microblogging: sharing mundane activities through augmented everyday objects. In: Proceedings of the 13th International Conference on Human Computer Interaction with Mobile Devices and Services, MobileHCI 11׳, ACM, 2011. p. 563–68.",
+        "DOI": "10.1145/2037373.2037461"
+      },
+      {
+        "key": "10.1016/j.jnca.2014.09.020_bib13",
+        "doi-asserted-by": "crossref",
+        "unstructured": "Guinard D, Fischer M, Trifa V. Sharing using social networks in a composable web of things. In: Eighth IEEE international conference on Pervasive Computing and Communications Workshops (PERCOM Workshops), 2010. p. 702–7.",
+        "DOI": "10.1109/PERCOMW.2010.5470524"
+      },
+      {
+        "key": "10.1016/j.jnca.2014.09.020_bib14",
+        "doi-asserted-by": "crossref",
+        "unstructured": "Kranz M, Roalter L, Michahelles F. Things that twitter: social networks and the internet of things. In: What can the Internet of Things do for the Citizen (CIoT) Workshop at The Eighth International Conference on Pervasive Computing (Pervasive 2010); 2010.",
+        "DOI": "10.1109/MPRV.2010.88"
+      },
+      {
+        "key": "10.1016/j.jnca.2014.09.020_bib15",
+        "doi-asserted-by": "crossref",
+        "unstructured": "Vazquez J, López-de Ipiña D. Social devices: Autonomous artifacts that communicate on the internet. In: The Internet of Things, Lecture Notes in Computer Science, vol. 4952. Springer: Berlin Heidelberg, 2008. p. 308–24.",
+        "DOI": "10.1007/978-3-540-78731-0_20"
+      },
+      {
+        "issue": "11",
+        "key": "10.1016/j.jnca.2014.09.020_bib16",
+        "doi-asserted-by": "crossref",
+        "first-page": "1193",
+        "DOI": "10.1109/LCOMM.2011.090911.111340",
+        "article-title": "Siot",
+        "volume": "15",
+        "author": "Atzori",
+        "year": "2011",
+        "journal-title": "IEEE Commun Lett"
+      },
+      {
+        "key": "10.1016/j.jnca.2014.09.020_bib17",
+        "doi-asserted-by": "crossref",
+        "unstructured": "Perez de Almeida RA, Blackstock M, Lea R, Calderon R, do Prado A, Guardia H. Thing broker: a twitter for things. In: Proceedings of the 2013 ACM conference on Pervasive and ubiquitous computing adjunct publication, UbiComp ׳13 Adjunct, ACM, 2013. p. 1545–54.",
+        "DOI": "10.1145/2494091.2497588"
+      },
+      {
+        "key": "10.1016/j.jnca.2014.09.020_bib18",
+        "doi-asserted-by": "crossref",
+        "unstructured": "Ciortea A, Boissier O, Zimmermann A, Florea AM. Reconsidering the social web of things: position paper. In: Proceedings of the 2013 ACM conference on Pervasive and ubiquitous computing adjunct publication, UbiComp ׳13 Adjunct, ACM, 2013. p. 1535–44.",
+        "DOI": "10.1145/2494091.2497587"
+      },
+      {
+        "key": "10.1016/j.jnca.2014.09.020_bib19",
+        "series-title": "Cluster analysis",
+        "author": "Everitt",
+        "year": "2011"
+      },
+      {
+        "issue": "2",
+        "key": "10.1016/j.jnca.2014.09.020_bib20",
+        "doi-asserted-by": "crossref",
+        "first-page": "44",
+        "DOI": "10.4018/jdwm.2011040103",
+        "article-title": "An empirical evaluation of similarity coefficients for binary valued data",
+        "volume": "7",
+        "author": "Lewis",
+        "year": "2011",
+        "journal-title": "Int J Data Wareh Min"
+      },
+      {
+        "issue": "2",
+        "key": "10.1016/j.jnca.2014.09.020_bib21",
+        "doi-asserted-by": "crossref",
+        "first-page": "257",
+        "DOI": "10.1007/BF01908719",
+        "article-title": "Constructing dissimilarity measures",
+        "volume": "7",
+        "author": "Gordon",
+        "year": "1990",
+        "journal-title": "J Classif"
+      },
+      {
+        "key": "10.1016/j.jnca.2014.09.020_bib22",
+        "doi-asserted-by": "crossref",
+        "first-page": "857",
+        "DOI": "10.2307/2528823",
+        "article-title": "A general coefficient of similarity and some of its properties",
+        "volume": "27",
+        "author": "Gower",
+        "year": "1971",
+        "journal-title": "Biometrics"
+      },
+      {
+        "issue": "5",
+        "key": "10.1016/j.jnca.2014.09.020_bib23",
+        "doi-asserted-by": "crossref",
+        "first-page": "1682",
+        "DOI": "10.2307/1938031",
+        "article-title": "Sampling properties of gower׳s general coefficient of similarity",
+        "volume": "66",
+        "author": "Lim",
+        "year": "1985",
+        "journal-title": "Ecology"
+      },
+      {
+        "key": "10.1016/j.jnca.2014.09.020_bib24",
+        "unstructured": "Fontecha J. Sistema móvil para la detección y valoración del síndrome de fragilidad en el adulto mayor [Ph.D.]. University of Castilla-La Mancha; 2014."
+      },
+      {
+        "key": "10.1016/j.jnca.2014.09.020_bib25",
+        "doi-asserted-by": "crossref",
+        "unstructured": "Schwartz T, Betz M, Ramirez L, Stevens G. Sustainable energy practices at work: Understanding the role of workers in energy conservation. In: Proceedings of NordiCHI׳10. ACM, 2010. p. 452–62.",
+        "DOI": "10.1145/1868914.1868966"
+      },
+      {
+        "key": "10.1016/j.jnca.2014.09.020_bib26",
+        "unstructured": "Box G, Jenkins G. Time series analysis, forecasting and control, holden-day, incorporated; 1990."
+      },
+      {
+        "key": "10.1016/j.jnca.2014.09.020_bib27",
+        "unstructured": "Bush E, Nipkow J, Josephy B, Heutling S, Griesshammer R. Strategies to enhance energy efficiency of coffee machines. In: EEDAL Conference, vol. 75; 2009."
+      },
+      {
+        "key": "10.1016/j.jnca.2014.09.020_bib28",
+        "unstructured": "Cnet news: Twitter hits 400 million tweets per day mostly mobile [Online] accessed on 07/10/2013, URL: 〈http://cnet.co/KHlg8q〉."
+      }
+    ],
+    "container-title": [
+      "Journal of Network and Computer Applications"
+    ],
+    "original-title": [],
+    "language": "en",
+    "link": [
+      {
+        "URL": "https://api.elsevier.com/content/article/PII:S1084804514002276?httpAccept=text/xml",
+        "content-type": "text/xml",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      },
+      {
+        "URL": "https://api.elsevier.com/content/article/PII:S1084804514002276?httpAccept=text/plain",
+        "content-type": "text/plain",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      }
+    ],
+    "deposited": {
+      "date-parts": [
+        [
+          2019,
+          8,
+          16
+        ]
+      ],
+      "date-time": "2019-08-16T07:22:36Z",
+      "timestamp": 1565940156000
+    },
+    "score": 1,
+    "subtitle": [],
+    "short-title": [],
+    "issued": {
+      "date-parts": [
+        [
+          2016,
+          1
+        ]
+      ]
+    },
+    "references-count": 28,
+    "alternative-id": [
+      "S1084804514002276"
+    ],
+    "URL": "http://dx.doi.org/10.1016/j.jnca.2014.09.020",
+    "relation": {},
+    "ISSN": [
+      "1084-8045"
+    ],
+    "issn-type": [
+      {
+        "value": "1084-8045",
+        "type": "print"
+      }
+    ],
+    "subject": [
+      "Computer Networks and Communications",
+      "Computer Science Applications",
+      "Hardware and Architecture"
+    ],
+    "published": {
+      "date-parts": [
+        [
+          2016,
+          1
+        ]
+      ]
+    },
+    "assertion": [
+      {
+        "value": "Elsevier",
+        "name": "publisher",
+        "label": "This article is maintained by"
+      },
+      {
+        "value": "Making social networks a means to save energy",
+        "name": "articletitle",
+        "label": "Article Title"
+      },
+      {
+        "value": "Journal of Network and Computer Applications",
+        "name": "journaltitle",
+        "label": "Journal Title"
+      },
+      {
+        "value": "https://doi.org/10.1016/j.jnca.2014.09.020",
+        "name": "articlelink",
+        "label": "CrossRef DOI link to publisher maintained version"
+      },
+      {
+        "value": "article",
+        "name": "content_type",
+        "label": "Content Type"
+      },
+      {
+        "value": "Copyright © 2014 Elsevier Ltd. All rights reserved.",
+        "name": "copyright",
+        "label": "Copyright"
+      }
+    ]
+  }
+}
