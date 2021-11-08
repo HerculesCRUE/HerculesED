@@ -1,0 +1,42 @@
+{
+    "offset": 0,
+    "next": 1,
+    "data": [
+        {
+            "contexts": [
+                "SciBERT (Beltagy et al., 2019) follows the BERT’s masking strategy to pre-train the model from scratch using a scientific corpus composed of papers from Semantic Scholar (Ammar et al., 2018).",
+                "27M articles from the Semantic Scholar dataset (Ammar et al., 2018)."
+            ],
+            "intents": [
+                "methodology"
+            ],
+            "isInfluential": true,
+            "citedPaper": {
+                "paperId": "649def34f8be52c8b66281af98ae884c09aef38b",
+                "externalIds": {
+                    "ArXiv": "...",
+                    "DBLP": "...",
+                    "PubMedCentral": "..."
+                },
+                "url": "https://www.semanticscholar.org/paper/649def34f8be52c8b66281af98ae884c09aef38b",
+                "title": "Construction of the Literature Graph in Semantic Scholar",
+                "abstract": "We describe a deployed scalable system for organizing published scientific literature into a heterogeneous graph to facilitate algorithmic manipulation and discovery.",
+                "venue": "NAACL",
+                "year": 2018,
+                "referenceCount": 321,
+                "citationCount": 987,
+                "influentialCitationCount": 654,
+                "isOpenAccess": true,
+                "fieldsOfStudy": [
+                    "Computer Science"
+                ],
+                "authors": [
+                    {
+                        "authorId": "1741101",
+                        "name": "Oren Etzioni"
+                    }
+                ]
+            }
+        }
+    ]
+}

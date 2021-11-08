@@ -1,0 +1,16 @@
+  publicacion.IDs -> objInicial.DcIdentifier
+publicacion.title  -> objInicial.DcTitle
+publicacion.doi -> objInicial.PrismDoi
+publicacion.url -> objInicial.link[i].Href
+    i = Ref="scopus"
+publicacion.dataIssued -> bjInicial.PrismCoverDate
+publicacion.pageStart -> objInicial.PrismCoverDate
+publicacion.pageEnd -> objInicial.PrismCoverDate
+
+publicacion.correspondingAuthor -> objInicial.DcCreator
+publicacion.hasPublicationVenue ->
+    objInicial.PrismIssn
+    objInicial.PrismPublicationName
+publicacion.hasMetric -> objInicial.CitedbyCount
+
+  

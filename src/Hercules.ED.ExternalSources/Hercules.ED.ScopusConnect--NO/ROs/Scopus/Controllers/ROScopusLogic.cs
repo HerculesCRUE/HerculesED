@@ -89,23 +89,37 @@ namespace ScopusConnect.ROs.Scopus.Controllers
 
         }
 
+
         /// <summary>
         /// Main function from get all repositories from the RO account
         /// </summary>
-        /// <param name="ID"></param>
-        /// <param date="date">year-month-day</param>
+        /// <param name="ID">The user of the repositories</param>
+        /// <param uri="uri">The uri for the call</param>
+        // AU-ID ( "Buján, David"   24474045300 )
+        /// <returns></returns>
+        public string getStringPublication(string name, string uri = "content/abstract/scopus_id/{0}")//AU-ID?{0}")
+        {
+            Uri url = new Uri(baseUri + string.Format(uri, name));
+            string info_publicationn = httpCall(url.ToString(), "GET", headers).Result;
+            return info_publicationn;
+        }
 
+        /// <summary>
+        /// Main function from get all repositories from the RO account
+        /// </summary>
+        /// <param name="Orcid"></param>
+        /// <param date="date">year-month-day</param>
+        // AU-ID ( "Buján, David"   24474045300 )
         /// <returns></returns>
         public List<Publication> getPublications(string name, string date = "1800-01-01", string uri = "content/search/scopus?query=ORCID(\"{0}\")&count=200&date={1}")//AU-ID?{0}")
         {
             string date_scopus = date.Substring(0,4)+"-"+ DateTime.Now.Date.Year.ToString();
-
+            //Console.Write("\n");
+            //Console.Write(date_scopus);
             Uri url = new Uri(baseUri + string.Format(uri, name,date_scopus));
             string info_publication = httpCall(url.ToString(), "GET", headers).Result;
             ROScopusControllerJSON info = new ROScopusControllerJSON(this);
-            Root objInicial = JsonConvert.DeserializeObject<Root>(info_publication);
-
-            List<Publication> sol = info.getListPublicatio(objInicial,date);
+            List<Publication> sol = info.getListPublicatio(info_publication,date);
             int n200 = 1;
             while(sol.Count == n200*200){
                 int start = n200*200;
@@ -113,10 +127,13 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                  url = new Uri(baseUri + string.Format(uri, name,date_scopus,start.ToString()));
                 info_publication = httpCall(url.ToString(), "GET", headers).Result;
                 n200=n200+1;
-                objInicial = JsonConvert.DeserializeObject<Root>(info_publication);
-                List<Publication> list_1=info.getListPublicatio(objInicial,date);
+                List<Publication> list_1=info.getListPublicatio(info_publication,date);
                 sol.AddRange(list_1);
-
+                //foreach(Publication pub in list_1){sol.Add(pub);}
+                //for(int j=0; j<list_1.Count;j++){
+                //sol.Concat(info.getListPublicatio(info_publication,date));
+                //sol.Add(list_1[j]);
+                //}
             }
             return sol;
         }

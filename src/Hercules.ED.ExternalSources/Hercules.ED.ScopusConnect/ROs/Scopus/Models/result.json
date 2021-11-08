@@ -1,4179 +1,941 @@
-[
-  {
-    "typeOfPublication": "ConferencePaper",
-    "title": "Towards a standardized model for privacy-preserving Verifiable Credentials",
-    "freetextKeyword": [
-      "p-ABC",
-      "privacy",
-      "Verifiable Credentials"
-    ],
-    "abstract": "© 2021 ACM.Lack of standardization and the subsequent difficulty of integration has been one of the main reasons for the scarce adoption of privacy-preserving Attribute-Based Credentials (p-ABC). Integration with the W3C's Verifiable Credentials (VC) specification would help by encouraging homogenization between different p-ABC schemes and bringing them all closer to other digital credentials. What is more, p-ABCs can help to solve privacy issues that have been identified in applications of VCs to use cases like vaccination passports. However, there has not been much work focusing on the collaboration between p-ABCs and VCs. We address this topic by establishing initial steps for extra standardization of elements that will help with the integration of p-ABCs into the standard. Namely, we propose a data model for predicates, which are a staple of p-ABC systems, and tools and guidelines to ease the adaptation process like a validation meta-schema. These ideas have been applied in a proof-of-concept implementation of the OLYMPUS distributed p-ABC scheme paired with serialization following the VC data model.",
-    "language": "eng",
-    "doi": "10.1145/3465481.3469204",
-    "dataIssued": {
-      "datimeTime": "2021-08-17"
-    },
-    "url": [
-      {
-        "link": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85113227800&origin=inward"
-      }
-    ],
-    "correspondingAuthor": {
-      "name": [
-        "Garcia-Rodriguez J.",
-        "Jesús",
-        "J."
-      ],
-      "surname": "García-Rodríguez",
-      "identifier": "Scopus-id: 57215378619",
-      "link": [
-        {
-          "link": "https://www.scopus.com/authid/detail.uri?authorId=57215378619"
-        }
-      ]
-    },
-    "seqOfAuthors": [
-      {
-        "name": [
-          "Garcia-Rodriguez J.",
-          "Jesús",
-          "J."
-        ],
-        "surname": "García-Rodríguez",
-        "identifier": "Scopus-id: 57215378619",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57215378619"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Torres Moreno R.",
-          "Rafael",
-          "R."
-        ],
-        "surname": "Torres Moreno",
-        "identifier": "Scopus-id: 57213147009",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57213147009"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Bernal Bernabe J.",
-          "Jorge",
-          "J."
-        ],
-        "surname": "Bernal Bernabé",
-        "identifier": "Scopus-id: 57220045741",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57220045741"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Skarmeta A.",
-          "Antonio",
-          "A."
-        ],
-        "surname": "Skarmeta",
-        "identifier": "Scopus-id: 57190210928",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57190210928"
-          }
-        ]
-      }
-    ],
-    "correspondingOrganization": null,
-    "hasKnowledgeArea": [
-      {
-        "name": "Human-Computer Interaction",
-        "abbreviation": "COMP",
-        "hasCode": "1709"
-      },
-      {
-        "name": "Computer Networks and Communications",
-        "abbreviation": "COMP",
-        "hasCode": "1705"
-      },
-      {
-        "name": "Computer Vision and Pattern Recognition",
-        "abbreviation": "COMP",
-        "hasCode": "1707"
-      },
-      {
-        "name": "Software",
-        "abbreviation": "COMP",
-        "hasCode": "1712"
-      }
-    ],
-    "pageEnd": null,
-    "pageStart": null,
-    "documentStatus": null,
-    "eanucc13": null,
-    "hasPublicationVenue": {
-      "hasMetric": null,
-      "abbreviation": null,
-      "publisher": null,
-      "issn": null,
-      "name": "ACM International Conference Proceeding Series",
-      "eissn": null,
-      "oclcnum": null
-    },
-    "hasMetric": {
-      "citationCount": "0",
-      "metricName": "Scopus"
-    },
-    "bibliografia": null
-  },
-  {
-    "typeOfPublication": "JournalArticle",
-    "title": "Climate-aware and iot-enabled selection of the most suitable stone fruit tree variety",
-    "freetextKeyword": [
-      "Cold units",
-      "Interoperability",
-      "IoT platform",
-      "Smart agriculture",
-      "Stone fruits",
-      "Weather"
-    ],
-    "abstract": "© 2021 by the authors. Licensee MDPI, Basel, Switzerland.The application of new technologies such as the Internet of Things offers the opportunity to improve current agricultural development, facilitate daily tasks, and turn farms into efficient and sustainable production systems. The use of these new technologies enables the digital transformation process demanded by the sector and provides agricultural collectives with more optimized analysis and prediction tools. Due to climate change, one of the farm industry’s problems is the advance or decay in the cycle of stone fruit trees. The objective is to recommend whether a specific area meets the minimum climatic requirements for planting certain stone fruit trees based on climatic data and bioclimatic indicators. The methodology used implements a large amount of meteorological data to generate information on specific climatic conditions and interactions on crops. In this work, a pilot study has been carried out in the Region of Murcia using an IoT platform. We simulate scenarios for the development of stone fruit varieties better adapted to the environment. Based on the standard, open interfaces, and protocols, the platform integrates heterogeneous information sources and interoperability with other third-party solutions to exchange and exploit such information.",
-    "language": "eng",
-    "doi": "10.3390/s21113867",
-    "dataIssued": {
-      "datimeTime": "2021-06-01"
-    },
-    "url": [
-      {
-        "link": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85107215520&origin=inward"
-      }
-    ],
-    "correspondingAuthor": {
-      "name": [
-        "Lopez-Morales J.A.",
-        "Juan A.",
-        "J.A."
-      ],
-      "surname": "López-Morales",
-      "identifier": "Scopus-id: 6505877342",
-      "link": [
-        {
-          "link": "https://www.scopus.com/authid/detail.uri?authorId=6505877342"
-        }
-      ]
-    },
-    "seqOfAuthors": [
-      {
-        "name": [
-          "Lopez-Morales J.A.",
-          "Juan A.",
-          "J.A."
-        ],
-        "surname": "López-Morales",
-        "identifier": "Scopus-id: 6505877342",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=6505877342"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Martinez J.A.",
-          "Juan A.",
-          "J.A."
-        ],
-        "surname": "Martínez",
-        "identifier": "Scopus-id: 57199490302",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57199490302"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Caro M.",
-          "Manuel",
-          "M."
-        ],
-        "surname": "Caro",
-        "identifier": "Scopus-id: 57224204632",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57224204632"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Erena M.",
-          "Manuel",
-          "M."
-        ],
-        "surname": "Erena",
-        "identifier": "Scopus-id: 26039074500",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=26039074500"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Skarmeta A.F.",
-          "Antonio F.",
-          "A.F."
-        ],
-        "surname": "Skarmeta",
-        "identifier": "Scopus-id: 57190210928",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57190210928"
-          }
-        ]
-      }
-    ],
-    "correspondingOrganization": null,
-    "hasKnowledgeArea": [
-      {
-        "name": "Analytical Chemistry",
-        "abbreviation": "CHEM",
-        "hasCode": "1602"
-      },
-      {
-        "name": "Information Systems",
-        "abbreviation": "COMP",
-        "hasCode": "1710"
-      },
-      {
-        "name": "Atomic and Molecular Physics, and Optics",
-        "abbreviation": "PHYS",
-        "hasCode": "3107"
-      },
-      {
-        "name": "Biochemistry",
-        "abbreviation": "BIOC",
-        "hasCode": "1303"
-      },
-      {
-        "name": "Instrumentation",
-        "abbreviation": "PHYS",
-        "hasCode": "3105"
-      },
-      {
-        "name": "Electrical and Electronic Engineering",
-        "abbreviation": "ENGI",
-        "hasCode": "2208"
-      }
-    ],
-    "pageEnd": null,
-    "pageStart": null,
-    "documentStatus": null,
-    "eanucc13": null,
-    "hasPublicationVenue": {
-      "hasMetric": null,
-      "abbreviation": null,
-      "publisher": null,
-      "issn": "14248220",
-      "name": "Sensors",
-      "eissn": null,
-      "oclcnum": null
-    },
-    "hasMetric": {
-      "citationCount": "0",
-      "metricName": "Scopus"
-    },
-    "bibliografia": null
-  },
-  {
-    "typeOfPublication": "JournalArticle",
-    "title": "Iotcrawler: Challenges and solutions for searching the internet of things",
-    "freetextKeyword": [
-      "Internet of Things",
-      "IoT data sources",
-      "IoT search framework",
-      "Privacy",
-      "Reliability",
-      "Search",
-      "Security"
-    ],
-    "abstract": "© 2021 by the authors. Licensee MDPI, Basel, Switzerland.Due to the rapid development of the Internet of Things (IoT) and consequently, the availability of more and more IoT data sources, mechanisms for searching and integrating IoT data sources become essential to leverage all relevant data for improving processes and services. This paper presents the IoT search framework IoTCrawler. The IoTCrawler framework is not only another IoT framework, it is a system of systems which connects existing solutions to offer interoperability and to overcome data fragmentation. In addition to its domain-independent design, IoTCrawler features a layered approach, offering solutions for crawling, indexing and searching IoT data sources, while ensuring privacy and security, adaptivity and reliability. The concept is proven by addressing a list of requirements defined for searching the IoT and an extensive evaluation. In addition, real world use cases showcase the applicability of the framework and provide examples of how it can be instantiated for new scenarios.",
-    "language": "eng",
-    "doi": "10.3390/s21051559",
-    "dataIssued": {
-      "datimeTime": "2021-03-01"
-    },
-    "url": [
-      {
-        "link": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85101268603&origin=inward"
-      }
-    ],
-    "correspondingAuthor": {
-      "name": [
-        "Iggena T.",
-        "Thorben",
-        "T."
-      ],
-      "surname": "Iggena",
-      "identifier": "Scopus-id: 57190410564",
-      "link": [
-        {
-          "link": "https://www.scopus.com/authid/detail.uri?authorId=57190410564"
-        }
-      ]
-    },
-    "seqOfAuthors": [
-      {
-        "name": [
-          "Iggena T.",
-          "Thorben",
-          "T."
-        ],
-        "surname": "Iggena",
-        "identifier": "Scopus-id: 57190410564",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57190410564"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Ilyas E.B.",
-          "Eushay Bin",
-          "E.B."
-        ],
-        "surname": "Ilyas",
-        "identifier": "Scopus-id: 57217585119",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57217585119"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Fischer M.",
-          "Marten",
-          "M."
-        ],
-        "surname": "Fischer",
-        "identifier": "Scopus-id: 55454929100",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=55454929100"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Tonjes R.",
-          "Ralf",
-          "R."
-        ],
-        "surname": "Tönjes",
-        "identifier": "Scopus-id: 36238654000",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=36238654000"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Elsaleh T.",
-          "Tarek",
-          "T."
-        ],
-        "surname": "Elsaleh",
-        "identifier": "Scopus-id: 48361097600",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=48361097600"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Rezvani R.",
-          "Roonak",
-          "R."
-        ],
-        "surname": "Rezvani",
-        "identifier": "Scopus-id: 57211427479",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57211427479"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Pourshahrokhi N.",
-          "Narges",
-          "N."
-        ],
-        "surname": "Pourshahrokhi",
-        "identifier": "Scopus-id: 57217592526",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57217592526"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Bischof S.",
-          "Stefan",
-          "S."
-        ],
-        "surname": "Bischof",
-        "identifier": "Scopus-id: 6701506511",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=6701506511"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Fernbach A.",
-          "Andreas",
-          "A."
-        ],
-        "surname": "Fernbach",
-        "identifier": "Scopus-id: 54381786800",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=54381786800"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Parreira J.X.",
-          "Josiane Xavier",
-          "J.X."
-        ],
-        "surname": "Parreira",
-        "identifier": "Scopus-id: 55664571300",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=55664571300"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Schneider P.",
-          "Patrik",
-          "P."
-        ],
-        "surname": "Schneider",
-        "identifier": "Scopus-id: 56675241600",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=56675241600"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Smirnov P.",
-          "Pavel",
-          "P."
-        ],
-        "surname": "Smirnov",
-        "identifier": "Scopus-id: 57204343003",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57204343003"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Strohbach M.",
-          "Martin",
-          "M."
-        ],
-        "surname": "Strohbach",
-        "identifier": "Scopus-id: 6603250565",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=6603250565"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Truong H.",
-          "Hien",
-          "H."
-        ],
-        "surname": "Truong",
-        "identifier": "Scopus-id: 56178008700",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=56178008700"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Gonzalez-Vidal A.",
-          "Aurora",
-          "A."
-        ],
-        "surname": "González-Vidal",
-        "identifier": "Scopus-id: 57189466053",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57189466053"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Skarmeta A.F.",
-          "Antonio F.",
-          "A.F."
-        ],
-        "surname": "Skarmeta",
-        "identifier": "Scopus-id: 57190210928",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57190210928"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Singh P.",
-          "Parwinder",
-          "P."
-        ],
-        "surname": "Singh",
-        "identifier": "Scopus-id: 57222061898",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57222061898"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Beliatis M.J.",
-          "Michail J.",
-          "M.J."
-        ],
-        "surname": "Beliatis",
-        "identifier": "Scopus-id: 37035899600",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=37035899600"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Presser M.",
-          "Mirko",
-          "M."
-        ],
-        "surname": "Presser",
-        "identifier": "Scopus-id: 23477943200",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=23477943200"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Martinez J.A.",
-          "Juan A.",
-          "J.A."
-        ],
-        "surname": "Martinez",
-        "identifier": "Scopus-id: 57199490302",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57199490302"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Gonzalez-Gil P.",
-          "Pedro",
-          "P."
-        ],
-        "surname": "Gonzalez-Gil",
-        "identifier": "Scopus-id: 42661284900",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=42661284900"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Krogbaek M.",
-          "Marianne",
-          "M."
-        ],
-        "surname": "Krogbæk",
-        "identifier": "Scopus-id: 57193883295",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57193883295"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Christophersen S.H.",
-          "Sebastian Holmgård",
-          "S.H."
-        ],
-        "surname": "Christophersen",
-        "identifier": "Scopus-id: 57217582267",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57217582267"
-          }
-        ]
-      }
-    ],
-    "correspondingOrganization": null,
-    "hasKnowledgeArea": [
-      {
-        "name": "Analytical Chemistry",
-        "abbreviation": "CHEM",
-        "hasCode": "1602"
-      },
-      {
-        "name": "Information Systems",
-        "abbreviation": "COMP",
-        "hasCode": "1710"
-      },
-      {
-        "name": "Atomic and Molecular Physics, and Optics",
-        "abbreviation": "PHYS",
-        "hasCode": "3107"
-      },
-      {
-        "name": "Biochemistry",
-        "abbreviation": "BIOC",
-        "hasCode": "1303"
-      },
-      {
-        "name": "Instrumentation",
-        "abbreviation": "PHYS",
-        "hasCode": "3105"
-      },
-      {
-        "name": "Electrical and Electronic Engineering",
-        "abbreviation": "ENGI",
-        "hasCode": "2208"
-      }
-    ],
-    "pageEnd": "32",
-    "pageStart": "1",
-    "documentStatus": null,
-    "eanucc13": null,
-    "hasPublicationVenue": {
-      "hasMetric": null,
-      "abbreviation": null,
-      "publisher": null,
-      "issn": "14248220",
-      "name": "Sensors",
-      "eissn": null,
-      "oclcnum": null
-    },
-    "hasMetric": {
-      "citationCount": "0",
-      "metricName": "Scopus"
-    },
-    "bibliografia": null
-  },
-  {
-    "typeOfPublication": "AcademicArticle",
-    "title": "A Survey of Cybersecurity Certification for the Internet of Things",
-    "freetextKeyword": [
-      "IoT",
-      "labelling",
-      "security",
-      "Security certification",
-      "security risk assessment",
-      "security testing"
-    ],
-    "abstract": "© 2020 ACM.In recent years, cybersecurity certification is gaining momentum as the baseline to build a structured approach to mitigate cybersecurity risks in the Internet of Things (IoT). This initiative is driven by industry, governmental institutions, and research communities, which have the goal to make IoT more secure for the end-users. In this survey, we analyze the current cybersecurity certification schemes, as well as the potential challenges to make them applicable for the IoT ecosystem. We also examine current efforts related to risk assessment and testing processes, which are widely recognized as the processes to build a cybersecurity certification framework. Our work provides a multidisciplinary perspective of a possible IoT cybersecurity certification framework by integrating research and technical tools and processes with policies and governance structures, which are analyzed against a set of identified challenges. This survey is intended to give a comprehensive overview of cybersecurity certification to facilitate the definition of a framework that fits in emerging scenarios, such as the IoT paradigm.",
-    "language": "eng",
-    "doi": "10.1145/3410160",
-    "dataIssued": {
-      "datimeTime": "2021-02-01"
-    },
-    "url": [
-      {
-        "link": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85100828644&origin=inward"
-      }
-    ],
-    "correspondingAuthor": {
-      "name": [
-        "Matheu S.N.",
-        "Sara N.",
-        "S.N."
-      ],
-      "surname": "Matheu",
-      "identifier": "Scopus-id: 57208818190",
-      "link": [
-        {
-          "link": "https://www.scopus.com/authid/detail.uri?authorId=57208818190"
-        }
-      ]
-    },
-    "seqOfAuthors": [
-      {
-        "name": [
-          "Matheu S.N.",
-          "Sara N.",
-          "S.N."
-        ],
-        "surname": "Matheu",
-        "identifier": "Scopus-id: 57208818190",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57208818190"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Hernandez-Ramos J.L.",
-          "José L.",
-          "J.L."
-        ],
-        "surname": "Hernández-Ramos",
-        "identifier": "Scopus-id: 56157393500",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=56157393500"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Skarmeta A.F.",
-          "Antonio F.",
-          "A.F."
-        ],
-        "surname": "Skarmeta",
-        "identifier": "Scopus-id: 57190210928",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57190210928"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Baldini G.",
-          "Gianmarco",
-          "G."
-        ],
-        "surname": "Baldini",
-        "identifier": "Scopus-id: 57193911480",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57193911480"
-          }
-        ]
-      }
-    ],
-    "correspondingOrganization": null,
-    "hasKnowledgeArea": [
-      {
-        "name": "Theoretical Computer Science",
-        "abbreviation": "MATH",
-        "hasCode": "2614"
-      },
-      {
-        "name": "Computer Science (all)",
-        "abbreviation": "COMP",
-        "hasCode": "1700"
-      }
-    ],
-    "pageEnd": null,
-    "pageStart": null,
-    "documentStatus": null,
-    "eanucc13": null,
-    "hasPublicationVenue": {
-      "hasMetric": null,
-      "abbreviation": null,
-      "publisher": null,
-      "issn": "15577341 03600300",
-      "name": "ACM Computing Surveys",
-      "eissn": null,
-      "oclcnum": null
-    },
-    "hasMetric": {
-      "citationCount": "2",
-      "metricName": "Scopus"
-    },
-    "bibliografia": null
-  },
-  {
-    "typeOfPublication": "JournalArticle",
-    "title": "Improving energy efficiency of irrigation wells by using an iot-based platform",
-    "freetextKeyword": [
-      "Energy monitoring",
-      "Information model",
-      "IoT platform",
-      "Smart agriculture",
-      "Water pumping"
-    ],
-    "abstract": "© 2021 by the authors. Licensee MDPI, Basel, Switzerland.The irrigation sector has undergone a remarkable transformation in recent decades due to the application of pressurized water distribution technologies, improving the management of limited water resources. As a result of this transformation, irrigation has become, together with agricultural machinery, the primary consumer of energy within the agri-food sector. Furthermore, the energy cost of operating pumping equipment during a farming season represents 30–40% of the crop’s total cost. For this reason, one of the most interesting challenges in this scope is that of improving energy efficiency and reducing economic costs so that productive work become more and more competitive. Energy audit makes possible to determine the efficiency of installations, and enables to determine energy saving protocols (requirements), for this reason the aim of this article is to carry out these by using IoT-based systems. The proposed system improves decision-making on agricultural pumping management by classifying wells’ efficiency and integrating the data sets that determine their efficiency into a single information model. The system monitors energy efficiency according to different parameters such as: infrastructure, energy consumption, electric rates, manometric height or type of installation, making it possible to enhance each pumping operation’s decisions. This solution has been deployed in an irrigation community in southeast Spain whose results have warned about the lack of efficiency in two of its wells: in one of them it is proposed that they be replaced, due to the high cost of pumping water, and in the other, hydraulic mechanisms are implemented to improve the water-energy binomial.",
-    "language": "eng",
-    "doi": "10.3390/electronics10030250",
-    "dataIssued": {
-      "datimeTime": "2021-02-01"
-    },
-    "url": [
-      {
-        "link": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85099769669&origin=inward"
-      }
-    ],
-    "correspondingAuthor": {
-      "name": [
-        "Lopez-Morales J.A.",
-        "Juan A.",
-        "J.A."
-      ],
-      "surname": "López-Morales",
-      "identifier": "Scopus-id: 6505877342",
-      "link": [
-        {
-          "link": "https://www.scopus.com/authid/detail.uri?authorId=6505877342"
-        }
-      ]
-    },
-    "seqOfAuthors": [
-      {
-        "name": [
-          "Lopez-Morales J.A.",
-          "Juan A.",
-          "J.A."
-        ],
-        "surname": "López-Morales",
-        "identifier": "Scopus-id: 6505877342",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=6505877342"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Martinez J.A.",
-          "Juan A.",
-          "J.A."
-        ],
-        "surname": "Martínez",
-        "identifier": "Scopus-id: 57199490302",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57199490302"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Skarmeta A.F.",
-          "Antonio F.",
-          "A.F."
-        ],
-        "surname": "Skarmeta",
-        "identifier": "Scopus-id: 57190210928",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57190210928"
-          }
-        ]
-      }
-    ],
-    "correspondingOrganization": null,
-    "hasKnowledgeArea": [
-      {
-        "name": "Control and Systems Engineering",
-        "abbreviation": "ENGI",
-        "hasCode": "2207"
-      },
-      {
-        "name": "Signal Processing",
-        "abbreviation": "COMP",
-        "hasCode": "1711"
-      },
-      {
-        "name": "Hardware and Architecture",
-        "abbreviation": "COMP",
-        "hasCode": "1708"
-      },
-      {
-        "name": "Computer Networks and Communications",
-        "abbreviation": "COMP",
-        "hasCode": "1705"
-      },
-      {
-        "name": "Electrical and Electronic Engineering",
-        "abbreviation": "ENGI",
-        "hasCode": "2208"
-      }
-    ],
-    "pageEnd": "18",
-    "pageStart": "1",
-    "documentStatus": null,
-    "eanucc13": null,
-    "hasPublicationVenue": {
-      "hasMetric": null,
-      "abbreviation": null,
-      "publisher": null,
-      "issn": "20799292",
-      "name": "Electronics (Switzerland)",
-      "eissn": null,
-      "oclcnum": null
-    },
-    "hasMetric": {
-      "citationCount": "2",
-      "metricName": "Scopus"
-    },
-    "bibliografia": null
-  },
-  {
-    "typeOfPublication": "JournalArticle",
-    "title": "Ciotvid: Towards an open iot-platform for infective pandemic diseases such as COVID-19",
-    "freetextKeyword": [
-      "Covid19",
-      "IoT platform",
-      "Spectrogram",
-      "Speech analysis"
-    ],
-    "abstract": "© 2021 by the authors. Licensee MDPI, Basel, Switzerland.The factors affecting the penetration of certain diseases such as COVID-19 in society are still unknown. Internet of Things (IoT) technologies can play a crucial role during the time of crisis and they can provide a more holistic view of the reasons that govern the outbreak of a contagious disease. The understanding of COVID-19 will be enriched by the analysis of data related to the phenomena, and this data can be collected using IoT sensors. In this paper, we show an integrated solution based on IoT technologies that can serve as opportunistic health data acquisition agents for combating the pandemic of COVID-19, named CIoTVID. The platform is composed of four layers—data acquisition, data aggregation, machine intelligence and services, within the solution. To demonstrate its validity, the solution has been tested with a use case based on creating a classifier of medical conditions using real data of voice, performing successfully. The layer of data aggregation is particularly relevant in this kind of solution as the data coming from medical devices has a very different nature to that coming from electronic sensors. Due to the adaptability of the platform to heterogeneous data and volumes of data; individuals, policymakers, and clinics could benefit from it to fight the propagation of the pandemic.",
-    "language": "eng",
-    "doi": "10.3390/s21020484",
-    "dataIssued": {
-      "datimeTime": "2021-01-02"
-    },
-    "url": [
-      {
-        "link": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85099341764&origin=inward"
-      }
-    ],
-    "correspondingAuthor": {
-      "name": [
-        "Ramallo-Gonzalez A.P.",
-        "Alfonso P.",
-        "A.P."
-      ],
-      "surname": "Ramallo-González",
-      "identifier": "Scopus-id: 55597330200",
-      "link": [
-        {
-          "link": "https://www.scopus.com/authid/detail.uri?authorId=55597330200"
-        }
-      ]
-    },
-    "seqOfAuthors": [
-      {
-        "name": [
-          "Ramallo-Gonzalez A.P.",
-          "Alfonso P.",
-          "A.P."
-        ],
-        "surname": "Ramallo-González",
-        "identifier": "Scopus-id: 55597330200",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=55597330200"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Gonzalez-Vidal A.",
-          "Aurora",
-          "A."
-        ],
-        "surname": "González-Vidal",
-        "identifier": "Scopus-id: 57189466053",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57189466053"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Skarmeta A.F.",
-          "Antonio F.",
-          "A.F."
-        ],
-        "surname": "Skarmeta",
-        "identifier": "Scopus-id: 57190210928",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57190210928"
-          }
-        ]
-      }
-    ],
-    "correspondingOrganization": null,
-    "hasKnowledgeArea": [
-      {
-        "name": "Analytical Chemistry",
-        "abbreviation": "CHEM",
-        "hasCode": "1602"
-      },
-      {
-        "name": "Biochemistry",
-        "abbreviation": "BIOC",
-        "hasCode": "1303"
-      },
-      {
-        "name": "Atomic and Molecular Physics, and Optics",
-        "abbreviation": "PHYS",
-        "hasCode": "3107"
-      },
-      {
-        "name": "Instrumentation",
-        "abbreviation": "PHYS",
-        "hasCode": "3105"
-      },
-      {
-        "name": "Electrical and Electronic Engineering",
-        "abbreviation": "ENGI",
-        "hasCode": "2208"
-      }
-    ],
-    "pageEnd": "13",
-    "pageStart": "1",
-    "documentStatus": null,
-    "eanucc13": null,
-    "hasPublicationVenue": {
-      "hasMetric": null,
-      "abbreviation": null,
-      "publisher": null,
-      "issn": "14248220",
-      "name": "Sensors (Switzerland)",
-      "eissn": null,
-      "oclcnum": null
-    },
-    "hasMetric": {
-      "citationCount": "3",
-      "metricName": "Scopus"
-    },
-    "bibliografia": null
-  },
-  {
-    "typeOfPublication": "JournalArticle",
-    "title": "A Trusted Approach for Decentralised and Privacy-Preserving Identity Management",
-    "freetextKeyword": [
-      "Blockchain",
-      "digital identities",
-      "DLT",
-      "identity management",
-      "privacy",
-      "privacy enhancing technologies",
-      "privacy-preserving",
-      "security"
-    ],
-    "abstract": "© 2013 IEEE.Identity Management (IdM) systems have traditionally relied on a centralized model prone to privacy, trust, and security problems, like potential massive data breaches or identity spoofing. Identity providers accumulate excessive power that might allow them to become a big brother, analyzing and storing as much data as possible. Users should be able to trust identity providers and manage their personal information straightforwardly without compromising their privacy. The European OLYMPUS project introduces a distributed approach for IdM based on enhanced Attribute-Based Credentials (ABC) that splits the role of Identity Provider to limit their influence and chances to become a unique point of failure. However, the trust relationship between service providers, users, and identity providers is still a gap in those kinds of privacy-preserving ABC systems. Decentralized technologies are an opportunity to break away from the centralized model and propose systems that respect privacy while increasing users' trust. This paper presents an evolution of the OLYMPUS architecture, maintaining all the privacy features and incorporating distributed ledger technologies to enhance trust and security in online transactions and IdM systems. The proposed system has been implemented, tested, and validated, showing its performance and feasibility to manage user's identity in a fully privacy-preserving, distributed and reliable way.",
-    "language": "eng",
-    "doi": "10.1109/ACCESS.2021.3099837",
-    "dataIssued": {
-      "datimeTime": "2021-01-01"
-    },
-    "url": [
-      {
-        "link": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85112673990&origin=inward"
-      }
-    ],
-    "correspondingAuthor": {
-      "name": [
-        "Moreno R.T.",
-        "Rafael Torres",
-        "R.T."
-      ],
-      "surname": "Moreno",
-      "identifier": "Scopus-id: 57210820201",
-      "link": [
-        {
-          "link": "https://www.scopus.com/authid/detail.uri?authorId=57210820201"
-        }
-      ]
-    },
-    "seqOfAuthors": [
-      {
-        "name": [
-          "Moreno R.T.",
-          "Rafael Torres",
-          "R.T."
-        ],
-        "surname": "Moreno",
-        "identifier": "Scopus-id: 57210820201",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57210820201"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Garcia-Rodriguez J.",
-          "Jesus",
-          "J."
-        ],
-        "surname": "Garcia-Rodriguez",
-        "identifier": "Scopus-id: 57215378619",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57215378619"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Bernabe J.B.",
-          "Jorge Bernal",
-          "J.B."
-        ],
-        "surname": "Bernabe",
-        "identifier": "Scopus-id: 57226784222",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57226784222"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Skarmeta A.",
-          "Antonio",
-          "A."
-        ],
-        "surname": "Skarmeta",
-        "identifier": "Scopus-id: 57190210928",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57190210928"
-          }
-        ]
-      }
-    ],
-    "correspondingOrganization": null,
-    "hasKnowledgeArea": [
-      {
-        "name": "Computer Science (all)",
-        "abbreviation": "COMP",
-        "hasCode": "1700"
-      },
-      {
-        "name": "Materials Science (all)",
-        "abbreviation": "MATE",
-        "hasCode": "2500"
-      },
-      {
-        "name": "Engineering (all)",
-        "abbreviation": "ENGI",
-        "hasCode": "2200"
-      }
-    ],
-    "pageEnd": "105804",
-    "pageStart": "105788",
-    "documentStatus": null,
-    "eanucc13": null,
-    "hasPublicationVenue": {
-      "hasMetric": null,
-      "abbreviation": null,
-      "publisher": null,
-      "issn": "21693536",
-      "name": "IEEE Access",
-      "eissn": null,
-      "oclcnum": null
-    },
-    "hasMetric": {
-      "citationCount": "0",
-      "metricName": "Scopus"
-    },
-    "bibliografia": null
-  },
-  {
-    "typeOfPublication": "JournalArticle",
-    "title": "Architecture for Orchestrating Dynamic DNN-Powered Image Processing Tasks in Edge and Cloud Devices",
-    "freetextKeyword": [
-      "DNN image processing",
-      "IoT",
-      "orchestration"
-    ],
-    "abstract": "© 2013 IEEE.DNN processing on image streams has opened the possibility for new and innovative applications. Some of those would benefit from performing the computation locally, avoiding incurring into latencies due to data travelling to image processing services in the cloud, and thus allowing for faster response times. New devices like the GPU-accelerated NVIDIA Jetson family, such as the Jetson Nano, are capable of running modern DNN image processing models, offering an affordable, powerful and scalable local alternative to cloud processing. Performing local image processing can also benefit security and even GDPR compliance, potentially easing the deployment of this solutions. Not only that, but local image processing can also bring the possibility of applying these techniques in areas with reduced connectivity, where cloud-based solutions are unfeasible. In this work, we propose an architecture for the orchestration of DNN accelerated image processing on IoT devices, based on FogFlow; an orchestration platform capable of leveraging cloud and edge resources. FogFlow is part of the FIWARE initiative and is based in the NGSI family of standards, widely applied in Smart City, Smart Building and Smart Home solutions, making it an easy-to-integrate technology.",
-    "language": "eng",
-    "doi": "10.1109/ACCESS.2021.3101306",
-    "dataIssued": {
-      "datimeTime": "2021-01-01"
-    },
-    "url": [
-      {
-        "link": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85111577698&origin=inward"
-      }
-    ],
-    "correspondingAuthor": {
-      "name": [
-        "Gonzalez-Gil P.",
-        "Pedro",
-        "P."
-      ],
-      "surname": "Gonzalez-Gil",
-      "identifier": "Scopus-id: 42661284900",
-      "link": [
-        {
-          "link": "https://www.scopus.com/authid/detail.uri?authorId=42661284900"
-        }
-      ]
-    },
-    "seqOfAuthors": [
-      {
-        "name": [
-          "Gonzalez-Gil P.",
-          "Pedro",
-          "P."
-        ],
-        "surname": "Gonzalez-Gil",
-        "identifier": "Scopus-id: 42661284900",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=42661284900"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Robles-Enciso A.",
-          "Alberto",
-          "A."
-        ],
-        "surname": "Robles-Enciso",
-        "identifier": "Scopus-id: 57216200378",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57216200378"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Martinez J.A.",
-          "Juan Antonio",
-          "J.A."
-        ],
-        "surname": "Martinez",
-        "identifier": "Scopus-id: 57199490302",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57199490302"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Skarmeta A.F.",
-          "Antonio F.",
-          "A.F."
-        ],
-        "surname": "Skarmeta",
-        "identifier": "Scopus-id: 57190210928",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57190210928"
-          }
-        ]
-      }
-    ],
-    "correspondingOrganization": null,
-    "hasKnowledgeArea": [
-      {
-        "name": "Computer Science (all)",
-        "abbreviation": "COMP",
-        "hasCode": "1700"
-      },
-      {
-        "name": "Materials Science (all)",
-        "abbreviation": "MATE",
-        "hasCode": "2500"
-      },
-      {
-        "name": "Engineering (all)",
-        "abbreviation": "ENGI",
-        "hasCode": "2200"
-      }
-    ],
-    "pageEnd": "107148",
-    "pageStart": "107137",
-    "documentStatus": null,
-    "eanucc13": null,
-    "hasPublicationVenue": {
-      "hasMetric": null,
-      "abbreviation": null,
-      "publisher": null,
-      "issn": "21693536",
-      "name": "IEEE Access",
-      "eissn": null,
-      "oclcnum": null
-    },
-    "hasMetric": {
-      "citationCount": "0",
-      "metricName": "Scopus"
-    },
-    "bibliografia": null
-  },
-  {
-    "typeOfPublication": "JournalArticle",
-    "title": "The challenges of software cybersecurity certification",
-    "freetextKeyword": null,
-    "abstract": "© 2003-2012 IEEE.In 2019, the new European Union (EU) cybersecurity regulation \"Cybersecurity Act\"(\"CSA\")1 entered into force to create a common framework for the certification of any information and communication technology (ICT) system, including products, services, and processes. The main purpose of this framework is to reduce the current fragmentation of cybersecurity certification schemes2 as well as to increase end users? trust in a hyperconnected society3 by fostering a mutual recognition of certified ICT components in any EU country.",
-    "language": "eng",
-    "doi": "10.1109/MSEC.2020.3037845",
-    "dataIssued": {
-      "datimeTime": "2021-01-01"
-    },
-    "url": [
-      {
-        "link": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85100497210&origin=inward"
-      }
-    ],
-    "correspondingAuthor": {
-      "name": [
-        "Hernandez-Ramos J.L.",
-        "Jose L.",
-        "J.L."
-      ],
-      "surname": "Hernandez-Ramos",
-      "identifier": "Scopus-id: 56157393500",
-      "link": [
-        {
-          "link": "https://www.scopus.com/authid/detail.uri?authorId=56157393500"
-        }
-      ]
-    },
-    "seqOfAuthors": [
-      {
-        "name": [
-          "Hernandez-Ramos J.L.",
-          "Jose L.",
-          "J.L."
-        ],
-        "surname": "Hernandez-Ramos",
-        "identifier": "Scopus-id: 56157393500",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=56157393500"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Matheu S.N.",
-          "Sara N.",
-          "S.N."
-        ],
-        "surname": "Matheu",
-        "identifier": "Scopus-id: 57208818190",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57208818190"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Skarmeta A.",
-          "Antonio",
-          "A."
-        ],
-        "surname": "Skarmeta",
-        "identifier": "Scopus-id: 57190210928",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57190210928"
-          }
-        ]
-      }
-    ],
-    "correspondingOrganization": null,
-    "hasKnowledgeArea": [
-      {
-        "name": "Computer Networks and Communications",
-        "abbreviation": "COMP",
-        "hasCode": "1705"
-      },
-      {
-        "name": "Electrical and Electronic Engineering",
-        "abbreviation": "ENGI",
-        "hasCode": "2208"
-      },
-      {
-        "name": "Law",
-        "abbreviation": "SOCI",
-        "hasCode": "3308"
-      }
-    ],
-    "pageEnd": "102",
-    "pageStart": "99",
-    "documentStatus": null,
-    "eanucc13": null,
-    "hasPublicationVenue": {
-      "hasMetric": null,
-      "abbreviation": null,
-      "publisher": null,
-      "issn": "15584046 15407993",
-      "name": "IEEE Security and Privacy",
-      "eissn": null,
-      "oclcnum": null
-    },
-    "hasMetric": {
-      "citationCount": "0",
-      "metricName": "Scopus"
-    },
-    "bibliografia": null
-  },
-  {
-    "typeOfPublication": "JournalArticle",
-    "title": "Distributed real-time SlowDoS attacks detection over encrypted traffic using Artificial Intelligence",
-    "freetextKeyword": [
-      "Artificial intelligence",
-      "Cyberattacks",
-      "Cybersecurity",
-      "Machine learning"
-    ],
-    "abstract": "© Elsevier LtdSlowDoS attacks exploit slow transmissions on application-level protocols like HTTP to carry out denial of service against web-servers. These attacks are difficult to be detected with traditional signature-based intrusion detection approaches, even more when the HTTP traffic is encrypted. To cope with this challenge, this paper describes and AI-based anomaly detection system for real-time detection of SlowDoS attacks over application-level encrypted traffic. Our system monitors in real-time the network traffic, analyzing, processing and aggregating packets into conversation flows, getting valuable features and statistics that are dynamically analyzed in streaming for AI-based anomaly detection. The distributed AI model running in Apache Spark-streaming, combines clustering analysis for anomaly detection, along with deep learning techniques to increase detection accuracy in those cases where clustering obtains ambiguous probabilities. The proposal has been implemented and validated in a real testbed, showing its feasibility, performance and accuracy for detecting in real-time different kinds of SlowDoS attacks over encrypted traffic. The achieved results are close to the optimal precision value with a success rate 98%, while the false negative rate takes a value below 0.5%.",
-    "language": "eng",
-    "doi": "10.1016/j.jnca.2020.102871",
-    "dataIssued": {
-      "datimeTime": "2021-01-01"
-    },
-    "url": [
-      {
-        "link": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85095796876&origin=inward"
-      }
-    ],
-    "correspondingAuthor": {
-      "name": [
-        "Garcia N.",
-        "Norberto",
-        "N."
-      ],
-      "surname": "Garcia",
-      "identifier": "Scopus-id: 57220648044",
-      "link": [
-        {
-          "link": "https://www.scopus.com/authid/detail.uri?authorId=57220648044"
-        }
-      ]
-    },
-    "seqOfAuthors": [
-      {
-        "name": [
-          "Garcia N.",
-          "Norberto",
-          "N."
-        ],
-        "surname": "Garcia",
-        "identifier": "Scopus-id: 57220648044",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57220648044"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Alcaniz T.",
-          "Tomas",
-          "T."
-        ],
-        "surname": "Alcaniz",
-        "identifier": "Scopus-id: 57219852047",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57219852047"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Gonzalez-Vidal A.",
-          "Aurora",
-          "A."
-        ],
-        "surname": "González-Vidal",
-        "identifier": "Scopus-id: 57189466053",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57189466053"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Bernabe J.B.",
-          "Jorge Bernal",
-          "J.B."
-        ],
-        "surname": "Bernabe",
-        "identifier": "Scopus-id: 57195618802",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57195618802"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Rivera D.",
-          "Diego",
-          "D."
-        ],
-        "surname": "Rivera",
-        "identifier": "Scopus-id: 57188843385",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57188843385"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Skarmeta A.",
-          "Antonio",
-          "A."
-        ],
-        "surname": "Skarmeta",
-        "identifier": "Scopus-id: 57190210928",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57190210928"
-          }
-        ]
-      }
-    ],
-    "correspondingOrganization": null,
-    "hasKnowledgeArea": [
-      {
-        "name": "Hardware and Architecture",
-        "abbreviation": "COMP",
-        "hasCode": "1708"
-      },
-      {
-        "name": "Computer Science Applications",
-        "abbreviation": "COMP",
-        "hasCode": "1706"
-      },
-      {
-        "name": "Computer Networks and Communications",
-        "abbreviation": "COMP",
-        "hasCode": "1705"
-      }
-    ],
-    "pageEnd": null,
-    "pageStart": null,
-    "documentStatus": null,
-    "eanucc13": null,
-    "hasPublicationVenue": {
-      "hasMetric": null,
-      "abbreviation": null,
-      "publisher": null,
-      "issn": "10958592 10848045",
-      "name": "Journal of Network and Computer Applications",
-      "eissn": null,
-      "oclcnum": null
-    },
-    "hasMetric": {
-      "citationCount": "4",
-      "metricName": "Scopus"
-    },
-    "bibliografia": null
-  },
-  {
-    "typeOfPublication": "JournalArticle",
-    "title": "Security and privacy in internet of things-enabled smart cities: Challenges and future directions",
-    "freetextKeyword": null,
-    "abstract": "© 2003-2012 IEEE.The digitalization of current urban spaces is realizing the vision of so-called smart cities, where security and privacy concerns could affect citizens' safety. This work discusses potential solutions derived from European Union research efforts to be considered in the coming years.",
-    "language": "eng",
-    "doi": "10.1109/MSEC.2020.3012353",
-    "dataIssued": {
-      "datimeTime": "2021-01-01"
-    },
-    "url": [
-      {
-        "link": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85089442018&origin=inward"
-      }
-    ],
-    "correspondingAuthor": {
-      "name": [
-        "Hernandez-Ramos J.L.",
-        "Jose L.",
-        "J.L."
-      ],
-      "surname": "Hernandez-Ramos",
-      "identifier": "Scopus-id: 56157393500",
-      "link": [
-        {
-          "link": "https://www.scopus.com/authid/detail.uri?authorId=56157393500"
-        }
-      ]
-    },
-    "seqOfAuthors": [
-      {
-        "name": [
-          "Hernandez-Ramos J.L.",
-          "Jose L.",
-          "J.L."
-        ],
-        "surname": "Hernandez-Ramos",
-        "identifier": "Scopus-id: 56157393500",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=56157393500"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Martinez J.A.",
-          "Juan A.",
-          "J.A."
-        ],
-        "surname": "Martinez",
-        "identifier": "Scopus-id: 57199490302",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57199490302"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Savarino V.",
-          "Vincenzo",
-          "V."
-        ],
-        "surname": "Savarino",
-        "identifier": "Scopus-id: 57190109780",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57190109780"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Angelini M.",
-          "Marco",
-          "M."
-        ],
-        "surname": "Angelini",
-        "identifier": "Scopus-id: 57218536110",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57218536110"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Napolitano V.",
-          "Vincenzo",
-          "V."
-        ],
-        "surname": "Napolitano",
-        "identifier": "Scopus-id: 57218533700",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57218533700"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Skarmeta A.F.",
-          "Antonio F.",
-          "A.F."
-        ],
-        "surname": "Skarmeta",
-        "identifier": "Scopus-id: 57190210928",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57190210928"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Baldini G.",
-          "Gianmarco",
-          "G."
-        ],
-        "surname": "Baldini",
-        "identifier": "Scopus-id: 57193911480",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57193911480"
-          }
-        ]
-      }
-    ],
-    "correspondingOrganization": null,
-    "hasKnowledgeArea": [
-      {
-        "name": "Computer Networks and Communications",
-        "abbreviation": "COMP",
-        "hasCode": "1705"
-      },
-      {
-        "name": "Electrical and Electronic Engineering",
-        "abbreviation": "ENGI",
-        "hasCode": "2208"
-      },
-      {
-        "name": "Law",
-        "abbreviation": "SOCI",
-        "hasCode": "3308"
-      }
-    ],
-    "pageEnd": "23",
-    "pageStart": "12",
-    "documentStatus": null,
-    "eanucc13": null,
-    "hasPublicationVenue": {
-      "hasMetric": null,
-      "abbreviation": null,
-      "publisher": null,
-      "issn": "15584046 15407993",
-      "name": "IEEE Security and Privacy",
-      "eissn": null,
-      "oclcnum": null
-    },
-    "hasMetric": {
-      "citationCount": "3",
-      "metricName": "Scopus"
-    },
-    "bibliografia": null
-  },
-  {
-    "typeOfPublication": "JournalArticle",
-    "title": "Evaluation of a zone encryption scheme for vehicular networks",
-    "freetextKeyword": [
-      "C-ITS",
-      "Security",
-      "V2V",
-      "Vehicular networks",
-      "Zone encryption"
-    ],
-    "abstract": "© 2020 Elsevier B.V.Vehicular communications are bringing a new wave of applications under the umbrella of the Cooperative Intelligent Transportation Systems (C-ITS). To this end, on-board units are expected to send messages periodically or upon the appearance of a relevant event, to feed an awareness ecosystem that enables safety or traffic efficiency services. This is the case of Cooperative Awareness Messages (CAMs) in Europe, which contain basic vehicle information such as its position or speed, among other parameters. From a network security perspective, CAMs are broadcasted unencrypted over an unprotected radio channel, hence enabling their potential interception and the disclosure of sensitive data. Although public key infrastructures (PKI)-like solutions have been proposed, high computational cost of asymmetric cryptography to cipher application data remains a challenge and a confidentiality alternative is needed. In this work, we present the implementation and evaluation of a symmetric encryption scheme based on disjoint security domains distributed in geographical areas. In the solution, vehicles are able to coordinate and agree on common keys to be used in different security zones. Simulation results show the validity of the zone encryption scheme in diverse vehicular scenarios with different traffic densities. A potential issue in the zone key redistribution consisting in the propagation of wrongly-generated duplicated keys is also detected, which is discussed in detail and a reliable solution based on the support of third-party data-forwarders is proposed and tested. Evaluations reveal good performance of the zone encryption mechanism in terms of robustness and latency, guaranteeing the efficient access to a secured channel while maintaining low computing load.",
-    "language": "eng",
-    "doi": "10.1016/j.comnet.2020.107523",
-    "dataIssued": {
-      "datimeTime": "2020-12-09"
-    },
-    "url": [
-      {
-        "link": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85090051236&origin=inward"
-      }
-    ],
-    "correspondingAuthor": {
-      "name": [
-        "Gallego-Madrid J.",
-        "Jorge",
-        "J."
-      ],
-      "surname": "Gallego-Madrid",
-      "identifier": "Scopus-id: 57210361966",
-      "link": [
-        {
-          "link": "https://www.scopus.com/authid/detail.uri?authorId=57210361966"
-        }
-      ]
-    },
-    "seqOfAuthors": [
-      {
-        "name": [
-          "Gallego-Madrid J.",
-          "Jorge",
-          "J."
-        ],
-        "surname": "Gallego-Madrid",
-        "identifier": "Scopus-id: 57210361966",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57210361966"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Sanchez-Iborra R.",
-          "Ramon",
-          "R."
-        ],
-        "surname": "Sanchez-Iborra",
-        "identifier": "Scopus-id: 55933950900",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=55933950900"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Santa J.",
-          "Jose",
-          "J."
-        ],
-        "surname": "Santa",
-        "identifier": "Scopus-id: 18038232200",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=18038232200"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Skarmeta A.",
-          "Antonio",
-          "A."
-        ],
-        "surname": "Skarmeta",
-        "identifier": "Scopus-id: 57190210928",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57190210928"
-          }
-        ]
-      }
-    ],
-    "correspondingOrganization": null,
-    "hasKnowledgeArea": [
-      {
-        "name": "Computer Networks and Communications",
-        "abbreviation": "COMP",
-        "hasCode": "1705"
-      }
-    ],
-    "pageEnd": null,
-    "pageStart": null,
-    "documentStatus": null,
-    "eanucc13": null,
-    "hasPublicationVenue": {
-      "hasMetric": null,
-      "abbreviation": null,
-      "publisher": null,
-      "issn": "13891286",
-      "name": "Computer Networks",
-      "eissn": null,
-      "oclcnum": null
-    },
-    "hasMetric": {
-      "citationCount": "0",
-      "metricName": "Scopus"
-    },
-    "bibliografia": null
-  },
-  {
-    "typeOfPublication": "ConferencePaper",
-    "title": "QoS and Resource aware Security Orchestration System",
-    "freetextKeyword": null,
-    "abstract": "© 2020 IEEE.Network Function Virtualization (NFV) and Software Distributed Networking (SDN) technologies play a crucial role in enabling 5G system and beyond. A synergy between these both technologies has been identified for enabling a new concept dubbed service function chains (SFC) that aims to reduce both the capital expenditures (CAPEX) and operating expenses (OPEX). The SFC paradigm considers different constraints and key performance indicators (KPIs), that includes QoS and different resources, for enabling network slice services. However, the large-scale, complexity and security issues brought by these technologies create an extra overhead for ensuring secure network slicing. To cope with these challenges, this paper proposes a cost-efficient optimized SFC management system that enables the creation of SFCs for enabling efficient and secure network slices. The proposed system considers the network and computational resources and current network security levels to ensure trusted deployments. The simulation results demonstrated the efficiency of the proposed solution for achieving its designed objectives. The proposed solution efficiently manages the SFCs by optimizing deployment costs and reducing overall end-to-end delay.",
-    "language": "eng",
-    "doi": "10.1109/GLOBECOM42002.2020.9348217",
-    "dataIssued": {
-      "datimeTime": "2020-12-01"
-    },
-    "url": [
-      {
-        "link": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85101252660&origin=inward"
-      }
-    ],
-    "correspondingAuthor": {
-      "name": [
-        "Bagaa M.",
-        "Miloud",
-        "M."
-      ],
-      "surname": "Bagaa",
-      "identifier": "Scopus-id: 24467380100",
-      "link": [
-        {
-          "link": "https://www.scopus.com/authid/detail.uri?authorId=24467380100"
-        }
-      ]
-    },
-    "seqOfAuthors": [
-      {
-        "name": [
-          "Bagaa M.",
-          "Miloud",
-          "M."
-        ],
-        "surname": "Bagaa",
-        "identifier": "Scopus-id: 24467380100",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=24467380100"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Taleb T.",
-          "Tarik",
-          "T."
-        ],
-        "surname": "Taleb",
-        "identifier": "Scopus-id: 6602641627",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=6602641627"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Bernabe J.B.",
-          "Jorge Bernal",
-          "J.B."
-        ],
-        "surname": "Bernabe",
-        "identifier": "Scopus-id: 57195618802",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57195618802"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Skarmeta A.",
-          "Antonio",
-          "A."
-        ],
-        "surname": "Skarmeta",
-        "identifier": "Scopus-id: 57190210928",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57190210928"
-          }
-        ]
-      }
-    ],
-    "correspondingOrganization": null,
-    "hasKnowledgeArea": [
-      {
-        "name": "Media Technology",
-        "abbreviation": "ENGI",
-        "hasCode": "2214"
-      },
-      {
-        "name": "Modeling and Simulation",
-        "abbreviation": "MATH",
-        "hasCode": "2611"
-      },
-      {
-        "name": "Instrumentation",
-        "abbreviation": "PHYS",
-        "hasCode": "3105"
-      },
-      {
-        "name": "Artificial Intelligence",
-        "abbreviation": "COMP",
-        "hasCode": "1702"
-      },
-      {
-        "name": "Computer Networks and Communications",
-        "abbreviation": "COMP",
-        "hasCode": "1705"
-      },
-      {
-        "name": "Hardware and Architecture",
-        "abbreviation": "COMP",
-        "hasCode": "1708"
-      },
-      {
-        "name": "Software",
-        "abbreviation": "COMP",
-        "hasCode": "1712"
-      },
-      {
-        "name": "Safety, Risk, Reliability and Quality",
-        "abbreviation": "ENGI",
-        "hasCode": "2213"
-      }
-    ],
-    "pageEnd": null,
-    "pageStart": null,
-    "documentStatus": null,
-    "eanucc13": null,
-    "hasPublicationVenue": {
-      "hasMetric": null,
-      "abbreviation": null,
-      "publisher": null,
-      "issn": null,
-      "name": "2020 IEEE Global Communications Conference, GLOBECOM 2020 - Proceedings",
-      "eissn": null,
-      "oclcnum": null
-    },
-    "hasMetric": {
-      "citationCount": "0",
-      "metricName": "Scopus"
-    },
-    "bibliografia": null
-  },
-  {
-    "typeOfPublication": "AcademicArticle",
-    "title": "Message from Organizers",
-    "freetextKeyword": null,
-    "abstract": null,
-    "language": "eng",
-    "doi": null,
-    "dataIssued": {
-      "datimeTime": "2020-11-16"
-    },
-    "url": [
-      {
-        "link": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85097681495&origin=inward"
-      }
-    ],
-    "correspondingAuthor": {
-      "name": [
-        "Skarmeta A.",
-        "Antonio",
-        "A."
-      ],
-      "surname": "Skarmeta",
-      "identifier": "Scopus-id: 57190210928",
-      "link": [
-        {
-          "link": "https://www.scopus.com/authid/detail.uri?authorId=57190210928"
-        }
-      ]
-    },
-    "seqOfAuthors": [
-      {
-        "name": [
-          "Skarmeta A.",
-          "Antonio",
-          "A."
-        ],
-        "surname": "Skarmeta",
-        "identifier": "Scopus-id: 57190210928",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57190210928"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Detti A.",
-          "Andrea",
-          "A."
-        ],
-        "surname": "Detti",
-        "identifier": "Scopus-id: 6602789368",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=6602789368"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Nakazato H.",
-          "Hidenori",
-          "H."
-        ],
-        "surname": "Nakazato",
-        "identifier": "Scopus-id: 35597257600",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=35597257600"
-          }
-        ]
-      }
-    ],
-    "correspondingOrganization": null,
-    "hasKnowledgeArea": [
-      {
-        "name": "Electrical and Electronic Engineering",
-        "abbreviation": "ENGI",
-        "hasCode": "2208"
-      },
-      {
-        "name": "Computer Networks and Communications",
-        "abbreviation": "COMP",
-        "hasCode": "1705"
-      }
-    ],
-    "pageEnd": null,
-    "pageStart": "II",
-    "documentStatus": null,
-    "eanucc13": null,
-    "hasPublicationVenue": {
-      "hasMetric": null,
-      "abbreviation": null,
-      "publisher": null,
-      "issn": null,
-      "name": "CCIoT 2020 - Proceedings of the 2020 Cloud Continuum Services for Smart IoT Systems, Part of SenSys 2020",
-      "eissn": null,
-      "oclcnum": null
-    },
-    "hasMetric": {
-      "citationCount": "0",
-      "metricName": "Scopus"
-    },
-    "bibliografia": null
-  },
-  {
-    "typeOfPublication": "ConferencePaper",
-    "title": "The security framework of Fed4IoT",
-    "freetextKeyword": [
-      "aaa",
-      "IoT",
-      "privacy",
-      "security"
-    ],
-    "abstract": "© 2020 ACM.The high number of IoT devices, and also their availability through the Internet, has made the topic of IoT virtualisation an emerging topic, which has gained a lot of interest from both academia and industry points of view. Fed4IoT is an H2020 EU-JPN Research Project, whose aim is precisely this one. Nevertheless, security, and more specifically authorisation or access control is a fundamental aspect that must be addressed, motivated by the increase of threats and attacks that the IoT domain has suffered. In this paper we propose the use of a distributed authorisation mechanism based on DCapBAC technology, to specifically deal with the IoT virtualisation aspect, in the scope of this project. This technology has proven its validity in the IoT domain because of its distributed nature and the flexibility of their authorisation policies.",
-    "language": "eng",
-    "doi": "10.1145/3417310.3431396",
-    "dataIssued": {
-      "datimeTime": "2020-11-16"
-    },
-    "url": [
-      {
-        "link": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85097642461&origin=inward"
-      }
-    ],
-    "correspondingAuthor": {
-      "name": [
-        "Gonzalez-Gil P.",
-        "Pedro",
-        "P."
-      ],
-      "surname": "Gonzalez-Gil",
-      "identifier": "Scopus-id: 42661284900",
-      "link": [
-        {
-          "link": "https://www.scopus.com/authid/detail.uri?authorId=42661284900"
-        }
-      ]
-    },
-    "seqOfAuthors": [
-      {
-        "name": [
-          "Gonzalez-Gil P.",
-          "Pedro",
-          "P."
-        ],
-        "surname": "Gonzalez-Gil",
-        "identifier": "Scopus-id: 42661284900",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=42661284900"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Skarmeta A.F.",
-          "Antonio F.",
-          "A.F."
-        ],
-        "surname": "Skarmeta",
-        "identifier": "Scopus-id: 57190210928",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57190210928"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Martinez J.A.",
-          "Juan Antonio",
-          "J.A."
-        ],
-        "surname": "Martinez",
-        "identifier": "Scopus-id: 57199490302",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57199490302"
-          }
-        ]
-      }
-    ],
-    "correspondingOrganization": null,
-    "hasKnowledgeArea": [
-      {
-        "name": "Electrical and Electronic Engineering",
-        "abbreviation": "ENGI",
-        "hasCode": "2208"
-      },
-      {
-        "name": "Computer Networks and Communications",
-        "abbreviation": "COMP",
-        "hasCode": "1705"
-      }
-    ],
-    "pageEnd": "6",
-    "pageStart": "1",
-    "documentStatus": null,
-    "eanucc13": null,
-    "hasPublicationVenue": {
-      "hasMetric": null,
-      "abbreviation": null,
-      "publisher": null,
-      "issn": null,
-      "name": "CCIoT 2020 - Proceedings of the 2020 Cloud Continuum Services for Smart IoT Systems, Part of SenSys 2020",
-      "eissn": null,
-      "oclcnum": null
-    },
-    "hasMetric": {
-      "citationCount": "0",
-      "metricName": "Scopus"
-    },
-    "bibliografia": null
-  },
-  {
-    "typeOfPublication": "ConferencePaper",
-    "title": "Applying Security Service Level Agreements in V2X Network Slices",
-    "freetextKeyword": null,
-    "abstract": "© 2020 IEEE.This demo presents the instantiation of a high level architecture proposed by INSPIRE-5Gplus to manage secured End-to-End (E2E) Network Slices. Network Slices are associated with Security Service Level Agreement (SSLA) to enhance the security on the virtual deployed resources, thus securing the created E2E Secure Network Slices. The proposed secured network slicing architecture is validated against a vehicular scenario, based on Anticipated Cooperative Collision Avoidance use case. In this scenario, we propose to detect false vehicular messages through a novel SSLA based on an Intrusion Detection System. The demo provides measurement of significant metrics such as mean time to detect, mean time to contain, and transaction speed.",
-    "language": "eng",
-    "doi": "10.1109/NFV-SDN50289.2020.9289861",
-    "dataIssued": {
-      "datimeTime": "2020-11-10"
-    },
-    "url": [
-      {
-        "link": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85099264128&origin=inward"
-      }
-    ],
-    "correspondingAuthor": {
-      "name": [
-        "Vilalta R.",
-        "Ricard",
-        "R."
-      ],
-      "surname": "Vilalta",
-      "identifier": "Scopus-id: 6701800953",
-      "link": [
-        {
-          "link": "https://www.scopus.com/authid/detail.uri?authorId=6701800953"
-        }
-      ]
-    },
-    "seqOfAuthors": [
-      {
-        "name": [
-          "Vilalta R.",
-          "Ricard",
-          "R."
-        ],
-        "surname": "Vilalta",
-        "identifier": "Scopus-id: 6701800953",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=6701800953"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Alemany P.",
-          "Pol",
-          "P."
-        ],
-        "surname": "Alemany",
-        "identifier": "Scopus-id: 57204420241",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57204420241"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Sedar R.",
-          "Roshan",
-          "R."
-        ],
-        "surname": "Sedar",
-        "identifier": "Scopus-id: 57136816500",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57136816500"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Kalalas C.",
-          "Charalampos",
-          "C."
-        ],
-        "surname": "Kalalas",
-        "identifier": "Scopus-id: 57190416016",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57190416016"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Casellas R.",
-          "Ramon",
-          "R."
-        ],
-        "surname": "Casellas",
-        "identifier": "Scopus-id: 24342919100",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=24342919100"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Martinez R.",
-          "Ricardo",
-          "R."
-        ],
-        "surname": "Martinez",
-        "identifier": "Scopus-id: 55926814100",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=55926814100"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Vazquez-Gallego F.",
-          "Francisco",
-          "F."
-        ],
-        "surname": "Vazquez-Gallego",
-        "identifier": "Scopus-id: 55091133300",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=55091133300"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Ortiz J.",
-          "Jordi",
-          "J."
-        ],
-        "surname": "Ortiz",
-        "identifier": "Scopus-id: 55241420600",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=55241420600"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Skarmeta A.",
-          "Antonio",
-          "A."
-        ],
-        "surname": "Skarmeta",
-        "identifier": "Scopus-id: 57190210928",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57190210928"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Alonso-Zarate J.",
-          "Jesus",
-          "J."
-        ],
-        "surname": "Alonso-Zarate",
-        "identifier": "Scopus-id: 17433386800",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=17433386800"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Munoz R.",
-          "Raul",
-          "R."
-        ],
-        "surname": "Munoz",
-        "identifier": "Scopus-id: 14032184500",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=14032184500"
-          }
-        ]
-      }
-    ],
-    "correspondingOrganization": null,
-    "hasKnowledgeArea": [
-      {
-        "name": "Computer Networks and Communications",
-        "abbreviation": "COMP",
-        "hasCode": "1705"
-      },
-      {
-        "name": "Software",
-        "abbreviation": "COMP",
-        "hasCode": "1712"
-      },
-      {
-        "name": "Information Systems and Management",
-        "abbreviation": "DECI",
-        "hasCode": "1802"
-      },
-      {
-        "name": "Safety, Risk, Reliability and Quality",
-        "abbreviation": "ENGI",
-        "hasCode": "2213"
-      }
-    ],
-    "pageEnd": "115",
-    "pageStart": "114",
-    "documentStatus": null,
-    "eanucc13": null,
-    "hasPublicationVenue": {
-      "hasMetric": null,
-      "abbreviation": null,
-      "publisher": null,
-      "issn": null,
-      "name": "2020 IEEE Conference on Network Function Virtualization and Software Defined Networks, NFV-SDN 2020 - Proceedings",
-      "eissn": null,
-      "oclcnum": null
-    },
-    "hasMetric": {
-      "citationCount": "1",
-      "metricName": "Scopus"
-    },
-    "bibliografia": null
-  },
-  {
-    "typeOfPublication": "ConferencePaper",
-    "title": "IoT-based data management for Smart Agriculture",
-    "freetextKeyword": [
-      "Evapotranspiration",
-      "IoT",
-      "Precision agriculture",
-      "Remote sensing",
-      "Web scraping"
-    ],
-    "abstract": "© 2020 IEEE.Precision Agriculture (PA), as the integration of information, communication and control technologies in agriculture, is growing day by day. The Internet of Things (IoT) and cloud computing paradigms offer advances to enhance PA connectivity but typical IoT measurements are not the only data sources available for crop management systems. The great development of Geographic Information Systems (GIS) provides a powerful tool for analyze the crop status in a near real time extent, concretely the images from Copernicus Sentinel-2 satellite have revolutionized PA. Also, there is a lot of unstructured agricultural data disseminated on websites that can be very useful if collected systematically trough web scraping techniques. In this article we present a real-life example of such heterogenous data to serve as complement for a cutting-edge smart farming platform. Specifically, the calculation of the Crop Evapotranspiration has been projected as a case study.",
-    "language": "eng",
-    "doi": "10.1109/EDiS49545.2020.9296443",
-    "dataIssued": {
-      "datimeTime": "2020-11-03"
-    },
-    "url": [
-      {
-        "link": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85099255494&origin=inward"
-      }
-    ],
-    "correspondingAuthor": {
-      "name": [
-        "Martnez J.V.Y.",
-        "Jose Vicente Yago",
-        "J.V.Y."
-      ],
-      "surname": "Martnez",
-      "identifier": "Scopus-id: 57221474095",
-      "link": [
-        {
-          "link": "https://www.scopus.com/authid/detail.uri?authorId=57221474095"
-        }
-      ]
-    },
-    "seqOfAuthors": [
-      {
-        "name": [
-          "Martnez J.V.Y.",
-          "Jose Vicente Yago",
-          "J.V.Y."
-        ],
-        "surname": "Martnez",
-        "identifier": "Scopus-id: 57221474095",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57221474095"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Skarmeta A.F.",
-          "Antonio F.",
-          "A.F."
-        ],
-        "surname": "Skarmeta",
-        "identifier": "Scopus-id: 57190210928",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57190210928"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Zamora-Izquierdo M.A.",
-          "Miguel A.",
-          "M.A."
-        ],
-        "surname": "Zamora-Izquierdo",
-        "identifier": "Scopus-id: 57219908925",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57219908925"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Ramallo-Gonzlez A.P.",
-          "Alfonso P.",
-          "A.P."
-        ],
-        "surname": "Ramallo-Gonzlez",
-        "identifier": "Scopus-id: 57221464840",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57221464840"
-          }
-        ]
-      }
-    ],
-    "correspondingOrganization": null,
-    "hasKnowledgeArea": [
-      {
-        "name": "Computer Science Applications",
-        "abbreviation": "COMP",
-        "hasCode": "1706"
-      },
-      {
-        "name": "Hardware and Architecture",
-        "abbreviation": "COMP",
-        "hasCode": "1708"
-      },
-      {
-        "name": "Control and Optimization",
-        "abbreviation": "MATH",
-        "hasCode": "2606"
-      },
-      {
-        "name": "Instrumentation",
-        "abbreviation": "PHYS",
-        "hasCode": "3105"
-      },
-      {
-        "name": "Artificial Intelligence",
-        "abbreviation": "COMP",
-        "hasCode": "1702"
-      },
-      {
-        "name": "Computer Networks and Communications",
-        "abbreviation": "COMP",
-        "hasCode": "1705"
-      }
-    ],
-    "pageEnd": "46",
-    "pageStart": "41",
-    "documentStatus": null,
-    "eanucc13": null,
-    "hasPublicationVenue": {
-      "hasMetric": null,
-      "abbreviation": null,
-      "publisher": null,
-      "issn": null,
-      "name": "2020 2nd International Conference on Embedded and Distributed Systems, EDiS 2020",
-      "eissn": null,
-      "oclcnum": null
-    },
-    "hasMetric": {
-      "citationCount": "0",
-      "metricName": "Scopus"
-    },
-    "bibliografia": null
-  },
-  {
-    "typeOfPublication": "ConferencePaper",
-    "title": "Dependable Content-Aware Prefetching for HTTP Applications over ICN as a Service",
-    "freetextKeyword": [
-      "CDN",
-      "ICN",
-      "prefetching",
-      "SDN",
-      "SVC",
-      "video"
-    ],
-    "abstract": "© 2020 IEEE.The importance of Hypertext Transfer Protocol (HTTP) in the interaction of users with the Internet is undisputed. Content Delivery Networks (CDNs) have emerged as a promising solution to enhance Quality of Service (QoS) provided in this type of transactions and to improve the network scalability. In this line, a new paradigm known as Information Centric Networks (ICNs) has been envisioned focusing the network routing on the content itself instead of attending to the topological addressing of nodes. A recent trend is using Software Define Networks (SDN) to manage data flows in this context. On top of an ICN as a Service (ICNaaS) architecture that provides end-to-end HTTP Information Centric Networking (ICN) alike transmissions with HTTP in-network caching, this paper proposes a dependable content aware prefetching mechanism, to enhance data transmission rates for first requesters that usually do not benefit from previous access to the same content. The validation tests have been conducted by considering the case of a video streaming service using the H.264/SVC codec with DASH. The obtained results corroborate the validity of the solution with cache hit ratios and client performance near to pre-cached content for video streaming.",
-    "language": "eng",
-    "doi": "10.1109/IECON43393.2020.9254348",
-    "dataIssued": {
-      "datimeTime": "2020-10-18"
-    },
-    "url": [
-      {
-        "link": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85097775384&origin=inward"
-      }
-    ],
-    "correspondingAuthor": {
-      "name": [
-        "Ortiz J.",
-        "Jordi",
-        "J."
-      ],
-      "surname": "Ortiz",
-      "identifier": "Scopus-id: 55241420600",
-      "link": [
-        {
-          "link": "https://www.scopus.com/authid/detail.uri?authorId=55241420600"
-        }
-      ]
-    },
-    "seqOfAuthors": [
-      {
-        "name": [
-          "Ortiz J.",
-          "Jordi",
-          "J."
-        ],
-        "surname": "Ortiz",
-        "identifier": "Scopus-id: 55241420600",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=55241420600"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Sanchez-Iborra R.",
-          "Ramon",
-          "R."
-        ],
-        "surname": "Sanchez-Iborra",
-        "identifier": "Scopus-id: 55933950900",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=55933950900"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Santa J.",
-          "Jose",
-          "J."
-        ],
-        "surname": "Santa",
-        "identifier": "Scopus-id: 18038232200",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=18038232200"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Skarmeta A.F.",
-          "Antonio F.",
-          "A.F."
-        ],
-        "surname": "Skarmeta",
-        "identifier": "Scopus-id: 57190210928",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57190210928"
-          }
-        ]
-      }
-    ],
-    "correspondingOrganization": null,
-    "hasKnowledgeArea": [
-      {
-        "name": "Control and Systems Engineering",
-        "abbreviation": "ENGI",
-        "hasCode": "2207"
-      },
-      {
-        "name": "Electrical and Electronic Engineering",
-        "abbreviation": "ENGI",
-        "hasCode": "2208"
-      }
-    ],
-    "pageEnd": "4476",
-    "pageStart": "4471",
-    "documentStatus": null,
-    "eanucc13": null,
-    "hasPublicationVenue": {
-      "hasMetric": null,
-      "abbreviation": null,
-      "publisher": null,
-      "issn": null,
-      "name": "IECON Proceedings (Industrial Electronics Conference)",
-      "eissn": null,
-      "oclcnum": null
-    },
-    "hasMetric": {
-      "citationCount": "0",
-      "metricName": "Scopus"
-    },
-    "bibliografia": null
-  },
-  {
-    "typeOfPublication": "JournalArticle",
-    "title": "An artificial intelligence-based collaboration approach in industrial iot manufacturing: Key concepts, architectural extensions and potential applications",
-    "freetextKeyword": [
-      "Artificial intelligence",
-      "Industry 4.0",
-      "IoT manufacturing",
-      "Sensing-based IIoT",
-      "Smart sensing"
-    ],
-    "abstract": "© 2020, MDPI AG. All rights reserved.The digitization of manufacturing industry has led to leaner and more efficient production, under the Industry 4.0 concept. Nowadays, datasets collected from shop floor assets and information technology (IT) systems are used in data-driven analytics efforts to support more informed business intelligence decisions. However, these results are currently only used in isolated and dispersed parts of the production process. At the same time, full integration of artificial intelligence (AI) in all parts of manufacturing systems is currently lacking. In this context, the goal of this manuscript is to present a more holistic integration of AI by promoting collaboration. To this end, collaboration is understood as a multi-dimensional conceptual term that covers all important enablers for AI adoption in manufacturing contexts and is promoted in terms of business intelligence optimization, human-in-the-loop and secure federation across manufacturing sites. To address these challenges, the proposed architectural approach builds on three technical pillars: (1) components that extend the functionality of the existing layers in the Reference Architectural Model for Industry 4.0; (2) definition of new layers for collaboration by means of human-in-the-loop and federation; (3) security concerns with AI-powered mechanisms. In addition, system implementation aspects are discussed and potential applications in industrial environments, as well as business impacts, are presented.",
-    "language": "eng",
-    "doi": "10.3390/s20195480",
-    "dataIssued": {
-      "datimeTime": "2020-10-01"
-    },
-    "url": [
-      {
-        "link": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85091632427&origin=inward"
-      }
-    ],
-    "correspondingAuthor": {
-      "name": [
-        "Trakadas P.",
-        "Panagiotis",
-        "P."
-      ],
-      "surname": "Trakadas",
-      "identifier": "Scopus-id: 6603036390",
-      "link": [
-        {
-          "link": "https://www.scopus.com/authid/detail.uri?authorId=6603036390"
-        }
-      ]
-    },
-    "seqOfAuthors": [
-      {
-        "name": [
-          "Trakadas P.",
-          "Panagiotis",
-          "P."
-        ],
-        "surname": "Trakadas",
-        "identifier": "Scopus-id: 6603036390",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=6603036390"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Simoens P.",
-          "Pieter",
-          "P."
-        ],
-        "surname": "Simoens",
-        "identifier": "Scopus-id: 13104080000",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=13104080000"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Gkonis P.",
-          "Panagiotis",
-          "P."
-        ],
-        "surname": "Gkonis",
-        "identifier": "Scopus-id: 24469879600",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=24469879600"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Sarakis L.",
-          "Lambros",
-          "L."
-        ],
-        "surname": "Sarakis",
-        "identifier": "Scopus-id: 14038183600",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=14038183600"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Angelopoulos A.",
-          "Angelos",
-          "A."
-        ],
-        "surname": "Angelopoulos",
-        "identifier": "Scopus-id: 7006247687",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=7006247687"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Ramallo-Gonzalez A.P.",
-          "Alfonso P.",
-          "A.P."
-        ],
-        "surname": "Ramallo-González",
-        "identifier": "Scopus-id: 55597330200",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=55597330200"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Skarmeta A.",
-          "Antonio",
-          "A."
-        ],
-        "surname": "Skarmeta",
-        "identifier": "Scopus-id: 57190210928",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57190210928"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Trochoutsos C.",
-          "Christos",
-          "C."
-        ],
-        "surname": "Trochoutsos",
-        "identifier": "Scopus-id: 57219199087",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57219199087"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Calvo D.",
-          "Daniel",
-          "D."
-        ],
-        "surname": "Calvo",
-        "identifier": "Scopus-id: 57217667284",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57217667284"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Pariente T.",
-          "Tomas",
-          "T."
-        ],
-        "surname": "Pariente",
-        "identifier": "Scopus-id: 25654465500",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=25654465500"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Chintamani K.",
-          "Keshav",
-          "K."
-        ],
-        "surname": "Chintamani",
-        "identifier": "Scopus-id: 18433617600",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=18433617600"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Fernandez I.",
-          "Izaskun",
-          "I."
-        ],
-        "surname": "Fernandez",
-        "identifier": "Scopus-id: 42761280800",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=42761280800"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Irigaray A.A.",
-          "Aitor Arnaiz",
-          "A.A."
-        ],
-        "surname": "Irigaray",
-        "identifier": "Scopus-id: 57220846304",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57220846304"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Parreira J.X.",
-          "Josiane Xavier",
-          "J.X."
-        ],
-        "surname": "Parreira",
-        "identifier": "Scopus-id: 55664571300",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=55664571300"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Petrali P.",
-          "Pierluigi",
-          "P."
-        ],
-        "surname": "Petrali",
-        "identifier": "Scopus-id: 55570006100",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=55570006100"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Leligou N.",
-          "Nelly",
-          "N."
-        ],
-        "surname": "Leligou",
-        "identifier": "Scopus-id: 6602311122",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=6602311122"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Karkazis P.",
-          "Panagiotis",
-          "P."
-        ],
-        "surname": "Karkazis",
-        "identifier": "Scopus-id: 35195881400",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=35195881400"
-          }
-        ]
-      }
-    ],
-    "correspondingOrganization": null,
-    "hasKnowledgeArea": [
-      {
-        "name": "Analytical Chemistry",
-        "abbreviation": "CHEM",
-        "hasCode": "1602"
-      },
-      {
-        "name": "Information Systems",
-        "abbreviation": "COMP",
-        "hasCode": "1710"
-      },
-      {
-        "name": "Atomic and Molecular Physics, and Optics",
-        "abbreviation": "PHYS",
-        "hasCode": "3107"
-      },
-      {
-        "name": "Biochemistry",
-        "abbreviation": "BIOC",
-        "hasCode": "1303"
-      },
-      {
-        "name": "Instrumentation",
-        "abbreviation": "PHYS",
-        "hasCode": "3105"
-      },
-      {
-        "name": "Electrical and Electronic Engineering",
-        "abbreviation": "ENGI",
-        "hasCode": "2208"
-      }
-    ],
-    "pageEnd": "20",
-    "pageStart": "1",
-    "documentStatus": null,
-    "eanucc13": null,
-    "hasPublicationVenue": {
-      "hasMetric": null,
-      "abbreviation": null,
-      "publisher": null,
-      "issn": "14248220",
-      "name": "Sensors (Switzerland)",
-      "eissn": null,
-      "oclcnum": null
-    },
-    "hasMetric": {
-      "citationCount": "5",
-      "metricName": "Scopus"
-    },
-    "bibliografia": null
-  },
-  {
-    "typeOfPublication": "ConferencePaper",
-    "title": "Enforcing GDPR regulation to vehicular 5G communications using edge virtual counterparts",
-    "freetextKeyword": [
-      "5G",
-      "CCAM",
-      "cyber-security",
-      "EDGE",
-      "GDPR",
-      "MEC",
-      "privacy",
-      "vehicular"
-    ],
-    "abstract": "© 2020 IEEE.More and more people are concerned about data privacy and this is applicable to vehicular scenarios in which onboard units (OBU) and user devices are exposed to traceability across different access networks and service domains. General Data Protection Regulation (GDPR) in European countries indicates the way to proceed to guarantee privacy and access to sensitive data, however, applying these laws is not straightforward and may vary from country to country. Last advances in 5G communications, such as virtualisation and Multi-Access Edge Computing (MEC) can enable the proper management of data considering local GDPR regulations by using edge services. In this paper we propose the treatment of personal data in virtual OBUs (vOBU) instantiated at the edge of the network on the move. This way, vehicles and occupants benefit from GDPR guarantees compliant with current country regulations as they move across European borders.",
-    "language": "eng",
-    "doi": "10.1109/5GWF49715.2020.9221248",
-    "dataIssued": {
-      "datimeTime": "2020-09-01"
-    },
-    "url": [
-      {
-        "link": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85095754818&origin=inward"
-      }
-    ],
-    "correspondingAuthor": {
-      "name": [
-        "Ortiz J.",
-        "Jordi",
-        "J."
-      ],
-      "surname": "Ortiz",
-      "identifier": "Scopus-id: 55241420600",
-      "link": [
-        {
-          "link": "https://www.scopus.com/authid/detail.uri?authorId=55241420600"
-        }
-      ]
-    },
-    "seqOfAuthors": [
-      {
-        "name": [
-          "Ortiz J.",
-          "Jordi",
-          "J."
-        ],
-        "surname": "Ortiz",
-        "identifier": "Scopus-id: 55241420600",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=55241420600"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Fernandez P.J.",
-          "Pedro J.",
-          "P.J."
-        ],
-        "surname": "Fernandez",
-        "identifier": "Scopus-id: 57198162020",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57198162020"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Sanchez-Iborra R.",
-          "Ramon",
-          "R."
-        ],
-        "surname": "Sanchez-Iborra",
-        "identifier": "Scopus-id: 55933950900",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=55933950900"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Bernabe J.B.",
-          "Jorge Bernal",
-          "J.B."
-        ],
-        "surname": "Bernabe",
-        "identifier": "Scopus-id: 57195618802",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57195618802"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Santa J.",
-          "Jose",
-          "J."
-        ],
-        "surname": "Santa",
-        "identifier": "Scopus-id: 18038232200",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=18038232200"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Skarmeta A.",
-          "Antonio",
-          "A."
-        ],
-        "surname": "Skarmeta",
-        "identifier": "Scopus-id: 57190210928",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57190210928"
-          }
-        ]
-      }
-    ],
-    "correspondingOrganization": null,
-    "hasKnowledgeArea": [
-      {
-        "name": "Hardware and Architecture",
-        "abbreviation": "COMP",
-        "hasCode": "1708"
-      },
-      {
-        "name": "Information Systems and Management",
-        "abbreviation": "DECI",
-        "hasCode": "1802"
-      },
-      {
-        "name": "Safety, Risk, Reliability and Quality",
-        "abbreviation": "ENGI",
-        "hasCode": "2213"
-      },
-      {
-        "name": "Computer Networks and Communications",
-        "abbreviation": "COMP",
-        "hasCode": "1705"
-      }
-    ],
-    "pageEnd": "126",
-    "pageStart": "121",
-    "documentStatus": null,
-    "eanucc13": null,
-    "hasPublicationVenue": {
-      "hasMetric": null,
-      "abbreviation": null,
-      "publisher": null,
-      "issn": null,
-      "name": "2020 IEEE 3rd 5G World Forum, 5GWF 2020 - Conference Proceedings",
-      "eissn": null,
-      "oclcnum": null
-    },
-    "hasMetric": {
-      "citationCount": "0",
-      "metricName": "Scopus"
-    },
-    "bibliografia": null
-  },
-  {
-    "typeOfPublication": "ConferencePaper",
-    "title": "INSPIRE-5Gplus: Intelligent security and pervasive trust for 5G and beyond networks",
-    "freetextKeyword": [
-      "5G",
-      "Cognitive security",
-      "Liability",
-      "Security",
-      "ZSM"
-    ],
-    "abstract": "© 2020 Owner/Author.The promise of disparate features envisioned by the 3GPP for 5G, such as offering enhanced Mobile Broadband connectivity while providing massive Machine Type Communications likely with very low data rates and maintaining Ultra Reliable Low Latency Communications requirements, create a very challenging environment for protecting the 5G networks themselves and associated assets. To overcome such complexity, future 5G networks must employ a very high degree of network and service management automation, which is a security challenge by itself as well as an opportunity for smarter and more efficient security functions. In this paper, we present the smart, trustworthy and liable 5G security platform being designed and developed in the INSPIRE-5Gplus1 project. This platform takes advantage of new techniques such as Machine Learning (ML), Artificial Intelligence (AI), Distributed Ledger Technologies (DLT), network softwarization and Trusted Execution Environment (TEE) for closed-loop and end-to-end security management following a zero-touch model in 5G and Beyond 5G networks. To this end, we specifically elaborate on two key aspects of our platform, namely security management with Security Service Level Agreements (SSLAs) and liability management, in addition to the description of the overall architecture.",
-    "language": "eng",
-    "doi": "10.1145/3407023.3409219",
-    "dataIssued": {
-      "datimeTime": "2020-08-25"
-    },
-    "url": [
-      {
-        "link": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85090343762&origin=inward"
-      }
-    ],
-    "correspondingAuthor": {
-      "name": [
-        "Ortiz J.",
-        "Jordi",
-        "J."
-      ],
-      "surname": "Ortiz",
-      "identifier": "Scopus-id: 55241420600",
-      "link": [
-        {
-          "link": "https://www.scopus.com/authid/detail.uri?authorId=55241420600"
-        }
-      ]
-    },
-    "seqOfAuthors": [
-      {
-        "name": [
-          "Ortiz J.",
-          "Jordi",
-          "J."
-        ],
-        "surname": "Ortiz",
-        "identifier": "Scopus-id: 55241420600",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=55241420600"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Sanchez-Iborra R.",
-          "Ramon",
-          "R."
-        ],
-        "surname": "Sanchez-Iborra",
-        "identifier": "Scopus-id: 55933950900",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=55933950900"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Bernabe J.B.",
-          "Jorge Bernal",
-          "J.B."
-        ],
-        "surname": "Bernabe",
-        "identifier": "Scopus-id: 57195618802",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57195618802"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Skarmeta A.",
-          "Antonio",
-          "A."
-        ],
-        "surname": "Skarmeta",
-        "identifier": "Scopus-id: 57190210928",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57190210928"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Benzaid C.",
-          "Chafika",
-          "C."
-        ],
-        "surname": "Benzaid",
-        "identifier": "Scopus-id: 25923291700",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=25923291700"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Taleb T.",
-          "Tarik",
-          "T."
-        ],
-        "surname": "Taleb",
-        "identifier": "Scopus-id: 6602641627",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=6602641627"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Alemany P.",
-          "Pol",
-          "P."
-        ],
-        "surname": "Alemany",
-        "identifier": "Scopus-id: 57204420241",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57204420241"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Munoz R.",
-          "Raul",
-          "R."
-        ],
-        "surname": "Muñoz",
-        "identifier": "Scopus-id: 14032184500",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=14032184500"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Vilalta R.",
-          "Ricard",
-          "R."
-        ],
-        "surname": "Vilalta",
-        "identifier": "Scopus-id: 6701800953",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=6701800953"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Gaber C.",
-          "Chrystel",
-          "C."
-        ],
-        "surname": "Gaber",
-        "identifier": "Scopus-id: 36190618700",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=36190618700"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Wary J.-P.",
-          "Jean Philippe",
-          "J.P."
-        ],
-        "surname": "Wary",
-        "identifier": "Scopus-id: 54788483700",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=54788483700"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Ayed D.",
-          "Dhouha",
-          "D."
-        ],
-        "surname": "Ayed",
-        "identifier": "Scopus-id: 15755088100",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=15755088100"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Bisson P.",
-          "Pascal",
-          "P."
-        ],
-        "surname": "Bisson",
-        "identifier": "Scopus-id: 6701794530",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=6701794530"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Christopoulou M.",
-          "Maria",
-          "M."
-        ],
-        "surname": "Christopoulou",
-        "identifier": "Scopus-id: 57218829417",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57218829417"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Xilouris G.",
-          "George",
-          "G."
-        ],
-        "surname": "Xilouris",
-        "identifier": "Scopus-id: 14322527100",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=14322527100"
-          }
-        ]
-      },
-      {
-        "name": [
-          "De Oca E.M.",
-          "Edgardo Montes",
-          "E.M."
-        ],
-        "surname": "De Oca",
-        "identifier": "Scopus-id: 34976546300",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=34976546300"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Gur G.",
-          "Gürkan",
-          "G."
-        ],
-        "surname": "Gür",
-        "identifier": "Scopus-id: 9638413000",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=9638413000"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Santinelli G.",
-          "Gianni",
-          "G."
-        ],
-        "surname": "Santinelli",
-        "identifier": "Scopus-id: 57204353963",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57204353963"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Lefebvre V.",
-          "Vincent",
-          "V."
-        ],
-        "surname": "Lefebvre",
-        "identifier": "Scopus-id: 57204355590",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57204355590"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Pastor A.",
-          "Antonio",
-          "A."
-        ],
-        "surname": "Pastor",
-        "identifier": "Scopus-id: 57210395292",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57210395292"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Lopez D.",
-          "Diego",
-          "D."
-        ],
-        "surname": "Lopez",
-        "identifier": "Scopus-id: 7201718777",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=7201718777"
-          }
-        ]
-      }
-    ],
-    "correspondingOrganization": null,
-    "hasKnowledgeArea": [
-      {
-        "name": "Software",
-        "abbreviation": "COMP",
-        "hasCode": "1712"
-      },
-      {
-        "name": "Human-Computer Interaction",
-        "abbreviation": "COMP",
-        "hasCode": "1709"
-      },
-      {
-        "name": "Computer Vision and Pattern Recognition",
-        "abbreviation": "COMP",
-        "hasCode": "1707"
-      },
-      {
-        "name": "Computer Networks and Communications",
-        "abbreviation": "COMP",
-        "hasCode": "1705"
-      }
-    ],
-    "pageEnd": null,
-    "pageStart": null,
-    "documentStatus": null,
-    "eanucc13": null,
-    "hasPublicationVenue": {
-      "hasMetric": null,
-      "abbreviation": null,
-      "publisher": null,
-      "issn": null,
-      "name": "ACM International Conference Proceeding Series",
-      "eissn": null,
-      "oclcnum": null
-    },
-    "hasMetric": {
-      "citationCount": "2",
-      "metricName": "Scopus"
-    },
-    "bibliografia": null
-  },
-  {
-    "typeOfPublication": "JournalArticle",
-    "title": "TinyML-Enabled Frugal Smart Objects: Challenges and Opportunities",
-    "freetextKeyword": null,
-    "abstract": "© 2001-2012 IEEE.The TinyML paradigm proposes to integrate Machine Learning (ML)-based mechanisms within small objects powered by Microcontroller Units (MCUs). This paves the way for the development of novel applications and services that do not need the omnipresent processing support from the cloud, which is power consuming and involves data security and privacy risks. In this work, a comprehensive review of the novel TinyML ecosystem is provided. The related challenges and opportunities are identified and the potential services that will be enabled by the development of truly smart frugal objects are discussed. As a main contribution of this paper, a detailed survey of the available TinyML frameworks for integrating ML algorithms within MCUs is provided. Besides, aiming at illustrating the given discussion, a real case study is presented. Concretely, we propose a multi-Radio Access Network (RAT) architecture for smart frugal objects. The issue of selecting the most adequate communication interface for sending sporadic messages considering both the status of the device and the characteristics of the data to be sent is addressed. To this end, several TinyML frameworks are evaluated and the performances of a number of ML algorithms embedded in an Arduino Uno board are analyzed. The attained results reveal the validity of the TinyML approach, which successfully enables the integration of techniques such as Neural Networks (NNs), Support Vector Machine (SVM), decision trees, or Random Forest (RF) in frugal objects with constrained hardware resources. The outcomes also show promising results in terms of algorithm's accuracy and computation performance.",
-    "language": "eng",
-    "doi": "10.1109/MCAS.2020.3005467",
-    "dataIssued": {
-      "datimeTime": "2020-07-01"
-    },
-    "url": [
-      {
-        "link": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85089941646&origin=inward"
-      }
-    ],
-    "correspondingAuthor": {
-      "name": [
-        "Sanchez-Iborra R.",
-        "Ramon",
-        "R."
-      ],
-      "surname": "Sanchez-Iborra",
-      "identifier": "Scopus-id: 55933950900",
-      "link": [
-        {
-          "link": "https://www.scopus.com/authid/detail.uri?authorId=55933950900"
-        }
-      ]
-    },
-    "seqOfAuthors": [
-      {
-        "name": [
-          "Sanchez-Iborra R.",
-          "Ramon",
-          "R."
-        ],
-        "surname": "Sanchez-Iborra",
-        "identifier": "Scopus-id: 55933950900",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=55933950900"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Skarmeta A.F.",
-          "Antonio F.",
-          "A.F."
-        ],
-        "surname": "Skarmeta",
-        "identifier": "Scopus-id: 57190210928",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57190210928"
-          }
-        ]
-      }
-    ],
-    "correspondingOrganization": null,
-    "hasKnowledgeArea": [
-      {
-        "name": "Computer Science Applications",
-        "abbreviation": "COMP",
-        "hasCode": "1706"
-      },
-      {
-        "name": "Electrical and Electronic Engineering",
-        "abbreviation": "ENGI",
-        "hasCode": "2208"
-      }
-    ],
-    "pageEnd": "18",
-    "pageStart": "4",
-    "documentStatus": null,
-    "eanucc13": null,
-    "hasPublicationVenue": {
-      "hasMetric": null,
-      "abbreviation": null,
-      "publisher": null,
-      "issn": "15580830 1531636X",
-      "name": "IEEE Circuits and Systems Magazine",
-      "eissn": null,
-      "oclcnum": null
-    },
-    "hasMetric": {
-      "citationCount": "16",
-      "metricName": "Scopus"
-    },
-    "bibliografia": null
-  },
-  {
-    "typeOfPublication": "JournalArticle",
-    "title": "Semantic-aware security orchestration in SDN/NFV-enabled IoT systems",
-    "freetextKeyword": [
-      "IoT",
-      "NFV",
-      "Optimization",
-      "QoS",
-      "SDN",
-      "Security",
-      "Semantic technologies"
-    ],
-    "abstract": "© 2020 by the authors. Licensee MDPI, Basel, Switzerland.IoT systems can be leveraged by Network Function Virtualization (NFV) and Software-Defined Networking (SDN) technologies, thereby strengthening their overall flexibility, security and resilience. In this sense, adaptive and policy-based security frameworks for SDN/NFV-aware IoT systems can provide a remarkable added value for self-protection and self-healing, by orchestrating and enforcing dynamically security policies and associated Virtual Network Functions (VNF) or Virtual network Security Functions (VSF) according to the actual context. However, this security orchestration is subject to multiple possible inconsistencies between the policies to enforce, the already enforced management policies and the evolving status of the managed IoT system. In this regard, this paper presents a semantic-aware, zero-touch and policy-driven security orchestration framework for autonomic and conflict-less security orchestration in SDN/NFV-aware IoT scenarios while ensuring optimal allocation and Service Function Chaining (SFC) of VSF. The framework relies on Semantic technologies and considers the security policies and the evolving IoT system model to dynamically and formally detect any semantic conflict during the orchestration. In addition, our optimized SFC algorithm maximizes the QoS, security aspects and resources usage during VSF allocation. The orchestration security framework has been implemented and validated showing its feasibility and performance to detect the conflicts and optimally enforce the VSFs.",
-    "language": "eng",
-    "doi": "10.3390/s20133622",
-    "dataIssued": {
-      "datimeTime": "2020-07-01"
-    },
-    "url": [
-      {
-        "link": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85086996848&origin=inward"
-      }
-    ],
-    "correspondingAuthor": {
-      "name": [
-        "Zarca A.M.",
-        "Alejandro Molina",
-        "A.M."
-      ],
-      "surname": "Zarca",
-      "identifier": "Scopus-id: 57205211593",
-      "link": [
-        {
-          "link": "https://www.scopus.com/authid/detail.uri?authorId=57205211593"
-        }
-      ]
-    },
-    "seqOfAuthors": [
-      {
-        "name": [
-          "Zarca A.M.",
-          "Alejandro Molina",
-          "A.M."
-        ],
-        "surname": "Zarca",
-        "identifier": "Scopus-id: 57205211593",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57205211593"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Bagaa M.",
-          "Miloud",
-          "M."
-        ],
-        "surname": "Bagaa",
-        "identifier": "Scopus-id: 24467380100",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=24467380100"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Bernabe J.B.",
-          "Jorge Bernal",
-          "J.B."
-        ],
-        "surname": "Bernabe",
-        "identifier": "Scopus-id: 57195618802",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57195618802"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Taleb T.",
-          "Tarik",
-          "T."
-        ],
-        "surname": "Taleb",
-        "identifier": "Scopus-id: 6602641627",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=6602641627"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Skarmeta A.F.",
-          "Antonio F.",
-          "A.F."
-        ],
-        "surname": "Skarmeta",
-        "identifier": "Scopus-id: 57190210928",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57190210928"
-          }
-        ]
-      }
-    ],
-    "correspondingOrganization": null,
-    "hasKnowledgeArea": [
-      {
-        "name": "Analytical Chemistry",
-        "abbreviation": "CHEM",
-        "hasCode": "1602"
-      },
-      {
-        "name": "Biochemistry",
-        "abbreviation": "BIOC",
-        "hasCode": "1303"
-      },
-      {
-        "name": "Atomic and Molecular Physics, and Optics",
-        "abbreviation": "PHYS",
-        "hasCode": "3107"
-      },
-      {
-        "name": "Instrumentation",
-        "abbreviation": "PHYS",
-        "hasCode": "3105"
-      },
-      {
-        "name": "Electrical and Electronic Engineering",
-        "abbreviation": "ENGI",
-        "hasCode": "2208"
-      }
-    ],
-    "pageEnd": "26",
-    "pageStart": "1",
-    "documentStatus": null,
-    "eanucc13": null,
-    "hasPublicationVenue": {
-      "hasMetric": null,
-      "abbreviation": null,
-      "publisher": null,
-      "issn": "14248220",
-      "name": "Sensors (Switzerland)",
-      "eissn": null,
-      "oclcnum": null
-    },
-    "hasMetric": {
-      "citationCount": "6",
-      "metricName": "Scopus"
-    },
-    "bibliografia": null
-  },
-  {
-    "typeOfPublication": "JournalArticle",
-    "title": "A hybrid neuro-fuzzy inference system-based algorithm for time series forecasting applied to energy consumption prediction",
-    "freetextKeyword": [
-      "ANFIS",
-      "Autoregressive process",
-      "Building energy consumption",
-      "Gender-difference firefly algorithm",
-      "Time series forecasting"
-    ],
-    "abstract": "© 2020 Elsevier LtdThe accuracy of the prediction of buildings’ energy consumption is being tackled using existing artificial intelligence techniques. However, there is a lack of effort on the development of new techniques for solving that problem and, therefore, achieving higher performance, which is important for the efficient management of energy in many levels. This study addresses this gap by proposing a new hybrid machine learning algorithm that incorporates the adaptive neuro-fuzzy inference system model with a new version of the firefly algorithm denominated as the gender-difference firefly algorithm. We expanded the search space diversification to increase the accuracy on the prediction and adopted the autoregressive process in order to approximate the chaotic behavior of the consumption time series. A new layer, denominated as non-working time adaptation was also integrated so as to decrease the fast variability of the predictions during non-working periods of time. We have applied our algorithm for the consumption prediction on 1 h, 2 h and 3 h ahead horizons. We have obtained improvements on the MAPE and R coefficient when compared with state-of-the-art publications in both a private dataset from the Faculty of Chemistry, located in the city of Murcia, Spain and a public dataset of the consumption of a Retail building located in California, United States. We also show our method's performance in five more buildings. Our results demonstrate the robustness and the accuracy of our proposal when compared to the traditional adaptive neuro-fuzzy inference system models and also to the different predictive techniques implemented in several pieces of literature.",
-    "language": "eng",
-    "doi": "10.1016/j.apenergy.2020.114977",
-    "dataIssued": {
-      "datimeTime": "2020-06-15"
-    },
-    "url": [
-      {
-        "link": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85083448033&origin=inward"
-      }
-    ],
-    "correspondingAuthor": {
-      "name": [
-        "Jallal M.A.",
-        "Mohammed Ali",
-        "M.A."
-      ],
-      "surname": "Jallal",
-      "identifier": "Scopus-id: 57194692511",
-      "link": [
-        {
-          "link": "https://www.scopus.com/authid/detail.uri?authorId=57194692511"
-        }
-      ]
-    },
-    "seqOfAuthors": [
-      {
-        "name": [
-          "Jallal M.A.",
-          "Mohammed Ali",
-          "M.A."
-        ],
-        "surname": "Jallal",
-        "identifier": "Scopus-id: 57194692511",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57194692511"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Gonzalez-Vidal A.",
-          "Aurora",
-          "A."
-        ],
-        "surname": "González-Vidal",
-        "identifier": "Scopus-id: 57189466053",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57189466053"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Skarmeta A.F.",
-          "Antonio F.",
-          "A.F."
-        ],
-        "surname": "Skarmeta",
-        "identifier": "Scopus-id: 57190210928",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57190210928"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Chabaa S.",
-          "Samira",
-          "S."
-        ],
-        "surname": "Chabaa",
-        "identifier": "Scopus-id: 26431728400",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=26431728400"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Zeroual A.",
-          "Abdelouhab",
-          "A."
-        ],
-        "surname": "Zeroual",
-        "identifier": "Scopus-id: 57192876099",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57192876099"
-          }
-        ]
-      }
-    ],
-    "correspondingOrganization": null,
-    "hasKnowledgeArea": [
-      {
-        "name": "Building and Construction",
-        "abbreviation": "ENGI",
-        "hasCode": "2215"
-      },
-      {
-        "name": "Mechanical Engineering",
-        "abbreviation": "ENGI",
-        "hasCode": "2210"
-      },
-      {
-        "name": "Energy (all)",
-        "abbreviation": "ENER",
-        "hasCode": "2100"
-      },
-      {
-        "name": "Management, Monitoring, Policy and Law",
-        "abbreviation": "ENVI",
-        "hasCode": "2308"
-      }
-    ],
-    "pageEnd": null,
-    "pageStart": null,
-    "documentStatus": null,
-    "eanucc13": null,
-    "hasPublicationVenue": {
-      "hasMetric": null,
-      "abbreviation": null,
-      "publisher": null,
-      "issn": "03062619",
-      "name": "Applied Energy",
-      "eissn": null,
-      "oclcnum": null
-    },
-    "hasMetric": {
-      "citationCount": "19",
-      "metricName": "Scopus"
-    },
-    "bibliografia": null
-  },
-  {
-    "typeOfPublication": "ConferencePaper",
-    "title": "OLYMPUS: A distributed privacy-preserving identity management system",
-    "freetextKeyword": [
-      "Digital identities",
-      "Identity management",
-      "IoT",
-      "Privacy",
-      "Privacy enhancing technologies",
-      "Privacy-preserving",
-      "Security"
-    ],
-    "abstract": "© 2020 IEEE.Despite the latest initiatives and research efforts to increase user privacy in digital scenarios, identity-related cybercrimes such as identity theft, wrong identity or user transactions surveillance are growing. In particular, blanket surveillance that might be potentially accomplished by Identity Providers (IdPs) contradicts the data minimization principle laid out in GDPR. Hence, user movements across Service Providers (SPs) might be tracked by malicious IdPs that become a central dominant entity, as well as a single point of failure in terms of privacy and security, putting users at risk when compromised. To cope with this issue, the OLYMPUS H2020 EU project is devising a truly privacy-preserving, yet user-friendly, and distributed identity management system that addresses the data minimization challenge in both online and offline scenarios. Thus, OLYMPUS divides the role of the IdP among various authorities by relying on threshold cryptography, thereby preventing user impersonation and surveillance from malicious or nosy IdPs. This paper overviews the OLYMPUS framework, including requirements considered, the proposed architecture, a series of use cases as well as the privacy analysis from the legal point of view.",
-    "language": "eng",
-    "doi": "10.1109/GIOTS49054.2020.9119663",
-    "dataIssued": {
-      "datimeTime": "2020-06-01"
-    },
-    "url": [
-      {
-        "link": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85087424029&origin=inward"
-      }
-    ],
-    "correspondingAuthor": {
-      "name": [
-        "Moreno R.T.",
-        "Rafael Torres",
-        "R.T."
-      ],
-      "surname": "Moreno",
-      "identifier": "Scopus-id: 57210820201",
-      "link": [
-        {
-          "link": "https://www.scopus.com/authid/detail.uri?authorId=57210820201"
-        }
-      ]
-    },
-    "seqOfAuthors": [
-      {
-        "name": [
-          "Moreno R.T.",
-          "Rafael Torres",
-          "R.T."
-        ],
-        "surname": "Moreno",
-        "identifier": "Scopus-id: 57210820201",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57210820201"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Rodriguez J.G.",
-          "Jesus Garcia",
-          "J.G."
-        ],
-        "surname": "Rodriguez",
-        "identifier": "Scopus-id: 57214916861",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57214916861"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Lopez C.T.",
-          "Cristina Timon",
-          "C.T."
-        ],
-        "surname": "Lopez",
-        "identifier": "Scopus-id: 57217585870",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57217585870"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Bernabe J.B.",
-          "Jorge Bernal",
-          "J.B."
-        ],
-        "surname": "Bernabe",
-        "identifier": "Scopus-id: 57195618802",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57195618802"
-          }
-        ]
-      },
-      {
-        "name": [
-          "Skarmeta A.",
-          "Antonio",
-          "A."
-        ],
-        "surname": "Skarmeta",
-        "identifier": "Scopus-id: 57190210928",
-        "link": [
-          {
-            "link": "https://www.scopus.com/authid/detail.uri?authorId=57190210928"
-          }
-        ]
-      }
-    ],
-    "correspondingOrganization": null,
-    "hasKnowledgeArea": [
-      {
-        "name": "Artificial Intelligence",
-        "abbreviation": "COMP",
-        "hasCode": "1702"
-      },
-      {
-        "name": "Computer Networks and Communications",
-        "abbreviation": "COMP",
-        "hasCode": "1705"
-      },
-      {
-        "name": "Computer Science Applications",
-        "abbreviation": "COMP",
-        "hasCode": "1706"
-      },
-      {
-        "name": "Hardware and Architecture",
-        "abbreviation": "COMP",
-        "hasCode": "1708"
-      },
-      {
-        "name": "Safety, Risk, Reliability and Quality",
-        "abbreviation": "ENGI",
-        "hasCode": "2213"
-      }
-    ],
-    "pageEnd": null,
-    "pageStart": null,
-    "documentStatus": null,
-    "eanucc13": null,
-    "hasPublicationVenue": {
-      "hasMetric": null,
-      "abbreviation": null,
-      "publisher": null,
-      "issn": null,
-      "name": "GIoTS 2020 - Global Internet of Things Summit, Proceedings",
-      "eissn": null,
-      "oclcnum": null
-    },
-    "hasMetric": {
-      "citationCount": "2",
-      "metricName": "Scopus"
-    },
-    "bibliografia": null
-  }
-]
+{
+    "search-results": {
+        "opensearch:totalResults": "15",
+        "opensearch:startIndex": "0",
+        "opensearch:itemsPerPage": "15",
+        "opensearch:Query": {
+            "@role": "request",
+            "@searchTerms": "ORCID(\"0000-0003-0955-976X\")",
+            "@startPage": "0"
+        },
+        "link": [
+            {
+                "@_fa": "true",
+                "@ref": "self",
+                "@href": "https://api.elsevier.com/content/search/scopus?start=0&count=200&query=ORCID%28%220000-0003-0955-976X%22%29&date=1800-2021",
+                "@type": "application/json"
+            },
+            {
+                "@_fa": "true",
+                "@ref": "first",
+                "@href": "https://api.elsevier.com/content/search/scopus?start=0&count=200&query=ORCID%28%220000-0003-0955-976X%22%29&date=1800-2021",
+                "@type": "application/json"
+            }
+        ],
+        "entry": [
+            {
+                "@_fa": "true",
+                "link": [
+                    {
+                        "@_fa": "true",
+                        "@ref": "self",
+                        "@href": "https://api.elsevier.com/content/abstract/scopus_id/85110238217"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "author-affiliation",
+                        "@href": "https://api.elsevier.com/content/abstract/scopus_id/85110238217?field=author,affiliation"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "scopus",
+                        "@href": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85110238217&origin=inward"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "scopus-citedby",
+                        "@href": "https://www.scopus.com/inward/citedby.uri?partnerID=HzOxMe3b&scp=85110238217&origin=inward"
+                    }
+                ],
+                "prism:url": "https://api.elsevier.com/content/abstract/scopus_id/85110238217",
+                "dc:identifier": "SCOPUS_ID:85110238217",
+                "eid": "2-s2.0-85110238217",
+                "dc:title": "Behavior modeling for a beacon-based indoor location system",
+                "dc:creator": "Bilbao-Jayo A.",
+                "prism:publicationName": "Sensors",
+                "prism:issn": "14248220",
+                "prism:volume": "21",
+                "prism:issueIdentifier": "14",
+                "prism:pageRange": null,
+                "prism:coverDate": "2021-07-02",
+                "prism:coverDisplayDate": "2 July 2021",
+                "prism:doi": "10.3390/s21144839",
+                "citedby-count": "0",
+                "affiliation": [
+                    {
+                        "@_fa": "true",
+                        "affilname": "Universidad de Deusto",
+                        "affiliation-city": "Bilbao",
+                        "affiliation-country": "Spain"
+                    }
+                ],
+                "pubmed-id": "34300579",
+                "prism:aggregationType": "Journal",
+                "subtype": "ar",
+                "subtypeDescription": "Article",
+                "article-number": "4839",
+                "source-id": "130124",
+                "openaccess": "1",
+                "openaccessFlag": true,
+                "freetoread": {
+                    "value": [
+                        {
+                            "$": "all"
+                        },
+                        {
+                            "$": "publisherfullgold"
+                        },
+                        {
+                            "$": "repository"
+                        },
+                        {
+                            "$": "repositoryvor"
+                        }
+                    ]
+                },
+                "freetoreadLabel": {
+                    "value": [
+                        {
+                            "$": "All Open Access"
+                        },
+                        {
+                            "$": "Gold"
+                        },
+                        {
+                            "$": "Green"
+                        }
+                    ]
+                }
+            },
+            {
+                "@_fa": "true",
+                "link": [
+                    {
+                        "@_fa": "true",
+                        "@ref": "self",
+                        "@href": "https://api.elsevier.com/content/abstract/scopus_id/85096672567"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "author-affiliation",
+                        "@href": "https://api.elsevier.com/content/abstract/scopus_id/85096672567?field=author,affiliation"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "scopus",
+                        "@href": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85096672567&origin=inward"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "scopus-citedby",
+                        "@href": "https://www.scopus.com/inward/citedby.uri?partnerID=HzOxMe3b&scp=85096672567&origin=inward"
+                    }
+                ],
+                "prism:url": "https://api.elsevier.com/content/abstract/scopus_id/85096672567",
+                "dc:identifier": "SCOPUS_ID:85096672567",
+                "eid": "2-s2.0-85096672567",
+                "dc:title": "Blockchain-mediated Collaboration of Citizens in Open Government Processes",
+                "dc:creator": "Emaldi M.",
+                "prism:publicationName": "2020 5th International Conference on Smart and Sustainable Technologies, SpliTech 2020",
+                "prism:isbn": [
+                    {
+                        "@_fa": "true",
+                        "$": "9789532901054"
+                    }
+                ],
+                "prism:pageRange": null,
+                "prism:coverDate": "2020-09-23",
+                "prism:coverDisplayDate": "23 September 2020",
+                "prism:doi": "10.23919/SpliTech49282.2020.9243734",
+                "citedby-count": "1",
+                "affiliation": [
+                    {
+                        "@_fa": "true",
+                        "affilname": "Universidad de Deusto",
+                        "affiliation-city": "Bilbao",
+                        "affiliation-country": "Spain"
+                    }
+                ],
+                "prism:aggregationType": "Conference Proceeding",
+                "subtype": "cp",
+                "subtypeDescription": "Conference Paper",
+                "article-number": "9243734",
+                "source-id": "21101028400",
+                "openaccess": "0",
+                "openaccessFlag": false
+            },
+            {
+                "@_fa": "true",
+                "link": [
+                    {
+                        "@_fa": "true",
+                        "@ref": "self",
+                        "@href": "https://api.elsevier.com/content/abstract/scopus_id/85054169107"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "author-affiliation",
+                        "@href": "https://api.elsevier.com/content/abstract/scopus_id/85054169107?field=author,affiliation"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "scopus",
+                        "@href": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85054169107&origin=inward"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "scopus-citedby",
+                        "@href": "https://www.scopus.com/inward/citedby.uri?partnerID=HzOxMe3b&scp=85054169107&origin=inward"
+                    }
+                ],
+                "prism:url": "https://api.elsevier.com/content/abstract/scopus_id/85054169107",
+                "dc:identifier": "SCOPUS_ID:85054169107",
+                "eid": "2-s2.0-85054169107",
+                "dc:title": "Empowering citizens into co-creators of demand-driven public services",
+                "dc:creator": "López-De-Ipiña D.",
+                "prism:publicationName": "MCCSIS 2018 - Multi Conference on Computer Science and Information Systems; Proceedings of the International Conferences on Big Data Analytics, Data Mining and Computational Intelligence 2018, Theory and Practice in Modern Computing 2018 and Connected Smart Cities 2018",
+                "prism:isbn": [
+                    {
+                        "@_fa": "true",
+                        "$": "9789898533807"
+                    }
+                ],
+                "prism:pageRange": "162-173",
+                "prism:coverDate": "2018-01-01",
+                "prism:coverDisplayDate": "2018",
+                "citedby-count": "1",
+                "affiliation": [
+                    {
+                        "@_fa": "true",
+                        "affilname": "Universidad de Deusto",
+                        "affiliation-city": "Bilbao",
+                        "affiliation-country": "Spain"
+                    }
+                ],
+                "prism:aggregationType": "Conference Proceeding",
+                "subtype": "cp",
+                "subtypeDescription": "Conference Paper",
+                "source-id": "21100878889",
+                "openaccess": "0",
+                "openaccessFlag": false
+            },
+            {
+                "@_fa": "true",
+                "link": [
+                    {
+                        "@_fa": "true",
+                        "@ref": "self",
+                        "@href": "https://api.elsevier.com/content/abstract/scopus_id/85020445728"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "author-affiliation",
+                        "@href": "https://api.elsevier.com/content/abstract/scopus_id/85020445728?field=author,affiliation"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "scopus",
+                        "@href": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85020445728&origin=inward"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "scopus-citedby",
+                        "@href": "https://www.scopus.com/inward/citedby.uri?partnerID=HzOxMe3b&scp=85020445728&origin=inward"
+                    }
+                ],
+                "prism:url": "https://api.elsevier.com/content/abstract/scopus_id/85020445728",
+                "dc:identifier": "SCOPUS_ID:85020445728",
+                "eid": "2-s2.0-85020445728",
+                "dc:title": "Towards citizen co-created public service apps",
+                "dc:creator": "Emaldi M.",
+                "prism:publicationName": "Sensors (Switzerland)",
+                "prism:issn": "14248220",
+                "prism:volume": "17",
+                "prism:issueIdentifier": "6",
+                "prism:pageRange": null,
+                "prism:coverDate": "2017-06-01",
+                "prism:coverDisplayDate": "June 2017",
+                "prism:doi": "10.3390/s17061265",
+                "citedby-count": "9",
+                "affiliation": [
+                    {
+                        "@_fa": "true",
+                        "affilname": "Universidad de Deusto",
+                        "affiliation-city": "Bilbao",
+                        "affiliation-country": "Spain"
+                    }
+                ],
+                "pubmed-id": "28574460",
+                "prism:aggregationType": "Journal",
+                "subtype": "ar",
+                "subtypeDescription": "Article",
+                "article-number": "1265",
+                "source-id": "130124",
+                "openaccess": "1",
+                "openaccessFlag": true,
+                "freetoread": {
+                    "value": [
+                        {
+                            "$": "all"
+                        },
+                        {
+                            "$": "publisherfullgold"
+                        },
+                        {
+                            "$": "repository"
+                        },
+                        {
+                            "$": "repositoryvor"
+                        },
+                        {
+                            "$": "repositoryam"
+                        }
+                    ]
+                },
+                "freetoreadLabel": {
+                    "value": [
+                        {
+                            "$": "All Open Access"
+                        },
+                        {
+                            "$": "Gold"
+                        },
+                        {
+                            "$": "Green"
+                        }
+                    ]
+                }
+            },
+            {
+                "@_fa": "true",
+                "link": [
+                    {
+                        "@_fa": "true",
+                        "@ref": "self",
+                        "@href": "https://api.elsevier.com/content/abstract/scopus_id/85013127727"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "author-affiliation",
+                        "@href": "https://api.elsevier.com/content/abstract/scopus_id/85013127727?field=author,affiliation"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "scopus",
+                        "@href": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85013127727&origin=inward"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "scopus-citedby",
+                        "@href": "https://www.scopus.com/inward/citedby.uri?partnerID=HzOxMe3b&scp=85013127727&origin=inward"
+                    }
+                ],
+                "prism:url": "https://api.elsevier.com/content/abstract/scopus_id/85013127727",
+                "dc:identifier": "SCOPUS_ID:85013127727",
+                "eid": "2-s2.0-85013127727",
+                "dc:title": "Overcrowding detection in indoor events using scalable technologies",
+                "dc:creator": "Lopez-Novoa U.",
+                "prism:publicationName": "Personal and Ubiquitous Computing",
+                "prism:issn": "16174909",
+                "prism:volume": "21",
+                "prism:issueIdentifier": "3",
+                "prism:pageRange": "507-519",
+                "prism:coverDate": "2017-06-01",
+                "prism:coverDisplayDate": "1 June 2017",
+                "prism:doi": "10.1007/s00779-017-1012-6",
+                "citedby-count": "5",
+                "affiliation": [
+                    {
+                        "@_fa": "true",
+                        "affilname": "Universidad de Deusto",
+                        "affiliation-city": "Bilbao",
+                        "affiliation-country": "Spain"
+                    }
+                ],
+                "prism:aggregationType": "Journal",
+                "subtype": "ar",
+                "subtypeDescription": "Article",
+                "source-id": "22315",
+                "openaccess": "0",
+                "openaccessFlag": false
+            },
+            {
+                "@_fa": "true",
+                "link": [
+                    {
+                        "@_fa": "true",
+                        "@ref": "self",
+                        "@href": "https://api.elsevier.com/content/abstract/scopus_id/85013191684"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "author-affiliation",
+                        "@href": "https://api.elsevier.com/content/abstract/scopus_id/85013191684?field=author,affiliation"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "scopus",
+                        "@href": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85013191684&origin=inward"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "scopus-citedby",
+                        "@href": "https://www.scopus.com/inward/citedby.uri?partnerID=HzOxMe3b&scp=85013191684&origin=inward"
+                    }
+                ],
+                "prism:url": "https://api.elsevier.com/content/abstract/scopus_id/85013191684",
+                "dc:identifier": "SCOPUS_ID:85013191684",
+                "eid": "2-s2.0-85013191684",
+                "dc:title": "A Platform for Overcrowding Detection in Indoor Events Using Scalable Technologies",
+                "dc:creator": "Aguilera U.",
+                "prism:publicationName": "Proceedings - 13th IEEE International Conference on Ubiquitous Intelligence and Computing, 13th IEEE International Conference on Advanced and Trusted Computing, 16th IEEE International Conference on Scalable Computing and Communications, IEEE International Conference on Cloud and Big Data Computing, IEEE International Conference on Internet of People and IEEE Smart World Congress and Workshops, UIC-ATC-ScalCom-CBDCom-IoP-SmartWorld 2016",
+                "prism:isbn": [
+                    {
+                        "@_fa": "true",
+                        "$": "9781509027705"
+                    }
+                ],
+                "prism:pageRange": "269-276",
+                "prism:coverDate": "2017-01-12",
+                "prism:coverDisplayDate": "12 January 2017",
+                "prism:doi": "10.1109/UIC-ATC-ScalCom-CBDCom-IoP-SmartWorld.2016.0058",
+                "citedby-count": "0",
+                "affiliation": [
+                    {
+                        "@_fa": "true",
+                        "affilname": "Universidad de Deusto",
+                        "affiliation-city": "Bilbao",
+                        "affiliation-country": "Spain"
+                    }
+                ],
+                "prism:aggregationType": "Conference Proceeding",
+                "subtype": "cp",
+                "subtypeDescription": "Conference Paper",
+                "article-number": "7816854",
+                "source-id": "21100795610",
+                "openaccess": "0",
+                "openaccessFlag": false
+            },
+            {
+                "@_fa": "true",
+                "link": [
+                    {
+                        "@_fa": "true",
+                        "@ref": "self",
+                        "@href": "https://api.elsevier.com/content/abstract/scopus_id/85009770864"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "author-affiliation",
+                        "@href": "https://api.elsevier.com/content/abstract/scopus_id/85009770864?field=author,affiliation"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "scopus",
+                        "@href": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85009770864&origin=inward"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "scopus-citedby",
+                        "@href": "https://www.scopus.com/inward/citedby.uri?partnerID=HzOxMe3b&scp=85009770864&origin=inward"
+                    }
+                ],
+                "prism:url": "https://api.elsevier.com/content/abstract/scopus_id/85009770864",
+                "dc:identifier": "SCOPUS_ID:85009770864",
+                "eid": "2-s2.0-85009770864",
+                "dc:title": "Towards citizen co-created public service apps",
+                "dc:creator": "López-De-Ipiña D.",
+                "prism:publicationName": "Lecture Notes in Computer Science (including subseries Lecture Notes in Artificial Intelligence and Lecture Notes in Bioinformatics)",
+                "prism:issn": "03029743",
+                "prism:eIssn": "16113349",
+                "prism:isbn": [
+                    {
+                        "@_fa": "true",
+                        "$": "9783319487984"
+                    }
+                ],
+                "prism:volume": "10070 LNCS",
+                "prism:pageRange": "469-481",
+                "prism:coverDate": "2016-01-01",
+                "prism:coverDisplayDate": "2016",
+                "prism:doi": "10.1007/978-3-319-48799-1_51",
+                "citedby-count": "6",
+                "affiliation": [
+                    {
+                        "@_fa": "true",
+                        "affilname": "Universidad de Deusto",
+                        "affiliation-city": "Bilbao",
+                        "affiliation-country": "Spain"
+                    }
+                ],
+                "prism:aggregationType": "Book Series",
+                "subtype": "cp",
+                "subtypeDescription": "Conference Paper",
+                "source-id": "25674",
+                "openaccess": "0",
+                "openaccessFlag": false,
+                "freetoread": {
+                    "value": [
+                        {
+                            "$": "all"
+                        },
+                        {
+                            "$": "repository"
+                        },
+                        {
+                            "$": "repositoryam"
+                        }
+                    ]
+                },
+                "freetoreadLabel": {
+                    "value": [
+                        {
+                            "$": "All Open Access"
+                        },
+                        {
+                            "$": "Green"
+                        }
+                    ]
+                }
+            },
+            {
+                "@_fa": "true",
+                "link": [
+                    {
+                        "@_fa": "true",
+                        "@ref": "self",
+                        "@href": "https://api.elsevier.com/content/abstract/scopus_id/84975721177"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "author-affiliation",
+                        "@href": "https://api.elsevier.com/content/abstract/scopus_id/84975721177?field=author,affiliation"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "scopus",
+                        "@href": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=84975721177&origin=inward"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "scopus-citedby",
+                        "@href": "https://www.scopus.com/inward/citedby.uri?partnerID=HzOxMe3b&scp=84975721177&origin=inward"
+                    }
+                ],
+                "prism:url": "https://api.elsevier.com/content/abstract/scopus_id/84975721177",
+                "dc:identifier": "SCOPUS_ID:84975721177",
+                "eid": "2-s2.0-84975721177",
+                "dc:title": "Linked Open Data as the Fuel for Smarter Cities",
+                "dc:creator": "Emaldi M.",
+                "prism:publicationName": "Modeling and Optimization in Science and Technologies",
+                "prism:issn": "21967326",
+                "prism:eIssn": "21967334",
+                "prism:volume": "4",
+                "prism:pageRange": "443-472",
+                "prism:coverDate": "2015-01-01",
+                "prism:coverDisplayDate": "2015",
+                "prism:doi": "10.1007/978-3-319-09177-8_18",
+                "citedby-count": "5",
+                "affiliation": [
+                    {
+                        "@_fa": "true",
+                        "affilname": "Universidad de Deusto",
+                        "affiliation-city": "Bilbao",
+                        "affiliation-country": "Spain"
+                    }
+                ],
+                "prism:aggregationType": "Book Series",
+                "subtype": "ch",
+                "subtypeDescription": "Book Chapter",
+                "source-id": "21100448506",
+                "openaccess": "0",
+                "openaccessFlag": false
+            },
+            {
+                "@_fa": "true",
+                "link": [
+                    {
+                        "@_fa": "true",
+                        "@ref": "self",
+                        "@href": "https://api.elsevier.com/content/abstract/scopus_id/84954527783"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "author-affiliation",
+                        "@href": "https://api.elsevier.com/content/abstract/scopus_id/84954527783?field=author,affiliation"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "scopus",
+                        "@href": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=84954527783&origin=inward"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "scopus-citedby",
+                        "@href": "https://www.scopus.com/inward/citedby.uri?partnerID=HzOxMe3b&scp=84954527783&origin=inward"
+                    }
+                ],
+                "prism:url": "https://api.elsevier.com/content/abstract/scopus_id/84954527783",
+                "dc:identifier": "SCOPUS_ID:84954527783",
+                "eid": "2-s2.0-84954527783",
+                "dc:title": "Detection of related semantic datasets based on frequent subgraph mining",
+                "dc:creator": "Emaldi M.",
+                "prism:publicationName": "CEUR Workshop Proceedings",
+                "prism:issn": "16130073",
+                "prism:volume": "1472",
+                "prism:pageRange": null,
+                "prism:coverDate": "2015-01-01",
+                "prism:coverDisplayDate": "2015",
+                "citedby-count": "0",
+                "affiliation": [
+                    {
+                        "@_fa": "true",
+                        "affilname": "Universidad de Deusto",
+                        "affiliation-city": "Bilbao",
+                        "affiliation-country": "Spain"
+                    }
+                ],
+                "prism:aggregationType": "Conference Proceeding",
+                "subtype": "cp",
+                "subtypeDescription": "Conference Paper",
+                "source-id": "21100218356",
+                "openaccess": "0",
+                "openaccessFlag": false
+            },
+            {
+                "@_fa": "true",
+                "link": [
+                    {
+                        "@_fa": "true",
+                        "@ref": "self",
+                        "@href": "https://api.elsevier.com/content/abstract/scopus_id/84893258223"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "author-affiliation",
+                        "@href": "https://api.elsevier.com/content/abstract/scopus_id/84893258223?field=author,affiliation"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "scopus",
+                        "@href": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=84893258223&origin=inward"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "scopus-citedby",
+                        "@href": "https://www.scopus.com/inward/citedby.uri?partnerID=HzOxMe3b&scp=84893258223&origin=inward"
+                    }
+                ],
+                "prism:url": "https://api.elsevier.com/content/abstract/scopus_id/84893258223",
+                "dc:identifier": "SCOPUS_ID:84893258223",
+                "eid": "2-s2.0-84893258223",
+                "dc:title": "Generic integration of remote laboratories in learning and content management systems through federation protocols",
+                "dc:creator": "Orduña P.",
+                "prism:publicationName": "Proceedings - Frontiers in Education Conference, FIE",
+                "prism:issn": "15394565",
+                "prism:isbn": [
+                    {
+                        "@_fa": "true",
+                        "$": "9781467352611"
+                    }
+                ],
+                "prism:pageRange": "1372-1378",
+                "prism:coverDate": "2013-12-01",
+                "prism:coverDisplayDate": "2013",
+                "prism:doi": "10.1109/FIE.2013.6685057",
+                "citedby-count": "24",
+                "affiliation": [
+                    {
+                        "@_fa": "true",
+                        "affilname": "Universidad de Deusto",
+                        "affiliation-city": "Bilbao",
+                        "affiliation-country": "Spain"
+                    }
+                ],
+                "prism:aggregationType": "Conference Proceeding",
+                "subtype": "cp",
+                "subtypeDescription": "Conference Paper",
+                "article-number": "6685057",
+                "source-id": "16719",
+                "openaccess": "0",
+                "openaccessFlag": false
+            },
+            {
+                "@_fa": "true",
+                "link": [
+                    {
+                        "@_fa": "true",
+                        "@ref": "self",
+                        "@href": "https://api.elsevier.com/content/abstract/scopus_id/84924348584"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "author-affiliation",
+                        "@href": "https://api.elsevier.com/content/abstract/scopus_id/84924348584?field=author,affiliation"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "scopus",
+                        "@href": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=84924348584&origin=inward"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "scopus-citedby",
+                        "@href": "https://www.scopus.com/inward/citedby.uri?partnerID=HzOxMe3b&scp=84924348584&origin=inward"
+                    }
+                ],
+                "prism:url": "https://api.elsevier.com/content/abstract/scopus_id/84924348584",
+                "dc:identifier": "SCOPUS_ID:84924348584",
+                "eid": "2-s2.0-84924348584",
+                "dc:title": "To trust, or not to trust: Highlighting the need for data provenance in mobile apps for smart cities",
+                "dc:creator": "Emaldi M.",
+                "prism:publicationName": "CEUR Workshop Proceedings",
+                "prism:issn": "16130073",
+                "prism:volume": "1075",
+                "prism:pageRange": "68-71",
+                "prism:coverDate": "2013-01-01",
+                "prism:coverDisplayDate": "2013",
+                "citedby-count": "2",
+                "affiliation": [
+                    {
+                        "@_fa": "true",
+                        "affilname": "Universidad de Deusto",
+                        "affiliation-city": "Bilbao",
+                        "affiliation-country": "Spain"
+                    }
+                ],
+                "prism:aggregationType": "Conference Proceeding",
+                "subtype": "cp",
+                "subtypeDescription": "Conference Paper",
+                "source-id": "21100218356",
+                "openaccess": "0",
+                "openaccessFlag": false
+            },
+            {
+                "@_fa": "true",
+                "link": [
+                    {
+                        "@_fa": "true",
+                        "@ref": "self",
+                        "@href": "https://api.elsevier.com/content/abstract/scopus_id/84870355948"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "author-affiliation",
+                        "@href": "https://api.elsevier.com/content/abstract/scopus_id/84870355948?field=author,affiliation"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "scopus",
+                        "@href": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=84870355948&origin=inward"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "scopus-citedby",
+                        "@href": "https://www.scopus.com/inward/citedby.uri?partnerID=HzOxMe3b&scp=84870355948&origin=inward"
+                    }
+                ],
+                "prism:url": "https://api.elsevier.com/content/abstract/scopus_id/84870355948",
+                "dc:identifier": "SCOPUS_ID:84870355948",
+                "eid": "2-s2.0-84870355948",
+                "dc:title": "LinkedQR: Improving tourism experience through linked data and QR codes",
+                "dc:creator": "Emaldi M.",
+                "prism:publicationName": "Lecture Notes in Computer Science (including subseries Lecture Notes in Artificial Intelligence and Lecture Notes in Bioinformatics)",
+                "prism:issn": "03029743",
+                "prism:eIssn": "16113349",
+                "prism:isbn": [
+                    {
+                        "@_fa": "true",
+                        "$": "9783642353765"
+                    }
+                ],
+                "prism:volume": "7656 LNCS",
+                "prism:pageRange": "371-378",
+                "prism:coverDate": "2012-12-06",
+                "prism:coverDisplayDate": "2012",
+                "prism:doi": "10.1007/978-3-642-35377-2_52",
+                "citedby-count": "8",
+                "affiliation": [
+                    {
+                        "@_fa": "true",
+                        "affilname": "Universidad de Deusto",
+                        "affiliation-city": "Bilbao",
+                        "affiliation-country": "Spain"
+                    }
+                ],
+                "prism:aggregationType": "Book Series",
+                "subtype": "cp",
+                "subtypeDescription": "Conference Paper",
+                "source-id": "25674",
+                "openaccess": "0",
+                "openaccessFlag": false
+            },
+            {
+                "@_fa": "true",
+                "link": [
+                    {
+                        "@_fa": "true",
+                        "@ref": "self",
+                        "@href": "https://api.elsevier.com/content/abstract/scopus_id/84892376900"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "author-affiliation",
+                        "@href": "https://api.elsevier.com/content/abstract/scopus_id/84892376900?field=author,affiliation"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "scopus",
+                        "@href": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=84892376900&origin=inward"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "scopus-citedby",
+                        "@href": "https://www.scopus.com/inward/citedby.uri?partnerID=HzOxMe3b&scp=84892376900&origin=inward"
+                    }
+                ],
+                "prism:url": "https://api.elsevier.com/content/abstract/scopus_id/84892376900",
+                "dc:identifier": "SCOPUS_ID:84892376900",
+                "eid": "2-s2.0-84892376900",
+                "dc:title": "Short paper: Semantic annotations for sensor Open Data",
+                "dc:creator": "Emaldi M.",
+                "prism:publicationName": "CEUR Workshop Proceedings",
+                "prism:issn": "16130073",
+                "prism:volume": "904",
+                "prism:pageRange": "115-120",
+                "prism:coverDate": "2012-12-01",
+                "prism:coverDisplayDate": "2012",
+                "citedby-count": "1",
+                "affiliation": [
+                    {
+                        "@_fa": "true",
+                        "affilname": "Universidad de Deusto",
+                        "affiliation-city": "Bilbao",
+                        "affiliation-country": "Spain"
+                    }
+                ],
+                "prism:aggregationType": "Conference Proceeding",
+                "subtype": "cp",
+                "subtypeDescription": "Conference Paper",
+                "source-id": "21100218356",
+                "openaccess": "0",
+                "openaccessFlag": false
+            },
+            {
+                "@_fa": "true",
+                "link": [
+                    {
+                        "@_fa": "true",
+                        "@ref": "self",
+                        "@href": "https://api.elsevier.com/content/abstract/scopus_id/84874753341"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "author-affiliation",
+                        "@href": "https://api.elsevier.com/content/abstract/scopus_id/84874753341?field=author,affiliation"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "scopus",
+                        "@href": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=84874753341&origin=inward"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "scopus-citedby",
+                        "@href": "https://www.scopus.com/inward/citedby.uri?partnerID=HzOxMe3b&scp=84874753341&origin=inward"
+                    }
+                ],
+                "prism:url": "https://api.elsevier.com/content/abstract/scopus_id/84874753341",
+                "dc:identifier": "SCOPUS_ID:84874753341",
+                "eid": "2-s2.0-84874753341",
+                "dc:title": "Modelling remote laboratories integrations in e-learning tools through remote laboratories federation protocols",
+                "dc:creator": "Orduna P.",
+                "prism:publicationName": "Proceedings - Frontiers in Education Conference, FIE",
+                "prism:issn": "15394565",
+                "prism:isbn": [
+                    {
+                        "@_fa": "true",
+                        "$": "9781467313513"
+                    }
+                ],
+                "prism:pageRange": null,
+                "prism:coverDate": "2012-12-01",
+                "prism:coverDisplayDate": "2012",
+                "prism:doi": "10.1109/FIE.2012.6462220",
+                "citedby-count": "10",
+                "affiliation": [
+                    {
+                        "@_fa": "true",
+                        "affilname": "Universidad de Deusto",
+                        "affiliation-city": "Bilbao",
+                        "affiliation-country": "Spain"
+                    }
+                ],
+                "prism:aggregationType": "Conference Proceeding",
+                "subtype": "cp",
+                "subtypeDescription": "Conference Paper",
+                "article-number": "6462220",
+                "source-id": "16719",
+                "openaccess": "0",
+                "openaccessFlag": false
+            },
+            {
+                "@_fa": "true",
+                "link": [
+                    {
+                        "@_fa": "true",
+                        "@ref": "self",
+                        "@href": "https://api.elsevier.com/content/abstract/scopus_id/84856928491"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "author-affiliation",
+                        "@href": "https://api.elsevier.com/content/abstract/scopus_id/84856928491?field=author,affiliation"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "scopus",
+                        "@href": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=84856928491&origin=inward"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "scopus-citedby",
+                        "@href": "https://www.scopus.com/inward/citedby.uri?partnerID=HzOxMe3b&scp=84856928491&origin=inward"
+                    }
+                ],
+                "prism:url": "https://api.elsevier.com/content/abstract/scopus_id/84856928491",
+                "dc:identifier": "SCOPUS_ID:84856928491",
+                "eid": "2-s2.0-84856928491",
+                "dc:title": "Collaboration of sensors and actuators through triple spaces",
+                "dc:creator": "Gómez-Goiri A.",
+                "prism:publicationName": "Proceedings of IEEE Sensors",
+                "prism:isbn": [
+                    {
+                        "@_fa": "true",
+                        "$": "9781424492886"
+                    }
+                ],
+                "prism:pageRange": "651-654",
+                "prism:coverDate": "2011-12-01",
+                "prism:coverDisplayDate": "2011",
+                "prism:doi": "10.1109/ICSENS.2011.6127316",
+                "citedby-count": "3",
+                "affiliation": [
+                    {
+                        "@_fa": "true",
+                        "affilname": "Universidad de Deusto",
+                        "affiliation-city": "Bilbao",
+                        "affiliation-country": "Spain"
+                    }
+                ],
+                "prism:aggregationType": "Conference Proceeding",
+                "subtype": "cp",
+                "subtypeDescription": "Conference Paper",
+                "article-number": "6127316",
+                "source-id": "74882",
+                "openaccess": "0",
+                "openaccessFlag": false
+            }
+        ]
+    }
+}

@@ -6,14 +6,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ScopusConnect.ROs.Scopus.Controllers;
 using ScopusConnect.ROs.Scopus.Models;
-using ScopusConnect.ROs.Scopus.Models.Inicial;
 using Newtonsoft.Json;
 
-namespace WoSConnect.Controllers
+namespace ScopusConnect.Controllers
 {
     [Produces("application/json")]
     [ApiController]
-    [Route("Scopus/[action]")]
+    [Route("scopus/[action]")]
     public class APIController : ControllerBase
     {
         private readonly ILogger<APIController> _logger;
@@ -52,10 +51,19 @@ namespace WoSConnect.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-      public List<Publication> GetROs([FromQuery][Required] string Scopus_ID,string date = "1800-01-01") 
-             {
+        public List<Publication> GetROs([FromQuery][Required] string Scopus_ID,string date = "1800-01-01")
+        {
             ROScopusController ScopusObject = new ROScopusController("https://api.elsevier.com/", "75f4ab3fac56f42ac83cdeb7c98882ca");//"adf94bebeeba8c3042ad5193455740e2");
+            //Author_maite author = ScopusObject.Author(author_id);
             List<Publication> publication = ScopusObject.getPublications(Scopus_ID,date);
+            //System.IO.StreamWriter outputFile = new System.IO.StreamWriter("ejemplo.txt");
+            //outputFile.Write(publication.ToString());
+            //outputFile.Close();
+
+            //List<Publication> publications = ScopusObject.getAllPublication(user_orcid);
+            //var respublications = JsonConvert.SerializeObject(author);
+            // Return the repository
+            //Console.Write(author);
             return publication;
         }
         
