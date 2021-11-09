@@ -644,7 +644,7 @@
 												"property": "http://w3id.org/roh/hasMetric",
 												"type": "auxEntity",
 												"title": {
-													"es": "Citas"
+													"es": "Auxiliar múltiple. Tabla."
 												},
 												"multiple": true,
 												"width": 3,
@@ -757,8 +757,15 @@
 													"es": "Introduce la traducción"
 												},
 												"property": "https://www.w3.org/2006/vcard/ns#hasLanguage",
+												"combo": {
+													"rdftype": "http://w3id.org/roh/Language",
+													"graph": "language",
+													"property": {
+														"property": "http://purl.org/dc/elements/1.1/title"
+													}
+												},
 												"multiple": true,
-												"type": "text",
+												"type": "selectCombo",
 												"width": 1
 											}
 										]
