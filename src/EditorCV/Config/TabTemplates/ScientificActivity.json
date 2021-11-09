@@ -1100,7 +1100,11 @@
 																"es": "País de celebración"
 															},
 															"child": {
-																"property": "https://www.w3.org/2006/vcard/ns#hasCountryName"
+																"property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+																"graph": "feature",
+																"child": {
+																	"property": "http://www.geonames.org/ontology#name"
+																}
 															}
 														},
 														{
@@ -1108,7 +1112,10 @@
 																"es": "C. Autón./Reg. de celebración"
 															},
 															"child": {
-																"property": "https://www.w3.org/2006/vcard/ns#hasRegion"
+																"property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+																"child": {
+																	"property": "http://www.geonames.org/ontology#name"
+																}
 															}
 														},
 														{
@@ -1117,9 +1124,11 @@
 															},
 															"TODO": "Autocompletado/texto libre",
 															"child": {
-																"property": "http://purl.org/ontology/bibo/"
+																"property": "http://purl.org/ontology/bibo/organizer"
+																
 															}
-														}
+														},
+														
 													],
 													"rows": [
 														{
@@ -1145,6 +1154,7 @@
 																		"es": "Fecha de celebración"
 																	},
 																	"type": "date",
+																	"TODO": "El tipo sale como text en vez de date"
 																	"placeholder": {
 																		"es": "Introduce la fecha de celebración"
 																	},
@@ -1160,7 +1170,7 @@
 																		"es": "Introduce la fecha de finalización"
 																	},
 																	"property": "http://vivoweb.org/ontology/core#end",
-																	"TODO": "El selector de fecha no se pinta adecuadamente",
+																	"TODO": "El tipo sale como text en vez de date",
 																	"type": "date",
 																	"width": 1
 																}
@@ -1196,6 +1206,7 @@
 																		}
 																	},
 																	"type": "selectCombo",
+																	"TODO": "No se despliega el combo de valores",
 																	"width": 1
 																},
 																{
@@ -1214,14 +1225,14 @@
 																		}
 																	},
 																	"type": "selectCombo",
+																	"TODO": "No se despliega el combo de valores",
 																	"width": 1
 																}
 															]
 														},
 														{
-															"properties": [
-															]
-														},
+															"properties": []
+														}
 													]
 												}
 											}
