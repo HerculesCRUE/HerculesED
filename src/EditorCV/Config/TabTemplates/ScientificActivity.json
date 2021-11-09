@@ -1314,13 +1314,14 @@
 																	"property": "http://w3id.org/roh/withExternalAdmissionsCommittee",
 																	"type": "text",
 																	"TODO": "El tipo boolean no funciona",
-																	"width": 3
+																	"width": 1
 																},
 																{
 																	"title": {
 																		"es": "Ámbito geográfico"
 																	},
 																	"property": "http://vivoweb.org/ontology/core#geographicFocus",
+																	"TODO": "No se despliega el combo de valores."
 																	"combo": {
 																		"rdftype": "http://vivoweb.org/ontology/core#GeographicRegion",
 																		"graph": "geographicregion",
