@@ -1279,7 +1279,7 @@
 																	"title": {
 																		"es": "Entidad organizadora"
 																	},
-																	"TODO": "Autocompletado/texto libre. El tipo de entidad, en caso de que haya que añadir una nueva organización, será autocompletado o combo",
+																	"TODO": "Autocompletado/texto libre. En caso de que haya que añadir una nueva organización, será por autocompletado o combo",
 																	"type": "text",
 																	"placeholder": {
 																		"es": "Introduce la entidad organizadora"
@@ -1309,12 +1309,21 @@
 															"properties": [
 																{
 																	"title": {
+																		"es": "Con comité de admisión ext."
+																	},
+																	"property": "http://w3id.org/roh/withExternalAdmissionsCommittee",
+																	"type": "text",
+																	"TODO": "El tipo boolean no funciona",
+																	"width": 3
+																},
+																{
+																	"title": {
 																		"es": "Ámbito geográfico"
 																	},
 																	"property": "http://vivoweb.org/ontology/core#geographicFocus",
 																	"combo": {
 																		"rdftype": "http://vivoweb.org/ontology/core#GeographicRegion",
-																		"graph": "geographicfocus",
+																		"graph": "geographicregion",
 																		"property": {
 																			"property": "http://purl.org/dc/elements/1.1/title"
 																		}
