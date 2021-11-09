@@ -1125,10 +1125,8 @@
 															"TODO": "Autocompletado/texto libre",
 															"child": {
 																"property": "http://purl.org/ontology/bibo/organizer"
-																
 															}
-														},
-														
+														}
 													],
 													"rows": [
 														{
@@ -1154,7 +1152,7 @@
 																		"es": "Fecha de celebración"
 																	},
 																	"type": "date",
-																	"TODO": "El tipo sale como text en vez de date"
+																	"TODO": "El tipo se muestra como text en lugar de date",
 																	"placeholder": {
 																		"es": "Introduce la fecha de celebración"
 																	},
@@ -1170,7 +1168,7 @@
 																		"es": "Introduce la fecha de finalización"
 																	},
 																	"property": "http://vivoweb.org/ontology/core#end",
-																	"TODO": "El tipo sale como text en vez de date",
+																	"TODO": "El tipo se muestra como text en lugar de date",
 																	"type": "date",
 																	"width": 1
 																}
