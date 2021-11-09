@@ -1053,7 +1053,7 @@
 												"property": "http://purl.org/ontology/bibo/presentedAt",
 												"type": "auxEntity",
 												"title": {
-													"es": "Congreso"
+													"es": "Evento"
 												},
 												"multiple": true,
 												"width": 3,
@@ -1065,7 +1065,7 @@
 													"properties": [
 														{
 															"name": {
-																"es": "Nombre del congreso"
+																"es": "Nombre del evento"
 															},
 															"child": {
 																"property": "http://purl.org/dc/elements/1.1/title"
@@ -1125,7 +1125,31 @@
 															},
 															"TODO": "Autocompletado/texto libre",
 															"child": {
-																"property": "http://purl.org/ontology/bibo/organizer"
+																"property": "http://purl.org/ontology/bibo/organizer",
+																"graph": "organization",
+																"child": {
+																	"property": "http://w3id.org/roh/title"
+																}
+															}
+														},
+														{
+															"name": {
+																"es": "Tipo de evento"
+															},
+															"child": {
+																"property": "http://purl.org/dc/elements/1.1/type",
+																"graph": "eventtype",
+																"child": {
+																	"property": "http://purl.org/dc/elements/1.1/title"
+																}
+															}
+														},
+														{
+															"name": {
+																"es": "Con comité de admisión ext."
+															},
+															"child": {
+																"property": "http://w3id.org/roh/withExternalAdmissionsCommittee",
 															}
 														},
 														{
@@ -1138,7 +1162,6 @@
 																"child": {
 																	"property": "http://purl.org/dc/elements/1.1/title"
 																}
-																
 															}
 														},
 														{
@@ -1146,20 +1169,20 @@
 																"es": "Ámbito geográfico, otros"
 															},
 															"child": {
-																"property": "http://w3id.org/roh/geographicFocusOther",
+																"property": "http://w3id.org/roh/geographicFocusOther"
 															}
-														},
+														}
 													],
 													"rows": [
 														{
 															"properties": [
 																{
 																	"title": {
-																		"es": "Nombre del congreso"
+																		"es": "Nombre del evento"
 																	},
 																	"type": "text",
 																	"placeholder": {
-																		"es": "Introduce el nombre del congreso"
+																		"es": "Introduce el nombre del evento"
 																	},
 																	"required": true,
 																	"property": "http://purl.org/dc/elements/1.1/title",
@@ -1263,8 +1286,37 @@
 																	},
 																	"required": false,
 																	"property": "https://www.w3.org/2006/vcard/ns#locality",
+																	"width": 2
+																}
+															]
+														},
+														{
+															"properties": [
+																{
+																	"title": {
+																		"es": "Ámbito geográfico"
+																	},
+																	"property": "https://www.w3.org/2006/vcard/ns#locality",
+																	"combo": {
+																		"rdftype": "http://www.geonames.org/ontology#Feature",
+																		"graph": "geographicfocus",
+																		"property": {
+																			"property": "http://www.geonames.org/ontology#name"
+																		}
+																	},
+																	"type": "selectCombo",
+																	"required": false,
 																	"width": 1
 																},
+																{
+																	"title": {
+																		"es": "Otros"
+																	},
+																	"property": "http://w3id.org/roh/geographicFocusOther",
+																	"type": "text",
+																	"required": false,
+																	"width": 1
+																}
 															]
 														}
 													]
