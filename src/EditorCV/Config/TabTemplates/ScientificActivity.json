@@ -1055,7 +1055,7 @@
 												"title": {
 													"es": "Evento"
 												},
-												"multiple": true,
+												"multiple": false,
 												"width": 3,
 												"auxEntityData": {
 													"rdftype": "http://purl.org/ontology/bibo/Event",
@@ -1201,7 +1201,7 @@
 																	"placeholder": {
 																		"es": "Introduce la fecha de celebración"
 																	},
-																	"required": true,
+																	"required": false,
 																	"property": "http://vivoweb.org/ontology/core#start",
 																	"width": 1
 																},
@@ -1285,7 +1285,7 @@
 																		"es": "Introduce la entidad organizadora"
 																	},
 																	"required": false,
-																	"property": "https://www.w3.org/2006/vcard/ns#locality",
+																	"property": "http://purl.org/ontology/bibo/organizer",
 																	"width": 2
 																},
 																{
