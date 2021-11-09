@@ -870,7 +870,7 @@
 							"property": "http://vivoweb.org/ontology/core#relatedBy",
 							"graph": "document",
 							"child": {
-								"property": "http://w3id.org/roh/title"
+								"property": "http://w3id.org/roh/workTitle"
 							}
 						},
 						"orders": [
@@ -891,7 +891,7 @@
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
 										"graph": "document",
 										"child": {
-											"property": "http://w3id.org/roh/title"
+											"property": "http://w3id.org/roh/workTitle"
 										},
 										"asc": true
 									}
@@ -914,7 +914,7 @@
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
 										"graph": "document",
 										"child": {
-											"property": "http://w3id.org/roh/title"
+											"property": "http://w3id.org/roh/workTitle"
 										},
 										"asc": true
 									}
@@ -1202,7 +1202,7 @@
 																		"es": "Introduce la fecha de celebración"
 																	},
 																	"required": true,
-																	"property": "http://purl.org/dc/elements/1.1/title",
+																	"property": "http://vivoweb.org/ontology/core#start",
 																	"width": 1
 																},
 																{
@@ -1301,6 +1301,18 @@
 																		}
 																	},
 																	"type": "selectCombo",
+																	"width": 1
+																}
+															]
+														},
+														{
+															"properties": [
+																{
+																	"title": {
+																		"es": "Con comité de admisión ext."
+																	},
+																	"property": "http://w3id.org/roh/withExternalAdmissionsCommittee",
+																	"type": "boolean",
 																	"width": 1
 																}
 															]
