@@ -1273,26 +1273,7 @@
 																}
 															]
 														},
-														{
-															"properties": [
-																
-																{
-																	"title": {
-																		"es": "Tipo de evento"
-																	},
-																	"property": "http://purl.org/dc/elements/1.1/type",
-																	"combo": {
-																		"rdftype": "http://w3id.org/roh/EventType",
-																		"graph": "eventtype",
-																		"property": {
-																			"property": "http://purl.org/dc/elements/1.1/title"
-																		}
-																	},
-																	"type": "selectCombo",
-																	"width": 1
-																}
-															]
-														},
+														
 														{
 															"properties": [
 																{
