@@ -515,10 +515,10 @@
 									{
 										"properties": [
 											{
-												"property": "http://purl.org/ontology/bibo/identifier",
+												"property": "TODO",
 												"type": "auxEntity",
 												"title": {
-													"es": "Identificador publicación"
+													"es": "Auxiliar múltiple. Tabla."
 												},
 												"multiple": true,
 												"width": 3,
