@@ -1831,7 +1831,7 @@
 												"TODO": "Auxiliar múltiple. Incluir los valores de la fuente de citas en la tabla, junto a un 'Otros' que permita añadir un nuevo tipo.",
 												"type": "auxEntity",
 												"title": {
-													"es": "Auxiliar múltiple. Tabla."
+													"es": "Citas"
 												},
 												"multiple": true,
 												"width": 3,
