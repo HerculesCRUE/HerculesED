@@ -641,7 +641,58 @@
 									{
 										"properties": [
 											{
-												"property": "http://w3id.org/roh/hasMetric",
+												"title": {
+													"es": "Ciudad de publicación"
+												},
+												"placeholder": {
+													"es": "Introduce la ciudad de publicación"
+												},
+												"property": "https://www.w3.org/2006/vcard/ns#locality",
+												"type": "text",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "C. Autón./Reg. de publicación"
+												},
+												"placeholder": {
+													"es": "Introduce la región de publicación"
+												},
+												"property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+												"combo": {
+													"rdftype": "http://www.geonames.org/ontology#Feature",
+													"graph": "feature",
+													"property": {
+														"property": "http://www.geonames.org/ontology#name"
+													}
+												},
+												"type": "selectCombo",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "País de publicación"
+												},
+												"placeholder": {
+													"es": "Introduce el país de publicación"
+												},
+												"property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+												"combo": {
+													"rdftype": "http://www.geonames.org/ontology#Feature",
+													"graph": "feature",
+													"property": {
+														"property": "http://www.geonames.org/ontology#name"
+													}
+												},
+												"type": "selectCombo",
+												"width": 1
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"property": "TODO",
 												"type": "auxEntity",
 												"title": {
 													"es": "Auxiliar múltiple. Tabla."
