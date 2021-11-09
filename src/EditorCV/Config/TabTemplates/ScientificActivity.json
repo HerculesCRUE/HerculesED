@@ -1149,7 +1149,7 @@
 																"es": "Con comité de admisión ext."
 															},
 															"child": {
-																"property": "http://w3id.org/roh/withExternalAdmissionsCommittee",
+																"property": "http://w3id.org/roh/withExternalAdmissionsCommittee"
 															}
 														},
 														{
@@ -1287,6 +1287,21 @@
 																	"required": false,
 																	"property": "https://www.w3.org/2006/vcard/ns#locality",
 																	"width": 2
+																},
+																{
+																	"title": {
+																		"es": "Tipo de evento"
+																	},
+																	"property": "http://purl.org/dc/elements/1.1/type",
+																	"combo": {
+																		"rdftype": "http://w3id.org/roh/EventType",
+																		"graph": "eventtype",
+																		"property": {
+																			"property": "http://purl.org/dc/elements/1.1/title"
+																		}
+																	},
+																	"type": "selectCombo",
+																	"width": 1
 																}
 															]
 														},
