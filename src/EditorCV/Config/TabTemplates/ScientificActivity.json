@@ -1305,6 +1305,19 @@
 																}
 															]
 														},
+														{
+															"properties": [
+																{
+																	"title": {
+																		"es": "Otros"
+																	},
+																	"property": "http://w3id.org/roh/geographicFocusOther",
+																	"type": "text",
+																	"required": false,
+																	"width": 1
+																}
+															]
+														}
 													]
 												}
 											}
