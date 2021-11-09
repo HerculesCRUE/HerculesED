@@ -1113,6 +1113,7 @@
 															},
 															"child": {
 																"property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+																"graph": "feature",
 																"child": {
 																	"property": "http://www.geonames.org/ontology#name"
 																}
@@ -1126,7 +1127,28 @@
 															"child": {
 																"property": "http://purl.org/ontology/bibo/organizer"
 															}
-														}
+														},
+														{
+															"name": {
+																"es": "Ámbito geográfico"
+															},
+															"child": {
+																"property": "http://vivoweb.org/ontology/core#geographicFocus",
+																"graph": "geographicregion",
+																"child": {
+																	"property": "http://purl.org/dc/elements/1.1/title"
+																}
+																
+															}
+														},
+														{
+															"name": {
+																"es": "Ámbito geográfico, otros"
+															},
+															"child": {
+																"property": "http://w3id.org/roh/geographicFocusOther",
+															}
+														},
 													],
 													"rows": [
 														{
@@ -1229,7 +1251,21 @@
 															]
 														},
 														{
-															"properties": []
+															"properties": [
+																{
+																	"title": {
+																		"es": "Entidad organizadora"
+																	},
+																	"TODO": "Autocompletado/texto libre. El tipo de entidad, en caso de que haya que añadir una nueva organización, será autocompletado o combo",
+																	"type": "text",
+																	"placeholder": {
+																		"es": "Introduce la entidad organizadora"
+																	},
+																	"required": false,
+																	"property": "https://www.w3.org/2006/vcard/ns#locality",
+																	"width": 1
+																},
+															]
 														}
 													]
 												}
