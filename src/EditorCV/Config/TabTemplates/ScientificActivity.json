@@ -1050,6 +1050,154 @@
 									{
 										"properties": [
 											{
+												"property": "http://purl.org/ontology/bibo/presentedAt",
+												"type": "auxEntity",
+												"title": {
+													"es": "Evento"
+												},
+												"multiple": false,
+												"width": 3,
+												"auxEntityData": {
+													"rdftype": "http://purl.org/ontology/bibo/Event",
+													"propertyTitle": {
+														"property": "http://purl.org/dc/elements/1.1/title"
+													},
+													"properties": [
+														{
+															"name": {
+																"es": "Nombre del evento"
+															},
+															"child": {
+																"property": "http://purl.org/dc/elements/1.1/title"
+															}
+														},
+														{
+															"name": {
+																"es": "Fecha de celebración"
+															},
+															"child": {
+																"property": "http://vivoweb.org/ontology/core#start"
+															}
+														},
+														{
+															"name": {
+																"es": "Fecha de finalización"
+															},
+															"child": {
+																"property": "http://vivoweb.org/ontology/core#end"
+															}
+														},
+														{
+															"name": {
+																"es": "Ciudad de celebración"
+															},
+															"child": {
+																"property": "https://www.w3.org/2006/vcard/ns#locality"
+															}
+														},
+														{
+															"name": {
+																"es": "País de celebración"
+															},
+															"child": {
+																"property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+																"graph": "feature",
+																"child": {
+																	"property": "http://www.geonames.org/ontology#name"
+																}
+															}
+														},
+														{
+															"name": {
+																"es": "C. Autón./Reg. de celebración"
+															},
+															"child": {
+																"property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+																"graph": "feature",
+																"child": {
+																	"property": "http://www.geonames.org/ontology#name"
+																}
+															}
+														},
+														{
+															"name": {
+																"es": "Entidad organizadora"
+															},
+															"TODO": "Autocompletado/texto libre",
+															"child": {
+																"property": "http://purl.org/ontology/bibo/organizer",
+																"graph": "organization",
+																"child": {
+																	"property": "http://w3id.org/roh/title"
+																}
+															}
+														},
+														{
+															"name": {
+																"es": "Tipo de evento"
+															},
+															"child": {
+																"property": "http://purl.org/dc/elements/1.1/type",
+																"graph": "eventtype",
+																"child": {
+																	"property": "http://purl.org/dc/elements/1.1/title"
+																}
+															}
+														},
+														{
+															"name": {
+																"es": "Con comité de admisión ext."
+															},
+															"child": {
+																"property": "http://w3id.org/roh/withExternalAdmissionsCommittee"
+															}
+														},
+														{
+															"name": {
+																"es": "Ámbito geográfico"
+															},
+															"child": {
+																"property": "http://vivoweb.org/ontology/core#geographicFocus",
+																"graph": "geographicregion",
+																"child": {
+																	"property": "http://purl.org/dc/elements/1.1/title"
+																}
+															}
+														},
+														{
+															"name": {
+																"es": "Ámbito geográfico, otros"
+															},
+															"child": {
+																"property": "http://w3id.org/roh/geographicFocusOther"
+															}
+														}
+													],
+													"rows": [
+														{
+															"properties": [
+																{
+																	"title": {
+																		"es": "Nombre del evento"
+																	},
+																	"type": "text",
+																	"placeholder": {
+																		"es": "Introduce el nombre del evento"
+																	},
+																	"required": true,
+																	"property": "http://purl.org/dc/elements/1.1/title",
+																	"width": 3
+																}
+															]
+														},
+													]
+												}
+											}
+										]
+									},
+									{
+										"properties": [
+											{
 												"title": {
 													"es": "Publicación principal"
 												},
