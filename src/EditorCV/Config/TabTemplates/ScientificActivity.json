@@ -1309,6 +1309,21 @@
 															"properties": [
 																{
 																	"title": {
+																		"es": "Ámbito geográfico"
+																	},
+																	"property": "http://vivoweb.org/ontology/core#geographicFocus",
+																	"combo": {
+																		"rdftype": "http://vivoweb.org/ontology/core#GeographicRegion",
+																		"graph": "geographicfocus",
+																		"property": {
+																			"property": "http://purl.org/dc/elements/1.1/title"
+																		}
+																	},
+																	"type": "selectCombo",
+																	"width": 1
+																},
+																{
+																	"title": {
 																		"es": "Otros"
 																	},
 																	"property": "http://w3id.org/roh/geographicFocusOther",
