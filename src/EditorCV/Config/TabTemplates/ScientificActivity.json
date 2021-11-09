@@ -1273,49 +1273,39 @@
 																}
 															]
 														},
-														
 														{
 															"properties": [
 																{
 																	"title": {
-																		"es": "Con comité de admisión ext."
+																		"es": "Entidad organizadora"
 																	},
-																	"property": "http://w3id.org/roh/withExternalAdmissionsCommittee",
+																	"TODO": "Autocompletado/texto libre. El tipo de entidad, en caso de que haya que añadir una nueva organización, será autocompletado o combo",
 																	"type": "text",
-																	"TODO": "El tipo boolean no funciona"
+																	"placeholder": {
+																		"es": "Introduce la entidad organizadora"
+																	},
+																	"required": false,
+																	"property": "http://purl.org/ontology/bibo/organizer",
+																	"width": 2
+																},
+																{
+																	"title": {
+																		"es": "Tipo de evento"
+																	},
+																	"property": "http://purl.org/dc/elements/1.1/type",
+																	"combo": {
+																		"rdftype": "http://w3id.org/roh/EventType",
+																		"graph": "eventtype",
+																		"property": {
+																			"property": "http://purl.org/dc/elements/1.1/title"
+																		}
+																	},
+																	"type": "selectCombo",
 																	"width": 1
 																}
 															]
 														},
-														{
-															"properties": [
-																{
-																	"title": {
-																		"es": "Ámbito geográfico"
-																	},
-																	"property": "https://www.w3.org/2006/vcard/ns#locality",
-																	"combo": {
-																		"rdftype": "http://www.geonames.org/ontology#Feature",
-																		"graph": "geographicfocus",
-																		"property": {
-																			"property": "http://www.geonames.org/ontology#name"
-																		}
-																	},
-																	"type": "selectCombo",
-																	"required": false,
-																	"width": 1
-																},
-																{
-																	"title": {
-																		"es": "Otros"
-																	},
-																	"property": "http://w3id.org/roh/geographicFocusOther",
-																	"type": "text",
-																	"required": false,
-																	"width": 1
-																}
-															]
-														}
+														
 													]
 												}
 											}
