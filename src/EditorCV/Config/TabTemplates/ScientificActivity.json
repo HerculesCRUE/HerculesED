@@ -1275,19 +1275,7 @@
 														},
 														{
 															"properties": [
-																{
-																	"title": {
-																		"es": "Entidad organizadora"
-																	},
-																	"TODO": "Autocompletado/texto libre. El tipo de entidad, en caso de que haya que añadir una nueva organización, será autocompletado o combo",
-																	"type": "text",
-																	"placeholder": {
-																		"es": "Introduce la entidad organizadora"
-																	},
-																	"required": false,
-																	"property": "http://purl.org/ontology/bibo/organizer",
-																	"width": 2
-																},
+																
 																{
 																	"title": {
 																		"es": "Tipo de evento"
