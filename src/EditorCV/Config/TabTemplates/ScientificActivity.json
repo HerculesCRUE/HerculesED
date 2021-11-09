@@ -1321,7 +1321,7 @@
 																		"es": "Ámbito geográfico"
 																	},
 																	"property": "http://vivoweb.org/ontology/core#geographicFocus",
-																	"TODO": "No se despliega el combo de valores."
+																	"TODO": "No se despliega el combo de valores.",
 																	"combo": {
 																		"rdftype": "http://vivoweb.org/ontology/core#GeographicRegion",
 																		"graph": "geographicregion",
