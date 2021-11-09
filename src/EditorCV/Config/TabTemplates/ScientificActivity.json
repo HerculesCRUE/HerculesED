@@ -230,7 +230,7 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Publicación principal"
+													"es": "Nombre de la publicación"
 												},
 												"type": "entity",
 												"multiple": false,
@@ -520,10 +520,11 @@
 									{
 										"properties": [
 											{
-												"property": "TODO",
+												"property": "http://purl.org/ontology/bibo/ReferenceSource",
 												"type": "auxEntity",
+												"TODO": "Incluir el DOI en la tabla, junto a un 'Otros' que permita añadir un nuevo tipo de identificador.",
 												"title": {
-													"es": "Auxiliar múltiple. Incluir los valores del tipo de identificador en la tabla, junto a un 'Otros' que permita añadir un nuevo tipo."
+													"es": "Identificador de la publicación"
 												},
 												"multiple": true,
 												"width": 3,
@@ -703,7 +704,7 @@
 												"TODO": "Auxiliar múltiple. Incluir los valores de la fuente de citas en la tabla, junto a un 'Otros' que permita añadir un nuevo tipo.",
 												"type": "auxEntity",
 												"title": {
-													"es": "Auxiliar múltiple. Tabla."
+													"es": "Citas"
 												},
 												"multiple": true,
 												"width": 3,
@@ -853,13 +854,13 @@
 			}
 		},
 		{
-			"rdftype": "http://w3id.org/roh/RelatedScientificPublication",
-			"TODO": "Falta por incluir la entidad RelatedScientificPublicationCV, que contendría los datos propios del investigador.",
-			"property": "http://w3id.org/roh/scientificPublications",
+			"rdftype": "http://w3id.org/roh/RelatedWorkSubmittedConferences",
+			"TODO": "Falta por incluir la entidad RelatedWorkSubmittedConferencesCV, que contendría los datos propios del investigador.",
+			"property": "http://w3id.org/roh/worksSubmittedConferences",
 			"presentation": {
 				"type": "listitems",
 				"title": {
-					"es": "Publicaciones, documentos científicos y técnicos"
+					"es": "Trabajos presentados en congresos nacionales o internacionales"
 				},
 				"listItemsPresentation": {
 					"property": "http://vivoweb.org/ontology/core#relatedBy",
@@ -1017,12 +1018,13 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Título de la publicación"
+													"es": "Título del trabajo"
 												},
 												"placeholder": {
-													"es": "Introduce el título de la publicación"
+													"es": "Introduce el título del trabajo"
 												},
-												"property": "http://w3id.org/roh/title",
+												"property": "http://w3id.org/roh/workTitle",
+												"TODO": "El título del trabajo es distinto al título de la publicación",
 												"required": true,
 												"type": "text",
 												"width": 3
@@ -1047,27 +1049,150 @@
 									{
 										"properties": [
 											{
+												"property": "http://purl.org/ontology/bibo/presentedAt",
+												"type": "auxEntity",
 												"title": {
-													"es": "Tipo de producción"
+													"es": "Congreso"
 												},
-												"property": "http://purl.org/dc/elements/1.1/type",
-												"combo": {
-													"rdftype": "http://w3id.org/roh/PublicationType",
-													"graph": "publicationtype",
-													"property": {
+												"multiple": true,
+												"width": 3,
+												"auxEntityData": {
+													"rdftype": "http://purl.org/ontology/bibo/Event",
+													"propertyTitle": {
 														"property": "http://purl.org/dc/elements/1.1/title"
-													}
+													},
+													"properties": [
+														{
+															"name": {
+																"es": "Nombre del congreso"
+															},
+															"child": {
+																"property": "http://purl.org/dc/elements/1.1/title",
+															}
+														},
+														{
+															"name": {
+																"es": "Fecha de celebración"
+															},
+															"child": {
+																"property": "http://vivoweb.org/ontology/core#start",
+															}
+														},
+														{
+															"name": {
+																"es": "Fecha de finalización"
+															},
+															"child": {
+																"property": "http://vivoweb.org/ontology/core#end",
+															}
+														},
+														{
+															"name": {
+																"es": "Ciudad de celebración"
+															},
+															"child": {
+																"property": "https://www.w3.org/2006/vcard/ns#locality",
+															}
+														},
+														{
+															"name": {
+																"es": "País de celebración"
+															},
+															"child": {
+																"property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+															}
+														},
+														{
+															"name": {
+																"es": "C. Autón./Reg. de celebración"
+															},
+															"child": {
+																"property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+															}
+														},
+														{
+															"name": {
+																"es": "Entidad organizadora"
+															},
+															"TODO": "Autocompletado/texto libre",
+															"child": {
+																"property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+															}
+														},
+													],
+													"rows": [
+														{
+															"properties": [
+																{
+																	"title": {
+																		"es": "Firma"
+																	},
+																	"type": "text",
+																	"placeholder": {
+																		"es": "Introduce la firma"
+																	},
+																	"required": true,
+																	"property": "http://xmlns.com/foaf/0.1/nick",
+																	"width": 3
+																}
+															]
+														},
+														{
+															"properties": [
+																{
+																	"title": {
+																		"es": "Persona"
+																	},
+																	"type": "entity",
+																	"multiple": false,
+																	"required": true,
+																	"property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
+																	"width": 3,
+																	"entityData": {
+																		"rdftype": "http://xmlns.com/foaf/0.1/Person",
+																		"graph": "person",
+																		"propertyTitle": {
+																			"property": "http://xmlns.com/foaf/0.1/name"
+																		},
+																		"properties": [
+																			{
+																				"name": {
+																					"es": "ORCID"
+																				},
+																				"child": {
+																					"property": "http://w3id.org/roh/ORCID"
+																				}
+																			}
+																		]
+																	}
+																}
+															]
+														}
+													]
+												}
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Fecha de celebración"
 												},
-												"TODO": "Aparece una opción con un punto al final",
-												"type": "selectCombo",
+												"placeholder": {
+													"es": "Introduce la fecha de celebración"
+												},
+												"property": "http://purl.org/dc/terms/issued",
+												"TODO": "El selector de fecha no se pinta adecuadamente",
+												"type": "date",
 												"width": 1
 											},
 											{
 												"title": {
-													"es": "Fecha de publicación"
+													"es": "Fecha de finalización"
 												},
 												"placeholder": {
-													"es": "Introduce la fecha de publicación"
+													"es": "Introduce la fecha de finalización"
 												},
 												"property": "http://purl.org/dc/terms/issued",
 												"TODO": "El selector de fecha no se pinta adecuadamente",
@@ -1370,10 +1495,11 @@
 									{
 										"properties": [
 											{
-												"property": "TODO",
+												"property": "http://purl.org/ontology/bibo/identifier",
+												"TODO": "Auxiliar múltiple. Incluir los valores del tipo de identificador en la tabla, junto a un 'Otros' que permita añadir un nuevo tipo.",
 												"type": "auxEntity",
 												"title": {
-													"es": "Auxiliar múltiple. Incluir los valores del tipo de identificador en la tabla, junto a un 'Otros' que permita añadir un nuevo tipo."
+													"es": "Identificador de la publicación"
 												},
 												"multiple": true,
 												"width": 3,
