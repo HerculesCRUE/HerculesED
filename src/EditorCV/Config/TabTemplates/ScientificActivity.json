@@ -1305,7 +1305,20 @@
 																}
 															]
 														},
-														
+														{
+															"properties": [
+																{
+																	"title": {
+																		"es": "Con comité de admisión ext."
+																	},
+																	"property": "http://w3id.org/roh/withExternalAdmissionsCommittee",
+																	"type": "text",
+																	"TODO": "El tipo boolean no funciona"
+																	"width": 3
+																},
+																
+															]
+														}
 													]
 												}
 											}
