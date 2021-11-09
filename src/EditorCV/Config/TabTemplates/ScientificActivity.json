@@ -477,6 +477,7 @@
 														{
 															"properties": [
 																{
+																	"TODO": "Error null al crear entidades",
 																	"title": {
 																		"es": "Persona"
 																	},
@@ -1353,6 +1354,117 @@
 									{
 										"properties": [
 											{
+												"property": "http://purl.org/ontology/bibo/authorList",
+												"TODO": "Integrar el diseño de Félix para la adición de autores",
+												"type": "auxEntity",
+												"title": {
+													"es": "Autores/as (p.o. de firma)"
+												},
+												"multiple": true,
+												"width": 3,
+												"auxEntityData": {
+													"rdftype": "http://purl.obolibrary.org/obo/BFO_0000023",
+													"propertyOrder": "http://www.w3.org/1999/02/22-rdf-syntax-ns#comment",
+													"propertyTitle": {
+														"property": "http://xmlns.com/foaf/0.1/nick"
+													},
+													"properties": [
+														{
+															"name": {
+																"es": "Nombre"
+															},
+															"child": {
+																"property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
+																"graph": "person",
+																"child": {
+																	"property": "http://xmlns.com/foaf/0.1/name"
+																}
+															}
+														},
+														{
+															"name": {
+																"es": "ORCID"
+															},
+															"child": {
+																"property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
+																"graph": "person",
+																"child": {
+																	"property": "http://w3id.org/roh/ORCID"
+																}
+															}
+														}
+													],
+													"rows": [
+														{
+															"properties": [
+																{
+																	"title": {
+																		"es": "Firma"
+																	},
+																	"type": "text",
+																	"placeholder": {
+																		"es": "Introduce la firma"
+																	},
+																	"required": true,
+																	"property": "http://xmlns.com/foaf/0.1/nick",
+																	"width": 3
+																}
+															]
+														},
+														{
+															"properties": [
+																{
+																	"title": {
+																		"es": "Persona"
+																	},
+																	"type": "entity",
+																	"multiple": false,
+																	"required": true,
+																	"property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
+																	"width": 3,
+																	"entityData": {
+																		"rdftype": "http://xmlns.com/foaf/0.1/Person",
+																		"graph": "person",
+																		"propertyTitle": {
+																			"property": "http://xmlns.com/foaf/0.1/name"
+																		},
+																		"properties": [
+																			{
+																				"name": {
+																					"es": "ORCID"
+																				},
+																				"child": {
+																					"property": "http://w3id.org/roh/ORCID"
+																				}
+																			}
+																		]
+																	}
+																}
+															]
+														}
+													]
+												}
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Fecha de publicación"
+												},
+												"placeholder": {
+													"es": "Introduce la fecha de publicación"
+												},
+												"property": "http://purl.org/dc/terms/issued",
+												"type": "date",
+												"width": 1
+											}
+										]
+									},
+									{
+										"properties": [
+											{
 												"title": {
 													"es": "Publicación principal"
 												},
@@ -1407,17 +1519,6 @@
 															"child": {
 																"property": "http://w3id.org/roh/format",
 																"graph": "documentformat",
-																"child": {
-																	"property": "http://purl.org/dc/elements/1.1/title"
-																}
-															}
-														},
-														{
-															"name": {
-																"es": "Índice de impacto"
-															},
-															"child": {
-																"property": "http://w3id.org/roh/impactIndex",
 																"child": {
 																	"property": "http://purl.org/dc/elements/1.1/title"
 																}
@@ -1537,102 +1638,6 @@
 												"width": 1
 											}
 										]
-									},
-									{
-										"properties": [
-											{
-												"property": "http://purl.org/ontology/bibo/authorList",
-												"TODO": "Integrar el diseño de Félix para la adición de autores",
-												"type": "auxEntity",
-												"title": {
-													"es": "Autores/as (p.o. de firma)"
-												},
-												"multiple": true,
-												"width": 3,
-												"auxEntityData": {
-													"rdftype": "http://purl.obolibrary.org/obo/BFO_0000023",
-													"propertyOrder": "http://www.w3.org/1999/02/22-rdf-syntax-ns#comment",
-													"propertyTitle": {
-														"property": "http://xmlns.com/foaf/0.1/nick"
-													},
-													"properties": [
-														{
-															"name": {
-																"es": "Nombre"
-															},
-															"child": {
-																"property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
-																"graph": "person",
-																"child": {
-																	"property": "http://xmlns.com/foaf/0.1/name"
-																}
-															}
-														},
-														{
-															"name": {
-																"es": "ORCID"
-															},
-															"child": {
-																"property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
-																"graph": "person",
-																"child": {
-																	"property": "http://w3id.org/roh/ORCID"
-																}
-															}
-														}
-													],
-													"rows": [
-														{
-															"properties": [
-																{
-																	"title": {
-																		"es": "Firma"
-																	},
-																	"type": "text",
-																	"placeholder": {
-																		"es": "Introduce la firma"
-																	},
-																	"required": true,
-																	"property": "http://xmlns.com/foaf/0.1/nick",
-																	"width": 3
-																}
-															]
-														},
-														{
-															"properties": [
-																{
-																	"title": {
-																		"es": "Persona"
-																	},
-																	"type": "entity",
-																	"multiple": false,
-																	"required": true,
-																	"property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
-																	"width": 3,
-																	"entityData": {
-																		"rdftype": "http://xmlns.com/foaf/0.1/Person",
-																		"graph": "person",
-																		"propertyTitle": {
-																			"property": "http://xmlns.com/foaf/0.1/name"
-																		},
-																		"properties": [
-																			{
-																				"name": {
-																					"es": "ORCID"
-																				},
-																				"child": {
-																					"property": "http://w3id.org/roh/ORCID"
-																				}
-																			}
-																		]
-																	}
-																}
-															]
-														}
-													]
-												}
-											}
-										]
 									}
 								]
 							},
@@ -1746,13 +1751,11 @@
 											},
 											{
 												"title": {
-													"es": "Colección"
+													"es": "Publicación en acta de congreso"
 												},
-												"placeholder": {
-													"es": "Introduce la colección"
-												},
-												"property": "http://w3id.org/roh/collection",
+												"property": "http://w3id.org/roh/congressProceedingsPublication",
 												"type": "text",
+												"TODO": "El tipo boolean/bool no funciona",
 												"width": 1
 											},
 											{
@@ -1913,60 +1916,6 @@
 														}
 													]
 												}
-											}
-										]
-									},
-									{
-										"properties": [
-											{
-												"title": {
-													"es": "Reseñas en revistas"
-												},
-												"placeholder": {
-													"es": "Introduce el número de reseñas en revistas"
-												},
-												"property": "http://purl.org/ontology/bibo/pageStart",
-												"type": "number",
-												"width": 1
-											}
-										]
-									},
-									{
-										"properties": [
-											{
-												"title": {
-													"es": "Traducciones"
-												},
-												"placeholder": {
-													"es": "Introduce la traducción"
-												},
-												"property": "https://www.w3.org/2006/vcard/ns#hasLanguage",
-												"combo": {
-													"rdftype": "http://w3id.org/roh/Language",
-													"graph": "language",
-													"property": {
-														"property": "http://purl.org/dc/elements/1.1/title"
-													}
-												},
-												"multiple": true,
-												"type": "selectCombo",
-												"width": 1
-											}
-										]
-									},
-									{
-										"properties": [
-											{
-												"title": {
-													"es": "Etiquetas"
-												},
-												"placeholder": {
-													"es": "Introduce la etiqueta"
-												},
-												"property": "http://vivoweb.org/ontology/core#freeTextKeyword",
-												"multiple": true,
-												"type": "text",
-												"width": 1
 											}
 										]
 									}
