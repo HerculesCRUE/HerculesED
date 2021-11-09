@@ -750,6 +750,7 @@
 																	"title": {
 																		"es": "Fuente de citas"
 																	},
+																	"TODO": "No se despliega el combo de valores.",
 																	"combo": {
 																		"rdftype": "http://purl.org/ontology/bibo/ReferenceSource",
 																		"graph": "referencesource",
@@ -1067,7 +1068,7 @@
 																"es": "Nombre del congreso"
 															},
 															"child": {
-																"property": "http://purl.org/dc/elements/1.1/title",
+																"property": "http://purl.org/dc/elements/1.1/title"
 															}
 														},
 														{
@@ -1075,7 +1076,7 @@
 																"es": "Fecha de celebración"
 															},
 															"child": {
-																"property": "http://vivoweb.org/ontology/core#start",
+																"property": "http://vivoweb.org/ontology/core#start"
 															}
 														},
 														{
@@ -1083,7 +1084,7 @@
 																"es": "Fecha de finalización"
 															},
 															"child": {
-																"property": "http://vivoweb.org/ontology/core#end",
+																"property": "http://vivoweb.org/ontology/core#end"
 															}
 														},
 														{
@@ -1091,7 +1092,7 @@
 																"es": "Ciudad de celebración"
 															},
 															"child": {
-																"property": "https://www.w3.org/2006/vcard/ns#locality",
+																"property": "https://www.w3.org/2006/vcard/ns#locality"
 															}
 														},
 														{
@@ -1099,7 +1100,7 @@
 																"es": "País de celebración"
 															},
 															"child": {
-																"property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+																"property": "https://www.w3.org/2006/vcard/ns#hasCountryName"
 															}
 														},
 														{
@@ -1107,7 +1108,7 @@
 																"es": "C. Autón./Reg. de celebración"
 															},
 															"child": {
-																"property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+																"property": "https://www.w3.org/2006/vcard/ns#hasRegion"
 															}
 														},
 														{
@@ -1116,23 +1117,23 @@
 															},
 															"TODO": "Autocompletado/texto libre",
 															"child": {
-																"property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+																"property": "http://purl.org/ontology/bibo/"
 															}
-														},
+														}
 													],
 													"rows": [
 														{
 															"properties": [
 																{
 																	"title": {
-																		"es": "Firma"
+																		"es": "Nombre del congreso"
 																	},
 																	"type": "text",
 																	"placeholder": {
-																		"es": "Introduce la firma"
+																		"es": "Introduce el nombre del congreso"
 																	},
 																	"required": true,
-																	"property": "http://xmlns.com/foaf/0.1/nick",
+																	"property": "http://purl.org/dc/elements/1.1/title",
 																	"width": 3
 																}
 															]
@@ -1141,63 +1142,88 @@
 															"properties": [
 																{
 																	"title": {
-																		"es": "Persona"
+																		"es": "Fecha de celebración"
 																	},
-																	"type": "entity",
-																	"multiple": false,
+																	"type": "date",
+																	"placeholder": {
+																		"es": "Introduce la fecha de celebración"
+																	},
 																	"required": true,
-																	"property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
-																	"width": 3,
-																	"entityData": {
-																		"rdftype": "http://xmlns.com/foaf/0.1/Person",
-																		"graph": "person",
-																		"propertyTitle": {
-																			"property": "http://xmlns.com/foaf/0.1/name"
-																		},
-																		"properties": [
-																			{
-																				"name": {
-																					"es": "ORCID"
-																				},
-																				"child": {
-																					"property": "http://w3id.org/roh/ORCID"
-																				}
-																			}
-																		]
-																	}
+																	"property": "http://purl.org/dc/elements/1.1/title",
+																	"width": 1
+																},
+																{
+																	"title": {
+																		"es": "Fecha de finalización"
+																	},
+																	"placeholder": {
+																		"es": "Introduce la fecha de finalización"
+																	},
+																	"property": "http://vivoweb.org/ontology/core#end",
+																	"TODO": "El selector de fecha no se pinta adecuadamente",
+																	"type": "date",
+																	"width": 1
 																}
 															]
-														}
+														},
+														{
+															"properties": [
+																{
+																	"title": {
+																		"es": "Ciudad de celebración"
+																	},
+																	"type": "text",
+																	"placeholder": {
+																		"es": "Introduce la ciudad de celebración"
+																	},
+																	"required": false,
+																	"property": "https://www.w3.org/2006/vcard/ns#locality",
+																	"width": 1
+																},
+																{
+																	"title": {
+																		"es": "País de celebración"
+																	},
+																	"placeholder": {
+																		"es": "Introduce la región de celebración"
+																	},
+																	"property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+																	"combo": {
+																		"rdftype": "http://www.geonames.org/ontology#Feature",
+																		"graph": "feature",
+																		"property": {
+																			"property": "http://www.geonames.org/ontology#name"
+																		}
+																	},
+																	"type": "selectCombo",
+																	"width": 1
+																},
+																{
+																	"title": {
+																		"es": "C. Autón./Reg. de celebración"
+																	},
+																	"placeholder": {
+																		"es": "Introduce el país de celebración"
+																	},
+																	"property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+																	"combo": {
+																		"rdftype": "http://www.geonames.org/ontology#Feature",
+																		"graph": "feature",
+																		"property": {
+																			"property": "http://www.geonames.org/ontology#name"
+																		}
+																	},
+																	"type": "selectCombo",
+																	"width": 1
+																}
+															]
+														},
+														{
+															"properties": [
+															]
+														},
 													]
 												}
-											}
-										]
-									},
-									{
-										"properties": [
-											{
-												"title": {
-													"es": "Fecha de celebración"
-												},
-												"placeholder": {
-													"es": "Introduce la fecha de celebración"
-												},
-												"property": "http://purl.org/dc/terms/issued",
-												"TODO": "El selector de fecha no se pinta adecuadamente",
-												"type": "date",
-												"width": 1
-											},
-											{
-												"title": {
-													"es": "Fecha de finalización"
-												},
-												"placeholder": {
-													"es": "Introduce la fecha de finalización"
-												},
-												"property": "http://purl.org/dc/terms/issued",
-												"TODO": "El selector de fecha no se pinta adecuadamente",
-												"type": "date",
-												"width": 1
 											}
 										]
 									},
