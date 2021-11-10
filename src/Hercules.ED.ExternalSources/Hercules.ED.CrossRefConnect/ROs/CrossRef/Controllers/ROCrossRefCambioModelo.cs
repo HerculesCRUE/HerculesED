@@ -45,6 +45,7 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                 publicacion.hasMetric = getPublicationMetric(objInicial);
                 if (publicacion_principal == true)
                 {
+                    //TODO: tengo que ver como hacer esto!
                     publicacion.bibliografia = getBiblografia(objInicial);
                     //publicacion.citas = getCitas(objInicial);
                 }
@@ -57,10 +58,10 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
 
         }
 
-        public List<String> getIDs(PublicacionInicial objInicial)
-        {
-            return null;
-        }
+        // public List<String> getIDs(PublicacionInicial objInicial)
+        // {
+        //     return null;
+        // }
 
 
         public string getTitle(PublicacionInicial objInicial)
@@ -75,10 +76,10 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
             return null;
         }
 
-        public string getAbstract(PublicacionInicial objInicial)
-        {
-            return null;
-        }
+        // public string getAbstract(PublicacionInicial objInicial)
+        // {
+        //     return null;
+        // }
 
         public string getLanguage(PublicacionInicial objInicial)
         {
@@ -89,10 +90,10 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
             }
             return null;
         }
-        public string getDoi(PublicacionInicial objInicial)
-        {
-            return null;
-        }
+        // public string getDoi(PublicacionInicial objInicial)
+        // {
+        //     return null;
+        // }
         public List<string> getLinks(PublicacionInicial objInicial)
         {
             if (objInicial.URL != null)
@@ -101,24 +102,25 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                 links.Add(objInicial.URL);
                 return links;
             }
-            return new List<string>();
+            return null;
         }
 
-        public DateTimeValue getDate(PublicacionInicial objInicial)
-        {
-            DateTimeValue date = new DateTimeValue();
-            date.datimeTime = null;
-            return date;
-        }
+        // public DateTimeValue getDate(PublicacionInicial objInicial)
+        // {
+        //     DateTimeValue date = new DateTimeValue();
+        //     date.datimeTime = null;
+        //     return date;
+        // }
 
         public string getPageStart(PublicacionInicial objInicial)
         {
             if (objInicial.page != null)
             {
-                if(objInicial.page.Contains("-")){
+                if (objInicial.page.Contains("-"))
+                {
 
-                string[] paguinas = objInicial.page.Split("-");
-                return paguinas[0];
+                    string[] paguinas = objInicial.page.Split("-");
+                    return paguinas[0];
                 }
             }
             return null;
@@ -128,9 +130,10 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
         {
             if (objInicial.page != null)
             {
-                if(objInicial.page.Contains("-")){
-                string[] paguinas = objInicial.page.Split("-");
-                return paguinas[1];
+                if (objInicial.page.Contains("-"))
+                {
+                    string[] paguinas = objInicial.page.Split("-");
+                    return paguinas[1];
                 }
             }
             return null;
@@ -144,17 +147,18 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
         //     return result;
         // }
 
-        public List<string> getFreetextKeyword(PublicacionInicial objInicial)
-        {
-            return new List<string>();
-        }
+        // public List<string> getFreetextKeyword(PublicacionInicial objInicial)
+        // {
+        //     return new List<string>();
+        // }
 
         public Person getAuthorPrincipal(PublicacionInicial objInicial)
         {
-            Person persona = new Person();
 
             if (objInicial.author != null)
             {
+                Person persona = new Person();
+
                 foreach (Author autor in objInicial.author)
                 {
                     if (autor.sequence == "first")
@@ -170,116 +174,123 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                         {
                             names.Add(autor.family);
                         }
-                        if(autor.given != null && autor.family != null){
-                            names.Add(autor.given+ " "+ autor.family);
+                        if (autor.given != null && autor.family != null)
+                        {
+                            names.Add(autor.given + " " + autor.family);
                         }
                         persona.name = names;
                         return persona;
                     }
                 }
             }
-        return persona;
-    }
-    public List<Person> getAuthors(PublicacionInicial objInicial)
-    {
-        if (objInicial.author != null)
+            return null;
+        }
+        public List<Person> getAuthors(PublicacionInicial objInicial)
         {
-            List<Person> autores = new List<Person>();
-            foreach (Author autor in objInicial.author)
+            if (objInicial.author != null)
             {
-                Person persona = new Person();
-                persona.ORCID = autor.ORCID;
-                List<string> names = new List<string>();
-                if (autor.given != null)
+                List<Person> autores = new List<Person>();
+                foreach (Author autor in objInicial.author)
                 {
-                    names.Add(autor.given);
+                    Person persona = new Person();
+                    persona.ORCID = autor.ORCID;
+                    List<string> names = new List<string>();
+                    if (autor.given != null)
+                    {
+                        names.Add(autor.given);
+                    }
+                    if (autor.family != null)
+                    {
+                        names.Add(autor.family);
+                    }
+                    if (autor.given != null && autor.family != null)
+                    {
+                        names.Add(autor.given + " " + autor.family);
+                    }
+                    persona.name = names;
+                    autores.Add(persona);
+
                 }
-                if (autor.family != null)
-                {
-                    names.Add(autor.family);
-                }
-                if(autor.given != null && autor.family != null){
-                            names.Add(autor.given+ " "+ autor.family);
-                        }
-                persona.name = names;
-                autores.Add(persona);
-               
+                return autores;
             }
-            return autores;
+            return null;
         }
-        return new List<Person>();
-    }
 
-    public Journal getJournal(PublicacionInicial objInicial)
-    {
-        Journal journal = new Journal();
-        if (objInicial.ISSN != null)
+        public Journal getJournal(PublicacionInicial objInicial)
         {
-            journal.issn = objInicial.ISSN[0];
-            //TODO: esto puede no estar bien! porque no se tiene que ser el primero... 
+            if (objInicial.ISSN != null || objInicial.ContainerTitle != null)
+            {
+                Journal journal = new Journal();
+                if (objInicial.ISSN != null)
+                {
+                    journal.issn = objInicial.ISSN[0];
+                    //TODO: esto puede no estar bien! porque no se tiene que ser el primero... 
+                }
+                if (objInicial.ContainerTitle != null)
+                {
+                    journal.name = objInicial.ContainerTitle[0];
+                    //TODO: esto puede no estar bien! porque no se tiene que ser el primero... 
+                }
+            }
+            return null;
         }
-        if (objInicial.ContainerTitle != null)
+
+
+
+        public List<PublicationMetric> getPublicationMetric(PublicacionInicial objInicial)
         {
-            journal.name = objInicial.ContainerTitle[0];
-            //TODO: esto puede no estar bien! porque no se tiene que ser el primero... 
+
+            if (objInicial.IsReferencedByCount != null)
+            {
+                List<PublicationMetric> metricList = new List<PublicationMetric>();
+                PublicationMetric metricPublicacion = new PublicationMetric();
+                metricPublicacion.citationCount = objInicial.IsReferencedByCount.ToString();
+                metricPublicacion.metricName = "CrossRef";
+                metricList.Add(metricPublicacion);
+                return metricList;
+                //TODO esto tampoco se si esta muy bien porque lo ha sacado de Scopus entonces aqui que debo poner? 
+            }
+            return null;
         }
-        return journal;
-    }
 
-
-
-    public List<PublicationMetric> getPublicationMetric(PublicacionInicial objInicial)
-    {
-        List<PublicationMetric> metricList = new List<PublicationMetric>();
-        PublicationMetric metricPublicacion = new PublicationMetric();
-
-        if (objInicial.IsReferencedByCount != null)
+        public List<Publication> getBiblografia(PublicacionInicial objInicial)
         {
-            metricPublicacion.citationCount = objInicial.IsReferencedByCount.ToString();
-            metricPublicacion.metricName = "CrossRef";
-            metricList.Add(metricPublicacion);
-            return metricList;
-            //TODO esto tampoco se si esta muy bien porque lo ha sacado de Scopus entonces aqui que debo poner? 
-        }
-        return null;
-    }
 
-    public List<Publication> getBiblografia(PublicacionInicial objInicial)
-    {
-        
-        if(objInicial.reference!=null){
-            List<Publication> bibiografia = new List<Publication>();
-            foreach(Reference bib in objInicial.reference){
-                Publication pub = new Publication();
-                    if(bib.DOI!=null){
-                        pub.doi=bib.DOI;
+            if (objInicial.reference != null)
+            {
+                List<Publication> bibiografia = new List<Publication>();
+                foreach (Reference bib in objInicial.reference)
+                {
+                    Publication pub = new Publication();
+                    if (bib.DOI != null)
+                    {
+                        pub.doi = bib.DOI;
                     }
-                    if(bib.ArticleTitle!=null){
-                        pub.title=bib.ArticleTitle;
+                    if (bib.ArticleTitle != null)
+                    {
+                        pub.title = bib.ArticleTitle;
                     }
-                    if(bib.JournalTitle!=null){
+                    if (bib.JournalTitle != null)
+                    {
                         Journal revista = new Journal();
                         revista.name = bib.JournalTitle;
                         pub.hasPublicationVenue = revista;
                     }
-                    if(pub.doi !=null || pub.hasPublicationVenue !=null || pub.title!=null){
+                    if (pub.doi != null || pub.hasPublicationVenue != null || pub.title != null)
+                    {
                         bibiografia.Add(pub);
                     }
                 }
                 return bibiografia;
-            
+
+            }
+            //todo solo he dejado aquellos que estan estructurados... 
+            return null;
         }
-        //todo solo he dejado aquellos que estan estructurados... 
-        return new List<Publication>();
+
+        // public List<Publication> getCitas(PublicacionInicial objInicial)
+        // {
+        //     return null;
+        // }
     }
-
-    public List<Publication> getCitas(PublicacionInicial objInicial)
-    {
-        return new List<Publication>();
-    }
-
-
-
-
-}
 }

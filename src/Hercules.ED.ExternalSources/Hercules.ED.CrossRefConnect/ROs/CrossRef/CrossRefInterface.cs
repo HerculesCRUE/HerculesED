@@ -8,7 +8,7 @@ namespace CrossRefConnect.ROs.CrossRef
 {
    interface CrossRefInterface
     {
-        Publication getPublications(string userId, string uri);
+        Publication getPublications(string DOI, Boolean True,  string uri);
 
     }
 }

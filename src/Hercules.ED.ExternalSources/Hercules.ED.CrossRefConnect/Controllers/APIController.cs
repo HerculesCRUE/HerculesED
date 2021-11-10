@@ -30,7 +30,6 @@ namespace CrossRefConnect.Controllers
         ///     GET /scopus/GetROs?author_id=SCOPUS_ID&amp;year=2020
         /// </remarks>
         /// <param name="doi">Orcid</param>
-        /// <param date="date">Year-month-day</param>
         /// <returns></returns>
         /// <response code="200">Ok</response>
         /// <response code="400">Invalid app</response> 
@@ -52,10 +51,10 @@ namespace CrossRefConnect.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public Publication GetROs([FromQuery][Required] string ID)
+        public Publication GetROs([FromQuery][Required] string DOI)
         {
             ROCrossRefController CrossRefObject = new ROCrossRefController("https://api.crossref.org/");//"adf94bebeeba8c3042ad5193455740e2");
-            Publication publication = CrossRefObject.getPublications(ID);
+            Publication publication = CrossRefObject.getPublications(DOI);
             return publication;
         }
         
