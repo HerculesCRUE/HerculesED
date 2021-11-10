@@ -4202,11 +4202,11 @@
 												"property": "http://w3id.org/roh/title",
 												"required": true,
 												"type": "text",
-												"width": 3
+												"width": 3,
+												"TODO": "Siguiente propiedad: Añadir las clasificaciones (primaria, secundaria y terciaria) según Cód. Unesco",
 											}
 										]
 									},
-									"TODO": "Añadir las clasificaciones (primaria, secundaria y terciaria) según Cód. Unesco",
 									{
 										"properties": [
 											{
