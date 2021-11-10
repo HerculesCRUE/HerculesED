@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace CrossRefConnect
+namespace PublicationConnect
 {
 #pragma warning disable CS1591
     public class Program

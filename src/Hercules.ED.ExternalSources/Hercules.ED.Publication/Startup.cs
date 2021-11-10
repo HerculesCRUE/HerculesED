@@ -14,7 +14,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 
-namespace CrossRefConnect
+namespace PublicationConnect
 {
     public class Startup
     {

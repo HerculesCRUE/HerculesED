@@ -8,7 +8,7 @@ namespace SemanticScholarConnect.ROs.SemanticScholar
 {
    interface SemanticScholarInterface
     {
-        Publication getPublications(string userId, string uri);
+        Publication getPublications(string doi, string uri);
 
     }
 }

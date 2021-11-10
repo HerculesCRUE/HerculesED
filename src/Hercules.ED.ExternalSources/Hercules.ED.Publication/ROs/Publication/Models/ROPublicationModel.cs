@@ -1,10 +1,13 @@
 using System;
 using System.Collections.Generic;
 
-namespace WoSConnect.ROs.WoS.Models
+namespace PublicationConnect.ROs.Publications.Models
 {
-
-
+// public class Url 
+// {
+//     public string link { get; set; }
+//    // public string description { get; set; }
+// }
 public class Publication 
 {
     public string typeOfPublication { get; set; } //no es un atributo de la ontologia!!
@@ -127,5 +130,6 @@ public class DateTimeInterval
     public DateTimeValue end { get; set; }
     public DateTimeValue start { get; set; }
 }
+
 
 }

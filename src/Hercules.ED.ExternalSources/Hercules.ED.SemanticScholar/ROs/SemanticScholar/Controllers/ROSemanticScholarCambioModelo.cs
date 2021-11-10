@@ -192,14 +192,16 @@ namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
 
        
 
-        public PublicationMetric getPublicationMetric(Root objInicial)
+        public List<PublicationMetric> getPublicationMetric(Root objInicial)
         {
+            List<PublicationMetric> metriscas = new List<PublicationMetric>();
             PublicationMetric metricPublicacion = new PublicationMetric();
             if(objInicial.citationCount!=null){
                 metricPublicacion.citationCount=objInicial.citationCount.ToString();
                 metricPublicacion.metricName="SemanticScholar";
             }
-            return metricPublicacion;
+            metriscas.Add(metricPublicacion);
+            return metriscas;
         }
 
         // public List<Publication> getBiblografia(Root objInicial)

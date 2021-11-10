@@ -27,9 +27,9 @@ namespace OpenCitationsConnect.Controllers
         /// <remarks>
         /// Sample request:
         ///
-        ///     GET /scopus/GetROs?author_id=SCOPUS_ID&amp;year=2020
+        ///     GET /OpenCitations/GetROs?doi=&amp;year=2020
         /// </remarks>
-        /// <param name="orcid">Orcid</param>
+        /// <param doi="doi">Orcid</param>
         /// <param date="date">Year-month-day</param>
         /// <returns></returns>
         /// <response code="200">Ok</response>
@@ -52,10 +52,10 @@ namespace OpenCitationsConnect.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public Publication GetROs([FromQuery][Required] string ID)
+        public Publication GetROs([FromQuery][Required] string doi)
         {
             ROOpenCitationsController OpenCitationsObject = new ROOpenCitationsController("https://w3id.org/oc/index/api/v1");
-            Publication publication = OpenCitationsObject.getPublications(ID);
+            Publication publication = OpenCitationsObject.getPublications(doi);
             return publication;
         }
         

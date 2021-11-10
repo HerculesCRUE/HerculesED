@@ -1,0 +1,23 @@
+Esyte artivo es para almacenar los cambios de modelo y donde estan! 
+
+Obtener el DOI----------------------------------
+type==doi 
+identifier
+identifiers
+cluster_related
+dynamic_data
+
+Publication.doi
+
+-------------------------------------------------------------
+
+
+
+
+
+
+
+
+static_data.summary.publishers.publisher.names.name.seq_n
+
+Cuidado aqui como ESTRUCTURA!!!!!!!

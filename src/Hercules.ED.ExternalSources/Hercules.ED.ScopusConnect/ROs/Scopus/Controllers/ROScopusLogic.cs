@@ -18,7 +18,6 @@ using System.Text.Json;
 using Newtonsoft.Json.Linq;
 //using Newtonsoft.Json.Linq.JObject;
 
-
 namespace ScopusConnect.ROs.Scopus.Controllers
 {
     public class ROScopusLogic : ScopusInterface
@@ -103,7 +102,7 @@ namespace ScopusConnect.ROs.Scopus.Controllers
             string info_publication = httpCall(url.ToString(), "GET", headers).Result;
             ROScopusControllerJSON info = new ROScopusControllerJSON(this);
             Root objInicial = JsonConvert.DeserializeObject<Root>(info_publication);
-
+            Console.Write(info_publication);
             List<Publication> sol = info.getListPublicatio(objInicial,date);
             int n200 = 1;
             while(sol.Count == n200*200){

@@ -4,14 +4,18 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using ScopusConnect.ROs.Scopus.Controllers;
-using ScopusConnect.ROs.Scopus.Models;
+using PublicationConnect.ROs.Publications.Controllers;
+using PublicationConnect.ROs.Publications.Models;
+using PublicationConnect.Controllers;
+using PublicationConnect.ROs.Publications.Controllers;
+using PublicationConnect.ROs.Publications.Models;
 using Newtonsoft.Json;
-namespace ScopusConnect.Controllers
+
+namespace PublicationConnect.Controllers
 {
     [Produces("application/json")]
     [ApiController]
-    [Route("Scopus/[action]")]
+    [Route("Publication/[action]")]
     public class APIController : ControllerBase
     {
         private readonly ILogger<APIController> _logger;
@@ -50,10 +54,10 @@ namespace ScopusConnect.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-      public List<Publication> GetROs([FromQuery][Required] string Scopus_ID,string date = "1800-01-01") 
-             {
-            ROScopusController ScopusObject = new ROScopusController("https://api.elsevier.com/", "75f4ab3fac56f42ac83cdeb7c98882ca");//"adf94bebeeba8c3042ad5193455740e2");
-            List<Publication> publication = ScopusObject.getPublications(Scopus_ID,date);
+        public List<Publication> GetROs([FromQuery][Required] string ID)
+        {
+            ROPublicationLogic PublicationObject = new ROPublicationLogic("");
+            List<Publication> publication = PublicationObject.getPublications(ID);
             return publication;
         }
         
