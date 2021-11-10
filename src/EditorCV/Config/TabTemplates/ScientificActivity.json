@@ -4177,22 +4177,6 @@
 										"property": "http://w3id.org/roh/title"
 									}
 								}
-							},
-							{
-								"name": {
-									"es": "Entidad de afiliación"
-								},
-								"child": {
-									"property": "http://vivoweb.org/ontology/core#relatedBy",
-									"graph": "committee",
-									"child": {
-										"property": "http://vivoweb.org/ontology/core#affiliatedOrganization",
-										"graph": "organization",
-										"child": {
-											"property": "http://w3id.org/roh/title"
-										}
-									}
-								}
 							}
 						]
 					},
@@ -4218,7 +4202,8 @@
 												"property": "http://w3id.org/roh/title",
 												"required": true,
 												"type": "text",
-												"width": 3
+												"width": 3,
+												"TODO": "Siguiente propiedad: Añadir las clasificaciones (primaria, secundaria y terciaria) según Cód. Unesco",
 											}
 										]
 									},
