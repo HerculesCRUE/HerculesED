@@ -4225,7 +4225,7 @@
 									{
 										"properties": [
 											{
-												"property": "http://purl.org/ontology/bibo/authorList",
+												"property": "http://w3id.org/roh/hasKnowledgeArea",
 												"type": "auxEntity",
 												"title": {
 													"es": "Clasificación (Cód. Unesco)"
