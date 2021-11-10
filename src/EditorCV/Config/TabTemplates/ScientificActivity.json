@@ -4297,6 +4297,35 @@
 												"width": 1
 											}
 										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Ámbito geográfico"
+												},
+												"property": "http://vivoweb.org/ontology/core#geographicFocus",
+												"TODO": "No se despliega el combo de valores.",
+												"combo": {
+													"rdftype": "http://vivoweb.org/ontology/core#GeographicRegion",
+													"graph": "geographicregion",
+													"property": {
+														"property": "http://purl.org/dc/elements/1.1/title"
+													}
+												},
+												"type": "selectCombo",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Otros"
+												},
+												"property": "http://w3id.org/roh/geographicFocusOther",
+												"type": "text",
+												"required": false,
+												"width": 1
+											}
+										]
 									}
 								]
 							}
