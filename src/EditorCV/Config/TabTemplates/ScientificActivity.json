@@ -4170,6 +4170,7 @@
 								"name": {
 									"es": "Nombre del comité"
 								},
+								"TODO": "Añadir las 3 clasificaciones temáticas en la siguiente propiedad (primaria, secundaria y terciaria)",
 								"child": {
 									"property": "http://vivoweb.org/ontology/core#relatedBy",
 									"graph": "committee",
@@ -4178,9 +4179,6 @@
 									}
 								}
 							},
-							{
-								"TODO": "Añadir las 3 clasificaciones temáticas (primaria, secundaria y terciaria)",
-							}
 						]
 					},
 					"listItemEdit": {
