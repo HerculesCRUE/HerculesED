@@ -4111,7 +4111,7 @@
 					"listItem": {
 						"propertyTitle": {
 							"property": "http://vivoweb.org/ontology/core#relatedBy",
-							"graph": "document",
+							"graph": "committee",
 							"child": {
 								"property": "http://w3id.org/roh/title"
 							}
