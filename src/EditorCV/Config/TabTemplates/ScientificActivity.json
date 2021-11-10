@@ -4225,6 +4225,62 @@
 									{
 										"properties": [
 											{
+												"property": "http://purl.org/ontology/bibo/authorList",
+												"type": "auxEntity",
+												"title": {
+													"es": "Clasificación (Cód. Unesco)"
+												},
+												"multiple": true,
+												"width": 3,
+												"auxEntityData": {
+													"rdftype": "http://w3id.org/roh/CategoryPath",
+													"propertyTitle": {
+														"property": "http://w3id.org/roh/categoryNode"
+													},
+													"properties": [
+														{
+															"name": {
+																"es": "Clasificación"
+															},
+															"child": {
+																"property": "http://w3id.org/roh/categoryNode",
+																"graph": "taxonomy",
+																"child": {
+																	"property": "http://purl.org/dc/elements/1.1/source"
+																}
+															}
+														}
+													],
+													"rows": [
+														{
+															"properties": [
+																{
+																	"title": {
+																		"es": "Clasificación"
+																	},
+																	"type": "entity",
+																	"multiple": false,
+																	"required": true,
+																	"property": "http://w3id.org/roh/categoryNode",
+																	"width": 3,
+																	"entityData": {
+																		"rdftype": "http://www.w3.org/2008/05/skos#Collection",
+																		"graph": "person",
+																		"propertyTitle": {
+																			"property": "http://purl.org/dc/elements/1.1/source"
+																		}
+																	}
+																}
+															]
+														}
+													]
+												}
+											}
+										]
+									},
+									{
+										"properties": [
+											{
 												"title": {
 													"es": "Entidad de afiliación"
 												},
