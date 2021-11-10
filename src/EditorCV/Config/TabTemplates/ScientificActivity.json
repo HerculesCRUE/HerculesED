@@ -4180,6 +4180,22 @@
 							},
 							{
 								"name": {
+									"es": "Clasificación (Cód. Unesco)"
+								},
+								"child": {
+									"property": "http://vivoweb.org/ontology/core#relatedBy",
+									"graph": "committee",
+									"child": {
+										"property": "http://w3id.org/roh/hasKnowledgeArea",
+										"graph": "taxonomy",
+										"child": {
+											"property": "http://purl.org/dc/elements/1.1/source"
+										}
+									}
+								}
+							}
+							{
+								"name": {
 									"es": "Entidad de afiliación"
 								},
 								"child": {
