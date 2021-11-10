@@ -4182,33 +4182,7 @@
 								"name": {
 									"es": "Clasificación (Cód. Unesco)"
 								},
-								"child": {
-									"property": "http://vivoweb.org/ontology/core#relatedBy",
-									"graph": "committee",
-									"child": {
-										"property": "http://w3id.org/roh/hasKnowledgeArea",
-										"graph": "taxonomy",
-										"child": {
-											"property": "http://purl.org/dc/elements/1.1/source"
-										}
-									}
-								}
-							}
-							{
-								"name": {
-									"es": "Entidad de afiliación"
-								},
-								"child": {
-									"property": "http://vivoweb.org/ontology/core#relatedBy",
-									"graph": "committee",
-									"child": {
-										"property": "http://vivoweb.org/ontology/core#affiliatedOrganization",
-										"graph": "organization",
-										"child": {
-											"property": "http://w3id.org/roh/title"
-										}
-									}
-								}
+								"TODO": "Añadir las 3 clasificaciones temáticas (primaria, secundaria y terciaria)"
 							}
 						]
 					},
