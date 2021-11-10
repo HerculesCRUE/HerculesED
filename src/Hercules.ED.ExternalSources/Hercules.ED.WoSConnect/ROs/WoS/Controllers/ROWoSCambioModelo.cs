@@ -501,8 +501,9 @@ namespace WoSConnect.ROs.WoS.Controllers
         //     return null;
         // }
 
-        public PublicationMetric getPublicationMetric(PublicacionInicial objInicial)
+        public List<PublicationMetric> getPublicationMetric(PublicacionInicial objInicial)
         {
+            List<PublicationMetric> metricList = new List<PublicationMetric>();
             PublicationMetric metricPublicacion = new PublicationMetric();
             metricPublicacion.metricName = "WoS";
             if (objInicial.dynamic_data != null)
@@ -515,14 +516,16 @@ namespace WoSConnect.ROs.WoS.Controllers
                         {
                             if(objInicial.dynamic_data.citation_related.tc_list.silo_tc.local_count!=null){
                             metricPublicacion.citationCount = objInicial.dynamic_data.citation_related.tc_list.silo_tc.local_count.ToString();
-                            return metricPublicacion;
+                            metricList.Add(metricPublicacion);
+                            return metricList;
 
                             }
                         }
                     }
                 }
             }
-            return metricPublicacion;
+
+            return null;
         }
 
         // public List<Publication> getBiblografia(PublicacionInicial objInicial)

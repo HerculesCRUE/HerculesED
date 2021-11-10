@@ -8,7 +8,7 @@ namespace OpenCitationsConnect.ROs.OpenCitations
 {
    interface OpenCitationsInterface
     {
-        Publication getPublications(string userId);//, string uri);
+        Publication getPublications(string doi);//, string uri);
 
     }
 }

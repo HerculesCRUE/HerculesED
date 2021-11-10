@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using ScopusConnect.ROs.Scopus.Models;
 using ScopusConnect.ROs.Scopus.Models.Inicial;
-
 using Newtonsoft.Json.Linq;
 using System;
 using System.Threading;
@@ -177,7 +176,7 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                 autor.name=names;
                 return autor;
             }
-            return new Person();
+            return null;
         }
         // public List<Person> getAuthors(PublicacionInicial objInicial)
         // {
@@ -186,6 +185,7 @@ namespace ScopusConnect.ROs.Scopus.Controllers
 
         public Journal getJournal(PublicacionInicial objInicial)
         {
+            if(objInicial.PrismPublicationName!=null || objInicial.PrismIssn!=null){
             Journal revista = new Journal();
             if(objInicial.PrismPublicationName!=null){
                 revista.name = objInicial.PrismPublicationName;
@@ -193,20 +193,25 @@ namespace ScopusConnect.ROs.Scopus.Controllers
             if(objInicial.PrismIssn!=null){
                 revista.issn=objInicial.PrismIssn;
             }
-
             return revista;
+            }
+            return null;
         }
 
 
 
-        public PublicationMetric getPublicationMetric(PublicacionInicial objInicial)
+        public List<PublicationMetric> getPublicationMetric(PublicacionInicial objInicial)
         {
+            List<PublicationMetric> metricList = new List<PublicationMetric>();
             PublicationMetric metricPublicacion = new PublicationMetric();
             if(objInicial.CitedbyCount!=null){
                 metricPublicacion.citationCount=objInicial.CitedbyCount;
                 metricPublicacion.metricName="Scopus";
+                metricList.Add(metricPublicacion);
+                return metricList;
             }
-            return metricPublicacion;
+
+            return null;
         }
 
         // public List<Publication> getBiblografia(PublicacionInicial objInicial)

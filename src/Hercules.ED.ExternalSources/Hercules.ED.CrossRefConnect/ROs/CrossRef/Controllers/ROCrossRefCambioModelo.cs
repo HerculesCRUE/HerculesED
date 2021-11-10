@@ -136,13 +136,13 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
             return null;
         }
 
-        public List<KnowledgeArea> getKnowledgeAreas(PublicacionInicial objInicial)
-        {
-            List<KnowledgeArea> result = new List<KnowledgeArea>();
-            KnowledgeArea area = null;
-            result.Add(area);
-            return result;
-        }
+        // public List<KnowledgeArea> getKnowledgeAreas(PublicacionInicial objInicial)
+        // {
+        //     List<KnowledgeArea> result = new List<KnowledgeArea>();
+        //     KnowledgeArea area = null;
+        //     result.Add(area);
+        //     return result;
+        // }
 
         public List<string> getFreetextKeyword(PublicacionInicial objInicial)
         {
@@ -228,17 +228,20 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
 
 
 
-    public PublicationMetric getPublicationMetric(PublicacionInicial objInicial)
+    public List<PublicationMetric> getPublicationMetric(PublicacionInicial objInicial)
     {
+        List<PublicationMetric> metricList = new List<PublicationMetric>();
         PublicationMetric metricPublicacion = new PublicationMetric();
 
         if (objInicial.IsReferencedByCount != null)
         {
             metricPublicacion.citationCount = objInicial.IsReferencedByCount.ToString();
             metricPublicacion.metricName = "CrossRef";
+            metricList.Add(metricPublicacion);
+            return metricList;
             //TODO esto tampoco se si esta muy bien porque lo ha sacado de Scopus entonces aqui que debo poner? 
         }
-        return metricPublicacion;
+        return null;
     }
 
     public List<Publication> getBiblografia(PublicacionInicial objInicial)

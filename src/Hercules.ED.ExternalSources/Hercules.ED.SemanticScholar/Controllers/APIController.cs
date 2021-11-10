@@ -29,7 +29,7 @@ namespace SemanticScholarConnect.Controllers
         ///
         ///     GET /scopus/GetROs?author_id=SCOPUS_ID&amp;year=2020
         /// </remarks>
-        /// <param name="orcid">Orcid</param>
+        /// <param doi="doi">Orcid</param>
         /// <param date="date">Year-month-day</param>
         /// <returns></returns>
         /// <response code="200">Ok</response>
@@ -52,10 +52,10 @@ namespace SemanticScholarConnect.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public Publication GetROs([FromQuery][Required] string ID)
+        public Publication GetROs([FromQuery][Required] string doi)
         {
             ROSemanticScholarController SemanticScholarObject = new ROSemanticScholarController("https://api.semanticscholar.org/");//, "10e8a3a2417b7ae1d864b5558136c56b78ed3eb8");//"adf94bebeeba8c3042ad5193455740e2");
-            Publication publication = SemanticScholarObject.getPublications(ID);
+            Publication publication = SemanticScholarObject.getPublications(doi);
             return publication;
         }
         

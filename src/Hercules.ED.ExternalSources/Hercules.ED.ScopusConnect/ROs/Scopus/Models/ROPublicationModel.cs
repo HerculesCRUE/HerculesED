@@ -3,11 +3,7 @@ using System.Collections.Generic;
 
 namespace ScopusConnect.ROs.Scopus.Models
 {
-// public class Url 
-// {
-//     public string link { get; set; }
-//    // public string description { get; set; }
-// }
+
 public class Publication 
 {
     public string typeOfPublication { get; set; } //no es un atributo de la ontologia!!
@@ -30,10 +26,10 @@ public class Publication
     public string pageStart { get; set; }
     public Status documentStatus { get; set; }
     public string eanucc13 { get; set; }
-    public List<String> IDs {get;set;}
+    public List<string> IDs {get;set;}
 
     public Journal hasPublicationVenue { get; set; }
-    public PublicationMetric hasMetric { get; set; }
+    public List<PublicationMetric> hasMetric { get; set; }
     // TODO preguntar equipo!!1
     public List<Publication> bibliografia { get; set; }
     public List<Publication> citas {get;set;}
@@ -130,6 +126,5 @@ public class DateTimeInterval
     public DateTimeValue end { get; set; }
     public DateTimeValue start { get; set; }
 }
-
 
 }
