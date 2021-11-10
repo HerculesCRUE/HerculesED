@@ -383,7 +383,7 @@ namespace WoSConnect.ROs.WoS.Controllers
                                         }
 
                                         persona.name = nombres;
-                                        persona.link = new List<string>();
+                                        persona.links = new List<string>();
                                         result.Add(persona);
 
                                     }
@@ -410,7 +410,7 @@ namespace WoSConnect.ROs.WoS.Controllers
                                         }
 
                                         persona.name = nombres;
-                                        persona.link = new List<string>();
+                                        persona.links = new List<string>();
                                         result.Add(persona);
 
                                     }
@@ -450,7 +450,7 @@ namespace WoSConnect.ROs.WoS.Controllers
 
                                     persona.name = nombres;
                                     result.Add(persona);
-                                    persona.link = new List<string>();
+                                    persona.links = new List<string>();
 
                                     return result;
                                 }
@@ -478,16 +478,12 @@ namespace WoSConnect.ROs.WoS.Controllers
                                     }
 
                                     persona.name = nombres;
-                                    persona.link = new List<string>();
+                                    persona.links = new List<string>();
 
                                     result.Add(persona);
                                     return result;
 
                                 }
-
-
-
-
                             }
                         }
                     }

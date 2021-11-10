@@ -94,7 +94,7 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
         /// </summary>
         /// <param name="Doi"></param>
         /// <returns></returns>
-        public Publication getPublications(string name, string uri = "works/{0}")
+        public Publication getPublications(string name, Boolean articulo_primer_order=true, string uri = "works/{0}")
         {
             Uri url = new Uri(baseUri + string.Format(uri, name));
             string info_publication = httpCall(url.ToString(), "GET", headers).Result;
@@ -102,8 +102,10 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
             Root objInicial = JsonConvert.DeserializeObject<Root>(info_publication);
             // CAMBIO DE MODELO -- PAra ello llamamos al controlador de cambio de modelo! 
             ROCrossRefControllerJSON info = new ROCrossRefControllerJSON(this);
-            Publication sol = info.cambioDeModeloPublicacion(objInicial.message, name, true);
+            Publication sol = info.cambioDeModeloPublicacion(objInicial.message, name, articulo_primer_order);
             return sol;
         }
     }
 }
+//todo: Comprobar que cuando llame mediante el servidor pudo hacerlo menejando el  boolean, osea pasandole el boolean! 
+//todo: aqui ya esta modificado el Ro de tipo publiacion de forma mas coherente. 

@@ -62,12 +62,14 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                 //publicacion.freetextKeyword = getFreetextKeyword(objInicial);
                 publicacion.correspondingAuthor = getAuthorPrincipal(objInicial);
                 //publicacion.seqOfAuthors = getAuthors(objInicial);
+                
                 publicacion.hasPublicationVenue = getJournal(objInicial);
                 publicacion.hasMetric = getPublicationMetric(objInicial);
                 return publicacion;
             }
             else
             {
+                
                 return null;
             }
 

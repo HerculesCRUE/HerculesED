@@ -171,7 +171,7 @@ namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
                     if(author.authorId!=null){
                         List<string> ids = new List<string>();
                     ids.Add("SemanticScholar: "+ author.authorId);
-                        persona.identifier =ids;
+                        persona.IDs =ids;
                     }
                 autores.Add(persona);
                 }

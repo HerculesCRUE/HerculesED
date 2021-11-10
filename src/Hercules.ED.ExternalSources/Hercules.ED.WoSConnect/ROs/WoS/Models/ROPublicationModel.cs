@@ -4,7 +4,6 @@ using System.Collections.Generic;
 namespace WoSConnect.ROs.WoS.Models
 {
 
-
 public class Publication 
 {
     public string typeOfPublication { get; set; } //no es un atributo de la ontologia!!
@@ -13,7 +12,7 @@ public class Publication
     public string Abstract { get; set; }
     public string language { get; set; } 
     public string doi { get; set; }
-    public string identifier {get;set;}
+   // public string identifier {get;set;}
     public DateTimeValue dataIssued { get; set; }
 
     public List<string> url { get; set; }
@@ -25,13 +24,12 @@ public class Publication
     public string pageEnd { get; set; }
 
     public string pageStart { get; set; }
-    public Status documentStatus { get; set; }
-    public string eanucc13 { get; set; }
+    //public Status documentStatus { get; set; }
+    //public string eanucc13 { get; set; }
     public List<string> IDs {get;set;}
 
     public Journal hasPublicationVenue { get; set; }
     public List<PublicationMetric> hasMetric { get; set; }
-    // TODO preguntar equipo!!1
     public List<Publication> bibliografia { get; set; }
     public List<Publication> citas {get;set;}
 }
@@ -39,7 +37,6 @@ public class Publication
 public class ConferencePaper : Publication
 {
     public Conference presentedAt { get; set; }  
-    
 }
 public class WorkshopPaper : ConferencePaper
 {
@@ -79,22 +76,21 @@ public class JournalMetric
     public float impactFactor { get; set; }
     public string metricName { get; set; }
 }
-public class Status
-{
-    public string status { get; set; }
-    public DateTimeValue dateIssued { get; set; }
-}
+
+// public class Status
+// {
+//     public string status { get; set; }
+//     public DateTimeValue dateIssued { get; set; }
+// }
 
 public class Person
 {
     //public DateTimeValue birthdate { get; set; }
-    public List<String> name { get; set; } 
-
-    public string surname { get; set; }
+    public List<string> name { get; set; } 
+    //public string surname { get; set; }
     public string ORCID {get;set;}
-
-    public List<string> identifier { get; set; }
-    public List<string> link { get; set; }
+    public List<string> IDs { get; set; }
+    public List<string> links { get; set; }
     //public string nick { get; set; }
 
 }
@@ -108,12 +104,12 @@ public class Conference
     public string abbreviation { get; set; }
     public DateTimeInterval dateTimeInterval { get; set; }
     public string description { get; set; }
-    public string identifier { get; set; }
+    public List<string> IDs { get; set; }
     public string title { get; set; }
     public string freetextKeyword { get; set; }
     public string locality { get; set; }
     //public ParticipatedBy participatedBy { get; set; }
-    public KnowledgeArea hasKnowledgeArea { get; set; }
+    public List<KnowledgeArea> hasKnowledgeArea { get; set; }
 
 }
 public class KnowledgeArea
