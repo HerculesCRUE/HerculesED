@@ -4686,9 +4686,9 @@
 												"title": {
 													"es": "Tipología de la gestión"
 												},
-												"property": "http://vivoweb.org/ontology/core#geographicFocus",
+												"property": "http://w3id.org/roh/managementType",
 												"combo": {
-													"rdftype": "http://vivoweb.org/ontology/core#ManagementTypeActivity",
+													"rdftype": "http://w3id.org/roh/ManagementTypeActivity",
 													"graph": "managementtypeactivity",
 													"property": {
 														"property": "http://purl.org/dc/elements/1.1/title"
