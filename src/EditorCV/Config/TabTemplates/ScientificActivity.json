@@ -287,17 +287,6 @@
 																	"property": "http://purl.org/dc/elements/1.1/title"
 																}
 															}
-														},
-														{
-															"name": {
-																"es": "Índice de impacto"
-															},
-															"child": {
-																"property": "http://w3id.org/roh/impactIndex",
-																"child": {
-																	"property": "http://purl.org/dc/elements/1.1/title"
-																}
-															}
 														}
 													],
 													"rows": [
@@ -1028,7 +1017,6 @@
 													"es": "Introduce el título del trabajo"
 												},
 												"property": "http://w3id.org/roh/title",
-												"TODO": "El título del trabajo es distinto al título de la publicación",
 												"required": true,
 												"type": "text",
 												"width": 3
@@ -1456,7 +1444,7 @@
 												"placeholder": {
 													"es": "Introduce el título de la publicación"
 												},
-												"property": "http://w3id.org/roh/workTitle",
+												"property": "http://w3id.org/roh/publicationTitle",
 												"type": "text",
 												"width": 3
 											}
@@ -1986,7 +1974,7 @@
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
 										"graph": "document",
 										"child": {
-											"property": "http://w3id.org/roh/workTitle"
+											"property": "http://w3id.org/roh/title"
 										},
 										"asc": true
 									}
@@ -2526,7 +2514,7 @@
 												"placeholder": {
 													"es": "Introduce el título de la publicación"
 												},
-												"property": "http://w3id.org/roh/workTitle",
+												"property": "http://w3id.org/roh/publicationTitle",
 												"type": "text",
 												"width": 3
 											}
@@ -3183,8 +3171,7 @@
 												"placeholder": {
 													"es": "Introduce el título del trabajo"
 												},
-												"property": "http://w3id.org/roh/workTitle",
-												"TODO": "El título del trabajo es distinto al título de la publicación",
+												"property": "http://w3id.org/roh/publicationTitle",
 												"required": true,
 												"type": "text",
 												"width": 3
@@ -3612,7 +3599,7 @@
 												"placeholder": {
 													"es": "Introduce el título de la publicación"
 												},
-												"property": "http://w3id.org/roh/workTitle",
+												"property": "http://w3id.org/roh/publicationTitle",
 												"type": "text",
 												"width": 3
 											}
@@ -4559,6 +4546,233 @@
 			"rdftype": "http://w3id.org/roh/RelatedActivityManagement",
 			"TODO": "Falta por incluir la entidad RelatedActivityManagementCV, que contendría los datos propios del investigador.",
 			"property": "http://w3id.org/roh/activitiesManagement",
+			"presentation": {
+				"type": "listitems",
+				"title": {
+					"es": "Gestión de actividades de I+D+i"
+				},
+				"listItemsPresentation": {
+					"property": "http://vivoweb.org/ontology/core#relatedBy",
+					"listItem": {
+						"propertyTitle": {
+							"property": "http://vivoweb.org/ontology/core#relatedBy",
+							"graph": "activity",
+							"child": {
+								"property": "http://w3id.org/roh/title"
+							}
+						},
+						"orders": [
+							{
+								"name": {
+									"es": "Ordenar por fecha más reciente"
+								},
+								"TODO": "El orden va por título de la actividad y por fecha de inicio del investigador en la actividad (datos propios)",
+								"properties": [
+									{
+										"property": "http://vivoweb.org/ontology/core#relatedBy",
+										"graph": "activity",
+										"child": {
+											"property": "http://purl.org/dc/terms/issued"
+										},
+										"asc": false
+									},
+									{
+										"property": "http://vivoweb.org/ontology/core#relatedBy",
+										"graph": "activity",
+										"child": {
+											"property": "http://w3id.org/roh/title"
+										},
+										"asc": true
+									}
+								]
+							},
+							{
+								"name": {
+									"es": "Ordenar por fecha más antigua"
+								},
+								"properties": [
+									{
+										"property": "http://vivoweb.org/ontology/core#relatedBy",
+										"graph": "activity",
+										"child": {
+											"property": "http://purl.org/dc/terms/issued"
+										},
+										"asc": true
+									},
+									{
+										"property": "http://vivoweb.org/ontology/core#relatedBy",
+										"graph": "activity",
+										"child": {
+											"property": "http://w3id.org/roh/title"
+										},
+										"asc": true
+									}
+								]
+							}
+						],
+						"properties": [
+							{
+								"name": {
+									"es": "Título de la actividad"
+								},
+								"child": {
+									"property": "http://vivoweb.org/ontology/core#relatedBy",
+									"graph": "activity",
+									"child": {
+										"property": "http://w3id.org/roh/title"
+									}
+								}
+							}
+						]
+					},
+					"listItemEdit": {
+						"graph": "activity",
+						"proptitle": "http://w3id.org/roh/title",
+						"rdftype": "http://w3id.org/roh/Activity",
+						"sections": [
+							{
+								"title": {
+									"es": "Información general"
+								},
+								"rows": [
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Nombre de la actividad"
+												},
+												"placeholder": {
+													"es": "Introduce el título de la actividad"
+												},
+												"property": "http://w3id.org/roh/title",
+												"required": true,
+												"type": "text",
+												"width": 3
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Entidad de realización"
+												},
+												"TODO": "Autocompletado/texto libre. En caso de que haya que añadir una nueva organización, será por autocompletado o combo",
+												"placeholder": {
+													"es": "Introduce la entidad de realización"
+												},
+												"property": "http://w3id.org/roh/promotedBy",
+												"type": "text",
+												"width": 2
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Tipología de la gestión"
+												},
+												"property": "http://w3id.org/roh/managementType",
+												"combo": {
+													"rdftype": "http://w3id.org/roh/ManagementTypeActivity",
+													"graph": "managementtypeactivity",
+													"property": {
+														"property": "http://purl.org/dc/elements/1.1/title"
+													}
+												},
+												"type": "selectCombo",
+												"width": 1
+											}
+										]
+									}
+								]
+							},
+							{
+								"title": {
+									"es": "Más campos"
+								},
+								"rows": [
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Promedio del presupuesto anual"
+												},
+												"placeholder": {
+													"es": "Introduce el promedio del presupuesto anual"
+												},
+												"property": "http://w3id.org/roh/averageAnnualBudget",
+												"type": "number",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Número de personas"
+												},
+												"placeholder": {
+													"es": "Introduce el número de personas"
+												},
+												"property": "http://w3id.org/roh/attendants",
+												"type": "number",
+												"width": 1
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Perfil grupo receptor"
+												},
+												"property": "http://w3id.org/roh/targetGroupProfile",
+												"combo": {
+													"rdftype": "http://w3id.org/roh/TargetGroupProfile",
+													"graph": "targetgroupprofile",
+													"property": {
+														"property": "http://purl.org/dc/elements/1.1/title"
+													}
+												},
+												"type": "selectCombo",
+												"width": 2
+											}
+										]
+									},
+									{
+										"title": {
+											"es": "Ámbito geográfico"
+										},
+										"property": "http://vivoweb.org/ontology/core#geographicFocus",
+										"TODO": "No se despliega el combo de valores.",
+										"combo": {
+											"rdftype": "http://vivoweb.org/ontology/core#GeographicRegion",
+											"graph": "geographicregion",
+											"property": {
+												"property": "http://purl.org/dc/elements/1.1/title"
+											}
+										},
+										"type": "selectCombo",
+										"width": 1
+									},
+									{
+										"title": {
+											"es": "Otros"
+										},
+										"property": "http://w3id.org/roh/geographicFocusOther",
+										"type": "text",
+										"required": false,
+										"width": 1
+									}
+								]
+							}
+						]
+					}
+				}
+			}
+		},
+		{
+			"rdftype": "http://w3id.org/roh/RelatedPrize",
+			"property": "http://w3id.org/roh/prizes",
 			"presentation": {
 				"type": "listitems",
 				"title": {
