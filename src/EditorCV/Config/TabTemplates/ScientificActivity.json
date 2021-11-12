@@ -4882,12 +4882,164 @@
 										"properties": [
 											{
 												"title": {
+													"es": "Entidad concesionaria"
+												},
+												"TODO": "Autocompletado/texto libre. En caso de que haya que añadir una nueva organización, será por autocompletado o combo",
+												"placeholder": {
+													"es": "Introduce la entidad concesionaria"
+												},
+												"property": "http://w3id.org/roh/accreditationIssuedBy",
+												"type": "text",
+												"width": 2
+											},
+											{
+												"title": {
 													"es": "Fecha de concesión"
 												},
 												"property": "http://w3id.org/roh/dateIssued",
 												"type": "date",
 												"width": 1
-											},
+											}
+										]
+									}
+								]
+							},
+							{
+								"title": {
+									"es": "Más campos"
+								},
+								"rows": [
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Reconocimientos ligados"
+												},
+												"placeholder": {
+													"es": "Introduce los reconocimientos ligados"
+												},
+												"property": "http://w3id.org/roh/recognitionLinked",
+												"type": "text",
+												"width": 2
+											}
+										]
+									}
+								]
+							}
+						]
+					}
+				}
+			}
+		},
+		{
+			"rdftype": "http://w3id.org/roh/RelatedOtherDistinction",
+			"property": "http://w3id.org/roh/otherDistinctions",
+			"presentation": {
+				"type": "listitems",
+				"title": {
+					"es": "Otras distinciones (carrera profesional y/o empresarial)"
+				},
+				"listItemsPresentation": {
+					"property": "http://vivoweb.org/ontology/core#relatedBy",
+					"listItem": {
+						"propertyTitle": {
+							"property": "http://vivoweb.org/ontology/core#relatedBy",
+							"graph": "accreditation",
+							"child": {
+								"property": "http://w3id.org/roh/title"
+							}
+						},
+						"orders": [
+							{
+								"name": {
+									"es": "Ordenar por fecha más reciente"
+								},
+								"properties": [
+									{
+										"property": "http://vivoweb.org/ontology/core#relatedBy",
+										"graph": "accreditation",
+										"child": {
+											"property": "http://w3id.org/roh/dateIssued"
+										},
+										"asc": false
+									},
+									{
+										"property": "http://vivoweb.org/ontology/core#relatedBy",
+										"graph": "accreditation",
+										"child": {
+											"property": "http://w3id.org/roh/title"
+										},
+										"asc": true
+									}
+								]
+							},
+							{
+								"name": {
+									"es": "Ordenar por fecha más antigua"
+								},
+								"properties": [
+									{
+										"property": "http://vivoweb.org/ontology/core#relatedBy",
+										"graph": "accreditation",
+										"child": {
+											"property": "http://w3id.org/roh/dateIssued"
+										},
+										"asc": true
+									},
+									{
+										"property": "http://vivoweb.org/ontology/core#relatedBy",
+										"graph": "accreditation",
+										"child": {
+											"property": "http://w3id.org/roh/title"
+										},
+										"asc": true
+									}
+								]
+							}
+						],
+						"properties": [
+							{
+								"name": {
+									"es": "Descripción"
+								},
+								"child": {
+									"property": "http://vivoweb.org/ontology/core#relatedBy",
+									"graph": "accreditation",
+									"child": {
+										"property": "http://w3id.org/roh/title"
+									}
+								}
+							}
+						]
+					},
+					"listItemEdit": {
+						"graph": "accreditation",
+						"proptitle": "http://w3id.org/roh/title",
+						"rdftype": "http://w3id.org/roh/Accreditation",
+						"sections": [
+							{
+								"title": {
+									"es": "Información general"
+								},
+								"rows": [
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Descripción"
+												},
+												"placeholder": {
+													"es": "Introduce la descripción"
+												},
+												"property": "http://w3id.org/roh/title",
+												"required": true,
+												"type": "text",
+												"width": 3
+											}
+										]
+									},
+									{
+										"properties": [
 											{
 												"title": {
 													"es": "Entidad concesionaria"
@@ -4899,6 +5051,510 @@
 												"property": "http://w3id.org/roh/accreditationIssuedBy",
 												"type": "text",
 												"width": 2
+											},
+											{
+												"title": {
+													"es": "Fecha de concesión"
+												},
+												"property": "http://w3id.org/roh/dateIssued",
+												"type": "date",
+												"width": 1
+											}
+										]
+									}
+								]
+							},
+							{
+								"title": {
+									"es": "Más campos"
+								},
+								"rows": [
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Ámbito geográfico"
+												},
+												"property": "http://vivoweb.org/ontology/core#geographicFocus",
+												"TODO": "No se despliega el combo de valores.",
+												"combo": {
+													"rdftype": "http://vivoweb.org/ontology/core#GeographicRegion",
+													"graph": "geographicregion",
+													"property": {
+														"property": "http://purl.org/dc/elements/1.1/title"
+													}
+												},
+												"type": "selectCombo",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Otros"
+												},
+												"property": "http://w3id.org/roh/geographicFocusOther",
+												"type": "text",
+												"width": 1
+											}
+										]
+									}
+								]
+							}
+						]
+					}
+				}
+			}
+		},
+		{
+			"rdftype": "http://w3id.org/roh/RelatedPrize",
+			"property": "http://w3id.org/roh/prizes",
+			"presentation": {
+				"type": "listitems",
+				"title": {
+					"es": "Premios, menciones y distinciones"
+				},
+				"listItemsPresentation": {
+					"property": "http://vivoweb.org/ontology/core#relatedBy",
+					"listItem": {
+						"propertyTitle": {
+							"property": "http://vivoweb.org/ontology/core#relatedBy",
+							"graph": "accreditation",
+							"child": {
+								"property": "http://w3id.org/roh/title"
+							}
+						},
+						"orders": [
+							{
+								"name": {
+									"es": "Ordenar por fecha más reciente"
+								},
+								"TODO": "El orden va por título de la actividad y por fecha de inicio del investigador en la actividad (datos propios)",
+								"properties": [
+									{
+										"property": "http://vivoweb.org/ontology/core#relatedBy",
+										"graph": "accreditation",
+										"child": {
+											"property": "http://w3id.org/roh/dateIssued"
+										},
+										"asc": false
+									},
+									{
+										"property": "http://vivoweb.org/ontology/core#relatedBy",
+										"graph": "accreditation",
+										"child": {
+											"property": "http://w3id.org/roh/title"
+										},
+										"asc": true
+									}
+								]
+							},
+							{
+								"name": {
+									"es": "Ordenar por fecha más antigua"
+								},
+								"properties": [
+									{
+										"property": "http://vivoweb.org/ontology/core#relatedBy",
+										"graph": "accreditation",
+										"child": {
+											"property": "http://w3id.org/roh/dateIssued"
+										},
+										"asc": true
+									},
+									{
+										"property": "http://vivoweb.org/ontology/core#relatedBy",
+										"graph": "accreditation",
+										"child": {
+											"property": "http://w3id.org/roh/title"
+										},
+										"asc": true
+									}
+								]
+							}
+						],
+						"properties": [
+							{
+								"name": {
+									"es": "Descripción"
+								},
+								"child": {
+									"property": "http://vivoweb.org/ontology/core#relatedBy",
+									"graph": "accreditation",
+									"child": {
+										"property": "http://w3id.org/roh/title"
+									}
+								}
+							}
+						]
+					},
+					"listItemEdit": {
+						"graph": "accreditation",
+						"proptitle": "http://w3id.org/roh/title",
+						"rdftype": "http://w3id.org/roh/Accreditation",
+						"sections": [
+							{
+								"title": {
+									"es": "Información general"
+								},
+								"rows": [
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Descripción"
+												},
+												"placeholder": {
+													"es": "Introduce la descripción"
+												},
+												"property": "http://w3id.org/roh/title",
+												"required": true,
+												"type": "text",
+												"width": 3
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Entidad concesionaria"
+												},
+												"TODO": "Autocompletado/texto libre. En caso de que haya que añadir una nueva organización, será por autocompletado o combo",
+												"placeholder": {
+													"es": "Introduce la entidad concesionaria"
+												},
+												"property": "http://w3id.org/roh/accreditationIssuedBy",
+												"type": "text",
+												"width": 2
+											},
+											{
+												"title": {
+													"es": "Fecha de concesión"
+												},
+												"property": "http://w3id.org/roh/dateIssued",
+												"type": "date",
+												"width": 1
+											}
+										]
+									}
+								]
+							},
+							{
+								"title": {
+									"es": "Más campos"
+								},
+								"rows": [
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Reconocimientos ligados"
+												},
+												"placeholder": {
+													"es": "Introduce los reconocimientos ligados"
+												},
+												"property": "http://w3id.org/roh/recognitionLinked",
+												"type": "text",
+												"width": 2
+											}
+										]
+									}
+								]
+							}
+						]
+					}
+				}
+			}
+		},
+		{
+			"rdftype": "http://w3id.org/roh/RelatedPrize",
+			"property": "http://w3id.org/roh/prizes",
+			"presentation": {
+				"type": "listitems",
+				"title": {
+					"es": "Premios, menciones y distinciones"
+				},
+				"listItemsPresentation": {
+					"property": "http://vivoweb.org/ontology/core#relatedBy",
+					"listItem": {
+						"propertyTitle": {
+							"property": "http://vivoweb.org/ontology/core#relatedBy",
+							"graph": "accreditation",
+							"child": {
+								"property": "http://w3id.org/roh/title"
+							}
+						},
+						"orders": [
+							{
+								"name": {
+									"es": "Ordenar por fecha más reciente"
+								},
+								"TODO": "El orden va por título de la actividad y por fecha de inicio del investigador en la actividad (datos propios)",
+								"properties": [
+									{
+										"property": "http://vivoweb.org/ontology/core#relatedBy",
+										"graph": "accreditation",
+										"child": {
+											"property": "http://w3id.org/roh/dateIssued"
+										},
+										"asc": false
+									},
+									{
+										"property": "http://vivoweb.org/ontology/core#relatedBy",
+										"graph": "accreditation",
+										"child": {
+											"property": "http://w3id.org/roh/title"
+										},
+										"asc": true
+									}
+								]
+							},
+							{
+								"name": {
+									"es": "Ordenar por fecha más antigua"
+								},
+								"properties": [
+									{
+										"property": "http://vivoweb.org/ontology/core#relatedBy",
+										"graph": "accreditation",
+										"child": {
+											"property": "http://w3id.org/roh/dateIssued"
+										},
+										"asc": true
+									},
+									{
+										"property": "http://vivoweb.org/ontology/core#relatedBy",
+										"graph": "accreditation",
+										"child": {
+											"property": "http://w3id.org/roh/title"
+										},
+										"asc": true
+									}
+								]
+							}
+						],
+						"properties": [
+							{
+								"name": {
+									"es": "Descripción"
+								},
+								"child": {
+									"property": "http://vivoweb.org/ontology/core#relatedBy",
+									"graph": "accreditation",
+									"child": {
+										"property": "http://w3id.org/roh/title"
+									}
+								}
+							}
+						]
+					},
+					"listItemEdit": {
+						"graph": "accreditation",
+						"proptitle": "http://w3id.org/roh/title",
+						"rdftype": "http://w3id.org/roh/Accreditation",
+						"sections": [
+							{
+								"title": {
+									"es": "Información general"
+								},
+								"rows": [
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Descripción"
+												},
+												"placeholder": {
+													"es": "Introduce la descripción"
+												},
+												"property": "http://w3id.org/roh/title",
+												"required": true,
+												"type": "text",
+												"width": 3
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Entidad concesionaria"
+												},
+												"TODO": "Autocompletado/texto libre. En caso de que haya que añadir una nueva organización, será por autocompletado o combo",
+												"placeholder": {
+													"es": "Introduce la entidad concesionaria"
+												},
+												"property": "http://w3id.org/roh/accreditationIssuedBy",
+												"type": "text",
+												"width": 2
+											},
+											{
+												"title": {
+													"es": "Fecha de concesión"
+												},
+												"property": "http://w3id.org/roh/dateIssued",
+												"type": "date",
+												"width": 1
+											}
+										]
+									}
+								]
+							},
+							{
+								"title": {
+									"es": "Más campos"
+								},
+								"rows": [
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Reconocimientos ligados"
+												},
+												"placeholder": {
+													"es": "Introduce los reconocimientos ligados"
+												},
+												"property": "http://w3id.org/roh/recognitionLinked",
+												"type": "text",
+												"width": 2
+											}
+										]
+									}
+								]
+							}
+						]
+					}
+				}
+			}
+		},
+		{
+			"rdftype": "http://w3id.org/roh/RelatedPrize",
+			"property": "http://w3id.org/roh/prizes",
+			"presentation": {
+				"type": "listitems",
+				"title": {
+					"es": "Premios, menciones y distinciones"
+				},
+				"listItemsPresentation": {
+					"property": "http://vivoweb.org/ontology/core#relatedBy",
+					"listItem": {
+						"propertyTitle": {
+							"property": "http://vivoweb.org/ontology/core#relatedBy",
+							"graph": "accreditation",
+							"child": {
+								"property": "http://w3id.org/roh/title"
+							}
+						},
+						"orders": [
+							{
+								"name": {
+									"es": "Ordenar por fecha más reciente"
+								},
+								"TODO": "El orden va por título de la actividad y por fecha de inicio del investigador en la actividad (datos propios)",
+								"properties": [
+									{
+										"property": "http://vivoweb.org/ontology/core#relatedBy",
+										"graph": "accreditation",
+										"child": {
+											"property": "http://w3id.org/roh/dateIssued"
+										},
+										"asc": false
+									},
+									{
+										"property": "http://vivoweb.org/ontology/core#relatedBy",
+										"graph": "accreditation",
+										"child": {
+											"property": "http://w3id.org/roh/title"
+										},
+										"asc": true
+									}
+								]
+							},
+							{
+								"name": {
+									"es": "Ordenar por fecha más antigua"
+								},
+								"properties": [
+									{
+										"property": "http://vivoweb.org/ontology/core#relatedBy",
+										"graph": "accreditation",
+										"child": {
+											"property": "http://w3id.org/roh/dateIssued"
+										},
+										"asc": true
+									},
+									{
+										"property": "http://vivoweb.org/ontology/core#relatedBy",
+										"graph": "accreditation",
+										"child": {
+											"property": "http://w3id.org/roh/title"
+										},
+										"asc": true
+									}
+								]
+							}
+						],
+						"properties": [
+							{
+								"name": {
+									"es": "Descripción"
+								},
+								"child": {
+									"property": "http://vivoweb.org/ontology/core#relatedBy",
+									"graph": "accreditation",
+									"child": {
+										"property": "http://w3id.org/roh/title"
+									}
+								}
+							}
+						]
+					},
+					"listItemEdit": {
+						"graph": "accreditation",
+						"proptitle": "http://w3id.org/roh/title",
+						"rdftype": "http://w3id.org/roh/Accreditation",
+						"sections": [
+							{
+								"title": {
+									"es": "Información general"
+								},
+								"rows": [
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Descripción"
+												},
+												"placeholder": {
+													"es": "Introduce la descripción"
+												},
+												"property": "http://w3id.org/roh/title",
+												"required": true,
+												"type": "text",
+												"width": 3
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Entidad concesionaria"
+												},
+												"TODO": "Autocompletado/texto libre. En caso de que haya que añadir una nueva organización, será por autocompletado o combo",
+												"placeholder": {
+													"es": "Introduce la entidad concesionaria"
+												},
+												"property": "http://w3id.org/roh/accreditationIssuedBy",
+												"type": "text",
+												"width": 2
+											},
+											{
+												"title": {
+													"es": "Fecha de concesión"
+												},
+												"property": "http://w3id.org/roh/dateIssued",
+												"type": "date",
+												"width": 1
 											}
 										]
 									}
