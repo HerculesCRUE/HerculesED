@@ -5278,8 +5278,8 @@
 			}
 		},
 		{
-			"rdftype": "http://w3id.org/roh/RelatedPrize",
-			"property": "http://w3id.org/roh/prizes",
+			"rdftype": "http://w3id.org/roh/RelatedObtainedRecognition",
+			"property": "http://w3id.org/roh/obtainedRecognition",
 			"presentation": {
 				"type": "listitems",
 				"title": {
