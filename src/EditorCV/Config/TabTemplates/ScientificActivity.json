@@ -5076,7 +5076,6 @@
 													"es": "Ámbito geográfico"
 												},
 												"property": "http://vivoweb.org/ontology/core#geographicFocus",
-												"TODO": "No se despliega el combo de valores.",
 												"combo": {
 													"rdftype": "http://vivoweb.org/ontology/core#GeographicRegion",
 													"graph": "geographicregion",
@@ -5088,6 +5087,7 @@
 												"width": 1
 											},
 											{
+												"TODO": "Debe aparecer en caso de que en el combo anterior se seleccione Otros",
 												"title": {
 													"es": "Otros"
 												},
@@ -5105,12 +5105,12 @@
 			}
 		},
 		{
-			"rdftype": "http://w3id.org/roh/RelatedPrize",
-			"property": "http://w3id.org/roh/prizes",
+			"rdftype": "http://w3id.org/roh/RelatedResearchActivityPeriod",
+			"property": "http://w3id.org/roh/researchActivityPeriods",
 			"presentation": {
 				"type": "listitems",
 				"title": {
-					"es": "Premios, menciones y distinciones"
+					"es": "Períodos de actividad investigadora"
 				},
 				"listItemsPresentation": {
 					"property": "http://vivoweb.org/ontology/core#relatedBy",
@@ -5119,7 +5119,7 @@
 							"property": "http://vivoweb.org/ontology/core#relatedBy",
 							"graph": "accreditation",
 							"child": {
-								"property": "http://w3id.org/roh/title"
+								"property": "http://w3id.org/roh/recognizedPeriods"
 							}
 						},
 						"orders": [
@@ -5127,7 +5127,6 @@
 								"name": {
 									"es": "Ordenar por fecha más reciente"
 								},
-								"TODO": "El orden va por título de la actividad y por fecha de inicio del investigador en la actividad (datos propios)",
 								"properties": [
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
@@ -5141,7 +5140,7 @@
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
 										"graph": "accreditation",
 										"child": {
-											"property": "http://w3id.org/roh/title"
+											"property": "http://w3id.org/roh/recognizedPeriods"
 										},
 										"asc": true
 									}
@@ -5164,7 +5163,7 @@
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
 										"graph": "accreditation",
 										"child": {
-											"property": "http://w3id.org/roh/title"
+											"property": "http://w3id.org/roh/recognizedPeriods"
 										},
 										"asc": true
 									}
@@ -5174,13 +5173,13 @@
 						"properties": [
 							{
 								"name": {
-									"es": "Descripción"
+									"es": "Nº de tramos reconocidos"
 								},
 								"child": {
 									"property": "http://vivoweb.org/ontology/core#relatedBy",
 									"graph": "accreditation",
 									"child": {
-										"property": "http://w3id.org/roh/title"
+										"property": "http://w3id.org/roh/recognizedPeriods"
 									}
 								}
 							}
@@ -5188,7 +5187,7 @@
 					},
 					"listItemEdit": {
 						"graph": "accreditation",
-						"proptitle": "http://w3id.org/roh/title",
+						"proptitle": "http://w3id.org/roh/recognizedPeriods",
 						"rdftype": "http://w3id.org/roh/Accreditation",
 						"sections": [
 							{
@@ -5200,15 +5199,15 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Descripción"
+													"es": "Nº de tramos reconocidos"
 												},
 												"placeholder": {
-													"es": "Introduce la descripción"
+													"es": "Introduce el nº de tramos reconocidos"
 												},
-												"property": "http://w3id.org/roh/title",
+												"property": "http://w3id.org/roh/recognizedPeriods",
 												"required": true,
 												"type": "text",
-												"width": 3
+												"width": 1
 											}
 										]
 									},
@@ -5216,7 +5215,7 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Entidad concesionaria"
+													"es": "Entidad acreditante"
 												},
 												"TODO": "Autocompletado/texto libre. En caso de que haya que añadir una nueva organización, será por autocompletado o combo",
 												"placeholder": {
@@ -5228,10 +5227,10 @@
 											},
 											{
 												"title": {
-													"es": "Fecha de concesión"
+													"es": "Fecha de obtención"
 												},
 												"property": "http://w3id.org/roh/dateIssued",
-												"type": "date",
+												"type": "text",
 												"width": 1
 											}
 										]
@@ -5247,14 +5246,27 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Reconocimientos ligados"
+													"es": "Ámbito geográfico"
 												},
-												"placeholder": {
-													"es": "Introduce los reconocimientos ligados"
+												"property": "http://vivoweb.org/ontology/core#geographicFocus",
+												"combo": {
+													"rdftype": "http://vivoweb.org/ontology/core#GeographicRegion",
+													"graph": "geographicregion",
+													"property": {
+														"property": "http://purl.org/dc/elements/1.1/title"
+													}
 												},
-												"property": "http://w3id.org/roh/recognitionLinked",
+												"type": "selectCombo",
+												"width": 1
+											},
+											{
+												"TODO": "Debe aparecer en caso de que en el combo anterior se seleccione Otros",
+												"title": {
+													"es": "Otros"
+												},
+												"property": "http://w3id.org/roh/geographicFocusOther",
 												"type": "text",
-												"width": 2
+												"width": 1
 											}
 										]
 									}
