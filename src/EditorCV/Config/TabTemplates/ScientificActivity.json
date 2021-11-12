@@ -4783,7 +4783,7 @@
 					"listItem": {
 						"propertyTitle": {
 							"property": "http://vivoweb.org/ontology/core#relatedBy",
-							"graph": "activity",
+							"graph": "accreditation",
 							"child": {
 								"property": "http://w3id.org/roh/title"
 							}
@@ -4797,7 +4797,7 @@
 								"properties": [
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "activity",
+										"graph": "accreditation",
 										"child": {
 											"property": "http://w3id.org/roh/dateIssued"
 										},
@@ -4805,7 +4805,7 @@
 									},
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "activity",
+										"graph": "accreditation",
 										"child": {
 											"property": "http://w3id.org/roh/title"
 										},
@@ -4820,7 +4820,7 @@
 								"properties": [
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "activity",
+										"graph": "accreditation",
 										"child": {
 											"property": "http://w3id.org/roh/dateIssued"
 										},
@@ -4828,7 +4828,7 @@
 									},
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "activity",
+										"graph": "accreditation",
 										"child": {
 											"property": "http://w3id.org/roh/title"
 										},
@@ -4844,7 +4844,7 @@
 								},
 								"child": {
 									"property": "http://vivoweb.org/ontology/core#relatedBy",
-									"graph": "activity",
+									"graph": "accreditation",
 									"child": {
 										"property": "http://w3id.org/roh/title"
 									}
@@ -4853,9 +4853,9 @@
 						]
 					},
 					"listItemEdit": {
-						"graph": "activity",
+						"graph": "accreditation",
 						"proptitle": "http://w3id.org/roh/title",
-						"rdftype": "http://w3id.org/roh/Activity",
+						"rdftype": "http://w3id.org/roh/Accreditation",
 						"sections": [
 							{
 								"title": {
