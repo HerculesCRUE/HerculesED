@@ -5205,8 +5205,7 @@
 													"es": "Introduce el nº de tramos reconocidos"
 												},
 												"property": "http://w3id.org/roh/recognizedPeriods",
-												"required": true,
-												"type": "text",
+												"type": "number",
 												"width": 1
 											}
 										]
