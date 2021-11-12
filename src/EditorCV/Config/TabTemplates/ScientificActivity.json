@@ -5446,12 +5446,12 @@
 			}
 		},
 		{
-			"rdftype": "http://w3id.org/roh/RelatedPrize",
-			"property": "http://w3id.org/roh/prizes",
+			"rdftype": "http://w3id.org/roh/RelatedOtherAchievement",
+			"property": "http://w3id.org/roh/otherAchievements",
 			"presentation": {
 				"type": "listitems",
 				"title": {
-					"es": "Premios, menciones y distinciones"
+					"es": "Resumen de otros méritos"
 				},
 				"listItemsPresentation": {
 					"property": "http://vivoweb.org/ontology/core#relatedBy",
@@ -5468,7 +5468,6 @@
 								"name": {
 									"es": "Ordenar por fecha más reciente"
 								},
-								"TODO": "El orden va por título de la actividad y por fecha de inicio del investigador en la actividad (datos propios)",
 								"properties": [
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
@@ -5515,7 +5514,7 @@
 						"properties": [
 							{
 								"name": {
-									"es": "Descripción"
+									"es": "Descripción del mérito"
 								},
 								"child": {
 									"property": "http://vivoweb.org/ontology/core#relatedBy",
@@ -5557,11 +5556,11 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Entidad concesionaria"
+													"es": "Entidad acreditante"
 												},
 												"TODO": "Autocompletado/texto libre. En caso de que haya que añadir una nueva organización, será por autocompletado o combo",
 												"placeholder": {
-													"es": "Introduce la entidad concesionaria"
+													"es": "Introduce la entidad acreditante"
 												},
 												"property": "http://w3id.org/roh/accreditationIssuedBy",
 												"type": "text",
@@ -5574,28 +5573,6 @@
 												"property": "http://w3id.org/roh/dateIssued",
 												"type": "date",
 												"width": 1
-											}
-										]
-									}
-								]
-							},
-							{
-								"title": {
-									"es": "Más campos"
-								},
-								"rows": [
-									{
-										"properties": [
-											{
-												"title": {
-													"es": "Reconocimientos ligados"
-												},
-												"placeholder": {
-													"es": "Introduce los reconocimientos ligados"
-												},
-												"property": "http://w3id.org/roh/recognitionLinked",
-												"type": "text",
-												"width": 2
 											}
 										]
 									}
