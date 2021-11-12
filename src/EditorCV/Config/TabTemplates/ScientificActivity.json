@@ -5172,6 +5172,7 @@
 						],
 						"properties": [
 							{
+								"TODO": "Aquí no hay roh:title, el campo principal es el número de tramos",
 								"name": {
 									"es": "Nº de tramos reconocidos"
 								},
@@ -5282,7 +5283,7 @@
 			"presentation": {
 				"type": "listitems",
 				"title": {
-					"es": "Premios, menciones y distinciones"
+					"es": "Acreditaciones/reconocimientos obtenidos"
 				},
 				"listItemsPresentation": {
 					"property": "http://vivoweb.org/ontology/core#relatedBy",
@@ -5299,7 +5300,6 @@
 								"name": {
 									"es": "Ordenar por fecha más reciente"
 								},
-								"TODO": "El orden va por título de la actividad y por fecha de inicio del investigador en la actividad (datos propios)",
 								"properties": [
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
@@ -5388,11 +5388,11 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Entidad concesionaria"
+													"es": "Entidad acreditante"
 												},
 												"TODO": "Autocompletado/texto libre. En caso de que haya que añadir una nueva organización, será por autocompletado o combo",
 												"placeholder": {
-													"es": "Introduce la entidad concesionaria"
+													"es": "Introduce la entidad acreditante"
 												},
 												"property": "http://w3id.org/roh/accreditationIssuedBy",
 												"type": "text",
@@ -5400,7 +5400,7 @@
 											},
 											{
 												"title": {
-													"es": "Fecha de concesión"
+													"es": "Fecha del reconocimiento"
 												},
 												"property": "http://w3id.org/roh/dateIssued",
 												"type": "date",
@@ -5419,14 +5419,22 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Reconocimientos ligados"
+													"es": "Nº de tramos reconocidos"
 												},
 												"placeholder": {
-													"es": "Introduce los reconocimientos ligados"
+													"es": "Introduce el nº de tramos reconocidos"
 												},
-												"property": "http://w3id.org/roh/recognitionLinked",
-												"type": "text",
-												"width": 2
+												"property": "http://w3id.org/roh/recognizedPeriods",
+												"type": "number",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Fecha de obtención"
+												},
+												"property": "http://w3id.org/roh/receptionDate",
+												"type": "date",
+												"width": 1
 											}
 										]
 									}
