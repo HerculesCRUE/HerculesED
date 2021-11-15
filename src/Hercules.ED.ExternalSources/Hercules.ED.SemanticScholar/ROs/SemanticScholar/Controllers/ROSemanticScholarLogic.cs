@@ -94,7 +94,7 @@ namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
         /// </summary>
         /// <param name="ID"></param>
         /// <returns></returns>
-        public Publication getPublications(string name, string uri = "graph/v1/paper/10.1007/978-3-319-09177-8_18?fields=externalIds,title,abstract,url,venue,year,referenceCount,citationCount,authors,authors.name,authors.externalIds")
+        public Publication getPublications(string name, string uri = "graph/v1/paper/{0}?fields=externalIds,title,abstract,url,venue,year,referenceCount,citationCount,authors,authors.name,authors.externalIds")
         {
             Uri url = new Uri(baseUri + string.Format(uri, name));
             string info_publication = httpCall(url.ToString(), "GET", headers).Result;

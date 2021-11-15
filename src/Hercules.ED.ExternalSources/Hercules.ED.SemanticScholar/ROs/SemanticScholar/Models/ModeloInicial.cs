@@ -10,7 +10,7 @@ namespace SemanticScholarConnect.ROs.SemanticScholar.Models.Inicial
     {
         public string MAG { get; set; }
         public string DOI { get; set; }
-        public List<string> DBLP { get; set; }
+       // public List<string> DBLP { get; set; }
         public string ArXiv {get;set;}
         public string PubMedCentral {get;set;} 
     }
