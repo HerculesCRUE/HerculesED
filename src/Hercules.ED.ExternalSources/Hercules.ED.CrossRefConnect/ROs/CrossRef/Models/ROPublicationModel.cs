@@ -19,7 +19,7 @@ public class Publication
     public Person correspondingAuthor { get; set; }
 
     public List<Person> seqOfAuthors { get; set; }
-    public Organization correspondingOrganization { get; set; }
+  //  public Organization correspondingOrganization { get; set; }
     public List<KnowledgeArea> hasKnowledgeArea { get; set; }
     public string pageEnd { get; set; }
 
@@ -27,23 +27,16 @@ public class Publication
     //public Status documentStatus { get; set; }
     //public string eanucc13 { get; set; }
     public List<string> IDs {get;set;}
+     public string presentedAt { get; set; }  
+    //todo no creo que esto en nuestra ontologia sea un string y no esta contemplado de mommento rellenarlo! 
 
     public Journal hasPublicationVenue { get; set; }
     public List<PublicationMetric> hasMetric { get; set; }
     public List<Publication> bibliografia { get; set; }
     public List<Publication> citas {get;set;}
+
 }
-   
-public class ConferencePaper : Publication
-{
-    public Conference presentedAt { get; set; }  
-}
-public class WorkshopPaper : ConferencePaper
-{
-}
-  public class JournalArticle : Publication
-{
-}
+
   public class PublicationMetric  
   {
       public string citationCount { get; set; }
@@ -57,15 +50,15 @@ public class WorkshopPaper : ConferencePaper
   public class Journal 
   {
    // public KnowledgeArea hasKnowledgeArea { get; set; }
-      public JournalMetric hasMetric { get; set; }
-      public string abbreviation { get; set; }
+    //  public JournalMetric hasMetric { get; set; }
+     // public string abbreviation { get; set; }
       //public string language { get; set; }
-      public Organization publisher { get; set; }
+    //  public Organization publisher { get; set; }
       //public Organization correspongingOrganization { get; set; }
       public string issn { get; set; }
       public string name { get; set; }
       public string eissn { get; set; }
-      public string oclcnum { get; set; }
+    //  public string oclcnum { get; set; }
   }
 
 public class JournalMetric
