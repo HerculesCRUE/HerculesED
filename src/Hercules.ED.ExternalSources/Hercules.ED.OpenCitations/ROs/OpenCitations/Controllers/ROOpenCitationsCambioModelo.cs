@@ -149,25 +149,27 @@ namespace OpenCitationsConnect.ROs.OpenCitations.Controllers
 
         public List<Publication> getBiblografia(Root objInicial)
         {
-             List<Publication> sol = new List<Publication>();
+            List<Publication> sol = new List<Publication>();
             if (objInicial.data != null)
             {
                 foreach (PublicationInicial referencia in objInicial.data)
                 {
-                    Publication pub = new Publication();
-                    if(referencia.citing!=null){
-                        string[] datos = referencia.citing.Split("> ");
-
-                    pub.doi=datos[1];
-
-                    }                    sol.Add(pub);
-
-
+                    if (referencia.cited != null)
+                    {
+                        Publication pub = new Publication();
+                        string[] datos = referencia.cited.Split("> ");
+                        pub.doi = datos[1];
+                        sol.Add(pub);
+                    }
                 }
-                return sol;
+                if (sol.Count==0)
+                {
+                    return null;
+                }
+                else { return sol; }
             }
-            return new List<Publication>();
-        
+            return null;
+
         }
 
         public List<Publication> getCitas(Root objInicial)
@@ -177,20 +179,22 @@ namespace OpenCitationsConnect.ROs.OpenCitations.Controllers
             {
                 foreach (PublicationInicial referencia in objInicial.data)
                 {
-                    Publication pub = new Publication();
-                    if(referencia.citing!=null){
-                        string[] datos = referencia.citing.Split("> ");
+                    if (referencia.cited != null)
+                    {
+                        Publication pub = new Publication();
 
-                    pub.doi=datos[1];
-
-
+                        string[] datos = referencia.cited.Split("> ");
+                        pub.doi = datos[1];
+                        sol.Add(pub);
                     }
-                    sol.Add(pub);
-
                 }
-                return sol;
+                if (sol.Count==0)
+                {
+                    return null;
+                }
+                else { return sol; }
             }
-            return new List<Publication>();
+            return null;
         }
 
 
