@@ -5,15 +5,17 @@ $(function () {
 
 //var urlEdicionCV = "https://localhost:44360/EdicionCV/";
 //var urlGuardadoCV = "https://localhost:44360/GuardadoCV/";
-var urlEdicionCV = "http://serviciosedma.gnoss.com/edicioncv/EdicionCV/";
-var urlGuardadoCV = "http://serviciosedma.gnoss.com/edicioncv/GuardadoCV/";
+var urlEdicionCV = "http://serviciosedma.gnoss.com/editorcv/EdicionCV/";
+var urlGuardadoCV = "http://serviciosedma.gnoss.com/editorcv/GuardadoCV/";
 
 
 var edicionCV = {
     idCV: null,
+	idPerson: null,
     init: function () {
         this.config();
         this.idCV = $('.contenido-cv').attr('about');
+		this.idPerson = $('.contenido-cv').attr('personid');
         return;
     },
     config: function () {
@@ -131,6 +133,14 @@ var edicionCV = {
 			max-width: 780px;
 		}
 		
+		.page-cv #modal-anadir-autor {
+			z-index: 1500 !important;
+		}
+		
+		.page-cv .modal-backdrop.show.modal-anadir-autor {
+			z-index: 1499 !important;
+		}
+		
 		</style>`);
 		
         //Carga de secciones principales
@@ -150,6 +160,7 @@ var edicionCV = {
         var that = this;
         $('div[about="' + entityID + '"] .col-12.col-contenido').empty();
         MostrarUpdateProgress();
+		
         $.get(urlEdicionCV + 'GetTab?pId=' + entityID + "&pRdfType=" + rdfType + "&pLang=" + lang, null, function (data) {
             that.printTab(entityID, data);
             OcultarUpdateProgress();
@@ -483,7 +494,9 @@ var edicionCV = {
         var numPaginas = 1;
         var texto = EliminarAcentos(texto).toLowerCase();
         $('div[section="' + id + '"] article').each(function () {
-            if ($(this).find('h2').text().toLowerCase().indexOf(texto) > -1) {
+			var existeEnTitulo=EliminarAcentos($(this).find('h2').text()).toLowerCase().indexOf(texto) > -1;
+			var existeEnPropiedad=EliminarAcentos($(this).find('.content-wrap .group p:not(.title),.content-wrap .group li').text()).toLowerCase().indexOf(texto) > -1;
+            if (existeEnTitulo||existeEnPropiedad) {
                 numPaginas = Math.floor((numTotal - 1 + numResultadosPagina) / numResultadosPagina);
                 if (numPaginas == paginaActual) {
                     $(this).show();
@@ -797,7 +810,12 @@ var edicionCV = {
 					htmlInput=this.printPropertyEditDate(property.property,property.placeholder,value,property.required);
 					break;
 				case 'auxEntity':
-					css+=" entityauxcontainer";
+				case 'auxEntityAuthorList':
+					if(property.type=='auxEntityAuthorList')
+					{
+						css+=" entityauxauthorlist";	
+					}
+					css+=" entityauxcontainer";					
 					if(property.required)
 					{
 						css+=" obligatorio";
@@ -809,7 +827,7 @@ var edicionCV = {
 							</div>`;
 					}else{
 						htmlInput=`<div class='item aux entityaux' propertyrdf='${property.property}' rdftype='${property.entityAuxData.rdftype}' about=''>
-							${this.printRowsEdit(property.entityAuxData.entityRows)}
+							${this.printRowsEdit(property.entityAuxData.rows)}
 							</div>`;
 					}					
 					break;
@@ -825,10 +843,10 @@ var edicionCV = {
 					htmlInput+=this.printPropertyEditTextInput(property.property,property.placeholder,value,property.required);
 					
 					//Pintamos el título
-					if(property.values.length>0 && property.values[0]!=null && property.entityData.title[property.values[0]]!=null)
+					if(property.values.length>0 && property.values[0]!=null && property.entityData.titles[property.values[0]]!=null)
 					{
 						htmlInput+=`
-						<span class="title" loaded="true" route="${property.entityData.title[property.values[0]].route}">${property.entityData.title[property.values[0]].value}</span> `;
+						<span class="title" loaded="true" route="${property.entityData.titles[property.values[0]].route}">${property.entityData.titles[property.values[0]].value}</span> `;
 					}else
 					{
 						htmlInput+=`
@@ -864,8 +882,8 @@ var edicionCV = {
 					
 			
 			var htmlMultiple=`<div class='item aux'>`;
-			if(property.type=='auxEntity')
-			{
+			if(property.type=='auxEntity' || property.type=='auxEntityAuthorList')
+			{				
 				htmlMultiple=`<div class='item aux entityaux' propertyrdf='${property.property}' rdftype='${property.entityAuxData.rdftype}' about=''>`;
 			}else if(property.type=='entity')
 			{
@@ -888,13 +906,14 @@ var edicionCV = {
 					htmlMultiple+=this.printPropertyEditDate(property.property,property.placeholder,'',property.required);
 					break;
 				case 'auxEntity':
-					htmlMultiple+=this.printRowsEdit(property.entityAuxData.entityRows);
+				case 'auxEntityAuthorList':
+					htmlMultiple+=this.printRowsEdit(property.entityAuxData.rows);
 					break;
 				case 'entity':
 					htmlMultiple+=this.printPropertyEditTextInput(property.property,property.placeholder,value,property.required);
 					break;
 			}	
-			if(property.type=='auxEntity')
+			if(property.type=='auxEntity'||property.type=='auxEntityAuthorList')
 			{
 				if(property.entityAuxData.propertyOrder!=null && property.entityAuxData.propertyOrder!='')
 				{
@@ -925,16 +944,20 @@ var edicionCV = {
 					}
 				}
 			}
-			if(property.type!='auxEntity' && property.type!='entity' )			
+			if(property.type!='auxEntity' && property.type!='entity' && property.type!='auxEntityAuthorList')			
 			{
 				htmlMultiple+= this.printAddButton();
 			}
 			
 			htmlMultiple+='</div>';	
 			var order="";
-			if(property.type=='auxEntity')
+			if(property.type=='auxEntity'||property.type== 'auxEntityAuthorList')
 			{
-				css+=" entityauxcontainer";				
+				css+=" entityauxcontainer";		
+				if(property.type=='auxEntityAuthorList')
+				{
+					css+=" entityauxauthorlist";	
+				}
 				if(property.entityAuxData.propertyOrder!=null && property.entityAuxData.propertyOrder!='')
 				{
 					order= 'order="'+property.entityAuxData.propertyOrder+'"';
@@ -950,7 +973,7 @@ var edicionCV = {
 				css+=" obligatorio";
 			}
 			for (var valor in property.values) {				
-				if(property.type=='auxEntity')
+				if(property.type=='auxEntity' || property.type=='auxEntityAuthorList')
 				{
 					htmlMultiple+=`<div class='item added entityaux' propertyrdf='${property.property}' rdftype='${property.entityAuxData.rdftype}' about='${property.values[valor]}'>`;
 				}else if(property.type=='entity')
@@ -976,7 +999,8 @@ var edicionCV = {
 					case 'date':
 						htmlMultiple+=this.printPropertyEditDate(property.property,property.placeholder,property.values[valor],property.required,true);
 						break;
-					case 'auxEntity':				
+					case 'auxEntity':	
+					case 'auxEntityAuthorList':					
 						htmlMultiple+=this.printRowsEdit(property.entityAuxData.entities[property.values[valor]]);
 						if(property.entityAuxData.propertyOrder!=null && property.entityAuxData.propertyOrder!='')
 						{
@@ -993,10 +1017,10 @@ var edicionCV = {
 						}
 						
 						//Pintamos el título
-						if(property.values[valor]!=null && property.entityAuxData.title[property.values[valor]]!=null)
+						if(property.values[valor]!=null && property.entityAuxData.titles[property.values[valor]]!=null)
 						{
 							htmlMultiple+=`
-							<span class="title" loaded="true" route="${property.entityAuxData.title[property.values[valor]].route}">${property.entityAuxData.title[property.values[valor]].value}</span> `;
+							<span class="title" loaded="true" route="${property.entityAuxData.titles[property.values[valor]].route}">${property.entityAuxData.titles[property.values[valor]].value}</span> `;
 						}
 						
 						//Pintamos las propiedades
@@ -1014,10 +1038,10 @@ var edicionCV = {
 						htmlMultiple+=this.printPropertyEditTextInput(property.property,property.placeholder,value,property.required);
 						
 						//Pintamos el título
-						if(property.values[valor]!=null && property.entityData.title[property.values[valor]]!=null)
+						if(property.values[valor]!=null && property.entityData.titles[property.values[valor]]!=null)
 						{
 							htmlMultiple+=`
-							<span class="title" loaded="true" route="${property.entityData.title[property.values[valor]].route}">${property.entityData.title[property.values[valor]].value}</span> `;
+							<span class="title" loaded="true" route="${property.entityData.titles[property.values[valor]].route}">${property.entityData.titles[property.values[valor]].value}</span> `;
 						}
 						
 						//Pintamos las propiedades
@@ -1032,7 +1056,7 @@ var edicionCV = {
 						
 						break;
 				}
-				if(property.type!='auxEntity' && property.type!='entity')			
+				if(property.type!='auxEntity' && property.type!='entity' && property.type!='auxEntityAuthorList')			
 				{
 					htmlMultiple+=this.printDeleteButton();
 				}
@@ -1102,7 +1126,7 @@ var edicionCV = {
 		{
 			disabled='disabled';
 		}
-		return `<textarea ${disabled} propertyrdf="${property}" placeholder="${placeholder}" value="${value}" type="text" class="form-control not-outline ${css}"></textarea>`;
+		return `<textarea ${disabled} propertyrdf="${property}" placeholder="${placeholder}" type="text" class="form-control not-outline ${css}">${value}</textarea>`;
 	},
     printSelectCombo: function (property, pId, pItems,required,pDisabled) {
 		var disabled='';
@@ -1757,65 +1781,79 @@ var edicionCV = {
 			var item=$(this).closest('.item').remove();
         });		
 		
-		//Mostrar popup entidad nueva/editar auxiliar
-		$('.multiple.entityauxcontainer .acciones-listado-edicion .add,.multiple.entityauxcontainer .acciones-listado-edicion .edit').off('click').on('click', function (e) {
-			var modalPopUp=$(this).closest('.modal-top').attr('id')
-			if(modalPopUp=='modal-editar-entidad')
-			{
-				modalPopUp='modal-editar-entidad-0'
-			}else
-			{
-				modalPopUp='modal-editar-entidad-'+(parseInt(modalPopUp.substring(21))+1);
-			}
-			modalPopUp='#'+modalPopUp;
-			$(modalPopUp).modal('show');
-			
-			
+		//Mostrar popup entidad nueva/editar auxiliar/editar especiales
+		$('.multiple.entityauxcontainer .acciones-listado-edicion .add,.multiple.entityauxcontainer .acciones-listado-edicion .edit').off('click').on('click', function (e) {			
 			var edit=$(this).hasClass('edit');
-			//IDS
-			var contenedor=$(this).closest('.entityauxcontainer');
-			var idTemp=$(contenedor).attr('idtemp');			
-			var id=RandomGuid();
-			if(edit)
+			if($(this).closest('.entityauxauthorlist').length>0)
 			{
-				id=$('input[name="edicion-listado-'+idTemp+'"]:checked').closest('article').attr('about');
-			}
-			//Clonamos la entidad auxiliar vacía
-			var entityAux=$(contenedor).children('.item.aux.entityaux[about=""]').clone();
-			if(edit)
-			{
-				entityAux=$(contenedor).children('.item.added.entityaux[about="'+id+'"]').clone();
-			}
-			if(!edit)
-			{
-				//Cambiamos cosas del clon
-				entityAux.attr('about',id);
-				entityAux.removeClass('aux');
-				entityAux.addClass('added');
-			}
-			//Rellenamos el popup
-			$(modalPopUp+' .formulario-edicion').empty();
-			$(modalPopUp+' .form-actions .ko').remove();
-			$(modalPopUp+' .formulario-edicion').append(entityAux);			
-			$(modalPopUp).attr('idtemp',idTemp);
-			$(modalPopUp).attr('about',id);
-			$(modalPopUp).attr('new','true');
-			if(edit)
-			{
-				$(modalPopUp).attr('new','false');
-				//Reseteamos los campos para mostrar en el listado
-				$(modalPopUp+' .formulario-edicion').children('.entityaux').children('span.title').attr('loaded','false');
-				$(modalPopUp+' .formulario-edicion').children('.entityaux').children('span.title').html('');
-				$(modalPopUp+' .formulario-edicion').children('.entityaux').children('span.property').attr('loaded','false');
-				$(modalPopUp+' .formulario-edicion').children('.entityaux').children('span.property').html('');
-			}
-			//Cambiamos los id temporales del clon
-			$(entityAux.find('div.entityauxcontainer,div.entitycontainer')).each(function() {
-				if($(this).attr('idtemp')!=null && $(this).attr('idtemp')!='')
+				if(!edit)
 				{
-					$(this).attr('idtemp',RandomGuid());
+					//Creación
+					$('#modal-anadir-autor').modal('show');
+					$('#modal-anadir-autor .resultados .form-group.full-group').remove();
+					$('#inputsignatures').val('');
+				}else
+				{
+					//Edición
 				}
-			});			
+			}else
+			{	
+				var modalPopUp=$(this).closest('.modal-top').attr('id')
+				if(modalPopUp=='modal-editar-entidad')
+				{
+					modalPopUp='modal-editar-entidad-0'
+				}else
+				{
+					modalPopUp='modal-editar-entidad-'+(parseInt(modalPopUp.substring(21))+1);
+				}
+				modalPopUp='#'+modalPopUp;
+				$(modalPopUp).modal('show');
+				
+				//IDS
+				var contenedor=$(this).closest('.entityauxcontainer');
+				var idTemp=$(contenedor).attr('idtemp');			
+				var id=RandomGuid();
+				if(edit)
+				{
+					id=$('input[name="edicion-listado-'+idTemp+'"]:checked').closest('article').attr('about');
+				}
+				//Clonamos la entidad auxiliar vacía
+				var entityAux=$(contenedor).children('.item.aux.entityaux[about=""]').clone();
+				if(edit)
+				{
+					entityAux=$(contenedor).children('.item.added.entityaux[about="'+id+'"]').clone();
+				}
+				if(!edit)
+				{
+					//Cambiamos cosas del clon
+					entityAux.attr('about',id);
+					entityAux.removeClass('aux');
+					entityAux.addClass('added');
+				}
+				//Rellenamos el popup
+				$(modalPopUp+' .formulario-edicion').empty();
+				$(modalPopUp+' .form-actions .ko').remove();
+				$(modalPopUp+' .formulario-edicion').append(entityAux);			
+				$(modalPopUp).attr('idtemp',idTemp);
+				$(modalPopUp).attr('about',id);
+				$(modalPopUp).attr('new','true');
+				if(edit)
+				{
+					$(modalPopUp).attr('new','false');
+					//Reseteamos los campos para mostrar en el listado
+					$(modalPopUp+' .formulario-edicion').children('.entityaux').children('span.title').attr('loaded','false');
+					$(modalPopUp+' .formulario-edicion').children('.entityaux').children('span.title').html('');
+					$(modalPopUp+' .formulario-edicion').children('.entityaux').children('span.property').attr('loaded','false');
+					$(modalPopUp+' .formulario-edicion').children('.entityaux').children('span.property').html('');
+				}
+				//Cambiamos los id temporales del clon
+				$(entityAux.find('div.entityauxcontainer,div.entitycontainer')).each(function() {
+					if($(this).attr('idtemp')!=null && $(this).attr('idtemp')!='')
+					{
+						$(this).attr('idtemp',RandomGuid());
+					}
+				});	
+			}			
 			that.repintarListadoEntity();
         });			
 		
@@ -1948,6 +1986,88 @@ var edicionCV = {
 			that.repintarListadoEntity();
         });
 		
+		//Buscar personas por firma
+		$('#modal-anadir-autor .validar').off('click').on('click', function (e) {
+			that.validarFirmas();		
+		});
+		
+		//Enganchamos comportamiento check firmas		
+		$('input.chksignature').change(function (e) {
+			var that=this;
+			$(this).closest('.form-group.full-group').find('input.chksignature').each(function () {
+				if(that!=this)
+				{
+					$(this).prop('checked', false);
+				}
+			});
+		});
+		
+		operativaFormularioAutor.init();
+		
+		//Enganchamos comportamiento buscar	firmas		
+		$('.coincidencia-wrap a.form-buscar').off('click').on('click', function (e) {
+			$('#modal-anadir-autor .formulario-principal').hide();
+			$('#modal-anadir-autor .formulario-codigo').show();
+			$('#modal-anadir-autor .formulario-autor').hide();				
+			$('#modal-anadir-autor .formulario-codigo .firma').text($(this).closest('.simple-collapse').find('.control-label.d-block').text());
+		});
+		
+		//Validar ORCID firma
+		$('#modal-anadir-autor .formulario-codigo a.btn-outline-grey').off('click').on('click', function (e) {
+			that.validarORCID($('#modal-anadir-autor #signatureorcid').val());		
+		});
+		
+		//Añadimos firmas
+		$('#modal-anadir-autor .addsignatures').off('click').on('click', function (e) {
+			$('#modal-anadir-autor').modal('hide');
+			
+			var htmlAuthor=`
+			<div class="item added entityaux" propertyrdf="http://purl.org/ontology/bibo/authorList" rdftype="http://purl.obolibrary.org/obo/BFO_0000023" about="${RandomGuid()}">
+				<div class="custom-form-row">
+					<div class="form-group expand-2">
+						<label class="control-label d-block">Firma *</label>
+						<input propertyrdf="http://xmlns.com/foaf/0.1/nick" placeholder="" value="Jose Luis Hernandez Ramos" type="text" class="form-control not-outline obligatorio">
+					</div>
+					<div class="form-group expand-2 entitycontainer obligatorio" rdftype="http://xmlns.com/foaf/0.1/Person" idtemp="${RandomGuid()}">
+						<label class="control-label d-block">Persona *</label>
+						<div class="item added entity" propertyrdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#member" rdftype="http://xmlns.com/foaf/0.1/Person" about="http://gnoss.com/items/Person_81c44f33-a00f-45b6-9380-ff51350ae5aa_19d0c65c-8a11-4b94-8acf-1a45dd47d18f"><input propertyrdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#member" placeholder="" value="" type="text" class="form-control not-outline obligatorio">
+							<span class="title" loaded="true" route="person||http://xmlns.com/foaf/0.1/name">Jose Luis Hernandez Ramos</span> 
+							<span class="property" loaded="true" name="ORCID" route="person||http://w3id.org/roh/ORCID"></span> 
+						</div>
+						<div class="item aux">
+							<input disabled="" value="Jose Luis Hernandez Ramos" type="text" class="form-control not-outline ">
+							<div class="acciones-listado-edicion">
+								<div class="wrap">
+									<ul class="no-list-style d-flex align-items-center">
+										<li>
+											<a class="btn btn-outline-grey edit">
+												<span class="texto">Editar</span>
+												<span class="material-icons">edit</span>
+											</a>
+										</li>
+										<li>
+											<a class="btn btn-outline-grey delete">
+												<span class="texto">Eliminar</span>
+												<span class="material-icons">delete</span>
+											</a>
+										</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<input propertyrdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#comment" value="10" type="hidden">
+				<span class="title" loaded="false" route="http://xmlns.com/foaf/0.1/nick"></span> 
+				<span class="property" loaded="false" name="Nombre" route="http://www.w3.org/1999/02/22-rdf-syntax-ns#member||person||http://xmlns.com/foaf/0.1/name"></span> 
+				<span class="property" loaded="false" name="ORCID" route="http://www.w3.org/1999/02/22-rdf-syntax-ns#member||person||http://w3id.org/roh/ORCID"></span> 
+			</div>`
+			$('.entityauxauthorlist').append(htmlAuthor);
+			
+			/*	*/
+		});
+		
+		
 		
 		
 		//GUARDADOS
@@ -1971,7 +2091,8 @@ var edicionCV = {
 		});
 		
         return;
-    }, validarFormulario: function (formulario,modal) {
+    }, 
+	validarFormulario: function (formulario,modal) {
         var that = this;
 		//Validamos los campos obligatorios
 		var camposObligatorios = []; 
@@ -2014,7 +2135,8 @@ var edicionCV = {
 			return false;
 		}
 		return true;        
-    }, eliminarItem: function (sectionID, entityID) {
+    }, 
+	eliminarItem: function (sectionID, entityID) {
         var that = this;
         var item = {};
         item.pEntity = entityID;
@@ -2025,7 +2147,8 @@ var edicionCV = {
             that.repintarListadoTab(sectionID);
             OcultarUpdateProgress();
         });
-    }, guardarModal: function (pFormulario) {
+    }, 
+	guardarModal: function (pFormulario) {
         var that = this;
 		
 		//Los modales son de 3 tipos
@@ -2170,8 +2293,8 @@ var edicionCV = {
 							});
 						} else {
 							//Si no viene entityLoad carga el item
-							$.get(urlEdicionCV + 'GetItemMini?pIdSection=' + entidad.sectionID + "&pRdfTypeTab=" + entidad.rdfTypeTab + "&pEntityID=" + data.id + "&pLang=" + lang, null, function (data) {
-								$('div[section="' + entidad.sectionID + '"] .resource-list-wrap').append(that.printHtmlListItem(data.id, data));
+							$.get(urlEdicionCV + 'GetItemMini?pIdSection=' + entidad.sectionID + "&pRdfTypeTab=" + entidad.rdfTypeTab + "&pEntityID=" + data.id + "&pLang=" + lang, null, function (data2) {
+								$('div[section="' + entidad.sectionID + '"] .resource-list-wrap').append(that.printHtmlListItem(data.id, data2));
 								that.repintarListadoTab(entidad.sectionID);
 								OcultarUpdateProgress();
 							});
@@ -2185,7 +2308,124 @@ var edicionCV = {
 				});
 			}
 		}        
-    }
+    },
+	validarFirmas: function (){
+		var that=this;
+		var item={};
+		item.pSignatures=$('#inputsignatures').val();
+		item.pCVID=this.idCV;
+		item.pPersonID=this.idPerson;
+		MostrarUpdateProgress();
+		$('#modal-anadir-autor .formulario-edicion .resultados').hide();
+		$('#modal-anadir-autor .formulario-edicion .resultados .form-group.full-group').remove();
+		$.post(urlEdicionCV + 'ValidateSignatures', item, function (data) {
+			OcultarUpdateProgress();
+			var i=0;
+			var htmlSinCandidatos=`<div class="user-miniatura">
+                                <div class="imagen-usuario-wrap">                                    
+									<div class="imagen">
+									</div>									
+                                </div>
+                                <div class="nombre-usuario-wrap">
+									<p class="nombre">Ninguna sugerencia</p>
+                                </div>
+                                <div class="coincidencia-wrap">
+                                    <a href="javascript: void(0);" class="form-buscar">Buscar</a>
+                                </div>
+                            </div>`;
+			for (var firma in data) {
+				var numCandidatos=data[firma].length;
+				i++;	
+				
+				var htmlCandidatos=htmlSinCandidatos;
+				if(numCandidatos>0)
+				{
+					//TODO textos
+					var score=(data[firma][0].score*100).toFixed(0);
+					htmlCandidatos=that.htmlCandidatoFirma(data[firma][0],i,score);
+					var otrosCandidatos='';
+					for (var j = 1; j < numCandidatos; j++) {
+						var scoreIn=(data[firma][j].score*100).toFixed(0);
+						if(scoreIn>=80)
+						{
+							htmlCandidatos+=that.htmlCandidatoFirma(data[firma][j],i,scoreIn);
+						}else
+						{
+							otrosCandidatos+=that.htmlCandidatoFirma(data[firma][j],i,scoreIn);
+						}
+					}
+					htmlCandidatos+=`	<a href="#groupCollapse${i}" data-toggle="collapse" aria-expanded="true" class="collapse-toggle collapsed">Más resultados</a>
+										<div id="groupCollapse${i}" class="collapse-wrap collapse">
+											${otrosCandidatos}
+											<div class="form-actions">
+												<a href="javascript: void(0);" class="form-buscar">Buscar</a>
+											</div>
+										</div>`;
+					
+					
+				}				
+				var autor=`	<div class="form-group full-group">
+								<div class="simple-collapse">
+									<label class="control-label d-block">${firma}</label>
+										${htmlCandidatos}									
+								</div>
+							</div>`;
+				$('#modal-anadir-autor .formulario-edicion .resultados').append(autor);
+			};			
+			$('#modal-anadir-autor .formulario-edicion .resultados').show();
+			
+			
+			that.engancharComportamientosCV();		
+			
+        });
+	},
+	htmlCandidatoFirma: function(candidato,indice,score){
+		//TODO imagen y textos
+		var color="red";
+		if(score>=90)
+		{
+			color="green";
+		}else if(score>=80){
+			color="orange";
+		}else{
+			color="red";
+		}
+		var id=RandomGuid();
+		var htmlOrcid='';
+		if(candidato.orcid!=null)
+		{
+			htmlOrcid=`<a target="_blank" href="https://orcid.org/${candidato.orcid}">${candidato.orcid}</a>`;
+		}
+		var html=`<div class="user-miniatura">
+					<div class="custom-control custom-checkbox">
+						<input type="checkbox" id="user-${id}" personid="${candidato.personid}" name="user-${indice}" class="custom-control-input chksignature">
+						<label class="custom-control-label" for="user-${id}"></label>
+					</div>
+					<div class="imagen-usuario-wrap">						
+						<div class="imagen">
+						</div>
+					</div>
+					<div class="nombre-usuario-wrap">						
+						<p class="nombre">${candidato.name}</p>
+						<p class="nombre-completo">TODO · ${htmlOrcid}</p>						
+					</div>
+					<div class="coincidencia-wrap">
+						<p class="label">Coincidencia</p>
+						<p class="numResultado" style="color: ${color};">${score}%</p>
+					</div>
+				</div>`;
+		return html;
+	},
+	validarORCID: function (orcid){
+		var that=this;
+		var item={};
+		item.pOrcid=orcid;
+		MostrarUpdateProgress();
+		$.post(urlGuardadoCV + 'ValidateORCID', item, function (data) {
+			OcultarUpdateProgress();			
+        });
+	}
+
 };
 
 //Métodos auxiliares
