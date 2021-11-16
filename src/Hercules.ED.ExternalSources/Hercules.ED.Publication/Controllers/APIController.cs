@@ -31,7 +31,7 @@ namespace PublicationConnect.Controllers
         ///
         ///     GET /scopus/GetROs?author_id=SCOPUS_ID&amp;year=2020
         /// </remarks>
-        /// <param name="orcid">Orcid</param>
+        /// <param orcid="orcid">Orcid</param>
         /// <param date="date">Year-month-day</param>
         /// <returns></returns>
         /// <response code="200">Ok</response>
@@ -54,10 +54,10 @@ namespace PublicationConnect.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public List<Publication> GetROs([FromQuery][Required] string ID)
+        public List<Publication> GetROs([FromQuery][Required] string orcid)
         {
             ROPublicationLogic PublicationObject = new ROPublicationLogic("");
-            List<Publication> publication = PublicationObject.getPublications(ID);
+            List<Publication> publication = PublicationObject.getPublications(orcid);
             return publication;
         }
         

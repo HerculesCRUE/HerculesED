@@ -20,9 +20,6 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
 
         }
 
-
-
-
         public Publication cambioDeModeloPublicacion(PublicacionInicial objInicial, string doi, Boolean publicacion_principal)
         {
             Publication publicacion = new Publication();
@@ -66,7 +63,7 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
 
         public string getTitle(PublicacionInicial objInicial)
         {
-            if (objInicial.title != null)
+            if (objInicial.title != null& objInicial.title.Count>=1)
             {
                 return objInicial.title[0];
                 //TODO: esto puede no estar bien! porque no se tiene que ser el primero... 
@@ -226,11 +223,16 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                     journal.issn = objInicial.ISSN[0];
                     //TODO: esto puede no estar bien! porque no se tiene que ser el primero... 
                 }
-                if (objInicial.ContainerTitle != null)
+                if (objInicial.ContainerTitle != null & objInicial.ContainerTitle.Count >= 1)
                 {
                     journal.name = objInicial.ContainerTitle[0];
                     //TODO: esto puede no estar bien! porque no se tiene que ser el primero... 
                 }
+                if (journal != new Journal())
+                {
+                    return journal;
+                }
+                else { return null; }
             }
             return null;
         }
