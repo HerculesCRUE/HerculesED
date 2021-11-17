@@ -94,9 +94,12 @@ namespace ScopusConnect.ROs.Scopus.Controllers
         /// <param date="date">year-month-day</param>
 
         /// <returns></returns>
-        public List<Publication> getPublications(string name, string date = "1800-01-01", string uri = "content/search/scopus?query=ORCID(\"{0}\")&count=200&date={1}")//AU-ID?{0}")
+        public List<Publication> getPublications(string name, string date = "1800-01-01", string uri = "content/search/scopus?query=ORCID(\"{0}\")&count=200&date={1}%&start={2}")//AU-ID?{0}")
         {
-            string date_scopus = date.Substring(0, 4) + "-" + DateTime.Now.Date.Year.ToString();
+            string date_scopus = date.Substring(0, 4) + "-" + (DateTime.Now.Date.Year+1).ToString();
+            Console.Write("LA fecha que se le pasa a escopus: \n");
+            Console.Write(date_scopus);
+            Console.Write("\n");
             //Console.Write(date_scopus);
             //Uri url = new Uri(baseUri + string.Format(uri, name, date_scopus));
             //string info_publication = httpCall(url.ToString(), "GET", headers).Result;
@@ -119,19 +122,24 @@ namespace ScopusConnect.ROs.Scopus.Controllers
             // }
             int n = 0;
             List<Publication> sol = new List<Publication>();
-            int reult = 1;
-            while (sol.Count() == 200 * n)
+            int result = 1;
+            int cardinalidad =1;
+            while (cardinalidad >= result )
             {
-                n++;
-                reult = 200 * n;
+           
+                int start = 200*n;
+            
                 uri = "content/search/scopus?query=ORCID(\"{0}\")&count=200&date={1}&start={2}";
-                Uri url = new Uri(baseUri + string.Format(uri, name, date_scopus, reult.ToString()));
+                Uri url = new Uri(baseUri + string.Format(uri, name, date_scopus, result.ToString(),start.ToString()));
+                n++;
+                result = 200*n;
                 String info_publication = httpCall(url.ToString(), "GET", headers).Result;
                 if (info_publication != "{\"service-error\":{\"status\":{\"statusCode\":\"INVALID_INPUT\",\"statusText\":\"Error translating query\"}}}")
-                {
+                {                    
                     Root objInicial = JsonConvert.DeserializeObject<Root>(info_publication);
-                    List<Publication> nuevas = info.getListPublicatio(objInicial, date_scopus);
+                    List<Publication> nuevas = info.getListPublicatio(objInicial, date);
                     sol.AddRange(nuevas);
+                    cardinalidad = objInicial.SearchResults.entry.Count;
                 }
             }
             return sol;
