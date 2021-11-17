@@ -510,6 +510,27 @@
 									{
 										"properties": [
 											{
+												"title": {
+													"es": "Posición de firma"
+												},
+												"TODO": "Campo calculado o dejamos introducir cualquier número (como hace el CVN)?",
+												"type": "number",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Nº total de autores"
+												},
+												"TODO": "Campo calculado o dejamos introducir cualquier número (como hace el CVN)?",
+												"property": "http://w3id.org/roh/researchersNumber",
+												"type": "number",
+												"width": 1
+											}
+										]
+									},
+									{
+										"properties": [
+											{
 												"property": "http://purl.org/ontology/bibo/ReferenceSource",
 												"type": "auxEntity",
 												"TODO": "Incluir el DOI en la tabla, junto a un 'Otros' que permita añadir un nuevo tipo de identificador.",
