@@ -1,0 +1,413 @@
+{
+	"rdftype": "http://w3id.org/roh/ScientificExperience",
+	"property": "http://w3id.org/roh/scientificExperience",
+	"sections": [
+		{
+			"rdftype": "http://w3id.org/roh/RelatedCompetitiveProject",
+			"property": "http://w3id.org/roh/competitiveProjects",
+			"presentation": {
+				"type": "listitems",
+				"title": {
+					"es": "Proyectos de I+D+i financiados en convocatorias competitivas de Administraciones o entidades públicas y privadas"
+				},
+				"listItemsPresentation": {
+					"property": "http://vivoweb.org/ontology/core#relatedBy",
+					"listItem": {
+						"propertyTitle": {
+							"property": "http://vivoweb.org/ontology/core#relatedBy",
+							"graph": "project",
+							"child": {
+								"property": "http://w3id.org/roh/title"
+							}
+						},
+						"orders": [
+							{
+								"name": {
+									"es": "Ordenar por fecha más reciente"
+								},
+								"properties": [
+									{
+										"property": "http://vivoweb.org/ontology/core#relatedBy",
+										"graph": "project",
+										"child": {
+											"property": "http://purl.org/dc/terms/issued"
+										},
+										"asc": false
+									},
+									{
+										"property": "http://vivoweb.org/ontology/core#relatedBy",
+										"graph": "project",
+										"child": {
+											"property": "http://w3id.org/roh/title"
+										},
+										"asc": true
+									}
+								]
+							},
+							{
+								"name": {
+									"es": "Ordenar por fecha más antigua"
+								},
+								"properties": [
+									{
+										"property": "http://vivoweb.org/ontology/core#relatedBy",
+										"graph": "project",
+										"child": {
+											"property": "http://purl.org/dc/terms/issued"
+										},
+										"asc": true
+									},
+									{
+										"property": "http://vivoweb.org/ontology/core#relatedBy",
+										"graph": "project",
+										"child": {
+											"property": "http://w3id.org/roh/title"
+										},
+										"asc": true
+									}
+								]
+							}
+						],
+						"properties": [
+							{
+								"name": {
+									"es": "Fecha de inicio"
+								},
+								"showMiniBold": true,
+								"type": "date",
+								"child": {
+									"property": "http://vivoweb.org/ontology/core#relatedBy",
+									"graph": "project",
+									"child": {
+										"property": "http://vivoweb.org/ontology/core#start"
+									}
+								}
+							},
+							{
+								"name": {
+									"es": "Autores/as (p. o. de firma)"
+								},
+								"showMini": true,
+								"childOR": [
+									{
+										"property": "http://vivoweb.org/ontology/core#relatedBy",
+										"graph": "project",
+										"order": "http://www.w3.org/1999/02/22-rdf-syntax-ns#comment",
+										"child": {
+											"property": "http://purl.org/ontology/bibo/authorList",
+											"child": {
+												"property": "http://w3id.org/roh/title"
+											}
+										}
+									},
+									{
+										"property": "http://vivoweb.org/ontology/core#relatedBy",
+										"graph": "project",
+										"order": "http://vivoweb.org/ontology/core#preferredDisplayOrder",
+										"child": {
+											"property": "http://vivoweb.org/ontology/core#relates",
+											"child": {
+												"property": "http://w3id.org/roh/roleOf",
+												"graph": "person",
+												"child": {
+													"property": "http://xmlns.com/foaf/0.1/name"
+												}
+											}
+										}
+									}
+								]
+							}
+						]
+					},
+					"listItemEdit": {
+						"graph": "project",
+						"proptitle": "http://w3id.org/roh/title",
+						"propdescription": "http://vivoweb.org/ontology/core#description",
+						"rdftype": "http://vivoweb.org/ontology/core#Project",
+						"sections": [
+							{
+								"title": {
+									"es": "Información general"
+								},
+								"rows": [
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Nombre del proyecto"
+												},
+												"placeholder": {
+													"es": "Introduce el nombre del proyecto"
+												},
+												"property": "http://w3id.org/roh/title",
+												"required": true,
+												"type": "text",
+												"width": 2
+											},
+											{
+												"title": {
+													"es": "Nº de investigadores/as"
+												},
+												"property": "http://w3id.org/roh/researchersNumber",
+												"type": "number",
+												"width": 1
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"property": "http://vivoweb.org/ontology/core#relates",
+												"TODO": "Integrar el diseño de Félix para la adición de autores",
+												"type": "auxEntity",
+												"title": {
+													"es": "Autores/as (p.o. de firma)"
+												},
+												"multiple": true,
+												"width": 3,
+												"auxEntityData": {
+													"rdftype": "http://purl.obolibrary.org/obo/BFO_0000023",
+													"propertyOrder": "http://vivoweb.org/ontology/core#preferredDisplayOrder",
+													"propertyTitle": {
+														"property": "http://w3id.org/roh/title"
+													},
+													"properties": [
+														{
+															"name": {
+																"es": "Nombre"
+															},
+															"child": {
+																"property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
+																"graph": "person",
+																"child": {
+																	"property": "http://xmlns.com/foaf/0.1/name"
+																}
+															}
+														},
+														{
+															"name": {
+																"es": "ORCID"
+															},
+															"child": {
+																"property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
+																"graph": "person",
+																"child": {
+																	"property": "http://w3id.org/roh/ORCID"
+																}
+															}
+														}
+													],
+													"rows": [
+														{
+															"properties": [
+																{
+																	"title": {
+																		"es": "Firma"
+																	},
+																	"type": "text",
+																	"placeholder": {
+																		"es": "Introduce la firma"
+																	},
+																	"required": true,
+																	"property": "http://xmlns.com/foaf/0.1/nick",
+																	"width": 3
+																}
+															]
+														},
+														{
+															"properties": [
+																{
+																	"TODO": "Error null al crear entidades",
+																	"title": {
+																		"es": "Persona"
+																	},
+																	"type": "entity",
+																	"multiple": false,
+																	"required": true,
+																	"property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
+																	"width": 3,
+																	"entityData": {
+																		"rdftype": "http://xmlns.com/foaf/0.1/Person",
+																		"graph": "person",
+																		"propertyTitle": {
+																			"property": "http://xmlns.com/foaf/0.1/name"
+																		},
+																		"properties": [
+																			{
+																				"name": {
+																					"es": "ORCID"
+																				},
+																				"child": {
+																					"property": "http://w3id.org/roh/ORCID"
+																				}
+																			}
+																		]
+																	}
+																}
+															]
+														}
+													]
+												}
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Entidad de realización"
+												},
+												"property": "http://w3id.org/roh/conductedBy",
+												"combo": {
+													"rdftype": "http://w3id.org/roh/PublicationType",
+													"graph": "organization",
+													"property": {
+														"property": "http://purl.org/dc/elements/1.1/title"
+													}
+												},
+												"type": "selectCombo",
+												"width": 1
+											}										
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Entidad/es financiadora/s"
+												},
+												"property": "http://w3id.org/roh/grantedBy",
+												"combo": {
+													"rdftype": "http://xmlns.com/foaf/0.1/Organization",
+													"graph": "organization",
+													"property": {
+														"property": "http://purl.org/dc/elements/1.1/title"
+													}
+												},
+												"type": "selectCombo",
+												"width": 1
+											}										
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Fecha de inicio"
+												},
+												"property": "http://vivoweb.org/ontology/core#start",
+												"type": "date",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Fecha de finalización"
+												},
+												"property": "http://vivoweb.org/ontology/core#end",
+												"type": "date",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Cuantía total"
+												},
+												"placeholder": {
+													"es": "Introduce la cuantía total"
+												},
+												"property": "http://w3id.org/roh/monetaryAmount",
+												"type": "number",
+												"width": 1
+											}
+										]
+									},
+								]
+							},
+							{
+								"title": {
+									"es": "Más campos"
+								},
+								"rows": [
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Duración años"
+												},
+												"property": "http://w3id.org/roh/durationYears",
+												"type": "text",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Duración meses"
+												},
+												"property": "http://w3id.org/roh/durationMonths",
+												"type": "text",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Duración días"
+												},
+												"property": "http://w3id.org/roh/durationDays",
+												"type": "text",
+												"width": 1
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Identificar palabras clave"
+												},
+												"property": "http://vivoweb.org/ontology/core#freeTextKeyword",
+												"multiple": true,
+												"type": "text",
+												"width": 1
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Ciudad de publicación"
+												},
+												"placeholder": {
+													"es": "Introduce la ciudad de publicación"
+												},
+												"property": "https://www.w3.org/2006/vcard/ns#locality",
+												"type": "text",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "C. Autón./Reg. de publicación"
+												},
+												"placeholder": {
+													"es": "Introduce la región de publicación"
+												},
+												"property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+												"combo": {
+													"rdftype": "http://www.geonames.org/ontology#Feature",
+													"graph": "feature",
+													"property": {
+														"property": "http://www.geonames.org/ontology#name"
+													}
+												},
+												"TODO": "Algunos valores están duplicados (ej. La Rioja, Isle of Man...)",
+												"type": "selectCombo",
+												"width": 1
+											}
+										]
+									},
+								]
+							}
+						]
+					}
+				}
+			}
+		}
+	]
+}
