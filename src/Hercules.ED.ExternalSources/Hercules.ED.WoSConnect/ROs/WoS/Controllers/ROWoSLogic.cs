@@ -92,8 +92,10 @@ namespace WoSConnect.ROs.WoS.Controllers
         /// Main function from get all repositories from the RO account
         /// </summary>
         /// <param name="ID"></param>
+        /// <param date="Year-Moth-day"></param>
+
         /// <returns></returns>
-        public List<Publication> getPublications(string name, string uri = "api/wos/?databaseId=WOK&usrQuery=AI=({0})&count=100&firstRecord={1}")
+        public List<Publication> getPublications(string name, string date="1500-01-01", string uri = "api/wos/?databaseId=WOK&usrQuery=AI=({0})&count=100&firstRecord={1}&publishTimeSpan={2}%2B2022-12-31&count=100&")
         {
             ROWoSControllerJSON info = new ROWoSControllerJSON(this);
             int n = 0;
@@ -102,7 +104,7 @@ namespace WoSConnect.ROs.WoS.Controllers
             while (sol.Count() == 100 * n)
             {
                 n++;
-                Uri url = new Uri(baseUri + string.Format(uri, name, reult.ToString()));
+                Uri url = new Uri(baseUri + string.Format(uri, name, reult.ToString(),date));
                 reult = 100 * n;
                 string info_publication = httpCall(url.ToString(), "GET", headers).Result;
                 Root objInicial = JsonConvert.DeserializeObject<Root>(info_publication);
