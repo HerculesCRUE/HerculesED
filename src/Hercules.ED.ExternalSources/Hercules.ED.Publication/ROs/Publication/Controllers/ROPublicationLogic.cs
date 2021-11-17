@@ -97,15 +97,16 @@ namespace PublicationConnect.ROs.Publications.Controllers
         /// Main function from get all repositories from the RO account
         /// </summary>
         /// <param name="ID"></param>
+        /// <param date="year-month-day"></param>
         /// <returns></returns>
-        public List<Publication> getPublications(string name)
+        public List<Publication> getPublications(string name,  string date="1500-01-01")
         {
             //Declaro el Resultado
             List<Publication> resultado = new List<Publication>();
-            List<Publication> objInicial_Scopus = llamada_Scopus(name);
+            List<Publication> objInicial_Scopus = llamada_Scopus(name,date);
 
             //consulta a WoS 
-            List<Publication> objInicial_woS = llamada_WoS(name);
+            List<Publication> objInicial_woS = llamada_WoS(name,date);
             if (objInicial_Scopus.Count >= 1)
             {
                 foreach (Publication pub in objInicial_woS)
@@ -560,16 +561,17 @@ namespace PublicationConnect.ROs.Publications.Controllers
             Publication objInicial_CrossRef = JsonConvert.DeserializeObject<Publication>(info_publication);
             return objInicial_CrossRef;
         }
-        public List<Publication> llamada_Scopus(string orcid)
+        public List<Publication> llamada_Scopus(string orcid,string date)
         {
-            Uri url = new Uri(string.Format("http://localhost:5001/Scopus/GetROs?orcid={0}", orcid));
+            Uri url = new Uri(string.Format("http://localhost:5001/Scopus/GetROs?orcid={0}&date={1}", orcid,date));
             string info_publication = httpCall(url.ToString(), "GET", headers).Result;
             List<Publication> objInicial_Scopus = JsonConvert.DeserializeObject<List<Publication>>(info_publication);
             return objInicial_Scopus;
         }
-        public List<Publication> llamada_WoS(string orcid)
+
+        public List<Publication> llamada_WoS(string orcid,string date)
         {
-            Uri url = new Uri(string.Format("http://localhost:5000/WoS/GetROs?orcid={0}", orcid));
+            Uri url = new Uri(string.Format("http://localhost:5000/WoS/GetROs?orcid={0}&date={1}", orcid,date));
             string info_publication = httpCall(url.ToString(), "GET", headers).Result;
             List<Publication> objInicial_woS = JsonConvert.DeserializeObject<List<Publication>>(info_publication);
             return objInicial_woS;

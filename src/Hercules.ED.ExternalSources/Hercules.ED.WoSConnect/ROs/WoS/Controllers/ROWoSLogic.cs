@@ -108,7 +108,6 @@ namespace WoSConnect.ROs.WoS.Controllers
                 n++;
                 result = 100 * n;
                 string info_publication = httpCall(url.ToString(), "GET", headers).Result;
-                //Console.Write(info_publication);
                 Root objInicial = JsonConvert.DeserializeObject<Root>(info_publication);
                 cardinalidad = objInicial.Data.Records.records.REC.Count();
                 List<Publication> nuevas = info.getListPublicatio(objInicial);

@@ -32,10 +32,7 @@ namespace WoSConnect.ROs.WoS.Controllers
                         {
                             if (objInicial.Data.Records.records.REC != null)
                             {
-                                Console.Write("Cantidad de items devueltos:\n");
-                                Console.Write(objInicial.Data.Records.records.REC.Count);
-                                
-
+                               
                                 foreach (PublicacionInicial rec in objInicial.Data.Records.records.REC)
                                 {
 
