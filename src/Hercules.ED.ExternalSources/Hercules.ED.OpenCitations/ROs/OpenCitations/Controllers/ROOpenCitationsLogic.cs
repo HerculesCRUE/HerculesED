@@ -98,26 +98,53 @@ namespace OpenCitationsConnect.ROs.OpenCitations.Controllers
         /// <returns></returns>
         public Publication getPublications(string name)//, string uri = "/references/{0}")
         {
+            ROOpenCitationsControllerJSON info = new ROOpenCitationsControllerJSON(this);
             Publication sol = new Publication();
-            sol.doi=name;
+            sol.doi = name;
             Uri url = new Uri(baseUri + string.Format("/references/{0}", name));
             string info_publication = httpCall(url.ToString(), "GET", headers).Result;
-            // MODELO DEVUELTO 
-            Root objInicial = JsonConvert.DeserializeObject<Root>("{\"data\": "+info_publication+" }");
-            // CAMBIO DE MODELO -- PAra ello llamamos al controlador de cambio de modelo! 
-            ROOpenCitationsControllerJSON info = new ROOpenCitationsControllerJSON(this);
-            if(objInicial!=null){
-            sol.bibliografia= info.getBiblografia(objInicial);
+            if (info_publication.StartsWith("<") )
+            //todo posiblemente este if halla que mejorarlo! 
+            {
+                Console.Write("Open Citations - error en el input");
             }
+            else
+            {
+                // MODELO DEVUELTO 
+                Root objInicial = JsonConvert.DeserializeObject<Root>("{\"data\": " + info_publication + " }");
+                // CAMBIO DE MODELO -- PAra ello llamamos al controlador de cambio de modelo! 
 
-             url = new Uri(baseUri + string.Format("/citations/{0}", name));
-             info_publication = httpCall(url.ToString(), "GET", headers).Result;
-            // MODELO DEVUELTO 
-            objInicial = JsonConvert.DeserializeObject<Root>("{\"data\": "+info_publication +" }");
-            if(objInicial!=null){
-            sol.citas= info.getCitas(objInicial);
+                if (objInicial != null)
+                {
+                    List<Publication> bib = new List<Publication>();
+                    bib = info.getBiblografia(objInicial);
+                    if (bib != null)
+                    {
+                        sol.bibliografia = bib;
+
+                    }
+                }
             }
-
+            url = new Uri(baseUri + string.Format("/citations/{0}", name));
+            info_publication = httpCall(url.ToString(), "GET", headers).Result;
+            if (info_publication.StartsWith("<"))
+            {
+                Console.Write("Open Citations - error en el input");
+            }
+            else
+            {
+                // MODELO DEVUELTO 
+                Root objInicial = JsonConvert.DeserializeObject<Root>("{\"data\": " + info_publication + " }");
+                if (objInicial != null)
+                {
+                    List<Publication> citas = new List<Publication>();
+                    citas = info.getCitas(objInicial);
+                    if (citas != null)
+                    {
+                        sol.citas = citas;
+                    }
+                }
+            }
             return sol;
         }
     }

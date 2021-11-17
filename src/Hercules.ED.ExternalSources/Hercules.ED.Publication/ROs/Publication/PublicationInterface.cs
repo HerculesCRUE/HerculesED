@@ -10,7 +10,7 @@ namespace PublicationConnect.ROs.Publications
 {
    interface PublicationInterface
     {
-        List<Publication> getPublications(string userId);
+        List<Publication> getPublications(string orcid);
 
     }
 }

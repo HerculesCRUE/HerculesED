@@ -84,7 +84,7 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
             }
             else
             {
-                return "";
+                return null;
             }
 
         }
@@ -99,6 +99,10 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
             Uri url = new Uri(baseUri + string.Format(uri, name));
             string info_publication = httpCall(url.ToString(), "GET", headers).Result;
             // MODELO DEVUELTO 
+            if(info_publication=="Resource not found."){
+                //Console.Write("HEY");
+                return null;
+            }
             Root objInicial = JsonConvert.DeserializeObject<Root>(info_publication);
             // CAMBIO DE MODELO -- PAra ello llamamos al controlador de cambio de modelo! 
             ROCrossRefControllerJSON info = new ROCrossRefControllerJSON(this);

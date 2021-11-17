@@ -92,9 +92,10 @@ namespace WoSConnect.ROs.WoS.Models.Inicial
         public Object name { get; set; }
     }
 
+
     public class Doctypes
     {
-        public object doctype { get; set; }
+        public Object doctype { get; set; }
         public int count { get; set; }
     }
 

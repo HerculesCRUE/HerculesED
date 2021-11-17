@@ -33,7 +33,7 @@ namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
 
 
         
-        public Publication cambioDeModeloPublicacion(Root objInicial, Boolean publicacion_principal)
+        public Publication cambioDeModeloPublicacion(Root objInicial)
         {
             Publication publicacion = new Publication();
             if (objInicial != null)
@@ -81,7 +81,11 @@ namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
                    IDs.Add("PubMedCentral: "+objInicial.externalIds.PubMedCentral);
                }
             }
+            if(IDs.Count==0){
+                return null;
+            }else{
             return IDs;
+            }
         }
 
 
@@ -116,18 +120,19 @@ namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
                 links.Add(objInicial.url);
                 return links;
             }
-            return new List<string>();
+            return null;
         }
 
         public DateTimeValue getDate(Root objInicial)
         {
-            DateTimeValue date = new DateTimeValue();
-            date.datimeTime =null;
+            
             if(objInicial.year!=null){
+                DateTimeValue date = new DateTimeValue();
+            date.datimeTime =null;
                 date.datimeTime=objInicial.year.ToString();
             //todo: esto no es del todo correcto! porque no es una fecha sino un año! 
             }
-            return date;
+            return null;
         }        
 
         // public string getPageStart(Root objInicial)
@@ -177,7 +182,7 @@ namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
                 }
                 return autores;
             }
-            return new List<Person>();
+            return null;
         }
 
         public Journal getJournal(Root objInicial)
@@ -187,21 +192,21 @@ namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
                 revista.name= objInicial.venue;
                 return revista;
             }
-            return new Journal();;
+            return null;
         }
-
-       
 
         public List<PublicationMetric> getPublicationMetric(Root objInicial)
         {
-            List<PublicationMetric> metriscas = new List<PublicationMetric>();
-            PublicationMetric metricPublicacion = new PublicationMetric();
+            
             if(objInicial.citationCount!=null){
+                List<PublicationMetric> metriscas = new List<PublicationMetric>();
+            PublicationMetric metricPublicacion = new PublicationMetric();
                 metricPublicacion.citationCount=objInicial.citationCount.ToString();
                 metricPublicacion.metricName="SemanticScholar";
-            }
-            metriscas.Add(metricPublicacion);
+                metriscas.Add(metricPublicacion);
             return metriscas;
+            }
+            return null;
         }
 
         // public List<Publication> getBiblografia(Root objInicial)
