@@ -28,6 +28,7 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                 {
                     if (objInicial.SearchResults.entry != null)
                     {
+            
                         foreach (PublicacionInicial rec in objInicial.SearchResults.entry)
                         {
                             if (DateTime.Parse(rec.PrismCoverDate) > DateTime.Parse(date))

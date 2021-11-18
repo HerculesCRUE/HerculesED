@@ -34,6 +34,7 @@ public class Publication
     public List<PublicationMetric> hasMetric { get; set; }
     public List<Publication> bibliografia { get; set; }
     public List<Publication> citas {get;set;}
+    
 
 }
 
