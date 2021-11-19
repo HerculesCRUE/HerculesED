@@ -1080,16 +1080,14 @@
 										"properties": [
 											{
 												"property": "http://purl.org/ontology/bibo/presentedAt",
-												"type": "entity",
+												"type": "auxEntity",
 												"title": {
 													"es": "Evento"
 												},
-												"multiple": false,
-												"required": false,
+												"multiple": true,
 												"width": 3,
-												"entityData": {
+												"auxEntityData": {
 													"rdftype": "http://purl.org/ontology/bibo/Event",
-													"graph": "document",
 													"propertyTitle": {
 														"property": "http://purl.org/dc/elements/1.1/title"
 													},
