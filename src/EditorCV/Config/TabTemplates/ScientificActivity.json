@@ -1080,6 +1080,7 @@
 										"properties": [
 											{
 												"property": "http://purl.org/ontology/bibo/presentedAt",
+												"TODO": "Entidad auxiliar de multiplicidad 0,1",
 												"type": "auxEntity",
 												"title": {
 													"es": "Evento"
