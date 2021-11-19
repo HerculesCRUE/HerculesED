@@ -157,6 +157,14 @@
 						"proptitle": "http://w3id.org/roh/title",
 						"propdescription": "http://purl.org/ontology/bibo/abstract",
 						"rdftype": "http://purl.org/ontology/bibo/Document",
+						"loadPropertyValues": [
+							{
+								"property": "http://w3id.org/roh/scientificActivityDocument",
+								"values": [
+									"http://gnoss.com/items/scientificactivitydocument_SAD1"
+								]
+							}
+						],
 						"sections": [
 							{
 								"title": {
@@ -874,6 +882,7 @@
 				"title": {
 					"es": "Trabajos presentados en congresos nacionales o internacionales"
 				},
+				
 				"listItemsPresentation": {
 					"property": "http://vivoweb.org/ontology/core#relatedBy",
 					"listItem": {
@@ -1022,6 +1031,14 @@
 						"proptitle": "http://w3id.org/roh/title",
 						"propdescription": "http://purl.org/ontology/bibo/abstract",
 						"rdftype": "http://purl.org/ontology/bibo/Document",
+						"loadPropertyValues": [
+							{
+								"property": "http://w3id.org/roh/scientificActivityDocument",
+								"values": [
+									"http://gnoss.com/items/scientificactivitydocument_SAD2"
+								]
+							}
+						],
 						"sections": [
 							{
 								"title": {
@@ -2092,6 +2109,14 @@
 						"proptitle": "http://w3id.org/roh/title",
 						"propdescription": "http://purl.org/ontology/bibo/abstract",
 						"rdftype": "http://purl.org/ontology/bibo/Document",
+						"loadPropertyValues": [
+							{
+								"property": "http://w3id.org/roh/scientificActivityDocument",
+								"values": [
+									"http://gnoss.com/items/scientificactivitydocument_SAD3"
+								]
+							}
+						],
 						"sections": [
 							{
 								"title": {
@@ -3177,6 +3202,14 @@
 						"proptitle": "http://w3id.org/roh/title",
 						"propdescription": "http://purl.org/ontology/bibo/abstract",
 						"rdftype": "http://purl.org/ontology/bibo/Document",
+						"loadPropertyValues": [
+							{
+								"property": "http://w3id.org/roh/scientificActivityDocument",
+								"values": [
+									"http://gnoss.com/items/scientificactivitydocument_SAD4"
+								]
+							}
+						],
 						"sections": [
 							{
 								"title": {
