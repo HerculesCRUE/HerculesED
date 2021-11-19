@@ -238,7 +238,7 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Nombre de la publicación"
+													"es": "Publicación principal"
 												},
 												"type": "entity",
 												"multiple": false,
@@ -1080,14 +1080,16 @@
 										"properties": [
 											{
 												"property": "http://purl.org/ontology/bibo/presentedAt",
-												"type": "auxEntity",
+												"type": "entity",
 												"title": {
 													"es": "Evento"
 												},
-												"multiple": true,
+												"multiple": false,
+												"required": false,
 												"width": 3,
-												"auxEntityData": {
+												"entityData": {
 													"rdftype": "http://purl.org/ontology/bibo/Event",
+													"graph": "document",
 													"propertyTitle": {
 														"property": "http://purl.org/dc/elements/1.1/title"
 													},
