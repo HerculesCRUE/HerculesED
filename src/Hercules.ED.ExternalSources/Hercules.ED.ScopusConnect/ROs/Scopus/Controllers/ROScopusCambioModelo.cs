@@ -12,6 +12,7 @@ namespace ScopusConnect.ROs.Scopus.Controllers
 {
     public class ROScopusControllerJSON //: //ROScopusLogic
     {
+        public List<string> advertencia = null;
         public ROScopusLogic ScopusLogic;
         public ROScopusControllerJSON(ROScopusLogic WoSLogic)
         {
@@ -36,6 +37,10 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                                 
                                 Publication publicacion = cambioDeModeloPublicacion(rec, true);
                                 if(publicacion!=null){
+                                     if(this.advertencia !=null){
+                                            publicacion.problema = this.advertencia;
+                                            this.advertencia=null;
+                                        }
                                 sol.Add(publicacion);
                                 }
                                 
