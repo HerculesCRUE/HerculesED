@@ -1,4 +1,13 @@
 @*[security|||shared/head/_ficherosjavascript.cshtml|||hercules]*@
+@using Es.Riam.Gnoss.Web.MVC.Models
+@using Es.Riam.Gnoss.Web.MVC.Controles.Helper
+@using Es.Riam.Gnoss.Web.MVC.Models.ViewModels
+@using Es.Riam.Gnoss.Web.MVC.Models.Administracion
+@using Es.Riam.Gnoss.AD.ServiciosGenerales
+@using Es.Riam.Gnoss.Web.MVC.Controllers
+@using Es.Riam.Gnoss.Web.MVC.Controllers.Administracion
+@using Es.Riam.Gnoss.Web.Controles
+@using Newtonsoft.Json
 @{
     CommunityModel Comunidad = Html.GetComunidad();
     string versionCSS = ViewBag.Version;
@@ -59,14 +68,6 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/cytoscape-qtip@2.8.0/cytoscape-qtip.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape-popper/2.0.0/cytoscape-popper.js"></script>
 
-<!-- PERSONALIZACION TEMA -->
-<script type="text/javascript" src="@urlPersonalizacion/theme/theme.js"></script>
-<script type="text/javascript" src="@urlPersonalizacion/theme/community.js"></script>
-<script type="text/javascript" src="@urlPersonalizacion/theme/community_proy.js"></script>
-
-
-
-
 @if (Html.GetJSYCSSunificado().HasValue && Html.GetJSYCSSunificado().Value)
 {
     <script type="text/javascript" src="@Html.GetBaseUrlStatic()/js/unificado.js?v=@Html.GetVersion()"></script>
@@ -96,6 +97,13 @@ else
     <script type="text/javascript" src="@Html.GetBaseUrlStatic()/jsUnificar/MVC.ComAdmin.js?v=@Html.GetVersion()"></script>
 
 }
+
+<!-- PERSONALIZACION TEMA -->
+<script type="text/javascript" src="@urlPersonalizacion/theme/theme.js"></script>
+<script type="text/javascript" src="@urlPersonalizacion/theme/community.js"></script>
+<script type="text/javascript" src="@urlPersonalizacion/theme/community_proy.js"></script>
+<!-- MomentJS -->
+<script type="text/javascript" src="@Html.GetBaseUrlStatic()/responsive/theme/libraries/momentJS/moment.js?v=@Html.GetVersion()"></script>
 
 @{
     string idioma = Html.GetUtilIdiomas().LanguageCode;
@@ -138,7 +146,6 @@ else
     <script type="text/javascript">@Html.Raw(Html.GetGoogleAnalytics())</script>
 }
 
-<script type="text/javascript" src="@Html.GetBaseUrlStatic()/jsNuevo/jquery.autocomplete.js?v=@Html.GetVersion()"></script>
 
 
 
