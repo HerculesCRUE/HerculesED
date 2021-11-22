@@ -179,11 +179,11 @@ namespace OpenCitationsConnect.ROs.OpenCitations.Controllers
             {
                 foreach (PublicationInicial referencia in objInicial.data)
                 {
-                    if (referencia.cited != null)
+                    if (referencia.citing != null)
                     {
                         Publication pub = new Publication();
 
-                        string[] datos = referencia.cited.Split("> ");
+                        string[] datos = referencia.citing.Split("> ");
                         pub.doi = datos[1];
                         sol.Add(pub);
                     }

@@ -32,9 +32,10 @@ namespace WoSConnect.ROs.WoS.Controllers
                         {
                             if (objInicial.Data.Records.records.REC != null)
                             {
-
+                               
                                 foreach (PublicacionInicial rec in objInicial.Data.Records.records.REC)
                                 {
+
                                     //Console.Write("hola");
                                     //try
                                     //{
@@ -110,38 +111,42 @@ namespace WoSConnect.ROs.WoS.Controllers
                     {
                         if (objInicial.static_data.summary.doctypes.doctype != null)
                         {
-                            Console.Write(objInicial.static_data.summary.doctypes.doctype);
                             try
                             {
                                 JArray hey = JsonConvert.DeserializeObject<JArray>(objInicial.static_data.summary.doctypes.doctype.ToString());
-                                //TODO: cuidado aqui a ver que hacemos! 
-                                //foreach (JContainer aa in hey)
-                                //{
-                                return "problema_a_solucionar";
-                                // string typeWoS = aa.ToString();
-                                // if (typeWoS == "Article")
-                                // {
-                                //     return "Journal Article";
-                                // }
-                                // else if (typeWoS == "Book")
-                                // {
-                                //     return "Book";
-                                // }
-                                // else if (typeWoS == "Book Chapter")
-                                // {
-                                //     return "Chapter";
-                                // }
-                                // else if (typeWoS == "Proceedings Paper")
-                                // {
-                                //     return "Conference Paper";
-                                // }
-                                // else { return null; }
-                                //}
+                                List<string> types = new List<string>();
+                                for(int i=0; i<hey.Count;i++){
+                                   
+                                    //return "problema_a_solucionar";
+                                    string typeWoS = hey[i].ToString();
+                                    if (typeWoS == "Article")
+                                    {
+                                        types.Add("Journal Article");
+                                    }
+                                    if (typeWoS == "Book")
+                                    {
+                                        types.Add("Book");
+                                    }
+                                    if (typeWoS == "Book Chapter")
+                                    {
+                                        types.Add("Chapter");
+                                    }
+                                    if (typeWoS == "Proceedings Paper")
+                                    {
+                                        types.Add("Conference Paper");
+                                    }
+                                }
+                                if(types.Count>1){
+                                    //todo: problemas!!!
+                                    return "problema_a_solucionar";
+ 
+                                }else if (types.Count==0){
+                                    return null;
+                                }else{return types[0];}
 
                             }
                             catch
                             {
-                                Console.Write(objInicial.static_data.summary.doctypes.doctype.ToString());
                                 //string hey = JsonConvert.DeserializeObject<string>(objInicial.static_data.summary.doctypes.doctype.ToString());
                                 string typeWoS = objInicial.static_data.summary.doctypes.doctype.ToString();
                                 if (typeWoS == "Article")
@@ -425,7 +430,6 @@ namespace WoSConnect.ROs.WoS.Controllers
                                 foreach (JContainer var in hey)
                                 {
                                     Person persona = new Person();
-                                    //Console.Write(var.ToString() + "\n");
 
                                     try
                                     {
@@ -517,7 +521,6 @@ namespace WoSConnect.ROs.WoS.Controllers
                             }
                             catch
                             {
-                                //Console.Write(objInicial.static_data.summary.names.name.ToString());
                                 try
                                 {
                                     Name_2 ee = JsonConvert.DeserializeObject<Name_2>(objInicial.static_data.summary.names.name.ToString());
@@ -634,7 +637,7 @@ namespace WoSConnect.ROs.WoS.Controllers
                     }
                 }
             }
-             if (objInicial.dynamic_data != null)
+            if (objInicial.dynamic_data != null)
             {
                 if (objInicial.dynamic_data.cluster_related != null)
                 {
@@ -662,14 +665,14 @@ namespace WoSConnect.ROs.WoS.Controllers
                             catch
                             {
                                 Identifier identifier = JsonConvert.DeserializeObject<Identifier>(objInicial.dynamic_data.cluster_related.identifiers.identifier.ToString());
-                                 if (identifier.type == "issn")
-                                    {
-                                        revista.issn = identifier.value;
-                                    }
-                                    if (identifier.type == "eissn")
-                                    {
-                                        revista.eissn = identifier.value;
-                                    }
+                                if (identifier.type == "issn")
+                                {
+                                    revista.issn = identifier.value;
+                                }
+                                if (identifier.type == "eissn")
+                                {
+                                    revista.eissn = identifier.value;
+                                }
                             }
                         }
 
@@ -677,9 +680,11 @@ namespace WoSConnect.ROs.WoS.Controllers
                     }
                 }
             }
-            if(revista!= new Journal()){
+            if (revista != new Journal())
+            {
                 return revista;
-            }else{return null;}
+            }
+            else { return null; }
         }
 
         public List<PublicationMetric> getPublicationMetric(PublicacionInicial objInicial)

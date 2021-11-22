@@ -33,7 +33,7 @@ namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
 
 
         
-        public Publication cambioDeModeloPublicacion(Root objInicial, Boolean publicacion_principal)
+        public Publication cambioDeModeloPublicacion(Root objInicial)
         {
             Publication publicacion = new Publication();
             if (objInicial != null)

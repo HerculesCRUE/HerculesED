@@ -50,9 +50,9 @@ namespace ScopusConnect.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-      public List<Publication> GetROs([FromQuery][Required] string orcid,string date = "1800-01-01") 
+      public List<Publication> GetROs([FromQuery][Required] string orcid,string date = "1500-01-01") 
              {
-            ROScopusController ScopusObject = new ROScopusController("https://api.elsevier.com/", "75f4ab3fac56f42ac83cdeb7c98882ca");//"adf94bebeeba8c3042ad5193455740e2");
+            ROScopusController ScopusObject = new ROScopusController("https://api.elsevier.com/", "adf94bebeeba8c3042ad5193455740e2");//"75f4ab3fac56f42ac83cdeb7c98882ca");//"adf94bebeeba8c3042ad5193455740e2");
             List<Publication> publication = ScopusObject.getPublications(orcid,date);
             return publication;
         }

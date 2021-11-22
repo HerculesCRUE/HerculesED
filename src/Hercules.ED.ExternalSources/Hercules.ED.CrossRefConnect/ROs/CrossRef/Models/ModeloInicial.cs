@@ -7,8 +7,8 @@ namespace CrossRefConnect.ROs.CrossRef.Models.Inicial
 // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse); 
     public class Indexed
     {
-        [JsonProperty("date-parts")]
-        public List<List<int>> DateParts { get; set; }
+        //[JsonProperty("date-parts")]
+        //public List<List<int>> DateParts { get; set; }
 
         [JsonProperty("date-time")]
         public DateTime DateTime { get; set; }
@@ -17,8 +17,8 @@ namespace CrossRefConnect.ROs.CrossRef.Models.Inicial
 
     public class Start
     {
-        [JsonProperty("date-parts")]
-        public List<List<int>> DateParts { get; set; }
+       // [JsonProperty("date-parts")]
+       // public List<List<int>> DateParts { get; set; }
 
         [JsonProperty("date-time")]
         public DateTime DateTime { get; set; }
@@ -206,7 +206,7 @@ namespace CrossRefConnect.ROs.CrossRef.Models.Inicial
 
         [JsonProperty("short-title")]
         public List<object> ShortTitle { get; set; }
-        public Issued issued { get; set; }
+       // public Issued issued { get; set; }
 
         [JsonProperty("references-count")]
         public int ReferencesCount { get; set; }
@@ -226,17 +226,15 @@ namespace CrossRefConnect.ROs.CrossRef.Models.Inicial
 
     public class Root
     {
-        public string status { get; set; }
+       // public string status { get; set; }
 
-        [JsonProperty("message-type")]
-        public string MessageType { get; set; }
+      //  [JsonProperty("message-type")]
+       // public string MessageType { get; set; }
 
-        [JsonProperty("message-version")]
-        public string MessageVersion { get; set; }
+       // [JsonProperty("message-version")]
+        //public string MessageVersion { get; set; }
         public PublicacionInicial message { get; set; }
     }
-
-
 
     
 }

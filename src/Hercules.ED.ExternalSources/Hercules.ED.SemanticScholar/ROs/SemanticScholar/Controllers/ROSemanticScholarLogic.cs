@@ -102,7 +102,7 @@ namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
             Root objInicial = JsonConvert.DeserializeObject<Root>(info_publication);
             // CAMBIO DE MODELO -- PAra ello llamamos al controlador de cambio de modelo! 
             ROSemanticScholarControllerJSON info = new ROSemanticScholarControllerJSON(this);
-            Publication sol = info.cambioDeModeloPublicacion(objInicial,false);
+            Publication sol = info.cambioDeModeloPublicacion(objInicial);
             sol.doi=name;
             return sol;
         }

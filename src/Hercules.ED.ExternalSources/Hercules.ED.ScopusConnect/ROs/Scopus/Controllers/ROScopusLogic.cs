@@ -94,27 +94,33 @@ namespace ScopusConnect.ROs.Scopus.Controllers
         /// <param date="date">year-month-day</param>
 
         /// <returns></returns>
-        public List<Publication> getPublications(string name, string date = "1800-01-01", string uri = "content/search/scopus?query=ORCID(\"{0}\")&count=200&date={1}")//AU-ID?{0}")
+        public List<Publication> getPublications(string name, string date = "1500-01-01", string uri = "content/search/scopus?query=ORCID(\"{0}\")&count=200&date={1}%&start={2}")//AU-ID?{0}")
         {
-            string date_scopus = date.Substring(0,4)+"-"+ DateTime.Now.Date.Year.ToString();
-
-            Uri url = new Uri(baseUri + string.Format(uri, name,date_scopus));
-            string info_publication = httpCall(url.ToString(), "GET", headers).Result;
+            string date_scopus = date.Substring(0, 4) + "-" + (DateTime.Now.Date.Year+1).ToString();
+            
             ROScopusControllerJSON info = new ROScopusControllerJSON(this);
-            Root objInicial = JsonConvert.DeserializeObject<Root>(info_publication);
-            Console.Write(info_publication);
-            List<Publication> sol = info.getListPublicatio(objInicial,date);
-            int n200 = 1;
-            while(sol.Count == n200*200){
-                int start = n200*200;
-                uri="content/search/scopus?query=ORCID(\"{0}\")&count=200&date={1}&start={2}";
-                 url = new Uri(baseUri + string.Format(uri, name,date_scopus,start.ToString()));
-                info_publication = httpCall(url.ToString(), "GET", headers).Result;
-                n200=n200+1;
-                objInicial = JsonConvert.DeserializeObject<Root>(info_publication);
-                List<Publication> list_1=info.getListPublicatio(objInicial,date);
-                sol.AddRange(list_1);
+            
+            
+            int n = 0;
+            List<Publication> sol = new List<Publication>();
+            int result = 1;
+            int cardinalidad =1;
+            while (cardinalidad >= result )
+            {
+    
+                uri = "content/search/scopus?query=ORCID(\"{0}\")&count=200&date={1}&start={2}";
+                Uri url = new Uri(baseUri + string.Format(uri, name, date_scopus, result.ToString()));
+                result = 200*n;
 
+                n++;
+                String info_publication = httpCall(url.ToString(), "GET", headers).Result;
+                if (info_publication != "{\"service-error\":{\"status\":{\"statusCode\":\"INVALID_INPUT\",\"statusText\":\"Error translating query\"}}}")
+                {            
+                    Root objInicial = JsonConvert.DeserializeObject<Root>(info_publication);
+                    List<Publication> nuevas = info.getListPublicatio(objInicial, date);
+                    sol.AddRange(nuevas);
+                    cardinalidad = objInicial.SearchResults.entry.Count;
+                }
             }
             return sol;
         }

@@ -8,7 +8,7 @@ namespace WoSConnect.ROs.WoS
 {
    interface WoSInterface
     {
-        List<Publication> getPublications(string userId, string uri);
+        List<Publication> getPublications(string userId, string date, string uri);
 
     }
 }
