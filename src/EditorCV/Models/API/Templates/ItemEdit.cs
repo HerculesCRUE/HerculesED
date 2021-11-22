@@ -34,10 +34,6 @@ namespace GuardadoCV.Models.API.Templates
         /// </summary>
         public string rdftype;
         /// <summary>
-        /// Propiedades a cargar
-        /// </summary>
-        public List<LoadPropertyValues> loadPropertyValues;
-        /// <summary>
         /// Genera el PropertyData para recuperar los datos
         /// </summary>
         /// <param name="pGraph">Grafo</param>
@@ -66,15 +62,6 @@ namespace GuardadoCV.Models.API.Templates
             }
             return propertyDatas;
         }
-    }
-
-    /// <summary>
-    /// Propiedades a cargar
-    /// </summary>
-    public class LoadPropertyValues
-    {
-        public string property { get; set; }
-        public List<string> values { get; set; }
     }
 
     /// <summary>
@@ -125,10 +112,6 @@ namespace GuardadoCV.Models.API.Templates
                 {
                     property = propertyDatas.First(x => x.property == property.property);
                 }
-                if(itemEditSectionRowProperty.type== DataTypeEdit.auxEntityAuthorList)
-                {
-                    property.childs.AddRange(GetPropertyDataAuthorList());
-                }
                 if (itemEditSectionRowProperty.auxEntityData != null && itemEditSectionRowProperty.auxEntityData.rows != null)
                 {
                     foreach (ItemEditSectionRow itemEditSectionRowIn in itemEditSectionRowProperty.auxEntityData.rows)
@@ -177,35 +160,6 @@ namespace GuardadoCV.Models.API.Templates
                 }
             }
             return propertyDatas;
-        }
-
-        /// <summary>
-        /// Genera los PropertyData para obtener los datos de autores
-        /// </summary>
-        /// <returns></returns>
-        private List<Utils.PropertyData> GetPropertyDataAuthorList()
-        {
-            List<Utils.PropertyData> listado = new List<Utils.PropertyData>() {
-                new Utils.PropertyData() {
-                    property= "http://xmlns.com/foaf/0.1/nick"
-                },
-                new Utils.PropertyData() {
-                    property = "http://www.w3.org/1999/02/22-rdf-syntax-ns#comment"
-                },
-                new Utils.PropertyData() {
-                    property = "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
-                    graph= "person",
-                    childs=new List<Utils.PropertyData>() {
-                        new Utils.PropertyData(){
-                            property="http://xmlns.com/foaf/0.1/name"
-                        },
-                        new Utils.PropertyData(){
-                            property="http://w3id.org/roh/ORCID"
-                        }
-                    }
-                }
-            };
-            return listado;
         }
     }
 

@@ -46,8 +46,6 @@ namespace GuardadoCV.Models.API.Templates
         auxEntity,
         //Entidad principal
         entity,
-        //Listado de autores
-        auxEntityAuthorList
     }
 
 }
