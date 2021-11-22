@@ -5092,8 +5092,8 @@
 			}
 		},
 		{
-			"rdftype": "http://w3id.org/roh/RelatedPrize",
-			"property": "http://w3id.org/roh/prizes",
+			"rdftype": "http://w3id.org/roh/RelatedResearchEvaluation",
+			"property": "http://w3id.org/roh/researchEvaluations",
 			"presentation": {
 				"type": "listitems",
 				"title": {
