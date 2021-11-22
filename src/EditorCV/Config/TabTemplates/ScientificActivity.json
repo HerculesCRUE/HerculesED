@@ -4645,10 +4645,10 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Número de asistentes"
+													"es": "Nº de asistentes"
 												},
 												"placeholder": {
-													"es": "Introduce el número de asistentes"
+													"es": "Introduce el nº de asistentes"
 												},
 												"property": "http://w3id.org/roh/attendants",
 												"type": "number",
@@ -4864,7 +4864,6 @@
 											"es": "Ámbito geográfico"
 										},
 										"property": "http://vivoweb.org/ontology/core#geographicFocus",
-										"TODO": "No se despliega el combo de valores.",
 										"combo": {
 											"rdftype": "http://vivoweb.org/ontology/core#GeographicRegion",
 											"graph": "geographicregion",
