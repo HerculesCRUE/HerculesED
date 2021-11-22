@@ -1854,6 +1854,14 @@
 												"property": "https://www.w3.org/2006/vcard/ns#hasRegion",
 												"combo": {
 													"rdftype": "http://www.geonames.org/ontology#Feature",
+													"filter": {
+														"property": "http://www.geonames.org/ontology#featureCode",
+														"value": "ADM1"
+													},
+													"dependency": {
+														"property": "http://www.geonames.org/ontology#parentFeature",
+														"propertyValue": "https://www.w3.org/2006/vcard/ns#hasCountryName"
+													},
 													"graph": "feature",
 													"property": {
 														"property": "http://www.geonames.org/ontology#name"
@@ -2950,6 +2958,14 @@
 												"property": "https://www.w3.org/2006/vcard/ns#hasRegion",
 												"combo": {
 													"rdftype": "http://www.geonames.org/ontology#Feature",
+													"filter": {
+														"property": "http://www.geonames.org/ontology#featureCode",
+														"value": "ADM1"
+													},
+													"dependency": {
+														"property": "http://www.geonames.org/ontology#parentFeature",
+														"propertyValue": "https://www.w3.org/2006/vcard/ns#hasCountryName"
+													},
 													"graph": "feature",
 													"property": {
 														"property": "http://www.geonames.org/ontology#name"
@@ -4046,6 +4062,14 @@
 												"property": "https://www.w3.org/2006/vcard/ns#hasRegion",
 												"combo": {
 													"rdftype": "http://www.geonames.org/ontology#Feature",
+													"filter": {
+														"property": "http://www.geonames.org/ontology#featureCode",
+														"value": "ADM1"
+													},
+													"dependency": {
+														"property": "http://www.geonames.org/ontology#parentFeature",
+														"propertyValue": "https://www.w3.org/2006/vcard/ns#hasCountryName"
+													},
 													"graph": "feature",
 													"property": {
 														"property": "http://www.geonames.org/ontology#name"
