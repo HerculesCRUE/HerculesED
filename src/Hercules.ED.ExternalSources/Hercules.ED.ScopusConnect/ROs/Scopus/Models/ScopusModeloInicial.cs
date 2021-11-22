@@ -100,8 +100,8 @@ public class Affiliation
        // public string openaccess { get; set; }
   // public bool openaccessFlag { get; set; }
 
-      //  [JsonProperty("prism:isbn")]
-       // public List<PrismIsbn> PrismIsbn { get; set; }
+        [JsonProperty("prism:isbn")]
+        public List<PrismIsbn> PrismIsbn { get; set; }
 
         [JsonProperty("prism:doi")]
         public string PrismDoi { get; set; }
@@ -119,6 +119,14 @@ public class Affiliation
 
         [JsonProperty("prism:eIssn")]
         public string PrismEIssn { get; set; } 
+    }
+ public class PrismIsbn
+    {
+        [JsonProperty("@_fa")]
+        public string Fa { get; set; }
+
+        [JsonProperty("$")]
+        public string  id { get; set; }
     }
 
     public class SearchResults

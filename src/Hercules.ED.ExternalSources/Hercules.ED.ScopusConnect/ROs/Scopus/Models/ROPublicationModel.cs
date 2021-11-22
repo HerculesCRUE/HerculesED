@@ -6,9 +6,10 @@ namespace ScopusConnect.ROs.Scopus.Models
 
 public class Publication 
 {
+    public List<string> problema {get;set;}
     public string typeOfPublication { get; set; } //no es un atributo de la ontologia!!
     public string title { get; set; }
-    public List<string> freetextKeyword { get; set; }
+    public List<FreetextKeyword>  list_freetextKeyword { get; set; }
     public string Abstract { get; set; }
     public string language { get; set; } 
     public string doi { get; set; }
@@ -30,12 +31,19 @@ public class Publication
      public string presentedAt { get; set; }  
     //todo no creo que esto en nuestra ontologia sea un string y no esta contemplado de mommento rellenarlo! 
 
-    public Journal hasPublicationVenue { get; set; }
+    public Source hasPublicationVenue { get; set; }
     public List<PublicationMetric> hasMetric { get; set; }
     public List<Publication> bibliografia { get; set; }
     public List<Publication> citas {get;set;}
+    
 
 }
+public class FreetextKeyword {
+    public string origin {get;set;}
+    public List<string> freetextKeyword {get;set;}
+}
+
+
 
   public class PublicationMetric  
   {
@@ -47,7 +55,7 @@ public class Publication
       public string datimeTime { get; set; }
   }
 
-  public class Journal 
+  public class Source 
   {
    // public KnowledgeArea hasKnowledgeArea { get; set; }
     //  public JournalMetric hasMetric { get; set; }
@@ -55,11 +63,14 @@ public class Publication
       //public string language { get; set; }
     //  public Organization publisher { get; set; }
       //public Organization correspongingOrganization { get; set; }
+      public string type {get;set;}
       public string issn { get; set; }
+      public List<string> isbn {get;set;}
       public string name { get; set; }
       public string eissn { get; set; }
     //  public string oclcnum { get; set; }
   }
+
 
 public class JournalMetric
 {
@@ -110,6 +121,7 @@ public class KnowledgeArea
     public string name { get; set; }
     public string abbreviation { get; set; }
     public string hasCode { get; set; }
+    public string resource {get;set;}
 }
 public class DateTimeInterval
 {

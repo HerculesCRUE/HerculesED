@@ -6,9 +6,10 @@ namespace WoSConnect.ROs.WoS.Models
 
 public class Publication 
 {
+    public List<string> problema {get;set;}
     public string typeOfPublication { get; set; } //no es un atributo de la ontologia!!
     public string title { get; set; }
-    public List<string> freetextKeyword { get; set; }
+    public List<FreetextKeyword>  list_freetextKeyword { get; set; }
     public string Abstract { get; set; }
     public string language { get; set; } 
     public string doi { get; set; }
@@ -37,6 +38,12 @@ public class Publication
     
 
 }
+public class FreetextKeyword {
+    public string origin {get;set;}
+    public List<string> freetextKeyword {get;set;}
+}
+
+
 
   public class PublicationMetric  
   {
@@ -111,6 +118,7 @@ public class KnowledgeArea
     public string name { get; set; }
     public string abbreviation { get; set; }
     public string hasCode { get; set; }
+    public string resource {get;set;}
 }
 public class DateTimeInterval
 {
