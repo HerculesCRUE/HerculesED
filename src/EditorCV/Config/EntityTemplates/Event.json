@@ -1,0 +1,73 @@
+{
+	"graph": "document",
+	"proptitle": "http://xmlns.com/foaf/0.1/name",
+	"propdescription": "",
+	"rdftype": "http://w3id.org/roh/Event",
+	"sections": [
+		{
+			"title": {
+				"es": "Evento"
+			},
+			"rows": [
+				{
+					"properties": [
+						{
+							"title": {
+								"es": "Nombre del evento"
+							},
+							"required": true,
+							"property": "http://purl.org/dc/elements/1.1/title",
+							"width": 3
+						}
+					]
+				},
+				{
+					"properties": [
+						{
+							"title": {
+								"es": "Fecha de celebración"
+							},
+							"placeholder": {
+								"es": "Introduce la fecha de celebración"
+							},
+							"required": false,
+							"property": "http://vivoweb.org/ontology/core#start",
+							"width": 1
+						},
+						{
+							"title": {
+								"es": "Fecha de finalización"
+							},
+							"placeholder": {
+								"es": "Introduce la fecha de finalización"
+							},
+							"required": false,
+							"property": "http://vivoweb.org/ontology/core#end",
+							"width": 1
+						}
+					]
+				},
+				{
+					"properties": [
+						{
+							"title": {
+								"es": "Entidad organizadora"
+							},
+							"required": false,
+							"property": "http://purl.org/ontology/bibo/organizer",
+							"combo": {
+								"rdftype": "http://xmlns.com/foaf/0.1/Organization",
+								"graph": "organization",
+								"property": {
+									"property": "http://w3id.org/roh/title"
+								}
+							},
+							"type": "text",
+							"width": 3
+						}
+					]
+				}
+			]
+		}
+	]
+}
