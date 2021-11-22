@@ -5104,7 +5104,7 @@
 					"listItem": {
 						"propertyTitle": {
 							"property": "http://vivoweb.org/ontology/core#relatedBy",
-							"graph": "accreditation",
+							"graph": "activity",
 							"child": {
 								"property": "http://w3id.org/roh/title"
 							}
@@ -5118,7 +5118,7 @@
 								"properties": [
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "accreditation",
+										"graph": "activity",
 										"child": {
 											"property": "http://w3id.org/roh/dateIssued"
 										},
@@ -5126,7 +5126,7 @@
 									},
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "accreditation",
+										"graph": "activity",
 										"child": {
 											"property": "http://w3id.org/roh/title"
 										},
@@ -5141,7 +5141,7 @@
 								"properties": [
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "accreditation",
+										"graph": "activity",
 										"child": {
 											"property": "http://w3id.org/roh/dateIssued"
 										},
@@ -5149,7 +5149,7 @@
 									},
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "accreditation",
+										"graph": "activity",
 										"child": {
 											"property": "http://w3id.org/roh/title"
 										},
@@ -5161,11 +5161,11 @@
 						"properties": [
 							{
 								"name": {
-									"es": "Descripción"
+									"es": "Nombre de la actividad"
 								},
 								"child": {
 									"property": "http://vivoweb.org/ontology/core#relatedBy",
-									"graph": "accreditation",
+									"graph": "activity",
 									"child": {
 										"property": "http://w3id.org/roh/title"
 									}
@@ -5174,9 +5174,9 @@
 						]
 					},
 					"listItemEdit": {
-						"graph": "accreditation",
+						"graph": "activity",
 						"proptitle": "http://w3id.org/roh/title",
-						"rdftype": "http://w3id.org/roh/Accreditation",
+						"rdftype": "http://w3id.org/roh/Activity",
 						"sections": [
 							{
 								"title": {
@@ -5187,10 +5187,10 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Descripción"
+													"es": "Nombre de la actividad"
 												},
 												"placeholder": {
-													"es": "Introduce la descripción"
+													"es": "Introduce el nombre de la actividad"
 												},
 												"property": "http://w3id.org/roh/title",
 												"required": true,
@@ -5203,23 +5203,15 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Entidad concesionaria"
+													"es": "Entidad de realización"
 												},
 												"TODO": "Autocompletado/texto libre. En caso de que haya que añadir una nueva organización, será por autocompletado o combo",
 												"placeholder": {
-													"es": "Introduce la entidad concesionaria"
+													"es": "Introduce la entidad de realización"
 												},
-												"property": "http://w3id.org/roh/accreditationIssuedBy",
+												"property": "http://w3id.org/roh/conductedBy",
 												"type": "text",
 												"width": 2
-											},
-											{
-												"title": {
-													"es": "Fecha de concesión"
-												},
-												"property": "http://w3id.org/roh/dateIssued",
-												"type": "date",
-												"width": 1
 											}
 										]
 									}
@@ -5234,17 +5226,58 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Reconocimientos ligados"
+													"es": "Ámbito geográfico"
 												},
-												"placeholder": {
-													"es": "Introduce los reconocimientos ligados"
+												"property": "http://vivoweb.org/ontology/core#geographicFocus",
+												"combo": {
+													"rdftype": "http://vivoweb.org/ontology/core#GeographicRegion",
+													"graph": "geographicregion",
+													"property": {
+														"property": "http://purl.org/dc/elements/1.1/title"
+													}
 												},
-												"property": "http://w3id.org/roh/recognitionLinked",
+												"type": "selectCombo",
+												"width": 1
+											},
+											{
+												"TODO": "Debe aparecer en caso de que en el combo anterior se seleccione Otros",
+												"title": {
+													"es": "Otros"
+												},
+												"property": "http://w3id.org/roh/geographicFocusOther",
 												"type": "text",
-												"width": 2
+												"width": 1
 											}
 										]
-									}
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Modalidad de actividad"
+												},
+												"property": "http://w3id.org/roh/activityModality",
+												"combo": {
+													"rdftype": "http://w3id.org/roh/ActivityModality",
+													"graph": "activitymodality",
+													"property": {
+														"property": "http://purl.org/dc/elements/1.1/title"
+													}
+												},
+												"type": "selectCombo",
+												"width": 2
+											},
+											{
+												"TODO": "Debe aparecer en caso de que en el combo anterior se seleccione Otros",
+												"title": {
+													"es": "Otros"
+												},
+												"property": "http://w3id.org/roh/geographicFocusOther",
+												"type": "text",
+												"width": 1
+											}
+										]
+									},
 								]
 							}
 						]
