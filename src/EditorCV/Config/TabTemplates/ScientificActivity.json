@@ -695,7 +695,6 @@
 														"property": "http://www.geonames.org/ontology#name"
 													}
 												},
-												"TODO": "Autocompletados relacionados. (ej. Comunidad de Murcia --> España",
 												"type": "selectCombo",
 												"width": 1
 											},
@@ -1833,12 +1832,15 @@
 												"property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
 												"combo": {
 													"rdftype": "http://www.geonames.org/ontology#Feature",
+													"filter": {
+														"property": "http://www.geonames.org/ontology#featureCode",
+														"value": "PCLD"
+													},
 													"graph": "feature",
 													"property": {
 														"property": "http://www.geonames.org/ontology#name"
 													}
 												},
-												"TODO": "Autocompletados relacionados. (ej. Comunidad de Murcia --> España",
 												"type": "selectCombo",
 												"width": 1
 											},
@@ -2926,12 +2928,15 @@
 												"property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
 												"combo": {
 													"rdftype": "http://www.geonames.org/ontology#Feature",
+													"filter": {
+														"property": "http://www.geonames.org/ontology#featureCode",
+														"value": "PCLD"
+													},
 													"graph": "feature",
 													"property": {
 														"property": "http://www.geonames.org/ontology#name"
 													}
 												},
-												"TODO": "Autocompletados relacionados. (ej. Comunidad de Murcia --> España",
 												"type": "selectCombo",
 												"width": 1
 											},
@@ -4019,12 +4024,15 @@
 												"property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
 												"combo": {
 													"rdftype": "http://www.geonames.org/ontology#Feature",
+													"filter": {
+														"property": "http://www.geonames.org/ontology#featureCode",
+														"value": "PCLD"
+													},
 													"graph": "feature",
 													"property": {
 														"property": "http://www.geonames.org/ontology#name"
 													}
 												},
-												"TODO": "Autocompletados relacionados. (ej. Comunidad de Murcia --> España",
 												"type": "selectCombo",
 												"width": 1
 											},
