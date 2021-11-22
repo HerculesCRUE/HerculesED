@@ -5265,7 +5265,7 @@
 													}
 												},
 												"type": "selectCombo",
-												"width": 2
+												"width": 1
 											},
 											{
 												"TODO": "Debe aparecer en caso de que en el combo anterior se seleccione Otros",
