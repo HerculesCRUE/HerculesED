@@ -31,7 +31,7 @@ public class Publication
      public string presentedAt { get; set; }  
     //todo no creo que esto en nuestra ontologia sea un string y no esta contemplado de mommento rellenarlo! 
 
-    public Journal hasPublicationVenue { get; set; }
+    public Source hasPublicationVenue { get; set; }
     public List<PublicationMetric> hasMetric { get; set; }
     public List<Publication> bibliografia { get; set; }
     public List<Publication> citas {get;set;}
@@ -55,7 +55,7 @@ public class FreetextKeyword {
       public string datimeTime { get; set; }
   }
 
-  public class Journal 
+  public class Source 
   {
    // public KnowledgeArea hasKnowledgeArea { get; set; }
     //  public JournalMetric hasMetric { get; set; }
@@ -63,11 +63,14 @@ public class FreetextKeyword {
       //public string language { get; set; }
     //  public Organization publisher { get; set; }
       //public Organization correspongingOrganization { get; set; }
+      public string type {get;set;}
       public string issn { get; set; }
+      public List<string> isbn {get;set;}
       public string name { get; set; }
       public string eissn { get; set; }
     //  public string oclcnum { get; set; }
   }
+
 
 public class JournalMetric
 {
