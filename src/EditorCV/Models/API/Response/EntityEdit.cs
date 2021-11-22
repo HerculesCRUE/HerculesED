@@ -98,6 +98,10 @@ namespace GuardadoCV.Models.API.Response
         /// </summary>
         public Dictionary<string, string> comboValues { get; set; }
         /// <summary>
+        /// Lista de valores disponibles para el combo
+        /// </summary>
+        public ComboDependency comboDependency { get; set; }
+        /// <summary>
         /// Datos de una entidad auxiliar dentro de una entidad
         /// </summary>
         public EntityEditAuxEntity entityAuxData { get; set; }
@@ -105,6 +109,12 @@ namespace GuardadoCV.Models.API.Response
         /// Datos de una entidad principal dentro de una entidad
         /// </summary>
         public EntityEditEntity entityData { get; set; }
+    }
+
+    public class ComboDependency
+    {
+        public string parent { get; set; }
+        public Dictionary<string, string> parentDependency { get; set; }
     }
 
     /// <summary>

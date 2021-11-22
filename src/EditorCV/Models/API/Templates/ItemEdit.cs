@@ -190,6 +190,10 @@ namespace GuardadoCV.Models.API.Templates
         /// </summary>
         public bool multiple;
         /// <summary>
+        /// Indica si la propiedad tiene autocompletar
+        /// </summary>
+        public bool autocomplete;
+        /// <summary>
         /// Indica si es obligatorio
         /// </summary>
         public bool required;
@@ -300,8 +304,36 @@ namespace GuardadoCV.Models.API.Templates
         /// </summary>
         public string rdftype;
 
+
+        public ItemEditSectionRowPropertyComboFilter filter;
+        public ItemEditSectionRowPropertyComboDependency dependency;
     }
 
+
+    public class ItemEditSectionRowPropertyComboFilter
+    {
+        /// <summary>
+        /// Propiedad por la que se va a filtrar
+        /// </summary>
+        public string property;
+        /// <summary>
+        /// Valor por el que se va a filtrar
+        /// </summary>
+        public string value;
+    }
+
+
+    public class ItemEditSectionRowPropertyComboDependency
+    {
+        /// <summary>
+        /// Propiedad de la que depende
+        /// </summary>
+        public string property;
+        /// <summary>
+        /// Propiedad de la que va a obtener el valor
+        /// </summary>
+        public string propertyValue;
+    }
 }
 
 

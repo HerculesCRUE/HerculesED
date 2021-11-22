@@ -26,6 +26,51 @@ namespace GuardadoCV.Models
 
 
         #region Métodos públicos
+
+
+
+        /// <summary>
+        /// Obtiene un listado de sugerencias con datos existentes para esa propiedad
+        /// </summary>
+        /// <param name="pSeach">Texto por el que se van a buscar sugerencias</param>
+        /// <param name="pProperty">Propiedad en la que se quiere buscar</param>
+        /// <param name="pRdfType">Rdf:type de la entidad en la que se quiere buscar</param>
+        /// <param name="pGraph">Grafo en el que se encuentra la propiedad</param>
+        /// <returns></returns>
+        public List<string> GetAutocomplete(string pSeach, string pProperty, string pRdfType, string pGraph)
+        {
+            /*
+                 EJEMPLO DE QUERY
+
+                SELECT DISTINCT ?o
+                FROM <http://gnoss.com/document.owl>
+                WHERE { ?s a <http://purl.org/ontology/bibo/Document> . ?s <http://vivoweb.org/ontology/core#freeTextKeyword> ?o . ?o bif:contains "'comp*'". }
+             
+             
+                SELECT distinct ?o 
+                FROM <http://gnoss.com/document.owl>
+                WHERE {  ?s a <http://purl.org/ontology/bibo/Document> . ?s <http://vivoweb.org/ontology/core#freeTextKeyword> ?o . FILTER (lcase(?o) like "com%" OR ?o like "% com%") }
+             */
+
+            string select = "SELECT DISTINCT ?o ";
+            string where = $"WHERE {{ ?s a <{ pRdfType }>. ?s <{ pProperty }> ?o . ";
+            if(pSeach.Length > 3)
+            {
+                where += $" ?o bif:contains \"'{ pSeach }*'\". }}";
+            }
+            else
+            {
+                where += $" FILTER (lcase(?o) like \"{ pSeach }%\" OR ?o like \"% { pSeach }%\") }}";
+            }
+
+            where += " ORDER BY ?o";
+                        
+            SparqlObject sparqlObjectAux = mResourceApi.VirtuosoQuery(select, where, pGraph);
+
+            return sparqlObjectAux.results.bindings.Select(x => x["o"].value).Distinct().ToList();
+
+        }
+
         /// <summary>
         /// Obtiene una sección de pestaña del CV
         /// </summary>
@@ -82,21 +127,7 @@ namespace GuardadoCV.Models
                 entityID = dataAux[pEntityID].First()["o"].value;
             }
 
-            Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> data = GetEditData(entityID, templateEdit, templateEdit.graph, pLang);
-
-            List<ItemEditSectionRowPropertyCombo> listCombosConfig = GetEditCombos(templateEdit.sections.SelectMany(x => x.rows).SelectMany(x => x.properties).ToList());
-            Dictionary<ItemEditSectionRowPropertyCombo, Dictionary<string, string>> combos = new Dictionary<ItemEditSectionRowPropertyCombo, Dictionary<string, string>>();
-            foreach (ItemEditSectionRowPropertyCombo combo in listCombosConfig)
-            {
-                Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> dataCombo = GetSubjectsCombo(combo, pLang);
-                Dictionary<string, string> valoresCombo = new Dictionary<string, string>() { { "", "-" } };
-                foreach (string id in dataCombo.Keys)
-                {
-                    valoresCombo.Add(id, GetPropValues(id, UtilityCV.GetPropComplete(combo.property), dataCombo).First());
-                }
-                combos.Add(combo, valoresCombo);
-            }
-            return GetEditModel(entityID, data, templateEdit, pLang, combos, templateEdit.graph);
+            return GetEditModel(entityID, templateEdit, pLang);
         }
 
         /// <summary>
@@ -110,10 +141,11 @@ namespace GuardadoCV.Models
             foreach (ItemEditSectionRowPropertyCombo comboConfig in pProperties.Select(x => x.combo).Where(x => x != null))
             {
                 if (!listCombosConfig.Exists(x =>
-                                     UtilityCV.GetPropComplete(x.property) == UtilityCV.GetPropComplete(comboConfig.property) &&
-                                     x.graph == comboConfig.graph &&
-                                     x.rdftype == comboConfig.rdftype
-                                    ))
+                        UtilityCV.GetPropComplete(x.property) == UtilityCV.GetPropComplete(comboConfig.property) &&
+                        x.graph == comboConfig.graph &&
+                        x.rdftype == comboConfig.rdftype &&
+                        x.filter == comboConfig.filter
+                    ))
                 {
 
                     listCombosConfig.Add(comboConfig);
@@ -129,10 +161,11 @@ namespace GuardadoCV.Models
                         foreach (ItemEditSectionRowPropertyCombo comboConfig in aux)
                         {
                             if (!listCombosConfig.Exists(x =>
-                                                 UtilityCV.GetPropComplete(x.property) == UtilityCV.GetPropComplete(comboConfig.property) &&
-                                                 x.graph == comboConfig.graph &&
-                                                 x.rdftype == comboConfig.rdftype
-                                                ))
+                                    UtilityCV.GetPropComplete(x.property) == UtilityCV.GetPropComplete(comboConfig.property) &&
+                                    x.graph == comboConfig.graph &&
+                                    x.rdftype == comboConfig.rdftype &&
+                                    x.filter == comboConfig.filter
+                                ))
                             {
 
                                 listCombosConfig.Add(comboConfig);
@@ -149,21 +182,8 @@ namespace GuardadoCV.Models
             ItemEdit templateEdit = UtilityCV.EntityTemplates.First(x => x.rdftype == pRdfType);
             string entityID = pEntityID;
 
-            Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> data = GetEditData(entityID, templateEdit, templateEdit.graph, pLang);
 
-            List<ItemEditSectionRowPropertyCombo> listCombosConfig = GetEditCombos(templateEdit.sections.SelectMany(x => x.rows).SelectMany(x => x.properties).ToList());
-            Dictionary<ItemEditSectionRowPropertyCombo, Dictionary<string, string>> combos = new Dictionary<ItemEditSectionRowPropertyCombo, Dictionary<string, string>>();
-            foreach (ItemEditSectionRowPropertyCombo combo in listCombosConfig)
-            {
-                Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> dataCombo = GetSubjectsCombo(combo, pLang);
-                Dictionary<string, string> valoresCombo = new Dictionary<string, string>() { { "", "-" } };
-                foreach (string id in dataCombo.Keys)
-                {
-                    valoresCombo.Add(id, GetPropValues(id, UtilityCV.GetPropComplete(combo.property), dataCombo).First());
-                }
-                combos.Add(combo, valoresCombo);
-            }
-            return GetEditModel(entityID, data, templateEdit, pLang, combos, templateEdit.graph);
+            return GetEditModel(entityID, templateEdit, pLang);
         }
 
         public ItemsLoad LoadProps(ItemsLoad pItemsLoad, string pLang)
@@ -388,8 +408,36 @@ namespace GuardadoCV.Models
         /// <param name="pCombos">Combos</param>
         /// <param name="pGraph">Grafo de la entidad</param>
         /// <returns></returns>
-        private EntityEdit GetEditModel(string pId, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> pData, ItemEdit pPresentationEdit, string pLang, Dictionary<ItemEditSectionRowPropertyCombo, Dictionary<string, string>> pCombos, string pGraph)
+        private EntityEdit GetEditModel(string pId, ItemEdit pPresentationEdit, string pLang)
         {
+            Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> data = GetEditData(pId, pPresentationEdit, pPresentationEdit.graph, pLang);
+
+            List<ItemEditSectionRowPropertyCombo> listCombosConfig = GetEditCombos(pPresentationEdit.sections.SelectMany(x => x.rows).SelectMany(x => x.properties).ToList());
+            Dictionary<ItemEditSectionRowPropertyCombo, Dictionary<string, string>> combos = new Dictionary<ItemEditSectionRowPropertyCombo, Dictionary<string, string>>();
+            Dictionary<ItemEditSectionRowPropertyCombo, Dictionary<string, string>> combosDependency = new Dictionary<ItemEditSectionRowPropertyCombo, Dictionary<string, string>>();
+
+            foreach (ItemEditSectionRowPropertyCombo combo in listCombosConfig)
+            {
+                Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> dataCombo = GetSubjectsCombo(combo, pLang);
+                Dictionary<string, string> valoresCombo = new Dictionary<string, string>() { { "", "-" } };
+                Dictionary<string, string> valoresDependency = new Dictionary<string, string>() { };
+                foreach (string id in dataCombo.Keys)
+                {
+                    valoresCombo.Add(id, GetPropValues(id, UtilityCV.GetPropComplete(combo.property), dataCombo).First());
+
+                    if (combo.dependency != null)
+                    {
+                        valoresDependency.Add(id, GetPropValues(id, combo.dependency.property, dataCombo).First());
+                    }
+                }
+
+                combos.Add(combo, valoresCombo);
+                if (combo.dependency != null)
+                {
+                    combosDependency.Add(combo, valoresDependency);
+                }
+            }
+
             EntityEdit entityEdit = new EntityEdit()
             {
                 entityID = pId,
@@ -397,12 +445,13 @@ namespace GuardadoCV.Models
                 rdftype = pPresentationEdit.rdftype,
                 sections = new List<EntityEditSection>()
             };
+
             foreach (ItemEditSection itemEditSection in pPresentationEdit.sections)
             {
                 EntityEditSection entityEditSection = new EntityEditSection()
                 {
                     title = UtilityCV.GetTextLang(pLang, itemEditSection.title),
-                    rows = GetRowsEdit(pId, itemEditSection.rows, pData, pCombos, pLang, pGraph)
+                    rows = GetRowsEdit(pId, itemEditSection.rows, data, combos, combosDependency, pLang, pPresentationEdit.graph)
                 };
                 entityEdit.sections.Add(entityEditSection);
             }
@@ -420,7 +469,7 @@ namespace GuardadoCV.Models
         /// <param name="pLang">Idioma</param>
         /// <param name="pGraph">Grafo de la entidad</param>
         /// <returns></returns>
-        private List<EntityEditSectionRow> GetRowsEdit(string pId, List<ItemEditSectionRow> pItemEditSectionRows, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> pData, Dictionary<ItemEditSectionRowPropertyCombo, Dictionary<string, string>> pCombos, string pLang, string pGraph)
+        private List<EntityEditSectionRow> GetRowsEdit(string pId, List<ItemEditSectionRow> pItemEditSectionRows, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> pData, Dictionary<ItemEditSectionRowPropertyCombo, Dictionary<string, string>> pCombos, Dictionary<ItemEditSectionRowPropertyCombo, Dictionary<string, string>> pCombosDependency, string pLang, string pGraph)
         {
             List<EntityEditSectionRow> entityEditSectionRows = new List<EntityEditSectionRow>();
             foreach (ItemEditSectionRow itemEditSectionRow in pItemEditSectionRows)
@@ -433,7 +482,7 @@ namespace GuardadoCV.Models
                 {
                     if (string.IsNullOrEmpty(itemEditSectionRowProperty.compossed))
                     {
-                        EntityEditSectionRowProperty entityEditSectionRowProperty = GetPropertiesEdit(pId, itemEditSectionRowProperty, pData, pCombos, pLang, pGraph);
+                        EntityEditSectionRowProperty entityEditSectionRowProperty = GetPropertiesEdit(pId, itemEditSectionRowProperty, pData, pCombos, pCombosDependency, pLang, pGraph);
                         entityEditSectionRow.properties.Add(entityEditSectionRowProperty);
                     }
                 }
@@ -452,7 +501,7 @@ namespace GuardadoCV.Models
         /// <param name="pLang">Idioma</param>
         /// <param name="pGraph">Grafo de la entidad</param>
         /// <returns></returns>
-        private EntityEditSectionRowProperty GetPropertiesEdit(string pId, ItemEditSectionRowProperty pItemEditSectionRowProperty, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> pData, Dictionary<ItemEditSectionRowPropertyCombo, Dictionary<string, string>> pCombos, string pLang, string pGraph)
+        private EntityEditSectionRowProperty GetPropertiesEdit(string pId, ItemEditSectionRowProperty pItemEditSectionRowProperty, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> pData, Dictionary<ItemEditSectionRowPropertyCombo, Dictionary<string, string>> pCombos, Dictionary<ItemEditSectionRowPropertyCombo, Dictionary<string, string>> pCombosDependency, string pLang, string pGraph)
         {
             EntityEditSectionRowProperty entityEditSectionRowProperty = new EntityEditSectionRowProperty()
             {
@@ -522,26 +571,40 @@ namespace GuardadoCV.Models
             }
             if (pItemEditSectionRowProperty.combo != null)
             {
-                entityEditSectionRowProperty.comboValues = pCombos.Where(x =>
+                entityEditSectionRowProperty.comboValues = pCombos.FirstOrDefault(x =>
                   UtilityCV.GetPropComplete(x.Key.property) == UtilityCV.GetPropComplete(pItemEditSectionRowProperty.combo.property) &&
                    x.Key.graph == pItemEditSectionRowProperty.combo.graph &&
-                   x.Key.rdftype == pItemEditSectionRowProperty.combo.rdftype
-                ).FirstOrDefault().Value;
+                   x.Key.rdftype == pItemEditSectionRowProperty.combo.rdftype && x.Key.filter == pItemEditSectionRowProperty.combo.filter
+                ).Value;
+
+                if (pItemEditSectionRowProperty.combo.dependency != null)
+                {
+                    Dictionary<string, string> parentDependency = pCombosDependency.FirstOrDefault(x =>
+                      UtilityCV.GetPropComplete(x.Key.property) == UtilityCV.GetPropComplete(pItemEditSectionRowProperty.combo.property) &&
+                       x.Key.graph == pItemEditSectionRowProperty.combo.graph &&
+                       x.Key.rdftype == pItemEditSectionRowProperty.combo.rdftype && x.Key.dependency == pItemEditSectionRowProperty.combo.dependency
+                    ).Value;
+
+                    if (parentDependency != null)
+                    {
+                        entityEditSectionRowProperty.comboDependency = new ComboDependency { parent = pItemEditSectionRowProperty.combo.dependency.propertyValue, parentDependency = parentDependency };
+                    }
+                }
             }
             if (pItemEditSectionRowProperty.type == DataTypeEdit.auxEntity)
             {
                 if (pItemEditSectionRowProperty.auxEntityData != null && pItemEditSectionRowProperty.auxEntityData.rows != null && pItemEditSectionRowProperty.auxEntityData.rows.Count > 0)
                 {
                     entityEditSectionRowProperty.entityAuxData.entities = new Dictionary<string, List<EntityEditSectionRow>>();
-                    entityEditSectionRowProperty.entityAuxData.rows = GetRowsEdit(null, pItemEditSectionRowProperty.auxEntityData.rows, pData, pCombos, pLang, pGraph);
+                    entityEditSectionRowProperty.entityAuxData.rows = GetRowsEdit(null, pItemEditSectionRowProperty.auxEntityData.rows, pData, pCombos, pCombosDependency, pLang, pGraph);
                     entityEditSectionRowProperty.entityAuxData.titles = new Dictionary<string, EntityEditRepresentativeProperty>();
                     entityEditSectionRowProperty.entityAuxData.properties = new Dictionary<string, List<EntityEditRepresentativeProperty>>();
                     foreach (string id in entityEditSectionRowProperty.values)
                     {
-                        entityEditSectionRowProperty.entityAuxData.entities.Add(id, GetRowsEdit(id, pItemEditSectionRowProperty.auxEntityData.rows, pData, pCombos, pLang, pGraph));
+                        entityEditSectionRowProperty.entityAuxData.entities.Add(id, GetRowsEdit(id, pItemEditSectionRowProperty.auxEntityData.rows, pData, pCombos,pCombosDependency, pLang, pGraph));
                         if (!string.IsNullOrEmpty(entityEditSectionRowProperty.entityAuxData.propertyOrder))
                         {
-                            string orden = GetPropertiesEdit(id, new ItemEditSectionRowProperty() { property = entityEditSectionRowProperty.entityAuxData.propertyOrder }, pData, pCombos, pLang, pGraph).values.FirstOrDefault();
+                            string orden = GetPropertiesEdit(id, new ItemEditSectionRowProperty() { property = entityEditSectionRowProperty.entityAuxData.propertyOrder }, pData, pCombos, pCombosDependency, pLang, pGraph).values.FirstOrDefault();
                             int.TryParse(orden, out int ordenInt);
                             entityEditSectionRowProperty.entityAuxData.childsOrder[id] = ordenInt;
                         }
@@ -644,9 +707,15 @@ namespace GuardadoCV.Models
             HashSet<string> ids = new HashSet<string>();
             while (limit == paginacion)
             {
+                string filter = "";
+                if (pItemEditSectionRowPropertyCombo.filter != null)
+                {
+                    filter = $" . ?s <{pItemEditSectionRowPropertyCombo.filter.property}> '{pItemEditSectionRowPropertyCombo.filter.value}'";
+                }
+
                 //Obtenemos los IDS
-                string select = "select * where{select distinct ?s";
-                string where = $"where{{?s a <{pItemEditSectionRowPropertyCombo.rdftype}> }} order by asc(?s)}} limit {limit} offset {offset}";
+                string select = "select * where{select distinct ?s ";
+                string where = $"where{{?s a <{pItemEditSectionRowPropertyCombo.rdftype}> {filter} }} order by asc(?s)}} limit {limit} offset {offset}";
                 SparqlObject sparqlObject = mResourceApi.VirtuosoQuery(select, where, pItemEditSectionRowPropertyCombo.graph);
                 limit = sparqlObject.results.bindings.Count;
                 offset += sparqlObject.results.bindings.Count;
@@ -656,6 +725,18 @@ namespace GuardadoCV.Models
                 }
             }
             List<PropertyData> propertyDatas = new List<PropertyData>() { pItemEditSectionRowPropertyCombo.property.GenerarPropertyData(pItemEditSectionRowPropertyCombo.graph) };
+
+
+            if (pItemEditSectionRowPropertyCombo.dependency != null)
+            {
+                propertyDatas.Add(new Utils.PropertyData()
+                {
+                    property = pItemEditSectionRowPropertyCombo.dependency.property,
+                    order = null,
+                    childs = new List<Utils.PropertyData>()
+                });
+            }
+
             return UtilityCV.GetProperties(ids, pItemEditSectionRowPropertyCombo.graph, propertyDatas, pLang);
         }
 
