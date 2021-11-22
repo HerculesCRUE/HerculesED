@@ -3,6 +3,8 @@ using GuardadoCV.Models;
 using GuardadoCV.Models.API.Input;
 using System;
 using Microsoft.AspNetCore.Cors;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace GuardadoCV.Controllers
 {
@@ -11,6 +13,28 @@ namespace GuardadoCV.Controllers
     [EnableCors("_myAllowSpecificOrigins")]
     public class EdicionCVController : ControllerBase
     {
+        /// <summary>
+        /// Obtiene un listado de sugerencias con datos existentes para esa propiedad
+        /// </summary>
+        /// <param name="pSeach">Texto por el que se van a buscar sugerencias</param>
+        /// <param name="pProperty">Propiedad en la que se quiere buscar</param>
+        /// <param name="pRdfType">Rdf:type de la entidad en la que se quiere buscar</param>
+        /// <param name="pGraph">Grafo en el que se encuentra la propiedad</param>
+        /// <returns></returns>
+        [HttpPost("GetAutocomplete")]
+        public IActionResult GetAutocomplete([FromForm] string q, [FromForm] string pProperty, [FromForm] string pRdfType, [FromForm] string pGraph, [FromForm] string lista)
+        {
+            try
+            {
+                AccionesEdicion accionesEdicion = new AccionesEdicion();
+                return Ok(accionesEdicion.GetAutocomplete(q.ToLower(), pProperty, pRdfType, pGraph, lista?.Split(',').ToList()));
+            }
+            catch (Exception ex)
+            {
+                return Ok(new Models.API.Response.JsonResult() { error = ex.Message + " " + ex.StackTrace });
+            }
+        }
+
         /// <summary>
         /// Obtiene los datos de una pestaña dentro del editor
         /// </summary>

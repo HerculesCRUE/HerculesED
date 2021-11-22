@@ -86,6 +86,10 @@ namespace GuardadoCV.Models.API.Response
         /// </summary>
         public bool multiple { get; set; }
         /// <summary>
+        /// Indica si es multiple
+        /// </summary>
+        public bool autocomplete { get; set; }
+        /// <summary>
         /// indica si es obligatorio
         /// </summary>
         public bool required { get; set; }

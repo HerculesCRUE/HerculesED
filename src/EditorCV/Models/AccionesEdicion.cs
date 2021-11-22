@@ -42,7 +42,7 @@ namespace GuardadoCV.Models
         /// <param name="pRdfType">Rdf:type de la entidad en la que se quiere buscar</param>
         /// <param name="pGraph">Grafo en el que se encuentra la propiedad</param>
         /// <returns></returns>
-        public List<string> GetAutocomplete(string pSeach, string pProperty, string pRdfType, string pGraph)
+        public List<string> GetAutocomplete(string pSeach, string pProperty, string pRdfType, string pGraph, List<string> pLista)
         {
             /*
                  EJEMPLO DE QUERY
@@ -72,7 +72,14 @@ namespace GuardadoCV.Models
 
             SparqlObject sparqlObjectAux = mResourceApi.VirtuosoQuery(select, where, pGraph);
 
-            return sparqlObjectAux.results.bindings.Select(x => x["o"].value).Distinct().ToList();
+            var resultados = sparqlObjectAux.results.bindings.Select(x => x["o"].value);
+
+            if(pLista != null)
+            {
+                resultados = resultados.Except(pLista);
+            }
+
+            return resultados.Distinct().ToList();
 
         }
 
@@ -930,6 +937,7 @@ namespace GuardadoCV.Models
                     width = pItemEditSectionRowProperty.width,
                     required = pItemEditSectionRowProperty.required,
                     multiple = true,
+                    autocomplete = pItemEditSectionRowProperty.autocomplete,
                     title = UtilityCV.GetTextLang(pLang, pItemEditSectionRowProperty.title),
                     type = DataTypeEdit.auxEntityAuthorList.ToString(),
                     values = new List<string>(),
@@ -1066,6 +1074,7 @@ namespace GuardadoCV.Models
                     width = pItemEditSectionRowProperty.width,
                     required = pItemEditSectionRowProperty.required,
                     multiple = pItemEditSectionRowProperty.multiple,
+                    autocomplete = pItemEditSectionRowProperty.autocomplete,
                     title = UtilityCV.GetTextLang(pLang, pItemEditSectionRowProperty.title),
                     placeholder = UtilityCV.GetTextLang(pLang, pItemEditSectionRowProperty.placeholder),
                     type = pItemEditSectionRowProperty.type.ToString(),
