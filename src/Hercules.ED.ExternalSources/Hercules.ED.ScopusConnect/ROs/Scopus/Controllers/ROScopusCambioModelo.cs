@@ -242,11 +242,11 @@ namespace ScopusConnect.ROs.Scopus.Controllers
         //     return new List<Person>();
         // }
 
-        public Journal getJournal(PublicacionInicial objInicial)
+        public Source getJournal(PublicacionInicial objInicial)
         {
             if (objInicial.PrismPublicationName != null || objInicial.PrismIssn != null)
             {
-                Journal revista = new Journal();
+                Source revista = new Source();
                 if (objInicial.PrismPublicationName != null)
                 {
                     revista.name = objInicial.PrismPublicationName;
@@ -254,6 +254,30 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                 if (objInicial.PrismIssn != null)
                 {
                     revista.issn = objInicial.PrismIssn;
+                }
+                if(objInicial.PrismAggregationType!=null){
+                    if(objInicial.PrismAggregationType=="Book"){
+                        revista.type="Book";
+                    }
+                    else if(objInicial.PrismAggregationType=="Journal"){
+                        revista.type="Journal";
+                    }else{
+                        //error de no identificar el type en el que esta publicado la publicacion! 
+                        string ad= "No se ha identificado el tipo de recurso en el que esta publicado";
+                        if(this.advertencia==null){
+                            List<string> ads = new List<string>();
+                            ads.Add(ad);
+                            this.advertencia=ads;
+                        }else{this.advertencia.Add(ad);}
+                    }
+                
+                }
+                if(objInicial.PrismIsbn!=null){
+                    List<string> isbn_list=new List<string>();
+                    foreach(PrismIsbn isbn in objInicial.PrismIsbn){
+                        isbn_list.Add(isbn.id);
+                    }
+                    revista.isbn= isbn_list;
                 }
                 return revista;
             }
