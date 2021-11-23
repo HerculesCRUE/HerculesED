@@ -21,7 +21,7 @@ public class Publication
 
     public List<Person> seqOfAuthors { get; set; }
   //  public Organization correspondingOrganization { get; set; }
-    public List<KnowledgeArea> hasKnowledgeArea { get; set; }
+    public List<KnowledgeArea_list> hasKnowledgeArea { get; set; }
     public string pageEnd { get; set; }
 
     public string pageStart { get; set; }
@@ -31,7 +31,7 @@ public class Publication
      public string presentedAt { get; set; }  
     //todo no creo que esto en nuestra ontologia sea un string y no esta contemplado de mommento rellenarlo! 
 
-    public Journal hasPublicationVenue { get; set; }
+    public Source hasPublicationVenue { get; set; }
     public List<PublicationMetric> hasMetric { get; set; }
     public List<Publication> bibliografia { get; set; }
     public List<Publication> citas {get;set;}
@@ -55,7 +55,7 @@ public class FreetextKeyword {
       public string datimeTime { get; set; }
   }
 
-  public class Journal 
+  public class Source 
   {
    // public KnowledgeArea hasKnowledgeArea { get; set; }
     //  public JournalMetric hasMetric { get; set; }
@@ -63,11 +63,14 @@ public class FreetextKeyword {
       //public string language { get; set; }
     //  public Organization publisher { get; set; }
       //public Organization correspongingOrganization { get; set; }
+      public string type {get;set;}
       public string issn { get; set; }
+      public List<string> isbn {get;set;}
       public string name { get; set; }
       public string eissn { get; set; }
     //  public string oclcnum { get; set; }
   }
+
 
 public class JournalMetric
 {
@@ -102,7 +105,8 @@ public class Organization
 }
 public class Conference
 {
-    public string abbreviation { get; set; }
+    //todo! esto mirar! 
+        public string abbreviation { get; set; }
     public DateTimeInterval dateTimeInterval { get; set; }
     public string description { get; set; }
     public List<string> IDs { get; set; }
@@ -110,20 +114,27 @@ public class Conference
     public string freetextKeyword { get; set; }
     public string locality { get; set; }
     //public ParticipatedBy participatedBy { get; set; }
-    public List<KnowledgeArea> hasKnowledgeArea { get; set; }
+    public List<KnowledgeArea_list> hasKnowledgeArea { get; set; }
 
 }
-public class KnowledgeArea
+public class KnowledgeArea_list
 {
-    public string name { get; set; }
-    public string abbreviation { get; set; }
-    public string hasCode { get; set; }
+    public List<KnowledgeArea> knowledgeAreas {get;set;}
     public string resource {get;set;}
 }
+
+public class KnowledgeArea 
+{
+    public string name { get; set; }
+   // public string abbreviation { get; set; }
+    public string hasCode { get; set; }
+
+
+}
+
 public class DateTimeInterval
 {
     public DateTimeValue end { get; set; }
     public DateTimeValue start { get; set; }
 }
-
 }
