@@ -5286,8 +5286,8 @@
 			}
 		},
 		{
-			"rdftype": "http://w3id.org/roh/RelatedPrize",
-			"property": "http://w3id.org/roh/prizes",
+			"rdftype": "http://w3id.org/roh/RelatedStay",
+			"property": "http://w3id.org/roh/stays",
 			"presentation": {
 				"type": "listitems",
 				"title": {
@@ -5298,7 +5298,7 @@
 					"listItem": {
 						"propertyTitle": {
 							"property": "http://vivoweb.org/ontology/core#relatedBy",
-							"graph": "accreditation",
+							"graph": "stay",
 							"child": {
 								"property": "http://w3id.org/roh/title"
 							}
@@ -5312,7 +5312,7 @@
 								"properties": [
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "accreditation",
+										"graph": "stay",
 										"child": {
 											"property": "http://w3id.org/roh/dateIssued"
 										},
@@ -5320,7 +5320,7 @@
 									},
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "accreditation",
+										"graph": "stay",
 										"child": {
 											"property": "http://w3id.org/roh/title"
 										},
@@ -5335,7 +5335,7 @@
 								"properties": [
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "accreditation",
+										"graph": "stay",
 										"child": {
 											"property": "http://w3id.org/roh/dateIssued"
 										},
@@ -5343,7 +5343,7 @@
 									},
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "accreditation",
+										"graph": "stay",
 										"child": {
 											"property": "http://w3id.org/roh/title"
 										},
@@ -5355,22 +5355,27 @@
 						"properties": [
 							{
 								"name": {
-									"es": "Descripción"
+									"es": "Objetivos de la estancia"
 								},
 								"child": {
 									"property": "http://vivoweb.org/ontology/core#relatedBy",
-									"graph": "accreditation",
+									"graph": "stay",
 									"child": {
-										"property": "http://w3id.org/roh/title"
+										"property": "http://vivoweb.org/ontology/core#goals",
+										"graph": "staygoal",
+										"child": {
+											"property": "http://purl.org/dc/elements/1.1/title"
+										}
 									}
 								}
-							}
+							},
+							
 						]
 					},
 					"listItemEdit": {
-						"graph": "accreditation",
+						"graph": "stay",
 						"proptitle": "http://w3id.org/roh/title",
-						"rdftype": "http://w3id.org/roh/Accreditation",
+						"rdftype": "http://w3id.org/roh/Stay",
 						"sections": [
 							{
 								"title": {
@@ -5381,23 +5386,42 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Descripción"
+													"es": "Objetivos de la estancia"
 												},
-												"placeholder": {
-													"es": "Introduce la descripción"
+												"property": "http://w3id.org/roh/goals",
+												"combo": {
+													"rdftype": "http://w3id.org/roh/StayGoal",
+													"graph": "staygoal",
+													"property": {
+														"property": "http://purl.org/dc/elements/1.1/title"
+													}
 												},
-												"property": "http://w3id.org/roh/title",
-												"required": true,
+												"type": "selectCombo",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Otros"
+												},
+												"property": "http://w3id.org/roh/goalsOther",
 												"type": "text",
-												"width": 3
-											}
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Tareas contrastables"
+												},
+												"property": "http://w3id.org/roh/performedTasks",
+												"type": "text",
+												"width": 1
+											},
 										]
 									},
 									{
 										"properties": [
 											{
 												"title": {
-													"es": "Entidad concesionaria"
+													"es": "Entidad de realización"
 												},
 												"TODO": "Autocompletado/texto libre. En caso de que haya que añadir una nueva organización, será por autocompletado o combo",
 												"placeholder": {
