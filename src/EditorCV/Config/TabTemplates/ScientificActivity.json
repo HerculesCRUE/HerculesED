@@ -5415,6 +5415,9 @@
 												"title": {
 													"es": "Tareas contrastables"
 												},
+												"placeholder": {
+													"es": "Introduce las tareas contrastables"
+												},
 												"property": "http://w3id.org/roh/performedTasks",
 												"type": "text",
 												"width": 2
@@ -5429,7 +5432,7 @@
 												},
 												"TODO": "Autocompletado/texto libre. En caso de que haya que añadir una nueva organización, será por autocompletado o combo",
 												"placeholder": {
-													"es": "Introduce la entidad concesionaria"
+													"es": "Introduce la entidad de realización"
 												},
 												"property": "http://w3id.org/roh/accreditationIssuedBy",
 												"type": "text",
@@ -5456,6 +5459,34 @@
 												"width": 1
 											}
 										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Duración años"
+												},
+												"property": "http://w3id.org/roh/durationYears",
+												"type": "text",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Duración meses"
+												},
+												"property": "http://w3id.org/roh/durationMonths",
+												"type": "text",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Duración días"
+												},
+												"property": "http://w3id.org/roh/durationDays",
+												"type": "text",
+												"width": 1
+											}
+										]
 									}
 								]
 							},
@@ -5467,15 +5498,88 @@
 									{
 										"properties": [
 											{
+												"TODO": "Tesauro en la propiedad anterior"
 												"title": {
-													"es": "Reconocimientos ligados"
+													"es": "Nombre del programa"
 												},
 												"placeholder": {
-													"es": "Introduce los reconocimientos ligados"
+													"es": "Introduce el nombre del programa"
 												},
-												"property": "http://w3id.org/roh/recognitionLinked",
+												"property": "http://w3id.org/roh/programme",
+												"type": "text",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Capac. adq. desarrolladas"
+												},
+												"placeholder": {
+													"es": "Introduce las capac. adq. desarrolladas"
+												},
+												"property": "http://w3id.org/roh/skillsDeveloped",
 												"type": "text",
 												"width": 2
+											},
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Resultados relevantes"
+												},
+												"placeholder": {
+													"es": "Introduce los resultados relevantes"
+												},
+												"property": "http://w3id.org/roh/relevantResults",
+												"type": "text",
+												"width": 2
+											},
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Entidad financiadora"
+												},
+												"placeholder": {
+													"es": "Introduce la entidad financiadora"
+												},
+												"property": "http://w3id.org/roh/fundedBy",
+												"type": "text",
+												"width": 2
+											},
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Entidad financiadora"
+												},
+												"placeholder": {
+													"es": "Introduce la entidad financiadora"
+												},
+												"property": "http://w3id.org/roh/fundedBy",
+												"type": "text",
+												"width": 2
+											},
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Identificar palabras clave"
+												},
+												"placeholder": {
+													"es": "Introduce la palabra clave"
+												},
+												"property": "http://vivoweb.org/ontology/core#freeTextKeyword",
+												"multiple": true,
+												"type": "text",
+												"width": 1
 											}
 										]
 									}
