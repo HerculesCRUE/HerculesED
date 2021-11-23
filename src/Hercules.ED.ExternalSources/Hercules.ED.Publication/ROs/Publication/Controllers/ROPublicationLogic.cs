@@ -101,8 +101,8 @@ namespace PublicationConnect.ROs.Publications.Controllers
         /// <param date="year-month-day"></param>
         /// <returns></returns>
         public List<Publication> getPublications(string name, string date = "1500-01-01")
-        {
-            //Declaro el Resultado
+{
+                //Declaro el Resultado
             List<Publication> resultado = new List<Publication>();
             List<Publication> objInicial_Scopus = llamada_Scopus(name, date);
 
@@ -383,17 +383,17 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         pub.Abstract = pub_2.Abstract;
                     }
 
-                    if (pub_1.list_freetextKeyword != null)
+                    if (pub_1.freetextKeywords != null)
                     {
-                        pub.list_freetextKeyword = pub_1.list_freetextKeyword;
-                        if (pub_2.list_freetextKeyword != null)
+                        pub.freetextKeywords = pub_1.freetextKeywords;
+                        if (pub_2.freetextKeywords != null)
                         {
-                            pub.list_freetextKeyword.AddRange(pub_2.list_freetextKeyword);
+                            pub.freetextKeywords.AddRange(pub_2.freetextKeywords);
                         }
                     }
                     else
                     {
-                        pub.list_freetextKeyword = pub_2.list_freetextKeyword;
+                        pub.freetextKeywords = pub_2.freetextKeywords;
                     }
 
                     if (pub_1.language != null)
@@ -454,17 +454,17 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     {
                         pub.seqOfAuthors = pub_2.seqOfAuthors;
                     }
-                    if (pub_1.hasKnowledgeArea != null)
+                    if (pub_1.hasKnowledgeAreas != null)
                     {
-                        pub.hasKnowledgeArea = pub_1.hasKnowledgeArea;
-                        if (pub_2.hasKnowledgeArea != null)
+                        pub.hasKnowledgeAreas = pub_1.hasKnowledgeAreas;
+                        if (pub_2.hasKnowledgeAreas != null)
                         {
-                            pub.hasKnowledgeArea.AddRange(pub_2.hasKnowledgeArea);
+                            pub.hasKnowledgeAreas.AddRange(pub_2.hasKnowledgeAreas);
                         }
                     }
                     else
                     {
-                        pub.hasKnowledgeArea = pub_2.hasKnowledgeArea;
+                        pub.hasKnowledgeAreas = pub_2.hasKnowledgeAreas;
                     }
                     if (pub_1.pageEnd != null)
                     {
@@ -521,10 +521,6 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         pub.hasMetric = pub_2.hasMetric;
                     }
                     return pub;
-
-
-
-
 
                 }
             }
