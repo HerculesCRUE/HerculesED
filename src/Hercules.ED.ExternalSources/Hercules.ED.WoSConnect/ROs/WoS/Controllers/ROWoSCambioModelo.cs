@@ -98,7 +98,8 @@ namespace WoSConnect.ROs.WoS.Controllers
                     }
                     publicacion.pageStart = getPageStart(objInicial);
                     publicacion.pageEnd = getPageEnd(objInicial);
-                    //publicacion.hasKnowledgeArea = getKnowledgeAreas(objInicial);
+                    //todo! falta el siitio de la conferencia! 
+                    publicacion.hasKnowledgeArea = getKnowledgeAreas(objInicial);
                     publicacion.list_freetextKeyword = getFreetextKeyword(objInicial);
                     //publicacion.correspondingAuthor = getAuthorPrincipal(objInicial);
                     publicacion.seqOfAuthors = getAuthors(objInicial);
@@ -451,11 +452,44 @@ namespace WoSConnect.ROs.WoS.Controllers
             return null;
         }
 
-        // public List<KnowledgeArea> getKnowledgeAreas(PublicacionInicial objInicial)
-        // {
+         public List<KnowledgeArea_list> getKnowledgeAreas(PublicacionInicial objInicial)
+         {
 
-        //     return new List<KnowledgeArea>();
-        // }
+            if(objInicial.static_data!=null){
+                if(objInicial.static_data.fullrecord_metadata!=null){
+                    if(objInicial.static_data.fullrecord_metadata.category_info!=null){
+                        if(objInicial.static_data.fullrecord_metadata.category_info.subjects!=null){
+                            if(objInicial.static_data.fullrecord_metadata.category_info.subjects.subject!=null){
+                                List<KnowledgeArea> list = new List<KnowledgeArea>();
+                                List<KnowledgeArea_list> result = new List<KnowledgeArea_list>();
+                                KnowledgeArea_list info_woS = new KnowledgeArea_list();
+                                foreach(Subject sub in objInicial.static_data.fullrecord_metadata.category_info.subjects.subject ){
+                                    if(sub.content!=null){
+                                        KnowledgeArea area = new KnowledgeArea();
+                                        area.name=sub.content;
+                                        if(sub.code!=null){
+                                            area.hasCode=sub.code;
+                                        }
+                                        if(area!=null){
+                                            list.Add(area);
+                                    }
+                                    }
+                                    
+                                    
+                                }
+                                if(list!=null){
+                                    info_woS.resource="WoS";
+                                    info_woS.knowledgeAreas=list;
+                                    result.Add(info_woS);
+                                    return result;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+             return new List<KnowledgeArea_list>();
+         }
 
         public List<FreetextKeyword> getFreetextKeyword(PublicacionInicial objInicial)
         {
@@ -702,9 +736,10 @@ namespace WoSConnect.ROs.WoS.Controllers
             return null;
         }
 
-        public Journal getJournal(PublicacionInicial objInicial)
+        public Source getJournal(PublicacionInicial objInicial)
         {
-            Journal revista = new Journal();
+            Source revista = new Source();
+            //todo! completar 
             if (objInicial.static_data != null)
             {
                 if (objInicial.static_data.summary != null)
@@ -767,7 +802,7 @@ namespace WoSConnect.ROs.WoS.Controllers
                     }
                 }
             }
-            if (revista != new Journal())
+            if (revista != new Source())
             {
                 return revista;
             }
