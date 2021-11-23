@@ -5734,7 +5734,7 @@
 												"property": "http://vivoweb.org/ontology/core#start",
 												"type": "date",
 												"width": 1
-											}
+											},
 											{
 												"title": {
 													"es": "Fecha de finalización"
@@ -5788,7 +5788,7 @@
 												"width": 2
 											}
 										]
-									},
+									}
 								]
 							},
 							{
