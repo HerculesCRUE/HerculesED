@@ -99,8 +99,8 @@ namespace WoSConnect.ROs.WoS.Controllers
                     publicacion.pageStart = getPageStart(objInicial);
                     publicacion.pageEnd = getPageEnd(objInicial);
                     //todo! falta el siitio de la conferencia! 
-                    publicacion.hasKnowledgeArea = getKnowledgeAreas(objInicial);
-                    publicacion.list_freetextKeyword = getFreetextKeyword(objInicial);
+                    publicacion.hasKnowledgeAreas = getKnowledgeAreas(objInicial);
+                    publicacion.freetextKeywords = getFreetextKeyword(objInicial);
                     //publicacion.correspondingAuthor = getAuthorPrincipal(objInicial);
                     publicacion.seqOfAuthors = getAuthors(objInicial);
                     if(publicacion.seqOfAuthors==null){
@@ -452,7 +452,7 @@ namespace WoSConnect.ROs.WoS.Controllers
             return null;
         }
 
-         public List<KnowledgeArea_list> getKnowledgeAreas(PublicacionInicial objInicial)
+         public List<KnowledgeAreas> getKnowledgeAreas(PublicacionInicial objInicial)
          {
 
             if(objInicial.static_data!=null){
@@ -461,8 +461,8 @@ namespace WoSConnect.ROs.WoS.Controllers
                         if(objInicial.static_data.fullrecord_metadata.category_info.subjects!=null){
                             if(objInicial.static_data.fullrecord_metadata.category_info.subjects.subject!=null){
                                 List<KnowledgeArea> list = new List<KnowledgeArea>();
-                                List<KnowledgeArea_list> result = new List<KnowledgeArea_list>();
-                                KnowledgeArea_list info_woS = new KnowledgeArea_list();
+                                List<KnowledgeAreas> result = new List<KnowledgeAreas>();
+                                KnowledgeAreas info_woS = new KnowledgeAreas();
                                 foreach(Subject sub in objInicial.static_data.fullrecord_metadata.category_info.subjects.subject ){
                                     if(sub.content!=null){
                                         KnowledgeArea area = new KnowledgeArea();
@@ -479,7 +479,7 @@ namespace WoSConnect.ROs.WoS.Controllers
                                 }
                                 if(list!=null){
                                     info_woS.resource="WoS";
-                                    info_woS.knowledgeAreas=list;
+                                    info_woS.knowledgeArea=list;
                                     result.Add(info_woS);
                                     return result;
                                 }
@@ -488,10 +488,10 @@ namespace WoSConnect.ROs.WoS.Controllers
                     }
                 }
             }
-             return new List<KnowledgeArea_list>();
+             return new List<KnowledgeAreas>();
          }
 
-        public List<FreetextKeyword> getFreetextKeyword(PublicacionInicial objInicial)
+        public List<FreetextKeywords> getFreetextKeyword(PublicacionInicial objInicial)
         {
             if (objInicial.static_data != null)
             {
@@ -502,10 +502,10 @@ namespace WoSConnect.ROs.WoS.Controllers
                         try
                         {
                             Keywords hey = JsonConvert.DeserializeObject<Keywords>(objInicial.static_data.fullrecord_metadata.keywords.ToString());
-                            FreetextKeyword list = new FreetextKeyword();
+                            FreetextKeywords list = new FreetextKeywords();
                             list.freetextKeyword = hey.keyword;
-                            list.origin = "WoS";
-                            List<FreetextKeyword> sol_list = new List<FreetextKeyword>();
+                            list.source = "WoS";
+                            List<FreetextKeywords> sol_list = new List<FreetextKeywords>();
                             sol_list.Add(list);
                             return sol_list;
                         }
@@ -515,10 +515,10 @@ namespace WoSConnect.ROs.WoS.Controllers
                             List<string> sol = new List<string>();
                             Keywords_2 hey = JsonConvert.DeserializeObject<Keywords_2>(objInicial.static_data.fullrecord_metadata.keywords.ToString());
                             sol.Add(hey.keyword);
-                            FreetextKeyword list = new FreetextKeyword();
+                            FreetextKeywords list = new FreetextKeywords();
                             list.freetextKeyword = sol;
-                            list.origin = "WoS";
-                            List<FreetextKeyword> sol_list = new List<FreetextKeyword>();
+                            list.source = "WoS";
+                            List<FreetextKeywords> sol_list = new List<FreetextKeywords>();
                             sol_list.Add(list);
                             return sol_list;
 
