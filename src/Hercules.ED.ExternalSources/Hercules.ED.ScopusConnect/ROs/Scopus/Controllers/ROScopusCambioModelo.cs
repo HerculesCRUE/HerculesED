@@ -253,7 +253,9 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                 }
                 if (objInicial.PrismIssn != null)
                 {
-                    revista.issn = objInicial.PrismIssn;
+                    List<string> issn = new List<string>();
+                    issn.Add(objInicial.PrismIssn);
+                    revista.issn = issn;
                 }
                 if(objInicial.PrismAggregationType!=null){
                     if(objInicial.PrismAggregationType=="Book"){
