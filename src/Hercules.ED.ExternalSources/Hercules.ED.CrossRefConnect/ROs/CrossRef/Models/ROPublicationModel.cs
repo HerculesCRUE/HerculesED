@@ -21,7 +21,7 @@ public class Publication
 
     public List<Person> seqOfAuthors { get; set; }
   //  public Organization correspondingOrganization { get; set; }
-    public List<KnowledgeArea> hasKnowledgeArea { get; set; }
+    public List<KnowledgeArea_list> hasKnowledgeArea { get; set; }
     public string pageEnd { get; set; }
 
     public string pageStart { get; set; }
@@ -105,7 +105,8 @@ public class Organization
 }
 public class Conference
 {
-    public string abbreviation { get; set; }
+    //todo! esto mirar! 
+        public string abbreviation { get; set; }
     public DateTimeInterval dateTimeInterval { get; set; }
     public string description { get; set; }
     public List<string> IDs { get; set; }
@@ -113,16 +114,24 @@ public class Conference
     public string freetextKeyword { get; set; }
     public string locality { get; set; }
     //public ParticipatedBy participatedBy { get; set; }
-    public List<KnowledgeArea> hasKnowledgeArea { get; set; }
+    public List<KnowledgeArea_list> hasKnowledgeArea { get; set; }
 
 }
-public class KnowledgeArea
+public class KnowledgeArea_list
 {
-    public string name { get; set; }
-    public string abbreviation { get; set; }
-    public string hasCode { get; set; }
+    public List<KnowledgeArea> knowledgeAreas {get;set;}
     public string resource {get;set;}
 }
+
+public class KnowledgeArea 
+{
+    public string name { get; set; }
+   // public string abbreviation { get; set; }
+    public string hasCode { get; set; }
+
+
+}
+
 public class DateTimeInterval
 {
     public DateTimeValue end { get; set; }

@@ -213,11 +213,12 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
             return null;
         }
 
-        public Journal getJournal(PublicacionInicial objInicial)
+        public Source getJournal(PublicacionInicial objInicial)
         {
+            //todo! cambiar esto! 
             if (objInicial.ISSN != null || objInicial.ContainerTitle != null)
             {
-                Journal journal = new Journal();
+                Source journal = new Source();
                 if (objInicial.ISSN != null)
                 {
                     journal.issn = objInicial.ISSN[0];
@@ -228,7 +229,17 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                     journal.name = objInicial.ContainerTitle[0];
                     //TODO: esto puede no estar bien! porque no se tiene que ser el primero... 
                 }
-                if (journal != new Journal())
+                 if (objInicial.ISBN != null)
+                {
+                    List<string> isbns =  new List<string>();
+                    foreach(string dato in objInicial.ISSN){
+                        isbns.Add(dato);
+                    }
+                    journal.isbn = isbns;
+                    //TODO: esto puede no estar bien! porque no se tiene que ser el primero... 
+                }
+
+                if (journal != new Source())
                 {
                     return journal;
                 }
@@ -274,7 +285,8 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                     }
                     if (bib.JournalTitle != null)
                     {
-                        Journal revista = new Journal();
+                        Source revista = new Source();
+                        //todo! 
                         revista.name = bib.JournalTitle;
                         pub.hasPublicationVenue = revista;
                     }
