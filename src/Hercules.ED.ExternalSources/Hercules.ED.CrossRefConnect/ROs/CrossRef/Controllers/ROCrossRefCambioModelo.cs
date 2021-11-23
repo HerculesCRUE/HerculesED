@@ -25,6 +25,7 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
             Publication publicacion = new Publication();
             if (objInicial != null)
             {
+                publicacion.typeOfPublication = getType(objInicial);
                 //publicacion.IDs = getIDs(objInicial);
                 publicacion.title = getTitle(objInicial);
                 //publicacion.Abstract = getAbstract(objInicial);
@@ -34,7 +35,7 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                 //publicacion.dataIssued = getDate(objInicial);
                 publicacion.pageStart = getPageStart(objInicial);
                 publicacion.pageEnd = getPageEnd(objInicial);
-                //publicacion.hasKnowledgeArea = getKnowledgeAreas(objInicial);
+                publicacion.hasKnowledgeAreas = getKnowledgeAreas(objInicial);
                 //publicacion.freetextKeyword = getFreetextKeyword(objInicial);
                 publicacion.correspondingAuthor = getAuthorPrincipal(objInicial);
                 publicacion.seqOfAuthors = getAuthors(objInicial);
@@ -53,6 +54,25 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                 return null;
             }
 
+        }
+        public string getType(PublicacionInicial objInicial){
+            if(objInicial.type!=null){
+                if(objInicial.type=="journal-article")
+                {
+                    return "Journal Article";
+                }
+                if(objInicial.type=="proceedings-article"){
+                    return "Conference Paper";
+                }
+                if(objInicial.type=="book-chapter"){
+                    return "Chapter";
+                }
+                if(objInicial.type=="book"){
+                    return "Book";
+                }
+                
+            }
+            return null;
         }
 
         // public List<String> getIDs(PublicacionInicial objInicial)
@@ -136,13 +156,27 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
             return null;
         }
 
-        // public List<KnowledgeArea> getKnowledgeAreas(PublicacionInicial objInicial)
-        // {
-        //     List<KnowledgeArea> result = new List<KnowledgeArea>();
-        //     KnowledgeArea area = null;
-        //     result.Add(area);
-        //     return result;
-        // }
+        public List<KnowledgeAreas> getKnowledgeAreas(PublicacionInicial objInicial)
+         {
+             List<KnowledgeAreas> result = new List<KnowledgeAreas>();
+            KnowledgeAreas areas= new KnowledgeAreas();
+            List<KnowledgeArea> ultima_list = new List<KnowledgeArea>();
+            if(objInicial.subject!=null){
+                foreach(string name in objInicial.subject){
+                    KnowledgeArea a = new KnowledgeArea();
+                    a.name=name;
+                    ultima_list.Add(a);
+                    
+                }
+                if(ultima_list!=new List<KnowledgeArea>()){
+                    areas.resource="CrossRef";
+                    areas.knowledgeArea=ultima_list;
+                    result.Add(areas);
+                    return result;
+                }
+            }
+            return null;
+         }
 
         // public List<string> getFreetextKeyword(PublicacionInicial objInicial)
         // {
@@ -215,14 +249,12 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
 
         public Source getJournal(PublicacionInicial objInicial)
         {
-            //todo! cambiar esto! 
             if (objInicial.ISSN != null || objInicial.ContainerTitle != null)
             {
                 Source journal = new Source();
                 if (objInicial.ISSN != null)
                 {
-                    journal.issn = objInicial.ISSN[0];
-                    //TODO: esto puede no estar bien! porque no se tiene que ser el primero... 
+                    journal.issn = objInicial.ISSN;
                 }
                 if (objInicial.ContainerTitle != null & objInicial.ContainerTitle.Count >= 1)
                 {
@@ -236,8 +268,14 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                         isbns.Add(dato);
                     }
                     journal.isbn = isbns;
-                    //TODO: esto puede no estar bien! porque no se tiene que ser el primero... 
                 }
+                if(objInicial.type=="book" || objInicial.type=="book-chapter"){
+                    journal.type ="Book";
+                }
+                if(objInicial.type=="journal-article"){
+                    journal.type ="Journal";
+                }
+                
 
                 if (journal != new Source())
                 {
@@ -286,7 +324,6 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                     if (bib.JournalTitle != null)
                     {
                         Source revista = new Source();
-                        //todo! 
                         revista.name = bib.JournalTitle;
                         pub.hasPublicationVenue = revista;
                     }
