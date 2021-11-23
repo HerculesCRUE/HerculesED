@@ -6742,7 +6742,7 @@
 												"property": "http://w3id.org/roh/members",
 												"type": "text",
 												"width": 1
-											},
+											}
 										]
 									},
 									{
@@ -7038,7 +7038,7 @@
 												"property": "http://w3id.org/roh/selectionEntity",
 												"type": "text",
 												"width": 2
-											},
+											}
 										]
 									},
 									{
@@ -7061,7 +7061,7 @@
 												"property": "http://w3id.org/roh/members",
 												"type": "number",
 												"width": 1
-											},
+											}
 										]
 									}
 								]
@@ -7094,7 +7094,6 @@
 								"name": {
 									"es": "Ordenar por fecha más reciente"
 								},
-								"TODO": "El orden va por título de la actividad y por fecha de inicio del investigador en la actividad (datos propios)",
 								"properties": [
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
@@ -7176,6 +7175,14 @@
 												"required": true,
 												"type": "text",
 												"width": 3
+											},
+											{
+												"title": {
+													"es": "Fecha de concesión"
+												},
+												"property": "http://w3id.org/roh/dateIssued",
+												"type": "date",
+												"width": 1
 											}
 										]
 									},
@@ -7192,14 +7199,6 @@
 												"property": "http://w3id.org/roh/accreditationIssuedBy",
 												"type": "text",
 												"width": 2
-											},
-											{
-												"title": {
-													"es": "Fecha de concesión"
-												},
-												"property": "http://w3id.org/roh/dateIssued",
-												"type": "date",
-												"width": 1
 											}
 										]
 									}
