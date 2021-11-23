@@ -792,8 +792,19 @@ namespace WoSConnect.ROs.WoS.Controllers
                             if(objInicial.static_data.summary.pub_info.pubtype=="Journal"){
                                 revista.type="Journal";
                             }
-                            if(objInicial.static_data.summary.pub_info.pubtype=="Book"){
+                            else if(objInicial.static_data.summary.pub_info.pubtype=="Book"){
                                 revista.type="Book";
+                            }
+                            else{
+                                //recogida de errores! 
+                                string ad="No se ha identidicado el tipo de recurso en el que esta publicado";
+                                if(this.advertencia!=null){
+                                    this.advertencia.Add(ad);
+                                }else{
+                                    List<string> advertencias = new List<string>();
+                                    advertencias.Add(ad);
+                                    this.advertencia=advertencias;
+                                }
                             }
                         }
                     }
