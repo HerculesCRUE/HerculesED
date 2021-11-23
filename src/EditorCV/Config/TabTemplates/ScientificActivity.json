@@ -5835,8 +5835,8 @@
 			}
 		},
 		{
-			"rdftype": "http://w3id.org/roh/RelatedPrize",
-			"property": "http://w3id.org/roh/prizes",
+			"rdftype": "http://w3id.org/roh/RelatedCollaboration",
+			"property": "http://w3id.org/roh/collaborations",
 			"presentation": {
 				"type": "listitems",
 				"title": {
@@ -5847,7 +5847,7 @@
 					"listItem": {
 						"propertyTitle": {
 							"property": "http://vivoweb.org/ontology/core#relatedBy",
-							"graph": "accreditation",
+							"graph": "collaboration",
 							"child": {
 								"property": "http://w3id.org/roh/title"
 							}
@@ -5861,7 +5861,7 @@
 								"properties": [
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "accreditation",
+										"graph": "collaboration",
 										"child": {
 											"property": "http://w3id.org/roh/dateIssued"
 										},
@@ -5869,7 +5869,7 @@
 									},
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "accreditation",
+										"graph": "collaboration",
 										"child": {
 											"property": "http://w3id.org/roh/title"
 										},
@@ -5884,7 +5884,7 @@
 								"properties": [
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "accreditation",
+										"graph": "collaboration",
 										"child": {
 											"property": "http://w3id.org/roh/dateIssued"
 										},
@@ -5892,7 +5892,7 @@
 									},
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "accreditation",
+										"graph": "collaboration",
 										"child": {
 											"property": "http://w3id.org/roh/title"
 										},
@@ -5904,11 +5904,11 @@
 						"properties": [
 							{
 								"name": {
-									"es": "Descripción"
+									"es": "Descripción de la colaboración"
 								},
 								"child": {
 									"property": "http://vivoweb.org/ontology/core#relatedBy",
-									"graph": "accreditation",
+									"graph": "collaboration",
 									"child": {
 										"property": "http://w3id.org/roh/title"
 									}
@@ -5917,9 +5917,9 @@
 						]
 					},
 					"listItemEdit": {
-						"graph": "accreditation",
+						"graph": "collaboration",
 						"proptitle": "http://w3id.org/roh/title",
-						"rdftype": "http://w3id.org/roh/Accreditation",
+						"rdftype": "http://w3id.org/roh/Collaboration",
 						"sections": [
 							{
 								"title": {
@@ -5930,10 +5930,10 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Descripción"
+													"es": "Descripción de la colaboración"
 												},
 												"placeholder": {
-													"es": "Introduce la descripción"
+													"es": "Introduce la descripción de la colaboración"
 												},
 												"property": "http://w3id.org/roh/title",
 												"required": true,
@@ -5941,28 +5941,129 @@
 												"width": 3
 											}
 										]
-									},
+									},	
 									{
 										"properties": [
 											{
 												"title": {
-													"es": "Entidad concesionaria"
+													"es": "Modo de relación"
 												},
-												"TODO": "Autocompletado/texto libre. En caso de que haya que añadir una nueva organización, será por autocompletado o combo",
-												"placeholder": {
-													"es": "Introduce la entidad concesionaria"
+												"property": "http://w3id.org/roh/relationshipType",
+												"combo": {
+													"rdftype": "http://w3id.org/roh/RelationshipType",
+													"graph": "relationshiptype",
+													"property": {
+														"property": "http://purl.org/dc/elements/1.1/title"
+													}
 												},
-												"property": "http://w3id.org/roh/accreditationIssuedBy",
-												"type": "text",
+												"type": "selectCombo",
 												"width": 2
 											},
 											{
+												"TODO": "Visibilidad de Otros en función del combo anterior",
 												"title": {
-													"es": "Fecha de concesión"
+													"es": "Otros"
 												},
-												"property": "http://w3id.org/roh/dateIssued",
-												"type": "date",
+												"property": "http://w3id.org/roh/relationshipTypeOthers",
+												"type": "text",
 												"width": 1
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"property": "http://purl.org/ontology/bibo/authorList",
+												"TODO": "Integrar el diseño de Félix para la adición de autores",
+												"type": "auxEntity",
+												"title": {
+													"es": "Nombres investigadores principales (IP, Co-IP,...)"
+												},
+												"multiple": true,
+												"width": 3,
+												"auxEntityData": {
+													"rdftype": "http://purl.obolibrary.org/obo/BFO_0000023",
+													"propertyOrder": "http://www.w3.org/1999/02/22-rdf-syntax-ns#comment",
+													"propertyTitle": {
+														"property": "http://xmlns.com/foaf/0.1/nick"
+													},
+													"properties": [
+														{
+															"name": {
+																"es": "Nombre"
+															},
+															"child": {
+																"property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
+																"graph": "person",
+																"child": {
+																	"property": "http://xmlns.com/foaf/0.1/name"
+																}
+															}
+														},
+														{
+															"name": {
+																"es": "ORCID"
+															},
+															"child": {
+																"property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
+																"graph": "person",
+																"child": {
+																	"property": "http://w3id.org/roh/ORCID"
+																}
+															}
+														}
+													],
+													"rows": [
+														{
+															"properties": [
+																{
+																	"title": {
+																		"es": "Firma"
+																	},
+																	"type": "text",
+																	"placeholder": {
+																		"es": "Introduce la firma"
+																	},
+																	"required": true,
+																	"property": "http://xmlns.com/foaf/0.1/nick",
+																	"width": 3
+																}
+															]
+														},
+														{
+															"properties": [
+																{
+																	"TODO": "Error null al crear entidades",
+																	"title": {
+																		"es": "Persona"
+																	},
+																	"type": "entity",
+																	"multiple": false,
+																	"required": true,
+																	"property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
+																	"width": 3,
+																	"entityData": {
+																		"rdftype": "http://xmlns.com/foaf/0.1/Person",
+																		"graph": "person",
+																		"propertyTitle": {
+																			"property": "http://xmlns.com/foaf/0.1/name"
+																		},
+																		"properties": [
+																			{
+																				"name": {
+																					"es": "ORCID"
+																				},
+																				"child": {
+																					"property": "http://w3id.org/roh/ORCID"
+																				}
+																			}
+																		]
+																	}
+																}
+															]
+														}
+													]
+												}
 											}
 										]
 									}
