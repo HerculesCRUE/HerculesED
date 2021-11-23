@@ -6144,9 +6144,6 @@
 												"title": {
 													"es": "País de radicación"
 												},
-												"placeholder": {
-													"es": "Introduce el país de radicación"
-												},
 												"property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
 												"combo": {
 													"rdftype": "http://www.geonames.org/ontology#Feature",
@@ -6164,10 +6161,7 @@
 											},
 											{
 												"title": {
-													"es": "C. Autón./Reg. de publicación"
-												},
-												"placeholder": {
-													"es": "Introduce la región de radicación"
+													"es": "C. Autón./Reg. de radicación"
 												},
 												"property": "https://www.w3.org/2006/vcard/ns#hasRegion",
 												"combo": {
@@ -6190,7 +6184,38 @@
 												"width": 1
 											}
 										]
-									}
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Identificar palabras clave"
+												},
+												"placeholder": {
+													"es": "Introduce la palabra clave"
+												},
+												"property": "http://vivoweb.org/ontology/core#freeTextKeyword",
+												"multiple": true,
+												"type": "text",
+												"width": 1
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Resultados relevantes"
+												},
+												"placeholder": {
+													"es": "Introduce los resultados relevantes"
+												},
+												"property": "http://w3id.org/roh/relevantResults",
+												"type": "text",
+												"width": 3
+											}
+										]
+									},
 								]
 							}
 						]
