@@ -185,10 +185,10 @@ namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
             return null;
         }
 
-        public Journal getJournal(Root objInicial)
+        public Source getJournal(Root objInicial)
         {
             if(objInicial.venue!=null && objInicial.venue!=""){
-                Journal revista = new Journal();
+                Source revista = new Source();
                 revista.name= objInicial.venue;
                 return revista;
             }
