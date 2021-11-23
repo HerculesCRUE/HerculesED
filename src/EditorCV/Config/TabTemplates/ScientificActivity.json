@@ -893,7 +893,6 @@
 				"title": {
 					"es": "Trabajos presentados en congresos nacionales o internacionales"
 				},
-				
 				"listItemsPresentation": {
 					"property": "http://vivoweb.org/ontology/core#relatedBy",
 					"listItem": {
@@ -5011,7 +5010,7 @@
 												"property": "http://w3id.org/roh/promotedBy",
 												"type": "text",
 												"width": 2
-											},
+											}
 										]
 									}
 								]
@@ -5277,7 +5276,7 @@
 												"width": 1
 											}
 										]
-									},
+									}
 								]
 							}
 						]
@@ -5368,8 +5367,7 @@
 										}
 									}
 								}
-							},
-							
+							}
 						]
 					},
 					"listItemEdit": {
@@ -5421,7 +5419,7 @@
 												"property": "http://w3id.org/roh/performedTasks",
 												"type": "text",
 												"width": 2
-											},
+											}
 										]
 									},
 									{
@@ -5437,7 +5435,7 @@
 												"property": "http://w3id.org/roh/accreditationIssuedBy",
 												"type": "text",
 												"width": 2
-											},
+											}
 										]
 									},
 									{
@@ -5498,7 +5496,7 @@
 									{
 										"properties": [
 											{
-												"TODO": "Tesauro en la propiedad anterior"
+												"TODO": "Tesauro en la propiedad anterior",
 												"title": {
 													"es": "Nombre del programa"
 												},
@@ -5519,7 +5517,7 @@
 												"property": "http://w3id.org/roh/skillsDeveloped",
 												"type": "text",
 												"width": 2
-											},
+											}
 										]
 									},
 									{
@@ -5534,7 +5532,7 @@
 												"property": "http://w3id.org/roh/relevantResults",
 												"type": "text",
 												"width": 2
-											},
+											}
 										]
 									},
 									{
@@ -5549,7 +5547,7 @@
 												"property": "http://w3id.org/roh/fundedBy",
 												"type": "text",
 												"width": 2
-											},
+											}
 										]
 									},
 									{
@@ -5564,7 +5562,7 @@
 												"property": "http://w3id.org/roh/fundedBy",
 												"type": "text",
 												"width": 2
-											},
+											}
 										]
 									},
 									{
