@@ -529,16 +529,16 @@ namespace WoSConnect.ROs.WoS.Models.Inicial
     }
 
     // public class QueryResult
-    // {
+   // {
     //     public int QueryID { get; set; }
     //     public int RecordsSearched { get; set; }
-    //     public int RecordsFound { get; set; }
-    // }
-
+        // public int RecordsFound { get; set; }
+  //   }
+//
     public class Root
     {
         public Data Data { get; set; }
-    //    public QueryResult QueryResult { get; set; }
+       // public QueryResult QueryResult { get; set; }
     }
 
 

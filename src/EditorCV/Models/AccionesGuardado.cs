@@ -1,4 +1,5 @@
-﻿using Gnoss.ApiWrapper;
+﻿using EditorCV.Models.ORCID;
+using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.ApiModel;
 using Gnoss.ApiWrapper.Model;
 using GuardadoCV.Models.API;
@@ -10,6 +11,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
@@ -115,6 +117,8 @@ namespace GuardadoCV.Models
                     //Creamos
                     pEntity.propTitle = templateSection.presentation.listItemsPresentation.listItemEdit.proptitle;
                     pEntity.propDescription = templateSection.presentation.listItemsPresentation.listItemEdit.propdescription;
+                    ProcesCompossedProperties(templateSection.presentation.listItemsPresentation.listItemEdit, pEntity);
+                    ProcesLoadPropertyValues(templateSection.presentation.listItemsPresentation.listItemEdit, pEntity);
                     ComplexOntologyResource resource = ToGnossApiResource(pEntity);
                     string result = mResourceApi.LoadComplexSemanticResource(resource, false, true);
 
@@ -158,6 +162,8 @@ namespace GuardadoCV.Models
                     Entity loadedEntity = GetLoadedEntity(pEntity.id, pEntity.ontology);
                     loadedEntity.propTitle = templateSection.presentation.listItemsPresentation.listItemEdit.proptitle;
                     loadedEntity.propDescription = templateSection.presentation.listItemsPresentation.listItemEdit.propdescription;
+                    ProcesCompossedProperties(templateSection.presentation.listItemsPresentation.listItemEdit, loadedEntity);
+                    ProcesLoadPropertyValues(templateSection.presentation.listItemsPresentation.listItemEdit, loadedEntity);
 
                     bool hasChange = MergeLoadedEntity(loadedEntity, pEntity);
 
@@ -186,6 +192,7 @@ namespace GuardadoCV.Models
                     pEntity.propTitle = itemEdit.proptitle;
                     pEntity.propDescription = itemEdit.propdescription;
                     ProcesCompossedProperties(itemEdit, pEntity);
+                    ProcesLoadPropertyValues(itemEdit, pEntity);
                     ComplexOntologyResource resource = ToGnossApiResource(pEntity);
                     string result = mResourceApi.LoadComplexSemanticResource(resource, false, true);
                     return new JsonResult() { ok = resource.Uploaded, id = result };
@@ -197,7 +204,7 @@ namespace GuardadoCV.Models
                     loadedEntity.propTitle = itemEdit.proptitle;
                     loadedEntity.propDescription = itemEdit.propdescription;
                     bool hasChange = MergeLoadedEntity(loadedEntity, pEntity);
-                    hasChange = ProcesCompossedProperties(itemEdit, loadedEntity) || hasChange;
+                    hasChange = ProcesCompossedProperties(itemEdit, loadedEntity) || ProcesLoadPropertyValues(itemEdit, loadedEntity) || hasChange;
                     if (hasChange)
                     {
                         ComplexOntologyResource resource = ToGnossApiResource(loadedEntity);
@@ -210,6 +217,70 @@ namespace GuardadoCV.Models
                     }
                 }
             }
+        }
+
+        public JsonResult ValidateORCID(string pORCID)
+        {
+            pORCID = pORCID.Replace("https://orcid.org/", "");
+            //1º Buscamos en las personas cargadas
+            SparqlObject resultData = mResourceApi.VirtuosoQuery("select ?s", "where{?s <http://w3id.org/roh/ORCID> '" + pORCID + "'. ?s a <http://xmlns.com/foaf/0.1/Person>}order by asc(?s)", "person");
+            foreach (Dictionary<string, Data> fila in resultData.results.bindings)
+            {
+                return new JsonResult() { ok = true, id = fila["s"].value, error = "" };
+            }
+
+            //2º Si no existe recuperamos la persona de ORCID, la creamos y la devolvemos
+            try
+            {
+                WebClient webClient = new WebClient();
+                webClient.Headers.Add(HttpRequestHeader.Accept, "application/json");
+                string jsonRespuestaOrcidPerson = webClient.DownloadString("https://pub.orcid.org/v3.0/" + pORCID + "/person");
+                webClient.Dispose();
+                ORCIDPerson person = JsonConvert.DeserializeObject<ORCIDPerson>(jsonRespuestaOrcidPerson);
+
+                if (person != null)
+                {
+                    Entity entity = new Entity();
+                    entity.rdfType = "http://xmlns.com/foaf/0.1/Person";
+                    entity.propTitle = "http://xmlns.com/foaf/0.1/name";
+                    entity.properties = new List<Entity.Property>()
+                    {
+                        new Entity.Property()
+                        {
+                            prop = "http://xmlns.com/foaf/0.1/name",
+                            values = new List<string>() { person.name.given_names.value.Trim() + " "+ person.name.family_name.value.Trim() }
+                        },
+                        new Entity.Property()
+                        {
+                            prop = "http://xmlns.com/foaf/0.1/firstName",
+                            values = new List<string>() { person.name.given_names.value.Trim() }
+                        },
+                        new Entity.Property()
+                        {
+                            prop = "http://xmlns.com/foaf/0.1/lastName",
+                            values = new List<string>() { person.name.family_name.value.Trim() }
+                        },
+                        new Entity.Property()
+                        {
+                            prop = "http://w3id.org/roh/ORCID",
+                            values = new List<string>() {pORCID }
+                        }
+                    };
+                    //TODO privacidad
+                    mResourceApi.ChangeOntoly("person");
+                    ComplexOntologyResource resource = ToGnossApiResource(entity);
+                    string result = mResourceApi.LoadComplexSemanticResource(resource, false, true);
+                    if (resource.Uploaded)
+                    {
+                        return new JsonResult() { ok = true, id = result, error = "" };
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                //TODO texto                
+            }
+            return new JsonResult() { ok = false, id = "", error = "El código introducido no es válio" };
         }
 
         /// <summary>
@@ -230,6 +301,40 @@ namespace GuardadoCV.Models
             }
             return changes;
         }
+
+        /// <summary>
+        /// Procesa las entidades configuradas como compuestas (por ejemplo el nombre completo de una persona 'nombre'+' '+ 'apellidos')
+        /// </summary>
+        /// <param name="pItemEdit">Configuración de item de edición</param>
+        /// <param name="pLoadedEntity">Datos de la entidad</param>
+        /// <returns></returns>
+        private bool ProcesLoadPropertyValues(ItemEdit pItemEdit, Entity pLoadedEntity)
+        {
+            bool changes = false;
+            if(pItemEdit.loadPropertyValues!=null && pItemEdit.loadPropertyValues.Count>0)
+            {
+                foreach(LoadPropertyValues propertyValue in pItemEdit.loadPropertyValues)
+                {
+                    Entity.Property prop = new Entity.Property()
+                    {
+                        prop = propertyValue.property,
+                        values =  propertyValue.values 
+                    };
+                    Entity.Property propLoad = pLoadedEntity.properties.FirstOrDefault(x => x.prop == prop.prop);
+                    if (propLoad==null)
+                    {
+                        pLoadedEntity.properties.Add(prop);
+                        changes = true;
+                    }else if(propLoad.values.Union(prop.values).Count()!=prop.values.Count)
+                    {
+                        propLoad.values = prop.values;
+                    }
+                }                
+            }
+            return changes;
+        }
+
+        
 
         /// <summary>
         /// Procesa las entidades configuradas como compuestas (por ejemplo el nombre completo de una persona 'nombre'+' '+ 'apellidos') (recursivo)
@@ -411,7 +516,7 @@ namespace GuardadoCV.Models
                     foreach (string value in property.values)
                     {
                         string valueAux = value;
-                        if(value==null)
+                        if (value == null)
                         {
                             valueAux = "";
                         }
@@ -496,7 +601,7 @@ namespace GuardadoCV.Models
             if (propDescription != null && propDescription.values.Count > 0)
             {
                 resource.Description = propDescription.values.First();
-                if(resource.Description==null)
+                if (resource.Description == null)
                 {
                     resource.Description = "";
                 }

@@ -29,10 +29,10 @@ namespace PublicationConnect.Controllers
         /// <remarks>
         /// Sample request:
         ///
-        ///     GET /scopus/GetROs?author_id=SCOPUS_ID&amp;year=2020
+        ///     GET /scopus/GetROs?orcid=XXXX-XXXX-XXXX-XXXX&amp;date=year-month-day
         /// </remarks>
         /// <param orcid="orcid">Orcid</param>
-        /// <param date="date">Year-month-day</param>
+        /// <param year-month-day="year-month-day">Year-month-day</param>
         /// <returns></returns>
         /// <response code="200">Ok</response>
         /// <response code="400">Invalid app</response> 
@@ -54,10 +54,10 @@ namespace PublicationConnect.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public List<Publication> GetROs([FromQuery][Required] string orcid)
+        public List<Publication> GetROs([FromQuery][Required] string orcid,string date="1500-01-01")
         {
             ROPublicationLogic PublicationObject = new ROPublicationLogic("");
-            List<Publication> publication = PublicationObject.getPublications(orcid);
+            List<Publication> publication = PublicationObject.getPublications(orcid,date);
             return publication;
         }
         

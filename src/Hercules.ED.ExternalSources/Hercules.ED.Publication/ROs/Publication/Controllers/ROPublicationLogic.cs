@@ -26,6 +26,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
 {
     public class ROPublicationLogic : PublicationInterface
     {
+        List<string> advertencia = new List<string>();
         protected string bareer;
         //ROScopusControllerJSON info = new ROScopusControllerJSON();
         protected string baseUri { get; set; }
@@ -37,7 +38,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
         public ROPublicationLogic(string baseUri)
         {
 
-            this.baseUri = "http://localhost:5000/WoS/GetROs?orcid={0}";
+            //this.baseUri = "http://localhost:5000/WoS/GetROs?orcid={0}";
 
             //this.bareer = bareer;
 
@@ -97,19 +98,21 @@ namespace PublicationConnect.ROs.Publications.Controllers
         /// Main function from get all repositories from the RO account
         /// </summary>
         /// <param name="ID"></param>
+        /// <param date="year-month-day"></param>
         /// <returns></returns>
-        public List<Publication> getPublications(string name)
+        public List<Publication> getPublications(string name, string date = "1500-01-01")
         {
             //Declaro el Resultado
             List<Publication> resultado = new List<Publication>();
-            List<Publication> objInicial_Scopus = llamada_Scopus(name);
+            List<Publication> objInicial_Scopus = llamada_Scopus(name, date);
 
             //consulta a WoS 
-            List<Publication> objInicial_woS = llamada_WoS(name);
+            List<Publication> objInicial_woS = llamada_WoS(name, date);
             if (objInicial_Scopus.Count >= 1)
             {
                 foreach (Publication pub in objInicial_woS)
                 {
+                    this.advertencia = pub.problema;
                     string doi = pub.doi;
                     dois_principales.Add(doi);
                     Publication pub_completa = Obtener_publicacion_dependiendo_grafo(pub, true);
@@ -117,12 +120,16 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     {
                         if (objInicial_Scopus.Count >= 1)
                         {
+
                             foreach (Publication pub_scopus in objInicial_Scopus)
                             {
                                 if (pub_scopus.doi != null)
                                 {
                                     if (pub_scopus.doi == pub_completa.doi)
                                     {
+                                        Console.Write(pub_scopus);
+                                        Console.Write("\n");
+                                        //todo combinar los erroees! ni puta idea de como hacerlo proqe depende de lo que juntes y lo que no! 
                                         if (pub_completa.IDs != null & pub_scopus.IDs != null)
                                         {
                                             pub_completa.IDs.AddRange(pub_scopus.IDs);
@@ -135,12 +142,17 @@ namespace PublicationConnect.ROs.Publications.Controllers
                                         {
                                             pub_completa.hasMetric.AddRange(pub_scopus.hasMetric);
                                         }
+                                        else if (pub_completa.hasMetric == null & pub_scopus.hasMetric != null)
+                                        {
+                                            pub_completa.hasMetric = pub_scopus.hasMetric;
+                                        }
                                     }
                                 }
                             }
                         }
                         resultado.Add(pub_completa);
                     }
+                    this.advertencia = null;
                 }
             }
             if (objInicial_Scopus.Count >= 1)
@@ -148,6 +160,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 //llamada Scopus para completar publicaciones. 
                 foreach (Publication pub_scopus in objInicial_Scopus)
                 {
+                    this.advertencia = pub_scopus.problema;
                     if (!dois_principales.Contains(pub_scopus.doi))
                     {
                         dois_principales.Add(pub_scopus.doi);
@@ -157,7 +170,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
                             resultado.Add(pub_completa);
                         }
                     }
+                    this.advertencia = null;
                 }
+
             }
             return resultado;
 
@@ -168,76 +183,55 @@ namespace PublicationConnect.ROs.Publications.Controllers
         //el booleano de principal es true si la publicacion que queremos meter en el grafo es principal 
         public Publication Obtener_publicacion_dependiendo_grafo(Publication pub, Boolean principal, string fuente = "Open Citations")
         {
-            if (false)
-            {
-                //Esta en el grafo! 
-                //todo: esta cjomporbacion de si esta en el grafo 
-                if (false)
-                {
-                    //esta como tipo publicacion principal -> no hacemos nada! 
-                    return null;
-                    //todo en realidad no queremos devolver null solo que no noshaxe falta conectar mas porque ya lo tenemos 
-                    //todo esta comporbacion de si esta ene lgrafo como publicacion principal! 
-                }
-                else
-                {
-                    // esto es si esta como tipo publicacion de bibliografia o cita 
-                    //este como bibliografia y nosotros queremos como principal:
-                    if (principal)
-                    {
-                        Publication pub_completa = obtener_bib_citas(pub);
-                        return pub_completa;
-                    }
-                    else
-                    {
-                        //todo en realidad no queremos devolver null solo que no noshaxe falta conectar mas porque ya lo tenemos 
-                        //este caso esta como bibliografia y queremos meter como bibliograi
-                        return null;
-                    }
 
+            if (principal)
+            {
+                Publication objInicial_semanticScholar = llamada_Semantic_Scholar(pub.doi);
+                if (pub.hasMetric != null)
+                {
+                    if (objInicial_semanticScholar.hasMetric != null)
+                    {
+                        pub.hasMetric.AddRange(objInicial_semanticScholar.hasMetric);
+                    }
                 }
+                else { pub.hasMetric = objInicial_semanticScholar.hasMetric; }
+                Publication pub_completa = obtener_bib_citas(pub);
+                return pub_completa;
             }
             else
             {
-                if (principal)
+                //si no es principal (no ha sido obtenida por WoS )y no esta en el grafo debemos llamar a funciones para completar esta funcion 
+                if (fuente == "Open Citations")
                 {
-                    Publication pub_completa = obtener_bib_citas(pub);
-                    return pub_completa;
+
+                    Publication pub_2 = this.llamada_CrossRef(pub.doi);
+                    Publication pub_1 = this.llamada_Semantic_Scholar(pub.doi);
+                    Publication pub_final_bib = compatacion(pub_1, pub_2);
+                    if (pub_final_bib != null)
+                    {
+                        return (pub_final_bib);
+                    }
+
                 }
-                else
+                if (fuente == "CrossRef")
                 {
-                    //si no es principal (no ha sido obtenida por WoS )y no esta en el grafo debemos llamar a funciones para completar esta funcion 
-                    if (fuente == "Open Citations")
-                    {
-
-                        Publication pub_2 = this.llamada_CrossRef(pub.doi);
-                        Publication pub_1 = this.llamada_Semantic_Scholar(pub.doi);
-                        Publication pub_final_bib = compatacion(pub_1, pub_2);
-                        if (pub_final_bib != null)
-                        {
-                            return (pub_final_bib);
-                        }
-
-                    }
-                    if (fuente == "CrossRef")
-                    {
-                        //todo es que aquinunca entra porque no esta esto implementado todavia. 
-                        return pub;
-                    }
-                    if (fuente == "SemanticScholar")
-                    {
-                        Publication pub_2 = this.llamada_CrossRef(pub.doi);
-                        Publication pub_final_bib = compatacion(pub, pub_2);
-                        if (pub_final_bib != null)
-                        {
-                            return (pub_final_bib);
-                        }
-
-                    }
-                    //en caso de que pase algo raro devolbemos lo que tenemos
+                    //todo es que aqui nunca entra porque no esta esto implementado todavia. 
                     return pub;
                 }
+                if (fuente == "SemanticScholar")
+                {
+                    Publication pub_2 = this.llamada_CrossRef(pub.doi);
+                    Publication pub_final_bib = compatacion(pub, pub_2);
+                    if (pub_final_bib != null)
+                    {
+                        return (pub_final_bib);
+                    }
+
+                }
+                //en caso de que pase algo raro devolbemos lo que tenemos
+                return pub;
             }
+            // }
         }
 
 
@@ -247,7 +241,6 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
             // Consulta Open Citations 
             Publication objInicial_OpenCitatons = llamada_open_citations(doi);
-
             List<Publication> citas = new List<Publication>();
 
             if (objInicial_OpenCitatons.citas != null)
@@ -289,10 +282,19 @@ namespace PublicationConnect.ROs.Publications.Controllers
             }
             //obteneemos toda la bibliografia de CrossREF
             Publication objInicial_CrossRef = llamada_CrossRef(doi);
+
             if (objInicial_CrossRef != null)
             {
+                if (pub.hasMetric != null)
+                {
+                    if (objInicial_CrossRef.hasMetric != null)
+                    {
+                        pub.hasMetric.AddRange(objInicial_CrossRef.hasMetric);
+                    }
+                }
+                else { pub.hasMetric = objInicial_CrossRef.hasMetric; }
                 List<Publication> bib_CrossRef = obtener_bib_crosRef(objInicial_CrossRef, dois_bibliografia);
-                
+
                 if (bib_CrossRef != new List<Publication>())
                 {
                     bibliografia.AddRange(bib_CrossRef);
@@ -319,7 +321,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     if (!dois_bibliografia.Contains(pub_cross.doi))
                     {
                         string doi_bib = pub_cross.doi;
-                        dois_bibliografia.Add(doi_bib); 
+                        dois_bibliografia.Add(doi_bib);
                         Publication pub_semntic_scholar = this.llamada_Semantic_Scholar(doi_bib);
                         Publication pub_crossRef = this.llamada_CrossRef(doi_bib);
                         Publication pub_final_bib = compatacion(pub_crossRef, pub_semntic_scholar);
@@ -381,17 +383,17 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         pub.Abstract = pub_2.Abstract;
                     }
 
-                    if (pub_1.freetextKeyword != null)
+                    if (pub_1.list_freetextKeyword != null)
                     {
-                        pub.freetextKeyword = pub_1.freetextKeyword;
-                        if (pub_2.freetextKeyword != null)
+                        pub.list_freetextKeyword = pub_1.list_freetextKeyword;
+                        if (pub_2.list_freetextKeyword != null)
                         {
-                            pub.freetextKeyword.AddRange(pub_2.freetextKeyword);
+                            pub.list_freetextKeyword.AddRange(pub_2.list_freetextKeyword);
                         }
                     }
                     else
                     {
-                        pub.freetextKeyword = pub_2.freetextKeyword;
+                        pub.list_freetextKeyword = pub_2.list_freetextKeyword;
                     }
 
                     if (pub_1.language != null)
@@ -560,16 +562,17 @@ namespace PublicationConnect.ROs.Publications.Controllers
             Publication objInicial_CrossRef = JsonConvert.DeserializeObject<Publication>(info_publication);
             return objInicial_CrossRef;
         }
-        public List<Publication> llamada_Scopus(string orcid)
+        public List<Publication> llamada_Scopus(string orcid, string date)
         {
-            Uri url = new Uri(string.Format("http://localhost:5001/Scopus/GetROs?orcid={0}", orcid));
+            Uri url = new Uri(string.Format("http://localhost:5001/Scopus/GetROs?orcid={0}&date={1}", orcid, date));
             string info_publication = httpCall(url.ToString(), "GET", headers).Result;
             List<Publication> objInicial_Scopus = JsonConvert.DeserializeObject<List<Publication>>(info_publication);
             return objInicial_Scopus;
         }
-        public List<Publication> llamada_WoS(string orcid)
+
+        public List<Publication> llamada_WoS(string orcid, string date)
         {
-            Uri url = new Uri(string.Format("http://localhost:5000/WoS/GetROs?orcid={0}", orcid));
+            Uri url = new Uri(string.Format("http://localhost:5000/WoS/GetROs?orcid={0}&date={1}", orcid, date));
             string info_publication = httpCall(url.ToString(), "GET", headers).Result;
             List<Publication> objInicial_woS = JsonConvert.DeserializeObject<List<Publication>>(info_publication);
             return objInicial_woS;

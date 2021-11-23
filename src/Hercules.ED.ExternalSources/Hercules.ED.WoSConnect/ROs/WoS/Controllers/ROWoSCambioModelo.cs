@@ -12,6 +12,7 @@ namespace WoSConnect.ROs.WoS.Controllers
 {
     public class ROWoSControllerJSON //: //ROScopusLogic
     {
+        public List<string> advertencia = null;
         public ROWoSLogic WoSLogic;
         public ROWoSControllerJSON(ROWoSLogic WoSLogic)
         {
@@ -35,22 +36,18 @@ namespace WoSConnect.ROs.WoS.Controllers
 
                                 foreach (PublicacionInicial rec in objInicial.Data.Records.records.REC)
                                 {
-                                    //Console.Write("hola");
-                                    //try
-                                    //{
-                                    //    PublicacionInicial hey = JsonConvert.DeserializeObject<PublicacionInicial>(rec.ToString());
+
                                     Publication publicacion = cambioDeModeloPublicacion(rec, true);
                                     if (publicacion != null)
                                     {
+                                        if (this.advertencia != null)
+                                        {
+                                            publicacion.problema = this.advertencia;
+                                            this.advertencia = null;
+                                        }
                                         sol.Add(publicacion);
                                     }
-                                    //}
-                                    //catch
-                                    // {
-                                    //    Console.Write("Extepción\n");
-                                    //TODO aquellos que no siguen el modelo averiguar porque y ver como generalos, de momento se llaman PRocessing la clase... 
-                                    //    continue;
-                                    // }
+
 
                                 }
                             }
@@ -75,16 +72,59 @@ namespace WoSConnect.ROs.WoS.Controllers
                     publicacion.Abstract = getAbstract(objInicial);
                     publicacion.language = getLanguage(objInicial);
                     publicacion.doi = getDoi(objInicial);
+                    if(publicacion.typeOfPublication == "Journal Article" & publicacion.doi ==null){
+                         //edventencia! 
+                        string ad_text = "No hay doi, sin embargo es un Journal Article.";
+                        if(this.advertencia==null){
+                            List<string> ad_list = new List<string>();
+                            ad_list.Add(ad_text);
+                            this.advertencia=ad_list;
+                        }else{
+                            this.advertencia.Add(ad_text);
+                        }
+                    }
                     //publicacion.url = getLinks(objInicial);
                     publicacion.dataIssued = getDate(objInicial);
+                    if(publicacion.dataIssued==null){
+                             //edventencia! 
+                        string ad_text = "No hay fecha de publicacion.";
+                        if(this.advertencia==null){
+                            List<string> ad_list = new List<string>();
+                            ad_list.Add(ad_text);
+                            this.advertencia=ad_list;
+                        }else{
+                            this.advertencia.Add(ad_text);
+                        }
+                    }
                     publicacion.pageStart = getPageStart(objInicial);
                     publicacion.pageEnd = getPageEnd(objInicial);
-
                     //publicacion.hasKnowledgeArea = getKnowledgeAreas(objInicial);
-                    publicacion.freetextKeyword = getFreetextKeyword(objInicial);
+                    publicacion.list_freetextKeyword = getFreetextKeyword(objInicial);
                     //publicacion.correspondingAuthor = getAuthorPrincipal(objInicial);
                     publicacion.seqOfAuthors = getAuthors(objInicial);
+                    if(publicacion.seqOfAuthors==null){
+                        //edventencia! 
+                        string ad_text = "No hay conjunto de autores.";
+                        if(this.advertencia==null){
+                            List<string> ad_list = new List<string>();
+                            ad_list.Add(ad_text);
+                            this.advertencia=ad_list;
+                        }else{
+                            this.advertencia.Add(ad_text);
+                        }
+                    }
                     publicacion.correspondingAuthor = publicacion.seqOfAuthors[0];
+                    if(publicacion.correspondingAuthor==null){
+                        //edventencia! 
+                        string ad_text = "No hay autor principal.";
+                        if(this.advertencia==null){
+                            List<string> ad_list = new List<string>();
+                            ad_list.Add(ad_text);
+                            this.advertencia=ad_list;
+                        }else{
+                            this.advertencia.Add(ad_text);
+                        }
+                    }
                     publicacion.hasPublicationVenue = getJournal(objInicial);
                     publicacion.hasMetric = getPublicationMetric(objInicial);
 
@@ -114,11 +154,8 @@ namespace WoSConnect.ROs.WoS.Controllers
                             {
                                 JArray hey = JsonConvert.DeserializeObject<JArray>(objInicial.static_data.summary.doctypes.doctype.ToString());
                                 List<string> types = new List<string>();
-                                Console.Write(hey);
-                                for(int i=0; i<hey.Count;i++){
-                                    Console.Write(hey[i]);
-                                
-                                    Console.Write("HATTTTT");
+                                for (int i = 0; i < hey.Count; i++)
+                                {
 
                                     //return "problema_a_solucionar";
                                     string typeWoS = hey[i].ToString();
@@ -139,14 +176,34 @@ namespace WoSConnect.ROs.WoS.Controllers
                                         types.Add("Conference Paper");
                                     }
                                 }
-                                if(types.Count>1){
-                                    //todo: problemas!!!
-                                    Console.Write("HET");
-                                    return "problema_a_solucionar";
- 
-                                }else if (types.Count==0){
+                                if (types.Count > 1)
+                                {
+                                    //obtener las etiquetas juntas para definirlas
+                                    string types_merge = "";
+                                    foreach (string type in types)
+                                    {
+                                        types_merge = types_merge + type + ";";
+                                    }
+                                    //definir el problema! 
+                                    if (this.advertencia == null)
+                                    {
+                                        List<string> ad = new List<string>();
+                                        ad.Add("Problema con el tipo de articulo. Los diferentes tipos obtenidos son los siguientes: " + types_merge);
+                                        this.advertencia = ad;
+                                    }
+                                    else
+                                    {
+                                        this.advertencia.Add("Problema con el tipo de articulo. Los diferentes tipos obtenidos son los siguientes: " + types_merge);
+                                    }
+                                    //devolvemos las etiquetas juntas para que no halla problemas!
+                                    return types_merge;
+
+                                }
+                                else if (types.Count == 0)
+                                {
                                     return null;
-                                }else{return types[0];}
+                                }
+                                else { return types[0]; }
 
                             }
                             catch
@@ -237,12 +294,28 @@ namespace WoSConnect.ROs.WoS.Controllers
                                 catch
                                 {
                                     AbstractText_list hey = JsonConvert.DeserializeObject<AbstractText_list>(objInicial.static_data.fullrecord_metadata.abstracts.@abstract.abstract_text.ToString());
-                                    foreach (string var in hey.p)
-                                    {
-                                        return var;
-                                        //TODO aqui si es una lista de abstract solo estoy devolviendo el primero! 
-                                    }
 
+                                    string abstract_2 = "";
+                                    string advertencia = "Hay un problema con el abstract: se han encontrado varios, son los siguientes:\n ";
+                                    for (int i = 0; i < hey.p.Count; i++)
+                                    {
+                                        if (i == 0)
+                                        {
+                                            abstract_2 = hey.p[i];
+                                        }
+                                        advertencia = advertencia + " Abstract: " + hey.p[i] + " \n.";
+                                    }
+                                    if (this.advertencia == null)
+                                    {
+                                        List<string> ad = new List<string>();
+                                        ad.Add(advertencia);
+                                        this.advertencia = ad;
+                                    }
+                                    else
+                                    {
+                                        this.advertencia.Add(advertencia);
+                                    }
+                                    return abstract_2;
                                 }
                             }
                         }
@@ -384,7 +457,7 @@ namespace WoSConnect.ROs.WoS.Controllers
         //     return new List<KnowledgeArea>();
         // }
 
-        public List<string> getFreetextKeyword(PublicacionInicial objInicial)
+        public List<FreetextKeyword> getFreetextKeyword(PublicacionInicial objInicial)
         {
             if (objInicial.static_data != null)
             {
@@ -395,15 +468,25 @@ namespace WoSConnect.ROs.WoS.Controllers
                         try
                         {
                             Keywords hey = JsonConvert.DeserializeObject<Keywords>(objInicial.static_data.fullrecord_metadata.keywords.ToString());
-                            return hey.keyword;
+                            FreetextKeyword list = new FreetextKeyword();
+                            list.freetextKeyword = hey.keyword;
+                            list.origin = "WoS";
+                            List<FreetextKeyword> sol_list = new List<FreetextKeyword>();
+                            sol_list.Add(list);
+                            return sol_list;
                         }
                         catch
                         {
+                            //en este caso solo hay un palabra y hay que meterlo en una lista para eso! 
                             List<string> sol = new List<string>();
-
                             Keywords_2 hey = JsonConvert.DeserializeObject<Keywords_2>(objInicial.static_data.fullrecord_metadata.keywords.ToString());
                             sol.Add(hey.keyword);
-                            return sol;
+                            FreetextKeyword list = new FreetextKeyword();
+                            list.freetextKeyword = sol;
+                            list.origin = "WoS";
+                            List<FreetextKeyword> sol_list = new List<FreetextKeyword>();
+                            sol_list.Add(list);
+                            return sol_list;
 
                         }
                     }
@@ -434,7 +517,6 @@ namespace WoSConnect.ROs.WoS.Controllers
                                 foreach (JContainer var in hey)
                                 {
                                     Person persona = new Person();
-                                    //Console.Write(var.ToString() + "\n");
 
                                     try
                                     {
@@ -526,7 +608,6 @@ namespace WoSConnect.ROs.WoS.Controllers
                             }
                             catch
                             {
-                                //Console.Write(objInicial.static_data.summary.names.name.ToString());
                                 try
                                 {
                                     Name_2 ee = JsonConvert.DeserializeObject<Name_2>(objInicial.static_data.summary.names.name.ToString());

@@ -118,6 +118,21 @@ namespace GuardadoCV.Controllers
             }
         }
 
+        
+        [HttpPost("ValidateSignatures")]
+        public IActionResult ValidateSignatures([FromForm] string pSignatures, [FromForm] string pCVID, [FromForm] string pPersonID)
+        {
+            try
+            {
+                AccionesEdicion accionesEdicion = new AccionesEdicion();
+                return Ok(accionesEdicion.ValidateSignatures(pSignatures, pCVID, pPersonID));
+            }
+            catch (Exception ex)
+            {
+                return Ok(new Models.API.Response.JsonResult() { error = ex.Message });
+            }
+        }
+
 
 
         //TODO es obligatorio añadirse a uno mismo como autor

@@ -74,6 +74,20 @@ namespace GuardadoCV.Controllers
         }
 
 
+        [HttpPost("ValidateORCID")]
+        public IActionResult ValidateORCID([FromForm] string pOrcid)
+        {
+            try
+            {
+                AccionesGuardado accionesGuardado = new AccionesGuardado();
+                return Ok(accionesGuardado.ValidateORCID(pOrcid));
+            }
+            catch (Exception ex)
+            {
+                return Ok(new Models.API.Response.JsonResult() { error = ex.Message });
+            }
+        }
+
 
         //Añadir entidad
 

@@ -30,6 +30,7 @@ namespace WoSConnect.Controllers
         ///     GET http://localhost:5000/WoS/GetROs?orcid=
         /// </remarks>
         /// <param orcid="orcid">Orcid</param>
+        /// <param date="Year-Month-Day">Orcid</param>
         /// <returns></returns>
         /// <response code="200">Ok</response>
         /// <response code="400">Invalid app</response> 
@@ -39,10 +40,10 @@ namespace WoSConnect.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public List<Publication> GetROs([FromQuery][Required] string orcid)
+        public List<Publication> GetROs([FromQuery][Required] string orcid,string date ="1500-01-01")
         {
             ROWoSController WoSObject = new ROWoSController("https://wos-api.clarivate.com/", "10e8a3a2417b7ae1d864b5558136c56b78ed3eb8");//"adf94bebeeba8c3042ad5193455740e2");
-            List<Publication> publication = WoSObject.getPublications(orcid);
+            List<Publication> publication = WoSObject.getPublications(orcid,date);
             return publication;
         }
         
