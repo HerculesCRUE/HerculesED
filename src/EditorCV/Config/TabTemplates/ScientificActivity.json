@@ -5554,21 +5554,6 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Entidad financiadora"
-												},
-												"placeholder": {
-													"es": "Introduce la entidad financiadora"
-												},
-												"property": "http://w3id.org/roh/fundedBy",
-												"type": "text",
-												"width": 2
-											}
-										]
-									},
-									{
-										"properties": [
-											{
-												"title": {
 													"es": "Identificar palabras clave"
 												},
 												"placeholder": {
@@ -5589,8 +5574,8 @@
 			}
 		},
 		{
-			"rdftype": "http://w3id.org/roh/RelatedPrize",
-			"property": "http://w3id.org/roh/prizes",
+			"rdftype": "http://w3id.org/roh/RelatedGrant",
+			"property": "http://w3id.org/roh/grants",
 			"presentation": {
 				"type": "listitems",
 				"title": {
@@ -5601,7 +5586,7 @@
 					"listItem": {
 						"propertyTitle": {
 							"property": "http://vivoweb.org/ontology/core#relatedBy",
-							"graph": "accreditation",
+							"graph": "grant",
 							"child": {
 								"property": "http://w3id.org/roh/title"
 							}
@@ -5615,7 +5600,7 @@
 								"properties": [
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "accreditation",
+										"graph": "grant",
 										"child": {
 											"property": "http://w3id.org/roh/dateIssued"
 										},
@@ -5623,7 +5608,7 @@
 									},
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "accreditation",
+										"graph": "grant",
 										"child": {
 											"property": "http://w3id.org/roh/title"
 										},
@@ -5638,7 +5623,7 @@
 								"properties": [
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "accreditation",
+										"graph": "grant",
 										"child": {
 											"property": "http://w3id.org/roh/dateIssued"
 										},
@@ -5646,7 +5631,7 @@
 									},
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "accreditation",
+										"graph": "grant",
 										"child": {
 											"property": "http://w3id.org/roh/title"
 										},
@@ -5658,11 +5643,11 @@
 						"properties": [
 							{
 								"name": {
-									"es": "Descripción"
+									"es": "Nombre de la ayuda"
 								},
 								"child": {
 									"property": "http://vivoweb.org/ontology/core#relatedBy",
-									"graph": "accreditation",
+									"graph": "grant",
 									"child": {
 										"property": "http://w3id.org/roh/title"
 									}
@@ -5671,9 +5656,9 @@
 						]
 					},
 					"listItemEdit": {
-						"graph": "accreditation",
+						"graph": "grant",
 						"proptitle": "http://w3id.org/roh/title",
-						"rdftype": "http://w3id.org/roh/Accreditation",
+						"rdftype": "http://vivoweb.org/ontology/core#Grant",
 						"sections": [
 							{
 								"title": {
@@ -5684,15 +5669,15 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Descripción"
+													"es": "Nombre de la ayuda"
 												},
 												"placeholder": {
-													"es": "Introduce la descripción"
+													"es": "Introduce el nombre de la ayuda"
 												},
 												"property": "http://w3id.org/roh/title",
 												"required": true,
 												"type": "text",
-												"width": 3
+												"width": 2
 											}
 										]
 									},
@@ -5706,20 +5691,104 @@
 												"placeholder": {
 													"es": "Introduce la entidad concesionaria"
 												},
-												"property": "http://w3id.org/roh/accreditationIssuedBy",
+												"property": "http://w3id.org/roh/awardingEntity",
 												"type": "text",
 												"width": 2
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Finalidad"
+												},
+												"property": "http://w3id.org/roh/aims",
+												"combo": {
+													"rdftype": "http://w3id.org/roh/GrantAim",
+													"graph": "grantaim",
+													"property": {
+														"property": "http://purl.org/dc/elements/1.1/title"
+													}
+												},
+												"type": "selectCombo",
+												"width": 1
 											},
+											{
+												"TODO": "Visibilidad de Otros en función del combo anterior",
+												"title": {
+													"es": "Otros"
+												},
+												"property": "http://w3id.org/roh/aimsOther",
+												"type": "text",
+												"width": 1
+											}
+										]
+									},
+									{
+										"properties": [
 											{
 												"title": {
 													"es": "Fecha de concesión"
 												},
-												"property": "http://w3id.org/roh/dateIssued",
+												"property": "http://vivoweb.org/ontology/core#start",
+												"type": "date",
+												"width": 1
+											}
+											{
+												"title": {
+													"es": "Fecha de finalización"
+												},
+												"property": "http://vivoweb.org/ontology/core#end",
 												"type": "date",
 												"width": 1
 											}
 										]
-									}
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Duración años"
+												},
+												"property": "http://w3id.org/roh/durationYears",
+												"type": "text",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Duración meses"
+												},
+												"property": "http://w3id.org/roh/durationMonths",
+												"type": "text",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Duración días"
+												},
+												"property": "http://w3id.org/roh/durationDays",
+												"type": "text",
+												"width": 1
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Entidad de realización"
+												},
+												"TODO": "Autocompletado/texto libre. En caso de que haya que añadir una nueva organización, será por autocompletado o combo",
+												"placeholder": {
+													"es": "Introduce la entidad de realización"
+												},
+												"property": "http://w3id.org/roh/entity",
+												"type": "text",
+												"width": 2
+											}
+										]
+									},
 								]
 							},
 							{
@@ -5731,14 +5800,30 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Reconocimientos ligados"
+													"es": "Importe de la ayuda"
 												},
 												"placeholder": {
-													"es": "Introduce los reconocimientos ligados"
+													"es": "Introduce el importe de la ayuda"
 												},
-												"property": "http://w3id.org/roh/recognitionLinked",
+												"property": "http://w3id.org/roh/monetaryAmount",
+												"type": "number",
+												"width": 1
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Identificar palabras clave"
+												},
+												"placeholder": {
+													"es": "Introduce la palabra clave"
+												},
+												"property": "http://vivoweb.org/ontology/core#freeTextKeyword",
+												"multiple": true,
 												"type": "text",
-												"width": 2
+												"width": 1
 											}
 										]
 									}
