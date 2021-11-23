@@ -64,7 +64,7 @@ public class FreetextKeywords {
     //  public Organization publisher { get; set; }
       //public Organization correspongingOrganization { get; set; }
       public string type {get;set;}
-      public string issn { get; set; }
+      public List<string> issn { get; set; }
       public List<string> isbn {get;set;}
       public string name { get; set; }
       public string eissn { get; set; }

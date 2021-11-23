@@ -72,27 +72,35 @@ namespace WoSConnect.ROs.WoS.Controllers
                     publicacion.Abstract = getAbstract(objInicial);
                     publicacion.language = getLanguage(objInicial);
                     publicacion.doi = getDoi(objInicial);
-                    if(publicacion.typeOfPublication == "Journal Article" & publicacion.doi ==null){
-                         //edventencia! 
+                    if (publicacion.typeOfPublication == "Journal Article" & publicacion.doi == null)
+                    {
+                        //edventencia! 
                         string ad_text = "No hay doi, sin embargo es un Journal Article.";
-                        if(this.advertencia==null){
+                        if (this.advertencia == null)
+                        {
                             List<string> ad_list = new List<string>();
                             ad_list.Add(ad_text);
-                            this.advertencia=ad_list;
-                        }else{
+                            this.advertencia = ad_list;
+                        }
+                        else
+                        {
                             this.advertencia.Add(ad_text);
                         }
                     }
                     //publicacion.url = getLinks(objInicial);
                     publicacion.dataIssued = getDate(objInicial);
-                    if(publicacion.dataIssued==null){
-                             //edventencia! 
+                    if (publicacion.dataIssued == null)
+                    {
+                        //edventencia! 
                         string ad_text = "No hay fecha de publicacion.";
-                        if(this.advertencia==null){
+                        if (this.advertencia == null)
+                        {
                             List<string> ad_list = new List<string>();
                             ad_list.Add(ad_text);
-                            this.advertencia=ad_list;
-                        }else{
+                            this.advertencia = ad_list;
+                        }
+                        else
+                        {
                             this.advertencia.Add(ad_text);
                         }
                     }
@@ -103,26 +111,34 @@ namespace WoSConnect.ROs.WoS.Controllers
                     publicacion.freetextKeywords = getFreetextKeyword(objInicial);
                     //publicacion.correspondingAuthor = getAuthorPrincipal(objInicial);
                     publicacion.seqOfAuthors = getAuthors(objInicial);
-                    if(publicacion.seqOfAuthors==null){
+                    if (publicacion.seqOfAuthors == null)
+                    {
                         //edventencia! 
                         string ad_text = "No hay conjunto de autores.";
-                        if(this.advertencia==null){
+                        if (this.advertencia == null)
+                        {
                             List<string> ad_list = new List<string>();
                             ad_list.Add(ad_text);
-                            this.advertencia=ad_list;
-                        }else{
+                            this.advertencia = ad_list;
+                        }
+                        else
+                        {
                             this.advertencia.Add(ad_text);
                         }
                     }
                     publicacion.correspondingAuthor = publicacion.seqOfAuthors[0];
-                    if(publicacion.correspondingAuthor==null){
+                    if (publicacion.correspondingAuthor == null)
+                    {
                         //edventencia! 
                         string ad_text = "No hay autor principal.";
-                        if(this.advertencia==null){
+                        if (this.advertencia == null)
+                        {
                             List<string> ad_list = new List<string>();
                             ad_list.Add(ad_text);
-                            this.advertencia=ad_list;
-                        }else{
+                            this.advertencia = ad_list;
+                        }
+                        else
+                        {
                             this.advertencia.Add(ad_text);
                         }
                     }
@@ -452,34 +468,44 @@ namespace WoSConnect.ROs.WoS.Controllers
             return null;
         }
 
-         public List<KnowledgeAreas> getKnowledgeAreas(PublicacionInicial objInicial)
-         {
+        public List<KnowledgeAreas> getKnowledgeAreas(PublicacionInicial objInicial)
+        {
 
-            if(objInicial.static_data!=null){
-                if(objInicial.static_data.fullrecord_metadata!=null){
-                    if(objInicial.static_data.fullrecord_metadata.category_info!=null){
-                        if(objInicial.static_data.fullrecord_metadata.category_info.subjects!=null){
-                            if(objInicial.static_data.fullrecord_metadata.category_info.subjects.subject!=null){
+            if (objInicial.static_data != null)
+            {
+                if (objInicial.static_data.fullrecord_metadata != null)
+                {
+                    if (objInicial.static_data.fullrecord_metadata.category_info != null)
+                    {
+                        if (objInicial.static_data.fullrecord_metadata.category_info.subjects != null)
+                        {
+                            if (objInicial.static_data.fullrecord_metadata.category_info.subjects.subject != null)
+                            {
                                 List<KnowledgeArea> list = new List<KnowledgeArea>();
                                 List<KnowledgeAreas> result = new List<KnowledgeAreas>();
                                 KnowledgeAreas info_woS = new KnowledgeAreas();
-                                foreach(Subject sub in objInicial.static_data.fullrecord_metadata.category_info.subjects.subject ){
-                                    if(sub.content!=null){
+                                foreach (Subject sub in objInicial.static_data.fullrecord_metadata.category_info.subjects.subject)
+                                {
+                                    if (sub.content != null)
+                                    {
                                         KnowledgeArea area = new KnowledgeArea();
-                                        area.name=sub.content;
-                                        if(sub.code!=null){
-                                            area.hasCode=sub.code;
+                                        area.name = sub.content;
+                                        if (sub.code != null)
+                                        {
+                                            area.hasCode = sub.code;
                                         }
-                                        if(area!=null){
+                                        if (area != null)
+                                        {
                                             list.Add(area);
+                                        }
                                     }
-                                    }
-                                    
-                                    
+
+
                                 }
-                                if(list!=null){
-                                    info_woS.resource="WoS";
-                                    info_woS.knowledgeArea=list;
+                                if (list != null)
+                                {
+                                    info_woS.resource = "WoS";
+                                    info_woS.knowledgeArea = list;
                                     result.Add(info_woS);
                                     return result;
                                 }
@@ -488,8 +514,8 @@ namespace WoSConnect.ROs.WoS.Controllers
                     }
                 }
             }
-             return new List<KnowledgeAreas>();
-         }
+            return new List<KnowledgeAreas>();
+        }
 
         public List<FreetextKeywords> getFreetextKeyword(PublicacionInicial objInicial)
         {
@@ -759,6 +785,20 @@ namespace WoSConnect.ROs.WoS.Controllers
                     }
                 }
             }
+            if(objInicial.static_data!=null){
+                if(objInicial.static_data.summary!=null){
+                    if(objInicial.static_data.summary.pub_info!=null){
+                        if(objInicial.static_data.summary.pub_info.pubtype!=null){
+                            if(objInicial.static_data.summary.pub_info.pubtype=="Journal"){
+                                revista.type="Journal";
+                            }
+                            if(objInicial.static_data.summary.pub_info.pubtype=="Book"){
+                                revista.type="Book";
+                            }
+                        }
+                    }
+                }
+            }
             if (objInicial.dynamic_data != null)
             {
                 if (objInicial.dynamic_data.cluster_related != null)
@@ -776,11 +816,20 @@ namespace WoSConnect.ROs.WoS.Controllers
 
                                     if (identifier.type == "issn")
                                     {
-                                        revista.issn = identifier.value;
+                                        List<string> issn = new List<string>();
+                                        issn.Add(identifier.value);
+                                        revista.issn = issn;
                                     }
                                     if (identifier.type == "eissn")
                                     {
                                         revista.eissn = identifier.value;
+                                    }
+                                    if (identifier.type == "isbn")
+                                    {
+                                        List<string> isbn = new List<string>();
+                                        isbn.Add(identifier.value);
+                                        revista.issn = isbn;
+                                        revista.isbn = isbn;
                                     }
                                 }
                             }
@@ -789,16 +838,25 @@ namespace WoSConnect.ROs.WoS.Controllers
                                 Identifier identifier = JsonConvert.DeserializeObject<Identifier>(objInicial.dynamic_data.cluster_related.identifiers.identifier.ToString());
                                 if (identifier.type == "issn")
                                 {
-                                    revista.issn = identifier.value;
+                                    List<string> issn = new List<string>();
+                                    issn.Add(identifier.value);
+                                    revista.issn = issn;
                                 }
                                 if (identifier.type == "eissn")
                                 {
                                     revista.eissn = identifier.value;
                                 }
+
+                                if (identifier.type == "isbn")
+                                {
+                                    List<string> isbn = new List<string>();
+                                    isbn.Add(identifier.value);
+                                    revista.issn = isbn;
+                                    revista.isbn = isbn;
+                                }
                             }
+
                         }
-
-
                     }
                 }
             }
