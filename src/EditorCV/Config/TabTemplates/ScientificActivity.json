@@ -5406,14 +5406,18 @@
 												"property": "http://w3id.org/roh/goalsOther",
 												"type": "text",
 												"width": 1
-											},
+											}
+										]
+									},
+									{
+										"properties": [
 											{
 												"title": {
 													"es": "Tareas contrastables"
 												},
 												"property": "http://w3id.org/roh/performedTasks",
 												"type": "text",
-												"width": 1
+												"width": 2
 											},
 										]
 									},
@@ -5431,11 +5435,23 @@
 												"type": "text",
 												"width": 2
 											},
+										]
+									},
+									{
+										"properties": [
 											{
 												"title": {
-													"es": "Fecha de concesión"
+													"es": "Fecha de inicio"
 												},
-												"property": "http://w3id.org/roh/dateIssued",
+												"property": "http://vivoweb.org/ontology/core#start",
+												"type": "date",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Fecha de finalización"
+												},
+												"property": "http://vivoweb.org/ontology/core#end",
 												"type": "date",
 												"width": 1
 											}
