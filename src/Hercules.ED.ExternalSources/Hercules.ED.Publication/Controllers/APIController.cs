@@ -29,10 +29,10 @@ namespace PublicationConnect.Controllers
         /// <remarks>
         /// Sample request:
         ///
-        ///     GET /scopus/GetROs?author_id=SCOPUS_ID&amp;year=2020
+        ///     GET /scopus/GetROs?orcid=XXXX-XXXX-XXXX-XXXX&amp;date=year-month-day
         /// </remarks>
         /// <param orcid="orcid">Orcid</param>
-        /// <param date="year-month-day">Year-month-day</param>
+        /// <param year-month-day="year-month-day">Year-month-day</param>
         /// <returns></returns>
         /// <response code="200">Ok</response>
         /// <response code="400">Invalid app</response> 
