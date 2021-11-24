@@ -44,19 +44,6 @@ namespace GuardadoCV.Models
         /// <returns></returns>
         public List<string> GetAutocomplete(string pSeach, string pProperty, string pRdfType, string pGraph)
         {
-            /*
-                 EJEMPLO DE QUERY
-
-                SELECT DISTINCT ?o
-                FROM <http://gnoss.com/document.owl>
-                WHERE { ?s a <http://purl.org/ontology/bibo/Document> . ?s <http://vivoweb.org/ontology/core#freeTextKeyword> ?o . ?o bif:contains "'comp*'". }
-             
-             
-                SELECT distinct ?o 
-                FROM <http://gnoss.com/document.owl>
-                WHERE {  ?s a <http://purl.org/ontology/bibo/Document> . ?s <http://vivoweb.org/ontology/core#freeTextKeyword> ?o . FILTER (lcase(?o) like "com%" OR ?o like "% com%") }
-             */
-
             string select = "SELECT DISTINCT ?o ";
             string where = $"WHERE {{ ?s a <{ pRdfType }>. ?s <{ pProperty }> ?o . ";
             if (pSeach.Length > 3)
@@ -206,14 +193,12 @@ namespace GuardadoCV.Models
             return pItemsLoad;
         }
 
-        public Dictionary<string, List<Person>> ValidateSignatures(string pSignatures, string pCVID, string pPersonID)
+        public Dictionary<string, List<Person>> ValidateSignatures(string pSignatures, string pCVID, string pPersonID,string pLang)
         {
             Dictionary<string, List<Person>> listaPersonas = new Dictionary<string, List<Person>>();
 
             if (!string.IsNullOrEmpty(pSignatures))
             {
-
-                //TODO errores, no repetir firmas, mensaje de como hacerlo
                 Dictionary<string, int> colaboradoresDocumentos = ObtenerColaboradoresPublicaciones(pPersonID);
                 Dictionary<string, int> colaboradoresProyectos = ObtenerColaboradoresProyectos(pPersonID);
 
@@ -225,6 +210,19 @@ namespace GuardadoCV.Models
                     ObtenerScores(firma.Trim(), ref personas, colaboradoresDocumentos, colaboradoresProyectos);
                     personas = personas.OrderByDescending(x => x.score).ToList();
                     listaPersonas.Add(firma.Trim(), personas);
+                }
+            }
+
+            List<Guid> listaIDs = listaPersonas.SelectMany(x => x.Value).Select(x => mResourceApi.GetShortGuid(x.personid)).Distinct().ToList();
+            if (listaIDs.Count > 0)
+            {
+                List<ResponseGetUrl> urls = mResourceApi.GetUrl(listaPersonas.SelectMany(x => x.Value).Select(x => mResourceApi.GetShortGuid(x.personid)).Distinct().ToList(), pLang);
+                foreach (string key in listaPersonas.Keys)
+                {
+                    foreach (Person person in listaPersonas[key])
+                    {
+                        person.url = urls.First(x => x.resource_id == mResourceApi.GetShortGuid(person.personid)).url;
+                    }
                 }
             }
             return listaPersonas;
@@ -294,7 +292,7 @@ namespace GuardadoCV.Models
                         unions.Add(sbUnion.ToString());
                     }
                     //TODO froms
-                    string select = $@"select distinct ?signature ?personID ?ORCID ?name ?num from <{mResourceApi.GraphsUrl}person.owl>";
+                    string select = $@"select distinct ?signature ?personID ?ORCID ?name ?num ?departamento from <{mResourceApi.GraphsUrl}person.owl> from <{mResourceApi.GraphsUrl}department.owl>";
                     string where = $@"where
                             {{
                                 {{
@@ -303,12 +301,18 @@ namespace GuardadoCV.Models
                                     {{
                                         ?s a <http://purl.org/ontology/bibo/Document>.
                                         ?s <http://purl.org/ontology/bibo/authorList> ?author.     
-                                        ?author <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?personID.
+                                        ?author <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?personID.                                        
                                         {{{string.Join("}UNION{", unions)}}}
                                     }}
                                 }}
                                 ?personID <http://xmlns.com/foaf/0.1/name> ?name.
-                                OPTIONAL{{?personID <http://w3id.org/roh/ORCID> ?ORCID}}
+                                OPTIONAL{{
+                                    ?personID <http://w3id.org/roh/ORCID> ?ORCID
+                                }}
+                                OPTIONAL{{
+                                    ?personID <http://vivoweb.org/ontology/core#departmentOrSchool> ?depID.
+                                    ?depID <http://purl.org/dc/elements/1.1/title> ?departamento.
+                                }}
                             }}order by desc (?num)limit 1000";
                     SparqlObject sparqlObject = mResourceApi.VirtuosoQuery(select, where, "document");
                     foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings)
@@ -329,6 +333,10 @@ namespace GuardadoCV.Models
                         {
                             persona.orcid = fila["ORCID"].value;
                         }
+                        if (fila.ContainsKey("departamento"))
+                        {
+                            persona.department = fila["departamento"].value;
+                        }
                         persona.signatures.Add(signature);
                     }
                 }
@@ -345,14 +353,14 @@ namespace GuardadoCV.Models
                         unions.Add(sbUnion.ToString());
                     }
 
-                    string select = $@"select distinct ?signature ?personID ?ORCID ?name ?num from <{mResourceApi.GraphsUrl}person.owl>";
+                    string select = $@"select distinct ?signature ?personID ?ORCID ?name ?num ?departamento from <{mResourceApi.GraphsUrl}person.owl> from <{mResourceApi.GraphsUrl}department.owl>";
                     string where = $@"where
                             {{
                                 {{
                                     select ?personID ?ORCID ?name ?signature sum(?num) as ?num
                                     where
                                     {{
-                                        ?personID  a <http://xmlns.com/foaf/0.1/Person>.
+                                        ?personID  a <http://xmlns.com/foaf/0.1/Person>.                                        
                                         {{{string.Join("}UNION{", unions)}}}
                                         OPTIONAL{{?personID <http://w3id.org/roh/ORCID> ?ORCID}}
                                     }}
@@ -363,6 +371,11 @@ namespace GuardadoCV.Models
                                     ?s <http://purl.org/ontology/bibo/authorList> ?author.
                                     ?author <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?personID.
                                     ?author <http://xmlns.com/foaf/0.1/nick> ?signature.    
+                                }}
+                                OPTIONAL
+                                {{
+                                    ?personID <http://vivoweb.org/ontology/core#departmentOrSchool> ?depID.
+                                    ?depID <http://purl.org/dc/elements/1.1/title> ?departamento.
                                 }}
                             }}order by desc (?num)limit 1000";
                     SparqlObject sparqlObject = mResourceApi.VirtuosoQuery(select, where, "document");
@@ -387,6 +400,10 @@ namespace GuardadoCV.Models
                         if (fila.ContainsKey("ORCID"))
                         {
                             persona.orcid = fila["ORCID"].value;
+                        }
+                        if (fila.ContainsKey("departamento"))
+                        {
+                            persona.department = fila["departamento"].value;
                         }
                     }
                 }

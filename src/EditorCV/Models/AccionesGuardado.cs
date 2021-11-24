@@ -1,4 +1,5 @@
-﻿using EditorCV.Models.ORCID;
+﻿using EditorCV.Models.API.Response;
+using EditorCV.Models.ORCID;
 using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.ApiModel;
 using Gnoss.ApiWrapper.Model;
@@ -12,6 +13,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Web;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
@@ -219,31 +222,33 @@ namespace GuardadoCV.Models
             }
         }
 
-        public JsonResult ValidateORCID(string pORCID)
+        public object ValidateORCID(string pORCID)
         {
             pORCID = pORCID.Replace("https://orcid.org/", "");
             //1º Buscamos en las personas cargadas
             SparqlObject resultData = mResourceApi.VirtuosoQuery("select ?s", "where{?s <http://w3id.org/roh/ORCID> '" + pORCID + "'. ?s a <http://xmlns.com/foaf/0.1/Person>}order by asc(?s)", "person");
+            string idPerson = "";
             foreach (Dictionary<string, Data> fila in resultData.results.bindings)
             {
-                return new JsonResult() { ok = true, id = fila["s"].value, error = "" };
+                idPerson = fila["s"].value;
             }
-
-            //2º Si no existe recuperamos la persona de ORCID, la creamos y la devolvemos
-            try
+            if (string.IsNullOrEmpty(idPerson))
             {
-                WebClient webClient = new WebClient();
-                webClient.Headers.Add(HttpRequestHeader.Accept, "application/json");
-                string jsonRespuestaOrcidPerson = webClient.DownloadString("https://pub.orcid.org/v3.0/" + pORCID + "/person");
-                webClient.Dispose();
-                ORCIDPerson person = JsonConvert.DeserializeObject<ORCIDPerson>(jsonRespuestaOrcidPerson);
-
-                if (person != null)
+                //2º Si no existe recuperamos la persona de ORCID, la creamos y la devolvemos
+                try
                 {
-                    Entity entity = new Entity();
-                    entity.rdfType = "http://xmlns.com/foaf/0.1/Person";
-                    entity.propTitle = "http://xmlns.com/foaf/0.1/name";
-                    entity.properties = new List<Entity.Property>()
+                    WebClient webClient = new WebClient();
+                    webClient.Headers.Add(HttpRequestHeader.Accept, "application/json");
+                    string jsonRespuestaOrcidPerson = webClient.DownloadString("https://pub.orcid.org/v3.0/" + pORCID + "/person");
+                    webClient.Dispose();
+                    ORCIDPerson person = JsonConvert.DeserializeObject<ORCIDPerson>(jsonRespuestaOrcidPerson);
+
+                    if (person != null)
+                    {
+                        Entity entity = new Entity();
+                        entity.rdfType = "http://xmlns.com/foaf/0.1/Person";
+                        entity.propTitle = "http://xmlns.com/foaf/0.1/name";
+                        entity.properties = new List<Entity.Property>()
                     {
                         new Entity.Property()
                         {
@@ -266,21 +271,95 @@ namespace GuardadoCV.Models
                             values = new List<string>() {pORCID }
                         }
                     };
-                    //TODO privacidad
-                    mResourceApi.ChangeOntoly("person");
-                    ComplexOntologyResource resource = ToGnossApiResource(entity);
-                    string result = mResourceApi.LoadComplexSemanticResource(resource, false, true);
-                    if (resource.Uploaded)
-                    {
-                        return new JsonResult() { ok = true, id = result, error = "" };
+                        //TODO privacidad
+                        mResourceApi.ChangeOntoly("person");
+                        ComplexOntologyResource resource = ToGnossApiResource(entity);
+                        string result = mResourceApi.LoadComplexSemanticResource(resource, false, true);
+                        if (resource.Uploaded)
+                        {
+                            idPerson = result;
+                        }
                     }
                 }
+                catch (Exception ex)
+                {
+                    //TODO texto                
+                }                
             }
-            catch (Exception ex)
+            if (!string.IsNullOrEmpty(idPerson))
             {
-                //TODO texto                
+                return GetPerson(idPerson);
             }
             return new JsonResult() { ok = false, id = "", error = "El código introducido no es válio" };
+        }
+
+        public Object CreatePerson(string pName, string pSurname)
+        {
+            Entity entity = new Entity();
+            entity.rdfType = "http://xmlns.com/foaf/0.1/Person";
+            entity.propTitle = "http://xmlns.com/foaf/0.1/name";
+            entity.properties = new List<Entity.Property>()
+                    {
+                        new Entity.Property()
+                        {
+                            prop = "http://xmlns.com/foaf/0.1/name",
+                            values = new List<string>() { pName + " "+ pSurname }
+                        },
+                        new Entity.Property()
+                        {
+                            prop = "http://xmlns.com/foaf/0.1/firstName",
+                            values = new List<string>() { pName }
+                        },
+                        new Entity.Property()
+                        {
+                            prop = "http://xmlns.com/foaf/0.1/lastName",
+                            values = new List<string>() { pSurname }
+                        }
+                    };
+            //TODO privacidad
+            mResourceApi.ChangeOntoly("person");
+            ComplexOntologyResource resource = ToGnossApiResource(entity);
+            string result = mResourceApi.LoadComplexSemanticResource(resource, false, true);
+            if (resource.Uploaded)
+            {
+                return GetPerson(result);
+            }
+            //TODO mensaje
+            return new JsonResult() { ok = false, id = "", error = "Se ha producido un error al crear la persona" };
+        }
+
+        private Person GetPerson(string pIdPerson)
+        {
+            string select = $@"select distinct ?ORCID ?name ?departamento from <{mResourceApi.GraphsUrl}department.owl>";
+            string where = $@"where
+                                {{
+                                    ?personID <http://xmlns.com/foaf/0.1/name> ?name.
+                                    OPTIONAL{{
+                                        ?personID <http://w3id.org/roh/ORCID> ?ORCID
+                                    }}
+                                    OPTIONAL{{
+                                        ?personID <http://vivoweb.org/ontology/core#departmentOrSchool> ?depID.
+                                        ?depID <http://purl.org/dc/elements/1.1/title> ?departamento.
+                                    }}
+                                    FILTER(?personID=<{pIdPerson}>)
+                                }}";
+            SparqlObject sparqlObject = mResourceApi.VirtuosoQuery(select, where, "person");
+            foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings)
+            {
+                Person persona = new Person();
+                persona.name = fila["name"].value;
+                persona.personid = pIdPerson;
+                if (fila.ContainsKey("ORCID"))
+                {
+                    persona.orcid = fila["ORCID"].value;
+                }
+                if (fila.ContainsKey("departamento"))
+                {
+                    persona.department = fila["departamento"].value;
+                }
+                return persona;
+            }
+            return null;
         }
 
         /// <summary>
@@ -311,30 +390,31 @@ namespace GuardadoCV.Models
         private bool ProcesLoadPropertyValues(ItemEdit pItemEdit, Entity pLoadedEntity)
         {
             bool changes = false;
-            if(pItemEdit.loadPropertyValues!=null && pItemEdit.loadPropertyValues.Count>0)
+            if (pItemEdit.loadPropertyValues != null && pItemEdit.loadPropertyValues.Count > 0)
             {
-                foreach(LoadPropertyValues propertyValue in pItemEdit.loadPropertyValues)
+                foreach (LoadPropertyValues propertyValue in pItemEdit.loadPropertyValues)
                 {
                     Entity.Property prop = new Entity.Property()
                     {
                         prop = propertyValue.property,
-                        values =  propertyValue.values 
+                        values = propertyValue.values
                     };
                     Entity.Property propLoad = pLoadedEntity.properties.FirstOrDefault(x => x.prop == prop.prop);
-                    if (propLoad==null)
+                    if (propLoad == null)
                     {
                         pLoadedEntity.properties.Add(prop);
                         changes = true;
-                    }else if(propLoad.values.Union(prop.values).Count()!=prop.values.Count)
+                    }
+                    else if (propLoad.values.Union(prop.values).Count() != prop.values.Count)
                     {
                         propLoad.values = prop.values;
                     }
-                }                
+                }
             }
             return changes;
         }
 
-        
+
 
         /// <summary>
         /// Procesa las entidades configuradas como compuestas (por ejemplo el nombre completo de una persona 'nombre'+' '+ 'apellidos') (recursivo)
@@ -510,7 +590,7 @@ namespace GuardadoCV.Models
             List<EntityRdf> listaEntidadesAuxiliares = new List<EntityRdf>();
             foreach (Entity.Property property in pEntity.properties.OrderBy(x => x.prop.Split(new string[] { "@@@" }, StringSplitOptions.RemoveEmptyEntries).Length))
             {
-                if (property.values.Count > 0)
+                if (property.prop != "null" && property.prop != null && property.values.Count > 0)
                 {
                     string[] propArray = property.prop.Split(new string[] { "@@@" }, StringSplitOptions.RemoveEmptyEntries);
                     foreach (string value in property.values)

@@ -3,6 +3,7 @@ using GuardadoCV.Models;
 using GuardadoCV.Models.API.Input;
 using System;
 using Microsoft.AspNetCore.Cors;
+using System.Net.Http;
 
 namespace GuardadoCV.Controllers
 {
@@ -120,12 +121,12 @@ namespace GuardadoCV.Controllers
 
         
         [HttpPost("ValidateSignatures")]
-        public IActionResult ValidateSignatures([FromForm] string pSignatures, [FromForm] string pCVID, [FromForm] string pPersonID)
+        public IActionResult ValidateSignatures([FromForm] string pSignatures, [FromForm] string pCVID, [FromForm] string pPersonID, [FromForm] string pLang)
         {
             try
             {
                 AccionesEdicion accionesEdicion = new AccionesEdicion();
-                return Ok(accionesEdicion.ValidateSignatures(pSignatures, pCVID, pPersonID));
+                return Ok(accionesEdicion.ValidateSignatures(pSignatures, pCVID, pPersonID,pLang));
             }
             catch (Exception ex)
             {
