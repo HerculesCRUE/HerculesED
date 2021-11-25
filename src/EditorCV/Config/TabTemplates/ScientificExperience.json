@@ -348,6 +348,7 @@
 									{
 										"properties": [
 											{
+												"TODO": "Entidad auxiliar múltiple que contiene otra entidad auxiliar (FundingProgram)",
 												"property": "http://w3id.org/roh/isSupportedBy",
 												"type": "auxEntity",
 												"title": {
@@ -439,7 +440,38 @@
 												}
 											}
 										]
-									}
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Resultados relevantes"
+												},
+												"property": "http://w3id.org/roh/relevantResults",
+												"type": "text",
+												"width": 2
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Entidad/es participante/s"
+												},
+												"property": "http://w3id.org/roh/grantedBy",
+												"combo": {
+													"rdftype": "http://xmlns.com/foaf/0.1/Organization",
+													"graph": "organization",
+													"property": {
+														"property": "http://purl.org/dc/elements/1.1/title"
+													}
+												},
+												"type": "selectCombo",
+												"width": 1
+											}
+										]
+									},
 								]
 							}
 						]
