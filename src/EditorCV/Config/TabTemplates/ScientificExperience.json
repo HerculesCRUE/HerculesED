@@ -368,7 +368,31 @@
 															"child": {
 																"property": "http://w3id.org/roh/monetaryAmount"
 															}
-														}
+														},
+														{
+															"name": {
+																"es": "Porcentaje en subvención"
+															},
+															"child": {
+																"property": "http://w3id.org/roh/grantsPercentage"
+															}
+														},
+														{
+															"name": {
+																"es": "Porcentaje en crédito"
+															},
+															"child": {
+																"property": "http://w3id.org/roh/creditPercentage"
+															}
+														},
+														{
+															"name": {
+																"es": "Porcentaje mixto"
+															},
+															"child": {
+																"property": "http://w3id.org/roh/mixedPercentage"
+															}
+														},
 													],
 													"rows": [
 														{
@@ -382,7 +406,43 @@
 																	"width": 1
 																}
 															]
-														}
+														},
+														{
+															"properties": [
+																{
+																	"title": {
+																		"es": "Porcentaje en subvención"
+																	},
+																	"property": "http://w3id.org/roh/grantsPercentage",
+																	"type": "number",
+																	"width": 1
+																}
+															]
+														},
+														{
+															"properties": [
+																{
+																	"title": {
+																		"es": "Porcentaje en crédito"
+																	},
+																	"property": "http://w3id.org/roh/creditPercentage",
+																	"type": "number",
+																	"width": 1
+																}
+															]
+														},
+														{
+															"properties": [
+																{
+																	"title": {
+																		"es": "Porcentaje mixto"
+																	},
+																	"property": "http://w3id.org/roh/mixedPercentage",
+																	"type": "number",
+																	"width": 1
+																}
+															]
+														},
 													]
 												}
 											}
