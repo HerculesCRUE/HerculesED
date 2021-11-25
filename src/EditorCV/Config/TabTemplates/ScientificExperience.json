@@ -190,7 +190,7 @@
 												},
 												"type": "selectCombo",
 												"width": 1
-											}										
+											}
 										]
 									},
 									{
@@ -209,7 +209,7 @@
 												},
 												"type": "selectCombo",
 												"width": 1
-											}										
+											}
 										]
 									},
 									{
@@ -242,7 +242,7 @@
 												"width": 1
 											}
 										]
-									},
+									}
 								]
 							},
 							{
@@ -366,10 +366,9 @@
 																"es": "Cuantía subproyecto"
 															},
 															"child": {
-																"property": "http://w3id.org/roh/monetaryAmount",
-																}
+																"property": "http://w3id.org/roh/monetaryAmount"
 															}
-														},
+														}
 													],
 													"rows": [
 														{
@@ -388,7 +387,7 @@
 												}
 											}
 										]
-									},
+									}
 								]
 							}
 						]
@@ -584,7 +583,7 @@
 												},
 												"type": "selectCombo",
 												"width": 1
-											}										
+											}
 										]
 									},
 									{
@@ -603,7 +602,7 @@
 												},
 												"type": "selectCombo",
 												"width": 1
-											}										
+											}
 										]
 									},
 									{
@@ -636,7 +635,7 @@
 												"width": 1
 											}
 										]
-									},
+									}
 								]
 							},
 							{
@@ -718,7 +717,7 @@
 												"width": 1
 											}
 										]
-									},
+									}
 								]
 							}
 						]
@@ -914,7 +913,7 @@
 												},
 												"type": "selectCombo",
 												"width": 1
-											}										
+											}
 										]
 									},
 									{
@@ -933,7 +932,7 @@
 												},
 												"type": "selectCombo",
 												"width": 1
-											}										
+											}
 										]
 									},
 									{
@@ -966,7 +965,7 @@
 												"width": 1
 											}
 										]
-									},
+									}
 								]
 							},
 							{
@@ -1048,7 +1047,7 @@
 												"width": 1
 											}
 										]
-									},
+									}
 								]
 							}
 						]
@@ -1244,7 +1243,7 @@
 												},
 												"type": "selectCombo",
 												"width": 1
-											}										
+											}
 										]
 									},
 									{
@@ -1263,7 +1262,7 @@
 												},
 												"type": "selectCombo",
 												"width": 1
-											}										
+											}
 										]
 									},
 									{
@@ -1296,7 +1295,7 @@
 												"width": 1
 											}
 										]
-									},
+									}
 								]
 							},
 							{
@@ -1378,7 +1377,7 @@
 												"width": 1
 											}
 										]
-									},
+									}
 								]
 							}
 						]
@@ -1574,7 +1573,7 @@
 												},
 												"type": "selectCombo",
 												"width": 1
-											}										
+											}
 										]
 									},
 									{
@@ -1593,7 +1592,7 @@
 												},
 												"type": "selectCombo",
 												"width": 1
-											}										
+											}
 										]
 									},
 									{
@@ -1626,7 +1625,7 @@
 												"width": 1
 											}
 										]
-									},
+									}
 								]
 							},
 							{
@@ -1708,7 +1707,7 @@
 												"width": 1
 											}
 										]
-									},
+									}
 								]
 							}
 						]
@@ -1904,7 +1903,7 @@
 												},
 												"type": "selectCombo",
 												"width": 1
-											}										
+											}
 										]
 									},
 									{
@@ -1923,7 +1922,7 @@
 												},
 												"type": "selectCombo",
 												"width": 1
-											}										
+											}
 										]
 									},
 									{
@@ -1956,7 +1955,7 @@
 												"width": 1
 											}
 										]
-									},
+									}
 								]
 							},
 							{
@@ -2038,7 +2037,7 @@
 												"width": 1
 											}
 										]
-									},
+									}
 								]
 							}
 						]
