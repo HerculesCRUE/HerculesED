@@ -206,7 +206,7 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Research Areas"
+													"es": "Áreas temáticas"
 												},
 												"property": "http://w3id.org/roh/hasKnowledgeArea",
 												"thesaurus": "researcharea",

@@ -345,6 +345,50 @@
 											}
 										]
 									},
+									{
+										"properties": [
+											{
+												"property": "http://w3id.org/roh/isSupportedBy",
+												"type": "auxEntity",
+												"title": {
+													"es": "Financiación"
+												},
+												"multiple": true,
+												"width": 3,
+												"auxEntityData": {
+													"rdftype": "http://w3id.org/roh/Funding",
+													"propertyTitle": {
+														"property": "http://w3id.org/roh/monetaryAmount"
+													},
+													"properties": [
+														{
+															"name": {
+																"es": "Cuantía subproyecto"
+															},
+															"child": {
+																"property": "http://w3id.org/roh/monetaryAmount",
+																}
+															}
+														},
+													],
+													"rows": [
+														{
+															"properties": [
+																{
+																	"title": {
+																		"es": "Cuantía subproyecto"
+																	},
+																	"property": "http://w3id.org/roh/monetaryAmount",
+																	"type": "number",
+																	"width": 1
+																}
+															]
+														}
+													]
+												}
+											}
+										]
+									},
 								]
 							}
 						]
