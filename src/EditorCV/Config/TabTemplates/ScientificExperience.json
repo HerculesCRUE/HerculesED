@@ -165,97 +165,12 @@
 									{
 										"properties": [
 											{
-												"property": "http://vivoweb.org/ontology/core#relates",
-												"TODO": "Integrar el diseño de Félix para la adición de autores",
-												"type": "auxEntity",
+												"property": "http://purl.org/ontology/bibo/authorList",
+												"type": "auxEntityAuthorList",
 												"title": {
 													"es": "Autores/as (p.o. de firma)"
 												},
-												"multiple": true,
-												"width": 3,
-												"auxEntityData": {
-													"rdftype": "http://purl.obolibrary.org/obo/BFO_0000023",
-													"propertyOrder": "http://vivoweb.org/ontology/core#preferredDisplayOrder",
-													"propertyTitle": {
-														"property": "http://w3id.org/roh/title"
-													},
-													"properties": [
-														{
-															"name": {
-																"es": "Nombre"
-															},
-															"child": {
-																"property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
-																"graph": "person",
-																"child": {
-																	"property": "http://xmlns.com/foaf/0.1/name"
-																}
-															}
-														},
-														{
-															"name": {
-																"es": "ORCID"
-															},
-															"child": {
-																"property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
-																"graph": "person",
-																"child": {
-																	"property": "http://w3id.org/roh/ORCID"
-																}
-															}
-														}
-													],
-													"rows": [
-														{
-															"properties": [
-																{
-																	"title": {
-																		"es": "Firma"
-																	},
-																	"type": "text",
-																	"placeholder": {
-																		"es": "Introduce la firma"
-																	},
-																	"required": true,
-																	"property": "http://xmlns.com/foaf/0.1/nick",
-																	"width": 3
-																}
-															]
-														},
-														{
-															"properties": [
-																{
-																	"TODO": "Error null al crear entidades",
-																	"title": {
-																		"es": "Persona"
-																	},
-																	"type": "entity",
-																	"multiple": false,
-																	"required": true,
-																	"property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
-																	"width": 3,
-																	"entityData": {
-																		"rdftype": "http://xmlns.com/foaf/0.1/Person",
-																		"graph": "person",
-																		"propertyTitle": {
-																			"property": "http://xmlns.com/foaf/0.1/name"
-																		},
-																		"properties": [
-																			{
-																				"name": {
-																					"es": "ORCID"
-																				},
-																				"child": {
-																					"property": "http://w3id.org/roh/ORCID"
-																				}
-																			}
-																		]
-																	}
-																}
-															]
-														}
-													]
-												}
+												"width": 3
 											}
 										]
 									},
@@ -580,97 +495,12 @@
 									{
 										"properties": [
 											{
-												"property": "http://vivoweb.org/ontology/core#relates",
-												"TODO": "Integrar el diseño de Félix para la adición de autores",
-												"type": "auxEntity",
+												"property": "http://purl.org/ontology/bibo/authorList",
+												"type": "auxEntityAuthorList",
 												"title": {
 													"es": "Autores/as (p.o. de firma)"
 												},
-												"multiple": true,
-												"width": 3,
-												"auxEntityData": {
-													"rdftype": "http://purl.obolibrary.org/obo/BFO_0000023",
-													"propertyOrder": "http://vivoweb.org/ontology/core#preferredDisplayOrder",
-													"propertyTitle": {
-														"property": "http://w3id.org/roh/title"
-													},
-													"properties": [
-														{
-															"name": {
-																"es": "Nombre"
-															},
-															"child": {
-																"property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
-																"graph": "person",
-																"child": {
-																	"property": "http://xmlns.com/foaf/0.1/name"
-																}
-															}
-														},
-														{
-															"name": {
-																"es": "ORCID"
-															},
-															"child": {
-																"property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
-																"graph": "person",
-																"child": {
-																	"property": "http://w3id.org/roh/ORCID"
-																}
-															}
-														}
-													],
-													"rows": [
-														{
-															"properties": [
-																{
-																	"title": {
-																		"es": "Firma"
-																	},
-																	"type": "text",
-																	"placeholder": {
-																		"es": "Introduce la firma"
-																	},
-																	"required": true,
-																	"property": "http://xmlns.com/foaf/0.1/nick",
-																	"width": 3
-																}
-															]
-														},
-														{
-															"properties": [
-																{
-																	"TODO": "Error null al crear entidades",
-																	"title": {
-																		"es": "Persona"
-																	},
-																	"type": "entity",
-																	"multiple": false,
-																	"required": true,
-																	"property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
-																	"width": 3,
-																	"entityData": {
-																		"rdftype": "http://xmlns.com/foaf/0.1/Person",
-																		"graph": "person",
-																		"propertyTitle": {
-																			"property": "http://xmlns.com/foaf/0.1/name"
-																		},
-																		"properties": [
-																			{
-																				"name": {
-																					"es": "ORCID"
-																				},
-																				"child": {
-																					"property": "http://w3id.org/roh/ORCID"
-																				}
-																			}
-																		]
-																	}
-																}
-															]
-														}
-													]
-												}
+												"width": 3
 											}
 										]
 									},
