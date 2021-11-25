@@ -295,6 +295,25 @@
 										"properties": [
 											{
 												"title": {
+													"es": "Modalidad de proyecto"
+												},
+												"property": "http://w3id.org/roh/modality",
+												"combo": {
+													"rdftype": "http://w3id.org/roh/ProjectModality",
+													"graph": "projectmodality",
+													"property": {
+														"property": "http://purl.org/dc/elements/1.1/title"
+													}
+												},
+												"type": "selectCombo",
+												"width": 1
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
 													"es": "Ámbito geográfico"
 												},
 												"property": "http://vivoweb.org/ontology/core#geographicFocus",
@@ -314,7 +333,14 @@
 												},
 												"property": "http://w3id.org/roh/geographicFocusOther",
 												"type": "text",
-												"required": false,
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Nº de personas/año"
+												},
+												"property": "http://w3id.org/roh/researchersNumber",
+												"type": "text",
 												"width": 1
 											}
 										]
