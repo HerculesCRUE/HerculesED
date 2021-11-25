@@ -416,11 +416,7 @@
 																	"property": "http://w3id.org/roh/grantsPercentage",
 																	"type": "number",
 																	"width": 1
-																}
-															]
-														},
-														{
-															"properties": [
+																},
 																{
 																	"title": {
 																		"es": "Porcentaje en crédito"
@@ -428,11 +424,7 @@
 																	"property": "http://w3id.org/roh/creditPercentage",
 																	"type": "number",
 																	"width": 1
-																}
-															]
-														},
-														{
-															"properties": [
+																},
 																{
 																	"title": {
 																		"es": "Porcentaje mixto"
