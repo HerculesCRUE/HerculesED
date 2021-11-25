@@ -338,7 +338,7 @@
 			"presentation": {
 				"type": "listitems",
 				"title": {
-					"es": "Proyectos de I+D+i financiados en convocatorias competitivas de Administraciones o entidades públicas y privadas"
+					"es": "Contratos, convenios o proyectos de I+D+i no competitivos con Administraciones o entidades públicas o privadas"
 				},
 				"listItemsPresentation": {
 					"property": "http://vivoweb.org/ontology/core#relatedBy",
