@@ -206,6 +206,20 @@
 										"properties": [
 											{
 												"title": {
+													"es": "Research Areas"
+												},
+												"property": "http://w3id.org/roh/hasKnowledgeArea",
+												"thesaurus": "researcharea",
+												"type": "thesaurus",
+												"width": 1,
+												"multiple": true
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
 													"es": "Tipo de producción"
 												},
 												"property": "http://purl.org/dc/elements/1.1/type",
@@ -787,6 +801,7 @@
 												},
 												"property": "http://vivoweb.org/ontology/core#freeTextKeyword",
 												"multiple": true,
+												"autocomplete": true,
 												"type": "text",
 												"width": 1
 											}
