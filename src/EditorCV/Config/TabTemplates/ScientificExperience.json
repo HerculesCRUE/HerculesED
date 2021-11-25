@@ -295,32 +295,26 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Ciudad de publicación"
+													"es": "Ámbito geográfico"
 												},
-												"placeholder": {
-													"es": "Introduce la ciudad de publicación"
+												"property": "http://vivoweb.org/ontology/core#geographicFocus",
+												"combo": {
+													"rdftype": "http://vivoweb.org/ontology/core#GeographicRegion",
+													"graph": "geographicregion",
+													"property": {
+														"property": "http://purl.org/dc/elements/1.1/title"
+													}
 												},
-												"property": "https://www.w3.org/2006/vcard/ns#locality",
-												"type": "text",
+												"type": "selectCombo",
 												"width": 1
 											},
 											{
 												"title": {
-													"es": "C. Autón./Reg. de publicación"
+													"es": "Otros"
 												},
-												"placeholder": {
-													"es": "Introduce la región de publicación"
-												},
-												"property": "https://www.w3.org/2006/vcard/ns#hasRegion",
-												"combo": {
-													"rdftype": "http://www.geonames.org/ontology#Feature",
-													"graph": "feature",
-													"property": {
-														"property": "http://www.geonames.org/ontology#name"
-													}
-												},
-												"TODO": "Algunos valores están duplicados (ej. La Rioja, Isle of Man...)",
-												"type": "selectCombo",
+												"property": "http://w3id.org/roh/geographicFocusOther",
+												"type": "text",
+												"required": false,
 												"width": 1
 											}
 										]
