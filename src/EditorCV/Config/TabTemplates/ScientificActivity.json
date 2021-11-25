@@ -710,6 +710,7 @@
 																		"es": "Fuente de citas"
 																	},
 																	"TODO": "No se despliega el combo de valores.",
+																	"property": "http://w3id.org/roh/metricName",
 																	"combo": {
 																		"rdftype": "http://purl.org/ontology/bibo/ReferenceSource",
 																		"graph": "referencesource",
@@ -1771,6 +1772,7 @@
 																	"title": {
 																		"es": "Fuente de citas"
 																	},
+																	"property": "http://w3id.org/roh/metricName",
 																	"combo": {
 																		"rdftype": "http://purl.org/ontology/bibo/ReferenceSource",
 																		"graph": "referencesource",
@@ -2790,6 +2792,7 @@
 																	"title": {
 																		"es": "Fuente de citas"
 																	},
+																	"property": "http://w3id.org/roh/metricName",
 																	"combo": {
 																		"rdftype": "http://purl.org/ontology/bibo/ReferenceSource",
 																		"graph": "referencesource",
@@ -3810,6 +3813,7 @@
 																	"title": {
 																		"es": "Fuente de citas"
 																	},
+																	"property": "http://w3id.org/roh/metricName",
 																	"combo": {
 																		"rdftype": "http://purl.org/ontology/bibo/ReferenceSource",
 																		"graph": "referencesource",
