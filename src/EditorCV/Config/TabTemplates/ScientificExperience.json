@@ -1783,7 +1783,7 @@
 					"listItem": {
 						"propertyTitle": {
 							"property": "http://vivoweb.org/ontology/core#relatedBy",
-							"graph": "patent",
+							"graph": "supervisedartisticproject",
 							"child": {
 								"property": "http://w3id.org/roh/title"
 							}
@@ -1796,7 +1796,7 @@
 								"properties": [
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "project",
+										"graph": "supervisedartisticproject",
 										"child": {
 											"property": "http://purl.org/dc/terms/issued"
 										},
@@ -1804,7 +1804,7 @@
 									},
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "project",
+										"graph": "supervisedartisticproject",
 										"child": {
 											"property": "http://w3id.org/roh/title"
 										},
@@ -1819,7 +1819,7 @@
 								"properties": [
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "project",
+										"graph": "supervisedartisticproject",
 										"child": {
 											"property": "http://purl.org/dc/terms/issued"
 										},
@@ -1827,7 +1827,7 @@
 									},
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "project",
+										"graph": "supervisedartisticproject",
 										"child": {
 											"property": "http://w3id.org/roh/title"
 										},
@@ -1845,7 +1845,7 @@
 								"type": "date",
 								"child": {
 									"property": "http://vivoweb.org/ontology/core#relatedBy",
-									"graph": "project",
+									"graph": "supervisedartisticproject",
 									"child": {
 										"property": "http://vivoweb.org/ontology/core#start"
 									}
@@ -1859,7 +1859,7 @@
 								"childOR": [
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "project",
+										"graph": "supervisedartisticproject",
 										"order": "http://www.w3.org/1999/02/22-rdf-syntax-ns#comment",
 										"child": {
 											"property": "http://purl.org/ontology/bibo/authorList",
@@ -1870,7 +1870,7 @@
 									},
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "project",
+										"graph": "supervisedartisticproject",
 										"order": "http://vivoweb.org/ontology/core#preferredDisplayOrder",
 										"child": {
 											"property": "http://vivoweb.org/ontology/core#relates",
@@ -1888,18 +1888,10 @@
 						]
 					},
 					"listItemEdit": {
-						"graph": "project",
+						"graph": "supervisedartisticproject",
 						"proptitle": "http://w3id.org/roh/title",
 						"propdescription": "http://vivoweb.org/ontology/core#description",
 						"rdftype": "http://vivoweb.org/ontology/core#Project",
-						"loadPropertyValues": [
-							{
-								"property": "http://w3id.org/roh/scientificExperienceProject",
-								"values": [
-									"http://gnoss.com/items/scientificexperienceproject_SEP2"
-								]
-							}
-						],
 						"sections": [
 							{
 								"title": {
@@ -1910,24 +1902,31 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Nombre del proyecto"
+													"es": "Descripción"
 												},
 												"placeholder": {
-													"es": "Introduce el nombre del proyecto"
+													"es": "Introduce la descripción"
 												},
-												"property": "http://w3id.org/roh/title",
-												"required": true,
+												"property": "http://vivoweb.org/ontology/core#description",
 												"type": "text",
-												"width": 2
+												"width": 1
 											},
 											{
 												"title": {
-													"es": "Nº de investigadores/as"
+													"es": "Nombre de la exposición"
 												},
-												"property": "http://w3id.org/roh/researchersNumber",
-												"type": "number",
+												"property": "http://w3id.org/roh/title",
+												"type": "text",
 												"width": 1
-											}
+											},
+											{
+												"title": {
+													"es": "Fecha de inicio"
+												},
+												"property": "http://vivoweb.org/ontology/core#start",
+												"type": "date",
+												"width": 1
+											},
 										]
 									},
 									{
@@ -1946,17 +1945,18 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Entidad de realización"
+													"es": "Título de la publicación"
 												},
-												"property": "http://w3id.org/roh/conductedBy",
-												"combo": {
-													"rdftype": "http://w3id.org/roh/PublicationType",
-													"graph": "organization",
-													"property": {
-														"property": "http://purl.org/dc/elements/1.1/title"
-													}
+												"property": "http://w3id.org/roh/",
+												"type": "text",
+												"width": 2
+											},
+											{
+												"title": {
+													"es": "Otros"
 												},
-												"type": "selectCombo",
+												"property": "http://w3id.org/roh/grantedBy",
+												"type": "text",
 												"width": 1
 											}
 										]
