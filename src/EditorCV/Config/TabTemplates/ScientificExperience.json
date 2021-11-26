@@ -1110,6 +1110,9 @@
 												"title": {
 													"es": "Número de solicitud"
 												},
+												"placeholder": {
+													"es": "Introduce el número de solicitud"
+												},
 												"property": "http://w3id.org/roh/applicationNumber",
 												"type": "text",
 												"width": 1
@@ -1170,7 +1173,7 @@
 												"property": "http://purl.org/ontology/bibo/authorList",
 												"type": "auxEntityAuthorList",
 												"title": {
-													"es": "Autores/as (p.o. de firma)"
+													"es": "Inventores/autores/obtentores"
 												},
 												"width": 3
 											}
@@ -1180,9 +1183,9 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Entidad/es financiadora/s"
+													"es": "Entidad titular de derechos"
 												},
-												"property": "http://w3id.org/roh/grantedBy",
+												"property": "http://w3id.org/roh/ownerOrganization",
 												"combo": {
 													"rdftype": "http://xmlns.com/foaf/0.1/Organization",
 													"graph": "organization",
@@ -1198,34 +1201,24 @@
 									{
 										"properties": [
 											{
+												"TODO": "Selección múltiple de empresas",
 												"title": {
-													"es": "Fecha de inicio"
+													"es": "Empresas"
 												},
-												"property": "http://vivoweb.org/ontology/core#start",
-												"type": "date",
-												"width": 1
-											},
-											{
-												"title": {
-													"es": "Fecha de finalización"
+												"property": "http://w3id.org/roh/ownerOrganization",
+												"combo": {
+													"rdftype": "http://xmlns.com/foaf/0.1/Organization",
+													"graph": "organization",
+													"property": {
+														"property": "http://purl.org/dc/elements/1.1/title"
+													}
 												},
-												"property": "http://vivoweb.org/ontology/core#end",
-												"type": "date",
-												"width": 1
-											},
-											{
-												"title": {
-													"es": "Cuantía total"
-												},
-												"placeholder": {
-													"es": "Introduce la cuantía total"
-												},
-												"property": "http://w3id.org/roh/monetaryAmount",
-												"type": "number",
+												"type": "selectCombo",
+												"multiple": true,
 												"width": 1
 											}
 										]
-									}
+									},
 								]
 							},
 							{
@@ -1237,77 +1230,62 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Duración años"
+													"es": "Tipo de propiedad industrial"
 												},
-												"property": "http://w3id.org/roh/durationYears",
-												"type": "text",
-												"width": 1
-											},
-											{
-												"title": {
-													"es": "Duración meses"
-												},
-												"property": "http://w3id.org/roh/durationMonths",
-												"type": "text",
-												"width": 1
-											},
-											{
-												"title": {
-													"es": "Duración días"
-												},
-												"property": "http://w3id.org/roh/durationDays",
-												"type": "text",
-												"width": 1
-											}
-										]
-									},
-									{
-										"properties": [
-											{
-												"title": {
-													"es": "Identificar palabras clave"
-												},
-												"property": "http://vivoweb.org/ontology/core#freeTextKeyword",
-												"multiple": true,
-												"type": "text",
-												"width": 1
-											}
-										]
-									},
-									{
-										"properties": [
-											{
-												"title": {
-													"es": "Ciudad de publicación"
-												},
-												"placeholder": {
-													"es": "Introduce la ciudad de publicación"
-												},
-												"property": "https://www.w3.org/2006/vcard/ns#locality",
-												"type": "text",
-												"width": 1
-											},
-											{
-												"title": {
-													"es": "C. Autón./Reg. de publicación"
-												},
-												"placeholder": {
-													"es": "Introduce la región de publicación"
-												},
-												"property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+												"property": "http://w3id.org/roh/industrialPropertyType",
 												"combo": {
-													"rdftype": "http://www.geonames.org/ontology#Feature",
-													"graph": "feature",
+													"rdftype": "http://w3id.org/roh/IndustrialPropertyType",
+													"graph": "industrialpropertytype",
 													"property": {
-														"property": "http://www.geonames.org/ontology#name"
+														"property": "http://purl.org/dc/elements/1.1/title"
 													}
 												},
-												"TODO": "Algunos valores están duplicados (ej. La Rioja, Isle of Man...)",
 												"type": "selectCombo",
 												"width": 1
-											}
+											},
+											{
+												"title": {
+													"es": "Otros"
+												},
+												"property": "http://w3id.org/roh/industrialPropertyTypeOther",
+												"type": "text",
+												"width": 1
+											},
 										]
-									}
+									},
+									{
+										"properties": [
+											{
+												"TODO": "Campo booleano",
+												"title": {
+													"es": "Derechos de autor"
+												},
+												"property": "http://w3id.org/roh/authorsRights",
+												"type": "text",
+												"width": 1
+											},
+											{
+												"TODO": "Campo booleano",
+												"title": {
+													"es": "Derechos conexos"
+												},
+												"property": "http://w3id.org/roh/relatedRights",
+												"type": "text",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Nº de patente"
+												},
+												"placeholder": {
+													"es": "Introduce el nº de patente"
+												},
+												"property": "http://w3id.org/roh/patentNumber",
+												"type": "text",
+												"width": 1
+											},
+										]
+									},
 								]
 							}
 						]
