@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace PublicationConnect.ROs.Publications.Models
 {
@@ -17,6 +18,10 @@ public class Publication
     public DateTimeValue dataIssued { get; set; }
 
     public List<string> url { get; set; }
+    public string pdf {get;set;}
+    public List<Knowledge_enriquecidos> topics_enriquecidos {get;set;}
+    public List<Knowledge_enriquecidos>  freetextKeyword_enriquecidas {get;set;}
+
     public Person correspondingAuthor { get; set; }
 
     public List<Person> seqOfAuthors { get; set; }
@@ -90,13 +95,20 @@ public class JournalMetric
 public class Person
 {
     //public DateTimeValue birthdate { get; set; }
-    public List<string> name { get; set; } 
+    public Name name { get; set; } 
     //public string surname { get; set; }
     public string ORCID {get;set;}
     public List<string> IDs { get; set; }
     public List<string> links { get; set; }
     //public string nick { get; set; }
 
+}
+
+public class Name{
+    public List<string> given {get;set;}
+    //
+    public List<string> familia {get;set;}
+    public List<string> nombre_completo {get;set;}
 }
 public class Organization
 {
@@ -105,7 +117,6 @@ public class Organization
 }
 public class Conference
 {
-    //todo! esto mirar! 
         public string abbreviation { get; set; }
     public DateTimeInterval dateTimeInterval { get; set; }
     public string description { get; set; }
@@ -136,5 +147,64 @@ public class DateTimeInterval
 {
     public DateTimeValue end { get; set; }
     public DateTimeValue start { get; set; }
+}
+
+
+
+
+public class Topics_enriquecidos{
+    public string pdf_url {get;set;}
+    public string rotype {get;set;}
+    public List<Knowledge_enriquecidos> topics {get;set;}
+}
+
+public class Knowledge_enriquecidos{
+    public string word {get;set;}
+    public string porcentaje {get;set;}
+}
+
+public class palabras_enriquecidas{
+        public  List<Knowledge_enriquecidos> topics {get;set;}
+        public string title {get;set;}
+        [JsonProperty("abstract")]
+    public string abstract_ {get;set;}
+          
+
+}
+
+public class enriquecimiento{
+    public string rotype {get;set;}
+     [JsonProperty("pdf_url")]
+    public string pdfurl {get;set;}
+    public string title {get;set;}
+
+    [JsonProperty("abstract")]
+    public string abstract_ {get;set;}
+     public string author_name {get;set;}
+    public string journal {get;set;}
+
+}
+
+public class enriquecimiento_sin_pdf{
+    public string rotype {get;set;}
+    // [JsonProperty("pdf_url")]
+    //public string pdfurl {get;set;}
+    public string title {get;set;}
+
+    [JsonProperty("abstract")]
+    public string abstract_ {get;set;}
+     public string author_name {get;set;}
+    public string journal {get;set;}
+
+}
+
+public class enriquecimiento_palabras{
+     public string rotype {get;set;}
+    // [JsonProperty("pdf_url")]
+    //public string pdfurl {get;set;}
+    public string title {get;set;}
+
+    [JsonProperty("abstract")]
+    public string abstract_ {get;set;}
 }
 }
