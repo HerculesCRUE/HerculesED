@@ -1218,7 +1218,7 @@
 												"width": 1
 											}
 										]
-									},
+									}
 								]
 							},
 							{
@@ -1250,7 +1250,7 @@
 												"property": "http://w3id.org/roh/industrialPropertyTypeOther",
 												"type": "text",
 												"width": 1
-											},
+											}
 										]
 									},
 									{
@@ -1283,7 +1283,7 @@
 												"property": "http://w3id.org/roh/patentNumber",
 												"type": "text",
 												"width": 1
-											},
+											}
 										]
 									},
 									{
@@ -1316,7 +1316,7 @@
 												"property": "http://w3id.org/roh/referenceCode",
 												"type": "text",
 												"width": 1
-											},
+											}
 										]
 									},
 									{
@@ -1338,7 +1338,7 @@
 												"property": "http://w3id.org/roh/europeanPatent",
 												"type": "text",
 												"width": 1
-											},
+											}
 										]
 									},
 									{
@@ -1360,7 +1360,7 @@
 												"property": "http://w3id.org/roh/pctPatent",
 												"type": "text",
 												"width": 1
-											},
+											}
 										]
 									},
 									{
@@ -1412,7 +1412,7 @@
 												"property": "http://w3id.org/roh/qualityDescription",
 												"type": "text",
 												"width": 2
-											},
+											}
 										]
 									},
 									{
@@ -1458,7 +1458,7 @@
 												"width": 2
 											}
 										]
-									},
+									}
 								]
 							}
 						]
@@ -1666,7 +1666,7 @@
 												"width": 2
 											}
 										]
-									},
+									}
 								]
 							},
 							{
@@ -1677,7 +1677,7 @@
 									{
 										"properties": [
 											{
-												"TODO": "Adición de un único investigador con nombre, apellidos y firma"
+												"TODO": "Adición de un único investigador con nombre, apellidos y firma",
 												"title": {
 													"es": "Nombre del investigador/a principal (IP)"
 												},
@@ -1721,7 +1721,7 @@
 												"property": "http://w3id.org/roh/directedPostdocsNumber",
 												"type": "number",
 												"width": 1
-											},
+											}
 										]
 									},
 									{
@@ -1744,7 +1744,7 @@
 												"property": "http://w3id.org/roh/otherRelevantResults",
 												"type": "text",
 												"width": 1
-											},
+											}
 										]
 									},
 									{
