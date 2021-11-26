@@ -1891,7 +1891,7 @@
 						"graph": "supervisedartisticproject",
 						"proptitle": "http://w3id.org/roh/title",
 						"propdescription": "http://vivoweb.org/ontology/core#description",
-						"rdftype": "http://vivoweb.org/ontology/core#Project",
+						"rdftype": "http://vivoweb.org/ontology/core#SupervisedArtisticProject",
 						"sections": [
 							{
 								"title": {
