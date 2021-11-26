@@ -605,7 +605,7 @@
 							{
 								"property": "http://w3id.org/roh/scientificExperienceProject",
 								"values": [
-									"http://gnoss.com/items/scientificexperienceproject_SEP2"
+									"http://gnoss.com/items/scientificexperienceproject_SEP1"
 								]
 							}
 						],
@@ -772,33 +772,199 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Ciudad de publicación"
+													"es": "Modalidad de proyecto"
 												},
-												"placeholder": {
-													"es": "Introduce la ciudad de publicación"
+												"property": "http://w3id.org/roh/modality",
+												"combo": {
+													"rdftype": "http://w3id.org/roh/ProjectModality",
+													"graph": "projectmodality",
+													"property": {
+														"property": "http://purl.org/dc/elements/1.1/title"
+													}
 												},
-												"property": "https://www.w3.org/2006/vcard/ns#locality",
+												"type": "selectCombo",
+												"width": 2
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Ámbito geográfico"
+												},
+												"property": "http://vivoweb.org/ontology/core#geographicFocus",
+												"combo": {
+													"rdftype": "http://vivoweb.org/ontology/core#GeographicRegion",
+													"graph": "geographicregion",
+													"property": {
+														"property": "http://purl.org/dc/elements/1.1/title"
+													}
+												},
+												"type": "selectCombo",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Otros"
+												},
+												"property": "http://w3id.org/roh/geographicFocusOther",
+												"type": "text",
+												"width": 1
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Entidad de realización"
+												},
+												"property": "http://w3id.org/roh/conductedBy",
+												"combo": {
+													"rdftype": "http://w3id.org/roh/PublicationType",
+													"graph": "organization",
+													"property": {
+														"property": "http://purl.org/dc/elements/1.1/title"
+													}
+												},
+												"type": "selectCombo",
+												"width": 1
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Nº de personas/año"
+												},
+												"property": "http://w3id.org/roh/researchersNumber",
 												"type": "text",
 												"width": 1
 											},
 											{
 												"title": {
-													"es": "C. Autón./Reg. de publicación"
+													"es": "Tipo de proyecto"
 												},
-												"placeholder": {
-													"es": "Introduce la región de publicación"
-												},
-												"property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+												"property": "http://w3id.org/roh/projectType",
 												"combo": {
-													"rdftype": "http://www.geonames.org/ontology#Feature",
-													"graph": "feature",
+													"rdftype": "http://w3id.org/roh/ProjectType",
+													"graph": "projecttype",
 													"property": {
-														"property": "http://www.geonames.org/ontology#name"
+														"property": "http://purl.org/dc/elements/1.1/title"
 													}
 												},
-												"TODO": "Algunos valores están duplicados (ej. La Rioja, Isle of Man...)",
 												"type": "selectCombo",
 												"width": 1
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"TODO": "Entidad auxiliar múltiple que contiene otra entidad auxiliar (FundingProgram)",
+												"property": "http://w3id.org/roh/isSupportedBy",
+												"type": "auxEntity",
+												"title": {
+													"es": "Financiación"
+												},
+												"multiple": true,
+												"width": 3,
+												"auxEntityData": {
+													"rdftype": "http://w3id.org/roh/Funding",
+													"propertyTitle": {
+														"property": "http://w3id.org/roh/monetaryAmount"
+													},
+													"properties": [
+														{
+															"name": {
+																"es": "Cuantía subproyecto"
+															},
+															"child": {
+																"property": "http://w3id.org/roh/monetaryAmount"
+															}
+														},
+														{
+															"name": {
+																"es": "Porcentaje en subvención"
+															},
+															"child": {
+																"property": "http://w3id.org/roh/grantsPercentage"
+															}
+														},
+														{
+															"name": {
+																"es": "Porcentaje en crédito"
+															},
+															"child": {
+																"property": "http://w3id.org/roh/creditPercentage"
+															}
+														},
+														{
+															"name": {
+																"es": "Porcentaje mixto"
+															},
+															"child": {
+																"property": "http://w3id.org/roh/mixedPercentage"
+															}
+														}
+													],
+													"rows": [
+														{
+															"properties": [
+																{
+																	"title": {
+																		"es": "Cuantía subproyecto"
+																	},
+																	"property": "http://w3id.org/roh/monetaryAmount",
+																	"type": "number",
+																	"width": 1
+																}
+															]
+														},
+														{
+															"properties": [
+																{
+																	"title": {
+																		"es": "Porcentaje en subvención"
+																	},
+																	"property": "http://w3id.org/roh/grantsPercentage",
+																	"type": "number",
+																	"width": 1
+																},
+																{
+																	"title": {
+																		"es": "Porcentaje en crédito"
+																	},
+																	"property": "http://w3id.org/roh/creditPercentage",
+																	"type": "number",
+																	"width": 1
+																},
+																{
+																	"title": {
+																		"es": "Porcentaje mixto"
+																	},
+																	"property": "http://w3id.org/roh/mixedPercentage",
+																	"type": "number",
+																	"width": 1
+																}
+															]
+														}
+													]
+												}
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Resultados relevantes"
+												},
+												"property": "http://w3id.org/roh/relevantResults",
+												"type": "text",
+												"width": 2
 											}
 										]
 									}
