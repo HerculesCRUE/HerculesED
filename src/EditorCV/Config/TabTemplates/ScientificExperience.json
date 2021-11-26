@@ -1452,7 +1452,7 @@
 												"title": {
 													"es": "Productos"
 												},
-												"property": "https://www.w3.org/2006/vcard/ns#products",
+												"property": "http://w3id.org/roh/products",
 												"multiple": true,
 												"type": "text",
 												"width": 2
