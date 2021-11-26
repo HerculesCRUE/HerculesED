@@ -88,6 +88,20 @@ namespace GuardadoCV.Controllers
             }
         }
 
+        [HttpPost("CreatePerson")]
+        public IActionResult CreatePerson([FromForm] string pName, [FromForm] string pSurname)
+        {
+            try
+            {
+                AccionesGuardado accionesGuardado = new AccionesGuardado();
+                return Ok(accionesGuardado.CreatePerson(pName, pSurname));
+            }
+            catch (Exception ex)
+            {
+                return Ok(new Models.API.Response.JsonResult() { error = ex.Message });
+            }
+        }
+
 
         //Añadir entidad
 

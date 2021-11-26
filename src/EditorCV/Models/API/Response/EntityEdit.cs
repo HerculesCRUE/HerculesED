@@ -86,6 +86,10 @@ namespace GuardadoCV.Models.API.Response
         /// </summary>
         public bool multiple { get; set; }
         /// <summary>
+        /// Indica si es multiple
+        /// </summary>
+        public bool autocomplete { get; set; }
+        /// <summary>
         /// indica si es obligatorio
         /// </summary>
         public bool required { get; set; }
@@ -101,6 +105,10 @@ namespace GuardadoCV.Models.API.Response
         /// Lista de valores disponibles para el combo
         /// </summary>
         public ComboDependency comboDependency { get; set; }
+        /// <summary>
+        /// Lista de valores del tesauro
+        /// </summary>
+        public List<ThesaurusItem> thesaurus { get; set; }
         /// <summary>
         /// Datos de una entidad auxiliar dentro de una entidad
         /// </summary>
@@ -206,6 +214,23 @@ namespace GuardadoCV.Models.API.Response
         public string value { get; set; }
     }
 
+
+    public class ThesaurusItem
+    {        
+        /// <summary>
+        /// Id del elemento
+        /// </summary>
+        public string id { get; set; }
+        /// <summary>
+        /// Nombre del elemento
+        /// </summary>
+        public string name { get; set; }
+        /// <summary>
+        /// Padre del elemento
+        /// </summary>
+        public string parentId { get; set; }
+
+    }
 }
 
 

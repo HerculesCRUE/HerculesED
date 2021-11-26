@@ -206,6 +206,20 @@
 										"properties": [
 											{
 												"title": {
+													"es": "Áreas temáticas"
+												},
+												"property": "http://w3id.org/roh/hasKnowledgeArea",
+												"thesaurus": "researcharea",
+												"type": "thesaurus",
+												"width": 1,
+												"multiple": true
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
 													"es": "Tipo de producción"
 												},
 												"property": "http://purl.org/dc/elements/1.1/type",
@@ -415,96 +429,11 @@
 										"properties": [
 											{
 												"property": "http://purl.org/ontology/bibo/authorList",
-												"TODO": "Integrar el diseño de Félix para la adición de autores",
-												"type": "auxEntity",
+												"type": "auxEntityAuthorList",
 												"title": {
 													"es": "Autores/as (p.o. de firma)"
 												},
-												"multiple": true,
-												"width": 3,
-												"auxEntityData": {
-													"rdftype": "http://purl.obolibrary.org/obo/BFO_0000023",
-													"propertyOrder": "http://www.w3.org/1999/02/22-rdf-syntax-ns#comment",
-													"propertyTitle": {
-														"property": "http://xmlns.com/foaf/0.1/nick"
-													},
-													"properties": [
-														{
-															"name": {
-																"es": "Nombre"
-															},
-															"child": {
-																"property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
-																"graph": "person",
-																"child": {
-																	"property": "http://xmlns.com/foaf/0.1/name"
-																}
-															}
-														},
-														{
-															"name": {
-																"es": "ORCID"
-															},
-															"child": {
-																"property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
-																"graph": "person",
-																"child": {
-																	"property": "http://w3id.org/roh/ORCID"
-																}
-															}
-														}
-													],
-													"rows": [
-														{
-															"properties": [
-																{
-																	"title": {
-																		"es": "Firma"
-																	},
-																	"type": "text",
-																	"placeholder": {
-																		"es": "Introduce la firma"
-																	},
-																	"required": true,
-																	"property": "http://xmlns.com/foaf/0.1/nick",
-																	"width": 3
-																}
-															]
-														},
-														{
-															"properties": [
-																{
-																	"TODO": "Error null al crear entidades",
-																	"title": {
-																		"es": "Persona"
-																	},
-																	"type": "entity",
-																	"multiple": false,
-																	"required": true,
-																	"property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
-																	"width": 3,
-																	"entityData": {
-																		"rdftype": "http://xmlns.com/foaf/0.1/Person",
-																		"graph": "person",
-																		"propertyTitle": {
-																			"property": "http://xmlns.com/foaf/0.1/name"
-																		},
-																		"properties": [
-																			{
-																				"name": {
-																					"es": "ORCID"
-																				},
-																				"child": {
-																					"property": "http://w3id.org/roh/ORCID"
-																				}
-																			}
-																		]
-																	}
-																}
-															]
-														}
-													]
-												}
+												"width": 3
 											}
 										]
 									}
@@ -695,7 +624,6 @@
 														"property": "http://www.geonames.org/ontology#name"
 													}
 												},
-												"TODO": "Autocompletados relacionados. (ej. Comunidad de Murcia --> España",
 												"type": "selectCombo",
 												"width": 1
 											},
@@ -782,6 +710,7 @@
 																		"es": "Fuente de citas"
 																	},
 																	"TODO": "No se despliega el combo de valores.",
+																	"property": "http://w3id.org/roh/metricName",
 																	"combo": {
 																		"rdftype": "http://purl.org/ontology/bibo/ReferenceSource",
 																		"graph": "referencesource",
@@ -873,6 +802,7 @@
 												},
 												"property": "http://vivoweb.org/ontology/core#freeTextKeyword",
 												"multiple": true,
+												"autocomplete": true,
 												"type": "text",
 												"width": 1
 											}
@@ -894,7 +824,6 @@
 				"title": {
 					"es": "Trabajos presentados en congresos nacionales o internacionales"
 				},
-				
 				"listItemsPresentation": {
 					"property": "http://vivoweb.org/ontology/core#relatedBy",
 					"listItem": {
@@ -1394,95 +1323,11 @@
 										"properties": [
 											{
 												"property": "http://purl.org/ontology/bibo/authorList",
-												"TODO": "Integrar el diseño de Félix para la adición de autores",
-												"type": "auxEntity",
+												"type": "auxEntityAuthorList",
 												"title": {
 													"es": "Autores/as (p.o. de firma)"
 												},
-												"multiple": true,
-												"width": 3,
-												"auxEntityData": {
-													"rdftype": "http://purl.obolibrary.org/obo/BFO_0000023",
-													"propertyOrder": "http://www.w3.org/1999/02/22-rdf-syntax-ns#comment",
-													"propertyTitle": {
-														"property": "http://xmlns.com/foaf/0.1/nick"
-													},
-													"properties": [
-														{
-															"name": {
-																"es": "Nombre"
-															},
-															"child": {
-																"property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
-																"graph": "person",
-																"child": {
-																	"property": "http://xmlns.com/foaf/0.1/name"
-																}
-															}
-														},
-														{
-															"name": {
-																"es": "ORCID"
-															},
-															"child": {
-																"property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
-																"graph": "person",
-																"child": {
-																	"property": "http://w3id.org/roh/ORCID"
-																}
-															}
-														}
-													],
-													"rows": [
-														{
-															"properties": [
-																{
-																	"title": {
-																		"es": "Firma"
-																	},
-																	"type": "text",
-																	"placeholder": {
-																		"es": "Introduce la firma"
-																	},
-																	"required": true,
-																	"property": "http://xmlns.com/foaf/0.1/nick",
-																	"width": 3
-																}
-															]
-														},
-														{
-															"properties": [
-																{
-																	"title": {
-																		"es": "Persona"
-																	},
-																	"type": "entity",
-																	"multiple": false,
-																	"required": true,
-																	"property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
-																	"width": 3,
-																	"entityData": {
-																		"rdftype": "http://xmlns.com/foaf/0.1/Person",
-																		"graph": "person",
-																		"propertyTitle": {
-																			"property": "http://xmlns.com/foaf/0.1/name"
-																		},
-																		"properties": [
-																			{
-																				"name": {
-																					"es": "ORCID"
-																				},
-																				"child": {
-																					"property": "http://w3id.org/roh/ORCID"
-																				}
-																			}
-																		]
-																	}
-																}
-															]
-														}
-													]
-												}
+												"width": 3
 											}
 										]
 									},
@@ -1833,12 +1678,15 @@
 												"property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
 												"combo": {
 													"rdftype": "http://www.geonames.org/ontology#Feature",
+													"filter": {
+														"property": "http://www.geonames.org/ontology#featureCode",
+														"value": "PCLD"
+													},
 													"graph": "feature",
 													"property": {
 														"property": "http://www.geonames.org/ontology#name"
 													}
 												},
-												"TODO": "Autocompletados relacionados. (ej. Comunidad de Murcia --> España",
 												"type": "selectCombo",
 												"width": 1
 											},
@@ -1852,6 +1700,14 @@
 												"property": "https://www.w3.org/2006/vcard/ns#hasRegion",
 												"combo": {
 													"rdftype": "http://www.geonames.org/ontology#Feature",
+													"filter": {
+														"property": "http://www.geonames.org/ontology#featureCode",
+														"value": "ADM1"
+													},
+													"dependency": {
+														"property": "http://www.geonames.org/ontology#parentFeature",
+														"propertyValue": "https://www.w3.org/2006/vcard/ns#hasCountryName"
+													},
 													"graph": "feature",
 													"property": {
 														"property": "http://www.geonames.org/ontology#name"
@@ -1916,6 +1772,7 @@
 																	"title": {
 																		"es": "Fuente de citas"
 																	},
+																	"property": "http://w3id.org/roh/metricName",
 																	"combo": {
 																		"rdftype": "http://purl.org/ontology/bibo/ReferenceSource",
 																		"graph": "referencesource",
@@ -2472,95 +2329,11 @@
 										"properties": [
 											{
 												"property": "http://purl.org/ontology/bibo/authorList",
-												"TODO": "Integrar el diseño de Félix para la adición de autores",
-												"type": "auxEntity",
+												"type": "auxEntityAuthorList",
 												"title": {
 													"es": "Autores/as (p.o. de firma)"
 												},
-												"multiple": true,
-												"width": 3,
-												"auxEntityData": {
-													"rdftype": "http://purl.obolibrary.org/obo/BFO_0000023",
-													"propertyOrder": "http://www.w3.org/1999/02/22-rdf-syntax-ns#comment",
-													"propertyTitle": {
-														"property": "http://xmlns.com/foaf/0.1/nick"
-													},
-													"properties": [
-														{
-															"name": {
-																"es": "Nombre"
-															},
-															"child": {
-																"property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
-																"graph": "person",
-																"child": {
-																	"property": "http://xmlns.com/foaf/0.1/name"
-																}
-															}
-														},
-														{
-															"name": {
-																"es": "ORCID"
-															},
-															"child": {
-																"property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
-																"graph": "person",
-																"child": {
-																	"property": "http://w3id.org/roh/ORCID"
-																}
-															}
-														}
-													],
-													"rows": [
-														{
-															"properties": [
-																{
-																	"title": {
-																		"es": "Firma"
-																	},
-																	"type": "text",
-																	"placeholder": {
-																		"es": "Introduce la firma"
-																	},
-																	"required": true,
-																	"property": "http://xmlns.com/foaf/0.1/nick",
-																	"width": 3
-																}
-															]
-														},
-														{
-															"properties": [
-																{
-																	"title": {
-																		"es": "Persona"
-																	},
-																	"type": "entity",
-																	"multiple": false,
-																	"required": true,
-																	"property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
-																	"width": 3,
-																	"entityData": {
-																		"rdftype": "http://xmlns.com/foaf/0.1/Person",
-																		"graph": "person",
-																		"propertyTitle": {
-																			"property": "http://xmlns.com/foaf/0.1/name"
-																		},
-																		"properties": [
-																			{
-																				"name": {
-																					"es": "ORCID"
-																				},
-																				"child": {
-																					"property": "http://w3id.org/roh/ORCID"
-																				}
-																			}
-																		]
-																	}
-																}
-															]
-														}
-													]
-												}
+												"width": 3
 											}
 										]
 									},
@@ -2926,12 +2699,15 @@
 												"property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
 												"combo": {
 													"rdftype": "http://www.geonames.org/ontology#Feature",
+													"filter": {
+														"property": "http://www.geonames.org/ontology#featureCode",
+														"value": "PCLD"
+													},
 													"graph": "feature",
 													"property": {
 														"property": "http://www.geonames.org/ontology#name"
 													}
 												},
-												"TODO": "Autocompletados relacionados. (ej. Comunidad de Murcia --> España",
 												"type": "selectCombo",
 												"width": 1
 											},
@@ -2945,12 +2721,19 @@
 												"property": "https://www.w3.org/2006/vcard/ns#hasRegion",
 												"combo": {
 													"rdftype": "http://www.geonames.org/ontology#Feature",
+													"filter": {
+														"property": "http://www.geonames.org/ontology#featureCode",
+														"value": "ADM1"
+													},
+													"dependency": {
+														"property": "http://www.geonames.org/ontology#parentFeature",
+														"propertyValue": "https://www.w3.org/2006/vcard/ns#hasCountryName"
+													},
 													"graph": "feature",
 													"property": {
 														"property": "http://www.geonames.org/ontology#name"
 													}
 												},
-												"TODO": "Algunos valores están duplicados (ej. La Rioja, Isle of Man...)",
 												"type": "selectCombo",
 												"width": 1
 											}
@@ -3009,6 +2792,7 @@
 																	"title": {
 																		"es": "Fuente de citas"
 																	},
+																	"property": "http://w3id.org/roh/metricName",
 																	"combo": {
 																		"rdftype": "http://purl.org/ontology/bibo/ReferenceSource",
 																		"graph": "referencesource",
@@ -3565,95 +3349,11 @@
 										"properties": [
 											{
 												"property": "http://purl.org/ontology/bibo/authorList",
-												"TODO": "Integrar el diseño de Félix para la adición de autores",
-												"type": "auxEntity",
+												"type": "auxEntityAuthorList",
 												"title": {
 													"es": "Autores/as (p.o. de firma)"
 												},
-												"multiple": true,
-												"width": 3,
-												"auxEntityData": {
-													"rdftype": "http://purl.obolibrary.org/obo/BFO_0000023",
-													"propertyOrder": "http://www.w3.org/1999/02/22-rdf-syntax-ns#comment",
-													"propertyTitle": {
-														"property": "http://xmlns.com/foaf/0.1/nick"
-													},
-													"properties": [
-														{
-															"name": {
-																"es": "Nombre"
-															},
-															"child": {
-																"property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
-																"graph": "person",
-																"child": {
-																	"property": "http://xmlns.com/foaf/0.1/name"
-																}
-															}
-														},
-														{
-															"name": {
-																"es": "ORCID"
-															},
-															"child": {
-																"property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
-																"graph": "person",
-																"child": {
-																	"property": "http://w3id.org/roh/ORCID"
-																}
-															}
-														}
-													],
-													"rows": [
-														{
-															"properties": [
-																{
-																	"title": {
-																		"es": "Firma"
-																	},
-																	"type": "text",
-																	"placeholder": {
-																		"es": "Introduce la firma"
-																	},
-																	"required": true,
-																	"property": "http://xmlns.com/foaf/0.1/nick",
-																	"width": 3
-																}
-															]
-														},
-														{
-															"properties": [
-																{
-																	"title": {
-																		"es": "Persona"
-																	},
-																	"type": "entity",
-																	"multiple": false,
-																	"required": true,
-																	"property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
-																	"width": 3,
-																	"entityData": {
-																		"rdftype": "http://xmlns.com/foaf/0.1/Person",
-																		"graph": "person",
-																		"propertyTitle": {
-																			"property": "http://xmlns.com/foaf/0.1/name"
-																		},
-																		"properties": [
-																			{
-																				"name": {
-																					"es": "ORCID"
-																				},
-																				"child": {
-																					"property": "http://w3id.org/roh/ORCID"
-																				}
-																			}
-																		]
-																	}
-																}
-															]
-														}
-													]
-												}
+												"width": 3
 											}
 										]
 									},
@@ -4019,12 +3719,15 @@
 												"property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
 												"combo": {
 													"rdftype": "http://www.geonames.org/ontology#Feature",
+													"filter": {
+														"property": "http://www.geonames.org/ontology#featureCode",
+														"value": "PCLD"
+													},
 													"graph": "feature",
 													"property": {
 														"property": "http://www.geonames.org/ontology#name"
 													}
 												},
-												"TODO": "Autocompletados relacionados. (ej. Comunidad de Murcia --> España",
 												"type": "selectCombo",
 												"width": 1
 											},
@@ -4038,6 +3741,14 @@
 												"property": "https://www.w3.org/2006/vcard/ns#hasRegion",
 												"combo": {
 													"rdftype": "http://www.geonames.org/ontology#Feature",
+													"filter": {
+														"property": "http://www.geonames.org/ontology#featureCode",
+														"value": "ADM1"
+													},
+													"dependency": {
+														"property": "http://www.geonames.org/ontology#parentFeature",
+														"propertyValue": "https://www.w3.org/2006/vcard/ns#hasCountryName"
+													},
 													"graph": "feature",
 													"property": {
 														"property": "http://www.geonames.org/ontology#name"
@@ -4102,6 +3813,7 @@
 																	"title": {
 																		"es": "Fuente de citas"
 																	},
+																	"property": "http://w3id.org/roh/metricName",
 																	"combo": {
 																		"rdftype": "http://purl.org/ontology/bibo/ReferenceSource",
 																		"graph": "referencesource",
@@ -4257,7 +3969,7 @@
 												"required": true,
 												"type": "text",
 												"width": 3,
-												"TODO": "Siguiente propiedad: Añadir las clasificaciones (primaria, secundaria y terciaria) según Cód. Unesco"
+												"TODO": "Siguiente propiedad: Tesauro. Añadir las clasificaciones (primaria, secundaria y terciaria) según Cód. Unesco."
 											}
 										]
 									},
@@ -4307,6 +4019,10 @@
 												"property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
 												"combo": {
 													"rdftype": "http://www.geonames.org/ontology#Feature",
+													"filter": {
+														"property": "http://www.geonames.org/ontology#featureCode",
+														"value": "PCLD"
+													},
 													"graph": "feature",
 													"property": {
 														"property": "http://www.geonames.org/ontology#name"
@@ -4326,6 +4042,14 @@
 												"property": "https://www.w3.org/2006/vcard/ns#hasRegion",
 												"combo": {
 													"rdftype": "http://www.geonames.org/ontology#Feature",
+													"filter": {
+														"property": "http://www.geonames.org/ontology#featureCode",
+														"value": "ADM1"
+													},
+													"dependency": {
+														"property": "http://www.geonames.org/ontology#parentFeature",
+														"propertyValue": "https://www.w3.org/2006/vcard/ns#hasCountryName"
+													},
 													"graph": "feature",
 													"property": {
 														"property": "http://www.geonames.org/ontology#name"
@@ -4505,7 +4229,7 @@
 													"es": "Ámbito geográfico"
 												},
 												"property": "http://vivoweb.org/ontology/core#geographicFocus",
-												"TODO": "No se despliega el combo de valores.",
+												"TODO": "Visibilidad del campo Otros",
 												"combo": {
 													"rdftype": "http://vivoweb.org/ontology/core#GeographicRegion",
 													"graph": "geographicregion",
@@ -4557,12 +4281,15 @@
 												"property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
 												"combo": {
 													"rdftype": "http://www.geonames.org/ontology#Feature",
+													"filter": {
+														"property": "http://www.geonames.org/ontology#featureCode",
+														"value": "PCLD"
+													},
 													"graph": "feature",
 													"property": {
 														"property": "http://www.geonames.org/ontology#name"
 													}
 												},
-												"TODO": "Autocompletados relacionados (ej. Comunidad de Murcia --> España",
 												"type": "selectCombo",
 												"width": 1
 											},
@@ -4576,12 +4303,19 @@
 												"property": "https://www.w3.org/2006/vcard/ns#hasRegion",
 												"combo": {
 													"rdftype": "http://www.geonames.org/ontology#Feature",
+													"filter": {
+														"property": "http://www.geonames.org/ontology#featureCode",
+														"value": "ADM1"
+													},
+													"dependency": {
+														"property": "http://www.geonames.org/ontology#parentFeature",
+														"propertyValue": "https://www.w3.org/2006/vcard/ns#hasCountryName"
+													},
 													"graph": "feature",
 													"property": {
 														"property": "http://www.geonames.org/ontology#name"
 													}
 												},
-												"TODO": "Algunos valores están duplicados (ej. La Rioja, Isle of Man...)",
 												"type": "selectCombo",
 												"width": 1
 											}
@@ -4591,10 +4325,10 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Número de asistentes"
+													"es": "Nº de asistentes"
 												},
 												"placeholder": {
-													"es": "Introduce el número de asistentes"
+													"es": "Introduce el nº de asistentes"
 												},
 												"property": "http://w3id.org/roh/attendants",
 												"type": "number",
@@ -4810,7 +4544,6 @@
 											"es": "Ámbito geográfico"
 										},
 										"property": "http://vivoweb.org/ontology/core#geographicFocus",
-										"TODO": "No se despliega el combo de valores.",
 										"combo": {
 											"rdftype": "http://vivoweb.org/ontology/core#GeographicRegion",
 											"graph": "geographicregion",
@@ -4850,7 +4583,7 @@
 					"listItem": {
 						"propertyTitle": {
 							"property": "http://vivoweb.org/ontology/core#relatedBy",
-							"graph": "accreditation",
+							"graph": "activity",
 							"child": {
 								"property": "http://w3id.org/roh/title"
 							}
@@ -4864,7 +4597,7 @@
 								"properties": [
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "accreditation",
+										"graph": "activity",
 										"child": {
 											"property": "http://w3id.org/roh/dateIssued"
 										},
@@ -4872,7 +4605,7 @@
 									},
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "accreditation",
+										"graph": "activity",
 										"child": {
 											"property": "http://w3id.org/roh/title"
 										},
@@ -4887,7 +4620,7 @@
 								"properties": [
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "accreditation",
+										"graph": "activity",
 										"child": {
 											"property": "http://w3id.org/roh/dateIssued"
 										},
@@ -4895,7 +4628,7 @@
 									},
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "accreditation",
+										"graph": "activity",
 										"child": {
 											"property": "http://w3id.org/roh/title"
 										},
@@ -4907,11 +4640,11 @@
 						"properties": [
 							{
 								"name": {
-									"es": "Descripción"
+									"es": "Nombre del foro"
 								},
 								"child": {
 									"property": "http://vivoweb.org/ontology/core#relatedBy",
-									"graph": "accreditation",
+									"graph": "activity",
 									"child": {
 										"property": "http://w3id.org/roh/title"
 									}
@@ -4920,9 +4653,9 @@
 						]
 					},
 					"listItemEdit": {
-						"graph": "accreditation",
+						"graph": "activity",
 						"proptitle": "http://w3id.org/roh/title",
-						"rdftype": "http://w3id.org/roh/Accreditation",
+						"rdftype": "http://w3id.org/roh/Activity",
 						"sections": [
 							{
 								"title": {
@@ -4933,10 +4666,10 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Descripción"
+													"es": "Nombre del foro"
 												},
 												"placeholder": {
-													"es": "Introduce la descripción"
+													"es": "Introduce el nombre del foro"
 												},
 												"property": "http://w3id.org/roh/title",
 												"required": true,
@@ -4949,23 +4682,15 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Entidad concesionaria"
+													"es": "Entidad organizadora"
 												},
 												"TODO": "Autocompletado/texto libre. En caso de que haya que añadir una nueva organización, será por autocompletado o combo",
 												"placeholder": {
 													"es": "Introduce la entidad concesionaria"
 												},
-												"property": "http://w3id.org/roh/accreditationIssuedBy",
+												"property": "http://w3id.org/roh/promotedBy",
 												"type": "text",
 												"width": 2
-											},
-											{
-												"title": {
-													"es": "Fecha de concesión"
-												},
-												"property": "http://w3id.org/roh/dateIssued",
-												"type": "date",
-												"width": 1
 											}
 										]
 									}
@@ -4980,14 +4705,62 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Reconocimientos ligados"
+													"es": "Ciudad entidad realización"
 												},
 												"placeholder": {
-													"es": "Introduce los reconocimientos ligados"
+													"es": "Introduce la ciudad entidad realización"
 												},
-												"property": "http://w3id.org/roh/recognitionLinked",
+												"property": "https://www.w3.org/2006/vcard/ns#locality",
 												"type": "text",
-												"width": 2
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "País entidad realización"
+												},
+												"placeholder": {
+													"es": "Introduce el país entidad realización"
+												},
+												"property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+												"combo": {
+													"rdftype": "http://www.geonames.org/ontology#Feature",
+													"filter": {
+														"property": "http://www.geonames.org/ontology#featureCode",
+														"value": "PCLD"
+													},
+													"graph": "feature",
+													"property": {
+														"property": "http://www.geonames.org/ontology#name"
+													}
+												},
+												"type": "selectCombo",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "C. Autón./Reg. entidad realización"
+												},
+												"placeholder": {
+													"es": "Introduce la C. Autón./Reg. entidad realización"
+												},
+												"property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+												"combo": {
+													"rdftype": "http://www.geonames.org/ontology#Feature",
+													"filter": {
+														"property": "http://www.geonames.org/ontology#featureCode",
+														"value": "ADM1"
+													},
+													"dependency": {
+														"property": "http://www.geonames.org/ontology#parentFeature",
+														"propertyValue": "https://www.w3.org/2006/vcard/ns#hasCountryName"
+													},
+													"graph": "feature",
+													"property": {
+														"property": "http://www.geonames.org/ontology#name"
+													}
+												},
+												"type": "selectCombo",
+												"width": 1
 											}
 										]
 									}
@@ -4999,8 +4772,8 @@
 			}
 		},
 		{
-			"rdftype": "http://w3id.org/roh/RelatedPrize",
-			"property": "http://w3id.org/roh/prizes",
+			"rdftype": "http://w3id.org/roh/RelatedResearchEvaluation",
+			"property": "http://w3id.org/roh/researchEvaluations",
 			"presentation": {
 				"type": "listitems",
 				"title": {
@@ -5011,7 +4784,7 @@
 					"listItem": {
 						"propertyTitle": {
 							"property": "http://vivoweb.org/ontology/core#relatedBy",
-							"graph": "accreditation",
+							"graph": "activity",
 							"child": {
 								"property": "http://w3id.org/roh/title"
 							}
@@ -5025,7 +4798,7 @@
 								"properties": [
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "accreditation",
+										"graph": "activity",
 										"child": {
 											"property": "http://w3id.org/roh/dateIssued"
 										},
@@ -5033,7 +4806,7 @@
 									},
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "accreditation",
+										"graph": "activity",
 										"child": {
 											"property": "http://w3id.org/roh/title"
 										},
@@ -5048,7 +4821,7 @@
 								"properties": [
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "accreditation",
+										"graph": "activity",
 										"child": {
 											"property": "http://w3id.org/roh/dateIssued"
 										},
@@ -5056,7 +4829,7 @@
 									},
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "accreditation",
+										"graph": "activity",
 										"child": {
 											"property": "http://w3id.org/roh/title"
 										},
@@ -5068,11 +4841,11 @@
 						"properties": [
 							{
 								"name": {
-									"es": "Descripción"
+									"es": "Nombre de la actividad"
 								},
 								"child": {
 									"property": "http://vivoweb.org/ontology/core#relatedBy",
-									"graph": "accreditation",
+									"graph": "activity",
 									"child": {
 										"property": "http://w3id.org/roh/title"
 									}
@@ -5081,9 +4854,9 @@
 						]
 					},
 					"listItemEdit": {
-						"graph": "accreditation",
+						"graph": "activity",
 						"proptitle": "http://w3id.org/roh/title",
-						"rdftype": "http://w3id.org/roh/Accreditation",
+						"rdftype": "http://w3id.org/roh/Activity",
 						"sections": [
 							{
 								"title": {
@@ -5094,10 +4867,10 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Descripción"
+													"es": "Nombre de la actividad"
 												},
 												"placeholder": {
-													"es": "Introduce la descripción"
+													"es": "Introduce el nombre de la actividad"
 												},
 												"property": "http://w3id.org/roh/title",
 												"required": true,
@@ -5110,23 +4883,15 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Entidad concesionaria"
+													"es": "Entidad de realización"
 												},
 												"TODO": "Autocompletado/texto libre. En caso de que haya que añadir una nueva organización, será por autocompletado o combo",
 												"placeholder": {
-													"es": "Introduce la entidad concesionaria"
+													"es": "Introduce la entidad de realización"
 												},
-												"property": "http://w3id.org/roh/accreditationIssuedBy",
+												"property": "http://w3id.org/roh/conductedBy",
 												"type": "text",
 												"width": 2
-											},
-											{
-												"title": {
-													"es": "Fecha de concesión"
-												},
-												"property": "http://w3id.org/roh/dateIssued",
-												"type": "date",
-												"width": 1
 											}
 										]
 									}
@@ -5141,14 +4906,55 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Reconocimientos ligados"
+													"es": "Ámbito geográfico"
 												},
-												"placeholder": {
-													"es": "Introduce los reconocimientos ligados"
+												"property": "http://vivoweb.org/ontology/core#geographicFocus",
+												"combo": {
+													"rdftype": "http://vivoweb.org/ontology/core#GeographicRegion",
+													"graph": "geographicregion",
+													"property": {
+														"property": "http://purl.org/dc/elements/1.1/title"
+													}
 												},
-												"property": "http://w3id.org/roh/recognitionLinked",
+												"type": "selectCombo",
+												"width": 1
+											},
+											{
+												"TODO": "Debe aparecer en caso de que en el combo anterior se seleccione Otros",
+												"title": {
+													"es": "Otros"
+												},
+												"property": "http://w3id.org/roh/geographicFocusOther",
 												"type": "text",
-												"width": 2
+												"width": 1
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Modalidad de actividad"
+												},
+												"property": "http://w3id.org/roh/activityModality",
+												"combo": {
+													"rdftype": "http://w3id.org/roh/ActivityModality",
+													"graph": "activitymodality",
+													"property": {
+														"property": "http://purl.org/dc/elements/1.1/title"
+													}
+												},
+												"type": "selectCombo",
+												"width": 1
+											},
+											{
+												"TODO": "Debe aparecer en caso de que en el combo anterior se seleccione Otros",
+												"title": {
+													"es": "Otros"
+												},
+												"property": "http://w3id.org/roh/geographicFocusOther",
+												"type": "text",
+												"width": 1
 											}
 										]
 									}
@@ -5160,8 +4966,8 @@
 			}
 		},
 		{
-			"rdftype": "http://w3id.org/roh/RelatedPrize",
-			"property": "http://w3id.org/roh/prizes",
+			"rdftype": "http://w3id.org/roh/RelatedStay",
+			"property": "http://w3id.org/roh/stays",
 			"presentation": {
 				"type": "listitems",
 				"title": {
@@ -5172,7 +4978,7 @@
 					"listItem": {
 						"propertyTitle": {
 							"property": "http://vivoweb.org/ontology/core#relatedBy",
-							"graph": "accreditation",
+							"graph": "stay",
 							"child": {
 								"property": "http://w3id.org/roh/title"
 							}
@@ -5186,7 +4992,7 @@
 								"properties": [
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "accreditation",
+										"graph": "stay",
 										"child": {
 											"property": "http://w3id.org/roh/dateIssued"
 										},
@@ -5194,7 +5000,7 @@
 									},
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "accreditation",
+										"graph": "stay",
 										"child": {
 											"property": "http://w3id.org/roh/title"
 										},
@@ -5209,7 +5015,7 @@
 								"properties": [
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "accreditation",
+										"graph": "stay",
 										"child": {
 											"property": "http://w3id.org/roh/dateIssued"
 										},
@@ -5217,7 +5023,7 @@
 									},
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "accreditation",
+										"graph": "stay",
 										"child": {
 											"property": "http://w3id.org/roh/title"
 										},
@@ -5229,22 +5035,26 @@
 						"properties": [
 							{
 								"name": {
-									"es": "Descripción"
+									"es": "Objetivos de la estancia"
 								},
 								"child": {
 									"property": "http://vivoweb.org/ontology/core#relatedBy",
-									"graph": "accreditation",
+									"graph": "stay",
 									"child": {
-										"property": "http://w3id.org/roh/title"
+										"property": "http://vivoweb.org/ontology/core#goals",
+										"graph": "staygoal",
+										"child": {
+											"property": "http://purl.org/dc/elements/1.1/title"
+										}
 									}
 								}
 							}
 						]
 					},
 					"listItemEdit": {
-						"graph": "accreditation",
+						"graph": "stay",
 						"proptitle": "http://w3id.org/roh/title",
-						"rdftype": "http://w3id.org/roh/Accreditation",
+						"rdftype": "http://w3id.org/roh/Stay",
 						"sections": [
 							{
 								"title": {
@@ -5255,15 +5065,26 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Descripción"
+													"es": "Objetivos de la estancia"
 												},
-												"placeholder": {
-													"es": "Introduce la descripción"
+												"property": "http://w3id.org/roh/goals",
+												"combo": {
+													"rdftype": "http://w3id.org/roh/StayGoal",
+													"graph": "staygoal",
+													"property": {
+														"property": "http://purl.org/dc/elements/1.1/title"
+													}
 												},
-												"property": "http://w3id.org/roh/title",
-												"required": true,
+												"type": "selectCombo",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Otros"
+												},
+												"property": "http://w3id.org/roh/goalsOther",
 												"type": "text",
-												"width": 3
+												"width": 1
 											}
 										]
 									},
@@ -5271,22 +5092,77 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Entidad concesionaria"
+													"es": "Tareas contrastables"
+												},
+												"placeholder": {
+													"es": "Introduce las tareas contrastables"
+												},
+												"property": "http://w3id.org/roh/performedTasks",
+												"type": "text",
+												"width": 2
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Entidad de realización"
 												},
 												"TODO": "Autocompletado/texto libre. En caso de que haya que añadir una nueva organización, será por autocompletado o combo",
 												"placeholder": {
-													"es": "Introduce la entidad concesionaria"
+													"es": "Introduce la entidad de realización"
 												},
 												"property": "http://w3id.org/roh/accreditationIssuedBy",
 												"type": "text",
 												"width": 2
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Fecha de inicio"
+												},
+												"property": "http://vivoweb.org/ontology/core#start",
+												"type": "date",
+												"width": 1
 											},
 											{
 												"title": {
-													"es": "Fecha de concesión"
+													"es": "Fecha de finalización"
 												},
-												"property": "http://w3id.org/roh/dateIssued",
+												"property": "http://vivoweb.org/ontology/core#end",
 												"type": "date",
+												"width": 1
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Duración años"
+												},
+												"property": "http://w3id.org/roh/durationYears",
+												"type": "text",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Duración meses"
+												},
+												"property": "http://w3id.org/roh/durationMonths",
+												"type": "text",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Duración días"
+												},
+												"property": "http://w3id.org/roh/durationDays",
+												"type": "text",
 												"width": 1
 											}
 										]
@@ -5301,15 +5177,73 @@
 									{
 										"properties": [
 											{
+												"TODO": "Tesauro en la propiedad anterior",
 												"title": {
-													"es": "Reconocimientos ligados"
+													"es": "Nombre del programa"
 												},
 												"placeholder": {
-													"es": "Introduce los reconocimientos ligados"
+													"es": "Introduce el nombre del programa"
 												},
-												"property": "http://w3id.org/roh/recognitionLinked",
+												"property": "http://w3id.org/roh/programme",
+												"type": "text",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Capac. adq. desarrolladas"
+												},
+												"placeholder": {
+													"es": "Introduce las capac. adq. desarrolladas"
+												},
+												"property": "http://w3id.org/roh/skillsDeveloped",
 												"type": "text",
 												"width": 2
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Resultados relevantes"
+												},
+												"placeholder": {
+													"es": "Introduce los resultados relevantes"
+												},
+												"property": "http://w3id.org/roh/relevantResults",
+												"type": "text",
+												"width": 2
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Entidad financiadora"
+												},
+												"placeholder": {
+													"es": "Introduce la entidad financiadora"
+												},
+												"property": "http://w3id.org/roh/fundedBy",
+												"type": "text",
+												"width": 2
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Identificar palabras clave"
+												},
+												"placeholder": {
+													"es": "Introduce la palabra clave"
+												},
+												"property": "http://vivoweb.org/ontology/core#freeTextKeyword",
+												"multiple": true,
+												"type": "text",
+												"width": 1
 											}
 										]
 									}
@@ -5321,8 +5255,8 @@
 			}
 		},
 		{
-			"rdftype": "http://w3id.org/roh/RelatedPrize",
-			"property": "http://w3id.org/roh/prizes",
+			"rdftype": "http://w3id.org/roh/RelatedGrant",
+			"property": "http://w3id.org/roh/grants",
 			"presentation": {
 				"type": "listitems",
 				"title": {
@@ -5333,7 +5267,7 @@
 					"listItem": {
 						"propertyTitle": {
 							"property": "http://vivoweb.org/ontology/core#relatedBy",
-							"graph": "accreditation",
+							"graph": "grant",
 							"child": {
 								"property": "http://w3id.org/roh/title"
 							}
@@ -5347,7 +5281,7 @@
 								"properties": [
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "accreditation",
+										"graph": "grant",
 										"child": {
 											"property": "http://w3id.org/roh/dateIssued"
 										},
@@ -5355,7 +5289,7 @@
 									},
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "accreditation",
+										"graph": "grant",
 										"child": {
 											"property": "http://w3id.org/roh/title"
 										},
@@ -5370,7 +5304,7 @@
 								"properties": [
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "accreditation",
+										"graph": "grant",
 										"child": {
 											"property": "http://w3id.org/roh/dateIssued"
 										},
@@ -5378,7 +5312,7 @@
 									},
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "accreditation",
+										"graph": "grant",
 										"child": {
 											"property": "http://w3id.org/roh/title"
 										},
@@ -5390,11 +5324,11 @@
 						"properties": [
 							{
 								"name": {
-									"es": "Descripción"
+									"es": "Nombre de la ayuda"
 								},
 								"child": {
 									"property": "http://vivoweb.org/ontology/core#relatedBy",
-									"graph": "accreditation",
+									"graph": "grant",
 									"child": {
 										"property": "http://w3id.org/roh/title"
 									}
@@ -5403,9 +5337,9 @@
 						]
 					},
 					"listItemEdit": {
-						"graph": "accreditation",
+						"graph": "grant",
 						"proptitle": "http://w3id.org/roh/title",
-						"rdftype": "http://w3id.org/roh/Accreditation",
+						"rdftype": "http://vivoweb.org/ontology/core#Grant",
 						"sections": [
 							{
 								"title": {
@@ -5416,15 +5350,15 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Descripción"
+													"es": "Nombre de la ayuda"
 												},
 												"placeholder": {
-													"es": "Introduce la descripción"
+													"es": "Introduce el nombre de la ayuda"
 												},
 												"property": "http://w3id.org/roh/title",
 												"required": true,
 												"type": "text",
-												"width": 3
+												"width": 2
 											}
 										]
 									},
@@ -5438,17 +5372,101 @@
 												"placeholder": {
 													"es": "Introduce la entidad concesionaria"
 												},
-												"property": "http://w3id.org/roh/accreditationIssuedBy",
+												"property": "http://w3id.org/roh/awardingEntity",
 												"type": "text",
 												"width": 2
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Finalidad"
+												},
+												"property": "http://w3id.org/roh/aims",
+												"combo": {
+													"rdftype": "http://w3id.org/roh/GrantAim",
+													"graph": "grantaim",
+													"property": {
+														"property": "http://purl.org/dc/elements/1.1/title"
+													}
+												},
+												"type": "selectCombo",
+												"width": 1
 											},
+											{
+												"TODO": "Visibilidad de Otros en función del combo anterior",
+												"title": {
+													"es": "Otros"
+												},
+												"property": "http://w3id.org/roh/aimsOther",
+												"type": "text",
+												"width": 1
+											}
+										]
+									},
+									{
+										"properties": [
 											{
 												"title": {
 													"es": "Fecha de concesión"
 												},
-												"property": "http://w3id.org/roh/dateIssued",
+												"property": "http://vivoweb.org/ontology/core#start",
 												"type": "date",
 												"width": 1
+											},
+											{
+												"title": {
+													"es": "Fecha de finalización"
+												},
+												"property": "http://vivoweb.org/ontology/core#end",
+												"type": "date",
+												"width": 1
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Duración años"
+												},
+												"property": "http://w3id.org/roh/durationYears",
+												"type": "text",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Duración meses"
+												},
+												"property": "http://w3id.org/roh/durationMonths",
+												"type": "text",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Duración días"
+												},
+												"property": "http://w3id.org/roh/durationDays",
+												"type": "text",
+												"width": 1
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Entidad de realización"
+												},
+												"TODO": "Autocompletado/texto libre. En caso de que haya que añadir una nueva organización, será por autocompletado o combo",
+												"placeholder": {
+													"es": "Introduce la entidad de realización"
+												},
+												"property": "http://w3id.org/roh/entity",
+												"type": "text",
+												"width": 2
 											}
 										]
 									}
@@ -5463,14 +5481,30 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Reconocimientos ligados"
+													"es": "Importe de la ayuda"
 												},
 												"placeholder": {
-													"es": "Introduce los reconocimientos ligados"
+													"es": "Introduce el importe de la ayuda"
 												},
-												"property": "http://w3id.org/roh/recognitionLinked",
+												"property": "http://w3id.org/roh/monetaryAmount",
+												"type": "number",
+												"width": 1
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Identificar palabras clave"
+												},
+												"placeholder": {
+													"es": "Introduce la palabra clave"
+												},
+												"property": "http://vivoweb.org/ontology/core#freeTextKeyword",
+												"multiple": true,
 												"type": "text",
-												"width": 2
+												"width": 1
 											}
 										]
 									}
@@ -5482,8 +5516,8 @@
 			}
 		},
 		{
-			"rdftype": "http://w3id.org/roh/RelatedPrize",
-			"property": "http://w3id.org/roh/prizes",
+			"rdftype": "http://w3id.org/roh/RelatedCollaboration",
+			"property": "http://w3id.org/roh/collaborations",
 			"presentation": {
 				"type": "listitems",
 				"title": {
@@ -5494,7 +5528,7 @@
 					"listItem": {
 						"propertyTitle": {
 							"property": "http://vivoweb.org/ontology/core#relatedBy",
-							"graph": "accreditation",
+							"graph": "collaboration",
 							"child": {
 								"property": "http://w3id.org/roh/title"
 							}
@@ -5508,7 +5542,7 @@
 								"properties": [
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "accreditation",
+										"graph": "collaboration",
 										"child": {
 											"property": "http://w3id.org/roh/dateIssued"
 										},
@@ -5516,7 +5550,7 @@
 									},
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "accreditation",
+										"graph": "collaboration",
 										"child": {
 											"property": "http://w3id.org/roh/title"
 										},
@@ -5531,7 +5565,7 @@
 								"properties": [
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "accreditation",
+										"graph": "collaboration",
 										"child": {
 											"property": "http://w3id.org/roh/dateIssued"
 										},
@@ -5539,7 +5573,7 @@
 									},
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "accreditation",
+										"graph": "collaboration",
 										"child": {
 											"property": "http://w3id.org/roh/title"
 										},
@@ -5551,11 +5585,11 @@
 						"properties": [
 							{
 								"name": {
-									"es": "Descripción"
+									"es": "Descripción de la colaboración"
 								},
 								"child": {
 									"property": "http://vivoweb.org/ontology/core#relatedBy",
-									"graph": "accreditation",
+									"graph": "collaboration",
 									"child": {
 										"property": "http://w3id.org/roh/title"
 									}
@@ -5564,9 +5598,9 @@
 						]
 					},
 					"listItemEdit": {
-						"graph": "accreditation",
+						"graph": "collaboration",
 						"proptitle": "http://w3id.org/roh/title",
-						"rdftype": "http://w3id.org/roh/Accreditation",
+						"rdftype": "http://w3id.org/roh/Collaboration",
 						"sections": [
 							{
 								"title": {
@@ -5577,10 +5611,10 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Descripción"
+													"es": "Descripción de la colaboración"
 												},
 												"placeholder": {
-													"es": "Introduce la descripción"
+													"es": "Introduce la descripción de la colaboración"
 												},
 												"property": "http://w3id.org/roh/title",
 												"required": true,
@@ -5593,22 +5627,91 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Entidad concesionaria"
+													"es": "Modo de relación"
 												},
-												"TODO": "Autocompletado/texto libre. En caso de que haya que añadir una nueva organización, será por autocompletado o combo",
-												"placeholder": {
-													"es": "Introduce la entidad concesionaria"
+												"property": "http://w3id.org/roh/relationshipType",
+												"combo": {
+													"rdftype": "http://w3id.org/roh/RelationshipType",
+													"graph": "relationshiptype",
+													"property": {
+														"property": "http://purl.org/dc/elements/1.1/title"
+													}
 												},
-												"property": "http://w3id.org/roh/accreditationIssuedBy",
-												"type": "text",
+												"type": "selectCombo",
 												"width": 2
 											},
 											{
+												"TODO": "Visibilidad de Otros en función del combo anterior",
 												"title": {
-													"es": "Fecha de concesión"
+													"es": "Otros"
 												},
-												"property": "http://w3id.org/roh/dateIssued",
+												"property": "http://w3id.org/roh/relationshipTypeOthers",
+												"type": "text",
+												"width": 1
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"property": "http://purl.org/ontology/bibo/authorList",
+												"type": "auxEntityAuthorList",
+												"title": {
+													"es": "Autores/as (p.o. de firma)"
+												},
+												"width": 3
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Entidad/es participante/s"
+												},
+												"property": "http://w3id.org/roh/participates",
+												"multiple": true,
+												"type": "text",
+												"width": 3
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Fecha de inicio"
+												},
+												"property": "http://vivoweb.org/ontology/core#start",
 												"type": "date",
+												"width": 1
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Duración años"
+												},
+												"property": "http://w3id.org/roh/durationYears",
+												"type": "text",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Duración meses"
+												},
+												"property": "http://w3id.org/roh/durationMonths",
+												"type": "text",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Duración días"
+												},
+												"property": "http://w3id.org/roh/durationDays",
+												"type": "text",
 												"width": 1
 											}
 										]
@@ -5624,14 +5727,88 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Reconocimientos ligados"
+													"es": "Ciudad de radicación"
 												},
 												"placeholder": {
-													"es": "Introduce los reconocimientos ligados"
+													"es": "Introduce la ciudad de radicación"
 												},
-												"property": "http://w3id.org/roh/recognitionLinked",
+												"property": "https://www.w3.org/2006/vcard/ns#locality",
 												"type": "text",
-												"width": 2
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "País de radicación"
+												},
+												"property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+												"combo": {
+													"rdftype": "http://www.geonames.org/ontology#Feature",
+													"filter": {
+														"property": "http://www.geonames.org/ontology#featureCode",
+														"value": "PCLD"
+													},
+													"graph": "feature",
+													"property": {
+														"property": "http://www.geonames.org/ontology#name"
+													}
+												},
+												"type": "selectCombo",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "C. Autón./Reg. de radicación"
+												},
+												"property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+												"combo": {
+													"rdftype": "http://www.geonames.org/ontology#Feature",
+													"filter": {
+														"property": "http://www.geonames.org/ontology#featureCode",
+														"value": "ADM1"
+													},
+													"dependency": {
+														"property": "http://www.geonames.org/ontology#parentFeature",
+														"propertyValue": "https://www.w3.org/2006/vcard/ns#hasCountryName"
+													},
+													"graph": "feature",
+													"property": {
+														"property": "http://www.geonames.org/ontology#name"
+													}
+												},
+												"TODO": "Algunos valores están duplicados (ej. La Rioja, Isle of Man...)",
+												"type": "selectCombo",
+												"width": 1
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Identificar palabras clave"
+												},
+												"placeholder": {
+													"es": "Introduce la palabra clave"
+												},
+												"property": "http://vivoweb.org/ontology/core#freeTextKeyword",
+												"multiple": true,
+												"type": "text",
+												"width": 1
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Resultados relevantes"
+												},
+												"placeholder": {
+													"es": "Introduce los resultados relevantes"
+												},
+												"property": "http://w3id.org/roh/relevantResults",
+												"type": "text",
+												"width": 3
 											}
 										]
 									}
@@ -5643,8 +5820,8 @@
 			}
 		},
 		{
-			"rdftype": "http://w3id.org/roh/RelatedPrize",
-			"property": "http://w3id.org/roh/prizes",
+			"rdftype": "http://w3id.org/roh/RelatedSociety",
+			"property": "http://w3id.org/roh/societies",
 			"presentation": {
 				"type": "listitems",
 				"title": {
@@ -5655,7 +5832,7 @@
 					"listItem": {
 						"propertyTitle": {
 							"property": "http://vivoweb.org/ontology/core#relatedBy",
-							"graph": "accreditation",
+							"graph": "society",
 							"child": {
 								"property": "http://w3id.org/roh/title"
 							}
@@ -5665,11 +5842,10 @@
 								"name": {
 									"es": "Ordenar por fecha más reciente"
 								},
-								"TODO": "El orden va por título de la actividad y por fecha de inicio del investigador en la actividad (datos propios)",
 								"properties": [
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "accreditation",
+										"graph": "society",
 										"child": {
 											"property": "http://w3id.org/roh/dateIssued"
 										},
@@ -5677,7 +5853,7 @@
 									},
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "accreditation",
+										"graph": "society",
 										"child": {
 											"property": "http://w3id.org/roh/title"
 										},
@@ -5692,7 +5868,7 @@
 								"properties": [
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "accreditation",
+										"graph": "society",
 										"child": {
 											"property": "http://w3id.org/roh/dateIssued"
 										},
@@ -5700,7 +5876,7 @@
 									},
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "accreditation",
+										"graph": "society",
 										"child": {
 											"property": "http://w3id.org/roh/title"
 										},
@@ -5716,7 +5892,7 @@
 								},
 								"child": {
 									"property": "http://vivoweb.org/ontology/core#relatedBy",
-									"graph": "accreditation",
+									"graph": "society",
 									"child": {
 										"property": "http://w3id.org/roh/title"
 									}
@@ -5725,9 +5901,9 @@
 						]
 					},
 					"listItemEdit": {
-						"graph": "accreditation",
+						"graph": "society",
 						"proptitle": "http://w3id.org/roh/title",
-						"rdftype": "http://w3id.org/roh/Accreditation",
+						"rdftype": "http://w3id.org/roh/Society",
 						"sections": [
 							{
 								"title": {
@@ -5738,10 +5914,10 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Descripción"
+													"es": "Nombre de la sociedad"
 												},
 												"placeholder": {
-													"es": "Introduce la descripción"
+													"es": "Introduce el nombre de la sociedad"
 												},
 												"property": "http://w3id.org/roh/title",
 												"required": true,
@@ -5754,21 +5930,34 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Entidad concesionaria"
+													"es": "Entidad de afiliación"
 												},
 												"TODO": "Autocompletado/texto libre. En caso de que haya que añadir una nueva organización, será por autocompletado o combo",
 												"placeholder": {
-													"es": "Introduce la entidad concesionaria"
+													"es": "Introduce la entidad de afiliación"
 												},
-												"property": "http://w3id.org/roh/accreditationIssuedBy",
+												"property": "http://vivoweb.org/ontology/core#affiliatedOrganization",
 												"type": "text",
 												"width": 2
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Fecha de inicio"
+												},
+												"type": "date",
+												"required": false,
+												"property": "http://vivoweb.org/ontology/core#start",
+												"width": 1
 											},
 											{
 												"title": {
-													"es": "Fecha de concesión"
+													"es": "Fecha de finalización"
 												},
-												"property": "http://w3id.org/roh/dateIssued",
+												"property": "http://vivoweb.org/ontology/core#end",
 												"type": "date",
 												"width": 1
 											}
@@ -5785,14 +5974,99 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Reconocimientos ligados"
+													"es": "Ciudad de radicación"
 												},
 												"placeholder": {
-													"es": "Introduce los reconocimientos ligados"
+													"es": "Introduce la ciudad de radicación"
 												},
-												"property": "http://w3id.org/roh/recognitionLinked",
+												"property": "https://www.w3.org/2006/vcard/ns#locality",
 												"type": "text",
-												"width": 2
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "País de radicación"
+												},
+												"property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+												"combo": {
+													"rdftype": "http://www.geonames.org/ontology#Feature",
+													"filter": {
+														"property": "http://www.geonames.org/ontology#featureCode",
+														"value": "PCLD"
+													},
+													"graph": "feature",
+													"property": {
+														"property": "http://www.geonames.org/ontology#name"
+													}
+												},
+												"type": "selectCombo",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "C. Autón./Reg. de radicación"
+												},
+												"property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+												"combo": {
+													"rdftype": "http://www.geonames.org/ontology#Feature",
+													"filter": {
+														"property": "http://www.geonames.org/ontology#featureCode",
+														"value": "ADM1"
+													},
+													"dependency": {
+														"property": "http://www.geonames.org/ontology#parentFeature",
+														"propertyValue": "https://www.w3.org/2006/vcard/ns#hasCountryName"
+													},
+													"graph": "feature",
+													"property": {
+														"property": "http://www.geonames.org/ontology#name"
+													}
+												},
+												"TODO": "Algunos valores están duplicados (ej. La Rioja, Isle of Man...)",
+												"type": "selectCombo",
+												"width": 1
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Identificar palabras clave"
+												},
+												"placeholder": {
+													"es": "Introduce la palabra clave"
+												},
+												"property": "http://vivoweb.org/ontology/core#freeTextKeyword",
+												"multiple": true,
+												"type": "text",
+												"width": 1
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Categoría profesional"
+												},
+												"placeholder": {
+													"es": "Introduce la categoría profesional"
+												},
+												"property": "http://w3id.org/roh/professionalCategory",
+												"type": "text",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Nº de socios/as"
+												},
+												"placeholder": {
+													"es": "Introduce el nº de socios/as"
+												},
+												"property": "http://w3id.org/roh/members",
+												"type": "number",
+												"width": 1
 											}
 										]
 									}
@@ -5804,8 +6078,8 @@
 			}
 		},
 		{
-			"rdftype": "http://w3id.org/roh/RelatedPrize",
-			"property": "http://w3id.org/roh/prizes",
+			"rdftype": "http://w3id.org/roh/RelatedCouncil",
+			"property": "http://w3id.org/roh/councils",
 			"presentation": {
 				"type": "listitems",
 				"title": {
@@ -5816,7 +6090,7 @@
 					"listItem": {
 						"propertyTitle": {
 							"property": "http://vivoweb.org/ontology/core#relatedBy",
-							"graph": "accreditation",
+							"graph": "council",
 							"child": {
 								"property": "http://w3id.org/roh/title"
 							}
@@ -5830,7 +6104,7 @@
 								"properties": [
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "accreditation",
+										"graph": "council",
 										"child": {
 											"property": "http://w3id.org/roh/dateIssued"
 										},
@@ -5838,7 +6112,7 @@
 									},
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "accreditation",
+										"graph": "council",
 										"child": {
 											"property": "http://w3id.org/roh/title"
 										},
@@ -5853,7 +6127,7 @@
 								"properties": [
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "accreditation",
+										"graph": "council",
 										"child": {
 											"property": "http://w3id.org/roh/dateIssued"
 										},
@@ -5861,7 +6135,7 @@
 									},
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "accreditation",
+										"graph": "council",
 										"child": {
 											"property": "http://w3id.org/roh/title"
 										},
@@ -5873,11 +6147,11 @@
 						"properties": [
 							{
 								"name": {
-									"es": "Descripción"
+									"es": "Nombre del Consejo editorial"
 								},
 								"child": {
 									"property": "http://vivoweb.org/ontology/core#relatedBy",
-									"graph": "accreditation",
+									"graph": "council",
 									"child": {
 										"property": "http://w3id.org/roh/title"
 									}
@@ -5886,9 +6160,9 @@
 						]
 					},
 					"listItemEdit": {
-						"graph": "accreditation",
+						"graph": "council",
 						"proptitle": "http://w3id.org/roh/title",
-						"rdftype": "http://w3id.org/roh/Accreditation",
+						"rdftype": "http://w3id.org/roh/Council",
 						"sections": [
 							{
 								"title": {
@@ -5899,7 +6173,7 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Descripción"
+													"es": "Nombre del Consejo editorial"
 												},
 												"placeholder": {
 													"es": "Introduce la descripción"
@@ -5915,22 +6189,54 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Entidad concesionaria"
+													"es": "Entidad de afiliación"
 												},
 												"TODO": "Autocompletado/texto libre. En caso de que haya que añadir una nueva organización, será por autocompletado o combo",
 												"placeholder": {
-													"es": "Introduce la entidad concesionaria"
+													"es": "Introduce la entidad de afiliación"
 												},
-												"property": "http://w3id.org/roh/accreditationIssuedBy",
+												"property": "http://vivoweb.org/ontology/core#affiliatedOrganization",
 												"type": "text",
 												"width": 2
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Fecha de inicio"
+												},
+												"property": "http://vivoweb.org/ontology/core#start",
+												"type": "date",
+												"width": 1
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Duración años"
+												},
+												"property": "http://w3id.org/roh/durationYears",
+												"type": "text",
+												"width": 1
 											},
 											{
 												"title": {
-													"es": "Fecha de concesión"
+													"es": "Duración meses"
 												},
-												"property": "http://w3id.org/roh/dateIssued",
-												"type": "date",
+												"property": "http://w3id.org/roh/durationMonths",
+												"type": "text",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Duración días"
+												},
+												"property": "http://w3id.org/roh/durationDays",
+												"type": "text",
 												"width": 1
 											}
 										]
@@ -5946,14 +6252,120 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Reconocimientos ligados"
+													"es": "Ciudad de radicación"
 												},
 												"placeholder": {
-													"es": "Introduce los reconocimientos ligados"
+													"es": "Introduce la ciudad de radicación"
 												},
-												"property": "http://w3id.org/roh/recognitionLinked",
+												"property": "https://www.w3.org/2006/vcard/ns#locality",
 												"type": "text",
-												"width": 2
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "País de radicación"
+												},
+												"placeholder": {
+													"es": "Introduce el país de radicación"
+												},
+												"property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+												"combo": {
+													"rdftype": "http://www.geonames.org/ontology#Feature",
+													"filter": {
+														"property": "http://www.geonames.org/ontology#featureCode",
+														"value": "PCLD"
+													},
+													"graph": "feature",
+													"property": {
+														"property": "http://www.geonames.org/ontology#name"
+													}
+												},
+												"TODO": "Autocompletados relacionados (ej. Comunidad de Murcia --> España",
+												"type": "selectCombo",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "C. Autón./Reg. de radicación"
+												},
+												"placeholder": {
+													"es": "Introduce la región de radicación"
+												},
+												"property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+												"combo": {
+													"rdftype": "http://www.geonames.org/ontology#Feature",
+													"filter": {
+														"property": "http://www.geonames.org/ontology#featureCode",
+														"value": "ADM1"
+													},
+													"dependency": {
+														"property": "http://www.geonames.org/ontology#parentFeature",
+														"propertyValue": "https://www.w3.org/2006/vcard/ns#hasCountryName"
+													},
+													"graph": "feature",
+													"property": {
+														"property": "http://www.geonames.org/ontology#name"
+													}
+												},
+												"TODO": "Algunos valores están duplicados (ej. La Rioja, Isle of Man...)",
+												"type": "selectCombo",
+												"width": 1
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Tareas desarrolladas"
+												},
+												"property": "http://w3id.org/roh/performedTasks",
+												"type": "text",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Categoría profesional"
+												},
+												"property": "http://w3id.org/roh/professionalCategory",
+												"type": "text",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Nº de socios"
+												},
+												"property": "http://w3id.org/roh/members",
+												"type": "text",
+												"width": 1
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Ámbito geográfico"
+												},
+												"property": "http://vivoweb.org/ontology/core#geographicFocus",
+												"combo": {
+													"rdftype": "http://vivoweb.org/ontology/core#GeographicRegion",
+													"graph": "geographicregion",
+													"property": {
+														"property": "http://purl.org/dc/elements/1.1/title"
+													}
+												},
+												"type": "selectCombo",
+												"width": 1
+											},
+											{
+												"TODO": "Debe aparecer en caso de que en el combo anterior se seleccione Otros",
+												"title": {
+													"es": "Otros"
+												},
+												"property": "http://w3id.org/roh/geographicFocusOther",
+												"type": "text",
+												"width": 1
 											}
 										]
 									}
@@ -5965,8 +6377,8 @@
 			}
 		},
 		{
-			"rdftype": "http://w3id.org/roh/RelatedPrize",
-			"property": "http://w3id.org/roh/prizes",
+			"rdftype": "http://w3id.org/roh/RelatedNetwork",
+			"property": "http://w3id.org/roh/networks",
 			"presentation": {
 				"type": "listitems",
 				"title": {
@@ -5977,7 +6389,7 @@
 					"listItem": {
 						"propertyTitle": {
 							"property": "http://vivoweb.org/ontology/core#relatedBy",
-							"graph": "accreditation",
+							"graph": "network",
 							"child": {
 								"property": "http://w3id.org/roh/title"
 							}
@@ -5991,7 +6403,7 @@
 								"properties": [
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "accreditation",
+										"graph": "network",
 										"child": {
 											"property": "http://w3id.org/roh/dateIssued"
 										},
@@ -5999,7 +6411,7 @@
 									},
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "accreditation",
+										"graph": "network",
 										"child": {
 											"property": "http://w3id.org/roh/title"
 										},
@@ -6014,7 +6426,7 @@
 								"properties": [
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "accreditation",
+										"graph": "network",
 										"child": {
 											"property": "http://w3id.org/roh/dateIssued"
 										},
@@ -6022,7 +6434,7 @@
 									},
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "accreditation",
+										"graph": "network",
 										"child": {
 											"property": "http://w3id.org/roh/title"
 										},
@@ -6034,11 +6446,11 @@
 						"properties": [
 							{
 								"name": {
-									"es": "Descripción"
+									"es": "Nombre de la red"
 								},
 								"child": {
 									"property": "http://vivoweb.org/ontology/core#relatedBy",
-									"graph": "accreditation",
+									"graph": "network",
 									"child": {
 										"property": "http://w3id.org/roh/title"
 									}
@@ -6047,9 +6459,9 @@
 						]
 					},
 					"listItemEdit": {
-						"graph": "accreditation",
+						"graph": "network",
 						"proptitle": "http://w3id.org/roh/title",
-						"rdftype": "http://w3id.org/roh/Accreditation",
+						"rdftype": "http://w3id.org/roh/Network",
 						"sections": [
 							{
 								"title": {
@@ -6060,15 +6472,26 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Descripción"
+													"es": "Nombre de la red"
 												},
 												"placeholder": {
-													"es": "Introduce la descripción"
+													"es": "Introduce el nombre de la red"
 												},
 												"property": "http://w3id.org/roh/title",
 												"required": true,
 												"type": "text",
-												"width": 3
+												"width": 2
+											},
+											{
+												"title": {
+													"es": "Identificación de la red"
+												},
+												"placeholder": {
+													"es": "Introduce la identificación de la red"
+												},
+												"property": "http://w3id.org/roh/identification",
+												"type": "text",
+												"width": 1
 											}
 										]
 									},
@@ -6076,22 +6499,52 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Entidad concesionaria"
+													"es": "Entidades participantes"
 												},
 												"TODO": "Autocompletado/texto libre. En caso de que haya que añadir una nueva organización, será por autocompletado o combo",
-												"placeholder": {
-													"es": "Introduce la entidad concesionaria"
-												},
-												"property": "http://w3id.org/roh/accreditationIssuedBy",
+												"property": "http://w3id.org/roh/participates",
+												"multiple": true,
 												"type": "text",
 												"width": 2
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Fecha de inicio"
+												},
+												"property": "http://vivoweb.org/ontology/core#start",
+												"type": "date",
+												"width": 1
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Duración años"
+												},
+												"property": "http://w3id.org/roh/durationYears",
+												"type": "text",
+												"width": 1
 											},
 											{
 												"title": {
-													"es": "Fecha de concesión"
+													"es": "Duración meses"
 												},
-												"property": "http://w3id.org/roh/dateIssued",
-												"type": "date",
+												"property": "http://w3id.org/roh/durationMonths",
+												"type": "text",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Duración días"
+												},
+												"property": "http://w3id.org/roh/durationDays",
+												"type": "text",
 												"width": 1
 											}
 										]
@@ -6107,14 +6560,103 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Reconocimientos ligados"
+													"es": "Ciudad de radicación"
 												},
 												"placeholder": {
-													"es": "Introduce los reconocimientos ligados"
+													"es": "Introduce la ciudad de radicación"
 												},
-												"property": "http://w3id.org/roh/recognitionLinked",
+												"property": "https://www.w3.org/2006/vcard/ns#locality",
+												"type": "text",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "País de radicación"
+												},
+												"placeholder": {
+													"es": "Introduce el país de radicación"
+												},
+												"property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+												"combo": {
+													"rdftype": "http://www.geonames.org/ontology#Feature",
+													"filter": {
+														"property": "http://www.geonames.org/ontology#featureCode",
+														"value": "PCLD"
+													},
+													"graph": "feature",
+													"property": {
+														"property": "http://www.geonames.org/ontology#name"
+													}
+												},
+												"TODO": "Autocompletados relacionados (ej. Comunidad de Murcia --> España",
+												"type": "selectCombo",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "C. Autón./Reg. de radicación"
+												},
+												"placeholder": {
+													"es": "Introduce la región de radicación"
+												},
+												"property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+												"combo": {
+													"rdftype": "http://www.geonames.org/ontology#Feature",
+													"filter": {
+														"property": "http://www.geonames.org/ontology#featureCode",
+														"value": "ADM1"
+													},
+													"dependency": {
+														"property": "http://www.geonames.org/ontology#parentFeature",
+														"propertyValue": "https://www.w3.org/2006/vcard/ns#hasCountryName"
+													},
+													"graph": "feature",
+													"property": {
+														"property": "http://www.geonames.org/ontology#name"
+													}
+												},
+												"TODO": "Algunos valores están duplicados (ej. La Rioja, Isle of Man...)",
+												"type": "selectCombo",
+												"width": 1
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Entidad de selección"
+												},
+												"TODO": "Autocompletado/texto libre. En caso de que haya que añadir una nueva organización, será por autocompletado o combo",
+												"placeholder": {
+													"es": "Introduce la entidad concesionaria"
+												},
+												"property": "http://w3id.org/roh/selectionEntity",
 												"type": "text",
 												"width": 2
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Tareas desarrolladas"
+												},
+												"placeholder": {
+													"es": "Introduce las tareas desarrolladas"
+												},
+												"property": "http://w3id.org/roh/performedTasks",
+												"type": "text",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Nº de investigadores/as"
+												},
+												"property": "http://w3id.org/roh/members",
+												"type": "number",
+												"width": 1
 											}
 										]
 									}
@@ -6148,7 +6690,6 @@
 								"name": {
 									"es": "Ordenar por fecha más reciente"
 								},
-								"TODO": "El orden va por título de la actividad y por fecha de inicio del investigador en la actividad (datos propios)",
 								"properties": [
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
@@ -6230,6 +6771,14 @@
 												"required": true,
 												"type": "text",
 												"width": 3
+											},
+											{
+												"title": {
+													"es": "Fecha de concesión"
+												},
+												"property": "http://w3id.org/roh/dateIssued",
+												"type": "date",
+												"width": 1
 											}
 										]
 									},
@@ -6246,14 +6795,6 @@
 												"property": "http://w3id.org/roh/accreditationIssuedBy",
 												"type": "text",
 												"width": 2
-											},
-											{
-												"title": {
-													"es": "Fecha de concesión"
-												},
-												"property": "http://w3id.org/roh/dateIssued",
-												"type": "date",
-												"width": 1
 											}
 										]
 									}

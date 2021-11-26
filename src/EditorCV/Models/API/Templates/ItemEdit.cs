@@ -129,6 +129,10 @@ namespace GuardadoCV.Models.API.Templates
                 {
                     property.childs.AddRange(GetPropertyDataAuthorList());
                 }
+                if (itemEditSectionRowProperty.type == DataTypeEdit.thesaurus)
+                {
+                    property.childs.AddRange(new List<Utils.PropertyData>() { new Utils.PropertyData { property = "http://w3id.org/roh/categoryNode" } });
+                }
                 if (itemEditSectionRowProperty.auxEntityData != null && itemEditSectionRowProperty.auxEntityData.rows != null)
                 {
                     foreach (ItemEditSectionRow itemEditSectionRowIn in itemEditSectionRowProperty.auxEntityData.rows)
@@ -247,6 +251,10 @@ namespace GuardadoCV.Models.API.Templates
         /// Datos para el combo
         /// </summary>
         public ItemEditSectionRowPropertyCombo combo;
+        /// <summary>
+        /// Indica el source del tesauro de la propiedad
+        /// </summary>
+        public string thesaurus;
         /// <summary>
         /// Tipo de la propiedad
         /// TODO
