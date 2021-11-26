@@ -605,6 +605,501 @@
 							{
 								"property": "http://w3id.org/roh/scientificExperienceProject",
 								"values": [
+									"http://gnoss.com/items/scientificexperienceproject_SEP1"
+								]
+							}
+						],
+						"sections": [
+							{
+								"title": {
+									"es": "Información general"
+								},
+								"rows": [
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Nombre del proyecto"
+												},
+												"placeholder": {
+													"es": "Introduce el nombre del proyecto"
+												},
+												"property": "http://w3id.org/roh/title",
+												"required": true,
+												"type": "text",
+												"width": 2
+											},
+											{
+												"title": {
+													"es": "Nº de investigadores/as"
+												},
+												"property": "http://w3id.org/roh/researchersNumber",
+												"type": "number",
+												"width": 1
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"property": "http://purl.org/ontology/bibo/authorList",
+												"type": "auxEntityAuthorList",
+												"title": {
+													"es": "Autores/as (p.o. de firma)"
+												},
+												"width": 3
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Entidad de realización"
+												},
+												"property": "http://w3id.org/roh/conductedBy",
+												"combo": {
+													"rdftype": "http://w3id.org/roh/PublicationType",
+													"graph": "organization",
+													"property": {
+														"property": "http://purl.org/dc/elements/1.1/title"
+													}
+												},
+												"type": "selectCombo",
+												"width": 1
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Entidad/es financiadora/s"
+												},
+												"property": "http://w3id.org/roh/grantedBy",
+												"combo": {
+													"rdftype": "http://xmlns.com/foaf/0.1/Organization",
+													"graph": "organization",
+													"property": {
+														"property": "http://purl.org/dc/elements/1.1/title"
+													}
+												},
+												"type": "selectCombo",
+												"width": 1
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Fecha de inicio"
+												},
+												"property": "http://vivoweb.org/ontology/core#start",
+												"type": "date",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Fecha de finalización"
+												},
+												"property": "http://vivoweb.org/ontology/core#end",
+												"type": "date",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Cuantía total"
+												},
+												"placeholder": {
+													"es": "Introduce la cuantía total"
+												},
+												"property": "http://w3id.org/roh/monetaryAmount",
+												"type": "number",
+												"width": 1
+											}
+										]
+									}
+								]
+							},
+							{
+								"title": {
+									"es": "Más campos"
+								},
+								"rows": [
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Duración años"
+												},
+												"property": "http://w3id.org/roh/durationYears",
+												"type": "text",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Duración meses"
+												},
+												"property": "http://w3id.org/roh/durationMonths",
+												"type": "text",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Duración días"
+												},
+												"property": "http://w3id.org/roh/durationDays",
+												"type": "text",
+												"width": 1
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Identificar palabras clave"
+												},
+												"property": "http://vivoweb.org/ontology/core#freeTextKeyword",
+												"multiple": true,
+												"type": "text",
+												"width": 1
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Modalidad de proyecto"
+												},
+												"property": "http://w3id.org/roh/modality",
+												"combo": {
+													"rdftype": "http://w3id.org/roh/ProjectModality",
+													"graph": "projectmodality",
+													"property": {
+														"property": "http://purl.org/dc/elements/1.1/title"
+													}
+												},
+												"type": "selectCombo",
+												"width": 2
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Ámbito geográfico"
+												},
+												"property": "http://vivoweb.org/ontology/core#geographicFocus",
+												"combo": {
+													"rdftype": "http://vivoweb.org/ontology/core#GeographicRegion",
+													"graph": "geographicregion",
+													"property": {
+														"property": "http://purl.org/dc/elements/1.1/title"
+													}
+												},
+												"type": "selectCombo",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Otros"
+												},
+												"property": "http://w3id.org/roh/geographicFocusOther",
+												"type": "text",
+												"width": 1
+											},
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Entidad de realización"
+												},
+												"property": "http://w3id.org/roh/conductedBy",
+												"combo": {
+													"rdftype": "http://w3id.org/roh/PublicationType",
+													"graph": "organization",
+													"property": {
+														"property": "http://purl.org/dc/elements/1.1/title"
+													}
+												},
+												"type": "selectCombo",
+												"width": 1
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Nº de personas/año"
+												},
+												"property": "http://w3id.org/roh/researchersNumber",
+												"type": "text",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Tipo de proyecto"
+												},
+												"property": "http://w3id.org/roh/projectType",
+												"combo": {
+													"rdftype": "http://w3id.org/roh/ProjectType",
+													"graph": "projecttype",
+													"property": {
+														"property": "http://purl.org/dc/elements/1.1/title"
+													}
+												},
+												"type": "selectCombo",
+												"width": 1
+											},
+										]
+									},
+									{
+										"properties": [
+											{
+												"TODO": "Entidad auxiliar múltiple que contiene otra entidad auxiliar (FundingProgram)",
+												"property": "http://w3id.org/roh/isSupportedBy",
+												"type": "auxEntity",
+												"title": {
+													"es": "Financiación"
+												},
+												"multiple": true,
+												"width": 3,
+												"auxEntityData": {
+													"rdftype": "http://w3id.org/roh/Funding",
+													"propertyTitle": {
+														"property": "http://w3id.org/roh/monetaryAmount"
+													},
+													"properties": [
+														{
+															"name": {
+																"es": "Cuantía subproyecto"
+															},
+															"child": {
+																"property": "http://w3id.org/roh/monetaryAmount"
+															}
+														},
+														{
+															"name": {
+																"es": "Porcentaje en subvención"
+															},
+															"child": {
+																"property": "http://w3id.org/roh/grantsPercentage"
+															}
+														},
+														{
+															"name": {
+																"es": "Porcentaje en crédito"
+															},
+															"child": {
+																"property": "http://w3id.org/roh/creditPercentage"
+															}
+														},
+														{
+															"name": {
+																"es": "Porcentaje mixto"
+															},
+															"child": {
+																"property": "http://w3id.org/roh/mixedPercentage"
+															}
+														},
+													],
+													"rows": [
+														{
+															"properties": [
+																{
+																	"title": {
+																		"es": "Cuantía subproyecto"
+																	},
+																	"property": "http://w3id.org/roh/monetaryAmount",
+																	"type": "number",
+																	"width": 1
+																}
+															]
+														},
+														{
+															"properties": [
+																{
+																	"title": {
+																		"es": "Porcentaje en subvención"
+																	},
+																	"property": "http://w3id.org/roh/grantsPercentage",
+																	"type": "number",
+																	"width": 1
+																},
+																{
+																	"title": {
+																		"es": "Porcentaje en crédito"
+																	},
+																	"property": "http://w3id.org/roh/creditPercentage",
+																	"type": "number",
+																	"width": 1
+																},
+																{
+																	"title": {
+																		"es": "Porcentaje mixto"
+																	},
+																	"property": "http://w3id.org/roh/mixedPercentage",
+																	"type": "number",
+																	"width": 1
+																}
+															]
+														},
+													]
+												}
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Resultados relevantes"
+												},
+												"property": "http://w3id.org/roh/relevantResults",
+												"type": "text",
+												"width": 2
+											}
+										]
+									},
+								]
+							}
+						]
+					}
+				}
+			}
+		},
+			"rdftype": "http://w3id.org/roh/RelatedNonCompetitiveProject",
+			"property": "http://w3id.org/roh/nonCompetitiveProjects",
+			"presentation": {
+				"type": "listitems",
+				"title": {
+					"es": "Contratos, convenios o proyectos de I+D+i no competitivos con Administraciones o entidades públicas o privadas"
+				},
+				"listItemsPresentation": {
+					"property": "http://vivoweb.org/ontology/core#relatedBy",
+					"listItem": {
+						"propertyTitle": {
+							"property": "http://vivoweb.org/ontology/core#relatedBy",
+							"graph": "project",
+							"child": {
+								"property": "http://w3id.org/roh/title"
+							}
+						},
+						"orders": [
+							{
+								"name": {
+									"es": "Ordenar por fecha más reciente"
+								},
+								"properties": [
+									{
+										"property": "http://vivoweb.org/ontology/core#relatedBy",
+										"graph": "project",
+										"child": {
+											"property": "http://purl.org/dc/terms/issued"
+										},
+										"asc": false
+									},
+									{
+										"property": "http://vivoweb.org/ontology/core#relatedBy",
+										"graph": "project",
+										"child": {
+											"property": "http://w3id.org/roh/title"
+										},
+										"asc": true
+									}
+								]
+							},
+							{
+								"name": {
+									"es": "Ordenar por fecha más antigua"
+								},
+								"properties": [
+									{
+										"property": "http://vivoweb.org/ontology/core#relatedBy",
+										"graph": "project",
+										"child": {
+											"property": "http://purl.org/dc/terms/issued"
+										},
+										"asc": true
+									},
+									{
+										"property": "http://vivoweb.org/ontology/core#relatedBy",
+										"graph": "project",
+										"child": {
+											"property": "http://w3id.org/roh/title"
+										},
+										"asc": true
+									}
+								]
+							}
+						],
+						"properties": [
+							{
+								"name": {
+									"es": "Fecha de inicio"
+								},
+								"showMiniBold": true,
+								"type": "date",
+								"child": {
+									"property": "http://vivoweb.org/ontology/core#relatedBy",
+									"graph": "project",
+									"child": {
+										"property": "http://vivoweb.org/ontology/core#start"
+									}
+								}
+							},
+							{
+								"name": {
+									"es": "Autores/as (p. o. de firma)"
+								},
+								"showMini": true,
+								"childOR": [
+									{
+										"property": "http://vivoweb.org/ontology/core#relatedBy",
+										"graph": "project",
+										"order": "http://www.w3.org/1999/02/22-rdf-syntax-ns#comment",
+										"child": {
+											"property": "http://purl.org/ontology/bibo/authorList",
+											"child": {
+												"property": "http://w3id.org/roh/title"
+											}
+										}
+									},
+									{
+										"property": "http://vivoweb.org/ontology/core#relatedBy",
+										"graph": "project",
+										"order": "http://vivoweb.org/ontology/core#preferredDisplayOrder",
+										"child": {
+											"property": "http://vivoweb.org/ontology/core#relates",
+											"child": {
+												"property": "http://w3id.org/roh/roleOf",
+												"graph": "person",
+												"child": {
+													"property": "http://xmlns.com/foaf/0.1/name"
+												}
+											}
+										}
+									}
+								]
+							}
+						]
+					},
+					"listItemEdit": {
+						"graph": "project",
+						"proptitle": "http://w3id.org/roh/title",
+						"propdescription": "http://vivoweb.org/ontology/core#description",
+						"rdftype": "http://vivoweb.org/ontology/core#Project",
+						"loadPropertyValues": [
+							{
+								"property": "http://w3id.org/roh/scientificExperienceProject",
+								"values": [
 									"http://gnoss.com/items/scientificexperienceproject_SEP2"
 								]
 							}
