@@ -1492,7 +1492,7 @@
 								"properties": [
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "project",
+										"graph": "group",
 										"child": {
 											"property": "http://purl.org/dc/terms/issued"
 										},
@@ -1500,7 +1500,7 @@
 									},
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "project",
+										"graph": "group",
 										"child": {
 											"property": "http://w3id.org/roh/title"
 										},
@@ -1515,7 +1515,7 @@
 								"properties": [
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "project",
+										"graph": "group",
 										"child": {
 											"property": "http://purl.org/dc/terms/issued"
 										},
@@ -1523,7 +1523,7 @@
 									},
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "project",
+										"graph": "group",
 										"child": {
 											"property": "http://w3id.org/roh/title"
 										},
@@ -1541,7 +1541,7 @@
 								"type": "date",
 								"child": {
 									"property": "http://vivoweb.org/ontology/core#relatedBy",
-									"graph": "project",
+									"graph": "group",
 									"child": {
 										"property": "http://vivoweb.org/ontology/core#start"
 									}
@@ -1555,7 +1555,7 @@
 								"childOR": [
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "project",
+										"graph": "group",
 										"order": "http://www.w3.org/1999/02/22-rdf-syntax-ns#comment",
 										"child": {
 											"property": "http://purl.org/ontology/bibo/authorList",
@@ -1566,7 +1566,7 @@
 									},
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "project",
+										"graph": "group",
 										"order": "http://vivoweb.org/ontology/core#preferredDisplayOrder",
 										"child": {
 											"property": "http://vivoweb.org/ontology/core#relates",
@@ -1584,18 +1584,10 @@
 						]
 					},
 					"listItemEdit": {
-						"graph": "project",
+						"graph": "group",
 						"proptitle": "http://w3id.org/roh/title",
 						"propdescription": "http://vivoweb.org/ontology/core#description",
-						"rdftype": "http://vivoweb.org/ontology/core#Project",
-						"loadPropertyValues": [
-							{
-								"property": "http://w3id.org/roh/scientificExperienceProject",
-								"values": [
-									"http://gnoss.com/items/scientificexperienceproject_SEP2"
-								]
-							}
-						],
+						"rdftype": "http://xmlns.com/foaf/0.1/Group",
 						"sections": [
 							{
 								"title": {
@@ -1606,10 +1598,40 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Nombre del proyecto"
+													"es": "Objeto del grupo"
 												},
 												"placeholder": {
-													"es": "Introduce el nombre del proyecto"
+													"es": "Introduce el objeto del grupo"
+												},
+												"property": "",
+												"type": "text",
+												"width": 2
+											},
+											{
+												"title": {
+													"es": "Clase de colaboración"
+												},
+												"property": "http://w3id.org/roh/colaborationType",
+												"combo": {
+													"rdftype": "http://xmlns.com/foaf/0.1/ColaborationTypeGroup",
+													"graph": "colaborationtypegroup",
+													"property": {
+														"property": "http://purl.org/dc/elements/1.1/title"
+													}
+												},
+												"type": "selectCombo",
+												"width": 1
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Nombre del grupo"
+												},
+												"placeholder": {
+													"es": "Introduce el nombre del grupo"
 												},
 												"property": "http://w3id.org/roh/title",
 												"required": true,
@@ -1618,41 +1640,10 @@
 											},
 											{
 												"title": {
-													"es": "Nº de investigadores/as"
+													"es": "Código normalizado"
 												},
-												"property": "http://w3id.org/roh/researchersNumber",
-												"type": "number",
-												"width": 1
-											}
-										]
-									},
-									{
-										"properties": [
-											{
-												"property": "http://purl.org/ontology/bibo/authorList",
-												"type": "auxEntityAuthorList",
-												"title": {
-													"es": "Autores/as (p.o. de firma)"
-												},
-												"width": 3
-											}
-										]
-									},
-									{
-										"properties": [
-											{
-												"title": {
-													"es": "Entidad de realización"
-												},
-												"property": "http://w3id.org/roh/conductedBy",
-												"combo": {
-													"rdftype": "http://w3id.org/roh/PublicationType",
-													"graph": "organization",
-													"property": {
-														"property": "http://purl.org/dc/elements/1.1/title"
-													}
-												},
-												"type": "selectCombo",
+												"property": "http://w3id.org/roh/normalizedCode",
+												"type": "text",
 												"width": 1
 											}
 										]
@@ -1661,9 +1652,9 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Entidad/es financiadora/s"
+													"es": "Entidad de afiliación"
 												},
-												"property": "http://w3id.org/roh/grantedBy",
+												"property": "http://vivoweb.org/ontology/core#affiliatedOrganization",
 												"combo": {
 													"rdftype": "http://xmlns.com/foaf/0.1/Organization",
 													"graph": "organization",
@@ -1672,41 +1663,10 @@
 													}
 												},
 												"type": "selectCombo",
-												"width": 1
+												"width": 2
 											}
 										]
 									},
-									{
-										"properties": [
-											{
-												"title": {
-													"es": "Fecha de inicio"
-												},
-												"property": "http://vivoweb.org/ontology/core#start",
-												"type": "date",
-												"width": 1
-											},
-											{
-												"title": {
-													"es": "Fecha de finalización"
-												},
-												"property": "http://vivoweb.org/ontology/core#end",
-												"type": "date",
-												"width": 1
-											},
-											{
-												"title": {
-													"es": "Cuantía total"
-												},
-												"placeholder": {
-													"es": "Introduce la cuantía total"
-												},
-												"property": "http://w3id.org/roh/monetaryAmount",
-												"type": "number",
-												"width": 1
-											}
-										]
-									}
 								]
 							},
 							{
@@ -1717,29 +1677,74 @@
 									{
 										"properties": [
 											{
+												"TODO": "Adición de un único investigador con nombre, apellidos y firma"
 												"title": {
-													"es": "Duración años"
+													"es": "Nombre del investigador/a principal (IP)"
 												},
-												"property": "http://w3id.org/roh/durationYears",
+												"property": "http://w3id.org/roh/mainResearcher",
 												"type": "text",
-												"width": 1
-											},
-											{
-												"title": {
-													"es": "Duración meses"
-												},
-												"property": "http://w3id.org/roh/durationMonths",
-												"type": "text",
-												"width": 1
-											},
-											{
-												"title": {
-													"es": "Duración días"
-												},
-												"property": "http://w3id.org/roh/durationDays",
-												"type": "text",
-												"width": 1
+												"width": 3
 											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Nº de componentes grupo"
+												},
+												"placeholder": {
+													"es": "Introduce el nº de componentes grupo"
+												},
+												"property": "http://w3id.org/roh/researchersNumber",
+												"type": "number",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Nº de tesis dirigidas"
+												},
+												"placeholder": {
+													"es": "Introduce el nº de tesis dirigidas"
+												},
+												"property": "http://w3id.org/roh/directedThesisNumber",
+												"type": "number",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Nº de posdoc. dirigidos"
+												},
+												"placeholder": {
+													"es": "Introduce el nº de posdoc. dirigidos"
+												},
+												"property": "http://w3id.org/roh/directedPostdocsNumber",
+												"type": "number",
+												"width": 1
+											},
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Resultados relevantes"
+												},
+												"placeholder": {
+													"es": "Introduce los resultados relevantes"
+												},
+												"property": "http://w3id.org/roh/relevantResults",
+												"type": "text",
+												"width": 2
+											},
+											{
+												"title": {
+													"es": "Otros"
+												},
+												"property": "http://w3id.org/roh/otherRelevantResults",
+												"type": "text",
+												"width": 1
+											},
 										]
 									},
 									{
@@ -1748,43 +1753,12 @@
 												"title": {
 													"es": "Identificar palabras clave"
 												},
+												"placeholder": {
+													"es": "Introduce la palabra clave"
+												},
 												"property": "http://vivoweb.org/ontology/core#freeTextKeyword",
 												"multiple": true,
 												"type": "text",
-												"width": 1
-											}
-										]
-									},
-									{
-										"properties": [
-											{
-												"title": {
-													"es": "Ciudad de publicación"
-												},
-												"placeholder": {
-													"es": "Introduce la ciudad de publicación"
-												},
-												"property": "https://www.w3.org/2006/vcard/ns#locality",
-												"type": "text",
-												"width": 1
-											},
-											{
-												"title": {
-													"es": "C. Autón./Reg. de publicación"
-												},
-												"placeholder": {
-													"es": "Introduce la región de publicación"
-												},
-												"property": "https://www.w3.org/2006/vcard/ns#hasRegion",
-												"combo": {
-													"rdftype": "http://www.geonames.org/ontology#Feature",
-													"graph": "feature",
-													"property": {
-														"property": "http://www.geonames.org/ontology#name"
-													}
-												},
-												"TODO": "Algunos valores están duplicados (ej. La Rioja, Isle of Man...)",
-												"type": "selectCombo",
 												"width": 1
 											}
 										]
