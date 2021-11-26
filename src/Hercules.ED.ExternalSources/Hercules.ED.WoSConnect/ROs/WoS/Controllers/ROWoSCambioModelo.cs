@@ -585,12 +585,16 @@ namespace WoSConnect.ROs.WoS.Controllers
                                         {
                                             persona.ORCID = ee.orcid_id;
                                         }
+
                                         List<string> nombres = new List<string>();
+                                        List<string> apellidos = new List<string>();
+                                        List<string> nombres_completo = new List<string>();
+
                                         if (ee.display_name != null)
                                         {
-                                            if (!nombres.Contains(ee.display_name))
+                                            if (!nombres_completo.Contains(ee.display_name))
                                             {
-                                                nombres.Add(ee.display_name);
+                                                nombres_completo.Add(ee.display_name);
                                             }
                                         }
                                         if (ee.first_name != null)
@@ -602,21 +606,35 @@ namespace WoSConnect.ROs.WoS.Controllers
                                         }
                                         if (ee.full_name != null)
                                         {
-                                            if (!nombres.Contains(ee.full_name))
+                                            if (!nombres_completo.Contains(ee.full_name))
                                             {
-                                                nombres.Add(ee.full_name);
+                                                nombres_completo.Add(ee.full_name);
                                             }
                                         }
                                         if (ee.last_name != null)
                                         {
-                                            if (!nombres.Contains(ee.last_name))
+                                            if (!apellidos.Contains(ee.last_name))
                                             {
-                                                nombres.Add(ee.last_name);
+                                                apellidos.Add(ee.last_name);
                                             }
                                         }
-                                        if (nombres.Count != 0)
+                                        if (nombres.Count > 0 || apellidos.Count > 0 || nombres_completo.Count > 0)
                                         {
-                                            persona.name = nombres;
+                                            Name nombre = new Name();
+                                            if (apellidos.Count > 0)
+                                            {
+                                                nombre.familia = apellidos;
+                                            }
+                                            if (nombres.Count > 0)
+                                            {
+                                                nombre.given = nombres;
+                                            }
+                                            if (nombres_completo.Count > 0)
+                                            {
+                                                nombre.nombre_completo = nombres_completo;
+                                            }
+                                            persona.name = nombre;
+
                                         }
                                         result.Add(persona);
 
@@ -626,11 +644,14 @@ namespace WoSConnect.ROs.WoS.Controllers
                                         Name_1 ee = JsonConvert.DeserializeObject<Name_1>(var.ToString());
 
                                         List<string> nombres = new List<string>();
+                                        List<string> apellidos = new List<string>();
+                                        List<string> nombres_completo = new List<string>();
+
                                         if (ee.display_name != null)
                                         {
-                                            if (!nombres.Contains(ee.display_name))
+                                            if (!nombres_completo.Contains(ee.display_name))
                                             {
-                                                nombres.Add(ee.display_name);
+                                                nombres_completo.Add(ee.display_name);
                                             }
                                         }
                                         if (ee.first_name != null)
@@ -642,22 +663,37 @@ namespace WoSConnect.ROs.WoS.Controllers
                                         }
                                         if (ee.full_name != null)
                                         {
-                                            if (!nombres.Contains(ee.full_name))
+                                            if (!nombres_completo.Contains(ee.full_name))
                                             {
-                                                nombres.Add(ee.full_name);
+                                                nombres_completo.Add(ee.full_name);
                                             }
                                         }
                                         if (ee.last_name != null)
                                         {
-                                            if (!nombres.Contains(ee.last_name))
+                                            if (!apellidos.Contains(ee.last_name))
                                             {
-                                                nombres.Add(ee.last_name);
+                                                apellidos.Add(ee.last_name);
                                             }
                                         }
-                                        if (nombres.Count != 0)
+                                        if (nombres.Count > 0 || apellidos.Count > 0 || nombres_completo.Count > 0)
                                         {
-                                            persona.name = nombres;
+                                            Name nombre = new Name();
+                                            if (apellidos.Count > 0)
+                                            {
+                                                nombre.familia = apellidos;
+                                            }
+                                            if (nombres.Count > 0)
+                                            {
+                                                nombre.given = nombres;
+                                            }
+                                            if (nombres_completo.Count > 0)
+                                            {
+                                                nombre.nombre_completo = nombres_completo;
+                                            }
+                                            persona.name = nombre;
+
                                         }
+
                                         result.Add(persona);
 
                                     }
@@ -676,12 +712,16 @@ namespace WoSConnect.ROs.WoS.Controllers
                                     {
                                         persona.ORCID = ee.orcid_id;
                                     }
+
                                     List<string> nombres = new List<string>();
+                                    List<string> apellidos = new List<string>();
+                                    List<string> nombres_completo = new List<string>();
+
                                     if (ee.display_name != null)
                                     {
-                                        if (!nombres.Contains(ee.display_name))
+                                        if (!nombres_completo.Contains(ee.display_name))
                                         {
-                                            nombres.Add(ee.display_name);
+                                            nombres_completo.Add(ee.display_name);
                                         }
                                     }
                                     if (ee.first_name != null)
@@ -693,21 +733,35 @@ namespace WoSConnect.ROs.WoS.Controllers
                                     }
                                     if (ee.full_name != null)
                                     {
-                                        if (!nombres.Contains(ee.full_name))
+                                        if (!nombres_completo.Contains(ee.full_name))
                                         {
-                                            nombres.Add(ee.full_name);
+                                            nombres_completo.Add(ee.full_name);
                                         }
                                     }
                                     if (ee.last_name != null)
                                     {
-                                        if (!nombres.Contains(ee.last_name))
+                                        if (!apellidos.Contains(ee.last_name))
                                         {
-                                            nombres.Add(ee.last_name);
+                                            apellidos.Add(ee.last_name);
                                         }
                                     }
-                                    if (nombres.Count != 0)
+                                    if (nombres.Count > 0 || apellidos.Count > 0 || nombres_completo.Count > 0)
                                     {
-                                        persona.name = nombres;
+                                        Name nombre = new Name();
+                                        if (apellidos.Count > 0)
+                                        {
+                                            nombre.familia = apellidos;
+                                        }
+                                        if (nombres.Count > 0)
+                                        {
+                                            nombre.given = nombres;
+                                        }
+                                        if (nombres_completo.Count > 0)
+                                        {
+                                            nombre.nombre_completo = nombres_completo;
+                                        }
+                                        persona.name = nombre;
+
                                     }
                                     result.Add(persona);
 
@@ -718,12 +772,16 @@ namespace WoSConnect.ROs.WoS.Controllers
                                     Name_1 ee = JsonConvert.DeserializeObject<Name_1>(objInicial.static_data.summary.names.name.ToString());
                                     Person persona = new Person();
 
+
                                     List<string> nombres = new List<string>();
+                                    List<string> apellidos = new List<string>();
+                                    List<string> nombres_completo = new List<string>();
+
                                     if (ee.display_name != null)
                                     {
-                                        if (!nombres.Contains(ee.display_name))
+                                        if (!nombres_completo.Contains(ee.display_name))
                                         {
-                                            nombres.Add(ee.display_name);
+                                            nombres_completo.Add(ee.display_name);
                                         }
                                     }
                                     if (ee.first_name != null)
@@ -735,21 +793,35 @@ namespace WoSConnect.ROs.WoS.Controllers
                                     }
                                     if (ee.full_name != null)
                                     {
-                                        if (!nombres.Contains(ee.full_name))
+                                        if (!nombres_completo.Contains(ee.full_name))
                                         {
-                                            nombres.Add(ee.full_name);
+                                            nombres_completo.Add(ee.full_name);
                                         }
                                     }
                                     if (ee.last_name != null)
                                     {
-                                        if (!nombres.Contains(ee.last_name))
+                                        if (!apellidos.Contains(ee.last_name))
                                         {
-                                            nombres.Add(ee.last_name);
+                                            apellidos.Add(ee.last_name);
                                         }
                                     }
-                                    if (nombres.Count != 0)
+                                    if (nombres.Count > 0 || apellidos.Count > 0 || nombres_completo.Count > 0)
                                     {
-                                        persona.name = nombres;
+                                        Name nombre = new Name();
+                                        if (apellidos.Count > 0)
+                                        {
+                                            nombre.familia = apellidos;
+                                        }
+                                        if (nombres.Count > 0)
+                                        {
+                                            nombre.given = nombres;
+                                        }
+                                        if (nombres_completo.Count > 0)
+                                        {
+                                            nombre.nombre_completo = nombres_completo;
+                                        }
+                                        persona.name = nombre;
+
                                     }
                                     result.Add(persona);
                                     return result;
@@ -785,25 +857,35 @@ namespace WoSConnect.ROs.WoS.Controllers
                     }
                 }
             }
-            if(objInicial.static_data!=null){
-                if(objInicial.static_data.summary!=null){
-                    if(objInicial.static_data.summary.pub_info!=null){
-                        if(objInicial.static_data.summary.pub_info.pubtype!=null){
-                            if(objInicial.static_data.summary.pub_info.pubtype=="Journal"){
-                                revista.type="Journal";
+            if (objInicial.static_data != null)
+            {
+                if (objInicial.static_data.summary != null)
+                {
+                    if (objInicial.static_data.summary.pub_info != null)
+                    {
+                        if (objInicial.static_data.summary.pub_info.pubtype != null)
+                        {
+                            if (objInicial.static_data.summary.pub_info.pubtype == "Journal")
+                            {
+                                revista.type = "Journal";
                             }
-                            else if(objInicial.static_data.summary.pub_info.pubtype=="Book"){
-                                revista.type="Book";
+                            else if (objInicial.static_data.summary.pub_info.pubtype == "Book")
+                            {
+                                revista.type = "Book";
                             }
-                            else{
+                            else
+                            {
                                 //recogida de errores! 
-                                string ad="No se ha identidicado el tipo de recurso en el que esta publicado";
-                                if(this.advertencia!=null){
+                                string ad = "No se ha identidicado el tipo de recurso en el que esta publicado";
+                                if (this.advertencia != null)
+                                {
                                     this.advertencia.Add(ad);
-                                }else{
+                                }
+                                else
+                                {
                                     List<string> advertencias = new List<string>();
                                     advertencias.Add(ad);
-                                    this.advertencia=advertencias;
+                                    this.advertencia = advertencias;
                                 }
                             }
                         }

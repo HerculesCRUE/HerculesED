@@ -17,6 +17,9 @@ public class Publication
     public DateTimeValue dataIssued { get; set; }
 
     public List<string> url { get; set; }
+    public string pdf {get;set;}
+    public Object topics_enriquecidos {get;set;}
+
     public Person correspondingAuthor { get; set; }
 
     public List<Person> seqOfAuthors { get; set; }
@@ -90,13 +93,20 @@ public class JournalMetric
 public class Person
 {
     //public DateTimeValue birthdate { get; set; }
-    public List<string> name { get; set; } 
+    public Name name { get; set; } 
     //public string surname { get; set; }
     public string ORCID {get;set;}
     public List<string> IDs { get; set; }
     public List<string> links { get; set; }
     //public string nick { get; set; }
 
+}
+
+public class Name{
+    public List<string> given {get;set;}
+    //
+    public List<string> familia {get;set;}
+    public List<string> nombre_completo {get;set;}
 }
 public class Organization
 {
@@ -105,7 +115,6 @@ public class Organization
 }
 public class Conference
 {
-    //todo! esto mirar! 
         public string abbreviation { get; set; }
     public DateTimeInterval dateTimeInterval { get; set; }
     public string description { get; set; }
@@ -137,4 +146,35 @@ public class DateTimeInterval
     public DateTimeValue end { get; set; }
     public DateTimeValue start { get; set; }
 }
+
+
+
+
+public class Topics_enriquecidos{
+    public string pdf_url {get;set;}
+    public string rotype {get;set;}
+    public Object topics {get;set;}
+}
+
+public class enriquecimiento{
+    public string rotype {get;set;}
+    public string pdf_url {get;set;}
+
+    public string title {get;set;}
+
+    //public string abstract {get;set;}
+    //todo! cuidado esto hay que solucionarlo. 
+     public string author_name {get;set;}
+    public string journal {get;set;}
+
+}
+
+
+
+
+
+
+
+
+
 }
