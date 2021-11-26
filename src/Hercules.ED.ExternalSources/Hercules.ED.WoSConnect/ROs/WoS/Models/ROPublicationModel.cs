@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace WoSConnect.ROs.WoS.Models
 {
@@ -18,7 +19,8 @@ public class Publication
 
     public List<string> url { get; set; }
     public string pdf {get;set;}
-    public Object topics_enriquecidos {get;set;}
+    public List<Knowledge_enriquecidos> topics_enriquecidos {get;set;}
+    public List<Knowledge_enriquecidos>  freetextKeyword_enriquecidas {get;set;}
 
     public Person correspondingAuthor { get; set; }
 
@@ -153,28 +155,58 @@ public class DateTimeInterval
 public class Topics_enriquecidos{
     public string pdf_url {get;set;}
     public string rotype {get;set;}
-    public Object topics {get;set;}
+    public List<Knowledge_enriquecidos> topics {get;set;}
+}
+
+public class Knowledge_enriquecidos{
+    public string word {get;set;}
+    public string porcentaje {get;set;}
+}
+
+public class palabras_enriquecidas{
+        public  List<Knowledge_enriquecidos> topics {get;set;}
+        public string title {get;set;}
+        [JsonProperty("abstract")]
+    public string abstract_ {get;set;}
+          
+
 }
 
 public class enriquecimiento{
     public string rotype {get;set;}
-    public string pdf_url {get;set;}
-
+     [JsonProperty("pdf_url")]
+    public string pdfurl {get;set;}
     public string title {get;set;}
 
-    //public string abstract {get;set;}
-    //todo! cuidado esto hay que solucionarlo. 
+    [JsonProperty("abstract")]
+    public string abstract_ {get;set;}
      public string author_name {get;set;}
     public string journal {get;set;}
 
 }
 
+public class enriquecimiento_sin_pdf{
+    public string rotype {get;set;}
+    // [JsonProperty("pdf_url")]
+    //public string pdfurl {get;set;}
+    public string title {get;set;}
 
+    [JsonProperty("abstract")]
+    public string abstract_ {get;set;}
+     public string author_name {get;set;}
+    public string journal {get;set;}
 
+}
 
+public class enriquecimiento_palabras{
+     public string rotype {get;set;}
+    // [JsonProperty("pdf_url")]
+    //public string pdfurl {get;set;}
+    public string title {get;set;}
 
-
-
+    [JsonProperty("abstract")]
+    public string abstract_ {get;set;}
+}
 
 
 }

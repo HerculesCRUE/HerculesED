@@ -89,7 +89,12 @@ publicacion.bibliografia = getBiblografia(objInicial);
 publicacion.citas = getCitas(objInicial);
              
 
+---------------------
+static_data.summary,conferences.conference.conf_infos.conf_info
+ TODO! 
 
+---------------
+static_data.fullrecord_metadata.category_info.subjects.subject[i].content
 
 
 
