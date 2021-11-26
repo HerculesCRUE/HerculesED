@@ -1,0 +1,72 @@
+{"data": [
+        {
+            "conceptrecid": "5505336",
+            "created": "2021-09-14T04:47:00.687234+00:00",
+            "doi": "10.3217/jucs-022-07-0896",
+            "doi_url": "https://doi.org/10.3217/jucs-022-07-0896",
+            "files": [
+                {
+                    "checksum": "e45b0113f8188ac305a5bbd27db27432",
+                    "filename": "jucs_article_23350.pdf",
+                    "filesize": 351442,
+                    "id": "bf0a6c7a-0c77-4d14-baef-e4deb875f37d",
+                    "links": {
+                        "download": "https://zenodo.org/api/files/a874fd81-8277-404e-8a94-76d05aa1b79b/jucs_article_23350.pdf",
+                        "self": "https://zenodo.org/api/deposit/depositions/5505337/files/bf0a6c7a-0c77-4d14-baef-e4deb875f37d"
+                    }
+                }
+            ],
+            "id": 5505337,
+            "links": {
+                "badge": "https://zenodo.org/badge/doi/10.3217/jucs-022-07-0896.svg",
+                "bucket": "https://zenodo.org/api/files/a874fd81-8277-404e-8a94-76d05aa1b79b",
+                "doi": "https://doi.org/10.3217/jucs-022-07-0896",
+                "html": "https://zenodo.org/record/5505337",
+                "latest": "https://zenodo.org/api/records/5505337",
+                "latest_html": "https://zenodo.org/record/5505337",
+                "self": "https://zenodo.org/api/records/5505337"
+            },
+            "metadata": {
+                "access_right": "open",
+                "creators": [
+                    {
+                        "affiliation": "University of Deusto, Bilbao, Spain",
+                        "name": "Aguilera, Unai"
+                    },
+                    {
+                        "affiliation": "University of Deusto, Bilbao, Spain",
+                        "name": "L\u00f3pez-De-Ipi\u00f1a, Diego"
+                    }
+                ],
+                "description": "Service discovery is a fundamental aspect of many services oriented applications; however, it cannot be directly applied to mobile ad hoc networks (MANET) due to their dynamic nature. The lack of central manager nodes results in the need of specific discovery solutions for this kind of networks. In this paper, we present a solution for the discovery of services in MANETs that is based on the classification of service's parameters according to a shared domain ontology. Our proposed discovery protocol encompasses two main processes: dissemination and search. The search process defines a pruning mechanism that enables to detect if search messages must be propagated or not, reducing the number of messages communicated through the network. The dissemination and search processes are integrated within the route management mechanism that enables to reduce the number of propagated messages.  We have implemented and tested our discovery solution using the ns-2 network simulator. Experiments have been performed using rigorously constructed scenarios for testing the characteristics of the proposed solution. The obtained results show how the inclusion of the ontology not only increments the expressiveness ofthe search and discovery process, but also enables to reduce the number of propagated messages due to the grouping and pruning processes.",
+                "doi": "10.3217/jucs-022-07-0896",
+                "imprint_publisher": "Journal of Universal Computer Science",
+                "journal_issue": "(7)",
+                "journal_pages": "896-920",
+                "journal_title": "JUCS - Journal of Universal Computer Science",
+                "journal_volume": "22",
+                "keywords": [
+                    "service discovery",
+                    "semantic",
+                    "protocol",
+                    "manet"
+                ],
+                "license": "CC-BY-4.0",
+                "prereserve_doi": {
+                    "doi": "10.5281/zenodo.5505337",
+                    "recid": 5505337
+                },
+                "publication_date": "2016-07-01",
+                "publication_type": "article",
+                "title": "A Semantically Enhanced Service Discovery for MANET",
+                "upload_type": "publication"
+            },
+            "modified": "2021-09-14T13:48:30.282298+00:00",
+            "owner": 1161,
+            "record_id": 5505337,
+            "state": "done",
+            "submitted": true,
+            "title": "A Semantically Enhanced Service Discovery for MANET"
+        }
+    ]
+}
