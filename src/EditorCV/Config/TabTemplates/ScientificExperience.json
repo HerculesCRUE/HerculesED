@@ -1001,7 +1001,7 @@
 								"properties": [
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "project",
+										"graph": "patent",
 										"child": {
 											"property": "http://purl.org/dc/terms/issued"
 										},
@@ -1009,7 +1009,7 @@
 									},
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "project",
+										"graph": "patent",
 										"child": {
 											"property": "http://w3id.org/roh/title"
 										},
@@ -1024,7 +1024,7 @@
 								"properties": [
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "project",
+										"graph": "patent",
 										"child": {
 											"property": "http://purl.org/dc/terms/issued"
 										},
@@ -1032,7 +1032,7 @@
 									},
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "project",
+										"graph": "patent",
 										"child": {
 											"property": "http://w3id.org/roh/title"
 										},
@@ -1050,7 +1050,7 @@
 								"type": "date",
 								"child": {
 									"property": "http://vivoweb.org/ontology/core#relatedBy",
-									"graph": "project",
+									"graph": "patent",
 									"child": {
 										"property": "http://vivoweb.org/ontology/core#start"
 									}
@@ -1064,7 +1064,7 @@
 								"childOR": [
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "project",
+										"graph": "patent",
 										"order": "http://www.w3.org/1999/02/22-rdf-syntax-ns#comment",
 										"child": {
 											"property": "http://purl.org/ontology/bibo/authorList",
@@ -1075,7 +1075,7 @@
 									},
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "project",
+										"graph": "patent",
 										"order": "http://vivoweb.org/ontology/core#preferredDisplayOrder",
 										"child": {
 											"property": "http://vivoweb.org/ontology/core#relates",
@@ -1093,18 +1093,9 @@
 						]
 					},
 					"listItemEdit": {
-						"graph": "project",
+						"graph": "patent",
 						"proptitle": "http://w3id.org/roh/title",
-						"propdescription": "http://vivoweb.org/ontology/core#description",
-						"rdftype": "http://vivoweb.org/ontology/core#Project",
-						"loadPropertyValues": [
-							{
-								"property": "http://w3id.org/roh/scientificExperienceProject",
-								"values": [
-									"http://gnoss.com/items/scientificexperienceproject_SEP2"
-								]
-							}
-						],
+						"rdftype": "http://purl.org/ontology/bibo/Patent",
 						"sections": [
 							{
 								"title": {
@@ -1115,24 +1106,36 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Nombre del proyecto"
+													"es": "Título propiedad industrial e intelectual"
 												},
 												"placeholder": {
-													"es": "Introduce el nombre del proyecto"
+													"es": "Introduce el título de la propiedad industrial e intelectual"
 												},
 												"property": "http://w3id.org/roh/title",
 												"required": true,
 												"type": "text",
-												"width": 2
+												"width": 3
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Fecha de registro"
+												},
+												"property": "http://vivoweb.org/ontology/core#dateFiled",
+												"type": "date",
+												"width": 1
 											},
 											{
 												"title": {
-													"es": "Nº de investigadores/as"
+													"es": "Fecha de concesión"
 												},
-												"property": "http://w3id.org/roh/researchersNumber",
-												"type": "number",
+												"property": "http://vivoweb.org/ontology/core#dateIssued",
+												"type": "date",
 												"width": 1
-											}
+											},
 										]
 									},
 									{
