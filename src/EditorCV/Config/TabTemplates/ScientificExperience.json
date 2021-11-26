@@ -1055,40 +1055,6 @@
 										"property": "http://vivoweb.org/ontology/core#start"
 									}
 								}
-							},
-							{
-								"name": {
-									"es": "Autores/as (p. o. de firma)"
-								},
-								"showMini": true,
-								"childOR": [
-									{
-										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "patent",
-										"order": "http://www.w3.org/1999/02/22-rdf-syntax-ns#comment",
-										"child": {
-											"property": "http://purl.org/ontology/bibo/authorList",
-											"child": {
-												"property": "http://w3id.org/roh/title"
-											}
-										}
-									},
-									{
-										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "patent",
-										"order": "http://vivoweb.org/ontology/core#preferredDisplayOrder",
-										"child": {
-											"property": "http://vivoweb.org/ontology/core#relates",
-											"child": {
-												"property": "http://w3id.org/roh/roleOf",
-												"graph": "person",
-												"child": {
-													"property": "http://xmlns.com/foaf/0.1/name"
-												}
-											}
-										}
-									}
-								]
 							}
 						]
 					},
@@ -1135,7 +1101,7 @@
 												"property": "http://vivoweb.org/ontology/core#dateIssued",
 												"type": "date",
 												"width": 1
-											},
+											}
 										]
 									},
 									{
@@ -1145,7 +1111,7 @@
 													"es": "Número de solicitud"
 												},
 												"property": "http://w3id.org/roh/applicationNumber",
-												"type": "string",
+												"type": "text",
 												"width": 1
 											},
 											{
