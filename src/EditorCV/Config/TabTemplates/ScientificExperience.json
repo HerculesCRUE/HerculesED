@@ -1141,31 +1141,72 @@
 									{
 										"properties": [
 											{
-												"property": "http://purl.org/ontology/bibo/authorList",
-												"type": "auxEntityAuthorList",
 												"title": {
-													"es": "Autores/as (p.o. de firma)"
+													"es": "Número de solicitud"
 												},
-												"width": 3
+												"property": "http://w3id.org/roh/applicationNumber",
+												"type": "string",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "País de inscripción"
+												},
+												"placeholder": {
+													"es": "Introduce el país de inscripción"
+												},
+												"property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+												"combo": {
+													"rdftype": "http://www.geonames.org/ontology#Feature",
+													"filter": {
+														"property": "http://www.geonames.org/ontology#featureCode",
+														"value": "PCLD"
+													},
+													"graph": "feature",
+													"property": {
+														"property": "http://www.geonames.org/ontology#name"
+													}
+												},
+												"type": "selectCombo",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "C. Autón./Reg. de inscripción"
+												},
+												"placeholder": {
+													"es": "Introduce la región de inscripción"
+												},
+												"property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+												"combo": {
+													"rdftype": "http://www.geonames.org/ontology#Feature",
+													"filter": {
+														"property": "http://www.geonames.org/ontology#featureCode",
+														"value": "ADM1"
+													},
+													"dependency": {
+														"property": "http://www.geonames.org/ontology#parentFeature",
+														"propertyValue": "https://www.w3.org/2006/vcard/ns#hasCountryName"
+													},
+													"graph": "feature",
+													"property": {
+														"property": "http://www.geonames.org/ontology#name"
+													}
+												},
+												"type": "selectCombo",
+												"width": 1
 											}
 										]
 									},
 									{
 										"properties": [
 											{
+												"property": "http://purl.org/ontology/bibo/authorList",
+												"type": "auxEntityAuthorList",
 												"title": {
-													"es": "Entidad de realización"
+													"es": "Autores/as (p.o. de firma)"
 												},
-												"property": "http://w3id.org/roh/conductedBy",
-												"combo": {
-													"rdftype": "http://w3id.org/roh/PublicationType",
-													"graph": "organization",
-													"property": {
-														"property": "http://purl.org/dc/elements/1.1/title"
-													}
-												},
-												"type": "selectCombo",
-												"width": 1
+												"width": 3
 											}
 										]
 									},
