@@ -55,22 +55,27 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
             }
 
         }
-        public string getType(PublicacionInicial objInicial){
-            if(objInicial.type!=null){
-                if(objInicial.type=="journal-article")
+        public string getType(PublicacionInicial objInicial)
+        {
+            if (objInicial.type != null)
+            {
+                if (objInicial.type == "journal-article")
                 {
                     return "Journal Article";
                 }
-                if(objInicial.type=="proceedings-article"){
+                if (objInicial.type == "proceedings-article")
+                {
                     return "Conference Paper";
                 }
-                if(objInicial.type=="book-chapter"){
+                if (objInicial.type == "book-chapter")
+                {
                     return "Chapter";
                 }
-                if(objInicial.type=="book"){
+                if (objInicial.type == "book")
+                {
                     return "Book";
                 }
-                
+
             }
             return null;
         }
@@ -83,7 +88,7 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
 
         public string getTitle(PublicacionInicial objInicial)
         {
-            if (objInicial.title != null& objInicial.title.Count>=1)
+            if (objInicial.title != null & objInicial.title.Count >= 1)
             {
                 return objInicial.title[0];
                 //TODO: esto puede no estar bien! porque no se tiene que ser el primero... 
@@ -157,26 +162,29 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
         }
 
         public List<KnowledgeAreas> getKnowledgeAreas(PublicacionInicial objInicial)
-         {
-             List<KnowledgeAreas> result = new List<KnowledgeAreas>();
-            KnowledgeAreas areas= new KnowledgeAreas();
+        {
+            List<KnowledgeAreas> result = new List<KnowledgeAreas>();
+            KnowledgeAreas areas = new KnowledgeAreas();
             List<KnowledgeArea> ultima_list = new List<KnowledgeArea>();
-            if(objInicial.subject!=null){
-                foreach(string name in objInicial.subject){
+            if (objInicial.subject != null)
+            {
+                foreach (string name in objInicial.subject)
+                {
                     KnowledgeArea a = new KnowledgeArea();
-                    a.name=name;
+                    a.name = name;
                     ultima_list.Add(a);
-                    
+
                 }
-                if(ultima_list!=new List<KnowledgeArea>()){
-                    areas.resource="CrossRef";
-                    areas.knowledgeArea=ultima_list;
+                if (ultima_list != new List<KnowledgeArea>())
+                {
+                    areas.resource = "CrossRef";
+                    areas.knowledgeArea = ultima_list;
                     result.Add(areas);
                     return result;
                 }
             }
             return null;
-         }
+        }
 
         // public List<string> getFreetextKeyword(PublicacionInicial objInicial)
         // {
@@ -196,20 +204,32 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                     {
 
                         persona.ORCID = autor.ORCID;
-                        List<string> names = new List<string>();
+
+                        List<string> name_inicial = new List<string>();
+                        List<string> apellido = new List<string>();
+
                         if (autor.given != null)
                         {
-                            names.Add(autor.given);
+                            name_inicial.Add(autor.given);
                         }
                         if (autor.family != null)
                         {
-                            names.Add(autor.family);
+                            apellido.Add(autor.family);
                         }
-                        if (autor.given != null && autor.family != null)
+                        if (name_inicial != null || apellido != null)
                         {
-                            names.Add(autor.given + " " + autor.family);
+                            Name nombre = new Name();
+                            if (name_inicial != new List<string>())
+                            {
+                                nombre.given = name_inicial;
+                            }
+                            if (apellido != new List<string>())
+                            {
+                                nombre.familia = apellido;
+                            }
+                            persona.name = nombre;
                         }
-                        persona.name = names;
+
                         return persona;
                     }
                 }
@@ -225,20 +245,31 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                 {
                     Person persona = new Person();
                     persona.ORCID = autor.ORCID;
-                    List<string> names = new List<string>();
+
+                    List<string> name_inicial = new List<string>();
+                    List<string> apellido = new List<string>();
+
                     if (autor.given != null)
                     {
-                        names.Add(autor.given);
+                        name_inicial.Add(autor.given);
                     }
                     if (autor.family != null)
                     {
-                        names.Add(autor.family);
+                        apellido.Add(autor.family);
                     }
-                    if (autor.given != null && autor.family != null)
+                    if (name_inicial != null || apellido != null)
                     {
-                        names.Add(autor.given + " " + autor.family);
+                        Name nombre = new Name();
+                        if (name_inicial != new List<string>())
+                        {
+                            nombre.given = name_inicial;
+                        }
+                        if (apellido != new List<string>())
+                        {
+                            nombre.familia = apellido;
+                        }
+                        persona.name = nombre;
                     }
-                    persona.name = names;
                     autores.Add(persona);
 
                 }
@@ -261,21 +292,20 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                     journal.name = objInicial.ContainerTitle[0];
                     //TODO: esto puede no estar bien! porque no se tiene que ser el primero... 
                 }
-                 if (objInicial.ISBN != null)
+                if (objInicial.ISBN != null)
                 {
-                    List<string> isbns =  new List<string>();
-                    foreach(string dato in objInicial.ISSN){
-                        isbns.Add(dato);
-                    }
-                    journal.isbn = isbns;
+                    journal.isbn = objInicial.ISBN;
+
                 }
-                if(objInicial.type=="book" || objInicial.type=="book-chapter"){
-                    journal.type ="Book";
+                if (objInicial.type == "book" || objInicial.type == "book-chapter")
+                {
+                    journal.type = "Book";
                 }
-                if(objInicial.type=="journal-article"){
-                    journal.type ="Journal";
+                if (objInicial.type == "journal-article")
+                {
+                    journal.type = "Journal";
                 }
-                
+
 
                 if (journal != new Source())
                 {
