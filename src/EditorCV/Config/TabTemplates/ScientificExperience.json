@@ -1514,24 +1514,6 @@
 						"properties": [
 							{
 								"name": {
-									"es": "Entidad de afiliación"
-								},
-								"showMiniBold": true,
-								"type": "text",
-								"child": {
-									"property": "http://vivoweb.org/ontology/core#relatedBy",
-									"graph": "group",
-									"child": {
-										"property": "http://vivoweb.org/ontology/core#affiliatedOrganization",
-										"graph": "organization",
-										"property": {
-											"property": "http://w3id.org/roh/title"
-										}
-									}
-								}
-							},
-							{
-								"name": {
 									"es": "Autores/as (p. o. de firma)"
 								},
 								"showMini": true,
