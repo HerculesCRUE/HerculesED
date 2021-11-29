@@ -240,10 +240,13 @@ namespace GuardadoCV.Models
 
                 foreach (string firma in firmas)
                 {
-                    List<Person> personas = ObtenerPersonasFirma(firma.Trim());
-                    ObtenerScores(firma.Trim(), ref personas, colaboradoresDocumentos, colaboradoresProyectos);
-                    personas = personas.OrderByDescending(x => x.score).ToList();
-                    listaPersonas.Add(firma.Trim(), personas);
+                    if (firma.Trim() != "")
+                    {
+                        List<Person> personas = ObtenerPersonasFirma(firma.Trim());
+                        ObtenerScores(firma.Trim(), ref personas, colaboradoresDocumentos, colaboradoresProyectos);
+                        personas = personas.OrderByDescending(x => x.score).ToList();
+                        listaPersonas.Add(firma.Trim(), personas);
+                    }
                 }
             }
 
