@@ -271,12 +271,13 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Identificar palabras clave"
+													"es": "Áreas temáticas"
 												},
-												"property": "http://vivoweb.org/ontology/core#freeTextKeyword",
-												"multiple": true,
-												"type": "text",
-												"width": 1
+												"property": "http://w3id.org/roh/hasProjectClassification",
+												"thesaurus": "researcharea",
+												"type": "thesaurus",
+												"width": 1,
+												"multiple": true
 											}
 										]
 									},
