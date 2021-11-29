@@ -1514,15 +1514,15 @@
 						"properties": [
 							{
 								"name": {
-									"es": "Fecha de inicio"
+									"es": "Entidad de afiliación"
 								},
 								"showMiniBold": true,
-								"type": "date",
+								"type": "text",
 								"child": {
 									"property": "http://vivoweb.org/ontology/core#relatedBy",
 									"graph": "group",
 									"child": {
-										"property": "http://vivoweb.org/ontology/core#start"
+										"property": "http://vivoweb.org/ontology/core#affiliatedOrganization"
 									}
 								}
 							},
