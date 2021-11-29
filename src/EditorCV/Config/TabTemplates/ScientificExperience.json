@@ -1578,7 +1578,7 @@
 												},
 												"property": "http://w3id.org/roh/colaborationType",
 												"combo": {
-													"rdftype": "http://xmlns.com/foaf/0.1/ColaborationTypeGroup",
+													"rdftype": "http://w3id.org/roh/ColaborationTypeGroup",
 													"graph": "colaborationtypegroup",
 													"property": {
 														"property": "http://purl.org/dc/elements/1.1/title"
