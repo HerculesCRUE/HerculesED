@@ -85,7 +85,7 @@
 							},
 							{
 								"name": {
-									"es": "Autores/as (p. o. de firma)"
+									"es": "Nombres investigadores principales (IP, Co-IP,...)"
 								},
 								"showMini": true,
 								"childOR": [
@@ -168,7 +168,7 @@
 												"property": "http://purl.org/ontology/bibo/authorList",
 												"type": "auxEntityAuthorList",
 												"title": {
-													"es": "Autores/as (p.o. de firma)"
+													"es": "Nombres investigadores principales (IP, Co-IP,...)"
 												},
 												"width": 3
 											}
@@ -562,7 +562,7 @@
 							},
 							{
 								"name": {
-									"es": "Autores/as (p. o. de firma)"
+									"es": "Nombres investigadores principales (IP, Co-IP,...)"
 								},
 								"showMini": true,
 								"childOR": [
@@ -645,7 +645,7 @@
 												"property": "http://purl.org/ontology/bibo/authorList",
 												"type": "auxEntityAuthorList",
 												"title": {
-													"es": "Autores/as (p.o. de firma)"
+													"es": "Nombres investigadores principales (IP, Co-IP,...)"
 												},
 												"width": 3
 											}
@@ -2127,7 +2127,7 @@
 								"properties": [
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "project",
+										"graph": "technologicalresult",
 										"child": {
 											"property": "http://purl.org/dc/terms/issued"
 										},
@@ -2150,7 +2150,7 @@
 								"properties": [
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "project",
+										"graph": "technologicalresult",
 										"child": {
 											"property": "http://purl.org/dc/terms/issued"
 										},
@@ -2158,7 +2158,7 @@
 									},
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "project",
+										"graph": "technologicalresult",
 										"child": {
 											"property": "http://w3id.org/roh/title"
 										},
@@ -2176,61 +2176,19 @@
 								"type": "date",
 								"child": {
 									"property": "http://vivoweb.org/ontology/core#relatedBy",
-									"graph": "project",
+									"graph": "technologicalresult",
 									"child": {
 										"property": "http://vivoweb.org/ontology/core#start"
 									}
 								}
-							},
-							{
-								"name": {
-									"es": "Autores/as (p. o. de firma)"
-								},
-								"showMini": true,
-								"childOR": [
-									{
-										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "project",
-										"order": "http://www.w3.org/1999/02/22-rdf-syntax-ns#comment",
-										"child": {
-											"property": "http://purl.org/ontology/bibo/authorList",
-											"child": {
-												"property": "http://w3id.org/roh/title"
-											}
-										}
-									},
-									{
-										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "project",
-										"order": "http://vivoweb.org/ontology/core#preferredDisplayOrder",
-										"child": {
-											"property": "http://vivoweb.org/ontology/core#relates",
-											"child": {
-												"property": "http://w3id.org/roh/roleOf",
-												"graph": "person",
-												"child": {
-													"property": "http://xmlns.com/foaf/0.1/name"
-												}
-											}
-										}
-									}
-								]
 							}
 						]
 					},
 					"listItemEdit": {
-						"graph": "project",
+						"graph": "technologicalresult",
 						"proptitle": "http://w3id.org/roh/title",
 						"propdescription": "http://vivoweb.org/ontology/core#description",
-						"rdftype": "http://vivoweb.org/ontology/core#Project",
-						"loadPropertyValues": [
-							{
-								"property": "http://w3id.org/roh/scientificExperienceProject",
-								"values": [
-									"http://gnoss.com/items/scientificexperienceproject_SEP2"
-								]
-							}
-						],
+						"rdftype": "http://w3id.org/roh/TechnologicalResult",
 						"sections": [
 							{
 								"title": {
@@ -2241,10 +2199,10 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Nombre del proyecto"
+													"es": "Descripción"
 												},
 												"placeholder": {
-													"es": "Introduce el nombre del proyecto"
+													"es": "Introduce la descripción"
 												},
 												"property": "http://w3id.org/roh/title",
 												"required": true,
