@@ -1876,7 +1876,7 @@
 							},
 							{
 								"name": {
-									"es": "Autores/as (p. o. de firma)"
+									"es": "Autores/as (p. o. de firma"
 								},
 								"showMini": true,
 								"childOR": [
@@ -1887,18 +1887,7 @@
 										"child": {
 											"property": "http://vivoweb.org/ontology/core#relates",
 											"child": {
-												"property": "http://w3id.org/roh/title"
-											}
-										}
-									},
-									{
-										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "supervisedartisticproject",
-										"order": "http://vivoweb.org/ontology/core#preferredDisplayOrder",
-										"child": {
-											"property": "http://vivoweb.org/ontology/core#relates",
-											"child": {
-												"property": "http://w3id.org/roh/roleOf",
+												"property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
 												"graph": "person",
 												"child": {
 													"property": "http://xmlns.com/foaf/0.1/name"
