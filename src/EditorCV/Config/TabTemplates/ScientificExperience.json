@@ -1098,7 +1098,7 @@
 										"graph": "patent",
 										"order": "http://www.w3.org/1999/02/22-rdf-syntax-ns#comment",
 										"child": {
-											"property": "http://vivoweb.org/ontology/core#relates",
+											"property": "http://w3id.org/roh/patentInventor",
 											"child": {
 												"property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
 												"graph": "person",
