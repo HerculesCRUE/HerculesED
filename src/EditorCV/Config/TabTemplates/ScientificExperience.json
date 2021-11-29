@@ -271,7 +271,7 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Áreas temáticas"
+													"es": "Palabras clave"
 												},
 												"property": "http://w3id.org/roh/hasProjectClassification",
 												"thesaurus": "researcharea",
