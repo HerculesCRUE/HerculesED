@@ -1086,6 +1086,29 @@
 										"property": "http://vivoweb.org/ontology/core#dateFiled"
 									}
 								}
+							},
+							{
+								"name": {
+									"es": "Inventores/autores/obtentores"
+								},
+								"showMini": true,
+								"childOR": [
+									{
+										"property": "http://vivoweb.org/ontology/core#relatedBy",
+										"graph": "patent",
+										"order": "http://www.w3.org/1999/02/22-rdf-syntax-ns#comment",
+										"child": {
+											"property": "http://vivoweb.org/ontology/core#relates",
+											"child": {
+												"property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
+												"graph": "person",
+												"child": {
+													"property": "http://xmlns.com/foaf/0.1/name"
+												}
+											}
+										}
+									}
+								]
 							}
 						]
 					},
