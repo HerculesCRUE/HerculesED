@@ -35,18 +35,18 @@ We provide the train, test and dev sets of each dataset corresponding to each on
 First you must set up a directory (referred as DATA_PATH through this file) for each level containing the following resources:
 
 ```
-- papers_lX.v1.train.oversampled.compact.tsv
-- papers_lX.v1.test.compact.tsv
-- papers_lX.v1.dev.compact.tsv
-- labels_lX.txt
+papers_lX.v1.train.oversampled.compact.tsv
+papers_lX.v1.test.compact.tsv
+papers_lX.v1.dev.compact.tsv
+labels_lX.txt
 ```
 
 Then you must create a symbolic link for each resource with the following exact names:
 ```
-- train.csv_ml.csv -> papers_lX.v1.train.oversampled.compact.tsv
-- test.csv_ml.csv -> papers_lX.v1.test.compact.tsv
-- dev.csv_ml.csv -> papers_lX.v1.dev.compact.tsv
-- labels.txt -> labels_lX.txt
+train.csv_ml.csv -> papers_lX.v1.train.oversampled.compact.tsv
+test.csv_ml.csv -> papers_lX.v1.test.compact.tsv
+dev.csv_ml.csv -> papers_lX.v1.dev.compact.tsv
+labels.txt -> labels_lX.txt
 ```
 
 This is how you can execute the script to train the models:
