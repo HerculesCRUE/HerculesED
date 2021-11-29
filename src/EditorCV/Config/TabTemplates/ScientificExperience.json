@@ -1589,38 +1589,21 @@
 						"properties": [
 							{
 								"name": {
-									"es": "Autores/as (p. o. de firma)"
+									"es": "Entidad de afiliación"
 								},
-								"showMini": true,
-								"childOR": [
-									{
-										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "group",
-										"order": "http://www.w3.org/1999/02/22-rdf-syntax-ns#comment",
+								"showMiniBold": true,
+								"child": {
+									"property": "http://vivoweb.org/ontology/core#relatedBy",
+									"graph": "group",
+									"child": {
+										"property": "http://vivoweb.org/ontology/core#affiliatedOrganization",
+										"graph": "organization",
 										"child": {
-											"property": "http://purl.org/ontology/bibo/authorList",
-											"child": {
-												"property": "http://w3id.org/roh/title"
-											}
-										}
-									},
-									{
-										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "group",
-										"order": "http://vivoweb.org/ontology/core#preferredDisplayOrder",
-										"child": {
-											"property": "http://vivoweb.org/ontology/core#relates",
-											"child": {
-												"property": "http://w3id.org/roh/roleOf",
-												"graph": "person",
-												"child": {
-													"property": "http://xmlns.com/foaf/0.1/name"
-												}
-											}
+											"property": "http://w3id.org/roh/title"
 										}
 									}
-								]
-							}
+								}
+							},
 						]
 					},
 					"listItemEdit": {
