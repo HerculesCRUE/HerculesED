@@ -1896,6 +1896,7 @@
 												},
 												"property": "http://w3id.org/roh/title",
 												"type": "text",
+												"required": true,
 												"width": 1
 											},
 											{
