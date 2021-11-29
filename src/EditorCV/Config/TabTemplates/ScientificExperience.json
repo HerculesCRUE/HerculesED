@@ -649,7 +649,7 @@
 												},
 												"property": "http://w3id.org/roh/conductedBy",
 												"combo": {
-													"rdftype": "http://w3id.org/roh/PublicationType",
+													"rdftype": "http://xmlns.com/foaf/0.1/Organization",
 													"graph": "organization",
 													"property": {
 														"property": "http://w3id.org/roh/title"
