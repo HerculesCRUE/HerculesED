@@ -1886,6 +1886,7 @@
 													"es": "Introduce la descripción"
 												},
 												"property": "http://vivoweb.org/ontology/core#description",
+												"required": true,
 												"type": "text",
 												"width": 1
 											},
@@ -1895,7 +1896,6 @@
 												},
 												"property": "http://w3id.org/roh/title",
 												"type": "text",
-												"required": true,
 												"width": 1
 											},
 											{
