@@ -697,6 +697,7 @@
 														"property": "http://w3id.org/roh/title"
 													}
 												},
+												"multiple": true,
 												"type": "selectCombo",
 												"width": 1
 											}
