@@ -1927,7 +1927,7 @@
 												"title": {
 													"es": "Título de la publicación"
 												},
-												"property": "http://w3id.org/roh/",
+												"property": "http://w3id.org/roh/publicationTitle",
 												"type": "text",
 												"width": 2
 											},
