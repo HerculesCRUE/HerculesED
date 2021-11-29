@@ -232,7 +232,9 @@ namespace ScopusConnect.ROs.Scopus.Controllers
             {
                 List<string> names = new List<string>();
                 names.Add(objInicial.DcCreator);
-                autor.name = names;
+                Name nombre =new Name();
+                nombre.nombre_completo=names;
+                autor.name = nombre;
                 return autor;
             }
             return null;
@@ -253,7 +255,9 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                 }
                 if (objInicial.PrismIssn != null)
                 {
-                    revista.issn = objInicial.PrismIssn;
+                    List<string> issn = new List<string>();
+                    issn.Add(objInicial.PrismIssn);
+                    revista.issn = issn;
                 }
                 if(objInicial.PrismAggregationType!=null){
                     if(objInicial.PrismAggregationType=="Book"){
@@ -284,8 +288,6 @@ namespace ScopusConnect.ROs.Scopus.Controllers
             return null;
         }
 
-
-
         public List<PublicationMetric> getPublicationMetric(PublicacionInicial objInicial)
         {
             List<PublicationMetric> metricList = new List<PublicationMetric>();
@@ -300,19 +302,6 @@ namespace ScopusConnect.ROs.Scopus.Controllers
 
             return null;
         }
-
-        // public List<Publication> getBiblografia(PublicacionInicial objInicial)
-        // {
-        //     return new List<Publication>();
-        // }
-
-        // public List<Publication> getCitas(PublicacionInicial objInicial)
-        // {
-        //     return new List<Publication>();
-        // }
-
-
-
 
     }
 }

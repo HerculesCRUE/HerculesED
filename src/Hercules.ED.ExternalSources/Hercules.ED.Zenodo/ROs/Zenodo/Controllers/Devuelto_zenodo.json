@@ -1,0 +1,61 @@
+[
+    {
+        "conceptrecid": "3675182",
+        "created": "2020-02-19T13:19:27.956738+00:00",
+        "doi": "10.1109/GIOTS.2018.8534578",
+        "doi_url": "https://doi.org/10.1109/GIOTS.2018.8534578",
+        "files": [
+            {
+                "checksum": "6795ac8c1de6c849d245025afd10bf70",
+                "filename": "16_Casado-Mansilla-2018.pdf",
+                "filesize": 2436967,
+                "id": "9771235f-80fa-4144-b93b-9d8719c89c63",
+                "links": {
+                    "download": "https://zenodo.org/api/files/daa12d4e-6c53-45e3-8525-093bdb95496f/16_Casado-Mansilla-2018.pdf",
+                    "self": "https://zenodo.org/api/deposit/depositions/3675183/files/9771235f-80fa-4144-b93b-9d8719c89c63"
+                }
+            }
+        ],
+        "id": 3675183,
+        "links": {
+            "badge": "https://zenodo.org/badge/doi/10.1109/GIOTS.2018.8534578.svg",
+            "bucket": "https://zenodo.org/api/files/daa12d4e-6c53-45e3-8525-093bdb95496f",
+            "doi": "https://doi.org/10.1109/GIOTS.2018.8534578",
+            "html": "https://zenodo.org/record/3675183",
+            "latest": "https://zenodo.org/api/records/3675183",
+            "latest_html": "https://zenodo.org/record/3675183",
+            "self": "https://zenodo.org/api/records/3675183"
+        },
+        "metadata": {
+            "access_right": "open",
+            "communities": [
+                {
+                    "identifier": "greensoul"
+                }
+            ],
+            "creators": [
+                {
+                    "name": "Casado-Mansilla, D., Irizar, A.M., Garaizar, P., Lopez-De-Ipina, D."
+                }
+            ],
+            "description": "<p>Sustainable HCI scholars have shown a growing<br>\ninterest in augmenting with technology everyday devices for<br>\npromoting energy conservation behaviors in different contexts<br>\nof use. The workspace has not been sufficiently explored as<br>\nspace where everyday appliances and work equipment might<br>\nbe converted into persuasive devices which raise eco-awareness.<br>\nIn this paper, we present the design of persuasive IoT devices<br>\nthat help to promote energy-efficient behaviour change in the<br>\nworkplace. This approach issued by applying Grounded Theory<br>\nanalysis over qualitative data collected at ten focus groups<br>\nsessions after running a one year study where participants<br>\nwere treated to different persuasive strategies. With these data,<br>\nfive design categories emerged to be taken into account in<br>\nthe conception phase when devising tangible objects that aim<br>\nto form pro-environmental behaviour change at workplaces.<br>\nOur design-insights are also derived from an evaluation of the<br>\nliterature on ambient devices that encourage energy-efficient<br>\npractices.</p>",
+            "doi": "10.1109/GIOTS.2018.8534578",
+            "language": "eng",
+            "license": "CC-BY-4.0",
+            "prereserve_doi": {
+                "doi": "10.5281/zenodo.3675183",
+                "recid": 3675183
+            },
+            "publication_date": "2018-02-19",
+            "publication_type": "conferencepaper",
+            "title": "Design-insights for devising persuasive IoT devices for sustainability in the workplace",
+            "upload_type": "publication"
+        },
+        "modified": "2020-02-19T19:20:54.550350+00:00",
+        "owner": 26874,
+        "record_id": 3675183,
+        "state": "done",
+        "submitted": true,
+        "title": "Design-insights for devising persuasive IoT devices for sustainability in the workplace"
+    }
+]

@@ -215,7 +215,11 @@ namespace CrossRefConnect.ROs.CrossRef.Models.Inicial
         public List<string> AlternativeId { get; set; }
         public string URL { get; set; }
         public Relation relation { get; set; }
+        public List<string> ISBN { get; set; }
         public List<string> ISSN { get; set; }
+       
+        [JsonProperty("isbn-type")]
+        public List<IssnType> IsbnType { get; set; }
 
         [JsonProperty("issn-type")]
         public List<IssnType> IssnType { get; set; }

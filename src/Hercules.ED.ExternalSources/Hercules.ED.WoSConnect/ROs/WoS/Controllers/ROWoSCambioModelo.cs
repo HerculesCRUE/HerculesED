@@ -72,56 +72,73 @@ namespace WoSConnect.ROs.WoS.Controllers
                     publicacion.Abstract = getAbstract(objInicial);
                     publicacion.language = getLanguage(objInicial);
                     publicacion.doi = getDoi(objInicial);
-                    if(publicacion.typeOfPublication == "Journal Article" & publicacion.doi ==null){
-                         //edventencia! 
+                    if (publicacion.typeOfPublication == "Journal Article" & publicacion.doi == null)
+                    {
+                        //edventencia! 
                         string ad_text = "No hay doi, sin embargo es un Journal Article.";
-                        if(this.advertencia==null){
+                        if (this.advertencia == null)
+                        {
                             List<string> ad_list = new List<string>();
                             ad_list.Add(ad_text);
-                            this.advertencia=ad_list;
-                        }else{
+                            this.advertencia = ad_list;
+                        }
+                        else
+                        {
                             this.advertencia.Add(ad_text);
                         }
                     }
                     //publicacion.url = getLinks(objInicial);
                     publicacion.dataIssued = getDate(objInicial);
-                    if(publicacion.dataIssued==null){
-                             //edventencia! 
+                    if (publicacion.dataIssued == null)
+                    {
+                        //edventencia! 
                         string ad_text = "No hay fecha de publicacion.";
-                        if(this.advertencia==null){
+                        if (this.advertencia == null)
+                        {
                             List<string> ad_list = new List<string>();
                             ad_list.Add(ad_text);
-                            this.advertencia=ad_list;
-                        }else{
+                            this.advertencia = ad_list;
+                        }
+                        else
+                        {
                             this.advertencia.Add(ad_text);
                         }
                     }
                     publicacion.pageStart = getPageStart(objInicial);
                     publicacion.pageEnd = getPageEnd(objInicial);
-                    //publicacion.hasKnowledgeArea = getKnowledgeAreas(objInicial);
-                    publicacion.list_freetextKeyword = getFreetextKeyword(objInicial);
+                    //todo! falta el siitio de la conferencia! 
+                    publicacion.hasKnowledgeAreas = getKnowledgeAreas(objInicial);
+                    publicacion.freetextKeywords = getFreetextKeyword(objInicial);
                     //publicacion.correspondingAuthor = getAuthorPrincipal(objInicial);
                     publicacion.seqOfAuthors = getAuthors(objInicial);
-                    if(publicacion.seqOfAuthors==null){
+                    if (publicacion.seqOfAuthors == null)
+                    {
                         //edventencia! 
                         string ad_text = "No hay conjunto de autores.";
-                        if(this.advertencia==null){
+                        if (this.advertencia == null)
+                        {
                             List<string> ad_list = new List<string>();
                             ad_list.Add(ad_text);
-                            this.advertencia=ad_list;
-                        }else{
+                            this.advertencia = ad_list;
+                        }
+                        else
+                        {
                             this.advertencia.Add(ad_text);
                         }
                     }
                     publicacion.correspondingAuthor = publicacion.seqOfAuthors[0];
-                    if(publicacion.correspondingAuthor==null){
+                    if (publicacion.correspondingAuthor == null)
+                    {
                         //edventencia! 
                         string ad_text = "No hay autor principal.";
-                        if(this.advertencia==null){
+                        if (this.advertencia == null)
+                        {
                             List<string> ad_list = new List<string>();
                             ad_list.Add(ad_text);
-                            this.advertencia=ad_list;
-                        }else{
+                            this.advertencia = ad_list;
+                        }
+                        else
+                        {
                             this.advertencia.Add(ad_text);
                         }
                     }
@@ -451,13 +468,56 @@ namespace WoSConnect.ROs.WoS.Controllers
             return null;
         }
 
-        // public List<KnowledgeArea> getKnowledgeAreas(PublicacionInicial objInicial)
-        // {
+        public List<KnowledgeAreas> getKnowledgeAreas(PublicacionInicial objInicial)
+        {
 
-        //     return new List<KnowledgeArea>();
-        // }
+            if (objInicial.static_data != null)
+            {
+                if (objInicial.static_data.fullrecord_metadata != null)
+                {
+                    if (objInicial.static_data.fullrecord_metadata.category_info != null)
+                    {
+                        if (objInicial.static_data.fullrecord_metadata.category_info.subjects != null)
+                        {
+                            if (objInicial.static_data.fullrecord_metadata.category_info.subjects.subject != null)
+                            {
+                                List<KnowledgeArea> list = new List<KnowledgeArea>();
+                                List<KnowledgeAreas> result = new List<KnowledgeAreas>();
+                                KnowledgeAreas info_woS = new KnowledgeAreas();
+                                foreach (Subject sub in objInicial.static_data.fullrecord_metadata.category_info.subjects.subject)
+                                {
+                                    if (sub.content != null)
+                                    {
+                                        KnowledgeArea area = new KnowledgeArea();
+                                        area.name = sub.content;
+                                        if (sub.code != null)
+                                        {
+                                            area.hasCode = sub.code;
+                                        }
+                                        if (area != null)
+                                        {
+                                            list.Add(area);
+                                        }
+                                    }
 
-        public List<FreetextKeyword> getFreetextKeyword(PublicacionInicial objInicial)
+
+                                }
+                                if (list != null)
+                                {
+                                    info_woS.resource = "WoS";
+                                    info_woS.knowledgeArea = list;
+                                    result.Add(info_woS);
+                                    return result;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return new List<KnowledgeAreas>();
+        }
+
+        public List<FreetextKeywords> getFreetextKeyword(PublicacionInicial objInicial)
         {
             if (objInicial.static_data != null)
             {
@@ -468,10 +528,10 @@ namespace WoSConnect.ROs.WoS.Controllers
                         try
                         {
                             Keywords hey = JsonConvert.DeserializeObject<Keywords>(objInicial.static_data.fullrecord_metadata.keywords.ToString());
-                            FreetextKeyword list = new FreetextKeyword();
+                            FreetextKeywords list = new FreetextKeywords();
                             list.freetextKeyword = hey.keyword;
-                            list.origin = "WoS";
-                            List<FreetextKeyword> sol_list = new List<FreetextKeyword>();
+                            list.source = "WoS";
+                            List<FreetextKeywords> sol_list = new List<FreetextKeywords>();
                             sol_list.Add(list);
                             return sol_list;
                         }
@@ -481,10 +541,10 @@ namespace WoSConnect.ROs.WoS.Controllers
                             List<string> sol = new List<string>();
                             Keywords_2 hey = JsonConvert.DeserializeObject<Keywords_2>(objInicial.static_data.fullrecord_metadata.keywords.ToString());
                             sol.Add(hey.keyword);
-                            FreetextKeyword list = new FreetextKeyword();
+                            FreetextKeywords list = new FreetextKeywords();
                             list.freetextKeyword = sol;
-                            list.origin = "WoS";
-                            List<FreetextKeyword> sol_list = new List<FreetextKeyword>();
+                            list.source = "WoS";
+                            List<FreetextKeywords> sol_list = new List<FreetextKeywords>();
                             sol_list.Add(list);
                             return sol_list;
 
@@ -525,12 +585,16 @@ namespace WoSConnect.ROs.WoS.Controllers
                                         {
                                             persona.ORCID = ee.orcid_id;
                                         }
+
                                         List<string> nombres = new List<string>();
+                                        List<string> apellidos = new List<string>();
+                                        List<string> nombres_completo = new List<string>();
+
                                         if (ee.display_name != null)
                                         {
-                                            if (!nombres.Contains(ee.display_name))
+                                            if (!nombres_completo.Contains(ee.display_name))
                                             {
-                                                nombres.Add(ee.display_name);
+                                                nombres_completo.Add(ee.display_name);
                                             }
                                         }
                                         if (ee.first_name != null)
@@ -542,21 +606,35 @@ namespace WoSConnect.ROs.WoS.Controllers
                                         }
                                         if (ee.full_name != null)
                                         {
-                                            if (!nombres.Contains(ee.full_name))
+                                            if (!nombres_completo.Contains(ee.full_name))
                                             {
-                                                nombres.Add(ee.full_name);
+                                                nombres_completo.Add(ee.full_name);
                                             }
                                         }
                                         if (ee.last_name != null)
                                         {
-                                            if (!nombres.Contains(ee.last_name))
+                                            if (!apellidos.Contains(ee.last_name))
                                             {
-                                                nombres.Add(ee.last_name);
+                                                apellidos.Add(ee.last_name);
                                             }
                                         }
-                                        if (nombres.Count != 0)
+                                        if (nombres.Count > 0 || apellidos.Count > 0 || nombres_completo.Count > 0)
                                         {
-                                            persona.name = nombres;
+                                            Name nombre = new Name();
+                                            if (apellidos.Count > 0)
+                                            {
+                                                nombre.familia = apellidos;
+                                            }
+                                            if (nombres.Count > 0)
+                                            {
+                                                nombre.given = nombres;
+                                            }
+                                            if (nombres_completo.Count > 0)
+                                            {
+                                                nombre.nombre_completo = nombres_completo;
+                                            }
+                                            persona.name = nombre;
+
                                         }
                                         result.Add(persona);
 
@@ -566,11 +644,14 @@ namespace WoSConnect.ROs.WoS.Controllers
                                         Name_1 ee = JsonConvert.DeserializeObject<Name_1>(var.ToString());
 
                                         List<string> nombres = new List<string>();
+                                        List<string> apellidos = new List<string>();
+                                        List<string> nombres_completo = new List<string>();
+
                                         if (ee.display_name != null)
                                         {
-                                            if (!nombres.Contains(ee.display_name))
+                                            if (!nombres_completo.Contains(ee.display_name))
                                             {
-                                                nombres.Add(ee.display_name);
+                                                nombres_completo.Add(ee.display_name);
                                             }
                                         }
                                         if (ee.first_name != null)
@@ -582,22 +663,37 @@ namespace WoSConnect.ROs.WoS.Controllers
                                         }
                                         if (ee.full_name != null)
                                         {
-                                            if (!nombres.Contains(ee.full_name))
+                                            if (!nombres_completo.Contains(ee.full_name))
                                             {
-                                                nombres.Add(ee.full_name);
+                                                nombres_completo.Add(ee.full_name);
                                             }
                                         }
                                         if (ee.last_name != null)
                                         {
-                                            if (!nombres.Contains(ee.last_name))
+                                            if (!apellidos.Contains(ee.last_name))
                                             {
-                                                nombres.Add(ee.last_name);
+                                                apellidos.Add(ee.last_name);
                                             }
                                         }
-                                        if (nombres.Count != 0)
+                                        if (nombres.Count > 0 || apellidos.Count > 0 || nombres_completo.Count > 0)
                                         {
-                                            persona.name = nombres;
+                                            Name nombre = new Name();
+                                            if (apellidos.Count > 0)
+                                            {
+                                                nombre.familia = apellidos;
+                                            }
+                                            if (nombres.Count > 0)
+                                            {
+                                                nombre.given = nombres;
+                                            }
+                                            if (nombres_completo.Count > 0)
+                                            {
+                                                nombre.nombre_completo = nombres_completo;
+                                            }
+                                            persona.name = nombre;
+
                                         }
+
                                         result.Add(persona);
 
                                     }
@@ -616,12 +712,16 @@ namespace WoSConnect.ROs.WoS.Controllers
                                     {
                                         persona.ORCID = ee.orcid_id;
                                     }
+
                                     List<string> nombres = new List<string>();
+                                    List<string> apellidos = new List<string>();
+                                    List<string> nombres_completo = new List<string>();
+
                                     if (ee.display_name != null)
                                     {
-                                        if (!nombres.Contains(ee.display_name))
+                                        if (!nombres_completo.Contains(ee.display_name))
                                         {
-                                            nombres.Add(ee.display_name);
+                                            nombres_completo.Add(ee.display_name);
                                         }
                                     }
                                     if (ee.first_name != null)
@@ -633,21 +733,35 @@ namespace WoSConnect.ROs.WoS.Controllers
                                     }
                                     if (ee.full_name != null)
                                     {
-                                        if (!nombres.Contains(ee.full_name))
+                                        if (!nombres_completo.Contains(ee.full_name))
                                         {
-                                            nombres.Add(ee.full_name);
+                                            nombres_completo.Add(ee.full_name);
                                         }
                                     }
                                     if (ee.last_name != null)
                                     {
-                                        if (!nombres.Contains(ee.last_name))
+                                        if (!apellidos.Contains(ee.last_name))
                                         {
-                                            nombres.Add(ee.last_name);
+                                            apellidos.Add(ee.last_name);
                                         }
                                     }
-                                    if (nombres.Count != 0)
+                                    if (nombres.Count > 0 || apellidos.Count > 0 || nombres_completo.Count > 0)
                                     {
-                                        persona.name = nombres;
+                                        Name nombre = new Name();
+                                        if (apellidos.Count > 0)
+                                        {
+                                            nombre.familia = apellidos;
+                                        }
+                                        if (nombres.Count > 0)
+                                        {
+                                            nombre.given = nombres;
+                                        }
+                                        if (nombres_completo.Count > 0)
+                                        {
+                                            nombre.nombre_completo = nombres_completo;
+                                        }
+                                        persona.name = nombre;
+
                                     }
                                     result.Add(persona);
 
@@ -658,12 +772,16 @@ namespace WoSConnect.ROs.WoS.Controllers
                                     Name_1 ee = JsonConvert.DeserializeObject<Name_1>(objInicial.static_data.summary.names.name.ToString());
                                     Person persona = new Person();
 
+
                                     List<string> nombres = new List<string>();
+                                    List<string> apellidos = new List<string>();
+                                    List<string> nombres_completo = new List<string>();
+
                                     if (ee.display_name != null)
                                     {
-                                        if (!nombres.Contains(ee.display_name))
+                                        if (!nombres_completo.Contains(ee.display_name))
                                         {
-                                            nombres.Add(ee.display_name);
+                                            nombres_completo.Add(ee.display_name);
                                         }
                                     }
                                     if (ee.first_name != null)
@@ -675,21 +793,35 @@ namespace WoSConnect.ROs.WoS.Controllers
                                     }
                                     if (ee.full_name != null)
                                     {
-                                        if (!nombres.Contains(ee.full_name))
+                                        if (!nombres_completo.Contains(ee.full_name))
                                         {
-                                            nombres.Add(ee.full_name);
+                                            nombres_completo.Add(ee.full_name);
                                         }
                                     }
                                     if (ee.last_name != null)
                                     {
-                                        if (!nombres.Contains(ee.last_name))
+                                        if (!apellidos.Contains(ee.last_name))
                                         {
-                                            nombres.Add(ee.last_name);
+                                            apellidos.Add(ee.last_name);
                                         }
                                     }
-                                    if (nombres.Count != 0)
+                                    if (nombres.Count > 0 || apellidos.Count > 0 || nombres_completo.Count > 0)
                                     {
-                                        persona.name = nombres;
+                                        Name nombre = new Name();
+                                        if (apellidos.Count > 0)
+                                        {
+                                            nombre.familia = apellidos;
+                                        }
+                                        if (nombres.Count > 0)
+                                        {
+                                            nombre.given = nombres;
+                                        }
+                                        if (nombres_completo.Count > 0)
+                                        {
+                                            nombre.nombre_completo = nombres_completo;
+                                        }
+                                        persona.name = nombre;
+
                                     }
                                     result.Add(persona);
                                     return result;
@@ -702,9 +834,10 @@ namespace WoSConnect.ROs.WoS.Controllers
             return null;
         }
 
-        public Journal getJournal(PublicacionInicial objInicial)
+        public Source getJournal(PublicacionInicial objInicial)
         {
-            Journal revista = new Journal();
+            Source revista = new Source();
+            //todo! completar 
             if (objInicial.static_data != null)
             {
                 if (objInicial.static_data.summary != null)
@@ -718,6 +851,41 @@ namespace WoSConnect.ROs.WoS.Controllers
                                 if (title.type == "source")
                                 {
                                     revista.name = title.content;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if (objInicial.static_data != null)
+            {
+                if (objInicial.static_data.summary != null)
+                {
+                    if (objInicial.static_data.summary.pub_info != null)
+                    {
+                        if (objInicial.static_data.summary.pub_info.pubtype != null)
+                        {
+                            if (objInicial.static_data.summary.pub_info.pubtype == "Journal")
+                            {
+                                revista.type = "Journal";
+                            }
+                            else if (objInicial.static_data.summary.pub_info.pubtype == "Book")
+                            {
+                                revista.type = "Book";
+                            }
+                            else
+                            {
+                                //recogida de errores! 
+                                string ad = "No se ha identidicado el tipo de recurso en el que esta publicado";
+                                if (this.advertencia != null)
+                                {
+                                    this.advertencia.Add(ad);
+                                }
+                                else
+                                {
+                                    List<string> advertencias = new List<string>();
+                                    advertencias.Add(ad);
+                                    this.advertencia = advertencias;
                                 }
                             }
                         }
@@ -741,11 +909,20 @@ namespace WoSConnect.ROs.WoS.Controllers
 
                                     if (identifier.type == "issn")
                                     {
-                                        revista.issn = identifier.value;
+                                        List<string> issn = new List<string>();
+                                        issn.Add(identifier.value);
+                                        revista.issn = issn;
                                     }
                                     if (identifier.type == "eissn")
                                     {
                                         revista.eissn = identifier.value;
+                                    }
+                                    if (identifier.type == "isbn")
+                                    {
+                                        List<string> isbn = new List<string>();
+                                        isbn.Add(identifier.value);
+                                        revista.issn = isbn;
+                                        revista.isbn = isbn;
                                     }
                                 }
                             }
@@ -754,20 +931,29 @@ namespace WoSConnect.ROs.WoS.Controllers
                                 Identifier identifier = JsonConvert.DeserializeObject<Identifier>(objInicial.dynamic_data.cluster_related.identifiers.identifier.ToString());
                                 if (identifier.type == "issn")
                                 {
-                                    revista.issn = identifier.value;
+                                    List<string> issn = new List<string>();
+                                    issn.Add(identifier.value);
+                                    revista.issn = issn;
                                 }
                                 if (identifier.type == "eissn")
                                 {
                                     revista.eissn = identifier.value;
                                 }
+
+                                if (identifier.type == "isbn")
+                                {
+                                    List<string> isbn = new List<string>();
+                                    isbn.Add(identifier.value);
+                                    revista.issn = isbn;
+                                    revista.isbn = isbn;
+                                }
                             }
+
                         }
-
-
                     }
                 }
             }
-            if (revista != new Journal())
+            if (revista != new Source())
             {
                 return revista;
             }

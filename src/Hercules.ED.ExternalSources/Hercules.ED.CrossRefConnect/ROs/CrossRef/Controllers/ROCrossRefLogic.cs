@@ -98,6 +98,7 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
         {
             Uri url = new Uri(baseUri + string.Format(uri, name));
             string info_publication = httpCall(url.ToString(), "GET", headers).Result;
+            Console.Write(info_publication);
             // MODELO DEVUELTO 
             if(info_publication=="Resource not found."){
                 //Console.Write("HEY");

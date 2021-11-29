@@ -171,7 +171,9 @@ namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
                     if(author.name!=null){
                     List<string> nombres = new List<string>();
                     nombres.Add(author.name);
-                    persona.name=nombres;
+                    Name nom = new Name();
+                    nom.nombre_completo=nombres;
+                    persona.name=nom;
                     }
                     if(author.authorId!=null){
                         List<string> ids = new List<string>();
@@ -185,10 +187,10 @@ namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
             return null;
         }
 
-        public Journal getJournal(Root objInicial)
+        public Source getJournal(Root objInicial)
         {
             if(objInicial.venue!=null && objInicial.venue!=""){
-                Journal revista = new Journal();
+                Source revista = new Source();
                 revista.name= objInicial.venue;
                 return revista;
             }

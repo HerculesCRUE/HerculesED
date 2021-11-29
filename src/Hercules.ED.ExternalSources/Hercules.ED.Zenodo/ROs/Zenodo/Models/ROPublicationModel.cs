@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 
 
-namespace CrossRefConnect.ROs.CrossRef.Models 
+namespace ZenodoConnect.ROs.Zenodo.Models
 {
-
 
 public class Publication 
 {
@@ -209,8 +208,6 @@ public class enriquecimiento_palabras{
     [JsonProperty("abstract")]
     public string abstract_ {get;set;}
 }
-
-
 
 
 }

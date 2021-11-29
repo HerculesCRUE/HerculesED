@@ -1,3 +1,6 @@
-nltk
-sklearn
-imblearn
+scikit-learn
+torchvision
+numpy
+tqdm
+transformers
+tensorboard

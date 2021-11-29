@@ -99,8 +99,7 @@ namespace ScopusConnect.ROs.Scopus.Controllers
             string date_scopus = date.Substring(0, 4) + "-" + (DateTime.Now.Date.Year+1).ToString();
             
             ROScopusControllerJSON info = new ROScopusControllerJSON(this);
-            
-            
+        
             int n = 0;
             List<Publication> sol = new List<Publication>();
             int result = 1;
@@ -110,10 +109,11 @@ namespace ScopusConnect.ROs.Scopus.Controllers
     
                 uri = "content/search/scopus?query=ORCID(\"{0}\")&count=200&date={1}&start={2}";
                 Uri url = new Uri(baseUri + string.Format(uri, name, date_scopus, result.ToString()));
+                n=n+1;
                 result = 200*n;
 
-                n++;
                 String info_publication = httpCall(url.ToString(), "GET", headers).Result;
+                //Console.Write(info_publication);
                 if (info_publication != "{\"service-error\":{\"status\":{\"statusCode\":\"INVALID_INPUT\",\"statusText\":\"Error translating query\"}}}")
                 {            
                     Root objInicial = JsonConvert.DeserializeObject<Root>(info_publication);

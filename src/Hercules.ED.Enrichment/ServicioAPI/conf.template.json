@@ -1,0 +1,23 @@
+{
+    "tmp_path":"/tmp/gnoss-hercules-api-2/",
+    "device":"gpu:0",
+    "topics": [
+    	{"name":"papers","path":"topic_models/papers","type":"bert"},
+	{"name":"sourceForge","path":"topic_models/sourceforge","type":"roberta"},
+	{"name":"bio-protocol","path":"topic_models/bio-protocol","type":"roberta"}
+    ],
+    "keyphrases": [
+	{"name":"papers","path":"topic_models/keyphrase_extraction/papers"},
+	{"name":"sourceForge","path":"topic_models/keyphrase_extraction/sourceforge"}
+    ],
+    "users": [
+	{
+	    "username": "elhuyar",
+	    "password": "$6$rounds=656000$O16mWAuLx/A.X96s$NK1J9GScrw9CVx7Y2MFz99D9WIWH0c0Ip8JTaYnkcbGHuC.IVHCnz60SSU.OG/CzmNvyU4gHt.2xNcAVaVhGn."
+	},
+	{
+	    "username": "gnoss",
+	    "password": "$6$rounds=656000$O16mWAuLx/A.X96s$NK1J9GScrw9CVx7Y2MFz99D9WIWH0c0Ip8JTaYnkcbGHuC.IVHCnz60SSU.OG/CzmNvyU4gHt.2xNcAVaVhGn."
+	}
+    ]
+}
