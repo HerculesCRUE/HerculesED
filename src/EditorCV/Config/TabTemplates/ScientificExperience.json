@@ -538,6 +538,23 @@
 						"properties": [
 							{
 								"name": {
+									"es": "Entidad de realización"
+								},
+								"showMiniBold": true,
+								"child": {
+									"property": "http://vivoweb.org/ontology/core#relatedBy",
+									"graph": "project",
+									"child": {
+										"property": "http://w3id.org/roh/conductedBy",
+										"graph": "organization",
+										"child": {
+											"property": "http://w3id.org/roh/title"
+										}
+									}
+								}
+							},
+							{
+								"name": {
 									"es": "Fecha de inicio"
 								},
 								"showMiniBold": true,
@@ -572,7 +589,7 @@
 										}
 									}
 								]
-							}
+							},
 						]
 					},
 					"listItemEdit": {
