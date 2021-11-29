@@ -5065,7 +5065,7 @@
 					},
 					"listItemEdit": {
 						"graph": "stay",
-						"proptitle": "http://w3id.org/roh/title",
+						"proptitle": "http://w3id.org/roh/performedTasks",
 						"rdftype": "http://w3id.org/roh/Stay",
 						"sections": [
 							{
@@ -5110,6 +5110,7 @@
 													"es": "Introduce las tareas contrastables"
 												},
 												"property": "http://w3id.org/roh/performedTasks",
+												"required": true,
 												"type": "text",
 												"width": 2
 											}
