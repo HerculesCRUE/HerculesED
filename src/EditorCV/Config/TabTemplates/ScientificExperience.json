@@ -1522,7 +1522,11 @@
 									"property": "http://vivoweb.org/ontology/core#relatedBy",
 									"graph": "group",
 									"child": {
-										"property": "http://vivoweb.org/ontology/core#affiliatedOrganization"
+										"property": "http://vivoweb.org/ontology/core#affiliatedOrganization",
+										"graph": "organization",
+										"property": {
+											"property": "http://w3id.org/roh/title"
+										}
 									}
 								}
 							},
@@ -1905,7 +1909,7 @@
 												"property": "http://vivoweb.org/ontology/core#start",
 												"type": "date",
 												"width": 1
-											},
+											}
 										]
 									},
 									{
@@ -2072,7 +2076,7 @@
 												"width": 1
 											}
 										]
-									},
+									}
 								]
 							}
 						]
