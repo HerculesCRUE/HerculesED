@@ -94,7 +94,7 @@
 										"graph": "project",
 										"order": "http://www.w3.org/1999/02/22-rdf-syntax-ns#comment",
 										"child": {
-											"property": "http://purl.org/ontology/bibo/authorList",
+											"property": "http://vivoweb.org/ontology/core#relates",
 											"child": {
 												"property": "http://w3id.org/roh/title"
 											}
@@ -165,7 +165,7 @@
 									{
 										"properties": [
 											{
-												"property": "http://purl.org/ontology/bibo/authorList",
+												"property": "http://vivoweb.org/ontology/core#relates",
 												"type": "auxEntityAuthorList",
 												"title": {
 													"es": "Nombres investigadores principales (IP, Co-IP,...)"
@@ -571,7 +571,7 @@
 										"graph": "project",
 										"order": "http://www.w3.org/1999/02/22-rdf-syntax-ns#comment",
 										"child": {
-											"property": "http://purl.org/ontology/bibo/authorList",
+											"property": "http://vivoweb.org/ontology/core#relates",
 											"child": {
 												"property": "http://w3id.org/roh/title"
 											}
@@ -642,7 +642,7 @@
 									{
 										"properties": [
 											{
-												"property": "http://purl.org/ontology/bibo/authorList",
+												"property": "http://vivoweb.org/ontology/core#relates",
 												"type": "auxEntityAuthorList",
 												"title": {
 													"es": "Nombres investigadores principales (IP, Co-IP,...)"
@@ -1170,7 +1170,7 @@
 									{
 										"properties": [
 											{
-												"property": "http://purl.org/ontology/bibo/authorList",
+												"property": "http://w3id.org/roh/patentInventor",
 												"type": "auxEntityAuthorList",
 												"title": {
 													"es": "Inventores/autores/obtentores"
