@@ -91,17 +91,6 @@
 								"childOR": [
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "project",
-										"order": "http://www.w3.org/1999/02/22-rdf-syntax-ns#comment",
-										"child": {
-											"property": "http://vivoweb.org/ontology/core#relates",
-											"child": {
-												"property": "http://w3id.org/roh/title"
-											}
-										}
-									},
-									{
-										"property": "http://vivoweb.org/ontology/core#relatedBy",
 										"graph": "document",
 										"order": "http://www.w3.org/1999/02/22-rdf-syntax-ns#comment",
 										"child": {
@@ -182,7 +171,7 @@
 												},
 												"property": "http://w3id.org/roh/conductedBy",
 												"combo": {
-													"rdftype": "http://w3id.org/roh/PublicationType",
+													"rdftype": "http://xmlns.com/foaf/0.1/Organization",
 													"graph": "organization",
 													"property": {
 														"property": "http://purl.org/dc/elements/1.1/title"
