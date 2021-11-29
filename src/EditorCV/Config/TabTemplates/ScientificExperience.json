@@ -1808,7 +1808,7 @@
 							"property": "http://vivoweb.org/ontology/core#relatedBy",
 							"graph": "supervisedartisticproject",
 							"child": {
-								"property": "http://w3id.org/roh/title"
+								"property": "http://vivoweb.org/ontology/core#description"
 							}
 						},
 						"orders": [
@@ -1829,7 +1829,7 @@
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
 										"graph": "supervisedartisticproject",
 										"child": {
-											"property": "http://w3id.org/roh/title"
+											"property": "http://vivoweb.org/ontology/core#description"
 										},
 										"asc": true
 									}
@@ -1852,7 +1852,7 @@
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
 										"graph": "supervisedartisticproject",
 										"child": {
-											"property": "http://w3id.org/roh/title"
+											"property": "http://vivoweb.org/ontology/core#description"
 										},
 										"asc": true
 									}
@@ -1902,7 +1902,7 @@
 					"listItemEdit": {
 						"graph": "supervisedartisticproject",
 						"proptitle": "http://vivoweb.org/ontology/core#description",
-						"rdftype": "http://vivoweb.org/ontology/core#SupervisedArtisticProject",
+						"rdftype": "http://w3id.org/roh/SupervisedArtisticProject",
 						"sections": [
 							{
 								"title": {
