@@ -174,7 +174,7 @@
 													"rdftype": "http://xmlns.com/foaf/0.1/Organization",
 													"graph": "organization",
 													"property": {
-														"property": "http://purl.org/dc/elements/1.1/title"
+														"property": "http://w3id.org/roh/title"
 													}
 												},
 												"type": "selectCombo",
@@ -193,7 +193,7 @@
 													"rdftype": "http://xmlns.com/foaf/0.1/Organization",
 													"graph": "organization",
 													"property": {
-														"property": "http://purl.org/dc/elements/1.1/title"
+														"property": "http://w3id.org/roh/title"
 													}
 												},
 												"type": "selectCombo",
@@ -2212,7 +2212,7 @@
 									{
 										"properties": [
 											{
-												"property": "http://purl.org/ontology/bibo/authorList",
+												"property": "http://vivoweb.org/ontology/core#relates",
 												"type": "auxEntityAuthorList",
 												"title": {
 													"es": "Autores/as (p.o. de firma)"
