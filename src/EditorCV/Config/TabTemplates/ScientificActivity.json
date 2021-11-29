@@ -4581,7 +4581,7 @@
 		},
 		{
 			"rdftype": "http://w3id.org/roh/RelatedForum",
-			"property": "http://w3id.org/roh/prizes",
+			"property": "http://w3id.org/roh/forums",
 			"presentation": {
 				"type": "listitems",
 				"title": {
