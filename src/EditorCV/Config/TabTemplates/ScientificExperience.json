@@ -1058,7 +1058,24 @@
 						"properties": [
 							{
 								"name": {
-									"es": "Fecha de inicio"
+									"es": "Entidad titular de derechos"
+								},
+								"showMiniBold": true,
+								"child": {
+									"property": "http://vivoweb.org/ontology/core#relatedBy",
+									"graph": "patent",
+									"child": {
+										"property": "http://w3id.org/roh/ownerOrganization",
+										"graph": "organization",
+										"child": {
+											"property": "http://w3id.org/roh/title"
+										}
+									}
+								}
+							},
+							{
+								"name": {
+									"es": "Fecha de registro"
 								},
 								"showMiniBold": true,
 								"type": "date",
@@ -1066,7 +1083,7 @@
 									"property": "http://vivoweb.org/ontology/core#relatedBy",
 									"graph": "patent",
 									"child": {
-										"property": "http://vivoweb.org/ontology/core#start"
+										"property": "http://vivoweb.org/ontology/core#dateFiled"
 									}
 								}
 							}
