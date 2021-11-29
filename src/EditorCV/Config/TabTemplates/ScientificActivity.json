@@ -4693,14 +4693,17 @@
 												"title": {
 													"es": "Entidad organizadora"
 												},
-												"TODO": "Autocompletado/texto libre. En caso de que haya que añadir una nueva organización, será por autocompletado o combo",
-												"placeholder": {
-													"es": "Introduce la entidad concesionaria"
-												},
 												"property": "http://w3id.org/roh/promotedBy",
-												"type": "text",
+												"combo": {
+													"rdftype": "http://xmlns.com/foaf/0.1/Organization",
+													"graph": "organization",
+													"property": {
+														"property": "http://w3id.org/roh/title"
+													}
+												},
+												"type": "selectCombo",
 												"width": 2
-											}
+											},
 										]
 									}
 								]
