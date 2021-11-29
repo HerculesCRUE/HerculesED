@@ -4215,12 +4215,15 @@
 												"title": {
 													"es": "Entidad convocante"
 												},
-												"TODO": "Autocompletado/texto libre. En caso de que haya que añadir una nueva organización, será por autocompletado o combo",
-												"placeholder": {
-													"es": "Introduce la entidad convocante"
-												},
 												"property": "http://w3id.org/roh/promotedBy",
-												"type": "text",
+												"combo": {
+													"rdftype": "http://xmlns.com/foaf/0.1/Organization",
+													"graph": "organization",
+													"property": {
+														"property": "http://w3id.org/roh/title"
+													}
+												},
+												"type": "selectCombo",
 												"width": 2
 											}
 										]
@@ -4461,12 +4464,15 @@
 												"title": {
 													"es": "Entidad de realización"
 												},
-												"TODO": "Autocompletado/texto libre. En caso de que haya que añadir una nueva organización, será por autocompletado o combo",
-												"placeholder": {
-													"es": "Introduce la entidad de realización"
-												},
 												"property": "http://w3id.org/roh/promotedBy",
-												"type": "text",
+												"combo": {
+													"rdftype": "http://xmlns.com/foaf/0.1/Organization",
+													"graph": "organization",
+													"property": {
+														"property": "http://w3id.org/roh/title"
+													}
+												},
+												"type": "selectCombo",
 												"width": 2
 											}
 										]
@@ -6197,12 +6203,15 @@
 												"title": {
 													"es": "Entidad de afiliación"
 												},
-												"TODO": "Autocompletado/texto libre. En caso de que haya que añadir una nueva organización, será por autocompletado o combo",
-												"placeholder": {
-													"es": "Introduce la entidad de afiliación"
-												},
 												"property": "http://vivoweb.org/ontology/core#affiliatedOrganization",
-												"type": "text",
+												"combo": {
+													"rdftype": "http://xmlns.com/foaf/0.1/Organization",
+													"graph": "organization",
+													"property": {
+														"property": "http://w3id.org/roh/title"
+													}
+												},
+												"type": "selectCombo",
 												"width": 2
 											}
 										]
