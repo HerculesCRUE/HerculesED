@@ -21,6 +21,13 @@ wget https://storage.googleapis.com/elhuyar/Hercules/specific_descriptors/krapiv
 tar xfz krapivin-raw.tar.gz
 ```
 
+The tf-idf models are also required in order to train the models:
+
+```
+wget https://storage.googleapis.com/elhuyar/Hercules/specific_descriptors/hercules-tfidf-models.tar.gz
+tar xfz hercules-tfidf-models.tar.gz
+```
+
 Optionally, you can also download the resources which will be created after following the steps in this guide.
 
 ```
@@ -42,15 +49,15 @@ To create the dataset to train the model, we will use the raw Krapivin dataset a
 python3 krapivin_extract_features.py [--fulltext] krapivin-set/ clef.pkl scopus.pkl idfakCLEF.pkl krapivin.tsv
 ```
 
-_Note: We should set the optional argument `--fulltext` if we want to extract keyword candidates from the full texts, and leave it blank if we want to extract them only from the title + abstract._
+_Note: You should set the optional argument `--fulltext` if you want to extract keyword candidates from the full texts, and leave it blank if you want to extract them only from the title + abstract._
 
-Then we split the full dataset into three sets: train, test and dev. We must not mix candidates from each document in different sets. That means we must split the dataset by document IDs. We can use the following script for that task:
+Then split the full dataset into three sets: train, test and dev. You must not mix candidates from each document in different sets. That means you must split the dataset by document IDs. You can use the following script for that task:
 
 ```
 python3 split_train_test.py krapivin.tsv train_docs.txt test_docs.txt
 ```
 
-_Note: We share the distribution of the document IDs used in our experiments. You can find them in the files `train_docs.txt` and `test_docs.txt`._
+_Note: We shared the distribution of the document IDs used in our experiments. You can find them in the files [`train_docs.txt`](https://storage.googleapis.com/elhuyar/Hercules/specific_descriptors/train_docs.txt) and [`test_docs.txt`](https://storage.googleapis.com/elhuyar/Hercules/specific_descriptors/test_docs.txt)._
 
 Once we have the three sets, we are able to train the model:
 
@@ -73,4 +80,4 @@ In order to get the ranking of a single document contained in the test-set, exec
 python3 dump_doc_ranks.py krapivin_single_model.sav krapivin_multi_model.sav krapivin.test.tsv 608626.txt
 ```
 
-Both models will be used by the main API service to perform the keyword extraction from new text documents.
+Both models (fulltext and abstracts) will be used by the main API service to perform the keyword extraction from new text documents.
