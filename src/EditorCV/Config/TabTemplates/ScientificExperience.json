@@ -1582,7 +1582,7 @@
 												"placeholder": {
 													"es": "Introduce el objeto del grupo"
 												},
-												"property": "",
+												"property": "http://vivoweb.org/ontology/core#description",
 												"type": "text",
 												"width": 2
 											},
