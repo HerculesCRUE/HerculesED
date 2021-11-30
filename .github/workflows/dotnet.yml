@@ -1,4 +1,4 @@
-name: Build
+name: Sonar_HARVESTER_TEST
 on:
   push:
     branches:
