@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Harvester.Models
 {
-    class IdentifierOAIPMH
+    public class IdentifierOAIPMH
     {
         public string Identifier { get; set; }
         public DateTime Date { get; set; }

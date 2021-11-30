@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31729.503
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harvester", "Harvester\Harvester.csproj", "{FEE8234C-9D4E-41DB-AB3A-A202DBC0B6BB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "hercules", "ClasesGeneradas\hercules.csproj", "{134B24D9-A459-45E9-983A-EF0A99385084}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HarvesterTest", "HarvesterTest\HarvesterTest.csproj", "{A9567857-B0B2-4E80-BED3-5C650E819FA3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{134B24D9-A459-45E9-983A-EF0A99385084}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{134B24D9-A459-45E9-983A-EF0A99385084}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{134B24D9-A459-45E9-983A-EF0A99385084}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9567857-B0B2-4E80-BED3-5C650E819FA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9567857-B0B2-4E80-BED3-5C650E819FA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9567857-B0B2-4E80-BED3-5C650E819FA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9567857-B0B2-4E80-BED3-5C650E819FA3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

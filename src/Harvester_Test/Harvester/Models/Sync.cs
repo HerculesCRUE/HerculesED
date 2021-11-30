@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Harvester.Models
 {
-    class Sync
+    public class Sync
     {
         public string Date { get; set; }
         public int LoadedResourcesNumber { get; set; }

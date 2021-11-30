@@ -26,14 +26,16 @@ namespace Harvester
 
         public static void LoadMainEntities()
         {
+            Harvester h = new(new IHarvesterServices());
+
             //Harvest organizations
-            List<Empresa> organizationList = Harvester.HarvestOrganizations();
+            List<Empresa> organizationList = h.HarvestOrganizations();
 
             //Harvest people
-            List<Persona> peopleList = Harvester.HarvestPeople();
+            List<Persona> peopleList = h.HarvestPeople();
 
             //Harvest projects
-            List<Proyecto> projectList = Harvester.HarvestProjects();
+            List<Proyecto> projectList = h.HarvestProjects();
 
             //Resource list to load
             List<ComplexOntologyResource> resourcesToLoadList = new();
@@ -101,11 +103,14 @@ namespace Harvester
                 //If not, create resource
                 else
                 {
-                    PersonOntology.Person newPerson = new();
-                    newPerson.Foaf_firstName = person.Nombre;
-                    newPerson.Foaf_lastName = person.Apellidos;
-                    newPerson.Foaf_name = person.Nombre + " " + person.Apellidos;
-                    newPerson.Roh_isSynchronized = true;
+                    //PersonOntology.Person newPerson = new();
+                    //newPerson.Foaf_firstName = person.Nombre;
+                    //newPerson.Foaf_lastName = person.Apellidos;
+                    //newPerson.Foaf_name = person.Nombre + " " + person.Apellidos;
+                    //newPerson.Roh_isSynchronized = true;
+                    //newPerson.Roh_hasPosition = person.;
+                    //newPerson.IdVivo_departmentOrSchool = person.Vinculacion.DepartamentoPDI.ToString();
+                    //newPerson.Vivo_hasResearchArea = person.
 
                 }
             }

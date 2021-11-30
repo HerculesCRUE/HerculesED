@@ -21,5 +21,7 @@ namespace OAI_PMH.Models.SGI.PersonalData
         public Vinculacion Vinculacion { get; set; }
         public DatosAcademicos DatosAcademicos { get; set; }
         public Fotografia Fotografia { get; set; }
+        public Sexenio Sexenios { get; set; }
+
     }
 }
