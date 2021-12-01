@@ -833,8 +833,8 @@
             var that = this;
             $('#proyectos-tab').unbind().click(function (e) {
                 e.preventDefault();
-                that.tabActive = "proyectos";
-                buscadorPersonalizado.init("@Html.Translate("PROYECTOS")", "#contenedorBuscadorProyectos", "searchProyectosPorGrupo=@pGroup.GNOSSID.Split('_')[1].ToUpper()", null, "rdf:type=project", "@Comunidad.Url", "@Comunidad.Key.ToString()");
+                that.tabActive = "proyectos";				
+                buscadorPersonalizado.init("@Html.Translate("PROYECTOS")", "#contenedorBuscadorProyectos", "roh:publicGroupList=http://gnoss/@pGroup.GNOSSID.Split('_')[1].ToUpper()", null, "rdf:type=project", "@Comunidad.Url", "@Comunidad.Key.ToString()");
             });
             $('#publicaciones-tab').unbind().click(function (e) {
                 e.preventDefault();
