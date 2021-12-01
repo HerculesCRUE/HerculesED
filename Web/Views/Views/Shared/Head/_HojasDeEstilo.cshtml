@@ -1,3 +1,13 @@
+@*[security|||shared/head/_hojasdeestilo.cshtml|||hercules]*@
+@using Es.Riam.Gnoss.Web.MVC.Models
+@using Es.Riam.Gnoss.Web.MVC.Controles.Helper
+@using Es.Riam.Gnoss.Web.MVC.Models.ViewModels
+@using Es.Riam.Gnoss.Web.MVC.Models.Administracion
+@using Es.Riam.Gnoss.AD.ServiciosGenerales
+@using Es.Riam.Gnoss.Web.MVC.Controllers
+@using Es.Riam.Gnoss.Web.MVC.Controllers.Administracion
+@using Es.Riam.Gnoss.Web.Controles
+@using Newtonsoft.Json
 @{
     CommunityModel Comunidad = Html.GetComunidad();
     string versionCSS = ViewBag.Version;
@@ -12,7 +22,7 @@
 
 
 <!-- MATERIAL ICONS -->
-<link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons&amp;op0ubx" media="all">
+<link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined" media="all">
 
 <!-- FONT AWESOME -->
 <link href="https://use.fontawesome.com/releases/v5.0.8/css/all.css" rel="stylesheet">
@@ -39,8 +49,12 @@
 <!-- TOASTR - https://www.jqueryscript.net/other/bootstrap-toasts-manager.html -->
 <link type="text/css" rel="stylesheet" href="@urlPersonalizacion/theme/libraries/toastr/toastr.min.css">
 
+<!-- DATEPICKER -->
+<link type="text/css" rel="stylesheet" href="@urlPersonalizacion/theme/libraries/jqueryUI/jquery-ui.min.css">
+
 <!-- PERSONALIZACION TEMA -->
 <link type="text/css" rel="stylesheet" href="@urlPersonalizacion/theme/theme.css">
 
 <!-- PERSONALIZACION COMUNIDAD -->
 <link type="text/css" rel="stylesheet" href="@urlPersonalizacion/theme/community.css">
+<link type="text/css" rel="stylesheet" href="@urlPersonalizacion/theme/community_proy.css">

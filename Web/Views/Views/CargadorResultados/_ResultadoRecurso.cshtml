@@ -1,3 +1,5 @@
+@using Es.Riam.Gnoss.Web.MVC.Models
+@using Es.Riam.Gnoss.Web.MVC.Controles.Helper
 @model ResourceModel
 
 @if (Model != null)
@@ -32,8 +34,29 @@
                         <h2 class="resource-title">
                             <a href="@Model.CompletCardLink">@Model.Title</a>
                         </h2>
-
-                        <div class="acciones-recurso-listado">
+                        <div class="d-flex quotes" scopus="TODO: SCOPUS" wos="TODO: WOS" inrecs="TODO: INRECS">
+                            @{
+                                if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+                                {
+                                    foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+                                    {
+                                        string idQuery = "NumeroCitas";
+                                        if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
+                                        {
+                                            string propiedad = "referencesLoadedCount";
+                                            foreach (Dictionary<string, string> row in item.Rows)
+                                            {
+                                                if (row.ContainsKey(propiedad))
+                                                {
+                                                    <p>@row[propiedad] citas</p>
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        </div>
+                        <div class="acciones-recurso-listado acciones-recurso-publicacion">
                             <div class="dropdown">
                                 <a href="#" class="dropdown-toggle" role="button" id="dropdownMasOpciones" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <span class="material-icons">more_vert</span>
@@ -65,12 +88,19 @@
                                     @{
                                         if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
                                         {
-                                            string propiedad = "fecha";
                                             foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
                                             {
-                                                if (item.Rows != null && item.Rows.Count > 0 && item.Rows[0].ContainsKey(propiedad))
+                                                string idQuery = "FechaDocumento";
+                                                if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
                                                 {
-                                                    <span>@item.Rows[0][propiedad].Substring(0, 4)</span>
+                                                    string propiedad = "fecha";
+                                                    foreach (Dictionary<string, string> row in item.Rows)
+                                                    {
+                                                        if (row.ContainsKey(propiedad))
+                                                        {
+                                                            <span>@row[propiedad].Substring(0, 4)</span>
+                                                        }
+                                                    }
                                                 }
                                             }
                                         }
@@ -79,12 +109,19 @@
                                 @{
                                     if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
                                     {
-                                        string propiedad = "nombre";
                                         foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
                                         {
-                                            if (item.Rows != null && item.Rows.Count > 0 && item.Rows[0].ContainsKey(propiedad))
+                                            string idQuery = "Journal";
+                                            if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
                                             {
-                                                @item.Rows[0][propiedad]
+                                                string propiedad = "nombre";
+                                                foreach (Dictionary<string, string> row in item.Rows)
+                                                {
+                                                    if (row.ContainsKey(propiedad))
+                                                    {
+                                                        @row[propiedad]
+                                                    }
+                                                }
                                             }
                                         }
                                     }
@@ -93,44 +130,76 @@
                             <div class="list-wrap authors">
                                 <ul>
                                     @{
-                                        Dictionary<string, List<string>> dicAutoresOrg = new Dictionary<string, List<string>>();
+                                        List<Tuple<string, string, string, string>> listaTuplas = new List<Tuple<string, string, string, string>>();
+                                        Dictionary<string, int> dicOrganizaciones = new Dictionary<string, int>();
+                                        string orgExterna = "Organización Externa";
 
                                         if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
                                         {
-                                            string propiedadPersona = "firma";
-                                            string propiedadOrg = "tituloOrg";
-
                                             foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
                                             {
-                                                foreach (Dictionary<string, string> dic in item.Rows)
+                                                string idQuery = "Autores";
+                                                if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
                                                 {
-                                                    if (dic != null && dic.Count > 0 && dic.ContainsKey(propiedadOrg))
+                                                    string propiedadId = "s";
+                                                    string propiedadNombre = "nombre";
+                                                    string propiedadFirma = "firma";
+                                                    string propiedadOrganizacion = "tituloOrg";
+                                                    foreach (Dictionary<string, string> row in item.Rows)
                                                     {
-                                                        if (!dicAutoresOrg.ContainsKey(dic[propiedadOrg]))
-                                                        {
-                                                            dicAutoresOrg.Add(dic[propiedadOrg], new List<string>());
-                                                        }
-                                                    }
-
-                                                    if (dic != null && dic.Count > 0 && dic.ContainsKey(propiedadPersona))
-                                                    {
-                                                        dicAutoresOrg[dic[propiedadOrg]].Add(dic[propiedadPersona]);
+                                                        listaTuplas.Add(new Tuple<string, string, string, string>(row[propiedadId], row[propiedadOrganizacion], row[propiedadNombre], row[propiedadFirma]));
                                                     }
                                                 }
                                             }
                                         }
 
+                                        //Tupla<Id, Organizacion, Nombre, Firma>
                                         int contador = 1;
-                                        foreach (KeyValuePair<string, List<string>> item in dicAutoresOrg)
+                                        foreach (Tuple<string, string, string, string> tupla in listaTuplas)
                                         {
-                                            foreach (string autor in item.Value)
+                                            if (!dicOrganizaciones.ContainsKey(tupla.Item2) && !string.IsNullOrEmpty(tupla.Item2))
                                             {
-                                                <li>
-                                                    <a href="javascript: void(0);">@autor</a>
-                                                    <sup>@contador</sup>
-                                                </li>
+                                                dicOrganizaciones.Add(tupla.Item2, contador);
+                                                contador++;
                                             }
-                                            contador++;
+                                            else if (!dicOrganizaciones.ContainsKey(orgExterna) && string.IsNullOrEmpty(tupla.Item2))
+                                            {
+                                                dicOrganizaciones.Add(orgExterna, contador);
+                                                contador++;
+                                            }
+                                        }
+
+                                        //Tupla<Id, Organizacion, Nombre, Firma>
+                                        foreach (Tuple<string, string, string, string> tupla in listaTuplas)
+                                        {
+                                            string filtroPersona = string.Empty;
+                                            string nombreFirma = string.Empty;
+                                            if (!string.IsNullOrEmpty(tupla.Item4))
+                                            {
+                                                nombreFirma = tupla.Item4;
+                                                filtroPersona = $@"bibo:authorList@@@foaf:nick={tupla.Item4}";
+                                            }
+                                            else if (!string.IsNullOrEmpty(tupla.Item3))
+                                            {
+                                                nombreFirma = tupla.Item3;
+                                                filtroPersona = $@"bibo:authorList@@@rdf:member@@@foaf:name={tupla.Item3}";
+                                            }
+
+                                            int numOrganizacion = 1;
+                                            if (dicOrganizaciones.ContainsKey(tupla.Item2))
+                                            {
+                                                numOrganizacion = dicOrganizaciones[tupla.Item2];
+                                            }
+                                            else if (!dicOrganizaciones.ContainsKey(orgExterna) && string.IsNullOrEmpty(tupla.Item2))
+                                            {
+                                                numOrganizacion = dicOrganizaciones[orgExterna];
+                                            }
+
+                                            <li>
+                                                <a href="javascript: void(0);" class="faceta" name="@filtroPersona">@nombreFirma</a>
+                                                <sup>@numOrganizacion</sup>
+                                            </li>
+
                                         }
                                     }
                                 </ul>
@@ -138,64 +207,50 @@
                             <div class="list-wrap colleges">
                                 <ul>
                                     @{
-                                        contador = 1;
-                                        foreach (KeyValuePair<string, List<string>> item in dicAutoresOrg)
+                                        foreach (KeyValuePair<string, int> item in dicOrganizaciones)
                                         {
                                             <li>
-                                                <sup>@contador</sup>
+                                                <sup>@item.Value</sup>
                                                 <a href="javascript: void(0);">@item.Key</a>
                                             </li>
-                                            contador++;
                                         }
                                     }
                                 </ul>
                             </div>
                             <div class="list-wrap tags">
-                                <p class="title">@Html.Translate("AREAS_CONOCIMIENTO")</p>
-                                <ul>
+                                <div class="label">@Html.Translate("AREAS_CONOCIMIENTO")</div>
+                                <ul class="facetedSearch">
                                     @{
+                                        int contadorCategorias = 0;
                                         if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
                                         {
-                                            string propiedad = "titulo";
                                             foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
                                             {
-                                                if (item.Rows != null && item.Rows.Count > 0 && item.Rows[0].ContainsKey(propiedad))
+                                                string idQuery = "Categorias";
+                                                if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
                                                 {
-                                                    <li>
-                                                        <a href="javascript: void(0);">
-                                                            <span class="texto">@item.Rows[0][propiedad]</span>
-                                                        </a>
-                                                    </li>
-                                                }
-                                            }
-                                        }
-                                    }
-                                </ul>
-                                <!--<p class="moreResults">
-                                    <a href="javascript: void(0);" class="ver-mas" style="display: flex;">Ver más</a>
-                                    <a href="javascript: void(0);" class="ver-menos" style="display: none;">Ver menos</a>
-                                </p>-->
-                            </div>
-                            <div class="list-wrap tags">
-                                <p class="title">@Html.Translate("ETIQUETAS")</p>
-                                <ul>
-                                    @{
-                                        if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
-                                        {
-                                            string propiedad = "freeTextWords";
-                                            foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
-                                            {
-                                                if (item.Rows != null && item.Rows.Count > 0 && item.Rows[0].ContainsKey(propiedad))
-                                                {
-                                                    foreach (Dictionary<string, string> keyWord in item.Rows)
+                                                    string propiedadId = "idCategoria";
+                                                    string propiedadTitulo = "titulo";
+
+                                                    foreach (Dictionary<string, string> row in item.Rows)
                                                     {
-                                                        foreach (KeyValuePair<string, string> claveValor in keyWord)
+                                                        if (row.ContainsKey(propiedadId) && row.ContainsKey(propiedadTitulo))
                                                         {
-                                                            if (claveValor.Key == "freeTextWords")
+                                                            contadorCategorias++;
+                                                            string filtro = $@"roh:hasKnowledgeArea@@@roh:categoryNode={row[propiedadId]}";
+                                                            if (contadorCategorias <= 3)
                                                             {
                                                                 <li>
-                                                                    <a href="javascript: void(0);">
-                                                                        <span class="texto">@claveValor.Value</span>
+                                                                    <a href="javascript: void(0);" class="faceta" name="@filtro">
+                                                                        <span class="texto">@row[propiedadTitulo]</span>
+                                                                    </a>
+                                                                </li>
+                                                            }
+                                                            else
+                                                            {
+                                                                <li class="ocultar" style="display: none;">
+                                                                    <a href="javascript: void(0);" class="faceta" name="@filtro">
+                                                                        <span class="texto">@row[propiedadTitulo]</span>
                                                                     </a>
                                                                 </li>
                                                             }
@@ -203,17 +258,138 @@
                                                     }
                                                 }
                                             }
+                                            if (contadorCategorias == 0)
+                                            {
+                                                <li>
+                                                    <a>
+                                                        <span class="texto">---</span>
+                                                    </a>
+                                                </li>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <li>
+                                                <a>
+                                                    <span class="texto">---</span>
+                                                </a>
+                                            </li>
                                         }
                                     }
                                 </ul>
-                                <!--<p class="moreResults">
-                                    <a href="javascript: void(0);" class="ver-mas" style="display: flex;">Ver más</a>
-                                    <a href="javascript: void(0);" class="ver-menos" style="display: none;">Ver menos</a>
-                                </p>-->
+                                @{
+                                    if (contadorCategorias > 3)
+                                    {
+                                        <p class="moreResults">
+                                            <a href="javascript: void(0);" class="ver-mas" style="display: flex;">@Html.Translate("VER_MAS")</a>
+                                            <a href="javascript: void(0);" class="ver-menos" style="display: none;">@Html.Translate("VER_MENOS")</a>
+                                        </p>
+                                    }
+                                }
+                            </div>
+                            <div class="list-wrap tags">
+                                <div class="label">@Html.Translate("ETIQUETAS")</div>
+                                <ul class="facetedSearch">
+                                    @{
+                                        int contadorEtiquetas = 0;
+                                        if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+                                        {
+                                            foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+                                            {
+                                                string idQuery = "FreeTextWords";
+                                                if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
+                                                {
+                                                    string propiedad = "freeTextWords";
+                                                    foreach (Dictionary<string, string> row in item.Rows)
+                                                    {
+                                                        if (row.ContainsKey(propiedad))
+                                                        {
+                                                            contadorEtiquetas++;
+                                                            string filtro = $@"vivo:freeTextKeyword={row[propiedad]}";
+                                                            if (contadorEtiquetas <= 3)
+                                                            {
+                                                                <li>
+                                                                    <a href="javascript: void(0);" class="faceta" name="@filtro">
+                                                                        <span class="texto">@row[propiedad]</span>
+                                                                    </a>
+                                                                </li>
+                                                            }
+                                                            else
+                                                            {
+                                                                <li class="ocultar" style="display: none;">
+                                                                    <a href="javascript: void(0);" class="faceta" name="@filtro">
+                                                                        <span class="texto">@row[propiedad]</span>
+                                                                    </a>
+                                                                </li>
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            if (contadorEtiquetas == 0)
+                                            {
+                                                <li>
+                                                    <a>
+                                                        <span class="texto">---</span>
+                                                    </a>
+                                                </li>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <li>
+                                                <a>
+                                                    <span class="texto">---</span>
+                                                </a>
+                                            </li>
+                                        }
+                                    }
+                                </ul>
+                                @{ if (contadorEtiquetas > 3)
+                                    {
+                                        <p class="moreResults">
+                                            <a href="javascript: void(0);" class="ver-mas" style="display: flex;">@Html.Translate("VER_MAS")</a>
+                                            <a href="javascript: void(0);" class="ver-menos" style="display: none;">@Html.Translate("VER_MENOS")</a>
+                                        </p> } }
                             </div>
                             <div class="desc">
-                                <p>TODO: Descripción del artículo.</p>
+                                @{
+                                    if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+                                    {
+                                        foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+                                        {
+                                            string idQuery = "Abstract";
+                                            if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
+                                            {
+                                                string propiedad = "abstract";
+                                                foreach (Dictionary<string, string> row in item.Rows)
+                                                {
+                                                    if (row.ContainsKey(propiedad))
+                                                    {
+                                                        <p>@row[propiedad]</p>
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
                             </div>
+                            @{
+                                if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+                                {
+                                    foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+                                    {
+                                        string idQuery = "Abstract";
+                                        if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
+                                        {
+                                            <p class="moreResults showMore">
+                                                <a href="javascript: void(0);" class="ver-mas" style="display: flex;">Ver más <span class="material-icons">expand_more</span></a>
+                                                <a href="javascript: void(0);" class="ver-menos" style="display: none;">Ver menos <span class="material-icons">expand_less</span></a>
+                                            </p>
+                                        }
+                                    }
+                                }
+                            }
                         </div>
                     </div>
                 </div>
@@ -222,7 +398,7 @@
     }
     else if (Model.RdfTypeName == "Project") // Proyectos
     {
-        <article class="resource proyecto enCurso">
+        <article class="resource proyecto">
             <div class="wrap">
                 <div class="middle-wrap">
                     <div class="title-wrap">
@@ -234,19 +410,79 @@
                                 <a href="#" class="dropdown-toggle" role="button" id="dropdownMasOpciones" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <span class="material-icons">more_vert</span>
                                 </a>
-                                <div class="dropdown-menu basic-dropdown dropdown-icons dropdown-menu-right" aria-labelledby="dropdownMasOpciones" style="">
+                                <div class="dropdown-menu basic-dropdown dropdown-icons dropdown-menu-right" aria-labelledby="dropdownMasOpciones">
                                     <p class="dropdown-title">Acciones</p>
                                     <ul class="no-list-style">
                                         <li>
                                             <a class="item-dropdown">
-                                                <span class="material-icons">folder_open</span>
-                                                <span class="texto">TODO: Guardar en favoritos</span>
+                                                <span class="material-icons">create</span>
+                                                <span class="texto">TODO: Editar</span>
                                             </a>
                                         </li>
                                         <li>
                                             <a class="item-dropdown" data-toggle="modal" data-target="#modal-enviar">
-                                                <span class="material-icons">person_add_alt_1</span>
-                                                <span class="texto">TODO: Añadir a clúster</span>
+                                                <span class="material-icons">send</span>
+                                                <span class="texto">TODO: Enviar</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="item-dropdown" data-toggle="modal" data-target="#modal-etiquetar">
+                                                <span class="material-icons">label</span>
+                                                <span class="texto">TODO: Etiquetar</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="item-dropdown" data-toggle="modal" data-target="#modal-categorizar">
+                                                <span class="material-icons">folder_open</span>
+                                                <span class="texto">TODO: Categorizar</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="item-dropdown" data-toggle="modal" data-target="#modal-versionar">
+                                                <span class="material-icons">file_copy</span>
+                                                <span class="texto">TODO: Versionar</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="item-dropdown" data-toggle="modal" data-target="#modal-container">
+                                                <span class="material-icons">dns</span>
+                                                <span class="texto">TODO: Historial</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="item-dropdown" data-toggle="modal" data-target="#modal-bloquear-comentarios">
+                                                <span class="material-icons">speaker_notes_off</span>
+                                                <span class="texto">TODO: Bloquear comentarios</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="item-dropdown" data-toggle="modal" data-target="#modal-vincular">
+                                                <span class="material-icons">attach_file</span>
+                                                <span class="texto">TODO: Vincular</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="item-dropdown" data-toggle="modal" data-target="#modal-certificar">
+                                                <span class="material-icons">verified_user</span>
+                                                <span class="texto">TODO: Certificar</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="item-dropdown" data-toggle="modal" data-target="#modal-eliminar">
+                                                <span class="material-icons">delete</span>
+                                                <span class="texto">TODO: Eliminar</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="item-dropdown" data-toggle="modal" data-target="#modal-compartir">
+                                                <span class="material-icons">share</span>
+                                                <span class="texto">TODO: Compartir</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="item-dropdown">
+                                                <span class="material-icons">forward</span>
+                                                <span class="texto">TODO: Ir a la web</span>
                                             </a>
                                         </li>
                                     </ul>
@@ -256,128 +492,578 @@
                     </div>
                     <div class="content-wrap">
                         <div class="description-wrap">
-                            <p class="tipo">@Html.Translate("TIPO_PROYECTO")</p>
-                            <div class="group-wrap">
-                                <div class="bloque">
-                                    <div class="label">@Html.Translate("ENTIDAD_FINANCIADORA")</div>
-                                    <div class="value">TODO: Comisión Europea (CE)</div>
-                                </div>
-                                <div class="bloque">
-                                    <div class="label">@Html.Translate("PROGRAMA_FINANCIACION")</div>
-                                    <div class="value">TODO: Programa de financiación</div>
-                                </div>
-                                <div class="bloque">
-                                    <div class="label">@Html.Translate("CODIGO_PROYECTO")</div>
-                                    <div class="value">
-                                        TODO: Código.
-                                        @*@{
-                                            if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+                            <div class="list-wrap">
+                                <ul>
+                                    @{
+                                        if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+                                        {
+                                            foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
                                             {
-                                                string propiedad = "id";
-                                                foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+                                                string idQuery = "EntidadRealizacion";
+                                                if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
                                                 {
-                                                    if (item.Rows != null && item.Rows.Count > 0 && item.Rows[0].ContainsKey(propiedad))
+                                                    string propiedad = "nombreOrg";
+                                                    foreach (Dictionary<string, string> row in item.Rows)
                                                     {
-                                                        @item.Rows[0][propiedad]
+                                                        if (row.ContainsKey(propiedad))
+                                                        {
+                                                            <li class="entity">
+                                                                @row[propiedad]
+                                                            </li>
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    @{
+                                        if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+                                        {
+                                            foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+                                            {
+                                                string idQuery = "AmbitoGeografico";
+                                                if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
+                                                {
+                                                    string propiedad = "geographicRegion";
+                                                    foreach (Dictionary<string, string> row in item.Rows)
+                                                    {
+                                                        if (row.ContainsKey(propiedad))
+                                                        {
+                                                            <li>
+                                                                @row[propiedad]
+                                                            </li>
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                </ul>
+                            </div>
+                            <div class="list-wrap authors">
+                                <ul>
+                                    @{
+                                        List<Tuple<string, string, string>> listaTuplas = new List<Tuple<string, string, string>>();
+                                        if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+                                        {
+                                            foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+                                            {
+                                                string idQuery = "Autores";
+                                                if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
+                                                {
+                                                    string propiedadId = "s";
+                                                    string propiedadNombre = "nombre";
+                                                    string propiedadFirma = "firma";
+                                                    foreach (Dictionary<string, string> row in item.Rows)
+                                                    {
+                                                        listaTuplas.Add(new Tuple<string, string, string>(row[propiedadId], row[propiedadNombre], row[propiedadFirma]));
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        //Tupla<Id, Nombre, Firma>
+                                        foreach (Tuple<string, string, string> tupla in listaTuplas)
+                                        {
+                                            string filtroPersona = string.Empty;
+                                            string nombreFirma = string.Empty;
+                                            if (!string.IsNullOrEmpty(tupla.Item3))
+                                            {
+                                                nombreFirma = tupla.Item3;
+                                                filtroPersona = $@"bibo:authorList@@@foaf:nick={tupla.Item3}";
+                                            }
+                                            else if (!string.IsNullOrEmpty(tupla.Item2))
+                                            {
+                                                nombreFirma = tupla.Item2;
+                                                filtroPersona = $@"bibo:authorList@@@rdf:member@@@foaf:name={tupla.Item2}";
+                                            }
+
+                                            <li>
+                                                <a href="javascript: void(0);" class="faceta" name="@filtroPersona">@nombreFirma</a>
+                                            </li>
+                                        }
+                                    }
+                                </ul>
+                            </div>
+                            <div class="desc">
+                                @{
+                                    if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+                                    {
+                                        foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+                                        {
+                                            string idQuery = "DescripcionProyecto";
+                                            if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
+                                            {
+                                                string propiedad = "descripcion";
+                                                foreach (Dictionary<string, string> row in item.Rows)
+                                                {
+                                                    if (row.ContainsKey(propiedad))
+                                                    {
+                                                        <p>@row[propiedad]</p>
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            </div>
+                            @{
+                                if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+                                {
+                                    foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+                                    {
+                                        string idQuery = "DescripcionProyecto";
+                                        if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
+                                        {
+                                            <p class="moreResults showMore">
+                                                <a href="javascript: void(0);" class="ver-mas" style="display: flex;">Ver más <span class="material-icons">expand_more</span></a>
+                                                <a href="javascript: void(0);" class="ver-menos" style="display: none;">Ver menos <span class="material-icons">expand_less</span></a>
+                                            </p>
+                                        }
+                                    }
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
+    }
+    else if (Model.RdfTypeName == "Person") // Persona
+    {
+
+        <article class="resource investigador">
+            <div class="wrap">
+                <div class="user-miniatura">
+                    <div class="imagen-usuario-wrap">
+                        <span class="material-icons">person</span>
+                    </div>
+                </div>
+                <div class="middle-wrap">
+                    <div class="title-wrap">
+                        <h2 class="resource-title">
+                            <a href="@Model.CompletCardLink">@Model.Title</a>
+                        </h2>
+                        <div class="info-resource">
+                            @{
+                                if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+                                {
+                                    foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+                                    {
+                                        string idQuery = "TotalPublicaciones";
+                                        if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
+                                        {
+                                            string propiedad = "numDocumento";
+                                            foreach (Dictionary<string, string> row in item.Rows)
+                                            {
+                                                if (row.ContainsKey(propiedad))
+                                                {
+                                                    <span class="material-icons">article</span>
+                                                    <span class="texto">@row[propiedad] publicaciones</span>
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        </div>
+                        <div class="info-resource">
+                            @{
+                                if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+                                {
+                                    foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+                                    {
+                                        string idQuery = "HIndex";
+                                        if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
+                                        {
+                                            string propiedad = "hIndex";
+                                            foreach (Dictionary<string, string> row in item.Rows)
+                                            {
+                                                if (row.ContainsKey(propiedad))
+                                                {
+                                                    <span class="material-icons">tag</span>
+                                                    <span class="texto">@row[propiedad] Índice H</span>
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        </div>
+                    </div>
+                    <div class="content-wrap">
+                        <div class="description-wrap">
+                            <div class="list-wrap">
+                                <ul>
+                                    @{
+                                        if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+                                        {
+                                            foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+                                            {
+                                                string idQuery = "HasPosition";
+                                                if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
+                                                {
+                                                    string propiedad = "hasPosition";
+                                                    foreach (Dictionary<string, string> row in item.Rows)
+                                                    {
+                                                        if (row.ContainsKey(propiedad))
+                                                        {
+                                                            <li class="entity">
+                                                                @row[propiedad]
+                                                            </li>
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    @{
+                                        if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+                                        {
+                                            foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+                                            {
+                                                string idQuery = "Organizacion";
+                                                if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
+                                                {
+                                                    string propiedad = "tituloOrg";
+                                                    foreach (Dictionary<string, string> row in item.Rows)
+                                                    {
+                                                        if (row.ContainsKey(propiedad))
+                                                        {
+                                                            <li>
+                                                                <a>@row[propiedad]</a>
+                                                            </li>
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    @{
+                                        if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+                                        {
+                                            foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+                                            {
+                                                string idQuery = "Departamento";
+                                                if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
+                                                {
+                                                    string propiedad = "departamento";
+                                                    foreach (Dictionary<string, string> row in item.Rows)
+                                                    {
+                                                        if (row.ContainsKey(propiedad))
+                                                        {
+                                                            <li>
+                                                                <a>@row[propiedad]</a>
+                                                            </li>
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                </ul>
+                            </div>
+                            <div class="desc">
+                                @{
+                                    if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+                                    {
+                                        foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+                                        {
+                                            string idQuery = "Descripcion";
+                                            if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
+                                            {
+                                                string propiedad = "descripcion";
+                                                foreach (Dictionary<string, string> row in item.Rows)
+                                                {
+                                                    if (row.ContainsKey(propiedad))
+                                                    {
+                                                        <p>@row[propiedad]</p>
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            </div>
+                            @{
+                                if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+                                {
+                                    foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+                                    {
+                                        string idQuery = "Descripcion";
+                                        if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
+                                        {
+                                            <p class="moreResults showMore">
+                                                <a href="javascript: void(0);" class="ver-mas" style="display: flex;">Ver más <span class="material-icons">expand_more</span></a>
+                                                <a href="javascript: void(0);" class="ver-menos" style="display: none;">Ver menos <span class="material-icons">expand_less</span></a>
+                                            </p>
+                                        }
+                                    }
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+    }
+    else if (Model.RdfTypeName == "Group") // Grupo
+    {
+
+        <article class="resource grupo">
+            <div class="wrap">
+                <div class="middle-wrap">
+                    <div class="title-wrap">
+                        <h2 class="resource-title">
+                            <a href="@Model.CompletCardLink">@Model.Title</a>
+                        </h2>
+
+                        @{
+                            if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+                            {
+                                foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+                                {
+                                    string idQuery = "GetTotalPublicaciones";
+                                    if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
+                                    {
+                                        string propiedad = "numDocuments";
+                                        foreach (Dictionary<string, string> row in item.Rows)
+                                        {
+                                            if (row.ContainsKey(propiedad))
+                                            {
+                                                <div class="info-resource" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Publicaciones">
+                                                    <span class="material-icons">article</span>
+                                                    <span class="texto">@row[propiedad]</span>
+                                                </div>
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        @{
+                            if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+                            {
+                                foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+                                {
+                                    string idQuery = "GetTotalProyectos";
+                                    if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
+                                    {
+                                        string propiedad = "numProjects";
+                                        foreach (Dictionary<string, string> row in item.Rows)
+                                        {
+                                            if (row.ContainsKey(propiedad))
+                                            {
+                                                <div class="info-resource" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Proyectos">
+                                                    <span class="material-icons">work</span>
+                                                    <span class="texto">@row[propiedad]</span>
+                                                </div>
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        @{
+                            if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+                            {
+                                foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+                                {
+                                    string idQuery = "GetResearchersNumber";
+                                    if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
+                                    {
+                                        string propiedad = "researchersNumber";
+                                        foreach (Dictionary<string, string> row in item.Rows)
+                                        {
+                                            if (row.ContainsKey(propiedad))
+                                            {
+                                                <div class="info-resource" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Investigadores">
+                                                    <span class="material-icons">groups</span>
+                                                    <span class="texto">@row[propiedad]</span>
+                                                </div>
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        <div class="acciones-recurso-listado">
+                            <div class="dropdown">
+                                <a href="#" class="dropdown-toggle" role="button" id="dropdownMasOpciones" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <span class="material-icons">more_vert</span>
+                                </a>
+                                <div class="dropdown-menu basic-dropdown dropdown-icons dropdown-menu-right" aria-labelledby="dropdownMasOpciones">
+                                    <p class="dropdown-title">Acciones</p>
+                                    <ul class="no-list-style">
+                                        <li>
+                                            <a class="item-dropdown">
+                                                <span class="material-icons">create</span>
+                                                <span class="texto">Editar</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="item-dropdown" data-toggle="modal" data-target="#modal-enviar">
+                                                <span class="material-icons">send</span>
+                                                <span class="texto">Enviar</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="item-dropdown" data-toggle="modal" data-target="#modal-etiquetar">
+                                                <span class="material-icons">label</span>
+                                                <span class="texto">Etiquetar</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="item-dropdown" data-toggle="modal" data-target="#modal-categorizar">
+                                                <span class="material-icons">folder_open</span>
+                                                <span class="texto">Categorizar</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="item-dropdown" data-toggle="modal" data-target="#modal-versionar">
+                                                <span class="material-icons">file_copy</span>
+                                                <span class="texto">Versionar</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="item-dropdown" data-toggle="modal" data-target="#modal-container">
+                                                <span class="material-icons">dns</span>
+                                                <span class="texto">Historial</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="item-dropdown" data-toggle="modal" data-target="#modal-bloquear-comentarios">
+                                                <span class="material-icons">speaker_notes_off</span>
+                                                <span class="texto">Bloquear comentarios</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="item-dropdown" data-toggle="modal" data-target="#modal-vincular">
+                                                <span class="material-icons">attach_file</span>
+                                                <span class="texto">Vincular</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="item-dropdown" data-toggle="modal" data-target="#modal-certificar">
+                                                <span class="material-icons">verified_user</span>
+                                                <span class="texto">Certificar</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="item-dropdown" data-toggle="modal" data-target="#modal-eliminar">
+                                                <span class="material-icons">delete</span>
+                                                <span class="texto">Eliminar</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="item-dropdown" data-toggle="modal" data-target="#modal-compartir">
+                                                <span class="material-icons">share</span>
+                                                <span class="texto">Compartir</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="item-dropdown">
+                                                <span class="material-icons">forward</span>
+                                                <span class="texto">Ir a la web</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="content-wrap">
+                        <div class="description-wrap">
+                            <div class="list-wrap authors">
+                                <ul>
+                                    @{
+                                        if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+                                        {
+                                            foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+                                            {
+                                                string idQuery = "GetMainResearcher";
+                                                if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
+                                                {
+                                                    string propiedad = "name";
+                                                    foreach (Dictionary<string, string> row in item.Rows)
+                                                    {
+                                                        if (row.ContainsKey(propiedad))
+                                                        {
+                                                            <li>
+                                                                <a href="javascript: void(0);">@row[propiedad]</a>
+                                                            </li>
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        @*if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+                                        {
+                                            foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+                                            {
+                                                string idQuery = "GetOtherResearchers";
+                                                if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
+                                                {
+                                                    string propiedad = "namesResearchers";
+                                                    foreach (Dictionary<string, string> row in item.Rows)
+                                                    {
+                                                        if (row.ContainsKey(propiedad))
+                                                        {
+                                                            <li>
+                                                                <a href="javascript: void(0);">@row[propiedad]</a>
+                                                            </li>
+                                                        }
                                                     }
                                                 }
                                             }
                                         }*@
-                                    </div>
-                                </div>
-                                <div class="bloque">
-                                    <div class="label">@Html.Translate("PRESUPUESTO")</div>
-                                    <div class="value">TODO: 999.999 EUR</div>
-                                </div>
-                                <div class="bloque bloque-estado">
-                                    <div class="label">@Html.Translate("ESTADO")</div>
-                                    <div class="value">TODO: En curso</div>
-                                </div>
-                                <div class="bloque bloque-fecha">
-                                    <div>
-                                        <div class="label">@Html.Translate("FECHA_INICIO")</div>
-                                        <div class="value">
-                                            @{
-                                                if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
-                                                {
-                                                    string propiedad = "start";
-                                                    foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
-                                                    {
-                                                        if (item.Rows != null && item.Rows.Count > 0 && item.Rows[0].ContainsKey(propiedad))
-                                                        {
-                                                            string anio = item.Rows[0][propiedad].Substring(0, 4);
-                                                            string mes = item.Rows[0][propiedad].Substring(4, 2);
-                                                            string dia = item.Rows[0][propiedad].Substring(6, 2);
-                                                            string fecha = dia + "/" + mes + "/" + anio;
-                                                            @fecha
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="label">@Html.Translate("FECHA_FIN")</div>
-                                        <div class="value">
-                                            @{
-                                                if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
-                                                {
-                                                    string propiedad = "end";
-                                                    foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
-                                                    {
-                                                        if (item.Rows != null && item.Rows.Count > 0 && item.Rows[0].ContainsKey(propiedad))
-                                                        {
-                                                            string anio = item.Rows[0][propiedad].Substring(0, 4);
-                                                            string mes = item.Rows[0][propiedad].Substring(4, 2);
-                                                            string dia = item.Rows[0][propiedad].Substring(6, 2);
-                                                            string fecha = dia + "/" + mes + "/" + anio;
-                                                            @fecha
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="list-wrap tags">
-                                <p class="title">@Html.Translate("TEMAS_INVESTIGACION")</p>
-                                <ul>
-                                    <li>
-                                        <a href="javascript: void(0);">
-                                            <span class="texto">TODO: Metadata</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript: void(0);">
-                                            <span class="texto">TODO: Ontology</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript: void(0);">
-                                            <span class="texto">TODO: Data science</span>
-                                        </a>
-                                    </li>
-                                    <li class="ocultar">
-                                        <a href="javascript: void(0);">
-                                            <span class="texto">TODO: Metadata</span>
-                                        </a>
-                                    </li>
-                                    <li class="ocultar">
-                                        <a href="javascript: void(0);">
-                                            <span class="texto">TODO: Ontology</span>
-                                        </a>
-                                    </li>
-                                    <li class="ocultar">
-                                        <a href="javascript: void(0);">
-                                            <span class="texto">TODO: Data science</span>
-                                        </a>
-                                    </li>
+                                    }
                                 </ul>
                             </div>
-                            <div class="desc">
-                                <p>TODO: Descripción del proyecto.</p>
-                            </div>
+
+                            @{
+                                if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+                                {
+                                    int nItems = 0;
+                                    <div class="list-wrap">
+                                        <ul>
+                                            @{
+                                                foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+                                                {
+                                                    string idQuery = "GetAreasInvestigacion";
+                                                    if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
+                                                    {
+                                                        string propiedad = "lineResearch";
+                                                        foreach (Dictionary<string, string> row in item.Rows)
+                                                        {
+                                                            if (row.ContainsKey(propiedad))
+                                                            {
+                                                                nItems++;
+                                                                <li @{if (nItems > 3) { @Html.Raw("class=\"ocultar\"")  }}>
+                                                                    <a href="javascript: void(0);">@row[propiedad]</a>
+                                                                </li>
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        </ul>
+                                        @{
+                                            if (nItems > 3)
+                                            {
+                                                <p class="moreResults">
+                                                    <a href="javascript: void(0);" class="ver-mas" style="display: flex;">Ver más</a>
+                                                    <a href="javascript: void(0);" class="ver-menos" style="display: none;">Ver menos</a>
+                                                </p>
+                                            }
+                                        }
+                                    </div>
+                                }
+                            }
                         </div>
                     </div>
                 </div>
@@ -401,11 +1087,11 @@
                                 {
                                     if ((Model.Description.Contains("<p ") || Model.Description.Contains("<p>")) && Model.Description.Contains("</p>"))
                                     {
-                                        <p>@MvcHtmlString.Create(Model.Description)</p>
+                                        <p>@Html.Raw(Model.Description)</p>
                                     }
                                     else
                                     {
-                                        <p>@MvcHtmlString.Create(Model.Description)</p>
+                                        <p>@Html.Raw(Model.Description)</p>
                                     }
                                 }
                                 else

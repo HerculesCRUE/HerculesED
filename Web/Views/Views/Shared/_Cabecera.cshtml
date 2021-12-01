@@ -1,3 +1,13 @@
+@*[security|||shared/_cabecera.cshtml|||hercules]*@
+@using Es.Riam.Gnoss.Web.MVC.Models
+@using Es.Riam.Gnoss.Web.MVC.Controles.Helper
+@using Es.Riam.Gnoss.Web.MVC.Models.ViewModels
+@using Es.Riam.Gnoss.Web.MVC.Models.Administracion
+@using Es.Riam.Gnoss.AD.ServiciosGenerales
+@using Es.Riam.Gnoss.Web.MVC.Controllers
+@using Es.Riam.Gnoss.Web.MVC.Controllers.Administracion
+@using Es.Riam.Gnoss.Web.Controles
+@using Newtonsoft.Json
 @if (Html.GetComunidad() != null)
 {
     <header id="header" class="background-primario texto-blanco">
@@ -12,11 +22,11 @@
             <div class="row upper-row">
                 <div class="col col01">
                     <div class="menu-logo-wrapper">
-						<div class="menu-toggle">
-							<a href="javascript: void(0);" data-target="menuLateral" id="menuLateralTrigger" class="texto-blanco">
-								<span class="material-icons">apps</span>
-							</a>
-						</div>
+                        <div class="menu-toggle">
+                            <a href="javascript: void(0);" data-target="menuLateral" id="menuLateralTrigger" class="texto-blanco">
+                                <span class="material-icons">apps</span>
+                            </a>
+                        </div>
                         <div class="logo-wrapper">
                             <a href="@Comunidad.Url" class="texto-blanco">
                                 Hércules
@@ -26,7 +36,7 @@
                 </div>
                 <div class="col col02">
                     <div class="col-buscador">
-                        <form method="post" id="formCajaBusqueda">
+                        <!--<form method="post" id="formCajaBusqueda">
                             <fieldset style="display: block">
                                 <legend class="nota">facetas</legend>
                                 <div class="finderUtils" id="divCajaBusqueda">
@@ -34,8 +44,9 @@
                                         <label for="finderSection" class="">Encontrar</label>
                                         <input type="text" id="finderSection" class="not-outline finderSectionText ac_input" autocomplete="off" placeholder="@Html.Translate("SEARCH")">
                                         <input title="Encontrar" type="button" class="findAction" id="inputLupa">
-                                        <input type="hidden" value="http://google.com" class="inpt_urlPaginaActual"> <!-- TODO -->
-                                        <input type="hidden" value="sioc_t:Tag|foaf:firstName" class="inpt_facetasBusqPag">
+                                        <input type="hidden" value="http://google.com" class="inpt_urlPaginaActual">-->
+                        <!-- TODO -->
+                        <!--<input type="hidden" value="sioc_t:Tag|foaf:firstName" class="inpt_facetasBusqPag">
                                         <input type="hidden" class="inpt_parametros">
                                         <a href="javascript: void(0);" class="btn-filtrar-movil">
                                             <span class="material-icons">filter_list</span>
@@ -53,7 +64,7 @@
                                     </div>
                                 </div>
                             </fieldset>
-                        </form>
+                        </form>-->
                     </div>
                 </div>
                 <div class="col col03">
