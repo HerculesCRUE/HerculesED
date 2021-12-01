@@ -57,7 +57,7 @@ namespace HavesterTest
                 List<Empresa> organizationList = new();
                 List<IdentifierOAIPMH> organizationIdList = lista;
                 string id = "Organizacion_S2816021";
-                string xml = h.HaversterServices.GetRecord(id, "xml_examples//record_organizacion.xml");
+                string xml = h.HaversterServices.GetRecord(id,"xml_examples//record_organizacion.xml");
                 XmlSerializer serializer = new(typeof(Empresa));
                 using (StringReader sr = new(xml))
                 {
