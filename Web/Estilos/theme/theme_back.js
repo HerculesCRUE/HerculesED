@@ -5,7 +5,7 @@
     Author: GNOSS Front
     Author URI: http://dewenir.es
 
-    Description: Fichero base de customización del tema de MyGNOSS.
+    Description: Fichero base de customizaciÃ³n del tema de MyGNOSS.
     Version: 1.0
 */
 
@@ -224,7 +224,7 @@ var sacarPrimerasLetrasNombre = {
         return this.sustituirAcentos(resul);
     },
     sustituirAcentos: function (text) {
-        var acentos = "ÃÀÁÄÂÈÉËÊÌÍÏÎÒÓÖÔÙÚÜÛãàáäâèéëêìíïîòóöôùúüûÑñÇç";
+        var acentos = "ÃƒÃ€ÃÃ„Ã‚ÃˆÃ‰Ã‹ÃŠÃŒÃÃÃŽÃ’Ã“Ã–Ã”Ã™ÃšÃœÃ›Ã£Ã Ã¡Ã¤Ã¢Ã¨Ã©Ã«ÃªÃ¬Ã­Ã¯Ã®Ã²Ã³Ã¶Ã´Ã¹ÃºÃ¼Ã»Ã‘Ã±Ã‡Ã§";
         var original = "AAAAAEEEEIIIIOOOOUUUUaaaaaeeeeiiiioooouuuunncc";
         for (var i = 0; i < acentos.length; i++) {
             text = text.replace(acentos.charAt(i), original.charAt(i));
@@ -246,7 +246,7 @@ var obtenerClaseBackgroundColor = {
     },
     sustituirAcentos: function (text) {
         if (text == null) return;
-        var acentos = "ÃÀÁÄÂÈÉËÊÌÍÏÎÒÓÖÔÙÚÜÛãàáäâèéëêìíïîòóöôùúüûÑñÇç";
+        var acentos = "ÃƒÃ€ÃÃ„Ã‚ÃˆÃ‰Ã‹ÃŠÃŒÃÃÃŽÃ’Ã“Ã–Ã”Ã™ÃšÃœÃ›Ã£Ã Ã¡Ã¤Ã¢Ã¨Ã©Ã«ÃªÃ¬Ã­Ã¯Ã®Ã²Ã³Ã¶Ã´Ã¹ÃºÃ¼Ã»Ã‘Ã±Ã‡Ã§";
         var original = "AAAAAEEEEIIIIOOOOUUUUaaaaaeeeeiiiioooouuuunncc";
         for (var i = 0; i < acentos.length; i++) {
             text = text.replace(acentos.charAt(i), original.charAt(i));
@@ -368,7 +368,7 @@ var metabuscador = {
     cargarResultados: function () {
         var that = this;
         this.metabuscador.addClass('mostrarResultados');
-        // simular la carga de cada sección
+        // simular la carga de cada secciÃ³n
         that.cargarRecursos();
         that.cargarDebates();
         that.cargarPreguntas();
@@ -515,7 +515,7 @@ var listadoMensajesAcciones = {
         var that = this;
 
         this.reloadButton.off('click').on('click', function (e) {
-            // SIMULACION DE PETICIÓN DE PRUEBAS
+            // SIMULACION DE PETICIÃ“N DE PRUEBAS
             var resourceList = that.body.find('.col-contenido .resource-list');
             resourceList.hide();
             MostrarUpdateProgress()
@@ -608,17 +608,19 @@ var accionDropdownSelect = {
 };
 
 
-// Añadir la clase .dropdown-autofocus (al padre del .dropdown-menu) para que cuando se despligue el dropdown
+// AÃ±adir la clase .dropdown-autofocus (al padre del .dropdown-menu) para que cuando se despligue el dropdown
 // se haga autofocus en el primer input que haya en el dropdown
 var accionDropdownAutofocus = {
     init: function () {
+        console.log('init')
+        console.log($('.dropdown-autofocus'))
         $('.dropdown-autofocus').on('shown.bs.dropdown', function () {
+            console.log('si')
             $dropdown = $(this);
-            setTimeout(function () {
-                $dropdown.find('input').first().focus();
-            });
+            $dropdown.find('input').first().focus()
+            console.log($dropdown.find('input'))
         });
-    }
+    },
 };
 
 var cambioVistaListado = {
@@ -685,7 +687,7 @@ var masHeaderMensaje = {
                 if (padre.hasClass('abierto') && i > 1) {
                     li.addClass('oculto');
                     padre.removeClass('abierto');
-                    verMas.text('más');
+                    verMas.text('mÃ¡s');
                 } else if (!padre.hasClass('abierto') && i > 1) {
                     li.removeClass('oculto');
                     padre.addClass('abierto');
@@ -899,7 +901,7 @@ var mensajeAnyadirRegistro = {
         var that = this;
         var btn = this.contenido.find('.anyadir-registro');
         var divMensaje = $('<div></div>').addClass('mensaje-anyadir-registro');
-        var tituloMensaje = $('<h3></h3>').text('Miembro añadido correctamente');
+        var tituloMensaje = $('<h3></h3>').text('Miembro aÃ±adido correctamente');
         var mensaje = $('<p></p>').text('Mensaje visible durante 10 segundos....');
         divMensaje.append(tituloMensaje);
         divMensaje.append(mensaje);
@@ -915,8 +917,8 @@ var mensajeAnyadirRegistro = {
     }
 };
 
-// calcular en la carga de la página cuanto padding-top tiene que tener el contenido
-// según la altura de la cabecera fixed
+// calcular en la carga de la pÃ¡gina cuanto padding-top tiene que tener el contenido
+// segÃºn la altura de la cabecera fixed
 var calcularPaddingTopMain = {
     init: function () {
         this.config();
@@ -1203,7 +1205,7 @@ function OcultarUpdateProgress() {
         };
         var plugin = this;
 
-        // Objeto HTML del Loading que se mostraría mientras se esté realizando la carga de la imagen
+        // Objeto HTML del Loading que se mostrarÃ­a mientras se estÃ© realizando la carga de la imagen
         var loadingSpinnerHtml = "";
         loadingSpinnerHtml +=
             '<div class="spinner-border texto-primario" role="status" style="position: absolute; top: 45%; left:40%">';
@@ -1273,7 +1275,7 @@ function OcultarUpdateProgress() {
 
         /**
          * @param {boolean} showLoading: Indicar si ha iniciado la carga y por lo tanto, es necesario mostrar un "loading".
-         * true: Mostrará el "loading"
+         * true: MostrarÃ¡ el "loading"
          * false: Quitar ese "loading" -> Fin carga de imagen
          */
         var showLoadingImagePreview = function (showLoading) {

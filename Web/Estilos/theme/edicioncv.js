@@ -8,6 +8,27 @@ $(function () {
 var urlEdicionCV = "http://serviciosedma.gnoss.com/editorcv/EdicionCV/";
 var urlGuardadoCV = "http://serviciosedma.gnoss.com/editorcv/GuardadoCV/";
 
+function GetText(id,param1,param2,param3,param4)
+{
+	var txt=$('#'+id).val();
+	if(param1!=null)
+	{
+		txt=txt.replace("PARAM1",param1);
+	}
+	if(param2!=null)
+	{
+		txt=txt.replace("PARAM2",param1);
+	}
+	if(param3!=null)
+	{
+		txt=txt.replace("PARAM3",param1);
+	}
+	if(param4!=null)
+	{
+		txt=txt.replace("PARAM4",param1);
+	}
+	return txt;
+}
 
 var edicionCV = {
     idCV: null,
@@ -141,6 +162,26 @@ var edicionCV = {
 			z-index: 1499 !important;
 		}
 		
+		
+		.select2-container--default .select2-results__option[aria-disabled=true] {
+			display: none;
+		}
+
+		.panel-group.pmd-accordion article.activo .material-icons.arrow {
+			-ms-transform: rotate(180deg);
+			transform: rotate(180deg);
+		}
+
+		.panel-group.pmd-accordion a[aria-expanded="true"] .pmd-accordion-arrow {
+			-ms-transform: rotate(0deg)!important;
+			transform: rotate(0deg)!important;
+		}
+		
+		.panel-group.pmd-accordion a[aria-expanded="false"] .pmd-accordion-arrow {
+			-ms-transform: rotate(180deg)!important;
+			transform: rotate(180deg)!important;
+		}
+
 		</style>`);
 		
         //Carga de secciones principales
@@ -180,22 +221,36 @@ var edicionCV = {
     printTabSection: function (data) {
         //Pintado sección listado
         //css mas generico
-        var id = RandomGuid();
-        var id2 = RandomGuid();
+        var id = 'x'+RandomGuid();
+        var id2 = 'x'+RandomGuid();
+		
+		var expanded="";
+		var show="";
+		if(Object.keys(data.items).length>0)
+		{
+			//Desplegado
+			expanded="true";
+			show="show";
+		}else
+		{
+			//No desplegado	
+			expanded="false";
+		}
+		//TODO texto ver items
         var htmlSection = `
 		<div class="panel-group pmd-accordion" section="${data.identifier}" id="${id}" role="tablist" aria-multiselectable="true">
             <div class="panel">
                 <div class="panel-heading" role="tab" id="publicaciones-tab">
                     <p class="panel-title">
-                        <a data-toggle="collapse" data-parent="#${id}" href="#${id2}" aria-expanded="true" aria-controls="${id2}" data-expandable="false">
+                        <a data-toggle="collapse" data-parent="#${id}" href="#${id2}" aria-expanded="${expanded}" aria-controls="${id2}" data-expandable="false">
                             <span class="material-icons pmd-accordion-icon-left">folder_open</span>
                             <span class="texto">${data.title}</span>
                             <span class="numResultados">(${Object.keys(data.items).length})</span>
-                            <span class="material-icons pmd-accordion-arrow">keyboard_arrow_down</span>
+                            <span class="material-icons pmd-accordion-arrow">keyboard_arrow_up</span>
                         </a>
                     </p>
                 </div>
-                <div id="${id2}" class="panel-collapse collapse show" role="tabpanel">
+                <div id="${id2}" class="panel-collapse collapse ${show}" role="tabpanel">
                     <div class="panel-body">
                         <div class="acciones-listado acciones-listado-cv">
 							<div class="wrap">								
@@ -390,13 +445,13 @@ var edicionCV = {
 							<span class="material-icons">more_vert</span>
 						</a>
 						<div class="dropdown-menu basic-dropdown dropdown-icons dropdown-menu-right" aria-labelledby="dropdownMasOpciones">
-							<p class="dropdown-title">Acciones</p>
+							<p class="dropdown-title">${GetText('CV_ACCIONES')}</p>
 							<ul class="no-list-style">
 								${htmlPublicar}
 								<li>
 									<a class="item-dropdown">
 										<span class="material-icons">delete</span>
-										<span class="texto eliminar" data-id="${id}">Eliminar</span>
+										<span class="texto eliminar" data-id="${id}">${GetText('CV_ELIMINAR')}</span>
 									</a>
 								</li>
 							</ul>
@@ -687,6 +742,7 @@ var edicionCV = {
         $('#modal-editar-entidad form').empty();
         $('#modal-editar-entidad form').attr('entityid', data.entityID);
         $('#modal-editar-entidad form').attr('rdftype', data.rdftype);
+        $('#modal-editar-entidad form').attr('ontology', data.ontology);
         $('#modal-editar-entidad form').attr('sectionID', sectionID);
         $('#modal-editar-entidad form').attr('rdfTypeTab', rdfTypeTab);
         //TODO ¿se usa, cambiar de nombre?
@@ -708,9 +764,7 @@ var edicionCV = {
 								</div>
 							</div>`;
             $('#modal-editar-entidad form').append(section);
-        }
-        iniciarSelects2.init();
-        iniciarDatepicker.init();		
+        }	
 		this.repintarListadoEntity();		
 		this.engancharComportamientosCV();
     },
@@ -735,9 +789,7 @@ var edicionCV = {
 								</div>
 							</div>`;
             $(modalContenedor+' form').append(section);
-        }
-        iniciarSelects2.init();
-        iniciarDatepicker.init();		
+        }		
 		this.repintarListadoEntity();		
 		this.engancharComportamientosCV();
     },
@@ -795,13 +847,13 @@ var edicionCV = {
 			
 			switch (property.type) {
 				case 'text':
-					htmlInput=this.printPropertyEditTextInput(property.property,property.placeholder,value,property.required,false);
+					htmlInput=this.printPropertyEditTextInput(property.property, property.placeholder,value, property.required, false, property.autocomplete);
 					break;
 				case 'number':
 					htmlInput=this.printPropertyEditNumberInput(property.property,property.placeholder,value,property.required);
 					break;
 				case 'selectCombo':
-					htmlInput=this.printSelectCombo(property.property, value, property.comboValues,property.required);
+					htmlInput=this.printSelectCombo(property.property, value, property.comboValues, property.comboDependency, property.required);
 					break;
 				case 'textarea':
 					htmlInput=this.printPropertyEditTextArea(property.property,property.placeholder,value,property.required);
@@ -840,7 +892,7 @@ var edicionCV = {
 					rdftype=` rdftype='${property.entityData.rdftype}'`;
 					htmlInput+=`<div class='item added entity' propertyrdf='${property.property}' rdftype='${property.entityData.rdftype}' about='${value}'>`;
 					
-					htmlInput+=this.printPropertyEditTextInput(property.property,property.placeholder,value,property.required);
+					htmlInput+=this.printPropertyEditTextInput(property.property, property.placeholder, value, property.required);
 					
 					//Pintamos el título
 					if(property.values.length>0 && property.values[0]!=null && property.entityData.titles[property.values[0]]!=null)
@@ -882,7 +934,7 @@ var edicionCV = {
 					
 			
 			var htmlMultiple=`<div class='item aux'>`;
-			if(property.type=='auxEntity' || property.type=='auxEntityAuthorList')
+			if(property.type=='auxEntity' || property.type=='auxEntityAuthorList'|| property.type=='thesaurus')
 			{				
 				htmlMultiple=`<div class='item aux entityaux' propertyrdf='${property.property}' rdftype='${property.entityAuxData.rdftype}' about=''>`;
 			}else if(property.type=='entity')
@@ -891,13 +943,21 @@ var edicionCV = {
 			}
 			switch (property.type) {
 				case 'text':
-					htmlMultiple+=this.printPropertyEditTextInput(property.property,property.placeholder,'',property.required,false);
+					htmlMultiple+=this.printPropertyEditTextInput(property.property, property.placeholder, '', property.required, false, property.autocomplete);
 					break;
 				case 'number':
 					htmlMultiple=this.printPropertyEditNumberInput(property.property,property.placeholder,value,property.required);
 					break;
 				case 'selectCombo':
-					htmlMultiple+=this.printSelectCombo(property.property, '', property.comboValues,property.required);
+					htmlMultiple+=this.printSelectCombo(property.property, '', property.comboValues, property.comboDependency, property.required);
+					break;
+				case 'thesaurus':
+					var valuesThesaurus = $.map(property.entityAuxData.entities, function(entity) {
+						var values = entity[0].properties[0].values;
+						return values;
+					});
+					htmlMultiple+=this.printThesaurus(property.property, valuesThesaurus, property.thesaurus, property.required);
+					htmlMultiple+=this.printRowsEdit(property.entityAuxData.rows);
 					break;
 				case 'textarea':
 					htmlMultiple+=this.printPropertyEditTextArea(property.property,property.placeholder,'',property.required);
@@ -910,10 +970,10 @@ var edicionCV = {
 					htmlMultiple+=this.printRowsEdit(property.entityAuxData.rows);
 					break;
 				case 'entity':
-					htmlMultiple+=this.printPropertyEditTextInput(property.property,property.placeholder,value,property.required);
+					htmlMultiple+=this.printPropertyEditTextInput(property.property, property.placeholder, value, property.required);
 					break;
 			}	
-			if(property.type=='auxEntity'||property.type=='auxEntityAuthorList')
+			if(property.type=='auxEntity'||property.type=='auxEntityAuthorList'|| property.type=='thesaurus')
 			{
 				if(property.entityAuxData.propertyOrder!=null && property.entityAuxData.propertyOrder!='')
 				{
@@ -944,19 +1004,23 @@ var edicionCV = {
 					}
 				}
 			}
-			if(property.type!='auxEntity' && property.type!='entity' && property.type!='auxEntityAuthorList')			
+			if(property.type!='auxEntity' && property.type!='entity' && property.type!='auxEntityAuthorList'&& property.type!='thesaurus')			
 			{
 				htmlMultiple+= this.printAddButton();
 			}
 			
 			htmlMultiple+='</div>';	
 			var order="";
-			if(property.type=='auxEntity'||property.type== 'auxEntityAuthorList')
+			if(property.type=='auxEntity'||property.type== 'auxEntityAuthorList'||property.type== 'thesaurus')
 			{
 				css+=" entityauxcontainer";		
 				if(property.type=='auxEntityAuthorList')
 				{
 					css+=" entityauxauthorlist";	
+				}
+				if(property.type=='thesaurus')
+				{
+					css+=" thesaurus";	
 				}
 				if(property.entityAuxData.propertyOrder!=null && property.entityAuxData.propertyOrder!='')
 				{
@@ -973,7 +1037,7 @@ var edicionCV = {
 				css+=" obligatorio";
 			}
 			for (var valor in property.values) {				
-				if(property.type=='auxEntity' || property.type=='auxEntityAuthorList')
+				if(property.type=='auxEntity' || property.type=='auxEntityAuthorList'|| property.type=='thesaurus')
 				{
 					htmlMultiple+=`<div class='item added entityaux' propertyrdf='${property.property}' rdftype='${property.entityAuxData.rdftype}' about='${property.values[valor]}'>`;
 				}else if(property.type=='entity')
@@ -985,13 +1049,13 @@ var edicionCV = {
 				}
 				switch (property.type) {
 					case 'text':
-						htmlMultiple+=this.printPropertyEditTextInput(property.property,property.placeholder,property.values[valor],property.required,true);
+						htmlMultiple+=this.printPropertyEditTextInput(property.property, property.placeholder, property.values[valor], property.required, true, false);
 						break;
 					case 'number':
 						htmlMultiple+=this.printPropertyEditNumberInput(property.property,property.placeholder,property.values[valor],property.required,true);
 						break;
 					case 'selectCombo':
-						htmlMultiple+=this.printSelectCombo(property.property, property.values[valor], property.comboValues,property.required,true);
+						htmlMultiple+=this.printSelectCombo(property.property, property.values[valor], property.comboValues, property.comboDependency, property.required,true);
 						break;
 					case 'textarea':
 						htmlMultiple+=this.printPropertyEditTextArea(property.property,property.placeholder,property.values[valor],property.required,true);
@@ -1000,7 +1064,8 @@ var edicionCV = {
 						htmlMultiple+=this.printPropertyEditDate(property.property,property.placeholder,property.values[valor],property.required,true);
 						break;
 					case 'auxEntity':	
-					case 'auxEntityAuthorList':					
+					case 'auxEntityAuthorList':	
+					case 'thesaurus':
 						htmlMultiple+=this.printRowsEdit(property.entityAuxData.entities[property.values[valor]]);
 						if(property.entityAuxData.propertyOrder!=null && property.entityAuxData.propertyOrder!='')
 						{
@@ -1035,7 +1100,7 @@ var edicionCV = {
 						
 						break;
 					case 'entity':	
-						htmlMultiple+=this.printPropertyEditTextInput(property.property,property.placeholder,value,property.required);
+						htmlMultiple+=this.printPropertyEditTextInput(property.property, property.placeholder, value, property.required);
 						
 						//Pintamos el título
 						if(property.values[valor]!=null && property.entityData.titles[property.values[valor]]!=null)
@@ -1068,7 +1133,7 @@ var edicionCV = {
 				</div>`;
         }		
     },
-	printPropertyEditTextInput: function (property,placeholder,value,required,pDisabled) {
+	printPropertyEditTextInput: function (property, placeholder, value, required, pDisabled, autocomplete) {
 		var css="";
 		if(required)
 		{
@@ -1080,7 +1145,13 @@ var edicionCV = {
 		{
 			disabled='disabled';
 		}
-		return `<input ${disabled} propertyrdf="${property}" placeholder="${placeholder}" value="${value}" type="text" class="form-control not-outline ${css}">`;
+		
+		var action = '';
+		if(autocomplete){
+			action = 'addAutocompletar(this)';
+		}
+		
+		return `<input ${disabled} propertyrdf="${property}" placeholder="${placeholder}" value="${value}" value="${value}" onclick="${action}" type="text" class="form-control not-outline ${css}">`;
 	},
 	printPropertyEditNumberInput: function (property,placeholder,value,required,pDisabled) {
 		var css="";
@@ -1128,7 +1199,7 @@ var edicionCV = {
 		}
 		return `<textarea ${disabled} propertyrdf="${property}" placeholder="${placeholder}" type="text" class="form-control not-outline ${css}">${value}</textarea>`;
 	},
-    printSelectCombo: function (property, pId, pItems,required,pDisabled) {
+    printSelectCombo: function (property, pId, pItems, pDependency, required, pDisabled) {
 		var disabled='';
 		if(pDisabled)
 		{
@@ -1141,13 +1212,123 @@ var edicionCV = {
 		}
         var selector = `<select ${disabled} propertyrdf="${property}" class="js-select2 ${css}" data-select-search="true">`;
         for (var propiedad in pItems) {
+			var propAux = '';
             if (propiedad == pId) {
-                selector += '<option selected value="' + propiedad + '">' + pItems[propiedad] + '</option>';
-            } else {
-                selector += '<option value="' + propiedad + '">' + pItems[propiedad] + '</option>';
+                propAux = ' selected ';
             }
+			if(pDependency != null && propiedad != ""){
+				propAux += ' disabled data-dependency="' + pDependency.parentDependency[propiedad] + '"';
+			}
+			
+			selector += `<option ${propAux} value="${propiedad}">${pItems[propiedad]}</option>`;
         }
         selector += "</select>";
+		
+		if(pDependency != null)
+		{
+			var script = ` $('select[propertyrdf="${pDependency.parent}"]').change(function(){
+				var valorSeleccionado = $(this).val();
+				var comboHijo = $('select[propertyrdf="${property}"]');
+				comboHijo.find('option').each(function(){
+					if($(this).attr('data-dependency') == valorSeleccionado || $(this).attr('data-dependency') == null){
+						$(this).removeAttr('disabled');
+					}
+					else{
+						$(this).attr('disabled', 'disabled');
+					}
+				})
+				var opcionHijaSelecccionada = comboHijo.find('option:selected');
+				if(opcionHijaSelecccionada.length > 0 && opcionHijaSelecccionada.attr("data-dependency") != valorSeleccionado)
+				{
+					comboHijo.find('option:nth-child(1)')
+					  .prop('selected',true)
+					  .trigger('change')
+				}
+			});
+			$('select[propertyrdf="${pDependency.parent}"]').trigger('change')`;
+			selector += '<script>' + script + '</script>'
+		}
+		
+        return selector;
+    },
+    printThesaurus: function (property, values, pItems, required, pDisabled) {
+		var disabled='';
+		if(pDisabled)
+		{
+			disabled='disabled';
+		}
+		var css="";
+		if(required)
+		{
+			css="obligatorio";
+		}
+		
+		var itemsHijo = $.grep(pItems, function (p) { return p.parentId == ''; });
+		
+		var selector = `<div class="buscador-coleccion">
+                            <div>
+                                <span class="buscar">
+                                    <input type="text" value="" class="texto">
+                                    <span class="material-icons lupa">search</span>
+                                </span>
+                            </div>
+							<script>
+								$(document).ready(function () {
+									$(".buscador-coleccion .buscar input").on("focus", function () {
+										$(this).val("");
+									});
+								});
+							</script>
+						</div>
+						<div class="action-buttons-resultados">
+                            <ul class="no-list-style">
+                                <li class="js-plegar-facetas-modal">
+                                    <span class="texto">Plegar</span>
+                                    <span class="material-icons">expand_less</span>
+                                </li>
+                                <li class="js-desplegar-facetas-modal">
+                                    <span class="texto">Desplegar</span>
+                                    <span class="material-icons">expand_more</span>
+                                </li>
+                            </ul>
+                        </div>						
+						<ul class="listadoTesauro">${this.printThesaurusItemsByParent(values, pItems, itemsHijo, 0)}</ul>`;
+			
+        return selector;
+    },
+	printThesaurusItemsByParent : function (values, pItems, itemsPintar, pLevel) {
+		var selector  = "";
+					
+        for (var id in itemsPintar) {
+			var propiedad = itemsPintar[id];
+			var itemsHijo = $.grep(pItems, function (p) { return p.parentId == propiedad.id; });
+			var classAux = '';
+			var propAux = '';
+            if (values.find(x => x == propiedad.id) != null) {
+                classAux = ' selected ';
+            }
+			if (itemsHijo.length == 0) {
+                classAux += ' last-level ';
+            }
+			if(propiedad.parentId != ""){
+				propAux += ' data-parent="' + propiedad.parentId + '"';
+			}
+			//selector += `<option level="${pLevel}" ${propAux} value="${propiedad.id}">${propiedad.name}</option>`;
+			
+		
+			selector += `<li><a rel="nofollow" ${propAux} name="${propiedad.id}" class="faceta con-subfaceta ocultarSubFaceta ${classAux}" title="${propiedad.name}">`;
+			if (itemsHijo.length > 0)
+			{
+				selector += `<span class="desplegarSubFaceta"><span class="material-icons">expand_more</span></span>`;
+			}
+			selector += `<span class="textoFaceta">${propiedad.name}</span></a>`;
+			if (itemsHijo.length > 0)
+			{
+				selector += `<ul>${this.printThesaurusItemsByParent(values, pItems, itemsHijo, pLevel + 1)}</ul>`;
+			}
+			selector += `</li>`;
+		}
+			
         return selector;
     },
     printAddButton: function () {
@@ -1156,7 +1337,7 @@ var edicionCV = {
 							<ul class="no-list-style d-flex align-items-center">
 								<li>
 									<a class="btn btn-outline-grey add">
-										<span class="texto">Añadir</span>
+										<span class="texto">${GetText('CV_AGNADIR')}</span>
 										<span class="material-icons">add</span>
 									</a>
 								</li>
@@ -1170,7 +1351,7 @@ var edicionCV = {
 							<ul class="no-list-style d-flex align-items-center">
 								<li>
 									<a class="btn btn-outline-grey delete">
-										<span class="texto">Eliminar</span>
+										<span class="texto">${GetText('CV_ELIMINAR')}</span>
 										<span class="material-icons">delete</span>
 									</a>
 								</li>
@@ -1178,10 +1359,138 @@ var edicionCV = {
 						</div>
 					</div>`;
 	},
-    repintarListadoEntity: function () {
+	repintarListadoThesaurus: function () {
 		var that=this;		
 		
-        $( ".entityauxcontainer,.entitycontainer" ).each(function() {
+        $( ".entityauxcontainer.thesaurus" ).each(function() {
+			
+			if($(this).attr('idtemp')==null)
+			{
+				$(this).attr('idtemp',RandomGuid());
+			}
+			
+			var valoresTesauro = $.map($(this).find('ul.listadoTesauro .faceta') ,function(faceta) { 
+				return { key : $(faceta).attr('name'), value : $(faceta).attr('title') }; 
+			});
+
+			var idTemp=	$(this).attr('idtemp');
+			$(this).children('.simple-collapse-content').remove();
+			var items= $(this).children('.item.added.entityaux');	
+			
+			
+			$(this).find('.item.aux.entityaux').find('ul.listadoTesauro').find('a.faceta.last-level.selected').removeClass('selected');
+			
+			var htmAccionesItems='';
+		
+			var iconAdd="add";
+			var classList="";
+							
+			if(items.length>0)
+			{				
+				htmAccionesItems+=that.pintarListadoEntityOrden($(this).attr('order')) + `<li>
+										<a class="btn btn-outline-grey delete">
+											<span class="texto">${GetText("CV_ELIMINAR")}</span>
+											<span class="material-icons">delete</span>
+										</a>
+									</li>`;
+			}
+			
+			var htmlAcciones=`
+								<div class="simple-collapse-content">
+									<div class="acciones-listado acciones-listado-edicion">
+										<div class="wrap">
+											<ul class="no-list-style d-flex align-items-center">
+												${htmAccionesItems}
+											</ul>
+										</div>
+										<div class="wrap">
+											<ul class="no-list-style d-flex align-items-center">
+												<li>
+													<a class="btn btn-outline-grey add">
+														<span class="texto">Añadir</span>
+														<span class="material-icons">${iconAdd}</span>
+													</a>
+												</li>
+											</ul>
+										</div>
+									</div>
+									<div class="resource-list listView ${classList}">
+										<div class="resource-list-wrap">
+											${that.repintarListadoThesaursItems(items,idTemp, valoresTesauro)}
+										</div>
+									</div>
+								</div>
+							</div>`;
+			$(this).append(htmlAcciones);
+			
+		});
+		this.engancharComportamientosCV();
+    },
+	repintarListadoThesaursItems: function (items, idTemp, valoresTesauro) {
+		var that=this;
+		var html='';
+		var num=0;
+		$(items).each(function() {
+			num++;
+			var checked = '';	
+			
+			if(num==1)
+			{
+				checked="checked";
+				$(this).closest('.entityauxcontainer').attr('selecteditem',$(this).attr('about'));
+			}
+		
+			html+=that.repintarListadoThesaurusyItem(this, num, checked, idTemp, valoresTesauro);
+		});
+		return html;
+	},
+    repintarListadoThesaurusyItem: function (item, num, checked, idTemp, valoresTesauro) {		
+		var that=this;
+		/*Cargar*/
+		var IdItems = $.map($(item).find('.item.added input') , function( input){ return $(input).val()}).sort()
+		var idItem =  IdItems[IdItems.length - 1];
+		
+		var title = "";
+		
+		for(var i = 0; i < IdItems.length; i++)
+		{
+			title += valoresTesauro.find(x => x.key == IdItems[i]).value;
+			
+			if ( i < IdItems.length - 1){ title += " / "; }
+		}
+		
+		var props="";
+		
+		$(item).parent().find('.item.aux.entityaux').find('ul.listadoTesauro').find('a.faceta.last-level[name="' + idItem + '"]').addClass('selected');
+		
+		//Marcar como selected las facetas
+		
+		return `<article class="resource" about="${$(item).attr('about')}" order="${num}">
+					<div class="custom-control themed little custom-radio">
+						<input type="radio" id="edicion-listado-${idTemp}${num}" name="edicion-listado-${idTemp}" class="custom-control-input" ${checked}>
+						<label class="custom-control-label" for="edicion-listado-${idTemp}${num}"></label>
+					</div>
+					<div class="wrap">
+						<div class="middle-wrap">
+							<div class="title-wrap">
+								<h2 class="resource-title">${title}</h2>
+							</div>
+							<div class="content-wrap">
+								<div class="description-wrap">
+									<div class="desc">
+									${props}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</article>`;
+	},
+    repintarListadoEntity: function () {
+		this.repintarListadoThesaurus();
+		var that=this;
+		
+        $( ".entityauxcontainer:not(.thesaurus),.entitycontainer" ).each(function() {
 			var aux=true;
 			if($(this).attr('class').indexOf('entitycontainer')>-1)
 			{
@@ -1206,11 +1515,13 @@ var edicionCV = {
 				$(this).children('.item.aux:not(.entity)').remove();
 			}
 			
+			
+			
 			if($(this).attr('order')!=null && $(this).attr('order')!='')
 			{
-				//Ordenamos
-				var ordenProperty=$(this).attr('order');
+				var ordenProperty=$(this).attr('order');				
 				
+				//Ordenamos				
 				var maxOrder=1;
 				$( items ).each(function() {
 					var orderIn=$(this).children('input[propertyrdf="'+ordenProperty+'"]').val();
@@ -1257,6 +1568,13 @@ var edicionCV = {
 					}
 					ordenActual=parseInt($(this).children('input[propertyrdf="'+ordenProperty+'"]').val());
 				})
+				
+				//Reseteamos ordenes
+				var orderActual=1;
+				$( items ).each(function() {
+					$(this).children('input[propertyrdf="'+ordenProperty+'"]').val(orderActual);
+					orderActual++;
+				});
 			}
 			
 			var htmAccionesItems='';
@@ -1269,20 +1587,30 @@ var edicionCV = {
 						$(this).attr('selecteditem',$($(items)[0]).attr('about'));
 					}
 					
-					htmAccionesItems+=that.pintarListadoEntityOrden($(this).attr('order'))+`<li>
-											<a class="btn btn-outline-grey edit">
-												<span class="texto">Editar</span>
-												<span class="material-icons">edit</span>
-											</a>
-										</li>
-										<li>
+					htmAccionesItems+=that.pintarListadoEntityOrden($(this).attr('order'));
+					if(!$(this).hasClass('entityauxauthorlist'))
+					{
+						htmAccionesItems+=`<li>
+												<a class="btn btn-outline-grey edit">
+													<span class="texto">Editar</span>
+													<span class="material-icons">edit</span>
+												</a>
+											</li>`;
+					}
+					htmAccionesItems+=`<li>
 											<a class="btn btn-outline-grey delete">
 												<span class="texto">Eliminar</span>
 												<span class="material-icons">delete</span>
 											</a>
 										</li>`;
 				}			
-			
+				var iconAdd="add";
+				var classList="";
+				if($(this).hasClass('entityauxauthorlist'))
+				{
+					iconAdd="person_add";
+					classList=" resource-list-autores";
+				}
 				var htmlAcciones=`
 									<div class="simple-collapse-content">
 										<div class="acciones-listado acciones-listado-edicion">
@@ -1296,7 +1624,7 @@ var edicionCV = {
 													<li>
 														<a class="btn btn-outline-grey add">
 															<span class="texto">Añadir</span>
-															<span class="material-icons">person_add</span>
+															<span class="material-icons">${iconAdd}</span>
 														</a>
 													</li>
 												</ul>
@@ -1308,7 +1636,7 @@ var edicionCV = {
 												</div>
 											</div>
 										</div>
-										<div class="resource-list listView">
+										<div class="resource-list listView ${classList}">
 											<div class="resource-list-wrap">
 												${that.repintarListadoEntityItems(items,idTemp,$(this).attr('order'))}
 											</div>
@@ -1328,13 +1656,13 @@ var edicionCV = {
 													<ul class="no-list-style d-flex align-items-center">
 														<li>
 															<a class="btn btn-outline-grey edit">
-																<span class="texto">Editar</span>
+																<span class="texto">${GetText('CV_EDITAR')}</span>
 																<span class="material-icons">edit</span>
 															</a>
 														</li>
 														<li>
 															<a class="btn btn-outline-grey delete">
-																<span class="texto">Eliminar</span>
+																<span class="texto">${GetText('CV_ELIMINAR')}</span>
 																<span class="material-icons">delete</span>
 															</a>
 														</li>
@@ -1343,14 +1671,14 @@ var edicionCV = {
 											</div>
 										</div>`;
 				}else
-				{					
+				{				
 					htmlAcciones+=`	<div class="item aux">
 										<input disabled="" value="" type="text" class="form-control not-outline ">	<div class="acciones-listado-edicion">
 											<div class="wrap">
 												<ul class="no-list-style d-flex align-items-center">
 													<li>
 														<a class="btn btn-outline-grey add">
-															<span class="texto">Añadir</span>
+															<span class="texto">${GetText('CV_AGNADIR')}</span>
 															<span class="material-icons">add</span>
 														</a>
 													</li>
@@ -1672,7 +2000,39 @@ var edicionCV = {
     //Fin de métodos de edición
     ,
     engancharComportamientosCV: function () {
+		$('.select2-container').remove();
+        iniciarSelects2.init();
+        iniciarDatepicker.init();	
+		plegarSubFacetas.init();
+		operativaFormularioTesauro.init();
         var that = this;
+		
+		//Tesauros
+		$('.listadoTesauro .faceta.last-level:not(.selected)').unbind( "click").bind( "click", function(){
+			var parentPanel = $(this).closest('.item.entityaux');
+			var newCategoryInput = parentPanel.find('input[type="text"]');
+			var newCategoryAddButton = parentPanel.find('.btn.add');
+			
+			faceta = $(this);
+			
+			while (faceta != null)
+			{
+				newCategoryInput.val(faceta.attr("name"));
+				newCategoryAddButton.trigger('click');
+				var listado = faceta.closest('ul');
+				if(!listado.hasClass('listadoTesauro'))
+				{
+					faceta = listado.prev();
+				}
+				else
+				{
+					faceta = null;
+				}
+			}
+			
+			$(this).closest('.formulario-edicion').next().find('a').trigger('click');
+		})
+		
 		//LISTADOS		
         //Paginación
         $('.panel-group .panNavegador ul.pagination li a').off('click').on('click', function (e) {
@@ -1747,7 +2107,7 @@ var edicionCV = {
             }
             var rdfTypeTab = $(this).closest('.cvTab').attr('rdftype');
             that.cargarEdicionItem(sectionID, rdfTypeTab, entityID);
-        });
+		});
         
 		
 		//Añadir propiedad multiple que no es otra entidad 		
@@ -1790,8 +2150,12 @@ var edicionCV = {
 				{
 					//Creación
 					$('#modal-anadir-autor').modal('show');
+					$('#modal-anadir-autor .ko').hide();
 					$('#modal-anadir-autor .resultados .form-group.full-group').remove();
-					$('#inputsignatures').val('');
+					$('#inputsignatures').val('');			
+					$('#inputsignatures').removeAttr('disabled');
+					$('#modal-anadir-autor .validar').removeAttr('disabled');
+					$('#modal-anadir-autor').attr('propertyrdf',$(this).closest('.entityauxauthorlist').find('.item.aux.entityaux').attr('propertyrdf'));
 				}else
 				{
 					//Edición
@@ -1853,6 +2217,18 @@ var edicionCV = {
 						$(this).attr('idtemp',RandomGuid());
 					}
 				});	
+				
+				if($(modalPopUp+' .formulario-edicion>div>ul.listadoTesauro').length>0)
+				{
+					$(modalPopUp+' .formulario-edicion>div>div.custom-form-row').hide();
+					$(modalPopUp+' .modal-body>div.form-actions').hide();
+					$(modalPopUp).addClass('modal-con-buscador');
+				}else
+				{
+					$(modalPopUp+' .formulario-edicion>div>div.custom-form-row').show();
+					$(modalPopUp+' .modal-body>div.form-actions').show();
+					$(modalPopUp).removeClass('modal-con-buscador');
+				}					
 			}			
 			that.repintarListadoEntity();
         });			
@@ -1984,13 +2360,30 @@ var edicionCV = {
 			}
 			that.cargarEdicionEntidad($(this),$(contenedor).attr("rdftype"), id);
 			that.repintarListadoEntity();
+			
+			if($(modalPopUp+' .formulario-edicion>div>ul.listadoTesauro').length>0)
+			{
+				$(modalPopUp+' .formulario-edicion>div>div.custom-form-row').hide();
+				$(modalPopUp+' .modal-body>div.form-actions').hide();
+				$(modalPopUp).addClass('modal-con-buscador');
+			}else
+			{
+				$(modalPopUp+' .formulario-edicion>div>div.custom-form-row').show();
+				$(modalPopUp+' .modal-body>div.form-actions').show();
+				$(modalPopUp).removeClass('modal-con-buscador');
+			}	
         });
 		
 		//Buscar personas por firma
 		$('#modal-anadir-autor .validar').off('click').on('click', function (e) {
-			that.validarFirmas();		
+			if($(this).attr('disabled')!='disabled')
+			{
+				$('#inputsignatures').attr('disabled','disabled');
+				$('#modal-anadir-autor .validar').attr('disabled','disabled');
+				that.validarFirmas();		
+			}
 		});
-		
+				
 		//Enganchamos comportamiento check firmas		
 		$('input.chksignature').change(function (e) {
 			var that=this;
@@ -2005,10 +2398,12 @@ var edicionCV = {
 		operativaFormularioAutor.init();
 		
 		//Enganchamos comportamiento buscar	firmas		
-		$('.coincidencia-wrap a.form-buscar').off('click').on('click', function (e) {
+		$('.coincidencia-wrap a.form-buscar,.collapse-wrap a.form-buscar').off('click').on('click', function (e) {
 			$('#modal-anadir-autor .formulario-principal').hide();
 			$('#modal-anadir-autor .formulario-codigo').show();
-			$('#modal-anadir-autor .formulario-autor').hide();				
+			$('#modal-anadir-autor .formulario-autor').hide();	
+			$('#signatureorcid').val('');
+			$('#modal-anadir-autor .formulario-codigo p.ko').hide();
 			$('#modal-anadir-autor .formulario-codigo .firma').text($(this).closest('.simple-collapse').find('.control-label.d-block').text());
 		});
 		
@@ -2016,59 +2411,181 @@ var edicionCV = {
 		$('#modal-anadir-autor .formulario-codigo a.btn-outline-grey').off('click').on('click', function (e) {
 			that.validarORCID($('#modal-anadir-autor #signatureorcid').val());		
 		});
+				
 		
 		//Añadimos firmas
-		$('#modal-anadir-autor .addsignatures').off('click').on('click', function (e) {
-			$('#modal-anadir-autor').modal('hide');
+		$('#modal-anadir-autor .addsignatures').off('click').on('click', function (e) {	
+			var error="";
+			//Error, no se ha seleccionado ninguna persona
+			$('#modal-anadir-autor .resultados .form-group.full-group').each(function (index) {
+				if($(this).find('input:checked').length==0)
+				{				
+					error+=GetText("CV_FIRMANOSELECCIONADOPERSONA")+$(this).find('label.control-label.d-block').text()+"</br>";
+				}
+			});
 			
-			var htmlAuthor=`
-			<div class="item added entityaux" propertyrdf="http://purl.org/ontology/bibo/authorList" rdftype="http://purl.obolibrary.org/obo/BFO_0000023" about="${RandomGuid()}">
-				<div class="custom-form-row">
-					<div class="form-group expand-2">
-						<label class="control-label d-block">Firma *</label>
-						<input propertyrdf="http://xmlns.com/foaf/0.1/nick" placeholder="" value="Jose Luis Hernandez Ramos" type="text" class="form-control not-outline obligatorio">
-					</div>
-					<div class="form-group expand-2 entitycontainer obligatorio" rdftype="http://xmlns.com/foaf/0.1/Person" idtemp="${RandomGuid()}">
-						<label class="control-label d-block">Persona *</label>
-						<div class="item added entity" propertyrdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#member" rdftype="http://xmlns.com/foaf/0.1/Person" about="http://gnoss.com/items/Person_81c44f33-a00f-45b6-9380-ff51350ae5aa_19d0c65c-8a11-4b94-8acf-1a45dd47d18f"><input propertyrdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#member" placeholder="" value="" type="text" class="form-control not-outline obligatorio">
-							<span class="title" loaded="true" route="person||http://xmlns.com/foaf/0.1/name">Jose Luis Hernandez Ramos</span> 
-							<span class="property" loaded="true" name="ORCID" route="person||http://w3id.org/roh/ORCID"></span> 
-						</div>
-						<div class="item aux">
-							<input disabled="" value="Jose Luis Hernandez Ramos" type="text" class="form-control not-outline ">
-							<div class="acciones-listado-edicion">
-								<div class="wrap">
-									<ul class="no-list-style d-flex align-items-center">
-										<li>
-											<a class="btn btn-outline-grey edit">
-												<span class="texto">Editar</span>
-												<span class="material-icons">edit</span>
-											</a>
-										</li>
-										<li>
-											<a class="btn btn-outline-grey delete">
-												<span class="texto">Eliminar</span>
-												<span class="material-icons">delete</span>
-											</a>
-										</li>
-									</ul>
+			//Error, la persona ya está cargada
+			var personasCargadas=[]
+			$('.entityauxauthorlist .added.entityaux div[propertyrdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#member"]').each(function (index) {
+				personasCargadas.push($(this).attr('about'));
+			});
+			
+			
+			$('#modal-anadir-autor .resultados .form-group.full-group').each(function (index) {
+				var personID=$(this).find('input:checked').attr('personid');
+				if(personasCargadas.indexOf(personID)>-1)
+				{
+					var nombre=$(this).find('input:checked').closest('.user-miniatura').find('.nombre-usuario-wrap .nombre').text();
+					error+=GetText("CV_ESTACARGADAPERSONAOTRAFIRMA",nombre);
+				}
+					
+			});
+			
+			
+			if(error!='')
+			{
+				$('#modal-anadir-autor .ko').show();
+				$('#modal-anadir-autor .ko').html(error);
+				return;
+			}
+			$('#modal-anadir-autor .ko').hide();
+			$('#modal-anadir-autor .ko').html('');
+			var num=1000;
+			$('#modal-anadir-autor .resultados .form-group.full-group').each(function (index) {
+				var personID=$(this).find('input:checked').attr('personid');
+				var nombre=$(this).find('input:checked').closest('.user-miniatura').find('.nombre-usuario-wrap .nombre').text();
+				var firma=$(this).find('label.control-label.d-block').text();
+				var orcid=$(this).find('input:checked').closest('.user-miniatura').find('.nombre-usuario-wrap .nombre-completo .orcid').text();
+				num++;
+				if($(this).find('input:checked').length>0)
+				{	
+					var htmlAuthor=`
+						<div class="item added entityaux" propertyrdf="${$('#modal-anadir-autor').attr('propertyrdf')}" rdftype="http://purl.obolibrary.org/obo/BFO_0000023" about="${RandomGuid()}">		
+							<div class="custom-form-row">
+								<div class="form-group full-group">
+									<label class="control-label d-block">Firma *</label>
+									<input propertyrdf="http://xmlns.com/foaf/0.1/nick" value="${firma}" type="text" class="form-control not-outline obligatorio">
 								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<input propertyrdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#comment" value="10" type="hidden">
-				<span class="title" loaded="false" route="http://xmlns.com/foaf/0.1/nick"></span> 
-				<span class="property" loaded="false" name="Nombre" route="http://www.w3.org/1999/02/22-rdf-syntax-ns#member||person||http://xmlns.com/foaf/0.1/name"></span> 
-				<span class="property" loaded="false" name="ORCID" route="http://www.w3.org/1999/02/22-rdf-syntax-ns#member||person||http://w3id.org/roh/ORCID"></span> 
-			</div>`
-			$('.entityauxauthorlist').append(htmlAuthor);
+								<div class="form-group full-group entitycontainer obligatorio" rdftype="http://xmlns.com/foaf/0.1/Person" idtemp="2a591f6b-5219-4abd-ac48-d1930aae0bc6">
+									<label class="control-label d-block">Persona *</label>
+									<div class="item added entity" propertyrdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#member" rdftype="http://xmlns.com/foaf/0.1/Person" about="${personID}">
+										<input propertyrdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#member" value="${personID}" type="text" class="form-control not-outline obligatorio">										
+									</div>
+								</div>
+							</div>						
+							<input propertyrdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#comment" value="${num}" type="hidden">
+							<span class="title" loaded="true" route="http://xmlns.com/foaf/0.1/nick">${firma}</span> 
+							<span class="property" loaded="true" name="Nombre" route="http://www.w3.org/1999/02/22-rdf-syntax-ns#member||person||http://xmlns.com/foaf/0.1/name">${nombre}</span> 
+							<span class="property" loaded="true" name="ORCID" route="http://www.w3.org/1999/02/22-rdf-syntax-ns#member||person||http://w3id.org/roh/ORCID">${orcid}</span>
+						</div>`;
+					$('.entityauxauthorlist').append(htmlAuthor);
+				}else
+				{
+					error+="No se ha seleccionado persona para la firma "+$(this).find('label.control-label.d-block').text();
+				}
+			});		
 			
-			/*	*/
+			$('#modal-anadir-autor').modal('hide');
+			that.repintarListadoEntity();		
 		});
 		
+		//Enganchamos comportamiento 'O teclea los datos de-'
+		$('#modal-anadir-autor .formulario-edicion.formulario-codigo a.form-autor').off('click').on('click', function (e) {
+			$('#modal-anadir-autor .formulario-principal').hide();
+			$('#modal-anadir-autor .formulario-codigo').hide();
+			$('#modal-anadir-autor .formulario-autor').show();				
+			$('#modal-anadir-autor .formulario-autor #cvFirmaAutor').val($(this).find('.firma').html());
+			$('#modal-anadir-autor .formulario-autor #cvNombreAutor').val('');
+			$('#modal-anadir-autor .formulario-autor #cvApellidosAutor').val('');
+			$('#modal-anadir-autor .formulario-autor .form-actions .ko').hide();				
+			$('#modal-anadir-autor .formulario-autor .form-actions .ko').html('');
+		});		
 		
-		
+		//Enganchamos comportamiento Guardar autor
+		$('#modal-anadir-autor a.btEditarAutor').off('click').on('click', function (e) {
+			var error="";
+			if($('#cvNombreAutor').val().trim()=='')
+			{
+				error+=GetText("CV_NOMBREOBLIGATORIO");
+			}
+			if($('#cvApellidosAutor').val().trim()=='')
+			{
+				if(error!='')
+				{
+					error+="</br>";
+				}
+				error+=GetText("CV_APELLIDOSOBLIGATORIO");
+			}
+			if(error!='')
+			{
+				$('#modal-anadir-autor .formulario-autor p.ko').show();				
+				$('#modal-anadir-autor .formulario-autor p.ko').html(error);
+				return;
+			}
+			$('#modal-anadir-autor .formulario-autor p.ko').hide();				
+			$('#modal-anadir-autor .formulario-autor p.ko').html('');
+			var item={};			
+			item.pName=$('#cvNombreAutor').val();
+			item.pSurname=$('#cvApellidosAutor').val();
+			MostrarUpdateProgress();
+			$.post(urlGuardadoCV + 'CreatePerson', item, function (data) {				
+				OcultarUpdateProgress();
+				$('#modal-anadir-autor .formulario-principal').show();
+				$('#modal-anadir-autor .formulario-codigo').hide();
+				$('#modal-anadir-autor .formulario-autor').hide();
+				var rGuid=RandomGuid();
+				var id=data.personid;
+				var firma=$('#cvFirmaAutor').val();
+				var indice=1;
+				var labelFirma=null;
+				$('#modal-anadir-autor .resultados .form-group.full-group .simple-collapse>label').each(function (index) {
+					if($(this).text()==firma)
+					{
+						labelFirma=$(this);
+						return;
+					}
+					indice++;
+				});
+				
+				var htmlAux="";
+				if(data.department!=null)
+				{			
+					htmlAux=data.department;
+				}
+				if(data.orcid!=null)
+				{
+					if(htmlAux!='')
+					{
+						htmlAux+=' · ';
+					}
+					htmlAux+=`<a target="_blank" class="orcid" href="https://orcid.org/${data.orcid}">${data.orcid}</a>`;
+				}	
+				
+				var htmlPersona=`<div class="user-miniatura">
+					<div class="custom-control custom-checkbox">
+						<input disabled="disabled" checked="checked" type="checkbox" id="user-${rGuid}" personid="${id}" name="user-${indice}" class="custom-control-input chksignature">
+						<label class="custom-control-label" for="user-${rGuid}"></label>
+					</div>
+					<div class="imagen-usuario-wrap">						
+						<div class="imagen">
+						</div>
+					</div>					
+					<div class="nombre-usuario-wrap">						
+						<p class="nombre">${data.name}</p>
+						<p class="nombre-completo">${htmlAux}</p>								
+					</div>
+				</div>`;
+				if(labelFirma!=null)
+				{
+					labelFirma.parent().find('div').remove();
+					labelFirma.parent().find('a').remove();
+					labelFirma.after(htmlPersona);
+					edicionCV.engancharComportamientosCV()
+				}
+			});
+			
+			
+		});	
 		
 		//GUARDADOS
 		$(`#modal-editar-entidad .btn-primary,
@@ -2088,6 +2605,11 @@ var edicionCV = {
 				//Procedemos si supera la validación
 				that.guardarModal(formulario);
 			}			
+		});
+		
+		//Autocompletar tesauros		
+		$('.modal-con-buscador div[rdftype="http://w3id.org/roh/CategoryPath"] input.texto').off('keyup').on('keyup', function (e) {
+			that.buscarTesauro($(this).val(),$('.modal-con-buscador ul.listadoTesauro'));			
 		});
 		
         return;
@@ -2310,16 +2832,78 @@ var edicionCV = {
 		}        
     },
 	validarFirmas: function (){
+		$('#modal-anadir-autor .formulario-edicion .resultados').hide();
+		$('#modal-anadir-autor .formulario-edicion .resultados .form-group.full-group').remove();
+		$('#modal-anadir-autor .formulario-edicion .form-actions .ko').hide();				
+		$('#modal-anadir-autor .formulario-edicion .form-actions .ko').html("");
+		var error="";
+		//Comprobamos que en el texto introducido no haya firmas duplicadas
+		var signatures=$('#inputsignatures').val().toLowerCase().split(',');
+		
+		var signaturesArray=[];
+		var firmaActual="";
+		signatures.forEach(function(signature){
+			var actual=signature.toLowerCase().trim();
+			if(firmaActual!='' && actual.replaceAll(".","").trim().length<4)
+			{
+				firmaActual+=", "+actual;
+				firmaActual=firmaActual.trim();
+				signaturesArray.push(firmaActual);
+				firmaActual='';
+			}else
+			{
+				if(firmaActual!='')
+				{
+					signaturesArray.push(firmaActual);
+				}
+				firmaActual=actual.trim();
+			}			
+		});
+		if(firmaActual!='')
+		{
+			signaturesArray.push(firmaActual);
+		}		
+		
+		var signaturesProcessed=[];	
+		signaturesArray.forEach(function(signature){
+			if(signaturesProcessed.indexOf(signature)>-1)
+			{
+				if(error!='')
+				{
+					error+="</br>";
+				}
+				error+=GetText("CV_LAFIRMAXESTADUPLICADA",signature);
+			}
+			signaturesProcessed.push(signature);
+		});
+		//Comprobamos que en el texto introducido no haya firmas duplicadas (de las cargadas anteriormente)
+		$('.entityauxauthorlist .added.entityaux input[propertyrdf="http://xmlns.com/foaf/0.1/nick"]').each(function () {
+			var firmaActual=$(this).val().trim();
+			if(signaturesProcessed.indexOf(firmaActual.toLowerCase())>-1)
+			{
+				if(error!='')
+				{
+					error+="</br>";
+				}
+				error+=GetText("CV_LAFIRMAXYAESTAINTRODUCIDA",firmaActual);
+			}
+        });
+		if(error!='')
+		{
+			$('#modal-anadir-autor .formulario-edicion .form-actions .ko').show();				
+			$('#modal-anadir-autor .formulario-edicion .form-actions .ko').html(error);
+			return;
+		}
+		
 		var that=this;
 		var item={};
 		item.pSignatures=$('#inputsignatures').val();
 		item.pCVID=this.idCV;
 		item.pPersonID=this.idPerson;
-		MostrarUpdateProgress();
-		$('#modal-anadir-autor .formulario-edicion .resultados').hide();
-		$('#modal-anadir-autor .formulario-edicion .resultados .form-group.full-group').remove();
+		item.pLang= lang;
+		MostrarUpdateProgress();		
 		$.post(urlEdicionCV + 'ValidateSignatures', item, function (data) {
-			OcultarUpdateProgress();
+			OcultarUpdateProgress();			
 			var i=0;
 			var htmlSinCandidatos=`<div class="user-miniatura">
                                 <div class="imagen-usuario-wrap">                                    
@@ -2333,14 +2917,15 @@ var edicionCV = {
                                     <a href="javascript: void(0);" class="form-buscar">Buscar</a>
                                 </div>
                             </div>`;
+			var vacio=true;
 			for (var firma in data) {
+				vacio=false;
 				var numCandidatos=data[firma].length;
 				i++;	
 				
 				var htmlCandidatos=htmlSinCandidatos;
 				if(numCandidatos>0)
 				{
-					//TODO textos
 					var score=(data[firma][0].score*100).toFixed(0);
 					htmlCandidatos=that.htmlCandidatoFirma(data[firma][0],i,score);
 					var otrosCandidatos='';
@@ -2354,11 +2939,11 @@ var edicionCV = {
 							otrosCandidatos+=that.htmlCandidatoFirma(data[firma][j],i,scoreIn);
 						}
 					}
-					htmlCandidatos+=`	<a href="#groupCollapse${i}" data-toggle="collapse" aria-expanded="true" class="collapse-toggle collapsed">Más resultados</a>
+					htmlCandidatos+=`	<a href="#groupCollapse${i}" data-toggle="collapse" aria-expanded="true" class="collapse-toggle collapsed">${GetText('CV_MASRESULTADOS')}</a>
 										<div id="groupCollapse${i}" class="collapse-wrap collapse">
 											${otrosCandidatos}
 											<div class="form-actions">
-												<a href="javascript: void(0);" class="form-buscar">Buscar</a>
+												<a href="javascript: void(0);" class="form-buscar">${GetText('CV_BUSCAR')}</a>
 											</div>
 										</div>`;
 					
@@ -2375,12 +2960,17 @@ var edicionCV = {
 			$('#modal-anadir-autor .formulario-edicion .resultados').show();
 			
 			
-			that.engancharComportamientosCV();		
+			that.engancharComportamientosCV();	
+			if(vacio)			
+			{
+				$('#modal-anadir-autor .formulario-edicion .form-actions .ko').show();
+				$('#modal-anadir-autor .formulario-edicion .form-actions .ko').html(GetText('CV_NOHASINTRODUCIDONINGUNAFIRMA'));
+			}
 			
         });
 	},
 	htmlCandidatoFirma: function(candidato,indice,score){
-		//TODO imagen y textos
+		//TODO imagen
 		var color="red";
 		if(score>=90)
 		{
@@ -2391,11 +2981,20 @@ var edicionCV = {
 			color="red";
 		}
 		var id=RandomGuid();
-		var htmlOrcid='';
+		var htmlAux="";
+		if(candidato.department!=null)
+		{			
+			htmlAux=candidato.department;
+		}
 		if(candidato.orcid!=null)
 		{
-			htmlOrcid=`<a target="_blank" href="https://orcid.org/${candidato.orcid}">${candidato.orcid}</a>`;
-		}
+			if(htmlAux!='')
+			{
+				htmlAux+=' · ';
+			}
+			htmlAux+=`<a target="_blank" class="orcid" href="https://orcid.org/${candidato.orcid}">${candidato.orcid}</a>`;
+		}		
+		
 		var html=`<div class="user-miniatura">
 					<div class="custom-control custom-checkbox">
 						<input type="checkbox" id="user-${id}" personid="${candidato.personid}" name="user-${indice}" class="custom-control-input chksignature">
@@ -2406,24 +3005,101 @@ var edicionCV = {
 						</div>
 					</div>
 					<div class="nombre-usuario-wrap">						
-						<p class="nombre">${candidato.name}</p>
-						<p class="nombre-completo">TODO · ${htmlOrcid}</p>						
+						<p class="nombre"><a target="_blank" href="${candidato.url}">${candidato.name}</a></p>
+						<p class="nombre-completo">${htmlAux}</p>						
 					</div>
 					<div class="coincidencia-wrap">
-						<p class="label">Coincidencia</p>
+						<p class="label">${GetText('CV_COINCIDENCIA')}</p>
 						<p class="numResultado" style="color: ${color};">${score}%</p>
 					</div>
 				</div>`;
 		return html;
 	},
 	validarORCID: function (orcid){
+		$('#modal-anadir-autor .formulario-edicion .form-actions .ko').hide();
+		$('#modal-anadir-autor .formulario-edicion .form-actions .ko').html('');
 		var that=this;
 		var item={};
 		item.pOrcid=orcid;
 		MostrarUpdateProgress();
-		$.post(urlGuardadoCV + 'ValidateORCID', item, function (data) {
-			OcultarUpdateProgress();			
+		$.post(urlGuardadoCV + 'ValidateORCID', item, function (data) {		
+			OcultarUpdateProgress();
+			$('#modal-anadir-autor .formulario-codigo p.ko').hide();
+			if(data.ok==false)
+			{
+				$('#modal-anadir-autor .formulario-codigo p.ko').show();
+				$('#modal-anadir-autor .formulario-codigo p.ko').html(GetText('CV_ELCODIGOINTRODUCIDONOESVALIDO'));
+				return;
+			}
+			$('#modal-anadir-autor .formulario-principal').show();
+			$('#modal-anadir-autor .formulario-codigo').hide();
+			$('#modal-anadir-autor .formulario-autor').hide();
+			var rGuid=RandomGuid();
+			var id=data.personid;
+			var firma=$('.formulario-codigo .form-autor .firma').text();
+			var indice=1;
+			var labelFirma=null;
+			$('#modal-anadir-autor .resultados .form-group.full-group .simple-collapse>label').each(function (index) {
+				if($(this).text()==firma)
+				{
+					labelFirma=$(this);
+					return;
+				}
+				indice++;
+			});
+			
+			var htmlAux="";
+			if(data.department!=null)
+			{			
+				htmlAux=data.department;
+			}
+			if(data.orcid!=null)
+			{
+				if(htmlAux!='')
+				{
+					htmlAux+=' · ';
+				}
+				htmlAux+=`<a target="_blank" class="orcid" href="https://orcid.org/${data.orcid}">${data.orcid}</a>`;
+			}	
+			
+			var htmlPersona=`<div class="user-miniatura">
+				<div class="custom-control custom-checkbox">
+					<input disabled="disabled" checked="checked" type="checkbox" id="user-${rGuid}" personid="${id}" name="user-${indice}" class="custom-control-input chksignature">
+					<label class="custom-control-label" for="user-${rGuid}"></label>
+				</div>
+				<div class="imagen-usuario-wrap">						
+					<div class="imagen">
+					</div>
+				</div>					
+				<div class="nombre-usuario-wrap">						
+					<p class="nombre">${data.name}</p>
+					<p class="nombre-completo">${htmlAux}</p>								
+				</div>
+			</div>`;
+			
+			if(labelFirma!=null)
+			{
+				labelFirma.parent().find('div').remove();
+				labelFirma.parent().find('a').remove();
+				labelFirma.after(htmlPersona);
+				edicionCV.engancharComportamientosCV()
+			}
         });
+	},
+	buscarTesauro: function(valor,tesauro){
+		var lista = tesauro.find('li');
+		lista.each(function(indice) {
+			var item = $(this);
+			var enlaceItem = item.children('a');
+			var itemText = enlaceItem.text();
+			item.removeClass('oculto');
+			if (itemText.toLowerCase().indexOf(valor.toLowerCase()) < 0) {
+				item.addClass('oculto');
+			} else {
+				item.removeHighlight().highlight(valor);
+				item.parents('.oculto').removeClass('oculto');
+			}
+		});
 	}
 
 };
@@ -2441,6 +3117,60 @@ function EliminarAcentos(texto) {
         else { ts += texto.charAt(i); }
     }
     return ts;
+}
+
+function addAutocompletar(control)
+{
+	var pProperty = $(control).attr('propertyrdf')
+	var pRdfType = $('#modal-editar-entidad form').attr('rdftype');
+	var	pGraph = $('#modal-editar-entidad form').attr('ontology');
+	
+     $(control).autocomplete(
+		null,
+		{
+			url: urlEdicionCV + "GetAutocomplete",
+			type: 'post',
+			delay: 0,
+			multiple: false,
+			scroll: false,
+			selectFirst: false,
+			minChars: 3,
+			width: 300,
+			cacheLength: 0,
+			parse : function(data){ 
+				var parsed = [];
+				try
+				{
+					for (var i=0; i < data.length; i++) {
+						var row = data[i];
+						
+						parsed[parsed.length] = {
+							data: row,
+							value: row,
+							result: row
+						};
+					}
+				}
+				catch(ex)
+				{}
+				return parsed; 
+			},
+			formatItem: function(data) { return data; },
+			extraParams: {
+				lista: function () {
+					var lista = ''; 
+					$('.added input[propertyrdf="' + pProperty + '"]').each(function () { 
+						lista += $(this).val().trim() + ',';
+					});
+                    return lista;
+                },
+                pProperty : pProperty,
+                pRdfType : pRdfType,
+                pGraph : pGraph
+			}
+		}
+	);
+	$(control).removeAttr('onclick')
 }
 
 function TransFormData(data, type) {
