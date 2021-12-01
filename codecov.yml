@@ -17,5 +17,5 @@ comment:
 flags:
   harvester_test:
     paths:
-      - src/Harvester_Test
+      - src/Hercules.ED.HarvesterTest
     carryforward: false
