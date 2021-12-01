@@ -24,4 +24,22 @@
     <ProjectReference Include="..\Harvester\Harvester.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="xml_examples\identifiers_persona.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="xml_examples\identifiers_proyecto.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="xml_examples\record_persona.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="xml_examples\record_proyecto.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="xml_examples\Syncs.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

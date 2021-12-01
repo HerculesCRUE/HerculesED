@@ -59,7 +59,7 @@ namespace HavesterTest
 
                 Harvester.Harvester h = new Harvester.Harvester(new HarvesterServicesMock());
 
-                List<IdentifierOAIPMH> organizationIdList = h.HaversterServices.ListIdentifiers("xml_examples//identifiers_empresa.xml");
+                List<IdentifierOAIPMH> organizationIdList = h.HaversterServices.ListIdentifiers("xml_examples//identifiers_organizaciones.xml");
                 string id = "buscar en el doc el id";
                 string xml = h.HaversterServices.GetRecord(id, "");
                 XmlSerializer serializer = new(typeof(Empresa));
@@ -68,7 +68,7 @@ namespace HavesterTest
                    organization = (Empresa)serializer.Deserialize(sr);
                 }
                 organizationsList.Add(organization);
-                Assert.True(organizationsList.Count>0,"Test harvest organizations");
+                Assert.True(organizationsList.Count>0, "xml_examples//record_organizaciones.xml");
 
 
 
@@ -128,7 +128,7 @@ namespace HavesterTest
             string lastSyncDate = syncList[^1].Date;
 
             Assert.True(firstSyncDate.Equals("2021-10-15T15:04:49Z"));
-            Assert.True(lastSyncDate.Equals("2021 - 10 - 15T00: 00:00Z"));
+            Assert.True(lastSyncDate.Equals("2021-10-15T00:00:00Z"));
 
                }
             catch
