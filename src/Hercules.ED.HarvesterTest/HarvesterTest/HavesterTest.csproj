@@ -25,10 +25,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="xml_examples\identifiers_organizacion.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="xml_examples\identifiers_persona.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="xml_examples\identifiers_proyecto.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="xml_examples\record_organizacion.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="xml_examples\record_persona.xml">
