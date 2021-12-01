@@ -61,14 +61,14 @@ namespace HavesterTest
 
                 List<IdentifierOAIPMH> organizationIdList = h.HaversterServices.ListIdentifiers("xml_examples//identifiers_organizaciones.xml");
                 string id = "Organizacion_S2816021";
-                string xml = h.HaversterServices.GetRecord(id, "");
+                string xml = h.HaversterServices.GetRecord(id, "xml_examples//record_organizacion.xml");
                 XmlSerializer serializer = new(typeof(Empresa));
                 using (StringReader sr = new(xml))
                 {
                    organization = (Empresa)serializer.Deserialize(sr);
                 }
                 organizationsList.Add(organization);
-                Assert.True(organizationsList.Count>0, "xml_examples//record_organizacion.xml");
+                Assert.True(organizationsList.Count>0, "Test harvest organizations");
 
 
 
