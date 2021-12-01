@@ -60,7 +60,7 @@ namespace HavesterTest
                 Harvester.Harvester h = new Harvester.Harvester(new HarvesterServicesMock());
 
                 List<IdentifierOAIPMH> organizationIdList = h.HaversterServices.ListIdentifiers("xml_examples//identifiers_organizaciones.xml");
-                string id = "buscar en el doc el id";
+                string id = "Organizacion_S2816021";
                 string xml = h.HaversterServices.GetRecord(id, "");
                 XmlSerializer serializer = new(typeof(Empresa));
                 using (StringReader sr = new(xml))
@@ -68,7 +68,7 @@ namespace HavesterTest
                    organization = (Empresa)serializer.Deserialize(sr);
                 }
                 organizationsList.Add(organization);
-                Assert.True(organizationsList.Count>0, "xml_examples//record_organizaciones.xml");
+                Assert.True(organizationsList.Count>0, "xml_examples//record_organizacion.xml");
 
 
 
