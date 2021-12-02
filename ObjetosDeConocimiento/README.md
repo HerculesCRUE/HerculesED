@@ -12,9 +12,7 @@
 # Hércules ED. Objetos de conocimiento
 
 [Introducción](#introducción)
-
 [Objetos de conocimiento](#objetos-de-conocimiento)
-
 > [Persona](#persona)
 
 INTRODUCCIÓN
