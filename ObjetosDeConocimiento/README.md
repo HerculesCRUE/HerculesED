@@ -11,11 +11,11 @@
 
 # Hércules ED. Objetos de conocimiento
 
-[INTRODUCCIÓN](#introducción)
+[Introducción](#introducción)
 
-[OBJETOS DE CONOCIMIENTO](#objetos-de-conocimiento)
+[Objetos de conocimiento](#objetos-de-conocimiento)
 
-[ Persona](#persona)
+[> Persona](#persona)
 
 INTRODUCCIÓN
 ============
