@@ -238,12 +238,41 @@ namespace GuardadoCV.Models
 
                 string[] firmas = pSignatures.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries).Distinct().ToArray();
 
+                List<string> signaturesList = new List<string>(); ;
+                string firmaActual = "";
                 foreach (string firma in firmas)
                 {
-                    List<Person> personas = ObtenerPersonasFirma(firma.Trim());
-                    ObtenerScores(firma.Trim(), ref personas, colaboradoresDocumentos, colaboradoresProyectos);
-                    personas = personas.OrderByDescending(x => x.score).ToList();
-                    listaPersonas.Add(firma.Trim(), personas);
+                    string actual = firma.Trim();
+                    if (firmaActual!="" && actual.Replace(".", "").Trim().Length < 4)
+                    {
+                        firmaActual += ", " + actual;
+                        firmaActual = firmaActual.Trim();
+                        signaturesList.Add(firmaActual.Trim());
+                        firmaActual = "";
+                    }
+                    else
+                    {
+                        if (firmaActual != "")
+                        {
+                            signaturesList.Add(firmaActual.Trim());
+                        }
+                        firmaActual = actual.Trim();
+                    }
+                }
+                if (firmaActual != "")
+                {
+                    signaturesList.Add(firmaActual.Trim());
+                }
+
+                foreach (string firma in signaturesList)
+                {
+                    if (firma.Trim() != "")
+                    {
+                        List<Person> personas = ObtenerPersonasFirma(firma.Trim());
+                        ObtenerScores(firma.Trim(), ref personas, colaboradoresDocumentos, colaboradoresProyectos);
+                        personas = personas.Where(x=>x.score>0.4f).OrderByDescending(x => x.score).ToList();
+                        listaPersonas.Add(firma.Trim(), personas);
+                    }
                 }
             }
 
@@ -479,14 +508,14 @@ namespace GuardadoCV.Models
                     {
                         for (int i = 0; i < pColaboradoresDocumentos[persona.personid]; i++)
                         {
-                            persona.score += (persona.scoreMax - persona.score) / 2;
+                            persona.score += (persona.scoreMax - persona.score) / 5;
                         }
                     }
                     if (pColaboradoresProyectos.ContainsKey(persona.personid))
                     {
                         for (int i = 0; i < pColaboradoresProyectos[persona.personid]; i++)
                         {
-                            persona.score += (persona.scoreMax - persona.score) / 2;
+                            persona.score += (persona.scoreMax - persona.score) / 5;
                         }
                     }
                 }
@@ -564,7 +593,7 @@ namespace GuardadoCV.Models
                     if (scoreSingleName > 0)
                     {
                         score = scoreSingleName * 0.9f;
-                        scoreMax = scoreSingleName + (1 - scoreSingleName) / 2;
+                        scoreMax = scoreSingleName + (1 - scoreSingleName) / 5;
                         indexTarget = j + 1;
                         break;
                     }

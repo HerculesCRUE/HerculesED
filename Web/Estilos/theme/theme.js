@@ -101,7 +101,7 @@ var menusLateralesManagement = {
         // this.onResize();
     },
     montarMenuLateralUsuario: function () {
-        if(!$('#menuLateralUsuario').length > 0) return;
+        if (!$('#menuLateralUsuario').length > 0) return;
 
         $('#menuLateralUsuario').slideReveal({
             trigger: $("#menuLateralUsuarioTrigger"),
@@ -112,7 +112,7 @@ var menusLateralesManagement = {
         });
     },
     montarMenuLateralMetabuscador: function () {
-        if(!$('#menuLateralMetabuscador').length > 0) return;
+        if (!$('#menuLateralMetabuscador').length > 0) return;
 
         $('#menuLateralMetabuscador').slideReveal({
             trigger: $("#menuLateralMetabuscadorTrigger"),
@@ -120,16 +120,16 @@ var menusLateralesManagement = {
             overlay: true,
             position: 'right',
             push: false,
-            show: function(slider, trigger){
+            show: function (slider, trigger) {
                 var width = 820
-                var windowWidth = $( window ).width();
+                var windowWidth = $(window).width();
                 var width = windowWidth < width ? windowWidth : width;
                 slider.css('width', width + 'px');
             },
         });
     },
     montarMenuLateral: function () {
-        if(!$('#menuLateral').length > 0) return;
+        if (!$('#menuLateral').length > 0) return;
 
         $('#menuLateral').slideReveal({
             trigger: $("#menuLateralTrigger"),
@@ -140,7 +140,7 @@ var menusLateralesManagement = {
         });
     },
     montarMenuLateralComunidad: function () {
-        if(!$('#menuLateralComunidad').length > 0) return;
+        if (!$('#menuLateralComunidad').length > 0) return;
 
         body.append($('#menuLateralComunidad'))
 
@@ -167,10 +167,10 @@ var menusLateralesManagement = {
 
         return;
     },
-    onResize: function(){
+    onResize: function () {
         var that = this;
         var width = $(window).width();
-        $(window).on('resize', function() {
+        $(window).on('resize', function () {
             if ($(this).width() !== width) {
                 width = $(this).width();
                 that.montarMenuLateralMetabuscador()
@@ -200,7 +200,7 @@ var clonarMenuUsuario = {
         return menuClonadoAux;
     },
     copiar: function () {
-        if(this.menuClonado.length > 0){
+        if (this.menuClonado.length > 0) {
             this.main.prepend(this.menuClonado);
         }
     }
@@ -377,7 +377,7 @@ var metabuscador = {
     },
     showLoader: function (loader_div, time) {
         var loaderBar = loader_div.progressBarTimer({
-            autostart:false,
+            autostart: false,
             timeLimit: time,
             warningThreshold: 0,
             baseStyle: '',
@@ -409,15 +409,15 @@ var metabuscador = {
                 loader_container.hide();
                 resolve();
             }, tiempo * 1000);
-          });
+        });
     },
     cargarRecursos: function () {
         var that = this;
-        var bloque =that.resultadosMetabuscador.find('.bloque.recursos');
+        var bloque = that.resultadosMetabuscador.find('.bloque.recursos');
         bloque.hide();
 
         var procesoCarga = this.cargar('recursos', 5);
-        procesoCarga.then(function(){
+        procesoCarga.then(function () {
             bloque.show();
         });
     },
@@ -427,7 +427,7 @@ var metabuscador = {
         bloque.hide();
 
         var procesoCarga = this.cargar('debates', 4);
-        procesoCarga.then(function(){
+        procesoCarga.then(function () {
             bloque.show();
         });
     },
@@ -437,7 +437,7 @@ var metabuscador = {
         bloque.hide();
 
         var procesoCarga = this.cargar('preguntas', 3);
-        procesoCarga.then(function(){
+        procesoCarga.then(function () {
             bloque.show();
         });
     },
@@ -447,7 +447,7 @@ var metabuscador = {
         bloque.hide();
 
         var procesoCarga = this.cargar('personas', 2);
-        procesoCarga.then(function(){
+        procesoCarga.then(function () {
             bloque.show();
         });
     },
@@ -586,6 +586,41 @@ var listadoMensajesAcciones = {
     }
 };
 
+var accionDropdownSelect = {
+    init: function () {
+        if ($('.dropdown-select').length > 0) this.comportamiento();
+    },
+    comportamiento: function () {
+        var select = $('.dropdown-select');
+        var menu = select.find('.dropdown-menu');
+        var item = menu.find('.item-dropdown');
+
+        item.off('click').on('click', function () {
+            var parent = $(this).parents('.dropdown-select');
+            var toggle = parent.find('.dropdown-toggle');
+            var items = parent.find('.item-dropdown');
+            toggle.html($(this).html());
+            toggle.addClass('active');
+            items.removeClass('activeView');
+            $(this).addClass('activeView');
+        });
+    }
+};
+
+
+// Añadir la clase .dropdown-autofocus (al padre del .dropdown-menu) para que cuando se despligue el dropdown
+// se haga autofocus en el primer input que haya en el dropdown
+var accionDropdownAutofocus = {
+    init: function () {
+        $('.dropdown-autofocus').on('shown.bs.dropdown', function () {
+            $dropdown = $(this);
+            setTimeout(function () {
+                $dropdown.find('input').first().focus();
+            });
+        });
+    }
+};
+
 var cambioVistaListado = {
     init: function () {
         this.config();
@@ -682,12 +717,11 @@ var plegarFacetasCabecera = {
         facetasTitle.off('click').on('click', function (e) {
             var title = $(this);
             var target = $(e.target);
-            var box = title.parent();
+            var box = title.parents('.box');
 
             if (target.hasClass('search-icon')) {
                 e.preventDefault();
                 e.stopPropagation();
-                that.mostrarOcultarBuscador(box);
             } else {
                 that.mostrarOcultarFaceta(box);
             }
@@ -697,32 +731,12 @@ var plegarFacetasCabecera = {
     },
     mostrarOcultarFaceta: function (box) {
         box.toggleClass('plegado');
-        if (box.hasClass('plegado')) {
-            this.ocultarBuscador(box);
-        }
     },
     mostrarFaceta: function (box) {
         box.removeClass('plegado');
     },
-    mostrarOcultarBuscador: function (box) {
-        var facetedSearchBox = box.find('.facetedSearchBox');
-        if (facetedSearchBox.hasClass('oculto')) {
-            this.mostrarBuscador(box)
-            this.mostrarFaceta(box);
-        } else {
-            this.ocultarBuscador(box)
-        }
-    },
-    mostrarBuscador: function (box) {
-        var facetedSearchBox = box.find('.facetedSearchBox');
-        facetedSearchBox.removeClass('oculto');
-        box.removeClass('ocultando-buscador');
-    },
-    ocultarBuscador: function (box) {
-        var facetedSearchBox = box.find('.facetedSearchBox');
-        facetedSearchBox.addClass('oculto');
-        box.addClass('ocultando-buscador');
-    }
+
+
 };
 
 var facetasVerMasVerTodos = {
@@ -736,7 +750,7 @@ var facetasVerMasVerTodos = {
         this.body = body;
         return;
     },
-    comportamientoVerTodos: function () {    },
+    comportamientoVerTodos: function () { },
     comportamientoVerMas: function () {
 
         $('.moreResults .ver-mas').off('click').on('click', function () {
@@ -758,6 +772,55 @@ var facetasVerMasVerTodos = {
     }
 };
 
+var comportamientosModalFacetas = {
+    init: function(){
+        $('.js-desplegar-facetas-modal').on('click', function(){
+            const button = $(this);
+            const faceta_wrap = button.closest('.facetas-wrap');
+            const action_buttons = button.closest('ul').find('li');
+            const facetas_con_subfaceta = faceta_wrap.find('.faceta.con-subfaceta.ocultarSubFaceta');
+            const boton_desplegar_faceta = facetas_con_subfaceta.find('.desplegarSubFaceta span');
+            boton_desplegar_faceta.trigger('click');
+            action_buttons.removeClass('active');
+            button.addClass('active');
+        });
+        $('.js-plegar-facetas-modal').on('click', function(){
+            const button = $(this);
+            const faceta_wrap = button.closest('.facetas-wrap');
+            const action_buttons = button.closest('ul').find('li');
+            const facetas_con_subfaceta = faceta_wrap.find('.faceta.con-subfaceta:not(.ocultarSubFaceta)');
+            const boton_desplegar_faceta = facetas_con_subfaceta.find('.desplegarSubFaceta span');
+            boton_desplegar_faceta.trigger('click');
+            action_buttons.removeClass('active');
+            button.addClass('active');
+        });
+        $('.js-anterior-facetas-modal').on('click', function(){
+            $('.resultados-wrap .listadoFacetas').animate({
+                marginLeft: 30,
+                opacity: 0
+            }, 200, function () {
+                $('.resultados-wrap .listadoFacetas').css({ marginLeft: -30 });
+                $('.resultados-wrap .listadoFacetas').animate({
+                    marginLeft: 30,
+                    opacity: 1
+                }, 200);
+            });
+        });
+        $('.js-siguiente-facetas-modal').on('click', function(){
+            $('.resultados-wrap .listadoFacetas').animate({
+                marginLeft: -30,
+                opacity: 0
+            }, 200, function () {
+                $('.resultados-wrap .listadoFacetas').css({ marginLeft: 30 });
+                $('.resultados-wrap .listadoFacetas').animate({
+                    marginLeft: 30,
+                    opacity: 1
+                }, 200);
+            });
+        });
+    }
+}
+
 var plegarSubFacetas = {
     init: function () {
         this.config();
@@ -770,13 +833,26 @@ var plegarSubFacetas = {
     },
     comportamiento: function () {
         $('.desplegarSubFaceta .material-icons').unbind().click(function () {
-            var padre = $($(this).closest('a'));
-            if ($(this).text() == 'add') {
-                $(padre).removeClass('ocultarSubFaceta');
-                $(this).text('remove');
-            } else {
-                $(padre).addClass('ocultarSubFaceta');
-                $(this).text('add');
+            var padre = $(this).closest('a');
+            var icono = $(this);
+            var icono_texto = icono.text().trim();
+            if (icono_texto == 'add' || icono_texto == 'remove') {
+                if (icono_texto == 'add') {
+                    padre.removeClass('ocultarSubFaceta');
+                    icono.text('remove');
+                } else {
+                    padre.addClass('ocultarSubFaceta');
+                    icono.text('add');
+                }
+            }
+            if (icono_texto == 'expand_more' || icono_texto == 'expand_less') {
+                if (icono_texto == 'expand_more') {
+                    padre.removeClass('ocultarSubFaceta');
+                    icono.text('expand_less');
+                } else {
+                    padre.addClass('ocultarSubFaceta');
+                    icono.text('expand_more');
+                }
             }
             alturizarBodyTamanoFacetas.init();
             return false;
@@ -911,10 +987,10 @@ var accionHistorial = {
     init: function () {
         this.config();
     },
-    config: function(){
+    config: function () {
         this.opciones = {
             paging: false,
-            ordering:  false,
+            ordering: false,
             select: false,
             searching: false,
             info: false,
@@ -930,34 +1006,34 @@ var accionHistorial = {
             ]
         }
     },
-    montarTabla: function(){
+    montarTabla: function () {
         this.modal = $('#modal-container');
         this.tabla = body.find('.tabla-versiones');
         this.hay_tabla = this.tabla.length > 0 ? true : false;
 
-        if(!this.hay_tabla) return;
+        if (!this.hay_tabla) return;
         this.tabla_montada = this.tabla.DataTable(this.opciones);
         this.comportamientosChecks();
         this.observarModal();
 
     },
-    comportamientosChecks: function(){
+    comportamientosChecks: function () {
         var checks = this.tabla.find("input[type='checkbox']");
-        checks.on('change', function (){
+        checks.on('change', function () {
             var check = $(this);
             var tr = check.closest('tr');
-            if(check.is(':checked')){
+            if (check.is(':checked')) {
                 tr.addClass('activo');
-            }else{
+            } else {
                 tr.removeClass('activo');
             }
         });
     },
-    observarModal: function() {
+    observarModal: function () {
         var that = this;
 
-        var observer = new MutationObserver(function(mutations) {
-            mutations.forEach(function(mutation) {
+        var observer = new MutationObserver(function (mutations) {
+            mutations.forEach(function (mutation) {
                 if (mutation.attributeName === "class") {
                     that.tabla_montada.responsive.rebuild();
                     that.tabla_montada.responsive.recalc();
@@ -976,13 +1052,13 @@ var accionDesplegarCategorias = {
         this.config();
         this.mostrarOcultarCategoriasHijas();
     },
-    config: function(){
+    config: function () {
         this.pan_categorias = $('.divTesArbol.divCategorias');
         this.desplegables = this.pan_categorias.find('.boton-desplegar')
     },
-    mostrarOcultarCategoriasHijas: function(){
-        if(this.desplegables.length > 0){
-            this.desplegables.off('click').on('click', function(){
+    mostrarOcultarCategoriasHijas: function () {
+        if (this.desplegables.length > 0) {
+            this.desplegables.off('click').on('click', function () {
                 $(this).toggleClass('mostrar-hijos');
             });
         }
@@ -994,13 +1070,13 @@ var iniciarSelects2 = {
         this.config();
         this.montarSelects();
     },
-    config: function(){
+    config: function () {
         this.select2 = body.find('.js-select2');
         this.defaultOptions = {
             minimumResultsForSearch: 10
         };
     },
-    montarSelects: function(){
+    montarSelects: function () {
         this.select2.select2(this.defaultOptions);
     }
 }
@@ -1010,37 +1086,37 @@ var iniciarDropAreaImagenPerfil = {
         this.config();
         this.montar();
     },
-    config: function(){
+    config: function () {
         this.droparea = body.find('.js-image-uploader');
     },
-    montar: function(){
+    montar: function () {
         this.droparea.imageDropArea({});
     }
 }
 
 var customizarAvisoCookies = {
-    init: function(){
+    init: function () {
         this.config();
         this.comportamientoAceptar();
         if (this.avisoCookies.length < 1) return;
         return;
     },
-    config: function(){
+    config: function () {
         this.body = body;
         this.avisoCookies = this.body.find('#aviso-cookies');
         return;
     },
-    comportamientoAceptar: function(){
-		var that = this;
+    comportamientoAceptar: function () {
+        var that = this;
         var aceptar = $('#aceptarCookies');
 
-		aceptar.on('click', function(e){
-			e.preventDefault();
-			that.guardarAceptarCookies();
-		});
+        aceptar.on('click', function (e) {
+            e.preventDefault();
+            that.guardarAceptarCookies();
+        });
         return;
     },
-    guardarAceptarCookies: function(){
+    guardarAceptarCookies: function () {
         var that = this;
         /*GnossPeticionAjax(
             $('#inpt_baseUrlBusqueda').val() + '/aceptar-cookies',
@@ -1056,8 +1132,8 @@ var customizarAvisoCookies = {
 
         $.ajax({
             url: $('#inpt_baseUrlBusqueda').val() + '/aceptar-cookies'
-        }).done(function() {
-            that.avisoCookies.animate( {opacity:'0'}, 400, 'swing', function(){
+        }).done(function () {
+            that.avisoCookies.animate({ opacity: '0' }, 400, 'swing', function () {
                 that.avisoCookies.remove();
             });
         });
@@ -1071,12 +1147,12 @@ var customizarAvisoCookies = {
  * @param  {string} contenido 'Mensaje que se quiere mostrar'
  */
 var mostrarNotificacion = function (tipo, contenido) {
-    toastr[tipo](contenido, 'Mensaje de la plataforma',{
+    toastr[tipo](contenido, 'Mensaje de la plataforma', {
         toastClass: 'toast themed',
         positionClass: "toast-bottom-center",
         target: 'body',
         closeHtml: '<span class="material-icons">close</span>',
-        showMethod:'slideDown',
+        showMethod: 'slideDown',
         timeOut: 5000,
         escapeHtml: false,
         closeButton: true,
@@ -1088,6 +1164,7 @@ function comportamientoCargaFacetasComunidad() {
     plegarFacetasCabecera.init();
     plegarSubFacetas.init();
     facetasVerMasVerTodos.init();
+    comportamientosModalFacetas.init();
 };
 
 var timeoutUpdateProgres;
@@ -1113,23 +1190,23 @@ function OcultarUpdateProgress() {
 }
 
 
-;(function($) {
+; (function ($) {
 
     $.imageDropArea = function (element, options) {
         var defaults = {
-          inputSelector: ".image-uploader__input",
-          dropAreaSelector: ".image-uploader__drop-area",
-          preview: ".image-uploader__preview",
-          previewImg: ".image-uploader__img",
-          errorDisplay: ".image-uploader__error",
-          // funcionPrueba: function() {}
+            inputSelector: ".image-uploader__input",
+            dropAreaSelector: ".image-uploader__drop-area",
+            preview: ".image-uploader__preview",
+            previewImg: ".image-uploader__img",
+            errorDisplay: ".image-uploader__error",
+            // funcionPrueba: function() {}
         };
         var plugin = this;
 
         // Objeto HTML del Loading que se mostraría mientras se esté realizando la carga de la imagen
         var loadingSpinnerHtml = "";
         loadingSpinnerHtml +=
-          '<div class="spinner-border texto-primario" role="status" style="position: absolute; top: 45%; left:40%">';
+            '<div class="spinner-border texto-primario" role="status" style="position: absolute; top: 45%; left:40%">';
         loadingSpinnerHtml += '<span class="sr-only">Cargando...</span>';
         loadingSpinnerHtml += "</div>";
 
@@ -1139,59 +1216,59 @@ function OcultarUpdateProgress() {
         var element = element;
 
         plugin.init = function () {
-          plugin.settings = $.extend({}, defaults, options);
-          plugin["input"] = $(plugin.settings.inputSelector);
-          plugin["dropAreaSelector"] = $(plugin.settings.dropAreaSelector);
-          plugin["preview"] = $(plugin.settings.preview);
-          plugin["previewImg"] = $(plugin.settings.previewImg);
-          plugin["errorDisplay"] = $(plugin.settings.errorDisplay);
-          onInputChange();
-          addDragAndDropEvents();
+            plugin.settings = $.extend({}, defaults, options);
+            plugin["input"] = $(plugin.settings.inputSelector);
+            plugin["dropAreaSelector"] = $(plugin.settings.dropAreaSelector);
+            plugin["preview"] = $(plugin.settings.preview);
+            plugin["previewImg"] = $(plugin.settings.previewImg);
+            plugin["errorDisplay"] = $(plugin.settings.errorDisplay);
+            onInputChange();
+            addDragAndDropEvents();
         };
 
         var onInputChange = function () {
-          plugin.input.change(function () {
-            // Mostrar spinner de carga de imagen
-            showLoadingImagePreview(true);
-            var data = new FormData();
-            var files = plugin.input.get(0).files;
-            if (files.length > 0) {
-              data.append("ImagenRegistroUsuario", files[0]);
-            }
-            $.ajax({
-              url: document.location.href,
-              type: "POST",
-              processData: false,
-              contentType: false,
-              data: data,
-              success: function (response) {
-                hideError();
-                onSuccesResponse(response);
-              },
-              error: function (er) {
-                displayError(er.statusText);
-              },
+            plugin.input.change(function () {
+                // Mostrar spinner de carga de imagen
+                showLoadingImagePreview(true);
+                var data = new FormData();
+                var files = plugin.input.get(0).files;
+                if (files.length > 0) {
+                    data.append("ImagenRegistroUsuario", files[0]);
+                }
+                $.ajax({
+                    url: document.location.href,
+                    type: "POST",
+                    processData: false,
+                    contentType: false,
+                    data: data,
+                    success: function (response) {
+                        hideError();
+                        onSuccesResponse(response);
+                    },
+                    error: function (er) {
+                        displayError(er.statusText);
+                    },
+                });
             });
-          });
         };
 
         var displayError = function (error) {
-          plugin.errorDisplay.find(".ko").text(error);
-          plugin.errorDisplay.find(".ko").show();
-          plugin.preview.removeClass("show-preview");
+            plugin.errorDisplay.find(".ko").text(error);
+            plugin.errorDisplay.find(".ko").show();
+            plugin.preview.removeClass("show-preview");
         };
         var hideError = function () {
-          plugin.errorDisplay.find(".ko").hide();
+            plugin.errorDisplay.find(".ko").hide();
         };
 
         var onSuccesResponse = function (response) {
-          if (response.indexOf("imagenes/") === 0) {
-            showImagePreview(response);
-            showLoadingImagePreview(false);
-          } else {
-            displayError(response);
-            showLoadingImagePreview(false);
-          }
+            if (response.indexOf("imagenes/") === 0) {
+                showImagePreview(response);
+                showLoadingImagePreview(false);
+            } else {
+                displayError(response);
+                showLoadingImagePreview(false);
+            }
         };
 
         /**
@@ -1200,66 +1277,66 @@ function OcultarUpdateProgress() {
          * false: Quitar ese "loading" -> Fin carga de imagen
          */
         var showLoadingImagePreview = function (showLoading) {
-          // Mostrar loading
-          if (showLoading) {
-            // Quitar la imagen actual del preview
-            plugin.preview.attr("src", "");
-            // Mostrar un spinner dentro del preview.
-            plugin.preview.append(loadingSpinnerHtml);
-          } else {
-            // Quitar loading
-            $(".spinner-border").remove();
-          }
+            // Mostrar loading
+            if (showLoading) {
+                // Quitar la imagen actual del preview
+                plugin.preview.attr("src", "");
+                // Mostrar un spinner dentro del preview.
+                plugin.preview.append(loadingSpinnerHtml);
+            } else {
+                // Quitar loading
+                $(".spinner-border").remove();
+            }
         };
 
         var showImagePreview = function (response) {
-          plugin.previewImg.attr(
-            "src",
-            "http://serviciospruebas.gnoss.net" + "/" + response
-          );
-          plugin.preview.addClass("show-preview");
+            plugin.previewImg.attr(
+                "src",
+                "http://serviciospruebas.gnoss.net" + "/" + response
+            );
+            plugin.preview.addClass("show-preview");
         };
 
         var addDragAndDropEvents = function () {
-          plugin.dropAreaSelector
-            .off("dragenter dragover")
-            .on("dragenter dragover", function (e) {
-              e.preventDefault();
-              e.stopPropagation();
+            plugin.dropAreaSelector
+                .off("dragenter dragover")
+                .on("dragenter dragover", function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                });
+
+            plugin.dropAreaSelector.off("click").on("click", function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                plugin.input.trigger("click");
             });
 
-          plugin.dropAreaSelector.off("click").on("click", function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-            plugin.input.trigger("click");
-          });
+            plugin.dropAreaSelector.off("dragleave").on("dragleave", function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            });
 
-          plugin.dropAreaSelector.off("dragleave").on("dragleave", function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-          });
-
-          plugin.dropAreaSelector.off("drop").on("drop", function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-            let dt = e.originalEvent.dataTransfer;
-            let files = dt.files;
-            plugin.input.get(0).files = files;
-            plugin.input.trigger("change");
-          });
+            plugin.dropAreaSelector.off("drop").on("drop", function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                let dt = e.originalEvent.dataTransfer;
+                let files = dt.files;
+                plugin.input.get(0).files = files;
+                plugin.input.trigger("change");
+            });
         };
         plugin.init();
-      };
+    };
 
-      // add the plugin to the jQuery.fn object
-      $.fn.imageDropArea = function (options) {
+    // add the plugin to the jQuery.fn object
+    $.fn.imageDropArea = function (options) {
         return this.each(function () {
-          if (undefined == $(this).data("imageDropArea")) {
-            var plugin = new $.imageDropArea(this, options);
-            $(this).data("imageDropArea", plugin);
-          }
+            if (undefined == $(this).data("imageDropArea")) {
+                var plugin = new $.imageDropArea(this, options);
+                $(this).data("imageDropArea", plugin);
+            }
         });
-      };
+    };
 })(jQuery);
 
 
@@ -1279,6 +1356,8 @@ $(function () {
     accionDesplegarCategorias.init();
     //circulosPersona.init();
     customizarAvisoCookies.init();
+    accionDropdownSelect.init();
+    accionDropdownAutofocus.init();
 
     if (body.hasClass('fichaRecurso') || body.hasClass('edicionRecurso')) {
         accionesRecurso.init();

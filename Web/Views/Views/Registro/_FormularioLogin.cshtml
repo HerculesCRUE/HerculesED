@@ -1,3 +1,13 @@
+@*[security|||registro/_formulariologin.cshtml|||hercules]*@
+@using Es.Riam.Gnoss.Web.MVC.Models
+@using Es.Riam.Gnoss.Web.MVC.Controles.Helper
+@using Es.Riam.Gnoss.Web.MVC.Models.ViewModels
+@using Es.Riam.Gnoss.Web.MVC.Models.Administracion
+@using Es.Riam.Gnoss.AD.ServiciosGenerales
+@using Es.Riam.Gnoss.Web.MVC.Controllers
+@using Es.Riam.Gnoss.Web.MVC.Controllers.Administracion
+@using Es.Riam.Gnoss.Web.Controles
+@using Newtonsoft.Json
 @{
     CommunityModel Comunidad = Html.GetComunidad();
 }
@@ -33,7 +43,7 @@
                                         </div>
                                         <div id="logintwice" class="error-wrap">
                                             <div class="ko">
-                                                <p id="mensajeErrorLoginTwice">@Html.GetText("LOGIN", "LOGINTWICE", Session.Timeout.ToString())</p>
+                                                <p id="mensajeErrorLoginTwice">@Html.GetText("LOGIN", "LOGINTWICE", Html.GetSessionTimeout())</p>
                                             </div>
                                         </div>
 

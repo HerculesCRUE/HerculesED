@@ -1,6 +1,22 @@
+@*[security|||shared/_pie.cshtml|||hercules]*@
+@using Es.Riam.Gnoss.Web.MVC.Models
+@using Es.Riam.Gnoss.Web.MVC.Controles.Helper
+@using Es.Riam.Gnoss.Web.MVC.Models.ViewModels
+@using Es.Riam.Gnoss.Web.MVC.Models.Administracion
+@using Es.Riam.Gnoss.AD.ServiciosGenerales
+@using Es.Riam.Gnoss.Web.MVC.Controllers
+@using Es.Riam.Gnoss.Web.MVC.Controllers.Administracion
+@using Es.Riam.Gnoss.Web.Controles
+@using Newtonsoft.Json
 @{
     UserProfileModel Perfil = Html.GetPerfil();
     CommunityModel Comunidad = Html.GetComunidad();
+    string versionCSS = ViewBag.Version;
+    if (Comunidad.VersionCSS.HasValue)
+    {
+        versionCSS += "-" + Comunidad.VersionCSS.Value.ToString();
+    }
+    string urlPersonalizacion = ViewBag.BaseURLContent + "/imagenes/proyectos/personalizacion/" + Comunidad.Key.ToString();
 }
 
 <footer id="footer">
@@ -10,10 +26,10 @@
             <div class="row row01">
                 <div class="col col-12 col-xl-6 logotipos">
                     <a href="javascript: void(0);">
-                        <img src="./theme/resources/logotipos/logo-ministerio.jpg" alt="Ministerio de Ciencia e Innovacion">
+                        <img src="@urlPersonalizacion/theme/resources/logotipos/logo-ministerio.jpg" alt="Ministerio de Ciencia e Innovacion">
                     </a>
                     <a href="javascript: void(0);">
-                        <img src="./theme/resources/logotipos/logo-um.jpg" alt="Universidad de Murcia">
+                        <img src="@urlPersonalizacion/theme/resources/logotipos/logo-um.jpg" alt="Universidad de Murcia">
                     </a>
                 </div>
                 <div class="col col-12 col-xl-6 europa">
@@ -22,7 +38,7 @@
                         <p>@Html.Translate("ERDF_DESCRIPTION")</p>
                     </div>
                     <a href="javascript: void(0);">
-                        <img src="./theme/resources/logotipos/logo-ue.png" alt="Unión Europea">
+                        <img src="@urlPersonalizacion/theme/resources/logotipos/logo-ue.png" alt="Unión Europea">
                     </a>
                 </div>
             </div>

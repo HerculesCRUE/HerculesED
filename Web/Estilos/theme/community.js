@@ -12,7 +12,7 @@
 var clonarMenuUsuario = {
     init: function () {
         this.config();
-        this.copiar();
+        this.copiarNavegacion();
         return;
     },
     config: function () {
@@ -21,16 +21,16 @@ var clonarMenuUsuario = {
         this.usuario = this.header.find('.col.col03 .usuario');
         this.menuOriginal = this.body.find('#menuLateralUsuario');
         this.navegacion = this.menuOriginal.find('#navegacion');
-        this.navegacionClonado = this.clonar()
+        this.navegacionClonado = this.clonarNavegacion();
         return;
     },
-    clonar: function () {
+    clonarNavegacion: function () {
         var navegacionClonadoAux = this.navegacion.clone();
         navegacionClonadoAux.attr('id', 'navegacionClonado');
         navegacionClonadoAux.attr('class', 'navegacion clonado');
         return navegacionClonadoAux;
     },
-    copiar: function () {
+    copiarNavegacion: function () {
         if (this.navegacionClonado.length > 0) {
             this.usuario.prepend(this.navegacionClonado);
         }
@@ -118,6 +118,8 @@ var accionesCurriculum = {
         this.expandAll();
         this.collapseAll();
         this.collapse();
+        this.expandAllModal();
+        this.collapseAllModal();
     },
     cambiarSeccion: function () {
         var cabecera = $('.cabecera-cv');
@@ -183,6 +185,36 @@ var accionesCurriculum = {
                 resource.addClass('activo');
             }
         });
+    },
+    expandAllModal: function () {
+        var button = $('.expandAll');
+
+        button.off('click').on('click', function(e) {
+            var $this = $(e.target);
+            var dataTarget = $this.attr('data-target');
+            var form = button.parents('.formulario-edicion');
+
+            form.find(dataTarget + '[data-toggle="collapse"]').each(function (i, event) {
+                var $this = $(event);
+                var objectID = $this.attr('href');
+                $(objectID).collapse('hide');
+            });
+        });
+    },
+    collapseAllModal: function () {
+        var button = $('.collapseAll');
+
+        button.off('click').on('click', function (e) {
+            var $this = $(e.target);
+            var dataTarget = $this.attr('data-target');
+            var form = button.parents('.formulario-edicion');
+
+            form.find(dataTarget + '[data-toggle="collapse"]').each(function (i, event) {
+                var $this = $(event);
+                var objectID = $this.attr('href');
+                $(objectID).collapse('show');
+            });
+        });
     }
 };
 
@@ -202,9 +234,362 @@ var iniciarComportamientoImagenUsuario = {
     },
 };
 
+var iniciarDatepicker = {
+    init: function() {
+        this.montarPlugin();
+    },
+    montarPlugin: function() {
+        $('.datepicker').datepicker({
+            closeText: 'Cerrar',
+            prevText: '<Ant',
+            nextText: 'Sig>',
+            currentText: 'Hoy',
+            monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+            monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+            dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+            dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Juv', 'Vie', 'Sáb'],
+            dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'],
+            weekHeader: 'Sm',
+            dateFormat: 'dd/mm/yy',
+            firstDay: 1,
+            isRTL: false,
+            showMonthAfterYear: false,
+            yearSuffix: ''
+        });
+    }
+};
+
+var collapseResource = {
+    init: function() {
+        this.collapse();
+    },
+    collapse: function() {
+        var boton = $('.arrow');
+
+        boton.off('click').on('click', function() {
+            var resource = $(this).parents('.resource');
+
+            if (resource.hasClass('plegado')) {
+                $(this).text('keyboard_arrow_down');
+                resource.removeClass('plegado');
+            } else {
+                $(this).text('keyboard_arrow_up');
+                resource.addClass('plegado');
+            }
+        });
+    }
+};
+
+var comportamientoVerMasVerMenos = {
+    init: function () {
+        this.comportamiento();
+    },
+    comportamiento: function () {
+        $('.description-wrap .moreResults .ver-mas').off('click').on('click', function () {
+            var showMore = $(this).closest('.showMore');
+            showMore.find('.ver-mas').css('display', 'none');
+            showMore.find('.ver-menos').css('display', 'flex');
+            var description_wrap = $(this).parents('.description-wrap');
+            var desc = description_wrap.find('.desc');
+            desc.css('display', 'block');
+        });
+
+        $('.description-wrap .moreResults .ver-menos').off('click').on('click', function () {
+            var showMore = $(this).closest('.showMore');
+            showMore.find('.ver-menos').css('display', 'none');
+            showMore.find('.ver-mas').css('display', 'flex');
+            var description_wrap = $(this).parents('.description-wrap');
+            var desc = description_wrap.find('.desc');
+            desc.css('display', '-webkit-box');
+        });
+    }
+};
+
+var comportamientoVerMasVerMenosTags = {
+    init: function() {
+        this.comportamiento();
+    },
+    comportamiento: function() {
+        $('.list-wrap .moreResults .ver-mas').off('click').on('click', function () {
+            var list = $(this).closest('.list-wrap');
+            list.find('ul > .ocultar').show(200);
+            list.find('.ver-mas').css('display', 'none');
+            list.find('.ver-menos').css('display', 'flex');
+        });
+
+        $('.list-wrap .moreResults .ver-menos').off('click').on('click', function () {
+            var list = $(this).closest('.list-wrap');
+            list.find('ul > .ocultar').hide(200);
+            list.find('.ver-menos').css('display', 'none');
+            list.find('.ver-mas').css('display', 'flex');
+        });
+    }
+};
+
+var operativaFormularioAutor = {
+    init: function () {
+        this.config();
+        this.formPrincipal();
+        this.formAutor();
+        this.formCodigo();
+    },
+    config: function () {
+        this.modal_autor = $('#modal-anadir-autor');
+        this.formularioPrincipal = this.modal_autor.find('.formulario-principal');
+        this.formularioAutor = this.modal_autor.find('.formulario-autor');
+        this.formularioCodigo = this.modal_autor.find('.formulario-codigo');
+    },
+    formPrincipal: function () {
+        var that = this;
+        var btn = $('.form-principal');
+
+        // Si se hace click en el enlace
+        btn.off('click').on('click', function() {
+            that.formularioPrincipal.show();
+            that.formularioCodigo.hide();
+            that.formularioAutor.hide();
+        });
+
+        this.modal();
+    },
+    formAutor: function () {
+        var that = this;
+        var btn = $('.form-autor');
+
+        // Si se hace click en el enlace
+        btn.off('click').on('click', function() {
+            that.formularioPrincipal.hide();
+            that.formularioCodigo.hide();
+            that.formularioAutor.show();
+        });
+
+        this.modal();
+    },
+    formCodigo: function () {
+        var that = this;
+        var btn = $('.form-buscar');
+
+        // Si se hace click en el enlace
+        btn.off('click').on('click', function() {
+            that.formularioPrincipal.hide();
+            that.formularioCodigo.show();
+            that.formularioAutor.hide();
+        });
+
+        this.modal();
+    },
+    modal: function () {
+        var that = this;
+
+        $('#modal-anadir-autor').on('show.bs.modal', function () {
+            $('#modal-anadir-datos-experiencia').modal('hide');
+        });
+
+        $('#modal-editar-autor').on('show.bs.modal', function () {
+            $('#modal-anadir-datos-experiencia').modal('hide');
+        });
+
+        $('#modal-anadir-autor').on('hide.bs.modal', function () {
+            $('#modal-anadir-datos-experiencia').modal('show');
+            $(this).find('.formulario-edicion').hide();
+            that.formularioPrincipal.show();
+        });
+
+        $('#modal-editar-autor').on('hide.bs.modal', function () {
+            $('#modal-anadir-datos-experiencia').modal('show');
+        });
+    }
+};
+
+var operativaFormularioTesauro = {
+    init: function () {
+        $('#modal-editar-entidad-0').on('show.bs.modal', function () {
+            $('#modal-anadir-datos-experiencia').modal('hide');
+            plegarSubFacetas.init();
+        });
+
+        $('#modal-editar-entidad-0').on('hide.bs.modal', function () {
+            $('#modal-anadir-datos-experiencia').modal('show');
+        });
+
+        $('.js-desplegar-facetas-modal').on('click', function (){
+            const button = $(this);
+            const aux = button.closest('.entityaux');
+            const action_buttons = button.closest('ul').find('li');
+            const facetas_con_subfaceta = aux.find('.faceta.con-subfaceta.ocultarSubFaceta');
+            const boton_desplegar_faceta = facetas_con_subfaceta.find('.desplegarSubFaceta span');
+            boton_desplegar_faceta.trigger('click');
+            action_buttons.removeClass('active');
+            button.addClass('active');
+        });
+
+        $('.js-plegar-facetas-modal').on('click', function (){
+            const button = $(this);
+            const aux = button.closest('.entityaux');
+            const action_buttons = button.closest('ul').find('li');
+            const facetas_con_subfaceta = aux.find('.faceta.con-subfaceta:not(.ocultarSubFaceta)');
+            const boton_desplegar_faceta = facetas_con_subfaceta.find('.desplegarSubFaceta span');
+            boton_desplegar_faceta.trigger('click');
+            action_buttons.removeClass('active');
+            button.addClass('active');
+        });
+    }
+};
+
+var mostrarFichaCabeceraFixed = {
+    init: function () {
+        this.config();
+        this.comportamiento();
+    },
+    config: function () {
+        this.body = body;
+        this.cabecera = this.body.find('.cabecera-ficha');
+    },
+    comportamiento: function () {
+        if(this.cabecera.length === 0) return;
+
+        var position = this.cabecera.position().top + this.cabecera.height();
+        $(window).scroll(function (e) {
+            var scroll = $(window).scrollTop();
+            if(scroll >= position) {
+                body.addClass('cabecera-ficha-fixed');
+            } else {
+                body.removeClass('cabecera-ficha-fixed');
+            }
+        });
+    }
+};
+
+var clonarNombreFicha = {
+    init: function () {
+        this.config();
+        this.copyName();
+        this.copyIcon();
+    },
+    config: function () {
+        this.body = body;
+        this.cabeceraFicha = this.body.find('.cabecera-ficha');
+        this.paneles = this.body.find('.tab-paneles-ficha');
+        this.tabs = this.paneles.find('.tabs');
+    },
+    copyName: function () {
+        var nombre = this.cabeceraFicha.find('.nombre-usuario-wrap .nombre');
+        var divNombre = $('<div />').addClass('nombre');
+        divNombre.append(nombre.text());
+        this.tabs.prepend(divNombre);
+    },
+    copyIcon: function () {
+        var icono = this.cabeceraFicha.find('.imagen-usuario-wrap');
+        this.tabs.find('.nombre').append(icono.html());
+    }
+};
+
+var montarTooltip = {
+    init: function () {
+        this.config();
+        this.comportamiento();
+    },
+    config: function () {
+        this.body = body;
+        this.listWrap = this.body.find('.list-wrap');
+        this.info_resource = this.body.find('.info-resource');
+        this.quotes = this.body.find('.quotes');
+        this.link = this.listWrap.find('.link');
+    },
+    comportamiento: function () {
+        var that = this;
+        this.montarTooltips();
+
+        this.link.on('shown.bs.tooltip', function () {
+            $('.tooltip').find('.cerrar').off('click').on('click', function () {
+                $('.tooltip').tooltip('hide');
+            });
+        });
+    },
+    montarTooltips: function () {
+        var that = this;
+        this.info_resource.tooltip({
+            html: true,
+            placement: 'bottom',
+            template: '<div class="tooltip background-gris grupos" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
+        });
+        this.quotes.tooltip({
+            html: true,
+            placement: 'bottom',
+            template: '<div class="tooltip background-blanco citas" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
+            title: that.getTooltipQuotes()
+        });
+        this.link.tooltip({
+            html: true,
+            placement: 'bottom',
+            template: '<div class="tooltip background-blanco link" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
+            title: that.getTooltipLink(),
+            trigger: 'manual'
+        }).on("mouseenter", function () {
+            //console.log('enter')
+            var _this = this;
+            $(this).tooltip('show');
+            $(this).siblings('.tooltip').on('mouseleave', function () {
+                $(_this).tooltip('hide');
+            });
+        }).on("mouseleave", function () {
+            //console.log('leave')
+            var _this = this;
+            setTimeout(function () {
+                if ($('.tooltip:hover').length < 0) {
+                    //console.log('hover')
+                    $(_this).tooltip("hide")
+                }
+                $('.tooltip').on('mouseleave', function () {
+                    //console.log('leave')
+                    $(_this).tooltip("hide");
+                });
+            }, 100);
+        });
+    },
+    getTooltipQuotes: function () {
+        return `<p class="tooltip-title">Fuente de citas</p>
+                <span class="material-icons cerrar">close</span>
+                <ul class="no-list-style">
+                    <li>
+                        <span class="texto">SCOPUS</span>
+                        <span class="num-resultado">144</span>
+                    </li>
+                    <li>
+                        <span class="texto">WOS</span>
+                        <span class="num-resultado">24</span>
+                    </li>
+                    <li>
+                        <span class="texto">INRECS</span>
+                        <span class="num-resultado">18</span>
+                    </li>
+                </ul>`;
+    },
+    getTooltipLink: function () {
+        return `<p class="tooltip-title">Enlazado con</p>
+                <span class="material-icons cerrar">close</span>
+                <div class="tooltip-content">
+                    <img src="./theme/resources/logotipos/logognossazul.png">
+                    <p>National Center for Biotechnology Information Search database</p>
+                </div>
+                <a href="#" class="tooltip-link">Ir al enlace <span class="material-icons">keyboard_arrow_right</span></a>`
+    }
+};
+
 $(function () {
     accionesBuscadorCabecera.init();
     communityMenuMovil.init();
+    iniciarDatepicker.init();
+    collapseResource.init();
+    montarTooltip.init();
+
+    comportamientoVerMasVerMenos.init();
+    comportamientoVerMasVerMenosTags.init();
+
+    if (body.hasClass('fichaRecurso')) {
+        mostrarFichaCabeceraFixed.init();
+        clonarNombreFicha.init();
+    }
 
     if (body.hasClass('fichaRecurso-investigador')) {
         filtrarMovil.init();
@@ -213,9 +598,11 @@ $(function () {
         comportamientoCargaFacetasComunidad();
     }
 
-    if (body.hasClass('page-cv')) {
+    if(body.hasClass('page-cv')){
         accionesCurriculum.init();
         iniciarComportamientoImagenUsuario.init();
+        operativaFormularioAutor.init();
+        operativaFormularioTesauro.init();
     }
 });
 
