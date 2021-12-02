@@ -2,7 +2,7 @@
 
 | Fecha         | 02/12/2021                                                   |
 | ------------- | ------------------------------------------------------------ |
-|Titulo|Objetos de Conocimiento| 
+|Título|Objetos de Conocimiento| 
 |Descripción|Relación de objetos de conocimiento empleados en el modelo semántico de Hércules ED|
 |Versión|1.0|
 |Módulo|Documentación|
