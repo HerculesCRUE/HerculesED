@@ -12,8 +12,14 @@
 # Hércules ED. Objetos de conocimiento
 
 [Introducción](#introducción)
+
 [Objetos de conocimiento](#objetos-de-conocimiento)
+
 > [Persona](#persona)
+> [Curriculum Vitae](#curriculum-vitae)
+> [Proyecto](#proyecto)
+> [Publicación](#publicacion)
+> [Grupo](#grupo)
 
 INTRODUCCIÓN
 ============
@@ -33,3 +39,15 @@ OBJETOS DE CONOCIMIENTO
 
 Persona
 -------
+
+Curriculum Vitae
+----------------
+
+Proyecto
+--------
+
+Publicación
+-----------
+
+Grupo
+-----
