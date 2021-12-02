@@ -25,7 +25,7 @@
 >
 > [Grupo](#grupo)
 
-INTRODUCCIÓN
+Introducción
 ============
 
 El desarrollo de la Red de Ontologías Hércules (ROH) en el proyecto Hércules EDMA
@@ -38,11 +38,13 @@ El presente documento describe todos aquellos objetos de conocimiento que
 aplicaremos en el desarrollo y posterior uso de la infraestructura
 ontológica, es decir, en la Red de Ontologías Hércules y en su documentación.
 
-OBJETOS DE CONOCIMIENTO
+Objetos de conocimiento
 =======================
 
 Persona
 -------
+
+![](../Docs/media/ObjetosDeConocimiento/CV.png)
 
 Curriculum Vitae
 ----------------
