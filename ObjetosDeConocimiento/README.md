@@ -44,6 +44,8 @@ Objetos de conocimiento
 Persona
 -------
 
+
+
 ![](../Docs/media/ObjetosDeConocimiento/CV.png)
 
 Curriculum Vitae
@@ -52,8 +54,15 @@ Curriculum Vitae
 Proyecto
 --------
 
+![](../Docs/media/ObjetosDeConocimiento/Project.png)
+
 Publicación
 -----------
 
+![](../Docs/media/ObjetosDeConocimiento/MainDocument.png)
+![](../Docs/media/ObjetosDeConocimiento/Document.png)
+
 Grupo
 -----
+
+![](../Docs/media/ObjetosDeConocimiento/Group.png)
