@@ -173,7 +173,6 @@ namespace WoSConnect.ROs.WoS.Controllers
                                 List<string> types = new List<string>();
                                 for (int i = 0; i < hey.Count; i++)
                                 {
-
                                     //return "problema_a_solucionar";
                                     string typeWoS = hey[i].ToString();
                                     if (typeWoS == "Article")
@@ -212,7 +211,6 @@ namespace WoSConnect.ROs.WoS.Controllers
                                     {
                                         this.advertencia.Add("Problema con el tipo de articulo. Los diferentes tipos obtenidos son los siguientes: " + types_merge);
                                     }
-                                    //devolvemos las etiquetas juntas para que no halla problemas!
                                     return types_merge;
 
                                 }
@@ -225,7 +223,6 @@ namespace WoSConnect.ROs.WoS.Controllers
                             }
                             catch
                             {
-                                //string hey = JsonConvert.DeserializeObject<string>(objInicial.static_data.summary.doctypes.doctype.ToString());
                                 string typeWoS = objInicial.static_data.summary.doctypes.doctype.ToString();
                                 if (typeWoS == "Article")
                                 {
@@ -583,7 +580,11 @@ namespace WoSConnect.ROs.WoS.Controllers
                                         Name_2 ee = JsonConvert.DeserializeObject<Name_2>(var.ToString());
                                         if (ee.orcid_id != null)
                                         {
-                                            persona.ORCID = ee.orcid_id;
+                                            if(ee.orcid_id.StartsWith("h")){
+                                                string[] e = ee.orcid_id.Split("org/");
+                                                persona.ORCID = e[1];
+                                            }else{
+                                            persona.ORCID = ee.orcid_id;}
                                         }
 
                                         List<string> nombres = new List<string>();
