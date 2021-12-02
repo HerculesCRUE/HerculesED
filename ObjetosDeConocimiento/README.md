@@ -15,7 +15,7 @@
 
 [Objetos de conocimiento](#objetos-de-conocimiento)
 
-[> Persona](#persona)
+> [Persona](#persona)
 
 INTRODUCCIÓN
 ============
