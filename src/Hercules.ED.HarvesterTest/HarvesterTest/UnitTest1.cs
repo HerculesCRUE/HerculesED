@@ -51,24 +51,20 @@ namespace HavesterTest
 
             try
             {
-            //to do 
-            throw new NotImplementedException("falta el archivo de empresas");
-
-            Empresa organization = new();
-            List<Empresa> organizationsList = new();
-
                 Harvester.Harvester h = new Harvester.Harvester(new HarvesterServicesMock());
-
-                List<IdentifierOAIPMH> organizationIdList = h.HaversterServices.ListIdentifiers("xml_examples//identifiers_organizaciones.xml");
-                string id = "buscar en el doc el id";
-                string xml = h.HaversterServices.GetRecord(id, "");
+                var lista = h.HaversterServices.ListIdentifiers("xml_examples//identifiers_organizacion.xml");
+                Empresa organization = new();
+                List<Empresa> organizationList = new();
+                List<IdentifierOAIPMH> organizationIdList = lista;
+                string id = "Organizacion_S2816021";
+                string xml = h.HaversterServices.GetRecord(id,"xml_examples//record_organizacion.xml");
                 XmlSerializer serializer = new(typeof(Empresa));
                 using (StringReader sr = new(xml))
                 {
                    organization = (Empresa)serializer.Deserialize(sr);
                 }
-                organizationsList.Add(organization);
-                Assert.True(organizationsList.Count>0, "xml_examples//record_organizaciones.xml");
+                organizationList.Add(organization);
+                Assert.True(organizationList.Count>0, "Test harvest organizations");
 
 
 
@@ -76,7 +72,7 @@ namespace HavesterTest
 
             catch
             {
-                Assert.True(false);
+                Assert.True(false, "error en el test HarvestOrganization");
             }
             
           

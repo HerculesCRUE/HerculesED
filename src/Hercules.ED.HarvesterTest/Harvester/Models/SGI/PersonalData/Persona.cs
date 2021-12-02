@@ -19,9 +19,9 @@ namespace OAI_PMH.Models.SGI.PersonalData
         public DatosPersonales DatosPersonales { get; set; }
         public DatosContacto DatosContacto { get; set; }
         public Vinculacion Vinculacion { get; set; }
+        public CategoriaProfesional CategoriaProfesional { get; set; }
         public DatosAcademicos DatosAcademicos { get; set; }
         public Fotografia Fotografia { get; set; }
         public Sexenio Sexenios { get; set; }
-
     }
 }
