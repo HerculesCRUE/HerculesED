@@ -49,6 +49,40 @@
                 </PropsEntLectura>
             </SeleccionEntidad>
         </Propiedad>
+		<Propiedad  ID="http://w3id.org/roh/publicGroupList" EntidadID="http://vivoweb.org/ontology/core#Project">
+            <AtrNombre>http://w3id.org/roh/publicGroupList</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/publicGroupList</AtrNombreLectura>
+			<SeleccionEntidad>
+                <TipoSeleccion>Autocompletar</TipoSeleccion>
+                <Grafo>group.owl</Grafo>
+                <UrlTipoEntSolicitada>http://xmlns.com/foaf/0.1/Group</UrlTipoEntSolicitada>              
+                <PropsEntEdicion>
+                    <NameProp>http://w3id.org/roh/title</NameProp>
+                </PropsEntEdicion>
+                <PropsEntLectura>
+                    <Propiedad ID="http://w3id.org/roh/title" EntidadID="http://xmlns.com/foaf/0.1/Group">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+                </PropsEntLectura>
+            </SeleccionEntidad>
+        </Propiedad>
+		<Propiedad  ID="http://w3id.org/roh/scientificExperienceProject" EntidadID="http://vivoweb.org/ontology/core#Project">
+            <AtrNombre>http://w3id.org/roh/scientificExperienceProject</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/scientificExperienceProject</AtrNombreLectura>
+			<SeleccionEntidad>
+                <TipoSeleccion>Autocompletar</TipoSeleccion>
+                <Grafo>scientificexperienceproject.owl</Grafo>
+                <UrlTipoEntSolicitada>http://w3id.org/roh/ScientificExperienceProject</UrlTipoEntSolicitada>              
+                <PropsEntEdicion>
+                    <NameProp>http://purl.org/dc/elements/1.1/title</NameProp>
+                </PropsEntEdicion>
+                <PropsEntLectura>
+                    <Propiedad ID="http://purl.org/dc/elements/1.1/title" EntidadID="http://w3id.org/roh/ScientificExperienceProject">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+                </PropsEntLectura>
+            </SeleccionEntidad>
+        </Propiedad>
         <Propiedad  ID="http://vivoweb.org/ontology/core#geographicFocus" EntidadID="http://vivoweb.org/ontology/core#Project">
             <AtrNombre>http://vivoweb.org/ontology/core#geographicFocus</AtrNombre>
             <AtrNombreLectura>http://vivoweb.org/ontology/core#geographicFocus</AtrNombreLectura>
@@ -104,6 +138,10 @@
             <AtrNombre>http://vivoweb.org/ontology/core#relates</AtrNombre>
             <AtrNombreLectura>http://vivoweb.org/ontology/core#relates</AtrNombreLectura>
         </Propiedad>
+		<Propiedad  ID="http://w3id.org/roh/mainResearchers" EntidadID="http://vivoweb.org/ontology/core#Project">
+            <AtrNombre>http://w3id.org/roh/mainResearchers</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/mainResearchers</AtrNombreLectura>
+        </Propiedad>
 		<Propiedad  ID="http://w3id.org/roh/projectType" EntidadID="http://vivoweb.org/ontology/core#Project">
             <AtrNombre>http://w3id.org/roh/projectType</AtrNombre>
             <AtrNombreLectura>http://w3id.org/roh/projectType</AtrNombreLectura>
@@ -138,6 +176,23 @@
                 </PropsEntLectura>
             </SeleccionEntidad>
         </Propiedad>
+		<Propiedad  ID="http://w3id.org/roh/publicAuthorList" EntidadID="http://vivoweb.org/ontology/core#Project">
+            <AtrNombre>http://w3id.org/roh/publicAuthorList</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/publicAuthorList</AtrNombreLectura>
+			<SeleccionEntidad>
+                <TipoSeleccion>Autocompletar</TipoSeleccion>
+                <Grafo>person.owl</Grafo>
+                <UrlTipoEntSolicitada>http://xmlns.com/foaf/0.1/Person</UrlTipoEntSolicitada>              
+                <PropsEntEdicion>
+                    <NameProp>http://xmlns.com/foaf/0.1/name</NameProp>
+                </PropsEntEdicion>
+                <PropsEntLectura>
+                    <Propiedad ID="http://xmlns.com/foaf/0.1/name" EntidadID="http://xmlns.com/foaf/0.1/Person">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+                </PropsEntLectura>
+            </SeleccionEntidad>
+        </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/relevantResults" EntidadID="http://vivoweb.org/ontology/core#Project">
             <AtrNombre>http://w3id.org/roh/relevantResults</AtrNombre>
             <AtrNombreLectura>http://w3id.org/roh/relevantResults</AtrNombreLectura>
@@ -165,6 +220,14 @@
         <Propiedad  ID="http://vivoweb.org/ontology/core#start" EntidadID="http://vivoweb.org/ontology/core#Project">
             <AtrNombre>http://vivoweb.org/ontology/core#start</AtrNombre>
             <AtrNombreLectura>http://vivoweb.org/ontology/core#start</AtrNombreLectura>
+        </Propiedad>
+		<Propiedad  ID="http://vivoweb.org/ontology/core#description" EntidadID="http://vivoweb.org/ontology/core#Project">
+            <AtrNombre>http://vivoweb.org/ontology/core#description</AtrNombre>
+            <AtrNombreLectura>http://vivoweb.org/ontology/core#description</AtrNombreLectura>
+        </Propiedad>
+		<Propiedad  ID="http://w3id.org/roh/isPublic" EntidadID="http://vivoweb.org/ontology/core#Project">
+            <AtrNombre>http://w3id.org/roh/isPublic</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/isPublic</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/durationYears" EntidadID="http://vivoweb.org/ontology/core#Project">
             <AtrNombre>http://w3id.org/roh/durationYears</AtrNombre>
@@ -194,13 +257,13 @@
             <AtrNombre>http://w3id.org/roh/title</AtrNombre>
             <AtrNombreLectura>http://w3id.org/roh/title</AtrNombreLectura>
         </Propiedad>
-        <Propiedad  ID="http://vivoweb.org/ontology/core#preferredDisplayOrder" EntidadID="http://purl.obolibrary.org/obo/BFO_0000023">
-            <AtrNombre>http://vivoweb.org/ontology/core#preferredDisplayOrder</AtrNombre>
-            <AtrNombreLectura>http://vivoweb.org/ontology/core#preferredDisplayOrder</AtrNombreLectura>
+        <Propiedad  ID="http://xmlns.com/foaf/0.1/nick" EntidadID="http://purl.obolibrary.org/obo/BFO_0000023">
+            <AtrNombre>http://xmlns.com/foaf/0.1/nick</AtrNombre>
+            <AtrNombreLectura>http://xmlns.com/foaf/0.1/nick</AtrNombreLectura>
         </Propiedad>
-        <Propiedad  ID="http://w3id.org/roh/roleOf" EntidadID="http://purl.obolibrary.org/obo/BFO_0000023">
-            <AtrNombre>http://w3id.org/roh/roleOf</AtrNombre>
-            <AtrNombreLectura>http://w3id.org/roh/roleOf</AtrNombreLectura>
+        <Propiedad  ID="http://www.w3.org/1999/02/22-rdf-syntax-ns#member" EntidadID="http://purl.obolibrary.org/obo/BFO_0000023">
+            <AtrNombre>http://www.w3.org/1999/02/22-rdf-syntax-ns#member</AtrNombre>
+            <AtrNombreLectura>http://www.w3.org/1999/02/22-rdf-syntax-ns#member</AtrNombreLectura>
 			<SeleccionEntidad>
                 <TipoSeleccion>Autocompletar</TipoSeleccion>
                 <Grafo>person.owl</Grafo>
@@ -215,13 +278,17 @@
                 </PropsEntLectura>
             </SeleccionEntidad>
         </Propiedad>
-        <Propiedad  ID="http://w3id.org/roh/order" EntidadID="http://purl.obolibrary.org/obo/BFO_0000023">
-            <AtrNombre>http://w3id.org/roh/order</AtrNombre>
-            <AtrNombreLectura>http://w3id.org/roh/order</AtrNombreLectura>
+        <Propiedad  ID="http://www.w3.org/1999/02/22-rdf-syntax-ns#comment" EntidadID="http://purl.obolibrary.org/obo/BFO_0000023">
+            <AtrNombre>http://www.w3.org/1999/02/22-rdf-syntax-ns#comment</AtrNombre>
+            <AtrNombreLectura>http://www.w3.org/1999/02/22-rdf-syntax-ns#comment</AtrNombreLectura>
         </Propiedad>
-        <Propiedad  ID="http://w3id.org/roh/title" EntidadID="http://purl.obolibrary.org/obo/BFO_0000023">
-            <AtrNombre>http://w3id.org/roh/title</AtrNombre>
-            <AtrNombreLectura>http://w3id.org/roh/title</AtrNombreLectura>
+		<Propiedad  ID="http://vivoweb.org/ontology/core#start" EntidadID="http://purl.obolibrary.org/obo/BFO_0000023">
+            <AtrNombre>http://vivoweb.org/ontology/core#start</AtrNombre>
+            <AtrNombreLectura>http://vivoweb.org/ontology/core#start</AtrNombreLectura>
+        </Propiedad>
+		<Propiedad  ID="http://vivoweb.org/ontology/core#end" EntidadID="http://purl.obolibrary.org/obo/BFO_0000023">
+            <AtrNombre>http://vivoweb.org/ontology/core#end</AtrNombre>
+            <AtrNombreLectura>http://vivoweb.org/ontology/core#end</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/promotedBy" EntidadID="http://w3id.org/roh/FundingProgram">
             <AtrNombre>http://w3id.org/roh/promotedBy</AtrNombre>
@@ -255,6 +322,10 @@
         <Propiedad  ID="http://w3id.org/roh/creditPercentage" EntidadID="http://w3id.org/roh/Funding">
             <AtrNombre>http://w3id.org/roh/creditPercentage</AtrNombre>
             <AtrNombreLectura>http://w3id.org/roh/creditPercentage</AtrNombreLectura>
+        </Propiedad>
+		<Propiedad  ID="http://w3id.org/roh/isFundedBy" EntidadID="http://w3id.org/roh/Funding">
+            <AtrNombre>http://w3id.org/roh/isFundedBy</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/isFundedBy</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://vivoweb.org/ontology/core#identifier" EntidadID="http://w3id.org/roh/Funding">
             <AtrNombre>http://vivoweb.org/ontology/core#identifier</AtrNombre>
@@ -318,21 +389,17 @@
                             <NameProp>http://vivoweb.org/ontology/core#abbreviation</NameProp> 
                             <NameProp>http://w3id.org/roh/isSynchronized</NameProp> 
                             <NameProp>http://w3id.org/roh/title</NameProp>
+							<NameProp>http://w3id.org/roh/scientificExperienceProject</NameProp>
+							<NameProp>http://vivoweb.org/ontology/core#description</NameProp>
+							<NameProp>http://w3id.org/roh/publicAuthorList</NameProp>
+							<NameProp>http://w3id.org/roh/publicGroupList</NameProp>
+							<NameProp>http://w3id.org/roh/isPublic</NameProp>
+							<NameProp>http://w3id.org/roh/mainResearchers</NameProp>
                         </Grupo>
                     </Grupo>
                 </Grupo>
             </OrdenEntidad>
             <OrdenEntidadLectura>
-                <Grupo classLectura="contentGroup contenidoPrincipal">
-                    <Grupo classLectura="group title">
-                        <Grupo Tipo="titulo">
-                            <NameProp>@@@TITULO</NameProp>
-                        </Grupo>
-                        <Grupo Tipo="subtitulo">
-                            <NameProp>@@@SUBTITULO</NameProp>
-                        </Grupo>
-                    </Grupo>
-                </Grupo>
                 <Grupo classLectura="group content semanticView">
                     <Grupo classLectura="group group_info">
                         <AtrNombreGrupo>Propiedades</AtrNombreGrupo>
@@ -361,6 +428,12 @@
                             <NameProp>http://vivoweb.org/ontology/core#abbreviation</NameProp> 
                             <NameProp>http://w3id.org/roh/isSynchronized</NameProp> 
                             <NameProp>http://w3id.org/roh/title</NameProp>
+							<NameProp>http://w3id.org/roh/scientificExperienceProject</NameProp>
+							<NameProp>http://vivoweb.org/ontology/core#description</NameProp>
+							<NameProp>http://w3id.org/roh/publicAuthorList</NameProp>
+							<NameProp>http://w3id.org/roh/publicGroupList</NameProp>
+							<NameProp>http://w3id.org/roh/isPublic</NameProp>
+							<NameProp>http://w3id.org/roh/mainResearchers</NameProp>
                         </Grupo>
                     </Grupo>
                 </Grupo>
@@ -373,33 +446,25 @@
                 <Grupo class="formtheme02">
                     <Grupo class="fieldset">
                         <Grupo Tipo="fieldset" class="mediumLabels">
-                            <NameProp>http://vivoweb.org/ontology/core#preferredDisplayOrder</NameProp> 
-                            <NameProp>http://w3id.org/roh/roleOf</NameProp> 
-                            <NameProp>http://w3id.org/roh/order</NameProp> 
-                            <NameProp>http://w3id.org/roh/title</NameProp>
+                            <NameProp>http://xmlns.com/foaf/0.1/nick</NameProp> 
+                            <NameProp>http://www.w3.org/1999/02/22-rdf-syntax-ns#member</NameProp> 
+                            <NameProp>http://www.w3.org/1999/02/22-rdf-syntax-ns#comment</NameProp>
+							<NameProp>http://vivoweb.org/ontology/core#start</NameProp>
+							<NameProp>http://vivoweb.org/ontology/core#end</NameProp> 
                         </Grupo>
                     </Grupo>
                 </Grupo>
             </OrdenEntidad>
             <OrdenEntidadLectura>
-                <Grupo classLectura="contentGroup contenidoPrincipal">
-                    <Grupo classLectura="group title">
-                        <Grupo Tipo="titulo">
-                            <NameProp>@@@TITULO</NameProp>
-                        </Grupo>
-                        <Grupo Tipo="subtitulo">
-                            <NameProp>@@@SUBTITULO</NameProp>
-                        </Grupo>
-                    </Grupo>
-                </Grupo>
                 <Grupo classLectura="group content semanticView">
                     <Grupo classLectura="group group_info">
                         <AtrNombreGrupo>Propiedades</AtrNombreGrupo>
                         <Grupo classLectura="contentGroup">
-                            <NameProp>http://vivoweb.org/ontology/core#preferredDisplayOrder</NameProp> 
-                            <NameProp>http://w3id.org/roh/roleOf</NameProp> 
-                            <NameProp>http://w3id.org/roh/order</NameProp> 
-                            <NameProp>http://w3id.org/roh/title</NameProp>
+                            <NameProp>http://xmlns.com/foaf/0.1/nick</NameProp> 
+                            <NameProp>http://www.w3.org/1999/02/22-rdf-syntax-ns#member</NameProp> 
+                            <NameProp>http://www.w3.org/1999/02/22-rdf-syntax-ns#comment</NameProp>
+							<NameProp>http://vivoweb.org/ontology/core#start</NameProp>
+							<NameProp>http://vivoweb.org/ontology/core#end</NameProp> 
                         </Grupo>
                     </Grupo>
                 </Grupo>
@@ -420,16 +485,6 @@
                 </Grupo>
             </OrdenEntidad>
             <OrdenEntidadLectura>
-                <Grupo classLectura="contentGroup contenidoPrincipal">
-                    <Grupo classLectura="group title">
-                        <Grupo Tipo="titulo">
-                            <NameProp>@@@TITULO</NameProp>
-                        </Grupo>
-                        <Grupo Tipo="subtitulo">
-                            <NameProp>@@@SUBTITULO</NameProp>
-                        </Grupo>
-                    </Grupo>
-                </Grupo>
                 <Grupo classLectura="group content semanticView">
                     <Grupo classLectura="group group_info">
                         <AtrNombreGrupo>Propiedades</AtrNombreGrupo>
@@ -454,21 +509,12 @@
                             <NameProp>http://vivoweb.org/ontology/core#identifier</NameProp> 
                             <NameProp>http://w3id.org/roh/grantsPercentage</NameProp> 
                             <NameProp>http://w3id.org/roh/monetaryAmount</NameProp>
+							<NameProp>http://w3id.org/roh/isFundedBy</NameProp>
                         </Grupo>
                     </Grupo>
                 </Grupo>
             </OrdenEntidad>
             <OrdenEntidadLectura>
-                <Grupo classLectura="contentGroup contenidoPrincipal">
-                    <Grupo classLectura="group title">
-                        <Grupo Tipo="titulo">
-                            <NameProp>@@@TITULO</NameProp>
-                        </Grupo>
-                        <Grupo Tipo="subtitulo">
-                            <NameProp>@@@SUBTITULO</NameProp>
-                        </Grupo>
-                    </Grupo>
-                </Grupo>
                 <Grupo classLectura="group content semanticView">
                     <Grupo classLectura="group group_info">
                         <AtrNombreGrupo>Propiedades</AtrNombreGrupo>
@@ -496,16 +542,6 @@
                 </Grupo>
             </OrdenEntidad>
             <OrdenEntidadLectura>
-                <Grupo classLectura="contentGroup contenidoPrincipal">
-                    <Grupo classLectura="group title">
-                        <Grupo Tipo="titulo">
-                            <NameProp>@@@TITULO</NameProp>
-                        </Grupo>
-                        <Grupo Tipo="subtitulo">
-                            <NameProp>@@@SUBTITULO</NameProp>
-                        </Grupo>
-                    </Grupo>
-                </Grupo>
                 <Grupo classLectura="group content semanticView">
                     <Grupo classLectura="group group_info">
                         <AtrNombreGrupo>Propiedades</AtrNombreGrupo>

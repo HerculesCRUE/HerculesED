@@ -11,50 +11,50 @@
 		<CategorizacionTesauroGnossObligatoria>false</CategorizacionTesauroGnossObligatoria>
     </ConfiguracionGeneral>
     <EspefPropiedad>
-        <Propiedad  ID="http://xmlns.com/foaf/0.1/topic" EntidadID="http://xmlns.com/foaf/0.1/Document">
-            <AtrNombre>Tipo identificador, otros</AtrNombre>
-            <AtrNombreLectura>Tipo identificador, otros</AtrNombreLectura>
-        </Propiedad>
-        <Propiedad  ID="http://purl.org/dc/elements/1.1/title" EntidadID="http://xmlns.com/foaf/0.1/Document">
-            <AtrNombre>Identificador</AtrNombre>
-            <AtrNombreLectura>Identificador</AtrNombreLectura>
-        </Propiedad>
-        <Propiedad  ID="http://xmlns.com/foaf/0.1/primaryTopic" EntidadID="http://xmlns.com/foaf/0.1/Document">
-            <AtrNombre>Tipo identificador</AtrNombre>
-            <AtrNombreLectura>Tipo identificador</AtrNombreLectura>
-        </Propiedad>
-        <Propiedad  ID="http://w3id.org/roh/metricNameOther" EntidadID="http://w3id.org/roh/PublicationMetric">
-            <AtrNombre>Nombre de la métrica, otros</AtrNombre>
-            <AtrNombreLectura>Nombre de la métrica, otros</AtrNombreLectura>
-        </Propiedad>
-        <Propiedad  ID="http://w3id.org/roh/metricName" EntidadID="http://w3id.org/roh/PublicationMetric">
-            <AtrNombre>Nombre de la métrica</AtrNombre>
-            <AtrNombreLectura>Nombre de la métrica</AtrNombreLectura>
+		<Propiedad  ID="http://w3id.org/roh/isProducedBy" EntidadID="http://purl.org/ontology/bibo/Document">
+            <AtrNombre>http://w3id.org/roh/isProducedBy</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/isProducedBy</AtrNombreLectura>
 			<SeleccionEntidad>
                 <TipoSeleccion>Autocompletar</TipoSeleccion>
-                <Grafo>referencesource.owl</Grafo>
-                <UrlTipoEntSolicitada>http://purl.org/ontology/bibo/ReferenceSource</UrlTipoEntSolicitada>              
+                <Grafo>group.owl</Grafo>
+                <UrlTipoEntSolicitada>http://xmlns.com/foaf/0.1/Group</UrlTipoEntSolicitada>              
                 <PropsEntEdicion>
-                    <NameProp>http://purl.org/dc/elements/1.1/title</NameProp>
+                    <NameProp>http://w3id.org/roh/title</NameProp>
                 </PropsEntEdicion>
                 <PropsEntLectura>
-                    <Propiedad ID="http://purl.org/dc/elements/1.1/title" EntidadID="http://purl.org/ontology/bibo/ReferenceSource">
+                    <Propiedad ID="http://w3id.org/roh/title" EntidadID="http://xmlns.com/foaf/0.1/Group">
                         <AtrNombreLectura></AtrNombreLectura>
                     </Propiedad>
                 </PropsEntLectura>
             </SeleccionEntidad>
         </Propiedad>
-        <Propiedad  ID="http://w3id.org/roh/citationCount" EntidadID="http://w3id.org/roh/PublicationMetric">
-            <AtrNombre>Número de citas</AtrNombre>
-            <AtrNombreLectura>Número de citas</AtrNombreLectura>
+        <Propiedad  ID="http://w3id.org/roh/userJournal" EntidadID="http://xmlns.com/foaf/0.1/Document">
+            <AtrNombre>http://w3id.org/roh/userJournal</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/userJournal</AtrNombreLectura>
         </Propiedad>
-		<Propiedad  ID="http://purl.org/ontology/bibo/abstract" EntidadID="http://purl.org/ontology/bibo/Document">
-            <AtrNombre>Abstract</AtrNombre>
-            <AtrNombreLectura>Abstract</AtrNombreLectura>
+		<Propiedad  ID="http://w3id.org/roh/typeOthers" EntidadID="http://xmlns.com/foaf/0.1/Document">
+            <AtrNombre>http://w3id.org/roh/typeOthers</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/typeOthers</AtrNombreLectura>
+        </Propiedad>
+		<Propiedad  ID="http://xmlns.com/foaf/0.1/topic" EntidadID="http://xmlns.com/foaf/0.1/Document">
+            <AtrNombre>http://xmlns.com/foaf/0.1/topic</AtrNombre>
+            <AtrNombreLectura>http://xmlns.com/foaf/0.1/topic</AtrNombreLectura>
+        </Propiedad>
+        <Propiedad  ID="http://purl.org/dc/elements/1.1/title" EntidadID="http://xmlns.com/foaf/0.1/Document">
+            <AtrNombre>http://purl.org/dc/elements/1.1/title</AtrNombre>
+            <AtrNombreLectura>http://purl.org/dc/elements/1.1/title</AtrNombreLectura>
+        </Propiedad>
+        <Propiedad  ID="http://w3id.org/roh/metricName" EntidadID="http://w3id.org/roh/PublicationMetric">
+            <AtrNombre>http://w3id.org/roh/metricName</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/metricName</AtrNombreLectura>
+        </Propiedad>
+        <Propiedad  ID="http://w3id.org/roh/citationCount" EntidadID="http://w3id.org/roh/PublicationMetric">
+            <AtrNombre>http://w3id.org/roh/citationCount</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/citationCount</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/categoryNode" EntidadID="http://w3id.org/roh/CategoryPath">
-            <AtrNombre>Nodo de categoría</AtrNombre>
-            <AtrNombreLectura>Nodo de categoría</AtrNombreLectura>
+            <AtrNombre>http://w3id.org/roh/categoryNode</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/categoryNode</AtrNombreLectura>
 			<SeleccionEntidad>
 				<TipoSeleccion>Tesauro</TipoSeleccion>
 				<Grafo>taxonomy.owl</Grafo>				
@@ -62,8 +62,8 @@
 			</SeleccionEntidad>
         </Propiedad>
         <Propiedad  ID="http://purl.org/ontology/bibo/organizer" EntidadID="http://purl.org/ontology/bibo/Event">
-            <AtrNombre>Entidad organizadora</AtrNombre>
-            <AtrNombreLectura>Entidad organizadora</AtrNombreLectura>
+            <AtrNombre>http://purl.org/ontology/bibo/organizer</AtrNombre>
+            <AtrNombreLectura>http://purl.org/ontology/bibo/organizer</AtrNombreLectura>
 			<SeleccionEntidad>
                 <TipoSeleccion>Autocompletar</TipoSeleccion>
                 <Grafo>organization.owl</Grafo>
@@ -78,9 +78,43 @@
                 </PropsEntLectura>
             </SeleccionEntidad>
         </Propiedad>
+        <Propiedad  ID="https://www.w3.org/2006/vcard/ns#hasCountryName" EntidadID="http://purl.org/ontology/bibo/Event">
+            <AtrNombre>https://www.w3.org/2006/vcard/ns#hasCountryName</AtrNombre>
+            <AtrNombreLectura>https://www.w3.org/2006/vcard/ns#hasCountryName</AtrNombreLectura>
+			<SeleccionEntidad>
+                <TipoSeleccion>Autocompletar</TipoSeleccion>
+                <Grafo>feature.owl</Grafo>
+                <UrlTipoEntSolicitada>http://www.geonames.org/ontology#Feature</UrlTipoEntSolicitada>              
+                <PropsEntEdicion>
+                    <NameProp>http://www.geonames.org/ontology#name</NameProp>
+                </PropsEntEdicion>
+                <PropsEntLectura>
+                    <Propiedad ID="http://www.geonames.org/ontology#name" EntidadID="http://www.geonames.org/ontology#Feature">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+                </PropsEntLectura>
+            </SeleccionEntidad>
+        </Propiedad>
+        <Propiedad  ID="https://www.w3.org/2006/vcard/ns#hasRegion" EntidadID="http://purl.org/ontology/bibo/Event">
+            <AtrNombre>https://www.w3.org/2006/vcard/ns#hasRegion</AtrNombre>
+            <AtrNombreLectura>https://www.w3.org/2006/vcard/ns#hasRegion</AtrNombreLectura>
+			<SeleccionEntidad>
+                <TipoSeleccion>Autocompletar</TipoSeleccion>
+                <Grafo>feature.owl</Grafo>
+                <UrlTipoEntSolicitada>http://www.geonames.org/ontology#Feature</UrlTipoEntSolicitada>              
+                <PropsEntEdicion>
+                    <NameProp>http://www.geonames.org/ontology#name</NameProp>
+                </PropsEntEdicion>
+                <PropsEntLectura>
+                    <Propiedad ID="http://www.geonames.org/ontology#name" EntidadID="http://www.geonames.org/ontology#Feature">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+                </PropsEntLectura>
+            </SeleccionEntidad>
+        </Propiedad>
         <Propiedad  ID="http://vivoweb.org/ontology/core#geographicFocus" EntidadID="http://purl.org/ontology/bibo/Event">
-            <AtrNombre>Ámbito geográfico</AtrNombre>
-            <AtrNombreLectura>Ámbito geográfico</AtrNombreLectura>
+            <AtrNombre>http://vivoweb.org/ontology/core#geographicFocus</AtrNombre>
+            <AtrNombreLectura>http://vivoweb.org/ontology/core#geographicFocus</AtrNombreLectura>
 			<SeleccionEntidad>
                 <TipoSeleccion>Autocompletar</TipoSeleccion>
                 <Grafo>geographicregion.owl</Grafo>
@@ -95,13 +129,9 @@
                 </PropsEntLectura>
             </SeleccionEntidad>
         </Propiedad>
-        <Propiedad  ID="https://www.w3.org/2006/vcard/ns#address" EntidadID="http://purl.org/ontology/bibo/Event">
-            <AtrNombre>Dirección</AtrNombre>
-            <AtrNombreLectura>Dirección</AtrNombreLectura>
-        </Propiedad>
         <Propiedad  ID="http://purl.org/dc/elements/1.1/type" EntidadID="http://purl.org/ontology/bibo/Event">
-            <AtrNombre>Tipo de evento</AtrNombre>
-            <AtrNombreLectura>Tipo de evento</AtrNombreLectura>
+            <AtrNombre>http://purl.org/dc/elements/1.1/type</AtrNombre>
+            <AtrNombreLectura>http://purl.org/dc/elements/1.1/type</AtrNombreLectura>
 			<SeleccionEntidad>
                 <TipoSeleccion>Autocompletar</TipoSeleccion>
                 <Grafo>eventtype.owl</Grafo>
@@ -117,57 +147,70 @@
             </SeleccionEntidad>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/geographicFocusOther" EntidadID="http://purl.org/ontology/bibo/Event">
-            <AtrNombre>Ámbito geográfico, otros</AtrNombre>
-            <AtrNombreLectura>Ámbito geográfico, otros</AtrNombreLectura>
+            <AtrNombre>http://w3id.org/roh/geographicFocusOther</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/geographicFocusOther</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://vivoweb.org/ontology/core#start" EntidadID="http://purl.org/ontology/bibo/Event">
-            <AtrNombre>Fecha de celebración</AtrNombre>
-            <AtrNombreLectura>Fecha de celebración</AtrNombreLectura>
+            <AtrNombre>http://vivoweb.org/ontology/core#start</AtrNombre>
+            <AtrNombreLectura>http://vivoweb.org/ontology/core#start</AtrNombreLectura>
+        </Propiedad>
+        <Propiedad  ID="https://www.w3.org/2006/vcard/ns#locality" EntidadID="http://purl.org/ontology/bibo/Event">
+            <AtrNombre>https://www.w3.org/2006/vcard/ns#locality</AtrNombre>
+            <AtrNombreLectura>https://www.w3.org/2006/vcard/ns#locality</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/withExternalAdmissionsCommittee" EntidadID="http://purl.org/ontology/bibo/Event">
-            <AtrNombre>Con comité de admisión externo</AtrNombre>
-            <AtrNombreLectura>Con comité de admisión externo</AtrNombreLectura>
+            <AtrNombre>http://w3id.org/roh/withExternalAdmissionsCommittee</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/withExternalAdmissionsCommittee</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://vivoweb.org/ontology/core#end" EntidadID="http://purl.org/ontology/bibo/Event">
-            <AtrNombre>Fecha de finalización</AtrNombre>
-            <AtrNombreLectura>Fecha de finalización</AtrNombreLectura>
+            <AtrNombre>http://vivoweb.org/ontology/core#end</AtrNombre>
+            <AtrNombreLectura>http://vivoweb.org/ontology/core#end</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://purl.org/dc/elements/1.1/title" EntidadID="http://purl.org/ontology/bibo/Event">
-            <AtrNombre>Nombre del evento</AtrNombre>
-            <AtrNombreLectura>Nombre del evento</AtrNombreLectura>
+            <AtrNombre>http://purl.org/dc/elements/1.1/title</AtrNombre>
+            <AtrNombreLectura>http://purl.org/dc/elements/1.1/title</AtrNombreLectura>
         </Propiedad>
-        <Propiedad  ID="http://xmlns.com/foaf/0.1/nick" EntidadID="http://purl.obolibrary.org/obo/BFO_0000023">
-            <AtrNombre>Firma</AtrNombre>
-            <AtrNombreLectura>Firma</AtrNombreLectura>
-        </Propiedad>
-        <Propiedad  ID="http://www.w3.org/1999/02/22-rdf-syntax-ns#member" EntidadID="http://purl.obolibrary.org/obo/BFO_0000023">
-            <AtrNombre>Autor</AtrNombre>
-            <AtrNombreLectura>Autor</AtrNombreLectura>
+        <Propiedad  ID="https://www.w3.org/2006/vcard/ns#hasCountryName" EntidadID="http://purl.org/ontology/bibo/Document">
+            <AtrNombre>https://www.w3.org/2006/vcard/ns#hasCountryName</AtrNombre>
+            <AtrNombreLectura>https://www.w3.org/2006/vcard/ns#hasCountryName</AtrNombreLectura>
 			<SeleccionEntidad>
                 <TipoSeleccion>Autocompletar</TipoSeleccion>
-                <Grafo>person.owl</Grafo>
-                <UrlTipoEntSolicitada>http://xmlns.com/foaf/0.1/Person</UrlTipoEntSolicitada>              
+                <Grafo>feature.owl</Grafo>
+                <UrlTipoEntSolicitada>http://www.geonames.org/ontology#Feature</UrlTipoEntSolicitada>              
                 <PropsEntEdicion>
-                    <NameProp>http://xmlns.com/foaf/0.1/name</NameProp>
+                    <NameProp>http://www.geonames.org/ontology#name</NameProp>
                 </PropsEntEdicion>
                 <PropsEntLectura>
-                    <Propiedad ID="http://xmlns.com/foaf/0.1/name" EntidadID="http://xmlns.com/foaf/0.1/Person">
+                    <Propiedad ID="http://www.geonames.org/ontology#name" EntidadID="http://www.geonames.org/ontology#Feature">
                         <AtrNombreLectura></AtrNombreLectura>
                     </Propiedad>
                 </PropsEntLectura>
             </SeleccionEntidad>
         </Propiedad>
-        <Propiedad  ID="http://www.w3.org/1999/02/22-rdf-syntax-ns#comment" EntidadID="http://purl.obolibrary.org/obo/BFO_0000023">
-            <AtrNombre>Posición</AtrNombre>
-            <AtrNombreLectura>Posición</AtrNombreLectura>
-        </Propiedad>
         <Propiedad  ID="http://purl.org/ontology/bibo/identifier" EntidadID="http://purl.org/ontology/bibo/Document">
-            <AtrNombre>Identificador de la publicación</AtrNombre>
-            <AtrNombreLectura>Identificador de la publicación</AtrNombreLectura>
+            <AtrNombre>http://purl.org/ontology/bibo/identifier</AtrNombre>
+            <AtrNombreLectura>http://purl.org/ontology/bibo/identifier</AtrNombreLectura>
+        </Propiedad>
+		<Propiedad  ID="http://w3id.org/roh/publicGroupList" EntidadID="http://purl.org/ontology/bibo/Document">
+            <AtrNombre>http://w3id.org/roh/publicGroupList</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/publicGroupList</AtrNombreLectura>
+			<SeleccionEntidad>
+                <TipoSeleccion>Autocompletar</TipoSeleccion>
+                <Grafo>group.owl</Grafo>
+                <UrlTipoEntSolicitada>http://xmlns.com/foaf/0.1/Group</UrlTipoEntSolicitada>              
+                <PropsEntEdicion>
+                    <NameProp>http://w3id.org/roh/title</NameProp>
+                </PropsEntEdicion>
+                <PropsEntLectura>
+                    <Propiedad ID="http://w3id.org/roh/title" EntidadID="http://xmlns.com/foaf/0.1/Group">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+                </PropsEntLectura>
+            </SeleccionEntidad>
         </Propiedad>
         <Propiedad  ID="https://www.w3.org/2006/vcard/ns#hasLanguage" EntidadID="http://purl.org/ontology/bibo/Document">
-            <AtrNombre>Traducciones</AtrNombre>
-            <AtrNombreLectura>Traducciones</AtrNombreLectura>
+            <AtrNombre>https://www.w3.org/2006/vcard/ns#hasLanguage</AtrNombre>
+            <AtrNombreLectura>https://www.w3.org/2006/vcard/ns#hasLanguage</AtrNombreLectura>
 			<SeleccionEntidad>
                 <TipoSeleccion>Autocompletar</TipoSeleccion>
                 <Grafo>language.owl</Grafo>
@@ -183,12 +226,16 @@
             </SeleccionEntidad>
         </Propiedad>
         <Propiedad  ID="http://purl.org/ontology/bibo/authorList" EntidadID="http://purl.org/ontology/bibo/Document">
-            <AtrNombre>Lista de autores</AtrNombre>
-            <AtrNombreLectura>Lista de autores</AtrNombreLectura>
+            <AtrNombre>http://purl.org/ontology/bibo/authorList</AtrNombre>
+            <AtrNombreLectura>http://purl.org/ontology/bibo/authorList</AtrNombreLectura>
+        </Propiedad>
+		<Propiedad  ID="http://w3id.org/roh/isPublic" EntidadID="http://purl.org/ontology/bibo/Document">
+            <AtrNombre>http://w3id.org/roh/isPublic</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/isPublic</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/project" EntidadID="http://purl.org/ontology/bibo/Document">
-            <AtrNombre>Proyecto vinculado</AtrNombre>
-            <AtrNombreLectura>Proyecto vinculado</AtrNombreLectura>
+            <AtrNombre>http://w3id.org/roh/project</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/project</AtrNombreLectura>
 			<SeleccionEntidad>
                 <TipoSeleccion>Autocompletar</TipoSeleccion>
                 <Grafo>project.owl</Grafo>
@@ -203,35 +250,72 @@
                 </PropsEntLectura>
             </SeleccionEntidad>
         </Propiedad>
-        <Propiedad  ID="http://w3id.org/roh/classificationCVN" EntidadID="http://purl.org/ontology/bibo/Document">
-            <AtrNombre>Clasificación CVN</AtrNombre>
-            <AtrNombreLectura>Clasificación CVN</AtrNombreLectura>
-			<ValoresCombo valorDefecto="Clasificación CVN">
-			<ValorCombo>publicaciones</ValorCombo>
-			<ValorCombo>trabajos-congresos</ValorCombo>
-			<ValorCombo>trabajos-seminarios</ValorCombo>
-			<ValorCombo>otros</ValorCombo>
-			</ValoresCombo>
-        </Propiedad>
-        <Propiedad  ID="https://www.w3.org/2006/vcard/ns#address" EntidadID="http://purl.org/ontology/bibo/Document">
-            <AtrNombre>Lugar de publicación</AtrNombre>
-            <AtrNombreLectura>Lugar de publicación</AtrNombreLectura>
+        <Propiedad  ID="https://www.w3.org/2006/vcard/ns#hasRegion" EntidadID="http://purl.org/ontology/bibo/Document">
+            <AtrNombre>https://www.w3.org/2006/vcard/ns#hasRegion</AtrNombre>
+            <AtrNombreLectura>https://www.w3.org/2006/vcard/ns#hasRegion</AtrNombreLectura>
+			<SeleccionEntidad>
+                <TipoSeleccion>Autocompletar</TipoSeleccion>
+                <Grafo>feature.owl</Grafo>
+                <UrlTipoEntSolicitada>http://www.geonames.org/ontology#Feature</UrlTipoEntSolicitada>              
+                <PropsEntEdicion>
+                    <NameProp>http://www.geonames.org/ontology#name</NameProp>
+                </PropsEntEdicion>
+                <PropsEntLectura>
+                    <Propiedad ID="http://www.geonames.org/ontology#name" EntidadID="http://www.geonames.org/ontology#Feature">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+                </PropsEntLectura>
+            </SeleccionEntidad>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/hasMetric" EntidadID="http://purl.org/ontology/bibo/Document">
-            <AtrNombre>Métrica</AtrNombre>
-            <AtrNombreLectura>Métrica</AtrNombreLectura>
+            <AtrNombre>http://w3id.org/roh/hasMetric</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/hasMetric</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://purl.org/ontology/bibo/presentedAt" EntidadID="http://purl.org/ontology/bibo/Document">
-            <AtrNombre>Presentado en</AtrNombre>
-            <AtrNombreLectura>Presentado en</AtrNombreLectura>
+            <AtrNombre>http://purl.org/ontology/bibo/presentedAt</AtrNombre>
+            <AtrNombreLectura>http://purl.org/ontology/bibo/presentedAt</AtrNombreLectura>
+        </Propiedad>
+        <Propiedad  ID="http://w3id.org/roh/correspondingAuthor" EntidadID="http://purl.org/ontology/bibo/Document">
+            <AtrNombre>http://w3id.org/roh/correspondingAuthor</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/correspondingAuthor</AtrNombreLectura>
+			<SeleccionEntidad>
+                <TipoSeleccion>Autocompletar</TipoSeleccion>
+                <Grafo>person.owl</Grafo>
+                <UrlTipoEntSolicitada>http://xmlns.com/foaf/0.1/Person</UrlTipoEntSolicitada>              
+                <PropsEntEdicion>
+                    <NameProp>http://xmlns.com/foaf/0.1/name</NameProp>
+                </PropsEntEdicion>
+                <PropsEntLectura>
+                    <Propiedad ID="http://xmlns.com/foaf/0.1/name" EntidadID="http://xmlns.com/foaf/0.1/Person">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+                </PropsEntLectura>
+            </SeleccionEntidad>
+        </Propiedad>
+		<Propiedad  ID="http://w3id.org/roh/publicAuthorList" EntidadID="http://purl.org/ontology/bibo/Document">
+            <AtrNombre>http://w3id.org/roh/publicAuthorList</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/publicAuthorList</AtrNombreLectura>
+			<SeleccionEntidad>
+                <TipoSeleccion>Autocompletar</TipoSeleccion>
+                <Grafo>person.owl</Grafo>
+                <UrlTipoEntSolicitada>http://xmlns.com/foaf/0.1/Person</UrlTipoEntSolicitada>              
+                <PropsEntEdicion>
+                    <NameProp>http://xmlns.com/foaf/0.1/name</NameProp>
+                </PropsEntEdicion>
+                <PropsEntLectura>
+                    <Propiedad ID="http://xmlns.com/foaf/0.1/name" EntidadID="http://xmlns.com/foaf/0.1/Person">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+                </PropsEntLectura>
+            </SeleccionEntidad>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/hasKnowledgeArea" EntidadID="http://purl.org/ontology/bibo/Document">
-            <AtrNombre>Categorías</AtrNombre>
-            <AtrNombreLectura>Categorías</AtrNombreLectura>
+            <AtrNombre>http://w3id.org/roh/hasKnowledgeArea</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/hasKnowledgeArea</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://purl.org/dc/elements/1.1/type" EntidadID="http://purl.org/ontology/bibo/Document">
-            <AtrNombre>Tipo de producción</AtrNombre>
-            <AtrNombreLectura>Tipo de producción</AtrNombreLectura>
+            <AtrNombre>http://purl.org/dc/elements/1.1/type</AtrNombre>
+            <AtrNombreLectura>http://purl.org/dc/elements/1.1/type</AtrNombreLectura>
 			<SeleccionEntidad>
                 <TipoSeleccion>Autocompletar</TipoSeleccion>
                 <Grafo>publicationtype.owl</Grafo>
@@ -247,8 +331,8 @@
             </SeleccionEntidad>
         </Propiedad>
         <Propiedad  ID="http://vivoweb.org/ontology/core#hasPublicationVenue" EntidadID="http://purl.org/ontology/bibo/Document">
-            <AtrNombre>Publicado en</AtrNombre>
-            <AtrNombreLectura>Publicado en</AtrNombreLectura>
+            <AtrNombre>http://vivoweb.org/ontology/core#hasPublicationVenue</AtrNombre>
+            <AtrNombreLectura>http://vivoweb.org/ontology/core#hasPublicationVenue</AtrNombreLectura>
 			<SeleccionEntidad>
                 <TipoSeleccion>Autocompletar</TipoSeleccion>
                 <Grafo>maindocument.owl</Grafo>
@@ -264,129 +348,209 @@
             </SeleccionEntidad>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/legalDeposit" EntidadID="http://purl.org/ontology/bibo/Document">
-            <AtrNombre>Depósito legal</AtrNombre>
-            <AtrNombreLectura>Depósito legal</AtrNombreLectura>
+            <AtrNombre>http://w3id.org/roh/legalDeposit</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/legalDeposit</AtrNombreLectura>
+        </Propiedad>
+        <Propiedad  ID="http://w3id.org/roh/publicationTitle" EntidadID="http://purl.org/ontology/bibo/Document">
+            <AtrNombre>http://w3id.org/roh/publicationTitle</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/publicationTitle</AtrNombreLectura>
+        </Propiedad>
+        <Propiedad  ID="https://www.w3.org/2006/vcard/ns#locality" EntidadID="http://purl.org/ontology/bibo/Document">
+            <AtrNombre>https://www.w3.org/2006/vcard/ns#locality</AtrNombre>
+            <AtrNombreLectura>https://www.w3.org/2006/vcard/ns#locality</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/authorsNumber" EntidadID="http://purl.org/ontology/bibo/Document">
-            <AtrNombre>Número de autores</AtrNombre>
-            <AtrNombreLectura>Número de autores</AtrNombreLectura>
+            <AtrNombre>http://w3id.org/roh/authorsNumber</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/authorsNumber</AtrNombreLectura>
         </Propiedad>
-		<Propiedad  ID="http://purl.org/ontology/bibo/issue" EntidadID="http://purl.org/ontology/bibo/Document">
-            <AtrNombre>Número</AtrNombre>
-            <AtrNombreLectura>Número</AtrNombreLectura>
+        <Propiedad  ID="http://w3id.org/roh/reviewsNumber" EntidadID="http://purl.org/ontology/bibo/Document">
+            <AtrNombre>http://w3id.org/roh/reviewsNumber</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/reviewsNumber</AtrNombreLectura>
         </Propiedad>
-        <Propiedad  ID="http://purl.org/ontology/bibo/volume" EntidadID="http://purl.org/ontology/bibo/Document">
-            <AtrNombre>Volumen</AtrNombre>
-            <AtrNombreLectura>Volumen</AtrNombreLectura>
+		<Propiedad  ID="http://w3id.org/roh/referencesLoadedCount" EntidadID="http://purl.org/ontology/bibo/Document">
+            <AtrNombre>http://w3id.org/roh/referencesLoadedCount</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/referencesLoadedCount</AtrNombreLectura>
+        </Propiedad>
+        <Propiedad  ID="http://purl.org/ontology/bibo/abstract" EntidadID="http://purl.org/ontology/bibo/Document">
+            <AtrNombre>http://purl.org/ontology/bibo/abstract</AtrNombre>
+            <AtrNombreLectura>http://purl.org/ontology/bibo/abstract</AtrNombreLectura>
+        </Propiedad>
+		<Propiedad  ID="http://purl.org/ontology/bibo/doi" EntidadID="http://purl.org/ontology/bibo/Document">
+            <AtrNombre>http://purl.org/ontology/bibo/doi</AtrNombre>
+            <AtrNombreLectura>http://purl.org/ontology/bibo/doi</AtrNombreLectura>
+        </Propiedad>
+		<Propiedad  ID="http://purl.org/ontology/bibo/handle" EntidadID="http://purl.org/ontology/bibo/Document">
+            <AtrNombre>http://purl.org/ontology/bibo/handle</AtrNombre>
+            <AtrNombreLectura>http://purl.org/ontology/bibo/handle</AtrNombreLectura>
+        </Propiedad>
+		<Propiedad  ID="http://purl.org/ontology/bibo/pmid" EntidadID="http://purl.org/ontology/bibo/Document">
+            <AtrNombre>http://purl.org/ontology/bibo/pmid</AtrNombre>
+            <AtrNombreLectura>http://purl.org/ontology/bibo/pmid</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://vivoweb.org/ontology/core#freeTextKeyword" EntidadID="http://purl.org/ontology/bibo/Document">
-            <AtrNombre>Etiquetas</AtrNombre>
-            <AtrNombreLectura>Etiquetas</AtrNombreLectura>
+            <AtrNombre>http://vivoweb.org/ontology/core#freeTextKeyword</AtrNombre>
+            <AtrNombreLectura>http://vivoweb.org/ontology/core#freeTextKeyword</AtrNombreLectura>
+        </Propiedad>
+        <Propiedad  ID="http://purl.org/ontology/bibo/issue" EntidadID="http://purl.org/ontology/bibo/Document">
+            <AtrNombre>http://purl.org/ontology/bibo/issue</AtrNombre>
+            <AtrNombreLectura>http://purl.org/ontology/bibo/issue</AtrNombreLectura>
+        </Propiedad>
+        <Propiedad  ID="http://purl.org/ontology/bibo/volume" EntidadID="http://purl.org/ontology/bibo/Document">
+            <AtrNombre>http://purl.org/ontology/bibo/volume</AtrNombre>
+            <AtrNombreLectura>http://purl.org/ontology/bibo/volume</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://purl.org/dc/terms/issued" EntidadID="http://purl.org/ontology/bibo/Document">
-            <AtrNombre>Fecha de publicación</AtrNombre>
-            <AtrNombreLectura>Fecha de publicación</AtrNombreLectura>
+            <AtrNombre>http://purl.org/dc/terms/issued</AtrNombre>
+            <AtrNombreLectura>http://purl.org/dc/terms/issued</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://purl.org/ontology/bibo/pageStart" EntidadID="http://purl.org/ontology/bibo/Document">
-            <AtrNombre>Página inicial</AtrNombre>
-            <AtrNombreLectura>Página inicial</AtrNombreLectura>
+            <AtrNombre>http://purl.org/ontology/bibo/pageStart</AtrNombre>
+            <AtrNombreLectura>http://purl.org/ontology/bibo/pageStart</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/congressProceedingsPublication" EntidadID="http://purl.org/ontology/bibo/Document">
-            <AtrNombre>Publicación en acta de congreso</AtrNombre>
-            <AtrNombreLectura>Publicación en acta de congreso</AtrNombreLectura>
+            <AtrNombre>http://w3id.org/roh/congressProceedingsPublication</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/congressProceedingsPublication</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/crisIdentifier" EntidadID="http://purl.org/ontology/bibo/Document">
-            <AtrNombre>Identificador de la publicación</AtrNombre>
-            <AtrNombreLectura>Identificador de la publicación</AtrNombreLectura>
+            <AtrNombre>http://w3id.org/roh/crisIdentifier</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/crisIdentifier</AtrNombreLectura>
+        </Propiedad>
+		<Propiedad  ID="http://w3id.org/roh/externalKeywords" EntidadID="http://purl.org/ontology/bibo/Document">
+            <AtrNombre>http://w3id.org/roh/externalKeywords</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/externalKeywords</AtrNombreLectura>
+        </Propiedad>
+		<Propiedad  ID="http://w3id.org/roh/enrichedKeywords" EntidadID="http://purl.org/ontology/bibo/Document">
+            <AtrNombre>http://w3id.org/roh/enrichedKeywords</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/enrichedKeywords</AtrNombreLectura>
+        </Propiedad>
+		<Propiedad  ID="http://w3id.org/roh/userKeywords" EntidadID="http://purl.org/ontology/bibo/Document">
+            <AtrNombre>http://w3id.org/roh/userKeywords</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/userKeywords</AtrNombreLectura>
+        </Propiedad>
+		<Propiedad  ID="http://w3id.org/roh/suggestedKeywords" EntidadID="http://purl.org/ontology/bibo/Document">
+            <AtrNombre>http://w3id.org/roh/suggestedKeywords</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/suggestedKeywords</AtrNombreLectura>
+        </Propiedad>
+		<Propiedad  ID="http://w3id.org/roh/inrecs" EntidadID="http://purl.org/ontology/bibo/Document">
+            <AtrNombre>http://w3id.org/roh/inrecs</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/inrecs</AtrNombreLectura>
+        </Propiedad>
+		<Propiedad  ID="http://w3id.org/roh/scopus" EntidadID="http://purl.org/ontology/bibo/Document">
+            <AtrNombre>http://w3id.org/roh/scopus</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/scopus</AtrNombreLectura>
+        </Propiedad>
+		<Propiedad  ID="http://w3id.org/roh/wos" EntidadID="http://purl.org/ontology/bibo/Document">
+            <AtrNombre>http://w3id.org/roh/wos</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/wos</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="https://www.w3.org/2006/vcard/ns#url" EntidadID="http://purl.org/ontology/bibo/Document">
-            <AtrNombre>URL</AtrNombre>
-            <AtrNombreLectura>URL</AtrNombreLectura>
+            <AtrNombre>https://www.w3.org/2006/vcard/ns#url</AtrNombre>
+            <AtrNombreLectura>https://www.w3.org/2006/vcard/ns#url</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://purl.org/ontology/bibo/pageEnd" EntidadID="http://purl.org/ontology/bibo/Document">
-            <AtrNombre>Página final</AtrNombre>
-            <AtrNombreLectura>Página final</AtrNombreLectura>
+            <AtrNombre>http://purl.org/ontology/bibo/pageEnd</AtrNombre>
+            <AtrNombreLectura>http://purl.org/ontology/bibo/pageEnd</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/collection" EntidadID="http://purl.org/ontology/bibo/Document">
-            <AtrNombre>Colección</AtrNombre>
-            <AtrNombreLectura>Colección</AtrNombreLectura>
+            <AtrNombre>http://w3id.org/roh/collection</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/collection</AtrNombreLectura>
+        </Propiedad>
+        <Propiedad  ID="http://w3id.org/roh/scientificActivityDocument" EntidadID="http://purl.org/ontology/bibo/Document">
+            <AtrNombre>http://w3id.org/roh/scientificActivityDocument</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/scientificActivityDocument</AtrNombreLectura>
+			<SeleccionEntidad>
+                <TipoSeleccion>Combo</TipoSeleccion>
+                <Grafo>scientificactivitydocument.owl</Grafo>
+                <UrlTipoEntSolicitada>http://w3id.org/roh/ScientificActivityDocument</UrlTipoEntSolicitada>              
+                <PropsEntEdicion>
+                    <NameProp>http://purl.org/dc/elements/1.1/title</NameProp>
+                </PropsEntEdicion>
+                <PropsEntLectura>
+                    <Propiedad ID="http://purl.org/dc/elements/1.1/title" EntidadID="http://w3id.org/roh/ScientificActivityDocument">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+                </PropsEntLectura>
+            </SeleccionEntidad>
+        </Propiedad>
+        <Propiedad  ID="http://w3id.org/roh/isValidated" EntidadID="http://purl.org/ontology/bibo/Document">
+            <AtrNombre>http://w3id.org/roh/isValidated</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/isValidated</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/title" EntidadID="http://purl.org/ontology/bibo/Document">
-            <AtrNombre>Título de la publicación</AtrNombre>
-            <AtrNombreLectura>Título de la publicación</AtrNombreLectura>
+            <AtrNombre>http://w3id.org/roh/title</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/title</AtrNombreLectura>
         </Propiedad>
-        <Propiedad  ID="https://www.w3.org/2006/vcard/ns#hasCountryName" EntidadID="https://www.w3.org/2006/vcard/ns#Address">
-            <AtrNombre>País</AtrNombre>
-            <AtrNombreLectura>País</AtrNombreLectura>
+		<Propiedad  ID="http://w3id.org/roh/citationLoadedCount" EntidadID="http://purl.org/ontology/bibo/Document">
+            <AtrNombre>http://w3id.org/roh/citationLoadedCount</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/citationLoadedCount</AtrNombreLectura>
+        </Propiedad>
+		<Propiedad  ID="http://purl.org/ontology/bibo/cites" EntidadID="http://purl.org/ontology/bibo/Document">
+            <AtrNombre>http://purl.org/ontology/bibo/cites</AtrNombre>
+            <AtrNombreLectura>http://purl.org/ontology/bibo/cites</AtrNombreLectura>
 			<SeleccionEntidad>
                 <TipoSeleccion>Autocompletar</TipoSeleccion>
-                <Grafo>feature.owl</Grafo>
-                <UrlTipoEntSolicitada>http://www.geonames.org/ontology#Feature</UrlTipoEntSolicitada>              
+                <Grafo>document.owl</Grafo>
+                <UrlTipoEntSolicitada>http://purl.org/ontology/bibo/Document</UrlTipoEntSolicitada>              
                 <PropsEntEdicion>
-                    <NameProp>http://www.geonames.org/ontology#name</NameProp>
+                    <NameProp>http://w3id.org/roh/title</NameProp>
                 </PropsEntEdicion>
                 <PropsEntLectura>
-                    <Propiedad ID="http://www.geonames.org/ontology#name" EntidadID="http://www.geonames.org/ontology#Feature">
+                    <Propiedad ID="http://w3id.org/roh/title" EntidadID="http://purl.org/ontology/bibo/Document">
                         <AtrNombreLectura></AtrNombreLectura>
                     </Propiedad>
                 </PropsEntLectura>
             </SeleccionEntidad>
         </Propiedad>
-        <Propiedad  ID="https://www.w3.org/2006/vcard/ns#hasRegion" EntidadID="https://www.w3.org/2006/vcard/ns#Address">
-            <AtrNombre>C. Autón./Reg.</AtrNombre>
-            <AtrNombreLectura>C. Autón./Reg.</AtrNombreLectura>
+        <Propiedad  ID="http://xmlns.com/foaf/0.1/nick" EntidadID="http://purl.obolibrary.org/obo/BFO_0000023">
+            <AtrNombre>http://xmlns.com/foaf/0.1/nick</AtrNombre>
+            <AtrNombreLectura>http://xmlns.com/foaf/0.1/nick</AtrNombreLectura>
+        </Propiedad>
+        <Propiedad  ID="http://www.w3.org/1999/02/22-rdf-syntax-ns#member" EntidadID="http://purl.obolibrary.org/obo/BFO_0000023">
+            <AtrNombre>http://www.w3.org/1999/02/22-rdf-syntax-ns#member</AtrNombre>
+            <AtrNombreLectura>http://www.w3.org/1999/02/22-rdf-syntax-ns#member</AtrNombreLectura>
 			<SeleccionEntidad>
+				<LinkARecurso IrAComunidad="true" PropiedadID="http://xmlns.com/foaf/0.1/name"></LinkARecurso>
                 <TipoSeleccion>Autocompletar</TipoSeleccion>
-                <Grafo>feature.owl</Grafo>
-                <UrlTipoEntSolicitada>http://www.geonames.org/ontology#Feature</UrlTipoEntSolicitada>              
+                <Grafo>person.owl</Grafo>
+                <UrlTipoEntSolicitada>http://xmlns.com/foaf/0.1/Person</UrlTipoEntSolicitada>              
                 <PropsEntEdicion>
-                    <NameProp>http://www.geonames.org/ontology#name</NameProp>
+                    <NameProp>http://xmlns.com/foaf/0.1/name</NameProp>
                 </PropsEntEdicion>
                 <PropsEntLectura>
-                    <Propiedad ID="http://www.geonames.org/ontology#name" EntidadID="http://www.geonames.org/ontology#Feature">
+                    <Propiedad ID="http://xmlns.com/foaf/0.1/name" EntidadID="http://xmlns.com/foaf/0.1/Person">
                         <AtrNombreLectura></AtrNombreLectura>
                     </Propiedad>
                 </PropsEntLectura>
             </SeleccionEntidad>
         </Propiedad>
-        <Propiedad  ID="https://www.w3.org/2006/vcard/ns#locality" EntidadID="https://www.w3.org/2006/vcard/ns#Address">
-            <AtrNombre>Ciudad</AtrNombre>
-            <AtrNombreLectura>Ciudad</AtrNombreLectura>
+        <Propiedad  ID="http://www.w3.org/1999/02/22-rdf-syntax-ns#comment" EntidadID="http://purl.obolibrary.org/obo/BFO_0000023">
+            <AtrNombre>http://www.w3.org/1999/02/22-rdf-syntax-ns#comment</AtrNombre>
+            <AtrNombreLectura>http://www.w3.org/1999/02/22-rdf-syntax-ns#comment</AtrNombreLectura>
         </Propiedad>
     </EspefPropiedad>
     <EspefEntidad>
         <Entidad  ID="http://xmlns.com/foaf/0.1/Document">
-            <AtrNombre>Documento</AtrNombre>
-            <AtrNombreLectura>Documento</AtrNombreLectura>
+            <AtrNombre>http://xmlns.com/foaf/0.1/Document</AtrNombre>
+            <AtrNombreLectura>http://xmlns.com/foaf/0.1/Document</AtrNombreLectura>
             <OrdenEntidad>
                 <Grupo class="formtheme02">
                     <Grupo class="fieldset">
                         <Grupo Tipo="fieldset" class="mediumLabels">
+                            <NameProp>http://xmlns.com/foaf/0.1/primaryTopic</NameProp> 
                             <NameProp>http://xmlns.com/foaf/0.1/topic</NameProp> 
-                            <NameProp>http://purl.org/dc/elements/1.1/title</NameProp> 
-                            <NameProp>http://xmlns.com/foaf/0.1/primaryTopic</NameProp>
+                            <NameProp>http://purl.org/dc/elements/1.1/title</NameProp>
                         </Grupo>
                     </Grupo>
                 </Grupo>
             </OrdenEntidad>
             <OrdenEntidadLectura>
-                <Grupo classLectura="contentGroup contenidoPrincipal">
-                    <Grupo classLectura="group title">
-                        <Grupo Tipo="titulo">
-                            <NameProp>@@@TITULO</NameProp>
-                        </Grupo>
-                        <Grupo Tipo="subtitulo">
-                            <NameProp>@@@SUBTITULO</NameProp>
-                        </Grupo>
-                    </Grupo>
-                </Grupo>
                 <Grupo classLectura="group content semanticView">
                     <Grupo classLectura="group group_info">
                         <AtrNombreGrupo>Propiedades</AtrNombreGrupo>
                         <Grupo classLectura="contentGroup">
+                            <NameProp>http://xmlns.com/foaf/0.1/primaryTopic</NameProp> 
                             <NameProp>http://xmlns.com/foaf/0.1/topic</NameProp> 
-                            <NameProp>http://purl.org/dc/elements/1.1/title</NameProp> 
-                            <NameProp>http://xmlns.com/foaf/0.1/primaryTopic</NameProp>
+                            <NameProp>http://purl.org/dc/elements/1.1/title</NameProp>
                         </Grupo>
                     </Grupo>
                 </Grupo>
@@ -407,16 +571,6 @@
                 </Grupo>
             </OrdenEntidad>
             <OrdenEntidadLectura>
-                <Grupo classLectura="contentGroup contenidoPrincipal">
-                    <Grupo classLectura="group title">
-                        <Grupo Tipo="titulo">
-                            <NameProp>@@@TITULO</NameProp>
-                        </Grupo>
-                        <Grupo Tipo="subtitulo">
-                            <NameProp>@@@SUBTITULO</NameProp>
-                        </Grupo>
-                    </Grupo>
-                </Grupo>
                 <Grupo classLectura="group content semanticView">
                     <Grupo classLectura="group group_info">
                         <AtrNombreGrupo>Propiedades</AtrNombreGrupo>
@@ -445,10 +599,10 @@
                 <Grupo classLectura="contentGroup contenidoPrincipal">
                     <Grupo classLectura="group title">
                         <Grupo Tipo="titulo">
-                            <NameProp>@@@TITULO</NameProp>
+                            <NameProp>http://w3id.org/roh/categoryNode</NameProp>
                         </Grupo>
                         <Grupo Tipo="subtitulo">
-                            <NameProp>@@@SUBTITULO</NameProp>
+                            <NameProp>http://w3id.org/roh/categoryNode</NameProp>
                         </Grupo>
                     </Grupo>
                 </Grupo>
@@ -463,18 +617,20 @@
             </OrdenEntidadLectura>
         </Entidad>
         <Entidad  ID="http://purl.org/ontology/bibo/Event">
-            <AtrNombre>Evento</AtrNombre>
-            <AtrNombreLectura>Evento</AtrNombreLectura>
+            <AtrNombre>http://purl.org/ontology/bibo/Event</AtrNombre>
+            <AtrNombreLectura>http://purl.org/ontology/bibo/Event</AtrNombreLectura>
             <OrdenEntidad>
                 <Grupo class="formtheme02">
                     <Grupo class="fieldset">
                         <Grupo Tipo="fieldset" class="mediumLabels">
                             <NameProp>http://purl.org/ontology/bibo/organizer</NameProp> 
+                            <NameProp>https://www.w3.org/2006/vcard/ns#hasCountryName</NameProp> 
+                            <NameProp>https://www.w3.org/2006/vcard/ns#hasRegion</NameProp> 
                             <NameProp>http://vivoweb.org/ontology/core#geographicFocus</NameProp> 
-                            <NameProp>https://www.w3.org/2006/vcard/ns#address</NameProp> 
                             <NameProp>http://purl.org/dc/elements/1.1/type</NameProp> 
                             <NameProp>http://w3id.org/roh/geographicFocusOther</NameProp> 
                             <NameProp>http://vivoweb.org/ontology/core#start</NameProp> 
+                            <NameProp>https://www.w3.org/2006/vcard/ns#locality</NameProp> 
                             <NameProp>http://w3id.org/roh/withExternalAdmissionsCommittee</NameProp> 
                             <NameProp>http://vivoweb.org/ontology/core#end</NameProp> 
                             <NameProp>http://purl.org/dc/elements/1.1/title</NameProp>
@@ -483,93 +639,54 @@
                 </Grupo>
             </OrdenEntidad>
             <OrdenEntidadLectura>
-                <Grupo classLectura="contentGroup contenidoPrincipal">
-                    <Grupo classLectura="group title">
-                        <Grupo Tipo="titulo">
-                            <NameProp>@@@TITULO</NameProp>
-                        </Grupo>
-                        <Grupo Tipo="subtitulo">
-                            <NameProp>@@@SUBTITULO</NameProp>
-                        </Grupo>
-                    </Grupo>
-                </Grupo>
                 <Grupo classLectura="group content semanticView">
                     <Grupo classLectura="group group_info">
                         <AtrNombreGrupo>Propiedades</AtrNombreGrupo>
                         <Grupo classLectura="contentGroup">
                             <NameProp>http://purl.org/ontology/bibo/organizer</NameProp> 
+                            <NameProp>https://www.w3.org/2006/vcard/ns#hasCountryName</NameProp> 
+                            <NameProp>https://www.w3.org/2006/vcard/ns#hasRegion</NameProp> 
                             <NameProp>http://vivoweb.org/ontology/core#geographicFocus</NameProp> 
-                            <NameProp>https://www.w3.org/2006/vcard/ns#address</NameProp> 
                             <NameProp>http://purl.org/dc/elements/1.1/type</NameProp> 
                             <NameProp>http://w3id.org/roh/geographicFocusOther</NameProp> 
                             <NameProp>http://vivoweb.org/ontology/core#start</NameProp> 
+                            <NameProp>https://www.w3.org/2006/vcard/ns#locality</NameProp> 
                             <NameProp>http://w3id.org/roh/withExternalAdmissionsCommittee</NameProp> 
                             <NameProp>http://vivoweb.org/ontology/core#end</NameProp> 
                             <NameProp>http://purl.org/dc/elements/1.1/title</NameProp>
-                        </Grupo>
-                    </Grupo>
-                </Grupo>
-            </OrdenEntidadLectura>
-        </Entidad>
-        <Entidad  ID="http://purl.obolibrary.org/obo/BFO_0000023">
-            <AtrNombre>Autores</AtrNombre>
-            <AtrNombreLectura>Autores</AtrNombreLectura>
-            <OrdenEntidad>
-                <Grupo class="formtheme02">
-                    <Grupo class="fieldset">
-                        <Grupo Tipo="fieldset" class="mediumLabels">
-                            <NameProp>http://xmlns.com/foaf/0.1/nick</NameProp> 
-                            <NameProp>http://www.w3.org/1999/02/22-rdf-syntax-ns#member</NameProp> 
-                            <NameProp>http://www.w3.org/1999/02/22-rdf-syntax-ns#comment</NameProp>
-                        </Grupo>
-                    </Grupo>
-                </Grupo>
-            </OrdenEntidad>
-            <OrdenEntidadLectura>
-                <Grupo classLectura="contentGroup contenidoPrincipal">
-                    <Grupo classLectura="group title">
-                        <Grupo Tipo="titulo">
-                            <NameProp>@@@TITULO</NameProp>
-                        </Grupo>
-                        <Grupo Tipo="subtitulo">
-                            <NameProp>@@@SUBTITULO</NameProp>
-                        </Grupo>
-                    </Grupo>
-                </Grupo>
-                <Grupo classLectura="group content semanticView">
-                    <Grupo classLectura="group group_info">
-                        <AtrNombreGrupo>Propiedades</AtrNombreGrupo>
-                        <Grupo classLectura="contentGroup">
-                            <NameProp>http://xmlns.com/foaf/0.1/nick</NameProp> 
-                            <NameProp>http://www.w3.org/1999/02/22-rdf-syntax-ns#member</NameProp> 
-                            <NameProp>http://www.w3.org/1999/02/22-rdf-syntax-ns#comment</NameProp>
                         </Grupo>
                     </Grupo>
                 </Grupo>
             </OrdenEntidadLectura>
         </Entidad>
         <Entidad  ID="http://purl.org/ontology/bibo/Document">
-            <AtrNombre>Publicación</AtrNombre>
-            <AtrNombreLectura>Publicación</AtrNombreLectura>
+            <AtrNombre>http://purl.org/ontology/bibo/Document</AtrNombre>
+            <AtrNombreLectura>http://purl.org/ontology/bibo/Document</AtrNombreLectura>
             <OrdenEntidad>
                 <Grupo class="formtheme02">
                     <Grupo class="fieldset">
                         <Grupo Tipo="fieldset" class="mediumLabels">
+                            <NameProp>https://www.w3.org/2006/vcard/ns#hasCountryName</NameProp> 
                             <NameProp>http://purl.org/ontology/bibo/identifier</NameProp> 
-							<NameProp>http://purl.org/ontology/bibo/abstract</NameProp>
                             <NameProp>https://www.w3.org/2006/vcard/ns#hasLanguage</NameProp> 
                             <NameProp>http://purl.org/ontology/bibo/authorList</NameProp> 
-                            <NameProp>http://w3id.org/roh/project</NameProp>
-                            <NameProp>http://w3id.org/roh/classificationCVN</NameProp> 
-                            <NameProp>https://www.w3.org/2006/vcard/ns#address</NameProp> 
+                            <NameProp>http://w3id.org/roh/project</NameProp> 
+                            <NameProp>https://www.w3.org/2006/vcard/ns#hasRegion</NameProp> 
                             <NameProp>http://w3id.org/roh/hasMetric</NameProp> 
                             <NameProp>http://purl.org/ontology/bibo/presentedAt</NameProp> 
+                            <NameProp>http://w3id.org/roh/correspondingAuthor</NameProp> 
                             <NameProp>http://w3id.org/roh/hasKnowledgeArea</NameProp> 
                             <NameProp>http://purl.org/dc/elements/1.1/type</NameProp> 
                             <NameProp>http://vivoweb.org/ontology/core#hasPublicationVenue</NameProp> 
                             <NameProp>http://w3id.org/roh/legalDeposit</NameProp> 
+                            <NameProp>http://w3id.org/roh/publicationTitle</NameProp> 
+                            <NameProp>https://www.w3.org/2006/vcard/ns#locality</NameProp> 
                             <NameProp>http://w3id.org/roh/authorsNumber</NameProp> 
+                            <NameProp>http://w3id.org/roh/reviewsNumber</NameProp> 
+                            <NameProp>http://purl.org/ontology/bibo/abstract</NameProp> 
                             <NameProp>http://vivoweb.org/ontology/core#freeTextKeyword</NameProp> 
+                            <NameProp>http://purl.org/ontology/bibo/issue</NameProp> 
+                            <NameProp>http://purl.org/ontology/bibo/volume</NameProp> 
                             <NameProp>http://purl.org/dc/terms/issued</NameProp> 
                             <NameProp>http://purl.org/ontology/bibo/pageStart</NameProp> 
                             <NameProp>http://w3id.org/roh/congressProceedingsPublication</NameProp> 
@@ -577,41 +694,58 @@
                             <NameProp>https://www.w3.org/2006/vcard/ns#url</NameProp> 
                             <NameProp>http://purl.org/ontology/bibo/pageEnd</NameProp> 
                             <NameProp>http://w3id.org/roh/collection</NameProp> 
+                            <NameProp>http://w3id.org/roh/scientificActivityDocument</NameProp> 
+                            <NameProp>http://w3id.org/roh/isValidated</NameProp> 
                             <NameProp>http://w3id.org/roh/title</NameProp>
+							<NameProp>http://w3id.org/roh/isProducedBy</NameProp>
+							<NameProp>http://w3id.org/roh/publicAuthorList</NameProp>
+							<NameProp>http://w3id.org/roh/userJournal</NameProp>
+							<NameProp>http://w3id.org/roh/typeOthers</NameProp>
+							<NameProp>http://purl.org/ontology/bibo/cites</NameProp>
+							<NameProp>http://w3id.org/roh/isPublic</NameProp>
+							<NameProp>http://w3id.org/roh/publicGroupList</NameProp>
+							<NameProp>http://w3id.org/roh/citationCount</NameProp>
+							<NameProp>http://w3id.org/roh/referencesLoadedCount</NameProp>
+							<NameProp>http://w3id.org/roh/inrecs</NameProp>
+							<NameProp>http://w3id.org/roh/scopus</NameProp>
+							<NameProp>http://w3id.org/roh/wos</NameProp>
+							<NameProp>http://purl.org/ontology/bibo/doi</NameProp>
+							<NameProp>http://purl.org/ontology/bibo/handle</NameProp>
+							<NameProp>http://purl.org/ontology/bibo/pmid</NameProp>
+							<NameProp>http://w3id.org/roh/externalKeywords</NameProp>
+							<NameProp>http://w3id.org/roh/enrichedKeywords</NameProp>
+							<NameProp>http://w3id.org/roh/userKeywords</NameProp>
+							<NameProp>http://w3id.org/roh/suggestedKeywords</NameProp>
                         </Grupo>
                     </Grupo>
                 </Grupo>
             </OrdenEntidad>
             <OrdenEntidadLectura>
-                <Grupo classLectura="contentGroup contenidoPrincipal">
-                    <Grupo classLectura="group title">
-                        <Grupo Tipo="titulo">
-                            <NameProp>@@@TITULO</NameProp>
-                        </Grupo>
-                        <Grupo Tipo="subtitulo">
-                            <NameProp>@@@SUBTITULO</NameProp>
-                        </Grupo>
-                    </Grupo>
-                </Grupo>
                 <Grupo classLectura="group content semanticView">
                     <Grupo classLectura="group group_info">
                         <AtrNombreGrupo>Propiedades</AtrNombreGrupo>
                         <Grupo classLectura="contentGroup">
+                            <NameProp>https://www.w3.org/2006/vcard/ns#hasCountryName</NameProp> 
                             <NameProp>http://purl.org/ontology/bibo/identifier</NameProp> 
-							<NameProp>http://purl.org/ontology/bibo/abstract</NameProp> 
                             <NameProp>https://www.w3.org/2006/vcard/ns#hasLanguage</NameProp> 
                             <NameProp>http://purl.org/ontology/bibo/authorList</NameProp> 
                             <NameProp>http://w3id.org/roh/project</NameProp> 
-                            <NameProp>http://w3id.org/roh/classificationCVN</NameProp> 
-                            <NameProp>https://www.w3.org/2006/vcard/ns#address</NameProp> 
+                            <NameProp>https://www.w3.org/2006/vcard/ns#hasRegion</NameProp> 
                             <NameProp>http://w3id.org/roh/hasMetric</NameProp> 
                             <NameProp>http://purl.org/ontology/bibo/presentedAt</NameProp> 
+                            <NameProp>http://w3id.org/roh/correspondingAuthor</NameProp> 
                             <NameProp>http://w3id.org/roh/hasKnowledgeArea</NameProp> 
                             <NameProp>http://purl.org/dc/elements/1.1/type</NameProp> 
                             <NameProp>http://vivoweb.org/ontology/core#hasPublicationVenue</NameProp> 
                             <NameProp>http://w3id.org/roh/legalDeposit</NameProp> 
+                            <NameProp>http://w3id.org/roh/publicationTitle</NameProp> 
+                            <NameProp>https://www.w3.org/2006/vcard/ns#locality</NameProp> 
                             <NameProp>http://w3id.org/roh/authorsNumber</NameProp> 
+                            <NameProp>http://w3id.org/roh/reviewsNumber</NameProp> 
+                            <NameProp>http://purl.org/ontology/bibo/abstract</NameProp> 
                             <NameProp>http://vivoweb.org/ontology/core#freeTextKeyword</NameProp> 
+                            <NameProp>http://purl.org/ontology/bibo/issue</NameProp> 
+                            <NameProp>http://purl.org/ontology/bibo/volume</NameProp> 
                             <NameProp>http://purl.org/dc/terms/issued</NameProp> 
                             <NameProp>http://purl.org/ontology/bibo/pageStart</NameProp> 
                             <NameProp>http://w3id.org/roh/congressProceedingsPublication</NameProp> 
@@ -619,44 +753,55 @@
                             <NameProp>https://www.w3.org/2006/vcard/ns#url</NameProp> 
                             <NameProp>http://purl.org/ontology/bibo/pageEnd</NameProp> 
                             <NameProp>http://w3id.org/roh/collection</NameProp> 
+                            <NameProp>http://w3id.org/roh/scientificActivityDocument</NameProp> 
+                            <NameProp>http://w3id.org/roh/isValidated</NameProp> 
                             <NameProp>http://w3id.org/roh/title</NameProp>
+							<NameProp>http://w3id.org/roh/isProducedBy</NameProp>
+							<NameProp>http://w3id.org/roh/publicAuthorList</NameProp>
+							<NameProp>http://w3id.org/roh/userJournal</NameProp>
+							<NameProp>http://w3id.org/roh/typeOthers</NameProp>
+							<NameProp>http://purl.org/ontology/bibo/cites</NameProp>
+							<NameProp>http://w3id.org/roh/isPublic</NameProp>
+							<NameProp>http://w3id.org/roh/publicGroupList</NameProp>
+							<NameProp>http://w3id.org/roh/citationCount</NameProp>
+							<NameProp>http://w3id.org/roh/referencesLoadedCount</NameProp>
+							<NameProp>http://w3id.org/roh/inrecs</NameProp>
+							<NameProp>http://w3id.org/roh/scopus</NameProp>
+							<NameProp>http://w3id.org/roh/wos</NameProp>
+							<NameProp>http://purl.org/ontology/bibo/doi</NameProp>
+							<NameProp>http://purl.org/ontology/bibo/handle</NameProp>
+							<NameProp>http://purl.org/ontology/bibo/pmid</NameProp>
+							<NameProp>http://w3id.org/roh/externalKeywords</NameProp>
+							<NameProp>http://w3id.org/roh/enrichedKeywords</NameProp>
+							<NameProp>http://w3id.org/roh/userKeywords</NameProp>
+							<NameProp>http://w3id.org/roh/suggestedKeywords</NameProp>
                         </Grupo>
                     </Grupo>
                 </Grupo>
             </OrdenEntidadLectura>
         </Entidad>
-        <Entidad  ID="https://www.w3.org/2006/vcard/ns#Address">
-            <AtrNombre>Lugar de publicación</AtrNombre>
-            <AtrNombreLectura>Lugar de publicación</AtrNombreLectura>
+        <Entidad  ID="http://purl.obolibrary.org/obo/BFO_0000023">
+            <AtrNombre>http://purl.obolibrary.org/obo/BFO_0000023</AtrNombre>
+            <AtrNombreLectura>http://purl.obolibrary.org/obo/BFO_0000023</AtrNombreLectura>
             <OrdenEntidad>
                 <Grupo class="formtheme02">
                     <Grupo class="fieldset">
                         <Grupo Tipo="fieldset" class="mediumLabels">
-                            <NameProp>https://www.w3.org/2006/vcard/ns#hasCountryName</NameProp> 
-                            <NameProp>https://www.w3.org/2006/vcard/ns#hasRegion</NameProp> 
-                            <NameProp>https://www.w3.org/2006/vcard/ns#locality</NameProp>
+                            <NameProp>http://xmlns.com/foaf/0.1/nick</NameProp> 
+                            <NameProp>http://www.w3.org/1999/02/22-rdf-syntax-ns#member</NameProp> 
+                            <NameProp>http://www.w3.org/1999/02/22-rdf-syntax-ns#comment</NameProp>
                         </Grupo>
                     </Grupo>
                 </Grupo>
             </OrdenEntidad>
             <OrdenEntidadLectura>
-                <Grupo classLectura="contentGroup contenidoPrincipal">
-                    <Grupo classLectura="group title">
-                        <Grupo Tipo="titulo">
-                            <NameProp>@@@TITULO</NameProp>
-                        </Grupo>
-                        <Grupo Tipo="subtitulo">
-                            <NameProp>@@@SUBTITULO</NameProp>
-                        </Grupo>
-                    </Grupo>
-                </Grupo>
                 <Grupo classLectura="group content semanticView">
                     <Grupo classLectura="group group_info">
                         <AtrNombreGrupo>Propiedades</AtrNombreGrupo>
                         <Grupo classLectura="contentGroup">
-                            <NameProp>https://www.w3.org/2006/vcard/ns#hasCountryName</NameProp> 
-                            <NameProp>https://www.w3.org/2006/vcard/ns#hasRegion</NameProp> 
-                            <NameProp>https://www.w3.org/2006/vcard/ns#locality</NameProp>
+                            <NameProp>http://xmlns.com/foaf/0.1/nick</NameProp> 
+                            <NameProp>http://www.w3.org/1999/02/22-rdf-syntax-ns#member</NameProp> 
+                            <NameProp>http://www.w3.org/1999/02/22-rdf-syntax-ns#comment</NameProp>
                         </Grupo>
                     </Grupo>
                 </Grupo>

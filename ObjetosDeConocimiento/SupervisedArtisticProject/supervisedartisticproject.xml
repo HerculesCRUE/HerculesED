@@ -11,10 +11,6 @@
 		<CategorizacionTesauroGnossObligatoria>false</CategorizacionTesauroGnossObligatoria>
     </ConfiguracionGeneral>
     <EspefPropiedad>
-        <Propiedad  ID="https://www.w3.org/2006/vcard/ns#hasAddress" EntidadID="http://w3id.org/roh/SupervisedArtisticProject">
-            <AtrNombre>https://www.w3.org/2006/vcard/ns#hasAddress</AtrNombre>
-            <AtrNombreLectura>https://www.w3.org/2006/vcard/ns#hasAddress</AtrNombreLectura>
-        </Propiedad>
         <Propiedad  ID="http://vivoweb.org/ontology/core#relates" EntidadID="http://w3id.org/roh/SupervisedArtisticProject">
             <AtrNombre>http://vivoweb.org/ontology/core#relates</AtrNombre>
             <AtrNombreLectura>http://vivoweb.org/ontology/core#relates</AtrNombreLectura>
@@ -51,6 +47,10 @@
             <AtrNombre>http://w3id.org/roh/award</AtrNombre>
             <AtrNombreLectura>http://w3id.org/roh/award</AtrNombreLectura>
         </Propiedad>
+		<Propiedad  ID="http://w3id.org/roh/collective" EntidadID="http://w3id.org/roh/SupervisedArtisticProject">
+            <AtrNombre>http://w3id.org/roh/collective</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/collective</AtrNombreLectura>
+        </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/catalogue" EntidadID="http://w3id.org/roh/SupervisedArtisticProject">
             <AtrNombre>http://w3id.org/roh/catalogue</AtrNombre>
             <AtrNombreLectura>http://w3id.org/roh/catalogue</AtrNombreLectura>
@@ -59,13 +59,13 @@
             <AtrNombre>http://w3id.org/roh/title</AtrNombre>
             <AtrNombreLectura>http://w3id.org/roh/title</AtrNombreLectura>
         </Propiedad>
-        <Propiedad  ID="http://vivoweb.org/ontology/core#preferredDisplayOrder" EntidadID="http://purl.obolibrary.org/obo/BFO_0000023">
-            <AtrNombre>http://vivoweb.org/ontology/core#preferredDisplayOrder</AtrNombre>
-            <AtrNombreLectura>http://vivoweb.org/ontology/core#preferredDisplayOrder</AtrNombreLectura>
+        <Propiedad  ID="http://xmlns.com/foaf/0.1/nick" EntidadID="http://purl.obolibrary.org/obo/BFO_0000023">
+            <AtrNombre>http://xmlns.com/foaf/0.1/nick</AtrNombre>
+            <AtrNombreLectura>http://xmlns.com/foaf/0.1/nick</AtrNombreLectura>
         </Propiedad>
-        <Propiedad  ID="http://w3id.org/roh/roleOf" EntidadID="http://purl.obolibrary.org/obo/BFO_0000023">
-            <AtrNombre>http://w3id.org/roh/roleOf</AtrNombre>
-            <AtrNombreLectura>http://w3id.org/roh/roleOf</AtrNombreLectura>
+        <Propiedad  ID="http://www.w3.org/1999/02/22-rdf-syntax-ns#member" EntidadID="http://purl.obolibrary.org/obo/BFO_0000023">
+            <AtrNombre>http://www.w3.org/1999/02/22-rdf-syntax-ns#member</AtrNombre>
+            <AtrNombreLectura>http://www.w3.org/1999/02/22-rdf-syntax-ns#member</AtrNombreLectura>
 			<SeleccionEntidad>
                 <TipoSeleccion>Autocompletar</TipoSeleccion>
                 <Grafo>person.owl</Grafo>
@@ -80,11 +80,11 @@
                 </PropsEntLectura>
             </SeleccionEntidad>
         </Propiedad>
-        <Propiedad  ID="http://w3id.org/roh/title" EntidadID="http://purl.obolibrary.org/obo/BFO_0000023">
-            <AtrNombre>http://w3id.org/roh/title</AtrNombre>
-            <AtrNombreLectura>http://w3id.org/roh/title</AtrNombreLectura>
+        <Propiedad  ID="http://www.w3.org/1999/02/22-rdf-syntax-ns#comment" EntidadID="http://purl.obolibrary.org/obo/BFO_0000023">
+            <AtrNombre>http://www.w3.org/1999/02/22-rdf-syntax-ns#comment</AtrNombre>
+            <AtrNombreLectura>http://www.w3.org/1999/02/22-rdf-syntax-ns#comment</AtrNombreLectura>
         </Propiedad>
-        <Propiedad  ID="https://www.w3.org/2006/vcard/ns#hasRegion" EntidadID="https://www.w3.org/2006/vcard/ns#Address">
+        <Propiedad  ID="https://www.w3.org/2006/vcard/ns#hasRegion" EntidadID="http://w3id.org/roh/SupervisedArtisticProject">
             <AtrNombre>https://www.w3.org/2006/vcard/ns#hasRegion</AtrNombre>
             <AtrNombreLectura>https://www.w3.org/2006/vcard/ns#hasRegion</AtrNombreLectura>
 			<SeleccionEntidad>
@@ -101,7 +101,7 @@
                 </PropsEntLectura>
             </SeleccionEntidad>
         </Propiedad>
-        <Propiedad  ID="https://www.w3.org/2006/vcard/ns#hasCountryName" EntidadID="https://www.w3.org/2006/vcard/ns#Address">
+        <Propiedad  ID="https://www.w3.org/2006/vcard/ns#hasCountryName" EntidadID="http://w3id.org/roh/SupervisedArtisticProject">
             <AtrNombre>https://www.w3.org/2006/vcard/ns#hasCountryName</AtrNombre>
             <AtrNombreLectura>https://www.w3.org/2006/vcard/ns#hasCountryName</AtrNombreLectura>
 			<SeleccionEntidad>
@@ -118,7 +118,7 @@
                 </PropsEntLectura>
             </SeleccionEntidad>
         </Propiedad>
-        <Propiedad  ID="https://www.w3.org/2006/vcard/ns#locality" EntidadID="https://www.w3.org/2006/vcard/ns#Address">
+        <Propiedad  ID="https://www.w3.org/2006/vcard/ns#locality" EntidadID="http://w3id.org/roh/SupervisedArtisticProject">
             <AtrNombre>https://www.w3.org/2006/vcard/ns#locality</AtrNombre>
             <AtrNombreLectura>https://www.w3.org/2006/vcard/ns#locality</AtrNombreLectura>
         </Propiedad>
@@ -131,7 +131,6 @@
                 <Grupo class="formtheme02">
                     <Grupo class="fieldset">
                         <Grupo Tipo="fieldset" class="mediumLabels">
-                            <NameProp>https://www.w3.org/2006/vcard/ns#hasAddress</NameProp> 
                             <NameProp>http://vivoweb.org/ontology/core#relates</NameProp> 
                             <NameProp>http://w3id.org/roh/cataloguing</NameProp> 
                             <NameProp>http://w3id.org/roh/exhibitionForum</NameProp> 
@@ -143,26 +142,19 @@
                             <NameProp>http://w3id.org/roh/award</NameProp> 
                             <NameProp>http://w3id.org/roh/catalogue</NameProp> 
                             <NameProp>http://w3id.org/roh/title</NameProp>
+							<NameProp>https://www.w3.org/2006/vcard/ns#locality</NameProp>
+							<NameProp>https://www.w3.org/2006/vcard/ns#hasRegion</NameProp>
+							<NameProp>https://www.w3.org/2006/vcard/ns#hasCountryName</NameProp>
+							<NameProp>http://w3id.org/roh/collective</NameProp>
                         </Grupo>
                     </Grupo>
                 </Grupo>
             </OrdenEntidad>
             <OrdenEntidadLectura>
-                <Grupo classLectura="contentGroup contenidoPrincipal">
-                    <Grupo classLectura="group title">
-                        <Grupo Tipo="titulo">
-                            <NameProp>@@@TITULO</NameProp>
-                        </Grupo>
-                        <Grupo Tipo="subtitulo">
-                            <NameProp>@@@SUBTITULO</NameProp>
-                        </Grupo>
-                    </Grupo>
-                </Grupo>
                 <Grupo classLectura="group content semanticView">
                     <Grupo classLectura="group group_info">
                         <AtrNombreGrupo>Propiedades</AtrNombreGrupo>
                         <Grupo classLectura="contentGroup">
-                            <NameProp>https://www.w3.org/2006/vcard/ns#hasAddress</NameProp> 
                             <NameProp>http://vivoweb.org/ontology/core#relates</NameProp> 
                             <NameProp>http://w3id.org/roh/cataloguing</NameProp> 
                             <NameProp>http://w3id.org/roh/exhibitionForum</NameProp> 
@@ -174,6 +166,10 @@
                             <NameProp>http://w3id.org/roh/award</NameProp> 
                             <NameProp>http://w3id.org/roh/catalogue</NameProp> 
                             <NameProp>http://w3id.org/roh/title</NameProp>
+							<NameProp>https://www.w3.org/2006/vcard/ns#locality</NameProp>
+							<NameProp>https://www.w3.org/2006/vcard/ns#hasRegion</NameProp>
+							<NameProp>https://www.w3.org/2006/vcard/ns#hasCountryName</NameProp>
+							<NameProp>http://w3id.org/roh/collective</NameProp>
                         </Grupo>
                     </Grupo>
                 </Grupo>
@@ -186,68 +182,21 @@
                 <Grupo class="formtheme02">
                     <Grupo class="fieldset">
                         <Grupo Tipo="fieldset" class="mediumLabels">
-                            <NameProp>http://vivoweb.org/ontology/core#preferredDisplayOrder</NameProp> 
-                            <NameProp>http://w3id.org/roh/roleOf</NameProp> 
-                            <NameProp>http://w3id.org/roh/title</NameProp>
+                            <NameProp>http://xmlns.com/foaf/0.1/nick</NameProp> 
+                            <NameProp>http://www.w3.org/1999/02/22-rdf-syntax-ns#member</NameProp> 
+                            <NameProp>http://www.w3.org/1999/02/22-rdf-syntax-ns#comment</NameProp>
                         </Grupo>
                     </Grupo>
                 </Grupo>
             </OrdenEntidad>
             <OrdenEntidadLectura>
-                <Grupo classLectura="contentGroup contenidoPrincipal">
-                    <Grupo classLectura="group title">
-                        <Grupo Tipo="titulo">
-                            <NameProp>@@@TITULO</NameProp>
-                        </Grupo>
-                        <Grupo Tipo="subtitulo">
-                            <NameProp>@@@SUBTITULO</NameProp>
-                        </Grupo>
-                    </Grupo>
-                </Grupo>
                 <Grupo classLectura="group content semanticView">
                     <Grupo classLectura="group group_info">
                         <AtrNombreGrupo>Propiedades</AtrNombreGrupo>
                         <Grupo classLectura="contentGroup">
-                            <NameProp>http://vivoweb.org/ontology/core#preferredDisplayOrder</NameProp> 
-                            <NameProp>http://w3id.org/roh/roleOf</NameProp> 
-                            <NameProp>http://w3id.org/roh/title</NameProp>
-                        </Grupo>
-                    </Grupo>
-                </Grupo>
-            </OrdenEntidadLectura>
-        </Entidad>
-        <Entidad  ID="https://www.w3.org/2006/vcard/ns#Address">
-            <AtrNombre>https://www.w3.org/2006/vcard/ns#Address</AtrNombre>
-            <AtrNombreLectura>https://www.w3.org/2006/vcard/ns#Address</AtrNombreLectura>
-            <OrdenEntidad>
-                <Grupo class="formtheme02">
-                    <Grupo class="fieldset">
-                        <Grupo Tipo="fieldset" class="mediumLabels">
-                            <NameProp>https://www.w3.org/2006/vcard/ns#hasRegion</NameProp> 
-                            <NameProp>https://www.w3.org/2006/vcard/ns#hasCountryName</NameProp> 
-                            <NameProp>https://www.w3.org/2006/vcard/ns#locality</NameProp>
-                        </Grupo>
-                    </Grupo>
-                </Grupo>
-            </OrdenEntidad>
-            <OrdenEntidadLectura>
-                <Grupo classLectura="contentGroup contenidoPrincipal">
-                    <Grupo classLectura="group title">
-                        <Grupo Tipo="titulo">
-                            <NameProp>@@@TITULO</NameProp>
-                        </Grupo>
-                        <Grupo Tipo="subtitulo">
-                            <NameProp>@@@SUBTITULO</NameProp>
-                        </Grupo>
-                    </Grupo>
-                </Grupo>
-                <Grupo classLectura="group content semanticView">
-                    <Grupo classLectura="group group_info">
-                        <AtrNombreGrupo>Propiedades</AtrNombreGrupo>
-                        <Grupo classLectura="contentGroup">
-                            <NameProp>https://www.w3.org/2006/vcard/ns#hasRegion</NameProp> 
-                            <NameProp>https://www.w3.org/2006/vcard/ns#hasCountryName</NameProp> 
-                            <NameProp>https://www.w3.org/2006/vcard/ns#locality</NameProp>
+                            <NameProp>http://xmlns.com/foaf/0.1/nick</NameProp> 
+                            <NameProp>http://www.w3.org/1999/02/22-rdf-syntax-ns#member</NameProp> 
+                            <NameProp>http://www.w3.org/1999/02/22-rdf-syntax-ns#comment</NameProp>
                         </Grupo>
                     </Grupo>
                 </Grupo>

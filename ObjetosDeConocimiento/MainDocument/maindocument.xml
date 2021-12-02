@@ -127,16 +127,6 @@
                 </Grupo>
             </OrdenEntidad>
             <OrdenEntidadLectura>
-                <Grupo classLectura="contentGroup contenidoPrincipal">
-                    <Grupo classLectura="group title">
-                        <Grupo Tipo="titulo">
-                            <NameProp>@@@TITULO</NameProp>
-                        </Grupo>
-                        <Grupo Tipo="subtitulo">
-                            <NameProp>@@@SUBTITULO</NameProp>
-                        </Grupo>
-                    </Grupo>
-                </Grupo>
                 <Grupo classLectura="group content semanticView">
                     <Grupo classLectura="group group_info">
                         <AtrNombreGrupo>Propiedades</AtrNombreGrupo>
@@ -173,16 +163,6 @@
                 </Grupo>
             </OrdenEntidad>
             <OrdenEntidadLectura>
-                <Grupo classLectura="contentGroup contenidoPrincipal">
-                    <Grupo classLectura="group title">
-                        <Grupo Tipo="titulo">
-                            <NameProp>@@@TITULO</NameProp>
-                        </Grupo>
-                        <Grupo Tipo="subtitulo">
-                            <NameProp>@@@SUBTITULO</NameProp>
-                        </Grupo>
-                    </Grupo>
-                </Grupo>
                 <Grupo classLectura="group content semanticView">
                     <Grupo classLectura="group group_info">
                         <AtrNombreGrupo>Propiedades</AtrNombreGrupo>

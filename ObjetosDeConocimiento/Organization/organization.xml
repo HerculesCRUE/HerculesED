@@ -11,21 +11,43 @@
 		<CategorizacionTesauroGnossObligatoria>false</CategorizacionTesauroGnossObligatoria>
     </ConfiguracionGeneral>
     <EspefPropiedad>
-		<Propiedad  ID="http://w3id.org/roh/crisIdentifier" EntidadID="http://xmlns.com/foaf/0.1/Organization">
-            <AtrNombre>Identificador</AtrNombre>
-            <AtrNombreLectura>Identificador</AtrNombreLectura>
+        <Propiedad  ID="https://www.w3.org/2006/vcard/ns#hasRegion" EntidadID="http://xmlns.com/foaf/0.1/Organization">
+            <AtrNombre>https://www.w3.org/2006/vcard/ns#hasRegion</AtrNombre>
+            <AtrNombreLectura>https://www.w3.org/2006/vcard/ns#hasRegion</AtrNombreLectura>
+			<SeleccionEntidad>
+                <TipoSeleccion>Autocompletar</TipoSeleccion>
+                <Grafo>feature.owl</Grafo>
+                <UrlTipoEntSolicitada>http://www.geonames.org/ontology#Feature</UrlTipoEntSolicitada>              
+                <PropsEntEdicion>
+                    <NameProp>http://www.geonames.org/ontology#name</NameProp>
+                </PropsEntEdicion>
+                <PropsEntLectura>
+                    <Propiedad ID="http://www.geonames.org/ontology#name" EntidadID="http://www.geonames.org/ontology#Feature">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+                </PropsEntLectura>
+            </SeleccionEntidad>
         </Propiedad>
-        <Propiedad  ID="https://www.w3.org/2006/vcard/ns#hasAddress" EntidadID="http://xmlns.com/foaf/0.1/Organization">
-            <AtrNombre>Dirección</AtrNombre>
-            <AtrNombreLectura>Dirección</AtrNombreLectura>
-        </Propiedad>
-        <Propiedad  ID="http://w3id.org/roh/otherTypeMoreInfo" EntidadID="http://xmlns.com/foaf/0.1/Organization">
-            <AtrNombre>Tipo de entidad, otros</AtrNombre>
-            <AtrNombreLectura>Tipo de entidad, otros</AtrNombreLectura>
+        <Propiedad  ID="https://www.w3.org/2006/vcard/ns#hasCountryName" EntidadID="http://xmlns.com/foaf/0.1/Organization">
+            <AtrNombre>https://www.w3.org/2006/vcard/ns#hasCountryName</AtrNombre>
+            <AtrNombreLectura>https://www.w3.org/2006/vcard/ns#hasCountryName</AtrNombreLectura>
+			<SeleccionEntidad>
+                <TipoSeleccion>Autocompletar</TipoSeleccion>
+                <Grafo>feature.owl</Grafo>
+                <UrlTipoEntSolicitada>http://www.geonames.org/ontology#Feature</UrlTipoEntSolicitada>              
+                <PropsEntEdicion>
+                    <NameProp>http://www.geonames.org/ontology#name</NameProp>
+                </PropsEntEdicion>
+                <PropsEntLectura>
+                    <Propiedad ID="http://www.geonames.org/ontology#name" EntidadID="http://www.geonames.org/ontology#Feature">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+                </PropsEntLectura>
+            </SeleccionEntidad>
         </Propiedad>
         <Propiedad  ID="http://purl.org/dc/elements/1.1/type" EntidadID="http://xmlns.com/foaf/0.1/Organization">
-            <AtrNombre>Tipo de entidad</AtrNombre>
-            <AtrNombreLectura>Tipo de entidad</AtrNombreLectura>
+            <AtrNombre>http://purl.org/dc/elements/1.1/type</AtrNombre>
+            <AtrNombreLectura>http://purl.org/dc/elements/1.1/type</AtrNombreLectura>
 			<SeleccionEntidad>
                 <TipoSeleccion>Autocompletar</TipoSeleccion>
                 <Grafo>organizationtype.owl</Grafo>
@@ -40,123 +62,60 @@
                 </PropsEntLectura>
             </SeleccionEntidad>
         </Propiedad>
+        <Propiedad  ID="http://w3id.org/roh/crisIdentifier" EntidadID="http://xmlns.com/foaf/0.1/Organization">
+            <AtrNombre>http://w3id.org/roh/crisIdentifier</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/crisIdentifier</AtrNombreLectura>
+        </Propiedad>
+        <Propiedad  ID="http://w3id.org/roh/otherTypeMoreInfo" EntidadID="http://xmlns.com/foaf/0.1/Organization">
+            <AtrNombre>http://w3id.org/roh/otherTypeMoreInfo</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/otherTypeMoreInfo</AtrNombreLectura>
+        </Propiedad>
+        <Propiedad  ID="https://www.w3.org/2006/vcard/ns#locality" EntidadID="http://xmlns.com/foaf/0.1/Organization">
+            <AtrNombre>https://www.w3.org/2006/vcard/ns#locality</AtrNombre>
+            <AtrNombreLectura>https://www.w3.org/2006/vcard/ns#locality</AtrNombreLectura>
+        </Propiedad>
+        <Propiedad  ID="http://w3id.org/roh/isSynchronized" EntidadID="http://xmlns.com/foaf/0.1/Organization">
+            <AtrNombre>http://w3id.org/roh/isSynchronized</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/isSynchronized</AtrNombreLectura>
+        </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/title" EntidadID="http://xmlns.com/foaf/0.1/Organization">
-            <AtrNombre>Nombre</AtrNombre>
-            <AtrNombreLectura>Nombre</AtrNombreLectura>
-        </Propiedad>
-        <Propiedad  ID="https://www.w3.org/2006/vcard/ns#hasRegion" EntidadID="https://www.w3.org/2006/vcard/ns#Address">
-            <AtrNombre>C. Autón./Reg. entidad</AtrNombre>
-            <AtrNombreLectura>C. Autón./Reg. entidad</AtrNombreLectura>
-			<SeleccionEntidad>
-                <TipoSeleccion>Autocompletar</TipoSeleccion>
-                <Grafo>feature.owl</Grafo>
-                <UrlTipoEntSolicitada>http://www.geonames.org/ontology#Feature</UrlTipoEntSolicitada>              
-                <PropsEntEdicion>
-                    <NameProp>http://www.geonames.org/ontology#name</NameProp>
-                </PropsEntEdicion>
-                <PropsEntLectura>
-                    <Propiedad ID="http://www.geonames.org/ontology#name" EntidadID="http://www.geonames.org/ontology#Feature">
-                        <AtrNombreLectura></AtrNombreLectura>
-                    </Propiedad>
-                </PropsEntLectura>
-            </SeleccionEntidad>
-        </Propiedad>
-        <Propiedad  ID="https://www.w3.org/2006/vcard/ns#hasCountryName" EntidadID="https://www.w3.org/2006/vcard/ns#Address">
-            <AtrNombre>País entidad</AtrNombre>
-            <AtrNombreLectura>País entidad</AtrNombreLectura>
-			<SeleccionEntidad>
-                <TipoSeleccion>Autocompletar</TipoSeleccion>
-                <Grafo>feature.owl</Grafo>
-                <UrlTipoEntSolicitada>http://www.geonames.org/ontology#Feature</UrlTipoEntSolicitada>              
-                <PropsEntEdicion>
-                    <NameProp>http://www.geonames.org/ontology#name</NameProp>
-                </PropsEntEdicion>
-                <PropsEntLectura>
-                    <Propiedad ID="http://www.geonames.org/ontology#name" EntidadID="http://www.geonames.org/ontology#Feature">
-                        <AtrNombreLectura></AtrNombreLectura>
-                    </Propiedad>
-                </PropsEntLectura>
-            </SeleccionEntidad>
-        </Propiedad>
-        <Propiedad  ID="https://www.w3.org/2006/vcard/ns#locality" EntidadID="https://www.w3.org/2006/vcard/ns#Address">
-            <AtrNombre>Ciudad entidad</AtrNombre>
-            <AtrNombreLectura>Ciudad entidad</AtrNombreLectura>
+            <AtrNombre>http://w3id.org/roh/title</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/title</AtrNombreLectura>
         </Propiedad>
     </EspefPropiedad>
     <EspefEntidad>
         <Entidad  ID="http://xmlns.com/foaf/0.1/Organization">
-            <AtrNombre>Entidad</AtrNombre>
-            <AtrNombreLectura>Entidad</AtrNombreLectura>
+            <AtrNombre>http://xmlns.com/foaf/0.1/Organization</AtrNombre>
+            <AtrNombreLectura>http://xmlns.com/foaf/0.1/Organization</AtrNombreLectura>
             <OrdenEntidad>
                 <Grupo class="formtheme02">
                     <Grupo class="fieldset">
                         <Grupo Tipo="fieldset" class="mediumLabels">
-							<NameProp>http://w3id.org/roh/crisIdentifier</NameProp>
-							<NameProp>http://w3id.org/roh/title</NameProp>
-                            <NameProp>https://www.w3.org/2006/vcard/ns#hasAddress</NameProp>
-							<NameProp>http://purl.org/dc/elements/1.1/type</NameProp> 
-                            <NameProp>http://w3id.org/roh/otherTypeMoreInfo</NameProp>
-                        </Grupo>
-                    </Grupo>
-                </Grupo>
-            </OrdenEntidad>
-            <OrdenEntidadLectura>
-                <Grupo classLectura="contentGroup contenidoPrincipal">
-                    <Grupo classLectura="group title">
-                        <Grupo Tipo="titulo">
-                            <NameProp>@@@TITULO</NameProp>
-                        </Grupo>
-                        <Grupo Tipo="subtitulo">
-                            <NameProp>@@@SUBTITULO</NameProp>
-                        </Grupo>
-                    </Grupo>
-                </Grupo>
-                <Grupo classLectura="group content semanticView">
-                    <Grupo classLectura="group group_info">
-                        <AtrNombreGrupo>Propiedades</AtrNombreGrupo>
-                        <Grupo classLectura="contentGroup">
-							<NameProp>http://w3id.org/roh/crisIdentifier</NameProp>
+                            <NameProp>https://www.w3.org/2006/vcard/ns#hasRegion</NameProp> 
+                            <NameProp>https://www.w3.org/2006/vcard/ns#hasCountryName</NameProp> 
+                            <NameProp>http://purl.org/dc/elements/1.1/type</NameProp> 
+                            <NameProp>http://w3id.org/roh/crisIdentifier</NameProp> 
+                            <NameProp>http://w3id.org/roh/otherTypeMoreInfo</NameProp> 
+                            <NameProp>https://www.w3.org/2006/vcard/ns#locality</NameProp> 
+                            <NameProp>http://w3id.org/roh/isSynchronized</NameProp> 
                             <NameProp>http://w3id.org/roh/title</NameProp>
-                            <NameProp>https://www.w3.org/2006/vcard/ns#hasAddress</NameProp>
-							<NameProp>http://purl.org/dc/elements/1.1/type</NameProp> 
-                            <NameProp>http://w3id.org/roh/otherTypeMoreInfo</NameProp>
-                        </Grupo>
-                    </Grupo>
-                </Grupo>
-            </OrdenEntidadLectura>
-        </Entidad>
-        <Entidad  ID="https://www.w3.org/2006/vcard/ns#Address">
-            <AtrNombre>Dirección</AtrNombre>
-            <AtrNombreLectura>Dirección</AtrNombreLectura>
-            <OrdenEntidad>
-                <Grupo class="formtheme02">
-                    <Grupo class="fieldset">
-                        <Grupo Tipo="fieldset" class="mediumLabels">
-							<NameProp>https://www.w3.org/2006/vcard/ns#locality</NameProp>
-                            <NameProp>https://www.w3.org/2006/vcard/ns#hasCountryName</NameProp>
-							<NameProp>https://www.w3.org/2006/vcard/ns#hasRegion</NameProp>
                         </Grupo>
                     </Grupo>
                 </Grupo>
             </OrdenEntidad>
             <OrdenEntidadLectura>
-                <Grupo classLectura="contentGroup contenidoPrincipal">
-                    <Grupo classLectura="group title">
-                        <Grupo Tipo="titulo">
-                            <NameProp>@@@TITULO</NameProp>
-                        </Grupo>
-                        <Grupo Tipo="subtitulo">
-                            <NameProp>@@@SUBTITULO</NameProp>
-                        </Grupo>
-                    </Grupo>
-                </Grupo>
                 <Grupo classLectura="group content semanticView">
                     <Grupo classLectura="group group_info">
                         <AtrNombreGrupo>Propiedades</AtrNombreGrupo>
                         <Grupo classLectura="contentGroup">
-                            <NameProp>https://www.w3.org/2006/vcard/ns#locality</NameProp>
-                            <NameProp>https://www.w3.org/2006/vcard/ns#hasCountryName</NameProp>
-							<NameProp>https://www.w3.org/2006/vcard/ns#hasRegion</NameProp>
+                            <NameProp>https://www.w3.org/2006/vcard/ns#hasRegion</NameProp> 
+                            <NameProp>https://www.w3.org/2006/vcard/ns#hasCountryName</NameProp> 
+                            <NameProp>http://purl.org/dc/elements/1.1/type</NameProp> 
+                            <NameProp>http://w3id.org/roh/crisIdentifier</NameProp> 
+                            <NameProp>http://w3id.org/roh/otherTypeMoreInfo</NameProp> 
+                            <NameProp>https://www.w3.org/2006/vcard/ns#locality</NameProp> 
+                            <NameProp>http://w3id.org/roh/isSynchronized</NameProp> 
+                            <NameProp>http://w3id.org/roh/title</NameProp>
                         </Grupo>
                     </Grupo>
                 </Grupo>
