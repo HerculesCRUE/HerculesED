@@ -28,15 +28,9 @@
 Introducción
 ============
 
-El desarrollo de la Red de Ontologías Hércules (ROH) en el proyecto Hércules EDMA
-debe contemplar la inclusión de todos aquellos objetos de conocimiento que responden
-a las necesidades de correspondencia con el Curriculum Vitae Normalizado (CVN),
-así como de integración con el desarrollo y la gestión de datos en las diferentes
-interfaces de la plataforma Hércules EDMA.
+El desarrollo de la Red de Ontologías Hércules (ROH) en el proyecto Hércules EDMA debe contemplar la inclusión de todos aquellos objetos de conocimiento que responden a las necesidades de correspondencia con el Curriculum Vitae Normalizado (CVN), así como de integración con el desarrollo y la gestión de datos en las diferentes interfaces de la plataforma Hércules EDMA.
 
-El presente documento describe todos aquellos objetos de conocimiento que
-aplicaremos en el desarrollo y posterior uso de la infraestructura
-ontológica, es decir, en la Red de Ontologías Hércules y en su documentación.
+El presente documento describe todos aquellos objetos de conocimiento que aplicaremos en el desarrollo y posterior uso de la infraestructura ontológica, es decir, en la Red de Ontologías Hércules y en su documentación.
 
 Objetos de conocimiento
 =======================
@@ -56,6 +50,7 @@ Una instancia de foaf:Person se asocia con las siguientes entidades a través de
 - foaf:Group, que vincula al investigador con uno o varios grupos de investigación.
 
 ![](../Docs/media/ObjetosDeConocimiento/CV.png)
+*Figura 1*
 
 Curriculum Vitae
 ----------------
