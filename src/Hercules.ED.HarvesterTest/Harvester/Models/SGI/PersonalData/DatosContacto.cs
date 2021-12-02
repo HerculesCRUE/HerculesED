@@ -17,7 +17,7 @@ namespace OAI_PMH.Models.SGI.PersonalData
         public string NumeroViaContacto { get; set; }
         public string AmpliacionDireccionContacto { get; set; }
         public string CodigoPostalContacto { get; set; }
-        public List<string> Emails { get; set; }
+        public List<Email> Emails { get; set; }
         public List<string> Telefonos { get; set; }
         public List<string> Moviles { get; set; }
     }
