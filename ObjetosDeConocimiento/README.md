@@ -49,8 +49,6 @@ Una instancia de foaf:Person se asocia con las siguientes entidades a través de
 - roh:CategoryPath, que vincula las áreas temáticas en las que un investigador desarrolla su trabajo.
 - foaf:Group, que vincula al investigador con uno o varios grupos de investigación.
 
-
-
 ![](../Docs/media/ObjetosDeConocimiento/CV.png)
 *Figura 1. Diagrama ontológico para la entidad foaf:Person*
 
