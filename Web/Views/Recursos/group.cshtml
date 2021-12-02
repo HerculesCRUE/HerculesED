@@ -170,7 +170,7 @@
                 }
 
 
-                @{ if (pGroup.Roh_researchersNumber > 0)
+                @{ if (pGroup.Roh_mainResearcher!=null && pGroup.Roh_mainResearcher.Count() > 0)
                     {
                         <div class="group-wrap">
                             <div class="bloque">
@@ -335,8 +335,16 @@
                         <li class="nav-item" role="presentation">
                             <a class="nav-link" id="miembros-tab" data-toggle="tab" href="#miembros-panel" role="tab" aria-controls="miembros-panel" aria-selected="false">
                                 <div class="bloque">
-                                    <div class="label">@Html.Translate("MIEMBROS")</div>
-                                    <div class="data">---</div>
+                                    <div class="label">@Html.Translate("MIEMBROS")</div>									
+									@{
+										// members
+                                        if (pGroup.Roh_researchersNumber != null && pGroup.Roh_researchersNumber > 0)
+                                        {
+                                            <div class="data">@pGroup.Roh_researchersNumber</div>
+                                        } else {
+                                            <div class="data">---</div>
+                                        }
+									}
                                 </div>
                             </a>
                         </li>
@@ -449,7 +457,7 @@
 <script type="text/javascript">
     var depuracion = false; // TODO:
 
-    const localUrlBase = "https://localhost:44321/";
+    const localUrlBase = "https://localhost:44344/";
 
     //Funciones propias de la ficha
 
@@ -473,13 +481,12 @@
     }
 
     // Datos gráfica publicaciones.
-    function CargarGraficaPublicaciones(pIdGrupo, parametros) {
-        var url = "http://serviciosedma.gnoss.com/servicioexterno/Hercules/DatosGraficaPublicacionesGrupo"
+    function CargarGraficaPublicaciones(parametros) {
+        var url = "http://serviciosedma.gnoss.com/servicioexterno/Hercules/DatosGraficaPublicaciones"
         if (depuracion) {
-            url = localUrlBase + "Hercules/DatosGraficaPublicacionesGrupo"
+            url = localUrlBase + "Hercules/DatosGraficaPublicaciones"
         }
         var arg = {};
-        arg.pIdGrupo = pIdGrupo;
         arg.pParametros = parametros;
 
         $.get(url, arg, function (data) {
@@ -501,13 +508,12 @@
 
 
     // Datos gráfica publicaciones.
-    function CargarGraficaProyectos(pIdGrupo, parametros) {
-        var url = "http://serviciosedma.gnoss.com/servicioexterno/Hercules/DatosGraficaProyectosGrupo"
+    function CargarGraficaProyectos(parametros) {
+        var url = "http://serviciosedma.gnoss.com/servicioexterno/Hercules/DatosGraficaProyectos"
         if (depuracion) {
-            url = localUrlBase + "Hercules/DatosGraficaProyectosGrupo"
+            url = localUrlBase + "Hercules/DatosGraficaProyectos"
         }
         var arg = {};
-        arg.pIdGrupo = pIdGrupo;
         arg.pParametros = parametros;
 
         var options = {
@@ -570,15 +576,14 @@
 
 
     // Datos gráfica colaboradores.
-    function CargarGraficaColaboradores(pIdGrupo, parametros, nombrePersona) {
-        var url = "http://serviciosedma.gnoss.com/servicioexterno/Hercules/DatosGraficaColaboradoresMainResearcherGrupo"
+    function CargarGraficaMiembros(pIdGrupo,parametros) {
+        var url = "http://serviciosedma.gnoss.com/servicioexterno/Hercules/DatosGraficaMiembrosGrupo"
         if (depuracion) {
-            url = localUrlBase + "Hercules/DatosGraficaColaboradoresMainResearcherGrupo"
+            url = localUrlBase + "Hercules/DatosGraficaMiembrosGrupo"
         }
         var arg = {};
         arg.pIdGrupo = pIdGrupo;
         arg.pParametros = parametros;
-        arg.pNombrePersona = nombrePersona;
         $('#graficaCytoscape').empty();
         $.get(url, arg, function (data) {
             $('#graficaCytoscape').empty();
@@ -844,7 +849,7 @@
             $('#publicaciones-tab').unbind().click(function (e) {
                 e.preventDefault();
                 that.tabActive = "publicaciones";
-                buscadorPersonalizado.init("@Html.Translate("PUBLICACIONES")", "#contenedorBuscadorPublicaciones", "searchPublicacionesPorGrupo=@pGroup.GNOSSID.Split('_')[1].ToUpper()", null, "rdf:type=document", "@Comunidad.Url", "@Comunidad.Key.ToString()");
+                buscadorPersonalizado.init("@Html.Translate("PUBLICACIONES")", "#contenedorBuscadorPublicaciones", "roh:publicGroupList=http://gnoss/@pGroup.GNOSSID.Split('_')[1].ToUpper()", null, "rdf:type=document", "@Comunidad.Url", "@Comunidad.Key.ToString()");
             });
             $('#temas-investigacion-tab').unbind().click(function (e) {
                 e.preventDefault();
@@ -854,7 +859,7 @@
             $('#miembros-tab').unbind().click(function (e) {
                 e.preventDefault();
                 that.tabActive = "miembros";
-                buscadorPersonalizado.init("@Html.Translate("MIEMBROS")", "#contenedorBuscadorMiembros", "searchPersonasPorGrupo=@pGroup.GNOSSID.Split('_')[1].ToUpper()", null, "rdf:type=person", "@Comunidad.Url", "@Comunidad.Key.ToString()");
+                buscadorPersonalizado.init("@Html.Translate("MIEMBROS")", "#contenedorBuscadorMiembros", "vivo:relates=http://gnoss/@pGroup.GNOSSID.Split('_')[1].ToUpper()", null, "rdf:type=person", "@Comunidad.Url", "@Comunidad.Key.ToString()");
             });
             $('#colaboradores-tab').unbind().click(function (e) {
                 e.preventDefault();
@@ -907,22 +912,19 @@
 
     // Acciones a llevar a cabo en el filtrado.
     function accionFiltrado() {
-        if (comportamientoPaginaGrupo.tabActive == "publicaciones") {
-            var parametros = ObtenerHash2();
-            CargarGraficaPublicaciones("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros);
+		var parametros = ObtenerHash2()+"&" + buscadorPersonalizado.filtro;
+        if (comportamientoPaginaGrupo.tabActive == "publicaciones") {            
+            CargarGraficaPublicaciones(parametros);
         }
         else if (comportamientoPaginaGrupo.tabActive == "proyectos") {
-            var parametros = ObtenerHash2();
-            CargarGraficaProyectos("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros);
+            CargarGraficaProyectos(parametros);
         }
         else if (comportamientoPaginaGrupo.tabActive == "miembros")
         {
-            var parametros = ObtenerHash2();
-            CargarGraficaColaboradores("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros, "@nombreMainResearcher");
+            CargarGraficaMiembros("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros);
         }
         else if (comportamientoPaginaGrupo.tabActive == "colaboradores")
         {
-            var parametros = ObtenerHash2();
             CargarGraficaColaboradoresFuera("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros, "@nombreMainResearcher");
         }
     }
