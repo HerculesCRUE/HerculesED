@@ -16,13 +16,13 @@
 [Objetos de conocimiento](#objetos-de-conocimiento)
 
 > [Persona](#persona)
-
+>
 > [Curriculum Vitae](#curriculum-vitae)
-
+>
 > [Proyecto](#proyecto)
-
+>
 > [Publicación](#publicacion)
-
+>
 > [Grupo](#grupo)
 
 INTRODUCCIÓN
