@@ -4,9 +4,9 @@ using WoSConnect.ROs.WoS.Models.Inicial;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Threading;
-
+using System.Data;
 using Newtonsoft.Json;
-
+using System.IO;
 
 namespace WoSConnect.ROs.WoS.Controllers
 {
@@ -19,6 +19,7 @@ namespace WoSConnect.ROs.WoS.Controllers
             this.WoSLogic = WoSLogic;
 
         }
+
 
         public List<Publication> getListPublicatio(Root objInicial)
         {
@@ -481,22 +482,44 @@ namespace WoSConnect.ROs.WoS.Controllers
                                 List<KnowledgeArea> list = new List<KnowledgeArea>();
                                 List<KnowledgeAreas> result = new List<KnowledgeAreas>();
                                 KnowledgeAreas info_woS = new KnowledgeAreas();
+                                List<string> names_areas = new List<string>();
+                                List<bool> booleans_code_areas = new List<bool>();
                                 foreach (Subject sub in objInicial.static_data.fullrecord_metadata.category_info.subjects.subject)
                                 {
-                                    if (sub.content != null)
-                                    {
-                                        KnowledgeArea area = new KnowledgeArea();
-                                        area.name = sub.content;
-                                        if (sub.code != null)
-                                        {
-                                            area.hasCode = sub.code;
-                                        }
-                                        if (area != null)
-                                        {
-                                            list.Add(area);
-                                        }
-                                    }
 
+                                    if (sub.content != null & sub.ascatype=="traditional"){
+                                    //todo, no es seguro que solo estemos utilizando la tradicional, aunque parece que si. 
+                                    
+                                        KnowledgeArea area = new KnowledgeArea();
+                                        if (names_areas.Count == 0 || !names_areas.Contains(sub.content))
+                                        {
+                                            area.name = sub.content;
+                                            names_areas.Add(sub.content);
+                                            if (sub.code != null)
+                                            {
+
+                                                area.hasCode = sub.code;
+                                                booleans_code_areas.Add(true);
+                                            }
+                                            else { booleans_code_areas.Add(false); }
+                                            if (area != null)
+                                            {
+                                                list.Add(area);
+                                            }
+                                        }
+                                        else if (sub.code != null)
+                                        {
+                                            for (int i = 0; i < list.Count; i++)
+                                            {
+                                                if (list[i].name == sub.content)
+                                                {
+                                                    list[i].hasCode = sub.code;
+                                                }
+                                            }
+                                        }
+
+                                    
+                                    }
 
                                 }
                                 if (list != null)
@@ -504,6 +527,11 @@ namespace WoSConnect.ROs.WoS.Controllers
                                     info_woS.resource = "WoS";
                                     info_woS.knowledgeArea = list;
                                     result.Add(info_woS);
+                                    KnowledgeAreas taxonomia = recuperar_taxonomia(info_woS);
+                                    if (taxonomia != null)
+                                    {
+                                        result.Add(taxonomia);
+                                    }
                                     return result;
                                 }
                             }
@@ -512,6 +540,44 @@ namespace WoSConnect.ROs.WoS.Controllers
                 }
             }
             return new List<KnowledgeAreas>();
+        }
+        public KnowledgeAreas recuperar_taxonomia(KnowledgeAreas areas_wos)
+        {
+            KnowledgeAreas taxonomia_hercules = new KnowledgeAreas();
+            List<KnowledgeArea> listado = new List<KnowledgeArea>();
+            taxonomia_hercules.resource = "Hércules";
+
+            List<KnowledgeArea> wos = areas_wos.knowledgeArea;
+            foreach (KnowledgeArea area_wos_obtenida in wos)
+            {
+                KnowledgeArea area_taxonomia = new KnowledgeArea();
+                try
+                {
+                    //en Scopus tambien habra una extepcion de este tipo. 
+                    if(area_wos_obtenida.name=="Physics, Fluids & Plasmas"){
+                    area_taxonomia.name = "Fluid Dynamics";//this.WoSLogic.ds[area_wos_obtenida.name];
+                    listado.Add(area_taxonomia);
+                    KnowledgeArea area_taxonomia_2 = new KnowledgeArea();
+                    area_taxonomia_2.name = "Plasma Physics";//this.WoSLogic.ds[area_wos_obtenida.name];
+                    listado.Add(area_taxonomia_2);
+                    }else{
+                        area_taxonomia.name = this.WoSLogic.ds[area_wos_obtenida.name];
+
+                    listado.Add(area_taxonomia);
+                    }
+                }
+                catch
+                {
+                    Console.Write(area_wos_obtenida.name);
+                    Console.Write("\n");
+                }
+            }
+            if (listado.Count > 0)
+            {
+                taxonomia_hercules.knowledgeArea = listado;
+                return taxonomia_hercules;
+            }
+            else { return null; }
         }
 
         public List<FreetextKeywords> getFreetextKeyword(PublicacionInicial objInicial)
@@ -580,11 +646,15 @@ namespace WoSConnect.ROs.WoS.Controllers
                                         Name_2 ee = JsonConvert.DeserializeObject<Name_2>(var.ToString());
                                         if (ee.orcid_id != null)
                                         {
-                                            if(ee.orcid_id.StartsWith("h")){
+                                            if (ee.orcid_id.StartsWith("h"))
+                                            {
                                                 string[] e = ee.orcid_id.Split("org/");
                                                 persona.ORCID = e[1];
-                                            }else{
-                                            persona.ORCID = ee.orcid_id;}
+                                            }
+                                            else
+                                            {
+                                                persona.ORCID = ee.orcid_id;
+                                            }
                                         }
 
                                         List<string> nombres = new List<string>();
