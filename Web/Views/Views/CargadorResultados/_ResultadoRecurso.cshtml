@@ -1,3 +1,4 @@
+@*[security|||cargadorresultados/_resultadorecurso.cshtml|||hercules]*@
 @using Es.Riam.Gnoss.Web.MVC.Models
 @using Es.Riam.Gnoss.Web.MVC.Controles.Helper
 @model ResourceModel
@@ -74,6 +75,12 @@
                                             <a class="item-dropdown" data-toggle="modal" data-target="#modal-enviar">
                                                 <span class="material-icons">person_add_alt_1</span>
                                                 <span class="texto">TODO: Añadir a clúster</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="item-dropdown" data-toggle="modal" data-target="#modal-enviar-produccion-cientifica">
+                                                <span class="material-icons">beenhere</span>
+                                                <span class="texto">@Html.Translate("ENVIAR_PRODUCCION_CIENTIFICA")</span>
                                             </a>
                                         </li>
                                     </ul>
@@ -383,8 +390,8 @@
                                         if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
                                         {
                                             <p class="moreResults showMore">
-                                                <a href="javascript: void(0);" class="ver-mas" style="display: flex;">Ver más <span class="material-icons">expand_more</span></a>
-                                                <a href="javascript: void(0);" class="ver-menos" style="display: none;">Ver menos <span class="material-icons">expand_less</span></a>
+                                                <a href="javascript: void(0);" class="ver-mas" style="display: flex;">@Html.Translate("VER_MAS") <span class="material-icons">expand_more</span></a>
+                                                <a href="javascript: void(0);" class="ver-menos" style="display: none;">@Html.Translate("VER_MENOS") <span class="material-icons">expand_less</span></a>
                                             </p>
                                         }
                                     }
@@ -794,8 +801,8 @@
                                         if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
                                         {
                                             <p class="moreResults showMore">
-                                                <a href="javascript: void(0);" class="ver-mas" style="display: flex;">Ver más <span class="material-icons">expand_more</span></a>
-                                                <a href="javascript: void(0);" class="ver-menos" style="display: none;">Ver menos <span class="material-icons">expand_less</span></a>
+                                                <a href="javascript: void(0);" class="ver-mas" style="display: flex;">@Html.Translate("VER_MAS") <span class="material-icons">expand_more</span></a>
+                                                <a href="javascript: void(0);" class="ver-menos" style="display: none;">@Html.Translate("VER_MENOS") <span class="material-icons">expand_less</span></a>
                                             </p>
                                         }
                                     }
@@ -1056,8 +1063,8 @@
                                             if (nItems > 3)
                                             {
                                                 <p class="moreResults">
-                                                    <a href="javascript: void(0);" class="ver-mas" style="display: flex;">Ver más</a>
-                                                    <a href="javascript: void(0);" class="ver-menos" style="display: none;">Ver menos</a>
+                                                    <a href="javascript: void(0);" class="ver-mas" style="display: flex;">@Html.Translate("VER_MAS")</a>
+                                                    <a href="javascript: void(0);" class="ver-menos" style="display: none;">@Html.Translate("VER_MENOS")</a>
                                                 </p>
                                             }
                                         }
