@@ -276,20 +276,26 @@
                     </div>
                 </div>
 
-                <div class="description-wrap">
-                    <div class="label">@Html.Translate("DESCRIPTION")</div>
-                    <div class="desc" style="display: -webkit-box;">
-                        <p about="@pGroup.GNOSSID" property="@pGroup.GetPropertyURI(nameof(pGroup.Vivo_description))">
-                            @Html.Raw(pGroup.Vivo_description)
-                        </p>
-                    </div>
-                    <p class="moreResults showMore">
-                        <a href="javascript: void(0);" class="ver-mas" style="display: flex;">Ver más</a>
-                        <a href="javascript: void(0);" class="ver-menos" style="display: none;">Ver menos</a>
-                    </p>
-                </div>
-            
-            
+                @{
+                    if (pGroup.Vivo_description != null && pGroup.Vivo_description != "")
+                    {
+                        <div class="group-wrap description-wrap">
+                            <div class="bloque">
+                                <div class="label">@Html.Translate("DESCRIPTION")</div>
+                                <div class="desc" style="display: -webkit-box;">
+                                    <p about="@pGroup.GNOSSID" property="@pGroup.GetPropertyURI(nameof(pGroup.Vivo_description))">
+                                        @Html.Raw(pGroup.Vivo_description)
+                                    </p>
+                                </div>
+                                <p class="moreResults showMore">
+                                    <a href="javascript: void(0);" class="ver-mas" style="display: flex;">Ver más</a>
+                                    <a href="javascript: void(0);" class="ver-menos" style="display: none;">Ver menos</a>
+                                </p>
+                            </div>
+                        </div>
+                    }
+                }
+
                 <div class="group-wrap">
                     <div class="bloque">
                         <div class="list-wrap tags" id="divTags">
