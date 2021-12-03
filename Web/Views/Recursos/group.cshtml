@@ -176,7 +176,7 @@
                 }
 
 
-                @{ if (pGroup.Roh_mainResearcher!=null && pGroup.Roh_mainResearcher.Count() > 0)
+                @{ if (pGroup.Roh_mainResearchers!=null && pGroup.Roh_mainResearchers.Count() > 0)
                     {
                         <div class="group-wrap">
                             <div class="bloque">
@@ -184,7 +184,7 @@
                                     @Html.Translate("PERSONAL_INVESTIGADOR_PRINCIPAL")
                                 </div>
                                 <div class="value">
-                                    @{ foreach (BFO_0000023 persona in pGroup.Roh_mainResearcher)
+                                    @{ foreach (BFO_0000023 persona in pGroup.Roh_mainResearchers)
                                         {
                                             if (persona != null && persona.Roh_roleOf != null)
                                             {
@@ -227,7 +227,7 @@
                                             }
                                         }
                                         // Get all main researcher researchs area
-                                        foreach (BFO_0000023 persona in pGroup.Roh_mainResearcher)
+                                        foreach (BFO_0000023 persona in pGroup.Roh_mainResearchers)
                                         {
                                             if (persona != null && persona.Vivo_hasResearchArea != null)
                                             {
@@ -1844,17 +1844,17 @@
                     }
                 }
             }
-            this.Roh_mainResearcher = new List<BFO_0000023>();
-            SemanticPropertyModel propRoh_mainResearcher = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/mainResearcher");
-            if  (propRoh_mainResearcher != null && propRoh_mainResearcher.PropertyValues.Count > 0)
+            this.Roh_mainResearchers = new List<BFO_0000023>();
+            SemanticPropertyModel propRoh_mainResearchers = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/mainResearchers");
+            if  (propRoh_mainResearchers != null && propRoh_mainResearchers.PropertyValues.Count > 0)
             {
-                foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_mainResearcher.PropertyValues)
+                foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_mainResearchers.PropertyValues)
                 {
                     if  (propValue.RelatedEntity!=null)
                     
                     {
-                        BFO_0000023 roh_mainResearcher = new BFO_0000023(propValue.RelatedEntity,  idiomaUsuario);
-                        this.Roh_mainResearcher.Add(roh_mainResearcher);
+                        BFO_0000023 Roh_mainResearchers = new BFO_0000023(propValue.RelatedEntity,  idiomaUsuario);
+                        this.Roh_mainResearchers.Add(Roh_mainResearchers);
                     }
                 }
             }
@@ -1927,17 +1927,17 @@
                     }
                 }
             }
-            this.Roh_mainResearcher = new List<BFO_0000023>();
-            SemanticPropertyModel propRoh_mainResearcher = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/mainResearcher");
-            if  (propRoh_mainResearcher != null && propRoh_mainResearcher.PropertyValues.Count > 0)
+            this.Roh_mainResearchers = new List<BFO_0000023>();
+            SemanticPropertyModel propRoh_mainResearchers = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/mainResearchers");
+            if  (propRoh_mainResearchers != null && propRoh_mainResearchers.PropertyValues.Count > 0)
             {
-                foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_mainResearcher.PropertyValues)
+                foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_mainResearchers.PropertyValues)
                 {
                     if  (propValue.RelatedEntity!=null)
                     
                     {
-                        BFO_0000023 roh_mainResearcher = new BFO_0000023(propValue.RelatedEntity,  idiomaUsuario);
-                        this.Roh_mainResearcher.Add(roh_mainResearcher);
+                        BFO_0000023 Roh_mainResearchers = new BFO_0000023(propValue.RelatedEntity,  idiomaUsuario);
+                        this.Roh_mainResearchers.Add(Roh_mainResearchers);
                     }
                 }
             }
@@ -1999,8 +1999,8 @@
         public List<GroupClassification> Roh_hasResultsGroupClassification { get; set;  }
 
         [LABEL(LanguageEnum.es,  "Investigador principal")]
-        [RDFProperty("http://w3id.org/roh/mainResearcher")]
-        public List<BFO_0000023> Roh_mainResearcher { get; set;  }
+        [RDFProperty("http://w3id.org/roh/mainResearchers")]
+        public List<BFO_0000023> Roh_mainResearchers { get; set;  }
 
         [LABEL(LanguageEnum.es,  "Miembros")]
         [RDFProperty("http://xmlns.com/foaf/0.1/member")]
