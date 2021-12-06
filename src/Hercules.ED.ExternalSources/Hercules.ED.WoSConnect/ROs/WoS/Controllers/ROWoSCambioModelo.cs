@@ -697,7 +697,7 @@ namespace WoSConnect.ROs.WoS.Controllers
                                         Name_2 ee = JsonConvert.DeserializeObject<Name_2>(var.ToString());
                                         if (ee.orcid_id != null)
                                         {
-                                            if (ee.orcid_id.Contains("https://orcid.org/"))
+                                            if (ee.orcid_id.Contains("https://orcid.org/") ||ee.orcid_id.Contains("http://orcid.org/") )
                                             {
                                                 int indice = ee.orcid_id.IndexOf("org/");
                                                 persona.ORCID = ee.orcid_id.Substring(indice + 4);
