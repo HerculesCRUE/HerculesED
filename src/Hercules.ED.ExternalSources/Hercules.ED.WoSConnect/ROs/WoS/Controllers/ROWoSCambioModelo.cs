@@ -417,7 +417,16 @@ namespace WoSConnect.ROs.WoS.Controllers
 
                                     if (identifier.type == "doi")
                                     {
-                                        return identifier.value;
+                                        if (identifier.value.Contains("https://doi.org/"))
+                                        {
+                                            int indice = identifier.value.IndexOf("org/");
+                                            return identifier.value.Substring(indice + 4);
+
+                                        }
+                                        else
+                                        {
+                                            return identifier.value;
+                                        }
                                     }
                                 }
                             }

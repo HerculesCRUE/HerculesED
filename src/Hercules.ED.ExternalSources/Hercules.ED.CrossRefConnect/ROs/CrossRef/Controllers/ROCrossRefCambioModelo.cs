@@ -357,7 +357,16 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                     Publication pub = new Publication();
                     if (bib.DOI != null)
                     {
-                        pub.doi = bib.DOI;
+                        if (bib.DOI.Contains("https://doi.org/"))
+                        {
+                            int indice = bib.DOI.IndexOf("org/");
+                            pub.doi = bib.DOI.Substring(indice + 4);
+
+                        }
+                        else
+                        {
+                            pub.doi = bib.DOI;
+                        }
                     }
                     if (bib.ArticleTitle != null)
                     {
