@@ -244,12 +244,18 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                 foreach (Author autor in objInicial.author)
                 {
                     Person persona = new Person();
-                    if(autor.ORCID!=null){
-                    if(autor.ORCID.StartsWith("h")){
-                                                string[] e = autor.ORCID.Split("org/");
-                                                persona.ORCID = e[1];
-                                            }else{
-                                            persona.ORCID =autor.ORCID;}}
+                    if (autor.ORCID != null)
+                    {
+                        if (autor.ORCID.Contains("https://orcid.org/"))
+                        {
+                            int indice = autor.ORCID.IndexOf("org/");
+                            persona.ORCID = autor.ORCID.Substring(indice + 4);
+                        }
+                        else
+                        {
+                            persona.ORCID = autor.ORCID;
+                        }
+                    }
                     //persona.ORCID = autor.ORCID;
 
                     List<string> name_inicial = new List<string>();
