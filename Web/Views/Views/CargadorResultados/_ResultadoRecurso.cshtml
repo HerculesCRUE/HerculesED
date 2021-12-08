@@ -225,7 +225,7 @@
                                 </ul>
                             </div>
                             <div class="list-wrap tags">
-                                <div class="label">@Html.Translate("AREAS_CONOCIMIENTO")</div>
+                                <div class="label">@Html.Translate("AREAS_TEMATICAS")</div>
                                 <ul class="facetedSearch">
                                     @{
                                         int contadorCategorias = 0;
@@ -285,7 +285,7 @@
                                     }
                                 </ul>
                                 @{
-                                    if (contadorCategorias > 3)
+                                    if (contadorCategorias >= 3)
                                     {
                                         <p class="moreResults">
                                             <a href="javascript: void(0);" class="ver-mas" style="display: flex;">@Html.Translate("VER_MAS")</a>
@@ -352,12 +352,14 @@
                                         }
                                     }
                                 </ul>
-                                @{ if (contadorEtiquetas > 3)
+                                @{ if (contadorEtiquetas >= 3)
                                     {
                                         <p class="moreResults">
                                             <a href="javascript: void(0);" class="ver-mas" style="display: flex;">@Html.Translate("VER_MAS")</a>
                                             <a href="javascript: void(0);" class="ver-menos" style="display: none;">@Html.Translate("VER_MENOS")</a>
-                                        </p> } }
+                                        </p>
+                                    }
+                                }
                             </div>
                             <div class="desc">
                                 @{
