@@ -31,11 +31,44 @@
             <div class="wrap">
                 <div class="middle-wrap">
                     <div class="title-wrap">
-
                         <h2 class="resource-title">
                             <a href="@Model.CompletCardLink">@Model.Title</a>
                         </h2>
-                        <div class="d-flex quotes" scopus="TODO: SCOPUS" wos="TODO: WOS" inrecs="TODO: INRECS">
+                        @{
+                            string valorInrecs = string.Empty;
+                            string valorWos = string.Empty;
+                            string valorScopus = string.Empty;
+
+                            if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+                            {
+                                foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+                                {
+                                    string idQuery = "Identificadores";
+                                    if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
+                                    {
+                                        string propInrecs = "inrecs";
+                                        string propWos = "wos";
+                                        string propScopus = "scopus";
+                                        foreach (Dictionary<string, string> row in item.Rows)
+                                        {
+                                            if (row.ContainsKey(propInrecs))
+                                            {
+                                                valorInrecs = row[propInrecs];
+                                            }
+                                            else if (row.ContainsKey(propWos))
+                                            {
+                                                valorWos = row[propWos];
+                                            }
+                                            else if (row.ContainsKey(propScopus))
+                                            {
+                                                valorScopus = row[propScopus];
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        <div class="d-flex quotes" scopus="@valorScopus" wos="@valorWos" inrecs="@valorInrecs">
                             @{
                                 if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
                                 {
@@ -1011,25 +1044,25 @@
                                         }
 
                                         @*if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
-                                        {
-                                            foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
                                             {
-                                                string idQuery = "GetOtherResearchers";
-                                                if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
+                                                foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
                                                 {
-                                                    string propiedad = "namesResearchers";
-                                                    foreach (Dictionary<string, string> row in item.Rows)
+                                                    string idQuery = "GetOtherResearchers";
+                                                    if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
                                                     {
-                                                        if (row.ContainsKey(propiedad))
+                                                        string propiedad = "namesResearchers";
+                                                        foreach (Dictionary<string, string> row in item.Rows)
                                                         {
-                                                            <li>
-                                                                <a href="javascript: void(0);">@row[propiedad]</a>
-                                                            </li>
+                                                            if (row.ContainsKey(propiedad))
+                                                            {
+                                                                <li>
+                                                                    <a href="javascript: void(0);">@row[propiedad]</a>
+                                                                </li>
+                                                            }
                                                         }
                                                     }
                                                 }
-                                            }
-                                        }*@
+                                            }*@
                                     }
                                 </ul>
                             </div>
