@@ -25,7 +25,7 @@ El presente documento describe todos aquellos objetos de conocimiento que aplica
 Inventario de Objetos de conocimiento
 =======================
 
-[Currículum Vitae](CV)
+[Currículum Vitae](CurriculumVitae)
 
 [Grupo](Group)
 
