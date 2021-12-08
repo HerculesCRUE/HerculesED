@@ -1,4 +1,4 @@
-@*[security|||cargadorresultados/_resultadorecurso.cshtml|||hercules]*@
+﻿@*[security|||cargadorresultados/_resultadorecurso.cshtml|||hercules]*@
 @using Es.Riam.Gnoss.Web.MVC.Models
 @using Es.Riam.Gnoss.Web.MVC.Controles.Helper
 @model ResourceModel
@@ -318,7 +318,7 @@
                                     }
                                 </ul>
                                 @{
-                                    if (contadorCategorias >= 3)
+                                    if (contadorCategorias > 3)
                                     {
                                         <p class="moreResults">
                                             <a href="javascript: void(0);" class="ver-mas" style="display: flex;">@Html.Translate("VER_MAS")</a>
@@ -385,7 +385,7 @@
                                         }
                                     }
                                 </ul>
-                                @{ if (contadorEtiquetas >= 3)
+                                @{ if (contadorEtiquetas > 3)
                                     {
                                         <p class="moreResults">
                                             <a href="javascript: void(0);" class="ver-mas" style="display: flex;">@Html.Translate("VER_MAS")</a>
