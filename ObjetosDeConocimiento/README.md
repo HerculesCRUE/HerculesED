@@ -13,7 +13,7 @@
 
 [Introducción](#introducción)
 
-[Inventario de Objetos de conocimiento](#inventario-de-objetos-de-conocimiento)
+[Inventario de objetos de conocimiento](#inventario-de-objetos-de-conocimiento)
 
 Introducción
 ============
@@ -24,7 +24,8 @@ El presente documento describe todos aquellos objetos de conocimiento que aplica
 
 Inventario de Objetos de conocimiento
 =======================
-[Persona](Person). La entidad foaf:Persona (ver Figura 1) representa a todas aquellas personas, externas o afiliadas a la Universidad de Murcia, que tienen cabida en la plataforma Hércules
+
+[Persona](Person)
 
 
 
