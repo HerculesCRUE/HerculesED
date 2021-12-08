@@ -332,11 +332,11 @@
                 <div class="tabs">
                     <ul class="nav nav-tabs" id="navegacion-recurso" role="tablist">
                         <li class="nav-item" role="presentation">
-                            <!-- Referencias -->
-                            <a class="nav-link active" id="referencias-tab" data-toggle="tab" href="#referencias-panel" role="tab" aria-controls="referencias-panel">
+                            <!-- Relacionados -->
+                            <a class="nav-link" id="relacionados-tab" data-toggle="tab" href="#relacionados-panel" role="tab" aria-controls="relacionados-panel">
                                 <div class="bloque">
-                                    <div class="label">@Html.Translate("REFERENCIAS")</div>
-                                    <div class="data">@pDocument.Roh_referencesLoadedCount</div>
+                                    <div class="label">@Html.Translate("RELACIONADOS")</div>
+                                    <div class="data">@pDocument.Roh_reviewsNumber</div>
                                 </div>
                             </a>
                         </li>
@@ -350,27 +350,20 @@
                             </a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <!-- Relacionados -->
-                            <a class="nav-link" id="relacionados-tab" data-toggle="tab" href="#relacionados-panel" role="tab" aria-controls="relacionados-panel">
+                            <!-- Referencias -->
+                            <a class="nav-link active" id="referencias-tab" data-toggle="tab" href="#referencias-panel" role="tab" aria-controls="referencias-panel">
                                 <div class="bloque">
-                                    <div class="label">@Html.Translate("RELACIONADOS")</div>
-                                    <div class="data">@pDocument.Roh_reviewsNumber</div>
+                                    <div class="label">@Html.Translate("REFERENCIAS")</div>
+                                    <div class="data">@pDocument.Roh_referencesLoadedCount</div>
                                 </div>
                             </a>
                         </li>
                     </ul>
                 </div>
                 <div class="tab-content" id="paneles-recurso">
-                    <div class="tab-pane fade show active" id="referencias-panel" role="tabpanel" aria-labelledby="referencias-tab">
-                        <div class="row" id="contenedorBuscadorReferencias">
-                            <!-- <div class="col col-12 col-grafo mb-5">
-                                <div class="wrapCol" id="graficaBuscadorReferencias" style="width: 1224px; height: 500px;"></div>
-                            </div> -->
-                            <div class="col col-12 col-section-title font-weight-bold searcherTitle">
-                                <div class="wrapCol">
-                                    <p>@Html.Translate("REFERENCIAS")</p>
-                                </div>
-                            </div>
+                
+                    <div class="tab-pane fade" id="relacionados-panel" role="tabpanel" aria-labelledby="relacionados-tab">
+                        <div class="row" id="contenedorBuscadorRelacionados">
                         </div>
                     </div>
 
@@ -386,9 +379,17 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="tab-pane fade" id="relacionados-panel" role="tabpanel" aria-labelledby="relacionados-tab">
-                        <div class="row" id="contenedorBuscadorRelacionados">
+                    
+                    <div class="tab-pane fade show active" id="referencias-panel" role="tabpanel" aria-labelledby="referencias-tab">
+                        <div class="row" id="contenedorBuscadorReferencias">
+                            <!-- <div class="col col-12 col-grafo mb-5">
+                                <div class="wrapCol" id="graficaBuscadorReferencias" style="width: 1224px; height: 500px;"></div>
+                            </div> -->
+                            <div class="col col-12 col-section-title font-weight-bold searcherTitle">
+                                <div class="wrapCol">
+                                    <p>@Html.Translate("REFERENCIAS")</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
