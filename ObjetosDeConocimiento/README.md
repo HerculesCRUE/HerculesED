@@ -25,25 +25,12 @@ El presente documento describe todos aquellos objetos de conocimiento que aplica
 Inventario de Objetos de conocimiento
 =======================
 
+[Currículum Vitae](CV)
+
+[Grupo](Group)
+
 [Persona](Person)
 
+[Proyecto](Project)
 
-
-Curriculum Vitae
-----------------
-
-Proyecto
---------
-
-![](../Docs/media/ObjetosDeConocimiento/Project.png)
-
-Publicación
------------
-
-![](../Docs/media/ObjetosDeConocimiento/MainDocument.png)
-![](../Docs/media/ObjetosDeConocimiento/Document.png)
-
-Grupo
------
-
-![](../Docs/media/ObjetosDeConocimiento/Group.png)
+[Publicación](Document)
