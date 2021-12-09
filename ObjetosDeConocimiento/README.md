@@ -22,8 +22,10 @@ El desarrollo de la Red de Ontologías Hércules (ROH) en el proyecto Hércules 
 
 El presente documento describe todos aquellos objetos de conocimiento que aplicaremos en el desarrollo y posterior uso de la infraestructura ontológica, es decir, en la Red de Ontologías Hércules y en su documentación.
 
-Inventario de Objetos de conocimiento
-=======================
+Inventario de objetos de conocimiento
+=====================================
+
+
 
 [Currículum Vitae](CurriculumVitae)
 
