@@ -2,7 +2,7 @@
 
 | Fecha         | 02/12/2021                                                   |
 | ------------- | ------------------------------------------------------------ |
-|Título|Objetos de Conocimiento Persons| 
+|Título|Objeto de Conocimiento Persona| 
 |Descripción|Descripción del objeto de conocimiento Persona para Hércules|
 |Versión|1.0|
 |Módulo|Documentación|
