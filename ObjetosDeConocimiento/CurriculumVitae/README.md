@@ -87,4 +87,4 @@ En las figuras 2, 3, 4, 5 y 6 se muestra el resto de diagramas correspondientes 
 *Figura 5. Diagrama ontológico de las entidades relativas a actividad científica para el objeto de conocimiento CurriculumVitae*
 
 ![](../../Docs/media/ObjetosDeConocimiento/ScientificExperience.png)
-*Figura 6. Diagrama ontológico de las entidades relativas a actividad científica para el objeto de conocimiento CurriculumVitae*
+*Figura 6. Diagrama ontológico de las entidades relativas a experiencia científica para el objeto de conocimiento CurriculumVitae*
