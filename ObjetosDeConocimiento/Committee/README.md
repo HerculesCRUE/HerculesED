@@ -12,7 +12,7 @@
 # Hércules ED. Objeto de conocimiento Comité
 
 La entidad eroh:Committee (ver Figura 1) representa comités científicos, técnicos o asesores de los que ha formado parte el investigador.
-Se emplean propiedades de los vocabularios VIVO, VCARD y de la ontología fundamental ROH, añadiéndose una única propiedad extendida eroh:geographicFocusOther.
+Se emplean propiedades de los vocabularios VIVO, VCARD y de la ontología fundamental ROH, añadiéndose una única propiedad extendida (eroh:geographicFocusOther).
 
 Una instancia de eroh:Committee se asocia con las siguientes entidades a través de propiedades de objeto:
 
