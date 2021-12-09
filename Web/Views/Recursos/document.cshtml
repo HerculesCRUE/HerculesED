@@ -59,10 +59,10 @@
                 <div class="ficha-title-wrap">
                     @{ if (!string.IsNullOrEmpty(pDocument.Roh_title))
                         {
-                            <p about="@pDocument.GNOSSID" property="@pDocument.GetPropertyURI(nameof(pDocument.Roh_title))" class="ficha-title">
+                            <h1 about="@pDocument.GNOSSID" property="@pDocument.GetPropertyURI(nameof(pDocument.Roh_title))" class="ficha-title">
                                 @pDocument.Roh_title
                                 <span class="material-icons candado-activo"></span>
-                            </p>
+                            </h1>
                         }
                         else
                         {
@@ -336,7 +336,7 @@
                             <a class="nav-link active" id="relacionados-tab" data-toggle="tab" href="#relacionados-panel" role="tab" aria-controls="relacionados-panel" aria-selected="true">
                                 <div class="bloque">
                                     <div class="label">@Html.Translate("RELACIONADOS")</div>
-                                    <div class="data">@pDocument.Roh_reviewsNumber</div>
+                                    <!-- <div class="data">@pDocument.Roh_reviewsNumber</div> -->
                                 </div>
                             </a>
                         </li>
