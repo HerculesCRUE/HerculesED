@@ -333,7 +333,7 @@
                     <ul class="nav nav-tabs" id="navegacion-recurso" role="tablist">
                         <li class="nav-item" role="presentation">
                             <!-- Relacionados -->
-                            <a class="nav-link" id="relacionados-tab" data-toggle="tab" href="#relacionados-panel" role="tab" aria-controls="relacionados-panel">
+                            <a class="nav-link active" id="relacionados-tab" data-toggle="tab" href="#relacionados-panel" role="tab" aria-controls="relacionados-panel" aria-selected="true">
                                 <div class="bloque">
                                     <div class="label">@Html.Translate("RELACIONADOS")</div>
                                     <div class="data">@pDocument.Roh_reviewsNumber</div>
@@ -342,7 +342,7 @@
                         </li>
                         <li class="nav-item" role="presentation">
                             <!-- Citas -->
-                            <a class="nav-link" id="citas-tab" data-toggle="tab" href="#citas-panel" role="tab" aria-controls="citas-panel" aria-selected="true">
+                            <a class="nav-link" id="citas-tab" data-toggle="tab" href="#citas-panel" role="tab" aria-controls="citas-panel" >
                                 <div class="bloque">
                                     <div class="label">@Html.Translate("CITAS")</div>
                                     <div class="data">@pDocument.Roh_citationLoadedCount</div>
@@ -351,7 +351,7 @@
                         </li>
                         <li class="nav-item" role="presentation">
                             <!-- Referencias -->
-                            <a class="nav-link active" id="referencias-tab" data-toggle="tab" href="#referencias-panel" role="tab" aria-controls="referencias-panel">
+                            <a class="nav-link" id="referencias-tab" data-toggle="tab" href="#referencias-panel" role="tab" aria-controls="referencias-panel">
                                 <div class="bloque">
                                     <div class="label">@Html.Translate("REFERENCIAS")</div>
                                     <div class="data">@pDocument.Roh_referencesLoadedCount</div>
@@ -362,7 +362,7 @@
                 </div>
                 <div class="tab-content" id="paneles-recurso">
                 
-                    <div class="tab-pane fade" id="relacionados-panel" role="tabpanel" aria-labelledby="relacionados-tab">
+                    <div class="tab-pane fade show active" id="relacionados-panel" role="tabpanel" aria-labelledby="relacionados-tab">
                         <div class="row" id="contenedorBuscadorRelacionados">
                         </div>
                     </div>
@@ -380,7 +380,7 @@
                         </div>
                     </div>
                     
-                    <div class="tab-pane fade show active" id="referencias-panel" role="tabpanel" aria-labelledby="referencias-tab">
+                    <div class="tab-pane fade" id="referencias-panel" role="tabpanel" aria-labelledby="referencias-tab">
                         <div class="row" id="contenedorBuscadorReferencias">
                             <!-- <div class="col col-12 col-grafo mb-5">
                                 <div class="wrapCol" id="graficaBuscadorReferencias" style="width: 1224px; height: 500px;"></div>
@@ -672,7 +672,7 @@
         tabActive: null,
         init: function () {
             this.config();
-            $('#referencias-tab').click();
+            $('#relacionados-tab').click();
             return;
         },
         config: function () {
