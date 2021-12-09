@@ -28,7 +28,6 @@ Inventario de objetos de conocimiento
 
 
 [Currículum Vitae](CurriculumVitae)
-
 [Grupo](Group)
 
 [Persona](Person)
