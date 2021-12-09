@@ -230,7 +230,7 @@
                                             {
                                                 numOrganizacion = dicOrganizaciones[tupla.Item2];
                                             }
-                                            else if (!dicOrganizaciones.ContainsKey(orgExterna) && string.IsNullOrEmpty(tupla.Item2))
+                                            else if (dicOrganizaciones.ContainsKey(orgExterna) && string.IsNullOrEmpty(tupla.Item2))
                                             {
                                                 numOrganizacion = dicOrganizaciones[orgExterna];
                                             }
