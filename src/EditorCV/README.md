@@ -11,19 +11,16 @@
 
 # Hércules ED. Configuración del Editor de CV
 
-La entidad eroh:Society (ver Figura 1) representa  sociedades científicas, literarias o artísticas establecidas con autoridad pública, así como las sociedades y asociaciones nacionales e internacionales de carácter científico-técnico, tecnológico, académico y/o profesional (colegios profesionales, reales sociedades, patronatos de museos, fundaciones culturales, etc.).
-Se han añadido varias propiedades que extienden la ontología fundamental con el fin de dar respuesta a las necesidades de gestión de datos requeridas durante el desarrollo de la infraestructura.
+[Introducción](#introducción)
 
-Las propiedades extendidas son las siguientes:
+[Ejemplo de edición](#ejemplo-de-edición)
 
-- eroh:participates
-- eroh:professionalCategory
-- eroh:members
-- eroh:geographicFocusOther
+Introducción
+============
 
-Una instancia de eroh:Society se asocia, a su vez, con las siguientes entidades a través de propiedades de objeto:
+Este documento describe, mediante un ejemplo práctico, cómo se realiza la configuración de los distintos ítems de la norma CVN para su posterior incorporación y edición en el currículum vitae del investigador en Hércules ED.
 
-- foaf:Organization, que referencia la organización a la que la sociedad está afiliada (vivo:affiliatedOrganization), además de aquellas organizaciones participantes de dicha sociedad (eroh:participates).
-- gn:Feature, que relaciona la sociedad o asociación con el país (vcard:hasCountryName) y la región (vcard:hasRegion) de radicación.
-- roh:CategoryPath, que representa mediante un esquema jerárquico el tesauro con las áreas temáticas descriptoras de la sociedad.
-- vivo:GeographicRegion, representa el ámbito geográfico de la sociedad.
+La configuración de estos ítems se lleva a cabo mediante la edición de archivos JSON localizados en la carpeta Config/ de
+
+Ejemplo de edición
+==================
