@@ -141,7 +141,7 @@ namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
             {
                 DateTimeValue date = new DateTimeValue();
                 date.datimeTime = null;
-                date.datimeTime = objInicial.year.ToString();
+                date.datimeTime = objInicial.year;
                 //todo: esto no es del todo correcto! porque no es una fecha sino un año! 
             }
             return null;
