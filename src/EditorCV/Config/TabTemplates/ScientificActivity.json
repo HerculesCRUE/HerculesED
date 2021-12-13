@@ -205,12 +205,42 @@
 										"properties": [
 											{
 												"title": {
+													"es": "Áreas temáticas externas"
+												},
+												"property": "http://w3id.org/roh/externalKnowledgeArea",
+												"thesaurus": "researcharea",
+												"type": "thesaurus",
+												"width": 0,
+												"multiple": true
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Áreas temáticas enriquecidas"
+												},
+												"property": "http://w3id.org/roh/enrichedKnowledgeArea",
+												"thesaurus": "researcharea",
+												"type": "thesaurus",
+												"width": 0,
+												"multiple": true
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
 													"es": "Áreas temáticas"
 												},
 												"property": "http://w3id.org/roh/hasKnowledgeArea",
+												"property": "http://w3id.org/roh/userKnowledgeArea",
 												"thesaurus": "researcharea",
 												"type": "thesaurus",
 												"width": 1,
+												"width": 3,
 												"multiple": true
 											}
 										]
