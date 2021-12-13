@@ -45,11 +45,13 @@ var buscadorPersonalizado = {
 			});
 			comportamientoVerMasVerMenosTags.init();
 			enlazarFacetasBusqueda();
+		}
+		if (callback && typeof(callback) === "function") {
 			callback();
 		}
 		return;
 	},
-	config: function () {
+	config: function (callback = () => {}) {
 		var that = this;
 		$('.searcherTitle').remove();
 		$('.searcherFacets').remove();
@@ -69,7 +71,7 @@ var buscadorPersonalizado = {
 							<div class="col col-12 col-xl-9 col-contenido derecha searcherResults">
 								<div class="wrapCol">
 									<div class="header-contenido">
-										<!-- NÃºmero de resultados -->
+										<!-- Número de resultados -->
 										<div class="h1-container">
 											<h1>${that.nombreelemento} <span id="panNumResultados" class="numResultados"></span></h1>
 										</div>
@@ -91,11 +93,12 @@ var buscadorPersonalizado = {
 								</div>
 							</div>`;
 		$(this.contenedor).append(hmltBuscador);
+		callback();
 	}
 }
 
-//Sobreescribimos FiltrarPorFacetas apra que coja el filtro por defecto (y el orden)
-function FiltrarPorFacetas(filtro) {
+//Sobreescribimos FiltrarPorFacetas para que coja el filtro por defecto (y el orden)
+function FiltrarPorFacetas(filtro, callback = () => {}) {
 	filtro += "|" + buscadorPersonalizado.filtro;
 	if (buscadorPersonalizado.orden != null) {
 		filtro += "|ordenarPor=" + buscadorPersonalizado.orden;
@@ -103,6 +106,7 @@ function FiltrarPorFacetas(filtro) {
 	if (typeof (accionFiltrado) != 'undefined') {
 		accionFiltrado(ObtenerHash2());
 	}
+	callback();
 	return FiltrarPorFacetasGenerico(filtro);
 }
 

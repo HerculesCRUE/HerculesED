@@ -385,14 +385,14 @@ var MontarResultadosScroll = {
     item: null,
     pagActual: null,
     active: true,
-    init: function (idFooterJQuery, idItemJQuery) {
+    init: function (idFooterJQuery, idItemJQuery, callback = () => {}) {
         this.pagActual = 1;
         this.footer = $(idFooterJQuery);
         this.item = idItemJQuery;
-        this.cargarScroll();
+        this.cargarScroll(callback());
         return;
     },
-    cargarScroll: function () {
+    cargarScroll: function (callback = () => {}) {
         var that = this;
         that.destroyScroll();
         // opciones del waypoint
@@ -417,6 +417,8 @@ var MontarResultadosScroll = {
                 if (typeof (urlCargarAccionesRecursos) != 'undefined') {
                     ObtenerAccionesListadoMVC(urlCargarAccionesRecursos);
                 }
+                console.log("llegado cargarScroll");
+                callback();
             });
         }, opts);
         return;
