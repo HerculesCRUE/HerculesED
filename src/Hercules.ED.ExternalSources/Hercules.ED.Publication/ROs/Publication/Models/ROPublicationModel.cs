@@ -73,6 +73,8 @@ public class FreetextKeywords {
       public List<string> isbn {get;set;}
       public string name { get; set; }
       public string eissn { get; set; }
+            public JournalMetric hasMetric {get;set;}
+
     //  public string oclcnum { get; set; }
   }
 
