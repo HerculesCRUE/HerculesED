@@ -25,4 +25,21 @@ La configuración de las pestañas que figuran en el CV del investigador se llev
 Ejemplo de edición
 ==================
 
+Véase el caso en el que se desee realizar la configuración para el ítem "Publicaciones, documentos científicos y técnicos", de la pestaña "Actividad científica" en el editor del CV del investigador:
+
 ![](../../Docs/media/EditorCV/EdicionCV1.png)
+
+El archivo a editar para la configuración de los ítems de "Actividad científica" es ScientificActivity.json, y lo encontramos en la carpeta TabTemplates. En él veremos la siguiente estructura:
+
+``` {
+	"rdftype": "http://w3id.org/roh/ScientificActivity",
+	"property": "http://w3id.org/roh/scientificActivity",
+	"sections": [
+		{
+			"rdftype": "http://w3id.org/roh/RelatedScientificPublication",
+			"property": "http://w3id.org/roh/scientificPublications",
+			"presentation": {
+				"type": "listitems",
+				"title": {
+					"es": "Publicaciones, documentos científicos y técnicos"
+				}, ```
