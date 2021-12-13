@@ -231,3 +231,44 @@ Como vemos en el ejemplo anterior, cada propiedad que deseamos mostrar de la pub
 
 
 ## Configuración de la edición
+
+Finalmente, vamos a configurar los distintos campos que queremos que presente una publicación a la hora de su edición por el titular del CV. Para ello, y al nivel de "listItemsPresentation", añadimos la propiedad "listItemEdit" que contendrá, a su vez, las siguientes propiedades:
+
+```
+
+"listItemEdit": {
+	"graph": "document",
+	"proptitle": "http://w3id.org/roh/title",
+	"propdescription": "http://purl.org/ontology/bibo/abstract",
+	"rdftype": "http://purl.org/ontology/bibo/Document",
+	"loadPropertyValues": [
+		{
+			"property": "http://w3id.org/roh/scientificActivityDocument",
+			"values": [
+				"http://gnoss.com/items/scientificactivitydocument_SAD1"
+			]
+		}
+	],
+	"sections": [
+		{
+			"title": {
+				"es": "Información general"
+			},
+			"rows": [
+				{
+					"properties": [
+						{
+							"title": {
+								"es": "Título de la publicación"
+							},
+							"placeholder": {
+								"es": "Introduce el título de la publicación"
+							},
+							"property": "http://w3id.org/roh/title",
+							"required": true,
+							"type": "text",
+							"width": 3
+						}
+					]
+				},
+```
