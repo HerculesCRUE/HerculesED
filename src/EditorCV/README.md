@@ -15,9 +15,9 @@
 
 [Ejemplo de edición](#ejemplo-de-edición)
 
-[Configuración de la presentación](#configuración-de-la-presentación)
+* [Configuración de la presentación](#configuración-de-la-presentación)
 
-[Configuración de la edición](#configuración-de-la-edición)
+* [Configuración de la edición](#configuración-de-la-edición)
 
 Introducción
 ============
@@ -228,3 +228,6 @@ Como vemos en el ejemplo anterior, cada propiedad que deseamos mostrar de la pub
 ![](../../Docs/media/EditorCV/EdicionCV3.png)
 
 ![](../../Docs/media/EditorCV/EdicionCV4.png)
+
+
+## Configuración de la edición
