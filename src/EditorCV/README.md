@@ -29,6 +29,8 @@ Véase el caso en el que se desee realizar la configuración para el ítem "Publ
 
 ![](../../Docs/media/EditorCV/EdicionCV1.png)
 
+
+
 El archivo a editar para la configuración de los ítems de "Actividad científica" es ScientificActivity.json, y lo encontramos en la carpeta TabTemplates. En él veremos la siguiente estructura:
 
 ```
@@ -45,3 +47,5 @@ El archivo a editar para la configuración de los ítems de "Actividad científi
 					"es": "Publicaciones, documentos científicos y técnicos"
 				},
 ```
+
+Una vez localizada la propiedad del modelo semántico que corresponde
