@@ -15,6 +15,10 @@
 
 [Ejemplo de edición](#ejemplo-de-edición)
 
+[Configuración de la presentación](#configuración-de-la-presentación)
+
+[Configuración de la edición](#configuración-de-la-edición)
+
 Introducción
 ============
 
@@ -50,7 +54,12 @@ El archivo a editar para la configuración de los ítems de "Actividad científi
 
 Una vez localizada la propiedad del modelo semántico que corresponde con la actividad científica y tecnológica del investigador, vemos un listado de secciones (ítems) que podemos editar. En este caso, y como vemos en la imagen anterior, se procede a definir el RDF, la propiedad del ítem y el título ("Publicaciones, documentos científicos y técnicos") con el que figurará en el listado del editor.
 
-Seguidamente, definimos la presentación para cada una de las publicaciones que el titular del CV puede añadir en esta sección. En primer lugar, se añade la propiedad que vincula el CV del investigador con el objeto que contendrá los datos generales de la publicación (vivo:relatedBy). Después definifimos el grafo sobre el que vamos a trabajar (document) y la propiedad que mostrará el título de cada una de las publicaciones que añadamos, en este caso roh:title.
+
+Configuración de la presentación
+================================
+
+
+Para definir la presentación de cada una de las publicaciones que el titular del CV puede añadir en esta sección, se añade la propiedad que vincula el CV del investigador con el objeto que contendrá los datos generales de la publicación (vivo:relatedBy). Después definimos el grafo sobre el que vamos a trabajar (document) y la propiedad que mostrará el título de cada una de las publicaciones que añadamos, en este caso roh:title.
 
 ```
 {
