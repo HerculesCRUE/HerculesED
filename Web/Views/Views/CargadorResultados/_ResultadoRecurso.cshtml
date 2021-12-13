@@ -70,7 +70,35 @@
                                 }
                             }
                         }
-                        <div class="d-flex quotes" scopus="@valorScopus" wos="@valorWos" inrecs="@valorInrecs">
+                        @{
+                            string valorOtros = string.Empty;
+
+                            if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+                            {
+                                foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+                                {
+                                    string idQuery = "IdentificadoresOtros";
+                                    if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
+                                    {
+                                        string propNombre = "nombre";
+                                        string propNumCitas = "numCitas";
+                                        foreach (Dictionary<string, string> row in item.Rows)
+                                        {
+                                            if (row.ContainsKey(propNombre) && row.ContainsKey(propNumCitas))
+                                            {
+                                                valorOtros += row[propNombre] + "~" + row[propNumCitas] + "|";
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            if(valorOtros.Length > 0)
+                            {
+                                valorOtros = valorOtros.Substring(0, valorOtros.Length - 1);
+                            }
+                        }
+                        <div class="d-flex quotes" scopus="@valorScopus" wos="@valorWos" inrecs="@valorInrecs" otros="@valorOtros">
                             @{
                                 if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
                                 {
