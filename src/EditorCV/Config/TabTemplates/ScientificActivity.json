@@ -4,7 +4,6 @@
 	"sections": [
 		{
 			"rdftype": "http://w3id.org/roh/RelatedScientificPublication",
-			"TODO": "Falta por incluir la entidad RelatedScientificPublicationCV, que contendría los datos propios del investigador.",
 			"property": "http://w3id.org/roh/scientificPublications",
 			"presentation": {
 				"type": "listitems",
