@@ -50,25 +50,77 @@ El archivo a editar para la configuración de los ítems de "Actividad científi
 
 Una vez localizada la propiedad del modelo semántico que corresponde con la actividad científica y tecnológica del investigador, vemos un listado de secciones (ítems) que podemos editar. En este caso, y como vemos en la imagen anterior, se procede a definir el RDF, la propiedad del ítem y el título ("Publicaciones, documentos científicos y técnicos") con el que figurará en el listado del editor.
 
-Seguidamente, definimos cómo se van a mostrar cada una de las publicaciones que el titular del CV puede añadir en esta sección.
+Seguidamente, definimos la presentación para cada una de las publicaciones que el titular del CV puede añadir en esta sección. En primer lugar, se añade la propiedad que vincula el CV del investigador con el objeto que contendrá los datos generales de la publicación (vivo:relatedBy). Después definifimos el grafo sobre el que vamos a trabajar (document) y la propiedad que mostrará el título de cada una de las publicaciones que añadamos, en este caso roh:title.
 
 ```
 {
 "listItemsPresentation": {
-					"property": "http://vivoweb.org/ontology/core#relatedBy",
-					"listItem": {
-						"propertyTitle": {
-							"property": "http://vivoweb.org/ontology/core#relatedBy",
-							"graph": "document",
-							"child": {
-								"property": "http://w3id.org/roh/title"
-							}
-						},
-						"orders": [
-							{
-								"name": {
-									"es": "Ordenar por fecha más reciente"
-								},
-								"properties": [
-									{
+	"property": "http://vivoweb.org/ontology/core#relatedBy",
+	"listItem": {
+		"propertyTitle": {
+			"property": "http://vivoweb.org/ontology/core#relatedBy",
+			"graph": "document",
+			"child": {
+				"property": "http://w3id.org/roh/title"
+			}
+		},
+		
 ```
+
+Procedemos a configurar el orden con el que filtrar las publicaciones mediante la propiedad "orders". En el siguiente ejemplo se contempla la ordenación por fecha más reciente y por fecha más antigua de publicación:
+
+
+```
+"orders": [
+	{
+		"name": {
+			"es": "Ordenar por fecha más reciente"
+		},
+		"properties": [
+			{
+				"property": "http://vivoweb.org/ontology/core#relatedBy",
+				"graph": "document",
+				"child": {
+					"property": "http://purl.org/dc/terms/issued"
+				},
+				"asc": false
+			},
+			{
+				"property": "http://vivoweb.org/ontology/core#relatedBy",
+				"graph": "document",
+				"child": {
+					"property": "http://w3id.org/roh/title"
+				},
+				"asc": true
+			}
+		]
+	},
+	{
+		"name": {
+			"es": "Ordenar por fecha más antigua"
+		},
+		"properties": [
+			{
+				"property": "http://vivoweb.org/ontology/core#relatedBy",
+				"graph": "document",
+				"child": {
+					"property": "http://purl.org/dc/terms/issued"
+				},
+				"asc": true
+			},
+			{
+				"property": "http://vivoweb.org/ontology/core#relatedBy",
+				"graph": "document",
+				"child": {
+					"property": "http://w3id.org/roh/title"
+				},
+				"asc": true
+			}
+		]
+	}
+	],
+```
+
+En la vista se muestra el siguiente resultado:
+
+![](../../Docs/media/EditorCV/EdicionCV2.png)
