@@ -195,6 +195,28 @@ Tras ello, queremos definir las propiedades que mostrará cada publicación en e
 			}
 		]
 	},
+	{
+		"name": {
+			"es": "Tipo de producción"
+		},
+		"child": {
+			"property": "http://vivoweb.org/ontology/core#relatedBy",
+			"graph": "document",
+			"child": {
+				"property": "http://purl.org/dc/elements/1.1/type",
+				"graph": "publicationtype",
+				"child": {
+					"property": "http://purl.org/dc/elements/1.1/title"
+				}
+			}
+		}
+	}
 
 
 ```
+
+Como vemos en el ejemplo anterior, cada propiedad que deseamos mostrar de la publicación viene definida por una jerarquía que la localiza en el grafo de la ontología. En el caso del nombre de la publicación, ésta se encuentra ubicada en el grafo "maindocument", por lo que debemos buscarla desde vivo:relatedBy --> bibo:Document --> vivo:hasPublicationVenue --> (cambiamos el grafo a "maindocument") --> roh:title. También podemos indicar si queremos que el valor de una determinada propiedad se muestre bajo el título sin necesidad de desplegar el resto de datos con "showMini" a true, o incluso en negrita con "showMiniBold" a true. La visualización de la instancia, sin desplegar y desplegada, quedaría así con el ejemplo de configuración anterior:
+
+![](../../Docs/media/EditorCV/EdicionCV3.png)
+
+![](../../Docs/media/EditorCV/EdicionCV4.png)
