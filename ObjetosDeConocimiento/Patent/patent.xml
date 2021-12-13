@@ -12,18 +12,14 @@
     </ConfiguracionGeneral>
     <EspefPropiedad>
 		<Propiedad  ID="http://xmlns.com/foaf/0.1/nick" EntidadID="http://purl.obolibrary.org/obo/BFO_0000023">
-            <AtrNombre>Firma</AtrNombre>
-            <AtrNombreLectura>Firma</AtrNombreLectura>
+            <AtrNombre>http://xmlns.com/foaf/0.1/nick</AtrNombre>
+            <AtrNombreLectura>http://xmlns.com/foaf/0.1/nick</AtrNombreLectura>
         </Propiedad>
-        <Propiedad  ID="http://vivoweb.org/ontology/core#preferredDisplayOrder" EntidadID="http://purl.obolibrary.org/obo/BFO_0000023">
-            <AtrNombre>Posición</AtrNombre>
-            <AtrNombreLectura>Posición</AtrNombreLectura>
-        </Propiedad>
-        <Propiedad  ID="http://w3id.org/roh/roleOf" EntidadID="http://purl.obolibrary.org/obo/BFO_0000023">
-            <AtrNombre>Persona</AtrNombre>
-            <AtrNombreLectura>Persona</AtrNombreLectura>
+        <Propiedad  ID="http://www.w3.org/1999/02/22-rdf-syntax-ns#member" EntidadID="http://purl.obolibrary.org/obo/BFO_0000023">
+            <AtrNombre>http://www.w3.org/1999/02/22-rdf-syntax-ns#member</AtrNombre>
+            <AtrNombreLectura>http://www.w3.org/1999/02/22-rdf-syntax-ns#member</AtrNombreLectura>
 			<SeleccionEntidad>
-                <TipoSeleccion>Combo</TipoSeleccion>
+                <TipoSeleccion>Autocompletar</TipoSeleccion>
                 <Grafo>person.owl</Grafo>
                 <UrlTipoEntSolicitada>http://xmlns.com/foaf/0.1/Person</UrlTipoEntSolicitada>              
                 <PropsEntEdicion>
@@ -35,6 +31,10 @@
                     </Propiedad>
                 </PropsEntLectura>
             </SeleccionEntidad>
+        </Propiedad>
+        <Propiedad  ID="http://www.w3.org/1999/02/22-rdf-syntax-ns#comment" EntidadID="http://purl.obolibrary.org/obo/BFO_0000023">
+            <AtrNombre>http://www.w3.org/1999/02/22-rdf-syntax-ns#comment</AtrNombre>
+            <AtrNombreLectura>http://www.w3.org/1999/02/22-rdf-syntax-ns#comment</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/ownerOrganization" EntidadID="http://purl.org/ontology/bibo/Patent">
             <AtrNombre>Entidad titular de derechos</AtrNombre>
@@ -243,30 +243,20 @@
                     <Grupo class="fieldset">
                         <Grupo Tipo="fieldset" class="mediumLabels">
                             <NameProp>http://xmlns.com/foaf/0.1/nick</NameProp> 
-                            <NameProp>http://vivoweb.org/ontology/core#preferredDisplayOrder</NameProp> 
-                            <NameProp>http://w3id.org/roh/roleOf</NameProp>
+                            <NameProp>http://www.w3.org/1999/02/22-rdf-syntax-ns#member</NameProp> 
+                            <NameProp>http://www.w3.org/1999/02/22-rdf-syntax-ns#comment</NameProp>
                         </Grupo>
                     </Grupo>
                 </Grupo>
             </OrdenEntidad>
             <OrdenEntidadLectura>
-                <Grupo classLectura="contentGroup contenidoPrincipal">
-                    <Grupo classLectura="group title">
-                        <Grupo Tipo="titulo">
-                            <NameProp>@@@TITULO</NameProp>
-                        </Grupo>
-                        <Grupo Tipo="subtitulo">
-                            <NameProp>@@@SUBTITULO</NameProp>
-                        </Grupo>
-                    </Grupo>
-                </Grupo>
                 <Grupo classLectura="group content semanticView">
                     <Grupo classLectura="group group_info">
                         <AtrNombreGrupo>Propiedades</AtrNombreGrupo>
                         <Grupo classLectura="contentGroup">
                             <NameProp>http://xmlns.com/foaf/0.1/nick</NameProp> 
-                            <NameProp>http://vivoweb.org/ontology/core#preferredDisplayOrder</NameProp> 
-                            <NameProp>http://w3id.org/roh/roleOf</NameProp>
+                            <NameProp>http://www.w3.org/1999/02/22-rdf-syntax-ns#member</NameProp> 
+                            <NameProp>http://www.w3.org/1999/02/22-rdf-syntax-ns#comment</NameProp>
                         </Grupo>
                     </Grupo>
                 </Grupo>
@@ -314,16 +304,6 @@
                 </Grupo>
             </OrdenEntidad>
             <OrdenEntidadLectura>
-                <Grupo classLectura="contentGroup contenidoPrincipal">
-                    <Grupo classLectura="group title">
-                        <Grupo Tipo="titulo">
-                            <NameProp>@@@TITULO</NameProp>
-                        </Grupo>
-                        <Grupo Tipo="subtitulo">
-                            <NameProp>@@@SUBTITULO</NameProp>
-                        </Grupo>
-                    </Grupo>
-                </Grupo>
                 <Grupo classLectura="group content semanticView">
                     <Grupo classLectura="group group_info">
                         <AtrNombreGrupo>Propiedades</AtrNombreGrupo>
@@ -378,16 +358,6 @@
                 </Grupo>
             </OrdenEntidad>
             <OrdenEntidadLectura>
-                <Grupo classLectura="contentGroup contenidoPrincipal">
-                    <Grupo classLectura="group title">
-                        <Grupo Tipo="titulo">
-                            <NameProp>@@@TITULO</NameProp>
-                        </Grupo>
-                        <Grupo Tipo="subtitulo">
-                            <NameProp>@@@SUBTITULO</NameProp>
-                        </Grupo>
-                    </Grupo>
-                </Grupo>
                 <Grupo classLectura="group content semanticView">
                     <Grupo classLectura="group group_info">
                         <AtrNombreGrupo>Propiedades</AtrNombreGrupo>

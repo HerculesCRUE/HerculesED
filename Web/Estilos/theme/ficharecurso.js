@@ -5,7 +5,7 @@ var buscadorPersonalizado = {
 	contenedor: null,
 	filtro: null,
 	orden:null,
-	init: function (nombreelemento, contenedor, filtro, orden,parametrosadicionales,urlcomunidad,idcomunidad) {
+	init: function (nombreelemento, contenedor, filtro, orden, parametrosadicionales, urlcomunidad, idcomunidad, callback = () => {}) {
 		this.nombreelemento = nombreelemento;
 		this.contenedor = contenedor;
 		this.filtro = filtro;
@@ -45,6 +45,7 @@ var buscadorPersonalizado = {
 			});
 			comportamientoVerMasVerMenosTags.init();
 			enlazarFacetasBusqueda();
+			callback();
 		}
 		return;
 	},
@@ -68,7 +69,7 @@ var buscadorPersonalizado = {
 							<div class="col col-12 col-xl-9 col-contenido derecha searcherResults">
 								<div class="wrapCol">
 									<div class="header-contenido">
-										<!-- Número de resultados -->
+										<!-- NÃºmero de resultados -->
 										<div class="h1-container">
 											<h1>${that.nombreelemento} <span id="panNumResultados" class="numResultados"></span></h1>
 										</div>
@@ -114,6 +115,7 @@ function comportamientoCargaFacetasComunidad() {
 		}
 	}
 	comportamientoFacetasPopUp.init();
+	plegarSubFacetas.init();
 }
 
 // Cuando se filtra no hay que subir arriba

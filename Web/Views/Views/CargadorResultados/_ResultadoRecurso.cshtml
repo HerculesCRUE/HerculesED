@@ -1,3 +1,4 @@
+﻿@*[security|||cargadorresultados/_resultadorecurso.cshtml|||hercules]*@
 @using Es.Riam.Gnoss.Web.MVC.Models
 @using Es.Riam.Gnoss.Web.MVC.Controles.Helper
 @model ResourceModel
@@ -30,11 +31,74 @@
             <div class="wrap">
                 <div class="middle-wrap">
                     <div class="title-wrap">
-
                         <h2 class="resource-title">
                             <a href="@Model.CompletCardLink">@Model.Title</a>
                         </h2>
-                        <div class="d-flex quotes" scopus="TODO: SCOPUS" wos="TODO: WOS" inrecs="TODO: INRECS">
+                        @{
+                            string valorInrecs = string.Empty;
+                            string valorWos = string.Empty;
+                            string valorScopus = string.Empty;
+
+                            if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+                            {
+                                foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+                                {
+                                    string idQuery = "Identificadores";
+                                    if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
+                                    {
+                                        string propInrecs = "inrecs";
+                                        string propWos = "wos";
+                                        string propScopus = "scopus";
+                                        foreach (Dictionary<string, string> row in item.Rows)
+                                        {
+                                            if (row.ContainsKey(propInrecs))
+                                            {
+                                                valorInrecs = row[propInrecs];
+                                            }
+
+                                            if (row.ContainsKey(propWos))
+                                            {
+                                                valorWos = row[propWos];
+                                            }
+
+                                            if (row.ContainsKey(propScopus))
+                                            {
+                                                valorScopus = row[propScopus];
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        @{
+                            string valorOtros = string.Empty;
+
+                            if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+                            {
+                                foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+                                {
+                                    string idQuery = "IdentificadoresOtros";
+                                    if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
+                                    {
+                                        string propNombre = "nombre";
+                                        string propNumCitas = "numCitas";
+                                        foreach (Dictionary<string, string> row in item.Rows)
+                                        {
+                                            if (row.ContainsKey(propNombre) && row.ContainsKey(propNumCitas))
+                                            {
+                                                valorOtros += row[propNombre] + "~" + row[propNumCitas] + "|";
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            if(valorOtros.Length > 0)
+                            {
+                                valorOtros = valorOtros.Substring(0, valorOtros.Length - 1);
+                            }
+                        }
+                        <div class="d-flex quotes" scopus="@valorScopus" wos="@valorWos" inrecs="@valorInrecs" otros="@valorOtros">
                             @{
                                 if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
                                 {
@@ -74,6 +138,12 @@
                                             <a class="item-dropdown" data-toggle="modal" data-target="#modal-enviar">
                                                 <span class="material-icons">person_add_alt_1</span>
                                                 <span class="texto">TODO: Añadir a clúster</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="item-dropdown" data-toggle="modal" data-target="#modal-enviar-produccion-cientifica">
+                                                <span class="material-icons">beenhere</span>
+                                                <span class="texto">@Html.Translate("ENVIAR_PRODUCCION_CIENTIFICA")</span>
                                             </a>
                                         </li>
                                     </ul>
@@ -190,7 +260,7 @@
                                             {
                                                 numOrganizacion = dicOrganizaciones[tupla.Item2];
                                             }
-                                            else if (!dicOrganizaciones.ContainsKey(orgExterna) && string.IsNullOrEmpty(tupla.Item2))
+                                            else if (dicOrganizaciones.ContainsKey(orgExterna) && string.IsNullOrEmpty(tupla.Item2))
                                             {
                                                 numOrganizacion = dicOrganizaciones[orgExterna];
                                             }
@@ -218,7 +288,7 @@
                                 </ul>
                             </div>
                             <div class="list-wrap tags">
-                                <div class="label">@Html.Translate("AREAS_CONOCIMIENTO")</div>
+                                <div class="label">@Html.Translate("AREAS_TEMATICAS")</div>
                                 <ul class="facetedSearch">
                                     @{
                                         int contadorCategorias = 0;
@@ -350,7 +420,9 @@
                                         <p class="moreResults">
                                             <a href="javascript: void(0);" class="ver-mas" style="display: flex;">@Html.Translate("VER_MAS")</a>
                                             <a href="javascript: void(0);" class="ver-menos" style="display: none;">@Html.Translate("VER_MENOS")</a>
-                                        </p> } }
+                                        </p>
+                                    }
+                                }
                             </div>
                             <div class="desc">
                                 @{
@@ -383,8 +455,8 @@
                                         if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
                                         {
                                             <p class="moreResults showMore">
-                                                <a href="javascript: void(0);" class="ver-mas" style="display: flex;">Ver más <span class="material-icons">expand_more</span></a>
-                                                <a href="javascript: void(0);" class="ver-menos" style="display: none;">Ver menos <span class="material-icons">expand_less</span></a>
+                                                <a href="javascript: void(0);" class="ver-mas" style="display: flex;">@Html.Translate("VER_MAS") <span class="material-icons">expand_more</span></a>
+                                                <a href="javascript: void(0);" class="ver-menos" style="display: none;">@Html.Translate("VER_MENOS") <span class="material-icons">expand_less</span></a>
                                             </p>
                                         }
                                     }
@@ -794,8 +866,8 @@
                                         if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
                                         {
                                             <p class="moreResults showMore">
-                                                <a href="javascript: void(0);" class="ver-mas" style="display: flex;">Ver más <span class="material-icons">expand_more</span></a>
-                                                <a href="javascript: void(0);" class="ver-menos" style="display: none;">Ver menos <span class="material-icons">expand_less</span></a>
+                                                <a href="javascript: void(0);" class="ver-mas" style="display: flex;">@Html.Translate("VER_MAS") <span class="material-icons">expand_more</span></a>
+                                                <a href="javascript: void(0);" class="ver-menos" style="display: none;">@Html.Translate("VER_MENOS") <span class="material-icons">expand_less</span></a>
                                             </p>
                                         }
                                     }
@@ -1002,25 +1074,25 @@
                                         }
 
                                         @*if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
-                                        {
-                                            foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
                                             {
-                                                string idQuery = "GetOtherResearchers";
-                                                if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
+                                                foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
                                                 {
-                                                    string propiedad = "namesResearchers";
-                                                    foreach (Dictionary<string, string> row in item.Rows)
+                                                    string idQuery = "GetOtherResearchers";
+                                                    if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
                                                     {
-                                                        if (row.ContainsKey(propiedad))
+                                                        string propiedad = "namesResearchers";
+                                                        foreach (Dictionary<string, string> row in item.Rows)
                                                         {
-                                                            <li>
-                                                                <a href="javascript: void(0);">@row[propiedad]</a>
-                                                            </li>
+                                                            if (row.ContainsKey(propiedad))
+                                                            {
+                                                                <li>
+                                                                    <a href="javascript: void(0);">@row[propiedad]</a>
+                                                                </li>
+                                                            }
                                                         }
                                                     }
                                                 }
-                                            }
-                                        }*@
+                                            }*@
                                     }
                                 </ul>
                             </div>
@@ -1056,8 +1128,8 @@
                                             if (nItems > 3)
                                             {
                                                 <p class="moreResults">
-                                                    <a href="javascript: void(0);" class="ver-mas" style="display: flex;">Ver más</a>
-                                                    <a href="javascript: void(0);" class="ver-menos" style="display: none;">Ver menos</a>
+                                                    <a href="javascript: void(0);" class="ver-mas" style="display: flex;">@Html.Translate("VER_MAS")</a>
+                                                    <a href="javascript: void(0);" class="ver-menos" style="display: none;">@Html.Translate("VER_MENOS")</a>
                                                 </p>
                                             }
                                         }

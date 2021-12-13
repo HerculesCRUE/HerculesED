@@ -79,21 +79,21 @@
                                         <span class="material-icons">more_vert</span>
                                     </a>
                                     <div class="dropdown-menu basic-dropdown dropdown-icons dropdown-menu-right" aria-labelledby="dropdownMasOpciones">
-                                        <p class="dropdown-title">Acciones</p>
+                                        <p class="dropdown-title">@Html.Translate("ACCIONES")</p>
                                         <ul class="no-list-style">
                                             <li>
                                                 <a class="item-dropdown">
-                                                    <span class="texto">Añadir áreas de conocimiento</span>
+                                                    <span class="texto">@Html.Translate("GUARDAR_ESPACIO_PERSONAL")</span>
                                                 </a>
                                             </li>
                                             <li>
                                                 <a class="item-dropdown">
-                                                    <span class="texto">Añadir etiquetas</span>
+                                                    <span class="texto">@Html.Translate("ADD_AREA_TEMATICA")</span>
                                                 </a>
                                             </li>
                                             <li>
                                                 <a class="item-dropdown">
-                                                    <span class="texto">Guardar en Espacio Personal</span>
+                                                    <span class="texto">@Html.Translate("ADD_ETIQUETAS")</span>
                                                 </a>
                                             </li>
                                         </ul>
@@ -221,7 +221,7 @@
                      }                    
                 </div>
             </div>
-            <!-- <div class="group-wrap">
+            <div class="group-wrap">
                 <div class="bloque">
                     <div class="label">@Html.Translate("MODALIDAD_PROYECTO")</div>
                     @{ 
@@ -235,8 +235,8 @@
                         }
                     }
                 </div>
-            </div> -->
-            <div class="group-wrap">
+            </div>
+            <!-- <div class="group-wrap">
                 <div class="bloque">
                     <div class="label">@Html.Translate("MODALIDAD_PROYECTO")</div>
                     @{ 
@@ -250,7 +250,7 @@
                         }
                     }
                 </div>
-            </div>
+            </div> -->
             <div class="group-wrap div3">
                 <div class="bloque">
                     <div class="label">@Html.Translate("AMBITO_GEOGRAFICO")</div>
@@ -2180,5 +2180,5 @@
         [LABEL(LanguageEnum.es, "Nombre del grupo")]
         [RDFProperty("http://w3id.org/roh/title")]
         public string Roh_title { get; set; }
-}
+    }
 }
