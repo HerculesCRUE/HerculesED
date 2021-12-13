@@ -20,7 +20,9 @@ Introducción
 
 Este documento describe, mediante un ejemplo práctico, cómo se realiza la configuración de los distintos ítems de la norma CVN para su posterior incorporación y edición en el currículum vitae del investigador en Hércules ED.
 
-La configuración de estos ítems se lleva a cabo mediante la edición de archivos JSON localizados en la carpeta Config/ de
+La configuración de las pestañas que figuran en el CV del investigador se lleva a cabo, fundamentalmente, mediante la edición de archivos JSON situados en la carpeta ./Config/TabTemplates/ que definen diversos aspectos para cada uno de los ítems contenidos en las secciones o pestañas que define la norma CVN.
 
 Ejemplo de edición
 ==================
+
+![](../../Docs/media/EditorCV/EdicionCV1.png)
