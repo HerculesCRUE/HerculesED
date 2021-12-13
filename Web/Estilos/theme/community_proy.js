@@ -483,10 +483,11 @@ montarTooltip.montarTooltips= function () {
 	this.quotes.each(function () {
 			var scopusInt=$(this).attr('scopus');
 			var wosInt=$(this).attr('wos');
-			var inrecsInt=$(this).attr('inrecs');	
+			var inrecsInt=$(this).attr('inrecs');
+			var otrasCitas=$(this).attr('otros');
 
 			var htmlScopus = "";
-			if(scopusInt != "" && scopusInt != "0"){
+			if(typeof scopusInt !== "undefined" && scopusInt != "" && scopusInt != "0"){
 				htmlScopus=`
 				<li>					
 					<span class="texto">SCOPUS</span>
@@ -495,7 +496,7 @@ montarTooltip.montarTooltips= function () {
 			}
 			
 			var htmlWos = "";
-			if(wosInt != "" && wosInt != "0"){
+			if(typeof wosInt !== "undefined" && wosInt != "" && wosInt != "0"){
 				htmlWos=`
 				<li>					
 					<span class="texto">WOS</span>
@@ -504,23 +505,45 @@ montarTooltip.montarTooltips= function () {
 			}
 			
 			var htmlInrecs = "";
-			if(inrecsInt != "" && inrecsInt != "0"){
+			if(typeof inrecsInt !== "undefined" && inrecsInt != "" && inrecsInt != "0"){
 				htmlInrecs=`
 				<li>					
 					<span class="texto">INRECS</span>
 					<span class="num-resultado">${inrecsInt}</span>					
 				</li>`;
 			}
-
+			
+			var htmlOtros = "";
+			if(typeof otrasCitas !== "undefined" && otrasCitas != ""){
+				
+				var listaSplit = otrasCitas.split("|");
+				
+				if(listaSplit != null && listaSplit.length > 0)
+				{
+					listaSplit.forEach( function(valor, indice, array) {
+						var nombreCita = valor.split("~")[0];
+						var numCita = valor.split("~")[1];
+						if(nombreCita != "" && numCita != "")
+						{
+							htmlOtros +=`
+							<li>					
+								<span class="texto">${nombreCita}</span>
+								<span class="num-resultado">${numCita}</span>					
+							</li>`;
+						}
+					});
+				}
+			}
 			
 			var html=`<p class="tooltip-title">Fuente de citas</p>
                 <ul class="no-list-style">
 				${htmlScopus}				
                 ${htmlWos}
                 ${htmlInrecs}
+				${htmlOtros}
                 </ul>`;
 				
-			if((scopusInt != "" && scopusInt != "0") || (wosInt != "" && wosInt != "0") || (inrecsInt != "" && inrecsInt != "0"))
+			if((typeof scopusInt !== "undefined" && scopusInt != "" && scopusInt != "0") || (typeof wosInt !== "undefined" && wosInt != "" && wosInt != "0") || (typeof inrecsInt !== "undefined" && inrecsInt != "" && inrecsInt != "0") || (typeof otrasCitas !== "undefined" && otrasCitas != "" && otrasCitas != "0"))
 			{
 				$(this).tooltip({
 					html: true,

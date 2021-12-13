@@ -74,6 +74,8 @@ public class FreetextKeywords {
       public List<string> isbn {get;set;}
       public string name { get; set; }
       public string eissn { get; set; }
+            public List<JournalMetric> hasMetric {get;set;}
+
     //  public string oclcnum { get; set; }
   }
 
@@ -95,6 +97,8 @@ public class JournalMetric
 
 public class Person
 {
+        public string id_persona {get;set;}
+
     //public DateTimeValue birthdate { get; set; }
     public Name name { get; set; } 
     //public string surname { get; set; }

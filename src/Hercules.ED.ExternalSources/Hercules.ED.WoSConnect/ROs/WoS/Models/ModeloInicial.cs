@@ -5,7 +5,6 @@ using System.Collections.Generic;
 namespace WoSConnect.ROs.WoS.Models.Inicial
 {
 
- // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse); 
     public class Page
     {
         public int page_count { get; set; }
@@ -202,7 +201,8 @@ namespace WoSConnect.ROs.WoS.Models.Inicial
 
     public class Conferences
     {
-        public Object conference { get; set; } // deberia ser de tipo Conference pero  aveces sera una lista de ese objeto 
+        public Object conference { get; set; } 
+        // deberia ser de tipo Conference pero  a veces sera una lista de ese objeto 
         public Object count { get; set; } //deberia ser un int 
     }
 
@@ -365,7 +365,8 @@ namespace WoSConnect.ROs.WoS.Models.Inicial
     {
         public int count { get; set; }
        // public AddressName address_name { get; set; }
-       public Object address_name {get;set;} // este objeto es el tipo AddressName pero algunos solo tienen un nombre y otros una lista d enombres
+       public Object address_name {get;set;} 
+       // este objeto es el tipo AddressName pero algunos solo tienen un nombre y otros una lista de nombres
     }
 
     public class AbstractText
@@ -447,7 +448,8 @@ namespace WoSConnect.ROs.WoS.Models.Inicial
         public Item item { get; set; }
         public FullrecordMetadata fullrecord_metadata { get; set; }
        // public Contributors contributors { get; set; }
-       public Object contributors { get; set; } //TODO cuidado que este objet es de tipo Controbutors
+       public Object contributors { get; set; }
+        //Este obtejeto es tipo Controbutors pero a veces aparecera como una
     }
 
     public class Dates

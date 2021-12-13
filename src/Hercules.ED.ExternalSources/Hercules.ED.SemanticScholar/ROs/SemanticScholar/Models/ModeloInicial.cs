@@ -30,7 +30,7 @@ namespace SemanticScholarConnect.ROs.SemanticScholar.Models.Inicial
         public string title { get; set; }
         public string @abstract { get; set; }
         public string venue { get; set; }
-        public int year { get; set; }
+        public string year { get; set; }
         public int referenceCount { get; set; }
         public int citationCount { get; set; }
         public List<Author> authors { get; set; }

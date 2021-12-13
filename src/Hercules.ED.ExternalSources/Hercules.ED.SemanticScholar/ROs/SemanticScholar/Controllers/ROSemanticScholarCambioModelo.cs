@@ -32,7 +32,7 @@ namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
         // }
 
 
-        
+
         public Publication cambioDeModeloPublicacion(Root objInicial)
         {
             Publication publicacion = new Publication();
@@ -42,7 +42,7 @@ namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
                 publicacion.title = getTitle(objInicial);
                 publicacion.Abstract = getAbstract(objInicial);
                 //publicacion.language = getLanguage(objInicial);
-               // publicacion.doi = getDoi(objInicial);
+                // publicacion.doi = getDoi(objInicial);
                 publicacion.url = getLinks(objInicial);
                 publicacion.dataIssued = getDate(objInicial);
                 //publicacion.pageStart = getPageStart(objInicial);
@@ -53,7 +53,7 @@ namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
                 publicacion.seqOfAuthors = getAuthors(objInicial);
                 publicacion.hasPublicationVenue = getJournal(objInicial);
                 publicacion.hasMetric = getPublicationMetric(objInicial);
-               
+
                 return publicacion;
             }
             else
@@ -66,32 +66,41 @@ namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
         public List<string> getIDs(Root objInicial)
         {
             List<string> IDs = new List<string>();
-            if(objInicial.paperId!=null){
-                IDs.Add("SemanticScholar: "+ objInicial.paperId);
-    
+            if (objInicial.paperId != null)
+            {
+                IDs.Add("SemanticScholar: " + objInicial.paperId);
+
             }
-            if(objInicial.externalIds!=null){
-               if(objInicial.externalIds.ArXiv!=null){
-                   IDs.Add("ArXiv: "+objInicial.externalIds.ArXiv);
-               }
-               if(objInicial.externalIds.MAG!=null){
-                   IDs.Add("MAG: "+objInicial.externalIds.MAG);
-               }
-               if(objInicial.externalIds.PubMedCentral!=null){
-                   IDs.Add("PubMedCentral: "+objInicial.externalIds.PubMedCentral);
-               }
+            if (objInicial.externalIds != null)
+            {
+                if (objInicial.externalIds.ArXiv != null)
+                {
+                    IDs.Add("ArXiv: " + objInicial.externalIds.ArXiv);
+                }
+                if (objInicial.externalIds.MAG != null)
+                {
+                    IDs.Add("MAG: " + objInicial.externalIds.MAG);
+                }
+                if (objInicial.externalIds.PubMedCentral != null)
+                {
+                    IDs.Add("PubMedCentral: " + objInicial.externalIds.PubMedCentral);
+                }
             }
-            if(IDs.Count==0){
+            if (IDs.Count == 0)
+            {
                 return null;
-            }else{
-            return IDs;
+            }
+            else
+            {
+                return IDs;
             }
         }
 
 
         public string getTitle(Root objInicial)
         {
-            if(objInicial.title!=null){
+            if (objInicial.title != null)
+            {
                 return objInicial.title;
             }
             return null;
@@ -99,7 +108,8 @@ namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
 
         public string getAbstract(Root objInicial)
         {
-            if(objInicial.@abstract!=null){
+            if (objInicial.@abstract != null)
+            {
                 return objInicial.@abstract;
             }
             return null;
@@ -115,8 +125,9 @@ namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
         // }
         public List<string> getLinks(Root objInicial)
         {
-            if(objInicial.url!=null){
-                List<string> links =new List<string>();
+            if (objInicial.url != null)
+            {
+                List<string> links = new List<string>();
                 links.Add(objInicial.url);
                 return links;
             }
@@ -125,15 +136,16 @@ namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
 
         public DateTimeValue getDate(Root objInicial)
         {
-            
-            if(objInicial.year!=null){
+
+            if (objInicial.year != null)
+            {
                 DateTimeValue date = new DateTimeValue();
-            date.datimeTime =null;
-                date.datimeTime=objInicial.year.ToString();
-            //todo: esto no es del todo correcto! porque no es una fecha sino un año! 
+                date.datimeTime = null;
+                date.datimeTime = objInicial.year;
+                //todo: esto no es del todo correcto! porque no es una fecha sino un año! 
             }
             return null;
-        }        
+        }
 
         // public string getPageStart(Root objInicial)
         // {
@@ -164,23 +176,42 @@ namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
         // }
         public List<Person> getAuthors(Root objInicial)
         {
-            if(objInicial.authors!=null){
+            if (objInicial.authors != null)
+            {
                 List<Person> autores = new List<Person>();
-                foreach(Author author in objInicial.authors){
+                foreach (Author author in objInicial.authors)
+                {
                     Person persona = new Person();
-                    if(author.name!=null){
-                    List<string> nombres = new List<string>();
-                    nombres.Add(author.name);
-                    Name nom = new Name();
-                    nom.nombre_completo=nombres;
-                    persona.name=nom;
+                    int i = this.SemanticScholarLogic.autores_orcid.Count;
+                    string orcid = null;
+                    string name = null;
+                    string familia = null;
+                    string completo = null;
+                    string idss = null; ;
+                    string links = null;
+                    if (author.name != null)
+                    {
+                        List<string> nombres = new List<string>();
+                        nombres.Add(author.name);
+                        completo=author.name;
+                        Name nom = new Name();
+                        nom.nombre_completo = nombres;
+                        persona.name = nom;
                     }
-                    if(author.authorId!=null){
+                    if (author.authorId != null)
+                    {
                         List<string> ids = new List<string>();
-                    ids.Add("SemanticScholar: "+ author.authorId);
-                        persona.IDs =ids;
+                        ids.Add("SemanticScholar: " + author.authorId);
+                        persona.IDs = ids;
+                        idss="SemanticScholar: " + author.authorId;
                     }
-                autores.Add(persona);
+                     persona.id_persona=i.ToString();
+                    autores.Add(persona);
+                                        if(orcid!=null || name!=null ||familia!=null ||completo!=null || idss!=null || links!=null){
+                                        Tuple<string,string, string, string, string, string> tupla = new Tuple<string,string, string, string, string, string>(orcid,name,familia,completo,idss,links);
+                                        
+                                        this.SemanticScholarLogic.autores_orcid[i.ToString()]=tupla;}
+                                        
                 }
                 return autores;
             }
@@ -189,9 +220,10 @@ namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
 
         public Source getJournal(Root objInicial)
         {
-            if(objInicial.venue!=null && objInicial.venue!=""){
+            if (objInicial.venue != null && objInicial.venue != "")
+            {
                 Source revista = new Source();
-                revista.name= objInicial.venue;
+                revista.name = objInicial.venue;
                 return revista;
             }
             return null;
@@ -199,14 +231,15 @@ namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
 
         public List<PublicationMetric> getPublicationMetric(Root objInicial)
         {
-            
-            if(objInicial.citationCount!=null){
+
+            if (objInicial.citationCount != null)
+            {
                 List<PublicationMetric> metriscas = new List<PublicationMetric>();
-            PublicationMetric metricPublicacion = new PublicationMetric();
-                metricPublicacion.citationCount=objInicial.citationCount.ToString();
-                metricPublicacion.metricName="SemanticScholar";
+                PublicationMetric metricPublicacion = new PublicationMetric();
+                metricPublicacion.citationCount = objInicial.citationCount.ToString();
+                metricPublicacion.metricName = "SemanticScholar";
                 metriscas.Add(metricPublicacion);
-            return metriscas;
+                return metriscas;
             }
             return null;
         }

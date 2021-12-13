@@ -30,72 +30,16 @@ namespace WoSConnect.ROs.WoS.Controllers
         protected string baseUri { get; set; }
 
         public  Dictionary<string, string>  ds; //= LeerDatosExcel(@"C:\Users\mpuer\Documents\GitHub\HerculesED\src\Hercules.ED.ExternalSources\Hércules-ED_Taxonomías_v1.2.xlsx");
-
-
-
-//         private static Dictionary<string, Tuple<string, string, string, string>> LeerDatosExcel(string pRuta)
-
-//         {
-//             Console.Write("ESTOY LEYENDO 2?????????????????????????????????????????????????????");
-
-//             // Lectura del Excel.
-
-//             DataSet ds = new DataSet();
-
-//             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
-//             using (var stream = File.Open(pRuta, FileMode.Open, FileAccess.Read))
-
-//             {
-
-//                 using (var reader = ExcelReaderFactory.CreateReader(stream))
-
-//                 {
-
-//                     ds = reader.AsDataSet(new ExcelDataSetConfiguration()
-
-//                     {
-
-//                         ConfigureDataTable = (tableReader) => new ExcelDataTableConfiguration()
-
-//                         {
-
-//                             UseHeaderRow = true,
-
-//                         }
-
-//                     });
-
-//                 }
-
-//             }
-//             Dictionary<string, Tuple<string, string, string, string>> name = new Dictionary<string, Tuple<string, string, string, string>>();
-
-//             //List<Tuple<string, string, string, string, string>> listaDatos = new List<Tuple<string, string, string, string, string>>();
-
-//             foreach (DataRow fila in ds.Tables["Hércules-KA-taxonomy (clean)"].Rows)
-//             {
-//                 Tuple<string, string, string, string> tupla =
-// new Tuple<string, string, string, string>(fila["Level 0"].ToString(), fila["Level 1"].ToString(), fila["Level 2"].ToString(), fila["Level 3"].ToString());
-
-//                 name[fila["WoS-JCR code"].ToString()] = tupla;
-
-//                 //                 listaDatos.Add(tupla);
-
-//             }
-
-//             return name;
-
-//         }
-
+        public Dictionary<string, Tuple<string,string,string,string,string,string>>  autores_orcid; //= LeerDatosExcel_autores(@"C:\Users\mpuer\Documents\GitHub\HerculesED\src\Hercules.ED.ExternalSources\Hercules-ED_autores.xlsx");
 
 
         protected Dictionary<string, string> headers = new Dictionary<string, string>();
-        public ROWoSLogic(string baseUri, string bareer, Dictionary<string, string> ds)
+        public ROWoSLogic(string baseUri, string bareer, Dictionary<string, string> ds,  Dictionary<string, Tuple<string,string, string, string,string,string>>  autores_orcid)
         {
             this.baseUri = baseUri;
             this.bareer = bareer;
             this.ds = ds;//LeerDatosExcel(path);
+            this.autores_orcid= autores_orcid;
             //$@"C:\GNOSS\Proyectos\HerculesMA\src\Hercules.MA.Load\Hercules.MA.Load\Dataset\Hércules-ED_Taxonomías_v1.1.xlsx");
 
         }
@@ -171,13 +115,24 @@ namespace WoSConnect.ROs.WoS.Controllers
                 result = 100 * n;
                 string info_publication = httpCall(url.ToString(), "GET", headers).Result;
                 //Console.Write(info_publication);
+                Console.Write(info_publication);
+
                 Root objInicial = JsonConvert.DeserializeObject<Root>(info_publication);
                 cardinalidad = objInicial.Data.Records.records.REC.Count();
                 List<Publication> nuevas = info.getListPublicatio(objInicial);
                 sol.AddRange(nuevas);
             }
-
+            
+            Console.Write("Ids del diccionario\n");
+            foreach(string i in this.autores_orcid.Keys){
+                Console.Write(i);
+                Console.Write(" ");
+                Console.Write(this.autores_orcid[i]);
+                Console.Write("\n");
+            }
             return sol;
         }
+
+       
     }
 }

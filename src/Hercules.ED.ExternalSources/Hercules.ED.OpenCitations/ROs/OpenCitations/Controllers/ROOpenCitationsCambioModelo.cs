@@ -158,11 +158,22 @@ namespace OpenCitationsConnect.ROs.OpenCitations.Controllers
                     {
                         Publication pub = new Publication();
                         string[] datos = referencia.cited.Split("> ");
-                        pub.doi = datos[1];
+                        string doi = datos[1];
+                        if (doi.Contains("https://doi.org/"))
+                        {
+                            int indice = doi.IndexOf("org/");
+                            pub.doi = doi.Substring(indice + 4);
+
+                        }
+                        else
+                        {
+
+                            pub.doi = datos[1];
+                        }
                         sol.Add(pub);
                     }
                 }
-                if (sol.Count==0)
+                if (sol.Count == 0)
                 {
                     return null;
                 }
@@ -184,11 +195,22 @@ namespace OpenCitationsConnect.ROs.OpenCitations.Controllers
                         Publication pub = new Publication();
 
                         string[] datos = referencia.citing.Split("> ");
-                        pub.doi = datos[1];
+                        string doi = datos[1];
+                        if (doi.Contains("https://doi.org/"))
+                        {
+                            int indice = doi.IndexOf("org/");
+                            pub.doi = doi.Substring(indice + 4);
+
+                        }
+                        else
+                        {
+
+                            pub.doi = datos[1];
+                        }
                         sol.Add(pub);
                     }
                 }
-                if (sol.Count==0)
+                if (sol.Count == 0)
                 {
                     return null;
                 }

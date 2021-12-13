@@ -4,7 +4,6 @@
 	"sections": [
 		{
 			"rdftype": "http://w3id.org/roh/RelatedScientificPublication",
-			"TODO": "Falta por incluir la entidad RelatedScientificPublicationCV, que contendría los datos propios del investigador.",
 			"property": "http://w3id.org/roh/scientificPublications",
 			"presentation": {
 				"type": "listitems",
@@ -206,12 +205,42 @@
 										"properties": [
 											{
 												"title": {
+													"es": "Áreas temáticas externas"
+												},
+												"property": "http://w3id.org/roh/externalKnowledgeArea",
+												"thesaurus": "researcharea",
+												"type": "thesaurus",
+												"width": 0,
+												"multiple": true
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Áreas temáticas enriquecidas"
+												},
+												"property": "http://w3id.org/roh/enrichedKnowledgeArea",
+												"thesaurus": "researcharea",
+												"type": "thesaurus",
+												"width": 0,
+												"multiple": true
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
 													"es": "Áreas temáticas"
 												},
 												"property": "http://w3id.org/roh/hasKnowledgeArea",
+												"property": "http://w3id.org/roh/userKnowledgeArea",
 												"thesaurus": "researcharea",
 												"type": "thesaurus",
 												"width": 1,
+												"width": 3,
 												"multiple": true
 											}
 										]
@@ -462,96 +491,6 @@
 												"property": "http://w3id.org/roh/researchersNumber",
 												"type": "number",
 												"width": 1
-											}
-										]
-									},
-									{
-										"properties": [
-											{
-												"property": "http://purl.org/ontology/bibo/ReferenceSource",
-												"type": "auxEntity",
-												"TODO": "Incluir el DOI en la tabla, junto a un 'Otros' que permita añadir un nuevo tipo de identificador.",
-												"title": {
-													"es": "Identificador de la publicación"
-												},
-												"multiple": true,
-												"width": 3,
-												"auxEntityData": {
-													"rdftype": "http://xmlns.com/foaf/0.1/Document",
-													"propertyTitle": {
-														"property": "http://xmlns.com/foaf/0.1/primaryTopic"
-													},
-													"properties": [
-														{
-															"name": {
-																"es": "Tipo identificador"
-															},
-															"child": {
-																"property": "http://xmlns.com/foaf/0.1/primaryTopic",
-																"graph": "publicationidentifiertype",
-																"child": {
-																	"property": "http://purl.org/dc/elements/1.1/title"
-																}
-															}
-														},
-														{
-															"name": {
-																"es": "Otros"
-															},
-															"child": {
-																"property": "http://xmlns.com/foaf/0.1/topic"
-															}
-														},
-														{
-															"name": {
-																"es": "Identificador publicación"
-															},
-															"child": {
-																"property": "http://purl.org/dc/elements/1.1/title"
-															}
-														}
-													],
-													"rows": [
-														{
-															"properties": [
-																{
-																	"title": {
-																		"es": "Tipo identificador"
-																	},
-																	"required": true,
-																	"property": "http://xmlns.com/foaf/0.1/primaryTopic",
-																	"combo": {
-																		"rdftype": "http://w3id.org/roh/PublicationIdentifierType",
-																		"graph": "publicationidentifiertype",
-																		"property": {
-																			"property": "http://purl.org/dc/elements/1.1/title"
-																		}
-																	},
-																	"type": "selectCombo",
-																	"width": 1
-																},
-																{
-																	"title": {
-																		"es": "Otros"
-																	},
-																	"type": "text",
-																	"required": false,
-																	"property": "http://xmlns.com/foaf/0.1/topic",
-																	"width": 1
-																},
-																{
-																	"title": {
-																		"es": "Identificador publicación"
-																	},
-																	"type": "text",
-																	"required": false,
-																	"property": "http://purl.org/dc/elements/1.1/title",
-																	"width": 1
-																}
-															]
-														}
-													]
-												}
 											}
 										]
 									},

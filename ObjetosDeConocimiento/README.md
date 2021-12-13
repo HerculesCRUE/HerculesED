@@ -7,7 +7,7 @@
 |Versión|1.0|
 |Módulo|Documentación|
 |Tipo|Especificación|
-|Cambios de la Versión||
+|Cambios de la Versión|Versión inicial|
 
 # Hércules ED. Objetos de conocimiento
 

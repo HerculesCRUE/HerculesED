@@ -26,7 +26,7 @@ Las propiedades extendidas son las siguientes:
 - eroh:activityModalityOther
 
 Los subtipos de actividad están relacionados con sus correspondientes epígrafes en la norma CVN a través de los valores descritos en la propiedad eroh:classificationCVN.
-Una instancia de foaf:Person se asocia con las siguientes entidades a través de propiedades de objeto:
+Una instancia de roh:Activity se asocia con las siguientes entidades a través de propiedades de objeto:
 
 - foaf:Organization, que vincula una actividad con la entidad convocante (roh:promotedBy) y la entidad de realización (eroh:conductedBy).
 - vivo:GeographicRegion, que representa el ámbito geográfico de una actividad.
