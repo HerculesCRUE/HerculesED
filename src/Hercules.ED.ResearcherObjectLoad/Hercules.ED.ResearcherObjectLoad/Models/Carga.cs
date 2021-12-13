@@ -63,6 +63,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
         {
             // Comprueba si está la publicación cargada.
             string idDocumento = ComprobarPublicacion(pPublicacion.doi);
+            //TODO recuperar cosas ASIO
 
             if (string.IsNullOrEmpty(idDocumento))
             {
@@ -311,7 +312,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                         {
                             mResourceApi.ChangeOntoly("person");
                             ComplexOntologyResource resourcePersona = persona.ToGnossApiResource(mResourceApi, null);
-                            //mResourceApi.LoadComplexSemanticResource(resourcePersona, false, true);
+                            mResourceApi.LoadComplexSemanticResource(resourcePersona, false, true);
                             idPersona = resourcePersona.GnossId;
                         }
 
@@ -388,7 +389,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             {
                                 mResourceApi.ChangeOntoly("person");
                                 ComplexOntologyResource resourcePersona = persona.ToGnossApiResource(mResourceApi, null);
-                                //mResourceApi.LoadComplexSemanticResource(resourcePersona, false, true);
+                                mResourceApi.LoadComplexSemanticResource(resourcePersona, false, true);
                                 idPersona = resourcePersona.GnossId;
                             }
 
@@ -573,7 +574,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
 
                     #region --- Comprobar ISBN
                     string isbnObtenido = string.Empty;
-                    if (string.IsNullOrEmpty(idRevista) && pPublicacion.hasPublicationVenue.isbn != null)
+                    if (pPublicacion.hasPublicationVenue.isbn != null)
                     {
                         // Comparo los elementos de la lista, y me quedo con el que mayor número tenga.
                         if (pPublicacion.hasPublicationVenue.isbn.Count() > 1)
@@ -593,7 +594,10 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             isbnObtenido = pPublicacion.hasPublicationVenue.isbn[0];
                         }
 
-                        idRevista = ComprobarRevistaISBN(isbnObtenido);
+                        if (string.IsNullOrEmpty(idRevista))
+                        {
+                            idRevista = ComprobarRevistaISBN(isbnObtenido);
+                        }
                     }
                     #endregion
 
@@ -632,7 +636,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     if (revistaNueva)
                     {
                         ComplexOntologyResource resourceRevista = revistaCargar.ToGnossApiResource(mResourceApi, null);
-                        //mResourceApi.LoadComplexSemanticResource(resourceRevista, false, true);
+                        mResourceApi.LoadComplexSemanticResource(resourceRevista, false, true);
                         idRevista = resourceRevista.GnossId;
                     }
                     else
@@ -640,7 +644,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                         Guid gnossId = mResourceApi.GetShortGuid(idRevista);
                         Guid articleId = new Guid(idRevista.Split('_')[2]);
                         ComplexOntologyResource resourceRevista = revistaCargar.ToGnossApiResource(mResourceApi, null, gnossId, articleId);
-                        //mResourceApi.ModifyComplexOntologyResource(resourceRevista, false, true);
+                        mResourceApi.ModifyComplexOntologyResource(resourceRevista, false, true);
                         idRevista = resourceRevista.GnossId;
                     }
                     documentoCargar.IdVivo_hasPublicationVenue = idRevista;
@@ -720,60 +724,138 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
 
                 // Carga de la publicación.
                 mResourceApi.ChangeOntoly("document");
-                if (string.IsNullOrEmpty(pIdDocumento))
+                if (pPubPrimaria) // Si es una publicación primaria
                 {
-                    Guid gnossId = mResourceApi.GetShortGuid(idDocumentoActual);
-                    Guid articleId = new Guid(idDocumentoActual.Split('_')[2]);
-                    ComplexOntologyResource resourceDocumento = documentoCargar.ToGnossApiResource(mResourceApi, null, gnossId, articleId);
-
-                    if (pTuplaDatosRecuperados != null)
-                    {
-                        // Si hay datos obtenidos de la recuperación...
-                        //mResourceApi.ModifyComplexOntologyResource(resourceDocumento, false, true);
+                    if (pTuplaDatosRecuperados != null) // Si hay datos obtenidos de la recuperación...
+                    {                        
+                        Guid gnossIdPrimaria = mResourceApi.GetShortGuid(idDocumentoActual);
+                        Guid articleIdPrimaria = new Guid(idDocumentoActual.Split('_')[2]);
+                        ComplexOntologyResource resourceDocumentoPrimaria = documentoCargar.ToGnossApiResource(mResourceApi, null, gnossIdPrimaria, articleIdPrimaria);
+                        mResourceApi.ModifyComplexOntologyResource(resourceDocumentoPrimaria, false, true);
                     }
                     else
-                    {
-                        //mResourceApi.LoadComplexSemanticResource(resourceDocumento, false, true);
-                    }
-                }
-                else
-                {
-                    if (pPubPrimaria) // Si es una publicación primaria --> Modifica 
                     {
                         Guid gnossIdPrimaria = mResourceApi.GetShortGuid(idDocumentoActual);
                         Guid articleIdPrimaria = new Guid(idDocumentoActual.Split('_')[2]);
                         ComplexOntologyResource resourceDocumentoPrimaria = documentoCargar.ToGnossApiResource(mResourceApi, null, gnossIdPrimaria, articleIdPrimaria);
-                        //mResourceApi.ModifyComplexOntologyResource(resourceDocumentoPrimaria, false, true);
-                    }
-                    else if (pPubSecundariaBiblio) // Si es una publicación secundaria de bibliografía --> De momento, no hacer nada... 
+                        mResourceApi.LoadComplexSemanticResource(resourceDocumentoPrimaria, false, true);
+                    }                    
+                }
+                else if (pPubSecundariaBiblio) // Si es una publicación secundaria de bibliografía
+                {
+                    string idDocumento = ComprobarPublicacion(pPublicacion.doi);
+                    if (!string.IsNullOrEmpty(idDocumento))
                     {
-
-                    }
-                    else if (pPubSecundariaCita) // Si es una publicación secundaria de cita --> Agrega triple con la relación 
-                    {
-                        // Comprueba si está la publicación cargada.
-                        string idDocumento = ComprobarPublicacion(pPublicacion.doi);
-
-                        if (!string.IsNullOrEmpty(idDocumento))
-                        {
-                            Dictionary<Guid, List<TriplesToInclude>> triples = new Dictionary<Guid, List<TriplesToInclude>>();
-                            triples.Add(mResourceApi.GetShortGuid(idDocumentoActual), new List<TriplesToInclude>() {
-                            new TriplesToInclude(){
-                                Predicate = "http://purl.org/ontology/bibo/cites",
-                                NewValue = pIdPadre
-                                }
-                            });
-                            //mResourceApi.InsertPropertiesLoadedResources(triples);
-                        }
-                        else
-                        {
-                            Guid gnossId = mResourceApi.GetShortGuid(idDocumentoActual);
-                            Guid articleId = new Guid(idDocumentoActual.Split('_')[2]);
-                            ComplexOntologyResource resourceDocumento = documentoCargar.ToGnossApiResource(mResourceApi, null, gnossId, articleId);
-                            //mResourceApi.ModifyComplexOntologyResource(resourceDocumento, false, true);                            
-                        }
+                        Guid gnossIdSecundario = mResourceApi.GetShortGuid(idDocumentoActual);
+                        Guid articleIdSecundario = new Guid(idDocumentoActual.Split('_')[2]);
+                        ComplexOntologyResource resourceDocumento = documentoCargar.ToGnossApiResource(mResourceApi, null, gnossIdSecundario, gnossIdSecundario);
+                        mResourceApi.LoadComplexSemanticResource(resourceDocumento, false, true);
                     }
                 }
+                else if (pPubSecundariaCita) // Si es una publicación secundaria de cita
+                {
+                    string idDocumento = ComprobarPublicacion(pPublicacion.doi);
+                    if (!string.IsNullOrEmpty(idDocumento))
+                    {
+                        Dictionary<Guid, List<TriplesToInclude>> triples = new Dictionary<Guid, List<TriplesToInclude>>();
+                        triples.Add(mResourceApi.GetShortGuid(idDocumento), new List<TriplesToInclude>() {
+                            new TriplesToInclude(){
+                                    Predicate = "http://purl.org/ontology/bibo/cites",
+                                    NewValue = pIdPadre
+                                }
+                            });
+                        mResourceApi.InsertPropertiesLoadedResources(triples);
+                    }
+                    else
+                    {
+                        Guid gnossId = mResourceApi.GetShortGuid(idDocumentoActual);
+                        Guid articleId = new Guid(idDocumentoActual.Split('_')[2]);
+                        ComplexOntologyResource resourceDocumento = documentoCargar.ToGnossApiResource(mResourceApi, null, gnossId, articleId);
+                        string idCreado = mResourceApi.LoadComplexSemanticResource(resourceDocumento, false, true);
+
+                        Dictionary<Guid, List<TriplesToInclude>> triples = new Dictionary<Guid, List<TriplesToInclude>>();
+                        triples.Add(mResourceApi.GetShortGuid(idCreado), new List<TriplesToInclude>() {
+                            new TriplesToInclude(){
+                                    Predicate = "http://purl.org/ontology/bibo/cites",
+                                    NewValue = pIdPadre
+                                }
+                            });
+                        mResourceApi.InsertPropertiesLoadedResources(triples);
+                    }
+                }
+
+                //mResourceApi.ChangeOntoly("document");
+                //if (string.IsNullOrEmpty(pIdDocumento) && pPubPrimaria)
+                //{
+                //    Guid gnossId = mResourceApi.GetShortGuid(idDocumentoActual);
+                //    Guid articleId = new Guid(idDocumentoActual.Split('_')[2]);
+                //    ComplexOntologyResource resourceDocumento = documentoCargar.ToGnossApiResource(mResourceApi, null, gnossId, articleId);
+
+                //    if (pTuplaDatosRecuperados != null)
+                //    {
+                //        // Si hay datos obtenidos de la recuperación...
+                //        mResourceApi.ModifyComplexOntologyResource(resourceDocumento, false, true);
+                //    }
+                //    else
+                //    {
+                //        mResourceApi.LoadComplexSemanticResource(resourceDocumento, false, true);
+                //    }
+                //}
+                //else
+                //{
+                //    if (pPubPrimaria) // Si es una publicación primaria --> Modifica 
+                //    {
+                //        Guid gnossIdPrimaria = mResourceApi.GetShortGuid(idDocumentoActual);
+                //        Guid articleIdPrimaria = new Guid(idDocumentoActual.Split('_')[2]);
+                //        ComplexOntologyResource resourceDocumentoPrimaria = documentoCargar.ToGnossApiResource(mResourceApi, null, gnossIdPrimaria, articleIdPrimaria);
+                //        mResourceApi.ModifyComplexOntologyResource(resourceDocumentoPrimaria, false, true);
+                //    }
+                //    else if (pPubSecundariaBiblio) // Si es una publicación secundaria de bibliografía --> De momento, no hacer nada... 
+                //    {
+                //        string idDocumento = ComprobarPublicacion(pPublicacion.doi);
+
+                //        if (!string.IsNullOrEmpty(idDocumento))
+                //        {
+                //            Guid gnossId = mResourceApi.GetShortGuid(idDocumentoActual);
+                //            Guid articleId = new Guid(idDocumentoActual.Split('_')[2]);
+                //            ComplexOntologyResource resourceDocumento = documentoCargar.ToGnossApiResource(mResourceApi, null, gnossId, articleId);
+                //            mResourceApi.LoadComplexSemanticResource(resourceDocumento, false, true);
+                //        }
+                //    }
+                //    else if (pPubSecundariaCita) // Si es una publicación secundaria de cita --> Agrega triple con la relación 
+                //    {
+                //        // Comprueba si está la publicación cargada.
+                //        string idDocumento = ComprobarPublicacion(pPublicacion.doi);
+
+                //        if (!string.IsNullOrEmpty(idDocumento))
+                //        {
+                //            Dictionary<Guid, List<TriplesToInclude>> triples = new Dictionary<Guid, List<TriplesToInclude>>();
+                //            triples.Add(mResourceApi.GetShortGuid(idDocumento), new List<TriplesToInclude>() {
+                //            new TriplesToInclude(){
+                //                    Predicate = "http://purl.org/ontology/bibo/cites",
+                //                    NewValue = pIdPadre
+                //                }
+                //            });
+                //            mResourceApi.InsertPropertiesLoadedResources(triples);
+                //        }
+                //        else
+                //        {
+                //            Guid gnossId = mResourceApi.GetShortGuid(idDocumentoActual);
+                //            Guid articleId = new Guid(idDocumentoActual.Split('_')[2]);
+                //            ComplexOntologyResource resourceDocumento = documentoCargar.ToGnossApiResource(mResourceApi, null, gnossId, articleId);
+                //            string idCreado=mResourceApi.LoadComplexSemanticResource(resourceDocumento, false, true);
+
+                //            Dictionary<Guid, List<TriplesToInclude>> triples = new Dictionary<Guid, List<TriplesToInclude>>();
+                //            triples.Add(mResourceApi.GetShortGuid(idCreado), new List<TriplesToInclude>() {
+                //            new TriplesToInclude(){
+                //                    Predicate = "http://purl.org/ontology/bibo/cites",
+                //                    NewValue = pIdPadre
+                //                }
+                //            });
+                //            mResourceApi.InsertPropertiesLoadedResources(triples);
+                //        }
+                //    }
+                //}
 
                 return idDocumentoActual;
             }
@@ -1139,10 +1221,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             string select = "SELECT ?documento ";
             string where = $@"WHERE {{
                                 ?documento a <http://purl.org/ontology/bibo/Document>. 
-                                ?documento <http://purl.org/ontology/bibo/identifier> ?identificador. 
-                                ?identificador <http://xmlns.com/foaf/0.1/primaryTopic> ?tipo. 
-                                ?identificador <http://purl.org/dc/elements/1.1/title> ?doi. 
-                                FILTER(?tipo = <http://gnoss.com/items/publicationidentifiertype_040>)
+                                ?documento <http://purl.org/ontology/bibo/doi> ?doi. 
                                 FILTER(?doi = '{pDOI}')
                             }}";
 
