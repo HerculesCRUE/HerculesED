@@ -124,3 +124,77 @@ Procedemos a configurar el orden con el que filtrar las publicaciones mediante l
 En la vista se muestra el siguiente resultado:
 
 ![](../../Docs/media/EditorCV/EdicionCV2.png)
+
+
+Tras ello, queremos definir las propiedades que mostrará cada publicación en el listado de minifichas, es decir, en la visualización previa a la edición. Además de la propiedad para el título de la publicación que hemos añadido anteriormente, queremos mostrar la fecha de la publicación, el nombre de la publicación principal (la revista) que sirve como soporte para el documento en cuestión, los autores y el tipo de producción de la publicación:
+
+
+```
+"properties": [
+	{
+		"name": {
+			"es": "Fecha de publicación"
+		},
+		"showMiniBold": true,
+		"type": "date",
+		"child": {
+			"property": "http://vivoweb.org/ontology/core#relatedBy",
+			"graph": "document",
+			"child": {
+				"property": "http://purl.org/dc/terms/issued"
+			}
+		}
+	},
+	{
+		"name": {
+			"es": "Nombre de la publicación"
+		},
+		"child": {
+			"property": "http://vivoweb.org/ontology/core#relatedBy",
+			"graph": "document",
+			"child": {
+				"property": "http://vivoweb.org/ontology/core#hasPublicationVenue",
+				"graph": "maindocument",
+				"child": {
+					"property": "http://w3id.org/roh/title"
+				}
+			}
+		}
+	},
+	{
+		"name": {
+			"es": "Autores/as (p. o. de firma)"
+		},
+		"showMini": true,
+		"childOR": [
+			{
+				"property": "http://vivoweb.org/ontology/core#relatedBy",
+				"graph": "document",
+				"order": "http://www.w3.org/1999/02/22-rdf-syntax-ns#comment",
+				"child": {
+					"property": "http://purl.org/ontology/bibo/authorList",
+					"child": {
+						"property": "http://xmlns.com/foaf/0.1/nick"
+					}
+				}
+			},
+			{
+				"property": "http://vivoweb.org/ontology/core#relatedBy",
+				"graph": "document",
+				"order": "http://www.w3.org/1999/02/22-rdf-syntax-ns#comment",
+				"child": {
+					"property": "http://purl.org/ontology/bibo/authorList",
+					"child": {
+						"property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
+						"graph": "person",
+						"child": {
+							"property": "http://xmlns.com/foaf/0.1/name"
+						}
+					}
+				}
+			}
+		]
+	},
+
+
+```
