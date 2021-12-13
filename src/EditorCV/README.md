@@ -15,6 +15,10 @@
 
 [Ejemplo de edición](#ejemplo-de-edición)
 
+* [Configuración de la presentación](#configuración-de-la-presentación)
+
+* [Configuración de la edición](#configuración-de-la-edición)
+
 Introducción
 ============
 
@@ -50,7 +54,11 @@ El archivo a editar para la configuración de los ítems de "Actividad científi
 
 Una vez localizada la propiedad del modelo semántico que corresponde con la actividad científica y tecnológica del investigador, vemos un listado de secciones (ítems) que podemos editar. En este caso, y como vemos en la imagen anterior, se procede a definir el RDF, la propiedad del ítem y el título ("Publicaciones, documentos científicos y técnicos") con el que figurará en el listado del editor.
 
-Seguidamente, definimos la presentación para cada una de las publicaciones que el titular del CV puede añadir en esta sección. En primer lugar, se añade la propiedad que vincula el CV del investigador con el objeto que contendrá los datos generales de la publicación (vivo:relatedBy). Después definifimos el grafo sobre el que vamos a trabajar (document) y la propiedad que mostrará el título de cada una de las publicaciones que añadamos, en este caso roh:title.
+
+## Configuración de la presentación
+
+
+Para definir la presentación de cada una de las publicaciones que el titular del CV puede añadir en esta sección, se añade la propiedad que vincula el CV del investigador con el objeto que contendrá los datos generales de la publicación (vivo:relatedBy). Después definimos el grafo sobre el que vamos a trabajar (document) y la propiedad que mostrará el título de cada una de las publicaciones que añadamos, en este caso roh:title.
 
 ```
 {
@@ -195,6 +203,72 @@ Tras ello, queremos definir las propiedades que mostrará cada publicación en e
 			}
 		]
 	},
+	{
+		"name": {
+			"es": "Tipo de producción"
+		},
+		"child": {
+			"property": "http://vivoweb.org/ontology/core#relatedBy",
+			"graph": "document",
+			"child": {
+				"property": "http://purl.org/dc/elements/1.1/type",
+				"graph": "publicationtype",
+				"child": {
+					"property": "http://purl.org/dc/elements/1.1/title"
+				}
+			}
+		}
+	}
 
 
+```
+
+Como vemos en el ejemplo anterior, cada propiedad que deseamos mostrar de la publicación viene definida por una jerarquía que la localiza en el grafo de la ontología. En el caso del nombre de la publicación, ésta se encuentra ubicada en el grafo "maindocument", por lo que debemos buscarla desde vivo:relatedBy --> bibo:Document --> vivo:hasPublicationVenue --> (cambiamos el grafo a "maindocument") --> roh:title. También podemos indicar si queremos que el valor de una determinada propiedad se muestre bajo el título sin necesidad de desplegar el resto de datos con "showMini" a true, o incluso en negrita con "showMiniBold" a true. La visualización de la instancia, sin desplegar y desplegada, quedaría así con el ejemplo de configuración anterior:
+
+![](../../Docs/media/EditorCV/EdicionCV3.png)
+
+![](../../Docs/media/EditorCV/EdicionCV4.png)
+
+
+## Configuración de la edición
+
+Finalmente, vamos a configurar los distintos campos que queremos que presente una publicación a la hora de su edición por el titular del CV. Para ello, y al nivel de "listItemsPresentation", añadimos la propiedad "listItemEdit" que contendrá, a su vez, las siguientes propiedades:
+
+```
+
+"listItemEdit": {
+	"graph": "document",
+	"proptitle": "http://w3id.org/roh/title",
+	"propdescription": "http://purl.org/ontology/bibo/abstract",
+	"rdftype": "http://purl.org/ontology/bibo/Document",
+	"loadPropertyValues": [
+		{
+			"property": "http://w3id.org/roh/scientificActivityDocument",
+			"values": [
+				"http://gnoss.com/items/scientificactivitydocument_SAD1"
+			]
+		}
+	],
+	"sections": [
+		{
+			"title": {
+				"es": "Información general"
+			},
+			"rows": [
+				{
+					"properties": [
+						{
+							"title": {
+								"es": "Título de la publicación"
+							},
+							"placeholder": {
+								"es": "Introduce el título de la publicación"
+							},
+							"property": "http://w3id.org/roh/title",
+							"required": true,
+							"type": "text",
+							"width": 3
+						}
+					]
+				},
 ```

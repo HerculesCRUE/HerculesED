@@ -197,7 +197,13 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
             if (objInicial.author != null)
             {
                 Person persona = new Person();
-
+                   int i = this.CrossRefLogic.autores_orcid.Count;
+                    string orcid = null;
+                    string name = null;
+                    string familia = null;
+                    string completo = null;
+                    string idss = null; ;
+                    string links = null;
                 foreach (Author autor in objInicial.author)
                 {
                     if (autor.sequence == "first")
@@ -208,11 +214,14 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                             {
                                 int indice = autor.ORCID.IndexOf("org/");
                                 persona.ORCID = autor.ORCID.Substring(indice + 4);
+                                orcid= persona.ORCID;
 
                             }
                             else
                             {
                                 persona.ORCID = autor.ORCID;
+                                                                orcid= persona.ORCID;
+
                             }
                         }
                         //persona.ORCID = autor.ORCID;
@@ -223,10 +232,12 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                         if (autor.given != null)
                         {
                             name_inicial.Add(autor.given);
+                            name=autor.given;
                         }
                         if (autor.family != null)
                         {
                             apellido.Add(autor.family);
+                            familia=autor.family;
                         }
                         if (name_inicial != null || apellido != null)
                         {
@@ -241,7 +252,13 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                             }
                             persona.name = nombre;
                         }
-
+                          persona.id_persona=i.ToString();
+                   
+                                        if(orcid!=null || name!=null ||familia!=null ||completo!=null || idss!=null || links!=null){
+                                        Tuple<string,string, string, string, string, string> tupla = new Tuple<string,string, string, string, string, string>(orcid,name,familia,completo,idss,links);
+                                        
+                                        this.CrossRefLogic.autores_orcid[i.ToString()]=tupla;}
+                                       
                         return persona;
                     }
                 }
@@ -256,16 +273,25 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                 foreach (Author autor in objInicial.author)
                 {
                     Person persona = new Person();
+                     int i = this.CrossRefLogic.autores_orcid.Count;
+                                    string orcid=null;
+                                    string name=null;
+                                    string familia=null;
+                                    string completo=null;
+                                    string ids=null;;
+                                    string links=null;
                     if (autor.ORCID != null)
                     {
                         if (autor.ORCID.Contains("https://orcid.org/") || autor.ORCID.Contains("http://orcid.org/") )
                         {
                             int indice = autor.ORCID.IndexOf("org/");
                             persona.ORCID = autor.ORCID.Substring(indice + 4);
+                            orcid=persona.ORCID;
                         }
                         else
                         {
                             persona.ORCID = autor.ORCID;
+                            orcid= persona.ORCID;
                         }
                     }
                     //persona.ORCID = autor.ORCID;
@@ -276,10 +302,12 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                     if (autor.given != null)
                     {
                         name_inicial.Add(autor.given);
+                        name=autor.given;
                     }
                     if (autor.family != null)
                     {
                         apellido.Add(autor.family);
+                        familia=autor.family;
                     }
                     if (name_inicial != null || apellido != null)
                     {
@@ -294,7 +322,10 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                         }
                         persona.name = nombre;
                     }
+                    persona.id_persona=i.ToString();
                     autores.Add(persona);
+                                        Tuple<string,string, string, string, string, string> tupla = new Tuple<string,string, string, string, string, string>(orcid,name,familia,completo,ids,links);
+                                        this.CrossRefLogic.autores_orcid[i.ToString()]=tupla;
 
                 }
                 return autores;

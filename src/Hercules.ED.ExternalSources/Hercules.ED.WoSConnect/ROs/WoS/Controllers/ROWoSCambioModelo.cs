@@ -691,6 +691,13 @@ namespace WoSConnect.ROs.WoS.Controllers
                                 foreach (JContainer var in hey)
                                 {
                                     Person persona = new Person();
+                                    int i = this.WoSLogic.autores_orcid.Count;
+                                    string orcid=null;
+                                    string name=null;
+                                    string familia=null;
+                                    string completo=null;
+                                    string ids=null;;
+                                    string links=null;
 
                                     try
                                     {
@@ -701,23 +708,24 @@ namespace WoSConnect.ROs.WoS.Controllers
                                             {
                                                 int indice = ee.orcid_id.IndexOf("org/");
                                                 persona.ORCID = ee.orcid_id.Substring(indice + 4);
-
+                                                orcid=ee.orcid_id.Substring(indice + 4);
                                             }
                                             else
                                             {
                                                 persona.ORCID = ee.orcid_id;
+                                                orcid=ee.orcid_id;
                                             }
                                         }
-
                                         List<string> nombres = new List<string>();
                                         List<string> apellidos = new List<string>();
                                         List<string> nombres_completo = new List<string>();
 
                                         if (ee.display_name != null)
                                         {
-                                            if (!nombres_completo.Contains(ee.display_name))
+                                            if (!nombres_completo.Contains(ee.display_name)  && !ee.full_name.Contains("IEEE"))
                                             {
                                                 nombres_completo.Add(ee.display_name);
+                                                completo=ee.display_name;
                                             }
                                         }
                                         if (ee.first_name != null)
@@ -725,13 +733,17 @@ namespace WoSConnect.ROs.WoS.Controllers
                                             if (!nombres.Contains(ee.first_name))
                                             {
                                                 nombres.Add(ee.first_name);
+                                                name=ee.first_name;
                                             }
                                         }
                                         if (ee.full_name != null)
                                         {
-                                            if (!nombres_completo.Contains(ee.full_name))
+                                            if (!nombres_completo.Contains(ee.full_name) && !ee.full_name.Contains("IEEE"))
                                             {
                                                 nombres_completo.Add(ee.full_name);
+                                                if(completo!=null){
+                                                    completo=completo+"*"+ee.first_name;
+                                                }
                                             }
                                         }
                                         if (ee.last_name != null)
@@ -739,6 +751,7 @@ namespace WoSConnect.ROs.WoS.Controllers
                                             if (!apellidos.Contains(ee.last_name))
                                             {
                                                 apellidos.Add(ee.last_name);
+                                                familia=ee.last_name;
                                             }
                                         }
                                         if (nombres.Count > 0 || apellidos.Count > 0 || nombres_completo.Count > 0)
@@ -759,22 +772,28 @@ namespace WoSConnect.ROs.WoS.Controllers
                                             persona.name = nombre;
 
                                         }
+                                        persona.id_persona=i.ToString();
                                         result.Add(persona);
-
+                                        if(orcid!=null || name!=null ||familia!=null ||completo!=null || ids!=null || links!=null){
+                                        Tuple<string,string, string, string, string, string> tupla = new Tuple<string,string, string, string, string, string>(orcid,name,familia,completo,ids,links);
+                                        
+                                        this.WoSLogic.autores_orcid[i.ToString()]=tupla;
+                                        }
                                     }
                                     catch
                                     {
                                         Name_1 ee = JsonConvert.DeserializeObject<Name_1>(var.ToString());
 
-                                        List<string> nombres = new List<string>();
+                                              List<string> nombres = new List<string>();
                                         List<string> apellidos = new List<string>();
                                         List<string> nombres_completo = new List<string>();
 
                                         if (ee.display_name != null)
                                         {
-                                            if (!nombres_completo.Contains(ee.display_name))
+                                            if (!nombres_completo.Contains(ee.display_name) && !ee.full_name.Contains("IEEE"))
                                             {
                                                 nombres_completo.Add(ee.display_name);
+                                                completo=ee.display_name;
                                             }
                                         }
                                         if (ee.first_name != null)
@@ -782,13 +801,18 @@ namespace WoSConnect.ROs.WoS.Controllers
                                             if (!nombres.Contains(ee.first_name))
                                             {
                                                 nombres.Add(ee.first_name);
+                                                name=ee.first_name;
                                             }
                                         }
                                         if (ee.full_name != null)
                                         {
-                                            if (!nombres_completo.Contains(ee.full_name))
+                                            if (!nombres_completo.Contains(ee.full_name) && !ee.full_name.Contains("IEEE"))
                                             {
+                                            
                                                 nombres_completo.Add(ee.full_name);
+                                                if(completo!=null){
+                                                    completo=completo+"*"+ee.first_name;
+                                                }
                                             }
                                         }
                                         if (ee.last_name != null)
@@ -796,6 +820,7 @@ namespace WoSConnect.ROs.WoS.Controllers
                                             if (!apellidos.Contains(ee.last_name))
                                             {
                                                 apellidos.Add(ee.last_name);
+                                                familia=ee.last_name;
                                             }
                                         }
                                         if (nombres.Count > 0 || apellidos.Count > 0 || nombres_completo.Count > 0)
@@ -816,9 +841,10 @@ namespace WoSConnect.ROs.WoS.Controllers
                                             persona.name = nombre;
 
                                         }
-
+                                        persona.id_persona=i.ToString();
                                         result.Add(persona);
-
+                                        Tuple<string,string, string, string, string, string> tupla = new Tuple<string,string, string, string, string, string>(orcid,name,familia,completo,ids,links);
+                                        this.WoSLogic.autores_orcid[i.ToString()]=tupla;
                                     }
 
 
