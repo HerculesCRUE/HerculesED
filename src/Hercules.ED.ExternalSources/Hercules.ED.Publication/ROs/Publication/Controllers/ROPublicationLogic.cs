@@ -31,17 +31,20 @@ namespace PublicationConnect.ROs.Publications.Controllers
         //ROScopusControllerJSON info = new ROScopusControllerJSON();
         protected string baseUri { get; set; }
 
-
+        
         // protected List<Publication> publications = new List<Publication>();
         protected List<string> dois_principales = new List<string>();
         protected List<string> dois_bibliografia = new List<string>();
         protected Dictionary<string, string> headers = new Dictionary<string, string>();
+        //protected Dictionary<string, Tuple<Liststring>,List<atring>,List<string>>  dic_orcid; //= new Dictionary<string, Tuple<Liststring>,List<atring>,List<string>>();
+
+
         public ROPublicationLogic(string baseUri)
         {
 
             //this.baseUri = "http://localhost:5000/WoS/GetROs?orcid={0}";
-
             //this.bareer = bareer;
+
 
         }
 
@@ -249,17 +252,19 @@ namespace PublicationConnect.ROs.Publications.Controllers
                             if (persona.name.nombre_completo.Count > 0)
                             {
                                 string name = persona.name.nombre_completo[0];
-                                 if(name!=null){
-                                if (names == "")
+                                if (name != null)
                                 {
-                                   
-                                    names = names + name;
+                                    if (names == "")
+                                    {
 
+                                        names = names + name;
+
+                                    }
+                                    else
+                                    {
+                                        names = names + " & " + name;
+                                    }
                                 }
-                                else
-                                {
-                                    names = names + " & " + name;
-                                }}
                             }
                         }
                     }
@@ -282,25 +287,26 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     //todo! esto se podria perfecccionar pero de momento es lo que hay! 
                     // por ejemplo se puede hacer que no pueda estar la misma persona dos vece sy cosas asi... 
                     foreach (Person persona in pub.seqOfAuthors)
-                    {
+                    { 
+                        if(persona.name!=null){
                         if (persona.name.nombre_completo != null)
                         {
                             if (persona.name.nombre_completo.Count > 0)
                             {
                                 string name = persona.name.nombre_completo[0];
-                                  if(name!=null){
-                                if (names == "")
+                                if (name != null)
                                 {
-                                   
-                                    names = names + name;
-
+                                    if (names == "")
+                                    {
+                                        names = names + name;
+                                    }
+                                    else
+                                    {
+                                        names = names + " & " + name;
+                                    }
                                 }
-                                else
-                                {
-                                    names = names + " & " + name;
-                                }}
                             }
-                        }
+                        }}
                     }
                     if (names != "")
                     {
@@ -576,7 +582,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         pub.seqOfAuthors = pub_1.seqOfAuthors;
                         if (pub_2.seqOfAuthors != null)
                         {
+                            //pub.seqOfAuthors = unificarUsuariosConNombreSimple(pub_1.seqOfAuthors, pub_2.seqOfAuthors);
                             //todo comporbacion de que son o no son iguales.
+                            //pub.seqOfAuthors.AddRange(pub_2.seqOfAuthors);
+                            pub.seqOfAuthors= pub_1.seqOfAuthors;
                             pub.seqOfAuthors.AddRange(pub_2.seqOfAuthors);
                         }
                     }
@@ -671,6 +680,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
 
         }
+
         public Publication llamada_Semantic_Scholar(string doi)
         {
             Uri url = new Uri(string.Format("http://localhost:5004/SemanticScholar/GetROs?doi={0}", doi));
@@ -736,9 +746,183 @@ namespace PublicationConnect.ROs.Publications.Controllers
             }
             catch { return null; }
         }
+        public string formato_estanda_string_name(string namee)
+        {
+            //if (namee.Contains("-") || namee.Contains(",")) { return null; }
+            //else
+            //{
+            //string[] i = name.Split(",");
+            //List<string> devolver = new List<string>();
+            //string nam;
+            //foreach(string namee in i){
+            //List<string> caracteres= new List<string>(){"á", "é", "ñ", "í","ú","'","ó","-"};
 
+            namee = namee.Replace("á", "a");
+            namee = namee.Replace("ó", "o");
+            namee = namee.Replace("-", " ");
+            namee = namee.Replace("ú", "u");
+            namee = namee.Replace("í", "i");
+            namee = namee.Replace("ñ", "n");
+            namee = namee.Replace("ó", "o");
+            namee = namee.Replace("é", "e");
+            //ä
+            namee = namee.Replace("´", "");
+            namee = namee.Replace("'", "");
+            namee = namee.Replace("~", "");
+            //todo, si funciona igual hay que considerar mas plaabras! 
+            //devolver.Add(nam);
+            // }
+            return namee;
+            //  }
 
+        }
+
+        
+        public List<string> nombre_completo(string name, string apellido)
+        {
+
+            //conseguimos todos los fromas posibles de un nombre simple
+            //ejemplo -> Pepe -> Pepe P. P son las formas posibles. 
+            string nombre_normalizado = formato_estanda_string_name(name);
+            List<string> given = new List<string>() { nombre_normalizado, nombre_normalizado.Substring(0, 1), nombre_normalizado.Substring(0, 1) + "." };
+            Console.Write(given[1]);
+            apellido = formato_estanda_string_name(apellido);
+
+            List<string> nomb_completos = new List<string>();
+            // given apellido
+            foreach (string given_forma in given)
+            {
+                //foreach (string apellido_forma in apellido)
+                //{
+
+                //    Console.Write(".....................------------------------");
+                nomb_completos.Add(given_forma + " " + apellido);
+                nomb_completos.Add(apellido + " " + given_forma);
+                nomb_completos.Add(apellido + ", " + given_forma);
+                //}
+            }
+            Console.Write(".....................------------------------");
+
+            return nomb_completos;
+        }
+
+        public Person unificar_dos_personas(Person persona_1, Person persona_2)
+        {
+            if (persona_1.ORCID == null)
+            {
+                if (persona_2.ORCID != null)
+                {
+                    persona_1.ORCID = persona_2.ORCID;
+                }
+            }
+            if (persona_2.IDs != null)
+            {
+                if (persona_1.IDs != null)
+                {
+                    persona_1.IDs.AddRange(persona_2.IDs);
+                }
+                else
+                {// persona_1.IDs=null
+                    persona_1.IDs = persona_2.IDs;
+                }
+            }
+
+            if (persona_2.links != null)
+            {
+                if (persona_1.links != null)
+                {
+                    persona_1.links.AddRange(persona_2.links);
+                }
+                else
+                {
+                    persona_1.links = persona_2.links;
+                }
+            }
+            
+        return persona_1;
+
+        }
+
+        public List<Person> unificarUsuariosConNombreSimple(List<Person> listado_1, List<Person> listado_2)
+        {
+            List<Person> devolver = new List<Person>();
+            foreach (Person persona_1 in listado_1)
+            {
+                //aqui faltaria algun if
+                if (persona_1.name.given != null && persona_1.name.given.Count > 0 && persona_1.name.familia != null && persona_1.name.familia.Count > 0)
+                {
+                    // el given y familia si tienen algo solo tienen 1... 
+                    if (!persona_1.name.familia[0].Contains("-") && !persona_1.name.given[0].Contains(" ") && !persona_1.name.familia[0].Contains(" "))
+                    {
+                        //los nombres son bonitos 
+                        string name = persona_1.name.given[0];
+                        string apellido = persona_1.name.familia[0];
+                        List<string> nombre_completo_1 = new List<string>();
+                        nombre_completo_1 = nombre_completo(name, apellido);
+                        persona_1.name.nombre_completo = nombre_completo_1;
+
+                        Person persona_eliminar = new Person();
+                        if (listado_2.Count >= 1)
+                        {
+                            for (int i = 0; i < listado_2.Count; i++)
+                            {
+                                Person person_2 = listado_2[i];
+
+                                if (person_2.name.nombre_completo != null)
+                                {
+                                    foreach (string name_completo_persona_2 in person_2.name.nombre_completo)
+                                    {
+                                        if (nombre_completo_1.Contains(formato_estanda_string_name(name_completo_persona_2)))
+                                        {
+                                            //detertada una persona duplicada por lo que toda la infromacion la pasamos a una unica persona. -> combinacion de datos! 
+                                            //llegados aqui deberiamos aber que uno de los orcis es null. 
+                                            if (persona_1.ORCID == null)
+                                            {
+                                                if (person_2.ORCID != null)
+                                                {
+                                                    persona_1.ORCID = person_2.ORCID;
+                                                }
+                                            }
+                                            if (person_2.IDs != null)
+                                            {
+                                                if (persona_1.IDs != null)
+                                                {
+                                                    persona_1.IDs.AddRange(person_2.IDs);
+                                                }
+                                                else
+                                                {
+                                                    persona_1.IDs = person_2.IDs;
+                                                }
+                                            }
+
+                                            if (person_2.links != null)
+                                            {
+                                                if (persona_1.links != null)
+                                                {
+                                                    persona_1.links.AddRange(person_2.links);
+                                                }
+                                                else
+                                                {
+                                                    persona_1.links = person_2.links;
+                                                }
+                                            }
+                                            persona_eliminar = person_2;
+                                            //  listado_2.Remove(person_2);
+                                            // }
+                                        }
+
+                                    }
+                                }
+                            }
+                            listado_2.Remove(persona_eliminar);
+                        }
+                    }
+                    else { devolver.Add(persona_1); }
+                }
+                else { devolver.Add(persona_1); }
+            }
+            return listado_1;
+        }
     }
-
 
 }

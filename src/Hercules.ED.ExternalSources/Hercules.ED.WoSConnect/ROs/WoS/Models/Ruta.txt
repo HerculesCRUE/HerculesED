@@ -2,7 +2,6 @@ Esyte artivo es para almacenar los cambios de modelo y donde estan!
 En el modelo inical partimo de la clase PublicacionInicial y en la otra desde publicacion
 Obtener el DOI----------------------------------
 
-
 Publication.doi = 
 PublicacionInicial.dynamic_data.cluster_related.identifiers[i].Identifier.value
     identifiers es una lista y hay que encontrar dentro el elemento Identifier que tenga type == "doi",
@@ -15,7 +14,6 @@ static_data.summary.titles.title[i].content
 
 -------------------------------------------
 publicacion.Abstract 
-
 static_data.fullrecord_metadata.abstracts.@abstract.abstract_text.p
 Igual tmabien da problemas si tiene mas de un abstract pero no se que va a tener mas de un abstract
 
@@ -55,13 +53,15 @@ publicacion.pageEnd
 -----------------------
 
 publicacion.hasKnowledgeArea
+static_data.fullrecord_metadata.category_info.subjects.subject.
 
 no las hago porque no se como se va a hacer esto! 
 
 ----------------------------------------------------------------
 publicacion.freetextKeyword 
-
-static_data.fullrecord_metadata.keywords.Keyword es una lista ocmo lo que necesitamos 
+static_data.item.keywords_plus.keyword  -> son obtenidas mediante un algortimo! NOOO! 
+static_data.fullrecord_metadata.keywords.Keyword -> articulo las que pone el autor! -> estan son las que queremos
+ es una lista ocmo lo que necesitamos 
 
 ----------------------------------------------
 publicacion.correspondingAuthor 
@@ -83,12 +83,9 @@ publicacion.hasMetric
        static_data.fullrecord_metadata.refs.count.ToString()
 
 
-
-
 publicacion.bibliografia = getBiblografia(objInicial);
 publicacion.citas = getCitas(objInicial);
              
-
 ---------------------
 static_data.summary,conferences.conference.conf_infos.conf_info
  TODO! 

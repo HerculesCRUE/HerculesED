@@ -94,6 +94,7 @@ public class JournalMetric
 
 public class Person
 {
+    public string id_persona {get;set;}
     //public DateTimeValue birthdate { get; set; }
     public Name name { get; set; } 
     //public string surname { get; set; }

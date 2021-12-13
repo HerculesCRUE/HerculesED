@@ -10,6 +10,7 @@ using PublicationConnect.Controllers;
 using PublicationConnect.ROs.Publications.Controllers;
 using PublicationConnect.ROs.Publications.Models;
 using Newtonsoft.Json;
+using PublicationConnect.Controllers.autores;
 
 namespace PublicationConnect.Controllers
 {
@@ -56,11 +57,15 @@ namespace PublicationConnect.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public List<Publication> GetROs([FromQuery][Required] string orcid,string date="1500-01-01")
         {
-            ROPublicationLogic PublicationObject = new ROPublicationLogic("");
-            List<Publication> publication = PublicationObject.getPublications(orcid,date);
-            return publication;
+          ROPublicationLogic PublicationObject = new ROPublicationLogic("");
+         List<Publication> publication = PublicationObject.getPublications(orcid,date);
+            almacenamiento_autores almacenamiento = new almacenamiento_autores();
+            almacenamiento.unificar_personas();
+          publication = almacenamiento.poner_usuarios(publication);
+           almacenamiento.guardar_info_autores();
+        return publication;
+         //  return null;
         }
         
-    
     }}
 

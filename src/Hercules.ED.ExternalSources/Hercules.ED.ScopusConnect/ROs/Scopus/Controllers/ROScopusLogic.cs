@@ -22,6 +22,8 @@ namespace ScopusConnect.ROs.Scopus.Controllers
 {
     public class ROScopusLogic : ScopusInterface
     {
+            public Dictionary<string, Tuple<string, string, string, string, string, string>> autores_orcid ;
+
         protected string bareer;
         //ROScopusControllerJSON info = new ROScopusControllerJSON();
         protected string baseUri { get; set; }
@@ -29,11 +31,11 @@ namespace ScopusConnect.ROs.Scopus.Controllers
 
         // protected List<Publication> publications = new List<Publication>();
         protected Dictionary<string, string> headers = new Dictionary<string, string>();
-        public ROScopusLogic(string baseUri, string bareer)
+        public ROScopusLogic(string baseUri, string bareer,      Dictionary<string, Tuple<string, string, string, string, string, string>> autores_orcid)
         {
             this.baseUri = baseUri;
             this.bareer = bareer;
-
+this.autores_orcid=autores_orcid;
         }
 
         // TODO: Esto no se si abra que cambiarlo o no.... 
@@ -113,8 +115,8 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                 result = 200*n;
 
                 String info_publication = httpCall(url.ToString(), "GET", headers).Result;
-                //Console.Write(info_publication);
-                if (info_publication != "{\"service-error\":{\"status\":{\"statusCode\":\"INVALID_INPUT\",\"statusText\":\"Error translating query\"}}}")
+                Console.Write(info_publication);
+                if (!info_publication.StartsWith( "{\"service-error\":"))//{\"status\":{\"statusCode\":\"INVALID_INPUT\",\"statusText\":\"Error translating query\"}}}")
                 {            
                     Root objInicial = JsonConvert.DeserializeObject<Root>(info_publication);
                     List<Publication> nuevas = info.getListPublicatio(objInicial, date);

@@ -27,18 +27,19 @@ namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
         protected string bareer;
         //ROScopusControllerJSON info = new ROScopusControllerJSON();
         protected string baseUri { get; set; }
+    public Dictionary<string, Tuple<string,string,string,string,string,string>>  autores_orcid; //= LeerDatosExcel_autores(@"C:\Users\mpuer\Documents\GitHub\HerculesED\src\Hercules.ED.ExternalSources\Hercules-ED_autores.xlsx");
+
 
 
         // protected List<Publication> publications = new List<Publication>();
         protected Dictionary<string, string> headers = new Dictionary<string, string>();
-        public ROSemanticScholarLogic(string baseUri)//, string bareer)
+        public ROSemanticScholarLogic(string baseUri, Dictionary<string, Tuple<string,string,string,string,string,string>>  autores_orcid )//, string bareer)
         {
             this.baseUri = baseUri;
+            this.autores_orcid = autores_orcid;
             //this.bareer = bareer;
 
         }
-
-        // TODO: Esto no se si abra que cambiarlo o no.... 
         /// <summary>
         /// A Http calls function
         /// </summary>
@@ -104,6 +105,13 @@ namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
             ROSemanticScholarControllerJSON info = new ROSemanticScholarControllerJSON(this);
             Publication sol = info.cambioDeModeloPublicacion(objInicial);
             sol.doi=name;
+            Console.Write("Ids del diccionario\n");
+            foreach(string i in this.autores_orcid.Keys){
+                Console.Write(i);
+                Console.Write(" ");
+                Console.Write(this.autores_orcid[i]);
+                Console.Write("\n");
+            }
             return sol;
         }
     }
