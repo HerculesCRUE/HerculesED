@@ -202,8 +202,20 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                 {
                     if (autor.sequence == "first")
                     {
+                        if (autor.ORCID != null)
+                        {
+                            if (autor.ORCID.Contains("https://orcid.org/") || autor.ORCID.Contains("http://orcid.org/"))
+                            {
+                                int indice = autor.ORCID.IndexOf("org/");
+                                persona.ORCID = autor.ORCID.Substring(indice + 4);
 
-                        persona.ORCID = autor.ORCID;
+                            }
+                            else
+                            {
+                                persona.ORCID = autor.ORCID;
+                            }
+                        }
+                        //persona.ORCID = autor.ORCID;
 
                         List<string> name_inicial = new List<string>();
                         List<string> apellido = new List<string>();
@@ -244,12 +256,18 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                 foreach (Author autor in objInicial.author)
                 {
                     Person persona = new Person();
-                    if(autor.ORCID!=null){
-                    if(autor.ORCID.StartsWith("h")){
-                                                string[] e = autor.ORCID.Split("org/");
-                                                persona.ORCID = e[1];
-                                            }else{
-                                            persona.ORCID =autor.ORCID;}}
+                    if (autor.ORCID != null)
+                    {
+                        if (autor.ORCID.Contains("https://orcid.org/") || autor.ORCID.Contains("http://orcid.org/") )
+                        {
+                            int indice = autor.ORCID.IndexOf("org/");
+                            persona.ORCID = autor.ORCID.Substring(indice + 4);
+                        }
+                        else
+                        {
+                            persona.ORCID = autor.ORCID;
+                        }
+                    }
                     //persona.ORCID = autor.ORCID;
 
                     List<string> name_inicial = new List<string>();
@@ -351,7 +369,16 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                     Publication pub = new Publication();
                     if (bib.DOI != null)
                     {
-                        pub.doi = bib.DOI;
+                        if (bib.DOI.Contains("https://doi.org/"))
+                        {
+                            int indice = bib.DOI.IndexOf("org/");
+                            pub.doi = bib.DOI.Substring(indice + 4);
+
+                        }
+                        else
+                        {
+                            pub.doi = bib.DOI;
+                        }
                     }
                     if (bib.ArticleTitle != null)
                     {

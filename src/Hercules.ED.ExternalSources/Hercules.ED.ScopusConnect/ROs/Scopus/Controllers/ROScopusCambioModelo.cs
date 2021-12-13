@@ -154,7 +154,16 @@ namespace ScopusConnect.ROs.Scopus.Controllers
         {
             if (objInicial.PrismDoi != null)
             {
+                if(objInicial.PrismDoi.Contains("https://doi.org/")){
+                     
+                                        
+                                            int indice = objInicial.PrismDoi.IndexOf("org/");
+                                            return objInicial.PrismDoi.Substring(indice + 4);
+
+                                        
+                }else{
                 return objInicial.PrismDoi;
+                }
             }
             return null;
         }
