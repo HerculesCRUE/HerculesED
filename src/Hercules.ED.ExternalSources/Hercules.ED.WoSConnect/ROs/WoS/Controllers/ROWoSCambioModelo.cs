@@ -206,61 +206,70 @@ namespace WoSConnect.ROs.WoS.Controllers
                     {
                         if (objInicial.static_data.summary.doctypes.doctype != null)
                         {
+                            bool esLista = false;
                             try
                             {
-                                JArray hey = JsonConvert.DeserializeObject<JArray>(objInicial.static_data.summary.doctypes.doctype.ToString());
-                                List<string> types = new List<string>();
-                                for (int i = 0; i < hey.Count; i++)
+                                if (objInicial.static_data.summary.doctypes.doctype.ToString().Trim().StartsWith("[") && objInicial.static_data.summary.doctypes.doctype.ToString().Trim().EndsWith("]"))
                                 {
-                                    //return "problema_a_solucionar";
-                                    string typeWoS = hey[i].ToString();
-                                    if (typeWoS == "Article")
+                                    JArray hey = JsonConvert.DeserializeObject<JArray>(objInicial.static_data.summary.doctypes.doctype.ToString());
+                                    esLista = true;
+                                    List<string> types = new List<string>();
+                                    for (int i = 0; i < hey.Count; i++)
                                     {
-                                        types.Add("Journal Article");
+                                        //return "problema_a_solucionar";
+                                        string typeWoS = hey[i].ToString();
+                                        if (typeWoS == "Article")
+                                        {
+                                            types.Add("Journal Article");
+                                        }
+                                        if (typeWoS == "Book")
+                                        {
+                                            types.Add("Book");
+                                        }
+                                        if (typeWoS == "Book Chapter")
+                                        {
+                                            types.Add("Chapter");
+                                        }
+                                        if (typeWoS == "Proceedings Paper")
+                                        {
+                                            types.Add("Conference Paper");
+                                        }
                                     }
-                                    if (typeWoS == "Book")
+                                    if (types.Count > 1)
                                     {
-                                        types.Add("Book");
-                                    }
-                                    if (typeWoS == "Book Chapter")
-                                    {
-                                        types.Add("Chapter");
-                                    }
-                                    if (typeWoS == "Proceedings Paper")
-                                    {
-                                        types.Add("Conference Paper");
-                                    }
-                                }
-                                if (types.Count > 1)
-                                {
-                                    //obtener las etiquetas juntas para definirlas
-                                    string types_merge = "";
-                                    foreach (string type in types)
-                                    {
-                                        types_merge = types_merge + type + ";";
-                                    }
-                                    //definir el problema! 
-                                    if (this.advertencia == null)
-                                    {
-                                        List<string> ad = new List<string>();
-                                        ad.Add("Problema con el tipo de articulo. Los diferentes tipos obtenidos son los siguientes: " + types_merge);
-                                        this.advertencia = ad;
-                                    }
-                                    else
-                                    {
-                                        this.advertencia.Add("Problema con el tipo de articulo. Los diferentes tipos obtenidos son los siguientes: " + types_merge);
-                                    }
-                                    return types_merge;
+                                        //obtener las etiquetas juntas para definirlas
+                                        string types_merge = "";
+                                        foreach (string type in types)
+                                        {
+                                            types_merge = types_merge + type + ";";
+                                        }
+                                        //definir el problema! 
+                                        if (this.advertencia == null)
+                                        {
+                                            List<string> ad = new List<string>();
+                                            ad.Add("Problema con el tipo de articulo. Los diferentes tipos obtenidos son los siguientes: " + types_merge);
+                                            this.advertencia = ad;
+                                        }
+                                        else
+                                        {
+                                            this.advertencia.Add("Problema con el tipo de articulo. Los diferentes tipos obtenidos son los siguientes: " + types_merge);
+                                        }
+                                        return types_merge;
 
+                                    }
+                                    else if (types.Count == 0)
+                                    {
+                                        return null;
+                                    }
+                                    else { return types[0]; }
                                 }
-                                else if (types.Count == 0)
-                                {
-                                    return null;
-                                }
-                                else { return types[0]; }
-
                             }
                             catch
+                            {
+
+
+                            }
+                            if (!esLista)
                             {
                                 string typeWoS = objInicial.static_data.summary.doctypes.doctype.ToString();
                                 if (typeWoS == "Article")
@@ -280,8 +289,8 @@ namespace WoSConnect.ROs.WoS.Controllers
                                     return "Conference Paper";
                                 }
                                 else { return null; }
-
                             }
+
                         }
                     }
                 }
@@ -336,15 +345,25 @@ namespace WoSConnect.ROs.WoS.Controllers
                         {
                             if (objInicial.static_data.fullrecord_metadata.abstracts.@abstract.abstract_text != null)
                             {
+                                bool esLista = false;
                                 try
                                 {
-                                    AbstractText hey = JsonConvert.DeserializeObject<AbstractText>(objInicial.static_data.fullrecord_metadata.abstracts.@abstract.abstract_text.ToString());
-                                    if (hey.p != null)
+                                    if (objInicial.static_data.fullrecord_metadata.abstracts.@abstract.abstract_text.ToString().Trim().StartsWith("[") && objInicial.static_data.fullrecord_metadata.abstracts.@abstract.abstract_text.ToString().Trim().EndsWith("]"))
                                     {
-                                        return hey.p;
+                                        AbstractText hey = JsonConvert.DeserializeObject<AbstractText>(objInicial.static_data.fullrecord_metadata.abstracts.@abstract.abstract_text.ToString());
+                                        esLista = true;
+                                        if (hey.p != null)
+                                        {
+                                            return hey.p;
+                                        }
                                     }
                                 }
                                 catch
+                                {
+
+                                }
+
+                                if (!esLista)
                                 {
                                     AbstractText_list hey = JsonConvert.DeserializeObject<AbstractText_list>(objInicial.static_data.fullrecord_metadata.abstracts.@abstract.abstract_text.ToString());
 
@@ -408,29 +427,38 @@ namespace WoSConnect.ROs.WoS.Controllers
                     {
                         if (objInicial.dynamic_data.cluster_related.identifiers.identifier != null)
                         {
+                            bool esLista = false;
                             try
                             {
-                                JArray hey = JsonConvert.DeserializeObject<JArray>(objInicial.dynamic_data.cluster_related.identifiers.identifier.ToString());
-                                foreach (JContainer var in hey)
+                                if (objInicial.dynamic_data.cluster_related.identifiers.identifier.ToString().Trim().StartsWith("[") && objInicial.dynamic_data.cluster_related.identifiers.identifier.ToString().Trim().EndsWith("]"))
                                 {
-                                    Identifier identifier = JsonConvert.DeserializeObject<Identifier>(var.ToString());
-
-                                    if (identifier.type == "doi")
+                                    JArray hey = JsonConvert.DeserializeObject<JArray>(objInicial.dynamic_data.cluster_related.identifiers.identifier.ToString());
+                                    esLista = true;
+                                    foreach (JContainer var in hey)
                                     {
-                                        if (identifier.value.Contains("https://doi.org/"))
-                                        {
-                                            int indice = identifier.value.IndexOf("org/");
-                                            return identifier.value.Substring(indice + 4);
+                                        Identifier identifier = JsonConvert.DeserializeObject<Identifier>(var.ToString());
 
-                                        }
-                                        else
+                                        if (identifier.type == "doi")
                                         {
-                                            return identifier.value;
+                                            if (identifier.value.Contains("https://doi.org/"))
+                                            {
+                                                int indice = identifier.value.IndexOf("org/");
+                                                return identifier.value.Substring(indice + 4);
+
+                                            }
+                                            else
+                                            {
+                                                return identifier.value;
+                                            }
                                         }
                                     }
                                 }
                             }
                             catch
+                            {
+
+                            }
+                            if (!esLista)
                             {
                                 Identifier identifier = JsonConvert.DeserializeObject<Identifier>(objInicial.dynamic_data.cluster_related.identifiers.identifier.ToString());
                                 if (identifier.type == "doi")
@@ -691,29 +719,28 @@ namespace WoSConnect.ROs.WoS.Controllers
                                 foreach (JContainer var in hey)
                                 {
                                     Person persona = new Person();
-                                    int i = this.WoSLogic.autores_orcid.Count;
-                                    string orcid=null;
-                                    string name=null;
-                                    string familia=null;
-                                    string completo=null;
-                                    string ids=null;;
-                                    string links=null;
+                                    string orcid = null;
+                                    string name = null;
+                                    string familia = null;
+                                    string completo = null;
+                                    string ids = null; ;
+                                    string links = null;
 
                                     try
                                     {
                                         Name_2 ee = JsonConvert.DeserializeObject<Name_2>(var.ToString());
                                         if (ee.orcid_id != null)
                                         {
-                                            if (ee.orcid_id.Contains("https://orcid.org/") ||ee.orcid_id.Contains("http://orcid.org/") )
+                                            if (ee.orcid_id.Contains("https://orcid.org/") || ee.orcid_id.Contains("http://orcid.org/"))
                                             {
                                                 int indice = ee.orcid_id.IndexOf("org/");
                                                 persona.ORCID = ee.orcid_id.Substring(indice + 4);
-                                                orcid=ee.orcid_id.Substring(indice + 4);
+                                                orcid = ee.orcid_id.Substring(indice + 4);
                                             }
                                             else
                                             {
                                                 persona.ORCID = ee.orcid_id;
-                                                orcid=ee.orcid_id;
+                                                orcid = ee.orcid_id;
                                             }
                                         }
                                         List<string> nombres = new List<string>();
@@ -722,10 +749,10 @@ namespace WoSConnect.ROs.WoS.Controllers
 
                                         if (ee.display_name != null)
                                         {
-                                            if (!nombres_completo.Contains(ee.display_name)  && !ee.full_name.Contains("IEEE"))
+                                            if (!nombres_completo.Contains(ee.display_name) && !ee.full_name.Contains("IEEE"))
                                             {
                                                 nombres_completo.Add(ee.display_name);
-                                                completo=ee.display_name;
+                                                completo = ee.display_name;
                                             }
                                         }
                                         if (ee.first_name != null)
@@ -733,7 +760,7 @@ namespace WoSConnect.ROs.WoS.Controllers
                                             if (!nombres.Contains(ee.first_name))
                                             {
                                                 nombres.Add(ee.first_name);
-                                                name=ee.first_name;
+                                                name = ee.first_name;
                                             }
                                         }
                                         if (ee.full_name != null)
@@ -741,8 +768,9 @@ namespace WoSConnect.ROs.WoS.Controllers
                                             if (!nombres_completo.Contains(ee.full_name) && !ee.full_name.Contains("IEEE"))
                                             {
                                                 nombres_completo.Add(ee.full_name);
-                                                if(completo!=null){
-                                                    completo=completo+"*"+ee.first_name;
+                                                if (completo != null)
+                                                {
+                                                    completo = completo + "*" + ee.first_name;
                                                 }
                                             }
                                         }
@@ -751,7 +779,7 @@ namespace WoSConnect.ROs.WoS.Controllers
                                             if (!apellidos.Contains(ee.last_name))
                                             {
                                                 apellidos.Add(ee.last_name);
-                                                familia=ee.last_name;
+                                                familia = ee.last_name;
                                             }
                                         }
                                         if (nombres.Count > 0 || apellidos.Count > 0 || nombres_completo.Count > 0)
@@ -772,19 +800,13 @@ namespace WoSConnect.ROs.WoS.Controllers
                                             persona.name = nombre;
 
                                         }
-                                        persona.id_persona=i.ToString();
                                         result.Add(persona);
-                                        if(orcid!=null || name!=null ||familia!=null ||completo!=null || ids!=null || links!=null){
-                                        Tuple<string,string, string, string, string, string> tupla = new Tuple<string,string, string, string, string, string>(orcid,name,familia,completo,ids,links);
-                                        
-                                        this.WoSLogic.autores_orcid[i.ToString()]=tupla;
-                                        }
                                     }
                                     catch
                                     {
                                         Name_1 ee = JsonConvert.DeserializeObject<Name_1>(var.ToString());
 
-                                              List<string> nombres = new List<string>();
+                                        List<string> nombres = new List<string>();
                                         List<string> apellidos = new List<string>();
                                         List<string> nombres_completo = new List<string>();
 
@@ -793,7 +815,7 @@ namespace WoSConnect.ROs.WoS.Controllers
                                             if (!nombres_completo.Contains(ee.display_name) && !ee.full_name.Contains("IEEE"))
                                             {
                                                 nombres_completo.Add(ee.display_name);
-                                                completo=ee.display_name;
+                                                completo = ee.display_name;
                                             }
                                         }
                                         if (ee.first_name != null)
@@ -801,17 +823,18 @@ namespace WoSConnect.ROs.WoS.Controllers
                                             if (!nombres.Contains(ee.first_name))
                                             {
                                                 nombres.Add(ee.first_name);
-                                                name=ee.first_name;
+                                                name = ee.first_name;
                                             }
                                         }
                                         if (ee.full_name != null)
                                         {
                                             if (!nombres_completo.Contains(ee.full_name) && !ee.full_name.Contains("IEEE"))
                                             {
-                                            
+
                                                 nombres_completo.Add(ee.full_name);
-                                                if(completo!=null){
-                                                    completo=completo+"*"+ee.first_name;
+                                                if (completo != null)
+                                                {
+                                                    completo = completo + "*" + ee.first_name;
                                                 }
                                             }
                                         }
@@ -820,7 +843,7 @@ namespace WoSConnect.ROs.WoS.Controllers
                                             if (!apellidos.Contains(ee.last_name))
                                             {
                                                 apellidos.Add(ee.last_name);
-                                                familia=ee.last_name;
+                                                familia = ee.last_name;
                                             }
                                         }
                                         if (nombres.Count > 0 || apellidos.Count > 0 || nombres_completo.Count > 0)
@@ -841,10 +864,7 @@ namespace WoSConnect.ROs.WoS.Controllers
                                             persona.name = nombre;
 
                                         }
-                                        persona.id_persona=i.ToString();
                                         result.Add(persona);
-                                        Tuple<string,string, string, string, string, string> tupla = new Tuple<string,string, string, string, string, string>(orcid,name,familia,completo,ids,links);
-                                        this.WoSLogic.autores_orcid[i.ToString()]=tupla;
                                     }
 
 
@@ -1049,33 +1069,43 @@ namespace WoSConnect.ROs.WoS.Controllers
                     {
                         if (objInicial.dynamic_data.cluster_related.identifiers.identifier != null)
                         {
+                            bool esLista = false;
                             try
                             {
-                                JArray hey = JsonConvert.DeserializeObject<JArray>(objInicial.dynamic_data.cluster_related.identifiers.identifier.ToString());
-                                foreach (JContainer var in hey)
+                                if (objInicial.dynamic_data.cluster_related.identifiers.identifier.ToString().Trim().StartsWith("[") && objInicial.dynamic_data.cluster_related.identifiers.identifier.ToString().EndsWith("]"))
                                 {
-                                    Identifier identifier = JsonConvert.DeserializeObject<Identifier>(var.ToString());
+                                    JArray hey = JsonConvert.DeserializeObject<JArray>(objInicial.dynamic_data.cluster_related.identifiers.identifier.ToString());
+                                    esLista = true;
+                                    foreach (JContainer var in hey)
+                                    {
+                                        Identifier identifier = JsonConvert.DeserializeObject<Identifier>(var.ToString());
 
-                                    if (identifier.type == "issn")
-                                    {
-                                        List<string> issn = new List<string>();
-                                        issn.Add(identifier.value);
-                                        revista.issn = issn;
-                                    }
-                                    if (identifier.type == "eissn")
-                                    {
-                                        revista.eissn = identifier.value;
-                                    }
-                                    if (identifier.type == "isbn")
-                                    {
-                                        List<string> isbn = new List<string>();
-                                        isbn.Add(identifier.value);
-                                        revista.issn = isbn;
-                                        revista.isbn = isbn;
+                                        if (identifier.type == "issn")
+                                        {
+                                            List<string> issn = new List<string>();
+                                            issn.Add(identifier.value);
+                                            revista.issn = issn;
+                                        }
+                                        if (identifier.type == "eissn")
+                                        {
+                                            revista.eissn = identifier.value;
+                                        }
+                                        if (identifier.type == "isbn")
+                                        {
+                                            List<string> isbn = new List<string>();
+                                            isbn.Add(identifier.value);
+                                            revista.issn = isbn;
+                                            revista.isbn = isbn;
+                                        }
                                     }
                                 }
                             }
                             catch
+                            {
+
+                            }
+
+                            if (!esLista)
                             {
                                 Identifier identifier = JsonConvert.DeserializeObject<Identifier>(objInicial.dynamic_data.cluster_related.identifiers.identifier.ToString());
                                 if (identifier.type == "issn")
@@ -1097,7 +1127,6 @@ namespace WoSConnect.ROs.WoS.Controllers
                                     revista.isbn = isbn;
                                 }
                             }
-
                         }
                     }
                 }
