@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Net.Http;
 using Gnoss.Web.ReprocessData.Models;
+using Newtonsoft.Json;
 
 namespace Gnoss.Web.ReprocessData.Models.Services
 {
@@ -99,7 +100,7 @@ namespace Gnoss.Web.ReprocessData.Models.Services
         /// <param name="url">the http call url</param>
         /// <param name="method">Crud method for the call</param>
         /// <returns></returns>
-         protected async Task<string> httpCall(string url, string method = "GET", Dictionary<string, string> headers = null)
+        protected async Task<string> httpCall(string url, string method = "GET", Dictionary<string, string> headers = null)
         {
             HttpResponseMessage response;
             using (var httpClient = new HttpClient())
@@ -144,29 +145,34 @@ namespace Gnoss.Web.ReprocessData.Models.Services
 
         // message = orcid 
         //fecha. 
-
-        //{"investigador";[ORCID];"1/11/2021"} -> obtener todo lo de un autor desde la fecha inducada. 
-        //{"publicación"; [DOI]} ->  proceso de actualizacion de citas de un documento en concreto en las diversas fuentes que puedas encontrarlo. 
-
-        public bool ProcessItem(List<string> message)
+        
+        /// <summary>
+        /// Permite mandar a procesar los datos a una cola Rabbit.
+        /// {"investigador"; [ORCID]; "1/11/2021"} -> Obtiene todos los datos relacionados con ese autor desde una fecha indicada. 
+        /// {"publicación"; [DOI]} -> Actualización de citas de un documento en concreto en las diversas fuentes que puedas encontrarlo.
+        /// </summary>
+        /// <param name="pMessage">Datos en formato string de un json.</param>
+        /// <returns></returns>
+        public bool ProcessItem(string pMessage)
         {
+            List<string> message = JsonConvert.DeserializeObject<List<string>>(pMessage);
             if (message.Count() == 3 & message[0] == "investigador")
             {
                 if (message[2] != null)
                 {
-                    Uri url = new Uri(string.Format("http://localhost:4999/Publication/GetROs?orcid={0}&date={1}", message[1], message[2]));
+                    Uri url = new Uri(string.Format(_configService.GetUrlPublicacion() + "Publication/GetROs?orcid={0}&date={1}", message[1], message[2]));
                     Console.Write(url);
-                    string info_publication = httpCall(url.ToString(), "GET",headers).Result;
+                    string info_publication = httpCall(url.ToString(), "GET", headers).Result;
                     //List<Publication> objInicial = JsonConvert.DeserializeObject<List<Publication>>(info_publication);
-                    
+
                     File.WriteAllText(dir_fichero, info_publication);
                     //escribirlo en un fichero! 
                     return true;
                 }
                 else
                 {
-                    Uri url = new Uri(string.Format("http://localhost:4999/Publication/GetROs?orcid={0}&date=1500-01-01", message[1]));
-                    string info_publication = httpCall(url.ToString(), "GET",headers).Result;
+                    Uri url = new Uri(string.Format(_configService.GetUrlPublicacion() + "Publication/GetROs?orcid={0}&date=1500-01-01", message[1]));
+                    string info_publication = httpCall(url.ToString(), "GET", headers).Result;
                     //List<Publication> objInicial = JsonConvert.DeserializeObject<List<Publication>>(info_publication);
                     //escribirlo en un fichero! 
                     File.WriteAllText(dir_fichero, info_publication);
@@ -179,11 +185,10 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                 //todo! 
                 return true;
             }
+
             // Si llegamos aqui lo que tenemos es la entrada de la cola de rabbit no esta en el formato correcto! 
             return false;
-
         }
-    
     }
 }
 
