@@ -191,7 +191,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
             }
             string info = JsonConvert.SerializeObject(resultado);
-            string path = @"C:\Users\mpuer\Desktop\pruebaGNOSSSS.json";
+            string path = _Configuracion.GetRutaJsonSalida();
             File.WriteAllText(path, info);
             return resultado;
 

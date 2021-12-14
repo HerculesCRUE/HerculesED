@@ -19,6 +19,7 @@ namespace PublicationAPI.Controllers
         private string urlOpenCitations { get; set; }
         private string urlSemanticScholar { get; set; }
         private string urlZenodo { get; set; }
+        private string rutaJsonSalida { get; set; }
 
         /// <summary>
         /// Constructor.
@@ -176,6 +177,31 @@ namespace PublicationAPI.Controllers
             }
 
             return urlZenodo;
+        }
+
+        /// <summary>
+        /// Obtiene la ruta del json de salida que ha sido configurada.
+        /// </summary>
+        /// <returns>Ruta del json de salida.</returns>
+        public string GetRutaJsonSalida()
+        {
+            if (string.IsNullOrEmpty(rutaJsonSalida))
+            {
+                string connectionString = string.Empty;
+                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                if (environmentVariables.Contains("RutaJsonSalida"))
+                {
+                    connectionString = environmentVariables["RutaJsonSalida"] as string;
+                }
+                else
+                {
+                    connectionString = configuracion["RutaJsonSalida"];
+                }
+
+                rutaJsonSalida = connectionString;
+            }
+
+            return rutaJsonSalida;
         }
     }
 }
