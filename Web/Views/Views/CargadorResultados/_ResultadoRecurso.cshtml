@@ -98,7 +98,7 @@
                                 valorOtros = valorOtros.Substring(0, valorOtros.Length - 1);
                             }
                         }
-                        <div class="d-flex quotes" scopus="@valorScopus" wos="@valorWos" inrecs="@valorInrecs" otros="@valorOtros">
+                        <div class="d-flex quotes" data-scopus="@valorScopus" data-wos="@valorWos" data-inrecs="@valorInrecs" data-otros="@valorOtros">
                             @{
                                 if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
                                 {

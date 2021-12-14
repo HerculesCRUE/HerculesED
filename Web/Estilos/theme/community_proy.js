@@ -481,10 +481,10 @@ var MontarResultadosScroll = {
 montarTooltip.montarTooltips= function () {
 	var that = this;	
 	this.quotes.each(function () {
-			var scopusInt=$(this).attr('scopus');
-			var wosInt=$(this).attr('wos');
-			var inrecsInt=$(this).attr('inrecs');
-			var otrasCitas=$(this).attr('otros');
+			var scopusInt=$(this).data('scopus');
+			var wosInt=$(this).data('wos');
+			var inrecsInt=$(this).data('inrecs');
+			var otrasCitas=$(this).data('otros');
 
 			var htmlScopus = "";
 			if(typeof scopusInt !== "undefined" && scopusInt != "" && scopusInt != "0"){

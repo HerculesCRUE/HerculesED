@@ -73,7 +73,20 @@
                         }
                     }
                 </div>
-                <div class="d-flex quotes">
+
+
+                @{
+                    string valorOtros = string.Empty;
+
+                    var metric = pDocument.Roh_hasMetric;
+                    metric.ForEach(e =>
+                    {
+                        valorOtros += e.Roh_metricName + "~" + e.Roh_citationCount + "|";
+                    });
+
+                }
+
+                <div class="d-flex quotes" data-scopus="@pDocument.Roh_scopus" data-wos="@pDocument.Roh_wos" data-inrecs="@pDocument.Roh_inrecs" data-otros="@valorOtros">
                     <p><span id="citas_number">@pDocument.Roh_citationCount</span> citas</p>
                 </div>
                 <div class="acciones-ficha-wrap">
