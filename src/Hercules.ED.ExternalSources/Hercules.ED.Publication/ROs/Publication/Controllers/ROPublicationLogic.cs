@@ -86,9 +86,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     catch (System.Exception)
                     {
                         throw new Exception("Error in the http call");
-                    }
+                    }                
                 }
             }
+
             if (response.Content != null)
             {
                 return await response.Content.ReadAsStringAsync();
@@ -97,7 +98,6 @@ namespace PublicationConnect.ROs.Publications.Controllers
             {
                 return "";
             }
-
         }
 
         /// <summary>

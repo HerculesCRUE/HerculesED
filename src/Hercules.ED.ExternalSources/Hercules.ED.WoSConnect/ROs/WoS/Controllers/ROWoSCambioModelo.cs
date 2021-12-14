@@ -365,29 +365,36 @@ namespace WoSConnect.ROs.WoS.Controllers
 
                                 if (!esLista)
                                 {
-                                    AbstractText_list hey = JsonConvert.DeserializeObject<AbstractText_list>(objInicial.static_data.fullrecord_metadata.abstracts.@abstract.abstract_text.ToString());
+                                    try
+                                    {
+                                        AbstractText_list hey = JsonConvert.DeserializeObject<AbstractText_list>(objInicial.static_data.fullrecord_metadata.abstracts.@abstract.abstract_text.ToString());
 
-                                    string abstract_2 = "";
-                                    string advertencia = "Hay un problema con el abstract: se han encontrado varios, son los siguientes:\n ";
-                                    for (int i = 0; i < hey.p.Count; i++)
-                                    {
-                                        if (i == 0)
+                                        string abstract_2 = "";
+                                        string advertencia = "Hay un problema con el abstract: se han encontrado varios, son los siguientes:\n ";
+                                        for (int i = 0; i < hey.p.Count; i++)
                                         {
-                                            abstract_2 = hey.p[i];
+                                            if (i == 0)
+                                            {
+                                                abstract_2 = hey.p[i];
+                                            }
+                                            advertencia = advertencia + " Abstract: " + hey.p[i] + " \n.";
                                         }
-                                        advertencia = advertencia + " Abstract: " + hey.p[i] + " \n.";
+                                        if (this.advertencia == null)
+                                        {
+                                            List<string> ad = new List<string>();
+                                            ad.Add(advertencia);
+                                            this.advertencia = ad;
+                                        }
+                                        else
+                                        {
+                                            this.advertencia.Add(advertencia);
+                                        }
+                                        return abstract_2;
                                     }
-                                    if (this.advertencia == null)
+                                    catch (Exception)
                                     {
-                                        List<string> ad = new List<string>();
-                                        ad.Add(advertencia);
-                                        this.advertencia = ad;
+                                        return "";
                                     }
-                                    else
-                                    {
-                                        this.advertencia.Add(advertencia);
-                                    }
-                                    return abstract_2;
                                 }
                             }
                         }
