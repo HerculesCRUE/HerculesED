@@ -306,7 +306,6 @@
 														"property": "http://purl.org/dc/elements/1.1/title"
 													}
 												},
-												"TODO": "Aparece una opción con un punto al final",
 												"type": "selectCombo",
 												"width": 1
 											},
