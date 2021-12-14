@@ -30,10 +30,11 @@ namespace WorkerServiceRabbitConsume
                     var scope = _serviceScopeFactory.CreateScope();
                     ConfigService configService = scope.ServiceProvider.GetRequiredService<ConfigService>();
                     ReadRabbitService rabbitMQService = scope.ServiceProvider.GetRequiredService<ReadRabbitService>();
-                    //ai.Add("investigador");
-                    //ai.Add("0000-0003-0955-976X")
-                    //ai.Add(null);
-                    //rabbitMQService.ProcessItem(ai);
+
+                    // Prueba 
+                    List<string> listaDatos = new List<string>() { "investigador" , "0000-0002-5525-1259", "01/12/2021"};
+                    rabbitMQService.PublishMessage(listaDatos, configService.GetQueueRabbit());
+
                     rabbitMQService.ListenToQueue(new ReadRabbitService.ReceivedDelegate(rabbitMQService.ProcessItem), new ReadRabbitService.ShutDownDelegate(OnShutDown), configService.GetQueueRabbit());
                     _processRabbitReady = true;
                 }

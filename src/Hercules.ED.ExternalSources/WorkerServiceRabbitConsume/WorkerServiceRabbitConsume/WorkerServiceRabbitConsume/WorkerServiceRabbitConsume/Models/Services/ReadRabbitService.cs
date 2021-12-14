@@ -42,6 +42,39 @@ namespace Gnoss.Web.ReprocessData.Models.Services
 
             connection = connectionFactory.CreateConnection();
         }
+
+
+        /// <summary>
+        /// Encola un objeto en Rabbit
+        /// </summary>
+        /// <param name="message">Objeto a encolar</param>
+        /// <param name="queue">Cola</param>
+        public void PublishMessage(object message, string queue)
+        {
+            using (var conn = connectionFactory.CreateConnection())
+            {
+                using (var channel = conn.CreateModel())
+                {
+                    channel.QueueDeclare(
+                        queue: queue,
+                        durable: false,
+                        exclusive: false,
+                        autoDelete: false,
+                        arguments: null
+                    );
+
+                    var jsonPayload = JsonConvert.SerializeObject(message);
+                    var body = Encoding.UTF8.GetBytes(jsonPayload);
+
+                    channel.BasicPublish(exchange: "",
+                        routingKey: queue,
+                        basicProperties: null,
+                        body: body
+                    );
+                }
+            }
+        }
+
         /// <summary>
         /// ListenToQueue
         /// </summary>
