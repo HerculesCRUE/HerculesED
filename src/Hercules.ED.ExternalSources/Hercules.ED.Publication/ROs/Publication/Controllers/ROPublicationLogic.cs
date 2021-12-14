@@ -20,7 +20,8 @@ using PublicationConnect.ROs.Publications.Controllers;
 using PublicationConnect.ROs.Publications.Models;
 //using Newtonsoft.Json.Linq.JObject;
 using System.IO;
-
+using PublicationAPI.Controllers;
+using Microsoft.Extensions.Configuration;
 
 namespace PublicationConnect.ROs.Publications.Controllers
 {
@@ -38,14 +39,15 @@ namespace PublicationConnect.ROs.Publications.Controllers
         protected Dictionary<string, string> headers = new Dictionary<string, string>();
         //protected Dictionary<string, Tuple<Liststring>,List<atring>,List<string>>  dic_orcid; //= new Dictionary<string, Tuple<Liststring>,List<atring>,List<string>>();
 
+        // Configuración.
+        readonly ConfigService _Configuracion;
 
-        public ROPublicationLogic(string baseUri)
+        public ROPublicationLogic(string baseUri, ConfigService pConfig)
         {
 
             //this.baseUri = "http://localhost:5000/WoS/GetROs?orcid={0}";
             //this.bareer = bareer;
-
-
+            _Configuracion = pConfig;
         }
 
         /// <summary>
@@ -683,7 +685,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
         public Publication llamada_Semantic_Scholar(string doi)
         {
-            Uri url = new Uri(string.Format("http://localhost:5004/SemanticScholar/GetROs?doi={0}", doi));
+            Uri url = new Uri(string.Format(_Configuracion.GetUrlSemanticScholar() + "SemanticScholar/GetROs?doi={0}", doi));
             string info_publication = httpCall(url.ToString(), "GET", headers).Result;
             Publication objInicial_SemanticScholar = JsonConvert.DeserializeObject<Publication>(info_publication);
             return objInicial_SemanticScholar;
@@ -691,7 +693,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
         public Publication llamada_open_citations(string doi)
         {
-            Uri url = new Uri(string.Format("http://localhost:5003/OpenCitations/GetROs?doi={0}", doi));
+            Uri url = new Uri(string.Format(_Configuracion.GetUrlOpenCitations() + "OpenCitations/GetROs?doi={0}", doi));
             string info_publication = httpCall(url.ToString(), "GET", headers).Result;
             if (info_publication == null)
             {
@@ -703,7 +705,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
         public Publication llamada_CrossRef(string doi)
         {
-            Uri url = new Uri(string.Format("http://localhost:5002/CrossRef/GetROs?doi={0}", doi));
+            Uri url = new Uri(string.Format(_Configuracion.GetUrlCrossRef() + "CrossRef/GetROs?doi={0}", doi));
             string info_publication = httpCall(url.ToString(), "GET", headers).Result;
             if (info_publication == null)
             {
@@ -714,7 +716,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
         }
         public List<Publication> llamada_Scopus(string orcid, string date)
         {
-            Uri url = new Uri(string.Format("http://localhost:5001/Scopus/GetROs?orcid={0}&date={1}", orcid, date));
+            Uri url = new Uri(string.Format(_Configuracion.GetUrlScopus() + "Scopus/GetROs?orcid={0}&date={1}", orcid, date));
             string info_publication = httpCall(url.ToString(), "GET", headers).Result;
             List<Publication> objInicial_Scopus = JsonConvert.DeserializeObject<List<Publication>>(info_publication);
             return objInicial_Scopus;
@@ -722,7 +724,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
         public List<Publication> llamada_WoS(string orcid, string date)
         {
-            Uri url = new Uri(string.Format("http://localhost:5000/WoS/GetROs?orcid={0}&date={1}", orcid, date));
+            Uri url = new Uri(string.Format(_Configuracion.GetUrlWos() + "WoS/GetROs?orcid={0}&date={1}", orcid, date));
             string info_publication = httpCall(url.ToString(), "GET", headers).Result;
             List<Publication> objInicial_woS = JsonConvert.DeserializeObject<List<Publication>>(info_publication);
             return objInicial_woS;
@@ -734,7 +736,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             {
                 if (name != null)
                 {
-                    Uri url = new Uri(string.Format("http://localhost:5005/Zenodo/GetROs?ID={0}", name));
+                    Uri url = new Uri(string.Format(_Configuracion.GetUrlZenodo() + "Zenodo/GetROs?ID={0}", name));
                     string info_publication = httpCall(url.ToString(), "GET", headers).Result;
                     if (info_publication == null | !info_publication.EndsWith(".pdf"))
                     {

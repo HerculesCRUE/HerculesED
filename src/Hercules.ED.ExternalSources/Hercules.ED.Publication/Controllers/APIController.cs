@@ -11,6 +11,7 @@ using PublicationConnect.ROs.Publications.Controllers;
 using PublicationConnect.ROs.Publications.Models;
 using Newtonsoft.Json;
 using PublicationConnect.Controllers.autores;
+using PublicationAPI.Controllers;
 
 namespace PublicationConnect.Controllers
 {
@@ -20,9 +21,13 @@ namespace PublicationConnect.Controllers
     public class APIController : ControllerBase
     {
         private readonly ILogger<APIController> _logger;
-        public APIController(ILogger<APIController> logger)
+
+        readonly ConfigService _Configuracion;
+
+        public APIController(ILogger<APIController> logger, ConfigService pConfig)
         {
             _logger = logger;
+            _Configuracion = pConfig;
         }
         /// <summary>
         /// Get all repositories from a specified user account and RO
@@ -57,7 +62,7 @@ namespace PublicationConnect.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public List<Publication> GetROs([FromQuery][Required] string orcid,string date="1500-01-01")
         {
-          ROPublicationLogic PublicationObject = new ROPublicationLogic("");
+          ROPublicationLogic PublicationObject = new ROPublicationLogic("", _Configuracion);
          List<Publication> publication = PublicationObject.getPublications(orcid,date);
             almacenamiento_autores almacenamiento = new almacenamiento_autores();
             almacenamiento.unificar_personas();

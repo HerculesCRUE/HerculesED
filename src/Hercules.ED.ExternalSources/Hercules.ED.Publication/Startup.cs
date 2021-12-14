@@ -13,6 +13,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using PublicationAPI.Controllers;
 
 namespace PublicationConnect
 {
@@ -61,6 +62,8 @@ namespace PublicationConnect
                 // c.IncludeXmlComments(string.Format(@"{0}comments.xml", System.AppDomain.CurrentDomain.BaseDirectory));
             });
 
+            // Configuración.
+            services.AddSingleton(typeof(ConfigService));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
