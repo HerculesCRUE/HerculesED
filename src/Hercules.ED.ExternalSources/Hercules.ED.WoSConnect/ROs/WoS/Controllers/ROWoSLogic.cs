@@ -97,32 +97,30 @@ namespace WoSConnect.ROs.WoS.Controllers
         /// <summary>
         /// Main function from get all repositories from the RO account
         /// </summary>
-        /// <param name="ID"></param>
-        /// <param date="Year-Moth-day"></param>
-
+        /// <param name="orcid">ORCID</param>
+        /// <param name="date">Fecha de incicio</param>
         /// <returns></returns>
-        public List<Publication> getPublications(string name, string date = "1500-01-01", string uri = "api/wos/?databaseId=WOK&usrQuery=AI=({0})&count=100&firstRecord={1}&publishTimeSpan={2}%2B2022-12-31")
+        public List<Publication> getPublications(string orcid, string date = "1500-01-01")
         {
             ROWoSControllerJSON info = new ROWoSControllerJSON(this);
             int n = 0;
             List<Publication> sol = new List<Publication>();
-            int result = 1;
-            int cardinalidad = 1;
-            while (cardinalidad >= result)
+            int numItems = 100;
+            bool continuar = true;
+            while (continuar)
             {
-                Uri url = new Uri(baseUri + string.Format(uri, name, result.ToString(), date));
+                Uri url = new Uri($@"{baseUri}api/wos/?databaseId=WOK&usrQuery=AI=({orcid})&count={numItems}&firstRecord={(numItems * n) + 1}&publishTimeSpan={date}%2B3000-12-31");
                 n++;
-                result = 100 * n;
                 string info_publication = httpCall(url.ToString(), "GET", headers).Result;
-                //Console.Write(info_publication);
-                Console.Write(info_publication);
-
                 Root objInicial = JsonConvert.DeserializeObject<Root>(info_publication);
-                cardinalidad = objInicial.Data.Records.records.REC.Count();
                 List<Publication> nuevas = info.getListPublicatio(objInicial);
                 sol.AddRange(nuevas);
+                if (nuevas.Count == 0)
+                {
+                    continuar = false;
+                }
             }
-            
+
             Console.Write("Ids del diccionario\n");
             foreach(string i in this.autores_orcid.Keys){
                 Console.Write(i);
