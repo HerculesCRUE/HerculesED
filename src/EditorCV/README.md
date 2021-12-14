@@ -15,7 +15,7 @@
 
 [Ejemplo de edición](#ejemplo-de-edición)
 
-* [Configuración de la presentación (listado y minificha](#configuración-de-la-presentación-listado)
+* [Configuración de la presentación (listado y minificha)](#configuración-de-la-presentación-listado)
 
 * [Configuración de la edición](#configuración-de-la-edición)
 
