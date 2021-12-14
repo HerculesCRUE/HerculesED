@@ -14,11 +14,13 @@ using System.Text.RegularExpressions;
 using System.Globalization;
 using System.Collections;
 using Gnoss.ApiWrapper.Exceptions;
+using System.Diagnostics.CodeAnalysis;
 using ImpactIndexCategory = ImpactindexcategoryOntology.ImpactIndexCategory;
 using ReferenceSource = ReferencesourceOntology.ReferenceSource;
 
 namespace MaindocumentOntology
 {
+	[ExcludeFromCodeCoverage]
 	public class ImpactIndex : GnossOCBase
 	{
 

@@ -14,10 +14,12 @@ using System.Text.RegularExpressions;
 using System.Globalization;
 using System.Collections;
 using Gnoss.ApiWrapper.Exceptions;
+using System.Diagnostics.CodeAnalysis;
 using DocumentFormat = DocumentformatOntology.DocumentFormat;
 
 namespace MaindocumentOntology
 {
+	[ExcludeFromCodeCoverage]
 	public class MainDocument : GnossOCBase
 	{
 
@@ -43,6 +45,7 @@ namespace MaindocumentOntology
 			{
 				this.Roh_format = new DocumentFormat(propRoh_format.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
+			this.Bibo_eissn = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/eissn"));
 			this.Roh_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/title"));
 			this.Bibo_isbn = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/isbn"));
 			this.Bibo_editor = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/editor"));
@@ -71,6 +74,7 @@ namespace MaindocumentOntology
 			{
 				this.Roh_format = new DocumentFormat(propRoh_format.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
+			this.Bibo_eissn = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/eissn"));
 			this.Roh_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/title"));
 			this.Bibo_isbn = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/isbn"));
 			this.Bibo_editor = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/editor"));
@@ -87,6 +91,10 @@ namespace MaindocumentOntology
 		[RDFProperty("http://w3id.org/roh/format")]
 		public  DocumentFormat Roh_format  { get; set;} 
 		public string IdRoh_format  { get; set;} 
+
+		[LABEL(LanguageEnum.es,"e-ISSN")]
+		[RDFProperty("http://purl.org/ontology/bibo/eissn")]
+		public  string Bibo_eissn { get; set;}
 
 		[LABEL(LanguageEnum.es,"Título de la publicación principal")]
 		[RDFProperty("http://w3id.org/roh/title")]
@@ -113,6 +121,7 @@ namespace MaindocumentOntology
 		{
 			base.GetProperties();
 			propList.Add(new StringOntologyProperty("roh:format", this.IdRoh_format));
+			propList.Add(new StringOntologyProperty("bibo:eissn", this.Bibo_eissn));
 			propList.Add(new StringOntologyProperty("roh:title", this.Roh_title));
 			propList.Add(new StringOntologyProperty("bibo:isbn", this.Bibo_isbn));
 			propList.Add(new StringOntologyProperty("bibo:editor", this.Bibo_editor));
@@ -212,6 +221,10 @@ namespace MaindocumentOntology
 				if(this.IdRoh_format != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/MainDocument_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/format", $"<{this.IdRoh_format}>", list, " . ");
+				}
+				if(this.Bibo_eissn != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/MainDocument_{ResourceID}_{ArticleID}",  "http://purl.org/ontology/bibo/eissn", $"\"{GenerarTextoSinSaltoDeLinea(this.Bibo_eissn)}\"", list, " . ");
 				}
 				if(this.Roh_title != null)
 				{
@@ -323,6 +336,10 @@ namespace MaindocumentOntology
 						itemRegex = itemRegex.ToLower();
 					}
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/format", $"<{itemRegex}>", list, " . ");
+				}
+				if(this.Bibo_eissn != null)
+				{
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://purl.org/ontology/bibo/eissn", $"\"{GenerarTextoSinSaltoDeLinea(this.Bibo_eissn).ToLower()}\"", list, " . ");
 				}
 				if(this.Roh_title != null)
 				{

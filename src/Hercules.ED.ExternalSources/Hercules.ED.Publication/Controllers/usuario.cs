@@ -332,7 +332,41 @@ namespace PublicationConnect.Controllers.autores
 
             return autores;
         }
+        public static Dictionary<string, Tuple<string, string, string, string, string, string>> LeerDatosExcel_JIF(string pRuta)
+        {
+            DataSet ds = new DataSet();
 
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            //FileStream uploadFileStream = System.IO.File.OpenRead(pRuta);
+
+            using (var stream = System.IO.File.Open(pRuta, FileMode.Open, FileAccess.Read))
+            {
+                using (var reader = ExcelReaderFactory.CreateReader(stream))
+                {
+                    ds = reader.AsDataSet(new ExcelDataSetConfiguration()
+                    {
+                        ConfigureDataTable = (tableReader) => new ExcelDataTableConfiguration()
+                        {
+                            UseHeaderRow = true,
+                        }
+                    });
+                }
+            }
+            Dictionary<string, Tuple<string, string, string, string, string, string>> autores = new Dictionary<string, Tuple<string, string, string, string, string, string>>();
+            foreach (DataRow fila in ds.Tables["Orcids"].Rows)
+            {
+                if (fila["id"].ToString() != "")
+                {
+                    Tuple<string, string, string, string, string, string> tupla = new Tuple<string, string, string, string, string, string>(
+                        fila["ORCID"].ToString(), fila["Name"].ToString(), fila["Apellido"].ToString(),
+                        fila["Nombres"].ToString(),
+                         fila["Ids"].ToString(), fila["Links"].ToString());
+                    autores[fila["id"].ToString()] = tupla;
+                }
+            }
+
+            return autores;
+        }
         // 
         public Boolean unificar_personas()
         {
@@ -395,131 +429,137 @@ namespace PublicationConnect.Controllers.autores
                         list_ids = this.usuarios_unicos[id_2].Item6;
                         list_links = this.usuarios_unicos[id_2].Item7;
 
-                        if (orcid != "" & orcid == orcid_unificado)
+                        if (orcid_unificado != "" & orcid == orcid_unificado)
                         {
 
                             completar_informacion_unificada(id, id_2);
                             id_nuevos_que_son_la_misma_persona.Add(id_2);
 
                         }
-                        else if (list_ids.Contains(ids) & ids != "")
+                        else if (list_ids.Contains(ids))
                         {
                             completar_informacion_unificada(id, id_2);
                             id_nuevos_que_son_la_misma_persona.Add(id_2);
                         }
                         else
                         {
-                            if (list_nombre_completo.Count > 0)
+                            if ((orcid != "" & orcid_unificado != "") || (list_id.Count > 0 & ids != ""))
                             {
-                                // cuando en los datos de la persona unificada tenemos el nombre completo 
-                                //foreach (string nombre_completo in list_nombre_completo)
-                                for (int k = 0; k < list_nombre_completo.Count; k++)
-                                {
-                                    string nombre_completo = list_nombre_completo[k];
-                                    if (name != "" & familia != "")
-                                    {
-                                        if (GetNameSimilarity(name + " " + familia, nombre_completo) > 0.87 ||
-                                            GetNameSimilarity(name.Substring(0, 1) + "." + " " + familia, nombre_completo) > 0.87  & name.Substring(0, 1)==nombre_completo.Substring(0,1) ||
-                                            GetNameSimilarity(familia + ", " + name.Substring(0, 1) + ".", nombre_completo) > 0.87 & nombre_completo.Substring(nombre_completo.Count() - 2,2)==name.Substring(0, 1)+"." ||
-                                            GetNameSimilarity(familia + " " + name.Substring(0, 1) + ".", nombre_completo) > 0.87)
-                                        {
-                                            if (ids!=""&  list_id.Count > 0 & !list_id.Contains(ids))
-                                            {
-                                                continue;
-                                            }
-                                            else
-                                            {
-                                                if (!id_nuevos_que_son_la_misma_persona.Contains(id_2))
-                                                {
-                                                    completar_informacion_unificada(id, id_2);
-
-                                                    id_nuevos_que_son_la_misma_persona.Add(id_2);
-                                                }
-                                            }
-                                        }
-                                    }
-                                    if (completo != "")
-                                    {
-                                        if (GetNameSimilarity(completo, nombre_completo) > 0.9)
-                                        {
-                                            if (ids!=""&  list_id.Count > 0 & !list_id.Contains(ids))
-                                            {
-                                                Console.Write("------------------------------------------------------------------");
-                                                continue;
-                                            }
-                                            else
-                                            {
-                                                if (!id_nuevos_que_son_la_misma_persona.Contains(id_2))
-                                                {
-                                                    completar_informacion_unificada(id, id_2);
-
-                                                    id_nuevos_que_son_la_misma_persona.Add(id_2);
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
+                                continue;
                             }
-
-                            // cuando en los datos de la persona unificada tenemos el nombre completo 
-                            else if (list_name.Count > 0 & list_familia.Count > 0)
+                            else
                             {
-                                for (int j = 0; j < list_name.Count; j++)
+                                if (list_nombre_completo.Count > 0)
                                 {
-                                    string name_unificado = list_name[j];
-                                    for (int i = 0; i < list_familia.Count; i++)
+                                    // cuando en los datos de la persona unificada tenemos el nombre completo 
+                                    //foreach (string nombre_completo in list_nombre_completo)
+                                    for (int k = 0; k < list_nombre_completo.Count; k++)
                                     {
+                                        string nombre_completo = list_nombre_completo[k];
                                         if (name != "" & familia != "")
                                         {
-                                            if (GetNameSimilarity(name + " " + familia, name_unificado + " " + list_familia[i]) > 0.87)
+                                            if (GetNameSimilarity(name + " " + familia, nombre_completo) > 0.87 ||
+                                                GetNameSimilarity(name.Substring(0, 1) + "." + " " + familia, nombre_completo) > 0.87 & name.Substring(0, 1) == nombre_completo.Substring(0, 1) ||
+                                                GetNameSimilarity(familia + ", " + name.Substring(0, 1) + ".", nombre_completo) > 0.87 & nombre_completo.Substring(nombre_completo.Count() - 2, 2) == name.Substring(0, 1) + "." ||
+                                                GetNameSimilarity(familia + " " + name.Substring(0, 1) + ".", nombre_completo) > 0.87)
                                             {
-                                            if (ids!=""&  list_id.Count > 0 & !list_id.Contains(ids))
-                                            {
-                                                continue;
-                                            }
-                                            else
-                                            {
-                                                if (!id_nuevos_que_son_la_misma_persona.Contains(id_2))
+                                                if (ids != "" & list_id.Count > 0 & !list_id.Contains(ids))
                                                 {
-                                                    completar_informacion_unificada(id, id_2);
-
-                                                    id_nuevos_que_son_la_misma_persona.Add(id_2);
+                                                    continue;
                                                 }
-                                            }
+                                                else
+                                                {
+                                                    if (!id_nuevos_que_son_la_misma_persona.Contains(id_2))
+                                                    {
+                                                        completar_informacion_unificada(id, id_2);
 
-
+                                                        id_nuevos_que_son_la_misma_persona.Add(id_2);
+                                                    }
+                                                }
                                             }
                                         }
                                         if (completo != "")
                                         {
-
-                                            if (GetNameSimilarity(name_unificado + " " + list_familia[i], completo) > 0.87 ||
-                                                GetNameSimilarity(name_unificado.Substring(0, 1) + ". " + familia, completo) > 0.87 & name_unificado.Substring(0, 1) == completo.Substring(0, 1) ||
-                                                GetNameSimilarity(list_familia[i] + ", " + name_unificado.Substring(0, 1) + ".", completo) > 0.87 & completo.Substring(completo.Count() - 2,2)==name_unificado.Substring(0, 1)+"."||
-                                                GetNameSimilarity(list_familia[i] + " " + name_unificado.Substring(0, 1) + ".", completo) > 0.87)
+                                            if (GetNameSimilarity(completo, nombre_completo) > 0.9)
                                             {
-                                            if (ids!=""&  list_id.Count > 0 & !list_id.Contains(ids))
-                                            {
-                                                continue;
-                                            }
-                                            else
-                                            {
-                                                if (!id_nuevos_que_son_la_misma_persona.Contains(id_2))
+                                                if (ids != "" & list_id.Count > 0 & !list_id.Contains(ids))
                                                 {
-                                                    completar_informacion_unificada(id, id_2);
+                                                    Console.Write("------------------------------------------------------------------");
+                                                    continue;
+                                                }
+                                                else
+                                                {
+                                                    if (!id_nuevos_que_son_la_misma_persona.Contains(id_2))
+                                                    {
+                                                        completar_informacion_unificada(id, id_2);
 
-                                                    id_nuevos_que_son_la_misma_persona.Add(id_2);
+                                                        id_nuevos_que_son_la_misma_persona.Add(id_2);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                // cuando en los datos de la persona unificada tenemos el nombre completo 
+                                else if (list_name.Count > 0 & list_familia.Count > 0)
+                                {
+                                    for (int j = 0; j < list_name.Count; j++)
+                                    {
+                                        string name_unificado = list_name[j];
+                                        for (int i = 0; i < list_familia.Count; i++)
+                                        {
+                                            if (name != "" & familia != "")
+                                            {
+                                                if (GetNameSimilarity(name + " " + familia, name_unificado + " " + list_familia[i]) > 0.87)
+                                                {
+                                                    if (ids != "" & list_id.Count > 0 & !list_id.Contains(ids))
+                                                    {
+                                                        continue;
+                                                    }
+                                                    else
+                                                    {
+                                                        if (!id_nuevos_que_son_la_misma_persona.Contains(id_2))
+                                                        {
+                                                            completar_informacion_unificada(id, id_2);
+
+                                                            id_nuevos_que_son_la_misma_persona.Add(id_2);
+                                                        }
+                                                    }
+
+
+                                                }
+                                            }
+                                            if (completo != "")
+                                            {
+
+                                                if (GetNameSimilarity(name_unificado + " " + list_familia[i], completo) > 0.87 ||
+                                                    GetNameSimilarity(name_unificado.Substring(0, 1) + ". " + familia, completo) > 0.87 & name_unificado.Substring(0, 1) == completo.Substring(0, 1) ||
+                                                    GetNameSimilarity(list_familia[i] + ", " + name_unificado.Substring(0, 1) + ".", completo) > 0.87 & completo.Substring(completo.Count() - 2, 2) == name_unificado.Substring(0, 1) + "." ||
+                                                    GetNameSimilarity(list_familia[i] + " " + name_unificado.Substring(0, 1) + ".", completo) > 0.87)
+                                                {
+                                                    if (ids != "" & list_id.Count > 0 & !list_id.Contains(ids))
+                                                    {
+                                                        continue;
+                                                    }
+                                                    else
+                                                    {
+                                                        if (!id_nuevos_que_son_la_misma_persona.Contains(id_2))
+                                                        {
+                                                            completar_informacion_unificada(id, id_2);
+
+                                                            id_nuevos_que_son_la_misma_persona.Add(id_2);
+                                                        }
+                                                    }
+
                                                 }
                                             }
 
-                                            }
                                         }
-
                                     }
                                 }
+
                             }
-
-
 
                         }
 
@@ -714,42 +754,47 @@ namespace PublicationConnect.Controllers.autores
         public Person obtener_persona_unidicada(string id)
         {
             // buscar el id del nuevo diccionario, en el que las personas no estan duplicadas. 
-            string id_persona = "0";
+            //string id_persona = "0";
             List<string> list_id_nuevos = this.usuarios_unicos.Keys.ToList();
             foreach (string id_nuevo in list_id_nuevos)
             {
-                if (this.usuarios_unicos[id_nuevo].Item1.Contains(id))
+                foreach (string id_viejo in this.usuarios_unicos[id_nuevo].Item1)
                 {
-                    id_persona = id_nuevo;
-                    break;
+                    if (id_viejo == id)
+                    {
+                        Person person = new Person();
+
+                        string orcid = this.usuarios_unicos[id_nuevo].Item2;
+                        person.ORCID = orcid;
+
+                        Name name_author = new Name();
+
+                        List<string> name = this.usuarios_unicos[id_nuevo].Item3;
+                        name_author.given = name;
+
+                        List<string> familia = this.usuarios_unicos[id_nuevo].Item4;
+                        name_author.familia = familia;
+
+                        List<string> completo = this.usuarios_unicos[id_nuevo].Item5;
+                        name_author.nombre_completo = completo;
+
+                        person.name = name_author;
+
+                        List<string> ids = this.usuarios_unicos[id_nuevo].Item6;
+                        person.IDs = ids;
+
+                        List<string> links = this.usuarios_unicos[id_nuevo].Item7;
+                        person.links = links;
+
+                        return person;
+                    }
+
+
                 }
             }
+            return null;
 
-            Person person = new Person();
 
-            string orcid = this.usuarios_unicos[id_persona].Item2;
-            person.ORCID = orcid;
-
-            Name name_author = new Name();
-
-            List<string> name = this.usuarios_unicos[id_persona].Item3;
-            name_author.given = name;
-
-            List<string> familia = this.usuarios_unicos[id_persona].Item4;
-            name_author.familia = familia;
-
-            List<string> completo = this.usuarios_unicos[id_persona].Item5;
-            name_author.nombre_completo = completo;
-
-            person.name = name_author;
-
-            List<string> ids = this.usuarios_unicos[id_persona].Item6;
-            person.IDs = ids;
-
-            List<string> links = this.usuarios_unicos[id_persona].Item7;
-            person.links = links;
-
-            return person;
         }
 
         // //cambiamos a los objetovos de una persona  -- id
