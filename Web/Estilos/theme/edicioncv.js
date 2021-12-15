@@ -181,6 +181,31 @@ var edicionCV = {
 			-ms-transform: rotate(180deg)!important;
 			transform: rotate(180deg)!important;
 		}
+		
+		.entityaux ul li .faceta:not(.last-level)::before {
+			background: #ccc;
+		}
+
+		.topic .item.added {
+			display: none !important;
+		}
+
+		.topic .item.aux input {
+			position: absolute;
+			top: 0;
+			width: 50%;
+			right: 94px;
+		}
+
+		.topic a.btn.btn-outline-grey.add {
+			height: 38px;
+		}
+		
+		.entityaux ul li .faceta.last-level.selected.lock,
+		.entityaux ul li .faceta.last-level.selected.lock::before {
+			background: #ccc;
+			cursor:not-allowed;
+		}
 
 		</style>`);
 		
@@ -813,6 +838,9 @@ var edicionCV = {
         //Estilos para el contenedor
         var css = "";
         switch (property.width) {
+            case 0:
+                css = 'oculto';
+                break;
             case 1:
                 css = '';
                 break;
@@ -826,6 +854,12 @@ var edicionCV = {
                 css = '';
                 break;
         }
+		
+		
+		var topicsProp = [ "http://w3id.org/roh/userKeywords", "http://w3id.org/roh/enrichedKeywords", "http://w3id.org/roh/externalKeywords" ];
+		if( $.inArray( property.property, topicsProp ) >= 0) {
+			css += ' topic';
+		}
         
 		var value = "";
 		if(!property.multiple)
@@ -1126,7 +1160,7 @@ var edicionCV = {
 					htmlMultiple+=this.printDeleteButton();
 				}
 				htmlMultiple+='</div>';	
-			}			
+			}
 			return `<div class="form-group ${css}" ${order} ${rdftype}>
 					<label class="control-label d-block">${property.title}${required}</label>
 					${htmlMultiple}
@@ -1359,8 +1393,61 @@ var edicionCV = {
 						</div>
 					</div>`;
 	},
+	repintarTopic: function() {
+		$('.topic').each(function(){
+			var htmlItmes = '';
+			
+			$(this).find(".item.added" ).each(function(){
+				var input = $(this).find('input');
+				
+				var background = '';
+				var deleteButton = `<span class="material-icons cerrar">close</span>`;
+				switch(input.attr('propertyrdf')){
+					case 'http://w3id.org/roh/externalKeywords' :
+						background = 'background-amarillo';
+						deleteButton = '';
+						break;
+					case 'http://w3id.org/roh/enrichedKeywords' :
+						background = '';
+						deleteButton = '';
+						break;
+					case 'http://w3id.org/roh/userKeywords' :
+						linkButton = '';
+						break;
+				}
+			
+				htmlItmes += `<li class="${background}" about="${input.attr('propertyrdf')}">
+					<a href="javascript: void(0);">
+						<span class="texto">${input.val()}</span>
+					</a>
+					${deleteButton}
+				</li>`;
+			});
+			
+			var htmlTopics=`<div class="simple-collapse-content">
+								<div class="resource-list listView">
+									<div class="list-wrap tags">
+										<ul>
+											${htmlItmes}
+										</ul>
+									</div>
+								</div>
+							</div>`;
+
+			$(this).find('.simple-collapse-content').remove();
+			$(this).append(htmlTopics);
+			
+		});
+		
+		
+		var listadosTopics = $( ".topic .simple-collapse-content .resource-list ul" )
+		listadosTopics.last().append(listadosTopics.find("li"));
+	},
 	repintarListadoThesaurus: function () {
 		var that=this;		
+		
+		var listadosTesauros = $( ".entityauxcontainer.thesaurus .item.aux.entityaux ul.listadoTesauro" )
+		listadosTesauros.find('a.faceta.selected').removeClass('selected');
 		
         $( ".entityauxcontainer.thesaurus" ).each(function() {
 			
@@ -1376,33 +1463,12 @@ var edicionCV = {
 			var idTemp=	$(this).attr('idtemp');
 			$(this).children('.simple-collapse-content').remove();
 			var items= $(this).children('.item.added.entityaux');	
-			
-			
-			$(this).find('.item.aux.entityaux').find('ul.listadoTesauro').find('a.faceta.last-level.selected').removeClass('selected');
-			
-			var htmAccionesItems='';
-		
+
 			var iconAdd="add";
-			var classList="";
-							
-			if(items.length>0)
-			{				
-				htmAccionesItems+=that.pintarListadoEntityOrden($(this).attr('order')) + `<li>
-										<a class="btn btn-outline-grey delete">
-											<span class="texto">${GetText("CV_ELIMINAR")}</span>
-											<span class="material-icons">delete</span>
-										</a>
-									</li>`;
-			}
 			
 			var htmlAcciones=`
 								<div class="simple-collapse-content">
 									<div class="acciones-listado acciones-listado-edicion">
-										<div class="wrap">
-											<ul class="no-list-style d-flex align-items-center">
-												${htmAccionesItems}
-											</ul>
-										</div>
 										<div class="wrap">
 											<ul class="no-list-style d-flex align-items-center">
 												<li>
@@ -1414,79 +1480,86 @@ var edicionCV = {
 											</ul>
 										</div>
 									</div>
-									<div class="resource-list listView ${classList}">
-										<div class="resource-list-wrap">
-											${that.repintarListadoThesaursItems(items,idTemp, valoresTesauro)}
+									<div class="resource-list listView">
+										<div class="list-wrap tags">
+											<ul>
+												${that.repintarListadoThesaursItems(items,idTemp, valoresTesauro)}
+											</ul>
 										</div>
 									</div>
 								</div>
 							</div>`;
+							
 			$(this).append(htmlAcciones);
 			
 		});
+		
+		var listadosTesauros = $( ".entityauxcontainer.thesaurus .simple-collapse-content .resource-list ul" )
+		listadosTesauros.last().append(listadosTesauros.find("li"));
+		
 		this.engancharComportamientosCV();
     },
 	repintarListadoThesaursItems: function (items, idTemp, valoresTesauro) {
 		var that=this;
 		var html='';
-		var num=0;
-		$(items).each(function() {
-			num++;
-			var checked = '';	
-			
-			if(num==1)
-			{
-				checked="checked";
-				$(this).closest('.entityauxcontainer').attr('selecteditem',$(this).attr('about'));
-			}
+		var num=1;
 		
-			html+=that.repintarListadoThesaurusyItem(this, num, checked, idTemp, valoresTesauro);
+		$(items).each(function() {
+			html+=that.repintarListadoThesaurusyItem($(this), num, idTemp, valoresTesauro);
+			num++;		
 		});
 		return html;
 	},
-    repintarListadoThesaurusyItem: function (item, num, checked, idTemp, valoresTesauro) {		
+    repintarListadoThesaurusyItem: function (item, num, idTemp, valoresTesauro) {		
 		var that=this;
 		/*Cargar*/
-		var IdItems = $.map($(item).find('.item.added input') , function( input){ return $(input).val()}).sort()
+		var IdItems = $.map(item.find('.item.added input') , function( input){ return $(input).val()}).sort()
 		var idItem =  IdItems[IdItems.length - 1];
 		
-		var title = "";
-		
-		for(var i = 0; i < IdItems.length; i++)
-		{
-			title += valoresTesauro.find(x => x.key == IdItems[i]).value;
-			
-			if ( i < IdItems.length - 1){ title += " / "; }
+		var title = valoresTesauro.find(x => x.key == idItem).value;
+				
+		//var listado = item.parent().find('.item.aux.entityaux').find('ul.listadoTesauro');
+		var background = '';
+		var deleteButton = `<span class="material-icons cerrar">close</span>`;
+		var linkButton = `<span class="material-icons link">link</span>`
+		var lockCheck = false;
+		switch(item.attr('propertyrdf')){
+			case 'http://w3id.org/roh/externalKnowledgeArea' :
+				background = 'background-amarillo';
+				deleteButton = '';
+				lockCheck = true;
+				break;
+			case 'http://w3id.org/roh/enrichedKnowledgeArea' :
+				background = '';
+				deleteButton = '';
+				lockCheck = true;
+				break;
+			case 'http://w3id.org/roh/userKnowledgeArea' :
+				linkButton = '';
+				break;
 		}
 		
-		var props="";
+		var listadosTesauros = $( ".entityauxcontainer.thesaurus .item.aux.entityaux ul.listadoTesauro" )
+		var listado = listadosTesauros.last();
+		$.each( IdItems, function( key, value ) {
+			var check = listado.find('a.faceta[name="' + value + '"]');
+			check.addClass('selected');
+			if(lockCheck == true){
+				check.addClass('lock');
+			}
+		});
 		
-		$(item).parent().find('.item.aux.entityaux').find('ul.listadoTesauro').find('a.faceta.last-level[name="' + idItem + '"]').addClass('selected');
 		
-		//Marcar como selected las facetas
-		
-		return `<article class="resource" about="${$(item).attr('about')}" order="${num}">
-					<div class="custom-control themed little custom-radio">
-						<input type="radio" id="edicion-listado-${idTemp}${num}" name="edicion-listado-${idTemp}" class="custom-control-input" ${checked}>
-						<label class="custom-control-label" for="edicion-listado-${idTemp}${num}"></label>
-					</div>
-					<div class="wrap">
-						<div class="middle-wrap">
-							<div class="title-wrap">
-								<h2 class="resource-title">${title}</h2>
-							</div>
-							<div class="content-wrap">
-								<div class="description-wrap">
-									<div class="desc">
-									${props}
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</article>`;
+		return `<li class="${background}" about="${item.attr('about')}" parent-idtemp="${idTemp}" order="${num}">
+					<a href="javascript: void(0);">
+						<span class="texto">${title}</span>
+					</a>
+					${linkButton}
+					${deleteButton}
+				</li>`;
 	},
     repintarListadoEntity: function () {
+		this.repintarTopic();
 		this.repintarListadoThesaurus();
 		var that=this;
 		
@@ -1996,9 +2069,8 @@ var edicionCV = {
             that.printEditEntity(modalPopUp,data,  rdfType);
             OcultarUpdateProgress();
         });
-    }
+    },
     //Fin de métodos de edición
-    ,
     engancharComportamientosCV: function () {
 		$('.select2-container').remove();
         iniciarSelects2.init();
@@ -2008,17 +2080,25 @@ var edicionCV = {
         var that = this;
 		
 		//Tesauros
-		$('.listadoTesauro .faceta.last-level:not(.selected)').unbind( "click").bind( "click", function(){
-			var parentPanel = $(this).closest('.item.entityaux');
-			var newCategoryInput = parentPanel.find('input[type="text"]');
-			var newCategoryAddButton = parentPanel.find('.btn.add');
+		$('.listadoTesauro .faceta:not(.last-level)').unbind( "click").bind( "click", function(){
+			$(this).find('.desplegarSubFaceta .material-icons').trigger('click');
+		});
+		$('.listadoTesauro .faceta.last-level:not(.lock)').unbind( "click").bind( "click", function(){		
+			var faceta = $(this);
 			
-			faceta = $(this);
+			var addOrRemove = !faceta.hasClass('selected');
 			
 			while (faceta != null)
 			{
-				newCategoryInput.val(faceta.attr("name"));
-				newCategoryAddButton.trigger('click');
+				if(addOrRemove || faceta.parent().find('ul .faceta.selected').length > 0)
+				{
+					faceta.addClass('selected');
+				}
+				else
+				{
+					faceta.removeClass('selected');
+				}
+				
 				var listado = faceta.closest('ul');
 				if(!listado.hasClass('listadoTesauro'))
 				{
@@ -2030,8 +2110,8 @@ var edicionCV = {
 				}
 			}
 			
-			$(this).closest('.formulario-edicion').next().find('a').trigger('click');
-		})
+			//$(this).closest('.formulario-edicion').next().find('a').trigger('click');
+		});
 		
 		//LISTADOS		
         //Paginación
@@ -2133,6 +2213,11 @@ var edicionCV = {
 			itemClone.find('input, select, textarea').val(item.find('input, select, textarea').val());
 			item.find('input, select, textarea').val('');
 			item.find('input, select, textarea').change();
+			
+			if(contenedor.hasClass('topic')){
+				edicionCV.repintarTopic();
+			}
+			
 			that.engancharComportamientosCV();
         });
 		
@@ -2221,13 +2306,13 @@ var edicionCV = {
 				if($(modalPopUp+' .formulario-edicion>div>ul.listadoTesauro').length>0)
 				{
 					$(modalPopUp+' .formulario-edicion>div>div.custom-form-row').hide();
-					$(modalPopUp+' .modal-body>div.form-actions').hide();
 					$(modalPopUp).addClass('modal-con-buscador');
+					$(modalPopUp).addClass('modal-tesauro');
 				}else
 				{
 					$(modalPopUp+' .formulario-edicion>div>div.custom-form-row').show();
-					$(modalPopUp+' .modal-body>div.form-actions').show();
 					$(modalPopUp).removeClass('modal-con-buscador');
+					$(modalPopUp).removeClass('modal-tesauro');
 				}					
 			}			
 			that.repintarListadoEntity();
@@ -2258,6 +2343,31 @@ var edicionCV = {
 			var contenedor=$(this).closest('.entitycontainer');
 			var idTemp=$(contenedor).attr('idtemp');
 			$('#modal-eliminar .btn-outline-primary').attr('href', 'javascript:$("#'+modalID+' div[idtemp=\''+idTemp+'\']>div.item.added.entity").attr("about","");$("#'+modalID+' div[idtemp=\''+idTemp+'\']>div.item.added.entity>input").val("");$("#'+modalID+' div[idtemp=\''+idTemp+'\']>div.item.added.entity>span").attr("loaded","true");$("#'+modalID+' div[idtemp=\''+idTemp+'\']>div.item.added.entity>span").html("");edicionCV.repintarListadoEntity();$("#modal-eliminar").modal("hide");');            
+        });
+		
+		//Eliminar entidad tesauro
+        $('.multiple.entityauxcontainer.thesaurus .list-wrap.tags .cerrar').off('click').on('click', function (e) {       
+			$("#modal-eliminar").modal("show");		
+			//Usa el popup
+			var modalID = $(this).closest('.modal').attr('id');
+			
+			var idTemp = $(this).closest('li').attr('parent-idtemp');
+			var id = $(this).closest('li').attr('about');
+			//$('#modal-eliminar .btn-outline-primary').attr('href', 'javascript:$("#'+modalID+' div[idtemp=\''+idTemp+'\'] div[about=\''+id+'\']").remove();$("#'+modalID+' div[idtemp=\''+idTemp+'\']").attr(\'remove\',$("div[idtemp=\''+idTemp+'\']").attr(\'remove\')+\'||'+id+'\');edicionCV.repintarListadoEntity();$("#modal-eliminar").modal("hide");'); 
+
+			$('#modal-eliminar .btn-outline-primary').attr('href', 'javascript:edicionCV.eliminarEntidadTesauro("'+modalID+'", "'+idTemp+'", "'+id+'")'); 
+        });
+		
+		//Eliminar topic
+        $('.topic .list-wrap.tags .cerrar').off('click').on('click', function (e) {       
+			$("#modal-eliminar").modal("show");		
+			//Usa el popup
+			var modalID = $(this).closest('.modal').attr('id');
+			var item = $(this).closest('li');
+			var propRdf = item.attr('about');
+			var value = item.find('.texto').text();
+
+			$('#modal-eliminar .btn-outline-primary').attr('href', 'javascript:edicionCV.eliminarEntidadTopic("'+modalID+'", "'+propRdf+'", "'+value+'")'); 
         });
 		
 		//Mover orden entidad auxiliar
@@ -2364,12 +2474,10 @@ var edicionCV = {
 			if($(modalPopUp+' .formulario-edicion>div>ul.listadoTesauro').length>0)
 			{
 				$(modalPopUp+' .formulario-edicion>div>div.custom-form-row').hide();
-				$(modalPopUp+' .modal-body>div.form-actions').hide();
 				$(modalPopUp).addClass('modal-con-buscador');
 			}else
 			{
 				$(modalPopUp+' .formulario-edicion>div>div.custom-form-row').show();
-				$(modalPopUp+' .modal-body>div.form-actions').show();
 				$(modalPopUp).removeClass('modal-con-buscador');
 			}	
         });
@@ -2658,6 +2766,27 @@ var edicionCV = {
 		}
 		return true;        
     }, 
+	 eliminarEntidadTesauro: function(modalID, idTemp, id){
+		$('#' + modalID + ' div[idtemp="' + idTemp + '"] div[about="' + id + '"]').remove();
+		var contenedor = $('#'+modalID+' div[idtemp="'+idTemp+'"]');
+		var valorRemoveAnterior = contenedor.attr('remove');
+		if(valorRemoveAnterior != null){
+			valorRemoveAnterior += '||';
+		}
+		else{
+			valorRemoveAnterior = '';
+		}
+		
+		contenedor.attr('remove', valorRemoveAnterior + id);
+		edicionCV.repintarListadoThesaurus();
+		$("#modal-eliminar").modal("hide");
+	},
+	eliminarEntidadTopic: function(modalID, propRDF, value){
+		$('#' + modalID + ' input[propertyrdf="' + propRDF + '"][value="' + value + '"]').parent().remove();
+
+		edicionCV.repintarTopic()
+		$("#modal-eliminar").modal("hide");
+	},
 	eliminarItem: function (sectionID, entityID) {
         var that = this;
         var item = {};
@@ -2678,13 +2807,59 @@ var edicionCV = {
 		//Entidad auxiliar
 		//Entidad principal
 		
-		var modal=$(pFormulario).closest('.modal');		
+		var modal = pFormulario.closest('.modal');		
 		//Auxiliar
-		if($(pFormulario).attr('entityid')==null && $(pFormulario).attr('entityload')==null)
+		if(pFormulario.attr('entityid') == null && pFormulario.attr('entityload') == null)
 		{			
-			if($(modal).attr('new')=='true')
+			if(modal.attr('new') == 'true')
 			{
-				$('.entityauxcontainer[idtemp="'+$(modal).attr('idtemp')+'"]').append($(modal).find('.formulario-edicion div[about="'+$(modal).attr('about')+'"]'));
+				if(modal.hasClass('modal-tesauro'))
+				{
+					var panThesaurus = $('.entityauxcontainer[idtemp="' + modal.attr('idtemp')+'"]');
+					panThesaurus.children('.item.added.entityaux').remove();
+			
+					var items = pFormulario.find('a.faceta.last-level.selected');
+					
+					items.each(function() {
+						var añadidos = pFormulario.find('.custom-form-row .item.added').remove();
+						
+						var parentPanel = $(this).closest('.item.entityaux');
+						var newCategoryInput = parentPanel.find('.custom-form-row input[type="text"]');
+						var newCategoryAddButton = parentPanel.find('.custom-form-row .btn.add');
+						
+						faceta = $(this);
+						
+						while (faceta != null)
+						{
+							//Seleccionar la categoría del panel principal
+							
+							newCategoryInput.val(faceta.attr("name"));
+							newCategoryAddButton.trigger('click');
+							var listado = faceta.closest('ul');
+							if(!listado.hasClass('listadoTesauro'))
+							{
+								faceta = listado.prev();
+							}
+							else
+							{
+								faceta = null;
+							}
+						}
+						
+						var formEdicionClone = modal.find('.formulario-edicion div[about="' + modal.attr('about')+'"]').clone();	
+						formEdicionClone.attr('about', RandomGuid());
+						formEdicionClone.find('.buscador-coleccion').remove();
+						formEdicionClone.find('.action-buttons-resultados').remove();
+						formEdicionClone.find('.listadoTesauro').remove();
+						formEdicionClone.find('.custom-form-row').show();
+						
+						panThesaurus.append(formEdicionClone);
+					});
+					
+				}
+				else{
+					$('.entityauxcontainer[idtemp="'+$(modal).attr('idtemp')+'"]').append($(modal).find('.formulario-edicion div[about="'+$(modal).attr('about')+'"]'));
+				}
 			}else
 			{
 				$('.entityauxcontainer[idtemp="'+$(modal).attr('idtemp')+'"] div[about="'+$(modal).attr('about')+'"]').replaceWith($(modal).find('.formulario-edicion div[about="'+$(modal).attr('about')+'"]'));
@@ -2739,6 +2914,7 @@ var edicionCV = {
 						prop = {};
 						prop.prop = property;
 						prop.values = [];
+						entidad.properties.push(prop);
 					}					
 					var valor=$(this).val();
 					if ($(this).closest('.entityaux').length == 1) {
@@ -2747,7 +2923,7 @@ var edicionCV = {
 						valor = entityParent + "@@@" + valor;
 					}
 					prop.values.push(valor);					
-					entidad.properties.push(prop);
+					
 				}
 			});
 			
@@ -3106,6 +3282,7 @@ var edicionCV = {
 
 //Métodos auxiliares
 function EliminarAcentos(texto) {
+	texto=texto.toLowerCase();
     var ts = '';
     for (var i = 0; i < texto.length; i++) {
         var c = texto.charCodeAt(i);
@@ -3162,6 +3339,14 @@ function addAutocompletar(control)
 					$('.added input[propertyrdf="' + pProperty + '"]').each(function () { 
 						lista += $(this).val().trim() + ',';
 					});
+					if(pProperty == 'http://w3id.org/roh/userKeywords'){
+						$('.added input[propertyrdf="http://w3id.org/roh/enrichedKeywords"]').each(function () { 
+							lista += $(this).val().trim() + ',';
+						});
+						$('.added input[propertyrdf="http://w3id.org/roh/externalKeywords"]').each(function () { 
+							lista += $(this).val().trim() + ',';
+						});
+					}
                     return lista;
                 },
                 pProperty : pProperty,

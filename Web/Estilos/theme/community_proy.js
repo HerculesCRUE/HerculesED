@@ -17,7 +17,157 @@ $(document).ready(function () {
 function comportamientoCargaFacetasComunidad() {	
 	comportamientoFacetasPopUp.init();	
 	plegarSubFacetas.init();
+	comportamientoRangosFechas();
+	comportamientoRangosNumeros();
 }
+
+var setFilter = function(element) {
+	// actualizarValoresSlider(self, pos);
+	// Get the element data
+	let theId = element.id;
+	let filterFinalPart1 = $(element).data("filterpart1");
+	let filterFinalPart2 = $(element).data("filterpart2");
+	let facekey = $(element).data("facekey");
+	let inputname1 = $(element).data("inputname1");
+	let inputname2 = $(element).data("inputname2");
+
+	let minDate = $("#" + inputname1).val();
+	let maxDate = $("#" + inputname2).val();
+
+	// Set the url for the filter
+	let filterString = filterFinalPart1 + minDate + '0000-' + maxDate + '0000&' + filterFinalPart2;
+	// window.location = filterString;
+
+	// Set name attr
+	$(element).parent().find(".searchButton").attr("name", facekey + '=' + minDate + '0000-' + maxDate + '0000');
+	// Set href attr
+	$(element).parent().find(".searchButton").attr("href", filterString);
+	setFilterButtons(element);
+}
+
+var setFilterNumbers = function(element) {
+	// Get the element data
+	let theId = element.id;
+	let filterFinalPart1 = $(element).data("filterpart1");
+	let filterFinalPart2 = $(element).data("filterpart2");
+	let facekey = $(element).data("facekey");
+	let inputname1 = $(element).data("inputname1");
+	let inputname2 = $(element).data("inputname2");
+	let minDate = $("#" + inputname1).val();
+	let maxDate = $("#" + inputname2).val();
+	// Set the url for the filter
+	let filterString = filterFinalPart1 + minDate + '-' + maxDate + '&' + filterFinalPart2;
+	// Set name attr
+	$(element).parent().find(".searchButton").attr("name", facekey + '=' + minDate + '-' + maxDate);
+	// Set href attr
+	$(element).parent().find(".searchButton").attr("href", filterString);
+}
+
+var setFilterButtons = function(element) {
+	let filterFinalPart1 = $(element).data("filterpart1");
+	let filterFinalPart2 = $(element).data("filterpart2");
+	let facekey = $(element).data("facekey");
+
+	let actYear = new Date().getFullYear();
+	let maxYear = actYear + 1;
+	let min5year = actYear - 5;
+	let lastYear = actYear - 1;
+
+	// Set the url for the filter
+	let filterString = filterFinalPart1 + min5year + '0000-' + maxYear + '0000&' + filterFinalPart2;
+
+	// LAST YEAR
+	// Set name attr
+	$(element).parent().find(".last5Years").attr("name", facekey + '=' + min5year + '0000-' + maxYear + '0000');
+	// Set href attr
+	$(element).parent().find(".last5Years").attr("href", filterString);
+
+	// Set the url for the filter
+	let filterStringAY = filterFinalPart1 + actYear + '0000-' + maxYear + '0000&' + filterFinalPart2;
+
+	// LAST YEAR
+	// Set name attr
+	$(element).parent().find(".lastYear").attr("name", facekey + '=' + actYear + '0000-' + maxYear + '0000');
+	// Set href attr
+	$(element).parent().find(".lastYear").attr("href", filterStringAY);
+
+	// Set the url for the filter
+	let filterStringActY = filterFinalPart1 + '19000000-' + '23000000&' + filterFinalPart2;
+
+	// ALL YEARS
+	// Set name attr
+	$(element).parent().find(".allYears").attr("name", facekey + '=' + '19000000-' + '23000000');
+	// Set href attr
+	$(element).parent().find(".allYears").attr("href", filterStringActY);
+}
+
+function comportamientoRangosFechas()
+{
+	// Inicialite all facetas general range
+	$(".faceta-general-range .ui-slider").each((i, e) => {
+		$(e).slider({
+		range: true,
+		min: $(e).data('minnumber'),
+		max: $(e).data('maxnumber'),
+		values: [$(e).data('minnumber'), $(e).data('maxnumber')],
+		slide: function(event, ui) {
+		$("#" + $(e).data('inputname1')).val(ui.values[0]);
+		$("#" + $(e).data('inputname2')).val(ui.values[1]);
+		}
+		});
+
+		$(e).off("slidechange").on( "slidechange", function( event, ui ) {
+		setFilter(e);
+		} );
+
+		setFilter(e);
+	});
+
+	$('.faceta-general-range a.searchButton').unbind().click(function (e) {
+		AgregarFaceta($(this).attr("name"));
+		// Quitar el panel de filtrado para móvil para visualizar resultados correctamente
+		$(body).removeClass("facetas-abiertas");
+		e.preventDefault();
+	});
+
+	$('.faceta-general-range a.last5Years, .faceta-general-range a.lastYear, .faceta-general-range a.allYears').unbind().click(function (e) {
+		AgregarFaceta($(this).attr("name"));
+		// Quitar el panel de filtrado para móvil para visualizar resultados correctamente
+		$(body).removeClass("facetas-abiertas");
+		e.preventDefault();
+	});
+}
+
+function comportamientoRangosNumeros()
+{
+	// Inicialite all facetas general range
+	$(".faceta-general-number-range .ui-slider").each((i, e) => {
+		$(e).slider({
+			range: true,
+			min: $(e).data('minnumber'),
+			max: $(e).data('maxnumber'),
+			values: [$(e).data('minnumber'), $(e).data('maxnumber')],
+			slide: function(event, ui) {
+				$("#" + $(e).data('inputname1')).val(ui.values[0]);
+				$("#" + $(e).data('inputname2')).val(ui.values[1]);
+		}
+		});
+		$(e).off("slidechange").on( "slidechange", function( event, ui ) {
+			setFilterNumbers(e);
+		});
+		setFilterNumbers(e);
+	});
+
+
+
+	$('.faceta-general-number-range a.searchButton').unbind().click(function (e) {
+		AgregarFaceta($(this).attr("name"));
+		// Quitar el panel de filtrado para móvil para visualizar resultados correctamente
+		$(body).removeClass("facetas-abiertas");
+		e.preventDefault();
+	});
+}
+	
 
 function CompletadaCargaRecursosComunidad()
 {	
@@ -481,6 +631,7 @@ var MontarResultadosScroll = {
 montarTooltip.montarTooltips= function () {
 	var that = this;	
 	this.quotes.each(function () {
+			console.log("toltipFN(montarTooltip)");
 			var scopusInt=$(this).data('scopus');
 			var wosInt=$(this).data('wos');
 			var inrecsInt=$(this).data('inrecs');
@@ -553,4 +704,278 @@ montarTooltip.montarTooltips= function () {
 				});
 			}
 	});
+}
+
+function MontarResultados(pFiltros, pPrimeraCarga, pNumeroResultados, pPanelID, pTokenAfinidad) {
+    contResultados = contResultados + 1;
+    if (document.getElementById('ctl00_ctl00_CPH1_CPHContenido_txtRecursosSeleccionados') != null) {
+        document.getElementById('ctl00_ctl00_CPH1_CPHContenido_txtRecursosSeleccionados').value = '';
+        document.getElementById('ctl00_ctl00_CPH1_CPHContenido_lblErrorMisRecursos').style.display = 'none';
+    }
+    var servicio = new WS($('input.inpt_UrlServicioResultados').val(), WSDataType.jsonp);
+
+    var paramAdicional = parametros_adiccionales;
+
+    /*
+    if ($('li.mapView').attr('class') == "mapView activeView") {
+        paramAdicional += 'busquedaTipoMapa=true';
+    }*/
+    /*
+    if ($('.chartView').attr('class') == "chartView activeView") {
+        paramAdicional = 'busquedaTipoChart=' + chartActivo + '|' + paramAdicional;
+    }*/
+
+    if ($('li.mapView').hasClass('activeView')) {
+        paramAdicional += 'busquedaTipoMapa=true';
+    }
+
+
+    if ($('.chartView').hasClass('activeView')) {
+        paramAdicional = 'busquedaTipoChart=' + chartActivo + '|' + paramAdicional;
+    }
+
+    var metodo = 'CargarResultados';
+    var params = {};
+
+    if (bool_usarMasterParaLectura) {
+        if (finUsoMaster == null) {
+            finUsoMaster = new Date();
+            finUsoMaster.setMinutes(finUsoMaster.getMinutes() + 1);
+        }
+        else {
+            var fechaActual = new Date();
+            if (fechaActual > finUsoMaster) {
+                bool_usarMasterParaLectura = false;
+                finUsoMaster = null;
+            }
+        }
+    }
+
+    params['pUsarMasterParaLectura'] = bool_usarMasterParaLectura;
+    params['pProyectoID'] = $('input.inpt_proyID').val();
+    params['pEsUsuarioInvitado'] = $('input.inpt_bool_esUsuarioInvitado').val() == 'True';
+
+    if (typeof (identOrg) != 'undefined') {
+	 
+        params['pIdentidadID'] = identOrg;
+    }
+    else {
+	 
+        params['pIdentidadID'] = $('input.inpt_identidadID').val();
+    }
+    params['pParametros'] = '' + pFiltros.replace('#', '');
+    params['pLanguageCode'] = $('input.inpt_Idioma').val();
+    params['pPrimeraCarga'] = pPrimeraCarga == "True";
+    params['pAdministradorVeTodasPersonas'] = adminVePersonas == "True";
+    params['pTipoBusqueda'] = tipoBusqeda;
+    params['pNumeroParteResultados'] = pNumeroResultados;
+    params['pGrafo'] = grafo;
+    params['pFiltroContexto'] = filtroContexto;
+    params['pParametros_adiccionales'] = paramAdicional;
+    params['cont'] = contResultados;
+    params['tokenAfinidad'] = pTokenAfinidad;
+
+    $.post(obtenerUrl($('input.inpt_UrlServicioResultados').val()) + "/" + metodo, params, function (response) {
+        if (params['cont'] == contResultados) {
+            var data = response
+            if (response.Value != null) {
+                data = response.Value;
+            }
+
+            var vistaMapa = (params['pParametros_adiccionales'].indexOf('busquedaTipoMapa=true') != -1);
+            var vistaChart = (params['pParametros_adiccionales'].indexOf('busquedaTipoChart=') != -1);
+
+            var descripcion = data;
+
+            var funcionJS = '';
+            if (descripcion.indexOf('###ejecutarFuncion###') != -1) {
+                var funcionJS = descripcion.substring(descripcion.indexOf('###ejecutarFuncion###') + '###ejecutarFuncion###'.length);
+                funcionJS = funcionJS.substring(0, funcionJS.indexOf('###ejecutarFuncion###'));
+
+                descripcion = descripcion.replace('###ejecutarFuncion###' + funcionJS + '###ejecutarFuncion###', '');
+            }
+
+            if (tipoBusqeda == 12) {
+                var panelListado = $(pPanelID).parent();
+                panelListado.html('<div id="' + pPanelID.replace('#', '') + '"></div><div id="' + panResultados.replace('#', '') + '"></div>')
+
+                var panel = $(pPanelID);
+                panel.css('display', 'none');
+                panel.html(descripcion);
+                panelListado.append(panel.find('.resource-list').html())
+                panel.find('.resource-list').html('');
+            } else if (!vistaMapa && !vistaChart) {
+                $(pPanelID).append(descripcion);
+            }
+            else {
+                var arraydatos = descripcion.split('|||');
+
+                if ($('#panAuxMapa').length == 0) {
+                    $(pPanelID).parent().html($(pPanelID).parent().html() + '<div id="panAuxMapa" style="display:none;"></div>');
+                }
+
+                if (vistaMapa) {
+                    $('#panAuxMapa').html('<div id="numResultadosRemover">' + arraydatos[0] + '</div>');
+                }
+
+                if (vistaChart) {
+                    datosChartActivo = arraydatos;
+                    $(pPanelID).html('<div id="divContChart"></div>');
+                    eval(jsChartActivo);
+                }
+                else {
+                    utilMapas.MontarMapaResultados(pPanelID, arraydatos);
+                }
+            }
+            FinalizarMontarResultados(paramAdicional, funcionJS, pNumeroResultados, pPanelID);
+        }
+        if (MontarResultadosScroll.pagActual != null) {
+            MontarResultadosScroll.pagActual = 1;
+            MontarResultadosScroll.cargarScroll();
+        }
+    }, "json");
+}
+
+
+function FiltrarPorFacetasGenerico(filtro) {
+    filtro = filtro.replace(/&/g, '|');
+
+    if (typeof (filtroDePag) != 'undefined' && filtroDePag != '') {
+        if (filtro != '') {
+            filtro = filtroDePag + '|' + filtro;
+        }
+        else {
+            filtro = filtroDePag;
+        }
+    }
+    //Si hay orden por relevancia pero no hay filtro search, quito el orden para que salga el orden por defecto
+    //    if(QuitarOrdenReleavanciaSinSearch(filtro))
+    //    {
+    //        return false;
+    //    }
+    filtrosPeticionActual = filtro;
+
+    var rdf = false;
+    if (filtro.indexOf('?rdf') != -1 && ((filtro.indexOf('?rdf') + 4) == filtro.length)) {
+        filtro = filtro.substring(0, filtro.length - 4);
+        document.location.hash = document.location.hash.substring(0, document.location.hash.length - 4);
+        rdf = true;
+    }
+
+    enlazarJavascriptFacetas = true;
+
+    var arg = filtro;
+
+    /*
+    var vistaMapa = ($('li.mapView').attr('class') == "mapView activeView");
+    var vistaChart = ($('.chartView').attr('class') == "chartView activeView");
+    */
+
+    var vistaMapa = $('li.mapView').hasClass('activeView');
+    var vistaChart = $('.chartView').hasClass('activeView');
+
+    if (!primeraCargaDeFacetas && !vistaMapa) {
+        MostrarUpdateProgress();
+    }
+
+    var parametrosFacetas = 'ObtenerResultados';
+
+    var gruposPorTipo = $('#facetedSearch.facetedSearch .listadoAgrupado ').length>0;
+
+    if (cargarFacetas && !gruposPorTipo) {
+        if (typeof panFacetas != "undefined" && panFacetas != "" && $('#' + panFacetas).length > 0 && !primeraCargaDeFacetas && !gruposPorTipo) {
+            $('#' + panFacetas).html('')
+        }
+        if (numResultadosBusq != "" && $('#' + numResultadosBusq).length > 0 && !primeraCargaDeFacetas) {
+            $('#' + numResultadosBusq).html('')
+            $('#' + numResultadosBusq).css('display', 'none');
+        }
+        if (!clickEnFaceta && panFiltrosPulgarcito != "" && $('#' + panFiltrosPulgarcito).length > 0 && !primeraCargaDeFacetas) {
+            $('#' + panFiltrosPulgarcito).html('')
+        }
+    }
+
+    if (!vistaMapa) {
+        SubirPagina();
+    }
+
+    if (typeof idNavegadorBusqueda != "undefined") {
+        $('#' + idNavegadorBusqueda).html('');
+        $('#' + idNavegadorBusqueda).css('display', 'none');
+    }
+
+    if (!vistaMapa && !primeraCargaDeFacetas) {
+        // Vaciar el contenido actual de resultados - Nuevo Front
+        // document.getElementById(updResultados).innerHTML = '';
+        $(`#${updResultados}`).html('');
+        $('#' + updResultados).attr('style', '');
+    }
+
+    clickEnFaceta = false;
+    var primeraCarga = false;
+
+    if (filtro.length > 1 || document.location.href.indexOf('/tag/') > -1 || (filtroContexto != null && filtroContexto != '')) {
+        parametrosFacetas = 'AgregarFacetas|' + arg;
+        var parametrosResultados = 'ObtenerResultados|' + arg;
+        if (!cargarFacetas) {
+            var parametrosResultados = 'ObtenerResultadosSinFacetas|' + arg;
+        }
+        //cargarFacetas
+        var displayNone = '';
+        document.getElementById('query').value = parametrosFacetas;
+        if (HayFiltrosActivos(filtro) && (tipoBusqeda != 12 || filtro.indexOf("=") != -1)) {
+            $('#' + divFiltros).css('display', '');
+            $('#' + divFiltros).css('padding-top', '0px !important');
+            //$('#' + divFiltros).css('margin-top', '10px');
+        }
+        var pLimpiarFilt = $('p', $('#' + divFiltros)[0]);
+
+        if (pLimpiarFilt != null && pLimpiarFilt.length > 0) {
+            if (!(filtro.length > 1 || document.location.href.indexOf('/tag/') > -1)) {
+                pLimpiarFilt[0].style.display = 'none';
+            }
+            else {
+                pLimpiarFilt[0].style.display = '';
+            }
+        }
+    }
+    else {
+        primeraCarga = true;
+        $('#' + divFiltros).css('display', 'none');
+        $('#' + divFiltros).css('padding-top', '0px !important');
+        //$('#' + divFiltros).css('margin-top', '10px');
+    }
+
+    if (rdf) {
+        eval(document.getElementById('rdfHack').href);
+    }
+
+    var tokenAfinidad = guidGenerator();
+
+    if (vistaMapa || !primeraCargaDeFacetas) {
+        MontarResultados(filtro, primeraCarga, 1, '#' + panResultados, tokenAfinidad);
+    }
+
+    if (panFacetas != "" && (cargarFacetas || document.getElementById(panFacetas).innerHTML == '')) {
+        var inicioFacetas = 1;
+
+        MontarFacetas(filtro, primeraCarga, inicioFacetas, '#' + panFacetas, null, tokenAfinidad);
+    }
+
+    primeraCargaDeFacetas = false;
+    cargarFacetas = true;
+
+    var txtBusquedaInt = $('.aaCabecera .searchGroup .text')
+    var textoSearch = 'search=';
+    if ((filtro.indexOf(textoSearch) > -1) && txtBusquedaInt.length > 0) {
+        var filtroSearch = filtro.substring(filtro.indexOf(textoSearch) + textoSearch.length);
+        if (filtroSearch.indexOf('|') > -1) {
+            filtroSearch = filtroSearch.substring(0, filtroSearch.indexOf('|'));
+        }
+
+        txtBusquedaInt.val(decodeURIComponent(filtroSearch));
+        txtBusquedaInt.blur();
+    }
+    CambiarOrden(filtro);
+    return false;
 }
