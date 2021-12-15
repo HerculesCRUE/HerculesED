@@ -13,8 +13,10 @@ namespace Gnoss.Web.ReprocessData.Models.Services
         private IConfiguration _configuration { get; set; }
         private string RabbitConnectionString { get; set; }
         private string QueueRabbit { get; set; }
+        private string urlPublicacion { get; set; }
+
         /// <summary>
-        /// ConfigService
+        /// Constructor.
         /// </summary>
         /// <param name="configuration"></param>
         public ConfigService(IConfiguration configuration)
@@ -23,7 +25,7 @@ namespace Gnoss.Web.ReprocessData.Models.Services
         }
 
         /// <summary>
-        /// GetBuildConfiguration
+        /// Contruye el objeto de lectura con la configuración del JSON.
         /// </summary>
         /// <returns></returns>
         public static IConfiguration GetBuildConfiguration()
@@ -35,9 +37,10 @@ namespace Gnoss.Web.ReprocessData.Models.Services
             return builder.Build();
         }
 
-        ///<summary>
-        ///Método que obtiene la ConfigUrl configurada
-        ///</summary>
+        /// <summary>
+        /// Obtiene la cadena de conexión de Rabbit configurada.
+        /// </summary>
+        /// <returns>Cadena de conexión de Rabbit.</returns>
         public string GetrabbitConnectionString()
         {
             if (string.IsNullOrEmpty(RabbitConnectionString))
@@ -56,6 +59,11 @@ namespace Gnoss.Web.ReprocessData.Models.Services
             }
             return RabbitConnectionString;
         }
+
+        /// <summary>
+        /// Obtiene la el nombre de la cola Rabbit de configuración.
+        /// </summary>
+        /// <returns>Nombre de la cola Rabbit.</returns>
         public string GetQueueRabbit()
         {
             if (string.IsNullOrEmpty(QueueRabbit))
@@ -73,6 +81,29 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                 QueueRabbit = queue;
             }
             return QueueRabbit;
+        }
+
+        /// <summary>
+        /// Obtiene la URL del API de Publicacion que ha sido configurada.
+        /// </summary>
+        /// <returns>URI del API de Publicacion.</returns>
+        public string GetUrlPublicacion()
+        {
+            if (string.IsNullOrEmpty(urlPublicacion))
+            {
+                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                string queue = string.Empty;
+                if (environmentVariables.Contains("UrlPublicacion"))
+                {
+                    queue = environmentVariables["UrlPublicacion"] as string;
+                }
+                else
+                {
+                    queue = _configuration["UrlPublicacion"];
+                }
+                urlPublicacion = queue;
+            }
+            return urlPublicacion;
         }
     }
 }

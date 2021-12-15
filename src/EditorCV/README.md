@@ -52,7 +52,7 @@ El archivo a editar para la configuración de los ítems de "Actividad científi
 				},
 ```
 
-Una vez localizada la propiedad del modelo semántico que corresponde con la actividad científica y tecnológica del investigador, vemos un listado de secciones (ítems) que podemos editar. En este caso, y como vemos en la imagen anterior, se procede a definir el RDF, la propiedad del ítem y el título ("Publicaciones, documentos científicos y técnicos") con el que figurará en el listado del editor.
+En primer lugar, se presenta el RDF y la propiedad que, en este caso, corresponden a la pestaña de actividad científica y tecnológica del investigador (roh:ScientificActivity). En un segundo nivel se sitúa el listado de secciones (ítems) que podemos editar. Como se observa en la imagen anterior, la primera sección corresponde a las publicaciones científicas (roh:scientificPublications), cuyo RDF, propiedad y presentación han sido establecidos. "presentation" contiene un tercer nivel en el que se ha definido el tipo (listado de ítems) y el título de la sección (Publicaciones, documentos científicos y técnicos).
 
 
 ## Configuración de la presentación (listado y minificha)
@@ -234,6 +234,13 @@ Como vemos en el ejemplo anterior, cada propiedad que deseamos mostrar de la pub
 
 Finalmente, vamos a configurar los distintos campos que queremos que presente una publicación a la hora de su edición por el titular del CV. Para ello, y al nivel de "listItemsPresentation", añadimos la propiedad "listItemEdit" que contendrá, a su vez, las siguientes propiedades:
 
+* "graph" --> El grafo utilizado.
+* "proptitle" --> El título de la propiedad.
+* "propdescription" --> La descripción de la propiedad.
+* "rdftype" --> El RDF.
+* "loadPropertyValues" --> Establece el valor que toma la propiedad que distingue el tipo de publicación (según CVN) con el que vamos a trabajar.
+* "sections" --> Aquí se define el listado de campos que se desea incluir en la edición de este ítem.
+
 ```
 
 "listItemEdit": {
@@ -273,7 +280,85 @@ Finalmente, vamos a configurar los distintos campos que queremos que presente un
 				},
 ```
 
-El ejemplo anterior establece nuevamente el grafo y el RDF sobre los que vamos a trabajar, y con "loadPropertyValues" se define el tipo de documento cuyas propiedades vamos a cargar (publicaciones de carácter científico en este caso). Posteriormente, en la propiedad "sections" podemos realizar una agrupación de los distintos campos que queremos editar por secciones. El ejemplo define una sección denominada "Información general" donde encontramos distintas filas ("rows") en la que añadiremos las propiedades que deseamos editar. Cada "properties" equivale a una fila cuya anchura definiremos en "width", a saber 1 para un campo que ocupe 1/3 del ancho, 2 para dos tercios y 3 si queremos que el campo ocupe todo el ancho. Además del título y el placeholder de la propiedad en cuestión, podemos definir otras propiedades como la obligatoriedad con "required" o el tipo de dato con "type", entre otras. La edición para el campo "Título de la publicación", quedaría así en la interfaz:
+El ejemplo anterior establece nuevamente el grafo y el RDF sobre los que vamos a trabajar, y con "loadPropertyValues" se define el tipo de documento cuyas propiedades vamos a cargar (publicaciones de carácter científico en este caso). Posteriormente, en la propiedad "sections" podemos realizar una agrupación de los distintos campos que queremos editar por secciones. El ejemplo define una sección denominada "Información general" donde encontramos distintas filas ("rows") en la que añadiremos las propiedades que deseamos editar. Cada "properties" equivale a una fila cuya anchura definiremos en "width", a saber 1 para un campo que ocupe 1/3 del ancho, 2 para dos tercios y 3 si queremos que el campo ocupe todo el ancho. Además del título y el placeholder de la propiedad en cuestión, podemos definir otras propiedades como la obligatoriedad con "required" o el tipo de dato con "type", entre otras. La edición para el campo "Título de la publicación" quedaría así en la interfaz:
 
 
 ![](../../Docs/media/EditorCV/EdicionCV5.png)
+
+
+En caso de que se quiera incorporar un campo con una estructura jerarquizada de tesauro, además del empleo de propiedades mencionadas anteriormente, como "title", "property", "type" o "width", la configuración debe llevarse a cabo utilizando la propiedad "thesaurus" con valor "researcharea", además de "type" con valor "thesaurus". Además, podemos emplear la propiedad "multiple" con valor true si se requieren múltiples instancias del campo en cuestión:
+
+```
+
+{
+	"properties": [
+	{
+		"title": {
+			"es": "Áreas temáticas externas"
+		},
+		"property": "http://w3id.org/roh/externalKnowledgeArea",
+		"thesaurus": "researcharea",
+		"type": "thesaurus",
+		"width": 0,
+		"multiple": true
+	}
+]
+},
+
+```
+
+La interfaz de edición del campo "Áreas temáticas externas" presentará este aspecto:
+
+
+![](../../Docs/media/EditorCV/EdicionCV6.png)
+
+![](../../Docs/media/EditorCV/EdicionCV7.png)
+
+En algunas ocasiones resulta necesario editar propiedades que están fuera del grafo, como ocurre con entidades secundarias. La forma de proceder es similar a las configuraciones descritas anteriormente, pero se debe especificar el grafo al que nos estamos moviendo. En el siguiente ejemplo se define el campo que recoge el tipo de publicación a través de una selección de tipo combo:
+
+```
+
+{
+	"title": {
+		"es": "Tipo de producción"
+	},
+	"property": "http://purl.org/dc/elements/1.1/type",
+	"combo": {
+		"rdftype": "http://w3id.org/roh/PublicationType",
+		"graph": "publicationtype",
+		"property": {
+			"property": "http://purl.org/dc/elements/1.1/title"
+		}
+	},
+	"type": "selectCombo",
+	"width": 1
+},
+
+```
+
+Una vez establecida la propiedad de la publicación sobre la que deseamos trabajar (dc:type), debemos localizar la entidad a la que esta apunta mediante la especificación, en un segundo nivel, del RDF, el grafo y la propiedad de la que vamos a extraer los valores del combo (dc:title). Será preciso además establecer como valor de "type" la cadena "selectCombo", de modo que el desplegable que contiene las distintas opciones del combo se visualice correctamente en la interfaz:
+
+![](../../Docs/media/EditorCV/EdicionCV8.png)
+
+Para establecer el campo de la autoría se ha realizado una configuración a medida que permite hacer una búsqueda de los diferentes autores por su firma y comprobar el grado de coincidencia que dichas firman revelan según las personas almacenadas en el sistema. Este caso es resuelto estableciendo el valor de "type" como "auxEntityAuthorList":
+
+```
+
+{
+	"properties": [
+		{
+			"property": "http://purl.org/ontology/bibo/authorList",
+			"type": "auxEntityAuthorList",
+			"title": {
+				"es": "Autores/as (p.o. de firma)"
+			},
+			"width": 3
+		}
+	]
+}
+
+```
+
+Quedando la visualización en la interfaz del siguiente modo:
+
+![](../../Docs/media/EditorCV/EdicionCV9.png)

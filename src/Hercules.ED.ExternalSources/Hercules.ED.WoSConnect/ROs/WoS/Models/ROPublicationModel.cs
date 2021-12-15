@@ -85,7 +85,6 @@ public class JournalMetric
 
 public class Person
 {
-   public string id_persona {get;set;}
     public Name name { get; set; } 
     public string ORCID {get;set;}
     public List<string> IDs { get; set; }

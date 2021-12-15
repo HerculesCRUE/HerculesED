@@ -191,23 +191,6 @@
             <AtrNombre>http://purl.org/ontology/bibo/identifier</AtrNombre>
             <AtrNombreLectura>http://purl.org/ontology/bibo/identifier</AtrNombreLectura>
         </Propiedad>
-		<Propiedad  ID="http://w3id.org/roh/publicGroupList" EntidadID="http://purl.org/ontology/bibo/Document">
-            <AtrNombre>http://w3id.org/roh/publicGroupList</AtrNombre>
-            <AtrNombreLectura>http://w3id.org/roh/publicGroupList</AtrNombreLectura>
-			<SeleccionEntidad>
-                <TipoSeleccion>Autocompletar</TipoSeleccion>
-                <Grafo>group.owl</Grafo>
-                <UrlTipoEntSolicitada>http://xmlns.com/foaf/0.1/Group</UrlTipoEntSolicitada>              
-                <PropsEntEdicion>
-                    <NameProp>http://w3id.org/roh/title</NameProp>
-                </PropsEntEdicion>
-                <PropsEntLectura>
-                    <Propiedad ID="http://w3id.org/roh/title" EntidadID="http://xmlns.com/foaf/0.1/Group">
-                        <AtrNombreLectura></AtrNombreLectura>
-                    </Propiedad>
-                </PropsEntLectura>
-            </SeleccionEntidad>
-        </Propiedad>
         <Propiedad  ID="https://www.w3.org/2006/vcard/ns#hasLanguage" EntidadID="http://purl.org/ontology/bibo/Document">
             <AtrNombre>https://www.w3.org/2006/vcard/ns#hasLanguage</AtrNombre>
             <AtrNombreLectura>https://www.w3.org/2006/vcard/ns#hasLanguage</AtrNombreLectura>
@@ -232,6 +215,10 @@
 		<Propiedad  ID="http://w3id.org/roh/isPublic" EntidadID="http://purl.org/ontology/bibo/Document">
             <AtrNombre>http://w3id.org/roh/isPublic</AtrNombre>
             <AtrNombreLectura>http://w3id.org/roh/isPublic</AtrNombreLectura>
+        </Propiedad>
+		<Propiedad  ID="http://w3id.org/roh/assessmentStatus" EntidadID="http://purl.org/ontology/bibo/Document">
+            <AtrNombre>http://w3id.org/roh/assessmentStatus</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/assessmentStatus</AtrNombreLectura>
         </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/project" EntidadID="http://purl.org/ontology/bibo/Document">
             <AtrNombre>http://w3id.org/roh/project</AtrNombre>
@@ -430,6 +417,22 @@
 		<Propiedad  ID="http://w3id.org/roh/suggestedKeywords" EntidadID="http://purl.org/ontology/bibo/Document">
             <AtrNombre>http://w3id.org/roh/suggestedKeywords</AtrNombre>
             <AtrNombreLectura>http://w3id.org/roh/suggestedKeywords</AtrNombreLectura>
+        </Propiedad>
+		<Propiedad  ID="http://w3id.org/roh/externalKnowledgeArea" EntidadID="http://purl.org/ontology/bibo/Document">
+            <AtrNombre>http://w3id.org/roh/externalKnowledgeArea</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/externalKnowledgeArea</AtrNombreLectura>
+        </Propiedad>
+		<Propiedad  ID="http://w3id.org/roh/enrichedKnowledgeArea" EntidadID="http://purl.org/ontology/bibo/Document">
+            <AtrNombre>http://w3id.org/roh/enrichedKnowledgeArea</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/enrichedKnowledgeArea</AtrNombreLectura>
+        </Propiedad>
+		<Propiedad  ID="http://w3id.org/roh/userKnowledgeArea" EntidadID="http://purl.org/ontology/bibo/Document">
+            <AtrNombre>http://w3id.org/roh/userKnowledgeArea</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/userKnowledgeArea</AtrNombreLectura>
+        </Propiedad>
+		<Propiedad  ID="http://w3id.org/roh/suggestedKnowledgeArea" EntidadID="http://purl.org/ontology/bibo/Document">
+            <AtrNombre>http://w3id.org/roh/suggestedKnowledgeArea</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/suggestedKnowledgeArea</AtrNombreLectura>
         </Propiedad>
 		<Propiedad  ID="http://w3id.org/roh/inrecs" EntidadID="http://purl.org/ontology/bibo/Document">
             <AtrNombre>http://w3id.org/roh/inrecs</AtrNombre>
@@ -703,7 +706,6 @@
 							<NameProp>http://w3id.org/roh/typeOthers</NameProp>
 							<NameProp>http://purl.org/ontology/bibo/cites</NameProp>
 							<NameProp>http://w3id.org/roh/isPublic</NameProp>
-							<NameProp>http://w3id.org/roh/publicGroupList</NameProp>
 							<NameProp>http://w3id.org/roh/citationCount</NameProp>
 							<NameProp>http://w3id.org/roh/referencesLoadedCount</NameProp>
 							<NameProp>http://w3id.org/roh/inrecs</NameProp>
@@ -716,6 +718,11 @@
 							<NameProp>http://w3id.org/roh/enrichedKeywords</NameProp>
 							<NameProp>http://w3id.org/roh/userKeywords</NameProp>
 							<NameProp>http://w3id.org/roh/suggestedKeywords</NameProp>
+							<NameProp>http://w3id.org/roh/externalKnowledgeArea</NameProp>
+							<NameProp>http://w3id.org/roh/enrichedKnowledgeArea</NameProp>
+							<NameProp>http://w3id.org/roh/userKnowledgeArea</NameProp>
+							<NameProp>http://w3id.org/roh/suggestedKnowledgeArea</NameProp>
+							<NameProp>http://w3id.org/roh/assessmentStatus</NameProp>
                         </Grupo>
                     </Grupo>
                 </Grupo>
@@ -762,7 +769,6 @@
 							<NameProp>http://w3id.org/roh/typeOthers</NameProp>
 							<NameProp>http://purl.org/ontology/bibo/cites</NameProp>
 							<NameProp>http://w3id.org/roh/isPublic</NameProp>
-							<NameProp>http://w3id.org/roh/publicGroupList</NameProp>
 							<NameProp>http://w3id.org/roh/citationCount</NameProp>
 							<NameProp>http://w3id.org/roh/referencesLoadedCount</NameProp>
 							<NameProp>http://w3id.org/roh/inrecs</NameProp>
@@ -775,6 +781,11 @@
 							<NameProp>http://w3id.org/roh/enrichedKeywords</NameProp>
 							<NameProp>http://w3id.org/roh/userKeywords</NameProp>
 							<NameProp>http://w3id.org/roh/suggestedKeywords</NameProp>
+							<NameProp>http://w3id.org/roh/externalKnowledgeArea</NameProp>
+							<NameProp>http://w3id.org/roh/enrichedKnowledgeArea</NameProp>
+							<NameProp>http://w3id.org/roh/userKnowledgeArea</NameProp>
+							<NameProp>http://w3id.org/roh/suggestedKnowledgeArea</NameProp>
+							<NameProp>http://w3id.org/roh/assessmentStatus</NameProp>
                         </Grupo>
                     </Grupo>
                 </Grupo>

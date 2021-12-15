@@ -12,7 +12,6 @@ using System.IO;
 using ClosedXML.Excel;
 using System.Text;
 using ExcelDataReader;
-using WoSConnect.Controllers.autores;
 
 
 
@@ -24,7 +23,7 @@ namespace WoSConnect.Controllers
     public class APIController : ControllerBase
     {
         private readonly ILogger<APIController> _logger;
-        public Dictionary<string, string> ds = LeerDatosExcel(@"C:\Users\mpuer\Documents\GitHub\HerculesED\src\Hercules.ED.ExternalSources\Hércules-ED_Taxonomía-Unificada_Scopus-WoS_v1.2.xlsx");
+        public Dictionary<string, string> ds = LeerDatosExcel(@"files\Taxonomy.xlsx");
        // public Dictionary<string, Tuple<string, string, string, string, string, string>> autores_orcid;// = LeerDatosExcel_autores(@"C:\Users\mpuer\Documents\GitHub\HerculesED\src\Hercules.ED.ExternalSources\Hercules-ED_autores.xlsx");
 
         public APIController(ILogger<APIController> logger)
@@ -225,11 +224,8 @@ namespace WoSConnect.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public List<Publication> GetROs([FromQuery][Required] string orcid, string date = "1500-01-01")
         {
-            almacenamiento_autores almacenamiento = new almacenamiento_autores();
-            ROWoSController WoSObject = new ROWoSController("https://wos-api.clarivate.com/", "10e8a3a2417b7ae1d864b5558136c56b78ed3eb8", this.ds, almacenamiento.autores_orcid);//, @"C:\Users\mpuer\Documents\GitHub\HerculesED\src\Hercules.ED.ExternalSources\Hércules-ED_Taxonomías_v1.2.xlsx");//"adf94bebeeba8c3042ad5193455740e2");
+            ROWoSController WoSObject = new ROWoSController("https://wos-api.clarivate.com/", "10e8a3a2417b7ae1d864b5558136c56b78ed3eb8", this.ds);//, @"C:\Users\mpuer\Documents\GitHub\HerculesED\src\Hercules.ED.ExternalSources\Hércules-ED_Taxonomías_v1.2.xlsx");//"adf94bebeeba8c3042ad5193455740e2");
             List<Publication> publication = WoSObject.getPublications(orcid, date);
-            //guardar_info_autores();
-            almacenamiento.guardar_info_autores();
             return publication;
         }
 

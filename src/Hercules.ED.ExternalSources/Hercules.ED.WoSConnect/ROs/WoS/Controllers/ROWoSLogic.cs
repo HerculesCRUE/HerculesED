@@ -24,23 +24,20 @@ using System.IO;
 
 namespace WoSConnect.ROs.WoS.Controllers
 {
-    public class ROWoSLogic : WoSInterface
+    public class ROWoSLogic 
     {
         protected string bareer;
         protected string baseUri { get; set; }
 
-        public  Dictionary<string, string>  ds; //= LeerDatosExcel(@"C:\Users\mpuer\Documents\GitHub\HerculesED\src\Hercules.ED.ExternalSources\Hércules-ED_Taxonomías_v1.2.xlsx");
-        public Dictionary<string, Tuple<string,string,string,string,string,string>>  autores_orcid; //= LeerDatosExcel_autores(@"C:\Users\mpuer\Documents\GitHub\HerculesED\src\Hercules.ED.ExternalSources\Hercules-ED_autores.xlsx");
+        public  Dictionary<string, string>  ds; 
 
 
         protected Dictionary<string, string> headers = new Dictionary<string, string>();
-        public ROWoSLogic(string baseUri, string bareer, Dictionary<string, string> ds,  Dictionary<string, Tuple<string,string, string, string,string,string>>  autores_orcid)
+        public ROWoSLogic(string baseUri, string bareer, Dictionary<string, string> ds)
         {
             this.baseUri = baseUri;
             this.bareer = bareer;
-            this.ds = ds;//LeerDatosExcel(path);
-            this.autores_orcid= autores_orcid;
-            //$@"C:\GNOSS\Proyectos\HerculesMA\src\Hercules.MA.Load\Hercules.MA.Load\Dataset\Hércules-ED_Taxonomías_v1.1.xlsx");
+            this.ds = ds;
 
         }
 
@@ -119,14 +116,6 @@ namespace WoSConnect.ROs.WoS.Controllers
                 {
                     continuar = false;
                 }
-            }
-
-            Console.Write("Ids del diccionario\n");
-            foreach(string i in this.autores_orcid.Keys){
-                Console.Write(i);
-                Console.Write(" ");
-                Console.Write(this.autores_orcid[i]);
-                Console.Write("\n");
             }
             return sol;
         }

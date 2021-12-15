@@ -14,13 +14,12 @@ namespace WoSConnect.ROs.WoS.Controllers
 {
     public class ROWoSController : ROWoSLogic
     {
-        public ROWoSController(string baseUri, string bareer, Dictionary<string, string> ds, Dictionary<string, Tuple<string,string, string, string,string,string>>  autores_orcid) : base(baseUri, bareer, ds,autores_orcid)
+        public ROWoSController(string baseUri, string bareer, Dictionary<string, string> ds) : base(baseUri, bareer, ds)
         {
 
             this.baseUri = baseUri;
             this.bareer = bareer;
             this.ds = base.ds;
-            this.autores_orcid = autores_orcid;
         }
 
     }
