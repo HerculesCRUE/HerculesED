@@ -44,9 +44,9 @@
             <AtrNombre>ISSN</AtrNombre>
             <AtrNombreLectura>ISSN</AtrNombreLectura>
         </Propiedad>
-        <Propiedad  ID="http://w3id.org/roh/crisIdentifier" EntidadID="http://w3id.org/roh/MainDocument">
-            <AtrNombre>Identificador de la publicación principal</AtrNombre>
-            <AtrNombreLectura>Identificador de la publicación principal</AtrNombreLectura>
+		<Propiedad  ID="http://purl.org/ontology/bibo/eissn" EntidadID="http://w3id.org/roh/MainDocument">
+            <AtrNombre>e-ISSN</AtrNombre>
+            <AtrNombreLectura>e-ISSN</AtrNombreLectura>
         </Propiedad>
 		<Propiedad  ID="http://w3id.org/roh/impactCategory" EntidadID="http://w3id.org/roh/ImpactIndex">
             <AtrNombre>Categoría del índice de impacto</AtrNombre>
@@ -81,9 +81,9 @@
             <AtrNombre>Posición de publicación</AtrNombre>
             <AtrNombreLectura>Posición de publicación</AtrNombreLectura>
         </Propiedad>
-        <Propiedad  ID="http://w3id.org/roh/journalTop25" EntidadID="http://w3id.org/roh/ImpactIndex">
-            <AtrNombre>Revista dentro del 25%</AtrNombre>
-            <AtrNombreLectura>Revista dentro del 25%</AtrNombreLectura>
+        <Propiedad  ID="http://w3id.org/roh/quartile" EntidadID="http://w3id.org/roh/ImpactIndex">
+            <AtrNombre>Cuartil</AtrNombre>
+            <AtrNombreLectura>Cuartil</AtrNombreLectura>
         </Propiedad>
 		<Propiedad  ID="http://w3id.org/roh/year" EntidadID="http://w3id.org/roh/ImpactIndex">
             <AtrNombre>Año del índice de impacto</AtrNombre>
@@ -119,8 +119,8 @@
                             <NameProp>http://w3id.org/roh/title</NameProp> 
                             <NameProp>http://purl.org/ontology/bibo/isbn</NameProp> 
                             <NameProp>http://purl.org/ontology/bibo/editor</NameProp> 
-                            <NameProp>http://purl.org/ontology/bibo/issn</NameProp> 
-                            <NameProp>http://w3id.org/roh/crisIdentifier</NameProp>
+                            <NameProp>http://purl.org/ontology/bibo/issn</NameProp>
+							<NameProp>http://purl.org/ontology/bibo/eissn</NameProp>
 							<NameProp>http://w3id.org/roh/impactIndex</NameProp> 
                         </Grupo>
                     </Grupo>
@@ -135,8 +135,8 @@
                             <NameProp>http://w3id.org/roh/title</NameProp> 
                             <NameProp>http://purl.org/ontology/bibo/isbn</NameProp> 
                             <NameProp>http://purl.org/ontology/bibo/editor</NameProp> 
-                            <NameProp>http://purl.org/ontology/bibo/issn</NameProp> 
-                            <NameProp>http://w3id.org/roh/crisIdentifier</NameProp>
+                            <NameProp>http://purl.org/ontology/bibo/issn</NameProp>
+							<NameProp>http://purl.org/ontology/bibo/eissn</NameProp>
 							<NameProp>http://w3id.org/roh/impactIndex</NameProp> 							
                         </Grupo>
                     </Grupo>
@@ -155,7 +155,7 @@
                             <NameProp>http://w3id.org/roh/impactSourceOther</NameProp> 
                             <NameProp>http://w3id.org/roh/journalNumberInCat</NameProp> 
                             <NameProp>http://w3id.org/roh/publicationPosition</NameProp> 
-                            <NameProp>http://w3id.org/roh/journalTop25</NameProp> 
+                            <NameProp>http://w3id.org/roh/quartile</NameProp> 
                             <NameProp>http://w3id.org/roh/impactSource</NameProp>
 							<NameProp>http://w3id.org/roh/year</NameProp>
                         </Grupo>
@@ -172,7 +172,7 @@
                             <NameProp>http://w3id.org/roh/impactSourceOther</NameProp> 
                             <NameProp>http://w3id.org/roh/journalNumberInCat</NameProp> 
                             <NameProp>http://w3id.org/roh/publicationPosition</NameProp> 
-                            <NameProp>http://w3id.org/roh/journalTop25</NameProp> 
+                            <NameProp>http://w3id.org/roh/quartile</NameProp> 
                             <NameProp>http://w3id.org/roh/impactSource</NameProp>
 							<NameProp>http://w3id.org/roh/year</NameProp>
                         </Grupo>
