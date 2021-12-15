@@ -128,6 +128,34 @@
 
                             }
 
+                            // Set a regex to find all filters into the url
+                            List<string> founded = new List<string>();
+                            string regex = string.Format(@"{0}=[0-9]+-[0-9]+",
+                                Regex.Escape(Model.FacetKey));
+                            foreach (Match match in Regex.Matches(filter, regex))
+                            {
+                                // Get all filters
+                                founded.Add(match.ToString());
+                            }
+                            // Split the filter from the dates filter founded
+                            var dataArr = filter.Split(founded.ToArray<string>(), StringSplitOptions.None);
+                            var data = dataArr.ToList<string>();
+
+
+                            // Get the first element
+                            var filterFinalPart1 = data[0] + Model.FacetKey + "=";
+                            data.RemoveAt(0);
+
+                            // Get the others filters (no dates)
+                            string filterFinalPart2 = "";
+                            data.ForEach(item => {
+                                if (item != "&" && item != "&&" && item != "&&&")
+                                {
+                                    filterFinalPart2 += item;
+                                }
+                            });
+                                        
+
 
                             <script>
                                 function v(fecha) {
@@ -143,69 +171,149 @@
                                 }
 
                                 // Filter javascript function
-                                var setFilter = function() {
-                                    let minDate = $("#gmd_@Model.Key@("_1")").val();
-                                    let maxDate = $("#gmd_@Model.Key@("_2")").val();
+                                var setFilter = function(element) {
+                                    
+                                    // actualizarValoresSlider(self, pos);
 
-                                    @{
-                                        // Set a regex to find all filters into the url
-                                        List<string> founded = new List<string>();
-                                        string regex = string.Format(@"{0}=[0-9]+-[0-9]+",
-                                            Regex.Escape(Model.FacetKey));
-                                        foreach (Match match in Regex.Matches(filter, regex))
-                                        {
-                                            // Get all filters
-                                            founded.Add(match.ToString());
-                                        }
-                                        // Split the filter from the dates filter founded
-                                        var dataArr = filter.Split(founded.ToArray<string>(), StringSplitOptions.None);
-                                        var data = dataArr.ToList<string>();
+                                    // Get the element data
+                                    let theId = element.id;
+                                    let filterFinalPart1 = $(element).data("filterpart1");
+                                    let filterFinalPart2 = $(element).data("filterpart2");
+                                    let facekey = $(element).data("facekey");
+                                    let inputname1 = $(element).data("inputname1");
+                                    let inputname2 = $(element).data("inputname2");
+
+                                    let minDate = $("#" + inputname1).val();
+                                    let maxDate = $("#" + inputname2).val();
 
 
-                                        // Get the first element
-                                        var filterFinalPart1 = data[0] + Model.FacetKey + "=";
-                                        data.RemoveAt(0);
-
-                                        // Get the others filters (no dates)
-                                        string filterFinalPart2 = "";
-                                        data.ForEach(item => {
-                                            if (item != "&" && item != "&&" && item != "&&&")
-                                            {
-                                                filterFinalPart2 += item;
-                                            }
-                                        });
-                                        
-
-                                    }
                                     // Set the url for the filter
-                                    let filterString = '@Html.Raw(filterFinalPart1)' + minDate + '0000-' + maxDate + '0000&' + '@Html.Raw(filterFinalPart2)';
-                                    console.log("filterString", filterString);
-                                    window.location = filterString;
+                                    let filterString = filterFinalPart1 + minDate + '0000-' + maxDate + '0000&' + filterFinalPart2;
+                                    
+                                    // window.location = filterString;
+
+                                    // Set name attr
+                                    $(element).parent().find(".searchButton").attr("name", facekey + '=' + minDate + '0000-' + maxDate + '0000');
+                                    
+                                    // Set href attr
+                                    $(element).parent().find(".searchButton").attr("href", filterString);
+
+                                    setFilterButtons(element);
+                                    
                                 }
 
+                                var setFilterButtons = function(element) {
+
+                                    let filterFinalPart1 = $(element).data("filterpart1");
+                                    let filterFinalPart2 = $(element).data("filterpart2");
+                                    let facekey = $(element).data("facekey");
+
+                                    let actYear = new Date().getFullYear();
+                                    let maxYear = actYear + 1;
+                                    let min5year = actYear - 5;
+                                    let lastYear = actYear - 1;
+
+
+                                    // Set the url for the filter
+                                    let filterString = filterFinalPart1 + min5year + '0000-' + maxYear + '0000&' + filterFinalPart2;
+
+                                    // LAST YEAR
+                                    // Set name attr
+                                    $(element).parent().find(".last5Years").attr("name", facekey + '=' + min5year + '0000-' + maxYear + '0000');
+                                    // Set href attr
+                                    $(element).parent().find(".last5Years").attr("href", filterString);
+
+                                    
+
+                                    // Set the url for the filter
+                                    let filterStringAY = filterFinalPart1 + actYear + '0000-' + maxYear + '0000&' + filterFinalPart2;
+
+                                    // LAST YEAR
+                                    // Set name attr
+                                    $(element).parent().find(".lastYear").attr("name", facekey + '=' + actYear + '0000-' + maxYear + '0000');
+                                    // Set href attr
+                                    $(element).parent().find(".lastYear").attr("href", filterStringAY);
+
+
+
+                                    // Set the url for the filter
+                                    let filterStringActY = filterFinalPart1 + '19000000-' + '23000000&' + filterFinalPart2;
+
+                                    // ALL YEARS
+                                    // Set name attr
+                                    $(element).parent().find(".allYears").attr("name", facekey + '=' + '19000000-' + '23000000');
+                                    // Set href attr
+                                    $(element).parent().find(".allYears").attr("href", filterStringActY);
+                                }
+
+
+                                
                                 $(function() {
 
-                                    $("#gmd_@Model.Key").slider({
-                                        range: true,
-                                        min: @minNumber,
-                                        max: @maxNumber,
-                                        values: [@minNumber, @maxNumber],
-                                        slide: function(event, ui) {
-                                            $("#gmd_@Model.Key@("_1")").val(ui.values[0]);
-                                            $("#gmd_@Model.Key@("_2")").val(ui.values[1]);
-                                        }
+                                    // Inicialite all facetas general range
+                                    $(".faceta-general-range .ui-slider").each((i, e) => {
+                                        $(e).slider({
+                                            range: true,
+                                            min: $(e).data('minnumber'),
+                                            max: $(e).data('maxnumber'),
+                                            values: [$(e).data('minnumber'), $(e).data('maxnumber')],
+                                            slide: function(event, ui) {
+                                                console.log(this);
+                                                console.log($(this));
+                                                $("#" + $(e).data('inputname1')).val(ui.values[0]);
+                                                $("#" + $(e).data('inputname2')).val(ui.values[1]);
+                                            }
+                                        });
+
+                                        $(e).off("slidechange").on( "slidechange", function( event, ui ) {
+                                            setFilter(e);
+                                        } );
+
+                                        setFilter(e);
                                     });
+
+                                    $('.faceta-general-range a.searchButton')
+                                    .unbind()
+                                    .click(function (e) {
+                                        AgregarFaceta($(this).attr("name"));
+                                        // Quitar el panel de filtrado para móvil para visualizar resultados correctamente
+                                        $(body).removeClass("facetas-abiertas");
+                                        e.preventDefault();
+                                    });
+
+
+                                    $('.faceta-general-range a.last5Years, .faceta-general-range a.lastYear, .faceta-general-range a.allYears')
+                                    .unbind()
+                                    .click(function (e) {
+                                        AgregarFaceta($(this).attr("name"));
+                                        // Quitar el panel de filtrado para móvil para visualizar resultados correctamente
+                                        $(body).removeClass("facetas-abiertas");
+                                        e.preventDefault();
+                                    });
+
+
                                 });
                             </script>
-                            <div class="faceta-date-range">
-                                <div id="gmd_@Model.Key" class="ui-slider ui-corner-all ui-slider-horizontal ui-widget ui-widget-content">
+                            <div class="faceta-date-range faceta-general-range" id="gmd_cont_@Model.Key">
+                                <div id="gmd_@Model.Key" class="ui-slider ui-corner-all ui-slider-horizontal ui-widget ui-widget-content"  data-inputname1="gmd_@Model.Key@("_1")" data-inputname2="gmd_@Model.Key@("_2")" data-minnumber="@minNumber" data-maxnumber="@maxNumber" data-filterpart1="@Html.Raw(filterFinalPart1)" data-filterpart2="@Html.Raw(filterFinalPart2)" data-facekey="@Model.FacetKey">
                                     <div class="ui-slider-range ui-corner-all ui-widget-header"></div>
                                     <span tabindex="0" class="ui-slider-handle ui-corner-all ui-state-default"></span>
                                     <span tabindex="0" class="ui-slider-handle ui-corner-all ui-state-default"></span>
                                 </div>
-                                <input title="Año" type="number" min="@minNumber" max="@maxNumber" autocomplete="off" class="filtroFacetaFecha hasDatepicker" placeholder="@minNumber" name="gmd_@Model.Key@("_1")" id="gmd_@Model.Key@("_1")" onchange="actualizarValoresSlider(this,0)" value="@minNumber">
-                                <input title="Año" type="number" min="@minNumber" max="@maxNumber" autocomplete="off" class="filtroFacetaFecha hasDatepicker" placeholder="@maxNumber" name="gmd_@Model.Key@("_2")" id="gmd_@Model.Key@("_2")" onchange="actualizarValoresSlider(this,1)" value="@maxNumber">
+                                <input title="Año" type="number" min="@minNumber" max="@maxNumber" autocomplete="off" class="filtroFacetaFecha hasDatepicker" placeholder="@minNumber" name="gmd_@Model.Key@("_1")" id="gmd_@Model.Key@("_1")" value="@minNumber">
+                                <input title="Año" type="number" min="@minNumber" max="@maxNumber" autocomplete="off" class="filtroFacetaFecha hasDatepicker" placeholder="@maxNumber" name="gmd_@Model.Key@("_2")" id="gmd_@Model.Key@("_2")" value="@maxNumber">
                                 <a name="@Model.FacetKey" class="searchButton" href="javascript:setFilter()">Aplicar</a>
+                                <ul class="no-list-style">
+                                    <li>
+                                        <a href="javascript: void(0);" class="last5Years">Últimos cinco años</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript: void(0);" class="lastYear">Último año</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript: void(0);" class="allYears">Todos</a>
+                                    </li>
+                                </ul>
                             </div>
                         }
                     </div>
