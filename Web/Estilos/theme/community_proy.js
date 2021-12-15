@@ -101,24 +101,41 @@ var setFilterButtons = function(element) {
 	$(element).parent().find(".allYears").attr("href", filterStringActY);
 }
 
+var changeSliderVals = function(sldrEl, el) {
+	var value = el.value;
+	totalVal = $(sldrEl).slider( "option", "values" );
+	if (el.classList.contains('minVal')) {
+		totalVal[0] = value;
+	} else if(el.classList.contains('maxVal')) {
+		totalVal[1] = value;
+	}
+	$(sldrEl).slider("values", totalVal);
+}
+
 function comportamientoRangosFechas()
 {
 	// Inicialite all facetas general range
 	$(".faceta-general-range .ui-slider").each((i, e) => {
 		$(e).slider({
-		range: true,
-		min: $(e).data('minnumber'),
-		max: $(e).data('maxnumber'),
-		values: [$(e).data('minnumber'), $(e).data('maxnumber')],
-		slide: function(event, ui) {
-		$("#" + $(e).data('inputname1')).val(ui.values[0]);
-		$("#" + $(e).data('inputname2')).val(ui.values[1]);
-		}
+			range: true,
+			min: $(e).data('minnumber'),
+			max: $(e).data('maxnumber'),
+			values: [$(e).data('minnumber'), $(e).data('maxnumber')],
+			slide: function(event, ui) {
+				$("#" + $(e).data('inputname1')).val(ui.values[0]);
+				$("#" + $(e).data('inputname2')).val(ui.values[1]);
+			}
 		});
 
 		$(e).off("slidechange").on( "slidechange", function( event, ui ) {
-		setFilter(e);
-		} );
+			setFilter(e);
+		});
+
+
+		$(e).parent().find("input.filtroFacetaFecha").off("input").on( "input", function( event, ui ) {
+			setFilter(e);
+			changeSliderVals(e, this);
+		});
 
 		setFilter(e);
 	});
@@ -155,6 +172,12 @@ function comportamientoRangosNumeros()
 		$(e).off("slidechange").on( "slidechange", function( event, ui ) {
 			setFilterNumbers(e);
 		});
+		
+		$(e).parent().find("input.filtroFacetaFecha").off("input").on( "input", function( event, ui ) {
+			setFilterNumbers(e);
+			changeSliderVals(e, this);
+		});
+
 		setFilterNumbers(e);
 	});
 
