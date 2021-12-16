@@ -184,7 +184,7 @@ function comportamientoRangosNumeros()
 
 
 	$('.faceta-general-number-range a.searchButton').unbind().click(function (e) {
-		AgregarFaceta($(this).attr("name"));
+		AgregarFaceta($(this).attr("name"),true);
 		// Quitar el panel de filtrado para móvil para visualizar resultados correctamente
 		$(body).removeClass("facetas-abiertas");
 		e.preventDefault();
