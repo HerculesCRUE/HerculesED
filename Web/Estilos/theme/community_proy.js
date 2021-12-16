@@ -1109,13 +1109,23 @@ function AgregarFaceta(faceta,eliminarFiltroAnterior=false) {
         return;
     }
     else if (!contieneFiltro) {
-        //Si no existe el filtro, lo a?adimos
-        if (filtros.length > 0) { filtros += '&'; }
-        filtros += faceta;
+		if (eliminarFiltroAnterior)
+		{
+			var filtroEliminar=faceta.substring(0,faceta.indexOf('=')+1);			
+			for (var i = 0; i < filtrosArray.length; i++) {				
+				if (filtrosArray[i].indexOf(filtroEliminar)==-1)  {
+					filtros += filtrosArray[i] + '&';
+				}
+			}
+		}	
+				
+		//Si no existe el filtro, lo a?adimos
+		if (filtros.length > 0) { filtros += '&'; }
+		filtros += faceta;
 
-        if (typeof searchAnalitics != 'undefined') {
-            searchAnalitics.facetsSearchAdd(faceta);
-        }
+		if (typeof searchAnalitics != 'undefined') {
+			searchAnalitics.facetsSearchAdd(faceta);
+		}
     }
     else {
         filtros = '';
