@@ -206,6 +206,14 @@ var edicionCV = {
 			background: #ccc;
 			cursor:not-allowed;
 		}
+		:root{
+			--c-gris-claro: #BBB;
+			--c-gris-oscuro: #555;
+		}
+		
+		.list-wrap ul li.background-oscuro { background-color: var(--c-gris-claro) !important; border: 1px solid var(--c-gris-oscuro) !important; }
+		.list-wrap ul li.background-oscuro a { color: var(--c-gris-oscuro); }
+		.list-wrap ul li.background-oscuro .material-icons { color: var(--c-gris-oscuro); }
 
 		</style>`);
 		
@@ -1399,20 +1407,19 @@ var edicionCV = {
 			
 			$(this).find(".item.added" ).each(function(){
 				var input = $(this).find('input');
+				input.attr('data-value', input.val());
 				
 				var background = '';
 				var deleteButton = `<span class="material-icons cerrar">close</span>`;
 				switch(input.attr('propertyrdf')){
 					case 'http://w3id.org/roh/externalKeywords' :
-						background = 'background-amarillo';
+						background = 'background-oscuro';
 						deleteButton = '';
 						break;
 					case 'http://w3id.org/roh/enrichedKeywords' :
-						background = '';
-						deleteButton = '';
+						background = 'background-amarillo';
 						break;
 					case 'http://w3id.org/roh/userKeywords' :
-						linkButton = '';
 						break;
 				}
 			
@@ -1521,21 +1528,18 @@ var edicionCV = {
 		//var listado = item.parent().find('.item.aux.entityaux').find('ul.listadoTesauro');
 		var background = '';
 		var deleteButton = `<span class="material-icons cerrar">close</span>`;
-		var linkButton = `<span class="material-icons link">link</span>`
 		var lockCheck = false;
 		switch(item.attr('propertyrdf')){
 			case 'http://w3id.org/roh/externalKnowledgeArea' :
-				background = 'background-amarillo';
+				background = 'background-oscuro';
 				deleteButton = '';
 				lockCheck = true;
 				break;
 			case 'http://w3id.org/roh/enrichedKnowledgeArea' :
-				background = '';
-				deleteButton = '';
+				background = 'background-amarillo';
 				lockCheck = true;
 				break;
 			case 'http://w3id.org/roh/userKnowledgeArea' :
-				linkButton = '';
 				break;
 		}
 		
@@ -1554,7 +1558,6 @@ var edicionCV = {
 					<a href="javascript: void(0);">
 						<span class="texto">${title}</span>
 					</a>
-					${linkButton}
 					${deleteButton}
 				</li>`;
 	},
@@ -2778,13 +2781,14 @@ var edicionCV = {
 		}
 		
 		contenedor.attr('remove', valorRemoveAnterior + id);
-		edicionCV.repintarListadoThesaurus();
+		this.repintarListadoThesaurus();
 		$("#modal-eliminar").modal("hide");
 	},
 	eliminarEntidadTopic: function(modalID, propRDF, value){
-		$('#' + modalID + ' input[propertyrdf="' + propRDF + '"][value="' + value + '"]').parent().remove();
+		$('#' + modalID + ' input[propertyrdf="' + propRDF + '"][data-value="' + value + '"]').parent().remove();
 
-		edicionCV.repintarTopic()
+		this.repintarTopic();
+		this.engancharComportamientosCV();
 		$("#modal-eliminar").modal("hide");
 	},
 	eliminarItem: function (sectionID, entityID) {
@@ -2818,7 +2822,7 @@ var edicionCV = {
 					var panThesaurus = $('.entityauxcontainer[idtemp="' + modal.attr('idtemp')+'"]');
 					panThesaurus.children('.item.added.entityaux').remove();
 			
-					var items = pFormulario.find('a.faceta.last-level.selected');
+					var items = pFormulario.find('a.faceta.last-level.selected:not(.lock)');
 					
 					items.each(function() {
 						var añadidos = pFormulario.find('.custom-form-row .item.added').remove();
@@ -2851,7 +2855,6 @@ var edicionCV = {
 						formEdicionClone.find('.buscador-coleccion').remove();
 						formEdicionClone.find('.action-buttons-resultados').remove();
 						formEdicionClone.find('.listadoTesauro').remove();
-						formEdicionClone.find('.custom-form-row').show();
 						
 						panThesaurus.append(formEdicionClone);
 					});
@@ -3302,6 +3305,9 @@ function addAutocompletar(control)
 	var pRdfType = $('#modal-editar-entidad form').attr('rdftype');
 	var	pGraph = $('#modal-editar-entidad form').attr('ontology');
 	
+	var btnID = 'add_' + pProperty;
+	$(control).parent().find('.acciones-listado-edicion .add').attr('id', btnID);
+	
      $(control).autocomplete(
 		null,
 		{
@@ -3351,7 +3357,8 @@ function addAutocompletar(control)
                 },
                 pProperty : pProperty,
                 pRdfType : pRdfType,
-                pGraph : pGraph
+                pGraph : pGraph,
+				botonBuscar : btnID
 			}
 		}
 	);
