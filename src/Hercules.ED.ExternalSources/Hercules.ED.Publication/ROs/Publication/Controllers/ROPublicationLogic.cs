@@ -20,6 +20,12 @@ using PublicationConnect.ROs.Publications.Controllers;
 using PublicationConnect.ROs.Publications.Models;
 //using Newtonsoft.Json.Linq.JObject;
 using System.IO;
+using System.Data;
+using System.IO;
+using ClosedXML.Excel;
+using System.Text;
+using ExcelDataReader;
+using System.Linq;
 using PublicationAPI.Controllers;
 using Microsoft.Extensions.Configuration;
 
@@ -489,9 +495,6 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 }
                 else
                 {
-                    // ninguna de las dos publicaciones esnull!!! 
-                    int count_1 = 0;
-                    int count_2 = 0;
                     if (pub_1.typeOfPublication != null)
                     {
                         pub.typeOfPublication = pub_1.typeOfPublication;
@@ -581,11 +584,12 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         pub.seqOfAuthors = pub_1.seqOfAuthors;
                         if (pub_2.seqOfAuthors != null)
                         {
+                            pub.seqOfAuthors = unir_autores(pub_1.seqOfAuthors, pub_2.seqOfAuthors);
                             //pub.seqOfAuthors = unificarUsuariosConNombreSimple(pub_1.seqOfAuthors, pub_2.seqOfAuthors);
                             //todo comporbacion de que son o no son iguales.
                             //pub.seqOfAuthors.AddRange(pub_2.seqOfAuthors);
-                            pub.seqOfAuthors = pub_1.seqOfAuthors;
-                            pub.seqOfAuthors.AddRange(pub_2.seqOfAuthors);
+                            // pub.seqOfAuthors = pub_1.seqOfAuthors;
+                            //pub.seqOfAuthors.AddRange(pub_2.seqOfAuthors);
                         }
                     }
                     else
@@ -678,6 +682,239 @@ namespace PublicationConnect.ROs.Publications.Controllers
             }
         }
 
+
+        public List<Person> unir_autores(List<Person> conjunto_1, List<Person> conjunto_2)
+        {
+            List<Person> lista_autores_no_iguales = new List<Person>();
+
+            foreach (Person person_2 in conjunto_2)
+            {
+                Boolean unificado = false;
+                string orcid_unificado = person_2.ORCID;
+                string name = person_2.name.given[0];
+                string familia = person_2.name.familia[0];
+                string completo = person_2.name.nombre_completo[0];
+                string ids = person_2.IDs[0];
+                string links = person_2.links[0];
+
+
+                for (int i = 0; i < conjunto_1.Count(); i++)
+                {
+                    Person person = conjunto_1[i];
+                    string orcid = person.ORCID;
+                    List<string> list_name = person.name.given;
+                    List<string> list_familia = person.name.familia;
+                    List<string> list_nombre_completo = person.name.nombre_completo;
+                    List<string> list_ids = person.IDs;
+                    List<string> list_links = person.links;
+
+                    if (orcid != null & orcid_unificado == orcid)
+                    {
+                        conjunto_1[i] = unir_dos_identidades_unicas(person, person_2);
+                        unificado = true;
+                    }
+                    else if (ids != null & list_ids != null)
+                    {
+                        if (list_ids.Contains(ids))
+                        {
+                            conjunto_1[i] = unir_dos_identidades_unicas(person, person_2);
+                            unificado = true;
+
+                        }
+
+                    }
+                    else
+                    {
+                        if (list_nombre_completo.Count > 0)
+                        {
+                            // cuando en los datos de la persona unificada tenemos el nombre completo 
+                            //foreach (string nombre_completo in list_nombre_completo)
+                            for (int k = 0; k < list_nombre_completo.Count; k++)
+                            {
+                                string nombre_completo = list_nombre_completo[k];
+                                if (name != "" & familia != "")
+                                {
+                                    if (GetNameSimilarity(name + " " + familia, nombre_completo) > 0.87 ||
+                                        GetNameSimilarity(name.Substring(0, 1) + "." + " " + familia, nombre_completo) > 0.87 & name.Substring(0, 1) == nombre_completo.Substring(0, 1) ||
+                                        GetNameSimilarity(familia + ", " + name.Substring(0, 1) + ".", nombre_completo) > 0.87 & nombre_completo.Substring(nombre_completo.Count() - 2, 2) == name.Substring(0, 1) + "." ||
+                                        GetNameSimilarity(familia + " " + name.Substring(0, 1) + ".", nombre_completo) > 0.87)
+                                    {
+                                        if (ids != "" & list_ids.Count > 0 & !list_ids.Contains(ids))
+                                        {
+                                            continue;
+                                        }
+                                        else
+                                        {
+                                            conjunto_1[i] = unir_dos_identidades_unicas(person, person_2);
+                                            unificado = true;
+                                        }
+                                    }
+                                }
+                                if (completo != "")
+                                {
+                                    if (GetNameSimilarity(completo, nombre_completo) > 0.9)
+                                    {
+                                        if (ids != "" & list_ids.Count > 0 & !list_ids.Contains(ids))
+                                        {
+                                            Console.Write("------------------------------------------------------------------");
+                                            continue;
+                                        }
+                                        else
+                                        {
+                                            conjunto_1[i] = unir_dos_identidades_unicas(person, person_2);
+                                            unificado = true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        // cuando en los datos de la persona unificada tenemos el nombre completo 
+                        else if (list_name.Count > 0 & list_familia.Count > 0)
+                        {
+                            for (int j = 0; j < list_name.Count; j++)
+                            {
+                                string name_unificado = list_name[j];
+                                for (int k = 0; k < list_familia.Count; k++)
+                                {
+                                    if (name != "" & familia != "")
+                                    {
+                                        if (GetNameSimilarity(name + " " + familia, name_unificado + " " + list_familia[k]) > 0.87)
+                                        {
+                                            if (ids != "" & list_ids.Count > 0 & !list_ids.Contains(ids))
+                                            {
+                                                continue;
+                                            }
+                                            else
+                                            {
+                                                conjunto_1[i] = unir_dos_identidades_unicas(person, person_2);
+                                                unificado = true;
+                                            }
+
+
+                                        }
+                                    }
+                                    if (completo != "")
+                                    {
+
+                                        if (GetNameSimilarity(name_unificado + " " + list_familia[k], completo) > 0.87 ||
+                                            GetNameSimilarity(name_unificado.Substring(0, 1) + ". " + familia, completo) > 0.87 & name_unificado.Substring(0, 1) == completo.Substring(0, 1) ||
+                                            GetNameSimilarity(list_familia[k] + ", " + name_unificado.Substring(0, 1) + ".", completo) > 0.87 & completo.Substring(completo.Count() - 2, 2) == name_unificado.Substring(0, 1) + "." ||
+                                            GetNameSimilarity(list_familia[k] + " " + name_unificado.Substring(0, 1) + ".", completo) > 0.87)
+                                        {
+                                            if (ids != "" & list_ids.Count > 0 & !list_ids.Contains(ids))
+                                            {
+                                                continue;
+                                            }
+                                            else
+                                            {
+
+                                                conjunto_1[i] = unir_dos_identidades_unicas(person, person_2);
+                                                unificado = true;
+                                            }
+                                        }
+
+                                    }
+                                }
+
+                            }
+                        }
+                        //llegado a este punto podemos suponer que los id no iguales ni los orcid y que ademas una de las dos personas no tiene id
+                    }
+                }
+                if (unificado == false)
+                {
+                    conjunto_1.Add(person_2);
+                }
+
+                //comprobar si persona es o no persona_comparar
+                //si son la misma -> 
+            }
+            return conjunto_1;
+        }
+
+
+
+        public Person unir_dos_identidades_unicas(Person person, Person person_2)
+        {
+            string orcid_unificado = person.ORCID;
+            List<string> list_name = person.name.given;
+            List<string> list_familia = person.name.familia;
+            List<string> list_nombre_completo = person.name.nombre_completo;
+            List<string> list_ids = person.IDs;
+            List<string> list_links = person.links;
+
+            string orcid = person_2.ORCID;
+            List<string> list_name_id2 = person_2.name.given;
+            List<string> list_familia_id2 = person_2.name.familia;
+            List<string> list_nombre_completo_id2 = person_2.name.nombre_completo;
+            List<string> list_ids_id_2 = person_2.IDs;
+            List<string> list_links_id_2 = person_2.links;
+
+            if (list_name_id2.Count > 0)
+            {
+                foreach (string name_ids2 in list_name_id2)
+                {
+                    if (!list_name_id2.Contains(name_ids2))
+                    {
+                        list_name.Add(name_ids2);
+                    }
+                }
+            }
+            if (list_familia_id2.Count > 0)
+            {
+                foreach (string familia_ids2 in list_familia_id2)
+                {
+                    if (!list_familia.Contains(familia_ids2))
+                    {
+                        list_familia.Add(familia_ids2);
+                    }
+                }
+            }
+            if (list_nombre_completo_id2.Count > 0)
+            {
+                foreach (string completo_ids2 in list_nombre_completo_id2)
+                {
+                    if (!list_nombre_completo.Contains(completo_ids2))
+                    {
+                        list_nombre_completo.Add(completo_ids2);
+                    }
+                }
+            }
+            if (list_ids_id_2.Count > 0)
+            {
+                foreach (string ids2 in list_ids_id_2)
+                {
+                    if (!list_ids.Contains(ids2))
+                    {
+                        list_ids.Add(ids2);
+                    }
+                }
+            }
+            if (list_links_id_2.Count > 0)
+            {
+                foreach (string links2 in list_links_id_2)
+                {
+                    if (!list_links.Contains(links2))
+                    {
+                        list_links.Add(links2);
+                    }
+                }
+
+            }
+            Person unificada = new Person();
+            unificada.IDs = list_ids;
+            unificada.links = list_links;
+            unificada.ORCID = orcid_unificado;
+            Name nombre = new Name();
+            nombre.given = list_name;
+            nombre.familia = list_familia;
+            nombre.nombre_completo = list_nombre_completo;
+            unificada.name = nombre;
+            return unificada;
+        }
+
+
         public Source metrica_journal(Source journal_inicial, string fecha, List<Knowledge_enriquecidos> areas_Tematicas)
         {
             string año = fecha.Substring(0, 4);
@@ -703,20 +940,22 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     // if(areas_Tematicas!=null){
                     // foreach (string area_revista in diccionario_areas.Keys.ToList())
                     //{
-                    string area=diccionario_areas.Keys.ToList()[0] ;
+                    string area = diccionario_areas.Keys.ToList()[0];
                     Boolean boole = false;
-                    if(areas_Tematicas!=null){
-                    foreach (Knowledge_enriquecidos are_tematica_enriquecida in areas_Tematicas)
+                    if (areas_Tematicas != null)
                     {
-                        if (diccionario_areas.Keys.ToList().Contains(are_tematica_enriquecida.word.ToLower()))
+                        foreach (Knowledge_enriquecidos are_tematica_enriquecida in areas_Tematicas)
                         {
+                            if (diccionario_areas.Keys.ToList().Contains(are_tematica_enriquecida.word.ToLower()))
                             {
-                                area = are_tematica_enriquecida.word.ToLower();
-                                boole = true;
+                                {
+                                    area = are_tematica_enriquecida.word.ToLower();
+                                    boole = true;
+                                }
+                                //}else{
                             }
-                            //}else{
                         }
-                    }}
+                    }
                     if (boole == false)
                     {
                         string quartil_inicial = "4";
@@ -1023,6 +1262,166 @@ namespace PublicationConnect.ROs.Publications.Controllers
         //     }
         //     return listado_1;
         // }
+      public float GetNameSimilarity(string pFirma, string pTarget)
+        {
+            pFirma = ObtenerTextosFirmasNormalizadas(pFirma);
+            pTarget = ObtenerTextosFirmasNormalizadas(pTarget);
+
+            //Almacenamos los scores de cada una de las palabras
+            List<float> scores = new List<float>();
+
+            string[] pFirmaNormalizadoSplit = pFirma.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+            string[] pTargetNormalizadoSplit = pTarget.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+
+            string[] source = pFirmaNormalizadoSplit;
+            string[] target = pTargetNormalizadoSplit;
+
+            int indexTarget = 0;
+            for (int i = 0; i < source.Length; i++)
+            {
+                //Similitud real
+                float score = 0;
+                string wordSource = source[i];
+                bool wordSourceInicial = wordSource.Length == 1;
+                //int desplazamiento = 0;
+                for (int j = indexTarget; j < target.Length; j++)
+                {
+                    string wordTarget = target[j];
+                    bool wordTargetInicial = wordTarget.Length == 1;
+                    //Alguna de las dos es inicial
+                    if (wordSourceInicial || wordTargetInicial)
+                    {
+                        if (wordSourceInicial != wordTargetInicial)
+                        {
+                            //No son las dos iniciales
+                            if (wordSource[0] == wordTarget[0])
+                            {
+                                score = 0.5f;
+                                indexTarget = j + 1;
+                                //desplazamiento = Math.Abs(j - i);
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            //Son las dos iniciales
+                            score = 0.75f;
+                            indexTarget = j + 1;
+                            //desplazamiento = Math.Abs(j - i);
+                            break;
+                        }
+                    }
+                    float scoreSingleName = CompareSingleName(wordSource, wordTarget);
+                    if (scoreSingleName > 0)
+                    {
+                        score = scoreSingleName;
+                        indexTarget = j + 1;
+                        break;
+                    }
+                }
+                scores.Add(score);
+            }
+            if (scores.Count > 0)
+            {
+                return scores.Sum() / source.Length;
+            }
+            return 0;
+        }
+
+        private string ObtenerTextosFirmasNormalizadas(string pText)
+        {
+            pText = pText.ToLower();
+            pText = pText.Trim();
+            if (pText.Contains(","))
+            {
+                pText = (pText.Substring(pText.IndexOf(",") + 1)).Trim() + " " + (pText.Substring(0, pText.IndexOf(","))).Trim();
+            }
+            pText = pText.Replace("-", " ");
+            string textoNormalizado = pText.Normalize(NormalizationForm.FormD);
+            System.Text.RegularExpressions.Regex reg = new System.Text.RegularExpressions.Regex("[^a-zA-Z ]");
+            string textoSinAcentos = reg.Replace(textoNormalizado, "");
+            while (textoSinAcentos.Contains(" del "))
+            {
+                textoSinAcentos = textoSinAcentos.Replace(" del ", " ");
+            }
+            while (textoSinAcentos.Contains(" de "))
+            {
+                textoSinAcentos = textoSinAcentos.Replace(" de ", " ");
+            }
+            while (textoSinAcentos.Contains(" la "))
+            {
+                textoSinAcentos = textoSinAcentos.Replace(" la ", " ");
+            }
+            while (textoSinAcentos.Contains("  "))
+            {
+                textoSinAcentos = textoSinAcentos.Replace("  ", " ");
+            }
+
+            return textoSinAcentos.Trim();
+        }
+
+        private float CompareSingleName(string pNameA, string pNameB)
+        {
+            HashSet<string> ngramsNameA = GetNGramas(pNameA, 2);
+            HashSet<string> ngramsNameB = GetNGramas(pNameB, 2);
+            float tokens_comunes = ngramsNameA.Intersect(ngramsNameB).Count();
+            float union_tokens = ngramsNameA.Union(ngramsNameB).Count();
+            float coeficiente_jackard = tokens_comunes / union_tokens;
+            return coeficiente_jackard;
+        }
+
+        private HashSet<string> GetNGramas(string pText, int pNgramSize)
+        {
+            HashSet<string> ngramas = new HashSet<string>();
+            int textLength = pText.Length;
+            if (pNgramSize == 1)
+            {
+                for (int i = 0; i < textLength; i++)
+                {
+                    ngramas.Add(pText[i].ToString());
+                }
+                return ngramas;
+            }
+
+            HashSet<string> ngramasaux = new HashSet<string>();
+            for (int i = 0; i < textLength; i++)
+            {
+                foreach (string ngram in ngramasaux.ToList())
+                {
+                    string ngamaux = ngram + pText[i];
+                    if (ngamaux.Length == pNgramSize)
+                    {
+                        ngramas.Add(ngamaux);
+                    }
+                    else
+                    {
+                        ngramasaux.Add(ngamaux);
+                    }
+                    ngramasaux.Remove(ngram);
+                }
+                ngramasaux.Add(pText[i].ToString());
+                if (i < pNgramSize)
+                {
+                    foreach (string ngrama in ngramasaux)
+                    {
+                        if (ngrama.Length == i + 1)
+                        {
+                            ngramas.Add(ngrama);
+                        }
+                    }
+                }
+            }
+            for (int i = (textLength - pNgramSize) + 1; i < textLength; i++)
+            {
+                if (i >= pNgramSize)
+                {
+                    ngramas.Add(pText.Substring(i));
+                }
+            }
+            return ngramas;
+        }
+
+
     }
 
 }
