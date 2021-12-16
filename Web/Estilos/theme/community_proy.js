@@ -1002,3 +1002,156 @@ function FiltrarPorFacetasGenerico(filtro) {
     CambiarOrden(filtro);
     return false;
 }
+
+
+function AgregarFaceta(faceta,eliminarFiltroAnterior=false) {
+    faceta = faceta.replace(/%22/g, '"');
+    estamosFiltrando = true;
+    //var filtros = ObtenerHash2().replace(/%20/g, ' ');
+    var filtros = ObtenerHash2();
+    filtros = replaceAll(filtros, '%26', '---AMPERSAND---');
+    filtros = decodeURIComponent(filtros);
+    filtros = replaceAll(filtros, '---AMPERSAND---', '%26');
+	
+
+
+    var esFacetaTesSem = false;
+
+    if (faceta.indexOf('|TesSem') != -1) {
+        esFacetaTesSem = true;
+        faceta = faceta.replace('|TesSem', '');
+    }
+
+    var eliminarFacetasDeGrupo = '';
+    if (faceta.indexOf("rdf:type=") != -1 && filtros.indexOf(faceta) != -1) {
+        //Si faceta es RDF:type y filtros la contiene, hay que eliminar las las que empiezen por el tipo+;
+        eliminarFacetasDeGrupo = faceta.substring(faceta.indexOf("rdf:type=") + 9) + ";";
+    }
+
+    var filtrosArray = filtros.split('&');
+    filtros = '';
+
+    var tempNamesPace = '';
+    if (faceta.indexOf('|replace') != -1) {
+        tempNamesPace = faceta.substring(0, faceta.indexOf('='));
+        faceta = faceta.replace('|replace', '');
+    }
+
+    var facetaDecode = decodeURIComponent(faceta);
+    var contieneFiltro = false;
+
+    for (var i = 0; i < filtrosArray.length; i++) {
+        if (filtrosArray[i] != '' && filtrosArray[i].indexOf('pagina=') == -1) {
+            if (eliminarFacetasDeGrupo == '' || filtrosArray[i].indexOf(eliminarFacetasDeGrupo) == -1) {
+                if (tempNamesPace == '' || (tempNamesPace != '' && filtrosArray[i].indexOf(tempNamesPace) == -1)) {
+                    filtros += filtrosArray[i] + '&';
+                }
+            }
+        }
+
+        if (filtrosArray[i] != '' && (filtrosArray[i] == faceta || filtrosArray[i] == facetaDecode)) {
+            contieneFiltro = true;
+        }
+    }
+
+    if (filtros != '') {
+        filtros = filtros.substring(0, filtros.length - 1);
+    }
+    if (faceta.indexOf('search=') == 0) {
+	 
+        $('h1 span#filtroInicio').remove();
+    }
+
+    if (typeof (filtroDePag) != 'undefined' && filtroDePag.indexOf(faceta) != -1) {
+        var url = document.location.href;
+        //var filtros = '';
+
+        if (filtros != '') {
+            filtros = '?' + filtros.replace(/ /g, '%20');
+            //filtros = '?' + encodeURIComponent(filtros);
+        }
+
+        if (url.indexOf('?') != -1) {
+            //filtros = url.substring(url.indexOf('?'));
+            url = url.substring(0, url.indexOf('?'));
+        }
+
+        if (url.substring(url.length - 1) == '/') {
+            url = url.substring(0, (url.length - 1));
+        }
+
+        //Quito los dos ultimos trozos:
+        url = url.substring(0, url.lastIndexOf('/'));
+        url = url.substring(0, url.lastIndexOf('/'));
+
+        if (filtroDePag.indexOf('skos:ConceptID') != -1) {
+            var busAvazConCat = false;
+
+            if (typeof (textoCategoria) != 'undefined') {
+                //busAvazConCat = (url.indexOf('/' + textoCategoria) == (url.length - textoCategoria.length - 1));
+                if (url.indexOf(textoComunidad + '/') != -1) {
+                    var trozosUrl = url.substring(url.indexOf(textoComunidad + '/')).split('/');
+                    busAvazConCat = (trozosUrl[2] == textoCategoria);
+                }
+            }
+
+            url = url.substring(0, url.lastIndexOf('/'));
+
+            if (busAvazConCat) {
+                url += '/' + textoBusqAvaz;
+            }
+        }
+
+
+        MostrarUpdateProgress();
+
+        document.location = url + filtros;
+        return;
+    }
+    else if (!contieneFiltro) {
+        //Si no existe el filtro, lo a?adimos
+        if (filtros.length > 0) { filtros += '&'; }
+        filtros += faceta;
+
+        if (typeof searchAnalitics != 'undefined') {
+            searchAnalitics.facetsSearchAdd(faceta);
+        }
+    }
+    else {
+        filtros = '';
+
+        for (var i = 0; i < filtrosArray.length; i++) {
+			var filtroEliminar="";
+			if (eliminarFiltroAnterior)
+			{
+				filtroEliminar=faceta.substring(0,faceta.indexOf('=')+1);
+			}
+            if (filtrosArray[i] != '' && filtrosArray[i] != faceta && filtrosArray[i] != facetaDecode && (!eliminarFiltroAnterior || filtrosArray[i].indexOf(filtroEliminar)==-1) ) {
+                filtros += filtrosArray[i] + '&';
+            }
+        }
+
+        if (filtros != '') {
+            filtros = filtros.substring(0, filtros.length - 1);
+        }
+
+        if (!esFacetaTesSem && typeof searchAnalitics != 'undefined') {
+            searchAnalitics.facetsSearchRemove(faceta);
+        }
+    }
+
+    filtros = filtros.replace(/&&/g, '&');
+    if (filtros.indexOf('&') == 0) {
+        filtros = filtros.substr(1, filtros.length);
+    }
+    if (filtros[filtros.length - 1] == '&') {
+        filtros = filtros.substr(0, filtros.length - 1);
+    }
+
+    filtros = filtros.replace(/\\\'/g, '\'');
+    filtros = filtros.replace('|', '%7C');
+
+    history.pushState('', 'New URL: ' + filtros, '?' + filtros);
+    FiltrarPorFacetas(ObtenerHash2());
+    EscribirUrlForm(filtros);
+}
