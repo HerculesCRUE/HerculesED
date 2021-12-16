@@ -32,7 +32,7 @@ var setFilter = function(element) {
 	let inputname2 = $(element).data("inputname2");
 
 	let minDate = $("#" + inputname1).val();
-	let maxDate = Math.parseInt($("#" + inputname2).val()) + 1;
+	let maxDate = Number.parseInt($("#" + inputname2).val()) + 1;
 
 	// Set the url for the filter
 	let filterString = filterFinalPart1 + minDate + '0000-' + maxDate + '0000&' + filterFinalPart2;
