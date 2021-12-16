@@ -141,14 +141,14 @@ function comportamientoRangosFechas()
 	});
 
 	$('.faceta-general-range a.searchButton').unbind().click(function (e) {
-		AgregarFaceta($(this).attr("name"));
+		AgregarFaceta($(this).attr("name"),true);
 		// Quitar el panel de filtrado para móvil para visualizar resultados correctamente
 		$(body).removeClass("facetas-abiertas");
 		e.preventDefault();
 	});
 
 	$('.faceta-general-range a.last5Years, .faceta-general-range a.lastYear, .faceta-general-range a.allYears').unbind().click(function (e) {
-		AgregarFaceta($(this).attr("name"));
+		AgregarFaceta($(this).attr("name"),true);
 		// Quitar el panel de filtrado para móvil para visualizar resultados correctamente
 		$(body).removeClass("facetas-abiertas");
 		e.preventDefault();
