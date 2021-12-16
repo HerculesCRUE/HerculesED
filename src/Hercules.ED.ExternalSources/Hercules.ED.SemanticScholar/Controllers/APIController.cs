@@ -8,7 +8,6 @@ using SemanticScholarConnect.ROs.SemanticScholar.Controllers;
 using SemanticScholarConnect.ROs.SemanticScholar.Models;
 using SemanticScholarConnect.ROs.SemanticScholar.Models.Inicial;
 using Newtonsoft.Json;
-using SemanticScholarConnect.Controllers.autores;
 using System.Data;
 using System.IO;
 using ClosedXML.Excel;
@@ -64,10 +63,10 @@ namespace SemanticScholarConnect.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public Publication GetROs([FromQuery][Required] string doi)
         {
-            almacenamiento_autores almacenamiento = new almacenamiento_autores();
-            ROSemanticScholarController SemanticScholarObject = new ROSemanticScholarController("https://api.semanticscholar.org/", almacenamiento.autores_orcid);//, "10e8a3a2417b7ae1d864b5558136c56b78ed3eb8");//"adf94bebeeba8c3042ad5193455740e2");
+            //almacenamiento_autores almacenamiento = new almacenamiento_autores();
+            ROSemanticScholarController SemanticScholarObject = new ROSemanticScholarController("https://api.semanticscholar.org/");//, almacenamiento.autores_orcid);//, "10e8a3a2417b7ae1d864b5558136c56b78ed3eb8");//"adf94bebeeba8c3042ad5193455740e2");
             Publication publication = SemanticScholarObject.getPublications(doi);
-            almacenamiento.guardar_info_autores();
+            //almacenamiento.guardar_info_autores();
             return publication;
         }
 

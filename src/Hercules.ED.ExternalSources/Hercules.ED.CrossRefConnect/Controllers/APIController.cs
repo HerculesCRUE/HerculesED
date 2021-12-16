@@ -8,7 +8,6 @@ using CrossRefConnect.ROs.CrossRef.Controllers;
 using CrossRefConnect.ROs.CrossRef.Models;
 using CrossRefConnect.ROs.CrossRef.Models.Inicial;
 using Newtonsoft.Json;
-using CrossRefConnect.Controllers.autores;
 using System.Data;
 using System.IO;
 using ClosedXML.Excel;
@@ -63,11 +62,11 @@ namespace CrossRefConnect.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public Publication GetROs([FromQuery][Required] string DOI)
         {
-            almacenamiento_autores almacenamiento = new almacenamiento_autores();
+            //almacenamiento_autores almacenamiento = new almacenamiento_autores();
 
-            ROCrossRefController CrossRefObject = new ROCrossRefController("https://api.crossref.org/",almacenamiento.autores_orcid);//"adf94bebeeba8c3042ad5193455740e2");
+            ROCrossRefController CrossRefObject = new ROCrossRefController("https://api.crossref.org/");//,almacenamiento.autores_orcid);//"adf94bebeeba8c3042ad5193455740e2");
             Publication publication = CrossRefObject.getPublications(DOI);
-            almacenamiento.guardar_info_autores();
+            //almacenamiento.guardar_info_autores();
             return publication;
         }
 

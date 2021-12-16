@@ -571,8 +571,6 @@ namespace WoSConnect.ROs.WoS.Controllers
 
                                     if (sub.content != null & sub.ascatype == "traditional")
                                     {
-                                        //todo, no es seguro que solo estemos utilizando la tradicional, aunque parece que si. 
-
                                         KnowledgeArea area = new KnowledgeArea();
                                         if (names_areas.Count == 0 || !names_areas.Contains(sub.content))
                                         {

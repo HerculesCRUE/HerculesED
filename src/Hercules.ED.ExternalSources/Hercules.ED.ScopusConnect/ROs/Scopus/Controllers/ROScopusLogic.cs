@@ -22,7 +22,6 @@ namespace ScopusConnect.ROs.Scopus.Controllers
 {
     public class ROScopusLogic : ScopusInterface
     {
-            public Dictionary<string, Tuple<string, string, string, string, string, string>> autores_orcid ;
 
         protected string bareer;
         //ROScopusControllerJSON info = new ROScopusControllerJSON();
@@ -31,11 +30,10 @@ namespace ScopusConnect.ROs.Scopus.Controllers
 
         // protected List<Publication> publications = new List<Publication>();
         protected Dictionary<string, string> headers = new Dictionary<string, string>();
-        public ROScopusLogic(string baseUri, string bareer,      Dictionary<string, Tuple<string, string, string, string, string, string>> autores_orcid)
+        public ROScopusLogic(string baseUri, string bareer)
         {
             this.baseUri = baseUri;
             this.bareer = bareer;
-this.autores_orcid=autores_orcid;
         }
 
         // TODO: Esto no se si abra que cambiarlo o no.... 

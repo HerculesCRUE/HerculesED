@@ -27,14 +27,13 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
         //protected string bareer;
         //ROScopusControllerJSON info = new ROScopusControllerJSON();
         protected string baseUri { get; set; }
-public Dictionary<string, Tuple<string, string, string, string, string, string>> autores_orcid;
 
         // protected List<Publication> publications = new List<Publication>();
         protected Dictionary<string, string> headers = new Dictionary<string, string>();
-        public ROCrossRefLogic(string baseUri,Dictionary<string, Tuple<string, string, string, string, string, string>> autores_orcid )//, string bareer)
+        public ROCrossRefLogic(string baseUri)//, string bareer)
         {
             this.baseUri = baseUri;
-            this.autores_orcid=autores_orcid;
+           // this.autores_orcid=autores_orcid;
            // this.bareer = bareer;
 
         }
@@ -102,23 +101,21 @@ public Dictionary<string, Tuple<string, string, string, string, string, string>>
             Console.Write(info_publication);
             // MODELO DEVUELTO 
             if(info_publication=="Resource not found." || info_publication.StartsWith("<html>")){
-                Console.Write("HEY");
+                //Console.Write("HEY");
                 return null;
             }
             Root objInicial = JsonConvert.DeserializeObject<Root>(info_publication);
             // CAMBIO DE MODELO -- PAra ello llamamos al controlador de cambio de modelo! 
             ROCrossRefControllerJSON info = new ROCrossRefControllerJSON(this);
             Publication sol = info.cambioDeModeloPublicacion(objInicial.message, name, articulo_primer_order);
-             Console.Write("Ids del diccionario\n");
-            foreach(string i in this.autores_orcid.Keys){
-                Console.Write(i);
-                Console.Write(" ");
-                Console.Write(this.autores_orcid[i]);
-                Console.Write("\n");
-            }
+            //Console.Write("Ids del diccionario\n");
+            //foreach(string i in this.autores_orcid.Keys){
+            //    Console.Write(i);
+            //    Console.Write(" ");
+            //    Console.Write(this.autores_orcid[i]);
+            //    Console.Write("\n");
+            //}
             return sol;
         }
     }
 }
-//todo: Comprobar que cuando llame mediante el servidor pudo hacerlo menejando el  boolean, osea pasandole el boolean! 
-//todo: aqui ya esta modificado el Ro de tipo publiacion de forma mas coherente. 

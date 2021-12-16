@@ -23,12 +23,15 @@ namespace PublicationConnect.Controllers.autores
 
         public Dictionary<string, Tuple<string, string, string, string, string, string>> autores_orcid;
         public Dictionary<string, Tuple<List<string>, string, List<string>, List<string>, List<string>, List<string>, List<string>>> usuarios_unicos;
-
+        public Dictionary<string, Dictionary<string, Dictionary<string, Tuple<string, string, string>>>> metricas_scopus;
         public almacenamiento_autores()
         {
+            //todo-> direcciones... 
             this.autores_orcid = LeerDatosExcel_autores(@"C:\Users\mpuer\Documents\GitHub\HerculesED\src\Hercules.ED.ExternalSources\Hercules-ED_autores.xlsx");
             this.usuarios_unicos = new Dictionary<string, Tuple<List<string>, string, List<string>, List<string>, List<string>, List<string>, List<string>>>();
             //  id      ->  ids_antiguos, orcid,     name,        apellidos,        nombre   ids,       url 
+            this.metricas_scopus = LeerDatosExcel_JIF(@"C:\Users\mpuer\Documents\GitHub\HerculesED\src\Hercules.ED.ExternalSources\Scopus_journal_metric.xlsx");
+
         }
 
 
@@ -332,7 +335,7 @@ namespace PublicationConnect.Controllers.autores
 
             return autores;
         }
-        public static Dictionary<string, Tuple<string, string, string, string, string, string>> LeerDatosExcel_JIF(string pRuta)
+        public static Dictionary<string, Dictionary<string, Dictionary<string, Tuple<string, string, string>>>> LeerDatosExcel_JIF(string pRuta)
         {
             DataSet ds = new DataSet();
 
@@ -352,20 +355,49 @@ namespace PublicationConnect.Controllers.autores
                     });
                 }
             }
-            Dictionary<string, Tuple<string, string, string, string, string, string>> autores = new Dictionary<string, Tuple<string, string, string, string, string, string>>();
-            foreach (DataRow fila in ds.Tables["Orcids"].Rows)
+            //año -> area_tematica
+            Dictionary<string, Dictionary<string, Dictionary<string, Tuple<string, string, string>>>> diccionario_final = new Dictionary<string, Dictionary<string, Dictionary<string, Tuple<string, string, string>>>>();
+            foreach (DataTable tabla in ds.Tables)
             {
-                if (fila["id"].ToString() != "")
+                if (tabla.TableName != "About CiteScore" & tabla.Namespace != "ASJC codes")
                 {
-                    Tuple<string, string, string, string, string, string> tupla = new Tuple<string, string, string, string, string, string>(
-                        fila["ORCID"].ToString(), fila["Name"].ToString(), fila["Apellido"].ToString(),
-                        fila["Nombres"].ToString(),
-                         fila["Ids"].ToString(), fila["Links"].ToString());
-                    autores[fila["id"].ToString()] = tupla;
+                    foreach (var a in tabla.TableName.ToList())
+                    {
+                        Console.Write(a.ToString());
+                    }
+                    string[] palabras = tabla.TableName.Split(" ");
+                    string año = palabras[palabras.Count() - 1];
+                    Console.Write(año);
+                    Dictionary<string, Tuple<string, string, string>> area_tematica = new Dictionary<string, Tuple<string, string, string>>();
+                    // area_tematica ->  SJR,  Quartile, RANK,
+                    Dictionary<string, Dictionary<string, Tuple<string, string, string>>> titulo = new Dictionary<string, Dictionary<string, Tuple<string, string, string>>>();
+                    // title-> area_tematica
+                    //Dictionary<string, Dictionary<string, Dictionary<string, Tuple<string, string, string, string>>>> diccionario_final = new Dictionary<string, Dictionary<string, Dictionary<string, Tuple<string, string, string, string>>>>();
+                    // 
+                    foreach (DataRow fila in ds.Tables[tabla.TableName].Rows)
+                    {
+                        //todo -> hay que ver si se puede hacer con el issn en vex con el titulo... el problema es que las revistas suelen tener varios issn...
+                        //Title,  Scopus Sub-Subject Area, Print ISSN, E-ISSN
+                        Tuple<string, string, string> tupla = new Tuple<string, string, string>(
+                            fila["Quartile"].ToString(), fila["RANK"].ToString(), fila["SJR"].ToString());
+                        if (titulo.Keys.Contains(fila["Title"].ToString().ToLower()))
+                        {
+                            area_tematica = titulo[fila["Title"].ToString().ToLower()];
+                        }
+                        else
+                        {
+                            area_tematica = new Dictionary<string, Tuple<string, string, string>>();
+                        }
+                        area_tematica[fila["Scopus Sub-Subject Area"].ToString().ToLower()] = tupla;
+                        titulo[fila["Title"].ToString().ToLower()] = area_tematica;
+                    }
+                    diccionario_final[año] = titulo;
+                    
                 }
+
             }
 
-            return autores;
+            return diccionario_final;
         }
         // 
         public Boolean unificar_personas()
@@ -797,138 +829,82 @@ namespace PublicationConnect.Controllers.autores
 
         }
 
-        // //cambiamos a los objetovos de una persona  -- id
-        // List<string> list_id = new List<string>();
-        // string[] ids_divididos = ids.Split('*');
-        // foreach (var identificador in ids_divididos)
+        // public List<Publication> poner_usuarios(List<Publication> publicaciones)
         // {
-        //     list_id.Add(identificador.ToString());
+        //     foreach (Publication pub_princiapl in publicaciones)
+        //     {
+        //         string id;
+        //         Person corresponding_author;
+        //         if (pub_princiapl.correspondingAuthor != null)
+        //         {
+        //             //se pone el autor correspondiendo de la publicacion con todos los datos completos
+        //             id = pub_princiapl.correspondingAuthor.id_persona;
+        //             corresponding_author = obtener_persona_unidicada(id);
+        //             pub_princiapl.correspondingAuthor = corresponding_author;
+        //         }
+        //         //se pone los autores correspondientes de la publicacion con todos los datos completos
+        //         List<Person> contribuidores = new List<Person>();
+        //         if (pub_princiapl.seqOfAuthors != null)
+        //         {
+        //             foreach (Person contribuidor in pub_princiapl.seqOfAuthors)
+        //             {
+        //                 id = contribuidor.id_persona;
+        //                 contribuidores.Add(obtener_persona_unidicada(id));
+        //             }
+        //             pub_princiapl.seqOfAuthors = contribuidores;
+        //         }
+        //         if (pub_princiapl.bibliografia != null)
+        //         {
+        //             // Por cada articulo de la bibliografia hacemos lo mismo...
+        //             foreach (Publication pub_bibliigrafia in pub_princiapl.bibliografia)
+        //             {
+        //                 if (pub_bibliigrafia.correspondingAuthor != null)
+        //                 {
+        //                     //se pone el autor correspondiendo de la publicacion con todos los datos completos
+        //                     id = pub_bibliigrafia.correspondingAuthor.id_persona;
+        //                     pub_bibliigrafia.correspondingAuthor = obtener_persona_unidicada(id);
+        //                 }
+        //                 //se pone los autores correspondientes de la publicacion con todos los datos completos
+        //                 contribuidores = new List<Person>();
+        //                 if (pub_bibliigrafia.seqOfAuthors != null)
+        //                 {
+        //                     foreach (Person contribuidor in pub_bibliigrafia.seqOfAuthors)
+        //                     {
+        //                         id = contribuidor.id_persona;
+        //                         contribuidores.Add(obtener_persona_unidicada(id));
+        //                     }
+        //                     pub_princiapl.seqOfAuthors = contribuidores;
+        //                 }
+        //             }
+        //         }
+        //         if (pub_princiapl.citas != null)
+        //         {
+        //             // Por cada articulo de la bibliografia hacemos lo mismo...
+        //             foreach (Publication pub_bibliigrafia in pub_princiapl.citas)
+        //             {
+        //                 if (pub_bibliigrafia.correspondingAuthor != null)
+        //                 {
+        //                     //se pone el autor correspondiendo de la publicacion con todos los datos completos
+        //                     id = pub_bibliigrafia.correspondingAuthor.id_persona;
+        //                     pub_bibliigrafia.correspondingAuthor = obtener_persona_unidicada(id);
+        //                 }
+        //                 //se pone los autores correspondientes de la publicacion con todos los datos completos
+        //                 contribuidores = new List<Person>();
+        //                 if (pub_bibliigrafia.seqOfAuthors != null)
+        //                 {
+        //                     foreach (Person contribuidor in pub_bibliigrafia.seqOfAuthors)
+        //                     {
+        //                         id = contribuidor.id_persona;
+        //                         contribuidores.Add(obtener_persona_unidicada(id));
+        //                     }
+        //                     pub_princiapl.seqOfAuthors = contribuidores;
+        //                 }
+        //             }
+        //         }
+
+        //     }
+        //     return publicaciones;
         // }
-        // person.IDs = list_id;
-        // //cambiamos a los objetovos de una persona  -- links
-        // List<string> list_links = new List<string>();
-        // string[] links_divididos = links.Split('*');
-        // foreach (var link in links_divididos)
-        // {
-        //     list_links.Add(link.ToString());
-        // }
-        // person.links = list_links;
-
-        // //Damos la estructura apropiada con los datos obtenidos  -- orcid
-        // person.ORCID = orcid;
-        // //Damos la estructura apropiada con los datos obtenidos  -- Name 
-
-        // Name name_author = new Name();
-        // //given 
-        // List<string> name_given = new List<string>();
-        // string[] name_dividivido = name.Split('*');
-        // foreach (var name_dividido_concreto in name_dividivido)
-        // {
-        //     name_given.Add(name_dividido_concreto.ToString());
-        // }
-        // name_author.given = name_given;
-        // //apellico
-        // List<string> name_familia = new List<string>();
-        // string[] familia_dividivido = familia.Split('*');
-        // foreach (var familia_dividido_concreto in name_dividivido)
-        // {
-        //     name_familia.Add(familia_dividido_concreto.ToString());
-        // }
-        // name_author.familia = name_familia;
-        // //nombre_completo 
-        // List<string> name_completo_familia = new List<string>();
-        // string[] completo_dividivido = familia.Split('*');
-        // foreach (var completo_dividido_concreto in completo_dividivido)
-        // {
-        //     name_completo_familia.Add(completo_dividido_concreto.ToString());
-        // }
-        // name_author.nombre_completo = name_completo_familia;
-
-        // person.name = name_author;
-        // person.id_persona = id;
-        // return person;
-
-
-
-
-
-
-        public List<Publication> poner_usuarios(List<Publication> publicaciones)
-        {
-            foreach (Publication pub_princiapl in publicaciones)
-            {
-                string id;
-                Person corresponding_author;
-                if (pub_princiapl.correspondingAuthor != null)
-                {
-                    //se pone el autor correspondiendo de la publicacion con todos los datos completos
-                    id = pub_princiapl.correspondingAuthor.id_persona;
-                    corresponding_author = obtener_persona_unidicada(id);
-                    pub_princiapl.correspondingAuthor = corresponding_author;
-                }
-                //se pone los autores correspondientes de la publicacion con todos los datos completos
-                List<Person> contribuidores = new List<Person>();
-                if (pub_princiapl.seqOfAuthors != null)
-                {
-                    foreach (Person contribuidor in pub_princiapl.seqOfAuthors)
-                    {
-                        id = contribuidor.id_persona;
-                        contribuidores.Add(obtener_persona_unidicada(id));
-                    }
-                    pub_princiapl.seqOfAuthors = contribuidores;
-                }
-                if (pub_princiapl.bibliografia != null)
-                {
-                    // Por cada articulo de la bibliografia hacemos lo mismo...
-                    foreach (Publication pub_bibliigrafia in pub_princiapl.bibliografia)
-                    {
-                        if (pub_bibliigrafia.correspondingAuthor != null)
-                        {
-                            //se pone el autor correspondiendo de la publicacion con todos los datos completos
-                            id = pub_bibliigrafia.correspondingAuthor.id_persona;
-                            pub_bibliigrafia.correspondingAuthor = obtener_persona_unidicada(id);
-                        }
-                        //se pone los autores correspondientes de la publicacion con todos los datos completos
-                        contribuidores = new List<Person>();
-                        if (pub_bibliigrafia.seqOfAuthors != null)
-                        {
-                            foreach (Person contribuidor in pub_bibliigrafia.seqOfAuthors)
-                            {
-                                id = contribuidor.id_persona;
-                                contribuidores.Add(obtener_persona_unidicada(id));
-                            }
-                            pub_princiapl.seqOfAuthors = contribuidores;
-                        }
-                    }
-                }
-                if (pub_princiapl.citas != null)
-                {
-                    // Por cada articulo de la bibliografia hacemos lo mismo...
-                    foreach (Publication pub_bibliigrafia in pub_princiapl.citas)
-                    {
-                        if (pub_bibliigrafia.correspondingAuthor != null)
-                        {
-                            //se pone el autor correspondiendo de la publicacion con todos los datos completos
-                            id = pub_bibliigrafia.correspondingAuthor.id_persona;
-                            pub_bibliigrafia.correspondingAuthor = obtener_persona_unidicada(id);
-                        }
-                        //se pone los autores correspondientes de la publicacion con todos los datos completos
-                        contribuidores = new List<Person>();
-                        if (pub_bibliigrafia.seqOfAuthors != null)
-                        {
-                            foreach (Person contribuidor in pub_bibliigrafia.seqOfAuthors)
-                            {
-                                id = contribuidor.id_persona;
-                                contribuidores.Add(obtener_persona_unidicada(id));
-                            }
-                            pub_princiapl.seqOfAuthors = contribuidores;
-                        }
-                    }
-                }
-
-            }
-            return publicaciones;
-        }
 
 
     }

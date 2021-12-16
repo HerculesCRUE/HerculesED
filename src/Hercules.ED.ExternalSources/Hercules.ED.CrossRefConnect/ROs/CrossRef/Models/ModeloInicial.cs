@@ -62,7 +62,7 @@ namespace CrossRefConnect.ROs.CrossRef.Models.Inicial
         public List<List<int>> DateParts { get; set; }
 
         [JsonProperty("date-time")]
-        public DateTime DateTime { get; set; }
+        public string DateTime { get; set; }
         public long timestamp { get; set; }
     }
 
