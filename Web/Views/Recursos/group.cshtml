@@ -553,6 +553,7 @@
         }
         var arg = {};
         arg.pParametros = parametros;
+        $('#' + idContenedor).empty();
         $.get(url, arg, function (data) {
             PintarGraficaPublicaciones(data, idContenedor);
         });
@@ -566,6 +567,7 @@
         }
         var arg = {};
         arg.pParametros = parametros;
+        $('#' + idContenedor).empty();
         $.get(url, arg, function (data) {
             PintarGraficaProyectos(data, idContenedor);
         });
@@ -624,7 +626,6 @@
         arg.pIdGrupo = pIdGrupo;
         arg.pParametros = parametros;
         arg.pMax = $('#numColaboradores').val();
-
         $('#' + idContenedor).empty();
         $.get(url, arg, function (data) {
             PintarGraficaArania(data, idContenedor);
