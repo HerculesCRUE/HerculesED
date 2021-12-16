@@ -1111,6 +1111,7 @@ function AgregarFaceta(faceta,eliminarFiltroAnterior=false) {
     else if (!contieneFiltro) {
 		if (eliminarFiltroAnterior)
 		{
+			filtros='';
 			var filtroEliminar=faceta.substring(0,faceta.indexOf('=')+1);			
 			for (var i = 0; i < filtrosArray.length; i++) {				
 				if (filtrosArray[i].indexOf(filtroEliminar)==-1)  {
