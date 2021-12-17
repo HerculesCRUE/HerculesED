@@ -31,9 +31,6 @@ namespace GuardadoCV.Models
 
 
         #region Métodos públicos
-
-
-
         /// <summary>
         /// Obtiene un listado de sugerencias con datos existentes para esa propiedad
         /// </summary>
@@ -44,30 +41,46 @@ namespace GuardadoCV.Models
         /// <returns></returns>
         public List<string> GetAutocomplete(string pSeach, string pProperty, string pRdfType, string pGraph, List<string> pLista)
         {
+            string searchText = pSeach.Trim();
+            string filter = "";
+            if (!pSeach.EndsWith(' '))
+            {
+                string[] splitSearch = searchText.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                if (splitSearch.Length > 1)
+                {
+                    searchText = searchText.Substring(0, searchText.LastIndexOf(' '));
+                    if (splitSearch.Last().Length > 3)
+                    {
+                        searchText += " " + splitSearch.Last() + "*";
+                    }
+                    else
+                    {
+                        filter = $" AND lcase(?o) like \"% { splitSearch.Last() }%\" ";
+                    }
+                }
+                else if (searchText.Length > 3)
+                {
+                    searchText += "*";
+                }
+                else // Si tiene menos de 4 caracteres y no termina en espacio, buscamos por like
+                {
+                    filter = $"  lcase(?o) like \"{ searchText }%\" OR lcase(?o) like \"% { searchText }%\" ";
+                    searchText = "";
+                }
+            }
+            if (searchText != "")
+            {
+                filter = $"bif:contains(?o, \"'{ searchText }'\"){filter}";
+            }
             string select = "SELECT DISTINCT ?o ";
-            string where = $"WHERE {{ ?s a <{ pRdfType }>. ?s <{ pProperty }> ?o . ";
-            if (pSeach.Length > 3)
-            {
-                where += $" ?o bif:contains \"'{ pSeach }*'\". }}";
-            }
-            else
-            {
-                where += $" FILTER (lcase(?o) like \"{ pSeach }%\" OR ?o like \"% { pSeach }%\") }}";
-            }
-
-            where += " ORDER BY ?o";
-
+            string where = $"WHERE {{ ?s a <{ pRdfType }>. ?s <{ pProperty }> ?o . FILTER( {filter} ) }} ORDER BY ?o";
             SparqlObject sparqlObjectAux = mResourceApi.VirtuosoQuery(select, where, pGraph);
-
-            var resultados = sparqlObjectAux.results.bindings.Select(x => x["o"].value);
-
+            var resultados = sparqlObjectAux.results.bindings.Select(x => x["o"].value).Distinct();
             if (pLista != null)
             {
-                resultados = resultados.Except(pLista);
+                resultados = resultados.Except(pLista, StringComparer.OrdinalIgnoreCase);
             }
-
-            return resultados.Distinct().ToList();
-
+            return resultados.ToList();
         }
 
         /// <summary>

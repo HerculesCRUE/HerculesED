@@ -74,7 +74,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.ObjetoJson
         public string quartile { get; set; }
         public string ranking { get; set; }
         public string impactFactorName { get; set; }
-        public double impactFactor { get; set; }
+        public string impactFactor { get; set; }
         public string citationCount { get; set; }
         public string metricName { get; set; }
     }
