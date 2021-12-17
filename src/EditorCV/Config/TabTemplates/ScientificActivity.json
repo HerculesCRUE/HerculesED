@@ -988,6 +988,97 @@
 									{
 										"properties": [
 											{
+												"title": {
+													"es": "Áreas temáticas externas"
+												},
+												"property": "http://w3id.org/roh/externalKnowledgeArea",
+												"thesaurus": "researcharea",
+												"type": "thesaurus",
+												"width": 0,
+												"multiple": true
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Áreas temáticas enriquecidas"
+												},
+												"property": "http://w3id.org/roh/enrichedKnowledgeArea",
+												"thesaurus": "researcharea",
+												"type": "thesaurus",
+												"width": 0,
+												"multiple": true
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Áreas temáticas"
+												},
+												"property": "http://w3id.org/roh/userKnowledgeArea",
+												"thesaurus": "researcharea",
+												"type": "thesaurus",
+												"width": 3,
+												"multiple": true
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Etiquetas externas"
+												},
+												"placeholder": {
+													"es": "Introduce la etiqueta"
+												},
+												"property": "http://w3id.org/roh/externalKeywords",
+												"multiple": true,
+												"type": "text",
+												"width": 0
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Etiquetas enriquecidas"
+												},
+												"placeholder": {
+													"es": "Introduce la etiqueta"
+												},
+												"property": "http://w3id.org/roh/enrichedKeywords",
+												"multiple": true,
+												"type": "text",
+												"width": 0
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Etiquetas"
+												},
+												"placeholder": {
+													"es": "Introduce la etiqueta"
+												},
+												"property": "http://w3id.org/roh/userKeywords",
+												"multiple": true,
+												"autocomplete": true,
+												"type": "text",
+												"width": 3
+											}
+										]
+									},
+									{
+										"properties": [
+											{
 												"property": "http://purl.org/ontology/bibo/presentedAt",
 												"TODO": "Entidad auxiliar de multiplicidad 0,1. No funcionan las propiedades de esta entidad.",
 												"type": "auxEntity",
@@ -1008,107 +1099,6 @@
 															},
 															"child": {
 																"property": "http://purl.org/dc/elements/1.1/title"
-															}
-														},
-														{
-															"name": {
-																"es": "Fecha de celebración"
-															},
-															"child": {
-																"property": "http://vivoweb.org/ontology/core#start"
-															}
-														},
-														{
-															"name": {
-																"es": "Fecha de finalización"
-															},
-															"child": {
-																"property": "http://vivoweb.org/ontology/core#end"
-															}
-														},
-														{
-															"name": {
-																"es": "Ciudad de celebración"
-															},
-															"child": {
-																"property": "https://www.w3.org/2006/vcard/ns#locality"
-															}
-														},
-														{
-															"name": {
-																"es": "País de celebración"
-															},
-															"child": {
-																"property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
-																"graph": "feature",
-																"child": {
-																	"property": "http://www.geonames.org/ontology#name"
-																}
-															}
-														},
-														{
-															"name": {
-																"es": "C. Autón./Reg. de celebración"
-															},
-															"child": {
-																"property": "https://www.w3.org/2006/vcard/ns#hasRegion",
-																"graph": "feature",
-																"child": {
-																	"property": "http://www.geonames.org/ontology#name"
-																}
-															}
-														},
-														{
-															"name": {
-																"es": "Entidad organizadora"
-															},
-															"property": "http://purl.org/ontology/bibo/organizer",
-															"combo": {
-																"property": "http://purl.org/ontology/bibo/organizer",
-																"graph": "organization",
-																"property": {
-																	"property": "http://w3id.org/roh/title"
-																}
-															}
-														},
-														{
-															"name": {
-																"es": "Tipo de evento"
-															},
-															"child": {
-																"property": "http://purl.org/dc/elements/1.1/type",
-																"graph": "eventtype",
-																"child": {
-																	"property": "http://purl.org/dc/elements/1.1/title"
-																}
-															}
-														},
-														{
-															"name": {
-																"es": "Con comité de admisión ext."
-															},
-															"child": {
-																"property": "http://w3id.org/roh/withExternalAdmissionsCommittee"
-															}
-														},
-														{
-															"name": {
-																"es": "Ámbito geográfico"
-															},
-															"child": {
-																"property": "http://vivoweb.org/ontology/core#geographicFocus",
-																"graph": "geographicregion",
-																"child": {
-																	"property": "http://purl.org/dc/elements/1.1/title"
-																}
-															}
-														},
-														{
-															"name": {
-																"es": "Ámbito geográfico, otros"
-															},
-															"child": {
-																"property": "http://w3id.org/roh/geographicFocusOther"
 															}
 														}
 													],
@@ -1498,96 +1488,6 @@
 									"es": "Más campos"
 								},
 								"rows": [
-									{
-										"properties": [
-											{
-												"property": "http://purl.org/ontology/bibo/identifier",
-												"TODO": "Auxiliar múltiple. Incluir los valores del tipo de identificador en la tabla, junto a un 'Otros' que permita añadir un nuevo tipo.",
-												"type": "auxEntity",
-												"title": {
-													"es": "Identificador de la publicación"
-												},
-												"multiple": true,
-												"width": 3,
-												"auxEntityData": {
-													"rdftype": "http://xmlns.com/foaf/0.1/Document",
-													"propertyTitle": {
-														"property": "http://xmlns.com/foaf/0.1/primaryTopic"
-													},
-													"properties": [
-														{
-															"name": {
-																"es": "Tipo identificador"
-															},
-															"child": {
-																"property": "http://xmlns.com/foaf/0.1/primaryTopic",
-																"graph": "publicationidentifiertype",
-																"child": {
-																	"property": "http://purl.org/dc/elements/1.1/title"
-																}
-															}
-														},
-														{
-															"name": {
-																"es": "Otros"
-															},
-															"child": {
-																"property": "http://xmlns.com/foaf/0.1/topic"
-															}
-														},
-														{
-															"name": {
-																"es": "Identificador publicación"
-															},
-															"child": {
-																"property": "http://purl.org/dc/elements/1.1/title"
-															}
-														}
-													],
-													"rows": [
-														{
-															"properties": [
-																{
-																	"title": {
-																		"es": "Tipo identificador"
-																	},
-																	"required": true,
-																	"property": "http://xmlns.com/foaf/0.1/primaryTopic",
-																	"combo": {
-																		"rdftype": "http://w3id.org/roh/PublicationIdentifierType",
-																		"graph": "publicationidentifiertype",
-																		"property": {
-																			"property": "http://purl.org/dc/elements/1.1/title"
-																		}
-																	},
-																	"type": "selectCombo",
-																	"width": 1
-																},
-																{
-																	"title": {
-																		"es": "Otros"
-																	},
-																	"type": "text",
-																	"required": false,
-																	"property": "http://xmlns.com/foaf/0.1/topic",
-																	"width": 1
-																},
-																{
-																	"title": {
-																		"es": "Identificador publicación"
-																	},
-																	"type": "text",
-																	"required": false,
-																	"property": "http://purl.org/dc/elements/1.1/title",
-																	"width": 1
-																}
-															]
-														}
-													]
-												}
-											}
-										]
-									},
 									{
 										"properties": [
 											{
@@ -1988,6 +1888,97 @@
 												},
 												"property": "http://purl.org/ontology/bibo/abstract",
 												"type": "textarea",
+												"width": 3
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Áreas temáticas externas"
+												},
+												"property": "http://w3id.org/roh/externalKnowledgeArea",
+												"thesaurus": "researcharea",
+												"type": "thesaurus",
+												"width": 0,
+												"multiple": true
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Áreas temáticas enriquecidas"
+												},
+												"property": "http://w3id.org/roh/enrichedKnowledgeArea",
+												"thesaurus": "researcharea",
+												"type": "thesaurus",
+												"width": 0,
+												"multiple": true
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Áreas temáticas"
+												},
+												"property": "http://w3id.org/roh/userKnowledgeArea",
+												"thesaurus": "researcharea",
+												"type": "thesaurus",
+												"width": 3,
+												"multiple": true
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Etiquetas externas"
+												},
+												"placeholder": {
+													"es": "Introduce la etiqueta"
+												},
+												"property": "http://w3id.org/roh/externalKeywords",
+												"multiple": true,
+												"type": "text",
+												"width": 0
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Etiquetas enriquecidas"
+												},
+												"placeholder": {
+													"es": "Introduce la etiqueta"
+												},
+												"property": "http://w3id.org/roh/enrichedKeywords",
+												"multiple": true,
+												"type": "text",
+												"width": 0
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Etiquetas"
+												},
+												"placeholder": {
+													"es": "Introduce la etiqueta"
+												},
+												"property": "http://w3id.org/roh/userKeywords",
+												"multiple": true,
+												"autocomplete": true,
+												"type": "text",
 												"width": 3
 											}
 										]
@@ -2518,97 +2509,7 @@
 								"title": {
 									"es": "Más campos"
 								},
-								"rows": [
-									{
-										"properties": [
-											{
-												"property": "http://purl.org/ontology/bibo/identifier",
-												"TODO": "Auxiliar múltiple. Incluir los valores del tipo de identificador en la tabla, junto a un 'Otros' que permita añadir un nuevo tipo.",
-												"type": "auxEntity",
-												"title": {
-													"es": "Identificador de la publicación"
-												},
-												"multiple": true,
-												"width": 3,
-												"auxEntityData": {
-													"rdftype": "http://xmlns.com/foaf/0.1/Document",
-													"propertyTitle": {
-														"property": "http://xmlns.com/foaf/0.1/primaryTopic"
-													},
-													"properties": [
-														{
-															"name": {
-																"es": "Tipo identificador"
-															},
-															"child": {
-																"property": "http://xmlns.com/foaf/0.1/primaryTopic",
-																"graph": "publicationidentifiertype",
-																"child": {
-																	"property": "http://purl.org/dc/elements/1.1/title"
-																}
-															}
-														},
-														{
-															"name": {
-																"es": "Otros"
-															},
-															"child": {
-																"property": "http://xmlns.com/foaf/0.1/topic"
-															}
-														},
-														{
-															"name": {
-																"es": "Identificador publicación"
-															},
-															"child": {
-																"property": "http://purl.org/dc/elements/1.1/title"
-															}
-														}
-													],
-													"rows": [
-														{
-															"properties": [
-																{
-																	"title": {
-																		"es": "Tipo identificador"
-																	},
-																	"required": true,
-																	"property": "http://xmlns.com/foaf/0.1/primaryTopic",
-																	"combo": {
-																		"rdftype": "http://w3id.org/roh/PublicationIdentifierType",
-																		"graph": "publicationidentifiertype",
-																		"property": {
-																			"property": "http://purl.org/dc/elements/1.1/title"
-																		}
-																	},
-																	"type": "selectCombo",
-																	"width": 1
-																},
-																{
-																	"title": {
-																		"es": "Otros"
-																	},
-																	"type": "text",
-																	"required": false,
-																	"property": "http://xmlns.com/foaf/0.1/topic",
-																	"width": 1
-																},
-																{
-																	"title": {
-																		"es": "Identificador publicación"
-																	},
-																	"type": "text",
-																	"required": false,
-																	"property": "http://purl.org/dc/elements/1.1/title",
-																	"width": 1
-																}
-															]
-														}
-													]
-												}
-											}
-										]
-									},
+								"rows": [									
 									{
 										"properties": [
 											{
