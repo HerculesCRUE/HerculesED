@@ -61,9 +61,8 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
 
         private static void ProcesarPublicacion(Publication pPublicacion, Dictionary<string, string> pDicAreasBroader, Dictionary<string, string> pDicAreasNombre)
         {
-            // Comprueba si está la publicación cargada.
+            // TODO: Comprueba si está la publicación cargada. (ASIO)
             string idDocumento = ComprobarPublicacion(pPublicacion.doi);
-            //TODO recuperar cosas ASIO
 
             if (string.IsNullOrEmpty(idDocumento))
             {
@@ -301,7 +300,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             }
                         }
 
-                        // TODO: Hacer comprobación a parte del nombre...
+                        // TODO: Hacer comprobación a parte del nombre... (ASIO)
                         if (string.IsNullOrEmpty(idPersona) && !string.IsNullOrEmpty(persona.Foaf_name))
                         {
                             idPersona = ComprobarPersonaNombre(persona.Foaf_name);
@@ -378,7 +377,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                 }
                             }
 
-                            // TODO: Hacer comprobación a parte del nombre...
+                            // TODO: Hacer comprobación a parte del nombre... (ASIO)
                             if (string.IsNullOrEmpty(idPersona) && !string.IsNullOrEmpty(persona.Foaf_name))
                             {
                                 idPersona = ComprobarPersonaNombre(persona.Foaf_name);
@@ -887,11 +886,8 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                     NewValue = pIdPadre
                                 }
                             });
-                        Dictionary<Guid,bool> resultado= mResourceApi.InsertPropertiesLoadedResources(triples);
-                        if(!resultado[mResourceApi.GetShortGuid(pIdDocumento)])
-                        {
-
-                        }
+                        Dictionary<Guid,bool> resultado = mResourceApi.InsertPropertiesLoadedResources(triples);
+                        bool comprobacion = resultado.ContainsKey(mResourceApi.GetShortGuid(pIdDocumento));
                     }
                     else
                     {
@@ -908,10 +904,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                 }
                             });
                         Dictionary<Guid, bool> resultado = mResourceApi.InsertPropertiesLoadedResources(triples);
-                        if (!resultado[mResourceApi.GetShortGuid(idDocumentoActual)])
-                        {
-
-                        }
+                        bool comprobacion = resultado.ContainsKey(mResourceApi.GetShortGuid(idDocumentoActual));
                     }
                 }
 
