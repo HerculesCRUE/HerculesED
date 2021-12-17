@@ -22,7 +22,7 @@ namespace WoSConnect.Controllers
     public class APIController : ControllerBase
     {
         private readonly ILogger<APIController> _logger;
-        public Dictionary<string, string> ds = LeerDatosExcel(@"Files\Taxonomy.xlsx");
+        public Dictionary<string, string> ds = LeerDatosExcel(@"Files/Taxonomy.xlsx");
 
         public APIController(ILogger<APIController> logger)
         {
