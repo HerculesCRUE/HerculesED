@@ -190,7 +190,7 @@ namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
                         persona.IDs = ids;
                     }
                     
-                                        
+                     autores.Add(persona);                   
                 }
                 return autores;
             }

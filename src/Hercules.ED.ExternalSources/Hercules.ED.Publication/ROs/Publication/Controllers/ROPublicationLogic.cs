@@ -115,6 +115,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     Publication pub_completa = compatacion(pub, objInicial_semanticScholar);
                     Publication objInicial_CrossRef = llamada_CrossRef(doi);
                     pub_completa = compatacion(pub_completa, objInicial_CrossRef);
+                    if (objInicial_CrossRef != null)
+                    {
+                        pub_completa.bibliografia = objInicial_CrossRef.bibliografia;
+                    }
                     pub.pdf = llamada_Zenodo(pub.doi);
                     pub.topics_enriquecidos = enriquedicmiento(pub);
                     pub.freetextKeyword_enriquecidas = enriquedicmiento_pal(pub);
@@ -161,7 +165,12 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         Publication objInicial_semanticScholar = llamada_Semantic_Scholar(pub_scopus.doi);
                         Publication pub_completa = compatacion(pub_scopus, objInicial_semanticScholar);
                         Publication objInicial_CrossRef = llamada_CrossRef(doi);
+
                         pub_completa = compatacion(pub_completa, objInicial_CrossRef);
+                        if (objInicial_CrossRef != null)
+                        {
+                            pub_completa.bibliografia = objInicial_CrossRef.bibliografia;
+                        }
                         pub_completa.pdf = llamada_Zenodo(pub_completa.doi);
                         pub_completa.topics_enriquecidos = enriquedicmiento(pub_completa);
                         pub_completa.freetextKeyword_enriquecidas = enriquedicmiento_pal(pub_completa);
@@ -220,123 +229,139 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
         public List<Knowledge_enriquecidos> enriquedicmiento(Publication pub)
         {
-            string info;
-            if (pub.title != null & pub.hasPublicationVenue.name != null & pub.Abstract != null & pub.seqOfAuthors != null)
+            string info = null;
+            if (pub != null)
             {
-                if (pub.pdf != null)
+                try
                 {
-                    enriquecimiento a = new enriquecimiento();
-                    a.rotype = "papers";
-                    a.pdfurl = pub.pdf;
-                    a.title = pub.title;
-                    a.abstract_ = pub.Abstract;
-                    a.journal = pub.hasPublicationVenue.name;
-                    string names = "";
-                    foreach (Person persona in pub.seqOfAuthors)
+                    if (pub.title != null & pub.hasPublicationVenue != null & pub.Abstract != null & pub.seqOfAuthors != null & pub.seqOfAuthors != new List<Person>())
                     {
-                        if (persona.name.nombre_completo != null)
+                        if (pub.hasPublicationVenue.name != null)
                         {
-                            if (persona.name.nombre_completo.Count > 0)
+                            if (pub.pdf != null)
                             {
-                                string name = persona.name.nombre_completo[0];
-                                if (name != null)
+                                enriquecimiento a = new enriquecimiento();
+                                a.rotype = "papers";
+                                a.pdfurl = pub.pdf;
+                                a.title = pub.title;
+                                a.abstract_ = pub.Abstract;
+                                a.journal = pub.hasPublicationVenue.name;
+                                string names = "";
+                                foreach (Person persona in pub.seqOfAuthors)
                                 {
-                                    if (names == "")
+                                    if (persona.name.nombre_completo != null)
                                     {
-                                        names = names + name;
-                                    }
-                                    else
-                                    {
-                                        names = names + " & " + name;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    if (names != "")
-                    {
-                        a.author_name = names;
-                        info = JsonConvert.SerializeObject(a);
-                    }
-                    else { info = null; }
-                }
-                else
-                {
-                    enriquecimiento_sin_pdf a = new enriquecimiento_sin_pdf();
-                    a.rotype = "papers";
-                    a.title = pub.title;
-                    a.abstract_ = pub.Abstract;
-                    a.journal = pub.hasPublicationVenue.name;
-
-                    string names = "";
-                    foreach (Person persona in pub.seqOfAuthors)
-                    {
-                        if (persona.name != null)
-                        {
-                            if (persona.name.nombre_completo != null)
-                            {
-                                if (persona.name.nombre_completo.Count > 0)
-                                {
-                                    string name = persona.name.nombre_completo[0];
-                                    if (name != null)
-                                    {
-                                        if (names == "")
+                                        if (persona.name.nombre_completo.Count > 0)
                                         {
-                                            names = names + name;
-                                        }
-                                        else
-                                        {
-                                            names = names + " & " + name;
+                                            string name = persona.name.nombre_completo[0];
+                                            if (name != null)
+                                            {
+                                                if (names == "")
+                                                {
+                                                    names = names + name;
+                                                }
+                                                else
+                                                {
+                                                    names = names + " & " + name;
+                                                }
+                                            }
                                         }
                                     }
                                 }
+                                if (names != "")
+                                {
+                                    a.author_name = names;
+                                    info = JsonConvert.SerializeObject(a);
+                                }
+                                else { info = null; }
+                            }
+                            else
+                            {
+                                enriquecimiento_sin_pdf a = new enriquecimiento_sin_pdf();
+                                a.rotype = "papers";
+                                a.title = pub.title;
+                                a.abstract_ = pub.Abstract;
+                                a.journal = pub.hasPublicationVenue.name;
+
+                                string names = "";
+                                foreach (Person persona in pub.seqOfAuthors)
+                                {
+                                    if (persona.name != null)
+                                    {
+                                        if (persona.name.nombre_completo != null)
+                                        {
+                                            if (persona.name.nombre_completo.Count > 0)
+                                            {
+                                                string name = persona.name.nombre_completo[0];
+                                                if (name != null)
+                                                {
+                                                    if (names == "")
+                                                    {
+                                                        names = names + name;
+                                                    }
+                                                    else
+                                                    {
+                                                        names = names + " & " + name;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                if (names != "")
+                                {
+                                    a.author_name = names;
+                                    info = JsonConvert.SerializeObject(a);
+                                }
+                                else { info = null; }
+
                             }
                         }
-                    }
-                    if (names != "")
-                    {
-                        a.author_name = names;
-                        info = JsonConvert.SerializeObject(a);
-                    }
-                    else { info = null; }
+                        if (info != null)
+                        {
+                            string info_publication = httpCall_2("thematic", info);
+                            if (info_publication != null)
+                            {
 
+                                Topics_enriquecidos objInic = JsonConvert.DeserializeObject<Topics_enriquecidos>(info_publication);
+                                return objInic.topics;
+
+                            }
+                            return null;
+                        }
+                        else { return null; }
+                    }
+                    else { return null; }
                 }
-                if (info != null)
+                catch
                 {
-                    string info_publication = httpCall_2("thematic", info);
-                    if (info_publication != null)
-                    {
-
-                        Topics_enriquecidos objInic = JsonConvert.DeserializeObject<Topics_enriquecidos>(info_publication);
-                        return objInic.topics;
-
-                    }
-                    return null;
+                    string infoo = JsonConvert.SerializeObject(pub);
+                    Console.Write(infoo);
                 }
-                else { return null; }
+
             }
             else { return null; }
-
+            return null;
         }
 
         public string httpCall_2(string uri, string info)
         {
-            try
-            {
-                HttpResponseMessage response = null;
-                HttpClient client = new HttpClient();
-                client.Timeout = TimeSpan.FromDays(1);
+            //try
+            //{
+            HttpResponseMessage response = null;
+            HttpClient client = new HttpClient();
+            client.Timeout = TimeSpan.FromDays(1);
 
-                var contentData = new StringContent(info, System.Text.Encoding.UTF8, "application/json");
-                client.Timeout = TimeSpan.FromDays(1);
-                response = client.PostAsync("http://herculesapi.elhuyar.eus/" + uri, contentData).Result;
+            var contentData = new StringContent(info, System.Text.Encoding.UTF8, "application/json");
+            client.Timeout = TimeSpan.FromDays(1);
+            response = client.PostAsync("http://herculesapi.elhuyar.eus/" + uri, contentData).Result;
 
-                // response.EnsureSuccessStatusCode();
-                string result = response.Content.ReadAsStringAsync().Result;
-                return result;
+            // response.EnsureSuccessStatusCode();
+            string result = response.Content.ReadAsStringAsync().Result;
+            return result;
 
-            }
-            catch { return null; }
+            //}
+            //catch { return null; }
         }
 
 
@@ -440,16 +465,29 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     Publication pub_crossRef = this.llamada_CrossRef(doi_bib);
                     Publication pub_final_bib = compatacion(pub_crossRef, pub_semntic_scholar);
                     pub_final_bib.pdf = llamada_Zenodo(pub_final_bib.doi);
-                    pub_final_bib.topics_enriquecidos = enriquedicmiento(pub_final_bib);
-                    pub_final_bib.freetextKeyword_enriquecidas = enriquedicmiento_pal(pub_final_bib);
-                    if (pub_final_bib.dataIssued != null & pub_final_bib.hasPublicationVenue.issn != null)
-                    {
-                        pub_final_bib.hasPublicationVenue = metrica_journal(pub_final_bib.hasPublicationVenue, pub_final_bib.dataIssued.datimeTime, pub_final_bib.topics_enriquecidos);
-                    }
                     if (pub_final_bib.pdf == "")
                     {
                         pub_final_bib.pdf = null;
                     }
+                    Console.Write(pub_final_bib.dataIssued);
+                    Console.Write("\n");
+                    pub_final_bib.topics_enriquecidos = enriquedicmiento(pub_final_bib);
+                    pub_final_bib.freetextKeyword_enriquecidas = enriquedicmiento_pal(pub_final_bib);
+                    Console.Write(pub_final_bib);
+                    // try
+                    //{
+                    if (pub_final_bib.dataIssued != null)
+                    {
+                        if (pub_final_bib.hasPublicationVenue != null)
+                        {
+                            pub_final_bib.hasPublicationVenue = metrica_journal(pub_final_bib.hasPublicationVenue, pub_final_bib.dataIssued.datimeTime, pub_final_bib.topics_enriquecidos);
+                        }
+                    }
+                    //    }catch{
+                    //    string info = JsonConvert.SerializeObject(pub_final_bib);
+                    //    Console.Write(info);
+                    //}
+
 
                     if (pub_final_bib != null)
                     {
@@ -541,7 +579,11 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     }
                     else
                     {
-                        pub.dataIssued = pub_2.dataIssued;
+                        if (pub_2.dataIssued != null)
+                        {
+                            pub.dataIssued = pub_2.dataIssued;
+                        }
+                        else { pub.dataIssued = null; }
                     }
                     if (pub_1.url != null)
                     {
@@ -566,16 +608,27 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
                     if (pub_1.seqOfAuthors != null)
                     {
-                        pub.seqOfAuthors = pub_1.seqOfAuthors;
-                        if (pub_2.seqOfAuthors != null)
+                        if (pub_2.seqOfAuthors != null & pub_2.seqOfAuthors != new List<Person>())
                         {
                             pub.seqOfAuthors = unir_autores(pub_1.seqOfAuthors, pub_2.seqOfAuthors);
 
                         }
+                        else
+                        {
+                            pub.seqOfAuthors = pub_1.seqOfAuthors;
+                        }
                     }
                     else
                     {
-                        pub.seqOfAuthors = pub_2.seqOfAuthors;
+                        if (pub_2.seqOfAuthors != null & pub_2.seqOfAuthors != new List<Person>())
+                        {
+                            pub.seqOfAuthors = pub_2.seqOfAuthors;
+                        }
+                        else
+                        {
+                            pub.seqOfAuthors = null;
+                            Console.Write("HOLI\n");
+                        }
                     }
                     if (pub_1.hasKnowledgeAreas != null)
                     {
@@ -647,6 +700,30 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     {
                         pub.hasPublicationVenue = pub_2.hasPublicationVenue;
                     }
+                    // if (pub_1.bibliografia != null)
+                    // {
+                    //     if (pub_2.bibliografia != null)
+                    //     {
+                    //         //Esto no va a apasar! 
+                    //     }
+                    //     else
+                    //     {
+                    //         pub.bibliografia = pub_1.bibliografia;
+                    //     }
+                    // }
+                    // else
+                    // {
+                    //     if (pub_2.bibliografia != null)
+                    //     {
+                    //         pub.bibliografia = pub_2.bibliografia;
+                    //     }
+                    //     else
+                    //     {
+                    //         pub.bibliografia = null;
+                    //     }
+
+                    //}
+
                     // if (bo)
                     // {
                     //     pub.pdf = llamada_Zenodo(pub.doi);
@@ -666,27 +743,87 @@ namespace PublicationConnect.ROs.Publications.Controllers
         public List<Person> unir_autores(List<Person> conjunto_1, List<Person> conjunto_2)
         {
             List<Person> lista_autores_no_iguales = new List<Person>();
+            List<Person> conjunto = new List<Person>();
+            foreach (Person per in conjunto_1)
+            {
+                conjunto.Add(per);
+            }
+            Console.Write(conjunto.Count() + "\n");
 
             foreach (Person person_2 in conjunto_2)
             {
                 Boolean unificado = false;
-                string orcid_unificado = person_2.ORCID;
-                string name = person_2.name.given[0];
-                string familia = person_2.name.familia[0];
-                string completo = person_2.name.nombre_completo[0];
-                string ids = person_2.IDs[0];
-                string links = person_2.links[0];
+                string orcid_unificado = "";
+                if (person_2.ORCID != null) { orcid_unificado = person_2.ORCID; }
+                string name = "";
+                string familia = "";
+                string completo = "";
+                string links = "";
+                string ids = "";
+                if (person_2.name != null)
+                {
+                    if (person_2.name.given != null)
+                    {
+                        name = person_2.name.given[0];
+                    }
+                    if (person_2.name.familia != null)
+                    {
+                        familia = person_2.name.familia[0];
+                    }
+                    if (person_2.name.nombre_completo != null)
+                    {
+                        completo = person_2.name.nombre_completo[0];
+                    }
+                }
+                if (person_2.IDs != null)
+                {
+                    ids = person_2.IDs[0];
+                }
+                if (person_2.links != null)
+                {
 
-
+                    links = person_2.links[0];
+                }
                 for (int i = 0; i < conjunto_1.Count(); i++)
                 {
                     Person person = conjunto_1[i];
-                    string orcid = person.ORCID;
-                    List<string> list_name = person.name.given;
-                    List<string> list_familia = person.name.familia;
-                    List<string> list_nombre_completo = person.name.nombre_completo;
-                    List<string> list_ids = person.IDs;
-                    List<string> list_links = person.links;
+                    string orcid = "";
+                    if (person.ORCID != null)
+                    {
+                        orcid = person.ORCID;
+                    }
+                    List<string> list_name = new List<string>();
+                    List<string> list_familia = new List<string>();
+                    List<string> list_nombre_completo = new List<string>();
+                    if (person.name != null)
+                    {
+                        if (person.name.given != null)
+                        {
+
+                            list_name = person.name.given;
+                        }
+                        if (person.name.familia != null)
+                        {
+
+                            list_familia = person.name.familia;
+                        }
+                        if (person.name.nombre_completo != null)
+                        {
+
+                            list_nombre_completo = person.name.nombre_completo;
+                        }
+                    }
+
+                    List<string> list_ids = new List<string>();
+                    if (person.IDs != null)
+                    {
+                        list_ids = person.IDs;
+                    }
+                    List<string> list_links = new List<string>();
+                    if (person.links != null)
+                    {
+                        list_links = person.links;
+                    }
 
                     if (orcid != null & orcid_unificado == orcid)
                     {
@@ -765,9 +902,11 @@ namespace PublicationConnect.ROs.Publications.Controllers
                                             }
                                             else
                                             {
+                                                //if(unificado==false){
                                                 conjunto_1[i] = unir_dos_identidades_unicas(person, person_2);
                                                 unificado = true;
                                             }
+                                            //}
 
 
                                         }
@@ -797,33 +936,114 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
                             }
                         }
+
+
+                        //conjunto.Add(conjunto_1[i]);
                     }
+
                 }
                 if (unificado == false)
                 {
-                    conjunto_1.Add(person_2);
+                    Console.Write("----------------------\n");
+                    conjunto.Add(person_2);
                 }
             }
-            return conjunto_1;
+            return conjunto;
         }
 
 
 
         public Person unir_dos_identidades_unicas(Person person, Person person_2)
         {
-            string orcid_unificado = person.ORCID;
-            List<string> list_name = person.name.given;
-            List<string> list_familia = person.name.familia;
-            List<string> list_nombre_completo = person.name.nombre_completo;
-            List<string> list_ids = person.IDs;
-            List<string> list_links = person.links;
+            //string orcid_unificado = person.ORCID;
+            //List<string> list_name = person.name.given;
+            //List<string> list_familia = person.name.familia;
+            //List<string> list_nombre_completo = person.name.nombre_completo;
+            //List<string> list_ids = person.IDs;
+            //List<string> list_links = person.links;
 
-            string orcid = person_2.ORCID;
-            List<string> list_name_id2 = person_2.name.given;
-            List<string> list_familia_id2 = person_2.name.familia;
-            List<string> list_nombre_completo_id2 = person_2.name.nombre_completo;
-            List<string> list_ids_id_2 = person_2.IDs;
-            List<string> list_links_id_2 = person_2.links;
+            // string orcid = person_2.ORCID;
+            // List<string> list_name_id2 = person_2.name.given;
+            // List<string> list_familia_id2 = person_2.name.familia;
+            // List<string> list_nombre_completo_id2 = person_2.name.nombre_completo;
+            // List<string> list_ids_id_2 = person_2.IDs;
+            // List<string> list_links_id_2 = person_2.links;
+              string orcid = "";
+                    if (person_2.ORCID != null)
+                    {
+                        orcid = person_2.ORCID;
+                    }
+                    List<string> list_name_id2 = new List<string>();
+                    List<string> list_familia_id2 = new List<string>();
+                    List<string> list_nombre_completo_id2 = new List<string>();
+                    if (person_2.name != null)
+                    {
+                        if (person_2.name.given != null)
+                        {
+
+                            list_name_id2 = person_2.name.given;
+                        }
+                        if (person_2.name.familia != null)
+                        {
+
+                            list_familia_id2 = person_2.name.familia;
+                        }
+                        if (person_2.name.nombre_completo != null)
+                        {
+
+                            list_nombre_completo_id2 = person_2.name.nombre_completo;
+                        }
+                    }
+
+                    List<string> list_ids_id2 = new List<string>();
+                    if (person_2.IDs != null)
+                    {
+                        list_ids_id2 = person_2.IDs;
+                    }
+                    List<string> list_link_id2= new List<string>();
+                    if (person_2.links!= null)
+                    {
+                        list_link_id2 = person_2.links;
+                    }
+      
+                    string orcid_unificado ="";
+                    if (person.ORCID != null)
+                    {
+                        orcid_unificado = person.ORCID;
+                    }
+                    List<string> list_name = new List<string>();
+                    List<string> list_familia = new List<string>();
+                    List<string> list_nombre_completo = new List<string>();
+                    if (person.name != null)
+                    {
+                        if (person.name.given != null)
+                        {
+
+                            list_name = person.name.given;
+                        }
+                        if (person.name.familia != null)
+                        {
+
+                            list_familia = person.name.familia;
+                        }
+                        if (person.name.nombre_completo != null)
+                        {
+
+                            list_nombre_completo = person.name.nombre_completo;
+                        }
+                    }
+
+                    List<string> list_ids = new List<string>();
+                    if (person.IDs != null)
+                    {
+                        list_ids = person.IDs;
+                    }
+                    List<string> list_links = new List<string>();
+                    if (person.links != null)
+                    {
+                        list_links = person.links;
+                    }
+      
 
             if (list_name_id2.Count > 0)
             {
@@ -855,9 +1075,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     }
                 }
             }
-            if (list_ids_id_2.Count > 0)
+            if (list_ids_id2.Count > 0)
             {
-                foreach (string ids2 in list_ids_id_2)
+                foreach (string ids2 in list_ids_id2)
                 {
                     if (!list_ids.Contains(ids2))
                     {
@@ -865,9 +1085,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     }
                 }
             }
-            if (list_links_id_2.Count > 0)
+            if (list_link_id2.Count > 0)
             {
-                foreach (string links2 in list_links_id_2)
+                foreach (string links2 in list_link_id2)
                 {
                     if (!list_links.Contains(links2))
                     {
@@ -896,83 +1116,86 @@ namespace PublicationConnect.ROs.Publications.Controllers
             JournalMetric metrica_revista_scopus = new JournalMetric();
             if (this.metricas_scopus.Keys.ToList().Contains(año))
             {
-                if (this.metricas_scopus[año].Keys.ToList().Contains(journal_inicial.name.ToLower()))
+                if (journal_inicial.name != null)
                 {
-
-                    Dictionary<string, Tuple<string, string, string>> diccionario_areas = this.metricas_scopus[año][journal_inicial.name.ToLower()];
-
-                    string area = diccionario_areas.Keys.ToList()[0];
-                    Boolean boole = false;
-                    if (areas_Tematicas != null)
+                    if (this.metricas_scopus[año].Keys.ToList().Contains(journal_inicial.name.ToLower()))
                     {
-                        foreach (Knowledge_enriquecidos are_tematica_enriquecida in areas_Tematicas)
+
+                        Dictionary<string, Tuple<string, string, string>> diccionario_areas = this.metricas_scopus[año][journal_inicial.name.ToLower()];
+
+                        string area = diccionario_areas.Keys.ToList()[0];
+                        Boolean boole = false;
+                        if (areas_Tematicas != null)
                         {
-                            if (diccionario_areas.Keys.ToList().Contains(are_tematica_enriquecida.word.ToLower()))
+                            foreach (Knowledge_enriquecidos are_tematica_enriquecida in areas_Tematicas)
                             {
+                                if (diccionario_areas.Keys.ToList().Contains(are_tematica_enriquecida.word.ToLower()))
                                 {
-                                    area = are_tematica_enriquecida.word.ToLower();
-                                    boole = true;
+                                    {
+                                        area = are_tematica_enriquecida.word.ToLower();
+                                        boole = true;
+                                    }
                                 }
                             }
                         }
-                    }
-                    if (boole == false)
-                    {
-                        string quartil_inicial = "4";
-                        foreach (string area_revista in diccionario_areas.Keys.ToList())
+                        if (boole == false)
                         {
-                            Tuple<string, string, string> tuple = diccionario_areas[area_revista];
-                            string Q = tuple.Item1;
-                            if (quartil_inicial == "4")
+                            string quartil_inicial = "4";
+                            foreach (string area_revista in diccionario_areas.Keys.ToList())
                             {
-                                if (Q == "1")
+                                Tuple<string, string, string> tuple = diccionario_areas[area_revista];
+                                string Q = tuple.Item1;
+                                if (quartil_inicial == "4")
                                 {
-                                    area = area_revista;
+                                    if (Q == "1")
+                                    {
+                                        area = area_revista;
+                                    }
+                                    else if (Q == "2")
+                                    {
+                                        area = area_revista;
+                                    }
+                                    else if (Q == "3")
+                                    {
+                                        area = area_revista;
+                                    }
                                 }
-                                else if (Q == "2")
+                                else if (quartil_inicial == "3")
                                 {
-                                    area = area_revista;
+                                    if (Q == "1")
+                                    {
+                                        area = area_revista;
+                                    }
+                                    else if (Q == "2")
+                                    {
+                                        area = area_revista;
+                                    }
                                 }
-                                else if (Q == "3")
+                                else if (quartil_inicial == "2")
                                 {
-                                    area = area_revista;
+                                    if (Q == "1")
+                                    {
+                                        area = area_revista;
+                                    }
+
                                 }
-                            }
-                            else if (quartil_inicial == "3")
-                            {
-                                if (Q == "1")
-                                {
-                                    area = area_revista;
-                                }
-                                else if (Q == "2")
-                                {
-                                    area = area_revista;
-                                }
-                            }
-                            else if (quartil_inicial == "2")
-                            {
-                                if (Q == "1")
+                                else if (quartil_inicial == "1")
                                 {
                                     area = area_revista;
                                 }
 
                             }
-                            else if (quartil_inicial == "1")
-                            {
-                                area = area_revista;
-                            }
-
                         }
+                        Tuple<string, string, string> tupla = diccionario_areas[area];
+
+                        metrica_revista_scopus.impactFactor = tupla.Item3;
+                        metrica_revista_scopus.quartile = tupla.Item1;
+
+                        metrica_revista_scopus.ranking = tupla.Item2;
+                        metrica_revista_scopus.impactFactorName = "SJR";
+                        metricas_revista.Add(metrica_revista_scopus);
+
                     }
-                    Tuple<string, string, string> tupla = diccionario_areas[area];
-
-                    metrica_revista_scopus.impactFactor = tupla.Item3;
-                    metrica_revista_scopus.quartile = tupla.Item1;
-
-                    metrica_revista_scopus.ranking = tupla.Item2;
-                    metrica_revista_scopus.impactFactorName = "SJR";
-                    metricas_revista.Add(metrica_revista_scopus);
-
                 }
             }
             //------------ lo mismo con la matrica de WoS-SCIE.
