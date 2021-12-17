@@ -44,19 +44,29 @@ namespace PublicationConnect.ROs.Publications.Controllers
         protected List<string> dois_bibliografia = new List<string>();
         protected Dictionary<string, string> headers = new Dictionary<string, string>();
         public Dictionary<string, Dictionary<string, Dictionary<string, Tuple<string, string, string>>>> metricas_scopus;
+        public Dictionary<string, Dictionary<string, Dictionary<string, Tuple<string, string, string>>>> metricas_scie;
+        public Dictionary<string, Dictionary<string, Dictionary<string, Tuple<string, string, string>>>> metricas_ssci;
+
+
 
         //protected Dictionary<string, Tuple<Liststring>,List<atring>,List<string>>  dic_orcid; //= new Dictionary<string, Tuple<Liststring>,List<atring>,List<string>>();
 
         // Configuración.
         readonly ConfigService _Configuracion;
 
-        public ROPublicationLogic(string baseUri, ConfigService pConfig, Dictionary<string, Dictionary<string, Dictionary<string, Tuple<string, string, string>>>> metricas_scopus)
-        {
+        public ROPublicationLogic(string baseUri, ConfigService pConfig)
+        {// Dictionary<string, Dictionary<string, Dictionary<string, Tuple<string, string, string>>>> metricas_scopus, Dictionary<string, Dictionary<string, Dictionary<string, Tuple<string, string, string>>>> metricas_WoS){
 
             //this.baseUri = "http://localhost:5000/WoS/GetROs?orcid={0}";
             //this.bareer = bareer;
             _Configuracion = pConfig;
-            this.metricas_scopus = metricas_scopus;
+            this.metricas_scopus = LeerDatosExcel_Scopus(@"files\Scopus_journal_metric.xlsx");
+
+            this.metricas_scie = LeerDatosExcel_WoS(@"files\JCR_SCIE_2020.xlsx");
+            this.metricas_ssci = LeerDatosExcel_WoS(@"files\JCR_SSCI_2020.xlsx");
+
+            ;
+
         }
 
         /// <summary>
@@ -585,11 +595,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         if (pub_2.seqOfAuthors != null)
                         {
                             pub.seqOfAuthors = unir_autores(pub_1.seqOfAuthors, pub_2.seqOfAuthors);
-                            //pub.seqOfAuthors = unificarUsuariosConNombreSimple(pub_1.seqOfAuthors, pub_2.seqOfAuthors);
-                            //todo comporbacion de que son o no son iguales.
-                            //pub.seqOfAuthors.AddRange(pub_2.seqOfAuthors);
-                            // pub.seqOfAuthors = pub_1.seqOfAuthors;
-                            //pub.seqOfAuthors.AddRange(pub_2.seqOfAuthors);
+
                         }
                     }
                     else
@@ -922,24 +928,13 @@ namespace PublicationConnect.ROs.Publications.Controllers
             JournalMetric metrica_revista_scopus = new JournalMetric();
             if (this.metricas_scopus.Keys.ToList().Contains(año))
             {
-                //foreach (string issn in journal_inicial.issn)
-                //{
-                //    string issn_sin_gion = issn.Replace("-", string.Empty);
-                //   Console.Write(issn_sin_gion);
-                //    Console.Write("\n");
-                //   if(issn_sin_gion.Substring(0,1)=="0"){
-                //      issn_sin_gion= issn_sin_gion.Substring(1);
-                // }
                 if (this.metricas_scopus[año].Keys.ToList().Contains(journal_inicial.name.ToLower()))
                 {
                     Console.Write("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
 
                     Dictionary<string, Tuple<string, string, string>> diccionario_areas = this.metricas_scopus[año][journal_inicial.name.ToLower()];
                     Console.Write(journal_inicial.name.ToLower());
-                    //todo! meter la eleccion entre areas tematicas! 
-                    // if(areas_Tematicas!=null){
-                    // foreach (string area_revista in diccionario_areas.Keys.ToList())
-                    //{
+
                     string area = diccionario_areas.Keys.ToList()[0];
                     Boolean boole = false;
                     if (areas_Tematicas != null)
@@ -952,7 +947,6 @@ namespace PublicationConnect.ROs.Publications.Controllers
                                     area = are_tematica_enriquecida.word.ToLower();
                                     boole = true;
                                 }
-                                //}else{
                             }
                         }
                     }
@@ -1012,19 +1006,188 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     metrica_revista_scopus.ranking = tupla.Item2;
                     metrica_revista_scopus.impactFactorName = "SJR";
                     metricas_revista.Add(metrica_revista_scopus);
-                    journal_inicial.hasMetric = metricas_revista;
-
-                    //  }
-
-                    //        }
-                    //    }
-                    // }
 
                 }
-                //     }
-                // }
             }
-            // }
+            //------------ lo mismo con la matrica de WoS-SCIE.
+            JournalMetric metrica_revista_woS_SCIE = new JournalMetric();
+
+            if (this.metricas_scie.Keys.ToList().Contains(año))
+            {
+                if (this.metricas_scie[año].Keys.ToList().Contains(journal_inicial.name.ToLower()))
+                {
+
+                    Dictionary<string, Tuple<string, string, string>> diccionario_areas = this.metricas_scie[año][journal_inicial.name.ToLower()];
+                    Console.Write(journal_inicial.name.ToLower());
+
+                    string area = diccionario_areas.Keys.ToList()[0];
+                    Boolean boole = false;
+                    if (areas_Tematicas != null)
+                    {
+                        foreach (Knowledge_enriquecidos are_tematica_enriquecida in areas_Tematicas)
+                        {
+                            if (diccionario_areas.Keys.ToList().Contains(are_tematica_enriquecida.word.ToLower()))
+                            {
+                                {
+                                    area = are_tematica_enriquecida.word.ToLower();
+                                    boole = true;
+                                }
+                            }
+                        }
+                    }
+                    if (boole == false)
+                    {
+                        string quartil_inicial = "Q4";
+                        foreach (string area_revista in diccionario_areas.Keys.ToList())
+                        {
+                            Tuple<string, string, string> tuple = diccionario_areas[area_revista];
+                            string Q = tuple.Item1;
+                            if (quartil_inicial == "Q4")
+                            {
+                                if (Q == "Q1")
+                                {
+                                    area = area_revista;
+                                }
+                                else if (Q == "Q2")
+                                {
+                                    area = area_revista;
+                                }
+                                else if (Q == "Q3")
+                                {
+                                    area = area_revista;
+                                }
+                            }
+                            else if (quartil_inicial == "Q3")
+                            {
+                                if (Q == "Q1")
+                                {
+                                    area = area_revista;
+                                }
+                                else if (Q == "Q2")
+                                {
+                                    area = area_revista;
+                                }
+                            }
+                            else if (quartil_inicial == "Q2")
+                            {
+                                if (Q == "Q1")
+                                {
+                                    area = area_revista;
+                                }
+
+                            }
+                            else if (quartil_inicial == "Q1")
+                            {
+                                area = area_revista;
+                            }
+
+                        }
+                    }
+                    Tuple<string, string, string> tupla = diccionario_areas[area];
+
+                    metrica_revista_woS_SCIE.impactFactor = tupla.Item3;
+                    metrica_revista_woS_SCIE.quartile = tupla.Item1;
+
+                    metrica_revista_woS_SCIE.ranking = tupla.Item2;
+                    metrica_revista_woS_SCIE.impactFactorName = "JIF-SCIE";
+                    metricas_revista.Add(metrica_revista_woS_SCIE);
+
+                }
+
+            }
+
+            //------------ lo mismo con la matrica de WoS-SCIE.
+            JournalMetric metrica_revista_woS_SSCI = new JournalMetric();
+
+            if (this.metricas_ssci.Keys.ToList().Contains(año))
+            {
+                if (this.metricas_ssci[año].Keys.ToList().Contains(journal_inicial.name.ToLower()))
+                {
+
+                    Dictionary<string, Tuple<string, string, string>> diccionario_areas = this.metricas_ssci[año][journal_inicial.name.ToLower()];
+                    Console.Write(journal_inicial.name.ToLower());
+
+                    string area = diccionario_areas.Keys.ToList()[0];
+                    Boolean boole = false;
+                    if (areas_Tematicas != null)
+                    {
+                        foreach (Knowledge_enriquecidos are_tematica_enriquecida in areas_Tematicas)
+                        {
+                            if (diccionario_areas.Keys.ToList().Contains(are_tematica_enriquecida.word.ToLower()))
+                            {
+                                {
+                                    area = are_tematica_enriquecida.word.ToLower();
+                                    boole = true;
+                                }
+                                //}else{
+                            }
+                        }
+                    }
+                    if (boole == false)
+                    {
+                        string quartil_inicial = "Q4";
+                        foreach (string area_revista in diccionario_areas.Keys.ToList())
+                        {
+                            Tuple<string, string, string> tuple = diccionario_areas[area_revista];
+                            string Q = tuple.Item1;
+                            if (quartil_inicial == "Q4")
+                            {
+                                if (Q == "Q1")
+                                {
+                                    area = area_revista;
+                                }
+                                else if (Q == "Q2")
+                                {
+                                    area = area_revista;
+                                }
+                                else if (Q == "Q3")
+                                {
+                                    area = area_revista;
+                                }
+                            }
+                            else if (quartil_inicial == "Q3")
+                            {
+                                if (Q == "Q1")
+                                {
+                                    area = area_revista;
+                                }
+                                else if (Q == "Q2")
+                                {
+                                    area = area_revista;
+                                }
+                            }
+                            else if (quartil_inicial == "Q2")
+                            {
+                                if (Q == "Q1")
+                                {
+                                    area = area_revista;
+                                }
+
+                            }
+                            else if (quartil_inicial == "Q1")
+                            {
+                                area = area_revista;
+                            }
+
+                        }
+                    }
+                    Tuple<string, string, string> tupla = diccionario_areas[area];
+
+                    metrica_revista_woS_SSCI.impactFactor = tupla.Item3;
+                    metrica_revista_woS_SSCI.quartile = tupla.Item1;
+
+
+                    metrica_revista_woS_SSCI.ranking = tupla.Item2;
+                    metrica_revista_woS_SSCI.impactFactorName = "JIF-SSCI";
+                    metricas_revista.Add(metrica_revista_woS_SSCI);
+
+                }
+
+            }
+            if (metricas_revista.Count>0)
+            {
+                journal_inicial.hasMetric = metricas_revista;
+            }
             return journal_inicial;
         }
 
@@ -1093,6 +1256,70 @@ namespace PublicationConnect.ROs.Publications.Controllers
             }
             catch { return null; }
         }
+
+
+
+
+        public static Dictionary<string, Dictionary<string, Dictionary<string, Tuple<string, string, string>>>> LeerDatosExcel_WoS(string pRuta)
+        {
+            DataSet ds = new DataSet();
+
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            using (var stream = System.IO.File.Open(pRuta, FileMode.Open, FileAccess.Read))
+            {
+                using (var reader = ExcelReaderFactory.CreateReader(stream))
+                {
+                    ds = reader.AsDataSet(new ExcelDataSetConfiguration()
+                    {
+                        ConfigureDataTable = (tableReader) => new ExcelDataTableConfiguration()
+                        {
+                            UseHeaderRow = true,
+                        }
+                    });
+                }
+            }
+            //año -> area_tematica
+            Dictionary<string, Dictionary<string, Dictionary<string, Tuple<string, string, string>>>> diccionario_final = new Dictionary<string, Dictionary<string, Dictionary<string, Tuple<string, string, string>>>>();
+            foreach (DataTable tabla in ds.Tables)
+            {
+                if (tabla.TableName != "JCR_SCIE_counts" & tabla.Namespace != "Journal_Title_Changes")
+                {
+                    foreach (var a in tabla.TableName.ToList())
+                    {
+                        Console.Write(a.ToString());
+                    }
+                    string[] palabras = tabla.TableName.Split("_");
+                    string año = palabras[palabras.Count() - 1].Substring(0, 4);
+                    Console.Write(año);
+                    Dictionary<string, Tuple<string, string, string>> area_tematica = new Dictionary<string, Tuple<string, string, string>>();
+                    //QUARTILE_RANK, CATEGORY_RANKING, IMPACT_FACTOR
+                    //CATEGORY_DESCRIPTION
+                    Dictionary<string, Dictionary<string, Tuple<string, string, string>>> titulo = new Dictionary<string, Dictionary<string, Tuple<string, string, string>>>();
+                    foreach (DataRow fila in ds.Tables[tabla.TableName].Rows)
+                    {
+                        //No e puede hacer con el issn (columas:  Print ISSN, E-ISSN)
+                        Tuple<string, string, string> tupla = new Tuple<string, string, string>(
+                            fila["QUARTILE_RANK"].ToString(), fila["CATEGORY_RANKING"].ToString(), fila["IMPACT_FACTOR"].ToString());
+                        if (titulo.Keys.Contains(fila["TITLE"].ToString().ToLower()))
+                        {
+                            area_tematica = titulo[fila["TITLE"].ToString().ToLower()];
+                        }
+                        else
+                        {
+                            area_tematica = new Dictionary<string, Tuple<string, string, string>>();
+                        }
+                        area_tematica[fila["CATEGORY_DESCRIPTION"].ToString().ToLower()] = tupla;
+                        titulo[fila["TITLE"].ToString().ToLower()] = area_tematica;
+                    }
+                    diccionario_final[año] = titulo;
+                    //string info = JsonConvert.SerializeObject(diccionario_final["2020"]);
+                    //Console.Write(info);
+                }
+            }
+            return diccionario_final;
+        }
+
+
         // public string formato_estanda_string_name(string namee)
         // {
 
@@ -1262,7 +1489,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
         //     }
         //     return listado_1;
         // }
-      public float GetNameSimilarity(string pFirma, string pTarget)
+        public float GetNameSimilarity(string pFirma, string pTarget)
         {
             pFirma = ObtenerTextosFirmasNormalizadas(pFirma);
             pTarget = ObtenerTextosFirmasNormalizadas(pTarget);
@@ -1419,6 +1646,63 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 }
             }
             return ngramas;
+        }
+
+        public static Dictionary<string, Dictionary<string, Dictionary<string, Tuple<string, string, string>>>> LeerDatosExcel_Scopus(string pRuta)
+        {
+            DataSet ds = new DataSet();
+
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            using (var stream = System.IO.File.Open(pRuta, FileMode.Open, FileAccess.Read))
+            {
+                using (var reader = ExcelReaderFactory.CreateReader(stream))
+                {
+                    ds = reader.AsDataSet(new ExcelDataSetConfiguration()
+                    {
+                        ConfigureDataTable = (tableReader) => new ExcelDataTableConfiguration()
+                        {
+                            UseHeaderRow = true,
+                        }
+                    });
+                }
+            }
+            //año -> area_tematica
+            Dictionary<string, Dictionary<string, Dictionary<string, Tuple<string, string, string>>>> diccionario_final = new Dictionary<string, Dictionary<string, Dictionary<string, Tuple<string, string, string>>>>();
+            foreach (DataTable tabla in ds.Tables)
+            {
+                if (tabla.TableName != "About CiteScore" & tabla.Namespace != "ASJC codes")
+                {
+                    foreach (var a in tabla.TableName.ToList())
+                    {
+                        Console.Write(a.ToString());
+                    }
+                    string[] palabras = tabla.TableName.Split(" ");
+                    string año = palabras[palabras.Count() - 1];
+                    Console.Write(año);
+                    Dictionary<string, Tuple<string, string, string>> area_tematica = new Dictionary<string, Tuple<string, string, string>>();
+                    // area_tematica ->  SJR,  Quartile, RANK,
+                    Dictionary<string, Dictionary<string, Tuple<string, string, string>>> titulo = new Dictionary<string, Dictionary<string, Tuple<string, string, string>>>();
+                    foreach (DataRow fila in ds.Tables[tabla.TableName].Rows)
+                    {
+                        //No e puede hacer con el issn (columas:  Print ISSN, E-ISSN)
+                        //Columnas usadas: Title,  Scopus Sub-Subject Area,
+                        Tuple<string, string, string> tupla = new Tuple<string, string, string>(
+                            fila["Quartile"].ToString(), fila["RANK"].ToString(), fila["SJR"].ToString());
+                        if (titulo.Keys.Contains(fila["Title"].ToString().ToLower()))
+                        {
+                            area_tematica = titulo[fila["Title"].ToString().ToLower()];
+                        }
+                        else
+                        {
+                            area_tematica = new Dictionary<string, Tuple<string, string, string>>();
+                        }
+                        area_tematica[fila["Scopus Sub-Subject Area"].ToString().ToLower()] = tupla;
+                        titulo[fila["Title"].ToString().ToLower()] = area_tematica;
+                    }
+                    diccionario_final[año] = titulo;
+                }
+            }
+            return diccionario_final;
         }
 
 

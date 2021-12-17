@@ -50,16 +50,10 @@ namespace PublicationConnect.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public List<Publication> GetROs([FromQuery][Required] string orcid, string date = "1500-01-01")
         {
-            almacenamiento_autores almacenamiento = new almacenamiento_autores();
-
-            ROPublicationLogic PublicationObject = new ROPublicationLogic("", _Configuracion,almacenamiento.metricas_scopus);
-
+            //almacenamiento_autores almacenamiento = new almacenamiento_autores();
+            ROPublicationLogic PublicationObject = new ROPublicationLogic("", _Configuracion);//,almacenamiento.metricas_scopus, almacenamiento.metricas_WoS);
             List<Publication> publication = PublicationObject.getPublications(orcid, date);
-            //almacenamiento.unificar_personas();
-            //publication = almacenamiento.poner_usuarios(publication);
-            //almacenamiento.guardar_info_autores();
             return publication;
-            //  return null;
         }
 
     }
