@@ -112,20 +112,53 @@ function PintarGraficaPublicaciones(data,idContenedor) {
 }
 
 function PintarGraficaProyectos(data,idContenedor) {	
-	$('#'+idContenedor+'_aux').remove();
-	$('#'+idContenedor).append($('<canvas id="'+idContenedor+'_aux" class="js-chart"></canvas>'));
-	var ctx = document.getElementById(idContenedor+'_aux');
-	var parent = ctx.parentElement;
-	var height = parent.offsetHeight;
-	ctx.setAttribute('height', 100);
-	data.options={
+	$('#'+idContenedor).empty();
+	var htmlGraficasProyectos=`	<div class="col-12 col-xl-8" style="height:400px">
+									<canvas id="${idContenedor}_barrasanios" class="js-chart"></canvas>
+								</div>
+								<div class="col-12 col-xl-4">
+									<div  style="height:166px">
+										<canvas id="${idContenedor}_barrasmiembros" class="js-chart"></canvas>
+									</div>
+									<div  style="height:234px">
+										<canvas id="${idContenedor}_sectoresambito" class="js-chart"></canvas>
+									</div>
+								</div>`;
+
+	$('#'+idContenedor).append(htmlGraficasProyectos);
+	
+	//Gráfico de barras años
+	var ctxBarrasAnios = document.getElementById(idContenedor+'_barrasanios');
+	data.graficaBarrasAnios.options={
 		scale:{
 			ticks:{
 				precision:0
 			}
-		}
+		},
+		maintainAspectRatio: false
 	}
-	var myChart = new Chart(ctx, data);
+	var myChartBarrasAnios = new Chart(ctxBarrasAnios, data.graficaBarrasAnios);
+	
+	
+	//Gráfico de barras miembros
+	var ctxBarrasMiembros = document.getElementById(idContenedor+'_barrasmiembros');
+	data.graficaBarrasMiembros.options={
+		scale:{
+			ticks:{
+				precision:0
+			}
+		},
+		maintainAspectRatio: false
+	}
+	var myChartBarrasMiembros = new Chart(ctxBarrasMiembros, data.graficaBarrasMiembros);
+	
+	
+	//Gráfico de sectores ambito
+	var ctxSectoresAmbito = document.getElementById(idContenedor+'_sectoresambito');
+	data.graficaSectoresAmbito.options={
+		maintainAspectRatio: false
+	}
+	var myChartSectoresAmbito = new Chart(ctxSectoresAmbito, data.graficaSectoresAmbito);
 }
 
 function PintarGraficaArania(data,idContenedor){
