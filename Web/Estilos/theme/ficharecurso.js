@@ -118,21 +118,7 @@ function PintarGraficaProyectos(data,idContenedor) {
 	var parent = ctx.parentElement;
 	var height = parent.offsetHeight;
 	ctx.setAttribute('height', 100);
-	var options = {
-		scales: {
-			xAxes: [{
-				gridLines: {
-					display: false
-				}
-			}],
-			yAxes: [{
-				gridLines: {
-					display: true
-				}
-			}]
-		}
-	}
-	var myChart = new Chart(ctx, data, options);
+	var myChart = new Chart(ctx, data);
 }
 
 function PintarGraficaArania(data,idContenedor){
