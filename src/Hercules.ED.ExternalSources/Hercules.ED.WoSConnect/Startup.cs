@@ -39,26 +39,10 @@ namespace WoSConnect
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "ScopusConnect API",
+                    Title = "WoSConnect API",
                     Version = "v1",
-                    Description = "A ASP.NET Core Web API for Hercules project",
-                    TermsOfService = new Uri("https://example.com/terms"),
+                    Description = "A ASP.NET Core Web API for Hercules project"
                 });
-
-                c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
-                {
-                    Name = "Authorization",
-                    Type = SecuritySchemeType.ApiKey,
-                    Scheme = "bearer",
-                    BearerFormat = "JWT",
-                    In = ParameterLocation.Header,
-                    Description = "JWT Authorization header using the Bearer scheme."
-                });
-
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                c.IncludeXmlComments(xmlPath);
-                // c.IncludeXmlComments(string.Format(@"{0}comments.xml", System.AppDomain.CurrentDomain.BaseDirectory));
             });
 
         }
@@ -82,12 +66,15 @@ namespace WoSConnect
                 endpoints.MapControllers();
             });
 
-            app.UseSwagger();
-            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), specifying the Swagger JSON endpoint.
-            app.UseSwaggerUI(c =>
+            app.UseSwagger(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "ScopusConnect API microservice V1");
+                c.PreSerializeFilters.Add((swaggerDoc, httpReq) => swaggerDoc.Servers = new List<OpenApiServer>
+                      {
+                        new OpenApiServer { Url = $"/wosapi"},
+                        new OpenApiServer { Url = $"/" }
+                      });
             });
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("v1/swagger.json", "WoSAPI v1"));
         }
     }
 }
