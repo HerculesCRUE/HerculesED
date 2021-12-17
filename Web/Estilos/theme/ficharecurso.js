@@ -36,18 +36,21 @@ var buscadorPersonalizado = {
 		mostrarFacetas = true;
 		mostrarCajaBusqueda = true;
 		FiltrarPorFacetas("");
-		MontarResultadosScroll.init('footer', 'article');
+		MontarResultadosScroll.init('footer', 'article', callback());
 		MontarResultadosScroll.CargarResultadosScroll = function (data) {
 			var htmlRespuesta = document.createElement("div");
 			htmlRespuesta.innerHTML = data;
 			$(htmlRespuesta).find('article').each(function () {
 				$('#panResultados article').last().after(this);
 			});
+			console.log("loaded $(htmlRespuesta).find('article')")
 			comportamientoVerMasVerMenosTags.init();
+			console.log("loaded comportamientoVerMasVerMenosTags")
 			enlazarFacetasBusqueda();
-		}
-		if (callback && typeof(callback) === "function") {
-			callback();
+			console.log("enlazarFacetasBusqueda")
+			if (callback && typeof(callback) === "function") {
+				callback();
+			}
 		}
 		return;
 	},
@@ -93,9 +96,181 @@ var buscadorPersonalizado = {
 								</div>
 							</div>`;
 		$(this.contenedor).append(hmltBuscador);
+		console.log("config llamado")
 		callback();
 	}
 }
+
+function PintarGraficaPublicaciones(data,idContenedor) {	
+	$('#'+idContenedor+'_aux').remove();
+	$('#'+idContenedor).append($('<canvas id="'+idContenedor+'_aux" class="js-chart"></canvas>'));
+	var ctx = document.getElementById(idContenedor+'_aux');
+	var parent = ctx.parentElement;
+	var height = parent.offsetHeight;
+	ctx.setAttribute('height', 100);
+	var myChart = new Chart(ctx, data);
+}
+
+function PintarGraficaProyectos(data,idContenedor) {	
+	$('#'+idContenedor+'_aux').remove();
+	$('#'+idContenedor).append($('<canvas id="'+idContenedor+'_aux" class="js-chart"></canvas>'));
+	var ctx = document.getElementById(idContenedor+'_aux');
+	var parent = ctx.parentElement;
+	var height = parent.offsetHeight;
+	ctx.setAttribute('height', 100);
+	data.options={
+		scale:{
+			ticks:{
+				precision:0
+			}
+		}
+	}
+	var myChart = new Chart(ctx, data);
+}
+
+function PintarGraficaArania(data,idContenedor){
+	$('#'+idContenedor).empty();
+	var cy = window.cy = cytoscape({
+		// Contenedor
+		container: document.getElementById(idContenedor),
+		// Layout
+		layout: {
+			name: 'cose',
+			idealEdgeLength: 100,
+			nodeOverlap: 20,
+			refresh: 20,
+			padding: 30,
+			randomize: false,
+			componentSpacing: 100,
+			nodeRepulsion: 400000,
+			edgeElasticity: 100,
+			nestingFactor: 5,
+			gravity: 80,
+			numIter: 1000,
+			initialTemp: 200,
+			coolingFactor: 0.95,
+			minTemp: 1.0
+
+		}, pan: { x: 350, y: 50 },
+		// Estilos
+		style: [{
+			"selector": "node",
+			"style": {
+				"width": "mapData(score, 0, 25, 30, 70)",
+				"height": "mapData(score, 0, 25, 30, 70)",
+				"content": "data(name)",
+				"font-size": "12px",
+				"font-family": 'Roboto',
+				"font-color": "#999999",
+				"background-color": "#c2c2c2",
+				"text-outline-width": "0px",
+				"overlay-padding": "6px",
+				"z-index": "10"
+			}
+		}, {
+			"selector": "edge",
+			"style": {
+				"curve-style": "haystack",
+				"content": "data(name)",
+				"font-size": "12px",
+				"font-family": 'Roboto',
+				"font-color": "#999999",
+				"haystack-radius": "0.5",
+				"opacity": "0.4",
+				"line-color": "#E1E1E1",
+				"width": "mapData(weight, 0, 10, 0, 10)",
+				"overlay-padding": "1px"
+			}
+		}],
+		// Datos
+		elements: data
+	});
+	cy.zoomingEnabled(false);
+
+	var arrayNodes = [];
+	var nodos = cy.nodes();
+
+	for (i = 0; i < cy.nodes().length; i++) { //starts loop
+		arrayNodes.push(nodos[i]._private.data.name);                
+		switch (nodos[i]._private.data.type) {
+			case 'icon_ip':
+				cy.nodes()[i].style({
+					'background-color': 'white',
+					'background-image': 'https://cdn.iconscout.com/icon/free/png-256/user-1912184-1617653.png',
+					'background-fit': 'cover',
+					'border-width': '2px',
+					'border-color': 'rgb(0,0,0)',
+					'shape': 'circle'
+				})                        
+				break;
+			case 'icon_member':
+				cy.nodes()[i].style({
+					'background-color': 'white',
+					'background-image': 'https://cdn.iconscout.com/icon/free/png-256/user-1648810-1401302.png',
+					'background-fit': 'cover',
+					'border-width': '2px',
+					'border-color': 'rgb(4,184,209)',
+					'shape': 'circle'
+				})
+				break;
+			default:
+				nodos[i].style({
+					'border-width': '2px',
+					'border-color': 'black',
+					'shape': 'circle'
+				});
+				break;
+		}
+	};
+
+	var arrayEdges = [];
+	var edges = cy.edges();
+
+	for (i = 0; i < cy.edges().length; i++) { //starts loop
+		arrayEdges.push(edges[i]._private.data.name);
+		edges[i]._private.data.name = "";
+		switch (edges[i]._private.data.type) {
+			case 'relation_document':
+				edges[i].style({
+					"line-color": "#FF0000"
+				})
+				break;
+			case 'relation_project':
+				edges[i].style({
+					"line-color": "#0000FF"
+				})
+				break;
+			default:
+				edges[i].style({
+					"line-color": "#E1E1E1"
+				})
+				break;
+		}
+	};
+
+	cy.on('click', 'node', function (e) {
+		e = e.target;
+		var indice = cy.nodes().indexOf(e);
+		if (e._private.data.name === "") {
+			e._private.data.name = arrayNodes[indice];
+		}
+		else {
+			e._private.data.name = "";
+		}
+	})
+
+	cy.on('click', 'edge', function (e) {
+		e = e.target;
+		var indice = cy.edges().indexOf(e);
+		if (e._private.data.name === "") {
+			e._private.data.name = arrayEdges[indice];
+		}
+		else {
+			e._private.data.name = "";
+		}
+	})
+}
+
 
 //Sobreescribimos FiltrarPorFacetas para que coja el filtro por defecto (y el orden)
 function FiltrarPorFacetas(filtro, callback = () => {}) {
@@ -106,7 +281,6 @@ function FiltrarPorFacetas(filtro, callback = () => {}) {
 	if (typeof (accionFiltrado) != 'undefined') {
 		accionFiltrado(ObtenerHash2());
 	}
-	callback();
 	return FiltrarPorFacetasGenerico(filtro);
 }
 
@@ -120,6 +294,8 @@ function comportamientoCargaFacetasComunidad() {
 	}
 	comportamientoFacetasPopUp.init();
 	plegarSubFacetas.init();
+	comportamientoRangosFechas();
+	comportamientoRangosNumeros();
 }
 
 // Cuando se filtra no hay que subir arriba

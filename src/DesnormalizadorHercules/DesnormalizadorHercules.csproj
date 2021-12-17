@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="dotNetRDF" Version="2.7.2" />
     <PackageReference Include="GnossApiWrapper.NetCore" Version="1.0.6" />
   </ItemGroup>
 

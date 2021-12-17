@@ -454,14 +454,6 @@
             <AtrNombre>http://purl.org/ontology/bibo/pageEnd</AtrNombre>
             <AtrNombreLectura>http://purl.org/ontology/bibo/pageEnd</AtrNombreLectura>
         </Propiedad>
-		<Propiedad  ID="http://w3id.org/roh/impactIndexInYear" EntidadID="http://purl.org/ontology/bibo/Document">
-            <AtrNombre>http://w3id.org/roh/impactIndexInYear</AtrNombre>
-            <AtrNombreLectura>http://w3id.org/roh/impactIndexInYear</AtrNombreLectura>
-        </Propiedad>
-		<Propiedad  ID="http://w3id.org/roh/quartile" EntidadID="http://purl.org/ontology/bibo/Document">
-            <AtrNombre>http://w3id.org/roh/quartile</AtrNombre>
-            <AtrNombreLectura>http://w3id.org/roh/quartile</AtrNombreLectura>
-        </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/collection" EntidadID="http://purl.org/ontology/bibo/Document">
             <AtrNombre>http://w3id.org/roh/collection</AtrNombre>
             <AtrNombreLectura>http://w3id.org/roh/collection</AtrNombreLectura>
@@ -731,11 +723,6 @@
 							<NameProp>http://w3id.org/roh/userKnowledgeArea</NameProp>
 							<NameProp>http://w3id.org/roh/suggestedKnowledgeArea</NameProp>
 							<NameProp>http://w3id.org/roh/assessmentStatus</NameProp>
-<<<<<<< HEAD
-							<NameProp>http://w3id.org/roh/impactIndexInYear</NameProp>
-							<NameProp>http://w3id.org/roh/quartile</NameProp>
-=======
->>>>>>> b3ead6a24a33b5e8102a6c0fcd853d5fde718092
                         </Grupo>
                     </Grupo>
                 </Grupo>
@@ -799,11 +786,6 @@
 							<NameProp>http://w3id.org/roh/userKnowledgeArea</NameProp>
 							<NameProp>http://w3id.org/roh/suggestedKnowledgeArea</NameProp>
 							<NameProp>http://w3id.org/roh/assessmentStatus</NameProp>
-<<<<<<< HEAD
-							<NameProp>http://w3id.org/roh/impactIndexInYear</NameProp>
-							<NameProp>http://w3id.org/roh/quartile</NameProp>
-=======
->>>>>>> b3ead6a24a33b5e8102a6c0fcd853d5fde718092
                         </Grupo>
                     </Grupo>
                 </Grupo>
