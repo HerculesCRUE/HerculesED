@@ -42,10 +42,6 @@ namespace ZenodoConnect.Controllers
             ROZenodoController ZenodoObject = new ROZenodoController("https://zenodo.org/api/records/");//,"0grEw8zOOPjtlxyHLOQtUjTSSSx3FFrywNNb3YivsvpYZ4bIiCNCQBrbY7xh");
             //, "10e8a3a2417b7ae1d864b5558136c56b78ed3eb8");//"adf94bebeeba8c3042ad5193455740e2");
             string publication = ZenodoObject.getPublications(ID);
-            Console.Write("DEVUELTO\n");
-            Console.Write(ID);
-            Console.Write(publication);
-            Console.Write("\n");
             return publication;
         }
         
