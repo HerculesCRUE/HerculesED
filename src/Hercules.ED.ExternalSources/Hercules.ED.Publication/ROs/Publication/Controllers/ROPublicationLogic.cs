@@ -132,7 +132,6 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
             if (objInicial_woS.Count >= 1)
             {
-                //Console.Write("hey");
                 foreach (Publication pub in objInicial_woS)
                 {
                     this.dois_bibliografia = new List<string>();
@@ -975,7 +974,6 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 {
 
                     Dictionary<string, Tuple<string, string, string>> diccionario_areas = this.metricas_scie[año][journal_inicial.name.ToLower()];
-                    Console.Write(journal_inicial.name.ToLower());
 
                     string area = diccionario_areas.Keys.ToList()[0];
                     Boolean boole = false;
@@ -1240,13 +1238,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
             {
                 if (tabla.TableName != "JCR_SCIE_counts" & tabla.Namespace != "Journal_Title_Changes")
                 {
-                    foreach (var a in tabla.TableName.ToList())
-                    {
-                        Console.Write(a.ToString());
-                    }
+                    
                     string[] palabras = tabla.TableName.Split("_");
                     string año = palabras[palabras.Count() - 1].Substring(0, 4);
-                    Console.Write(año);
                     Dictionary<string, Tuple<string, string, string>> area_tematica = new Dictionary<string, Tuple<string, string, string>>();
                     //QUARTILE_RANK, CATEGORY_RANKING, IMPACT_FACTOR
                     //CATEGORY_DESCRIPTION
@@ -1457,13 +1451,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
             {
                 if (tabla.TableName != "About CiteScore" & tabla.Namespace != "ASJC codes")
                 {
-                    foreach (var a in tabla.TableName.ToList())
-                    {
-                        Console.Write(a.ToString());
-                    }
+                   
                     string[] palabras = tabla.TableName.Split(" ");
                     string año = palabras[palabras.Count() - 1];
-                    Console.Write(año);
                     Dictionary<string, Tuple<string, string, string>> area_tematica = new Dictionary<string, Tuple<string, string, string>>();
                     // area_tematica ->  SJR,  Quartile, RANK,
                     Dictionary<string, Dictionary<string, Tuple<string, string, string>>> titulo = new Dictionary<string, Dictionary<string, Tuple<string, string, string>>>();
