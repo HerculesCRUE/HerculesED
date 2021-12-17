@@ -7,7 +7,6 @@ using Microsoft.Extensions.Logging;
 using ScopusConnect.ROs.Scopus.Controllers;
 using ScopusConnect.ROs.Scopus.Models;
 using Newtonsoft.Json;
-using ScopusConnect.Controllers.autores;
 namespace ScopusConnect.Controllers
 {
     [Produces("application/json")]
@@ -53,10 +52,8 @@ namespace ScopusConnect.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
       public List<Publication> GetROs([FromQuery][Required] string orcid,string date = "1500-01-01") 
              {
-                    almacenamiento_autores almcenamiento = new almacenamiento_autores();
-            ROScopusController ScopusObject = new ROScopusController("https://api.elsevier.com/", "adf94bebeeba8c3042ad5193455740e2",almcenamiento.autores_orcid);//"75f4ab3fac56f42ac83cdeb7c98882ca");//"adf94bebeeba8c3042ad5193455740e2");
+            ROScopusController ScopusObject = new ROScopusController("https://api.elsevier.com/", "adf94bebeeba8c3042ad5193455740e2");//"75f4ab3fac56f42ac83cdeb7c98882ca");//"adf94bebeeba8c3042ad5193455740e2");
             List<Publication> publication = ScopusObject.getPublications(orcid,date);
-            almcenamiento.guardar_info_autores();
             return publication;
         }
         

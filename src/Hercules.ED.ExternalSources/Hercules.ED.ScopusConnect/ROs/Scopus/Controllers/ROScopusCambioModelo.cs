@@ -237,13 +237,7 @@ namespace ScopusConnect.ROs.Scopus.Controllers
         public Person getAuthorPrincipal(PublicacionInicial objInicial)
         {
             Person autor = new Person();
-             int i = this.ScopusLogic.autores_orcid.Count;
-                    string orcid = null;
-                    string name = null;
-                    string familia = null;
-                    string completo = null;
-                    string idss = null; ;
-                    string links = null;
+            
             if (objInicial.DcCreator != null)
             {
                 List<string> names = new List<string>();
@@ -251,12 +245,6 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                 Name nombre =new Name();
                 nombre.nombre_completo=names;
                 autor.name = nombre;
-                completo=objInicial.DcCreator;
-                  autor.id_persona=i.ToString();
-                                        if(orcid!=null || name!=null ||familia!=null ||completo!=null || idss!=null || links!=null){
-                                        Tuple<string,string, string, string, string, string> tupla = new Tuple<string,string, string, string, string, string>(orcid,name,familia,completo,idss,links);
-                                        
-                                        this.ScopusLogic.autores_orcid[i.ToString()]=tupla;}
                                        
                 return autor;
             }

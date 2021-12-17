@@ -8,7 +8,6 @@ using CrossRefConnect.ROs.CrossRef.Controllers;
 using CrossRefConnect.ROs.CrossRef.Models;
 using CrossRefConnect.ROs.CrossRef.Models.Inicial;
 using Newtonsoft.Json;
-using CrossRefConnect.Controllers.autores;
 using System.Data;
 using System.IO;
 using ClosedXML.Excel;
@@ -45,29 +44,14 @@ namespace CrossRefConnect.Controllers
         /// <response code="400">Invalid app</response> 
         /// <response code="500">Oops! Something went wrong</response> 
 
-        //public List<Publication> GetROs([FromQuery][Required] string user, [FromQuery][Required] string userToken, [FromQuery][Required] string appToken, [FromQuery] string consumerKey = null, [FromQuery] string consumerSecret = null)
-        //{
-        //if (string.IsNullOrEmpty(user))
-        // {
-        //     return null;
-        //  } 
-        // else if (string.IsNullOrEmpty(userToken))
-        // {
-        //    return null;
-        // }
-        // Get all publication from a user
-        //ROScopusController ScopusObject = new ROScopusController("https://api.elsevier.com/", userToken);
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public Publication GetROs([FromQuery][Required] string DOI)
         {
-            almacenamiento_autores almacenamiento = new almacenamiento_autores();
-
-            ROCrossRefController CrossRefObject = new ROCrossRefController("https://api.crossref.org/",almacenamiento.autores_orcid);//"adf94bebeeba8c3042ad5193455740e2");
+            ROCrossRefController CrossRefObject = new ROCrossRefController("https://api.crossref.org/");//"adf94bebeeba8c3042ad5193455740e2");
             Publication publication = CrossRefObject.getPublications(DOI);
-            almacenamiento.guardar_info_autores();
             return publication;
         }
 

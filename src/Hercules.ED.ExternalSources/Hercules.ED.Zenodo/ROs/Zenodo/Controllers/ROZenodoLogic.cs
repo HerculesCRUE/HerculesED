@@ -54,17 +54,10 @@ namespace ZenodoConnect.ROs.Zenodo.Controllers
             {
                 using (var request = new HttpRequestMessage(new HttpMethod(method), url))
                 {
-                    Console.Write(headers);
-                    //request.Headers.TryAddWithoutValidation("access_token", bareer);
-                    // request.Headers.TryAddWithoutValidation("q", name);
                     request.Headers.TryAddWithoutValidation("Accept", "application/json");
-                    Console.Write(request);
                     if (headers != null && headers.Count > 0)
                     {
-                        // if (headers.ContainsKey("Authorization"))
-                        // {
-                        //     request.Headers.TryAddWithoutValidation("Authorization", headers["Authorization"]);
-                        // }
+                       
                         foreach (var item in headers)
                         {
                             request.Headers.TryAddWithoutValidation(item.Key, item.Value);
@@ -99,45 +92,28 @@ namespace ZenodoConnect.ROs.Zenodo.Controllers
         /// <returns></returns>?access_token=ACCESS_TOKEN
         public string getPublications(string name, string uri = "?q=doi:\"{0}\"")
         {
-            //https://zenodo.org/api/records/?q=doi:%2210.3217/jucs-022-07-0896%22
             Uri url = new Uri(baseUri + string.Format(uri, name));
 
             string info_publication = httpCall(url.ToString(), "GET", headers).Result;
-            //Console.Write(info_publication);
-            //string path = @"C:\Users\mpuer\Desktop\pruebaGNOSSSS.json";
-            //File.WriteAllText(path, info_publication);
-            //string[] h= info_publication.Split("[");
-            //string a = info_publication.Remove(1);
-            //string b = info_publication.Remove(1,info_publication.Count()-1);
-            // MODELO DEVUELTO 
+
             try
             {
                 Root_2 objInicial = JsonConvert.DeserializeObject<Root_2>("{\"data\":" + info_publication + "}");
 
-                // CAMBIO DE MODELO -- PAra ello llamamos al controlador de cambio de modelo! 
-                //ROZenodoControllerJSON info = new ROZenodoControllerJSON(this);
-                // List<Publication> sol = info.getListPublicatio(objInicial);
-                if (objInicial != null & objInicial != new Root_2())
+                 if (objInicial != null & objInicial != new Root_2())
                 {
-                    Console.Write("1\n");
                     if (objInicial.data != null & objInicial.data.Count > 0)
                     {
-                        Console.Write("2\n");
                         if (objInicial.data[0] != null)
                         {
-                            Console.Write("3\n");
                             if (objInicial.data[0].files != null & objInicial.data[0].files.Count > 0)
                             {
-                                Console.Write("4\n");
                                 if (objInicial.data[0].files[0] != null)
                                 {
-                                    Console.Write("5\n");
                                     if (objInicial.data[0].files[0].links != null)
                                     {
-                                        Console.Write("6\n");
                                         if (objInicial.data[0].files[0].links.download != null)
                                         {
-                                            Console.Write("7\n");
                                             if (objInicial.data[0].files[0].links.download.EndsWith(".pdf"))
                                             {
                                                 return objInicial.data[0].files[0].links.download;

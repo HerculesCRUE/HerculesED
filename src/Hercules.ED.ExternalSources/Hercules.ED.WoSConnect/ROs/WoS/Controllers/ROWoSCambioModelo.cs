@@ -58,45 +58,10 @@ namespace WoSConnect.ROs.WoS.Controllers
                     }
                 }
             }
-            //this.WoSLogic.autores_orcid.
-            //SaveAs(@"C:\Users\mpuer\Documents\GitHub\HerculesED\src\Hercules.ED.ExternalSources\Hercules-ED_autores.xlsx", Excel.XlFileFormat.xlWorkbookNormal);
-            // Boolean boole = guardar_autores(this.WoSLogic.autores_orcid);
+            
             return sol;
         }
-        // public Boolean guardar_autores(Dictionary<string, Tuple<string, string, string, string, string>> dicc)
-        // {
-
-        //     dicc["orcid_1"] = new Tuple<string, string, string, string, string>("name_2","apelido_2","nombres_2","ids_2","links_2");
-        //     for (int i = 0; i < dicc.Keys.Count; i++)
-        //     {
-
-        //         Excel.Application myexcelApplication = new Excel.Application();
-        //         if (myexcelApplication != null)
-        //         {
-        //             Excel.Workbook myexcelWorkbook = myexcelApplication.Workbooks.Add();
-        //             Excel.Worksheet myexcelWorksheet = (Excel.Worksheet)myexcelWorkbook.Sheets.Add();
-
-        //             myexcelWorksheet.Cells[i+1,1] = dicc.Keys[i];
-        //             myexcelWorksheet.Cells[i+1,2] = dicc[dicc.Keys[i]][0]; //name
-        //             myexcelWorksheet.Cells[i+1,3] = dicc[dicc.Keys[i]][1]; //apellido
-        //             myexcelWorksheet.Cells[i+1,4] = dicc[dicc.Keys[i]][2];//completo
-        //             myexcelWorksheet.Cells[i+1,5] = dicc[dicc.Keys[i]][3];//ids
-        //             myexcelWorksheet.Cells[i+1,6] = dicc[dicc.Keys[i]][4];//links
-
-
-
-        //             myexcelApplication.ActiveWorkbook.SaveAs(@"C:\Users\mpuer\Documents\GitHub\HerculesED\src\Hercules.ED.ExternalSources\Hercules-ED_autores.xlsx", Excel.XlFileFormat.xlWorkbookNormal);
-
-        //             myexcelWorkbook.Close();
-        //             myexcelApplication.Quit();
-
-        //         }
-
-        //     }
-        //     return true;
-
-
-        // }
+    
         public Publication cambioDeModeloPublicacion(PublicacionInicial objInicial, Boolean publicacion_principal)
         {
             Publication publicacion = new Publication();
@@ -481,10 +446,7 @@ namespace WoSConnect.ROs.WoS.Controllers
             }
             return null;
         }
-        // public List<string> getLinks(PublicacionInicial objInicial)
-        // {
-        //     return new List<string>();
-        // }
+       
 
         public DateTimeValue getDate(PublicacionInicial objInicial)
         {
@@ -571,8 +533,6 @@ namespace WoSConnect.ROs.WoS.Controllers
 
                                     if (sub.content != null & sub.ascatype == "traditional")
                                     {
-                                        //todo, no es seguro que solo estemos utilizando la tradicional, aunque parece que si. 
-
                                         KnowledgeArea area = new KnowledgeArea();
                                         if (names_areas.Count == 0 || !names_areas.Contains(sub.content))
                                         {
@@ -639,11 +599,11 @@ namespace WoSConnect.ROs.WoS.Controllers
                     //en Scopus tambien habra una extepcion de este tipo. 
                     if (area_wos_obtenida.name == "Physics, Fluids & Plasmas")
                     {
-                        area_taxonomia.name = "Fluid Dynamics";//this.WoSLogic.ds[area_wos_obtenida.name];
+                        area_taxonomia.name = "Fluid Dynamics";
                         listado.Add(area_taxonomia);
                         KnowledgeArea area_taxonomia_2 = new KnowledgeArea();
-                        area_taxonomia_2.name = "Plasma Physics";//this.WoSLogic.ds[area_wos_obtenida.name];
-                        listado.Add(area_taxonomia_2);
+                        area_taxonomia_2.name = "Plasma Physics";
+                                                listado.Add(area_taxonomia_2);
                     }
                     else
                     {
@@ -704,11 +664,7 @@ namespace WoSConnect.ROs.WoS.Controllers
             return null;
         }
 
-        // public Person getAuthorPrincipal(PublicacionInicial objInicial)
-        // {
-        //     Person persona = new Person();
-        //     return null;
-        // }
+        
         public List<Person> getAuthors(PublicacionInicial objInicial)
         {
             List<Person> result = new List<Person>();
@@ -1013,7 +969,6 @@ namespace WoSConnect.ROs.WoS.Controllers
         public Source getJournal(PublicacionInicial objInicial)
         {
             Source revista = new Source();
-            //todo! completar 
             if (objInicial.static_data != null)
             {
                 if (objInicial.static_data.summary != null)

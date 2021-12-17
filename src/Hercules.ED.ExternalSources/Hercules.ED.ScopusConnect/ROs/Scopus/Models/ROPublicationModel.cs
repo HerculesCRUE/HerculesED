@@ -84,7 +84,7 @@ public class JournalMetric
     public string quartile { get; set; }
     public string ranking { get; set; }
     public string impactFactorName { get; set; }
-    public float impactFactor { get; set; }
+    public string impactFactor { get; set; }
     public string metricName { get; set; }
 }
 
@@ -96,7 +96,7 @@ public class JournalMetric
 
 public class Person
 {
-        public string id_persona {get;set;}
+   //     public string id_persona {get;set;}
 
     //public DateTimeValue birthdate { get; set; }
     public Name name { get; set; } 

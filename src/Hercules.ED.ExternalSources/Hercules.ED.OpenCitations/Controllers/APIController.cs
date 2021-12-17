@@ -36,18 +36,6 @@ namespace OpenCitationsConnect.Controllers
         /// <response code="400">Invalid app</response> 
         /// <response code="500">Oops! Something went wrong</response> 
         
-        //public List<Publication> GetROs([FromQuery][Required] string user, [FromQuery][Required] string userToken, [FromQuery][Required] string appToken, [FromQuery] string consumerKey = null, [FromQuery] string consumerSecret = null)
-        //{
-            //if (string.IsNullOrEmpty(user))
-           // {
-           //     return null;
-          //  } 
-           // else if (string.IsNullOrEmpty(userToken))
-           // {
-            //    return null;
-           // }
-            // Get all publication from a user
-            //ROScopusController ScopusObject = new ROScopusController("https://api.elsevier.com/", userToken);
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

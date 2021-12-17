@@ -2,16 +2,9 @@ using System.Collections.Generic;
 using SemanticScholarConnect.ROs.SemanticScholar.Models;
 using SemanticScholarConnect.ROs.SemanticScholar.Models.Inicial;
 
-using Newtonsoft.Json.Linq;
-using System;
-using System.Threading;
-
-using Newtonsoft.Json;
-
-
 namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
 {
-    public class ROSemanticScholarControllerJSON //: //ROScopusLogic
+    public class ROSemanticScholarControllerJSON 
     {
         public ROSemanticScholarLogic SemanticScholarLogic;
         public ROSemanticScholarControllerJSON(ROSemanticScholarLogic SemanticScholarLogic)
@@ -142,7 +135,6 @@ namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
                 DateTimeValue date = new DateTimeValue();
                 date.datimeTime = null;
                 date.datimeTime = objInicial.year;
-                //todo: esto no es del todo correcto! porque no es una fecha sino un año! 
             }
             return null;
         }
@@ -182,18 +174,11 @@ namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
                 foreach (Author author in objInicial.authors)
                 {
                     Person persona = new Person();
-                    int i = this.SemanticScholarLogic.autores_orcid.Count;
-                    string orcid = null;
-                    string name = null;
-                    string familia = null;
-                    string completo = null;
-                    string idss = null; ;
-                    string links = null;
+                   
                     if (author.name != null)
                     {
                         List<string> nombres = new List<string>();
                         nombres.Add(author.name);
-                        completo=author.name;
                         Name nom = new Name();
                         nom.nombre_completo = nombres;
                         persona.name = nom;
@@ -203,14 +188,8 @@ namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
                         List<string> ids = new List<string>();
                         ids.Add("SemanticScholar: " + author.authorId);
                         persona.IDs = ids;
-                        idss="SemanticScholar: " + author.authorId;
                     }
-                     persona.id_persona=i.ToString();
-                    autores.Add(persona);
-                                        if(orcid!=null || name!=null ||familia!=null ||completo!=null || idss!=null || links!=null){
-                                        Tuple<string,string, string, string, string, string> tupla = new Tuple<string,string, string, string, string, string>(orcid,name,familia,completo,idss,links);
-                                        
-                                        this.SemanticScholarLogic.autores_orcid[i.ToString()]=tupla;}
+                    
                                         
                 }
                 return autores;
