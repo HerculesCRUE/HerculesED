@@ -39,8 +39,8 @@ namespace MaindocumentOntology
 			this.Roh_impactSourceOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/impactSourceOther"));
 			this.Roh_year= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/year"));
 			this.Roh_journalNumberInCat = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/journalNumberInCat"));
+			this.Roh_quartile = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/quartile"));
 			this.Roh_publicationPosition = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/publicationPosition"));
-			this.Roh_journalTop25= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/journalTop25"));
 			SemanticPropertyModel propRoh_impactSource = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/impactSource");
 			if(propRoh_impactSource != null && propRoh_impactSource.PropertyValues.Count > 0)
 			{
@@ -73,13 +73,13 @@ namespace MaindocumentOntology
 		[RDFProperty("http://w3id.org/roh/journalNumberInCat")]
 		public  int? Roh_journalNumberInCat { get; set;}
 
+		[LABEL(LanguageEnum.es,"Cuartil")]
+		[RDFProperty("http://w3id.org/roh/quartile")]
+		public  int? Roh_quartile { get; set;}
+
 		[LABEL(LanguageEnum.es,"Posición de publicación")]
 		[RDFProperty("http://w3id.org/roh/publicationPosition")]
 		public  int? Roh_publicationPosition { get; set;}
-
-		[LABEL(LanguageEnum.es,"Revista dentro del 25%")]
-		[RDFProperty("http://w3id.org/roh/journalTop25")]
-		public  bool Roh_journalTop25 { get; set;}
 
 		[LABEL(LanguageEnum.es,"Fuente de impacto")]
 		[RDFProperty("http://w3id.org/roh/impactSource")]
@@ -98,8 +98,8 @@ namespace MaindocumentOntology
 				propList.Add(new DateOntologyProperty("roh:year", this.Roh_year.Value));
 				}
 			propList.Add(new StringOntologyProperty("roh:journalNumberInCat", this.Roh_journalNumberInCat.ToString()));
+			propList.Add(new StringOntologyProperty("roh:quartile", this.Roh_quartile.ToString()));
 			propList.Add(new StringOntologyProperty("roh:publicationPosition", this.Roh_publicationPosition.ToString()));
-			propList.Add(new BoolOntologyProperty("roh:journalTop25", this.Roh_journalTop25));
 			propList.Add(new StringOntologyProperty("roh:impactSource", this.IdRoh_impactSource));
 		}
 
