@@ -13,6 +13,7 @@ using System.Net.Http.Headers;
 using SemanticScholarConnect.ROs.SemanticScholar;
 using SemanticScholarConnect.ROs.SemanticScholar.Models;
 using SemanticScholarConnect.ROs.SemanticScholar.Models.Inicial;
+using SemanticShcolarAPI.Controllers;
 using System.Web;
 using System.Text.Json;
 using Newtonsoft.Json.Linq;
@@ -26,16 +27,19 @@ namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
     {
         protected string bareer;
         //ROScopusControllerJSON info = new ROScopusControllerJSON();
-        protected string baseUri { get; set; }
+     //  protected string baseUri { get; set; }
    // public Dictionary<string, Tuple<string,string,string,string,string,string>>  autores_orcid; //= LeerDatosExcel_autores(@"C:\Users\mpuer\Documents\GitHub\HerculesED\src\Hercules.ED.ExternalSources\Hercules-ED_autores.xlsx");
 
 
 
         // protected List<Publication> publications = new List<Publication>();
         protected Dictionary<string, string> headers = new Dictionary<string, string>();
-        public ROSemanticScholarLogic(string baseUri )//, string bareer)
+     readonly ConfigService _Configuracion;
+
+ public ROSemanticScholarLogic(ConfigService pConfig)
         {
-            this.baseUri = baseUri;
+
+            _Configuracion = pConfig;
            // this.autores_orcid = autores_orcid;
             //this.bareer = bareer;
 
@@ -97,7 +101,7 @@ namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
         /// <returns></returns>
         public Publication getPublications(string name, string uri = "graph/v1/paper/{0}?fields=externalIds,title,abstract,url,venue,year,referenceCount,citationCount,authors,authors.name,authors.externalIds")
         {
-            Uri url = new Uri(baseUri + string.Format(uri, name));
+            Uri url = new Uri(_Configuracion.GetUrlSemanticScholar_base() + string.Format(uri, name));
             string info_publication = httpCall(url.ToString(), "GET", headers).Result;
             // MODELO DEVUELTO 
             Root objInicial = JsonConvert.DeserializeObject<Root>(info_publication);

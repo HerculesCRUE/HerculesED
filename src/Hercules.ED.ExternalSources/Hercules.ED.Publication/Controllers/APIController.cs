@@ -45,7 +45,7 @@ namespace PublicationConnect.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public List<Publication> GetROs([FromQuery][Required] string orcid, string date = "1500-01-01")
         {
-            ROPublicationLogic PublicationObject = new ROPublicationLogic("", _Configuracion);//,almacenamiento.metricas_scopus, almacenamiento.metricas_WoS);
+            ROPublicationLogic PublicationObject = new ROPublicationLogic( _Configuracion);//,almacenamiento.metricas_scopus, almacenamiento.metricas_WoS);
             List<Publication> publication = PublicationObject.getPublications(orcid, date);
             return publication;
         }

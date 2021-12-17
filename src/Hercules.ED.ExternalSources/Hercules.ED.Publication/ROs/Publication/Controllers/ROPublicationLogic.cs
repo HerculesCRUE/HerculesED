@@ -30,7 +30,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
         // Configuración.
         readonly ConfigService _Configuracion;
 
-        public ROPublicationLogic(string baseUri, ConfigService pConfig)
+        public ROPublicationLogic( ConfigService pConfig)
         {
 
             _Configuracion = pConfig;

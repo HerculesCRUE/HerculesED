@@ -19,7 +19,7 @@ using Newtonsoft.Json.Linq;
 using System.IO;
 //using Newtonsoft.Json.Linq.JObject;
 
-
+using ZenodoConnect.Controllers.API;
 
 namespace ZenodoConnect.ROs.Zenodo.Controllers
 {
@@ -27,19 +27,21 @@ namespace ZenodoConnect.ROs.Zenodo.Controllers
     {
         protected string bareer;
         //ROScopusControllerJSON info = new ROScopusControllerJSON();
-        protected string baseUri { get; set; }
+        //protected string baseUri { get; set; }
 
 
         // protected List<Publication> publications = new List<Publication>();
         protected Dictionary<string, string> headers = new Dictionary<string, string>();
-        public ROZenodoLogic(string baseUri)//, string bareer)
+    readonly ConfigService _Configuracion;
+
+        public ROZenodoLogic(ConfigService pConfig)
         {
-            this.baseUri = baseUri;
+
+            _Configuracion = pConfig;
             //this.bareer = bareer;
 
         }
 
-        // TODO: Esto no se si abra que cambiarlo o no.... 
         /// <summary>
         /// A Http calls function
         /// </summary>
@@ -92,7 +94,7 @@ namespace ZenodoConnect.ROs.Zenodo.Controllers
         /// <returns></returns>?access_token=ACCESS_TOKEN
         public string getPublications(string name, string uri = "?q=doi:\"{0}\"")
         {
-            Uri url = new Uri(baseUri + string.Format(uri, name));
+            Uri url = new Uri(_Configuracion.GetUrlZenodo_base() + string.Format(uri, name));
 
             string info_publication = httpCall(url.ToString(), "GET", headers).Result;
 
