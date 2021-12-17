@@ -155,8 +155,6 @@ public class DateTimeInterval
 }
 
 
-
-
 public class Topics_enriquecidos{
     public string pdf_url {get;set;}
     public string rotype {get;set;}

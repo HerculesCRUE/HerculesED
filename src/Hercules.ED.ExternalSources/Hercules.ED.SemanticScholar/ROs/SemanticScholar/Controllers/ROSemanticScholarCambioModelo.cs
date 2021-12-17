@@ -2,16 +2,9 @@ using System.Collections.Generic;
 using SemanticScholarConnect.ROs.SemanticScholar.Models;
 using SemanticScholarConnect.ROs.SemanticScholar.Models.Inicial;
 
-using Newtonsoft.Json.Linq;
-using System;
-using System.Threading;
-
-using Newtonsoft.Json;
-
-
 namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
 {
-    public class ROSemanticScholarControllerJSON //: //ROScopusLogic
+    public class ROSemanticScholarControllerJSON 
     {
         public ROSemanticScholarLogic SemanticScholarLogic;
         public ROSemanticScholarControllerJSON(ROSemanticScholarLogic SemanticScholarLogic)
@@ -142,7 +135,6 @@ namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
                 DateTimeValue date = new DateTimeValue();
                 date.datimeTime = null;
                 date.datimeTime = objInicial.year;
-                //todo: esto no es del todo correcto! porque no es una fecha sino un año! 
             }
             return null;
         }

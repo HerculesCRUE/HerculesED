@@ -48,9 +48,6 @@ namespace PublicationConnect.ROs.Publications.Controllers
         public Dictionary<string, Dictionary<string, Dictionary<string, Tuple<string, string, string>>>> metricas_ssci;
 
 
-
-        //protected Dictionary<string, Tuple<Liststring>,List<atring>,List<string>>  dic_orcid; //= new Dictionary<string, Tuple<Liststring>,List<atring>,List<string>>();
-
         // Configuración.
         readonly ConfigService _Configuracion;
 
@@ -211,8 +208,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             }
             string info = JsonConvert.SerializeObject(resultado);
             string path = _Configuracion.GetRutaJsonSalida();
-            //todo! 
-            File.WriteAllText(@"C:\Users\mpuer\Desktop\pruebaGNOSSSS.json", info);
+            File.WriteAllText(@"files\Resultado_final.json", info);
             return resultado;
 
         }
@@ -229,10 +225,6 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
                 info = JsonConvert.SerializeObject(a);
                 string info_publication = httpCall_2("specific", info);
-                //Console.Write("\n");
-                //Console.Write("Salida palabras enriquecidas:\n");
-                //Console.Write(info_publication);
-                //Console.Write("\n");
                 if (info_publication != null)
                 {
 
@@ -273,9 +265,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                                 {
                                     if (names == "")
                                     {
-
                                         names = names + name;
-
                                     }
                                     else
                                     {
@@ -336,10 +326,6 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 if (info != null)
                 {
                     string info_publication = httpCall_2("thematic", info);
-                    //Console.Write("\n");
-                    //Console.Write("Salida topics entiquecidos\n");
-                    //Console.Write(info_publication);
-                    //Console.Write("\n");
                     if (info_publication != null)
                     {
 
@@ -362,10 +348,6 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 HttpResponseMessage response = null;
                 HttpClient client = new HttpClient();
                 client.Timeout = TimeSpan.FromDays(1);
-                //Console.Write("\n");
-                //Console.Write("Entrada de peticion " + uri + "\n");
-                //Console.Write(info);
-                //Console.Write("\n");
 
                 var contentData = new StringContent(info, System.Text.Encoding.UTF8, "application/json");
                 client.Timeout = TimeSpan.FromDays(1);
@@ -425,20 +407,11 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
                         if (pub_completa != null)
                         {
-                            //pub_completa.pdf = llamada_Zenodo(pub_completa.doi);
-                            // if (pub_completa.pdf == "")
-                            // {
-                            //     pub_completa.pdf = null;
-                            // }
-                            //  pub_completa.topics_enriquecidos = enriquedicmiento(pub_completa);
-                            //pub_completa.freetextKeyword_enriquecidas=enriquedicmiento_pal(pub_completa);
-
                             bibliografia.Add(pub_completa);
                         }
                     }
 
                 }
-
             }
             if (bibliografia.Count > 0)
             {
@@ -470,14 +443,6 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
                     if (pub_final_bib != null)
                     {
-                        // pub_final_bib.pdf = llamada_Zenodo(pub_final_bib.doi);
-                        // if (pub_final_bib.pdf == "")
-                        // {
-                        //     pub_final_bib.pdf = null;
-                        // }
-                        // pub_final_bib.topics_enriquecidos = enriquedicmiento(pub_final_bib);
-                        // pub_final_bib.freetextKeyword_enriquecidas=enriquedicmiento_pal(pub_final_bib);
-
                         bib.Add(pub_final_bib);
                     }
                 }
@@ -666,11 +631,11 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     }
                     if (pub_1.hasPublicationVenue != null)
                     {
-                        pub.hasPublicationVenue = pub_1.hasPublicationVenue;//= metrica_journal(pub_1.hasPublicationVenue, pub.dataIssued.datimeTime, pub.topics_enriquecidos);
+                        pub.hasPublicationVenue = pub_1.hasPublicationVenue;
                     }
                     else
                     {
-                        pub.hasPublicationVenue = pub_2.hasPublicationVenue; //= metrica_journal(pub_2.hasPublicationVenue, pub.dataIssued.datimeTime, pub.topics_enriquecidos);
+                        pub.hasPublicationVenue = pub_2.hasPublicationVenue; 
                     }
                     if (bo)
                     {
@@ -734,7 +699,6 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         if (list_nombre_completo.Count > 0)
                         {
                             // cuando en los datos de la persona unificada tenemos el nombre completo 
-                            //foreach (string nombre_completo in list_nombre_completo)
                             for (int k = 0; k < list_nombre_completo.Count; k++)
                             {
                                 string nombre_completo = list_nombre_completo[k];
@@ -762,7 +726,6 @@ namespace PublicationConnect.ROs.Publications.Controllers
                                     {
                                         if (ids != "" & list_ids.Count > 0 & !list_ids.Contains(ids))
                                         {
-                                            Console.Write("------------------------------------------------------------------");
                                             continue;
                                         }
                                         else
@@ -825,16 +788,12 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
                             }
                         }
-                        //llegado a este punto podemos suponer que los id no iguales ni los orcid y que ademas una de las dos personas no tiene id
                     }
                 }
                 if (unificado == false)
                 {
                     conjunto_1.Add(person_2);
                 }
-
-                //comprobar si persona es o no persona_comparar
-                //si son la misma -> 
             }
             return conjunto_1;
         }
@@ -930,10 +889,8 @@ namespace PublicationConnect.ROs.Publications.Controllers
             {
                 if (this.metricas_scopus[año].Keys.ToList().Contains(journal_inicial.name.ToLower()))
                 {
-                    Console.Write("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
 
                     Dictionary<string, Tuple<string, string, string>> diccionario_areas = this.metricas_scopus[año][journal_inicial.name.ToLower()];
-                    Console.Write(journal_inicial.name.ToLower());
 
                     string area = diccionario_areas.Keys.ToList()[0];
                     Boolean boole = false;
@@ -1105,7 +1062,6 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 {
 
                     Dictionary<string, Tuple<string, string, string>> diccionario_areas = this.metricas_ssci[año][journal_inicial.name.ToLower()];
-                    Console.Write(journal_inicial.name.ToLower());
 
                     string area = diccionario_areas.Keys.ToList()[0];
                     Boolean boole = false;
@@ -1119,7 +1075,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                                     area = are_tematica_enriquecida.word.ToLower();
                                     boole = true;
                                 }
-                                //}else{
+                                
                             }
                         }
                     }
@@ -1312,183 +1268,12 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         titulo[fila["TITLE"].ToString().ToLower()] = area_tematica;
                     }
                     diccionario_final[año] = titulo;
-                    //string info = JsonConvert.SerializeObject(diccionario_final["2020"]);
-                    //Console.Write(info);
                 }
             }
             return diccionario_final;
         }
 
 
-        // public string formato_estanda_string_name(string namee)
-        // {
-
-        //     namee = namee.Replace("á", "a");
-        //     namee = namee.Replace("ó", "o");
-        //     namee = namee.Replace("-", " ");
-        //     namee = namee.Replace("ú", "u");
-        //     namee = namee.Replace("í", "i");
-        //     namee = namee.Replace("ñ", "n");
-        //     namee = namee.Replace("ó", "o");
-        //     namee = namee.Replace("é", "e");
-        //     //ä
-        //     namee = namee.Replace("´", "");
-        //     namee = namee.Replace("'", "");
-        //     namee = namee.Replace("~", "");
-        //     //todo, si funciona igual hay que considerar mas plaabras! 
-        //     //devolver.Add(nam);
-        //     // }
-        //     return namee;
-        //     //  }
-
-        // }
-
-
-        // public List<string> nombre_completo(string name, string apellido)
-        // {
-
-        //     //conseguimos todos los fromas posibles de un nombre simple
-        //     //ejemplo -> Pepe -> Pepe P. P son las formas posibles. 
-        //     string nombre_normalizado = formato_estanda_string_name(name);
-        //     List<string> given = new List<string>() { nombre_normalizado, nombre_normalizado.Substring(0, 1), nombre_normalizado.Substring(0, 1) + "." };
-        //     Console.Write(given[1]);
-        //     apellido = formato_estanda_string_name(apellido);
-
-        //     List<string> nomb_completos = new List<string>();
-        //     // given apellido
-        //     foreach (string given_forma in given)
-        //     {
-        //         //foreach (string apellido_forma in apellido)
-        //         //{
-
-        //         //    Console.Write(".....................------------------------");
-        //         nomb_completos.Add(given_forma + " " + apellido);
-        //         nomb_completos.Add(apellido + " " + given_forma);
-        //         nomb_completos.Add(apellido + ", " + given_forma);
-        //         //}
-        //     }
-        //     Console.Write(".....................------------------------");
-
-        //     return nomb_completos;
-        // }
-
-        // public Person unificar_dos_personas(Person persona_1, Person persona_2)
-        // {
-        //     if (persona_1.ORCID == null)
-        //     {
-        //         if (persona_2.ORCID != null)
-        //         {
-        //             persona_1.ORCID = persona_2.ORCID;
-        //         }
-        //     }
-        //     if (persona_2.IDs != null)
-        //     {
-        //         if (persona_1.IDs != null)
-        //         {
-        //             persona_1.IDs.AddRange(persona_2.IDs);
-        //         }
-        //         else
-        //         {// persona_1.IDs=null
-        //             persona_1.IDs = persona_2.IDs;
-        //         }
-        //     }
-
-        //     if (persona_2.links != null)
-        //     {
-        //         if (persona_1.links != null)
-        //         {
-        //             persona_1.links.AddRange(persona_2.links);
-        //         }
-        //         else
-        //         {
-        //             persona_1.links = persona_2.links;
-        //         }
-        //     }
-
-        // return persona_1;
-
-        // }
-
-        // public List<Person> unificarUsuariosConNombreSimple(List<Person> listado_1, List<Person> listado_2)
-        // {
-        //     List<Person> devolver = new List<Person>();
-        //     foreach (Person persona_1 in listado_1)
-        //     {
-        //         //aqui faltaria algun if
-        //         if (persona_1.name.given != null && persona_1.name.given.Count > 0 && persona_1.name.familia != null && persona_1.name.familia.Count > 0)
-        //         {
-        //             // el given y familia si tienen algo solo tienen 1... 
-        //             if (!persona_1.name.familia[0].Contains("-") && !persona_1.name.given[0].Contains(" ") && !persona_1.name.familia[0].Contains(" "))
-        //             {
-        //                 //los nombres son bonitos 
-        //                 string name = persona_1.name.given[0];
-        //                 string apellido = persona_1.name.familia[0];
-        //                 List<string> nombre_completo_1 = new List<string>();
-        //                 nombre_completo_1 = nombre_completo(name, apellido);
-        //                 persona_1.name.nombre_completo = nombre_completo_1;
-
-        //                 Person persona_eliminar = new Person();
-        //                 if (listado_2.Count >= 1)
-        //                 {
-        //                     for (int i = 0; i < listado_2.Count; i++)
-        //                     {
-        //                         Person person_2 = listado_2[i];
-
-        //                         if (person_2.name.nombre_completo != null)
-        //                         {
-        //                             foreach (string name_completo_persona_2 in person_2.name.nombre_completo)
-        //                             {
-        //                                 if (nombre_completo_1.Contains(formato_estanda_string_name(name_completo_persona_2)))
-        //                                 {
-        //                                     //detertada una persona duplicada por lo que toda la infromacion la pasamos a una unica persona. -> combinacion de datos! 
-        //                                     //llegados aqui deberiamos aber que uno de los orcis es null. 
-        //                                     if (persona_1.ORCID == null)
-        //                                     {
-        //                                         if (person_2.ORCID != null)
-        //                                         {
-        //                                             persona_1.ORCID = person_2.ORCID;
-        //                                         }
-        //                                     }
-        //                                     if (person_2.IDs != null)
-        //                                     {
-        //                                         if (persona_1.IDs != null)
-        //                                         {
-        //                                             persona_1.IDs.AddRange(person_2.IDs);
-        //                                         }
-        //                                         else
-        //                                         {
-        //                                             persona_1.IDs = person_2.IDs;
-        //                                         }
-        //                                     }
-
-        //                                     if (person_2.links != null)
-        //                                     {
-        //                                         if (persona_1.links != null)
-        //                                         {
-        //                                             persona_1.links.AddRange(person_2.links);
-        //                                         }
-        //                                         else
-        //                                         {
-        //                                             persona_1.links = person_2.links;
-        //                                         }
-        //                                     }
-        //                                     persona_eliminar = person_2;
-        //                                     //  listado_2.Remove(person_2);
-        //                                     // }
-        //                                 }
-
-        //                             }
-        //                         }
-        //                     }
-        //                     listado_2.Remove(persona_eliminar);
-        //                 }
-        //             }
-        //             else { devolver.Add(persona_1); }
-        //         }
-        //         else { devolver.Add(persona_1); }
-        //     }
-        //     return listado_1;
-        // }
         public float GetNameSimilarity(string pFirma, string pTarget)
         {
             pFirma = ObtenerTextosFirmasNormalizadas(pFirma);

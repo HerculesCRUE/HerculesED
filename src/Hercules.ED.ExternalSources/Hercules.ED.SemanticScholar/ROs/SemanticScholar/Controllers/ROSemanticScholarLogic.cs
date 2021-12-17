@@ -105,13 +105,7 @@ namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
             ROSemanticScholarControllerJSON info = new ROSemanticScholarControllerJSON(this);
             Publication sol = info.cambioDeModeloPublicacion(objInicial);
             sol.doi=name;
-           // Console.Write("Ids del diccionario\n");
-            //foreach(string i in this.autores_orcid.Keys){
-             //   Console.Write(i);
-              //  Console.Write(" ");
-               // Console.Write(this.autores_orcid[i]);
-                //Console.Write("\n");
-            //}
+           
             return sol;
         }
     }

@@ -101,20 +101,12 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
             Console.Write(info_publication);
             // MODELO DEVUELTO 
             if(info_publication=="Resource not found." || info_publication.StartsWith("<html>")){
-                //Console.Write("HEY");
                 return null;
             }
             Root objInicial = JsonConvert.DeserializeObject<Root>(info_publication);
             // CAMBIO DE MODELO -- PAra ello llamamos al controlador de cambio de modelo! 
             ROCrossRefControllerJSON info = new ROCrossRefControllerJSON(this);
             Publication sol = info.cambioDeModeloPublicacion(objInicial.message, name, articulo_primer_order);
-            //Console.Write("Ids del diccionario\n");
-            //foreach(string i in this.autores_orcid.Keys){
-            //    Console.Write(i);
-            //    Console.Write(" ");
-            //    Console.Write(this.autores_orcid[i]);
-            //    Console.Write("\n");
-            //}
             return sol;
         }
     }

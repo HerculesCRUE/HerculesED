@@ -43,7 +43,6 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                 publicacion.hasMetric = getPublicationMetric(objInicial);
                 if (publicacion_principal == true)
                 {
-                    //TODO: tengo que ver como hacer esto!
                     publicacion.bibliografia = getBiblografia(objInicial);
                     //publicacion.citas = getCitas(objInicial);
                 }
@@ -91,7 +90,6 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
             if (objInicial.title != null & objInicial.title.Count >= 1)
             {
                 return objInicial.title[0];
-                //TODO: esto puede no estar bien! porque no se tiene que ser el primero... 
 
 
             }
@@ -198,13 +196,6 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
             if (objInicial.author != null)
             {
                 Person persona = new Person();
-                   //int i = this.CrossRefLogic.autores_orcid.Count;
-                   // string orcid = null;
-                    //string name = null;
-                    //string familia = null;
-                    //string completo = null;
-                    //string idss = null; ;
-                    //string links = null;
                 foreach (Author autor in objInicial.author)
                 {
                     if (autor.sequence == "first")
@@ -215,30 +206,22 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                             {
                                 int indice = autor.ORCID.IndexOf("org/");
                                 persona.ORCID = autor.ORCID.Substring(indice + 4);
-                                //orcid= persona.ORCID;
-
                             }
                             else
                             {
                                 persona.ORCID = autor.ORCID;
-                                //                                orcid= persona.ORCID;
-
                             }
                         }
-                        //persona.ORCID = autor.ORCID;
-
                         List<string> name_inicial = new List<string>();
                         List<string> apellido = new List<string>();
 
                         if (autor.given != null)
                         {
                             name_inicial.Add(autor.given);
-                            //name=autor.given;
                         }
                         if (autor.family != null)
                         {
                             apellido.Add(autor.family);
-                            //familia=autor.family;
                         }
                         if (name_inicial != null || apellido != null)
                         {
@@ -252,14 +235,7 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                                 nombre.familia = apellido;
                             }
                             persona.name = nombre;
-                        }
-                        //  persona.id_persona=i.ToString();
-                   
-                        //                if(orcid!=null || name!=null ||familia!=null ||completo!=null || idss!=null || links!=null){
-                        //                Tuple<string,string, string, string, string, string> tupla = new Tuple<string,string, string, string, string, string>(orcid,name,familia,completo,idss,links);
-                                        
-                        //                this.CrossRefLogic.autores_orcid[i.ToString()]=tupla;}
-                                       
+                        }       
                         return persona;
                     }
                 }
@@ -287,8 +263,6 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                             persona.ORCID = autor.ORCID;
                         }
                     }
-                    //persona.ORCID = autor.ORCID;
-
                     List<string> name_inicial = new List<string>();
                     List<string> apellido = new List<string>();
 
@@ -332,7 +306,6 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                 if (objInicial.ContainerTitle != null & objInicial.ContainerTitle.Count >= 1)
                 {
                     journal.name = objInicial.ContainerTitle[0];
-                    //TODO: esto puede no estar bien! porque no se tiene que ser el primero... 
                 }
                 if (objInicial.ISBN != null)
                 {
@@ -371,7 +344,6 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                 metricPublicacion.metricName = "CrossRef";
                 metricList.Add(metricPublicacion);
                 return metricList;
-                //TODO esto tampoco se si esta muy bien porque lo ha sacado de Scopus entonces aqui que debo poner? 
             }
             return null;
         }
@@ -416,7 +388,6 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                 return bibiografia;
 
             }
-            //todo solo he dejado aquellos que estan estructurados... 
             return null;
         }
 
