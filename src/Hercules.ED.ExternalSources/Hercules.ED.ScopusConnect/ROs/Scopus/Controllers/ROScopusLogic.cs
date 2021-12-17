@@ -113,7 +113,6 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                 result = 200*n;
 
                 String info_publication = httpCall(url.ToString(), "GET", headers).Result;
-                Console.Write(info_publication);
                 if (!info_publication.StartsWith( "{\"service-error\":"))//{\"status\":{\"statusCode\":\"INVALID_INPUT\",\"statusText\":\"Error translating query\"}}}")
                 {            
                     Root objInicial = JsonConvert.DeserializeObject<Root>(info_publication);

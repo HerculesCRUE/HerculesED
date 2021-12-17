@@ -1,33 +1,15 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System.Net;
 using Newtonsoft.Json;
 using System.Net.Http;
-using System.Net.Http.Headers;
-using PublicationConnect.ROs.Publications;
 using PublicationConnect.ROs.Publications.Models;
-using System.Web;
-using System.Text.Json;
-using Newtonsoft.Json.Linq;
-using PublicationConnect.Controllers;
-using PublicationConnect.ROs.Publications.Controllers;
-using PublicationConnect.ROs.Publications.Models;
-//using Newtonsoft.Json.Linq.JObject;
 using System.IO;
 using System.Data;
-using System.IO;
-using ClosedXML.Excel;
 using System.Text;
 using ExcelDataReader;
-using System.Linq;
 using PublicationAPI.Controllers;
-using Microsoft.Extensions.Configuration;
 
 namespace PublicationConnect.ROs.Publications.Controllers
 {
@@ -35,11 +17,8 @@ namespace PublicationConnect.ROs.Publications.Controllers
     {
         List<string> advertencia = new List<string>();
         protected string bareer;
-        //ROScopusControllerJSON info = new ROScopusControllerJSON();
         protected string baseUri { get; set; }
 
-
-        // protected List<Publication> publications = new List<Publication>();
         protected List<string> dois_principales = new List<string>();
         protected List<string> dois_bibliografia = new List<string>();
         protected Dictionary<string, string> headers = new Dictionary<string, string>();
@@ -52,18 +31,12 @@ namespace PublicationConnect.ROs.Publications.Controllers
         readonly ConfigService _Configuracion;
 
         public ROPublicationLogic(string baseUri, ConfigService pConfig)
-        {// Dictionary<string, Dictionary<string, Dictionary<string, Tuple<string, string, string>>>> metricas_scopus, Dictionary<string, Dictionary<string, Dictionary<string, Tuple<string, string, string>>>> metricas_WoS){
+        {
 
-            //this.baseUri = "http://localhost:5000/WoS/GetROs?orcid={0}";
-            //this.bareer = bareer;
             _Configuracion = pConfig;
             this.metricas_scopus = LeerDatosExcel_Scopus(@"files\Scopus_journal_metric.xlsx");
-
             this.metricas_scie = LeerDatosExcel_WoS(@"files\JCR_SCIE_2020.xlsx");
             this.metricas_ssci = LeerDatosExcel_WoS(@"files\JCR_SSCI_2020.xlsx");
-
-            ;
-
         }
 
         /// <summary>
@@ -132,7 +105,6 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
             if (objInicial_woS.Count >= 1)
             {
-                //Console.Write("hey");
                 foreach (Publication pub in objInicial_woS)
                 {
                     this.dois_bibliografia = new List<string>();
@@ -140,17 +112,20 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     string doi = pub.doi;
                     dois_principales.Add(doi);
                     Publication objInicial_semanticScholar = llamada_Semantic_Scholar(pub.doi);
-                    Publication pub_completa = compatacion(pub, objInicial_semanticScholar, true);
+                    Publication pub_completa = compatacion(pub, objInicial_semanticScholar);
                     Publication objInicial_CrossRef = llamada_CrossRef(doi);
-                    pub_completa = compatacion(pub_completa, objInicial_CrossRef, true);
-                    //pub_completa.pdf = llamada_Zenodo(pub_completa.doi);
+                    pub_completa = compatacion(pub_completa, objInicial_CrossRef);
+                    pub.pdf = llamada_Zenodo(pub.doi);
+                    pub.topics_enriquecidos = enriquedicmiento(pub);
+                    pub.freetextKeyword_enriquecidas = enriquedicmiento_pal(pub);
+                    if (pub.dataIssued != null & pub.hasPublicationVenue.issn != null)
+                    {
+                        pub.hasPublicationVenue = metrica_journal(pub.hasPublicationVenue, pub.dataIssued.datimeTime, pub.topics_enriquecidos);
+                    }
                     if (pub_completa.pdf == "")
                     {
                         pub_completa.pdf = null;
                     }
-                    // pub_completa.topics_enriquecidos = enriquedicmiento(pub_completa);
-                    //pub_completa.freetextKeyword_enriquecidas=enriquedicmiento_pal(pub_completa);
-
                     pub_completa = completar_bib(pub_completa);
                     pub_completa = obtener_bib_citas(pub_completa);
                     if (objInicial_Scopus.Count >= 1)
@@ -161,7 +136,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                             {
                                 if (pub_scopus.doi == pub_completa.doi)
                                 {
-                                    pub_completa = compatacion(pub_completa, pub_scopus, true);
+                                    pub_completa = compatacion(pub_completa, pub_scopus);
                                     //todo combinar los erroees! ni puta idea de como hacerlo proqe depende de lo que juntes y lo que no! 
                                 }
                             }
@@ -184,17 +159,20 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         string doi = pub_scopus.doi;
                         dois_principales.Add(doi);
                         Publication objInicial_semanticScholar = llamada_Semantic_Scholar(pub_scopus.doi);
-                        Publication pub_completa = compatacion(pub_scopus, objInicial_semanticScholar, false);
+                        Publication pub_completa = compatacion(pub_scopus, objInicial_semanticScholar);
                         Publication objInicial_CrossRef = llamada_CrossRef(doi);
-                        pub_completa = compatacion(pub_completa, objInicial_CrossRef, true);
-                        //pub_completa.pdf = llamada_Zenodo(pub_completa.title);
-                        // if (pub_completa.pdf == "")
-                        // {
-                        //     pub_completa.pdf = null;
-                        // }
-                        // pub_completa.topics_enriquecidos = enriquedicmiento(pub_completa);
-                        //pub_completa.freetextKeyword_enriquecidas=enriquedicmiento_pal(pub_completa);
-
+                        pub_completa = compatacion(pub_completa, objInicial_CrossRef);
+                        pub_completa.pdf = llamada_Zenodo(pub_completa.doi);
+                        pub_completa.topics_enriquecidos = enriquedicmiento(pub_completa);
+                        pub_completa.freetextKeyword_enriquecidas = enriquedicmiento_pal(pub_completa);
+                        if (pub_completa.dataIssued != null & pub_completa.hasPublicationVenue.issn != null)
+                        {
+                            pub_completa.hasPublicationVenue = metrica_journal(pub_completa.hasPublicationVenue, pub_completa.dataIssued.datimeTime, pub_completa.topics_enriquecidos);
+                        }
+                        if (pub_completa.pdf == "")
+                        {
+                            pub_completa.pdf = null;
+                        }
                         pub_completa = completar_bib(pub_completa);
                         pub_completa = obtener_bib_citas(pub_completa);
                         pub_completa.problema = this.advertencia;
@@ -377,8 +355,19 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     string doi_cita = pub_cita.doi;
                     Publication objInicial_SemanticScholar = llamada_Semantic_Scholar(doi_cita);
                     Publication pub_2 = this.llamada_CrossRef(doi_cita);
-                    Publication pub_completa = compatacion(pub_2, objInicial_SemanticScholar, true);
+                    Publication pub_completa = compatacion(pub_2, objInicial_SemanticScholar);
 
+                    pub_completa.pdf = llamada_Zenodo(pub_completa.doi);
+                    pub_completa.topics_enriquecidos = enriquedicmiento(pub_completa);
+                    pub_completa.freetextKeyword_enriquecidas = enriquedicmiento_pal(pub_completa);
+                    if (pub_completa.dataIssued != null & pub_completa.hasPublicationVenue.issn != null)
+                    {
+                        pub_completa.hasPublicationVenue = metrica_journal(pub_completa.hasPublicationVenue, pub_completa.dataIssued.datimeTime, pub_completa.topics_enriquecidos);
+                    }
+                    if (pub_completa.pdf == "")
+                    {
+                        pub_completa.pdf = null;
+                    }
                     if (pub_completa != null)
                     {
                         citas.Add(pub_completa);
@@ -403,8 +392,18 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         //llamada Semantic Scholar 
                         Publication objInicial_SemanticScholar = llamada_Semantic_Scholar(doi_bib);
                         Publication pub_2 = this.llamada_CrossRef(doi_bib);
-                        Publication pub_completa = compatacion(pub_2, objInicial_SemanticScholar, true);
-
+                        Publication pub_completa = compatacion(pub_2, objInicial_SemanticScholar);
+                        pub_completa.pdf = llamada_Zenodo(pub_completa.doi);
+                        pub_completa.topics_enriquecidos = enriquedicmiento(pub_completa);
+                        pub_completa.freetextKeyword_enriquecidas = enriquedicmiento_pal(pub_completa);
+                        if (pub_completa.dataIssued != null & pub_completa.hasPublicationVenue.issn != null)
+                        {
+                            pub_completa.hasPublicationVenue = metrica_journal(pub_completa.hasPublicationVenue, pub_completa.dataIssued.datimeTime, pub_completa.topics_enriquecidos);
+                        }
+                        if (pub_completa.pdf == "")
+                        {
+                            pub_completa.pdf = null;
+                        }
                         if (pub_completa != null)
                         {
                             bibliografia.Add(pub_completa);
@@ -439,7 +438,18 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     this.dois_bibliografia.Add(doi_bib);
                     Publication pub_semntic_scholar = this.llamada_Semantic_Scholar(doi_bib);
                     Publication pub_crossRef = this.llamada_CrossRef(doi_bib);
-                    Publication pub_final_bib = compatacion(pub_crossRef, pub_semntic_scholar, true);
+                    Publication pub_final_bib = compatacion(pub_crossRef, pub_semntic_scholar);
+                    pub_final_bib.pdf = llamada_Zenodo(pub_final_bib.doi);
+                    pub_final_bib.topics_enriquecidos = enriquedicmiento(pub_final_bib);
+                    pub_final_bib.freetextKeyword_enriquecidas = enriquedicmiento_pal(pub_final_bib);
+                    if (pub_final_bib.dataIssued != null & pub_final_bib.hasPublicationVenue.issn != null)
+                    {
+                        pub_final_bib.hasPublicationVenue = metrica_journal(pub_final_bib.hasPublicationVenue, pub_final_bib.dataIssued.datimeTime, pub_final_bib.topics_enriquecidos);
+                    }
+                    if (pub_final_bib.pdf == "")
+                    {
+                        pub_final_bib.pdf = null;
+                    }
 
                     if (pub_final_bib != null)
                     {
@@ -451,7 +461,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             }
             return pub;
         }
-        public Publication compatacion(Publication pub_1, Publication pub_2, Boolean bo)
+        public Publication compatacion(Publication pub_1, Publication pub_2)
         {
             Publication pub = new Publication();
             if (pub_1 == null)
@@ -635,19 +645,18 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     }
                     else
                     {
-                        pub.hasPublicationVenue = pub_2.hasPublicationVenue; 
+                        pub.hasPublicationVenue = pub_2.hasPublicationVenue;
                     }
-                    if (bo)
-                    {
-                        pub.pdf = llamada_Zenodo(pub.doi);
-
-                        pub.topics_enriquecidos = enriquedicmiento(pub);
-                        pub.freetextKeyword_enriquecidas = enriquedicmiento_pal(pub);
-                    }
-                    if (pub.dataIssued != null & pub.hasPublicationVenue.issn != null)
-                    {
-                        pub.hasPublicationVenue = metrica_journal(pub.hasPublicationVenue, pub.dataIssued.datimeTime, pub.topics_enriquecidos);
-                    }
+                    // if (bo)
+                    // {
+                    //     pub.pdf = llamada_Zenodo(pub.doi);
+                    //     pub.topics_enriquecidos = enriquedicmiento(pub);
+                    //     pub.freetextKeyword_enriquecidas = enriquedicmiento_pal(pub);
+                    // }
+                    // if (pub.dataIssued != null & pub.hasPublicationVenue.issn != null)
+                    // {
+                    //     pub.hasPublicationVenue = metrica_journal(pub.hasPublicationVenue, pub.dataIssued.datimeTime, pub.topics_enriquecidos);
+                    // }
                     return pub;
                 }
             }
@@ -975,7 +984,6 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 {
 
                     Dictionary<string, Tuple<string, string, string>> diccionario_areas = this.metricas_scie[año][journal_inicial.name.ToLower()];
-                    Console.Write(journal_inicial.name.ToLower());
 
                     string area = diccionario_areas.Keys.ToList()[0];
                     Boolean boole = false;
@@ -1075,7 +1083,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                                     area = are_tematica_enriquecida.word.ToLower();
                                     boole = true;
                                 }
-                                
+
                             }
                         }
                     }
@@ -1140,7 +1148,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 }
 
             }
-            if (metricas_revista.Count>0)
+            if (metricas_revista.Count > 0)
             {
                 journal_inicial.hasMetric = metricas_revista;
             }
@@ -1240,13 +1248,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
             {
                 if (tabla.TableName != "JCR_SCIE_counts" & tabla.Namespace != "Journal_Title_Changes")
                 {
-                    foreach (var a in tabla.TableName.ToList())
-                    {
-                        Console.Write(a.ToString());
-                    }
+
                     string[] palabras = tabla.TableName.Split("_");
                     string año = palabras[palabras.Count() - 1].Substring(0, 4);
-                    Console.Write(año);
                     Dictionary<string, Tuple<string, string, string>> area_tematica = new Dictionary<string, Tuple<string, string, string>>();
                     //QUARTILE_RANK, CATEGORY_RANKING, IMPACT_FACTOR
                     //CATEGORY_DESCRIPTION
@@ -1457,13 +1461,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
             {
                 if (tabla.TableName != "About CiteScore" & tabla.Namespace != "ASJC codes")
                 {
-                    foreach (var a in tabla.TableName.ToList())
-                    {
-                        Console.Write(a.ToString());
-                    }
+
                     string[] palabras = tabla.TableName.Split(" ");
                     string año = palabras[palabras.Count() - 1];
-                    Console.Write(año);
                     Dictionary<string, Tuple<string, string, string>> area_tematica = new Dictionary<string, Tuple<string, string, string>>();
                     // area_tematica ->  SJR,  Quartile, RANK,
                     Dictionary<string, Dictionary<string, Tuple<string, string, string>>> titulo = new Dictionary<string, Dictionary<string, Tuple<string, string, string>>>();
