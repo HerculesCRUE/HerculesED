@@ -118,6 +118,13 @@ function PintarGraficaProyectos(data,idContenedor) {
 	var parent = ctx.parentElement;
 	var height = parent.offsetHeight;
 	ctx.setAttribute('height', 100);
+	data.options={
+		scale:{
+			ticks:{
+				precision:0
+			}
+		}
+	}
 	var myChart = new Chart(ctx, data);
 }
 
