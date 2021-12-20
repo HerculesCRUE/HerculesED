@@ -10,6 +10,7 @@ using System.Data;
 using System.Text;
 using ExcelDataReader;
 using PublicationAPI.Controllers;
+using Serilog;
 
 namespace PublicationConnect.ROs.Publications.Controllers
 {
@@ -34,9 +35,12 @@ namespace PublicationConnect.ROs.Publications.Controllers
         {
 
             _Configuracion = pConfig;
-            this.metricas_scopus = LeerDatosExcel_Scopus(@"files\Scopus_journal_metric.xlsx");
-            this.metricas_scie = LeerDatosExcel_WoS(@"files\JCR_SCIE_2020.xlsx");
-            this.metricas_ssci = LeerDatosExcel_WoS(@"files\JCR_SSCI_2020.xlsx");
+            Log.Information("Leyendo Excel SCOPUS...");
+            this.metricas_scopus = LeerDatosExcel_Scopus(@"Files/Scopus_journal_metric.xlsx");
+            Log.Information("Leyendo Excel SCIE WOS...");
+            this.metricas_scie = LeerDatosExcel_WoS(@"Files/JCR_SCIE_2020.xlsx");
+            Log.Information("Leyendo Excel SSCI WOS...");
+            this.metricas_ssci = LeerDatosExcel_WoS(@"Files/JCR_SSCI_2020.xlsx");
         }
 
         /// <summary>
@@ -99,8 +103,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
         {
             //Declaro el Resultado
             List<Publication> resultado = new List<Publication>();
+            Log.Information("Haciendo petición a Scopus...");
             List<Publication> objInicial_Scopus = llamada_Scopus(name, date);
-            //consulta a WoS 
+            Log.Information("Haciendo petición a Wos...");
             List<Publication> objInicial_woS = llamada_WoS(name, date);
 
             if (objInicial_woS.Count >= 1)
@@ -195,7 +200,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             }
             string info = JsonConvert.SerializeObject(resultado);
             string path = _Configuracion.GetRutaJsonSalida();
-            File.WriteAllText(@"files\Resultado_final.json", info);
+            File.WriteAllText(@"Files/Resultado_final.json", info);
             return resultado;
 
         }

@@ -17,7 +17,6 @@ using System.Web;
 using System.Text.Json;
 using Newtonsoft.Json.Linq;
 //using Newtonsoft.Json.Linq.JObject;
-using ScopusAPI.Controllers;
 namespace ScopusConnect.ROs.Scopus.Controllers
 {
     public class ROScopusLogic : ScopusInterface
@@ -26,16 +25,12 @@ namespace ScopusConnect.ROs.Scopus.Controllers
         protected string bareer;
         //ROScopusControllerJSON info = new ROScopusControllerJSON();
        // protected string baseUri { get; set; }
-readonly ConfigService _Configuracion;
 
         // protected List<Publication> publications = new List<Publication>();
         protected Dictionary<string, string> headers = new Dictionary<string, string>();
-        public ROScopusLogic(ConfigService pConfig)
+        public ROScopusLogic()
         {
-
-            _Configuracion = pConfig;
             //this.bareer = bareer;
-
         }
 
         // TODO: Esto no se si abra que cambiarlo o no.... 
@@ -53,7 +48,7 @@ readonly ConfigService _Configuracion;
             {
                 using (var request = new HttpRequestMessage(new HttpMethod(method), url))
                 {
-                    request.Headers.TryAddWithoutValidation("X-ELS-APIKey", _Configuracion.GetUrlScopus_key());
+                    request.Headers.TryAddWithoutValidation("X-ELS-APIKey", "75f4ab3fac56f42ac83cdeb7c98882ca"); //TODO: Token
                     //request.Headers.TryAddWithoutValidation("Connection", "keep-alive");
                     request.Headers.TryAddWithoutValidation("Accept", "application/json");
 
@@ -110,7 +105,7 @@ readonly ConfigService _Configuracion;
             {
     
                 uri = "content/search/scopus?query=ORCID(\"{0}\")&count=200&date={1}&start={2}";
-                Uri url = new Uri(_Configuracion.GetUrlScopus_base() + string.Format(uri, name, date_scopus, result.ToString()));
+                Uri url = new Uri("https://api.elsevier.com/" + string.Format(uri, name, date_scopus, result.ToString()));
                 n=n+1;
                 result = 200*n;
 

@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ZenodoConnect.ROs.Zenodo.Controllers;
 using Newtonsoft.Json;
-using  ZenodoAPI.Controllers;
 namespace ZenodoConnect.Controllers
 {
     [Produces("application/json")]
@@ -14,12 +13,10 @@ namespace ZenodoConnect.Controllers
     public class APIController : ControllerBase
     {
         private readonly ILogger<APIController> _logger;
-        readonly ConfigService _Configuracion;
 
-        public APIController(ILogger<APIController> logger, ConfigService pConfig)
+        public APIController(ILogger<APIController> logger)
         {
             _logger = logger;
-            _Configuracion = pConfig;
         }
         /// <summary>
         /// Get all repositories from a specified user account and RO
@@ -42,7 +39,7 @@ namespace ZenodoConnect.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public string GetROs([FromQuery][Required] string ID)
         {
-            ROZenodoLogic ZenodoObject = new ROZenodoLogic(_Configuracion);//,"0grEw8zOOPjtlxyHLOQtUjTSSSx3FFrywNNb3YivsvpYZ4bIiCNCQBrbY7xh");
+            ROZenodoLogic ZenodoObject = new ROZenodoLogic();//,"0grEw8zOOPjtlxyHLOQtUjTSSSx3FFrywNNb3YivsvpYZ4bIiCNCQBrbY7xh");
             //, "10e8a3a2417b7ae1d864b5558136c56b78ed3eb8");//"adf94bebeeba8c3042ad5193455740e2");
             string publication = ZenodoObject.getPublications(ID);
             return publication;
