@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31729.503
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrossRefAPI", "CrossRefAPI.csproj", "{BFC9D3CB-AC6B-43FE-B833-B148C2B0A14E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BFC9D3CB-AC6B-43FE-B833-B148C2B0A14E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFC9D3CB-AC6B-43FE-B833-B148C2B0A14E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFC9D3CB-AC6B-43FE-B833-B148C2B0A14E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BFC9D3CB-AC6B-43FE-B833-B148C2B0A14E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9DDDFA71-BD72-462E-A1EF-CCFFCCF56441}
+	EndGlobalSection
+EndGlobal
