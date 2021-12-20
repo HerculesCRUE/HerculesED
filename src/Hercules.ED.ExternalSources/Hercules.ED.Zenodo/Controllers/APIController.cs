@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ZenodoConnect.ROs.Zenodo.Controllers;
 using Newtonsoft.Json;
-using ZenodoConnect.Controllers.API;
+using  ZenodoAPI.Controllers;
 namespace ZenodoConnect.Controllers
 {
     [Produces("application/json")]
