@@ -46,9 +46,6 @@ namespace CrossRefConnect
                     Description = "A ASP.NET Core Web API for Hercules project",
                 });
             });
-
-            // Configuraci�n.
-            services.AddSingleton(typeof(ConfigService));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

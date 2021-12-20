@@ -98,7 +98,7 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
         /// <returns></returns>
         public Publication getPublications(string name, Boolean articulo_primer_order=true, string uri = "works/{0}")
         {
-            Uri url = new Uri(_Configuracion.GetUrlCrossRef_base() + string.Format(uri, name));
+            Uri url = new Uri("https://api.crossref.org/" + string.Format(uri, name));
             string info_publication = httpCall(url.ToString(), "GET", headers).Result;
             // MODELO DEVUELTO 
             if(info_publication=="Resource not found." || info_publication.StartsWith("<html>")){
