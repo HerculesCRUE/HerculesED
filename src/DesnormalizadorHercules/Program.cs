@@ -65,6 +65,8 @@ namespace DesnormalizadorHercules
                     actualizadorPersonas.ActualizarPersonasPublicas();
                     actualizadorPersonas.ActualizarAreasPersonas();
                     actualizadorPersonas.EliminarPersonasNoReferenciadas();
+                    //TODO
+                    //actualizadorPersonas.ActualizarNumeroAreasTematicas();
 
                     ActualizadorGroup actualizadorGrupos = new ActualizadorGroup(resourceApi);
                     actualizadorGrupos.ActualizarNumeroMiembros();

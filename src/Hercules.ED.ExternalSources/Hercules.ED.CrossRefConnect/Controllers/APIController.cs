@@ -13,7 +13,6 @@ using System.IO;
 using ClosedXML.Excel;
 using System.Text;
 using ExcelDataReader;
-using CrossRefAPI.Controllers;
 
 namespace CrossRefConnect.Controllers
 {
@@ -23,12 +22,10 @@ namespace CrossRefConnect.Controllers
     public class APIController : ControllerBase
     {
         private readonly ILogger<APIController> _logger;
-        readonly ConfigService _Configuracion;
 
-        public APIController(ILogger<APIController> logger, ConfigService pConfig)
+        public APIController(ILogger<APIController> logger)
         {
             _logger = logger;
-            _Configuracion = pConfig;
         }
      
 
@@ -52,7 +49,7 @@ namespace CrossRefConnect.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public Publication GetROs([FromQuery][Required] string DOI)
         {
-            ROCrossRefLogic CrossRefObject = new ROCrossRefLogic(_Configuracion);
+            ROCrossRefLogic CrossRefObject = new ROCrossRefLogic();
             Publication publication = CrossRefObject.getPublications(DOI);
             return publication;
         }

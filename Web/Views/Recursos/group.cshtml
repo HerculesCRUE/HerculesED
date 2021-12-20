@@ -514,7 +514,7 @@
                             </div>
                             <div class="col col-12 col-chart">
                                 <div class="wrapCol">
-                                    <div class="chart-wrap chart-publicaciones-horizontal">
+                                    <div id="areastematicasgraph">
                                     </div>
                                 </div>
                             </div>
@@ -590,28 +590,16 @@
     }
 
     // Datos gráfica áreas temáticas
-    function CargarGraficaAreasTematicas(pIdGrupo) {
-        var url = "http://serviciosedma.gnoss.com/servicioexterno/Hercules/DatosGraficaAreasTematicasGrupo"
+    function CargarGraficaAreasTematicas(pIdGrupo, idContenedor) {
+        var url = "http://serviciosedma.gnoss.com/servicioexterno/Hercules/DatosGraficaAreasTematicas"
         if (depuracion) {
-            url = localUrlBase + "Hercules/DatosGraficaAreasTematicasGrupo"
+            url = localUrlBase + "Hercules/DatosGraficaAreasTematicas"
         }
         var arg = {};
-        arg.pIdGrupo = pIdGrupo;
+        arg.pId = pIdGrupo;
+        arg.pType = 'group';
         $.get(url, arg, function (data) {
-            // Porcentajes en parte inferior.
-            data.options.scales.x.ticks.callback = function (value) { return value + "%" }
-            var altura = data.data.labels.length * 50;
-            $('#chart-publicaciones-horizontal').remove();
-            $('div.chart-publicaciones-horizontal').removeAttr("style");
-            $('div.chart-publicaciones-horizontal').css("height", altura + 50);
-            $('div.chart-publicaciones-horizontal').append($('<canvas id="chart-publicaciones-horizontal" class="js-chart" width="600" height="' + altura + '"></canvas>'));
-            var ctx = document.getElementById('chart-publicaciones-horizontal');
-            var parent = ctx.parentElement;
-            var width = parent.offsetWidth;
-            ctx.setAttribute('width', width);
-            var height = parent.offsetHeight;
-            ctx.setAttribute('height', height);
-            var myChart = new Chart(ctx, data);
+            PintarGraficaAreasTematicas(data, idContenedor);
         });
     }
 
@@ -657,7 +645,7 @@
             $('#temas-investigacion-tab').unbind().click(function (e) {
                 e.preventDefault();
                 that.tabActive = "topics";
-                CargarGraficaAreasTematicas("@pGroup.GNOSSID.Split('_')[1].ToUpper()", "");
+                CargarGraficaAreasTematicas("@pGroup.GNOSSID.Split('_')[1].ToUpper()", "areastematicasgraph");
             });
             $('#miembros-tab').unbind().click(function (e) {
                 e.preventDefault();

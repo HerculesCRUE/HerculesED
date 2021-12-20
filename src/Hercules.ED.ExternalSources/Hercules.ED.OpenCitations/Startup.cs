@@ -72,7 +72,7 @@ namespace OpenCitationsConnect
             {
                 c.PreSerializeFilters.Add((swaggerDoc, httpReq) => swaggerDoc.Servers = new List<OpenApiServer>
                       {
-                        new OpenApiServer { Url = $"/opencitations"},
+                        new OpenApiServer { Url = $"/opencitationsapi"},
                         new OpenApiServer { Url = $"/" }
                       });
             });
