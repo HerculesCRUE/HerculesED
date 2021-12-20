@@ -304,6 +304,23 @@ function PintarGraficaArania(data,idContenedor){
 	})
 }
 
+function PintarGraficaAreasTematicas(data,idContenedor) {	
+	$('#'+idContenedor).empty();
+	// Porcentajes en parte inferior.
+	data.options.scales.x.ticks.callback = function (value) { return value + "%" }
+	var altura = data.data.labels.length * 50;
+	$('#'+idContenedor).removeAttr("style");
+	$('#'+idContenedor).css("height", altura + 50);
+	$('#'+idContenedor).append($(`<canvas id="${idContenedor}_aux" class="js-chart" width="600" height="' + altura + '"></canvas>`));
+	var ctx = document.getElementById(idContenedor+'_aux');
+	var parent = ctx.parentElement;
+	var width = parent.offsetWidth;
+	ctx.setAttribute('width', width);
+	var height = parent.offsetHeight;
+	ctx.setAttribute('height', height);
+	var myChart = new Chart(ctx, data);
+}
+
 
 //Sobreescribimos FiltrarPorFacetas para que coja el filtro por defecto (y el orden)
 function FiltrarPorFacetas(filtro, callback = () => {}) {
