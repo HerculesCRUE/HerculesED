@@ -706,5 +706,70 @@ namespace DesnormalizadorHercules.Models
             }
         }
 
+
+        public void ActualizarNumeroAreasTematicas(string pPerson = null)
+        {
+            string filter = "";
+            if (!string.IsNullOrEmpty(pPerson))
+            {
+                filter = $" FILTER(?person =<{pPerson}>)";
+            }
+            //Eliminamos los duplicados
+            EliminarDuplicados("person", "http://xmlns.com/foaf/0.1/Person", "http://w3id.org/roh/themedAreasNumber");
+
+
+            //Actualizamos los datos
+            while (true)
+            {
+                int limit = 500;
+                //TODO eliminar from
+                String select = @"select * where{ select ?person  ?numAreasTematicasCargadas ?numAreasTematicasACargar  from <http://gnoss.com/document.owl>  from <http://gnoss.com/taxonomy.owl>  ";
+                String where = @$"where{{
+                            ?person a <http://xmlns.com/foaf/0.1/Person>.
+                            {filter}
+                            OPTIONAL
+                            {{
+                              ?person <http://w3id.org/roh/themedAreasNumber> ?numAreasTematicasCargadasAux. 
+                              BIND(xsd:int( ?numAreasTematicasCargadasAux) as  ?numAreasTematicasCargadas)
+                            }}
+                            {{
+                              select ?person count(distinct ?categoria) as ?numAreasTematicasACargar
+                              Where{{
+                                ?person a <http://xmlns.com/foaf/0.1/Person>.
+                                OPTIONAL{{
+                                    ?documento a <http://purl.org/ontology/bibo/Document>. 
+                                    ?documento <http://w3id.org/roh/publicAuthorList> ?person.
+                                    ?documento <http://w3id.org/roh/hasKnowledgeArea> ?area.
+                                    ?area <http://w3id.org/roh/categoryNode> ?categoria.
+                                    ?categoria <http://www.w3.org/2008/05/skos#prefLabel> ?nombreCategoria.
+                                    MINUS
+                                    {{
+                                        ?categoria <http://www.w3.org/2008/05/skos#narrower> ?hijos
+                                    }}
+                                }}
+                              }}Group by ?person 
+                            }}
+                            FILTER(?numAreasTematicasCargadas!= ?numAreasTematicasACargar OR !BOUND(?numAreasTematicasCargadas) )
+                            }}}} limit {limit}";
+                SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
+
+                foreach (Dictionary<string, SparqlObject.Data> fila in resultado.results.bindings)
+                {
+                    string person = fila["person"].value;
+                    string numAreasTematicasACargar = fila["numAreasTematicasACargar"].value;
+                    string numAreasTematicasCargadas = "";
+                    if (fila.ContainsKey("numAreasTematicasCargadas"))
+                    {
+                        numAreasTematicasCargadas = fila["numAreasTematicasCargadas"].value;
+                    }
+                    ActualizadorTriple(person, "http://w3id.org/roh/themedAreasNumber", numAreasTematicasCargadas, numAreasTematicasACargar);
+                }
+
+                if (resultado.results.bindings.Count() != limit)
+                {
+                    break;
+                }
+            }
+        }
     }
 }
