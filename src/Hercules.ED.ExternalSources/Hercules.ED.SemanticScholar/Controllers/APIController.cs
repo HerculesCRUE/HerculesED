@@ -13,6 +13,7 @@ using System.IO;
 using ClosedXML.Excel;
 using System.Text;
 using ExcelDataReader;
+using SemanticShcolarAPI.Controllers;
 
 
 namespace SemanticScholarConnect.Controllers
@@ -23,11 +24,13 @@ namespace SemanticScholarConnect.Controllers
     public class APIController : ControllerBase
     {
         private readonly ILogger<APIController> _logger;
-        public APIController(ILogger<APIController> logger)
+        readonly ConfigService _Configuracion;
+
+        public APIController(ILogger<APIController> logger, ConfigService pConfig)
         {
             _logger = logger;
+            _Configuracion = pConfig;
         }
-       
         /// <summary>
         /// Get all repositories from a specified user account and RO
         /// </summary>
@@ -49,7 +52,7 @@ namespace SemanticScholarConnect.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public Publication GetROs([FromQuery][Required] string doi)
         {
-            ROSemanticScholarController SemanticScholarObject = new ROSemanticScholarController("https://api.semanticscholar.org/");//, "10e8a3a2417b7ae1d864b5558136c56b78ed3eb8");//"adf94bebeeba8c3042ad5193455740e2");
+            ROSemanticScholarLogic SemanticScholarObject = new ROSemanticScholarLogic(_Configuracion);//, "10e8a3a2417b7ae1d864b5558136c56b78ed3eb8");//"adf94bebeeba8c3042ad5193455740e2");
             Publication publication = SemanticScholarObject.getPublications(doi);
             return publication;
         }

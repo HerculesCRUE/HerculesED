@@ -17,7 +17,7 @@ using System.Web;
 using System.Text.Json;
 using Newtonsoft.Json.Linq;
 //using Newtonsoft.Json.Linq.JObject;
-
+using ScopusAPI.Controllers;
 namespace ScopusConnect.ROs.Scopus.Controllers
 {
     public class ROScopusLogic : ScopusInterface
@@ -25,15 +25,17 @@ namespace ScopusConnect.ROs.Scopus.Controllers
 
         protected string bareer;
         //ROScopusControllerJSON info = new ROScopusControllerJSON();
-        protected string baseUri { get; set; }
-
+       // protected string baseUri { get; set; }
+readonly ConfigService _Configuracion;
 
         // protected List<Publication> publications = new List<Publication>();
         protected Dictionary<string, string> headers = new Dictionary<string, string>();
-        public ROScopusLogic(string baseUri, string bareer)
+        public ROScopusLogic(ConfigService pConfig)
         {
-            this.baseUri = baseUri;
-            this.bareer = bareer;
+
+            _Configuracion = pConfig;
+            //this.bareer = bareer;
+
         }
 
         // TODO: Esto no se si abra que cambiarlo o no.... 
@@ -51,7 +53,7 @@ namespace ScopusConnect.ROs.Scopus.Controllers
             {
                 using (var request = new HttpRequestMessage(new HttpMethod(method), url))
                 {
-                    request.Headers.TryAddWithoutValidation("X-ELS-APIKey", bareer);
+                    request.Headers.TryAddWithoutValidation("X-ELS-APIKey", _Configuracion.GetUrlScopus_key());
                     //request.Headers.TryAddWithoutValidation("Connection", "keep-alive");
                     request.Headers.TryAddWithoutValidation("Accept", "application/json");
 
@@ -108,7 +110,7 @@ namespace ScopusConnect.ROs.Scopus.Controllers
             {
     
                 uri = "content/search/scopus?query=ORCID(\"{0}\")&count=200&date={1}&start={2}";
-                Uri url = new Uri(baseUri + string.Format(uri, name, date_scopus, result.ToString()));
+                Uri url = new Uri(_Configuracion.GetUrlScopus_base() + string.Format(uri, name, date_scopus, result.ToString()));
                 n=n+1;
                 result = 200*n;
 

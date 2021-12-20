@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using ScopusConnect.ROs.Scopus.Controllers;
 using ScopusConnect.ROs.Scopus.Models;
 using Newtonsoft.Json;
+using ScopusAPI.Controllers;
 namespace ScopusConnect.Controllers
 {
     [Produces("application/json")]
@@ -15,9 +16,12 @@ namespace ScopusConnect.Controllers
     public class APIController : ControllerBase
     {
         private readonly ILogger<APIController> _logger;
-        public APIController(ILogger<APIController> logger)
+         readonly ConfigService _Configuracion;
+
+        public APIController(ILogger<APIController> logger, ConfigService pConfig)
         {
             _logger = logger;
+            _Configuracion = pConfig;
         }
         /// <summary>
         /// Get all repositories from a specified user account and RO
@@ -52,7 +56,7 @@ namespace ScopusConnect.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
       public List<Publication> GetROs([FromQuery][Required] string orcid,string date = "1500-01-01") 
              {
-            ROScopusController ScopusObject = new ROScopusController("https://api.elsevier.com/", "adf94bebeeba8c3042ad5193455740e2");//"75f4ab3fac56f42ac83cdeb7c98882ca");//"adf94bebeeba8c3042ad5193455740e2");
+            ROScopusLogic ScopusObject = new ROScopusLogic(_Configuracion);//"75f4ab3fac56f42ac83cdeb7c98882ca");//"adf94bebeeba8c3042ad5193455740e2");
             List<Publication> publication = ScopusObject.getPublications(orcid,date);
             return publication;
         }

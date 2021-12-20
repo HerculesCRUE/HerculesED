@@ -13,6 +13,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using OpenCitationsAPI.Middlewares;
 
 namespace OpenCitationsConnect
 {
@@ -23,7 +24,6 @@ namespace OpenCitationsConnect
             Configuration = configuration;
         }
 
-        
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -39,26 +39,10 @@ namespace OpenCitationsConnect
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "ScopusConnect API",
+                    Title = "OpenCitationsConnect API",
                     Version = "v1",
                     Description = "A ASP.NET Core Web API for Hercules project",
-                    TermsOfService = new Uri("https://example.com/terms"),
                 });
-
-                c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
-                {
-                    Name = "Authorization",
-                    Type = SecuritySchemeType.ApiKey,
-                    Scheme = "bearer",
-                    BearerFormat = "JWT",
-                    In = ParameterLocation.Header,
-                    Description = "JWT Authorization header using the Bearer scheme."
-                });
-
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                c.IncludeXmlComments(xmlPath);
-                // c.IncludeXmlComments(string.Format(@"{0}comments.xml", System.AppDomain.CurrentDomain.BaseDirectory));
             });
 
         }
@@ -77,17 +61,22 @@ namespace OpenCitationsConnect
 
             app.UseAuthorization();
 
+            app.UseMiddleware(typeof(ErrorHandlingMiddleware));
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
 
-            app.UseSwagger();
-            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), specifying the Swagger JSON endpoint.
-            app.UseSwaggerUI(c =>
+            app.UseSwagger(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "ScopusConnect API microservice V1");
+                c.PreSerializeFilters.Add((swaggerDoc, httpReq) => swaggerDoc.Servers = new List<OpenApiServer>
+                      {
+                        new OpenApiServer { Url = $"/opencitationsapi"},
+                        new OpenApiServer { Url = $"/" }
+                      });
             });
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("v1/swagger.json", "OpenCitationsAPI v1"));
         }
     }
 }

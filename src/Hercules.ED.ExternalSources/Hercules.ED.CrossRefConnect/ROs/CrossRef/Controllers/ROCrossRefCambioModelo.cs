@@ -127,10 +127,16 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
 
          public DateTimeValue getDate(PublicacionInicial objInicial)
          {
-             DateTimeValue date = new DateTimeValue();
-             date.datimeTime = objInicial.created.DateTime;
+             if(objInicial!=null){
+                 if(objInicial.created!=null){
+                    if(objInicial.created.DateTime!=null){
+                         DateTimeValue date = new DateTimeValue();
+                        date.datimeTime = objInicial.created.DateTime.Substring(0,10);
              
-             return date;
+                    return date;
+                    }else{return null;}
+                 }else{return null;}
+             }else{return null;}
          }
 
         public string getPageStart(PublicacionInicial objInicial)
@@ -287,7 +293,8 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                         }
                         persona.name = nombre;
                     }
-                    
+
+                  autores.Add(persona);  
                 }
                 return autores;
             }

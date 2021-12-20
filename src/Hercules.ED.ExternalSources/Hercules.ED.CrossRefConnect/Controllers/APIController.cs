@@ -27,7 +27,6 @@ namespace CrossRefConnect.Controllers
         {
             _logger = logger;
         }
-
      
 
         /// <summary>
@@ -50,7 +49,7 @@ namespace CrossRefConnect.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public Publication GetROs([FromQuery][Required] string DOI)
         {
-            ROCrossRefController CrossRefObject = new ROCrossRefController("https://api.crossref.org/");//"adf94bebeeba8c3042ad5193455740e2");
+            ROCrossRefLogic CrossRefObject = new ROCrossRefLogic();
             Publication publication = CrossRefObject.getPublications(DOI);
             return publication;
         }
