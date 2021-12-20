@@ -14,6 +14,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using CrossRefAPI.Controllers;
+using CrossRefAPI.Middlewares;
 
 namespace CrossRefConnect
 {
@@ -64,6 +65,8 @@ namespace CrossRefConnect
 
             app.UseAuthorization();
 
+            app.UseMiddleware(typeof(ErrorHandlingMiddleware));
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
@@ -77,7 +80,7 @@ namespace CrossRefConnect
                         new OpenApiServer { Url = $"/" }
                       });
             });
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("v1/swagger.json", "WoSAPI v1"));
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("v1/swagger.json", "CrossRefAPI v1"));
         }
     }
 }
