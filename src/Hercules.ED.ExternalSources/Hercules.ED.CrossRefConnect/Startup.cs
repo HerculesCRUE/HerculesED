@@ -13,6 +13,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using CrossRefAPI.Controllers;
+
 
 namespace CrossRefConnect
 {
@@ -61,6 +63,8 @@ namespace CrossRefConnect
                 // c.IncludeXmlComments(string.Format(@"{0}comments.xml", System.AppDomain.CurrentDomain.BaseDirectory));
             });
 
+            // Configuraci�n.
+            services.AddSingleton(typeof(ConfigService));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -15,7 +15,8 @@ namespace CrossRefAPI.Controllers
         // URLs
         private string urlWos { get; set; }
         private string urlScopus { get; set; }
-        private string urlCrossRef { get; set; }
+        private string  urlCrossRef { get; set; }
+        private string urlCrossRef_base {get;set;}
         private string urlOpenCitations { get; set; }
         private string urlSemanticScholar { get; set; }
         private string urlZenodo { get; set; }
@@ -103,6 +104,33 @@ namespace CrossRefAPI.Controllers
 
             return urlCrossRef;
         }
+
+                /// <summary>
+        /// Obtiene la URL del API de CrossRef que ha sido configurada.
+        /// </summary>
+        /// <returns>URI del API de CrossRef.</returns>
+        public string GetUrlCrossRef_base()
+        {
+            if (string.IsNullOrEmpty(urlCrossRef))
+            {
+                string connectionString = string.Empty;
+                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                if (environmentVariables.Contains("UrlCrossRef_base"))
+                {
+                    connectionString = environmentVariables["UrlCrossRef_base"] as string;
+                }
+                else
+                {
+                    connectionString = configuracion["UrlCrossRef_base"];
+                }
+
+                urlCrossRef_base = connectionString;
+            }
+
+            return urlCrossRef_base;
+        }
+
+
 
         /// <summary>
         /// Obtiene la URL del API de OpenCitations que ha sido configurada.

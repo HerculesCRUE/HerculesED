@@ -17,7 +17,7 @@ using System.Web;
 using System.Text.Json;
 using Newtonsoft.Json.Linq;
 //using Newtonsoft.Json.Linq.JObject;WoS
-
+using CrossRefAPI.Controllers;
 
 
 namespace CrossRefConnect.ROs.CrossRef.Controllers
@@ -27,14 +27,16 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
         //protected string bareer;
         //ROScopusControllerJSON info = new ROScopusControllerJSON();
         protected string baseUri { get; set; }
+        readonly ConfigService _Configuracion;
+
 
         // protected List<Publication> publications = new List<Publication>();
         protected Dictionary<string, string> headers = new Dictionary<string, string>();
-        public ROCrossRefLogic(string baseUri)//, string bareer)
+        public ROCrossRefLogic(ConfigService pConfig)
         {
-            this.baseUri = baseUri;
-           // this.autores_orcid=autores_orcid;
-           // this.bareer = bareer;
+
+            _Configuracion = pConfig;
+            //this.bareer = bareer;
 
         }
 
@@ -96,7 +98,7 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
         /// <returns></returns>
         public Publication getPublications(string name, Boolean articulo_primer_order=true, string uri = "works/{0}")
         {
-            Uri url = new Uri(baseUri + string.Format(uri, name));
+            Uri url = new Uri(_Configuracion.GetUrlCrossRef_base() + string.Format(uri, name));
             string info_publication = httpCall(url.ToString(), "GET", headers).Result;
             // MODELO DEVUELTO 
             if(info_publication=="Resource not found." || info_publication.StartsWith("<html>")){
