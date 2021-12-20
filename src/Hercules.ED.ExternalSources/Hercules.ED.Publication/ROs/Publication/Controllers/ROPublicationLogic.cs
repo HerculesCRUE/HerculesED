@@ -33,7 +33,6 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
         public ROPublicationLogic(ConfigService pConfig)
         {
-
             _Configuracion = pConfig;
 
             Log.Information("Leyendo Excel SCOPUS...");

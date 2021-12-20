@@ -22,19 +22,19 @@
     <Content Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="Files\Resultado_final.json">
+    <Content Update="Files/Resultado_final.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Files\JCR_SCIE_2020.xlsx">
+    <None Update="Files/JCR_SCIE_2020.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Files\JCR_SSCI_2020.xlsx">
+    <None Update="Files/JCR_SSCI_2020.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Files\Scopus_journal_metric.xlsx">
+    <None Update="Files/Scopus_journal_metric.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
