@@ -34,9 +34,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
         {
 
             _Configuracion = pConfig;
-            this.metricas_scopus = LeerDatosExcel_Scopus(@"Files/Scopus_journal_metric.xlsx");
-            this.metricas_scie = LeerDatosExcel_WoS(@"Files/JCR_SCIE_2020.xlsx");
-            this.metricas_ssci = LeerDatosExcel_WoS(@"Files/JCR_SSCI_2020.xlsx");
+            this.metricas_scopus = LeerDatosExcel_Scopus(@"files\Scopus_journal_metric.xlsx");
+            this.metricas_scie = LeerDatosExcel_WoS(@"files\JCR_SCIE_2020.xlsx");
+            this.metricas_ssci = LeerDatosExcel_WoS(@"files\JCR_SSCI_2020.xlsx");
         }
 
         /// <summary>
@@ -195,7 +195,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             }
             string info = JsonConvert.SerializeObject(resultado);
             string path = _Configuracion.GetRutaJsonSalida();
-            File.WriteAllText(@"Files/Resultado_final.json", info);
+            File.WriteAllText(@"files\Resultado_final.json", info);
             return resultado;
 
         }
@@ -742,6 +742,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
         public List<Person> unir_autores(List<Person> conjunto_1, List<Person> conjunto_2)
         {
+            Console.Write("Iniciando unir autores--------------------------------------");
             List<Person> lista_autores_no_iguales = new List<Person>();
             List<Person> conjunto = new List<Person>();
             foreach (Person per in conjunto_1)
@@ -799,7 +800,6 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     {
                         if (person.name.given != null)
                         {
-
                             list_name = person.name.given;
                         }
                         if (person.name.familia != null)
@@ -811,6 +811,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         {
 
                             list_nombre_completo = person.name.nombre_completo;
+                            foreach(string na in list_nombre_completo){
+                                Console.Write(na);
+                            }
                         }
                     }
 
@@ -948,6 +951,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     conjunto.Add(person_2);
                 }
             }
+            //conjunto_1.AddRange(lista_autores_no_iguales);
             return conjunto;
         }
 
@@ -1065,16 +1069,16 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     }
                 }
             }
-            if (list_nombre_completo_id2.Count > 0)
-            {
-                foreach (string completo_ids2 in list_nombre_completo_id2)
-                {
-                    if (!list_nombre_completo.Contains(completo_ids2))
-                    {
-                        list_nombre_completo.Add(completo_ids2);
-                    }
-                }
-            }
+            // if (list_nombre_completo_id2.Count > 0)
+            // {
+            //     foreach (string completo_ids2 in list_nombre_completo_id2)
+            //     {
+            //         if (!list_nombre_completo.Contains(completo_ids2))
+            //         {
+            //             list_nombre_completo.Add(completo_ids2);
+            //         }
+            //     }
+            // }
             if (list_ids_id2.Count > 0)
             {
                 foreach (string ids2 in list_ids_id2)
