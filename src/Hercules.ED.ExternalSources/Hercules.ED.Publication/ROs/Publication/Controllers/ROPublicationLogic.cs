@@ -201,7 +201,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             }
             string info = JsonConvert.SerializeObject(resultado);
             string path = _Configuracion.GetRutaJsonSalida();
-            File.WriteAllText(@"files\Resultado_final.json", info);
+            File.WriteAllText(@"Files/Resultado_final.json", info);
             return resultado;
 
         }
