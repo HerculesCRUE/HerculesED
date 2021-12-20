@@ -6,8 +6,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using  ZenodoAPI.Controllers;
+using ZenodoConnect;
 
-namespace ScopusConnect
+namespace ZenodoConnect
 {
 #pragma warning disable CS1591
     public class Program

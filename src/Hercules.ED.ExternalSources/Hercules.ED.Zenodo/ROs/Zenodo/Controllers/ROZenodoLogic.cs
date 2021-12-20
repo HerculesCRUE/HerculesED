@@ -19,7 +19,7 @@ using Newtonsoft.Json.Linq;
 using System.IO;
 //using Newtonsoft.Json.Linq.JObject;
 
-using ZenodoConnect.Controllers.API;
+using  ZenodoAPI.Controllers;
 
 namespace ZenodoConnect.ROs.Zenodo.Controllers
 {
