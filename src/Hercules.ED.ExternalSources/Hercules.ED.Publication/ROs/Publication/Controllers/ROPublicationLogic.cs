@@ -34,9 +34,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
         {
 
             _Configuracion = pConfig;
-            this.metricas_scopus = LeerDatosExcel_Scopus(@"files\Scopus_journal_metric.xlsx");
-            this.metricas_scie = LeerDatosExcel_WoS(@"files\JCR_SCIE_2020.xlsx");
-            this.metricas_ssci = LeerDatosExcel_WoS(@"files\JCR_SSCI_2020.xlsx");
+            this.metricas_scopus = LeerDatosExcel_Scopus(@"Files/Scopus_journal_metric.xlsx");
+            this.metricas_scie = LeerDatosExcel_WoS(@"Files/JCR_SCIE_2020.xlsx");
+            this.metricas_ssci = LeerDatosExcel_WoS(@"Files/JCR_SSCI_2020.xlsx");
         }
 
         /// <summary>
@@ -195,7 +195,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             }
             string info = JsonConvert.SerializeObject(resultado);
             string path = _Configuracion.GetRutaJsonSalida();
-            File.WriteAllText(@"files\Resultado_final.json", info);
+            File.WriteAllText(@"Files/Resultado_final.json", info);
             return resultado;
 
         }

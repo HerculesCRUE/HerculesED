@@ -24,5 +24,17 @@
     </Content>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Files\JCR_SCIE_2020.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Files\JCR_SSCI_2020.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Files\Scopus_journal_metric.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 
 </Project>
