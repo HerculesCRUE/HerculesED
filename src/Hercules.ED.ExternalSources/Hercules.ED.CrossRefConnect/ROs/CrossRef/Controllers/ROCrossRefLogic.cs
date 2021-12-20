@@ -17,7 +17,6 @@ using System.Web;
 using System.Text.Json;
 using Newtonsoft.Json.Linq;
 //using Newtonsoft.Json.Linq.JObject;WoS
-using CrossRefAPI.Controllers;
 
 
 namespace CrossRefConnect.ROs.CrossRef.Controllers
@@ -27,17 +26,13 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
         //protected string bareer;
         //ROScopusControllerJSON info = new ROScopusControllerJSON();
         protected string baseUri { get; set; }
-        readonly ConfigService _Configuracion;
 
 
         // protected List<Publication> publications = new List<Publication>();
         protected Dictionary<string, string> headers = new Dictionary<string, string>();
-        public ROCrossRefLogic(ConfigService pConfig)
+        public ROCrossRefLogic()
         {
-
-            _Configuracion = pConfig;
             //this.bareer = bareer;
-
         }
 
         // TODO: Esto no se si abra que cambiarlo o no.... 
