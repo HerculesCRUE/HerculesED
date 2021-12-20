@@ -13,7 +13,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
-using ScopusAPI.Controllers;
 using ScopusAPI.Middlewares;
 
 namespace ScopusConnect
@@ -46,9 +45,6 @@ namespace ScopusConnect
                     Description = "A ASP.NET Core Web API for Hercules project",
                 });
             });
-
-            // Configuraci�n.
-            services.AddSingleton(typeof(ConfigService));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
