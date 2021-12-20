@@ -364,6 +364,13 @@ comportamientoFacetasPopUp.cargarFaceta= function () {
 	{
 		 params['pParametros'] +=filtroPersonalizado;
 	}
+	
+	if(typeof buscadorPersonalizado !== 'undefined' && buscadorPersonalizado.filtro!=null && buscadorPersonalizado.filtro!='')
+	{
+		 params['pParametros'] +='|'+buscadorPersonalizado.filtro;
+	}
+	
+	
 	params['pLanguageCode'] = $('input.inpt_Idioma').val();
 	params['pPrimeraCarga'] = false;
 	params['pAdministradorVeTodasPersonas'] = false;
