@@ -514,6 +514,9 @@
                             </div>
                             <div class="col col-12 col-chart">
                                 <div class="wrapCol">
+                                    <input type="text" id="numAreas" value="10" />
+                                    <input type="text" id="inicioAreas" />
+                                    <input type="text" id="finAreas" />
                                     <div id="areastematicasgraph">
                                     </div>
                                 </div>
@@ -598,6 +601,8 @@
         var arg = {};
         arg.pId = pIdGrupo;
         arg.pType = 'group';
+        arg.pAnioInicio = $('#inicioAreas').val();
+        arg.pAnioFin = $('#finAreas').val();
         $.get(url, arg, function (data) {
             PintarGraficaAreasTematicas(data, idContenedor);
         });
