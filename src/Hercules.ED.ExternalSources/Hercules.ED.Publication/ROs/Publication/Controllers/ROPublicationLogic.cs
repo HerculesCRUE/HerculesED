@@ -1454,12 +1454,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
         public List<Publication> llamada_Scopus(string orcid, string date)
         {
             Uri url = new Uri(string.Format(_Configuracion.GetUrlScopus() + "Scopus/GetROs?orcid={0}&date={1}", orcid, date));
-            UriBuilder uri = new UriBuilder(string.Format(_Configuracion.GetUrlScopus() + "Scopus/GetROs?orcid={0}&date={1}", orcid, date));
-            uri.Scheme = Uri.UriSchemeHttps;
             string info_publication = httpCall(url.ToString(), "GET", headers).Result;
-            string info_publication2 = httpCall(uri.ToString(), "GET", headers).Result;
-            Log.Information("URL 1 --> " + info_publication);
-            Log.Information("URI 2 --> " + info_publication2);
             Log.Information("Respuesta Scopus --> " + info_publication);
             List<Publication> objInicial_Scopus = JsonConvert.DeserializeObject<List<Publication>>(info_publication);
             return objInicial_Scopus;
@@ -1468,12 +1463,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
         public List<Publication> llamada_WoS(string orcid, string date)
         {
             Uri url = new Uri(string.Format(_Configuracion.GetUrlWos() + "WoS/GetROs?orcid={0}&date={1}", orcid, date));
-            UriBuilder uri = new UriBuilder(string.Format(_Configuracion.GetUrlWos() + "WoS/GetROs?orcid={0}&date={1}", orcid, date));
-            uri.Scheme = Uri.UriSchemeHttps;
             string info_publication = httpCall(url.ToString(), "GET", headers).Result;
-            string info_publication2 = httpCall(uri.ToString(), "GET", headers).Result;
-            Log.Information("URL 1 --> " + info_publication);
-            Log.Information("URI 2 --> " + info_publication2);
             Log.Information("Respuesta WoS --> " + info_publication);
             List<Publication> objInicial_woS = JsonConvert.DeserializeObject<List<Publication>>(info_publication);
             return objInicial_woS;
