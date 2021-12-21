@@ -45,7 +45,7 @@ namespace WorkerServiceRabbitConsume
         private void OnShutDown()
         {
             _processRabbitReady = false;
-            Thread.Sleep(5000);
+            Thread.Sleep(300000);
             ListenToQueue();
         }
     }
