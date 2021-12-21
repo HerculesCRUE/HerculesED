@@ -108,7 +108,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             Log.Information("Haciendo petición a Wos...");
             List<Publication> objInicial_woS = llamada_WoS(name, date);
 
-            if (objInicial_woS.Count >= 1)
+            if (objInicial_woS != null && objInicial_woS.Count >= 1)
             {
                 foreach (Publication pub in objInicial_woS)
                 {
@@ -137,7 +137,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     }
                     pub_completa = completar_bib(pub_completa);
                     pub_completa = obtener_bib_citas(pub_completa);
-                    if (objInicial_Scopus.Count >= 1)
+                    if (objInicial_Scopus != null && objInicial_Scopus.Count >= 1)
                     {
                         foreach (Publication pub_scopus in objInicial_Scopus)
                         {
@@ -1447,6 +1447,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
         {
             Uri url = new Uri(string.Format(_Configuracion.GetUrlWos() + "WoS/GetROs?orcid={0}&date={1}", orcid, date));
             string info_publication = httpCall(url.ToString(), "GET", headers).Result;
+            Log.Information(info_publication);
             List<Publication> objInicial_woS = JsonConvert.DeserializeObject<List<Publication>>(info_publication);
             return objInicial_woS;
         }
