@@ -23,14 +23,6 @@ namespace WorkerServiceRabbitConsume
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            //while (!stoppingToken.IsCancellationRequested)
-            //{
-            //    if (!_processRabbitReady)
-            //    {
-
-            //    }
-            //    Thread.Sleep(5000);
-            //}
             ListenToQueue();
         }
 

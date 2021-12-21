@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using WorkerServiceRabbitConsume.Middlewares;
 
 namespace WorkerServiceRabbitConsume
 {
@@ -27,7 +26,6 @@ namespace WorkerServiceRabbitConsume
                 {
                     services.AddSingleton(typeof(ConfigService));
                     services.AddScoped(typeof(ReadRabbitService));
-                    services.AddScoped(typeof(ErrorHandlingMiddleware));
                     services.AddHostedService<Worker>();
                 });
     }
