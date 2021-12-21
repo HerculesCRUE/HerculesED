@@ -15,16 +15,19 @@ using Microsoft.OpenApi.Models;
 using System.Reflection;
 using PublicationAPI.Controllers;
 using PublicationAPI.Middlewares;
+using Serilog;
+using System.Collections;
 
 namespace PublicationConnect
 {
     public class Startup
     {
+        private string _LogPath;
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
-
         
         public IConfiguration Configuration { get; }
 
@@ -49,6 +52,7 @@ namespace PublicationConnect
 
             // Configuración.
             services.AddSingleton(typeof(ConfigService));
+            CreateLoggin(CreateTimeStamp());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -81,6 +85,56 @@ namespace PublicationConnect
                       });
             });
             app.UseSwaggerUI(c => c.SwaggerEndpoint("v1/swagger.json", "PublicationAPI v1"));
+        }
+
+        private void CreateLoggin(string pTimestamp)
+        {
+            string pathDirectory = GetLogPath();
+            if (!Path.IsPathRooted(pathDirectory))
+            {
+                pathDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, pathDirectory);
+            }
+            if (!Directory.Exists(pathDirectory))
+            {
+                Directory.CreateDirectory(pathDirectory);
+            }
+            Log.Logger = new LoggerConfiguration().Enrich.FromLogContext().WriteTo.File($"{pathDirectory}/log_{pTimestamp}.txt").CreateLogger();
+        }
+
+        public string GetLogPath()
+        {
+            if (string.IsNullOrEmpty(_LogPath))
+            {
+                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                string logPath = string.Empty;
+                if (environmentVariables.Contains("LogPath"))
+                {
+                    logPath = environmentVariables["LogPath"] as string;
+                }
+                else
+                {
+                    logPath = Configuration["LogPath"];
+                }
+                _LogPath = logPath;
+            }
+            return _LogPath;
+        }
+
+        private string CreateTimeStamp()
+        {
+            DateTime time = DateTime.Now;
+            string month = time.Month.ToString();
+            if (month.Length == 1)
+            {
+                month = $"0{month}";
+            }
+            string day = time.Day.ToString();
+            if (day.Length == 1)
+            {
+                day = $"0{day}";
+            }
+            string timeStamp = $"{time.Year.ToString()}{month}{day}";
+            return timeStamp;
         }
     }
 }
