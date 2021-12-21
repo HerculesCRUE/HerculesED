@@ -13,6 +13,7 @@ using DocumentOntology;
 using PersonOntology;
 using Gnoss.ApiWrapper.Model;
 using Hercules.ED.ResearcherObjectLoad.Models.ObjetoJson;
+using Hercules.ED.ResearcherObjectLoad.Config;
 
 namespace Hercules.ED.ResearcherObjectLoad.Models
 {
@@ -20,7 +21,8 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
     {
         public static ResourceApi mResourceApi;
         public static CommunityApi mCommunityApi;
-        public static IConfigurationRoot configuracion;
+        //public static IConfigurationRoot configuracion;
+        public static ConfigService configuracion;
 
         #region --- Constantes
         public static string JOURNAL_ARTICLE = "Journal Article";
@@ -33,7 +35,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
 
         public static void CargaMain()
         {
-            ProcesarFichero(configuracion["DirectorioLectura"], configuracion["DirectorioEscritura"]);
+            ProcesarFichero(configuracion.GetRutaDirectorioLectura(), configuracion.GetRutaDirectorioEscritura());
         }
 
         public static void ProcesarFichero(string pRutaLectura, string pRutaEscritura)

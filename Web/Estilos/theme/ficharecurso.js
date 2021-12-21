@@ -105,9 +105,29 @@ function PintarGraficaPublicaciones(data,idContenedor) {
 	$('#'+idContenedor+'_aux').remove();
 	$('#'+idContenedor).append($('<canvas id="'+idContenedor+'_aux" class="js-chart"></canvas>'));
 	var ctx = document.getElementById(idContenedor+'_aux');
+	data.options={
+		scales: {
+		  y1: {
+			type: 'linear',
+			display: true,
+			position: 'left'
+		  },
+		  y2: {
+			type: 'linear',
+			display: true,
+			position: 'right'
+		  },
+		},		
+		scale:{
+			ticks:{
+				precision:0
+			}
+		},
+		maintainAspectRatio: false
+	}
 	var parent = ctx.parentElement;
 	var height = parent.offsetHeight;
-	ctx.setAttribute('height', 100);
+	ctx.setAttribute('height', 400);
 	var myChart = new Chart(ctx, data);
 }
 
@@ -260,7 +280,8 @@ function PintarGraficaArania(data,idContenedor){
 	var edges = cy.edges();
 
 	for (i = 0; i < cy.edges().length; i++) { //starts loop
-		arrayEdges.push(edges[i]._private.data.name);
+		var data=edges[i]._private.data.id.split('~');	
+		arrayEdges.push(data[data.length-1]);
 		edges[i]._private.data.name = "";
 		switch (edges[i]._private.data.type) {
 			case 'relation_document':
@@ -309,6 +330,10 @@ function PintarGraficaAreasTematicas(data,idContenedor) {
 	// Porcentajes en parte inferior.
 	data.options.scales.x.ticks.callback = function (value) { return value + "%" }
 	var altura = data.data.labels.length * 50;
+	if(altura==0)
+	{
+		altura=50;
+	}
 	$('#'+idContenedor).removeAttr("style");
 	$('#'+idContenedor).css("height", altura + 50);
 	$('#'+idContenedor).append($(`<canvas id="${idContenedor}_aux" class="js-chart" width="600" height="' + altura + '"></canvas>`));

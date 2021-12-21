@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31313.79
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkerServiceRabbitConsume", "WorkerServiceRabbitConsume\WorkerServiceRabbitConsume.csproj", "{ACDAE417-7BFB-427D-931E-1C29D96A507F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorkerServiceRabbitConsume", "WorkerServiceRabbitConsume\WorkerServiceRabbitConsume.csproj", "{ACDAE417-7BFB-427D-931E-1C29D96A507F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

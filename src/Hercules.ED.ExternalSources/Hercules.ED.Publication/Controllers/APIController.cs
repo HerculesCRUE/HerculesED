@@ -7,6 +7,7 @@ using PublicationConnect.ROs.Publications.Controllers;
 using PublicationConnect.ROs.Publications.Models;
 using Newtonsoft.Json;
 using PublicationAPI.Controllers;
+using Serilog;
 
 namespace PublicationConnect.Controllers
 {
@@ -45,7 +46,9 @@ namespace PublicationConnect.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public List<Publication> GetROs([FromQuery][Required] string orcid, string date = "1500-01-01")
         {
+            Log.Information("Leyendo Configuración...");
             ROPublicationLogic PublicationObject = new ROPublicationLogic( _Configuracion);//,almacenamiento.metricas_scopus, almacenamiento.metricas_WoS);
+            Log.Information("Obteniendo datos de publicación...");
             List<Publication> publication = PublicationObject.getPublications(orcid, date);
             return publication;
         }

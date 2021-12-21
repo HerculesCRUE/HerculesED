@@ -2,6 +2,7 @@
 using System;
 using Hercules.ED.ResearcherObjectLoad.Models;
 using Microsoft.Extensions.Configuration;
+using Hercules.ED.ResearcherObjectLoad.Config;
 
 namespace Hercules.ED.ResearcherObjectLoad
 {
@@ -9,13 +10,12 @@ namespace Hercules.ED.ResearcherObjectLoad
     {
         private static ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config\configOAuth\OAuthV3.config");
         private static CommunityApi mCommunityApi = new CommunityApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config\configOAuth\OAuthV3.config");
-        public static IConfigurationRoot configuracion = new ConfigurationBuilder().AddJsonFile($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config\appsettings\appsettings.json").Build();
-        
+       
         static void Main(string[] args)
         {
             Carga.mResourceApi = mResourceApi;
             Carga.mCommunityApi = mCommunityApi;
-            Carga.configuracion = configuracion;
+            Carga.configuracion = new ConfigService();
             Carga.CargaMain();
         }
     }

@@ -14,16 +14,20 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using PublicationAPI.Controllers;
+using PublicationAPI.Middlewares;
+using Serilog;
+using System.Collections;
 
 namespace PublicationConnect
 {
     public class Startup
     {
+        private string _LogPath;
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
-
         
         public IConfiguration Configuration { get; }
 
@@ -40,30 +44,15 @@ namespace PublicationConnect
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "ScopusConnect API",
+                    Title = "Publication API",
                     Version = "v1",
                     Description = "A ASP.NET Core Web API for Hercules project",
-                    TermsOfService = new Uri("https://example.com/terms"),
                 });
-
-                c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
-                {
-                    Name = "Authorization",
-                    Type = SecuritySchemeType.ApiKey,
-                    Scheme = "bearer",
-                    BearerFormat = "JWT",
-                    In = ParameterLocation.Header,
-                    Description = "JWT Authorization header using the Bearer scheme."
-                });
-
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                c.IncludeXmlComments(xmlPath);
-                // c.IncludeXmlComments(string.Format(@"{0}comments.xml", System.AppDomain.CurrentDomain.BaseDirectory));
             });
 
             // Configuración.
             services.AddSingleton(typeof(ConfigService));
+            CreateLoggin(CreateTimeStamp());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -80,17 +69,72 @@ namespace PublicationConnect
 
             app.UseAuthorization();
 
+            app.UseMiddleware(typeof(ErrorHandlingMiddleware));
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
 
-            app.UseSwagger();
-            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), specifying the Swagger JSON endpoint.
-            app.UseSwaggerUI(c =>
+            app.UseSwagger(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "ScopusConnect API microservice V1");
+                c.PreSerializeFilters.Add((swaggerDoc, httpReq) => swaggerDoc.Servers = new List<OpenApiServer>
+                      {
+                        new OpenApiServer { Url = $"/publicationapi"},
+                        new OpenApiServer { Url = $"/" }
+                      });
             });
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("v1/swagger.json", "PublicationAPI v1"));
+        }
+
+        private void CreateLoggin(string pTimestamp)
+        {
+            string pathDirectory = GetLogPath();
+            if (!Path.IsPathRooted(pathDirectory))
+            {
+                pathDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, pathDirectory);
+            }
+            if (!Directory.Exists(pathDirectory))
+            {
+                Directory.CreateDirectory(pathDirectory);
+            }
+            Log.Logger = new LoggerConfiguration().Enrich.FromLogContext().WriteTo.File($"{pathDirectory}/log_{pTimestamp}.txt").CreateLogger();
+        }
+
+        public string GetLogPath()
+        {
+            if (string.IsNullOrEmpty(_LogPath))
+            {
+                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                string logPath = string.Empty;
+                if (environmentVariables.Contains("LogPath"))
+                {
+                    logPath = environmentVariables["LogPath"] as string;
+                }
+                else
+                {
+                    logPath = Configuration["LogPath"];
+                }
+                _LogPath = logPath;
+            }
+            return _LogPath;
+        }
+
+        private string CreateTimeStamp()
+        {
+            DateTime time = DateTime.Now;
+            string month = time.Month.ToString();
+            if (month.Length == 1)
+            {
+                month = $"0{month}";
+            }
+            string day = time.Day.ToString();
+            if (day.Length == 1)
+            {
+                day = $"0{day}";
+            }
+            string timeStamp = $"{time.Year.ToString()}{month}{day}";
+            return timeStamp;
         }
     }
 }

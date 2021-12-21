@@ -514,6 +514,11 @@
                             </div>
                             <div class="col col-12 col-chart">
                                 <div class="wrapCol">
+                                    <input type="text" id="numAreas" value="10" />
+                                    <input type="text" id="inicioAreas" />
+                                    <input type="text" id="finAreas" />
+                                    <div id="areastematicasgrapharania" style="width: 1224px; height: 500px;">
+                                    </div>
                                     <div id="areastematicasgraph">
                                     </div>
                                 </div>
@@ -598,8 +603,28 @@
         var arg = {};
         arg.pId = pIdGrupo;
         arg.pType = 'group';
+        arg.pAnioInicio = $('#inicioAreas').val();
+        arg.pAnioFin = $('#finAreas').val();
         $.get(url, arg, function (data) {
             PintarGraficaAreasTematicas(data, idContenedor);
+        });
+    }
+
+    // Datos gráfica áreas temáticas
+    function CargarGraficaAreasTematicasArania(pIdGrupo, idContenedor) {
+        var url = "http://serviciosedma.gnoss.com/servicioexterno/Hercules/DatosGraficaAreasTematicasArania"
+        if (depuracion) {
+            url = localUrlBase + "Hercules/DatosGraficaAreasTematicasArania"
+        }
+        var arg = {};
+        arg.pId = pIdGrupo;
+        arg.pType = 'group';
+        arg.pAnioInicio = $('#inicioAreas').val();
+        arg.pAnioFin = $('#finAreas').val();
+        arg.pNumAreasAnioFin = $('#finAreas').val();
+        arg.pNumAreas = $('#numAreas').val();
+        $.get(url, arg, function (data) {
+            PintarGraficaArania(data, idContenedor);
         });
     }
 
@@ -646,6 +671,7 @@
                 e.preventDefault();
                 that.tabActive = "topics";
                 CargarGraficaAreasTematicas("@pGroup.GNOSSID.Split('_')[1].ToUpper()", "areastematicasgraph");
+                CargarGraficaAreasTematicasArania("@pGroup.GNOSSID.Split('_')[1].ToUpper()", "areastematicasgrapharania");
             });
             $('#miembros-tab').unbind().click(function (e) {
                 e.preventDefault();

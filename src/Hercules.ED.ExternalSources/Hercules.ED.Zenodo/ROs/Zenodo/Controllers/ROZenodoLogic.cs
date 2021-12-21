@@ -19,8 +19,6 @@ using Newtonsoft.Json.Linq;
 using System.IO;
 //using Newtonsoft.Json.Linq.JObject;
 
-using  ZenodoAPI.Controllers;
-
 namespace ZenodoConnect.ROs.Zenodo.Controllers
 {
     public class ROZenodoLogic : ZenodoInterface
@@ -32,14 +30,10 @@ namespace ZenodoConnect.ROs.Zenodo.Controllers
 
         // protected List<Publication> publications = new List<Publication>();
         protected Dictionary<string, string> headers = new Dictionary<string, string>();
-    readonly ConfigService _Configuracion;
 
-        public ROZenodoLogic(ConfigService pConfig)
+        public ROZenodoLogic()
         {
-
-            _Configuracion = pConfig;
             //this.bareer = bareer;
-
         }
 
         /// <summary>
@@ -94,7 +88,7 @@ namespace ZenodoConnect.ROs.Zenodo.Controllers
         /// <returns></returns>?access_token=ACCESS_TOKEN
         public string getPublications(string name, string uri = "?q=doi:\"{0}\"")
         {
-            Uri url = new Uri(_Configuracion.GetUrlZenodo_base() + string.Format(uri, name));
+            Uri url = new Uri("https://zenodo.org/api/records/" + string.Format(uri, name));
 
             string info_publication = httpCall(url.ToString(), "GET", headers).Result;
 
