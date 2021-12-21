@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using Gnoss.Web.ReprocessData.Models;
 using Newtonsoft.Json;
+using System.Threading;
 
 namespace Gnoss.Web.ReprocessData.Models.Services
 {
@@ -199,7 +200,7 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                     Console.Write("Obteniendo datos petición de: " + url);
                     string info_publication = httpCall(url.ToString(), "GET", headers).Result;
                     //List<Publication> objInicial = JsonConvert.DeserializeObject<List<Publication>>(info_publication);
-
+                    Console.Write("Datos: " + info_publication);
                     File.WriteAllText(dir_fichero + "inv_" + DateTime.Now.ToString().Replace('/', '-').Replace(':', '_') + ".json", info_publication);
                     //escribirlo en un fichero! 
                     return true;
