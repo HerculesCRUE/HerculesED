@@ -14,6 +14,7 @@ using PersonOntology;
 using Gnoss.ApiWrapper.Model;
 using Hercules.ED.ResearcherObjectLoad.Models.ObjetoJson;
 using Hercules.ED.ResearcherObjectLoad.Config;
+using System.Threading;
 
 namespace Hercules.ED.ResearcherObjectLoad.Models
 {
@@ -21,7 +22,6 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
     {
         public static ResourceApi mResourceApi;
         public static CommunityApi mCommunityApi;
-        //public static IConfigurationRoot configuracion;
         public static ConfigService configuracion;
 
         #region --- Constantes
@@ -43,21 +43,25 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             DirectoryInfo directorio = new DirectoryInfo(pRutaLectura);
 
             Tuple<Dictionary<string, string>, Dictionary<string, string>> tupla = ObtenerDatosTesauro();
-
-            foreach (var fichero in directorio.GetFiles("*.json"))
+            while (true)
             {
-                string jsonString = File.ReadAllText(fichero.FullName);
-                List<Publication> listaPublicaciones = JsonConvert.DeserializeObject<List<Publication>>(jsonString);
-
-                foreach (Publication publicacion in listaPublicaciones)
+                foreach (var fichero in directorio.GetFiles("*.json"))
                 {
-                    ProcesarPublicacion(publicacion, tupla.Item1, tupla.Item2);
-                    Console.WriteLine($@"{DateTime.Now} ------------------------------ Publicación leída.");
+                    string jsonString = File.ReadAllText(fichero.FullName);
+                    List<Publication> listaPublicaciones = JsonConvert.DeserializeObject<List<Publication>>(jsonString);
+
+                    foreach (Publication publicacion in listaPublicaciones)
+                    {
+                        ProcesarPublicacion(publicacion, tupla.Item1, tupla.Item2);
+                        Console.WriteLine($@"{DateTime.Now} ------------------------------ Publicación leída.");
+                    }
+
+                    // Hace una copia del fichero y elimina el original.
+                    CrearZip(pRutaEscritura, fichero.Name, jsonString);
+                    File.Delete(fichero.FullName);
                 }
 
-                // Hace una copia del fichero y elimina el original.
-                CrearZip(pRutaEscritura, fichero.Name, jsonString);
-                File.Delete(fichero.FullName);
+                Thread.Sleep(5000);
             }
         }
 
