@@ -105,9 +105,29 @@ function PintarGraficaPublicaciones(data,idContenedor) {
 	$('#'+idContenedor+'_aux').remove();
 	$('#'+idContenedor).append($('<canvas id="'+idContenedor+'_aux" class="js-chart"></canvas>'));
 	var ctx = document.getElementById(idContenedor+'_aux');
+	data.options={
+		scales: {
+		  y1: {
+			type: 'linear',
+			display: true,
+			position: 'left'
+		  },
+		  y2: {
+			type: 'linear',
+			display: true,
+			position: 'right'
+		  },
+		},		
+		scale:{
+			ticks:{
+				precision:0
+			}
+		},
+		maintainAspectRatio: false
+	}
 	var parent = ctx.parentElement;
 	var height = parent.offsetHeight;
-	ctx.setAttribute('height', 100);
+	ctx.setAttribute('height', 400);
 	var myChart = new Chart(ctx, data);
 }
 
