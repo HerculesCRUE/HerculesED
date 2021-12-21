@@ -28,6 +28,8 @@
     Html.AddBodyClass("fichaRecurso");
     Html.AddBodyClass("fichaRecurso-proyecto");
     string nombreMainResearcher = "";
+    int anioInicioAreas = 1980;
+    int anioFinAreas = DateTime.Now.Year;
 }
 
 <div class="col col-12 col-breadcrumb">
@@ -463,7 +465,27 @@
                             </div>
                             <div class="col col-12 col-chart">
                                 <div class="wrapCol">
-                                    <div class="chart-wrap chart-proyectos row" id="projectgraph">
+                                    <div class="chart-wrap">
+                                        <div class="contenido-grafico container">
+                                            <div class="row">
+                                                <div class="col col-12 col-md-8">
+                                                    <div class="grafico-wrap">
+                                                        <p>@Html.Translate("GRAFICA_PROYECTOS_ANIO")</p>
+                                                        <canvas id="projectgraphanios" class="js-chart"></canvas>
+                                                    </div>
+                                                </div>
+                                                <div class="col col-12 col-md-4">
+                                                    <div class="grafico-wrap">
+                                                        <p>@Html.Translate("GRAFICA_PROYECTOS_MIEMBROS")</p>
+                                                        <canvas id="projectgraphmembers" class="js-chart"></canvas>
+                                                    </div>
+                                                    <div class="grafico-wrap">
+                                                        <p>@Html.Translate("GRAFICA_PROYECTOS_AMBITO")</p>
+                                                        <canvas id="projectgraphambitos" class="js-chart"></canvas>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -483,7 +505,18 @@
                             </div>
                             <div class="col col-12 col-chart">
                                 <div class="wrapCol">
-                                    <div class="chart-wrap chart-publicaciones" id="publicaciongraph">
+                                    <div class="chart-wrap">
+                                        <div class="contenido-grafico container">
+                                            <div class="row">
+                                                <div class="col col-12 col-md-12">
+                                                    <div class="grafico-wrap">
+                                                        <p>@Html.Translate("GRAFICA_PUBLICIONES")</p>
+                                                        <div class="chart-wrap chart-publicaciones" id="publicaciongraph">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -496,8 +529,21 @@
                     </div>
                     <div class="tab-pane fade" id="miembros-panel" role="tabpanel" aria-labelledby="miembros-tab">
                         <div class="row" id="contenedorBuscadorMiembros">
-                            <div class="col col-12 col-grafo mb-5">
-                                <div class="wrapCol" id="membersgraph" style="width: 1224px; height: 500px;"></div>
+                            <div class="col col-12 col-chart">
+                                <div class="wrapCol">
+                                    <div class="chart-wrap">
+                                        <div class="contenido-grafico container">
+                                            <div class="row">
+                                                <div class="col col-12 col-md-12">
+                                                    <div class="grafico-wrap">
+                                                        <p>@Html.Translate("GRAFICA_MIEMBROS_GRUPO")</p>
+                                                        <div class="wrapCol" id="membersgraph" style="width: 1224px; height: 500px;"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="col col-12 col-section-title font-weight-bold searcherTitle">
                                 <div class="wrapCol">
@@ -508,18 +554,86 @@
                     </div>
                     <div class="tab-pane fade" id="temas-investigacion-panel" role="tabpanel" aria-labelledby="temas-investigacion-tab">
                         <div class="row" id="contenedorBuscadorTemasInvestigacion">
-                            <div class="col col-12 col-section-title font-weight-bold">
-                                <div class="wrapCol">
-                                </div>
-                            </div>
                             <div class="col col-12 col-chart">
                                 <div class="wrapCol">
-                                    <input type="text" id="numAreas" value="10" />
-                                    <input type="text" id="inicioAreas" />
-                                    <input type="text" id="finAreas" />
-                                    <div id="areastematicasgrapharania" style="width: 1224px; height: 500px;">
-                                    </div>
-                                    <div id="areastematicasgraph">
+                                    <div class="chart-wrap">
+                                        <div class="acciones-grafico">
+                                            <div class="periodo dropdown dropdown-select">
+                                                <a href="#" class="dropdown-toggle btn btn-outline-grey" role="button" id="dropdownPeriodo" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    @Html.Translate("PERIODO_TEMPORAL"):
+                                                    <span class="texto">@Html.Translate("TODOS")</span>
+                                                </a>
+                                                <div class="dropdown-menu basic-dropdown dropdown-menu-left" aria-labelledby="dropdownPeriodo">
+                                                    <p class="dropdown-title">@Html.Translate("PERSONALIZADO")</p>
+                                                    <div class="faceta-date-range">
+                                                        <div id="dateRangeAreas" class="ui-slider ui-corner-all ui-slider-horizontal ui-widget ui-widget-content">
+                                                            <div class="ui-slider-range ui-corner-all ui-widget-header"></div>
+                                                            <span tabindex="0" class="ui-slider-handle ui-corner-all ui-state-default"></span>
+                                                            <span tabindex="0" class="ui-slider-handle ui-corner-all ui-state-default"></span>
+                                                        </div>
+                                                        <div class="d-flex">
+                                                            <input title="@Html.Translate("ANIO")" type="number" min="@anioInicioAreas" max="@anioFinAreas" value="@anioInicioAreas" autocomplete="off" class="filtroFacetaFecha hasDatepicker" placeholder="@Html.Translate("ANIO_INICIO")" name="gmd_ci_datef1" id="inicioAreas">
+                                                            <input title="@Html.Translate("ANIO")" type="number" min="@anioInicioAreas" max="@anioFinAreas" value="@anioFinAreas" autocomplete="off" class="filtroFacetaFecha hasDatepicker" placeholder="@Html.Translate("ANIO_FIN")" name="gmd_ci_datef2" id="finAreas">
+                                                            <a class="searchButton"  id="aplicarAnioAreas">@Html.Translate("APLICAR")</a>
+                                                        </div>
+                                                        <ul class="no-list-style">
+                                                            <li>
+                                                                <a href="javascript: void(0);" id="ultimosCincoAniosAreas" class="item-dropdown ">
+                                                                    <span class="textoAlternativo">@Html.Translate("PERIODO_TEMPORAL"):</span>
+                                                                    <span class="texto">@Html.Translate("ULTIMOS_CINCO_ANIOS")</span>
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="javascript: void(0);" id="ultimoAnioArea" class="item-dropdown ">
+                                                                    <span class="textoAlternativo">@Html.Translate("PERIODO_TEMPORAL"):</span>
+                                                                    <span class="texto">@Html.Translate("ULTIMO_ANIO")</span>
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="javascript: void(0);" id="todosAniosArea" class="item-dropdown activeView ">
+                                                                    <span class="textoAlternativo">@Html.Translate("PERIODO_TEMPORAL"):</span>
+                                                                    <span class="texto">@Html.Translate("TODOS")</span>
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="contenido-grafico container">
+                                            <div class="row">
+                                                <div class="col col-12 col-md-12">
+                                                    <div class="grafico-wrap">
+                                                        <p>@Html.Translate("GRAFICA_AREAS_GRUPO_ARANIA")</p>
+                                                        <div class="graph-controls">
+                                                            <ul class="no-list-style d-flex align-items-center">
+                                                                <li class="control remove-control" id="removeNodesAreas">
+                                                                    <span class="material-icons">remove</span>
+                                                                </li>
+                                                                <li class="control text-control">
+                                                                    <span id="numNodosArea">10</span>&nbsp;@Html.Translate("NODOS")
+                                                                </li>
+                                                                <li class="control add-control" id="addNodesAreas">
+                                                                    <span class="material-icons">add</span>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                        <input type="hidden" id="numAreas" value="10" />
+                                                        <div id="areastematicasgrapharania" style="width: 1224px; height: 500px;">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col col-12 col-md-12">
+                                                    <div class="grafico-wrap">
+                                                        <p>@Html.Translate("GRAFICA_AREAS_GRUPO_BARRAS")</p>
+                                                        <div id="areastematicasgraph">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -527,9 +641,35 @@
                     </div>
                     <div class="tab-pane fade" id="colaboradores-panel" role="tabpanel" aria-labelledby="colaboradores-tab">
                         <div class="row" id="contenedorBuscadorMiembrosFuera">
-                            <div class="col col-12 col-grafo mb-5">
-                                <input type="text" id="numColaboradores" value="10" />
-                                <div class="wrapCol" id="colaboratorsgraph" style="width: 1224px; height: 500px;"></div>
+                            <div class="col col-12 col-chart">
+                                <div class="wrapCol">
+                                    <div class="chart-wrap">
+                                        <div class="contenido-grafico container">
+                                            <div class="row">
+                                                <div class="col col-12 col-md-12">
+                                                    <div class="grafico-wrap">
+                                                        <p>@Html.Translate("GRAFICA_COLABORADORES_GRUPO")</p>
+                                                        <div class="graph-controls">
+                                                            <ul class="no-list-style d-flex align-items-center">
+                                                                <li class="control remove-control" id="removeNodesCollaborators">
+                                                                    <span class="material-icons">remove</span>
+                                                                </li>
+                                                                <li class="control text-control">
+                                                                    <span id="numNodosCollaborators">10</span>&nbsp;@Html.Translate("NODOS")
+                                                                </li>
+                                                                <li class="control add-control" id="addNodesCollaborators">
+                                                                    <span class="material-icons">add</span>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                        <input type="hidden" id="numColaboradores" value="10" />
+                                                        <div class="wrapCol" id="colaboratorsgraph" style="width: 1224px; height: 500px;"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="col col-12 col-section-title font-weight-bold searcherTitle">
                                 <div class="wrapCol">
@@ -565,16 +705,18 @@
     }
 
     // Datos gráfica proyectos.
-    function CargarGraficaProyectos(parametros, idContenedor) {
+    function CargarGraficaProyectos(parametros, idContenedorAnios, idContenedorMiembros, idContenedorAmbito) {
         var url = "http://serviciosedma.gnoss.com/servicioexterno/Hercules/DatosGraficaProyectos"
         if (depuracion) {
             url = localUrlBase + "Hercules/DatosGraficaProyectos"
         }
         var arg = {};
         arg.pParametros = parametros;
-        $('#' + idContenedor).empty();
+        $('#' + idContenedorAnios).empty();
+        $('#' + idContenedorMiembros).empty();
+        $('#' + idContenedorAmbito).empty();
         $.get(url, arg, function (data) {
-            PintarGraficaProyectos(data, idContenedor);
+            PintarGraficaProyectos(data, idContenedorAnios, idContenedorMiembros, idContenedorAmbito);
         });
     }
 
@@ -621,16 +763,17 @@
         arg.pType = 'group';
         arg.pAnioInicio = $('#inicioAreas').val();
         arg.pAnioFin = $('#finAreas').val();
-        arg.pNumAreasAnioFin = $('#finAreas').val();
         arg.pNumAreas = $('#numAreas').val();
+        MostrarUpdateProgress();
         $.get(url, arg, function (data) {
             PintarGraficaArania(data, idContenedor);
+            OcultarUpdateProgress();
         });
     }
 
 
     // Datos gráfica colaboradores externos.
-    function CargarGraficaColaboradores(pIdGrupo, parametros, idContenedor) {
+    function CargarGraficaColaboradores(pIdGrupo, parametros, idContenedor, mostrarCargando = false) {
         var url = "http://serviciosedma.gnoss.com/servicioexterno/Hercules/DatosGraficaColaboradoresGrupo"
         if (depuracion) {
             url = localUrlBase + "Hercules/DatosGraficaColaboradoresGrupo"
@@ -640,8 +783,14 @@
         arg.pParametros = parametros;
         arg.pMax = $('#numColaboradores').val();
         $('#' + idContenedor).empty();
+        if (mostrarCargando) {
+            MostrarUpdateProgress();
+        }
         $.get(url, arg, function (data) {
             PintarGraficaArania(data, idContenedor);
+            if (mostrarCargando) {
+                OcultarUpdateProgress();
+            }
         });
     }
 
@@ -657,6 +806,103 @@
         },
         config: function () {
             var that = this;
+            //Métodos areas
+            $(function () {
+                $("#dateRangeAreas").slider({
+                    range: true,
+                    min: @anioInicioAreas,
+                    max: @anioFinAreas,
+                    values: [@anioInicioAreas, @anioFinAreas],
+                    slide: function (event, ui) {
+                        $("#inicioAreas").val(ui.values[0]);
+                        $("#finAreas").val(ui.values[1]);
+                    }
+                });
+            });
+            $('#ultimosCincoAniosAreas').unbind().click(function (e) {
+                e.preventDefault();
+                $("#inicioAreas").val(@(anioFinAreas - 4));
+                $("#finAreas").val(@anioFinAreas);
+                var parent = $(this).parents('.dropdown-select');
+                var toggle = parent.find('.dropdown-toggle');
+                toggle.html($(this).html());
+                CargarGraficaAreasTematicas("@pGroup.GNOSSID.Split('_')[1].ToUpper()", "areastematicasgraph");
+                CargarGraficaAreasTematicasArania("@pGroup.GNOSSID.Split('_')[1].ToUpper()", "areastematicasgrapharania");
+            });
+
+            $('#ultimoAnioArea').unbind().click(function (e) {
+                e.preventDefault();
+                $("#inicioAreas").val(@anioFinAreas);
+                $("#finAreas").val(@anioFinAreas);
+                var parent = $(this).parents('.dropdown-select');
+                var toggle = parent.find('.dropdown-toggle');
+                toggle.html($(this).html());
+                CargarGraficaAreasTematicas("@pGroup.GNOSSID.Split('_')[1].ToUpper()", "areastematicasgraph");
+                CargarGraficaAreasTematicasArania("@pGroup.GNOSSID.Split('_')[1].ToUpper()", "areastematicasgrapharania");
+            });
+
+            $('#aplicarAnioAreas').unbind().click(function (e) {
+                e.preventDefault();
+                var parent = $(this).parents('.dropdown-select');
+                var toggle = parent.find('.dropdown-toggle');
+                toggle.html($("#inicioAreas").val() + '-' + $("#finAreas").val());
+                CargarGraficaAreasTematicas("@pGroup.GNOSSID.Split('_')[1].ToUpper()", "areastematicasgraph");
+                CargarGraficaAreasTematicasArania("@pGroup.GNOSSID.Split('_')[1].ToUpper()", "areastematicasgrapharania");
+            });
+
+            $('#todosAniosArea').unbind().click(function (e) {
+                e.preventDefault();
+                $("#inicioAreas").val(@anioInicioAreas);
+                $("#finAreas").val(@anioFinAreas);
+                var parent = $(this).parents('.dropdown-select');
+                var toggle = parent.find('.dropdown-toggle');
+                toggle.html($(this).html());
+                CargarGraficaAreasTematicas("@pGroup.GNOSSID.Split('_')[1].ToUpper()", "areastematicasgraph");
+                CargarGraficaAreasTematicasArania("@pGroup.GNOSSID.Split('_')[1].ToUpper()", "areastematicasgrapharania");
+            });
+
+            $('#removeNodesAreas').unbind().click(function (e) {
+                e.preventDefault();
+                var numAreas = parseInt($('#numAreas').val());
+                if (numAreas > 10) {
+                    $('#numAreas').val((numAreas - 10));
+                }
+                $('#numNodosArea').html($('#numAreas').val());
+                CargarGraficaAreasTematicasArania("@pGroup.GNOSSID.Split('_')[1].ToUpper()", "areastematicasgrapharania");
+            });
+
+            $('#addNodesAreas').unbind().click(function (e) {
+                e.preventDefault();
+                var numAreas = parseInt($('#numAreas').val());
+                $('#numAreas').val((numAreas + 10));
+                $('#numNodosArea').html($('#numAreas').val());
+                CargarGraficaAreasTematicasArania("@pGroup.GNOSSID.Split('_')[1].ToUpper()", "areastematicasgrapharania");
+            });
+            //Fin métodos áreas
+
+            //Métodos colaboradores
+            $('#removeNodesCollaborators').unbind().click(function (e) {
+                e.preventDefault();
+                var numColaboradores = parseInt($('#numColaboradores').val());
+                if (numColaboradores > 10) {
+                    $('#numColaboradores').val((numColaboradores - 10));
+                }
+                $('#numNodosCollaborators').html($('#numColaboradores').val());
+                var parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro;
+                CargarGraficaColaboradores("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros,'colaboratorsgraph',true);
+            });
+
+            $('#addNodesCollaborators').unbind().click(function (e) {
+                e.preventDefault();
+                var numColaboradores = parseInt($('#numColaboradores').val());
+                $('#numColaboradores').val((numColaboradores + 10));
+                $('#numNodosCollaborators').html($('#numColaboradores').val());
+                var parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro;
+                 CargarGraficaColaboradores("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros,'colaboratorsgraph',true);
+            });
+            //Fin métodos colaboradores
+
+
             $('#proyectos-tab').unbind().click(function (e) {
                 e.preventDefault();
                 that.tabActive = "proyectos";
@@ -700,7 +946,7 @@
             CargarGraficaPublicaciones(parametros,'publicaciongraph');
         }
         else if (comportamientoPaginaGrupo.tabActive == "proyectos") {
-            CargarGraficaProyectos(parametros,'projectgraph');
+            CargarGraficaProyectos(parametros, 'projectgraphanios', 'projectgraphmembers','projectgraphambitos');
         }
         else if (comportamientoPaginaGrupo.tabActive == "miembros")
         {

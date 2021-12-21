@@ -131,24 +131,16 @@ function PintarGraficaPublicaciones(data,idContenedor) {
 	var myChart = new Chart(ctx, data);
 }
 
-function PintarGraficaProyectos(data,idContenedor) {	
-	$('#'+idContenedor).empty();
-	var htmlGraficasProyectos=`	<div class="col-12 col-xl-8" style="height:400px">
-									<canvas id="${idContenedor}_barrasanios" class="js-chart"></canvas>
-								</div>
-								<div class="col-12 col-xl-4">
-									<div  style="height:166px">
-										<canvas id="${idContenedor}_barrasmiembros" class="js-chart"></canvas>
-									</div>
-									<div  style="height:234px">
-										<canvas id="${idContenedor}_sectoresambito" class="js-chart"></canvas>
-									</div>
-								</div>`;
-
-	$('#'+idContenedor).append(htmlGraficasProyectos);
+function PintarGraficaProyectos(data,idContenedorAnios,idContenedorMiembros,idContenedorAmbito) {	
+	$('#'+idContenedorAnios).empty();
+	$('#'+idContenedorAnios).parent().css("height", 400);
+	$('#'+idContenedorMiembros).empty();
+	$('#'+idContenedorMiembros).parent().css("height", 166);
+	$('#'+idContenedorAmbito).empty();
+	$('#'+idContenedorAmbito).parent().css("height", 234);	
 	
 	//Gráfico de barras años
-	var ctxBarrasAnios = document.getElementById(idContenedor+'_barrasanios');
+	var ctxBarrasAnios = document.getElementById(idContenedorAnios);
 	data.graficaBarrasAnios.options={
 		scale:{
 			ticks:{
@@ -161,7 +153,7 @@ function PintarGraficaProyectos(data,idContenedor) {
 	
 	
 	//Gráfico de barras miembros
-	var ctxBarrasMiembros = document.getElementById(idContenedor+'_barrasmiembros');
+	var ctxBarrasMiembros = document.getElementById(idContenedorMiembros);
 	data.graficaBarrasMiembros.options={
 		scale:{
 			ticks:{
@@ -174,7 +166,7 @@ function PintarGraficaProyectos(data,idContenedor) {
 	
 	
 	//Gráfico de sectores ambito
-	var ctxSectoresAmbito = document.getElementById(idContenedor+'_sectoresambito');
+	var ctxSectoresAmbito = document.getElementById(idContenedorAmbito);
 	data.graficaSectoresAmbito.options={
 		maintainAspectRatio: false
 	}
@@ -225,14 +217,16 @@ function PintarGraficaArania(data,idContenedor){
 			"style": {
 				"curve-style": "haystack",
 				"content": "data(name)",
-				"font-size": "12px",
+				"font-size": "24px",
 				"font-family": 'Roboto',
 				"font-color": "#999999",
+				"background-color": "#c2c2c2",
 				"haystack-radius": "0.5",
-				"opacity": "0.4",
+				"opacity": "0.5",
 				"line-color": "#E1E1E1",
 				"width": "mapData(weight, 0, 10, 0, 10)",
-				"overlay-padding": "1px"
+				"overlay-padding": "1px",
+				"z-index": "11"
 			}
 		}],
 		// Datos

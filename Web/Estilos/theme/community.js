@@ -246,9 +246,9 @@ var iniciarDatepicker = {
             currentText: 'Hoy',
             monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
             monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
-            dayNames: ['Domingo', 'Lunes', 'Martes', 'MiÃ©rcoles', 'Jueves', 'Viernes', 'SÃ¡bado'],
-            dayNamesShort: ['Dom', 'Lun', 'Mar', 'MiÃ©', 'Juv', 'Vie', 'SÃ¡b'],
-            dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'SÃ¡'],
+            dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+            dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Juv', 'Vie', 'Sáb'],
+            dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'],
             weekHeader: 'Sm',
             dateFormat: 'dd/mm/yy',
             firstDay: 1,
@@ -436,6 +436,18 @@ var operativaFormularioTesauro = {
     }
 };
 
+var comportamientoTopicosCV = {
+    init: function () {
+        $('#modal-anadir-topicos').on('show.bs.modal', function () {
+            $('#modal-anadir-datos-experiencia').modal('hide');
+        });
+
+        $('#modal-anadir-topicos').on('hide.bs.modal', function () {
+            $('#modal-anadir-datos-experiencia').modal('show');
+        });
+    }
+};
+
 var mostrarFichaCabeceraFixed = {
     init: function () {
         this.config();
@@ -444,11 +456,10 @@ var mostrarFichaCabeceraFixed = {
     config: function () {
         this.body = body;
         this.cabecera = this.body.find('.cabecera-ficha');
+        this.contenido = this.body.find('.contenido-ficha');
     },
     comportamiento: function () {
-        if(this.cabecera.length === 0) return;
-
-        var position = this.cabecera.position().top + this.cabecera.height();
+        const position = this.contenido.position().top;
         $(window).scroll(function (e) {
             var scroll = $(window).scrollTop();
             if(scroll >= position) {
@@ -643,6 +654,7 @@ $(function () {
         iniciarComportamientoImagenUsuario.init();
         operativaFormularioAutor.init();
         operativaFormularioTesauro.init();
+        comportamientoTopicosCV.init();
     }
 });
 
@@ -650,16 +662,16 @@ $(function () {
 
     /**
     Para hacer que la imagen se guarde directamente por ajax hay que configurar las siguientes opciones
-    (Por defecto es "false" por lo que el File se guardarÃ¡ con el formulario al que pertenezca):
+    (Por defecto es "false" por lo que el File se guardará con el formulario al que pertenezca):
 
     options: {
         ajax: {
-            url: (string) url a la que se quiere hacer la peticiÃ³n,
-            param_name: (string) nombre del parÃ¡metro con el que se va a pasar el objeto File
+            url: (string) url a la que se quiere hacer la petición,
+            param_name: (string) nombre del parámetro con el que se va a pasar el objeto File
         }
     }
 
-    Se puede configurar tambiÃ©n cual serÃ¡n los selectores para cada elemento del droparea
+    Se puede configurar también cual serán los selectores para cada elemento del droparea
     options: {
         inputSelector: ".image-uploader__input",
         dropAreaSelector: ".image-uploader__drop-area",
@@ -668,15 +680,15 @@ $(function () {
         errorDisplay: ".image-uploader__error",
     }
 
-    Configurar lÃ­mite de tamaÃ±o en Kb (por defecto sin lÃ­mite)
+    Configurar límite de tamaño en Kb (por defecto sin límite)
     options: {
         sizeLimit: 100
     }
 
-    El html por defecto deberÃ­a ser asÃ­:
+    El html por defecto debería ser así:
         <div class="image-uploader js-image-uploader">
             <div class="image-uploader__preview">
-                <!-- Si hay una imagen en el servidor pintarla en el src, si no dejarlo vacÃ­o  -->
+                <!-- Si hay una imagen en el servidor pintarla en el src, si no dejarlo vacío  -->
                 <img class="image-uploader__img" src="">
             </div>
             <div class="image-uploader__drop-area">
@@ -685,8 +697,8 @@ $(function () {
                 </div>
                 <div class="image-uploader__info">
                     <p><strong>Arrastra y suelta en la zona punteada una foto para tu perfil</strong></p>
-                    <p>ImÃ¡genes en formato .PNG o .JPG</p>
-                    <p>Peso mÃ¡ximo de las imÃ¡genes 250 kb</p>
+                    <p>Imágenes en formato .PNG o .JPG</p>
+                    <p>Peso máximo de las imágenes 250 kb</p>
                 </div>
             </div>
             <div class="image-uploader__error">
@@ -728,7 +740,7 @@ $(function () {
 
         /**
          * Comprueba si en el inicio del plugin ya hay una imagen
-         * para aÃ±adirla al input file
+         * para añadirla al input file
          */
         var initialImageCheck = async function () {
             const image_url = plugin.previewImg.attr("src");
@@ -749,12 +761,12 @@ $(function () {
         var addInputChangeEvent = function () {
             plugin.input.change(function () {
                 if (!isFileImage()) {
-                    displayError('El archivo no es una imÃ¡gen vÃ¡lida. Los formatos vÃ¡lidos son .png y .jpg.');
+                    displayError('El archivo no es una imágen válida. Los formatos válidos son .png y .jpg.');
                     return;
                 }
 
                 if (!imageSizeAllowed()) {
-                    displayError('El archivo pesa demasiado. El lÃ­mite es ' + plugin.settings.sizeLimit + 'Kb');
+                    displayError('El archivo pesa demasiado. El límite es ' + plugin.settings.sizeLimit + 'Kb');
                     return;
                 }
 
@@ -767,7 +779,7 @@ $(function () {
         };
 
         /**
-         * Muestra la imagen que se ha aÃ±adido al input file
+         * Muestra la imagen que se ha añadido al input file
          */
         var showImageTemporalPreview = function () {
 
@@ -778,7 +790,7 @@ $(function () {
         };
 
         /**
-         * Incia lÃ³gica para llamada ajax
+         * Incia lógica para llamada ajax
          */
         var uploadImageWithAjax = function () {
 
@@ -820,11 +832,11 @@ $(function () {
          */
         var checkAjaxSettings = function () {
             if (plugin.settings.ajax.hasProperty('param_name')) {
-                console.log('La opciÃ³n "ajax.param_name" no estÃ¡ configurada')
+                console.log('La opción "ajax.param_name" no está configurada')
                 return false;
             }
             if (plugin.settings.ajax.hasProperty('url')) {
-                console.log('La opciÃ³n de "ajax.url" no estÃ¡ configurada')
+                console.log('La opción de "ajax.url" no está configurada')
                 return false;
             }
             return true;
@@ -864,7 +876,7 @@ $(function () {
 
         /**
          * @param {boolean} showLoading: Indicar si ha iniciado la carga y por lo tanto, es necesario mostrar un "loading".
-         * true: MostrarÃ¡ el "loading"
+         * true: Mostrará el "loading"
          * false: Quitar ese "loading" -> Fin carga de imagen
          */
         var showLoadingImagePreview = function (showLoading) {
