@@ -384,6 +384,14 @@
                                 </div>
                             </a>
                         </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="colaboradores-tab" data-toggle="tab" href="#colaboradores-panel" role="tab" aria-controls="colaboradores-panel" aria-selected="false">
+                                <div class="bloque">
+                                    <div class="label">@Html.Translate("COLABORADORES")</div>
+                                    <div class="data">---</div>
+                                </div>
+                            </a>
+                        </li>
                     </ul>
                 </div>
 
@@ -430,6 +438,13 @@
                             </div>
                         </div>
                     </div>
+                    <div class="tab-pane fade" id="colaboradores-panel" role="tabpanel" aria-labelledby="referencias-tab">
+                        <div class="row" id="contenedorBuscadorColaboradores">
+                            <div class="col col-12 col-grafo mb-5">
+                                <div class="wrapCol" id="graficaCytoscapeColab" style="width: 1224px; height: 500px;"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -440,11 +455,20 @@
 <script type="text/javascript">
     var depuracion = false;
 
+    const localUrlBase = "https://localhost:44321/";
+    const edmaUrlBase = "@Html.GetBaseUrlContent()/";
+
+    const urlBase = "@Html.GetBaseUrl()";
+    if (urlBase.includes("localhost") || urlBase.includes("depuracion")) {
+        depuracion = true;
+    }
+    
+
     // Datos cabeceras de las fichas.
     function CargarDatosCabeceras() {
-        var url = "http://serviciosedma.gnoss.com/servicioexterno/Hercules/DatosFichaProyecto"
+        var url = edmaUrlBase + "servicioexterno/Hercules/DatosFichaProyecto"
         if (depuracion) {
-            url = "https://localhost:44321/Hercules/DatosFichaProyecto"
+             url = localUrlBase + "Hercules/DatosFichaProyecto"
         }
         var arg = {};
         arg.pIdProyecto = "@pProject.GNOSSID";
@@ -459,136 +483,43 @@
     }
 
     // Datos gráfica colaboradores.
-    function CargarGraficaColaboradores(idproyecto, parametros) {
-        var url = "http://serviciosedma.gnoss.com/servicioexterno/Hercules/DatosGraficaRedColaboradores"
+    function CargarGraficaColaboradores(idproyecto, parametros, idContenedor) {
+        var url = edmaUrlBase + "servicioexterno/Hercules/DatosGraficaRedColaboradores"
         if (depuracion) {
-            url = "https://localhost:44321/Hercules/DatosGraficaRedColaboradores"
+            url = localUrlBase + "Hercules/DatosGraficaRedColaboradores"
         }
         var arg = {};
         arg.pIdProyecto = idproyecto;
         arg.pParametros = parametros;
-		$('#graficaCytoscape').empty();
+        $('#' + idContenedor).empty();
         $.get(url, arg, function (data) {
-            $('#graficaCytoscape').empty();
-
-            var cy = window.cy = cytoscape({
-                // Contenedor
-                container: document.getElementById('graficaCytoscape'),
-                // Layout
-                layout: {
-                    name: 'cose',
-                    idealEdgeLength: 100,
-                    nodeOverlap: 20,
-                    refresh: 20,
-                    padding: 30,
-                    randomize: false,
-                    componentSpacing: 100,
-                    nodeRepulsion: 400000,
-                    edgeElasticity: 100,
-                    nestingFactor: 5,
-                    gravity: 80,
-                    numIter: 1000,
-                    initialTemp: 200,
-                    coolingFactor: 0.95,
-                    minTemp: 1.0
-
-                }, pan: { x: 350, y: 50 },
-                // Estilos
-                style: [{
-                    "selector": "node",
-                    "style": {
-
-                        "width": "mapData(score, 0, 25, 30, 70)",
-                        "height": "mapData(score, 0, 25, 30, 70)",
-                        "content": "data(name)",
-                        "font-size": "12px",
-                        "font-family": 'Roboto',
-                        "font-color": "#999999",
-                        "background-color": "#c2c2c2",
-
-                        "text-outline-width": "0px",
-
-                        "overlay-padding": "6px",
-                        "z-index": "10"
-                    }
-                }, {
-                    "selector": "edge",
-                    "style": {
-                        "curve-style": "haystack",
-                        "haystack-radius": "0.5",
-                        "opacity": "0.4",
-                        "line-color": "#E1E1E1",
-                        "width": "5",
-                        "overlay-padding": "1px",
-                        "font-family": 'Arial Black',
-                        "font-color": 'black'
-                    }
-                }],
-                // Datos
-                elements: data
-            });
-            cy.zoomingEnabled(false);
-
-            var array = []
-            var nodos = cy.nodes()
-
-            //Quita el nombre de la publicación.
-            array.push(nodos[0]._private.data.name);
-            cy.nodes()[0]._private.data.name = "";
-
-            cy.nodes()[0].style({
-                'border-width': '2px',
-                'border-color': 'black',
-                'shape': 'circle'
-            });
-
-            var f = cy.nodes().length
-
-            for (i = 1; i < cy.nodes().length; i++) { //starts loop
-                array.push(nodos[i]._private.data.name);
-                //cy.nodes()[i]._private.data.name="";
-                cy.nodes()[i].style({
-                    'background-color': 'white',
-                    'background-image': 'https://cdn.iconscout.com/icon/free/png-256/user-1648810-1401302.png',
-                    'background-fit': 'cover',
-                    'border-width': '2px',
-                    'border-color': 'rgb(4,184,209)',
-                    'shape': 'circle'
-                })
-            };
-
-            cy.on('mouseover', 'edges', function (event) {
-                $('#numRelaciones').text('(' + event.target.id().split("~")[2] + ')');
-            });
-
-            cy.on('click', 'node', function (e) {
-                e = e.target;
-                var indice = cy.nodes().indexOf(e)
-                if (e._private.data.name === "") {
-                    e._private.data.name = array[indice]
-                    //nodo proyect.
-                    if (indice === 0) {
-                        e.style('border-color', 'rgb(12,121,212)')
-                    }
-                    else {
-                        e.style('border-color', 'rgb(4,184,209)')
-                    }
-                }
-                else {
-                    e._private.data.name = ""
-                    if (indice == 0) e.style('border-color', 'black');
-                    else e.style('border-color', 'grey');
-                }
-            })
+            PintarGraficaArania(data, idContenedor);
         });
     }
 
+
+    // Datos gráfica miembros.
+    function CargarGraficaMiembros(idproyecto, parametros, idContenedor) {
+        var url = edmaUrlBase + "servicioexterno/Hercules/DatosGraficaRedMiembros"
+        if (depuracion) {
+            url = localUrlBase + "Hercules/DatosGraficaRedMiembros"
+        }
+        var arg = {};
+        arg.pIdProyecto = idproyecto;
+        arg.pParametros = parametros;
+        $('#' + idContenedor).empty();
+        $.get(url, arg, function (data) {
+            PintarGraficaArania(data, idContenedor);
+        });
+    }
+
+
     // Datos gráfica publicaciones.
     function CargarGraficaPublicaciones(idproyecto, parametros) {
-		$('#chart-publicaciones').remove();
-        var url = "http://serviciosedma.gnoss.com/servicioexterno/Hercules/DatosGraficaPublicaciones"
+        $('#chart-publicaciones').remove();
+        var url = edmaUrlBase + "servicioexterno/Hercules/DatosGraficaPublicaciones"
         if (depuracion) {
-            url = "https://localhost:44321/Hercules/DatosGraficaPublicaciones"
+             url = localUrlBase + "Hercules/DatosGraficaPublicaciones"
         }
         var arg = {};
         arg.pIdProyecto = idproyecto;
@@ -607,10 +538,10 @@
 
     // Datos gráfica publicaciones horizontal.
     function CargarGraficaPublicacionesHorizontal(idproyecto, parametros) {
-		$('#chart-publicaciones-horizontal').remove();
-        var url = "http://serviciosedma.gnoss.com/servicioexterno/Hercules/DatosGraficaPublicacionesHorizontal"
+        $('#chart-publicaciones-horizontal').remove();
+        var url = edmaUrlBase + "servicioexterno/Hercules/DatosGraficaPublicacionesHorizontal"
         if (depuracion) {
-            url = "https://localhost:44321/Hercules/DatosGraficaPublicacionesHorizontal"
+             url = localUrlBase + "Hercules/DatosGraficaPublicacionesHorizontal"
         }
         var arg = {};
         arg.pIdProyecto = idproyecto;
@@ -665,6 +596,11 @@
                 CargarGraficaPublicacionesHorizontal("@pProject.GNOSSID.Split('_')[1].ToUpper()", "");
                 history.pushState('', 'New URL: ', ResetearURL());
             });
+            $('#colaboradores-tab').unbind().click(function (e) {
+                e.preventDefault();
+                that.tabActive = "colaboradores";
+                buscadorPersonalizado.init("@Html.Translate("INVESTIGADORES")", "#contenedorBuscadorColaboradores", "searchPersonasColaboradoresConProyecto=@pProject.GNOSSID.Split('_')[1].ToUpper()", null, "PestanyaActualID=@Html.Translate("ID_BUSQUEDA_PERSONAS_COLABORADORES")|rdf:type=person", "@Comunidad.Url", "@Comunidad.Key.ToString()");
+            });
             return;
         }
     };
@@ -675,13 +611,16 @@
 
     // Acciones al llevar a cabo en rl filtrado
     function accionFiltrado() {
+        var parametros = ObtenerHash2()+"&" + buscadorPersonalizado.filtro;
         if (comportamientoPaginaProyecto.tabActive == "participantes") {
-            var parametros = ObtenerHash2();
-            CargarGraficaColaboradores("@pProject.GNOSSID.Split('_')[1].ToUpper()", parametros);
+            CargarGraficaMiembros("@pProject.GNOSSID.Split('_')[1].ToUpper()", parametros, "graficaCytoscape");
         }
         else if (comportamientoPaginaProyecto.tabActive == "publicaciones") {
             var parametros = ObtenerHash2();
             CargarGraficaPublicaciones("@pProject.GNOSSID.Split('_')[1].ToUpper()", parametros);
+        }
+        else if (comportamientoPaginaProyecto.tabActive == "colaboradores") {
+            CargarGraficaColaboradores("@pProject.GNOSSID.Split('_')[1].ToUpper()", parametros, "graficaCytoscapeColab");
         }
     }
 
@@ -1540,39 +1479,39 @@
     }
 
     public class BFO_0000023 : GnossOCBase
-	{
+    {
 
-		public BFO_0000023() : base() { } 
+        public BFO_0000023() : base() { } 
 
-		public BFO_0000023(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
-		{
-			this.mGNOSSID = pSemCmsModel.Entity.Uri;
-			this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
-			this.Foaf_nick = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/nick"));
-			SemanticPropertyModel propRdf_member = pSemCmsModel.GetPropertyByPath("http://www.w3.org/1999/02/22-rdf-syntax-ns#member");
-			if(propRdf_member != null && propRdf_member.PropertyValues.Count > 0)
-			{
-				this.Rdf_member = new Person(propRdf_member.PropertyValues[0].RelatedEntity,idiomaUsuario);
-			}
-			this.Rdf_comment = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://www.w3.org/1999/02/22-rdf-syntax-ns#comment")).Value;
-		}
+        public BFO_0000023(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
+        {
+            this.mGNOSSID = pSemCmsModel.Entity.Uri;
+            this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
+            this.Foaf_nick = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/nick"));
+            SemanticPropertyModel propRdf_member = pSemCmsModel.GetPropertyByPath("http://www.w3.org/1999/02/22-rdf-syntax-ns#member");
+            if(propRdf_member != null && propRdf_member.PropertyValues.Count > 0)
+            {
+                this.Rdf_member = new Person(propRdf_member.PropertyValues[0].RelatedEntity,idiomaUsuario);
+            }
+            this.Rdf_comment = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://www.w3.org/1999/02/22-rdf-syntax-ns#comment")).Value;
+        }
 
-		public virtual string RdfType { get { return "http://purl.obolibrary.org/obo/BFO_0000023"; } }
-		public virtual string RdfsLabel { get { return "http://purl.obolibrary.org/obo/BFO_0000023"; } }
+        public virtual string RdfType { get { return "http://purl.obolibrary.org/obo/BFO_0000023"; } }
+        public virtual string RdfsLabel { get { return "http://purl.obolibrary.org/obo/BFO_0000023"; } }
 
-		[LABEL(LanguageEnum.es,"http://xmlns.com/foaf/0.1/nick")]
-		[RDFProperty("http://xmlns.com/foaf/0.1/nick")]
-		public  string Foaf_nick { get; set;}
+        [LABEL(LanguageEnum.es,"http://xmlns.com/foaf/0.1/nick")]
+        [RDFProperty("http://xmlns.com/foaf/0.1/nick")]
+        public  string Foaf_nick { get; set;}
 
-		[LABEL(LanguageEnum.es,"http://www.w3.org/1999/02/22-rdf-syntax-ns#member")]
-		[RDFProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#member")]
+        [LABEL(LanguageEnum.es,"http://www.w3.org/1999/02/22-rdf-syntax-ns#member")]
+        [RDFProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#member")]
 
-		public  Person Rdf_member  { get; set;} 
-		public string IdRdf_member  { get; set;} 
+        public  Person Rdf_member  { get; set;} 
+        public string IdRdf_member  { get; set;} 
 
-		[LABEL(LanguageEnum.es,"http://www.w3.org/1999/02/22-rdf-syntax-ns#comment")]
-		[RDFProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#comment")]
-		public  int Rdf_comment { get; set;}
+        [LABEL(LanguageEnum.es,"http://www.w3.org/1999/02/22-rdf-syntax-ns#comment")]
+        [RDFProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#comment")]
+        public  int Rdf_comment { get; set;}
     }
 
     public class Person : GnossOCBase
