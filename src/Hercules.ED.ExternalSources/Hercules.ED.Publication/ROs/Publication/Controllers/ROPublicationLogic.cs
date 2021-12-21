@@ -20,9 +20,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
         protected string bareer;
         protected string baseUri { get; set; }
 
-        protected List<string> dois_principales = new List<string>();
-        protected List<string> dois_bibliografia = new List<string>();
-        protected Dictionary<string, string> headers = new Dictionary<string, string>();
+        public List<string> dois_principales = new List<string>();
+        public List<string> dois_bibliografia = new List<string>();
+        public Dictionary<string, string> headers = new Dictionary<string, string>();
         public Dictionary<string, Dictionary<string, Dictionary<string, Tuple<string, string, string>>>> metricas_scopus;
         public Dictionary<string, Dictionary<string, Dictionary<string, Tuple<string, string, string>>>> metricas_scie;
         public Dictionary<string, Dictionary<string, Dictionary<string, Tuple<string, string, string>>>> metricas_ssci;
