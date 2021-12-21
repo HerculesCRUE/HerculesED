@@ -1408,6 +1408,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
         {
             Uri url = new Uri(string.Format(_Configuracion.GetUrlSemanticScholar() + "SemanticScholar/GetROs?doi={0}", doi));
             string info_publication = httpCall(url.ToString(), "GET", headers).Result;
+            Log.Information("Respuesta SemanticScholar --> " + info_publication);
             Publication objInicial_SemanticScholar = JsonConvert.DeserializeObject<Publication>(info_publication);
             return objInicial_SemanticScholar;
         }
@@ -1416,6 +1417,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
         {
             Uri url = new Uri(string.Format(_Configuracion.GetUrlOpenCitations() + "OpenCitations/GetROs?doi={0}", doi));
             string info_publication = httpCall(url.ToString(), "GET", headers).Result;
+            Log.Information("Respuesta OpenCitations --> " + info_publication);
             if (info_publication == null)
             {
                 return null;
@@ -1428,6 +1430,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
         {
             Uri url = new Uri(string.Format(_Configuracion.GetUrlCrossRef() + "CrossRef/GetROs?doi={0}", doi));
             string info_publication = httpCall(url.ToString(), "GET", headers).Result;
+            Log.Information("Respuesta CrossRef --> " + info_publication);
             if (info_publication == null)
             {
                 return null;
@@ -1439,6 +1442,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
         {
             Uri url = new Uri(string.Format(_Configuracion.GetUrlScopus() + "Scopus/GetROs?orcid={0}&date={1}", orcid, date));
             string info_publication = httpCall(url.ToString(), "GET", headers).Result;
+            Log.Information("Respuesta Scopus --> " + info_publication);
             List<Publication> objInicial_Scopus = JsonConvert.DeserializeObject<List<Publication>>(info_publication);
             return objInicial_Scopus;
         }
@@ -1447,7 +1451,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
         {
             Uri url = new Uri(string.Format(_Configuracion.GetUrlWos() + "WoS/GetROs?orcid={0}&date={1}", orcid, date));
             string info_publication = httpCall(url.ToString(), "GET", headers).Result;
-            Log.Information(info_publication);
+            Log.Information("Respuesta WoS --> " + info_publication);
             List<Publication> objInicial_woS = JsonConvert.DeserializeObject<List<Publication>>(info_publication);
             return objInicial_woS;
         }
@@ -1460,6 +1464,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 {
                     Uri url = new Uri(string.Format(_Configuracion.GetUrlZenodo() + "Zenodo/GetROs?ID={0}", name));
                     string info_publication = httpCall(url.ToString(), "GET", headers).Result;
+                    Log.Information("Respuesta Zenodo --> " + info_publication);
                     if (info_publication == null | !info_publication.EndsWith(".pdf"))
                     {
                         return null;
