@@ -280,7 +280,8 @@ function PintarGraficaArania(data,idContenedor){
 	var edges = cy.edges();
 
 	for (i = 0; i < cy.edges().length; i++) { //starts loop
-		arrayEdges.push(edges[i]._private.data.name);
+		var data=edges[i]._private.data.id.split('~');	
+		arrayEdges.push(data[data.length-1]);
 		edges[i]._private.data.name = "";
 		switch (edges[i]._private.data.type) {
 			case 'relation_document':
