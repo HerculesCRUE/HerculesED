@@ -112,12 +112,18 @@ namespace PublicationConnect.ROs.Publications.Controllers
             {
                 foreach (Publication pub in objInicial_woS)
                 {
+                    Log.Information("Lista dois bibliografia...");
                     this.dois_bibliografia = new List<string>();
+                    Log.Information("Advertencia...");
                     this.advertencia = pub.problema;
                     string doi = pub.doi;
-                    dois_principales.Add(doi);
+                    Log.Information("Lista dois principales...");
+                    this.dois_principales.Add(doi);
+                    Log.Information("Haciendo petición a SemanticScholar...");
                     Publication objInicial_semanticScholar = llamada_Semantic_Scholar(pub.doi);
+                    Log.Information("Comparación...");
                     Publication pub_completa = compatacion(pub, objInicial_semanticScholar);
+                    Log.Information("Haciendo petición a CrossRef...");
                     Publication objInicial_CrossRef = llamada_CrossRef(doi);
                     pub_completa = compatacion(pub_completa, objInicial_CrossRef);
                     if (objInicial_CrossRef != null)
