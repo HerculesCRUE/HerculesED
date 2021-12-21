@@ -161,7 +161,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
                 }
             }
-            if (objInicial_Scopus.Count >= 1)
+            if (objInicial_Scopus != null && objInicial_Scopus.Count >= 1)
             {
                 //llamada Scopus para completar publicaciones. 
                 foreach (Publication pub_scopus in objInicial_Scopus)
@@ -169,19 +169,26 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     this.advertencia = pub_scopus.problema;
                     if (!dois_principales.Contains(pub_scopus.doi))
                     {
+                        Log.Information("Lista dois bibliografia2...");
                         this.dois_bibliografia = new List<string>();
+                        Log.Information("Advertencias2...");
                         this.advertencia = pub_scopus.problema;
                         string doi = pub_scopus.doi;
-                        dois_principales.Add(doi);
+                        Log.Information("Lista dois principales2...");
+                        this.dois_principales.Add(doi);
+                        Log.Information("Llamada a SemanticScholar...");
                         Publication objInicial_semanticScholar = llamada_Semantic_Scholar(pub_scopus.doi);
+                        Log.Information("Comparación...");
                         Publication pub_completa = compatacion(pub_scopus, objInicial_semanticScholar);
+                        Log.Information("Llamada a CrossRef...");
                         Publication objInicial_CrossRef = llamada_CrossRef(doi);
-
+                        Log.Information("Comparación...");
                         pub_completa = compatacion(pub_completa, objInicial_CrossRef);
                         if (objInicial_CrossRef != null)
                         {
                             pub_completa.bibliografia = objInicial_CrossRef.bibliografia;
                         }
+                        Log.Information("Llamada a Zenodo...");
                         pub_completa.pdf = llamada_Zenodo(pub_completa.doi);
                         pub_completa.topics_enriquecidos = enriquedicmiento(pub_completa);
                         pub_completa.freetextKeyword_enriquecidas = enriquedicmiento_pal(pub_completa);
