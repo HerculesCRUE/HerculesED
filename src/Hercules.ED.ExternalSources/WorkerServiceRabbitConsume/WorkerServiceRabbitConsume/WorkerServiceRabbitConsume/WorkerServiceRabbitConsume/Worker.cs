@@ -23,27 +23,38 @@ namespace WorkerServiceRabbitConsume
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            while (!stoppingToken.IsCancellationRequested)
+            //while (!stoppingToken.IsCancellationRequested)
+            //{
+            //    if (!_processRabbitReady)
+            //    {
+
+            //    }
+            //    Thread.Sleep(5000);
+            //}
+            ListenToQueue();
+        }
+
+        private void ListenToQueue()
+        {
+            using (var scope = _serviceScopeFactory.CreateScope())
             {
-                if (!_processRabbitReady)
-                {
-                    var scope = _serviceScopeFactory.CreateScope();
-                    ConfigService configService = scope.ServiceProvider.GetRequiredService<ConfigService>();
-                    ReadRabbitService rabbitMQService = scope.ServiceProvider.GetRequiredService<ReadRabbitService>();
+                ConfigService configService = scope.ServiceProvider.GetRequiredService<ConfigService>();
+                ReadRabbitService rabbitMQService = scope.ServiceProvider.GetRequiredService<ReadRabbitService>();
 
-                    // Prueba 
-                    List<string> listaDatos = new List<string>() { "investigador" , "0000-0002-5525-1259", "01/12/2021"};
-                    rabbitMQService.PublishMessage(listaDatos, configService.GetQueueRabbit());
+                // Prueba 
+                //List<string> listaDatos = new List<string>() { "investigador" , "0000-0002-5525-1259", "2021-12-01"};
+                //rabbitMQService.PublishMessage(listaDatos, configService.GetQueueRabbit());
 
-                    rabbitMQService.ListenToQueue(new ReadRabbitService.ReceivedDelegate(rabbitMQService.ProcessItem), new ReadRabbitService.ShutDownDelegate(OnShutDown), configService.GetQueueRabbit());
-                    _processRabbitReady = true;
-                }
+                rabbitMQService.ListenToQueue(new ReadRabbitService.ReceivedDelegate(rabbitMQService.ProcessItem), new ReadRabbitService.ShutDownDelegate(OnShutDown), configService.GetQueueRabbit());
+                _processRabbitReady = true;
             }
         }
 
         private void OnShutDown()
         {
             _processRabbitReady = false;
+            Thread.Sleep(5000);
+            ListenToQueue();
         }
     }
 }

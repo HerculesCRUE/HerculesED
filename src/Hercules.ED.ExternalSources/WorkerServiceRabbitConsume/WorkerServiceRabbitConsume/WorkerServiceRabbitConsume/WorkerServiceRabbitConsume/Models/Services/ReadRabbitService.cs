@@ -124,7 +124,7 @@ namespace Gnoss.Web.ReprocessData.Models.Services
             channel.BasicConsume(queue, false, eventingBasicConsumer);
         }
 
-        public string dir_fichero = @"";
+        public string dir_fichero = @"FileDatosOut/";
         protected Dictionary<string, string> headers = new Dictionary<string, string>();
 
         /// <summary>
@@ -194,11 +194,13 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                 if (message[2] != null)
                 {
                     Uri url = new Uri(string.Format(_configService.GetUrlPublicacion() + "Publication/GetROs?orcid={0}&date={1}", message[1], message[2]));
-                    Console.Write(url);
+                    //UriBuilder uri = new UriBuilder(string.Format(_configService.GetUrlPublicacion() + "Publication/GetROs?orcid={0}&date={1}", message[1], message[2]));
+                    //uri.Scheme = Uri.UriSchemeHttps;
+                    Console.Write("Obteniendo datos petición de: " + url);
                     string info_publication = httpCall(url.ToString(), "GET", headers).Result;
                     //List<Publication> objInicial = JsonConvert.DeserializeObject<List<Publication>>(info_publication);
 
-                    File.WriteAllText(dir_fichero, info_publication);
+                    File.WriteAllText(dir_fichero + "inv_" + DateTime.Now.ToString().Replace('/', '-').Replace(':', '_') + ".json", info_publication);
                     //escribirlo en un fichero! 
                     return true;
                 }
@@ -208,7 +210,7 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                     string info_publication = httpCall(url.ToString(), "GET", headers).Result;
                     //List<Publication> objInicial = JsonConvert.DeserializeObject<List<Publication>>(info_publication);
                     //escribirlo en un fichero! 
-                    File.WriteAllText(dir_fichero, info_publication);
+                    File.WriteAllText(dir_fichero + "inv_" + DateTime.Now + ".json", info_publication);
 
                     return true;
                 }
@@ -220,7 +222,7 @@ namespace Gnoss.Web.ReprocessData.Models.Services
             }
 
             // Si llegamos aqui lo que tenemos es la entrada de la cola de rabbit no esta en el formato correcto! 
-            return false;
+            return true;
         }
     }
 }
