@@ -275,5 +275,229 @@ namespace DesnormalizadorHercules.Models
                 }
             }
         }
+
+
+        public void ActualizarNumeroAreasTematicas(string pProject = null)
+        {
+            //TODO cambiar con lo que este público en el CV
+            //TODO comentario query
+
+
+            string filter = "";
+            if (!string.IsNullOrEmpty(pProject))
+            {
+                filter = $" FILTER(?project =<{pProject}>)";
+            }
+            //Eliminamos los duplicados
+            EliminarDuplicados("project", "http://vivoweb.org/ontology/core#Project", "http://w3id.org/roh/themedAreasNumber");
+
+
+            //Actualizamos los datos
+            while (true)
+            {
+                int limit = 500;
+                //TODO eliminar from
+                String select = @"select * where{ select ?project  ?numAreasTematicasCargadas ?numAreasTematicasACargar  from <http://gnoss.com/document.owl>  from <http://gnoss.com/taxonomy.owl>  ";
+                String where = @$"where{{
+                            ?project a <http://vivoweb.org/ontology/core#Project>.
+                            {filter}
+                            OPTIONAL
+                            {{
+                              ?project <http://w3id.org/roh/themedAreasNumber> ?numAreasTematicasCargadasAux. 
+                              BIND(xsd:int( ?numAreasTematicasCargadasAux) as  ?numAreasTematicasCargadas)
+                            }}
+                            {{
+                              select ?project count(distinct ?categoria) as ?numAreasTematicasACargar
+                              Where{{
+                                ?project a <http://vivoweb.org/ontology/core#Project>.
+                                OPTIONAL{{
+                                    ?documento a <http://purl.org/ontology/bibo/Document>. 
+                                    ?documento <http://w3id.org/roh/project> ?project.
+                                    ?documento <http://w3id.org/roh/hasKnowledgeArea> ?area.
+                                    ?area <http://w3id.org/roh/categoryNode> ?categoria.
+                                    ?categoria <http://www.w3.org/2008/05/skos#prefLabel> ?nombreCategoria.
+                                    MINUS
+                                    {{
+                                        ?categoria <http://www.w3.org/2008/05/skos#narrower> ?hijos
+                                    }}
+                                }}
+                              }}Group by ?project 
+                            }}
+                            FILTER(?numAreasTematicasCargadas!= ?numAreasTematicasACargar OR !BOUND(?numAreasTematicasCargadas) )
+                            }}}} limit {limit}";
+                SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "project");
+
+                foreach (Dictionary<string, SparqlObject.Data> fila in resultado.results.bindings)
+                {
+                    string project = fila["project"].value;
+                    string numAreasTematicasACargar = fila["numAreasTematicasACargar"].value;
+                    string numAreasTematicasCargadas = "";
+                    if (fila.ContainsKey("numAreasTematicasCargadas"))
+                    {
+                        numAreasTematicasCargadas = fila["numAreasTematicasCargadas"].value;
+                    }
+                    ActualizadorTriple(project, "http://w3id.org/roh/themedAreasNumber", numAreasTematicasCargadas, numAreasTematicasACargar);
+                }
+
+                if (resultado.results.bindings.Count() != limit)
+                {
+                    break;
+                }
+            }
+        }
+
+
+        public void ActualizarNumeroPublicaciones(string pProject = null)
+        {
+            //TODO cambiar con lo que este público en el CV
+            //TODO comentario query
+
+
+            string filter = "";
+            if (!string.IsNullOrEmpty(pProject))
+            {
+                filter = $" FILTER(?project =<{pProject}>)";
+            }
+            //Eliminamos los duplicados
+            EliminarDuplicados("project", "http://vivoweb.org/ontology/core#Project", "http://w3id.org/roh/publicationsNumber");
+
+
+            //Actualizamos los datos
+            while (true)
+            {
+                int limit = 500;
+                //TODO eliminar from
+                String select = @"select * where{ select ?project  ?numDocumentosCargados ?numDocumentosACargar  from <http://gnoss.com/document.owl>  from <http://gnoss.com/person.owl>  ";
+                String where = @$"where{{
+                            ?project a <http://vivoweb.org/ontology/core#Project>.
+                            {filter}
+                            OPTIONAL
+                            {{
+                              ?project <http://w3id.org/roh/publicationsNumber> ?numDocumentosCargadosAux. 
+                              BIND(xsd:int( ?numDocumentosCargadosAux) as  ?numDocumentosCargados)
+                            }}
+                            {{
+                              select ?project count(distinct ?doc) as ?numDocumentosACargar
+                              Where{{
+                                ?project a <http://vivoweb.org/ontology/core#Project>.
+                                OPTIONAL{{
+                                    ?doc a <http://purl.org/ontology/bibo/Document>. 
+                                    ?doc <http://w3id.org/roh/project> ?project.
+                                }}
+                              }}Group by ?project 
+                            }}
+                            FILTER(?numDocumentosCargados!= ?numDocumentosACargar OR !BOUND(?numDocumentosCargados) )
+                            }}}} limit {limit}";
+                SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "project");
+
+                foreach (Dictionary<string, SparqlObject.Data> fila in resultado.results.bindings)
+                {
+                    string project = fila["project"].value;
+                    string numDocumentosACargar = fila["numDocumentosACargar"].value;
+                    string numDocumentosCargados = "";
+                    if (fila.ContainsKey("numDocumentosCargados"))
+                    {
+                        numDocumentosCargados = fila["numDocumentosCargados"].value;
+                    }
+                    ActualizadorTriple(project, "http://w3id.org/roh/publicationsNumber", numDocumentosCargados, numDocumentosACargar);
+                }
+
+                if (resultado.results.bindings.Count() != limit)
+                {
+                    break;
+                }
+            }
+        }
+
+
+        public void ActualizarNumeroColaboradores(string pProject = null)
+        {
+            string filter = "";
+            if (!string.IsNullOrEmpty(pProject))
+            {
+                filter = $" FILTER(?project =<{pProject}>)";
+            }
+            //Eliminamos los duplicados
+            EliminarDuplicados("project", "http://xmlns.com/foaf/0.1/Group", "http://w3id.org/roh/collaboratorsNumber");
+
+            while (true)
+            {
+                int limit = 500;
+                //TODO eliminar from
+                String select = @"select * where{ select ?project ?numColaboradoresCargados ?numColaboradoresACargar  from <http://gnoss.com/person.owl> from <http://gnoss.com/project.owl> from <http://gnoss.com/document.owl> ";
+                String where = @$"where{{
+                            ?project a <http://vivoweb.org/ontology/core#Project>.
+                            {filter}
+                            OPTIONAL
+                            {{
+                              ?project <http://w3id.org/roh/collaboratorsNumber> ?numColaboradoresCargadosAux. 
+                              BIND(xsd:int( ?numColaboradoresCargadosAux) as  ?numColaboradoresCargados)
+                            }}
+                            {{
+                              select ?project count(distinct ?person) as ?numColaboradoresACargar
+                              Where{{                               
+                                ?project a <http://vivoweb.org/ontology/core#Project>.
+                                OPTIONAL
+                                {{
+                                    {{
+	                                    SELECT DISTINCT ?person ?project
+	                                    WHERE 
+	                                    {{	
+                                            ?person a <http://xmlns.com/foaf/0.1/Person>
+		                                    {{
+			                                    {{
+				                                    #Documentos
+				                                    SELECT *
+				                                    WHERE {{
+					                                    ?documento <http://w3id.org/roh/project> ?project.
+					                                    ?documento a <http://purl.org/ontology/bibo/Document>.
+					                                    ?documento <http://purl.org/ontology/bibo/authorList> ?listaAutores.
+					                                    ?listaAutores <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person.
+				                                    }}
+			                                    }} 
+			                                    UNION 
+			                                    {{
+				                                    #Proyectos
+				                                    SELECT *
+				                                    WHERE {{
+					                                    ?project ?propRol ?role.
+					                                    FILTER(?propRol in (<http://vivoweb.org/ontology/core#relates>,<http://w3id.org/roh/mainResearchers>))
+					                                    ?role <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person.
+				                                    }}
+			                                    }}
+		                                    }}		
+		                                    MINUS
+		                                    {{
+			                                    ?person <http://vivoweb.org/ontology/core#relates> ?project
+		                                    }}
+	                                    }}
+                                    }}
+                                }}                                
+                              }}Group by ?project 
+                            }}
+                            FILTER(?numColaboradoresCargados!= ?numColaboradoresACargar OR !BOUND(?numColaboradoresCargados) )
+                            }}}} limit {limit}";
+                SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "project");
+
+                foreach (Dictionary<string, SparqlObject.Data> fila in resultado.results.bindings)
+                {
+                    string project = fila["project"].value;
+                    string numColaboradoresACargar = fila["numColaboradoresACargar"].value;
+                    string numColaboradoresCargados = "";
+                    if (fila.ContainsKey("numColaboradoresCargados"))
+                    {
+                        numColaboradoresCargados = fila["numColaboradoresCargados"].value;
+                    }
+                    ActualizadorTriple(project, "http://w3id.org/roh/collaboratorsNumber", numColaboradoresCargados, numColaboradoresACargar);
+                }
+
+                if (resultado.results.bindings.Count() != limit)
+                {
+                    break;
+                }
+            }
+
+        }
+
     }
 }

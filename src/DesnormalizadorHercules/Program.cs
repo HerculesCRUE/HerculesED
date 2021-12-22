@@ -93,10 +93,9 @@ namespace DesnormalizadorHercules
                     actualizadorProject.ActualizarPertenenciaPersonas();
                     actualizadorProject.ActualizarPertenenciaGrupos();
                     actualizadorProject.ActualizarProyectosPublicos();
-                    //Nº de publicaciones
-                    //Nº de areas tematicas
-                    //Nº de colaboradores
-
+                    actualizadorProject.ActualizarNumeroAreasTematicas();
+                    actualizadorProject.ActualizarNumeroPublicaciones();
+                    actualizadorProject.ActualizarNumeroColaboradores();
 
 
 
