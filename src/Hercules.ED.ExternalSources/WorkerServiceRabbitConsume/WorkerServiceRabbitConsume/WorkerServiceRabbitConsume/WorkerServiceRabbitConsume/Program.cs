@@ -17,6 +17,7 @@ namespace WorkerServiceRabbitConsume
 
         public static void Main(string[] args)
         {
+            FileLogger.Log("Inicio");
             CreateHostBuilder(args).Build().Run();
         }
 
@@ -28,5 +29,16 @@ namespace WorkerServiceRabbitConsume
                     services.AddScoped(typeof(ReadRabbitService));
                     services.AddHostedService<Worker>();
                 });
+
+        public static class FileLogger
+        {
+            private const string FilePath = "/app/logs/log.txt";
+            public static void Log(string messsage)
+            {
+                using var fileStream = new FileStream(FilePath, FileMode.Append);
+                using var writter = new StreamWriter(fileStream);
+                writter.WriteLine(messsage);
+            }
+        }
     }
 }

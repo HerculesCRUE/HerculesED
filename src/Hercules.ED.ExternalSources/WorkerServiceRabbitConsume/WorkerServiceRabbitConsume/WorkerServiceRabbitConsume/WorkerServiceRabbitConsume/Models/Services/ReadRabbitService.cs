@@ -11,6 +11,7 @@ using System.Net.Http;
 using Gnoss.Web.ReprocessData.Models;
 using Newtonsoft.Json;
 using System.Threading;
+using static WorkerServiceRabbitConsume.Program;
 
 namespace Gnoss.Web.ReprocessData.Models.Services
 {
@@ -195,12 +196,15 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                 if (message[2] != null)
                 {
                     Console.Write("Generando URL...");
+                    FileLogger.Log("Generando URL...");
                     Uri url = new Uri(string.Format(_configService.GetUrlPublicacion() + "Publication/GetROs?orcid={0}&date={1}", message[1], message[2]));
                     //UriBuilder uri = new UriBuilder(string.Format(_configService.GetUrlPublicacion() + "Publication/GetROs?orcid={0}&date={1}", message[1], message[2]));
                     //uri.Scheme = Uri.UriSchemeHttps;
                     Console.Write("Obteniendo datos petición de: " + url);
+                    FileLogger.Log("Obteniendo datos petición de: " + url);
                     string info_publication = httpCall(url.ToString(), "GET", headers).Result;
                     //List<Publication> objInicial = JsonConvert.DeserializeObject<List<Publication>>(info_publication);
+                    Console.Write("Datos de publicación leidos.");
                     Console.Write("Datos de publicación leidos.");
                     File.WriteAllText(dir_fichero + "inv_" + DateTime.Now.ToString().Replace('/', '-').Replace(':', '_') + ".json", info_publication);
                     //escribirlo en un fichero! 
