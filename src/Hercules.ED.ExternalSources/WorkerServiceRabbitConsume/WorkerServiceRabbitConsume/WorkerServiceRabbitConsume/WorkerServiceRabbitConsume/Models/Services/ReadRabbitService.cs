@@ -207,13 +207,18 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                         string info_publication = httpCall(url.ToString(), "GET", headers).Result;
                         //List<Publication> objInicial = JsonConvert.DeserializeObject<List<Publication>>(info_publication);
                         Console.Write("Datos de publicación leidos.");
-                        Console.Write("Datos de publicación leidos.");
-                        if(!Directory.Exists("/app" + dir_fichero)) //TODO: Coger de configuración la ruta del directorio
+                        FileLogger.Log("Datos de publicación leidos.");
+
+                        // ------------------ TODO: Coger de configuración la ruta del directorio
+                        if (!Directory.Exists("/app/logs/" + dir_fichero)) 
                         {
-                            Directory.CreateDirectory(Path.GetDirectoryName(dir_fichero));
+                            Directory.CreateDirectory("/app/logs/" + dir_fichero);
+                            FileLogger.Log("Directorio creado");
                         }
-                        Console.Write(Path.GetDirectoryName(dir_fichero));
-                        File.WriteAllText(dir_fichero + "inv_" + DateTime.Now.ToString().Replace('/', '-').Replace(':', '_') + ".json", info_publication);
+
+                        FileLogger.Log("/app/logs/" + dir_fichero);
+                        File.WriteAllText("/app/logs/" + dir_fichero + "inv_" + DateTime.Now.ToString().Replace('/', '-').Replace(':', '_') + ".json", info_publication);
+                        FileLogger.Log("JSON --> " + "/app/logs/" + dir_fichero + "inv_" + DateTime.Now.ToString().Replace('/', '-').Replace(':', '_') + ".json");
                         //escribirlo en un fichero! 
                     }
                     catch (Exception e)
