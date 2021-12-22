@@ -215,6 +215,11 @@ var edicionCV = {
 		.list-wrap ul li.background-oscuro a { color: var(--c-gris-oscuro); }
 		.list-wrap ul li.background-oscuro .material-icons { color: var(--c-gris-oscuro); }
 
+		.topic .item.aux .ac_results{
+			top: 40px!important;
+			left: calc(50% - 94px)!important;
+		}
+
 		</style>`);
 		
         //Carga de secciones principales
