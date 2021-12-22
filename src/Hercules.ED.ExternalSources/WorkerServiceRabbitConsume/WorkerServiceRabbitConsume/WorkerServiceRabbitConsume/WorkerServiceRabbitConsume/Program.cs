@@ -17,7 +17,6 @@ namespace WorkerServiceRabbitConsume
 
         public static void Main(string[] args)
         {
-            FileLogger.Log("Inicio");
             CreateHostBuilder(args).Build().Run();
         }
 

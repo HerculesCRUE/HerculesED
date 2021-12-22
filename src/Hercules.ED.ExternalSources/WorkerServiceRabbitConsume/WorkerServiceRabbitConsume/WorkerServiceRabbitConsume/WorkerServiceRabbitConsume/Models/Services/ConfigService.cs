@@ -14,6 +14,7 @@ namespace Gnoss.Web.ReprocessData.Models.Services
         private string RabbitConnectionString { get; set; }
         private string QueueRabbit { get; set; }
         private string urlPublicacion { get; set; }
+        private string rutaDirectorioEscritura { get; set; }
 
         /// <summary>
         /// Constructor.
@@ -104,6 +105,31 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                 urlPublicacion = queue;
             }
             return urlPublicacion;
+        }
+
+        /// <summary>
+        /// Obtiene la ruta de escritura de los ficheros.
+        /// </summary>
+        /// <returns>Ruta de escritura.</returns>
+        public string GetRutaDirectorioEscritura()
+        {
+            if (string.IsNullOrEmpty(rutaDirectorioEscritura))
+            {
+                string connectionString = string.Empty;
+                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                if (environmentVariables.Contains("DirectorioEscritura"))
+                {
+                    connectionString = environmentVariables["DirectorioEscritura"] as string;
+                }
+                else
+                {
+                    connectionString = _configuration["DirectorioEscritura"];
+                }
+
+                rutaDirectorioEscritura = connectionString;
+            }
+
+            return rutaDirectorioEscritura;
         }
     }
 }

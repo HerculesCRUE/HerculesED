@@ -195,31 +195,17 @@ namespace Gnoss.Web.ReprocessData.Models.Services
             {
                 if (message[2] != null)
                 {
-                    Console.Write("Generando URL...");
-                    FileLogger.Log("Generando URL...");
                     Uri url = new Uri(string.Format(_configService.GetUrlPublicacion() + "Publication/GetROs?orcid={0}&date={1}", message[1], message[2]));
-                    //UriBuilder uri = new UriBuilder(string.Format(_configService.GetUrlPublicacion() + "Publication/GetROs?orcid={0}&date={1}", message[1], message[2]));
-                    //uri.Scheme = Uri.UriSchemeHttps;
-                    Console.Write("Obteniendo datos petición de: " + url);
-                    FileLogger.Log("Obteniendo datos petición de: " + url);
+
                     try
                     {
                         string info_publication = httpCall(url.ToString(), "GET", headers).Result;
-                        //List<Publication> objInicial = JsonConvert.DeserializeObject<List<Publication>>(info_publication);
-                        Console.Write("Datos de publicación leidos.");
-                        FileLogger.Log("Datos de publicación leidos.");
-
-                        // ------------------ TODO: Coger de configuración la ruta del directorio
-                        if (!Directory.Exists("/app/logs/" + dir_fichero)) 
+                        if (!Directory.Exists(_configService.GetRutaDirectorioEscritura()))
                         {
-                            Directory.CreateDirectory("/app/logs/" + dir_fichero);
-                            FileLogger.Log("Directorio creado");
+                            Directory.CreateDirectory(_configService.GetRutaDirectorioEscritura());
                         }
 
-                        FileLogger.Log("/app/logs/" + dir_fichero);
-                        File.WriteAllText("/app/logs/" + dir_fichero + "inv_" + DateTime.Now.ToString().Replace('/', '-').Replace(':', '_') + ".json", info_publication);
-                        FileLogger.Log("JSON --> " + "/app/logs/" + dir_fichero + "inv_" + DateTime.Now.ToString().Replace('/', '-').Replace(':', '_') + ".json");
-                        //escribirlo en un fichero! 
+                        File.WriteAllText(_configService.GetRutaDirectorioEscritura() + "inv_" + DateTime.Now.ToString().Replace('/', '-').Replace(':', '_') + ".json", info_publication);
                     }
                     catch (Exception e)
                     {
