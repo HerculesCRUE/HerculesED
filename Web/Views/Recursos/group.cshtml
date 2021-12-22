@@ -572,8 +572,8 @@
                                                             <span tabindex="0" class="ui-slider-handle ui-corner-all ui-state-default"></span>
                                                         </div>
                                                         <div class="d-flex">
-                                                            <input title="@Html.Translate("ANIO")" type="number" min="@anioInicioAreas" max="@anioFinAreas" value="@anioInicioAreas" autocomplete="off" class="filtroFacetaFecha hasDatepicker" placeholder="@Html.Translate("ANIO_INICIO")" name="gmd_ci_datef1" id="inicioAreas">
-                                                            <input title="@Html.Translate("ANIO")" type="number" min="@anioInicioAreas" max="@anioFinAreas" value="@anioFinAreas" autocomplete="off" class="filtroFacetaFecha hasDatepicker" placeholder="@Html.Translate("ANIO_FIN")" name="gmd_ci_datef2" id="finAreas">
+                                                            <input title="@Html.Translate("ANIO")" type="number" min="@anioInicioAreas" max="@anioFinAreas" value="" autocomplete="off" class="filtroFacetaFecha hasDatepicker" placeholder="@Html.Translate("ANIO_INICIO")" name="gmd_ci_datef1" id="inicioAreas">
+                                                            <input title="@Html.Translate("ANIO")" type="number" min="@anioInicioAreas" max="@anioFinAreas" value="" autocomplete="off" class="filtroFacetaFecha hasDatepicker" placeholder="@Html.Translate("ANIO_FIN")" name="gmd_ci_datef2" id="finAreas">
                                                             <a class="searchButton"  id="aplicarAnioAreas">@Html.Translate("APLICAR")</a>
                                                         </div>
                                                         <ul class="no-list-style">
@@ -845,15 +845,15 @@
                 e.preventDefault();
                 var parent = $(this).parents('.dropdown-select');
                 var toggle = parent.find('.dropdown-toggle');
-                toggle.html($("#inicioAreas").val() + '-' + $("#finAreas").val());
+                toggle.html('<span class="textoAlternativo">@Html.Translate("PERIODO_TEMPORAL"):</span> <span class="texto">' + $("#inicioAreas").val() + '-' + $("#finAreas").val()+'</span>');
                 CargarGraficaAreasTematicas("@pGroup.GNOSSID.Split('_')[1].ToUpper()", "areastematicasgraph");
                 CargarGraficaAreasTematicasArania("@pGroup.GNOSSID.Split('_')[1].ToUpper()", "areastematicasgrapharania");
             });
 
             $('#todosAniosArea').unbind().click(function (e) {
                 e.preventDefault();
-                $("#inicioAreas").val(@anioInicioAreas);
-                $("#finAreas").val(@anioFinAreas);
+                $("#inicioAreas").val('');
+                $("#finAreas").val('');
                 var parent = $(this).parents('.dropdown-select');
                 var toggle = parent.find('.dropdown-toggle');
                 toggle.html($(this).html());
