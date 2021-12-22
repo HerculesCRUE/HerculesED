@@ -209,15 +209,15 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                         Console.Write("Datos de publicación leidos.");
                         FileLogger.Log("Datos de publicación leidos.");
                         //TODO: Coger de configuración la ruta del directorio
-                        if (!Directory.Exists("/home/gnoss/docker_edma/web_edma/" + dir_fichero)) 
+                        if (!Directory.Exists(System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase + dir_fichero)) 
                         {
-                            Directory.CreateDirectory("/home/gnoss/docker_edma/web_edma/" + dir_fichero);
+                            Directory.CreateDirectory(System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase + dir_fichero);
                             FileLogger.Log("Directorio creado");
                         }
 
-                        FileLogger.Log("/home/gnoss/docker_edma/web_edma/" + dir_fichero);
-                        File.WriteAllText("/home/gnoss/docker_edma/web_edma/" + dir_fichero + "inv_" + DateTime.Now.ToString().Replace('/', '-').Replace(':', '_') + ".json", info_publication);
-                        FileLogger.Log("JSON --> " + "/home/gnoss/docker_edma/web_edma/" + dir_fichero + "inv_" + DateTime.Now.ToString().Replace('/', '-').Replace(':', '_') + ".json");
+                        FileLogger.Log(System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase + dir_fichero);
+                        File.WriteAllText(System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase + dir_fichero + "inv_" + DateTime.Now.ToString().Replace('/', '-').Replace(':', '_') + ".json", info_publication);
+                        FileLogger.Log("JSON --> " + System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase + dir_fichero + "inv_" + DateTime.Now.ToString().Replace('/', '-').Replace(':', '_') + ".json");
                         //escribirlo en un fichero! 
                     }
                     catch (Exception e)
