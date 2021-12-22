@@ -190,6 +190,21 @@
 										"properties": [
 											{
 												"title": {
+													"es": "Documento"
+												},
+												"placeholder": {
+													"es": "Introduce la url del documento"
+												},
+												"property": "http://w3id.org/roh/hasFile",
+												"type": "text",
+												"width": 3
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
 													"es": "Descripción"
 												},
 												"placeholder": {
@@ -289,6 +304,112 @@
 												"autocomplete": true,
 												"type": "text",
 												"width": 3
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Identificador DOI"
+												},
+												"placeholder": {
+													"es": "Introduce el identificador DOI"
+												},
+												"property": "http://purl.org/ontology/bibo/doi",
+												"type": "text",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Identificador Handle"
+												},
+												"placeholder": {
+													"es": "Introduce el identificador Handle"
+												},
+												"property": "http://purl.org/ontology/bibo/handle",
+												"type": "text",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Identificador PMID"
+												},
+												"placeholder": {
+													"es": "Introduce el identificador PMID"
+												},
+												"property": "http://purl.org/ontology/bibo/pmid",
+												"type": "text",
+												"width": 1
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"property": "http://purl.org/ontology/bibo/identifier",
+												"TODO": "Auxiliar múltiple. Incluir los valores de la fuente de citas en la tabla, junto a un 'Otros' que permita añadir un nuevo tipo.",
+												"type": "auxEntity",
+												"title": {
+													"es": "Otros identificadores"
+												},
+												"multiple": true,
+												"width": 3,
+												"auxEntityData": {
+													"rdftype": "http://xmlns.com/foaf/0.1/Document",
+													"propertyTitle": {
+														"property": "http://xmlns.com/foaf/0.1/topic"
+													},
+													"properties": [
+														{
+															"name": {
+																"es": "Nombre del identificador"
+															},
+															"child": {
+																"property": "http://xmlns.com/foaf/0.1/topic"
+															}
+														},
+														{
+															"name": {
+																"es": "Identificador"
+															},
+															"child": {
+																"property": "http://purl.org/dc/elements/1.1/title"
+															}
+														}
+													],
+													"rows": [
+														{
+															"properties": [
+
+																{
+																	"title": {
+																		"es": "Nombre del identificador"
+																	},
+																	"placeholder": {
+																		"es": "Introduce el nombre del identificador"
+																	},
+																	"type": "text",
+																	"required": true,
+																	"property": "http://xmlns.com/foaf/0.1/topic",
+																	"width": 1
+																},
+																{
+																	"title": {
+																		"es": "Identificador"
+																	},
+																	"placeholder": {
+																		"es": "Introduce el identificador"
+																	},
+																	"type": "text",
+																	"required": true,
+																	"property": "http://purl.org/dc/elements/1.1/title",
+																	"width": 1
+																}
+															]
+														}
+													]
+												}
 											}
 										]
 									},
@@ -528,15 +649,6 @@
 												"TODO": "Campo calculado o dejamos introducir cualquier número (como hace el CVN)?",
 												"type": "number",
 												"width": 1
-											},
-											{
-												"title": {
-													"es": "Nº total de autores"
-												},
-												"TODO": "Campo calculado o dejamos introducir cualquier número (como hace el CVN)?",
-												"property": "http://w3id.org/roh/researchersNumber",
-												"type": "number",
-												"width": 1
 											}
 										]
 									},
@@ -644,18 +756,55 @@
 									{
 										"properties": [
 											{
+												"title": {
+													"es": "Nº de citas en IN-RECS"
+												},
+												"placeholder": {
+													"es": "Introduce el nº de citas en IN-RECS"
+												},
+												"property": "http://w3id.org/roh/inrecs",
+												"type": "number",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Nº de citas en SCOPUS"
+												},
+												"placeholder": {
+													"es": "Introduce el nº de citas en SCOPUS"
+												},
+												"property": "http://w3id.org/roh/scopus",
+												"type": "number",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Nº de citas en WOS"
+												},
+												"placeholder": {
+													"es": "Introduce el nº de citas en WOS"
+												},
+												"property": "http://w3id.org/roh/wos",
+												"type": "number",
+												"width": 1
+											}
+										]
+									},
+									{
+										"properties": [
+											{
 												"property": "http://w3id.org/roh/hasMetric",
 												"TODO": "Auxiliar múltiple. Incluir los valores de la fuente de citas en la tabla, junto a un 'Otros' que permita añadir un nuevo tipo.",
 												"type": "auxEntity",
 												"title": {
-													"es": "Citas"
+													"es": "Citas de otras fuentes"
 												},
 												"multiple": true,
 												"width": 3,
 												"auxEntityData": {
 													"rdftype": "http://w3id.org/roh/PublicationMetric",
 													"propertyTitle": {
-														"property": "http://xmlns.com/foaf/0.1/metricName"
+														"property": "http://w3id.org/roh/metricName"
 													},
 													"properties": [
 														{
@@ -663,19 +812,7 @@
 																"es": "Fuente de citas"
 															},
 															"child": {
-																"property": "http://xmlns.com/foaf/0.1/metricName",
-																"graph": "referencesource",
-																"child": {
-																	"property": "http://purl.org/dc/elements/1.1/title"
-																}
-															}
-														},
-														{
-															"name": {
-																"es": "Otros"
-															},
-															"child": {
-																"property": "http://xmlns.com/foaf/0.1/topic"
+																"property": "http://w3id.org/roh/metricName"
 															}
 														},
 														{
@@ -683,52 +820,36 @@
 																"es": "Citas"
 															},
 															"child": {
-																"property": "http://purl.org/dc/elements/1.1/title"
+																"property": "http://w3id.org/roh/citationCount"
 															}
 														}
 													],
 													"rows": [
 														{
 															"properties": [
+																
 																{
 																	"title": {
 																		"es": "Fuente de citas"
-																	},
-																	"TODO": "No se despliega el combo de valores.",
-																	"property": "http://w3id.org/roh/metricName",
-																	"combo": {
-																		"rdftype": "http://purl.org/ontology/bibo/ReferenceSource",
-																		"graph": "referencesource",
-																		"property": {
-																			"property": "http://purl.org/dc/elements/1.1/title"
-																		}
-																	},
-																	"type": "selectCombo",
-																	"required": true,
-																	"width": 1
-																},
-																{
-																	"title": {
-																		"es": "Otros"
 																	},
 																	"placeholder": {
 																		"es": "Introduce la fuente de citas"
 																	},
 																	"type": "text",
-																	"required": false,
-																	"property": "http://xmlns.com/foaf/0.1/topic",
+																	"required": true,
+																	"property": "http://w3id.org/roh/metricName",
 																	"width": 1
 																},
 																{
 																	"title": {
-																		"es": "Citas"
+																		"es": "Nº de citas"
 																	},
 																	"placeholder": {
 																		"es": "Introduce el número de citas"
 																	},
 																	"type": "number",
-																	"required": false,
-																	"property": "http://purl.org/dc/elements/1.1/title",
+																	"required": true,
+																	"property": "http://w3id.org/roh/citationCount",
 																	"width": 1
 																}
 															]
@@ -974,6 +1095,21 @@
 										"properties": [
 											{
 												"title": {
+													"es": "Documento"
+												},
+												"placeholder": {
+													"es": "Introduce la url del documento"
+												},
+												"property": "http://w3id.org/roh/hasFile",
+												"type": "text",
+												"width": 3
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
 													"es": "Descripción"
 												},
 												"placeholder": {
@@ -1073,6 +1209,112 @@
 												"autocomplete": true,
 												"type": "text",
 												"width": 3
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Identificador DOI"
+												},
+												"placeholder": {
+													"es": "Introduce el identificador DOI"
+												},
+												"property": "http://purl.org/ontology/bibo/doi",
+												"type": "text",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Identificador Handle"
+												},
+												"placeholder": {
+													"es": "Introduce el identificador Handle"
+												},
+												"property": "http://purl.org/ontology/bibo/handle",
+												"type": "text",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Identificador PMID"
+												},
+												"placeholder": {
+													"es": "Introduce el identificador PMID"
+												},
+												"property": "http://purl.org/ontology/bibo/pmid",
+												"type": "text",
+												"width": 1
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"property": "http://purl.org/ontology/bibo/identifier",
+												"TODO": "Auxiliar múltiple. Incluir los valores de la fuente de citas en la tabla, junto a un 'Otros' que permita añadir un nuevo tipo.",
+												"type": "auxEntity",
+												"title": {
+													"es": "Otros identificadores"
+												},
+												"multiple": true,
+												"width": 3,
+												"auxEntityData": {
+													"rdftype": "http://xmlns.com/foaf/0.1/Document",
+													"propertyTitle": {
+														"property": "http://xmlns.com/foaf/0.1/topic"
+													},
+													"properties": [
+														{
+															"name": {
+																"es": "Nombre del identificador"
+															},
+															"child": {
+																"property": "http://xmlns.com/foaf/0.1/topic"
+															}
+														},
+														{
+															"name": {
+																"es": "Identificador"
+															},
+															"child": {
+																"property": "http://purl.org/dc/elements/1.1/title"
+															}
+														}
+													],
+													"rows": [
+														{
+															"properties": [
+
+																{
+																	"title": {
+																		"es": "Nombre del identificador"
+																	},
+																	"placeholder": {
+																		"es": "Introduce el nombre del identificador"
+																	},
+																	"type": "text",
+																	"required": true,
+																	"property": "http://xmlns.com/foaf/0.1/topic",
+																	"width": 1
+																},
+																{
+																	"title": {
+																		"es": "Identificador"
+																	},
+																	"placeholder": {
+																		"es": "Introduce el identificador"
+																	},
+																	"type": "text",
+																	"required": true,
+																	"property": "http://purl.org/dc/elements/1.1/title",
+																	"width": 1
+																}
+															]
+														}
+													]
+												}
 											}
 										]
 									},
@@ -1590,18 +1832,55 @@
 									{
 										"properties": [
 											{
+												"title": {
+													"es": "Nº de citas en IN-RECS"
+												},
+												"placeholder": {
+													"es": "Introduce el nº de citas en IN-RECS"
+												},
+												"property": "http://w3id.org/roh/inrecs",
+												"type": "number",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Nº de citas en SCOPUS"
+												},
+												"placeholder": {
+													"es": "Introduce el nº de citas en SCOPUS"
+												},
+												"property": "http://w3id.org/roh/scopus",
+												"type": "number",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Nº de citas en WOS"
+												},
+												"placeholder": {
+													"es": "Introduce el nº de citas en WOS"
+												},
+												"property": "http://w3id.org/roh/wos",
+												"type": "number",
+												"width": 1
+											}
+										]
+									},
+									{
+										"properties": [
+											{
 												"property": "http://w3id.org/roh/hasMetric",
 												"TODO": "Auxiliar múltiple. Incluir los valores de la fuente de citas en la tabla, junto a un 'Otros' que permita añadir un nuevo tipo.",
 												"type": "auxEntity",
 												"title": {
-													"es": "Citas"
+													"es": "Citas de otras fuentes"
 												},
 												"multiple": true,
 												"width": 3,
 												"auxEntityData": {
 													"rdftype": "http://w3id.org/roh/PublicationMetric",
 													"propertyTitle": {
-														"property": "http://xmlns.com/foaf/0.1/metricName"
+														"property": "http://w3id.org/roh/metricName"
 													},
 													"properties": [
 														{
@@ -1609,19 +1888,7 @@
 																"es": "Fuente de citas"
 															},
 															"child": {
-																"property": "http://xmlns.com/foaf/0.1/metricName",
-																"graph": "referencesource",
-																"child": {
-																	"property": "http://purl.org/dc/elements/1.1/title"
-																}
-															}
-														},
-														{
-															"name": {
-																"es": "Otros"
-															},
-															"child": {
-																"property": "http://xmlns.com/foaf/0.1/topic"
+																"property": "http://w3id.org/roh/metricName"
 															}
 														},
 														{
@@ -1629,51 +1896,36 @@
 																"es": "Citas"
 															},
 															"child": {
-																"property": "http://purl.org/dc/elements/1.1/title"
+																"property": "http://w3id.org/roh/citationCount"
 															}
 														}
 													],
 													"rows": [
 														{
 															"properties": [
+
 																{
 																	"title": {
 																		"es": "Fuente de citas"
-																	},
-																	"property": "http://w3id.org/roh/metricName",
-																	"combo": {
-																		"rdftype": "http://purl.org/ontology/bibo/ReferenceSource",
-																		"graph": "referencesource",
-																		"property": {
-																			"property": "http://purl.org/dc/elements/1.1/title"
-																		}
-																	},
-																	"type": "selectCombo",
-																	"required": true,
-																	"width": 1
-																},
-																{
-																	"title": {
-																		"es": "Otros"
 																	},
 																	"placeholder": {
 																		"es": "Introduce la fuente de citas"
 																	},
 																	"type": "text",
-																	"required": false,
-																	"property": "http://xmlns.com/foaf/0.1/topic",
+																	"required": true,
+																	"property": "http://w3id.org/roh/metricName",
 																	"width": 1
 																},
 																{
 																	"title": {
-																		"es": "Citas"
+																		"es": "Nº de citas"
 																	},
 																	"placeholder": {
 																		"es": "Introduce el número de citas"
 																	},
 																	"type": "number",
-																	"required": false,
-																	"property": "http://purl.org/dc/elements/1.1/title",
+																	"required": true,
+																	"property": "http://w3id.org/roh/citationCount",
 																	"width": 1
 																}
 															]
@@ -1881,6 +2133,21 @@
 										"properties": [
 											{
 												"title": {
+													"es": "Documento"
+												},
+												"placeholder": {
+													"es": "Introduce la url del documento"
+												},
+												"property": "http://w3id.org/roh/hasFile",
+												"type": "text",
+												"width": 3
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
 													"es": "Descripción"
 												},
 												"placeholder": {
@@ -1980,6 +2247,112 @@
 												"autocomplete": true,
 												"type": "text",
 												"width": 3
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Identificador DOI"
+												},
+												"placeholder": {
+													"es": "Introduce el identificador DOI"
+												},
+												"property": "http://purl.org/ontology/bibo/doi",
+												"type": "text",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Identificador Handle"
+												},
+												"placeholder": {
+													"es": "Introduce el identificador Handle"
+												},
+												"property": "http://purl.org/ontology/bibo/handle",
+												"type": "text",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Identificador PMID"
+												},
+												"placeholder": {
+													"es": "Introduce el identificador PMID"
+												},
+												"property": "http://purl.org/ontology/bibo/pmid",
+												"type": "text",
+												"width": 1
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"property": "http://purl.org/ontology/bibo/identifier",
+												"TODO": "Auxiliar múltiple. Incluir los valores de la fuente de citas en la tabla, junto a un 'Otros' que permita añadir un nuevo tipo.",
+												"type": "auxEntity",
+												"title": {
+													"es": "Otros identificadores"
+												},
+												"multiple": true,
+												"width": 3,
+												"auxEntityData": {
+													"rdftype": "http://xmlns.com/foaf/0.1/Document",
+													"propertyTitle": {
+														"property": "http://xmlns.com/foaf/0.1/topic"
+													},
+													"properties": [
+														{
+															"name": {
+																"es": "Nombre del identificador"
+															},
+															"child": {
+																"property": "http://xmlns.com/foaf/0.1/topic"
+															}
+														},
+														{
+															"name": {
+																"es": "Identificador"
+															},
+															"child": {
+																"property": "http://purl.org/dc/elements/1.1/title"
+															}
+														}
+													],
+													"rows": [
+														{
+															"properties": [
+
+																{
+																	"title": {
+																		"es": "Nombre del identificador"
+																	},
+																	"placeholder": {
+																		"es": "Introduce el nombre del identificador"
+																	},
+																	"type": "text",
+																	"required": true,
+																	"property": "http://xmlns.com/foaf/0.1/topic",
+																	"width": 1
+																},
+																{
+																	"title": {
+																		"es": "Identificador"
+																	},
+																	"placeholder": {
+																		"es": "Introduce el identificador"
+																	},
+																	"type": "text",
+																	"required": true,
+																	"property": "http://purl.org/dc/elements/1.1/title",
+																	"width": 1
+																}
+															]
+														}
+													]
+												}
 											}
 										]
 									},
@@ -2509,7 +2882,7 @@
 								"title": {
 									"es": "Más campos"
 								},
-								"rows": [									
+								"rows": [
 									{
 										"properties": [
 											{
@@ -2611,18 +2984,55 @@
 									{
 										"properties": [
 											{
+												"title": {
+													"es": "Nº de citas en IN-RECS"
+												},
+												"placeholder": {
+													"es": "Introduce el nº de citas en IN-RECS"
+												},
+												"property": "http://w3id.org/roh/inrecs",
+												"type": "number",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Nº de citas en SCOPUS"
+												},
+												"placeholder": {
+													"es": "Introduce el nº de citas en SCOPUS"
+												},
+												"property": "http://w3id.org/roh/scopus",
+												"type": "number",
+												"width": 1
+											},
+											{
+												"title": {
+													"es": "Nº de citas en WOS"
+												},
+												"placeholder": {
+													"es": "Introduce el nº de citas en WOS"
+												},
+												"property": "http://w3id.org/roh/wos",
+												"type": "number",
+												"width": 1
+											}
+										]
+									},
+									{
+										"properties": [
+											{
 												"property": "http://w3id.org/roh/hasMetric",
 												"TODO": "Auxiliar múltiple. Incluir los valores de la fuente de citas en la tabla, junto a un 'Otros' que permita añadir un nuevo tipo.",
 												"type": "auxEntity",
 												"title": {
-													"es": "Citas"
+													"es": "Citas de otras fuentes"
 												},
 												"multiple": true,
 												"width": 3,
 												"auxEntityData": {
 													"rdftype": "http://w3id.org/roh/PublicationMetric",
 													"propertyTitle": {
-														"property": "http://xmlns.com/foaf/0.1/metricName"
+														"property": "http://w3id.org/roh/metricName"
 													},
 													"properties": [
 														{
@@ -2630,19 +3040,7 @@
 																"es": "Fuente de citas"
 															},
 															"child": {
-																"property": "http://xmlns.com/foaf/0.1/metricName",
-																"graph": "referencesource",
-																"child": {
-																	"property": "http://purl.org/dc/elements/1.1/title"
-																}
-															}
-														},
-														{
-															"name": {
-																"es": "Otros"
-															},
-															"child": {
-																"property": "http://xmlns.com/foaf/0.1/topic"
+																"property": "http://w3id.org/roh/metricName"
 															}
 														},
 														{
@@ -2650,51 +3048,36 @@
 																"es": "Citas"
 															},
 															"child": {
-																"property": "http://purl.org/dc/elements/1.1/title"
+																"property": "http://w3id.org/roh/citationCount"
 															}
 														}
 													],
 													"rows": [
 														{
 															"properties": [
+
 																{
 																	"title": {
 																		"es": "Fuente de citas"
-																	},
-																	"property": "http://w3id.org/roh/metricName",
-																	"combo": {
-																		"rdftype": "http://purl.org/ontology/bibo/ReferenceSource",
-																		"graph": "referencesource",
-																		"property": {
-																			"property": "http://purl.org/dc/elements/1.1/title"
-																		}
-																	},
-																	"type": "selectCombo",
-																	"required": true,
-																	"width": 1
-																},
-																{
-																	"title": {
-																		"es": "Otros"
 																	},
 																	"placeholder": {
 																		"es": "Introduce la fuente de citas"
 																	},
 																	"type": "text",
-																	"required": false,
-																	"property": "http://xmlns.com/foaf/0.1/topic",
+																	"required": true,
+																	"property": "http://w3id.org/roh/metricName",
 																	"width": 1
 																},
 																{
 																	"title": {
-																		"es": "Citas"
+																		"es": "Nº de citas"
 																	},
 																	"placeholder": {
 																		"es": "Introduce el número de citas"
 																	},
 																	"type": "number",
-																	"required": false,
-																	"property": "http://purl.org/dc/elements/1.1/title",
+																	"required": true,
+																	"property": "http://w3id.org/roh/citationCount",
 																	"width": 1
 																}
 															]
