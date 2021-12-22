@@ -418,7 +418,7 @@ namespace DesnormalizadorHercules.Models
                 filter = $" FILTER(?project =<{pProject}>)";
             }
             //Eliminamos los duplicados
-            EliminarDuplicados("project", "http://xmlns.com/foaf/0.1/Group", "http://w3id.org/roh/collaboratorsNumber");
+            EliminarDuplicados("project", "http://vivoweb.org/ontology/core#Project", "http://w3id.org/roh/collaboratorsNumber");
 
             while (true)
             {
@@ -455,20 +455,10 @@ namespace DesnormalizadorHercules.Models
 					                                    ?listaAutores <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person.
 				                                    }}
 			                                    }} 
-			                                    UNION 
-			                                    {{
-				                                    #Proyectos
-				                                    SELECT *
-				                                    WHERE {{
-					                                    ?project ?propRol ?role.
-					                                    FILTER(?propRol in (<http://vivoweb.org/ontology/core#relates>,<http://w3id.org/roh/mainResearchers>))
-					                                    ?role <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person.
-				                                    }}
-			                                    }}
 		                                    }}		
 		                                    MINUS
 		                                    {{
-			                                    ?person <http://vivoweb.org/ontology/core#relates> ?project
+			                                    ?project <http://w3id.org/roh/publicauthorlist> ?person
 		                                    }}
 	                                    }}
                                     }}
