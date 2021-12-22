@@ -14,6 +14,7 @@ namespace GuardadoCV.Controllers
     [EnableCors("_myAllowSpecificOrigins")]
     public class EdicionCVController : ControllerBase
     {
+
         /// <summary>
         /// Obtiene un listado de sugerencias con datos existentes para esa propiedad
         /// </summary>
