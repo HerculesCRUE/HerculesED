@@ -847,7 +847,7 @@
             $('#publicaciones-tab').unbind().click(function (e) {
                 e.preventDefault();
                 that.tabActive = "publicaciones";
-                buscadorPersonalizado.init("@Html.Translate("PUBLICACIONES")", "#contenedorBuscadorPublicaciones", "searchDocumentosRelacionadosConProyecto=@pProject.GNOSSID.Split('_')[1].ToUpper()", "dct:issued", "PestanyaActualID=@Html.Translate("ID_BUSQUEDA_DOCUMENTOS")|rdf:type=document", "@Comunidad.Url", "@Comunidad.Key.ToString()");
+                buscadorPersonalizado.init("@Html.Translate("PUBLICACIONES")", "#contenedorBuscadorPublicaciones", "roh:project=http://gnoss/@pProject.GNOSSID.Split('_')[1].ToUpper()", "dct:issued", "PestanyaActualID=@Html.Translate("ID_BUSQUEDA_DOCUMENTOS")|rdf:type=document", "@Comunidad.Url", "@Comunidad.Key.ToString()");
             });
             $('#temas-investigacion-tab').unbind().click(function (e) {
                 e.preventDefault();
