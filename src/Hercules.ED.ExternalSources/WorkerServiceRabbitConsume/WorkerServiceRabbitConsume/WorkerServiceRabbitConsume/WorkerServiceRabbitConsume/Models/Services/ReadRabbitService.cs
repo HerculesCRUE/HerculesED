@@ -216,8 +216,8 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                         }
 
                         FileLogger.Log(Path.GetDirectoryName(System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase + dir_fichero));
-                        File.WriteAllText(System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase + dir_fichero + "/inv_" + DateTime.Now.ToString().Replace('/', '-').Replace(':', '_') + ".json", info_publication);
-                        FileLogger.Log("JSON --> " + System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase + dir_fichero + "/inv_" + DateTime.Now.ToString().Replace('/', '-').Replace(':', '_') + ".json");
+                        File.WriteAllText(System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase + dir_fichero + "inv_" + DateTime.Now.ToString().Replace('/', '-').Replace(':', '_') + ".json", info_publication);
+                        FileLogger.Log("JSON --> " + System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase + dir_fichero + "inv_" + DateTime.Now.ToString().Replace('/', '-').Replace(':', '_') + ".json");
                         //escribirlo en un fichero! 
                     }
                     catch (Exception e)
