@@ -845,8 +845,8 @@
 
             $('#todosAniosArea').unbind().click(function (e) {
                 e.preventDefault();
-                $("#inicioAreas").val(@anioInicioAreas);
-                $("#finAreas").val(@anioFinAreas);
+                $("#inicioAreas").val('');
+                $("#finAreas").val('');
                 var parent = $(this).parents('.dropdown-select');
                 var toggle = parent.find('.dropdown-toggle');
                 toggle.html($(this).html());
