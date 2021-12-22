@@ -217,7 +217,7 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                         }
 
                         FileLogger.Log("/app/logs/" + dir_fichero);
-                        File.WriteAllText("/app/logs/" + "inv_" + DateTime.Now.ToString().Replace('/', '-').Replace(':', '_') + ".json", info_publication);
+                        File.WriteAllText("/app/logs/" + dir_fichero + "inv_" + DateTime.Now.ToString().Replace('/', '-').Replace(':', '_') + ".json", info_publication);
                         FileLogger.Log("JSON --> " + "/app/logs/" + dir_fichero + "inv_" + DateTime.Now.ToString().Replace('/', '-').Replace(':', '_') + ".json");
                         //escribirlo en un fichero! 
                     }
