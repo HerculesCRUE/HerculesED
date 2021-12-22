@@ -3,9 +3,6 @@
 }
 
 .facetas-wrap .fechaDesdeHasta .filtroFacetaFecha {
-height: 38px;
-width: calc(50% - 2px);
-padding: 10px 20px;
-font-size: .933rem;
-border: 1px solid var(--c-gris-borde);
+	width: calc(50% - 6px);
 }
+
