@@ -200,15 +200,15 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                     try
                     {
                         string info_publication = httpCall(url.ToString(), "GET", headers).Result;
-                        FileLogger.Log("Publicación obtenida." + _configService.GetRutaDirectorioEscritura());
+                        FileLogger.Log(DateTime.Now + " Publicación obtenida.");
                         if (!Directory.Exists(_configService.GetRutaDirectorioEscritura()))
                         {
                             Directory.CreateDirectory(_configService.GetRutaDirectorioEscritura());
-                            FileLogger.Log("Directorio creado: " + _configService.GetRutaDirectorioEscritura());
+                            FileLogger.Log(DateTime.Now + " Directorio creado: " + _configService.GetRutaDirectorioEscritura());
                         }
 
                         File.WriteAllText(_configService.GetRutaDirectorioEscritura() + "inv_" + DateTime.Now.ToString().Replace('/', '-').Replace(':', '_') + ".json", info_publication);
-                        FileLogger.Log("JSON creado.");
+                        FileLogger.Log(DateTime.Now + " JSON creado.");
                     }
                     catch (Exception e)
                     {
