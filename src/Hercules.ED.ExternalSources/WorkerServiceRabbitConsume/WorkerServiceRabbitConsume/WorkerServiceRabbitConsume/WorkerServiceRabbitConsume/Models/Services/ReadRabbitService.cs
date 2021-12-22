@@ -208,10 +208,11 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                         //List<Publication> objInicial = JsonConvert.DeserializeObject<List<Publication>>(info_publication);
                         Console.Write("Datos de publicación leidos.");
                         Console.Write("Datos de publicación leidos.");
-                        if(!Directory.Exists("app/" + dir_fichero)) //TODO: Coger de configuración la ruta del directorio
+                        if(!Directory.Exists("/app" + dir_fichero)) //TODO: Coger de configuración la ruta del directorio
                         {
                             Directory.CreateDirectory(Path.GetDirectoryName(dir_fichero));
                         }
+                        Console.Write(Path.GetDirectoryName(dir_fichero));
                         File.WriteAllText(dir_fichero + "inv_" + DateTime.Now.ToString().Replace('/', '-').Replace(':', '_') + ".json", info_publication);
                         //escribirlo en un fichero! 
                     }
