@@ -194,6 +194,7 @@ namespace Gnoss.Web.ReprocessData.Models.Services
             {
                 if (message[2] != null)
                 {
+                    Console.Write("Generando URL...");
                     Uri url = new Uri(string.Format(_configService.GetUrlPublicacion() + "Publication/GetROs?orcid={0}&date={1}", message[1], message[2]));
                     //UriBuilder uri = new UriBuilder(string.Format(_configService.GetUrlPublicacion() + "Publication/GetROs?orcid={0}&date={1}", message[1], message[2]));
                     //uri.Scheme = Uri.UriSchemeHttps;
