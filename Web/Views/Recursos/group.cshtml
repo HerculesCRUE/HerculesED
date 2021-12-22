@@ -712,9 +712,11 @@
         }
         var arg = {};
         arg.pParametros = parametros;
-        $('#' + idContenedorAnios).empty();
-        $('#' + idContenedorMiembros).empty();
-        $('#' + idContenedorAmbito).empty();
+		
+		$('#' + idContenedorAnios).replaceWith('<canvas id="'+idContenedorAnios+'" class="js-chart"></canvas>' );
+		$('#' + idContenedorMiembros).replaceWith('<canvas id="'+idContenedorMiembros+'" class="js-chart"></canvas>' );
+		$('#' + idContenedorAmbito).replaceWith('<canvas id="'+idContenedorAmbito+'" class="js-chart"></canvas>' );
+		
         $.get(url, arg, function (data) {
             PintarGraficaProyectos(data, idContenedorAnios, idContenedorMiembros, idContenedorAmbito);
         });
