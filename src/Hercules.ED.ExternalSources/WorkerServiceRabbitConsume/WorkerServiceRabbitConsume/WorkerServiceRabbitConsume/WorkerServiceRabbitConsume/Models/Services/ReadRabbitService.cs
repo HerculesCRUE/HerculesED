@@ -202,12 +202,19 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                     //uri.Scheme = Uri.UriSchemeHttps;
                     Console.Write("Obteniendo datos petición de: " + url);
                     FileLogger.Log("Obteniendo datos petición de: " + url);
-                    string info_publication = httpCall(url.ToString(), "GET", headers).Result;
-                    //List<Publication> objInicial = JsonConvert.DeserializeObject<List<Publication>>(info_publication);
-                    Console.Write("Datos de publicación leidos.");
-                    Console.Write("Datos de publicación leidos.");
-                    File.WriteAllText(dir_fichero + "inv_" + DateTime.Now.ToString().Replace('/', '-').Replace(':', '_') + ".json", info_publication);
-                    //escribirlo en un fichero! 
+                    try
+                    {
+                        string info_publication = httpCall(url.ToString(), "GET", headers).Result;
+                        //List<Publication> objInicial = JsonConvert.DeserializeObject<List<Publication>>(info_publication);
+                        Console.Write("Datos de publicación leidos.");
+                        Console.Write("Datos de publicación leidos.");
+                        File.WriteAllText(dir_fichero + "inv_" + DateTime.Now.ToString().Replace('/', '-').Replace(':', '_') + ".json", info_publication);
+                        //escribirlo en un fichero! 
+                    }
+                    catch (Exception e)
+                    {
+                        FileLogger.Log(DateTime.Now + " - " + e);
+                    }                    
                     return true;
                 }
                 else
