@@ -211,7 +211,7 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                         //TODO: Coger de configuración la ruta del directorio
                         if (!Directory.Exists(System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase + dir_fichero)) 
                         {
-                            Directory.CreateDirectory(Path.GetDirectoryName(System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase + dir_fichero));
+                            Directory.CreateDirectory(System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase + dir_fichero);
                             FileLogger.Log("Directorio creado");
                         }
 
