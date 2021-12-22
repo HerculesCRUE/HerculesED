@@ -771,5 +771,93 @@ namespace DesnormalizadorHercules.Models
                 }
             }
         }
+
+        public void ActualizarNumeroColaboradores(string pPersona = null)
+        {
+            string filter = "";
+            if (!string.IsNullOrEmpty(pPersona))
+            {
+                filter = $" FILTER(?person =<{pPersona}>)";
+            }
+            //Eliminamos los duplicados
+            EliminarDuplicados("person", "http://xmlns.com/foaf/0.1/Person", "http://w3id.org/roh/collaboratorsNumber");
+
+            while (true)
+            {
+                int limit = 500;
+                //TODO eliminar from
+                String select = @"select * where{ select ?person ?numColaboradoresCargados ?numColaboradoresACargar  from <http://gnoss.com/project.owl> from <http://gnoss.com/document.owl> ";
+                String where = @$"where{{
+                            ?person a <http://xmlns.com/foaf/0.1/Person>.
+                            {filter}
+                            OPTIONAL
+                            {{
+                              ?person <http://w3id.org/roh/collaboratorsNumber> ?numColaboradoresCargadosAux. 
+                              BIND(xsd:int( ?numColaboradoresCargadosAux) as  ?numColaboradoresCargados)
+                            }}
+                            {{
+                              select ?person count(distinct ?collaborator) as ?numColaboradoresACargar
+                              Where{{                               
+                                ?person a <http://xmlns.com/foaf/0.1/Person>.
+                                OPTIONAL
+                                {{
+                                    {{
+	                                    SELECT DISTINCT ?collaborator ?person
+	                                    WHERE 
+	                                    {{	
+                                            ?collaborator a <http://xmlns.com/foaf/0.1/Person>
+		                                    {{
+			                                    {{
+				                                    #Documentos
+				                                    SELECT *
+				                                    WHERE {{
+					                                    ?documento <http://w3id.org/roh/publicAuthorList> ?person.
+					                                    ?documento a <http://purl.org/ontology/bibo/Document>.
+					                                    ?documento <http://purl.org/ontology/bibo/authorList> ?listaAutores.
+					                                    ?listaAutores <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?collaborator.
+				                                    }}
+			                                    }} 
+			                                    UNION 
+			                                    {{
+				                                    #Proyectos
+				                                    SELECT *
+				                                    WHERE {{
+					                                    ?proy <http://w3id.org/roh/publicAuthorList> ?person.
+					                                    ?proy a <http://vivoweb.org/ontology/core#Project>.
+					                                    ?proy ?propRol ?role.
+					                                    FILTER(?propRol in (<http://vivoweb.org/ontology/core#relates>,<http://w3id.org/roh/mainResearchers>))
+					                                    ?role <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?collaborator.
+				                                    }}
+			                                    }}
+		                                    }}		
+		                                    FILTER(?collaborator!=?person)
+	                                    }}
+                                    }}
+                                }}                                
+                              }}Group by ?person 
+                            }}
+                            FILTER(?numColaboradoresCargados!= ?numColaboradoresACargar OR !BOUND(?numColaboradoresCargados) )
+                            }}}} limit {limit}";
+                SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
+
+                foreach (Dictionary<string, SparqlObject.Data> fila in resultado.results.bindings)
+                {
+                    string person = fila["person"].value;
+                    string numColaboradoresACargar = fila["numColaboradoresACargar"].value;
+                    string numColaboradoresCargados = "";
+                    if (fila.ContainsKey("numColaboradoresCargados"))
+                    {
+                        numColaboradoresCargados = fila["numColaboradoresCargados"].value;
+                    }
+                    ActualizadorTriple(person, "http://w3id.org/roh/collaboratorsNumber", numColaboradoresCargados, numColaboradoresACargar);
+                }
+
+                if (resultado.results.bindings.Count() != limit)
+                {
+                    break;
+                }
+            }
+
+        }
     }
 }
