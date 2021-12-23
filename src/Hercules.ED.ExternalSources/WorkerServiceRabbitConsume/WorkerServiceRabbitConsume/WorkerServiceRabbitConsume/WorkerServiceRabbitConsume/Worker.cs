@@ -14,38 +14,48 @@ namespace WorkerServiceRabbitConsume
     {
         private readonly ILogger<Worker> _logger;
         private readonly IServiceScopeFactory _serviceScopeFactory;
-        private bool _processRabbitReady = false;
+
+        /// <summary>
+        /// Contructor.
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <param name="serviceScopeFactory"></param>
         public Worker(ILogger<Worker> logger, IServiceScopeFactory serviceScopeFactory)
         {
             _logger = logger;
             _serviceScopeFactory = serviceScopeFactory;
         }
 
+        /// <summary>
+        /// Tarea asincrona.
+        /// </summary>
+        /// <param name="stoppingToken"></param>
+        /// <returns></returns>
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             ListenToQueue();
         }
 
+        /// <summary>
+        /// Lectura de una cola Rabbit.
+        /// </summary>
         private void ListenToQueue()
         {
             using (var scope = _serviceScopeFactory.CreateScope())
             {
                 ConfigService configService = scope.ServiceProvider.GetRequiredService<ConfigService>();
                 ReadRabbitService rabbitMQService = scope.ServiceProvider.GetRequiredService<ReadRabbitService>();
-
-                // Prueba 
-                //List<string> listaDatos = new List<string>() { "investigador" , "0000-0002-5525-1259", "2021-12-01"};
-                //rabbitMQService.PublishMessage(listaDatos, configService.GetQueueRabbit());
-
                 rabbitMQService.ListenToQueue(new ReadRabbitService.ReceivedDelegate(rabbitMQService.ProcessItem), new ReadRabbitService.ShutDownDelegate(OnShutDown), configService.GetQueueRabbit());
-                _processRabbitReady = true;
             }
         }
 
+        /// <summary>
+        /// Permite lanzar la escucha después de leer. 
+        /// Contiene un sleep de 30 segundos.
+        /// </summary>
         private void OnShutDown()
         {
-            _processRabbitReady = false;
-            Thread.Sleep(5000);
+            Thread.Sleep(30000);
             ListenToQueue();
         }
     }

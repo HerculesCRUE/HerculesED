@@ -47,7 +47,7 @@ namespace Gnoss.Web.ReprocessData.Models.Services
             if (string.IsNullOrEmpty(RabbitConnectionString))
             {
                 IDictionary environmentVariables = Environment.GetEnvironmentVariables();
-                string rabbitConnectionString = "";
+                string rabbitConnectionString = string.Empty;
                 if (environmentVariables.Contains("RabbitMQ"))
                 {
                     rabbitConnectionString = environmentVariables["RabbitMQ"] as string;
@@ -70,7 +70,7 @@ namespace Gnoss.Web.ReprocessData.Models.Services
             if (string.IsNullOrEmpty(QueueRabbit))
             {
                 IDictionary environmentVariables = Environment.GetEnvironmentVariables();
-                string queue = "";
+                string queue = string.Empty;
                 if (environmentVariables.Contains("QueueRabbit"))
                 {
                     queue = environmentVariables["QueueRabbit"] as string;

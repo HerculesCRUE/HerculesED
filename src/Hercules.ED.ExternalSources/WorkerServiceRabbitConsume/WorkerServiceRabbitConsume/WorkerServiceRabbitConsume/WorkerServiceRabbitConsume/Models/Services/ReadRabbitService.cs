@@ -17,23 +17,27 @@ namespace Gnoss.Web.ReprocessData.Models.Services
 {
     public class ReadRabbitService
     {
-
-
+        private ConfigService _configService;
+        private readonly ConnectionFactory connectionFactory;
+        private readonly IConnection connection;
+        private Dictionary<string, string> headers = new Dictionary<string, string>();
 
         /// <summary>
-        /// ReceivedDelegate
+        /// ReceivedDelegate.
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
         public delegate bool ReceivedDelegate(string s);
+
         /// <summary>
-        /// ShutDownDelegate
+        /// ShutDownDelegate.
         /// </summary>
         public delegate void ShutDownDelegate();
-        private ConfigService _configService;
-        private readonly ConnectionFactory connectionFactory;
-        private readonly IConnection connection;
 
+        /// <summary>
+        /// Contructor.
+        /// </summary>
+        /// <param name="configService"></param>
         public ReadRabbitService(ConfigService configService)
         {
             _configService = configService;
@@ -45,9 +49,8 @@ namespace Gnoss.Web.ReprocessData.Models.Services
             connection = connectionFactory.CreateConnection();
         }
 
-
         /// <summary>
-        /// Encola un objeto en Rabbit
+        /// Encola un objeto en Rabbit.
         /// </summary>
         /// <param name="message">Objeto a encolar</param>
         /// <param name="queue">Cola</param>
@@ -68,7 +71,7 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                     var jsonPayload = JsonConvert.SerializeObject(message);
                     var body = Encoding.UTF8.GetBytes(jsonPayload);
 
-                    channel.BasicPublish(exchange: "",
+                    channel.BasicPublish(exchange: string.Empty,
                         routingKey: queue,
                         basicProperties: null,
                         body: body
@@ -78,7 +81,7 @@ namespace Gnoss.Web.ReprocessData.Models.Services
         }
 
         /// <summary>
-        /// ListenToQueue
+        /// ListenToQueue.
         /// </summary>
         /// <param name="receivedFunction"></param>
         /// <param name="shutdownFunction"></param>
@@ -126,14 +129,11 @@ namespace Gnoss.Web.ReprocessData.Models.Services
             channel.BasicConsume(queue, false, eventingBasicConsumer);
         }
 
-        public string dir_fichero = @"FileDatosOut/";
-        protected Dictionary<string, string> headers = new Dictionary<string, string>();
-
         /// <summary>
-        /// A Http calls function
+        /// A Http calls function.
         /// </summary>
-        /// <param name="url">the http call url</param>
-        /// <param name="method">Crud method for the call</param>
+        /// <param name="url">The http call URL.</param>
+        /// <param name="method">Crud method for the call.</param>
         /// <returns></returns>
         protected async Task<string> httpCall(string url, string method = "GET", Dictionary<string, string> headers = null)
         {
@@ -142,21 +142,16 @@ namespace Gnoss.Web.ReprocessData.Models.Services
             {
                 using (var request = new HttpRequestMessage(new HttpMethod(method), url))
                 {
-                    //request.Headers.TryAddWithoutValidation("X-ApiKey", bareer);
-                    //request.Headers.TryAddWithoutValidation("Connection", "keep-alive");
                     request.Headers.TryAddWithoutValidation("Accept", "application/json");
 
                     if (headers != null && headers.Count > 0)
                     {
-                        // if (headers.ContainsKey("Authorization"))
-                        // {
-                        //     request.Headers.TryAddWithoutValidation("Authorization", headers["Authorization"]);
-                        // }
                         foreach (var item in headers)
                         {
                             request.Headers.TryAddWithoutValidation(item.Key, item.Value);
                         }
                     }
+
                     try
                     {
                         response = await httpClient.SendAsync(request);
@@ -167,20 +162,19 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                     }
                 }
             }
+
             if (response.Content != null)
             {
                 return await response.Content.ReadAsStringAsync();
             }
+
             else
             {
-                return "";
+                return string.Empty;
             }
 
         }
 
-        // message = orcid 
-        //fecha. 
-        
         /// <summary>
         /// Permite mandar a procesar los datos a una cola Rabbit.
         /// {"investigador"; [ORCID]; "2021-11-01"} -> Obtiene todos los datos relacionados con ese autor desde una fecha indicada. 
@@ -190,50 +184,41 @@ namespace Gnoss.Web.ReprocessData.Models.Services
         /// <returns></returns>
         public bool ProcessItem(string pMessage)
         {
+            // Listado con los datos.
             List<string> message = JsonConvert.DeserializeObject<List<string>>(pMessage);
-            if (message.Count() == 3 & message[0] == "investigador")
-            {
-                if (message[2] != null)
+
+            if (message != null && message.Count() == 3 && message[0] == "investigador" && !string.IsNullOrEmpty(message[1]) && !string.IsNullOrEmpty(message[2]))
+            {  
+                try
                 {
+                    // Creación de la URL.
                     Uri url = new Uri(string.Format(_configService.GetUrlPublicacion() + "Publication/GetROs?orcid={0}&date={1}", message[1], message[2]));
 
-                    try
-                    {
-                        string info_publication = httpCall(url.ToString(), "GET", headers).Result;
-                        FileLogger.Log(DateTime.Now + " Publicación obtenida.");
-                        if (!Directory.Exists(_configService.GetRutaDirectorioEscritura()))
-                        {
-                            Directory.CreateDirectory(_configService.GetRutaDirectorioEscritura());
-                            FileLogger.Log(DateTime.Now + " Directorio creado: " + _configService.GetRutaDirectorioEscritura());
-                        }
-
-                        File.WriteAllText(_configService.GetRutaDirectorioEscritura() + "inv_" + DateTime.Now.ToString().Replace('/', '-').Replace(':', '_') + ".json", info_publication);
-                        FileLogger.Log(DateTime.Now + " JSON creado.");
-                    }
-                    catch (Exception e)
-                    {
-                        FileLogger.Log(DateTime.Now + " - " + e);
-                    }                    
-                    return true;
-                }
-                else
-                {
-                    Uri url = new Uri(string.Format(_configService.GetUrlPublicacion() + "Publication/GetROs?orcid={0}&date=1500-01-01", message[1]));
+                    // Obtención de datos con la petición.
                     string info_publication = httpCall(url.ToString(), "GET", headers).Result;
-                    //List<Publication> objInicial = JsonConvert.DeserializeObject<List<Publication>>(info_publication);
-                    //escribirlo en un fichero! 
-                    File.WriteAllText(dir_fichero + "inv_" + DateTime.Now + ".json", info_publication);
+                    FileLogger.Log($@"{DateTime.Now} - Publicación obtenida.");
 
-                    return true;
+                    // Creación del directorio si no existe.
+                    if (!Directory.Exists(_configService.GetRutaDirectorioEscritura()))
+                    {
+                        Directory.CreateDirectory(_configService.GetRutaDirectorioEscritura());
+                        FileLogger.Log($@"{DateTime.Now} - Directorio creado: {_configService.GetRutaDirectorioEscritura()}");
+                    }
+
+                    // Guardado de la información en formato JSON.
+                    File.WriteAllText($@"{_configService.GetRutaDirectorioEscritura()}inv_{DateTime.Now.ToString().Replace('/', '-').Replace(':', '_')}.json", info_publication);
+                    FileLogger.Log($@"{DateTime.Now} - fichero JSON creado.");
+                }
+                catch (Exception e)
+                {
+                    FileLogger.Log($@"{DateTime.Now} - {e}");
                 }
             }
             else if (message.Count() == 2 & message[0] == "publicación")
             {
-                //todo! 
-                return true;
+                // --- TODO: Hacer la parte de publicación.
             }
 
-            // Si llegamos aqui lo que tenemos es la entrada de la cola de rabbit no esta en el formato correcto! 
             return true;
         }
     }
