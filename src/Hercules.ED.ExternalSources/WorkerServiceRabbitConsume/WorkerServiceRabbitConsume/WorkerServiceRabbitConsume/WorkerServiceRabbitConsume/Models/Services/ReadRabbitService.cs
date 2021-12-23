@@ -216,7 +216,7 @@ namespace Gnoss.Web.ReprocessData.Models.Services
             }
             else if (message.Count() == 2 & message[0] == "publicación")
             {
-                // --- TODO
+                // --- TODO: Hacer la parte de publicación.
             }
 
             return true;

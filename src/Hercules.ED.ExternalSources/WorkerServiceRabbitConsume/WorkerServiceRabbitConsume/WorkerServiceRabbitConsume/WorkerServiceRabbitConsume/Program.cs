@@ -15,11 +15,20 @@ namespace WorkerServiceRabbitConsume
     {
         private string _LogPath;
 
+        /// <summary>
+        /// Contructor.
+        /// </summary>
+        /// <param name="args"></param>
         public static void Main(string[] args)
         {
             CreateHostBuilder(args).Build().Run();
         }
 
+        /// <summary>
+        /// CreateHostBuilder.
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns></returns>
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureServices((hostContext, services) =>
@@ -29,9 +38,17 @@ namespace WorkerServiceRabbitConsume
                     services.AddHostedService<Worker>();
                 });
 
+        /// <summary>
+        /// Clase FileLogger.
+        /// </summary>
         public static class FileLogger
         {
-            private const string FilePath = "/app/logs/log.txt"; // --- TODO
+            private const string FilePath = "/app/logs/log.txt"; // --- TODO: Sacarlo a archivo de configuración.
+
+            /// <summary>
+            /// Sobreescribe el método Log para pintar el mensaje de error en un fichero.
+            /// </summary>
+            /// <param name="messsage"></param>
             public static void Log(string messsage)
             {
                 using var fileStream = new FileStream(FilePath, FileMode.Append);
