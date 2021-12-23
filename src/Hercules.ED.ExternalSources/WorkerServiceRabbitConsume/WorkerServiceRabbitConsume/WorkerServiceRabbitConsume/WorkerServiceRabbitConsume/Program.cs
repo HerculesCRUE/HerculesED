@@ -31,7 +31,7 @@ namespace WorkerServiceRabbitConsume
 
         public static class FileLogger
         {
-            private const string FilePath = "/app/logs/log.txt";
+            private const string FilePath = "/app/logs/log.txt"; // --- TODO
             public static void Log(string messsage)
             {
                 using var fileStream = new FileStream(FilePath, FileMode.Append);
