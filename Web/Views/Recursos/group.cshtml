@@ -688,7 +688,14 @@
 <script type="text/javascript">
     var depuracion = false; // TODO:
 
-    const localUrlBase = "https://localhost:44344/";
+    const localUrlBase = "https://localhost:44321/";
+    const edmaUrlBase = "@Html.GetBaseUrlContent()/";
+
+    const urlBase = "@Html.GetBaseUrl()";
+    if (urlBase.includes("localhost") || urlBase.includes("depuracion")) {
+        depuracion = true;
+    }
+
 
     // Datos gráfica publicaciones.
     function CargarGraficaPublicaciones(parametros, idContenedor) {
@@ -712,11 +719,11 @@
         }
         var arg = {};
         arg.pParametros = parametros;
-		
-		$('#' + idContenedorAnios).replaceWith('<canvas id="'+idContenedorAnios+'" class="js-chart"></canvas>' );
-		$('#' + idContenedorMiembros).replaceWith('<canvas id="'+idContenedorMiembros+'" class="js-chart"></canvas>' );
-		$('#' + idContenedorAmbito).replaceWith('<canvas id="'+idContenedorAmbito+'" class="js-chart"></canvas>' );
-		
+        
+        $('#' + idContenedorAnios).replaceWith('<canvas id="'+idContenedorAnios+'" class="js-chart"></canvas>' );
+        $('#' + idContenedorMiembros).replaceWith('<canvas id="'+idContenedorMiembros+'" class="js-chart"></canvas>' );
+        $('#' + idContenedorAmbito).replaceWith('<canvas id="'+idContenedorAmbito+'" class="js-chart"></canvas>' );
+        
         $.get(url, arg, function (data) {
             PintarGraficaProyectos(data, idContenedorAnios, idContenedorMiembros, idContenedorAmbito);
         });
