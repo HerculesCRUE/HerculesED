@@ -46,7 +46,7 @@
 <input type="hidden" id="CV_EDITAR" value="@Html.Translate("CV_EDITAR")"/>
 <input type="hidden" id="CV_NOHASINTRODUCIDONINGUNAFIRMA" value="@Html.Translate("CV_NOHASINTRODUCIDONINGUNAFIRMA")"/>
 <input type="hidden" id="CV_ELCODIGOINTRODUCIDONOESVALIDO" value="@Html.Translate("CV_ELCODIGOINTRODUCIDONOESVALIDO")"/>
-
+<input type="hidden" id="CV_DATOSPERSONALES" value="@Html.Translate("CV_DATOSPERSONALES")"/>
 	
 <div class="row">
     <div class="col col-12 col-breadcrumb">
@@ -153,36 +153,7 @@
                     <div class="tab-content" id="paneles-cv">
                         <div class="tab-pane fade show active" id="identificacion-panel" role="tabpanel" aria-labelledby="identificacion-tab">
                             <div class="row cvTab" about="@pCV.Roh_personalData.GNOSSID" rdftype="http://w3id.org/roh/PersonalData" property="http://w3id.org/roh/personalData">
-                                <div class="col col-12 col-contenido">
-                                    <div class="datos-identificacion  p-4">
-                                        <div class="bloque bloque-title">
-											<!--TODO-->
-                                            <div class="title">
-                                                Datos personales
-                                            </div>
-                                            <div class="actions">
-                                                <ul class="no-list-style d-flex align-items-center">
-                                                    <li>
-                                                        <a class="btn btn-outline-grey" data-toggle="modal" data-target="#modal-editar-datos-identificacion">
-                                                            <span class="texto">Editar</span>
-                                                            <span class="material-icons">edit</span>
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                                <div class="dropdown">
-                                                    <a class="dropdown-toggle btn btn-outline-grey no-flecha" data-toggle="dropdown" aria-expanded="false">
-                                                        <span class="texto">Acciones</span>
-                                                        <span class="material-icons">more_vert</span>
-                                                    </a>
-                                                    <div class="dropdown-menu basic-dropdown dropdown-menu-right" style="will-change: transform;">
-                                                        <a href="javascript: void(0)" class="item-dropdown">Acción 1</a>
-                                                        <a href="javascript: void(0)" class="item-dropdown">Acción 2</a>
-                                                        <a href="javascript: void(0)" class="item-dropdown">Acción 3</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                <div class="col col-12 col-contenido">                                    
                                 </div>
                             </div>
                         </div>
