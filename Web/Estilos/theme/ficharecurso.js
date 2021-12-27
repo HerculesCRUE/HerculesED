@@ -133,7 +133,7 @@ function PintarGraficaPublicaciones(data,idContenedor) {
 
 function PintarGraficaProyectos(data,idContenedorAnios,idContenedorMiembros,idContenedorAmbito) {	
 	$('#'+idContenedorAnios).empty();
-	$('#'+idContenedorAnios).parent().css("height", 400);
+	$('#'+idContenedorAnios).parent().css("height", 450);
 	$('#'+idContenedorMiembros).empty();
 	$('#'+idContenedorMiembros).parent().css("height", 166);
 	$('#'+idContenedorAmbito).empty();
@@ -166,11 +166,16 @@ function PintarGraficaProyectos(data,idContenedorAnios,idContenedorMiembros,idCo
 	
 	
 	//Gráfico de sectores ambito
-	var ctxSectoresAmbito = document.getElementById(idContenedorAmbito);
+	var ctxBarrasAmbito = document.getElementById(idContenedorAmbito);
 	data.graficaSectoresAmbito.options={
+		scale:{
+			ticks:{
+				precision:0
+			}
+		},
 		maintainAspectRatio: false
 	}
-	var myChartSectoresAmbito = new Chart(ctxSectoresAmbito, data.graficaSectoresAmbito);
+	var myBarrasAmbito = new Chart(ctxBarrasAmbito, data.graficaSectoresAmbito);
 }
 
 function PintarGraficaArania(data,idContenedor){
