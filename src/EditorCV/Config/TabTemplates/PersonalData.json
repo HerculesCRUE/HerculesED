@@ -247,7 +247,6 @@
                 "title": {
                   "es": "Teléfono fijo"
                 },
-                "multiple": true,
                 "width": 3,
                 "auxEntityData": {
                   "rdftype": "https://www.w3.org/2006/vcard/ns#TelephoneType",
@@ -557,7 +556,7 @@
                     },
                     {
                       "name": {
-                        "es": "Código postal"
+                        "es": "Código postal de contacto"
                       },
                       "child": {
                         "property": "https://www.w3.org/2006/vcard/ns#postal-code"
