@@ -343,9 +343,6 @@
                 "width": 3,
                 "auxEntityData": {
                   "rdftype": "https://www.w3.org/2006/vcard/ns#TelephoneType",
-                  "propertyTitle": {
-                    "property": "https://www.w3.org/2006/vcard/ns#hasValue"
-                  },
                   "properties": [
                     {
                       "name": {
@@ -437,9 +434,6 @@
                 "width": 3,
                 "auxEntityData": {
                   "rdftype": "https://www.w3.org/2006/vcard/ns#TelephoneType",
-                  "propertyTitle": {
-                    "property": "https://www.w3.org/2006/vcard/ns#hasValue"
-                  },
                   "properties": [
                     {
                       "name": {
