@@ -1183,12 +1183,17 @@ namespace GuardadoCV.Models
                     {
                         childsOrder = new Dictionary<string, int>(),
                         rdftype = pItemEditSectionRowProperty.auxEntityData.rdftype,
-                        propertyOrder = pItemEditSectionRowProperty.auxEntityData.propertyOrder,
-                        titleConfig = new EntityEditRepresentativeProperty()
+                        propertyOrder = pItemEditSectionRowProperty.auxEntityData.propertyOrder,                        
+                    };
+
+                    if (pItemEditSectionRowProperty.auxEntityData.propertyTitle != null)
+                    {
+                        entityEditSectionRowProperty.entityAuxData.titleConfig = new EntityEditRepresentativeProperty()
                         {
                             route = pItemEditSectionRowProperty.auxEntityData.propertyTitle.GetRoute()
-                        }
-                    };
+                        };
+                    }
+
                     entityEditSectionRowProperty.entityAuxData.propertiesConfig = new List<EntityEditRepresentativeProperty>();
                     foreach (ItemEditEntityProperty entityProperty in pItemEditSectionRowProperty.auxEntityData.properties)
                     {

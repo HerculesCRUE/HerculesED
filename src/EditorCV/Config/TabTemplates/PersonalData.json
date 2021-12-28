@@ -249,10 +249,7 @@
                 },
                 "width": 3,
                 "auxEntityData": {
-                  "rdftype": "https://www.w3.org/2006/vcard/ns#TelephoneType",
-                  "propertyTitle": {
-                    "property": "https://www.w3.org/2006/vcard/ns#hasValue"
-                  },
+                  "rdftype": "https://www.w3.org/2006/vcard/ns#TelephoneType",                  
                   "properties": [
                     {
                       "name": {
@@ -569,6 +566,42 @@
                       "child": {
                         "property": "https://www.w3.org/2006/vcard/ns#locality"
                       }
+                    },
+                    {
+                      "name": {
+                        "es": "País de contacto"
+                      },
+                      "child": {
+                        "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+                        "graph": "feature",
+                        "child": {
+                          "property": "http://www.geonames.org/ontology#name"
+                        }
+                      }
+                    },
+                    {
+                      "name": {
+                        "es": "C. Autón./Reg. de contacto"
+                      },
+                      "child": {
+                        "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+                        "graph": "feature",
+                        "child": {
+                          "property": "http://www.geonames.org/ontology#name"
+                        }
+                      }
+                    },
+                    {
+                      "name": {
+                        "es": "Provincia de contacto"
+                      },
+                      "child": {
+                        "property": "http://w3id.org/roh/hasProvince",
+                        "graph": "feature",
+                        "child": {
+                          "property": "http://www.geonames.org/ontology#name"
+                        }
+                      }
                     }
                   ],
                   "rows": [
@@ -721,13 +754,37 @@
                   "propertyTitle": {
                     "property": "https://www.w3.org/2006/vcard/ns#locality"
                   },
-                  "properties": [                    
+                  "properties": [
                     {
                       "name": {
                         "es": "Ciudad de nacimiento"
                       },
                       "child": {
                         "property": "https://www.w3.org/2006/vcard/ns#locality"
+                      }
+                    },
+                    {
+                      "name": {
+                        "es": "País de nacimiento"
+                      },
+                      "child": {
+                        "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+                        "graph": "feature",
+                        "child": {
+                          "property": "http://www.geonames.org/ontology#name"
+                        }
+                      }
+                    },
+                    {
+                      "name": {
+                        "es": "C. Autón./Reg. de nacimiento"
+                      },
+                      "child": {
+                        "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+                        "graph": "feature",
+                        "child": {
+                          "property": "http://www.geonames.org/ontology#name"
+                        }
                       }
                     }
                   ],
