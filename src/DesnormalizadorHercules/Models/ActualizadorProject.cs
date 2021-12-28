@@ -458,7 +458,7 @@ namespace DesnormalizadorHercules.Models
 		                                    }}		
 		                                    MINUS
 		                                    {{
-			                                    ?project <http://w3id.org/roh/publicauthorlist> ?person
+			                                    ?project <http://w3id.org/roh/publicAuthorList> ?person
 		                                    }}
 	                                    }}
                                     }}
