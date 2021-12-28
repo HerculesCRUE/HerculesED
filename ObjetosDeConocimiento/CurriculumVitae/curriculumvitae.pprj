@@ -1,4 +1,4 @@
-; Mon Dec 27 17:16:52 CET 2021
+; Tue Dec 28 15:10:34 CET 2021
 ; 
 ;+ (version "3.3.1")
 ;+ (build "Build 430")
@@ -6,11 +6,11 @@
 ([BROWSER_SLOT_NAMES] of  Property_List
 
 	(properties
-		[curriculumvitae_ProjectKB_Instance_51]
-		[curriculumvitae_ProjectKB_Instance_52]
-		[curriculumvitae_ProjectKB_Instance_53]
-		[curriculumvitae_ProjectKB_Instance_54]
-		[curriculumvitae_ProjectKB_Instance_55]))
+		[curriculumvitae_ProjectKB_Instance_56]
+		[curriculumvitae_ProjectKB_Instance_57]
+		[curriculumvitae_ProjectKB_Instance_58]
+		[curriculumvitae_ProjectKB_Instance_59]
+		[curriculumvitae_ProjectKB_Instance_60]))
 
 ([CLSES_TAB] of  Widget
 
@@ -226,33 +226,33 @@
 ([curriculumvitae_ProjectKB_Instance_50] of  Property_List
 )
 
-([curriculumvitae_ProjectKB_Instance_51] of  String
+([curriculumvitae_ProjectKB_Instance_56] of  String
 
 	(name "owl:Class")
 	(string_value "%3ANAME"))
 
-([curriculumvitae_ProjectKB_Instance_52] of  String
+([curriculumvitae_ProjectKB_Instance_57] of  String
 
 	(name ":INSTANCE-ANNOTATION")
 	(string_value "%3AANNOTATION-TEXT"))
 
-([curriculumvitae_ProjectKB_Instance_53] of  String
+([curriculumvitae_ProjectKB_Instance_58] of  String
 
 	(name ":PAL-CONSTRAINT")
 	(string_value "%3APAL-NAME"))
 
-([curriculumvitae_ProjectKB_Instance_54] of  String
+([curriculumvitae_ProjectKB_Instance_59] of  String
 
 	(name "owl:Thing")
 	(string_value "%3ANAME"))
 
-([curriculumvitae_ProjectKB_Instance_55] of  String
+([curriculumvitae_ProjectKB_Instance_6] of  Property_List
+)
+
+([curriculumvitae_ProjectKB_Instance_60] of  String
 
 	(name ":META-CLASS")
 	(string_value "%3ANAME"))
-
-([curriculumvitae_ProjectKB_Instance_6] of  Property_List
-)
 
 ([curriculumvitae_ProjectKB_Instance_7] of  Widget
 
