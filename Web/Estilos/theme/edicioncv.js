@@ -40,14 +40,9 @@ var edicionCV = {
         return;
     },
     config: function () {
-		
-		
 		$('*').on('shown.bs.modal', function(e) {
 			$('.modal-backdrop').last().addClass($(this).attr('id'));
 		});
-		
-		
-		
 		//TODO cambiar
 		$('body').append(`
 		<style>
@@ -232,6 +227,7 @@ var edicionCV = {
             var rdfType = $($(this).attr('href')).find('.cvTab').attr('rdftype');
             that.loadTab(entityID, rdfType);
         });
+		$('#identificacion-tab').click();		
         return;
     },
     //Métodos de pestañas
@@ -247,14 +243,144 @@ var edicionCV = {
         return;
     },
     printTab: function (entityID, data) {
-        for (var i = 0; i < data.sections.length; i++) {
-            $('div[about="' + entityID + '"] .col-12.col-contenido').append(this.printTabSection(data.sections[i]));
-            this.repintarListadoTab(data.sections[i].identifier);
-        }
+		if(data.entityID!=null)
+		{
+			$('div[about="' + entityID + '"] .col-12.col-contenido').append(this.printPersonalData(data));
+		}else
+		{
+			for (var i = 0; i < data.sections.length; i++) {
+				$('div[about="' + entityID + '"] .col-12.col-contenido').append(this.printTabSection(data.sections[i]));
+				this.repintarListadoTab(data.sections[i].identifier);
+			}
+		}
         accionesCurriculum.init();
+		this.engancharComportamientosCV();
     }
     //Fin de métodos de pestañas
-    ,
+    ,//Métodos de datos personales
+    printPersonalData: function (data) {
+		var htmlSections='';
+		for (var i = 0; i < data.sections.length; i++) {
+			htmlSections+=this.printSectionPersonalData(data.sections[i]);
+		}
+		var html=`	<div class="datos-identificacion  p-4">
+						<div class="bloque bloque-title">
+							<div class="title">${GetText('CV_DATOSPERSONALES')}</div>
+							<div class="actions">
+								<ul class="no-list-style d-flex align-items-center">
+									<li>
+										<a class="btn btn-outline-grey" id="personalDataEdit" personaldataid="${data.entityID}">
+											<span class="texto">${GetText('CV_EDITAR')}</span>
+											<span class="material-icons">edit</span>
+										</a>
+									</li>
+								</ul>
+							</div>
+						</div>
+						${htmlSections}
+					</div>`;		
+		return html;
+	},
+    printSectionPersonalData: function (section) {
+		var htmlProperties='';
+		for (var i = 0; i < section.rows.length; i++) {
+			for (var k = 0; k < section.rows[i].properties.length; k++) {
+				htmlProperties += this.printPropertyPersonalData(section.rows[i].properties[k]);
+			}
+        }
+		var html='';
+		if(htmlProperties.trim()!='')
+		{
+			html = `	<div class="bloque">
+							<p class="pl-4 mb-2 uppercase font-weight-bold">${section.title}</p>
+							<div class="table-alike-wrapper">
+								<div class="table-alike">
+									${htmlProperties}
+								</div>
+							</div>
+						</div>`;
+		}
+        return html;
+    },
+    printPropertyPersonalData: function (property) {			
+		var html='';
+		for (var i = 0; i < property.values.length; i++) {
+			if(property.entityAuxData==null)
+			{
+				var title=property.title;
+				var value = property.values[i];
+				if(value!='' && property.type=='selectCombo')
+				{
+					value=property.comboValues[value];
+				}
+				if(value!='' && property.type=='date')
+				{
+					value=value.substring(6, 8) + "/" + value.substring(4, 6) + "/" + value.substring(0, 4);
+				}
+				if(value!='')
+				{
+					html+=`		<div class="item ">
+										<div class="item-content">
+											<div class="item-title">
+												${title}
+											</div>
+											<div class="item-data">
+												${value}
+											</div>
+										</div>
+									</div>`;
+				}
+			}else
+			{
+				if(property.entityAuxData.rdftype=='http://xmlns.com/foaf/0.1/Document')
+				{
+					//Identificadores
+					var entity=property.entityAuxData.entities[property.values[i]][0];									
+					html+=`		<div class="item ">
+										<div class="item-content">
+											<div class="item-title">
+												${entity.properties[0].values[0]}
+											</div>
+											<div class="item-data">
+												${entity.properties[1].values[0]}
+											</div>
+										</div>
+									</div>`;
+				}else
+				{
+					for (var j = 0; j < property.entityAuxData.entities[property.values[i]].length; j++) {
+						var entityRows=property.entityAuxData.entities[property.values[i]][j];
+						for (var k = 0; k < entityRows.properties.length; k++) {
+							var tit=entityRows.properties[k].title;
+							var val='';
+							if(entityRows.properties[k].values.length>0)
+							{
+								val=entityRows.properties[k].values[0];
+							}
+							if(val!='' && entityRows.properties[k].type=='selectCombo')
+							{
+								val=entityRows.properties[k].comboValues[val];
+							}
+							if(val!='')
+							{
+								html+=`		<div class="item ">
+												<div class="item-content">
+													<div class="item-title">
+														${tit}
+													</div>
+													<div class="item-data">
+														${val}
+													</div>
+												</div>
+											</div>`;
+							}
+						}
+					}
+				}
+			}
+		}
+		return html;				
+    },
     //Métodos de secciones
     printTabSection: function (data) {
         //Pintado sección listado
@@ -297,7 +423,7 @@ var edicionCV = {
 								<ul class="no-list-style d-flex align-items-center">
 									<li>
 										<a class="btn btn-outline-grey aniadirEntidad">
-											<span class="texto">Añadir</span>
+											<span class="texto">${GetText('CV_AGNADIR')}</span>
 											<span class="material-icons">post_add</span>
 										</a>
 									</li>
@@ -306,7 +432,7 @@ var edicionCV = {
 								<div class="buscador">
 									<div class="fieldsetGroup searchGroup">
 										<div class="textoBusquedaPrincipalInput">
-											<input type="text" class="not-outline txtBusqueda" placeholder="Escribe algo..." autocomplete="off">
+											<input type="text" class="not-outline txtBusqueda" placeholder="${GetText('CV_ESCRIBE_ALGO')}" autocomplete="off">
 											<span class="botonSearch">
 												<span class="material-icons">search</span>
 											</span>
@@ -889,7 +1015,7 @@ var edicionCV = {
 		}
 
 		var rdftype='';	
-		if (!property.multiple) {
+		if (!property.multiple && property.entityAuxData==null) {
 			var htmlInput='';
 			
 			switch (property.type) {
@@ -977,9 +1103,10 @@ var edicionCV = {
 					${htmlInput}
 				</div>`;
 		}else{
-			css+=' multiple';
-					
-			
+			if (property.multiple)
+			{
+				css+=' multiple';			
+			}
 			var htmlMultiple=`<div class='item aux'>`;
 			if(property.type=='auxEntity' || property.type=='auxEntityAuthorList'|| property.type=='thesaurus')
 			{				
@@ -1027,8 +1154,13 @@ var edicionCV = {
 					htmlMultiple+=`
 					<input propertyrdf="${property.entityAuxData.propertyOrder}" value="" type="hidden">`;
 				}
-				htmlMultiple+=`
-					<span class="title" loaded="false" route="${property.entityAuxData.titleConfig.route}"></span> `;				
+				if(property.entityAuxData.titleConfig!=null)
+				{
+					htmlMultiple+=`<span class="title" loaded="false" route="${property.entityAuxData.titleConfig.route}"></span> `;				
+				}else
+				{
+					htmlMultiple+=`<span class="title" loaded="true"></span> `;				
+				}
 				
 				if(property.entityAuxData.propertiesConfig!=null)
 				{
@@ -1257,7 +1389,13 @@ var edicionCV = {
 		{
 			css="obligatorio";
 		}
-        var selector = `<select ${disabled} propertyrdf="${property}" class="js-select2 ${css}" data-select-search="true">`;
+		var dependency="";
+		if(pDependency != null)
+		{
+			css+=" hasdependency";
+			dependency=pDependency.parent;
+		}
+        var selector = `<select ${disabled} propertyrdf="${property}" class="js-select2 ${css}" dependency="${dependency}" data-select-search="true">`;
         for (var propiedad in pItems) {
 			var propAux = '';
             if (propiedad == pId) {
@@ -1269,10 +1407,10 @@ var edicionCV = {
 			
 			selector += `<option ${propAux} value="${propiedad}">${pItems[propiedad]}</option>`;
         }
-        selector += "</select>";
-		
+        selector += "</select>";	
 		if(pDependency != null)
 		{
+			/*
 			var script = ` $('select[propertyrdf="${pDependency.parent}"]').change(function(){
 				var valorSeleccionado = $(this).val();
 				var comboHijo = $('select[propertyrdf="${property}"]');
@@ -1293,9 +1431,8 @@ var edicionCV = {
 				}
 			});
 			$('select[propertyrdf="${pDependency.parent}"]').trigger('change')`;
-			selector += '<script>' + script + '</script>'
-		}
-		
+			selector += '<script>' + script + '</script>'*/
+		}		
         return selector;
     },
     printThesaurus: function (property, values, pItems, required, pDisabled) {
@@ -1485,7 +1622,7 @@ var edicionCV = {
 											<ul class="no-list-style d-flex align-items-center">
 												<li>
 													<a class="btn btn-outline-grey add">
-														<span class="texto">Añadir</span>
+														<span class="texto">${GetText('CV_AGNADIR')}</span>
 														<span class="material-icons">${iconAdd}</span>
 													</a>
 												</li>
@@ -1659,7 +1796,7 @@ var edicionCV = {
 			}
 			
 			var htmAccionesItems='';
-			if(multiple)
+			if(multiple || aux)
 			{
 				if(items.length>0)
 				{
@@ -1692,6 +1829,28 @@ var edicionCV = {
 					iconAdd="person_add";
 					classList=" resource-list-autores";
 				}
+				var htmlAdd="";
+				if(multiple || (aux && items.length==0))
+				{
+					htmlAdd=`	<ul class="no-list-style d-flex align-items-center">
+									<li>
+										<a class="btn btn-outline-grey add">
+											<span class="texto">${GetText('CV_AGNADIR')}</span>
+											<span class="material-icons">${iconAdd}</span>
+										</a>
+									</li>
+								</ul>`;
+				}
+				var htmlSearch="";
+				if(items.length>1)
+				{
+					htmlSearch=`	<div id="buscador" class="buscador">
+										<input type="text" id="txtBusquedaPrincipal" class="not-outline text txtBusqueda autocompletar personalizado ac_input" placeholder="${GetText('CV_ESCRIBE_ALGO')}" autocomplete="off">
+										<span class="botonSearch">
+											<span class="material-icons">search</span>
+										</span>
+									</div>`;
+				}
 				var htmlAcciones=`
 									<div class="simple-collapse-content">
 										<div class="acciones-listado acciones-listado-edicion">
@@ -1701,20 +1860,8 @@ var edicionCV = {
 												</ul>
 											</div>
 											<div class="wrap">
-												<ul class="no-list-style d-flex align-items-center">
-													<li>
-														<a class="btn btn-outline-grey add">
-															<span class="texto">Añadir</span>
-															<span class="material-icons">${iconAdd}</span>
-														</a>
-													</li>
-												</ul>
-												<div id="buscador" class="buscador">
-													<input type="text" id="txtBusquedaPrincipal" class="not-outline text txtBusqueda autocompletar personalizado ac_input" placeholder="Escribe algo..." autocomplete="off">
-													<span class="botonSearch">
-														<span class="material-icons">search</span>
-													</span>
-												</div>
+												${htmlAdd}
+												${htmlSearch}
 											</div>
 										</div>
 										<div class="resource-list listView ${classList}">
@@ -1851,6 +1998,12 @@ var edicionCV = {
 							spanTitle.attr('loaded','pending');
 							break;
 						}
+					}else if(prop.is('select'))
+					{			
+						if(prop.val()!='')
+						{
+							spanTitle.text(prop.find('option:selected').text());
+						}
 					}else if(j+1==routeCompleteSplitTitle.length && prop.val()!='')
 					{
 						spanTitle.text(prop.val());							
@@ -1890,21 +2043,27 @@ var edicionCV = {
 						}else if(prop.is('div') && prop.hasClass('entity'))
 						{						
 							var itemLoad={};
-							if(prop.children('[propertyrdf="'+routeCompleteSplitProperty[j]+'"]').val()!='')
+							if(prop.children('[propertyrdf="'+routeCompleteSplitProperty[k]+'"]').val()!='')
 							{
-								itemLoad.id=prop.children('[propertyrdf="'+routeCompleteSplitProperty[j]+'"]').val();
+								itemLoad.id=prop.children('[propertyrdf="'+routeCompleteSplitProperty[k]+'"]').val();
 								itemLoad.about=spanProperty.closest('.entityaux').attr('about');
 								itemLoad.route="";
 								itemLoad.routeComplete=spanProperty.attr('route');
-								for (var j2 = j+1; j2 < routeCompleteSplitProperty.length; j2++) {
-									itemLoad.route+=routeCompleteSplitProperty[j2]+"||";
+								for (var k2 = k+1; k2 < routeCompleteSplitProperty.length; k2++) {
+									itemLoad.route+=routeCompleteSplitProperty[k2]+"||";
 								}
 								itemLoad.route=itemLoad.route.substring(0,itemLoad.route.length-2);
 								itemsLoad.items.push(itemLoad);
 								spanProperty.attr('loaded','pending');
 								break;
 							}
-						}else if(j+1==routeCompleteSplitProperty.length && prop.val()!='')
+						}else if(prop.is('select'))
+						{			
+							if(prop.val()!='')
+							{
+								spanProperty.text(prop.find('option:selected').text());
+							}
+						}else if(k+1==routeCompleteSplitProperty.length && prop.val()!='')
 						{
 							spanProperty.text(prop.val());							
 						}
@@ -2235,7 +2394,8 @@ var edicionCV = {
         });		
 		
 		//Mostrar popup entidad nueva/editar auxiliar/editar especiales
-		$('.multiple.entityauxcontainer .acciones-listado-edicion .add,.multiple.entityauxcontainer .acciones-listado-edicion .edit').off('click').on('click', function (e) {			
+		//$('.multiple.entityauxcontainer .acciones-listado-edicion .add,.multiple.entityauxcontainer .acciones-listado-edicion .edit').off('click').on('click', function (e) {			
+		$('.entityauxcontainer .acciones-listado-edicion .add,.entityauxcontainer .acciones-listado-edicion .edit').off('click').on('click', function (e) {			
 			var edit=$(this).hasClass('edit');
 			if($(this).closest('.entityauxauthorlist').length>0)
 			{
@@ -2328,9 +2488,12 @@ var edicionCV = {
 		
 			
 		//Eliminar entidad auxiliar/normal de listado
-        $('.multiple.entityauxcontainer .acciones-listado-edicion .delete,.multiple.entitycontainer .acciones-listado-edicion .delete').off('click').on('click', function (e) {
+        //$('.multiple.entityauxcontainer .acciones-listado-edicion .delete,.multiple.entitycontainer .acciones-listado-edicion .delete').off('click').on('click', function (e) {
+		$('.entityauxcontainer .acciones-listado-edicion .delete,tiple.entitycontainer .acciones-listado-edicion .delete').off('click').on('click', function (e) {
 			$("#modal-eliminar").modal("show");
-            var entityAux=$(this).closest('.multiple').hasClass('entityauxcontainer');
+            //var entityAux=$(this).closest('.multiple').hasClass('entityauxcontainer');
+			var entityAux=$(this).closest('.form-group').hasClass('entityauxcontainer');
+			
 			//Usa el popup			
 			var modalID=$(this).closest('.modal').attr('id');
 			var contenedor=$(this).closest('.entitycontainer');
@@ -2728,6 +2891,45 @@ var edicionCV = {
 			that.buscarTesauro($(this).val(),$('.modal-con-buscador ul.listadoTesauro'));			
 		});
 		
+		//Cargar edición datos personales
+        $('#personalDataEdit').off('click').on('click', function (e) {
+			MostrarUpdateProgress();			
+			$.get(urlEdicionCV + 'GetTab?pId=' + $(this).attr('personaldataid') + "&pRdfType=http://w3id.org/roh/PersonalData&pLang=" + lang, null, function (data) {
+				$('#modal-editar-entidad').modal('show');
+				that.printEditItemCV(data, data.entityID, 'http://w3id.org/roh/PersonalData', data.entityID);					
+				OcultarUpdateProgress();
+			});
+		});
+		
+		
+		//Combos dependientes
+		$('select.hasdependency').each(function(){
+			//Obtenemos el input del que es dependiente
+			var dependency=$(this).attr('dependency');
+			//Seleccionamos el input del que es dependiente y le añadimos el input sobre el que tiene que actuar
+			$('select[propertyrdf="'+dependency+'"]').attr('dependencyact',$(this).attr('propertyrdf'));
+			$('select[propertyrdf="'+dependency+'"]').unbind( "change.dependency").bind( "change.dependency", function(){
+				var valorSeleccionado = $(this).val();
+				var comboHijo =$(this).closest('.custom-form-row').find('select[propertyrdf="'+$(this).attr('dependencyact')+'"]');
+				comboHijo.find('option').each(function(){
+					if($(this).attr('data-dependency') == valorSeleccionado || $(this).attr('data-dependency') == null){
+						$(this).removeAttr('disabled');
+					}
+					else{
+						$(this).attr('disabled', 'disabled');
+					}
+				})
+				var opcionHijaSelecccionada = comboHijo.find('option:selected');
+				if(opcionHijaSelecccionada.length > 0 && opcionHijaSelecccionada.attr("data-dependency") != valorSeleccionado)
+				{
+					comboHijo.find('option:nth-child(1)')
+					  .prop('selected',true)
+					  .trigger('change')
+				}
+			});	
+			$('select[propertyrdf="'+dependency+'"]').trigger('change');
+		});
+		
         return;
     }, 
 	validarFormulario: function (formulario,modal) {
@@ -2991,12 +3193,19 @@ var edicionCV = {
 						$(modal).modal('hide');
 						var entityLoad = $(pFormulario).attr('entityload');
 						if (entityLoad != null && entityLoad != '') {
-							//Si viene entityLoad actualiza el item
-							$.get(urlEdicionCV + 'GetItemMini?pIdSection=' + entidad.sectionID + "&pRdfTypeTab=" + entidad.rdfTypeTab + "&pEntityID=" + entityLoad + "&pLang=" + lang, null, function (data) {
-								$('a[data-id="' + entityLoad + '"]').closest('article').replaceWith(that.printHtmlListItem(entityLoad, data));
-								that.repintarListadoTab(entidad.sectionID);
-								OcultarUpdateProgress();
-							});
+							//Si son los datos personales refrescamos
+							if(entidad.rdfTypeTab=='http://w3id.org/roh/PersonalData')
+							{
+								$('#identificacion-tab').click();
+							}else
+							{							
+								//Si viene entityLoad actualiza el item
+								$.get(urlEdicionCV + 'GetItemMini?pIdSection=' + entidad.sectionID + "&pRdfTypeTab=" + entidad.rdfTypeTab + "&pEntityID=" + entityLoad + "&pLang=" + lang, null, function (data) {
+									$('a[data-id="' + entityLoad + '"]').closest('article').replaceWith(that.printHtmlListItem(entityLoad, data));
+									that.repintarListadoTab(entidad.sectionID);
+									OcultarUpdateProgress();
+								});
+							}
 						} else {
 							//Si no viene entityLoad carga el item
 							$.get(urlEdicionCV + 'GetItemMini?pIdSection=' + entidad.sectionID + "&pRdfTypeTab=" + entidad.rdfTypeTab + "&pEntityID=" + data.id + "&pLang=" + lang, null, function (data2) {
