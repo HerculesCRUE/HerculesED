@@ -10,20 +10,8 @@
           "es": "Datos personales"
         },
         "rows": [
-          /*{
+          {
             "properties": [
-              {
-                "title": {
-                  "es": "Apellidos"
-                },
-                "placeholder": {
-                  "es": "Introduce los apellidos"
-                },
-                "property": "http://xmlns.com/foaf/0.1/lastName",
-                "required": true,
-                "type": "text",
-                "width": 2
-              },
               {
                 "title": {
                   "es": "Nombre"
@@ -35,9 +23,31 @@
                 "required": true,
                 "type": "text",
                 "width": 1
+              },
+              {
+                "title": {
+                  "es": "Primer apellido"
+                },
+                "placeholder": {
+                  "es": "Introduce tu primer apellido"
+                },
+                "property": "http://xmlns.com/foaf/0.1/familyName",
+                "type": "text",
+                "width": 1
+              },
+              {
+                "title": {
+                  "es": "Segundo apellido"
+                },
+                "placeholder": {
+                  "es": "Introduce tu segundo apellido"
+                },
+                "property": "http://w3id.org/roh/secondFamilyName",
+                "type": "text",
+                "width": 1
               }
             ]
-          },*/
+          },
           {
             "properties": [
               {
