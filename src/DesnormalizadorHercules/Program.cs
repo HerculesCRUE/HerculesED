@@ -71,13 +71,14 @@ namespace DesnormalizadorHercules
                     actualizadorPersonas.ActualizarNumeroColaboradores();
 
                     ActualizadorGroup actualizadorGrupos = new ActualizadorGroup(resourceApi);
+                    actualizadorGrupos.ActualizarGruposPublicos();
                     actualizadorGrupos.ActualizarNumeroMiembros();
                     actualizadorGrupos.ActualizarNumeroColaboradores();
                     actualizadorGrupos.ActualizarNumeroProyectos();
                     actualizadorGrupos.ActualizarNumeroPublicaciones();
                     actualizadorGrupos.ActualizarNumeroAreasTematicas();
                     actualizadorGrupos.ActualizarPertenenciaLineas();
-                    actualizadorGrupos.ActualizarGruposPublicos();
+                    
                     actualizadorGrupos.ActualizarAreasGrupos();
 
                     ActualizadorDocument actualizadorDocument = new ActualizadorDocument(resourceApi);
@@ -97,6 +98,7 @@ namespace DesnormalizadorHercules
                     actualizadorProject.ActualizarNumeroAreasTematicas();
                     actualizadorProject.ActualizarNumeroPublicaciones();
                     actualizadorProject.ActualizarNumeroColaboradores();
+                    actualizadorProject.ActualizarNumeroMiembros();
 
 
 
