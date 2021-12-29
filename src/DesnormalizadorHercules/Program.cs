@@ -49,6 +49,7 @@ namespace DesnormalizadorHercules
                 {
                     ResourceApi resourceApi = new ResourceApi(rutaOauth);
                     ActualizadorCV actualizadorCV = new ActualizadorCV(resourceApi);
+                    actualizadorCV.CrearCVs();
                     actualizadorCV.ActualizarDocumentos();
                     actualizadorCV.ActualizarGrupos();
                     //TODO otro vinculo entre persona y proyecto
