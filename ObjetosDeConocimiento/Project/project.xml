@@ -253,6 +253,10 @@
             <AtrNombre>http://w3id.org/roh/isSynchronized</AtrNombre>
             <AtrNombreLectura>http://w3id.org/roh/isSynchronized</AtrNombreLectura>
         </Propiedad>
+		<Propiedad  ID="http://vivoweb.org/ontology/core#hasResearchArea" EntidadID="http://vivoweb.org/ontology/core#Project">
+            <AtrNombre>Líneas de investigación</AtrNombre>
+            <AtrNombreLectura>Líneas de investigación</AtrNombreLectura>
+        </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/title" EntidadID="http://vivoweb.org/ontology/core#Project">
             <AtrNombre>http://w3id.org/roh/title</AtrNombre>
             <AtrNombreLectura>http://w3id.org/roh/title</AtrNombreLectura>
@@ -395,6 +399,7 @@
 							<NameProp>http://w3id.org/roh/publicGroupList</NameProp>
 							<NameProp>http://w3id.org/roh/isPublic</NameProp>
 							<NameProp>http://w3id.org/roh/mainResearchers</NameProp>
+							<NameProp>http://vivoweb.org/ontology/core#hasResearchArea</NameProp>
                         </Grupo>
                     </Grupo>
                 </Grupo>
@@ -434,6 +439,7 @@
 							<NameProp>http://w3id.org/roh/publicGroupList</NameProp>
 							<NameProp>http://w3id.org/roh/isPublic</NameProp>
 							<NameProp>http://w3id.org/roh/mainResearchers</NameProp>
+							<NameProp>http://vivoweb.org/ontology/core#hasResearchArea</NameProp>
                         </Grupo>
                     </Grupo>
                 </Grupo>
@@ -547,6 +553,33 @@
                         <AtrNombreGrupo>Propiedades</AtrNombreGrupo>
                         <Grupo classLectura="contentGroup">
                             <NameProp>http://w3id.org/roh/projectClassificationNode</NameProp>
+                        </Grupo>
+                    </Grupo>
+                </Grupo>
+            </OrdenEntidadLectura>
+        </Entidad>
+		<Entidad  ID="http://w3id.org/roh/ResearchArea">
+            <AtrNombre>http://w3id.org/roh/ResearchArea</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/ResearchArea</AtrNombreLectura>
+            <OrdenEntidad>
+                <Grupo class="formtheme02">
+                    <Grupo class="fieldset">
+                        <Grupo Tipo="fieldset" class="mediumLabels">
+                            <NameProp>http://w3id.org/roh/title</NameProp>
+							<NameProp>http://vivoweb.org/ontology/core#start</NameProp>
+							<NameProp>http://vivoweb.org/ontology/core#end</NameProp>
+                        </Grupo>
+                    </Grupo>
+                </Grupo>
+            </OrdenEntidad>
+            <OrdenEntidadLectura>
+                <Grupo classLectura="group content semanticView">
+                    <Grupo classLectura="group group_info">
+                        <AtrNombreGrupo>Propiedades</AtrNombreGrupo>
+                        <Grupo classLectura="contentGroup">
+                            <NameProp>http://w3id.org/roh/title</NameProp>
+							<NameProp>http://vivoweb.org/ontology/core#start</NameProp>
+							<NameProp>http://vivoweb.org/ontology/core#end</NameProp>
                         </Grupo>
                     </Grupo>
                 </Grupo>

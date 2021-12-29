@@ -139,19 +139,17 @@
                             @Html.Translate("PERSONAL_INVESTIGADOR_PRINCIPAL")
                         </div>
                         @{ 
-                            if (pProject.Vivo_relates != null && pProject.Vivo_relates.Count > 0)
+                            if (pProject.Roh_mainResearchers != null && pProject.Roh_mainResearchers.Count > 0)
                             {
-                                int numPreferencia = 100;
                                 string nombrePersona = "";
                                 <ul>
                                 @{ 
-                                    foreach (BFO_0000023 persona in pProject.Vivo_relates)
+                                    foreach (BFO_0000023 persona in pProject.Roh_mainResearchers)
                                     {
                                         if (persona != null)
                                         {
-                                            if (persona.Rdf_member != null && persona.Rdf_comment != null && persona.Rdf_comment < numPreferencia)
+                                            if (persona.Rdf_member != null && persona.Rdf_member.Foaf_name != null)
                                             {
-                                                numPreferencia = persona.Rdf_comment;
                                                 nombrePersona = persona.Rdf_member.Foaf_name;
                                                 <li>
                                                     <a about="@persona.Rdf_member.GNOSSID" property="@persona.Rdf_member.GetPropertyURI(nameof(persona.Rdf_member.Foaf_name))" href="@persona.Rdf_member.URL">@nombrePersona</a>
@@ -161,7 +159,10 @@
                                     }
                                 }
                                 </ul>
-                            }
+                            }else
+							{
+								<div class="value">---</div>
+							}
                         }
                     </div>
                 </div>

@@ -16,14 +16,26 @@ namespace GuardadoCV.Models.API.Templates
         /// rdf:type de la entidad representante de la pestaña
         /// </summary>
         public string rdftype;
+
         /// <summary>
         /// propiedad que apunta a la entidad representante de la pestaña
         /// </summary>
         public string property;
+
         /// <summary>
         /// Secciones de la pestaña
         /// </summary>
         public List<TabSection> sections;
+
+        /// <summary>
+        /// Indica si se trata de los datos personales
+        /// </summary>
+        public bool personalData;
+
+        /// <summary>
+        /// Secciones de los datos personales
+        /// </summary>
+        public ItemEdit personalDataSections;
     }
 
     /// <summary>
@@ -56,9 +68,9 @@ namespace GuardadoCV.Models.API.Templates
             switch (presentation.type)
             {
                 case TabSectionPresentationType.listitems:
-                    Utils.PropertyData propertyData = this.presentation.listItemsPresentation.listItem.GenerarPropertyData(pGraph);
-                    propertyData.property = this.property;
-                    return propertyData;
+                    Utils.PropertyData propertyDataListItems = this.presentation.listItemsPresentation.listItem.GenerarPropertyData(pGraph);
+                    propertyDataListItems.property = this.property;
+                    return propertyDataListItems;
                 default:
                     throw new Exception("No está implementado la presentación del tipo " + presentation.type);
             }
@@ -99,7 +111,6 @@ namespace GuardadoCV.Models.API.Templates
         public TabSectionListItem listItem;
         /// <summary>
         /// Datos de configuración de edición para los items del listado de la lista
-        /// TODO CAMBIAR
         /// </summary>
         public ItemEdit listItemEdit;
     }

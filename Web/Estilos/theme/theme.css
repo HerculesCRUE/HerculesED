@@ -1131,7 +1131,7 @@ body.scrolling.comunidad header #community-menu { display: none; }
 .col-contenido .header-contenido .h1-container { }
 .col-contenido .header-contenido .h1-container h1 { font-size: 1.75rem; font-weight: 500; letter-spacing: 0.56px; color: #333; margin-bottom: 0; }
 .col-contenido .header-contenido .h1-container .numResultados { padding-right: 5px; font-weight: 300;}
-.col-contenido .header-contenido .acciones-listado { padding: 0; margin: 0; }Ã§
+.col-contenido .header-contenido .acciones-listado { padding: 0; margin: 0; }
 
 .modal-resultados { }
 .modal-resultados .buscador-coleccion .buscar { display: block; position: relative;}
@@ -1163,7 +1163,7 @@ body.scrolling.comunidad header #community-menu { display: none; }
     .col-facetas .header-facetas p { color: var(--c-blanco); }
     .col-facetas .header-facetas .cerrar { text-decoration: none !important; display: flex; align-items: center; justify-content: center; position: absolute; right: 0; top: 50%; transform: translateY(-50%); color: var(--c-blanco); width: 40px; }
 
-    .col-facetas #panFacetas { padding: 0 20px; max-height: calc(100vh - 60px); height: calc(100vh - 60px);}
+    .col-facetas #panFacetas { padding: 0 20px; max-height: calc(100vh - 60px); height: calc(100vh - 60px); overflow: auto !important; }
     .col-facetas #panFacetas .mCustomScrollBox { overflow: hidden; }
 
     .facetas-abiertas header { z-index: 10; }

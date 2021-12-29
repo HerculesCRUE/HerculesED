@@ -31,6 +31,7 @@
     SemanticResourceModel semCmsModel = Model.SemanticFrom;
     GnossOCBase.LanguageEnum idiomaUsuario = (GnossOCBase.LanguageEnum)Enum.Parse(typeof(GnossOCBase.LanguageEnum), Html.GetUtilIdiomas().LanguageCode.ToLower());
     CV pCV = new CV(semCmsModel, idiomaUsuario); 
+	HeaderModel cabecera = Html.GetCabecera();
 }
 <input type="hidden" id="CV_FIRMANOSELECCIONADOPERSONA" value="@Html.Translate("CV_FIRMANOSELECCIONADOPERSONA")"/>
 <input type="hidden" id="CV_MASRESULTADOS" value="@Html.Translate("CV_MASRESULTADOS")"/>
@@ -46,6 +47,8 @@
 <input type="hidden" id="CV_EDITAR" value="@Html.Translate("CV_EDITAR")"/>
 <input type="hidden" id="CV_NOHASINTRODUCIDONINGUNAFIRMA" value="@Html.Translate("CV_NOHASINTRODUCIDONINGUNAFIRMA")"/>
 <input type="hidden" id="CV_ELCODIGOINTRODUCIDONOESVALIDO" value="@Html.Translate("CV_ELCODIGOINTRODUCIDONOESVALIDO")"/>
+<input type="hidden" id="CV_DATOSPERSONALES" value="@Html.Translate("CV_DATOSPERSONALES")"/>
+<input type="hidden" id="CV_ESCRIBE_ALGO" value="@Html.Translate("CV_ESCRIBE_ALGO")"/>
 
 	
 <div class="row">
@@ -80,41 +83,25 @@
                     <div class="acciones-curriculum">
                         <div class="wrap">
 							<!--TODO-->
-                            <div class="exportar dropdown">
-                                <a class="dropdown-toggle" data-toggle="dropdown">
-                                    <span class="texto">Exportar</span>
-                                </a>
-                                <div class="dropdown-menu basic-dropdown dropdown-menu-right">
-                                    <a href="javascript: void(0)" class="item-dropdown">PDF</a>
-                                    <a href="javascript: void(0)" class="item-dropdown">Hoja de cálculo</a>
-                                    <a href="javascript: void(0)" class="item-dropdown">Documento word</a>
-                                    <a href="javascript: void(0)" class="item-dropdown">Imagen JPG</a>
-                                </div>
-                            </div>
-							<!--TODO-->
                             <div class="idioma dropdown">
                                 <a class="dropdown-toggle" data-toggle="dropdown">
                                     <span class="texto">Idioma</span>
-                                    <span class="texto seleccionado">ES</span>
+                                    <span class="texto seleccionado">@Html.GetUtilIdiomas().LanguageCode.ToUpper()</span>
                                 </a>
                                 <div class="dropdown-menu basic-dropdown dropdown-menu-right">
-                                    <a href="javascript: void(0)" class="item-dropdown">Español</a>
-                                    <a href="javascript: void(0)" class="item-dropdown">Inglés</a>
-                                    <a href="javascript: void(0)" class="item-dropdown">Francés</a>
+									@foreach (KeyValuePair<string, string> idioma in cabecera.Languajes)
+									{
+										string urlIdioma = "";
+										if (cabecera.MultiLingualLinks != null && cabecera.MultiLingualLinks.ContainsKey(idioma.Key))
+										{
+											urlIdioma = cabecera.MultiLingualLinks[idioma.Key].Value;
+										}
+										<a class="item-dropdown" lang="@idioma.Key" href="@urlIdioma" title="@idioma.Value">
+													@idioma.Value
+												</a>
+									}
                                 </div>
                             </div>
-							<!--TODO-->
-                            <div class="secciones dropdown">
-                                <a class="dropdown-toggle" data-toggle="dropdown">
-                                    <span class="texto">Secciones</span>
-                                </a>
-                                <div class="dropdown-menu basic-dropdown dropdown-menu-right">
-                                    <a href="javascript: void(0)" class="item-dropdown">Sección 01</a>
-                                    <a href="javascript: void(0)" class="item-dropdown">Sección 02</a>
-                                    <a href="javascript: void(0)" class="item-dropdown">Sección 03</a>
-                                </div>
-                            </div>
-							<!--TODO-->
                             <div class="plegar dropdown">
                                 <a class="dropdown-toggle" data-toggle="dropdown">
                                     <span class="texto">@Html.Translate("CV_PLEGARTODAS")</span>
@@ -153,36 +140,7 @@
                     <div class="tab-content" id="paneles-cv">
                         <div class="tab-pane fade show active" id="identificacion-panel" role="tabpanel" aria-labelledby="identificacion-tab">
                             <div class="row cvTab" about="@pCV.Roh_personalData.GNOSSID" rdftype="http://w3id.org/roh/PersonalData" property="http://w3id.org/roh/personalData">
-                                <div class="col col-12 col-contenido">
-                                    <div class="datos-identificacion  p-4">
-                                        <div class="bloque bloque-title">
-											<!--TODO-->
-                                            <div class="title">
-                                                Datos personales
-                                            </div>
-                                            <div class="actions">
-                                                <ul class="no-list-style d-flex align-items-center">
-                                                    <li>
-                                                        <a class="btn btn-outline-grey" data-toggle="modal" data-target="#modal-editar-datos-identificacion">
-                                                            <span class="texto">Editar</span>
-                                                            <span class="material-icons">edit</span>
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                                <div class="dropdown">
-                                                    <a class="dropdown-toggle btn btn-outline-grey no-flecha" data-toggle="dropdown" aria-expanded="false">
-                                                        <span class="texto">Acciones</span>
-                                                        <span class="material-icons">more_vert</span>
-                                                    </a>
-                                                    <div class="dropdown-menu basic-dropdown dropdown-menu-right" style="will-change: transform;">
-                                                        <a href="javascript: void(0)" class="item-dropdown">Acción 1</a>
-                                                        <a href="javascript: void(0)" class="item-dropdown">Acción 2</a>
-                                                        <a href="javascript: void(0)" class="item-dropdown">Acción 3</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                <div class="col col-12 col-contenido">                                    
                                 </div>
                             </div>
                         </div>

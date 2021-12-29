@@ -108,7 +108,25 @@ namespace GuardadoCV.Models
         /// <returns></returns>
         public JsonResult ActualizarEntidad(Entity pEntity, string pCvID, string pSectionID, string pRdfTypeTab)
         {
-            if (!string.IsNullOrEmpty(pSectionID) && !string.IsNullOrEmpty(pRdfTypeTab))
+            if (pRdfTypeTab == "http://w3id.org/roh/PersonalData")
+            {
+                GuardadoCV.Models.API.Templates.Tab template = UtilityCV.TabTemplates.First(x => x.rdftype == pRdfTypeTab);
+
+                //Modificamos
+                Entity loadedEntity = GetLoadedEntity(pEntity.id, "curriculumvitae");
+                bool updated = UpdateEntityAux(new List<string>() { "http://w3id.org/roh/personalData" }, new List<string>() { pEntity.id }, loadedEntity, pEntity);
+
+                if (updated)
+                {
+                    return new JsonResult() { ok = true, id = pEntity.id };
+                }
+                else
+                {
+                    return new JsonResult() { ok = false };
+                }
+
+            }
+            else if (!string.IsNullOrEmpty(pSectionID) && !string.IsNullOrEmpty(pRdfTypeTab))
             {
                 //Item de CV
                 GuardadoCV.Models.API.Templates.Tab template = UtilityCV.TabTemplates.First(x => x.rdftype == pRdfTypeTab);
@@ -284,7 +302,7 @@ namespace GuardadoCV.Models
                 catch (Exception ex)
                 {
                     //TODO texto                
-                }                
+                }
             }
             if (!string.IsNullOrEmpty(idPerson))
             {
@@ -571,6 +589,227 @@ namespace GuardadoCV.Models
             }
             return change;
         }
+
+        /// <summary>
+        /// Fusiona dos entidades
+        /// </summary>
+        /// <param name="pPropertyIDs">Propiedades que apuntan a la auxiliar separadas por '|'</param>
+        /// <param name="pEntityIDs">Entidades que apuntan a la auxiliar separadas por '|'</param>
+        /// <param name="pLoadedEntity">Entidad cargada en BBDD</param>
+        /// <param name="pUpdatedEntity">Nueva entidad</param>
+        /// <returns>Devuelve true si se ha actualizado correctamente</returns>
+        private bool UpdateEntityAux(List<string> pPropertyIDs, List<string> pEntityIDs, Entity pLoadedEntity, Entity pUpdatedEntity)
+        {
+            bool update = true;
+            Guid guid = mResourceApi.GetShortGuid(pLoadedEntity.id);
+            Dictionary<Guid, List<Gnoss.ApiWrapper.Model.TriplesToInclude>> triplesInclude = new Dictionary<Guid, List<TriplesToInclude>>() { { guid, new List<TriplesToInclude>() } };
+            Dictionary<Guid, List<Gnoss.ApiWrapper.Model.RemoveTriples>> triplesRemove = new Dictionary<Guid, List<RemoveTriples>>() { { guid, new List<RemoveTriples>() } };
+            Dictionary<Guid, List<Gnoss.ApiWrapper.Model.TriplesToModify>> triplesModify = new Dictionary<Guid, List<TriplesToModify>>() { { guid, new List<TriplesToModify>() } };
+
+            foreach (Entity.Property property in pUpdatedEntity.properties)
+            {
+                bool remove = property.values == null || property.values.Count == 0 || !property.values.Exists(x => !string.IsNullOrEmpty(x));
+                //Recorremos las propiedades de la entidad a actualizar y modificamos la entidad recuperada de BBDD               
+                Entity.Property propertyLoadedEntity = pLoadedEntity.properties.FirstOrDefault(x => x.prop == property.prop);
+                if (propertyLoadedEntity != null)
+                {
+                    if (remove)
+                    {
+                        foreach (string valor in propertyLoadedEntity.values)
+                        {
+                            triplesRemove[guid].Add(new RemoveTriples()
+                            {
+                                Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(property.prop),
+                                Value = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(guid, valor, property.prop)
+                            });
+                        }
+                    }
+                    else
+                    {
+                        HashSet<string> items = new HashSet<string>();
+                        foreach (string valor in propertyLoadedEntity.values)
+                        {
+                            items.Add(GetEntityOfValue(valor));
+                        }
+                        foreach (string valor in property.values)
+                        {
+                            items.Add(GetEntityOfValue(valor));
+                        }
+
+                        foreach (string item in items)
+                        {
+                            List<string> valuesLoadedEntity = propertyLoadedEntity.values.Where(x => GetEntityOfValue(x) == item).ToList();
+                            List<string> valuesEntity = property.values.Where(x => GetEntityOfValue(x) == item).ToList();
+                            int numLoaded = valuesLoadedEntity.Count;
+                            int numNew = valuesEntity.Count;
+                            int numIntersect = valuesLoadedEntity.Intersect(valuesEntity).Count();
+                            if (numLoaded != numNew || numLoaded != numIntersect)
+                            {
+                                if (numLoaded == 1 && numNew == 1)
+                                {
+                                    triplesModify[guid].Add(new TriplesToModify()
+                                    {
+
+                                        Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(property.prop),
+                                        NewValue = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(guid, valuesEntity[0], property.prop),
+                                        OldValue = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(guid, valuesLoadedEntity[0], property.prop)
+                                    });
+                                }
+                                else
+                                {
+                                    //Eliminaciones
+                                    foreach (string valor in valuesLoadedEntity.Except(property.values))
+                                    {
+                                        triplesRemove[guid].Add(new RemoveTriples()
+                                        {
+
+                                            Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(property.prop),
+                                            Value = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(guid, valor, property.prop)
+                                        });
+                                    }
+                                    //Inserciones
+                                    foreach (string valor in valuesEntity.Except(valuesLoadedEntity))
+                                    {
+                                        if (!valor.EndsWith("@@@"))
+                                        {
+                                            triplesInclude[guid].Add(new TriplesToInclude()
+                                            {
+
+                                                Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(property.prop),
+                                                NewValue = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(guid, valor, property.prop)
+                                            });
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                else if (!remove)
+                {
+                    foreach (string valor in property.values)
+                    {
+                        if (!valor.EndsWith("@@@"))
+                        {
+                            triplesInclude[guid].Add(new TriplesToInclude()
+                            {
+
+                                Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(property.prop),
+                                NewValue = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(guid, valor, property.prop)
+                            });
+                        }
+                    }
+                }
+                else if (remove)
+                {
+                    List<Entity.Property> propertiesLoadedEntityRemove = pLoadedEntity.properties.Where(x => x.prop.StartsWith(property.prop)).ToList();
+                    foreach (Entity.Property propertyToRemove in propertiesLoadedEntityRemove)
+                    {
+                        foreach (string valor in propertyToRemove.values)
+                        {
+                            triplesRemove[guid].Add(new RemoveTriples()
+                            {
+
+                                Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(property.prop),
+                                Value = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(guid, valor, property.prop)
+                            });
+                        }
+                    }
+                }
+            }
+            if (pUpdatedEntity.auxEntityRemove != null)
+            {
+                foreach (string auxEntityRemove in pUpdatedEntity.auxEntityRemove)
+                {
+                    if (auxEntityRemove.StartsWith("http"))
+                    {
+                        foreach (Entity.Property property in pLoadedEntity.properties)
+                        {
+                            foreach (string valor in property.values)
+                            {
+                                if (valor.Contains(auxEntityRemove))
+                                {
+                                    //Elmiminamos de la lista a aliminar los hijos de la entidad a eliminar
+                                    triplesRemove[guid].RemoveAll(x => x.Value.Contains(auxEntityRemove));
+                                    //Eliminamos la entidad auxiliar
+                                    triplesRemove[guid].Add(new RemoveTriples()
+                                    {
+
+                                        Predicate = string.Join("|", pPropertyIDs) + "|" + property.prop.Substring(0, property.prop.IndexOf("@@@")),
+                                        Value = string.Join("|", pEntityIDs) + "|" + auxEntityRemove
+                                    });
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if (triplesRemove[guid].Count > 0)
+            {
+                update = update && mResourceApi.DeletePropertiesLoadedResources(triplesRemove)[guid];
+            }
+            if (triplesInclude[guid].Count > 0)
+            {
+                update = update && mResourceApi.InsertPropertiesLoadedResources(triplesInclude)[guid];
+            }
+            if (triplesModify[guid].Count > 0)
+            {
+                update = update && mResourceApi.ModifyPropertiesLoadedResources(triplesModify)[guid];
+            }
+            return update;
+        }
+
+        /// <summary>
+        /// Transforma la propiedad para su carga en una entiadad auxiliar
+        /// </summary>
+        /// <param name="pProp">Propiedad</param>
+        /// <returns></returns>
+        private string GetPropUpdateEntityAux(string pProp)
+        {
+            while (pProp.Contains("@@@"))
+            {
+                int indexInitRdfType = pProp.IndexOf("@@@");
+                int indexEndRdfType = pProp.IndexOf("|", indexInitRdfType);
+                if (indexEndRdfType > indexInitRdfType)
+                {
+                    pProp = pProp.Substring(0, indexInitRdfType) + pProp.Substring(indexEndRdfType);
+                }
+                else
+                {
+                    pProp = pProp.Substring(0, indexInitRdfType);
+                }
+            }
+            return pProp;
+        }
+
+        /// <summary>
+        /// Transforma el valor de la propiedad para su carga en una entiadad auxiliar
+        /// </summary>
+        /// <param name="pMainEntityID">Identificador de la entiad principal</param>
+        /// <param name="pValue">Valor</param>
+        /// <param name="pProp">Propiedad</param>
+        /// <returns></returns>
+        private string GetValueUpdateEntityAux(Guid pMainEntityID, string pValue, string pProp)
+        {
+            return pValue.Replace("@@@", "|");
+        }
+
+        /// <summary>
+        /// Obtiene la entidad del valor
+        /// </summary>
+        /// <param name="pValue"></param>
+        /// <returns></returns>
+        private string GetEntityOfValue(string pValue)
+        {
+            string entityID = "";
+            if (pValue.Contains("@@@"))
+            {
+                entityID = pValue.Substring(0, pValue.IndexOf("@@@"));
+            }
+            return entityID;
+        }
+
 
         /// <summary>
         /// Crea un ComplexOntologyResource con los datos de una entidad para su carga

@@ -90,15 +90,23 @@ namespace GuardadoCV.Models
         /// <param name="pRdfType">Rdf:type de la entidad de la sección</param>
         /// <param name="pLang">Idioma para recuperar los datos</param>
         /// <returns></returns>
-        public API.Response.Tab GetTab(string pId, string pRdfType, string pLang)
+        public Object GetTab(string pId, string pRdfType, string pLang)
         {
 
             //Obtenemos el template
             API.Templates.Tab template = UtilityCV.TabTemplates.First(x => x.rdftype == pRdfType);
-            //Obtenemos los datos necesarios para el pintado
-            Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> data = GetTabData(pId, template, pLang);
-            //Obtenemos el modelo para devolver
-            API.Response.Tab respuesta = GetTabModel(pId, data, template, pLang);
+            Object respuesta = null;
+            if (!template.personalData)
+            {
+                //Obtenemos los datos necesarios para el pintado
+                Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> data = GetTabData(pId, template, pLang);
+                //Obtenemos el modelo para devolver
+                respuesta = GetTabModel(pId, data, template, pLang);
+            }else
+            {
+
+                respuesta = GetEditModel(pId, template.personalDataSections, pLang);
+            }
             return respuesta;
         }
 
@@ -729,7 +737,7 @@ namespace GuardadoCV.Models
         private Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> GetTabData(string pId, API.Templates.Tab pTemplate, string pLang)
         {
             List<PropertyData> propertyDatas = new List<PropertyData>();
-            string graph = "curriculumvitae";
+            string graph = "curriculumvitae";            
             foreach (API.Templates.TabSection templateSection in pTemplate.sections)
             {
                 propertyDatas.Add(templateSection.GenerarPropertyData(graph));
@@ -1175,12 +1183,17 @@ namespace GuardadoCV.Models
                     {
                         childsOrder = new Dictionary<string, int>(),
                         rdftype = pItemEditSectionRowProperty.auxEntityData.rdftype,
-                        propertyOrder = pItemEditSectionRowProperty.auxEntityData.propertyOrder,
-                        titleConfig = new EntityEditRepresentativeProperty()
+                        propertyOrder = pItemEditSectionRowProperty.auxEntityData.propertyOrder,                        
+                    };
+
+                    if (pItemEditSectionRowProperty.auxEntityData.propertyTitle != null)
+                    {
+                        entityEditSectionRowProperty.entityAuxData.titleConfig = new EntityEditRepresentativeProperty()
                         {
                             route = pItemEditSectionRowProperty.auxEntityData.propertyTitle.GetRoute()
-                        }
-                    };
+                        };
+                    }
+
                     entityEditSectionRowProperty.entityAuxData.propertiesConfig = new List<EntityEditRepresentativeProperty>();
                     foreach (ItemEditEntityProperty entityProperty in pItemEditSectionRowProperty.auxEntityData.properties)
                     {

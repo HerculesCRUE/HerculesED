@@ -394,6 +394,10 @@
             <AtrNombre>http://purl.org/ontology/bibo/pageStart</AtrNombre>
             <AtrNombreLectura>http://purl.org/ontology/bibo/pageStart</AtrNombreLectura>
         </Propiedad>
+		<Propiedad  ID="http://w3id.org/roh/hasFile" EntidadID="http://purl.org/ontology/bibo/Document">
+            <AtrNombre>http://w3id.org/roh/hasFile</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/hasFile</AtrNombreLectura>
+        </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/congressProceedingsPublication" EntidadID="http://purl.org/ontology/bibo/Document">
             <AtrNombre>http://w3id.org/roh/congressProceedingsPublication</AtrNombre>
             <AtrNombreLectura>http://w3id.org/roh/congressProceedingsPublication</AtrNombreLectura>
@@ -733,6 +737,7 @@
 							<NameProp>http://w3id.org/roh/assessmentStatus</NameProp>
 							<NameProp>http://w3id.org/roh/impactIndexInYear</NameProp>
 							<NameProp>http://w3id.org/roh/quartile</NameProp>
+							<NameProp>http://w3id.org/roh/hasFile</NameProp>
                         </Grupo>
                     </Grupo>
                 </Grupo>
@@ -798,6 +803,7 @@
 							<NameProp>http://w3id.org/roh/assessmentStatus</NameProp>
 							<NameProp>http://w3id.org/roh/impactIndexInYear</NameProp>
 							<NameProp>http://w3id.org/roh/quartile</NameProp>
+							<NameProp>http://w3id.org/roh/hasFile</NameProp>
                         </Grupo>
                     </Grupo>
                 </Grupo>

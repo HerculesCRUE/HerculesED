@@ -63,7 +63,7 @@ namespace GuardadoCV.Models.Utils
                     int offset = 0;
                     int limit = paginacion;
                     while (limit == paginacion)
-                    { 
+                    {
                         string select = "select * where{select distinct ?s ?p ?o ";
                         string where = $"where{{?s ?p ?o. FILTER( lang(?o) = '{pLang}' OR lang(?o) = '' OR !isLiteral(?o) )  FILTER(?s in(<{string.Join(">,<", list)}>)) FILTER(?p in(<{string.Join(">,<", pProperties.Where(x => string.IsNullOrEmpty(x.order)).Select(x => x.property).ToList())}>))}} order by asc(?o) asc(?p) asc(?s)}} limit {limit} offset {offset}";
                         SparqlObject sparqlObjectAux = mResourceApi.VirtuosoQuery(select, where, pGraph);
@@ -331,54 +331,59 @@ namespace GuardadoCV.Models.Utils
                         {
                             throw new Exception($"La propiedad 'property' es obligatoria en la pestaña del fichero {nombreFicheo}");
                         }
-                        if (tab.sections == null)
+                        if (!tab.personalData)
                         {
-                            throw new Exception($"La propiedad 'sections' es obligatoria en la pestaña del fichero {nombreFicheo}");
-                        }
-                        foreach (TabSection section in tab.sections)
-                        {
-                            if (string.IsNullOrEmpty(section.rdftype))
+                            if (tab.sections == null)
                             {
-                                throw new Exception($"La propiedad 'rdftype' es obligatoria en las secciones del fichero {nombreFicheo}");
+                                throw new Exception($"La propiedad 'sections' es obligatoria en la pestaña del fichero {nombreFicheo}");
                             }
-                            if (string.IsNullOrEmpty(section.property))
+                            foreach (TabSection section in tab.sections)
                             {
-                                throw new Exception($"La propiedad 'property' es obligatoria en las secciones del fichero {nombreFicheo}");
-                            }
-                            if (section.presentation == null)
-                            {
-                                throw new Exception($"La propiedad 'presentation' es obligatoria en las secciones del fichero {nombreFicheo}");
-                            }
-                            else
-                            {
-                                if (section.presentation.title == null || section.presentation.title.Count == 0)
+                                if (string.IsNullOrEmpty(section.rdftype))
                                 {
-                                    throw new Exception($"La propiedad 'title' es obligatoria en la seccion del rdftype '{section.rdftype}' del fichero {nombreFicheo}");
+                                    throw new Exception($"La propiedad 'rdftype' es obligatoria en las secciones del fichero {nombreFicheo}");
                                 }
-                                if (section.presentation.listItemsPresentation == null)
+                                if (string.IsNullOrEmpty(section.property))
                                 {
-                                    throw new Exception($"La propiedad 'listItemsPresentation' es obligatoria en las seccion del rdftype '{section.rdftype}' del fichero {nombreFicheo}");
+                                    throw new Exception($"La propiedad 'property' es obligatoria en las secciones del fichero {nombreFicheo}");
+                                }
+                                if (section.presentation == null)
+                                {
+                                    throw new Exception($"La propiedad 'presentation' es obligatoria en las secciones del fichero {nombreFicheo}");
                                 }
                                 else
                                 {
-                                    if (string.IsNullOrEmpty(section.presentation.listItemsPresentation.property))
+                                    if (section.presentation.title == null || section.presentation.title.Count == 0)
                                     {
-                                        throw new Exception($"La propiedad 'property' es obligatoria en 'listItemsPresentation' en la seccion del rdftype '{section.rdftype}' del fichero {nombreFicheo}");
+                                        throw new Exception($"La propiedad 'title' es obligatoria en la seccion del rdftype '{section.rdftype}' del fichero {nombreFicheo}");
                                     }
-                                    if (section.presentation.listItemsPresentation.listItem==null)
+
+                                    if (section.presentation.listItemsPresentation == null)
                                     {
-                                        throw new Exception($"La propiedad 'listItem' es obligatoria en 'listItemsPresentation' en la seccion del rdftype '{section.rdftype}' del fichero {nombreFicheo}");
+                                        throw new Exception($"La propiedad 'listItemsPresentation' es obligatoria en las seccion del rdftype '{section.rdftype}' del fichero {nombreFicheo}");
                                     }
                                     else
                                     {
+                                        if (string.IsNullOrEmpty(section.presentation.listItemsPresentation.property))
+                                        {
+                                            throw new Exception($"La propiedad 'property' es obligatoria en 'listItemsPresentation' en la seccion del rdftype '{section.rdftype}' del fichero {nombreFicheo}");
+                                        }
+                                        if (section.presentation.listItemsPresentation.listItem == null)
+                                        {
+                                            throw new Exception($"La propiedad 'listItem' es obligatoria en 'listItemsPresentation' en la seccion del rdftype '{section.rdftype}' del fichero {nombreFicheo}");
+                                        }
+                                        else
+                                        {
 
-                                    }
-                                    if (section.presentation.listItemsPresentation.listItemEdit == null)
-                                    {
-                                        throw new Exception($"La propiedad 'listItemEdit' es obligatoria en 'listItemsPresentation' en la seccion del rdftype '{section.rdftype}' del fichero {nombreFicheo}");
-                                    }else
-                                    {
-                                        //TODO
+                                        }
+                                        if (section.presentation.listItemsPresentation.listItemEdit == null)
+                                        {
+                                            throw new Exception($"La propiedad 'listItemEdit' es obligatoria en 'listItemsPresentation' en la seccion del rdftype '{section.rdftype}' del fichero {nombreFicheo}");
+                                        }
+                                        else
+                                        {
+                                            //TODO
+                                        }
                                     }
                                 }
                             }

@@ -1,0 +1,895 @@
+{
+  "rdftype": "http://w3id.org/roh/PersonalData",
+  "property": "http://w3id.org/roh/personalData",
+  "personalData": true,
+  "personalDataSections": {
+    "graph": "curriculumvitae",
+    "sections": [
+      {
+        "title": {
+          "es": "Datos personales"
+        },
+        "rows": [
+          {
+            "properties": [
+              {
+                "title": {
+                  "es": "Nombre"
+                },
+                "placeholder": {
+                  "es": "Introduce el nombre"
+                },
+                "property": "http://xmlns.com/foaf/0.1/firstName",
+                "required": true,
+                "type": "text",
+                "width": 1
+              },
+              {
+                "title": {
+                  "es": "Primer apellido"
+                },
+                "placeholder": {
+                  "es": "Introduce tu primer apellido"
+                },
+                "property": "http://xmlns.com/foaf/0.1/familyName",
+                "type": "text",
+                "width": 1
+              },
+              {
+                "title": {
+                  "es": "Segundo apellido"
+                },
+                "placeholder": {
+                  "es": "Introduce tu segundo apellido"
+                },
+                "property": "http://w3id.org/roh/secondFamilyName",
+                "type": "text",
+                "width": 1
+              }
+            ]
+          },
+          {
+            "properties": [
+              {
+                "title": {
+                  "es": "Sexo"
+                },
+                "property": "http://xmlns.com/foaf/0.1/gender",
+                "combo": {
+                  "rdftype": "http://w3id.org/roh/Gender",
+                  "graph": "gender",
+                  "property": {
+                    "property": "http://purl.org/dc/elements/1.1/title"
+                  }
+                },
+                "type": "selectCombo",
+                "width": 1
+              },
+              {
+                "title": {
+                  "es": "Fecha de nacimiento"
+                },
+                "placeholder": {
+                  "es": "Introduce la fecha de nacimiento"
+                },
+                "property": "https://www.w3.org/2006/vcard/ns#birth-date",
+                "type": "date",
+                "width": 1
+              },
+              {
+                "title": {
+                  "es": "Correo electrónico"
+                },
+                "placeholder": {
+                  "es": "Introduce el correo electrónico"
+                },
+                "property": "https://www.w3.org/2006/vcard/ns#email",
+                "type": "text",
+                "width": 1
+              }
+            ]
+          },
+          {
+            "properties": [
+              {
+                "title": {
+                  "es": "DNI"
+                },
+                "property": "http://w3id.org/roh/dni",
+                "placeholder": {
+                  "es": "Introduce tu DNI"
+                },
+                "type": "text",
+                "width": 1
+              },
+              {
+                "title": {
+                  "es": "NIE"
+                },
+                "property": "http://w3id.org/roh/nie",
+                "placeholder": {
+                  "es": "Introduce tu NIE"
+                },
+                "type": "text",
+                "width": 1
+              },
+              {
+                "title": {
+                  "es": "Pasaporte"
+                },
+                "property": "http://w3id.org/roh/passport",
+                "placeholder": {
+                  "es": "Introduce tu pasaporte"
+                },
+                "type": "text",
+                "width": 1
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": {
+          "es": "Identificadores"
+        },
+        "rows": [
+          {
+            "properties": [
+              {
+                "title": {
+                  "es": "ORCID"
+                },
+                "placeholder": {
+                  "es": "Introduce tu ORCID"
+                },
+                "property": "http://w3id.org/roh/ORCID",
+                "required": false,
+                "type": "text",
+                "width": 1
+              },
+              {
+                "title": {
+                  "es": "ScopusID"
+                },
+                "placeholder": {
+                  "es": "Introduce tu ScopusID"
+                },
+                "property": "http://vivoweb.org/ontology/core#scopusId",
+                "required": false,
+                "type": "text",
+                "width": 1
+              },
+              {
+                "title": {
+                  "es": "ResearcherID"
+                },
+                "placeholder": {
+                  "es": "Introduce tu ResearcherID"
+                },
+                "property": "http://vivoweb.org/ontology/core#researcherId",
+                "required": false,
+                "type": "text",
+                "width": 1
+              }
+            ]
+          },
+          {
+            "properties": [
+              {
+                "property": "http://w3id.org/roh/otherIds",
+                "TODO": "Auxiliar múltiple. Incluir los valores de la fuente de citas en la tabla, junto a un 'Otros' que permita añadir un nuevo tipo.",
+                "type": "auxEntity",
+                "title": {
+                  "es": "Otros identificadores"
+                },
+                "multiple": true,
+                "width": 1,
+                "auxEntityData": {
+                  "rdftype": "http://xmlns.com/foaf/0.1/Document",
+                  "propertyTitle": {
+                    "property": "http://xmlns.com/foaf/0.1/topic"
+                  },
+                  "properties": [
+                    {
+                      "name": {
+                        "es": "Nombre del identificador"
+                      },
+                      "child": {
+                        "property": "http://xmlns.com/foaf/0.1/topic"
+                      }
+                    },
+                    {
+                      "name": {
+                        "es": "Identificador"
+                      },
+                      "child": {
+                        "property": "http://purl.org/dc/elements/1.1/title"
+                      }
+                    }
+                  ],
+                  "rows": [
+                    {
+                      "properties": [
+
+                        {
+                          "title": {
+                            "es": "Nombre del identificador"
+                          },
+                          "placeholder": {
+                            "es": "Introduce el nombre del identificador"
+                          },
+                          "type": "text",
+                          "required": true,
+                          "property": "http://xmlns.com/foaf/0.1/topic",
+                          "width": 1
+                        },
+                        {
+                          "title": {
+                            "es": "Identificador"
+                          },
+                          "placeholder": {
+                            "es": "Introduce el identificador"
+                          },
+                          "type": "text",
+                          "required": true,
+                          "property": "http://purl.org/dc/elements/1.1/title",
+                          "width": 1
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": {
+          "es": "Teléfono fijo"
+        },
+        "rows": [
+          {
+            "properties": [
+              {
+                "property": "https://www.w3.org/2006/vcard/ns#hasTelephone",
+                "type": "auxEntity",
+                "title": {
+                  "es": "Teléfono fijo"
+                },
+                "width": 3,
+                "auxEntityData": {
+                  "rdftype": "https://www.w3.org/2006/vcard/ns#TelephoneType",                  
+                  "properties": [
+                    {
+                      "name": {
+                        "es": "Código internacional"
+                      },
+                      "child": {
+                        "property": "http://w3id.org/roh/hasInternationalCode"
+                      }
+                    },
+                    {
+                      "name": {
+                        "es": "Número"
+                      },
+                      "child": {
+                        "property": "https://www.w3.org/2006/vcard/ns#hasValue"
+                      }
+                    },
+                    {
+                      "name": {
+                        "es": "Extensión"
+                      },
+                      "child": {
+                        "property": "http://w3id.org/roh/hasExtension"
+                      }
+                    }
+                  ],
+                  "rows": [
+                    {
+                      "properties": [
+
+                        {
+                          "title": {
+                            "es": "Código internacional"
+                          },
+                          "placeholder": {
+                            "es": "Introduce el código internacional"
+                          },
+                          "type": "text",
+                          "required": false,
+                          "property": "http://w3id.org/roh/hasInternationalCode",
+                          "width": 1
+                        },
+                        {
+                          "title": {
+                            "es": "Número"
+                          },
+                          "placeholder": {
+                            "es": "Introduce el número"
+                          },
+                          "type": "text",
+                          "required": true,
+                          "property": "https://www.w3.org/2006/vcard/ns#hasValue",
+                          "width": 1
+                        },
+                        {
+                          "title": {
+                            "es": "Extensión"
+                          },
+                          "placeholder": {
+                            "es": "Introduce la extensión"
+                          },
+                          "type": "text",
+                          "required": false,
+                          "property": "http://w3id.org/roh/hasExtension",
+                          "width": 1
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+
+
+            ]
+          }
+        ]
+      },
+      {
+        "title": {
+          "es": "Teléfono móvil"
+        },
+        "rows": [
+          {
+            "properties": [
+              {
+                "property": "http://w3id.org/roh/hasMobilePhone",
+                "type": "auxEntity",
+                "title": {
+                  "es": "Teléfono móvil"
+                },
+                "width": 3,
+                "auxEntityData": {
+                  "rdftype": "https://www.w3.org/2006/vcard/ns#TelephoneType",
+                  "properties": [
+                    {
+                      "name": {
+                        "es": "Código internacional"
+                      },
+                      "child": {
+                        "property": "http://w3id.org/roh/hasInternationalCode"
+                      }
+                    },
+                    {
+                      "name": {
+                        "es": "Número"
+                      },
+                      "child": {
+                        "property": "https://www.w3.org/2006/vcard/ns#hasValue"
+                      }
+                    },
+                    {
+                      "name": {
+                        "es": "Extensión"
+                      },
+                      "child": {
+                        "property": "http://w3id.org/roh/hasExtension"
+                      }
+                    }
+                  ],
+                  "rows": [
+                    {
+                      "properties": [
+
+                        {
+                          "title": {
+                            "es": "Código internacional"
+                          },
+                          "placeholder": {
+                            "es": "Introduce el código internacional"
+                          },
+                          "type": "text",
+                          "required": false,
+                          "property": "http://w3id.org/roh/hasInternationalCode",
+                          "width": 1
+                        },
+                        {
+                          "title": {
+                            "es": "Número"
+                          },
+                          "placeholder": {
+                            "es": "Introduce el número"
+                          },
+                          "type": "text",
+                          "required": true,
+                          "property": "https://www.w3.org/2006/vcard/ns#hasValue",
+                          "width": 1
+                        },
+                        {
+                          "title": {
+                            "es": "Extensión"
+                          },
+                          "placeholder": {
+                            "es": "Introduce la extensión"
+                          },
+                          "type": "text",
+                          "required": false,
+                          "property": "http://w3id.org/roh/hasExtension",
+                          "width": 1
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": {
+          "es": "Fax"
+        },
+        "rows": [
+          {
+            "properties": [
+              {
+                "property": "http://w3id.org/roh/hasFax",
+                "type": "auxEntity",
+                "title": {
+                  "es": "Fax"
+                },
+                "width": 3,
+                "auxEntityData": {
+                  "rdftype": "https://www.w3.org/2006/vcard/ns#TelephoneType",
+                  "properties": [
+                    {
+                      "name": {
+                        "es": "Código internacional"
+                      },
+                      "child": {
+                        "property": "http://w3id.org/roh/hasInternationalCode"
+                      }
+                    },
+                    {
+                      "name": {
+                        "es": "Número"
+                      },
+                      "child": {
+                        "property": "https://www.w3.org/2006/vcard/ns#hasValue"
+                      }
+                    },
+                    {
+                      "name": {
+                        "es": "Extensión"
+                      },
+                      "child": {
+                        "property": "http://w3id.org/roh/hasExtension"
+                      }
+                    }
+                  ],
+                  "rows": [
+                    {
+                      "properties": [
+
+                        {
+                          "title": {
+                            "es": "Código internacional"
+                          },
+                          "placeholder": {
+                            "es": "Introduce el código internacional"
+                          },
+                          "type": "text",
+                          "required": false,
+                          "property": "http://w3id.org/roh/hasInternationalCode",
+                          "width": 1
+                        },
+                        {
+                          "title": {
+                            "es": "Número"
+                          },
+                          "placeholder": {
+                            "es": "Introduce el número"
+                          },
+                          "type": "text",
+                          "required": true,
+                          "property": "https://www.w3.org/2006/vcard/ns#hasValue",
+                          "width": 1
+                        },
+                        {
+                          "title": {
+                            "es": "Extensión"
+                          },
+                          "placeholder": {
+                            "es": "Introduce la extensión"
+                          },
+                          "type": "text",
+                          "required": false,
+                          "property": "http://w3id.org/roh/hasExtension",
+                          "width": 1
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": {
+          "es": "Información de contacto"
+        },
+        "rows": [
+          {
+            "properties": [
+              {
+                "property": "https://www.w3.org/2006/vcard/ns#address",
+                "type": "auxEntity",
+                "title": {
+                  "es": "Dirección de contacto"
+                },
+                "width": 3,
+                "auxEntityData": {
+                  "rdftype": "https://www.w3.org/2006/vcard/ns#Address",
+                  "propertyTitle": {
+                    "property": "https://www.w3.org/2006/vcard/ns#locality"
+                  },
+                  "properties": [
+                    {
+                      "name": {
+                        "es": "Dirección de contacto"
+                      },
+                      "child": {
+                        "property": "https://www.w3.org/2006/vcard/ns#street-address"
+                      }
+                    },
+                    {
+                      "name": {
+                        "es": "Resto de dirección de contacto"
+                      },
+                      "child": {
+                        "property": "https://www.w3.org/2006/vcard/ns#extended-address"
+                      }
+                    },
+                    {
+                      "name": {
+                        "es": "Código postal de contacto"
+                      },
+                      "child": {
+                        "property": "https://www.w3.org/2006/vcard/ns#postal-code"
+                      }
+                    },
+                    {
+                      "name": {
+                        "es": "Ciudad de contacto"
+                      },
+                      "child": {
+                        "property": "https://www.w3.org/2006/vcard/ns#locality"
+                      }
+                    },
+                    {
+                      "name": {
+                        "es": "País de contacto"
+                      },
+                      "child": {
+                        "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+                        "graph": "feature",
+                        "child": {
+                          "property": "http://www.geonames.org/ontology#name"
+                        }
+                      }
+                    },
+                    {
+                      "name": {
+                        "es": "C. Autón./Reg. de contacto"
+                      },
+                      "child": {
+                        "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+                        "graph": "feature",
+                        "child": {
+                          "property": "http://www.geonames.org/ontology#name"
+                        }
+                      }
+                    },
+                    {
+                      "name": {
+                        "es": "Provincia de contacto"
+                      },
+                      "child": {
+                        "property": "http://w3id.org/roh/hasProvince",
+                        "graph": "feature",
+                        "child": {
+                          "property": "http://www.geonames.org/ontology#name"
+                        }
+                      }
+                    }
+                  ],
+                  "rows": [
+                    {
+                      "properties": [
+                        {
+                          "title": {
+                            "es": "Dirección de contacto"
+                          },
+                          "placeholder": {
+                            "es": "Introduce tu dirección de contacto"
+                          },
+                          "type": "text",
+                          "required": false,
+                          "property": "https://www.w3.org/2006/vcard/ns#street-address",
+                          "width": 1
+                        },
+                        {
+                          "title": {
+                            "es": "Resto de dirección de contacto"
+                          },
+                          "placeholder": {
+                            "es": "Introduce el resto de tu dirección de contacto"
+                          },
+                          "type": "text",
+                          "required": false,
+                          "property": "https://www.w3.org/2006/vcard/ns#extended-address",
+                          "width": 1
+                        },
+                        {
+                          "title": {
+                            "es": "Código postal"
+                          },
+                          "placeholder": {
+                            "es": "Introduce tu código postal"
+                          },
+                          "type": "text",
+                          "required": false,
+                          "property": "https://www.w3.org/2006/vcard/ns#postal-code",
+                          "width": 1
+                        }
+                      ]
+                    },
+                    {
+                      "properties": [
+                        {
+                          "title": {
+                            "es": "Ciudad de contacto"
+                          },
+                          "placeholder": {
+                            "es": "Introduce tu ciudad de contacto"
+                          },
+                          "type": "text",
+                          "required": true,
+                          "property": "https://www.w3.org/2006/vcard/ns#locality",
+                          "width": 1
+                        },
+                        {
+                          "title": {
+                            "es": "País de contacto"
+                          },
+                          "placeholder": {
+                            "es": "Introduce el país de contacto"
+                          },
+                          "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+                          "combo": {
+                            "rdftype": "http://www.geonames.org/ontology#Feature",
+                            "filter": {
+                              "property": "http://www.geonames.org/ontology#featureCode",
+                              "value": "PCLD"
+                            },
+                            "graph": "feature",
+                            "property": {
+                              "property": "http://www.geonames.org/ontology#name"
+                            }
+                          },
+                          "type": "selectCombo",
+                          "width": 1
+                        },
+                        {
+                          "title": {
+                            "es": "C. Autón./Reg. de contacto"
+                          },
+                          "placeholder": {
+                            "es": "Introduce la C. Autón./Reg. de contacto"
+                          },
+                          "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+                          "combo": {
+                            "rdftype": "http://www.geonames.org/ontology#Feature",
+                            "filter": {
+                              "property": "http://www.geonames.org/ontology#featureCode",
+                              "value": "ADM1"
+                            },
+                            "dependency": {
+                              "property": "http://www.geonames.org/ontology#parentFeature",
+                              "propertyValue": "https://www.w3.org/2006/vcard/ns#hasCountryName"
+                            },
+                            "graph": "feature",
+                            "property": {
+                              "property": "http://www.geonames.org/ontology#name"
+                            }
+                          },
+                          "type": "selectCombo",
+                          "width": 1
+                        },
+                        {
+                          "title": {
+                            "es": "Provincia de contacto"
+                          },
+                          "placeholder": {
+                            "es": "Introduce la provincia de contacto"
+                          },
+                          "property": "http://w3id.org/roh/hasProvince",
+                          "combo": {
+                            "rdftype": "http://www.geonames.org/ontology#Feature",
+                            "filter": {
+                              "property": "http://www.geonames.org/ontology#featureCode",
+                              "value": "ADM2"
+                            },
+                            "dependency": {
+                              "property": "http://www.geonames.org/ontology#parentFeature",
+                              "propertyValue": "https://www.w3.org/2006/vcard/ns#hasRegion"
+                            },
+                            "graph": "feature",
+                            "property": {
+                              "property": "http://www.geonames.org/ontology#name"
+                            }
+                          },
+                          "type": "selectCombo",
+                          "width": 1
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "properties": [
+              {
+                "property": "http://w3id.org/roh/birthplace",
+                "type": "auxEntity",
+                "title": {
+                  "es": "Dirección de nacimiento"
+                },
+                "width": 3,
+                "auxEntityData": {
+                  "rdftype": "https://www.w3.org/2006/vcard/ns#Address",
+                  "propertyTitle": {
+                    "property": "https://www.w3.org/2006/vcard/ns#locality"
+                  },
+                  "properties": [
+                    {
+                      "name": {
+                        "es": "Ciudad de nacimiento"
+                      },
+                      "child": {
+                        "property": "https://www.w3.org/2006/vcard/ns#locality"
+                      }
+                    },
+                    {
+                      "name": {
+                        "es": "País de nacimiento"
+                      },
+                      "child": {
+                        "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+                        "graph": "feature",
+                        "child": {
+                          "property": "http://www.geonames.org/ontology#name"
+                        }
+                      }
+                    },
+                    {
+                      "name": {
+                        "es": "C. Autón./Reg. de nacimiento"
+                      },
+                      "child": {
+                        "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+                        "graph": "feature",
+                        "child": {
+                          "property": "http://www.geonames.org/ontology#name"
+                        }
+                      }
+                    }
+                  ],
+                  "rows": [                    
+                    {
+                      "properties": [
+                        {
+                          "title": {
+                            "es": "Ciudad de nacimiento"
+                          },
+                          "placeholder": {
+                            "es": "Introduce tu ciudad de nacimiento"
+                          },
+                          "type": "text",
+                          "required": true,
+                          "property": "https://www.w3.org/2006/vcard/ns#locality",
+                          "width": 1
+                        },
+                        {
+                          "title": {
+                            "es": "País de nacimiento"
+                          },
+                          "placeholder": {
+                            "es": "Introduce el país de nacimiento"
+                          },
+                          "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+                          "combo": {
+                            "rdftype": "http://www.geonames.org/ontology#Feature",
+                            "filter": {
+                              "property": "http://www.geonames.org/ontology#featureCode",
+                              "value": "PCLD"
+                            },
+                            "graph": "feature",
+                            "property": {
+                              "property": "http://www.geonames.org/ontology#name"
+                            }
+                          },
+                          "type": "selectCombo",
+                          "width": 1
+                        },
+                        {
+                          "title": {
+                            "es": "C. Autón./Reg. de nacimiento"
+                          },
+                          "placeholder": {
+                            "es": "Introduce la C. Autón./Reg. de nacimiento"
+                          },
+                          "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+                          "combo": {
+                            "rdftype": "http://www.geonames.org/ontology#Feature",
+                            "filter": {
+                              "property": "http://www.geonames.org/ontology#featureCode",
+                              "value": "ADM1"
+                            },
+                            "dependency": {
+                              "property": "http://www.geonames.org/ontology#parentFeature",
+                              "propertyValue": "https://www.w3.org/2006/vcard/ns#hasCountryName"
+                            },
+                            "graph": "feature",
+                            "property": {
+                              "property": "http://www.geonames.org/ontology#name"
+                            }
+                          },
+                          "type": "selectCombo",
+                          "width": 1
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "properties": [
+              {
+                "title": {
+                  "es": "Nacionalidad"
+                },
+                "placeholder": {
+                  "es": "Introduce tu nacionalidad"
+                },
+                "property": "http://www.schema.org/nationality",
+                "combo": {
+                  "rdftype": "http://www.geonames.org/ontology#Feature",
+                  "filter": {
+                    "property": "http://www.geonames.org/ontology#featureCode",
+                    "value": "PCLD"
+                  },
+                  "graph": "feature",
+                  "property": {
+                    "property": "http://www.geonames.org/ontology#name"
+                  }
+                },
+                "type": "selectCombo",
+                "width": 1
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
