@@ -96,7 +96,7 @@ namespace DesnormalizadorHercules.Models
         /// <param name="pProject">ID del proyecto</param>
         public void ActualizarPertenenciaPersonas(string pPerson = null,string pProject=null)
         {
-            //TODO hablar con Esteban, bajas... fecha actual... fecha fin...
+            //TODO hablar con Esteban, bajas... fecha actual... fecha fin... ¿los actuales o los hitoricos, en este caso a diferncia de grupos creo que deberían ser los históricos, no sería necesaria la fecha actual? IMPORTANTE actua
             string fechaActual = DateTime.UtcNow.ToString("yyyyMMdd000000");
 
             string filter = "";
