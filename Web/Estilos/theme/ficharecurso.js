@@ -189,6 +189,7 @@ function PintarGraficaArania(data,idContenedor){
 			idealEdgeLength: 100,
 			nodeOverlap: 20,
 			refresh: 20,
+			fit:true,
 			padding: 30,
 			randomize: false,
 			componentSpacing: 100,
@@ -201,7 +202,7 @@ function PintarGraficaArania(data,idContenedor){
 			coolingFactor: 0.95,
 			minTemp: 1.0
 
-		}, pan: { x: 350, y: 50 },
+		},
 		// Estilos
 		style: [{
 			"selector": "node",
@@ -237,7 +238,6 @@ function PintarGraficaArania(data,idContenedor){
 		// Datos
 		elements: data
 	});
-	cy.zoomingEnabled(false);
 
 	var arrayNodes = [];
 	var nodos = cy.nodes();
