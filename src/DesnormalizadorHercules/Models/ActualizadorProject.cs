@@ -26,6 +26,7 @@ namespace DesnormalizadorHercules.Models
         /// <summary>
         /// Actualizamos en la propiedad http://w3id.org/roh/isPublic de los http://vivoweb.org/ontology/core#Project 
         /// los proyectos públicos (son los proyectos oficiales, es decir, los que tienen http://w3id.org/roh/crisIdentifier)
+        /// Esta propiedad se utilizará como filtro en el bucador general de proyectos
         /// No tiene dependencias
         /// </summary>
         /// <param name="pProject">ID del proyecto</param>
@@ -77,7 +78,7 @@ namespace DesnormalizadorHercules.Models
                     ActualizadorTriple(project, "http://w3id.org/roh/isPublic", isPublicCargado, isPublicACargar);
                 }
 
-                if (resultado.results.bindings.Count() != limit)
+                if (resultado.results.bindings.Count != limit)
                 {
                     break;
                 }
@@ -85,14 +86,17 @@ namespace DesnormalizadorHercules.Models
         }
 
         /// <summary>
-        /// Actualizamos en la propiedad http://w3id.org/roh/publicAuthorList de los http://vivoweb.org/ontology/core#Project públicos
-        /// los miembros oficiales (con http://w3id.org/roh/crisIdentifier) actuales (sin fecha de alta o fecha de alta anterior a la actual y sin fecha de baja o fecha de baja posterior a la actual) 
-        /// Depende de ActualizadorProject.ActualizarProyectosPublicos
+        /// Actualizamos en la propiedad http://w3id.org/roh/publicAuthorList de los http://vivoweb.org/ontology/core#Project
+        /// los miembros actuales (sin fecha de alta o fecha de alta anterior a la actual y sin fecha de baja o fecha de baja posterior a la actual) 
+        /// Cargamos en los investigadores con CV que tengan el proyecto PÚBLICO en su CV
+        /// Cargamos en los investigadores sin CV sólo los proyectos OFICIALES
+        /// No tiene dependencias
         /// </summary>
         /// <param name="pPerson">ID de la persona</param>
         /// <param name="pProject">ID del proyecto</param>
         public void ActualizarPertenenciaPersonas(string pPerson = null,string pProject=null)
         {
+            //TODO hablar con Esteban, bajas... fecha actual... fecha fin...
             string fechaActual = DateTime.UtcNow.ToString("yyyyMMdd000000");
 
             string filter = "";
@@ -110,20 +114,35 @@ namespace DesnormalizadorHercules.Models
                 //Añadimos a proyectos
                 int limit = 500;
                 //TODO eliminar from
-                String select = @"select * where{select distinct ?person ?project from <http://gnoss.com/person.owl>  ";
+                String select = @"select * where{select distinct ?person ?project from <http://gnoss.com/person.owl> from <http://gnoss.com/curriculumvitae.owl>  ";
                 String where = @$"where{{
                                     {filter}
                                     {{
                                         select distinct ?person ?project
                                         Where
                                         {{
+                                            {{
+                                                    
+                                                    ?cv <http://w3id.org/roh/cvOf> ?person.
+                                                    ?cv a <http://w3id.org/roh/CV>.
+                                                    ?cv <http://w3id.org/roh/scientificExperience> ?scientificExperience.
+                                                    ?scientificExperience ?lvl2 ?cvlvl3.
+                                                    ?cvlvl3 <http://vivoweb.org/ontology/core#relatedBy> ?project.
+                                                    ?cvlvl3  <http://w3id.org/roh/isPublic> 'true'.
+                                            }}
+                                            UNION
+                                            {{
+                                                    ?project <http://w3id.org/roh/isPublic> 'true'
+                                                    MINUS
+                                                    {{
+                                                            ?anycv <http://w3id.org/roh/cvOf> ?person.
+                                                    }}
+                                            }}
                                             ?person a <http://xmlns.com/foaf/0.1/Person>.
-                                            ?person <http://w3id.org/roh/crisIdentifier> ?crisIdentifier.
-                                            ?project a <http://vivoweb.org/ontology/core#Project>.
-                                            ?project <http://w3id.org/roh/isPublic> 'true'.
+                                            ?project a <http://vivoweb.org/ontology/core#Project>.            
                                             ?project ?propRol ?rol.
                                             FILTER(?propRol in (<http://vivoweb.org/ontology/core#relates>,<http://w3id.org/roh/mainResearchers>))                                    
-                                            ?rol <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person.   
+                                            ?rol <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person.  
                                             OPTIONAL{{?rol <http://vivoweb.org/ontology/core#start> ?fechaPersonaInit.}}
                                             OPTIONAL{{?rol <http://vivoweb.org/ontology/core#end> ?fechaPersonaEnd.}}
 	                                        BIND(IF(bound(?fechaPersonaEnd), xsd:integer(?fechaPersonaEnd), 30000000000000) as ?end)
@@ -140,7 +159,7 @@ namespace DesnormalizadorHercules.Models
                                 }}}}order by desc(?project) limit {limit}";
                 SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "project");
                 InsercionMultiple(resultado.results.bindings, "http://w3id.org/roh/publicAuthorList", "project", "person");
-                if (resultado.results.bindings.Count() != limit)
+                if (resultado.results.bindings.Count != limit)
                 {
                     break;
                 }
@@ -151,7 +170,7 @@ namespace DesnormalizadorHercules.Models
                 //Eliminamos de proyectos
                 int limit = 500;
                 //TODO eliminar from
-                String select = @"select * where{select distinct ?person ?project  from <http://gnoss.com/person.owl>  ";
+                String select = @"select * where{select distinct ?person ?project  from <http://gnoss.com/person.owl> from <http://gnoss.com/curriculumvitae.owl>   ";
                 String where = @$"where{{
                                     {filter}
                                     {{
@@ -164,13 +183,28 @@ namespace DesnormalizadorHercules.Models
                                         select distinct ?person ?project
                                         Where
                                         {{
+                                            {{
+                                                    
+                                                    ?cv <http://w3id.org/roh/cvOf> ?person.
+                                                    ?cv a <http://w3id.org/roh/CV>.
+                                                    ?cv <http://w3id.org/roh/scientificExperience> ?scientificExperience.
+                                                    ?scientificExperience ?lvl2 ?cvlvl3.
+                                                    ?cvlvl3 <http://vivoweb.org/ontology/core#relatedBy> ?project.
+                                                    ?cvlvl3  <http://w3id.org/roh/isPublic> 'true'.
+                                            }}
+                                            UNION
+                                            {{
+                                                    ?project <http://w3id.org/roh/isPublic> 'true'
+                                                    MINUS
+                                                    {{
+                                                            ?anycv <http://w3id.org/roh/cvOf> ?person.
+                                                    }}
+                                            }}
                                             ?person a <http://xmlns.com/foaf/0.1/Person>.
-                                            ?person <http://w3id.org/roh/crisIdentifier> ?crisIdentifier.
-                                            ?project a <http://vivoweb.org/ontology/core#Project>.
-                                            ?project <http://w3id.org/roh/isPublic> 'true'.                           
+                                            ?project a <http://vivoweb.org/ontology/core#Project>.            
                                             ?project ?propRol ?rol.
                                             FILTER(?propRol in (<http://vivoweb.org/ontology/core#relates>,<http://w3id.org/roh/mainResearchers>))                                    
-                                            ?rol <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person.   
+                                            ?rol <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person.  
                                             OPTIONAL{{?rol <http://vivoweb.org/ontology/core#start> ?fechaPersonaInit.}}
                                             OPTIONAL{{?rol <http://vivoweb.org/ontology/core#end> ?fechaPersonaEnd.}}
 	                                        BIND(IF(bound(?fechaPersonaEnd), xsd:integer(?fechaPersonaEnd), 30000000000000) as ?end)
@@ -181,7 +215,7 @@ namespace DesnormalizadorHercules.Models
                                 }}}}order by desc(?project) limit {limit}";
                 SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "project");
                 EliminacionMultiple(resultado.results.bindings, "http://w3id.org/roh/publicAuthorList", "project", "person");
-                if (resultado.results.bindings.Count() != limit)
+                if (resultado.results.bindings.Count != limit)
                 {
                     break;
                 }
@@ -189,9 +223,9 @@ namespace DesnormalizadorHercules.Models
         }
 
         /// <summary>
-        /// Insertamos en la propiedad http://w3id.org/roh/publicGroupList de los http://vivoweb.org/ontology/core#Project públicos
-        /// los grupos públicos a los que pertenecían los miembros oficiales (con http://w3id.org/roh/crisIdentifier) del grupo cuando coinciden en el tiempo su pertenencia en el proyecto y en el grupo
-        /// Depende de ActualizadorProject.ActualizarProyectosPublicos y de ActualizadorGroup.ActualizarGruposPublicos
+        /// Insertamos en la propiedad http://w3id.org/roh/publicGroupList de los http://vivoweb.org/ontology/core#Project 
+        /// los grupos a los que pertenecían los miembros  del grupo cuando coinciden en el tiempo su pertenencia en el proyecto y en el grupo
+        /// No tiene dependencias
         /// </summary>
         /// <param name="pGrupo">ID del grupo</param>
         /// <param name="pProject">ID del proyecto</param>
@@ -217,10 +251,8 @@ namespace DesnormalizadorHercules.Models
                                     {{
                                         select ?proyecto ?group
                                         Where{{
-                                            ?group a <http://xmlns.com/foaf/0.1/Group>.    
-                                            ?group <http://w3id.org/roh/isPublic> 'true'.
+                                            ?group a <http://xmlns.com/foaf/0.1/Group>.   
                                             ?proyecto a <http://vivoweb.org/ontology/core#Project>.
-                                            ?project <http://w3id.org/roh/isPublic> 'true'.
                                             ?proyecto ?propRol ?rol.
                                             FILTER(?propRol in (<http://vivoweb.org/ontology/core#relates>,<http://w3id.org/roh/mainResearchers>))                                    
                                             ?rol <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person. 
@@ -250,7 +282,7 @@ namespace DesnormalizadorHercules.Models
                                 }}}}order by desc(?proyecto) limit {limit}";
                 SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "group");
                 InsercionMultiple(resultado.results.bindings, "http://w3id.org/roh/publicGroupList", "proyecto", "group");
-                if (resultado.results.bindings.Count() != limit)
+                if (resultado.results.bindings.Count != limit)
                 {
                     break;
                 }
@@ -273,10 +305,8 @@ namespace DesnormalizadorHercules.Models
                                     {{
                                         select ?proyecto ?group
                                         Where{{
-                                            ?group a <http://xmlns.com/foaf/0.1/Group>.    
-                                            ?group <http://w3id.org/roh/isPublic> 'true'.
+                                            ?group a <http://xmlns.com/foaf/0.1/Group>.   
                                             ?proyecto a <http://vivoweb.org/ontology/core#Project>.
-                                            ?project <http://w3id.org/roh/isPublic> 'true'.
                                             ?proyecto ?propRol ?rol.
                                             FILTER(?propRol in (<http://vivoweb.org/ontology/core#relates>,<http://w3id.org/roh/mainResearchers>))                                    
                                             ?rol <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person. 
@@ -300,7 +330,7 @@ namespace DesnormalizadorHercules.Models
                                 }}}}order by desc(?proyecto) limit {limit}";
                 var resultado = mResourceApi.VirtuosoQuery(select, where, "group");
                 EliminacionMultiple(resultado.results.bindings, "http://w3id.org/roh/publicGroupList", "proyecto", "group");
-                if (resultado.results.bindings.Count() != limit)
+                if (resultado.results.bindings.Count != limit)
                 {
                     break;
                 }
@@ -310,14 +340,14 @@ namespace DesnormalizadorHercules.Models
         }
 
         /// <summary>
-        /// Actualizamos en la propiedad http://w3id.org/roh/themedAreasNumber de los http://vivoweb.org/ontology/core#Project públicos 
-        /// el número de áreas temáticas de las publicaciones públicas del proyecto, este dato es inferido de las publicaciones públicas que pertenecen al proyecto
-        /// Depende de ActualizadorProject.ActualizarProyectosPublicos y de ActualizadorDocument.ActualizarDocumentosPublicos
+        /// Actualizamos en la propiedad http://w3id.org/roh/themedAreasNumber de los http://vivoweb.org/ontology/core#Project 
+        /// el número de áreas temáticas de las publicaciones oficiales del proyecto, este dato es inferido de las publicaciones validadas que pertenecen al proyecto
+        /// No tiene dependencias
         /// </summary>
         /// <param name="pProject">ID del proyecto</param>
         public void ActualizarNumeroAreasTematicas(string pProject = null)
         {
-            //TODO ¿como se vvinculan docs a proyectos?
+            //TODO Estebam como se vvinculan docs a proyectos?
             string filter = "";
             if (!string.IsNullOrEmpty(pProject))
             {
@@ -325,7 +355,6 @@ namespace DesnormalizadorHercules.Models
             }
             //Eliminamos los duplicados
             EliminarDuplicados("project", "http://vivoweb.org/ontology/core#Project", "http://w3id.org/roh/themedAreasNumber");
-
 
             //Actualizamos los datos
             while (true)
@@ -345,10 +374,9 @@ namespace DesnormalizadorHercules.Models
                               select ?project count(distinct ?categoria) as ?numAreasTematicasACargar
                               Where{{
                                 ?project a <http://vivoweb.org/ontology/core#Project>.
-                                ?project <http://w3id.org/roh/isPublic> 'true'.
                                 OPTIONAL{{
                                     ?documento a <http://purl.org/ontology/bibo/Document>. 
-                                    ?documento <http://w3id.org/roh/isPublic> 'true'.
+                                    ?documento <http://w3id.org/roh/isValidated> 'true'.
                                     ?documento <http://w3id.org/roh/project> ?project.
                                     ?documento <http://w3id.org/roh/hasKnowledgeArea> ?area.
                                     ?area <http://w3id.org/roh/categoryNode> ?categoria.
@@ -376,7 +404,7 @@ namespace DesnormalizadorHercules.Models
                     ActualizadorTriple(project, "http://w3id.org/roh/themedAreasNumber", numAreasTematicasCargadas, numAreasTematicasACargar);
                 }
 
-                if (resultado.results.bindings.Count() != limit)
+                if (resultado.results.bindings.Count != limit)
                 {
                     break;
                 }
@@ -384,14 +412,13 @@ namespace DesnormalizadorHercules.Models
         }
 
         /// <summary>
-        /// Actualizamos en la propiedad http://w3id.org/roh/publicationsNumber de los http://vivoweb.org/ontology/core#Project públicos 
-        /// el número de publicaciones públicas del proyecto
-        /// Depende de ActualizadorProject.ActualizarProyectosPublicos y de ActualizadorDocument.ActualizarDocumentosPublicos
+        /// Actualizamos en la propiedad http://w3id.org/roh/publicationsNumber de los http://vivoweb.org/ontology/core#Project  
+        /// el número de publicaciones validades del proyecto
+        /// No tiene dependencias
         /// </summary>
         /// <param name="pProject">ID del proyecto</param>
         public void ActualizarNumeroPublicaciones(string pProject = null)
         {
-            //TODO comentario query
             string filter = "";
             if (!string.IsNullOrEmpty(pProject))
             {
@@ -419,10 +446,9 @@ namespace DesnormalizadorHercules.Models
                               select ?project count(distinct ?doc) as ?numDocumentosACargar
                               Where{{
                                 ?project a <http://vivoweb.org/ontology/core#Project>.
-                                ?project <http://w3id.org/roh/isPublic> 'true'.
                                 OPTIONAL{{
                                     ?doc a <http://purl.org/ontology/bibo/Document>. 
-                                    ?doc <http://w3id.org/roh/isPublic> 'true'.
+                                    ?doc <http://w3id.org/roh/isValidated> 'true'.
                                     ?doc <http://w3id.org/roh/project> ?project.
                                 }}
                               }}Group by ?project 
@@ -443,7 +469,7 @@ namespace DesnormalizadorHercules.Models
                     ActualizadorTriple(project, "http://w3id.org/roh/publicationsNumber", numDocumentosCargados, numDocumentosACargar);
                 }
 
-                if (resultado.results.bindings.Count() != limit)
+                if (resultado.results.bindings.Count != limit)
                 {
                     break;
                 }
@@ -451,9 +477,9 @@ namespace DesnormalizadorHercules.Models
         }
 
         /// <summary>
-        /// Actualizamos en la propiedad http://w3id.org/roh/collaboratorsNumber de los http://vivoweb.org/ontology/core#Project públicos 
-        /// el nº de colaboradores (personas con autorías en documentos del proyectos que no son miembros públicos del proyecto)
-        /// Depende de ActualizadorProject.ActualizarProyectosPublicosy de ActualizadorProject.ActualizarPertenenciaPersonas
+        /// Actualizamos en la propiedad http://w3id.org/roh/collaboratorsNumber de los http://vivoweb.org/ontology/core#Project  
+        /// el nº de colaboradores (personas con autorías en documentos del proyecto que no son miembros públicos del proyecto)
+        /// Depende de ActualizadorProject.ActualizarPertenenciaPersonas y de ActualizadorDocument.ActualizarPertenenciaPersonas
         /// </summary>
         /// <param name="pProject">ID del proyecto</param>
         public void ActualizarNumeroColaboradores(string pProject = null)
@@ -483,7 +509,6 @@ namespace DesnormalizadorHercules.Models
                               select ?project count(distinct ?person) as ?numColaboradoresACargar
                               Where{{                               
                                 ?project a <http://vivoweb.org/ontology/core#Project>.
-                                ?project <http://w3id.org/roh/isPublic> 'true'.
                                 OPTIONAL
                                 {{
                                     {{
@@ -528,7 +553,7 @@ namespace DesnormalizadorHercules.Models
                     ActualizadorTriple(project, "http://w3id.org/roh/collaboratorsNumber", numColaboradoresCargados, numColaboradoresACargar);
                 }
 
-                if (resultado.results.bindings.Count() != limit)
+                if (resultado.results.bindings.Count != limit)
                 {
                     break;
                 }
@@ -538,9 +563,9 @@ namespace DesnormalizadorHercules.Models
 
 
         /// <summary>
-        /// Actualizamos en la propiedad http://w3id.org/roh/researchersNumber de los http://vivoweb.org/ontology/core#Project públicos
-        /// el nº de miembros oficiales 
-        /// Depende de ActualizadorProject.ActualizarProyectosPublicos y de ActualizadorProject.ActualizarPertenenciaGrupos
+        /// Actualizamos en la propiedad http://w3id.org/roh/researchersNumber de los http://vivoweb.org/ontology/core#Project
+        /// el nº de miembros 
+        /// Depende de ActualizadorProject.ActualizarPertenenciaPersonas
         /// </summary>
         /// <param name="pProject">ID del proyecto</param>
         public void ActualizarNumeroMiembros(string pProject = null)
@@ -570,7 +595,6 @@ namespace DesnormalizadorHercules.Models
                               select ?project count(distinct ?person) as ?numMiembrosACargar
                               Where{{                               
                                 ?project a <http://vivoweb.org/ontology/core#Project>.
-                                ?project <http://w3id.org/roh/isPublic> 'true'.
                                 OPTIONAL
                                 {{                                    	
                                     ?person a <http://xmlns.com/foaf/0.1/Person>.
@@ -594,7 +618,7 @@ namespace DesnormalizadorHercules.Models
                     ActualizadorTriple(project, "http://w3id.org/roh/researchersNumber", numMiembrosCargados, numMiembrosACargar);
                 }
 
-                if (resultado.results.bindings.Count() != limit)
+                if (resultado.results.bindings.Count != limit)
                 {
                     break;
                 }

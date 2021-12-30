@@ -27,9 +27,10 @@ namespace DesnormalizadorHercules.Models
         /// <summary>
         /// Actualizamos en la propiedad http://w3id.org/roh/isPublic de los http://xmlns.com/foaf/0.1/Group
         /// los grupos públicos (son los proyectos oficiales, es decir, los que tienen http://w3id.org/roh/crisIdentifier)
+        /// Esta propiedad se utilizará como filtro en el bucador general de grupos
         /// No tiene dependencias
         /// </summary>
-        /// <param name="pProject">ID del proyecto</param>
+        /// <param name="pGrupo">ID del grupo</param>
         public void ActualizarGruposPublicos(string pGrupo = null)
         {
             string filter = "";
@@ -78,7 +79,7 @@ namespace DesnormalizadorHercules.Models
                     ActualizadorTriple(group, "http://w3id.org/roh/isPublic", isPublicCargado, isPublicACargar);
                 }
 
-                if (resultado.results.bindings.Count() != limit)
+                if (resultado.results.bindings.Count != limit)
                 {
                     break;
                 }
@@ -86,9 +87,9 @@ namespace DesnormalizadorHercules.Models
         }
 
         /// <summary>
-        /// Actualizamos en la propiedad http://w3id.org/roh/researchersNumber de los http://xmlns.com/foaf/0.1/Group grupos públicos 
-        /// el nº de miembros en la fecha actual 
-        /// Depende de ActualizadorGroup.ActualizarGruposPublicos y de ActualizadorPerson.ActualizarPertenenciaGrupos
+        /// Actualizamos en la propiedad http://w3id.org/roh/researchersNumber de los http://xmlns.com/foaf/0.1/Group 
+        /// el nº de miembros (personas que apuntan al grupo con la propiedad 'http://vivoweb.org/ontology/core#relates')
+        /// Depende de ActualizadorPerson.ActualizarPertenenciaGrupos
         /// </summary>
         /// <param name="pGrupo">ID del grupo</param>
         public void ActualizarNumeroMiembros(string pGrupo=null)
@@ -118,7 +119,6 @@ namespace DesnormalizadorHercules.Models
                               select ?group count(distinct ?person) as ?numMiembrosACargar
                               Where{{                               
                                 ?group a <http://xmlns.com/foaf/0.1/Group>.
-                                ?group <http://w3id.org/roh/isPublic> 'true'.
                                 OPTIONAL
                                 {{
                                     ?person <http://vivoweb.org/ontology/core#relates> ?group.
@@ -141,7 +141,7 @@ namespace DesnormalizadorHercules.Models
                     ActualizadorTriple(group, "http://w3id.org/roh/researchersNumber", numMiembrosCargados, numMiembrosACargar);
                 }
 
-                if (resultado.results.bindings.Count() != limit)
+                if (resultado.results.bindings.Count != limit)
                 {
                     break;
                 }
@@ -150,9 +150,9 @@ namespace DesnormalizadorHercules.Models
         }
 
         /// <summary>
-        /// Actualizamos en la propiedad http://w3id.org/roh/collaboratorsNumber de los http://xmlns.com/foaf/0.1/Group grupos públicos 
+        /// Actualizamos en la propiedad http://w3id.org/roh/collaboratorsNumber de los http://xmlns.com/foaf/0.1/Group 
         /// el nº de colaboradores en la fecha actual  (personas con autorías en documentos del grupo o miembros de proyectos del grupo que no son miembros públicos del grupo)
-        /// Depende de ActualizadorGroup.ActualizarGruposPublicos y de ActualizadorPerson.ActualizarPertenenciaGrupos
+        /// Depende de ActualizadorPerson.ActualizarPertenenciaGrupos
         /// </summary>
         /// <param name="pGrupo">ID del grupo</param>
         public void ActualizarNumeroColaboradores(string pGrupo = null)
@@ -182,7 +182,6 @@ namespace DesnormalizadorHercules.Models
                               select ?group count(distinct ?person) as ?numColaboradoresACargar
                               Where{{                               
                                 ?group a <http://xmlns.com/foaf/0.1/Group>.
-                                ?group <http://w3id.org/roh/isPublic> 'true'.
                                 OPTIONAL
                                 {{
                                     {{
@@ -239,7 +238,7 @@ namespace DesnormalizadorHercules.Models
                     ActualizadorTriple(group, "http://w3id.org/roh/collaboratorsNumber", numColaboradoresCargados, numColaboradoresACargar);
                 }
 
-                if (resultado.results.bindings.Count() != limit)
+                if (resultado.results.bindings.Count != limit)
                 {
                     break;
                 }
@@ -248,9 +247,9 @@ namespace DesnormalizadorHercules.Models
         }
 
         /// <summary>
-        /// Actualizamos en la propiedad http://w3id.org/roh/projectsNumber de los http://xmlns.com/foaf/0.1/Group grupos públicos 
-        /// el nº de proyectos (personas con autorías en documentos del grupo o miembros de proyectos del grupo que no son miembros públicos del grupo)
-        /// Depende de ActualizadorGroup.ActualizarGruposPublicos y de ActualizadorProyecto.ActualizarPertenenciaGrupos
+        /// Actualizamos en la propiedad http://w3id.org/roh/projectsNumber de los http://xmlns.com/foaf/0.1/Group 
+        /// el nº de proyectos (proyectos que apuntan al grupo con la propiedad 'http://w3id.org/roh/publicGroupList')
+        /// Depende de ActualizadorProyecto.ActualizarPertenenciaGrupos
         /// </summary>
         /// <param name="pGrupo">ID del grupo</param>
         public void ActualizarNumeroProyectos(string pGrupo = null)
@@ -281,7 +280,6 @@ namespace DesnormalizadorHercules.Models
                               select ?group count(distinct ?proyecto) as ?numProyectosACargar
                               Where{{
                                 ?group a <http://xmlns.com/foaf/0.1/Group>.
-                                ?group <http://w3id.org/roh/isPublic> 'true'.
                                 OPTIONAL{{                                    
                                     ?proyecto a <http://vivoweb.org/ontology/core#Project>.
                                     ?proyecto <http://w3id.org/roh/publicGroupList> ?group.
@@ -304,7 +302,7 @@ namespace DesnormalizadorHercules.Models
                     ActualizadorTriple(grupo, "http://w3id.org/roh/projectsNumber", numProyectosCargados, numProyectosACargar);
                 }
 
-                if (resultado.results.bindings.Count() != limit)
+                if (resultado.results.bindings.Count != limit)
                 {
                     break;
                 }
@@ -312,9 +310,9 @@ namespace DesnormalizadorHercules.Models
         }
 
         /// <summary>
-        /// Actualizamos en la propiedad http://w3id.org/roh/publicationsNumber de los http://xmlns.com/foaf/0.1/Group públicos 
-        /// el número de publicaciones públicas del grupo
-        /// Depende de ActualizadorGroup.ActualizarGruposPublicos, de ActualizadorDocument.ActualizarDocumentosPublicos y ActualizadorDocument.ActualizarPertenenciaGrupos
+        /// Actualizamos en la propiedad http://w3id.org/roh/publicationsNumber de los http://xmlns.com/foaf/0.1/Group  
+        /// el número de publicaciones validadas del grupo (publicaciones que apuntan al grupo con la propiedad 'http://w3id.org/roh/isProducedBy')
+        /// Depende de ActualizadorDocument.ActualizarPertenenciaGrupos
         /// </summary>
         /// <param name="pGrupo">ID del grupo</param>
         public void ActualizarNumeroPublicaciones(string pGrupo = null)
@@ -346,10 +344,8 @@ namespace DesnormalizadorHercules.Models
                               select ?grupo count(distinct ?doc) as ?numDocumentosACargar
                               Where{{
                                 ?grupo a <http://xmlns.com/foaf/0.1/Group>.
-                                ?group <http://w3id.org/roh/isPublic> 'true'.
                                 OPTIONAL{{
                                     ?doc a <http://purl.org/ontology/bibo/Document>.
-                                    ?doc <http://w3id.org/roh/isPublic> 'true'.
                                     ?doc <http://w3id.org/roh/isProducedBy> ?grupo.
                                 }}
                               }}Group by ?grupo 
@@ -370,7 +366,7 @@ namespace DesnormalizadorHercules.Models
                     ActualizadorTriple(grupo, "http://w3id.org/roh/publicationsNumber", numDocumentosCargados, numDocumentosACargar);
                 }
 
-                if (resultado.results.bindings.Count() != limit)
+                if (resultado.results.bindings.Count != limit)
                 {
                     break;
                 }
@@ -378,9 +374,9 @@ namespace DesnormalizadorHercules.Models
         }
 
         /// <summary>
-        /// Actualizamos en la propiedad http://w3id.org/roh/themedAreasNumber de los http://xmlns.com/foaf/0.1/Group públicos 
-        /// el número de áreas temáticas de las publicaciones públicas del grupo, este dato es inferido de las publicaciones públicas que pertenecen al grupo
-        /// Depende de ActualizadorGroup.ActualizarGruposPublicos, de ActualizadorDocument.ActualizarDocumentosPublicos y ActualizadorDocument.ActualizarPertenenciaGrupos
+        /// Actualizamos en la propiedad http://w3id.org/roh/themedAreasNumber de los http://xmlns.com/foaf/0.1/Group  
+        /// el número de áreas temáticas de las publicaciones públicas del grupo, este dato es inferido de las publicaciones públicas que pertenecen al grupo (publicaciones que apuntan al grupo con la propiedad 'http://w3id.org/roh/isProducedBy')
+        /// Depende de ActualizadorDocument.ActualizarPertenenciaGrupos
         /// </summary>
         /// <param name="pGrupo">ID del grupo</param>
         public void ActualizarNumeroAreasTematicas(string pGrupo = null)
@@ -410,10 +406,8 @@ namespace DesnormalizadorHercules.Models
                               select ?grupo count(distinct ?categoria) as ?numAreasTematicasACargar
                               Where{{
                                 ?grupo a <http://xmlns.com/foaf/0.1/Group>.
-                                ?group <http://w3id.org/roh/isPublic> 'true'.
                                 OPTIONAL{{
                                     ?documento a <http://purl.org/ontology/bibo/Document>. 
-                                    ?documento <http://w3id.org/roh/isPublic> 'true'.
                                     ?documento <http://w3id.org/roh/isProducedBy> ?grupo.
                                     ?documento <http://w3id.org/roh/hasKnowledgeArea> ?area.
                                     ?area <http://w3id.org/roh/categoryNode> ?categoria.
@@ -441,7 +435,7 @@ namespace DesnormalizadorHercules.Models
                     ActualizadorTriple(grupo, "http://w3id.org/roh/themedAreasNumber", numAreasTematicasCargadas, numAreasTematicasACargar);
                 }
 
-                if (resultado.results.bindings.Count() != limit)
+                if (resultado.results.bindings.Count != limit)
                 {
                     break;
                 }
@@ -449,9 +443,9 @@ namespace DesnormalizadorHercules.Models
         }
 
         /// <summary>
-        /// Actualizamos en la propiedad http://w3id.org/roh/lineResearch de los http://xmlns.com/foaf/0.1/Group públicos 
-        /// la líneas de invetigación de sus miembros activos
-        /// Depende de ActualizadorGroup.ActualizarGruposPublicos
+        /// Actualizamos en la propiedad http://w3id.org/roh/lineResearch de los http://xmlns.com/foaf/0.1/Group 
+        /// la líneas de invetigación de sus miembros activos en el momento actual
+        /// No tiene dependencias
         /// </summary>
         /// <param name="pGrupo">ID del grupo</param>
         public void ActualizarPertenenciaLineas(string pGrupo = null)
@@ -475,8 +469,7 @@ namespace DesnormalizadorHercules.Models
                                         Where
                                         {{
                                             ?person a <http://xmlns.com/foaf/0.1/Person>.
-                                            ?group a <http://xmlns.com/foaf/0.1/Group>.    
-                                            ?group <http://w3id.org/roh/isPublic> 'true'.
+                                            ?group a <http://xmlns.com/foaf/0.1/Group>.  
                                             {{
                                                 ?group <http://w3id.org/roh/mainResearchers> ?rol.
                                                 ?rol <http://w3id.org/roh/roleOf> ?person.                                                
@@ -518,7 +511,7 @@ namespace DesnormalizadorHercules.Models
                                 }}}}order by desc(?group) limit {limit}";
                 SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "group");
                 InsercionMultiple(resultado.results.bindings, "http://w3id.org/roh/lineResearch", "group", "linea");
-                if (resultado.results.bindings.Count() != limit)
+                if (resultado.results.bindings.Count != limit)
                 {
                     break;
                 }
@@ -542,8 +535,7 @@ namespace DesnormalizadorHercules.Models
                                         Where
                                         {{
                                             ?person a <http://xmlns.com/foaf/0.1/Person>.
-                                            ?group a <http://xmlns.com/foaf/0.1/Group>.                                            
-                                            ?group <http://w3id.org/roh/crisIdentifier> ?crisIdentifier.
+                                            ?group a <http://xmlns.com/foaf/0.1/Group>.              
                                             {{
                                                 ?group <http://w3id.org/roh/mainResearchers> ?rol.
                                                 ?rol <http://w3id.org/roh/roleOf> ?person.                                                
@@ -580,7 +572,7 @@ namespace DesnormalizadorHercules.Models
                                 }}}}order by desc(?group) limit {limit}";
                 var resultado = mResourceApi.VirtuosoQuery(select, where, "group");
                 EliminacionMultiple(resultado.results.bindings, "http://w3id.org/roh/lineResearch", "group", "linea");
-                if (resultado.results.bindings.Count() != limit)
+                if (resultado.results.bindings.Count != limit)
                 {
                     break;
                 }
@@ -588,20 +580,20 @@ namespace DesnormalizadorHercules.Models
         }
 
         /// <summary>
-        /// Actualizamos en la propiedad http://w3id.org/roh/hasKnowledgeArea de los http://xmlns.com/foaf/0.1/Group públicos 
+        /// Actualizamos en la propiedad http://w3id.org/roh/hasKnowledgeArea de los http://xmlns.com/foaf/0.1/Group 
         /// las áreas de los miembros actuales del grupo
-        /// Depende de ActualizadorGroup.ActualizarGruposPublicos, ActualizadorPerson.ActualizarPertenenciaGrupos y ActualizadorPerson.ActualizarAreasPersonas
+        /// Depende de ActualizadorPerson.ActualizarPertenenciaGrupos y ActualizadorPerson.ActualizarAreasPersonas
         /// </summary>
         /// <param name="pGrupo">ID del grupo</param>
-        public void ActualizarAreasGrupos(string pGroup = null)
+        public void ActualizarAreasGrupos(string pGrupo = null)
         {
             string graphsUrl = mResourceApi.GraphsUrl;
             if (!string.IsNullOrEmpty(graphsUrl))
             {
                 string filter = "";
-                if (!string.IsNullOrEmpty(pGroup))
+                if (!string.IsNullOrEmpty(pGrupo))
                 {
-                    filter = $" FILTER(?group =<{pGroup}>)";
+                    filter = $" FILTER(?group =<{pGrupo}>)";
                 }
 
                 //Eliminamos las categorías duplicadas
@@ -646,7 +638,7 @@ namespace DesnormalizadorHercules.Models
                                     }}
                                 }}";
                         resultado = mResourceApi.VirtuosoQuery(select, where, "group");                        
-                        List<RemoveTriples> triplesRemove = new List<RemoveTriples>();
+                        List<RemoveTriples> triplesRemove = new();
                         foreach (string hasKnowledgeArea in resultado.results.bindings.GetRange(1, resultado.results.bindings.Count - 1).Select(x => x["hasKnowledgeArea"].value).ToList())
                         {
                             triplesRemove.Add(new RemoveTriples()
@@ -662,14 +654,14 @@ namespace DesnormalizadorHercules.Models
                     }
 
 
-                    if (resultado.results.bindings.Count() != limit)
+                    if (resultado.results.bindings.Count != limit)
                     {
                         break;
                     }
                 }
 
                 //Cargamos el tesauro
-                Dictionary<string, string> dicAreasBroader = new Dictionary<string, string>();
+                Dictionary<string, string> dicAreasBroader = new();
                 {
                     String select = @"select distinct * ";
                     String where = @$"where{{
@@ -703,7 +695,6 @@ namespace DesnormalizadorHercules.Models
                             {{
                                 select  distinct ?group ?hasKnowledgeAreaPerson ?categoryNode where{{
                                     ?group a <http://xmlns.com/foaf/0.1/Group>.
-                                    ?group <http://w3id.org/roh/isPublic> 'true'.
                                     ?person a <http://xmlns.com/foaf/0.1/Person>.
                                     ?person <http://vivoweb.org/ontology/core#relates> ?group.                                    
                                     ?person  <http://vivoweb.org/ontology/core#hasResearchArea> ?hasKnowledgeAreaPerson.
@@ -727,7 +718,7 @@ namespace DesnormalizadorHercules.Models
                             }}}}order by (?group) limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "group");
                     InsertarCategorias(resultado, dicAreasBroader, graphsUrl, "group", "http://w3id.org/roh/hasKnowledgeArea");
-                    if (resultado.results.bindings.Count() != limit)
+                    if (resultado.results.bindings.Count != limit)
                     {
                         break;
                     }
@@ -756,7 +747,6 @@ namespace DesnormalizadorHercules.Models
                             MINUS{{
                                 select  distinct ?group ?hasKnowledgeAreaPerson ?categoryNode where{{
                                     ?group a <http://xmlns.com/foaf/0.1/Group>.
-                                    ?group <http://w3id.org/roh/isPublic> 'true'.
                                     ?person a <http://xmlns.com/foaf/0.1/Person>.
                                     ?person <http://vivoweb.org/ontology/core#relates> ?group.                                    
                                     ?person  <http://vivoweb.org/ontology/core#hasResearchArea> ?hasKnowledgeAreaPerson.
@@ -770,7 +760,7 @@ namespace DesnormalizadorHercules.Models
                             }}}}order by (?group) limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "group");
                     EliminarCategorias(resultado, "group", "http://w3id.org/roh/hasKnowledgeArea");
-                    if (resultado.results.bindings.Count() != limit)
+                    if (resultado.results.bindings.Count != limit)
                     {
                         break;
                     }

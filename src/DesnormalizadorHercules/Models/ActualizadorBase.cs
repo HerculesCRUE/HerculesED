@@ -25,21 +25,22 @@ namespace DesnormalizadorHercules.Models
         /// <summary>
         /// Lista con los prefijos
         /// </summary>
-        public static Dictionary<string, string> dicPrefix = new Dictionary<string, string>() {
+        private readonly static Dictionary<string, string> dicPrefix = new()
+        {
             { "rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#" },
-            {"rdfs", "http://www.w3.org/2000/01/rdf-schema#" },
-            {"foaf", "http://xmlns.com/foaf/0.1/" },
-            {"vivo", "http://vivoweb.org/ontology/core#" },
-            {"owl", "http://www.w3.org/2002/07/owl#" },
-            {"bibo", "http://purl.org/ontology/bibo/" },
-            {"roh", "http://w3id.org/roh/" },
-            {"dct", "http://purl.org/dc/terms/" },
-            {"xsd", "http://www.w3.org/2001/XMLSchema#" },
-            {"obo", "http://purl.obolibrary.org/obo/" },
-            {"vcard", "https://www.w3.org/2006/vcard/ns#" },
-            {"dc", "http://purl.org/dc/elements/1.1/" },
-            {"gn", "http://www.geonames.org/ontology#" },
-            {"skos", "http://www.w3.org/2008/05/skos#" }
+            { "rdfs", "http://www.w3.org/2000/01/rdf-schema#" },
+            { "foaf", "http://xmlns.com/foaf/0.1/" },
+            { "vivo", "http://vivoweb.org/ontology/core#" },
+            { "owl", "http://www.w3.org/2002/07/owl#" },
+            { "bibo", "http://purl.org/ontology/bibo/" },
+            { "roh", "http://w3id.org/roh/" },
+            { "dct", "http://purl.org/dc/terms/" },
+            { "xsd", "http://www.w3.org/2001/XMLSchema#" },
+            { "obo", "http://purl.obolibrary.org/obo/" },
+            { "vcard", "https://www.w3.org/2006/vcard/ns#" },
+            { "dc", "http://purl.org/dc/elements/1.1/" },
+            { "gn", "http://www.geonames.org/ontology#" },
+            { "skos", "http://www.w3.org/2008/05/skos#" }
         };
 
         /// <summary>
@@ -64,7 +65,7 @@ namespace DesnormalizadorHercules.Models
             foreach (string id in ids)
             {
                 Guid guid = mResourceApi.GetShortGuid(id);
-                Dictionary<Guid, List<Gnoss.ApiWrapper.Model.TriplesToInclude>> triples = new Dictionary<Guid, List<TriplesToInclude>>() { { guid, new List<TriplesToInclude>() } };
+                Dictionary<Guid, List<TriplesToInclude>> triples = new() { { guid, new List<TriplesToInclude>() } };
                 foreach (string value in pFilas.Where(x => x[pPropSubject].value == id).Select(x => x[pPropObject].value))
                 {
                     TriplesToInclude t = new();
@@ -89,7 +90,7 @@ namespace DesnormalizadorHercules.Models
             foreach (string id in ids)
             {
                 Guid guid = mResourceApi.GetShortGuid(id);
-                Dictionary<Guid, List<Gnoss.ApiWrapper.Model.RemoveTriples>> triples = new Dictionary<Guid, List<RemoveTriples>>() { { guid, new List<RemoveTriples>() } };
+                Dictionary<Guid, List<Gnoss.ApiWrapper.Model.RemoveTriples>> triples = new() { { guid, new List<RemoveTriples>() } };
                 foreach (string value in pFilas.Where(x => x[pPropSubject].value == id).Select(x => x[pPropObject].value))
                 {
                     RemoveTriples t = new();
@@ -114,11 +115,11 @@ namespace DesnormalizadorHercules.Models
             if (!string.IsNullOrEmpty(pValorAntiguo) && !string.IsNullOrEmpty(pValorNuevo))
             {
                 //Si el valor nuevo y el viejo no son nulos -->modificamos
-                TriplesToModify t = new TriplesToModify();
+                TriplesToModify t = new();
                 t.NewValue = pValorNuevo;
                 t.OldValue = pValorAntiguo;
                 t.Predicate = pPredicado;
-                var resultado = mResourceApi.ModifyPropertiesLoadedResources(new Dictionary<Guid, List<Gnoss.ApiWrapper.Model.TriplesToModify>>() { { guid, new List<Gnoss.ApiWrapper.Model.TriplesToModify>() { t } } });
+                mResourceApi.ModifyPropertiesLoadedResources(new Dictionary<Guid, List<Gnoss.ApiWrapper.Model.TriplesToModify>>() { { guid, new List<Gnoss.ApiWrapper.Model.TriplesToModify>() { t } } });
             }
             else if (string.IsNullOrEmpty(pValorAntiguo) && !string.IsNullOrEmpty(pValorNuevo))
             {
@@ -126,7 +127,7 @@ namespace DesnormalizadorHercules.Models
                 TriplesToInclude t = new();
                 t.Predicate = pPredicado;
                 t.NewValue = pValorNuevo;
-                var resultado = mResourceApi.InsertPropertiesLoadedResources(new Dictionary<Guid, List<Gnoss.ApiWrapper.Model.TriplesToInclude>>() { { guid, new List<Gnoss.ApiWrapper.Model.TriplesToInclude>() { t } } });
+                mResourceApi.InsertPropertiesLoadedResources(new Dictionary<Guid, List<Gnoss.ApiWrapper.Model.TriplesToInclude>>() { { guid, new List<Gnoss.ApiWrapper.Model.TriplesToInclude>() { t } } });
             }
             else if (!string.IsNullOrEmpty(pValorAntiguo) && string.IsNullOrEmpty(pValorNuevo))
             {
@@ -134,7 +135,7 @@ namespace DesnormalizadorHercules.Models
                 RemoveTriples t = new();
                 t.Predicate = pPredicado;
                 t.Value = pValorAntiguo;
-                var resultado = mResourceApi.DeletePropertiesLoadedResources(new Dictionary<Guid, List<Gnoss.ApiWrapper.Model.RemoveTriples>>() { { guid, new List<Gnoss.ApiWrapper.Model.RemoveTriples>() { t } } });
+                mResourceApi.DeletePropertiesLoadedResources(new Dictionary<Guid, List<Gnoss.ApiWrapper.Model.RemoveTriples>>() { { guid, new List<Gnoss.ApiWrapper.Model.RemoveTriples>() { t } } });
             }
         }
 
@@ -172,7 +173,7 @@ namespace DesnormalizadorHercules.Models
                         ActualizadorTriple(id, pProperty, value, "");
                     }
                 }
-                if (resultado.results.bindings.Count() != limit)
+                if (resultado.results.bindings.Count != limit)
                 {
                     break;
                 }
@@ -187,23 +188,23 @@ namespace DesnormalizadorHercules.Models
         /// <param name="pGraphsUrl">Url interna de los grafos</param>
         /// <param name="pVarItem">Ítem en el que insertar las categorias</param>
         /// <param name="pPropCategoria">Propiedad en la que insertar las categorías</param>
-        public void InsertarCategorias(SparqlObject pResultado, Dictionary<string, string> pDicAreasBroader, string pGraphsUrl,string pVarItem,string pPropCategoria)
+        public void InsertarCategorias(SparqlObject pResultado, Dictionary<string, string> pDicAreasBroader, string pGraphsUrl, string pVarItem, string pPropCategoria)
         {
-            Dictionary<Guid, List<TriplesToInclude>> triplesToInclude = new Dictionary<Guid, List<TriplesToInclude>>();
+            Dictionary<Guid, List<TriplesToInclude>> triplesToInclude = new();
             foreach (Dictionary<string, SparqlObject.Data> fila in pResultado.results.bindings)
             {
                 string item = fila[pVarItem].value;
                 string categoryNode = fila["categoryNode"].value;
 
                 string idNewAux = pGraphsUrl + "items/CategoryPath_" + mResourceApi.GetShortGuid(item).ToString().ToLower() + "_" + Guid.NewGuid();
-                List<TriplesToInclude> listaTriples = new List<TriplesToInclude>();
+                List<TriplesToInclude> listaTriples = new();
                 string idEntityAux = idNewAux;
 
                 string categoryNodeAux = categoryNode;
                 while (!string.IsNullOrEmpty(categoryNodeAux))
                 {
-                    string predicadoCategoria =pPropCategoria+ "|http://w3id.org/roh/categoryNode";
-                    TriplesToInclude tr2 = new TriplesToInclude(idEntityAux + "|" + categoryNodeAux, predicadoCategoria);
+                    string predicadoCategoria = pPropCategoria + "|http://w3id.org/roh/categoryNode";
+                    TriplesToInclude tr2 = new(idEntityAux + "|" + categoryNodeAux, predicadoCategoria);
                     listaTriples.Add(tr2);
                     categoryNodeAux = pDicAreasBroader[categoryNodeAux];
                 }
@@ -220,7 +221,7 @@ namespace DesnormalizadorHercules.Models
             }
             foreach (Guid idItem in triplesToInclude.Keys)
             {
-                mResourceApi.InsertPropertiesLoadedResources(new Dictionary<Guid, List<TriplesToInclude>>() { { idItem, triplesToInclude[idItem] } });
+                mResourceApi.InsertPropertiesLoadedResources(new() { { idItem, triplesToInclude[idItem] } });
             }
         }
 
@@ -230,15 +231,15 @@ namespace DesnormalizadorHercules.Models
         /// <param name="pResultado">Resultado de la query de la que obtener los datos</param>
         /// <param name="pVarItem">Ítem en el que insertar las categorias</param>
         /// <param name="pPropCategoria">Propiedad en la que insertar las categorías</param>
-        public void EliminarCategorias(SparqlObject pResultado, string pVarItem,string pPropCategoria)
+        public void EliminarCategorias(SparqlObject pResultado, string pVarItem, string pPropCategoria)
         {
-            Dictionary<Guid, List<RemoveTriples>> triplesToRemove = new Dictionary<Guid, List<RemoveTriples>>();
+            Dictionary<Guid, List<RemoveTriples>> triplesToRemove = new();
             foreach (Dictionary<string, SparqlObject.Data> fila in pResultado.results.bindings)
             {
                 string item = fila[pVarItem].value;
                 string hasKnowledgeArea = fila["hasKnowledgeArea"].value;
 
-                RemoveTriples removeTriple = new RemoveTriples();
+                RemoveTriples removeTriple = new();
                 removeTriple.Predicate = pPropCategoria;
                 removeTriple.Value = hasKnowledgeArea;
 
@@ -267,6 +268,21 @@ namespace DesnormalizadorHercules.Models
         {
             KeyValuePair<string, string> prefix = dicPrefix.First(x => pProperty.StartsWith(x.Value));
             return pProperty.Replace(prefix.Value, prefix.Key + ":");
+        }
+
+        /// <summary>
+        /// Trocea una lista en listas de N tamaño
+        /// </summary>
+        /// <typeparam name="T">Clased de los elementos de la lista</typeparam>
+        /// <param name="pList">Lista</param>
+        /// <param name="nSize">Tamaño de la lista</param>
+        /// <returns></returns>
+        public static IEnumerable<List<T>> SplitList<T>(List<T> pList, int pSize)
+        {
+            for (int i = 0; i < pList.Count; i += pSize)
+            {
+                yield return pList.GetRange(i, Math.Min(pSize, pList.Count - i));
+            }
         }
     }
 }

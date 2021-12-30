@@ -2,7 +2,6 @@
 using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.ApiModel;
 using Gnoss.ApiWrapper.Model;
-using PersonOntology;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,17 +11,90 @@ using System.Threading.Tasks;
 
 namespace DesnormalizadorHercules.Models
 {
+    /// <summary>
+    /// Clase para actualizar propiedades de CVs
+    /// </summary>
     class ActualizadorCV : ActualizadorBase
     {
-        public ActualizadorCV(ResourceApi pResourceApi):base(pResourceApi)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="pResourceApi">API Wrapper de GNOSS</param>
+        public ActualizadorCV(ResourceApi pResourceApi) : base(pResourceApi)
         {
         }
-        private static string rutaOauth = $@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/OAuthV3.config";
-        private static ResourceApi mResourceApi = new ResourceApi(rutaOauth);
-        private static CommunityApi mCommunityApi = new CommunityApi(rutaOauth);
-        private static Guid mIdComunidad = mCommunityApi.GetCommunityId();
 
-        public void ActualizarDocumentos(string pPerson = null, string pDocument = null, string pCV = null)
+        /// <summary>
+        /// Crea un currículum para todos los investigadores activos (http://w3id.org/roh/isActive 'true')
+        /// NO se realizan eliminaciones
+        /// No tiene dependencias
+        /// </summary>
+        /// <param name="pPerson">ID de la persona</param>
+        public void CrearCVs(string pPerson = null)
+        {
+            string filter = "";
+            if (!string.IsNullOrEmpty(pPerson))
+            {
+                filter = $" FILTER(?person =<{pPerson}>)";
+            }
+
+            string graphsUrl = mResourceApi.GraphsUrl;
+            if (!string.IsNullOrEmpty(graphsUrl))
+            {
+                while (true)
+                {
+                    //Añadimos documentos
+                    int limit = 50;
+                    //TODO eliminar from
+                    String select = @"SELECT distinct ?person from <http://gnoss.com/curriculumvitae.owl> ";
+                    String where = @$"  where{{
+                                            {filter}
+                                            ?person a <http://xmlns.com/foaf/0.1/Person>.
+                                            ?person <http://w3id.org/roh/isActive> 'true'.
+                                            MINUS{{ ?cv  <http://w3id.org/roh/cvOf> ?person}}
+                                        }} limit {limit}";
+
+                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
+
+                    // Personas que no poseen actualmente un CV y deberían tenerlo
+                    List<string> persons = new();
+                    foreach (Dictionary<string, SparqlObject.Data> fila in resultado.results.bindings)
+                    {
+                        persons.Add(fila["person"].value);
+                    }
+
+                    // Obtenemos los CV a cargar
+                    mResourceApi.ChangeOntoly("curriculumvitae");
+                    List<CV> listaCVCargar = GenerateCVFromPersons(persons);
+                    foreach (CV cv in listaCVCargar)
+                    {
+                        ComplexOntologyResource resource = cv.ToGnossApiResource(mResourceApi, new());
+                        if (listaCVCargar.Last() == cv)
+                        {
+                            mResourceApi.LoadComplexSemanticResource(resource, true, true);
+                        }
+                        else
+                        {
+                            mResourceApi.LoadComplexSemanticResource(resource);
+                        }
+                    }
+
+                    if (resultado.results.bindings.Count != limit)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Insertamos/eliminamos en los CV las publicaciones de las que el dueño del CV es autor con la privacidad correspondiente
+        /// Depende de ActualizadorCV.CrearCVs
+        /// </summary>        
+        /// <param name="pPerson">ID de la persona</param>
+        /// <param name="pDocument">ID del documento</param>
+        /// <param name="pCV">ID del CV</param>
+        public void ModificarDocumentos(string pPerson = null, string pDocument = null, string pCV = null)
         {
             string graphsUrl = mResourceApi.GraphsUrl;
             if (!string.IsNullOrEmpty(graphsUrl))
@@ -41,21 +113,17 @@ namespace DesnormalizadorHercules.Models
                     filter = $" FILTER(?cv =<{pCV}>)";
                 }
 
-
-
-
-
                 while (true)
                 {
                     //Añadimos documentos
                     int limit = 500;
                     //TODO eliminar from
-                    String select = @"SELECT * WHERE{select distinct ?cv ?scientificActivity ?document  ?typeDocument  from <http://gnoss.com/document.owl> from <http://gnoss.com/person.owl>  from <http://gnoss.com/scientificactivitydocument.owl>  ";
+                    String select = @"SELECT * WHERE{select distinct ?cv ?scientificActivity ?document ?isValidated ?typeDocument  from <http://gnoss.com/document.owl> from <http://gnoss.com/person.owl>  from <http://gnoss.com/scientificactivitydocument.owl>  ";
                     String where = @$"where{{
                                     {filter}
                                     {{
                                         #DESEABLES
-                                        select distinct ?cv ?scientificActivity ?document ?typeDocument
+                                        select distinct ?person ?cv ?scientificActivity ?document ?isValidated ?typeDocument
                                         Where
                                         {{
                                             ?person a <http://xmlns.com/foaf/0.1/Person>.                                            
@@ -66,6 +134,7 @@ namespace DesnormalizadorHercules.Models
                                             ?document <http://purl.org/ontology/bibo/authorList> ?autor.
                                             ?autor <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person.
                                             ?document <http://w3id.org/roh/scientificActivityDocument> ?scientificActivityDocument.
+                                            ?document <http://w3id.org/roh/isValidated> ?isValidated.
                                             ?scientificActivityDocument <http://purl.org/dc/elements/1.1/identifier> ?typeDocument.
                                         }}
                                     }}
@@ -104,7 +173,7 @@ namespace DesnormalizadorHercules.Models
                                 }}}}order by desc(?cv) limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
                     InsertarDocumentosCV(resultado, graphsUrl);
-                    if (resultado.results.bindings.Count() != limit)
+                    if (resultado.results.bindings.Count != limit)
                     {
                         break;
                     }
@@ -152,7 +221,7 @@ namespace DesnormalizadorHercules.Models
                                     MINUS
                                     {{
                                         #DESEABLES
-                                        select distinct ?cv ?scientificActivity ?document ?typeDocument
+                                        select distinct ?person ?cv ?scientificActivity ?document ?typeDocument
                                         Where
                                         {{
                                             ?person a <http://xmlns.com/foaf/0.1/Person>.                                            
@@ -168,8 +237,8 @@ namespace DesnormalizadorHercules.Models
                                     }}
                                 }}}}order by desc(?cv) limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
-                    EliminarDocumentosCV(resultado, graphsUrl);
-                    if (resultado.results.bindings.Count() != limit)
+                    EliminarDocumentosCV(resultado);
+                    if (resultado.results.bindings.Count != limit)
                     {
                         break;
                     }
@@ -177,8 +246,71 @@ namespace DesnormalizadorHercules.Models
             }
         }
 
+        /// <summary>
+        /// Modifica la privacidad de las publicaciones de los CV en caso de que haya que hacerlo
+        /// (Solo convierte en públicos aquellos documentos que sean privados pero deberían ser públicos)
+        /// Depende de ActualizadorCV.CrearCVs
+        /// </summary>
+        /// <param name="pPerson">ID de la persona</param>
+        /// <param name="pDocument">ID del documento</param>
+        /// <param name="pCV">ID del CV</param>
+        public void CambiarPrivacidadDocumentos(string pPerson = null, string pDocument = null, string pCV = null)
+        {
+            string graphsUrl = mResourceApi.GraphsUrl;
+            if (!string.IsNullOrEmpty(graphsUrl))
+            {
+                string filter = "";
+                if (!string.IsNullOrEmpty(pPerson))
+                {
+                    filter = $" FILTER(?person =<{pPerson}>)";
+                }
+                if (!string.IsNullOrEmpty(pDocument))
+                {
+                    filter = $" FILTER(?document =<{pDocument}>)";
+                }
+                if (!string.IsNullOrEmpty(pCV))
+                {
+                    filter = $" FILTER(?cv =<{pCV}>)";
+                }
 
-        public void ActualizarProyectos(string pPerson = null, string pProyecto = null, string pCV = null)
+                while (true)
+                {
+                    //Publicamos los documentos
+                    int limit = 500;
+                    //TODO eliminar from
+                    String select = @"SELECT * WHERE{select distinct ?cv ?scientificActivity ?propItem ?item from <http://gnoss.com/document.owl> from <http://gnoss.com/person.owl>  ";
+                    String where = @$"where{{
+                                    {filter}
+                                    {{
+                                        ?person a <http://xmlns.com/foaf/0.1/Person>.                                            
+                                        ?document a <http://purl.org/ontology/bibo/Document>.
+                                        ?document <http://w3id.org/roh/isValidated> 'true'.
+                                        ?cv a <http://w3id.org/roh/CV>.
+                                        ?cv <http://w3id.org/roh/cvOf> ?person.
+                                        ?cv <http://w3id.org/roh/scientificActivity> ?scientificActivity.                                        
+                                        ?scientificActivity ?propItem ?item.
+                                        ?item <http://vivoweb.org/ontology/core#relatedBy> ?document.
+                                        ?item <http://w3id.org/roh/isPublic> 'false'.
+                                    }}
+                                }}}}order by desc(?cv) limit {limit}";
+                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+                    PublicarDocumentosCV(resultado, graphsUrl);
+                    if (resultado.results.bindings.Count != limit)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Insertamos/eliminamos en los CV los proyectos oficiales (con http://w3id.org/roh/crisIdentifier ) de los que el dueño del CV es miembro y les ponemos privacidad pública
+        /// Depende de ActualizadorCV.CrearCVs
+        /// </summary>        
+        /// <param name="pPerson">ID de la persona</param>
+        /// <param name="pProyecto">ID del documento</param>
+        /// <param name="pCV">ID del CV</param>
+        public void ModificarProyectos(string pPerson = null, string pProyecto = null, string pCV = null)
         {
             string graphsUrl = mResourceApi.GraphsUrl;
             if (!string.IsNullOrEmpty(graphsUrl))
@@ -198,8 +330,7 @@ namespace DesnormalizadorHercules.Models
                 }
                 while (true)
                 {
-                    //TODO esto esta mal, los autores de los proectos hay que reisarlos
-                    //Añadimos documentos
+                    //Añadimos proyectos
                     int limit = 500;
                     //TODO eliminar from
                     String select = @"SELECT * WHERE{select distinct ?cv ?scientificExperience ?project ?typeProject from <http://gnoss.com/project.owl> from <http://gnoss.com/person.owl>  from <http://gnoss.com/scientificexperienceproject.owl>  ";
@@ -212,6 +343,7 @@ namespace DesnormalizadorHercules.Models
                                         {{
                                             ?person a <http://xmlns.com/foaf/0.1/Person>.                                            
                                             ?project a <http://vivoweb.org/ontology/core#Project>.
+                                            ?project <http://w3id.org/roh/crisIdentifier> ?crisIdentifier.
                                             ?cv a <http://w3id.org/roh/CV>.
                                             ?cv <http://w3id.org/roh/cvOf> ?person.
                                             ?cv <http://w3id.org/roh/scientificExperience> ?scientificExperience.
@@ -227,6 +359,7 @@ namespace DesnormalizadorHercules.Models
                                         #ACTUALES
                                         ?person a <http://xmlns.com/foaf/0.1/Person>.                                            
                                         ?project a <http://vivoweb.org/ontology/core#Project>.
+                                        ?project <http://w3id.org/roh/crisIdentifier> ?crisIdentifier.
                                         ?cv a <http://w3id.org/roh/CV>.
                                         ?cv <http://w3id.org/roh/cvOf> ?person.
                                         ?cv <http://w3id.org/roh/scientificExperience> ?scientificExperience.
@@ -245,7 +378,7 @@ namespace DesnormalizadorHercules.Models
                                 }}}}order by desc(?cv) limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
                     InsertarProyectosCV(resultado, graphsUrl);
-                    if (resultado.results.bindings.Count() != limit)
+                    if (resultado.results.bindings.Count != limit)
                     {
                         break;
                     }
@@ -253,7 +386,7 @@ namespace DesnormalizadorHercules.Models
 
                 while (true)
                 {
-                    //Elminamos documentos
+                    //Elminamos proyectos
                     int limit = 500;
                     //TODO eliminar from select distinct ?cv ?scientificActivity ?item ?typeDocument
                     String select = @"SELECT * WHERE{select distinct ?cv ?scientificExperience ?project ?item ?typeProject from <http://gnoss.com/project.owl> from <http://gnoss.com/person.owl>  from <http://gnoss.com/scientificexperienceproject.owl>  ";
@@ -263,6 +396,7 @@ namespace DesnormalizadorHercules.Models
                                         #ACTUALES
                                         ?person a <http://xmlns.com/foaf/0.1/Person>.                                            
                                         ?project a <http://vivoweb.org/ontology/core#Project>.
+                                        ?project <http://w3id.org/roh/crisIdentifier> ?crisIdentifier.
                                         ?cv a <http://w3id.org/roh/CV>.
                                         ?cv <http://w3id.org/roh/cvOf> ?person.
                                         ?cv <http://w3id.org/roh/scientificExperience> ?scientificExperience.
@@ -286,6 +420,7 @@ namespace DesnormalizadorHercules.Models
                                         {{
                                             ?person a <http://xmlns.com/foaf/0.1/Person>.                                            
                                             ?project a <http://vivoweb.org/ontology/core#Project>.
+                                            ?project <http://w3id.org/roh/crisIdentifier> ?crisIdentifier.
                                             ?cv a <http://w3id.org/roh/CV>.
                                             ?cv <http://w3id.org/roh/cvOf> ?person.
                                             ?cv <http://w3id.org/roh/scientificExperience> ?scientificExperience.
@@ -298,8 +433,8 @@ namespace DesnormalizadorHercules.Models
                                     }}
                                 }}}}order by desc(?cv) limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
-                    EliminarProyectosCV(resultado, graphsUrl);
-                    if (resultado.results.bindings.Count() != limit)
+                    EliminarProyectosCV(resultado);
+                    if (resultado.results.bindings.Count != limit)
                     {
                         break;
                     }
@@ -307,7 +442,14 @@ namespace DesnormalizadorHercules.Models
             }
         }
 
-        public void ActualizarGrupos(string pPerson = null, string pGroup = null, string pCV = null)
+        /// <summary>
+        /// Insertamos/eliminamos en los CV los grupos oficiales (con http://w3id.org/roh/crisIdentifier ) de los que el dueño del CV es miembro y les ponemos privacidad pública
+        /// Depende de ActualizadorCV.CrearCVs
+        /// </summary>        
+        /// <param name="pPerson">ID de la persona</param>
+        /// <param name="pGroup">ID del documento</param>
+        /// <param name="pCV">ID del CV</param>
+        public void ModificarGrupos(string pPerson = null, string pGroup = null, string pCV = null)
         {
             string graphsUrl = mResourceApi.GraphsUrl;
             if (!string.IsNullOrEmpty(graphsUrl))
@@ -326,7 +468,7 @@ namespace DesnormalizadorHercules.Models
                     filter = $" FILTER(?cv =<{pCV}>)";
                 }
                 while (true)
-                {                    
+                {
                     //Añadimos grupos
                     int limit = 500;
                     //TODO eliminar from
@@ -365,9 +507,9 @@ namespace DesnormalizadorHercules.Models
                                     }}
                                 }}}}order by desc(?cv) limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
-                    InsertarItemsCV(resultado, graphsUrl, "http://w3id.org/roh/RelatedGroup", "http://w3id.org/roh/scientificExperience", "http://w3id.org/roh/groups", "group", "scientificExperience");
+                    InsertarItemsCV(resultado, graphsUrl, "http://w3id.org/roh/RelatedGroup", "http://w3id.org/roh/scientificExperience", "http://w3id.org/roh/groups", "group", "scientificExperience",true);
 
-                    if (resultado.results.bindings.Count() != limit)
+                    if (resultado.results.bindings.Count != limit)
                     {
                         break;
                     }
@@ -413,8 +555,8 @@ namespace DesnormalizadorHercules.Models
                                     }}
                                 }}}}order by desc(?cv) limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
-                    EliminarItemsCV(resultado, graphsUrl, "http://w3id.org/roh/scientificExperience", "http://w3id.org/roh/groups","item", "scientificExperience");
-                    if (resultado.results.bindings.Count() != limit)
+                    EliminarItemsCV(resultado, "http://w3id.org/roh/scientificExperience", "http://w3id.org/roh/groups", "item", "scientificExperience");
+                    if (resultado.results.bindings.Count != limit)
                     {
                         break;
                     }
@@ -422,269 +564,244 @@ namespace DesnormalizadorHercules.Models
             }
         }
 
+
         /// <summary>
-        /// Crea un currículum para todos los investigadores de las universidades indicadas
+        /// Genera objetos CV de las personas pasadas por parámetro
         /// </summary>
-        /// <param name="pPerson">Lista de IDs de las personas.</param>
-        /// <param name="universidades">Universidades a las que tienen que pertenecer los investigadores para crearse el CV.</param>
-        public void CrearCVs(string pPerson = null, List<string> universidades = null)
+        /// <param name="personsIDs"></param>
+        /// <returns></returns>
+        private List<CV> GenerateCVFromPersons(List<string> personsIDs)
         {
-
-
-            // TMP - prove with a current element for test
-            Guid tmpElement = new Guid("e32c3594-bbad-4861-87c3-1258f265a27a");
-            mResourceApi.PersistentDelete(tmpElement);
-
-            List<ComplexOntologyResource> listaRecursosCargar = new List<ComplexOntologyResource>();
-
-            string graphsUrl = mResourceApi.GraphsUrl;
-            if (!string.IsNullOrEmpty(graphsUrl))
+            Dictionary<string, CV> listaCV = new();
+            if (personsIDs.Count > 0)
             {
-                string filter = "";
-                if (!string.IsNullOrEmpty(pPerson))
-                {
-                    filter = $" FILTER(?person =<{pPerson}>)";
-                }
+                var personasIDsStr = string.Join(',', personsIDs.Select(item => "<" + item + ">"));
 
-                if (universidades == null)
+                //Nombre
                 {
-                    universidades = new List<string>();
-                    universidades.Add("Universidad de Murcia");
-                }
-                var universidadesStr = string.Join(',', universidades.Select(item => "'" + item + "'"));
-
-                while (true)
-                {
-                    // http://vivoweb.org/ontology/core#departmentOrSchool
-                    //Añadimos documentos
-                    int limit = 50;
-                    //TODO eliminar from
-                    String select = @"SELECT ?person WHERE{select distinct ?person from <http://gnoss.com/person.owl> from <http://gnoss.com/curriculumvitae.owl> ";
+                    String select = @"SELECT DISTINCT ?person ?name ?firstName ?lastName";
                     String where = @$"where{{
-                                    {filter}
-
-                                    ?person <http://w3id.org/roh/hasRole> ?orgAux.
-                                    ?orgAux <http://w3id.org/roh/title> ?orgTitle.
-                                    FILTER ( ?orgTitle IN ({universidadesStr})).
-                                    FILTER NOT EXISTS {{ ?cv <http://w3id.org/roh/cvOf> ?person }}
-
-                                }}}} limit {limit}";
-
-                    try
-                    {
-
-                        SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "organization");
-
-                        // Personas que no poseen actualmente un CV
-                        List<string> persons = new List<string>();
-                        foreach (Dictionary<string, SparqlObject.Data> fila in resultado.results.bindings)
-                        {
-                            persons.Add(fila["person"].value);
-                        }
-
-                        // Obtenemos toda la información que nos interesa de las personas
-                        var peopleData = getDataFromPeople(persons);
-
-                        List<CV> listCV = new List<CV>();
-                        mResourceApi.ChangeOntoly("curriculumvitae");
-                        foreach (KeyValuePair<string, Person> pd in peopleData)
-                        {
-
-                            CV newCv = new CV();
-
-                            // Cargamos los datos personales
-                            var persData = new PersonalData();
-                            if (pd.Value.Vcard_email != null)
-                            {
-                                persData.Vcard_email = pd.Value.Vcard_email[0];
-                            }
-                            // tmpPD.Vcard_hasTelephone = pd.Value.Vcard_hasTelephone.Select(e => new TelephoneType( e, GnossBase.GnossOCBase.LanguageEnum.es));
-                            persData.Foaf_homepage = pd.Value.Foaf_homepage;
-                            persData.Roh_ORCID = pd.Value.Roh_ORCID;
-                            persData.Vivo_scopusId = pd.Value.Vivo_scopusId;
-                            persData.Vivo_researcherId = pd.Value.Vivo_researcherId;
-                            // tmpPD.Vcard_address. = pd.Value.Vcard_address;
-
-                            // Añadimos el teléfono
-                            persData.Vcard_hasTelephone = new List<TelephoneType>();
-                            if (pd.Value.Vcard_hasTelephone != null)
-                            {
-                                foreach (string tel in pd.Value.Vcard_hasTelephone)
-                                {
-                                    var telObj = new TelephoneType();
-                                    telObj.Vcard_hasValue = tel;
-                                    persData.Vcard_hasTelephone.Add(telObj);
-                                }
-                            }
-
-                            // Añadimos el personalData en el currículum
-                            newCv.Roh_personalData = persData;
-
-                            // Cargamos los datos del CV
-                            if (pd.Value.Foaf_nick != null && pd.Value.Foaf_nick.Count > 0)
-                            {
-                                newCv.Foaf_name = pd.Value.Foaf_nick[0];
-                            } else if (pd.Value.Foaf_name != null)
-                            {
-                                newCv.Foaf_name = pd.Value.Foaf_name;
-                            }
-                            newCv.IdRoh_cvOf = pd.Key;
-
-                            // Cargamos la actividad científica y la experiencia científica
-                            var scientificExperience = new ScientificExperience();
-                            scientificExperience.Roh_title = "-";
-
-                            var scientificActivity = new ScientificActivity();
-                            scientificActivity.Roh_title = "-";
-
-                            newCv.Roh_scientificExperience = scientificExperience;
-                            newCv.Roh_scientificActivity = scientificActivity;
-
-                            listCV.Add(newCv);
-
-
-                            //Creamos el recurso.
-                            ComplexOntologyResource resource = newCv.ToGnossApiResource(mResourceApi, new List<string>());
-                            listaRecursosCargar.Add(resource);
-                        }                        
-                        CargarDatos(listaRecursosCargar);
-                        listaRecursosCargar.Clear();
-
-
-
-
-                        if (resultado.results.bindings.Count() != limit)
-                        {
-                            break;
-                        }
-                    }
-                    catch (Exception e) {}
-                    
-                }
-            }
-        }
-
-
-        /// <summary>
-        /// Obtiene los de las entidades persona para cargarlos en el CV
-        /// </summary>
-        /// <param name="personsIDs">Lista de IDs de las personas.</param>
-        private Dictionary<string, Person> getDataFromPeople(List<string> personsIDs)
-        {
-            var persons = new Dictionary<string, Person>();
-
-            var personasIDsStr = string.Join(',', personsIDs.Select(item => "<" + item + ">"));
-
-            // http://vivoweb.org/ontology/core#departmentOrSchool
-            //Añadimos documentos
-            int limit = 1000;
-            //TODO eliminar from
-            String select = @"SELECT DISTINCT ?person ?p ?o";
-            String where = @$"where{{
-                                        ?person ?p ?o.
+                                        ?person a <http://xmlns.com/foaf/0.1/Person>.
+                                        ?person <http://xmlns.com/foaf/0.1/name> ?name.
+                                        OPTIONAL{{?person <http://xmlns.com/foaf/0.1/firstName> ?firstName}}
+                                        OPTIONAL{{?person <http://xmlns.com/foaf/0.1/lastName> ?lastName}}
                                         FILTER( ?person IN ( {personasIDsStr} )).
-                        }}order by desc(?person) limit {limit}";
+                        }}";
+                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
 
-            try
-            {
-                SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
-
-                // Personas que no poseen actualmente un CV
-                foreach (Dictionary<string, SparqlObject.Data> fila in resultado.results.bindings)
-                {
-                    if (!persons.ContainsKey(fila["person"].value))
+                    // Personas que no poseen actualmente un CV
+                    foreach (Dictionary<string, SparqlObject.Data> fila in resultado.results.bindings)
                     {
-                        persons.Add(fila["person"].value, new Person());
+                        string person = fila["person"].value;
+                        string name = fila["name"].value;
+                        string firstName = "";
+                        string lastName = "";
+                        if (fila.ContainsKey("firstName"))
+                        {
+                            firstName = fila["firstName"].value;
+                        }
+                        if (fila.ContainsKey("lastName"))
+                        {
+                            lastName = fila["lastName"].value;
+                        }
+                        CV cv = new();
+                        if (listaCV.ContainsKey(person))
+                        {
+                            cv = listaCV[person];
+                        }
+                        else
+                        {
+                            listaCV.Add(person, cv);
+                        }
+                        cv.Foaf_name = name;
+                        cv.IdRoh_cvOf = person;
+                        cv.Roh_scientificExperience = new ScientificExperience() { Roh_title = "-" };
+                        cv.Roh_scientificActivity = new ScientificActivity() { Roh_title = "-" };
+                        cv.Roh_personalData = new PersonalData() { Foaf_firstName = firstName, Foaf_familyName = lastName };
                     }
-                    switch (fila["p"].value)
-                    {
-                        case "http://xmlns.com/foaf/0.1/nick":
-                            persons[fila["person"].value].Foaf_nick = new List<string> { fila["o"].value };
-                            break;
-                        case "http://xmlns.com/foaf/0.1/name":
-                            persons[fila["person"].value].Foaf_name = fila["o"].value;
-                            break;
-                        case "http://w3id.org/roh/ORCID":
-                            persons[fila["person"].value].Roh_ORCID = fila["o"].value;
-                            break;
-                        case "https://www.w3.org/2006/vcard/ns#email":
-                            if (persons[fila["person"].value].Vcard_email != null && persons[fila["person"].value].Vcard_email.Count > 0)
-                            {
-                                persons[fila["person"].value].Vcard_email.Add(fila["o"].value);
-                            }
-                            else
-                            {
-                                persons[fila["person"].value].Vcard_email = new List<string> { fila["o"].value };
-                            }
-                            break;
-                        case "https://www.w3.org/2006/vcard/ns#address":
-                            persons[fila["person"].value].Vcard_address = fila["o"].value;
-                            break;
-                        case "https://www.w3.org/2006/vcard/ns#hasTelephone":
-                            if (persons[fila["person"].value].Vcard_hasTelephone != null && persons[fila["person"].value].Vcard_hasTelephone.Count > 0)
-                            {
-                                persons[fila["person"].value].Vcard_hasTelephone.Add(fila["o"].value);
-                            }
-                            else
-                            {
-                                persons[fila["person"].value].Vcard_hasTelephone = new List<string> { fila["o"].value };
-                            }
-                            break;
-                        case "http://xmlns.com/foaf/0.1/homepage":
-                            if (persons[fila["person"].value].Foaf_homepage != null && persons[fila["person"].value].Foaf_homepage.Count > 0)
-                            {
-                                persons[fila["person"].value].Foaf_homepage.Add(fila["o"].value);
-                            }
-                            else
-                            {
-                                persons[fila["person"].value].Foaf_homepage = new List<string> { fila["o"].value };
-                            }
-                            break;
-                        case "http://vivoweb.org/ontology/core#scopusId":
-                            persons[fila["person"].value].Vivo_scopusId = fila["o"].value;
-                            break;
-                        case "http://vivoweb.org/ontology/core#researcherId":
-                            persons[fila["person"].value].Vivo_researcherId = fila["o"].value;
-                            break;
-                    }
-                    // persons.Add(fila["person"].value);
                 }
 
-            } catch (Exception e) { }
-            
-
-            return persons;
-        }
-
-        /// <summary>
-        /// Permite cargar los recursos.
-        /// </summary>
-        /// <param name="pListaRecursosCargar">Lista de recursos a cargar.</param>
-        private void CargarDatos(List<ComplexOntologyResource> pListaRecursosCargar)
-        {
-            //Carga.
-            foreach (ComplexOntologyResource recursoCargar in pListaRecursosCargar)
-            {
-                if (pListaRecursosCargar.Last() == recursoCargar)
+                //Email
                 {
-                    mResourceApi.LoadComplexSemanticResource(recursoCargar, true, true);
+                    String select = @"SELECT DISTINCT ?person ?email";
+                    String where = @$"where{{
+                                        ?person a <http://xmlns.com/foaf/0.1/Person>.
+                                        ?person <https://www.w3.org/2006/vcard/ns#email> ?email.
+                                        FILTER( ?person IN ( {personasIDsStr} )).
+                        }}";
+                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
+
+                    // Personas que no poseen actualmente un CV
+                    foreach (Dictionary<string, SparqlObject.Data> fila in resultado.results.bindings)
+                    {
+                        string person = fila["person"].value;
+                        string email = fila["email"].value;
+                        if (listaCV.ContainsKey(person))
+                        {
+                            CV cv = listaCV[person];
+                            cv.Roh_personalData.Vcard_email = email;
+                        }
+                    }
                 }
-                else
+
+                //Teléfono
                 {
-                    mResourceApi.LoadComplexSemanticResource(recursoCargar);
+                    String select = @"SELECT DISTINCT ?person ?telephone";
+                    String where = @$"where{{
+                                        ?person a <http://xmlns.com/foaf/0.1/Person>.
+                                        ?person <https://www.w3.org/2006/vcard/ns#hasTelephone> ?telephone.
+                                        FILTER( ?person IN ( {personasIDsStr} )).
+                        }}";
+                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
+
+                    // Personas que no poseen actualmente un CV
+                    foreach (Dictionary<string, SparqlObject.Data> fila in resultado.results.bindings)
+                    {
+                        string person = fila["person"].value;
+                        string telephone = fila["telephone"].value;
+                        if (listaCV.ContainsKey(person))
+                        {
+                            CV cv = listaCV[person];
+                            cv.Roh_personalData.Vcard_hasTelephone = new TelephoneType() { Vcard_hasValue = telephone };
+                        }
+                    }
+                }
+
+                //Página
+                {
+                    String select = @"SELECT DISTINCT ?person ?homepage";
+                    String where = @$"where{{
+                                        ?person a <http://xmlns.com/foaf/0.1/Person>.
+                                        ?person <http://xmlns.com/foaf/0.1/homepage> ?homepage.
+                                        FILTER( ?person IN ( {personasIDsStr} )).
+                        }}";
+                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
+
+                    // Personas que no poseen actualmente un CV
+                    foreach (Dictionary<string, SparqlObject.Data> fila in resultado.results.bindings)
+                    {
+                        string person = fila["person"].value;
+                        string homepage = fila["homepage"].value;
+                        if (listaCV.ContainsKey(person))
+                        {
+                            CV cv = listaCV[person];
+                            cv.Roh_personalData.Foaf_homepage = homepage;
+                        }
+                    }
+                }
+
+                //ORCID
+                //SCOPUS
+                //ResearcherId
+                {
+                    String select = @"SELECT DISTINCT ?person ?orcid ?scopusId ?researcherId";
+                    String where = @$"where{{
+                                        ?person a <http://xmlns.com/foaf/0.1/Person>.
+                                        OPTIONAL{{?person <http://w3id.org/roh/ORCID> ?orcid.}}
+                                        OPTIONAL{{?person <http://vivoweb.org/ontology/core#scopusId> ?scopusId.}}
+                                        OPTIONAL{{?person <http://vivoweb.org/ontology/core#researcherId> ?researcherId.}}
+                                        FILTER( ?person IN ( {personasIDsStr} )).
+                        }}";
+                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
+
+                    // Personas que no poseen actualmente un CV
+                    foreach (Dictionary<string, SparqlObject.Data> fila in resultado.results.bindings)
+                    {
+                        string person = fila["person"].value;
+                        string orcid = "";
+                        string scopusId = "";
+                        string researcherId = "";
+                        if (fila.ContainsKey("orcid"))
+                        {
+                            orcid = fila["orcid"].value;
+                        }
+                        if (fila.ContainsKey("scopusId"))
+                        {
+                            scopusId = fila["scopusId"].value;
+                        }
+                        if (fila.ContainsKey("researcherId"))
+                        {
+                            researcherId = fila["researcherId"].value;
+                        }
+                        if (listaCV.ContainsKey(person))
+                        {
+                            CV cv = listaCV[person];
+                            cv.Roh_personalData.Roh_ORCID = orcid;
+                            cv.Roh_personalData.Vivo_scopusId = scopusId;
+                            cv.Roh_personalData.Vivo_researcherId = researcherId;
+                        }
+                    }
+                }
+
+                //Otros IDs
+                {
+                    String select = @"SELECT DISTINCT ?person ?semanticScholarId";
+                    String where = @$"where{{
+                                        ?person a <http://xmlns.com/foaf/0.1/Person>.
+                                        ?person <http://w3id.org/roh/semanticScholarId> ?semanticScholarId.
+                                        FILTER( ?person IN ( {personasIDsStr} )).
+                        }}";
+                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
+
+                    // Personas que no poseen actualmente un CV
+                    foreach (Dictionary<string, SparqlObject.Data> fila in resultado.results.bindings)
+                    {
+                        string person = fila["person"].value;
+                        string semanticScholarId = fila["semanticScholarId"].value;
+                        if (listaCV.ContainsKey(person))
+                        {
+                            CV cv = listaCV[person];
+                            if (cv.Roh_personalData.Roh_otherIds == null)
+                            {
+                                cv.Roh_personalData.Roh_otherIds = new List<Document>();
+                            }
+                            cv.Roh_personalData.Roh_otherIds.Add(new Document() { Foaf_topic = "SemanticScholar", Dc_title = semanticScholarId });
+                        }
+                    }
+                }
+
+                //Direccion
+                {
+                    String select = @"SELECT DISTINCT ?person ?address";
+                    String where = @$"where{{
+                                        ?person a <http://xmlns.com/foaf/0.1/Person>.
+                                        ?person <https://www.w3.org/2006/vcard/ns#address> ?address.
+                                        FILTER( ?person IN ( {personasIDsStr} )).
+                        }}";
+                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
+
+                    // Personas que no poseen actualmente un CV
+                    foreach (Dictionary<string, SparqlObject.Data> fila in resultado.results.bindings)
+                    {
+                        string person = fila["person"].value;
+                        string address = fila["address"].value;
+                        if (listaCV.ContainsKey(person))
+                        {
+                            CV cv = listaCV[person];
+                            if (cv.Roh_personalData.Vcard_address == null)
+                            {
+                                cv.Roh_personalData.Vcard_address = new Address();
+                            }
+                            cv.Roh_personalData.Vcard_address.Vcard_locality = address;
+                        }
+                    }
                 }
             }
+            return listaCV.Values.ToList();
         }
 
-        private void InsertarDocumentosCV(SparqlObject pDatosCargar,string graphsUrl)
+
+
+        private void InsertarDocumentosCV(SparqlObject pDatosCargar, string graphsUrl)
         {
-            Dictionary<Guid, List<TriplesToInclude>> triplesToInclude = new Dictionary<Guid, List<TriplesToInclude>>();
+            Dictionary<Guid, List<TriplesToInclude>> triplesToInclude = new();
             foreach (Dictionary<string, SparqlObject.Data> fila in pDatosCargar.results.bindings)
             {
                 string cv = fila["cv"].value;
                 string scientificActivity = fila["scientificActivity"].value;
                 string document = fila["document"].value;
                 string typeDocument = fila["typeDocument"].value;
+                string isValidated = fila["isValidated"].value;
 
                 string rdftype = "";
                 string property = "";
@@ -712,18 +829,17 @@ namespace DesnormalizadorHercules.Models
                 string rdfTypePrefix = AniadirPrefijo(rdftype);
                 rdfTypePrefix = rdfTypePrefix.Substring(rdfTypePrefix.IndexOf(":") + 1);
                 string idNewAux = graphsUrl + "items/" + rdfTypePrefix + "_" + mResourceApi.GetShortGuid(cv) + "_" + Guid.NewGuid();
-                List<TriplesToInclude> listaTriples = new List<TriplesToInclude>();
+                List<TriplesToInclude> listaTriples = new();
                 string idEntityAux = scientificActivity + "|" + idNewAux;
 
-                //TODO
-                //Privacidad, por defecto false                    
+                //Privacidad            
                 string predicadoPrivacidad = "http://w3id.org/roh/scientificActivity|" + property + "|http://w3id.org/roh/isPublic";
-                TriplesToInclude tr2 = new TriplesToInclude(idEntityAux + "|false", predicadoPrivacidad);
+                TriplesToInclude tr2 = new(idEntityAux + "|" + isValidated, predicadoPrivacidad);
                 listaTriples.Add(tr2);
 
                 //Entidad
                 string predicadoEntidad = "http://w3id.org/roh/scientificActivity|" + property + "|http://vivoweb.org/ontology/core#relatedBy";
-                TriplesToInclude tr1 = new TriplesToInclude(idEntityAux + "|" + document, predicadoEntidad);
+                TriplesToInclude tr1 = new(idEntityAux + "|" + document, predicadoEntidad);
                 listaTriples.Add(tr1);
 
                 Guid idCV = mResourceApi.GetShortGuid(cv);
@@ -737,15 +853,19 @@ namespace DesnormalizadorHercules.Models
                 }
             }
 
-            foreach(Guid idCV in triplesToInclude.Keys)
+            foreach (Guid idCV in triplesToInclude.Keys)
             {
-                mResourceApi.InsertPropertiesLoadedResources(new Dictionary<Guid, List<TriplesToInclude>>() { { idCV, triplesToInclude[idCV] } });
+                List<List<TriplesToInclude>> listasDeListas = SplitList(triplesToInclude[idCV], 50).ToList();
+                foreach (List<TriplesToInclude> triples in listasDeListas)
+                {
+                    mResourceApi.InsertPropertiesLoadedResources(new() { { idCV, triples } });
+                }
             }
         }
 
-        private void EliminarDocumentosCV(SparqlObject pDatosCargar, string graphsUrl)
+        private void EliminarDocumentosCV(SparqlObject pDatosCargar)
         {
-            Dictionary<Guid, List<RemoveTriples>> triplesToDelete = new Dictionary<Guid, List<RemoveTriples>>();
+            Dictionary<Guid, List<RemoveTriples>> triplesToDelete = new();
             foreach (Dictionary<string, SparqlObject.Data> fila in pDatosCargar.results.bindings)
             {
                 string cv = fila["cv"].value;
@@ -770,7 +890,7 @@ namespace DesnormalizadorHercules.Models
                         break;
                 }
 
-                RemoveTriples removeTriple = new RemoveTriples();
+                RemoveTriples removeTriple = new();
                 removeTriple.Predicate = "http://w3id.org/roh/scientificActivity|" + property;
                 removeTriple.Value = scientificActivity + "|" + item;
                 Guid idCV = mResourceApi.GetShortGuid(cv);
@@ -780,20 +900,63 @@ namespace DesnormalizadorHercules.Models
                 }
                 else
                 {
-                    triplesToDelete.Add(idCV,new List<RemoveTriples>() { removeTriple });
+                    triplesToDelete.Add(idCV, new() { removeTriple });
                 }
             }
 
             foreach (Guid idCV in triplesToDelete.Keys)
             {
-                mResourceApi.DeletePropertiesLoadedResources(new Dictionary<Guid, List<RemoveTriples>>() { { idCV, triplesToDelete[idCV] } });
+                List<List<RemoveTriples>> listasDeListas = SplitList(triplesToDelete[idCV], 50).ToList();
+                foreach (List<RemoveTriples> triples in listasDeListas)
+                {
+                    mResourceApi.DeletePropertiesLoadedResources(new() { { idCV, triples } });
+                }
+            }
+        }
+
+        private void PublicarDocumentosCV(SparqlObject pDatosCargar, string graphsUrl)
+        {
+            Dictionary<Guid, List<TriplesToModify>> triplesToModify = new();
+            foreach (Dictionary<string, SparqlObject.Data> fila in pDatosCargar.results.bindings)
+            {
+                string cv = fila["cv"].value;
+                string scientificActivity = fila["scientificActivity"].value;
+                string propItem = fila["propItem"].value;
+                string item = fila["item"].value;
+
+
+                TriplesToModify triple = new()
+                {
+                    OldValue = scientificActivity + "|" + item + "|false",
+                    NewValue = scientificActivity + "|" + item + "|true",
+                    Predicate = "http://w3id.org/roh/scientificActivity|" + propItem + "|http://w3id.org/roh/isPublic"
+                };
+
+                Guid idCV = mResourceApi.GetShortGuid(cv);
+                if (triplesToModify.ContainsKey(idCV))
+                {
+                    triplesToModify[idCV].Add(triple);
+                }
+                else
+                {
+                    triplesToModify.Add(mResourceApi.GetShortGuid(cv), new List<TriplesToModify>() { triple });
+                }
+            }
+
+            foreach (Guid idCV in triplesToModify.Keys)
+            {
+                List<List<TriplesToModify>> listasDeListas = SplitList(triplesToModify[idCV], 50).ToList();
+                foreach (List<TriplesToModify> triples in listasDeListas)
+                {
+                    mResourceApi.ModifyPropertiesLoadedResources(new() { { idCV, triples } });
+                }
             }
         }
 
         private void InsertarProyectosCV(SparqlObject pDatosCargar, string graphsUrl)
         {
             //http://gnoss.com/items/scientificexperienceproject_SEP1
-            Dictionary<Guid, List<TriplesToInclude>> triplesToInclude = new Dictionary<Guid, List<TriplesToInclude>>();
+            Dictionary<Guid, List<TriplesToInclude>> triplesToInclude = new();
             foreach (Dictionary<string, SparqlObject.Data> fila in pDatosCargar.results.bindings)
             {
                 string cv = fila["cv"].value;
@@ -819,18 +982,17 @@ namespace DesnormalizadorHercules.Models
                 string rdfTypePrefix = AniadirPrefijo(rdftype);
                 rdfTypePrefix = rdfTypePrefix.Substring(rdfTypePrefix.IndexOf(":") + 1);
                 string idNewAux = graphsUrl + "items/" + rdfTypePrefix + "_" + mResourceApi.GetShortGuid(cv) + "_" + Guid.NewGuid();
-                List<TriplesToInclude> listaTriples = new List<TriplesToInclude>();
+                List<TriplesToInclude> listaTriples = new();
                 string idEntityAux = scientificExperience + "|" + idNewAux;
 
-                //TODO
-                //Privacidad, por defecto false                    
+                //Privacidad, true (son proyectos oficiales)
                 string predicadoPrivacidad = "http://w3id.org/roh/scientificExperience|" + property + "|http://w3id.org/roh/isPublic";
-                TriplesToInclude tr2 = new TriplesToInclude(idEntityAux + "|false", predicadoPrivacidad);
+                TriplesToInclude tr2 = new(idEntityAux + "|true", predicadoPrivacidad);
                 listaTriples.Add(tr2);
 
                 //Entidad
                 string predicadoEntidad = "http://w3id.org/roh/scientificExperience|" + property + "|http://vivoweb.org/ontology/core#relatedBy";
-                TriplesToInclude tr1 = new TriplesToInclude(idEntityAux + "|" + project, predicadoEntidad);
+                TriplesToInclude tr1 = new(idEntityAux + "|" + project, predicadoEntidad);
                 listaTriples.Add(tr1);
 
                 Guid idCV = mResourceApi.GetShortGuid(cv);
@@ -850,9 +1012,9 @@ namespace DesnormalizadorHercules.Models
             }
         }
 
-        private void EliminarProyectosCV(SparqlObject pDatosCargar, string graphsUrl)
+        private void EliminarProyectosCV(SparqlObject pDatosCargar)
         {
-            Dictionary<Guid, List<RemoveTriples>> triplesToDelete = new Dictionary<Guid, List<RemoveTriples>>();
+            Dictionary<Guid, List<RemoveTriples>> triplesToDelete = new();
             foreach (Dictionary<string, SparqlObject.Data> fila in pDatosCargar.results.bindings)
             {
                 string cv = fila["cv"].value;
@@ -871,7 +1033,7 @@ namespace DesnormalizadorHercules.Models
                         break;
                 }
 
-                RemoveTriples removeTriple = new RemoveTriples();
+                RemoveTriples removeTriple = new();
                 removeTriple.Predicate = "http://w3id.org/roh/scientificExperience|" + property;
                 removeTriple.Value = scientificExperience + "|" + item;
                 Guid idCV = mResourceApi.GetShortGuid(cv);
@@ -891,9 +1053,9 @@ namespace DesnormalizadorHercules.Models
             }
         }
 
-        private void InsertarItemsCV(SparqlObject pDatosCargar, string graphsUrl,string pRdfType, string pSectionProperty, string pProperty, string pVarEntity, string pVarSection)
+        private void InsertarItemsCV(SparqlObject pDatosCargar, string graphsUrl, string pRdfType, string pSectionProperty, string pProperty, string pVarEntity, string pVarSection,bool pPublic)
         {
-            Dictionary<Guid, List<TriplesToInclude>> triplesToInclude = new Dictionary<Guid, List<TriplesToInclude>>();
+            Dictionary<Guid, List<TriplesToInclude>> triplesToInclude = new();
             foreach (Dictionary<string, SparqlObject.Data> fila in pDatosCargar.results.bindings)
             {
                 string cv = fila["cv"].value;
@@ -904,18 +1066,17 @@ namespace DesnormalizadorHercules.Models
                 string rdfTypePrefix = AniadirPrefijo(pRdfType);
                 rdfTypePrefix = rdfTypePrefix.Substring(rdfTypePrefix.IndexOf(":") + 1);
                 string idNewAux = graphsUrl + "items/" + rdfTypePrefix + "_" + mResourceApi.GetShortGuid(cv) + "_" + Guid.NewGuid();
-                List<TriplesToInclude> listaTriples = new List<TriplesToInclude>();
+                List<TriplesToInclude> listaTriples = new();
                 string idEntityAux = section + "|" + idNewAux;
 
-                //TODO
-                //Privacidad, por defecto false                    
-                string predicadoPrivacidad = pSectionProperty+"|" + pProperty + "|http://w3id.org/roh/isPublic";
-                TriplesToInclude tr2 = new TriplesToInclude(idEntityAux + "|false", predicadoPrivacidad);
+                //Privacidad                  
+                string predicadoPrivacidad = pSectionProperty + "|" + pProperty + "|http://w3id.org/roh/isPublic";
+                TriplesToInclude tr2 = new(idEntityAux + "|"+ pPublic.ToString().ToLower(), predicadoPrivacidad);
                 listaTriples.Add(tr2);
 
                 //Entidad
-                string predicadoEntidad = pSectionProperty+"|" + pProperty + "|http://vivoweb.org/ontology/core#relatedBy";
-                TriplesToInclude tr1 = new TriplesToInclude(idEntityAux + "|" + entity, predicadoEntidad);
+                string predicadoEntidad = pSectionProperty + "|" + pProperty + "|http://vivoweb.org/ontology/core#relatedBy";
+                TriplesToInclude tr1 = new(idEntityAux + "|" + entity, predicadoEntidad);
                 listaTriples.Add(tr1);
 
                 Guid idCV = mResourceApi.GetShortGuid(cv);
@@ -934,18 +1095,18 @@ namespace DesnormalizadorHercules.Models
                 mResourceApi.InsertPropertiesLoadedResources(new Dictionary<Guid, List<TriplesToInclude>>() { { idCV, triplesToInclude[idCV] } });
             }
         }
-
-        private void EliminarItemsCV(SparqlObject pDatosCargar, string graphsUrl, string pSectionProperty, string pProperty, string pVarItem, string pVarSection)
+        
+        private void EliminarItemsCV(SparqlObject pDatosCargar, string pSectionProperty, string pProperty, string pVarItem, string pVarSection)
         {
-            Dictionary<Guid, List<RemoveTriples>> triplesToDelete = new Dictionary<Guid, List<RemoveTriples>>();
+            Dictionary<Guid, List<RemoveTriples>> triplesToDelete = new();
             foreach (Dictionary<string, SparqlObject.Data> fila in pDatosCargar.results.bindings)
             {
                 string cv = fila["cv"].value;
                 string section = fila[pVarSection].value;
                 string item = fila[pVarItem].value;
 
-                RemoveTriples removeTriple = new RemoveTriples();
-                removeTriple.Predicate = pSectionProperty+"|" + pProperty;
+                RemoveTriples removeTriple = new();
+                removeTriple.Predicate = pSectionProperty + "|" + pProperty;
                 removeTriple.Value = section + "|" + item;
                 Guid idCV = mResourceApi.GetShortGuid(cv);
                 if (triplesToDelete.ContainsKey(idCV))
