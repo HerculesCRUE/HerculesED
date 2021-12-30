@@ -334,7 +334,6 @@ namespace DesnormalizadorHercules.Models
         /// <param name="pDocument">ID del documento</param>
         public void ActualizarNumeroCitasMaximas(string pDocument = null)
         {
-            //TODO comentario query
             string filter = "";
             if (!string.IsNullOrEmpty(pDocument))
             {
@@ -469,7 +468,6 @@ namespace DesnormalizadorHercules.Models
         /// <param name="pDocument">ID del documento</param>
         public void ActualizarNumeroReferenciasCargadas(string pDocument = null)
         {
-            //TODO comentario query
             string filter = "";
             if (!string.IsNullOrEmpty(pDocument))
             {
