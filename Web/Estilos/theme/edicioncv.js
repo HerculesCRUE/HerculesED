@@ -607,7 +607,7 @@ var edicionCV = {
 			//Si no está publicado siempre se puede publicar
 			htmlAcciones = `	<li>
 								<a class="item-dropdown">
-									<span class="material-icons">lock_open</span>
+									<span class="material-icons">visibility</span>
 									<span class="texto publicaritem" data-id="${id}" property="${data.propertyIspublic}">${GetText("CV_PUBLICAR")}</span>
 								</a>
 							</li>`;
@@ -615,7 +615,7 @@ var edicionCV = {
 			//Si está publicado sólo se puede despublicar si es editable
 			htmlAcciones = `	<li>
 								<a class="item-dropdown">
-									<span class="material-icons">lock</span>
+									<span class="material-icons">visibility_off</span>
 									<span class="texto despublicaritem" data-id="${id}">${GetText("CV_DESPUBLICAR")}</span>
 								</a>
 							</li>`;
