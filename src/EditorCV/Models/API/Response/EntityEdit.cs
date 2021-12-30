@@ -28,6 +28,10 @@ namespace GuardadoCV.Models.API.Response
         /// Secciones de edición
         /// </summary>
         public List<EntityEditSection> sections { get; set; }
+        /// <summary>
+        /// Especifica si la entiadad es editable
+        /// </summary>
+        public bool iseditable { get; set; }
     }
 
     /// <summary>

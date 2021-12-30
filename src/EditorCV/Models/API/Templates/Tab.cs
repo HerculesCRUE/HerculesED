@@ -69,6 +69,18 @@ namespace GuardadoCV.Models.API.Templates
             {
                 case TabSectionPresentationType.listitems:
                     Utils.PropertyData propertyDataListItems = this.presentation.listItemsPresentation.listItem.GenerarPropertyData(pGraph);
+                    //Editabilidad
+                    foreach (string propEditabilidad in Utils.UtilityCV.PropertyNotEditable.Keys)
+                    {
+                        propertyDataListItems.childs.First(x => x.graph == this.presentation.listItemsPresentation.listItemEdit.graph).childs.Add(
+                            //Editabilidad
+                            new Utils.PropertyData()
+                            {
+                                property = propEditabilidad,
+                                childs = new List<Utils.PropertyData>()
+                            }
+                        );
+                    }                    
                     propertyDataListItems.property = this.property;
                     return propertyDataListItems;
                 default:
@@ -155,6 +167,8 @@ namespace GuardadoCV.Models.API.Templates
             {
                 propertyData.childs.Add(propertyTitle.GenerarPropertyData(pGraph));
             }
+
+            //Visibilidad
             Utils.PropertyData property = new Utils.PropertyData()
             {
                 property = Utils.UtilityCV.PropertyIspublic,

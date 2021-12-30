@@ -81,9 +81,13 @@ namespace GuardadoCV.Models.API.Response
         /// </summary>
         public string title { get; set; }
         /// <summary>
-        /// Indica si es público o no (o no tiene privacidad)
+        /// Indica si es público o no 
         /// </summary>
-        public string ispublic { get; set; }
+        public bool ispublic { get; set; }
+        /// <summary>
+        /// Indica si es editable o no 
+        /// </summary>
+        public bool iseditable { get; set; }
         /// <summary>
         /// Propiedades del item
         /// </summary>

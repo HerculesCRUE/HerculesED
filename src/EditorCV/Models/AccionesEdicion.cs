@@ -15,6 +15,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using EditorCV.Models.API.Response;
 using System.Threading.Tasks;
+using System.Net;
+using System.Threading;
 
 namespace GuardadoCV.Models
 {
@@ -102,7 +104,8 @@ namespace GuardadoCV.Models
                 Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> data = GetTabData(pId, template, pLang);
                 //Obtenemos el modelo para devolver
                 respuesta = GetTabModel(pId, data, template, pLang);
-            }else
+            }
+            else
             {
 
                 respuesta = GetEditModel(pId, template.personalDataSections, pLang);
@@ -120,9 +123,9 @@ namespace GuardadoCV.Models
         /// <returns></returns>
         public TabSectionItem GetItemMini(string pIdSection, string pRdfTypeTab, string pEntityID, string pLang)
         {
-            TabSectionListItem presentationMini = UtilityCV.TabTemplates.First(x => x.rdftype == pRdfTypeTab).sections.First(x => x.property == pIdSection).presentation.listItemsPresentation.listItem;
-            Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> data = GetItemMiniData(pEntityID, presentationMini, pLang);
-            return GetItem(pEntityID, data, presentationMini, pLang);
+            TabSectionPresentationListItems presentationListItem = UtilityCV.TabTemplates.First(x => x.rdftype == pRdfTypeTab).sections.First(x => x.property == pIdSection).presentation.listItemsPresentation;
+            Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> data = GetItemMiniData(pEntityID, presentationListItem.listItem, pLang);
+            return GetItem(pEntityID, data, presentationListItem, pLang);
         }
 
 
@@ -248,7 +251,7 @@ namespace GuardadoCV.Models
             return pItemsLoad;
         }
 
-        public Dictionary<string, List<Person>> ValidateSignatures(string pSignatures, string pCVID, string pPersonID,string pLang)
+        public Dictionary<string, List<Person>> ValidateSignatures(string pSignatures, string pCVID, string pPersonID, string pLang)
         {
             Dictionary<string, List<Person>> listaPersonas = new Dictionary<string, List<Person>>();
 
@@ -264,7 +267,7 @@ namespace GuardadoCV.Models
                 foreach (string firma in firmas)
                 {
                     string actual = firma.Trim();
-                    if (firmaActual!="" && actual.Replace(".", "").Trim().Length < 4)
+                    if (firmaActual != "" && actual.Replace(".", "").Trim().Length < 4)
                     {
                         firmaActual += ", " + actual;
                         firmaActual = firmaActual.Trim();
@@ -285,16 +288,31 @@ namespace GuardadoCV.Models
                     signaturesList.Add(firmaActual.Trim());
                 }
 
+                listaPersonas = new Dictionary<string, List<Person>>();
                 foreach (string firma in signaturesList)
                 {
                     if (firma.Trim() != "")
                     {
                         List<Person> personas = ObtenerPersonasFirma(firma.Trim());
                         ObtenerScores(firma.Trim(), ref personas, colaboradoresDocumentos, colaboradoresProyectos);
-                        personas = personas.Where(x=>x.score>0.4f).OrderByDescending(x => x.score).ToList();
+                        personas = personas.Where(x => x.score > 0.4f).OrderByDescending(x => x.score).ToList();
                         listaPersonas.Add(firma.Trim(), personas);
                     }
                 }
+
+                listaPersonas = new Dictionary<string, List<Person>>();
+                Parallel.ForEach(signaturesList, firma =>
+                {
+
+                    //System.Threading.Thread.Sleep(signaturesList.IndexOf(firma)*100);
+                    if (firma.Trim() != "")
+                    {
+                        List<Person> personas = ObtenerPersonasFirma(firma.Trim());
+                        ObtenerScores(firma.Trim(), ref personas, colaboradoresDocumentos, colaboradoresProyectos);
+                        personas = personas.Where(x => x.score > 0.4f).OrderByDescending(x => x.score).ToList();
+                        listaPersonas[firma.Trim()] = personas;
+                    }
+                });
             }
 
             List<Guid> listaIDs = listaPersonas.SelectMany(x => x.Value).Select(x => mResourceApi.GetShortGuid(x.personid)).Distinct().ToList();
@@ -737,7 +755,7 @@ namespace GuardadoCV.Models
         private Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> GetTabData(string pId, API.Templates.Tab pTemplate, string pLang)
         {
             List<PropertyData> propertyDatas = new List<PropertyData>();
-            string graph = "curriculumvitae";            
+            string graph = "curriculumvitae";
             foreach (API.Templates.TabSection templateSection in pTemplate.sections)
             {
                 propertyDatas.Add(templateSection.GenerarPropertyData(graph));
@@ -813,7 +831,7 @@ namespace GuardadoCV.Models
                     {
                         foreach (string idEntity in pData[pId].Where(x => x["p"].value == templateSection.property).Select(x => x["o"].value).Distinct())
                         {
-                            tabSection.items.Add(idEntity, GetItem(idEntity, pData, templateSection.presentation.listItemsPresentation.listItem, pLang));
+                            tabSection.items.Add(idEntity, GetItem(idEntity, pData, templateSection.presentation.listItemsPresentation, pLang));
                         }
                     }
                     tab.sections.Add(tabSection);
@@ -831,23 +849,40 @@ namespace GuardadoCV.Models
         /// <param name="pListItemConfig">Configuración del item</param>
         /// <param name="pLang">Idioma</param>
         /// <returns></returns>
-        private TabSectionItem GetItem(string pId, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> pData, TabSectionListItem pListItemConfig, string pLang)
+        private TabSectionItem GetItem(string pId, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> pData, TabSectionPresentationListItems pListItemConfig, string pLang)
         {
             TabSectionItem item = new TabSectionItem()
             {
-                title = GetPropValues(pId, UtilityCV.GetPropComplete(pListItemConfig.propertyTitle), pData).FirstOrDefault()
+                title = GetPropValues(pId, UtilityCV.GetPropComplete(pListItemConfig.listItem.propertyTitle), pData).FirstOrDefault()
             };
             if (item.title == null)
             {
                 item.title = "";
             }
-            item.ispublic = GetPropValues(pId, UtilityCV.PropertyIspublic, pData).FirstOrDefault();
-            if (string.IsNullOrEmpty(item.ispublic))
+            //Editabilidad
+            item.iseditable = true;
+            foreach (string propEditabilidad in Utils.UtilityCV.PropertyNotEditable.Keys)
             {
-                item.ispublic = "";
+                string valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + propEditabilidad, pData).FirstOrDefault();
+                if (Utils.UtilityCV.PropertyNotEditable[propEditabilidad] == null || Utils.UtilityCV.PropertyNotEditable[propEditabilidad].Count == 0 && !string.IsNullOrEmpty(valorPropiedad))
+                {
+                    item.iseditable = false;
+                }
+                else if (Utils.UtilityCV.PropertyNotEditable[propEditabilidad].Contains(valorPropiedad))
+                {
+                    item.iseditable = false;
+                }
+            }
+
+            //Visibilidad
+            string valorVisibilidad = GetPropValues(pId, UtilityCV.PropertyIspublic, pData).FirstOrDefault();
+            item.ispublic = false;
+            if (!string.IsNullOrEmpty(valorVisibilidad) && valorVisibilidad=="true")
+            {
+                item.ispublic = true;
             }
             item.properties = new List<TabSectionItemProperty>();
-            foreach (TabSectionListItemProperty property in pListItemConfig.properties)
+            foreach (TabSectionListItemProperty property in pListItemConfig.listItem.properties)
             {
                 string propertyIn = "";
                 TabSectionItemProperty itemProperty = new TabSectionItemProperty()
@@ -875,9 +910,9 @@ namespace GuardadoCV.Models
                 item.properties.Add(itemProperty);
             }
             item.orderProperties = new List<TabSectionItemOrderProperty>();
-            if (pListItemConfig.orders != null)
+            if (pListItemConfig.listItem.orders != null)
             {
-                foreach (TabSectionListItemOrder order in pListItemConfig.orders)
+                foreach (TabSectionListItemOrder order in pListItemConfig.listItem.orders)
                 {
                     if (order.properties != null)
                     {
@@ -914,6 +949,15 @@ namespace GuardadoCV.Models
         private Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> GetEditData(string pId, ItemEdit pItemEdit, string pGraph, string pLang)
         {
             List<PropertyData> propertyDatas = pItemEdit.GenerarPropertyDatas(pGraph);
+            //Editabilidad
+            foreach (string propEditabilidad in Utils.UtilityCV.PropertyNotEditable.Keys)
+            {
+                propertyDatas.Add(new Utils.PropertyData()
+                {
+                    property = propEditabilidad,
+                    childs = new List<Utils.PropertyData>()
+                });
+            }
             Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> respuesta = UtilityCV.GetProperties(new HashSet<string>() { pId }, pGraph, propertyDatas, pLang);
             return respuesta;
         }
@@ -977,6 +1021,21 @@ namespace GuardadoCV.Models
                     rows = GetRowsEdit(pId, itemEditSection.rows, data, combos, combosDependency, tesauros, pLang, pPresentationEdit.graph)
                 };
                 entityEdit.sections.Add(entityEditSection);
+            }
+
+            //Editabilidad
+            entityEdit.iseditable = true;
+            foreach (string propEditabilidad in Utils.UtilityCV.PropertyNotEditable.Keys)
+            {
+                string valorPropiedad = GetPropValues(pId, propEditabilidad, data).FirstOrDefault();
+                if (Utils.UtilityCV.PropertyNotEditable[propEditabilidad] == null || Utils.UtilityCV.PropertyNotEditable[propEditabilidad].Count == 0 && !string.IsNullOrEmpty(valorPropiedad))
+                {
+                    entityEdit.iseditable = false;
+                }
+                else if (Utils.UtilityCV.PropertyNotEditable[propEditabilidad].Contains(valorPropiedad))
+                {
+                    entityEdit.iseditable = false;
+                }
             }
             return entityEdit;
         }
@@ -1183,7 +1242,7 @@ namespace GuardadoCV.Models
                     {
                         childsOrder = new Dictionary<string, int>(),
                         rdftype = pItemEditSectionRowProperty.auxEntityData.rdftype,
-                        propertyOrder = pItemEditSectionRowProperty.auxEntityData.propertyOrder,                        
+                        propertyOrder = pItemEditSectionRowProperty.auxEntityData.propertyOrder,
                     };
 
                     if (pItemEditSectionRowProperty.auxEntityData.propertyTitle != null)
@@ -1295,38 +1354,38 @@ namespace GuardadoCV.Models
                     foreach (string id in entityEditSectionRowProperty.values)
                     {
                         entityEditSectionRowProperty.entityAuxData.entities.Add(id, GetRowsEdit(id, rowsEdit, pData, pCombos, pCombosDependency, pTesauros, pLang, pGraph));
-                        
-
-                    //    //Title
-                    //    string title = GetPropValues(id, "http://xmlns.com/foaf/0.1/nick", pData).FirstOrDefault();
-                    //    if (string.IsNullOrEmpty(title))
-                    //    {
-                    //        title = "";
-                    //    }
-                    //    entityEditSectionRowProperty.entityAuxData.titles.Add(id, new EntityEditRepresentativeProperty()
-                    //    {
-                    //        value = title,
-                    //        route = "http://xmlns.com/foaf/0.1/nick"
-                    //    });
 
 
-                    //    entityEditSectionRowProperty.entityAuxData.properties[id] = new List<EntityEditRepresentativeProperty>()
-                    //{
-                    //    new EntityEditRepresentativeProperty()
-                    //    {
-                    //        //TODO
-                    //        name = "Nombre",
-                    //        value = string.Join(", ", GetPropValues(id, "http://www.w3.org/1999/02/22-rdf-syntax-ns#member@@@http://xmlns.com/foaf/0.1/name", pData)),
-                    //        route = "http://www.w3.org/1999/02/22-rdf-syntax-ns#member||person||http://xmlns.com/foaf/0.1/name"
-                    //    },
-                    //    new EntityEditRepresentativeProperty()
-                    //    {
-                    //        //TODO
-                    //        name = "ORCID",
-                    //        value = string.Join(", ", GetPropValues(id, "http://www.w3.org/1999/02/22-rdf-syntax-ns#member@@@http://w3id.org/roh/ORCID", pData)),
-                    //        route = "http://www.w3.org/1999/02/22-rdf-syntax-ns#member||person||http://w3id.org/roh/ORCID"
-                    //    }
-                    //};
+                        //    //Title
+                        //    string title = GetPropValues(id, "http://xmlns.com/foaf/0.1/nick", pData).FirstOrDefault();
+                        //    if (string.IsNullOrEmpty(title))
+                        //    {
+                        //        title = "";
+                        //    }
+                        //    entityEditSectionRowProperty.entityAuxData.titles.Add(id, new EntityEditRepresentativeProperty()
+                        //    {
+                        //        value = title,
+                        //        route = "http://xmlns.com/foaf/0.1/nick"
+                        //    });
+
+
+                        //    entityEditSectionRowProperty.entityAuxData.properties[id] = new List<EntityEditRepresentativeProperty>()
+                        //{
+                        //    new EntityEditRepresentativeProperty()
+                        //    {
+                        //        //TODO
+                        //        name = "Nombre",
+                        //        value = string.Join(", ", GetPropValues(id, "http://www.w3.org/1999/02/22-rdf-syntax-ns#member@@@http://xmlns.com/foaf/0.1/name", pData)),
+                        //        route = "http://www.w3.org/1999/02/22-rdf-syntax-ns#member||person||http://xmlns.com/foaf/0.1/name"
+                        //    },
+                        //    new EntityEditRepresentativeProperty()
+                        //    {
+                        //        //TODO
+                        //        name = "ORCID",
+                        //        value = string.Join(", ", GetPropValues(id, "http://www.w3.org/1999/02/22-rdf-syntax-ns#member@@@http://w3id.org/roh/ORCID", pData)),
+                        //        route = "http://www.w3.org/1999/02/22-rdf-syntax-ns#member||person||http://w3id.org/roh/ORCID"
+                        //    }
+                        //};
                     }
 
                     return entityEditSectionRowProperty;

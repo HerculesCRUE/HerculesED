@@ -19,6 +19,16 @@ namespace GuardadoCV.Models.Utils
         /// Propiedad para marcar las entidades como públicas
         /// </summary>
         public static string PropertyIspublic { get { return "http://w3id.org/roh/isPublic"; } }
+
+        /// <summary>
+        /// Propiedad para comprobar si no es editable, tiene que tener en alguna propiedad
+        /// de las claves algún valor de los valores
+        /// </summary>
+        public static Dictionary<string, List<string>> PropertyNotEditable = new Dictionary<string, List<string>>()
+        {
+            { "http://w3id.org/roh/crisIdentifier", new List<string>() }
+        };
+
         public static Dictionary<string, string> dicPrefix = new Dictionary<string, string>() {
             { "rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#" },
             {"rdfs", "http://www.w3.org/2000/01/rdf-schema#" },
