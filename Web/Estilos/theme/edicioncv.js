@@ -10,24 +10,30 @@ var urlGuardadoCV = "http://serviciosedma.gnoss.com/editorcv/GuardadoCV/";
 
 function GetText(id,param1,param2,param3,param4)
 {
-	var txt=$('#'+id).val();
-	if(param1!=null)
+	if($('#'+id).length)
 	{
-		txt=txt.replace("PARAM1",param1);
-	}
-	if(param2!=null)
+		var txt=$('#'+id).val();
+		if(param1!=null)
+		{
+			txt=txt.replace("PARAM1",param1);
+		}
+		if(param2!=null)
+		{
+			txt=txt.replace("PARAM2",param1);
+		}
+		if(param3!=null)
+		{
+			txt=txt.replace("PARAM3",param1);
+		}
+		if(param4!=null)
+		{
+			txt=txt.replace("PARAM4",param1);
+		}
+		return txt;
+	}else
 	{
-		txt=txt.replace("PARAM2",param1);
+		return id;
 	}
-	if(param3!=null)
-	{
-		txt=txt.replace("PARAM3",param1);
-	}
-	if(param4!=null)
-	{
-		txt=txt.replace("PARAM4",param1);
-	}
-	return txt;
 }
 
 var edicionCV = {
@@ -542,7 +548,8 @@ var edicionCV = {
 											<div class="title-wrap">
 												<h2 class="resource-title">
 													<a href="#" data-id="${id}">${data.title}</a>
-													${this.printHtmlListItemPrivacidad(data)}
+													${this.printHtmlListItemVisibilidad(data)}
+													${this.printHtmlListItemEditable(data)}
 												</h2>
 												${this.printHtmlListItemAcciones(data, id)}                        
 												<span class="material-icons arrow">keyboard_arrow_down</span>
@@ -572,56 +579,73 @@ var edicionCV = {
         html += '</div>';
         return html;
     },
-
-
-    printHtmlListItemPrivacidad: function (data) {
-		if (data.ispublic == "true") {
+    printHtmlListItemEditable: function (data) {
+		if (data.iseditable) {
 			return `	<div class="candado-wrapper">
 							<div class="con-icono-before candado-activo"></div>
 						</div>`;
-		} else if (data.ispublic == "false") {
+		} else {
 			return `	<div class="candado-wrapper">
 							<div class="con-icono-before candado"></div>
 						</div>`;
 		}
     },
+    printHtmlListItemVisibilidad: function (data) {
+		if (data.ispublic) {
+			return `	<div class="visibility-wrapper">
+							<div class="con-icono-before eye"></div>
+						</div>`;
+		} else  {
+			return `	<div class="visibility-wrapper">
+							<div class="con-icono-before visibility-activo"></div>
+						</div>`;
+		}
+    },
     printHtmlListItemAcciones: function (data, id) {
-        var htmlPublicar = "";
-		if (data.ispublic.toLowerCase() != "true") {
-			htmlPublicar = `	<li>
+        var htmlAcciones = "";
+		if (!data.ispublic) {
+			//Si no está publicado siempre se puede publicar
+			htmlAcciones = `	<li>
 								<a class="item-dropdown">
 									<span class="material-icons">lock_open</span>
-									<span class="texto publicaritem" data-id="${id}" property="${data.propertyIspublic}">Publicar</span>
+									<span class="texto publicaritem" data-id="${id}" property="${data.propertyIspublic}">${GetText("CV_PUBLICAR")}</span>
 								</a>
 							</li>`;
-		}
-		if (data.ispublic.toLowerCase() != "false") {
-			htmlPublicar = `	<li>
+		}else if (data.iseditable){
+			//Si está publicado sólo se puede despublicar si es editable
+			htmlAcciones = `	<li>
 								<a class="item-dropdown">
 									<span class="material-icons">lock</span>
-									<span class="texto despublicaritem" data-id="${id}">Despublicar</span>
+									<span class="texto despublicaritem" data-id="${id}">${GetText("CV_DESPUBLICAR")}</span>
 								</a>
 							</li>`;
 		}
-		return `<div class="acciones-recurso-listado acciones-recurso">
-					<div class="dropdown">
-						<a href="javascript: void(0)" class="dropdown-toggle no-flecha" role="button" id="dropdownMasOpciones" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							<span class="material-icons">more_vert</span>
-						</a>
-						<div class="dropdown-menu basic-dropdown dropdown-icons dropdown-menu-right" aria-labelledby="dropdownMasOpciones">
-							<p class="dropdown-title">${GetText('CV_ACCIONES')}</p>
-							<ul class="no-list-style">
-								${htmlPublicar}
-								<li>
-									<a class="item-dropdown">
-										<span class="material-icons">delete</span>
-										<span class="texto eliminar" data-id="${id}">${GetText('CV_ELIMINAR')}</span>
+		//Si es editable se puede eliminar
+		if(data.iseditable){
+			htmlAcciones+=`<li>
+								<a class="item-dropdown">
+									<span class="material-icons">delete</span>
+									<span class="texto eliminar" data-id="${id}">${GetText('CV_ELIMINAR')}</span>
+								</a>
+							</li>`
+		}
+		if(htmlAcciones!='')
+		{
+			htmlAcciones= `	<div class="acciones-recurso-listado acciones-recurso">
+								<div class="dropdown">
+									<a href="javascript: void(0)" class="dropdown-toggle no-flecha" role="button" id="dropdownMasOpciones" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+										<span class="material-icons">more_vert</span>
 									</a>
-								</li>
-							</ul>
-						</div>
-					</div>
-				</div>`;
+									<div class="dropdown-menu basic-dropdown dropdown-icons dropdown-menu-right" aria-labelledby="dropdownMasOpciones">
+										<p class="dropdown-title">${GetText('CV_ACCIONES')}</p>
+										<ul class="no-list-style">
+											${htmlAcciones}
+										</ul>
+									</div>
+								</div>
+							</div>`;
+		}	
+		return htmlAcciones;		
     },
     printHtmlListItemPropiedades: function (data) {
         var html = ''
@@ -924,7 +948,7 @@ var edicionCV = {
                 `<div class="simple-collapse">
 								<a class="collapse-toggle ${collapsed}" data-toggle="collapse" href="#collapse-${i}" role="button" aria-expanded="${ariaexpanded}" aria-controls="collapse-${i}">${data.sections[i].title}</a>
 								<div class="collapse ${show}" id="collapse-${i}" style="">
-									<div class="simple-collapse-content">${this.printRowsEdit(data.sections[i].rows)}</div>
+									<div class="simple-collapse-content">${this.printRowsEdit(data.iseditable,data.sections[i].rows)}</div>
 								</div>
 							</div>`;
             $('#modal-editar-entidad form').append(section);
@@ -949,7 +973,7 @@ var edicionCV = {
                 `<div class="simple-collapse">
 								<a class="collapse-toggle ${collapsed}" data-toggle="collapse" href="#collapse-${i}" role="button" aria-expanded="${ariaexpanded}" aria-controls="collapse-${i}">${data.sections[i].title}</a>
 								<div class="collapse ${show}" id="collapse-${i}" style="">
-									<div class="simple-collapse-content">${this.printRowsEdit(data.sections[i].rows)}</div>
+									<div class="simple-collapse-content">${this.printRowsEdit(data.iseditable,data.sections[i].rows)}</div>
 								</div>
 							</div>`;
             $(modalContenedor+' form').append(section);
@@ -957,23 +981,23 @@ var edicionCV = {
 		this.repintarListadoEntity();		
 		this.engancharComportamientosCV();
     },
-    printRowsEdit: function (rows) {
+    printRowsEdit: function (iseditable,rows) {
         var rowsHtml = "";
         for (var i = 0; i < rows.length; i++) {
-            rowsHtml += this.printRowEdit(rows[i]);
+            rowsHtml += this.printRowEdit(iseditable,rows[i]);
         }
         return rowsHtml;
     },
-    printRowEdit: function (row) {
+    printRowEdit: function (iseditable,row) {
         var rowHtml = `<div class="custom-form-row">`
         for (var k = 0; k < row.properties.length; k++) {
-            rowHtml += this.printPropertyEdit(row.properties[k]);
+            rowHtml += this.printPropertyEdit(iseditable,row.properties[k]);
         }
         rowHtml += `</div>`;
 
         return rowHtml;
     },
-    printPropertyEdit: function (property) {
+    printPropertyEdit: function (iseditable,property) {
         //Estilos para el contenedor
         var css = "";
         switch (property.width) {
@@ -1000,6 +1024,11 @@ var edicionCV = {
 			css += ' topic';
 		}
         
+		if(!iseditable)
+		{
+			css += ' disabled ';
+		}
+		
 		var value = "";
 		if(!property.multiple)
 		{
@@ -1020,19 +1049,19 @@ var edicionCV = {
 			
 			switch (property.type) {
 				case 'text':
-					htmlInput=this.printPropertyEditTextInput(property.property, property.placeholder,value, property.required, false, property.autocomplete);
+					htmlInput=this.printPropertyEditTextInput(property.property, property.placeholder,value, property.required, !iseditable, property.autocomplete);
 					break;
 				case 'number':
-					htmlInput=this.printPropertyEditNumberInput(property.property,property.placeholder,value,property.required);
+					htmlInput=this.printPropertyEditNumberInput(property.property,property.placeholder,value,property.required,!iseditable);
 					break;
 				case 'selectCombo':
-					htmlInput=this.printSelectCombo(property.property, value, property.comboValues, property.comboDependency, property.required);
+					htmlInput=this.printSelectCombo(property.property, value, property.comboValues, property.comboDependency, property.required,!iseditable);
 					break;
 				case 'textarea':
-					htmlInput=this.printPropertyEditTextArea(property.property,property.placeholder,value,property.required);
+					htmlInput=this.printPropertyEditTextArea(property.property,property.placeholder,value,property.required,!iseditable);
 					break;
 				case 'date':
-					htmlInput=this.printPropertyEditDate(property.property,property.placeholder,value,property.required);
+					htmlInput=this.printPropertyEditDate(property.property,property.placeholder,value,property.required,!iseditable);
 					break;
 				case 'auxEntity':
 				case 'auxEntityAuthorList':
@@ -1048,11 +1077,11 @@ var edicionCV = {
 					if(value!='')
 					{
 						htmlInput=`<div class='item aux entityaux' propertyrdf='${property.property}' rdftype='${property.entityAuxData.rdftype}' about='${value}'>
-							${this.printRowsEdit(property.entityAuxData.entities[value])}
+							${this.printRowsEdit(iseditable,property.entityAuxData.entities[value])}
 							</div>`;
 					}else{
 						htmlInput=`<div class='item aux entityaux' propertyrdf='${property.property}' rdftype='${property.entityAuxData.rdftype}' about=''>
-							${this.printRowsEdit(property.entityAuxData.rows)}
+							${this.printRowsEdit(iseditable,property.entityAuxData.rows)}
 							</div>`;
 					}					
 					break;
@@ -1065,7 +1094,7 @@ var edicionCV = {
 					rdftype=` rdftype='${property.entityData.rdftype}'`;
 					htmlInput+=`<div class='item added entity' propertyrdf='${property.property}' rdftype='${property.entityData.rdftype}' about='${value}'>`;
 					
-					htmlInput+=this.printPropertyEditTextInput(property.property, property.placeholder, value, property.required);
+					htmlInput+=this.printPropertyEditTextInput(property.property, property.placeholder, value, property.required,!iseditable);
 					
 					//Pintamos el título
 					if(property.values.length>0 && property.values[0]!=null && property.entityData.titles[property.values[0]]!=null)
@@ -1117,34 +1146,34 @@ var edicionCV = {
 			}
 			switch (property.type) {
 				case 'text':
-					htmlMultiple+=this.printPropertyEditTextInput(property.property, property.placeholder, '', property.required, false, property.autocomplete);
+					htmlMultiple+=this.printPropertyEditTextInput(property.property, property.placeholder, '', property.required, !iseditable, property.autocomplete);
 					break;
 				case 'number':
-					htmlMultiple=this.printPropertyEditNumberInput(property.property,property.placeholder,value,property.required);
+					htmlMultiple=this.printPropertyEditNumberInput(property.property,property.placeholder,value,property.required,!iseditable);
 					break;
 				case 'selectCombo':
-					htmlMultiple+=this.printSelectCombo(property.property, '', property.comboValues, property.comboDependency, property.required);
+					htmlMultiple+=this.printSelectCombo(property.property, '', property.comboValues, property.comboDependency, property.required,!iseditable);
 					break;
 				case 'thesaurus':
 					var valuesThesaurus = $.map(property.entityAuxData.entities, function(entity) {
 						var values = entity[0].properties[0].values;
 						return values;
 					});
-					htmlMultiple+=this.printThesaurus(property.property, valuesThesaurus, property.thesaurus, property.required);
-					htmlMultiple+=this.printRowsEdit(property.entityAuxData.rows);
+					htmlMultiple+=this.printThesaurus(property.property, valuesThesaurus, property.thesaurus, property.required,!iseditable);
+					htmlMultiple+=this.printRowsEdit(iseditable,property.entityAuxData.rows);
 					break;
 				case 'textarea':
-					htmlMultiple+=this.printPropertyEditTextArea(property.property,property.placeholder,'',property.required);
+					htmlMultiple+=this.printPropertyEditTextArea(property.property,property.placeholder,'',property.required,!iseditable);
 					break;
 				case 'date':
-					htmlMultiple+=this.printPropertyEditDate(property.property,property.placeholder,'',property.required);
+					htmlMultiple+=this.printPropertyEditDate(property.property,property.placeholder,'',property.required,!iseditable);
 					break;
 				case 'auxEntity':
 				case 'auxEntityAuthorList':
-					htmlMultiple+=this.printRowsEdit(property.entityAuxData.rows);
+					htmlMultiple+=this.printRowsEdit(iseditable,property.entityAuxData.rows);
 					break;
 				case 'entity':
-					htmlMultiple+=this.printPropertyEditTextInput(property.property, property.placeholder, value, property.required);
+					htmlMultiple+=this.printPropertyEditTextInput(property.property, property.placeholder, value, property.required,!iseditable);
 					break;
 			}	
 			if(property.type=='auxEntity'||property.type=='auxEntityAuthorList'|| property.type=='thesaurus')
@@ -1183,7 +1212,7 @@ var edicionCV = {
 					}
 				}
 			}
-			if(property.type!='auxEntity' && property.type!='entity' && property.type!='auxEntityAuthorList'&& property.type!='thesaurus')			
+			if(iseditable && property.type!='auxEntity' && property.type!='entity' && property.type!='auxEntityAuthorList'&& property.type!='thesaurus')			
 			{
 				htmlMultiple+= this.printAddButton();
 			}
@@ -1245,7 +1274,7 @@ var edicionCV = {
 					case 'auxEntity':	
 					case 'auxEntityAuthorList':	
 					case 'thesaurus':
-						htmlMultiple+=this.printRowsEdit(property.entityAuxData.entities[property.values[valor]]);
+						htmlMultiple+=this.printRowsEdit(iseditable,property.entityAuxData.entities[property.values[valor]]);
 						if(property.entityAuxData.propertyOrder!=null && property.entityAuxData.propertyOrder!='')
 						{
 							//Pintamos el orden
@@ -1279,7 +1308,7 @@ var edicionCV = {
 						
 						break;
 					case 'entity':	
-						htmlMultiple+=this.printPropertyEditTextInput(property.property, property.placeholder, value, property.required);
+						htmlMultiple+=this.printPropertyEditTextInput(property.property, property.placeholder, value, property.required,!iseditable);
 						
 						//Pintamos el título
 						if(property.values[valor]!=null && property.entityData.titles[property.values[valor]]!=null)
@@ -1467,16 +1496,16 @@ var edicionCV = {
 						<div class="action-buttons-resultados">
                             <ul class="no-list-style">
                                 <li class="js-plegar-facetas-modal">
-                                    <span class="texto">Plegar</span>
+                                    <span class="texto">${GetText("CV_PLEGAR")}</span>
                                     <span class="material-icons">expand_less</span>
                                 </li>
                                 <li class="js-desplegar-facetas-modal">
-                                    <span class="texto">Desplegar</span>
+                                    <span class="texto">${GetText("CV_DESPLEGAR")}</span>
                                     <span class="material-icons">expand_more</span>
                                 </li>
                             </ul>
                         </div>						
-						<ul class="listadoTesauro">${this.printThesaurusItemsByParent(values, pItems, itemsHijo, 0)}</ul>`;
+						<ul class="listadoTesauro ${disabled}">${this.printThesaurusItemsByParent(values, pItems, itemsHijo, 0)}</ul>`;
 			
         return selector;
     },
@@ -1608,16 +1637,8 @@ var edicionCV = {
 			var valoresTesauro = $.map($(this).find('ul.listadoTesauro .faceta') ,function(faceta) { 
 				return { key : $(faceta).attr('name'), value : $(faceta).attr('title') }; 
 			});
-
-			var idTemp=	$(this).attr('idtemp');
-			$(this).children('.simple-collapse-content').remove();
-			var items= $(this).children('.item.added.entityaux');	
-
-			var iconAdd="add";
-			
-			var htmlAcciones=`
-								<div class="simple-collapse-content">
-									<div class="acciones-listado acciones-listado-edicion">
+		
+			var htmlAgnadir=`		<div class="acciones-listado acciones-listado-edicion">
 										<div class="wrap">
 											<ul class="no-list-style d-flex align-items-center">
 												<li>
@@ -1628,7 +1649,21 @@ var edicionCV = {
 												</li>
 											</ul>
 										</div>
-									</div>
+									</div>`;
+			if($(this).find('ul.listadoTesauro').hasClass('disabled'))
+			{
+				htmlAgnadir='';
+			}
+			
+			var idTemp=	$(this).attr('idtemp');
+			$(this).children('.simple-collapse-content').remove();
+			var items= $(this).children('.item.added.entityaux');	
+
+			var iconAdd="add";
+			
+			var htmlAcciones=`
+								<div class="simple-collapse-content">
+									${htmlAgnadir}
 									<div class="resource-list listView">
 										<div class="list-wrap tags">
 											<ul>
@@ -1805,22 +1840,28 @@ var edicionCV = {
 						$(this).attr('selecteditem',$($(items)[0]).attr('about'));
 					}
 					
-					htmAccionesItems+=that.pintarListadoEntityOrden($(this).attr('order'));
-					if(!$(this).hasClass('entityauxauthorlist'))
+					if(!$(this).hasClass('disabled'))
+					{
+						htmAccionesItems+=that.pintarListadoEntityOrden($(this).attr('order'));		
+					}						
+						if(!$(this).hasClass('entityauxauthorlist'))
+						{
+							htmAccionesItems+=`<li>
+													<a class="btn btn-outline-grey edit">
+														<span class="texto">${GetText("CV_EDITAR")}</span>
+														<span class="material-icons">edit</span>
+													</a>
+												</li>`;
+						}
+					if(!$(this).hasClass('disabled'))
 					{
 						htmAccionesItems+=`<li>
-												<a class="btn btn-outline-grey edit">
-													<span class="texto">Editar</span>
-													<span class="material-icons">edit</span>
+												<a class="btn btn-outline-grey delete">
+													<span class="texto">${GetText("CV_ELIMINAR")}</span>
+													<span class="material-icons">delete</span>
 												</a>
 											</li>`;
 					}
-					htmAccionesItems+=`<li>
-											<a class="btn btn-outline-grey delete">
-												<span class="texto">Eliminar</span>
-												<span class="material-icons">delete</span>
-											</a>
-										</li>`;
 				}			
 				var iconAdd="add";
 				var classList="";
@@ -1832,14 +1873,17 @@ var edicionCV = {
 				var htmlAdd="";
 				if(multiple || (aux && items.length==0))
 				{
-					htmlAdd=`	<ul class="no-list-style d-flex align-items-center">
-									<li>
-										<a class="btn btn-outline-grey add">
-											<span class="texto">${GetText('CV_AGNADIR')}</span>
-											<span class="material-icons">${iconAdd}</span>
-										</a>
-									</li>
-								</ul>`;
+					if(!$(this).hasClass('disabled'))
+					{
+						htmlAdd=`	<ul class="no-list-style d-flex align-items-center">
+										<li>
+											<a class="btn btn-outline-grey add">
+												<span class="texto">${GetText('CV_AGNADIR')}</span>
+												<span class="material-icons">${iconAdd}</span>
+											</a>
+										</li>
+									</ul>`;
+					}
 				}
 				var htmlSearch="";
 				if(items.length>1)
@@ -1875,8 +1919,19 @@ var edicionCV = {
 			}else
 			{
 				htmlAcciones="";
+				
 				if($($(items)[0]).find('input').val()!='')
 				{
+					var htmlEliminar='';
+					if(!$(this).hasClass('disabled'))
+					{
+						htmlEliminar=`	<li>
+											<a class="btn btn-outline-grey delete">
+												<span class="texto">${GetText('CV_ELIMINAR')}</span>
+												<span class="material-icons">delete</span>
+											</a>
+										</li>`
+					}
 					htmlAcciones+=`	<div class="item aux">
 										${that.repintarEntityItem($(items[0]))}
 											<div class="acciones-listado-edicion">
@@ -1888,33 +1943,31 @@ var edicionCV = {
 																<span class="material-icons">edit</span>
 															</a>
 														</li>
+														${htmlEliminar}
+													</ul>
+												</div>
+											</div>
+										</div>`;
+				}else
+				{	
+					if(!$(this).hasClass('disabled'))
+					{
+						htmlAcciones+=`	<div class="item aux">
+											<input disabled="" value="" type="text" class="form-control not-outline ">	<div class="acciones-listado-edicion">
+												<div class="wrap">
+													<ul class="no-list-style d-flex align-items-center">
 														<li>
-															<a class="btn btn-outline-grey delete">
-																<span class="texto">${GetText('CV_ELIMINAR')}</span>
-																<span class="material-icons">delete</span>
+															<a class="btn btn-outline-grey add">
+																<span class="texto">${GetText('CV_AGNADIR')}</span>
+																<span class="material-icons">add</span>
 															</a>
 														</li>
 													</ul>
 												</div>
 											</div>
 										</div>`;
-				}else
-				{				
-					htmlAcciones+=`	<div class="item aux">
-										<input disabled="" value="" type="text" class="form-control not-outline ">	<div class="acciones-listado-edicion">
-											<div class="wrap">
-												<ul class="no-list-style d-flex align-items-center">
-													<li>
-														<a class="btn btn-outline-grey add">
-															<span class="texto">${GetText('CV_AGNADIR')}</span>
-															<span class="material-icons">add</span>
-														</a>
-													</li>
-												</ul>
-											</div>
-										</div>
-									</div>`;
-				}					
+					}
+				}			
 				$(this).append(htmlAcciones);
 			}
 		});
