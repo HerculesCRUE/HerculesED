@@ -7,5 +7,5 @@
 }
 
 .candado-wrapper { padding-left: 14px; }
-.candado::before { content: 'lock'; font-size: 1.4rem; color: #ababab; }
+.candado::before { content: 'lock'; font-size: 1.4rem; /*color: #ababab;*/ }
 .candado-activo::before { content: 'lock_open'; font-size: 1.4rem;/* color: #00a8ff; */}
