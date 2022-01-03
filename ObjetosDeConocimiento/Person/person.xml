@@ -172,6 +172,10 @@
             <AtrNombre>http://xmlns.com/foaf/0.1/lastName</AtrNombre>
             <AtrNombreLectura>http://xmlns.com/foaf/0.1/lastName</AtrNombreLectura>
         </Propiedad>
+		<Propiedad  ID="http://w3id.org/roh/lastUpdatedDate" EntidadID="http://xmlns.com/foaf/0.1/Person">
+            <AtrNombre>http://w3id.org/roh/lastUpdatedDate</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/lastUpdatedDate</AtrNombreLectura>
+        </Propiedad>
     </EspefPropiedad>
     <EspefEntidad>
         <Entidad  ID="http://xmlns.com/foaf/0.1/Person">
@@ -209,6 +213,7 @@
 							<NameProp>http://vivoweb.org/ontology/core#researcherId</NameProp>
 							<NameProp>http://w3id.org/roh/semanticScholarId</NameProp>
 							<NameProp>http://w3id.org/roh/isActive</NameProp>
+							<NameProp>http://w3id.org/roh/lastUpdatedDate</NameProp> 
                         </Grupo>
                     </Grupo>
                 </Grupo>
@@ -246,6 +251,7 @@
 							<NameProp>http://vivoweb.org/ontology/core#researcherId</NameProp>
 							<NameProp>http://w3id.org/roh/semanticScholarId</NameProp>
 							<NameProp>http://w3id.org/roh/isActive</NameProp>
+							<NameProp>http://w3id.org/roh/lastUpdatedDate</NameProp> 
                         </Grupo>
                     </Grupo>
                 </Grupo>
