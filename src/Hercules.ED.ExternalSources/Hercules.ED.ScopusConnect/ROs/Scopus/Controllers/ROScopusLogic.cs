@@ -28,6 +28,8 @@ namespace ScopusConnect.ROs.Scopus.Controllers
 
         // protected List<Publication> publications = new List<Publication>();
         protected Dictionary<string, string> headers = new Dictionary<string, string>();
+
+        public static string apiKey = "75f4ab3fac56f42ac83cdeb7c98882ca";
         public ROScopusLogic()
         {
             //this.bareer = bareer;
@@ -48,9 +50,9 @@ namespace ScopusConnect.ROs.Scopus.Controllers
             {
                 using (var request = new HttpRequestMessage(new HttpMethod(method), url))
                 {
-                    request.Headers.TryAddWithoutValidation("X-ELS-APIKey", "75f4ab3fac56f42ac83cdeb7c98882ca"); //TODO: Token
+                    request.Headers.Add("X-ELS-APIKey", apiKey); //TODO: Token
                     //request.Headers.TryAddWithoutValidation("Connection", "keep-alive");
-                    request.Headers.TryAddWithoutValidation("Accept", "application/json");
+                    request.Headers.Add("Accept", "application/json");
 
                     if (headers != null && headers.Count > 0)
                     {
@@ -60,7 +62,7 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                         // }
                         foreach (var item in headers)
                         {
-                            request.Headers.TryAddWithoutValidation(item.Key, item.Value);
+                            request.Headers.Add(item.Key, item.Value);
                         }
                     }
                     try
@@ -91,12 +93,12 @@ namespace ScopusConnect.ROs.Scopus.Controllers
         /// <param date="date">year-month-day</param>
 
         /// <returns></returns>
-        public List<Publication> getPublications(string name, string date = "1500-01-01", string uri = "content/search/scopus?query=ORCID(\"{0}\")&count=200&date={1}%&start={2}")//AU-ID?{0}")
+        public List<Publication> getPublications(string name, string date = "1500-01-01", string uri = "content/search/scopus?query=ORCID(\"{0}\")&date={1}%&start={2}")//AU-ID?{0}")
         {
             string date_scopus = date.Substring(0, 4) + "-" + (DateTime.Now.Date.Year+1).ToString();
             
             ROScopusControllerJSON info = new ROScopusControllerJSON(this);
-        
+            
             int n = 0;
             List<Publication> sol = new List<Publication>();
             int result = 1;
@@ -104,8 +106,8 @@ namespace ScopusConnect.ROs.Scopus.Controllers
             while (cardinalidad >= result )
             {
     
-                uri = "content/search/scopus?query=ORCID(\"{0}\")&count=200&date={1}&start={2}";
-                Uri url = new Uri("https://api.elsevier.com/" + string.Format(uri, name, date_scopus, result.ToString()));
+                uri = "content/search/scopus?query=ORCID(\"{0}\")&apikey={1}&date={2}&start={3}";
+                Uri url = new Uri("https://api.elsevier.com/" + string.Format(uri, name, apiKey, date_scopus, result.ToString()));
                 n=n+1;
                 result = 200*n;
 
