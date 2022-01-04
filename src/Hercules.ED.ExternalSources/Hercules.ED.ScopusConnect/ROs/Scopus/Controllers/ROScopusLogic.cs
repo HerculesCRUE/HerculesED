@@ -1,22 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System.Net;
 using Newtonsoft.Json;
 using System.Net.Http;
-using System.Net.Http.Headers;
-using ScopusConnect.ROs.Scopus;
 using ScopusConnect.ROs.Scopus.Models;
 using ScopusConnect.ROs.Scopus.Models.Inicial;
-using System.Web;
-using System.Text.Json;
-using Newtonsoft.Json.Linq;
-//using Newtonsoft.Json.Linq.JObject;
+
 namespace ScopusConnect.ROs.Scopus.Controllers
 {
     public class ROScopusLogic : ScopusInterface
@@ -121,6 +110,41 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                 }
             }
             return sol;
+        }
+
+        /// <summary>
+        /// Obtiene una publicación mediante un DOI.
+        /// </summary>
+        /// <param name="pDoi">Identificador DOI de la publicación a obtener.</param>
+        /// <returns>Publicación obtenida. (Null --> Error)</returns>
+        public Publication getPublicationDoi(string pDoi)
+        {
+            // Objeto publicación.
+            Publication publicacionFinal = null;
+
+            try
+            {
+                // Clase.
+                ROScopusControllerJSON info = new ROScopusControllerJSON(this);
+
+                // Petición.
+                Uri url = new Uri($@"https://api.elsevier.com/content/search/scopus?apikey={apiKey}&query=DOI({pDoi})");
+                string result = httpCall(url.ToString(), "GET", headers).Result;
+
+                // Obtención de datos.
+                if (!string.IsNullOrEmpty(result) && !result.StartsWith("{\"service-error\":"))
+                {
+                    Root objInicial = JsonConvert.DeserializeObject<Root>(result);
+                    PublicacionInicial publicacionInicial = objInicial.SearchResults.entry[0];
+                    publicacionFinal = info.cambioDeModeloPublicacion(publicacionInicial, true);
+                }
+            }
+            catch (Exception error)
+            {
+                return publicacionFinal;
+            }
+
+            return publicacionFinal;
         }
     }
 }

@@ -24,12 +24,12 @@ using System.IO;
 
 namespace WoSConnect.ROs.WoS.Controllers
 {
-    public class ROWoSLogic 
+    public class ROWoSLogic
     {
         protected string bareer;
         protected string baseUri { get; set; }
 
-        public  Dictionary<string, string>  ds; 
+        public Dictionary<string, string> ds;
 
 
         protected Dictionary<string, string> headers = new Dictionary<string, string>();
@@ -120,6 +120,39 @@ namespace WoSConnect.ROs.WoS.Controllers
             return sol;
         }
 
-       
+        /// <summary>
+        /// Obtiene una publicación mediante el ID de WoS.
+        /// </summary>
+        /// <param name="pIdWos">ID de la publicación a obtener.</param>
+        /// <returns></returns>
+        public Publication getPublicationWos(string pIdWos)
+        {
+            // Objeto publicación.
+            Publication publicacionFinal = null;
+
+            try
+            {
+                // Clase.
+                ROWoSControllerJSON info = new ROWoSControllerJSON(this);
+
+                // Petición.
+                Uri url = new Uri($@"{baseUri}api/wos/id/WOS:{pIdWos}?databaseId=WOK&count=1&firstRecord=1");
+                string result = httpCall(url.ToString(), "GET", headers).Result;
+
+                // Obtención de datos.
+                if (!string.IsNullOrEmpty(result) && !result.Contains("\"RecordsFound\":0"))
+                {
+                    Root objInicial = JsonConvert.DeserializeObject<Root>(result);
+                    PublicacionInicial publicacionInicial = objInicial.Data.Records.records.REC[0];
+                    publicacionFinal = info.cambioDeModeloPublicacion(publicacionInicial, true);
+                }
+            }
+            catch(Exception error)
+            {
+                return publicacionFinal;
+            }
+
+            return publicacionFinal;
+        }
     }
 }
