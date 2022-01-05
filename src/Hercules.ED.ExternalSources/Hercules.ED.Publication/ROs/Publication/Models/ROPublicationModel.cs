@@ -37,6 +37,7 @@ public class Publication
     //todo no creo que esto en nuestra ontologia sea un string y no esta contemplado de mommento rellenarlo! 
 
     public Source hasPublicationVenue { get; set; }
+
     public List<PublicationMetric> hasMetric { get; set; }
     public List<Publication> bibliografia { get; set; }
     public List<Publication> citas {get;set;}
