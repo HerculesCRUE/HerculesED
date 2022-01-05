@@ -170,6 +170,7 @@ function PintarGraficaProyectos(data,idContenedorAnios,idContenedorMiembros,idCo
 				precision:0
 			}
 		},
+		plugins: { legend: { display: false } },
 		maintainAspectRatio: false
 	}
 
@@ -195,6 +196,7 @@ function PintarGraficaProyectos(data,idContenedorAnios,idContenedorMiembros,idCo
 				precision:0
 			}
 		},
+		plugins: { legend: { display: false } },
 		maintainAspectRatio: false
 	}
 
