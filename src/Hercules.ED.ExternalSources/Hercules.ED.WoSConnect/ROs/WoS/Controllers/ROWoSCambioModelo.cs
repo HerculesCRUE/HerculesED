@@ -317,10 +317,6 @@ namespace WoSConnect.ROs.WoS.Controllers
                                     {
                                         AbstractText hey = JsonConvert.DeserializeObject<AbstractText>(objInicial.static_data.fullrecord_metadata.abstracts.@abstract.abstract_text.ToString());
                                         esLista = true;
-                                        if (hey.p != null)
-                                        {
-                                            return hey.p;
-                                        }
                                     }
                                 }
                                 catch
@@ -636,9 +632,12 @@ namespace WoSConnect.ROs.WoS.Controllers
                     {
                         try
                         {
-                            Keywords hey = JsonConvert.DeserializeObject<Keywords>(objInicial.static_data.fullrecord_metadata.keywords.ToString());
                             FreetextKeywords list = new FreetextKeywords();
-                            list.freetextKeyword = hey.keyword;
+                            list.freetextKeyword = new List<string>();
+                            foreach (string keyword in objInicial.static_data.fullrecord_metadata.keywords.keyword)
+                            {
+                                list.freetextKeyword.Add(keyword);
+                            }                            
                             list.source = "WoS";
                             List<FreetextKeywords> sol_list = new List<FreetextKeywords>();
                             sol_list.Add(list);
@@ -678,8 +677,9 @@ namespace WoSConnect.ROs.WoS.Controllers
                         {
                             try
                             {
-                                JArray hey = JsonConvert.DeserializeObject<JArray>(objInicial.static_data.summary.names.name.ToString());
-                                foreach (JContainer var in hey)
+                                //JArray hey = JsonConvert.DeserializeObject<JArray>(objInicial.static_data.summary.names.name.ToString());
+
+                                foreach(Models.Inicial.Name nombre in objInicial.static_data.summary.names.name)
                                 {
                                     Person persona = new Person();
                                     string orcid = null;
@@ -691,140 +691,137 @@ namespace WoSConnect.ROs.WoS.Controllers
 
                                     try
                                     {
-                                        Name_2 ee = JsonConvert.DeserializeObject<Name_2>(var.ToString());
-                                        if (ee.orcid_id != null)
+                                        if (nombre.orcid_id != null)
                                         {
-                                            if (ee.orcid_id.Contains("https://orcid.org/") || ee.orcid_id.Contains("http://orcid.org/"))
+                                            if (nombre.orcid_id.Contains("https://orcid.org/") || nombre.orcid_id.Contains("http://orcid.org/"))
                                             {
-                                                int indice = ee.orcid_id.IndexOf("org/");
-                                                persona.ORCID = ee.orcid_id.Substring(indice + 4);
-                                                orcid = ee.orcid_id.Substring(indice + 4);
+                                                int indice = nombre.orcid_id.IndexOf("org/");
+                                                persona.ORCID = nombre.orcid_id.Substring(indice + 4);
+                                                orcid = nombre.orcid_id.Substring(indice + 4);
                                             }
                                             else
                                             {
-                                                persona.ORCID = ee.orcid_id;
-                                                orcid = ee.orcid_id;
+                                                persona.ORCID = nombre.orcid_id;
+                                                orcid = nombre.orcid_id;
                                             }
                                         }
                                         List<string> nombres = new List<string>();
                                         List<string> apellidos = new List<string>();
                                         List<string> nombres_completo = new List<string>();
 
-                                        if (ee.display_name != null)
+                                        if (nombre.display_name != null)
                                         {
-                                            if (!nombres_completo.Contains(ee.display_name) && !ee.full_name.Contains("IEEE"))
+                                            if (!nombres_completo.Contains(nombre.display_name) && !nombre.full_name.Contains("IEEE"))
                                             {
-                                                nombres_completo.Add(ee.display_name);
-                                                completo = ee.display_name;
+                                                nombres_completo.Add(nombre.display_name);
+                                                completo = nombre.display_name;
                                             }
                                         }
-                                        if (ee.first_name != null)
+                                        if (nombre.first_name != null)
                                         {
-                                            if (!nombres.Contains(ee.first_name))
+                                            if (!nombres.Contains(nombre.first_name))
                                             {
-                                                nombres.Add(ee.first_name);
-                                                name = ee.first_name;
+                                                nombres.Add(nombre.first_name);
+                                                name = nombre.first_name;
                                             }
                                         }
-                                        if (ee.full_name != null)
+                                        if (nombre.full_name != null)
                                         {
-                                            if (!nombres_completo.Contains(ee.full_name) && !ee.full_name.Contains("IEEE"))
+                                            if (!nombres_completo.Contains(nombre.full_name) && !nombre.full_name.Contains("IEEE"))
                                             {
-                                                nombres_completo.Add(ee.full_name);
+                                                nombres_completo.Add(nombre.full_name);
                                                 if (completo != null)
                                                 {
-                                                    completo = completo + "*" + ee.first_name;
+                                                    completo = completo + "*" + nombre.first_name;
                                                 }
                                             }
                                         }
-                                        if (ee.last_name != null)
+                                        if (nombre.last_name != null)
                                         {
-                                            if (!apellidos.Contains(ee.last_name))
+                                            if (!apellidos.Contains(nombre.last_name))
                                             {
-                                                apellidos.Add(ee.last_name);
-                                                familia = ee.last_name;
+                                                apellidos.Add(nombre.last_name);
+                                                familia = nombre.last_name;
                                             }
                                         }
                                         if (nombres.Count > 0 || apellidos.Count > 0 || nombres_completo.Count > 0)
                                         {
-                                            Name nombre = new Name();
+                                            Models.Name nombreName = new Models.Name();
                                             if (apellidos.Count > 0)
                                             {
-                                                nombre.familia = apellidos;
+                                                nombreName.familia = apellidos;
                                             }
                                             if (nombres.Count > 0)
                                             {
-                                                nombre.given = nombres;
+                                                nombreName.given = nombres;
                                             }
                                             if (nombres_completo.Count > 0)
                                             {
-                                                nombre.nombre_completo = nombres_completo;
+                                                nombreName.nombre_completo = nombres_completo;
                                             }
-                                            persona.name = nombre;
+                                            persona.name = nombreName;
 
                                         }
                                         result.Add(persona);
                                     }
                                     catch
                                     {
-                                        Name_1 ee = JsonConvert.DeserializeObject<Name_1>(var.ToString());
-
                                         List<string> nombres = new List<string>();
                                         List<string> apellidos = new List<string>();
                                         List<string> nombres_completo = new List<string>();
 
-                                        if (ee.display_name != null)
+                                        if (nombre.display_name != null)
                                         {
-                                            if (!nombres_completo.Contains(ee.display_name) && !ee.full_name.Contains("IEEE"))
+                                            if (!nombres_completo.Contains(nombre.display_name) && !nombre.full_name.Contains("IEEE"))
                                             {
-                                                nombres_completo.Add(ee.display_name);
-                                                completo = ee.display_name;
+                                                nombres_completo.Add(nombre.display_name);
+                                                completo = nombre.display_name;
                                             }
                                         }
-                                        if (ee.first_name != null)
+                                        if (nombre.first_name != null)
                                         {
-                                            if (!nombres.Contains(ee.first_name))
+                                            if (!nombres.Contains(nombre.first_name))
                                             {
-                                                nombres.Add(ee.first_name);
-                                                name = ee.first_name;
+                                                nombres.Add(nombre.first_name);
+                                                name = nombre.first_name;
                                             }
                                         }
-                                        if (ee.full_name != null)
+                                        if (nombre.full_name != null)
                                         {
-                                            if (!nombres_completo.Contains(ee.full_name) && !ee.full_name.Contains("IEEE"))
+                                            if (!nombres_completo.Contains(nombre.full_name) && !nombre.full_name.Contains("IEEE"))
                                             {
 
-                                                nombres_completo.Add(ee.full_name);
+                                                nombres_completo.Add(nombre.full_name);
                                                 if (completo != null)
                                                 {
-                                                    completo = completo + "*" + ee.first_name;
+                                                    completo = completo + "*" + nombre.first_name;
                                                 }
                                             }
                                         }
-                                        if (ee.last_name != null)
+                                        if (nombre.last_name != null)
                                         {
-                                            if (!apellidos.Contains(ee.last_name))
+                                            if (!apellidos.Contains(nombre.last_name))
                                             {
-                                                apellidos.Add(ee.last_name);
-                                                familia = ee.last_name;
+                                                apellidos.Add(nombre.last_name);
+                                                familia = nombre.last_name;
                                             }
                                         }
                                         if (nombres.Count > 0 || apellidos.Count > 0 || nombres_completo.Count > 0)
                                         {
-                                            Name nombre = new Name();
+                                            Models.Name nameNombre = new Models.Name();
                                             if (apellidos.Count > 0)
                                             {
-                                                nombre.familia = apellidos;
+                                                nameNombre.familia = apellidos;
                                             }
                                             if (nombres.Count > 0)
                                             {
-                                                nombre.given = nombres;
+                                                nameNombre.given = nombres;
                                             }
                                             if (nombres_completo.Count > 0)
                                             {
-                                                nombre.nombre_completo = nombres_completo;
+                                                nameNombre.nombre_completo = nombres_completo;
                                             }
-                                            persona.name = nombre;
+                                            persona.name = nameNombre;
 
                                         }
                                         result.Add(persona);
@@ -879,7 +876,7 @@ namespace WoSConnect.ROs.WoS.Controllers
                                     }
                                     if (nombres.Count > 0 || apellidos.Count > 0 || nombres_completo.Count > 0)
                                     {
-                                        Name nombre = new Name();
+                                        Models.Name nombre = new Models.Name();
                                         if (apellidos.Count > 0)
                                         {
                                             nombre.familia = apellidos;
@@ -939,7 +936,7 @@ namespace WoSConnect.ROs.WoS.Controllers
                                     }
                                     if (nombres.Count > 0 || apellidos.Count > 0 || nombres_completo.Count > 0)
                                     {
-                                        Name nombre = new Name();
+                                        Models.Name nombre = new Models.Name();
                                         if (apellidos.Count > 0)
                                         {
                                             nombre.familia = apellidos;

@@ -106,16 +106,28 @@ namespace WoSConnect.ROs.WoS.Controllers
             bool continuar = true;
             while (continuar)
             {
+                //TODO: Cambiar fecha de publicación por fecha de modificación.
                 Uri url = new Uri($@"{baseUri}api/wos/?databaseId=WOK&usrQuery=AI=({orcid})&count={numItems}&firstRecord={(numItems * n) + 1}&publishTimeSpan={date}%2B3000-12-31");
+                //Uri url = new Uri($@"{baseUri}api/wos/citing?databaseId=WOK&uniqueId=WOS:000624784700001&count={numItems}&firstRecord={(numItems * n) + 1}&publishTimeSpan=1500-01-01%2B3000-12-31"); //&publishTimeSpan={date}%2B3000-12-31
+                //Uri url = new Uri($@"{baseUri}api/wos/references?databaseId=WOK&uniqueId=WOS:000624784700001&count={numItems}&firstRecord={(numItems * n) + 1}"); //
+                //Uri url = new Uri($@"{baseUri}api/wos?databaseId=WOK&uniqueId=WOS:000270372400005"); //&publishTimeSpan={date}%2B3000-12-31
                 n++;
                 string info_publication = httpCall(url.ToString(), "GET", headers).Result;
-                Root objInicial = JsonConvert.DeserializeObject<Root>(info_publication);
-                List<Publication> nuevas = info.getListPublicatio(objInicial);
-                sol.AddRange(nuevas);
-                if (nuevas.Count == 0)
+                try
                 {
-                    continuar = false;
+                    Root objInicial = JsonConvert.DeserializeObject<Root>(info_publication);
+                    List<Publication> nuevas = info.getListPublicatio(objInicial);
+                    sol.AddRange(nuevas);
+                    if (nuevas.Count == 0)
+                    {
+                        continuar = false;
+                    }
                 }
+                catch(Exception error)
+                {
+                    // TODO: Revisar parseo JSON.
+                    string msg = error.Message;
+                }                
             }
             return sol;
         }
@@ -148,6 +160,41 @@ namespace WoSConnect.ROs.WoS.Controllers
                 }
             }
             catch(Exception error)
+            {
+                return publicacionFinal;
+            }
+
+            return publicacionFinal;
+        }
+
+        /// <summary>
+        /// Obtiene una publicación mediante el DOI.
+        /// </summary>
+        /// <param name="pDoi">DOI de la publicación a obtener.</param>
+        /// <returns></returns>
+        public Publication getPublicationDoi(string pDoi)
+        {
+            // Objeto publicación.
+            Publication publicacionFinal = null;
+
+            try
+            {
+                // Clase.
+                ROWoSControllerJSON info = new ROWoSControllerJSON(this);
+
+                // Petición.
+                Uri url = new Uri($@"{baseUri}api/wos/?databaseId=WOK&usrQuery=DO=({pDoi})&count=1&firstRecord=1");                
+                string result = httpCall(url.ToString(), "GET", headers).Result;
+
+                // Obtención de datos.
+                if (!string.IsNullOrEmpty(result) && !result.Contains("\"RecordsFound\":0"))
+                {
+                    Root objInicial = JsonConvert.DeserializeObject<Root>(result);
+                    PublicacionInicial publicacionInicial = objInicial.Data.Records.records.REC[0];
+                    publicacionFinal = info.cambioDeModeloPublicacion(publicacionInicial, true);
+                }
+            }
+            catch (Exception error)
             {
                 return publicacionFinal;
             }

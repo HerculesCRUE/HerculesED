@@ -101,6 +101,22 @@ namespace WoSConnect.Controllers
             Publication publication = WoSObject.getPublicationWos(pIdWos);
             return publication;
         }
+
+        /// <summary>
+        /// Permite obtener la información de una publicación mediante el identificador de WoS (Web Of Science).
+        /// </summary>
+        /// <param name="pDoi">DOI de la publicación.</param>
+        /// <returns>Objeto con los datos recuperados.</returns>
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public Publication GetRoByDoi([FromQuery][Required] string pDoi)
+        {
+            ROWoSController WoSObject = new ROWoSController("https://wos-api.clarivate.com/", "10e8a3a2417b7ae1d864b5558136c56b78ed3eb8", this.ds);//, @"C:\Users\mpuer\Documents\GitHub\HerculesED\src\Hercules.ED.ExternalSources\Hércules-ED_Taxonomías_v1.2.xlsx");//"adf94bebeeba8c3042ad5193455740e2");
+            Publication publication = WoSObject.getPublicationDoi(pDoi);
+            return publication;
+        }
     }
 }
 
