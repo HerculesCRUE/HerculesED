@@ -110,12 +110,22 @@ function PintarGraficaPublicaciones(data,idContenedor) {
 		  y1: {
 			type: 'linear',
 			display: true,
-			position: 'left'
+			position: 'left',
+			title: {
+              text: "Publicaciones",
+              display: true,
+              color: "red",
+            },
 		  },
 		  y2: {
 			type: 'linear',
 			display: true,
-			position: 'right'
+			position: 'right',
+			title: {
+              text: "Citas",
+              display: true,
+              color: "red",
+            },
 		  },
 		},		
 		scale:{
@@ -162,6 +172,18 @@ function PintarGraficaProyectos(data,idContenedorAnios,idContenedorMiembros,idCo
 		},
 		maintainAspectRatio: false
 	}
+
+
+	var items = [];
+	data.graficaBarrasMiembros.data.datasets.forEach(e => {
+	  items = [...e.data];
+	});
+	var maxData = Math.max(...items);
+
+	data.graficaBarrasMiembros.options.scale.suggestedMax = maxData + 1;
+
+
+
 	var myChartBarrasMiembros = new Chart(ctxBarrasMiembros, data.graficaBarrasMiembros);
 	
 	
@@ -175,6 +197,16 @@ function PintarGraficaProyectos(data,idContenedorAnios,idContenedorMiembros,idCo
 		},
 		maintainAspectRatio: false
 	}
+
+
+	items = [];
+	data.graficaSectoresAmbito.data.datasets.forEach(e => {
+	  items = [...e.data];
+	});
+	maxData = Math.max(...items);
+
+	data.graficaSectoresAmbito.options.scale.suggestedMax = maxData + 1;
+
 	var myBarrasAmbito = new Chart(ctxBarrasAmbito, data.graficaSectoresAmbito);
 }
 
