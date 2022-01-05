@@ -6,13 +6,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="DatasetLocal\**" />
+    <EmbeddedResource Remove="DatasetLocal\**" />
+    <None Remove="DatasetLocal\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="GnossApiWrapper.NetCore" Version="1.0.6" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Config\configOAuth\" />
-    <Folder Include="DatasetLocal\JsonOUT\" />
+    <Folder Include="Dataset\JsonEscritura\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,7 +32,7 @@
     <None Update="Config\configOAuth\OAuthV3.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="DatasetLocal\JsonIN\datos.json">
+    <None Update="Dataset\JsonLectura\pruebaGNOSSSS.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

@@ -572,23 +572,23 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                         }
                     }
 
+                    // Comprobar EISSN
+                    if (string.IsNullOrEmpty(idRevista) && !string.IsNullOrEmpty(pPublicacion.hasPublicationVenue.eissn))
+                    {
+                        idRevista = ComprobarRevistaEISSN(pPublicacion.hasPublicationVenue.eissn);
+                    }
+
                     // Comprobar ISBN
                     if (string.IsNullOrEmpty(idRevista) && pPublicacion.hasPublicationVenue.isbn != null && pPublicacion.hasPublicationVenue.isbn.Count > 0)
                     {
                         foreach (string isbn in pPublicacion.hasPublicationVenue.isbn)
                         {
-                            idRevista = ComprobarRevistaISSN(isbn);
+                            idRevista = ComprobarRevistaISBN(isbn);
                             if (!string.IsNullOrEmpty(idRevista))
                             {
                                 break;
                             }
                         }
-                    }
-
-                    // Comprobar EISSN
-                    if (string.IsNullOrEmpty(idRevista) && !string.IsNullOrEmpty(pPublicacion.hasPublicationVenue.eissn))
-                    {
-                        idRevista = ComprobarRevistaEISSN(pPublicacion.hasPublicationVenue.eissn);
                     }
 
                     // Comprobar Título
@@ -631,131 +631,6 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             }
                         }
                     }
-
-                    //#region --- Comprobar ISSN  
-                    //string issnObtenido = string.Empty;
-                    //if (pPublicacion.hasPublicationVenue.issn != null)
-                    //{
-                    //    // Comparo los elementos de la lista, y me quedo con el que mayor número tenga.
-                    //    if (pPublicacion.hasPublicationVenue.issn.Count() > 1)
-                    //    {
-                    //        issnObtenido = pPublicacion.hasPublicationVenue.issn.Max();
-                    //    }
-                    //    else
-                    //    {
-                    //        issnObtenido = pPublicacion.hasPublicationVenue.issn[0];
-                    //    }
-
-                    //    idRevista = ComprobarRevistaISSN(issnObtenido);
-                    //}
-                    //#endregion
-
-                    //#region --- Comprobar ISBN
-                    //string isbnObtenido = string.Empty;
-                    //if (pPublicacion.hasPublicationVenue.isbn != null)
-                    //{
-                    //    // Comparo los elementos de la lista, y me quedo con el que mayor número tenga.
-                    //    if (pPublicacion.hasPublicationVenue.isbn.Count() > 1)
-                    //    {
-                    //        int num = 0;
-                    //        foreach (string itemIsbn in pPublicacion.hasPublicationVenue.issn)
-                    //        {
-                    //            if (Int32.TryParse(itemIsbn, out int n3) && Int32.Parse(itemIsbn) > num)
-                    //            {
-                    //                num = Int32.Parse(itemIsbn);
-                    //                isbnObtenido = itemIsbn;
-                    //            }
-                    //            else
-                    //            {
-                    //                isbnObtenido = itemIsbn;
-                    //            }
-                    //        }
-                    //    }
-                    //    else
-                    //    {
-                    //        isbnObtenido = pPublicacion.hasPublicationVenue.isbn[0];
-                    //    }
-
-                    //    if (string.IsNullOrEmpty(idRevista))
-                    //    {
-                    //        idRevista = ComprobarRevistaISBN(isbnObtenido);
-                    //    }
-                    //}
-                    //#endregion
-
-                    //#region --- Comprobar Titulo
-                    //if (string.IsNullOrEmpty(idRevista) && pPublicacion.hasPublicationVenue.name != null)
-                    //{
-                    //    idRevista = ComprobarRevistaTitulo(pPublicacion.hasPublicationVenue.name);
-                    //}
-                    //#endregion
-
-                    //bool revistaNueva = true;
-                    //if (!string.IsNullOrEmpty(idRevista))
-                    //{
-                    //    revistaNueva = false;
-                    //}
-
-                    //// Creación del contenedor.
-                    //MaindocumentOntology.MainDocument revistaCargar = new MaindocumentOntology.MainDocument();
-                    //revistaCargar.Roh_title = pPublicacion.hasPublicationVenue.name;
-                    //revistaCargar.Bibo_issn = issnObtenido;
-                    //revistaCargar.Bibo_isbn = isbnObtenido;
-                    //if (!string.IsNullOrEmpty(pPublicacion.hasPublicationVenue.eissn))
-                    //{
-                    //    revistaCargar.Bibo_eissn = pPublicacion.hasPublicationVenue.eissn;
-                    //}
-                    //if (!string.IsNullOrEmpty(pPublicacion.hasPublicationVenue.type))
-                    //{
-                    //    if (pPublicacion.hasPublicationVenue.type == REVISTA_JOURNAL)
-                    //    {
-                    //        revistaCargar.IdRoh_format = "http://gnoss.com/items/documentformat_057";
-                    //    }
-                    //    else if (pPublicacion.hasPublicationVenue.type == REVISTA_BOOK)
-                    //    {
-                    //        revistaCargar.IdRoh_format = "http://gnoss.com/items/documentformat_032";
-                    //    }
-                    //}
-                    //if (pPublicacion.hasPublicationVenue.hasMetric != null && pPublicacion.hasPublicationVenue.hasMetric.Count > 0)
-                    //{
-                    //    revistaCargar.Roh_impactIndex = new List<MaindocumentOntology.ImpactIndex>();
-                    //    foreach (HasMetric metrica in pPublicacion.hasPublicationVenue.hasMetric)
-                    //    {
-                    //        MaindocumentOntology.ImpactIndex impacto = new MaindocumentOntology.ImpactIndex();
-                    //        if (!string.IsNullOrEmpty(metrica.quartile) && metrica.quartile.ToLower() == "q1")
-                    //        {
-                    //            //impacto.Roh_journalTop25 = true;
-                    //        }
-                    //        if (!string.IsNullOrEmpty(metrica.ranking) && metrica.ranking.Contains("/"))
-                    //        {
-                    //            impacto.Roh_publicationPosition = Int32.Parse(metrica.ranking.Split('/')[0]);
-                    //        }
-                    //        if (!string.IsNullOrEmpty(metrica.impactFactorName))
-                    //        {
-                    //            impacto.Roh_impactSourceOther = metrica.impactFactorName;
-                    //        }
-                    //        impacto.Roh_impactIndexInYear = (float)metrica.impactFactor;
-                    //        revistaCargar.Roh_impactIndex.Add(impacto);
-                    //    }
-                    //}
-
-                    //// Carga de la revista.
-                    //mResourceApi.ChangeOntoly("maindocument");
-                    //if (revistaNueva)
-                    //{
-                    //    ComplexOntologyResource resourceRevista = revistaCargar.ToGnossApiResource(mResourceApi, null);
-                    //    //mResourceApi.LoadComplexSemanticResource(resourceRevista, false, true);
-                    //    idRevista = resourceRevista.GnossId;
-                    //}
-                    //else
-                    //{
-                    //    Guid gnossId = mResourceApi.GetShortGuid(idRevista);
-                    //    Guid articleId = new Guid(idRevista.Split('_')[2]);
-                    //    ComplexOntologyResource resourceRevista = revistaCargar.ToGnossApiResource(mResourceApi, null, gnossId, articleId);
-                    //    //mResourceApi.ModifyComplexOntologyResource(resourceRevista, false, true);
-                    //    idRevista = resourceRevista.GnossId;
-                    //}
-                    //documentoCargar.IdVivo_hasPublicationVenue = idRevista;
                 }
 
                 // Bibliografia (Cites)
