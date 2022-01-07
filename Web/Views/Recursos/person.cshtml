@@ -641,6 +641,79 @@
                             <div class="col col-12 col-chart">
                                 <div class="wrapCol">
                                     <div class="chart-wrap">
+                                        <div class="acciones-grafico">
+                                            <div class="periodo dropdown dropdown-select">
+                                                <!-- <a href="#" class="dropdown-toggle btn btn-outline-grey" role="button" id="dropdownPeriodo" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    Periodo temporal:
+                                                    <span class="texto">Todos</span>
+                                                </a>
+                                                <div class="dropdown-menu basic-dropdown dropdown-menu-left" aria-labelledby="dropdownPeriodo">
+                                                    <p class="dropdown-title">Personalizado</p>
+                                                    <div class="faceta-date-range">
+                                                        <div id="gmd_ci_daterange" class="ui-slider ui-corner-all ui-slider-horizontal ui-widget ui-widget-content">
+                                                            <div class="ui-slider-range ui-corner-all ui-widget-header"></div>
+                                                            <span tabindex="0" class="ui-slider-handle ui-corner-all ui-state-default"></span>
+                                                            <span tabindex="0" class="ui-slider-handle ui-corner-all ui-state-default"></span>
+                                                        </div>
+                                                        <div class="d-flex">
+                                                            <input title="Año" type="number" min="0" max="2021" autocomplete="off" class="filtroFacetaFecha hasDatepicker" placeholder="Año inicio" name="gmd_ci_datef1" id="gmd_ci_datef1" onchange="actualizarValoresSlider(this,0)">
+                                                            <input title="Año" type="number" min="0" max="2021" autocomplete="off" class="filtroFacetaFecha hasDatepicker" placeholder="Año fin" name="gmd_ci_datef2" id="gmd_ci_datef2" onchange="actualizarValoresSlider(this,1)">
+                                                            <a name="gmd_ci:date" class="searchButton">Aplicar</a>
+                                                        </div>
+                                                        <ul class="no-list-style">
+                                                            <li>
+                                                                <a href="javascript: void(0);" class="item-dropdown">
+                                                                    <span class="textoAlternativo">Periodo temporal:</span>
+                                                                    <span class="texto">Últimos cinco años</span>
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="javascript: void(0);" class="item-dropdown">
+                                                                    <span class="textoAlternativo">Periodo temporal:</span>
+                                                                    <span class="texto">Últimos año</span>
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="javascript: void(0);" class="item-dropdown activeView">
+                                                                    <span class="textoAlternativo">Periodo temporal:</span>
+                                                                    <span class="texto">Todos</span>
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div> -->
+                                            </div>
+                                            <div class="vista-red dropdown">
+                                                <a href="#" class="dropdown-toggle btn btn-outline-grey" role="button" id="dropdownVistaRed" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <span class="texto">Relaciones a mostrar</span>
+                                                </a>
+                                                <div class="dropdown-menu basic-dropdown dropdown-menu-right" aria-labelledby="dropdownVistaRed">
+                                                    <ul class="no-list-style">
+                                                        <li>
+                                                            <a href="javascript: actualizar('relation_project')" rel="nofollow" class="item-dropdown"><span class="texto">Proyectos</span></a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="javascript: actualizar('relation_document')" rel="nofollow" class="item-dropdown"><span class="texto">Documentos</span></a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <div class="temas dropdown">
+                                                <a href="#" class="dropdown-toggle btn btn-outline-grey" role="button" id="dropdownTemas" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <span class="texto">Relaciones entre los miembros</span>
+                                                </a>
+                                                <div class="dropdown-menu basic-dropdown dropdown-menu-right" aria-labelledby="dropdownTemas">
+                                                    <ul class="no-list-style">
+                                                        <li>
+                                                            <a href="javascript: void(0);" rel="nofollow" class="item-dropdown"><span class="texto">Si</span></a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="javascript: void(0);" rel="nofollow" class="item-dropdown"><span class="texto">No</span></a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div class="contenido-grafico container">
                                             <div class="row">
                                                 <div class="col col-12 col-md-12">
@@ -697,14 +770,25 @@
 <!-- JAVASCRIPT -->
 <script type="text/javascript">
     var depuracion = false; // TODO:
-    const localUrlBase = "https://localhost:44344/";
-    const servicioExtermpBaseUrl = "http://serviciosedma.gnoss.com";
+
+    const localUrlBase = "https://localhost:44321/";
+    const servicioExtermpBaseUrl = "@Html.GetBaseUrlContent()/";
+
+    const urlBase = "@Html.GetBaseUrl()";
+    if (urlBase.includes("localhost") || urlBase.includes("depuracion")) {
+        depuracion = true;
+    }
+
+
+    // Datos Garfica Colaboradores
+    var dataCB = {};
+    var idContenedorCB = "";
 
     // Datos gráfica publicaciones.
     function CargarGraficaPublicaciones(parametros, idContenedor) {
-        var url = servicioExtermpBaseUrl + "/servicioexterno/Hercules/DatosGraficaPublicaciones"
+        var url = servicioExtermpBaseUrl + "servicioexterno/Hercules/DatosGraficaPublicaciones"
         if (depuracion) {
-            url = localUrlBase + "/Hercules/DatosGraficaPublicaciones"
+            url = localUrlBase + "Hercules/DatosGraficaPublicaciones"
         }
         var arg = {};
         arg.pParametros = parametros;
@@ -716,15 +800,15 @@
 
     // Datos gráfica proyectos.
     function CargarGraficaProyectos(parametros, idContenedorAnios, idContenedorMiembros, idContenedorAmbito) {
-        var url = servicioExtermpBaseUrl + "/servicioexterno/Hercules/DatosGraficaProyectos"
+        var url = servicioExtermpBaseUrl + "servicioexterno/Hercules/DatosGraficaProyectos"
         if (depuracion) {
             url = localUrlBase + "Hercules/DatosGraficaProyectos"
         }
         var arg = {};
         arg.pParametros = parametros;
         $('#' + idContenedorAnios).replaceWith('<canvas id="'+idContenedorAnios+'" class="js-chart"></canvas>' );
-		$('#' + idContenedorMiembros).replaceWith('<canvas id="'+idContenedorMiembros+'" class="js-chart"></canvas>' );
-		$('#' + idContenedorAmbito).replaceWith('<canvas id="'+idContenedorAmbito+'" class="js-chart"></canvas>' );
+        $('#' + idContenedorMiembros).replaceWith('<canvas id="'+idContenedorMiembros+'" class="js-chart"></canvas>' );
+        $('#' + idContenedorAmbito).replaceWith('<canvas id="'+idContenedorAmbito+'" class="js-chart"></canvas>' );
         $.get(url, arg, function (data) {
             PintarGraficaProyectos(data, idContenedorAnios, idContenedorMiembros, idContenedorAmbito);
         });
@@ -732,7 +816,7 @@
 
     // Datos gráfica colaboradores externos.
     function CargarGraficaColaboradores(pIdPersona, parametros, idContenedor, mostrarCargando = false) {
-        var url = "http://serviciosedma.gnoss.com/servicioexterno/Hercules/DatosGraficaColaboradoresPersonas"
+        var url = servicioExtermpBaseUrl + "servicioexterno/Hercules/DatosGraficaColaboradoresPersonas"
         if (depuracion) {
             url = localUrlBase + "Hercules/DatosGraficaColaboradoresPersonas"
         }
@@ -744,17 +828,29 @@
         if (mostrarCargando) {
             MostrarUpdateProgress();
         }
+
+        let optionsRelations = ["relation_project", "relation_document"];
+
         $.get(url, arg, function (data) {
-            PintarGraficaArania(data, idContenedor);
+            // Establecer los valores en la variable externa
+            dataCB = data;
+            idContenedorCB = idContenedor;
+
+            ActualizarGraficaColaboradores();
             if (mostrarCargando) {
                 OcultarUpdateProgress();
             }
         });
+
+    }
+
+    function ActualizarGraficaColaboradores(typesOcultar = [], showRelation = true) {
+        AjustarGraficaArania(dataCB, idContenedorCB, typesOcultar, showRelation);
     }
 
     // Datos gráfica áreas temáticas
     function CargarGraficaAreasTematicas(pIdGrupo, idContenedor) {
-        var url = "http://serviciosedma.gnoss.com/servicioexterno/Hercules/DatosGraficaAreasTematicas"
+        var url = servicioExtermpBaseUrl + "servicioexterno/Hercules/DatosGraficaAreasTematicas"
         if (depuracion) {
             url = localUrlBase + "Hercules/DatosGraficaAreasTematicas"
         }
@@ -770,7 +866,7 @@
 
     // Datos gráfica áreas temáticas
     function CargarGraficaAreasTematicasArania(pIdGrupo, idContenedor) {
-        var url = "http://serviciosedma.gnoss.com/servicioexterno/Hercules/DatosGraficaAreasTematicasArania"
+        var url = servicioExtermpBaseUrl + "servicioexterno/Hercules/DatosGraficaAreasTematicasArania"
         if (depuracion) {
             url = localUrlBase + "Hercules/DatosGraficaAreasTematicasArania"
         }

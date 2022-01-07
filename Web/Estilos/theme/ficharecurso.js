@@ -203,13 +203,34 @@ function PintarGraficaProyectos(data,idContenedorAnios,idContenedorMiembros,idCo
 
 	items = [];
 	data.graficaSectoresAmbito.data.datasets.forEach(e => {
-	  items = [...e.data];
+	  items = [...items, ...e.data];
 	});
 	maxData = Math.max(...items);
 
 	data.graficaSectoresAmbito.options.scale.suggestedMax = maxData + 1;
 
 	var myBarrasAmbito = new Chart(ctxBarrasAmbito, data.graficaSectoresAmbito);
+}
+
+
+function AjustarGraficaArania(data,idContenedor,typesOcultar = [],showRelation = true) {
+
+	if (typesOcultar.length > 0) {
+		data = data.filter(e => e.selectable === true || typesOcultar.includes(e.data.type));
+	}
+
+	if (showRelation == false) {
+		let ipEl = data.filter(e => e.data.type === "none" || e.data.type === "icon_ip");
+		if (ipEl.length > 0) {
+			let id = ipEl[0].data.id;
+			if (id != "")
+			{
+				data = data.filter(e => e.selectable === true || e.data.source === id || e.data.target === id);
+			}
+		}
+	}
+
+	PintarGraficaArania(data, idContenedor);
 }
 
 function PintarGraficaArania(data,idContenedor){
