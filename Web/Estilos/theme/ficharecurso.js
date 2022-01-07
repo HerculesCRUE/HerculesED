@@ -262,8 +262,8 @@ function PintarGraficaArania(data,idContenedor){
 		style: [{
 			"selector": "node",
 			"style": {
-				"width": "mapData(score, 0, 25, 30, 70)",
-				"height": "mapData(score, 0, 25, 30, 70)",
+				"width": "mapData(score, 0, 10, 45, 90)",
+				"height": "mapData(score, 0, 10, 45, 90)",
 				"content": "data(name)",
 				"font-size": "12px",
 				"font-family": 'Roboto',
