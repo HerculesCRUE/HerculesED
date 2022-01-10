@@ -378,19 +378,30 @@ function PintarGraficaArania(data,idContenedor){
 		}
 	});
 
+	// Colocar los elementos huérfanos a la derecha
 	cy.ready(function(event) {
 		let maxPos = 0;
-		let onlyItems = cy.nodes().filter(node => node._private.edges == []);
-		console.log("onlyItems: ",onlyItems);
+		let minYPos = 9999999;
+		let maxYPos = 0;
+		let yPos = 0;
+		// Obtengo los elementos sin relación
+		let onlyItems = cy.nodes().filter(node => node._private.edges.length == 0);
+		// Selecciono las posiciones desde las que comenzar
 		for (i = 0; i < cy.nodes().length; i++) { //starts loop
 			maxPos = (nodos[i]._private.position.x > maxPos) ? nodos[i]._private.position.x : maxPos;
+			minYPos = (nodos[i]._private.position.y < minYPos) ? nodos[i]._private.position.y : minYPos;
+			maxYPos = (nodos[i]._private.position.y > maxYPos) ? nodos[i]._private.position.y : maxYPos;
 		};
 
-		maxPos = maxPos + 40;
+		yPos = minYPos;
+
+		// Modifico las posiciones de los elementos que quiero recolocar
+		maxPos = maxPos + maxPos / 2;
 		for (i = 0; i < onlyItems.length; i++) { //starts loop
-			onlyItems.position('x', maxPos);
+			onlyItems[i].position({'x': maxPos, 'y': yPos});
+			
+			yPos = yPos + onlyItems[i]._private.style.height.value + 50;
 		};
-		console.log("maxPos", maxPos);
     });
 }
 
