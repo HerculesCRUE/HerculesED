@@ -376,7 +376,22 @@ function PintarGraficaArania(data,idContenedor){
 		else {
 			e._private.data.name = "";
 		}
-	})
+	});
+
+	cy.ready(function(event) {
+		let maxPos = 0;
+		let onlyItems = cy.nodes().filter(node => node._private.edges == []);
+		console.log("onlyItems: ",onlyItems);
+		for (i = 0; i < cy.nodes().length; i++) { //starts loop
+			maxPos = (nodos[i]._private.position.x > maxPos) ? nodos[i]._private.position.x : maxPos;
+		};
+
+		maxPos = maxPos + 40;
+		for (i = 0; i < onlyItems.length; i++) { //starts loop
+			onlyItems.position('x', maxPos);
+		};
+		console.log("maxPos", maxPos);
+    });
 }
 
 function PintarGraficaAreasTematicas(data,idContenedor) {	
