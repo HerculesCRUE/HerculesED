@@ -1555,7 +1555,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             List<Publication> objInicial_Scopus = null;
             try
             {
-                JsonConvert.DeserializeObject<List<Publication>>(info_publication);
+                objInicial_Scopus = JsonConvert.DeserializeObject<List<Publication>>(info_publication);
             }catch(Exception error)
             {
                 return objInicial_Scopus;
@@ -1571,7 +1571,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             List<Publication> objInicial_woS = null;
             try
             {
-                JsonConvert.DeserializeObject<List<Publication>>(info_publication);
+                objInicial_woS = JsonConvert.DeserializeObject<List<Publication>>(info_publication);
             }catch(Exception error)
             {
                 return objInicial_woS;
