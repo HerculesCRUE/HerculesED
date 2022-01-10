@@ -7,6 +7,7 @@ using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.Model;
 using Es.Riam.Gnoss.Web.MVC.Models;
 using Gnoss.ApiWrapper.Interfaces;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 namespace GnossBase
@@ -45,16 +46,17 @@ namespace GnossBase
         }
     }
 
+	[ExcludeFromCodeCoverage]
 	public class GnossOCBase : IGnossOCBase
 	{
 		public enum LanguageEnum
 		{
 			es,
 			en,
-			ca,
+            ca,
 			eu,
 			gl,
-			fr,
+			fr
 		}
 		internal List<OntologyEntity> entList = new List<OntologyEntity>();
 		internal List<OntologyProperty> propList = new List<OntologyProperty>();

@@ -14,11 +14,13 @@ using System.Text.RegularExpressions;
 using System.Globalization;
 using System.Collections;
 using Gnoss.ApiWrapper.Exceptions;
+using System.Diagnostics.CodeAnalysis;
 using GeographicRegion = GeographicregionOntology.GeographicRegion;
 using Organization = OrganizationOntology.Organization;
 
 namespace AccreditationOntology
 {
+	[ExcludeFromCodeCoverage]
 	public class Accreditation : GnossOCBase
 	{
 

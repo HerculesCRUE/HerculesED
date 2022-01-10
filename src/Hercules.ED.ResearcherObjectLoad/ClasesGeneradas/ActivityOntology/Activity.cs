@@ -14,6 +14,7 @@ using System.Text.RegularExpressions;
 using System.Globalization;
 using System.Collections;
 using Gnoss.ApiWrapper.Exceptions;
+using System.Diagnostics.CodeAnalysis;
 using Organization = OrganizationOntology.Organization;
 using Feature = FeatureOntology.Feature;
 using ManagementTypeActivity = ManagementtypeactivityOntology.ManagementTypeActivity;
@@ -23,6 +24,7 @@ using ActivityModality = ActivitymodalityOntology.ActivityModality;
 
 namespace ActivityOntology
 {
+	[ExcludeFromCodeCoverage]
 	public class Activity : GnossOCBase
 	{
 

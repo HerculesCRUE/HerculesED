@@ -14,11 +14,13 @@ using System.Text.RegularExpressions;
 using System.Globalization;
 using System.Collections;
 using Gnoss.ApiWrapper.Exceptions;
+using System.Diagnostics.CodeAnalysis;
 using Feature = FeatureOntology.Feature;
 using Organization = OrganizationOntology.Organization;
 
 namespace NetworkOntology
 {
+	[ExcludeFromCodeCoverage]
 	public class Network : GnossOCBase
 	{
 
