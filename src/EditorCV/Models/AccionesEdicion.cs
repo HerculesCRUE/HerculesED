@@ -861,16 +861,19 @@ namespace GuardadoCV.Models
             }
             //Editabilidad
             item.iseditable = true;
-            foreach (string propEditabilidad in Utils.UtilityCV.PropertyNotEditable.Keys)
+            if (!string.IsNullOrEmpty(pId))
             {
-                string valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + propEditabilidad, pData).FirstOrDefault();
-                if (Utils.UtilityCV.PropertyNotEditable[propEditabilidad] == null || Utils.UtilityCV.PropertyNotEditable[propEditabilidad].Count == 0 && !string.IsNullOrEmpty(valorPropiedad))
+                foreach (string propEditabilidad in Utils.UtilityCV.PropertyNotEditable.Keys)
                 {
-                    item.iseditable = false;
-                }
-                else if (Utils.UtilityCV.PropertyNotEditable[propEditabilidad].Contains(valorPropiedad))
-                {
-                    item.iseditable = false;
+                    string valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + propEditabilidad, pData).FirstOrDefault();
+                    if ((Utils.UtilityCV.PropertyNotEditable[propEditabilidad] == null || Utils.UtilityCV.PropertyNotEditable[propEditabilidad].Count == 0) && !string.IsNullOrEmpty(valorPropiedad))
+                    {
+                        item.iseditable = false;
+                    }
+                    else if (Utils.UtilityCV.PropertyNotEditable[propEditabilidad].Contains(valorPropiedad))
+                    {
+                        item.iseditable = false;
+                    }
                 }
             }
 
@@ -1025,16 +1028,19 @@ namespace GuardadoCV.Models
 
             //Editabilidad
             entityEdit.iseditable = true;
-            foreach (string propEditabilidad in Utils.UtilityCV.PropertyNotEditable.Keys)
+            if (!string.IsNullOrEmpty(pId))
             {
-                string valorPropiedad = GetPropValues(pId, propEditabilidad, data).FirstOrDefault();
-                if (Utils.UtilityCV.PropertyNotEditable[propEditabilidad] == null || Utils.UtilityCV.PropertyNotEditable[propEditabilidad].Count == 0 && !string.IsNullOrEmpty(valorPropiedad))
+                foreach (string propEditabilidad in Utils.UtilityCV.PropertyNotEditable.Keys)
                 {
-                    entityEdit.iseditable = false;
-                }
-                else if (Utils.UtilityCV.PropertyNotEditable[propEditabilidad].Contains(valorPropiedad))
-                {
-                    entityEdit.iseditable = false;
+                    string valorPropiedad = GetPropValues(pId, propEditabilidad, data).FirstOrDefault();
+                    if ((Utils.UtilityCV.PropertyNotEditable[propEditabilidad] == null || Utils.UtilityCV.PropertyNotEditable[propEditabilidad].Count == 0) && !string.IsNullOrEmpty(valorPropiedad))
+                    {
+                        entityEdit.iseditable = false;
+                    }
+                    else if (Utils.UtilityCV.PropertyNotEditable[propEditabilidad].Contains(valorPropiedad))
+                    {
+                        entityEdit.iseditable = false;
+                    }
                 }
             }
             return entityEdit;
