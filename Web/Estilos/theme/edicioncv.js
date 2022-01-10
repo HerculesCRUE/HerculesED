@@ -1637,6 +1637,8 @@ var edicionCV = {
 			var valoresTesauro = $.map($(this).find('ul.listadoTesauro .faceta') ,function(faceta) { 
 				return { key : $(faceta).attr('name'), value : $(faceta).attr('title') }; 
 			});
+			
+			var iconAdd="add";
 		
 			var htmlAgnadir=`		<div class="acciones-listado acciones-listado-edicion">
 										<div class="wrap">
@@ -1658,8 +1660,6 @@ var edicionCV = {
 			var idTemp=	$(this).attr('idtemp');
 			$(this).children('.simple-collapse-content').remove();
 			var items= $(this).children('.item.added.entityaux');	
-
-			var iconAdd="add";
 			
 			var htmlAcciones=`
 								<div class="simple-collapse-content">
