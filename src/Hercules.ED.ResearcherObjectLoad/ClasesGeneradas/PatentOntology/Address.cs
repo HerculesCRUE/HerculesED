@@ -14,10 +14,12 @@ using System.Text.RegularExpressions;
 using System.Globalization;
 using System.Collections;
 using Gnoss.ApiWrapper.Exceptions;
+using System.Diagnostics.CodeAnalysis;
 using Feature = FeatureOntology.Feature;
 
 namespace PatentOntology
 {
+	[ExcludeFromCodeCoverage]
 	public class Address : GnossOCBase
 	{
 

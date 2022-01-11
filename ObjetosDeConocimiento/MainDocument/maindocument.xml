@@ -48,7 +48,7 @@
             <AtrNombre>e-ISSN</AtrNombre>
             <AtrNombreLectura>e-ISSN</AtrNombreLectura>
         </Propiedad>
-		<Propiedad  ID="http://w3id.org/roh/impactCategory" EntidadID="http://w3id.org/roh/ImpactIndex">
+		<Propiedad  ID="http://w3id.org/roh/impactIndexCategory" EntidadID="http://w3id.org/roh/ImpactCategory">
             <AtrNombre>Categoría del índice de impacto</AtrNombre>
             <AtrNombreLectura>Categoría del índice de impacto</AtrNombreLectura>
 			<SeleccionEntidad>
@@ -73,15 +73,15 @@
             <AtrNombre>Fuente de impacto, otros</AtrNombre>
             <AtrNombreLectura>Fuente de impacto, otros</AtrNombreLectura>
         </Propiedad>
-        <Propiedad  ID="http://w3id.org/roh/journalNumberInCat" EntidadID="http://w3id.org/roh/ImpactIndex">
+        <Propiedad  ID="http://w3id.org/roh/journalNumberInCat" EntidadID="http://w3id.org/roh/ImpactCategory">
             <AtrNombre>Número de revistas en la categoría</AtrNombre>
             <AtrNombreLectura>Número de revistas en la categoría</AtrNombreLectura>
         </Propiedad>
-        <Propiedad  ID="http://w3id.org/roh/publicationPosition" EntidadID="http://w3id.org/roh/ImpactIndex">
+        <Propiedad  ID="http://w3id.org/roh/publicationPosition" EntidadID="http://w3id.org/roh/ImpactCategory">
             <AtrNombre>Posición de publicación</AtrNombre>
             <AtrNombreLectura>Posición de publicación</AtrNombreLectura>
         </Propiedad>
-        <Propiedad  ID="http://w3id.org/roh/quartile" EntidadID="http://w3id.org/roh/ImpactIndex">
+        <Propiedad  ID="http://w3id.org/roh/quartile" EntidadID="http://w3id.org/roh/ImpactCategory">
             <AtrNombre>Cuartil</AtrNombre>
             <AtrNombreLectura>Cuartil</AtrNombreLectura>
         </Propiedad>

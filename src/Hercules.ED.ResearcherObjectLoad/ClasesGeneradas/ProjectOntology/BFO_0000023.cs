@@ -14,10 +14,12 @@ using System.Text.RegularExpressions;
 using System.Globalization;
 using System.Collections;
 using Gnoss.ApiWrapper.Exceptions;
+using System.Diagnostics.CodeAnalysis;
 using Person = PersonOntology.Person;
 
 namespace ProjectOntology
 {
+	[ExcludeFromCodeCoverage]
 	public class BFO_0000023 : GnossOCBase
 	{
 

@@ -1118,25 +1118,22 @@ namespace CurriculumvitaeOntology
 			}
 			if(this.Roh_personalData.Vcard_hasTelephone != null)
 			{
-			foreach(var item2 in this.Roh_personalData.Vcard_hasTelephone)
-			{
-				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/TelephoneType_{ResourceID}_{item2.ArticleID}", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", $"<https://www.w3.org/2006/vcard/ns#TelephoneType>", list, " . ");
-				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/TelephoneType_{ResourceID}_{item2.ArticleID}", "http://www.w3.org/2000/01/rdf-schema#label", $"\"https://www.w3.org/2006/vcard/ns#TelephoneType\"", list, " . ");
-				AgregarTripleALista($"{resourceAPI.GraphsUrl}{ResourceID}", "http://gnoss/hasEntidad", $"<{resourceAPI.GraphsUrl}items/TelephoneType_{ResourceID}_{item2.ArticleID}>", list, " . ");
-				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/PersonalData_{ResourceID}_{this.Roh_personalData.ArticleID}", "https://www.w3.org/2006/vcard/ns#hasTelephone", $"<{resourceAPI.GraphsUrl}items/TelephoneType_{ResourceID}_{item2.ArticleID}>", list, " . ");
-				if(item2.Roh_hasExtension != null)
+				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/TelephoneType_{ResourceID}_{this.Roh_personalData.Vcard_hasTelephone.ArticleID}", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", $"<https://www.w3.org/2006/vcard/ns#TelephoneType>", list, " . ");
+				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/TelephoneType_{ResourceID}_{this.Roh_personalData.Vcard_hasTelephone.ArticleID}", "http://www.w3.org/2000/01/rdf-schema#label", $"\"https://www.w3.org/2006/vcard/ns#TelephoneType\"", list, " . ");
+				AgregarTripleALista($"{resourceAPI.GraphsUrl}{ResourceID}", "http://gnoss/hasEntidad", $"<{resourceAPI.GraphsUrl}items/TelephoneType_{ResourceID}_{this.Roh_personalData.Vcard_hasTelephone.ArticleID}>", list, " . ");
+				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/PersonalData_{ResourceID}_{this.Roh_personalData.ArticleID}", "https://www.w3.org/2006/vcard/ns#hasTelephone", $"<{resourceAPI.GraphsUrl}items/TelephoneType_{ResourceID}_{this.Roh_personalData.Vcard_hasTelephone.ArticleID}>", list, " . ");
+				if(this.Roh_personalData.Vcard_hasTelephone.Roh_hasExtension != null)
 				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/TelephoneType_{ResourceID}_{item2.ArticleID}",  "http://w3id.org/roh/hasExtension", $"\"{GenerarTextoSinSaltoDeLinea(item2.Roh_hasExtension)}\"", list, " . ");
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/TelephoneType_{ResourceID}_{this.Roh_personalData.Vcard_hasTelephone.ArticleID}",  "http://w3id.org/roh/hasExtension", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Vcard_hasTelephone.Roh_hasExtension)}\"", list, " . ");
 				}
-				if(item2.Roh_hasInternationalCode != null)
+				if(this.Roh_personalData.Vcard_hasTelephone.Roh_hasInternationalCode != null)
 				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/TelephoneType_{ResourceID}_{item2.ArticleID}",  "http://w3id.org/roh/hasInternationalCode", $"\"{GenerarTextoSinSaltoDeLinea(item2.Roh_hasInternationalCode)}\"", list, " . ");
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/TelephoneType_{ResourceID}_{this.Roh_personalData.Vcard_hasTelephone.ArticleID}",  "http://w3id.org/roh/hasInternationalCode", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Vcard_hasTelephone.Roh_hasInternationalCode)}\"", list, " . ");
 				}
-				if(item2.Vcard_hasValue != null)
+				if(this.Roh_personalData.Vcard_hasTelephone.Vcard_hasValue != null)
 				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/TelephoneType_{ResourceID}_{item2.ArticleID}",  "https://www.w3.org/2006/vcard/ns#hasValue", $"\"{GenerarTextoSinSaltoDeLinea(item2.Vcard_hasValue)}\"", list, " . ");
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/TelephoneType_{ResourceID}_{this.Roh_personalData.Vcard_hasTelephone.ArticleID}",  "https://www.w3.org/2006/vcard/ns#hasValue", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Vcard_hasTelephone.Vcard_hasValue)}\"", list, " . ");
 				}
-			}
 			}
 			if(this.Roh_personalData.Roh_hasMobilePhone != null)
 			{
@@ -1265,6 +1262,18 @@ namespace CurriculumvitaeOntology
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/PersonalData_{ResourceID}_{this.Roh_personalData.ArticleID}",  "http://vivoweb.org/ontology/core#scopusId", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Vivo_scopusId)}\"", list, " . ");
 				}
+				if(this.Roh_personalData.Foaf_familyName != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/PersonalData_{ResourceID}_{this.Roh_personalData.ArticleID}",  "http://xmlns.com/foaf/0.1/familyName", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Foaf_familyName)}\"", list, " . ");
+				}
+				if(this.Roh_personalData.Roh_secondFamilyName != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/PersonalData_{ResourceID}_{this.Roh_personalData.ArticleID}",  "http://w3id.org/roh/secondFamilyName", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Roh_secondFamilyName)}\"", list, " . ");
+				}
+				if(this.Roh_personalData.Vcard_email != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/PersonalData_{ResourceID}_{this.Roh_personalData.ArticleID}",  "https://www.w3.org/2006/vcard/ns#email", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Vcard_email)}\"", list, " . ");
+				}
 				if(this.Roh_personalData.Foaf_img != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/PersonalData_{ResourceID}_{this.Roh_personalData.ArticleID}",  "http://xmlns.com/foaf/0.1/img", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Foaf_img)}\"", list, " . ");
@@ -1275,10 +1284,7 @@ namespace CurriculumvitaeOntology
 				}
 				if(this.Roh_personalData.Foaf_homepage != null)
 				{
-					foreach(var item2 in this.Roh_personalData.Foaf_homepage)
-					{
-						AgregarTripleALista($"{resourceAPI.GraphsUrl}items/PersonalData_{ResourceID}_{this.Roh_personalData.ArticleID}", "http://xmlns.com/foaf/0.1/homepage", $"\"{GenerarTextoSinSaltoDeLinea(item2)}\"", list, " . ");
-					}
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/PersonalData_{ResourceID}_{this.Roh_personalData.ArticleID}",  "http://xmlns.com/foaf/0.1/homepage", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Foaf_homepage)}\"", list, " . ");
 				}
 				if(this.Roh_personalData.Roh_ORCID != null)
 				{
@@ -1292,9 +1298,9 @@ namespace CurriculumvitaeOntology
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/PersonalData_{ResourceID}_{this.Roh_personalData.ArticleID}",  "https://www.w3.org/2006/vcard/ns#birth-date", $"\"{this.Roh_personalData.Vcard_birth_date.Value.ToString("yyyyMMddHHmmss")}\"", list, " . ");
 				}
-				if(this.Roh_personalData.Vcard_email != null)
+				if(this.Roh_personalData.Foaf_firstName != null)
 				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/PersonalData_{ResourceID}_{this.Roh_personalData.ArticleID}",  "https://www.w3.org/2006/vcard/ns#email", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Vcard_email)}\"", list, " . ");
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/PersonalData_{ResourceID}_{this.Roh_personalData.ArticleID}",  "http://xmlns.com/foaf/0.1/firstName", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Foaf_firstName)}\"", list, " . ");
 				}
 			}
 				if(this.IdRoh_gnossUser != null)
@@ -2575,22 +2581,19 @@ namespace CurriculumvitaeOntology
 			}
 			if(this.Roh_personalData.Vcard_hasTelephone != null)
 			{
-			foreach(var item2 in this.Roh_personalData.Vcard_hasTelephone)
-			{
-				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/personaldata_{ResourceID}_{this.Roh_personalData.ArticleID}", "https://www.w3.org/2006/vcard/ns#hasTelephone", $"<{resourceAPI.GraphsUrl}items/telephonetype_{ResourceID}_{item2.ArticleID}>", list, " . ");
-				if(item2.Roh_hasExtension != null)
+				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/personaldata_{ResourceID}_{this.Roh_personalData.ArticleID}", "https://www.w3.org/2006/vcard/ns#hasTelephone", $"<{resourceAPI.GraphsUrl}items/telephonetype_{ResourceID}_{this.Roh_personalData.Vcard_hasTelephone.ArticleID}>", list, " . ");
+				if(this.Roh_personalData.Vcard_hasTelephone.Roh_hasExtension != null)
 				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/telephonetype_{ResourceID}_{item2.ArticleID}",  "http://w3id.org/roh/hasExtension", $"\"{GenerarTextoSinSaltoDeLinea(item2.Roh_hasExtension).ToLower()}\"", list, " . ");
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/telephonetype_{ResourceID}_{this.Roh_personalData.Vcard_hasTelephone.ArticleID}",  "http://w3id.org/roh/hasExtension", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Vcard_hasTelephone.Roh_hasExtension).ToLower()}\"", list, " . ");
 				}
-				if(item2.Roh_hasInternationalCode != null)
+				if(this.Roh_personalData.Vcard_hasTelephone.Roh_hasInternationalCode != null)
 				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/telephonetype_{ResourceID}_{item2.ArticleID}",  "http://w3id.org/roh/hasInternationalCode", $"\"{GenerarTextoSinSaltoDeLinea(item2.Roh_hasInternationalCode).ToLower()}\"", list, " . ");
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/telephonetype_{ResourceID}_{this.Roh_personalData.Vcard_hasTelephone.ArticleID}",  "http://w3id.org/roh/hasInternationalCode", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Vcard_hasTelephone.Roh_hasInternationalCode).ToLower()}\"", list, " . ");
 				}
-				if(item2.Vcard_hasValue != null)
+				if(this.Roh_personalData.Vcard_hasTelephone.Vcard_hasValue != null)
 				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/telephonetype_{ResourceID}_{item2.ArticleID}",  "https://www.w3.org/2006/vcard/ns#hasValue", $"\"{GenerarTextoSinSaltoDeLinea(item2.Vcard_hasValue).ToLower()}\"", list, " . ");
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/telephonetype_{ResourceID}_{this.Roh_personalData.Vcard_hasTelephone.ArticleID}",  "https://www.w3.org/2006/vcard/ns#hasValue", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Vcard_hasTelephone.Vcard_hasValue).ToLower()}\"", list, " . ");
 				}
-			}
 			}
 			if(this.Roh_personalData.Roh_hasMobilePhone != null)
 			{
@@ -2787,6 +2790,18 @@ namespace CurriculumvitaeOntology
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/personaldata_{ResourceID}_{this.Roh_personalData.ArticleID}",  "http://vivoweb.org/ontology/core#scopusId", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Vivo_scopusId).ToLower()}\"", list, " . ");
 				}
+				if(this.Roh_personalData.Foaf_familyName != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/personaldata_{ResourceID}_{this.Roh_personalData.ArticleID}",  "http://xmlns.com/foaf/0.1/familyName", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Foaf_familyName).ToLower()}\"", list, " . ");
+				}
+				if(this.Roh_personalData.Roh_secondFamilyName != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/personaldata_{ResourceID}_{this.Roh_personalData.ArticleID}",  "http://w3id.org/roh/secondFamilyName", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Roh_secondFamilyName).ToLower()}\"", list, " . ");
+				}
+				if(this.Roh_personalData.Vcard_email != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/personaldata_{ResourceID}_{this.Roh_personalData.ArticleID}",  "https://www.w3.org/2006/vcard/ns#email", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Vcard_email).ToLower()}\"", list, " . ");
+				}
 				if(this.Roh_personalData.Foaf_img != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/personaldata_{ResourceID}_{this.Roh_personalData.ArticleID}",  "http://xmlns.com/foaf/0.1/img", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Foaf_img).ToLower()}\"", list, " . ");
@@ -2797,10 +2812,7 @@ namespace CurriculumvitaeOntology
 				}
 				if(this.Roh_personalData.Foaf_homepage != null)
 				{
-					foreach(var item2 in this.Roh_personalData.Foaf_homepage)
-					{
-						AgregarTripleALista($"{resourceAPI.GraphsUrl}items/personaldata_{ResourceID}_{this.Roh_personalData.ArticleID}", "http://xmlns.com/foaf/0.1/homepage", $"\"{GenerarTextoSinSaltoDeLinea(item2).ToLower()}\"", list, " . ");
-					}
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/personaldata_{ResourceID}_{this.Roh_personalData.ArticleID}",  "http://xmlns.com/foaf/0.1/homepage", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Foaf_homepage).ToLower()}\"", list, " . ");
 				}
 				if(this.Roh_personalData.Roh_ORCID != null)
 				{
@@ -2814,9 +2826,9 @@ namespace CurriculumvitaeOntology
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/personaldata_{ResourceID}_{this.Roh_personalData.ArticleID}",  "https://www.w3.org/2006/vcard/ns#birth-date", $"{this.Roh_personalData.Vcard_birth_date.Value.ToString("yyyyMMddHHmmss")}", list, " . ");
 				}
-				if(this.Roh_personalData.Vcard_email != null)
+				if(this.Roh_personalData.Foaf_firstName != null)
 				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/personaldata_{ResourceID}_{this.Roh_personalData.ArticleID}",  "https://www.w3.org/2006/vcard/ns#email", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Vcard_email).ToLower()}\"", list, " . ");
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/personaldata_{ResourceID}_{this.Roh_personalData.ArticleID}",  "http://xmlns.com/foaf/0.1/firstName", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Foaf_firstName).ToLower()}\"", list, " . ");
 				}
 			}
 				if(this.IdRoh_gnossUser != null)

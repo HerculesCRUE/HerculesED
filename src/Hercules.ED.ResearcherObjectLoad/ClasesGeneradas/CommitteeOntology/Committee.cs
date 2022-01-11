@@ -14,12 +14,14 @@ using System.Text.RegularExpressions;
 using System.Globalization;
 using System.Collections;
 using Gnoss.ApiWrapper.Exceptions;
+using System.Diagnostics.CodeAnalysis;
 using Organization = OrganizationOntology.Organization;
 using GeographicRegion = GeographicregionOntology.GeographicRegion;
 using Feature = FeatureOntology.Feature;
 
 namespace CommitteeOntology
 {
+	[ExcludeFromCodeCoverage]
 	public class Committee : GnossOCBase
 	{
 

@@ -14,9 +14,11 @@ using System.Text.RegularExpressions;
 using System.Globalization;
 using System.Collections;
 using Gnoss.ApiWrapper.Exceptions;
+using System.Diagnostics.CodeAnalysis;
 
 namespace ManagementtypeactivityOntology
 {
+	[ExcludeFromCodeCoverage]
 	public class ManagementTypeActivity : GnossOCBase
 	{
 

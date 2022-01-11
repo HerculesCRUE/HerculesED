@@ -17,7 +17,7 @@ using Gnoss.ApiWrapper.Exceptions;
 using System.Diagnostics.CodeAnalysis;
 using Concept = TaxonomyOntology.Concept;
 
-namespace TechnologicalresultOntology
+namespace GroupOntology
 {
 	[ExcludeFromCodeCoverage]
 	public class CategoryPath : GnossOCBase
