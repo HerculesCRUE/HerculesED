@@ -53,6 +53,18 @@ namespace PublicationConnect.Controllers
             return publication;
         }
 
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public List<Publication> GetRoPublication([FromQuery][Required] string pDoi)
+        {
+            Log.Information("Leyendo Configuración...");
+            ROPublicationLogic PublicationObject = new ROPublicationLogic(_Configuracion);//,almacenamiento.metricas_scopus, almacenamiento.metricas_WoS);
+            Log.Information("Obteniendo datos de publicación...");
+            List<Publication> publication = PublicationObject.getPublications("", pDoi:pDoi);
+            return publication;
+        }
     }
 }
 
