@@ -121,7 +121,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 objInicial_Scopus = llamada_Scopus(name, date);
                 Log.Information("Haciendo petición a Wos...");
                 objInicial_woS = llamada_WoS(name, date);
-            }            
+            }
 
             if (objInicial_woS != null && objInicial_woS.Count >= 1)
             {
@@ -413,25 +413,29 @@ namespace PublicationConnect.ROs.Publications.Controllers
             {
                 foreach (Publication pub_cita in objInicial_OpenCitatons.citas)
                 {
+
                     string doi_cita = pub_cita.doi;
                     Publication objInicial_SemanticScholar = llamadaSemanticScholar(doi_cita);
                     Publication pub_2 = this.llamadaCrossRef(doi_cita);
                     Publication pub_completa = compatacion(pub_2, objInicial_SemanticScholar);
 
-                    pub_completa.pdf = llamadaZenodo(pub_completa.doi);
-                    pub_completa.topics_enriquecidos = enriquedicmiento(pub_completa);
-                    pub_completa.freetextKeyword_enriquecidas = enriquedicmiento_pal(pub_completa);
-                    if (pub_completa.dataIssued != null & pub_completa.hasPublicationVenue.issn != null)
-                    {
-                        pub_completa.hasPublicationVenue = metrica_journal(pub_completa.hasPublicationVenue, pub_completa.dataIssued.datimeTime, pub_completa.topics_enriquecidos);
-                    }
-                    if (pub_completa.pdf == "")
-                    {
-                        pub_completa.pdf = null;
-                    }
                     if (pub_completa != null)
                     {
-                        citas.Add(pub_completa);
+                        pub_completa.pdf = llamadaZenodo(pub_completa.doi);
+                        pub_completa.topics_enriquecidos = enriquedicmiento(pub_completa);
+                        pub_completa.freetextKeyword_enriquecidas = enriquedicmiento_pal(pub_completa);
+                        if (pub_completa.dataIssued != null & pub_completa.hasPublicationVenue.issn != null)
+                        {
+                            pub_completa.hasPublicationVenue = metrica_journal(pub_completa.hasPublicationVenue, pub_completa.dataIssued.datimeTime, pub_completa.topics_enriquecidos);
+                        }
+                        if (pub_completa.pdf == "")
+                        {
+                            pub_completa.pdf = null;
+                        }
+                        if (pub_completa != null)
+                        {
+                            citas.Add(pub_completa);
+                        }
                     }
                 }
             }
@@ -444,7 +448,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 else
                 {
                     pub.citas.AddRange(citas);
-                }               
+                }
             }
 
             List<Publication> bibliografia = new List<Publication>();
@@ -752,8 +756,8 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     {
                         pub.hasPublicationVenue = pub_2.hasPublicationVenue;
                     }
-                    
-                    if(pub_1.bibliografia != null)
+
+                    if (pub_1.bibliografia != null)
                     {
                         pub.bibliografia = pub_1.bibliografia;
                     }
@@ -809,15 +813,15 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 string ids = "";
                 if (person_2.name != null)
                 {
-                    if (person_2.name.given != null)
+                    if (person_2.name.given != null && person_2.name.given.Count > 0)
                     {
                         name = person_2.name.given[0];
                     }
-                    if (person_2.name.familia != null)
+                    if (person_2.name.familia != null && person_2.name.familia.Count > 0)
                     {
                         familia = person_2.name.familia[0];
                     }
-                    if (person_2.name.nombre_completo != null)
+                    if (person_2.name.nombre_completo != null && person_2.name.nombre_completo.Count > 0)
                     {
                         completo = person_2.name.nombre_completo[0];
                     }
@@ -844,16 +848,16 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     List<string> list_nombre_completo = new List<string>();
                     if (person.name != null)
                     {
-                        if (person.name.given != null)
+                        if (person.name.given != null && person.name.given.Count > 0)
                         {
                             list_name = person.name.given;
                         }
-                        if (person.name.familia != null)
+                        if (person.name.familia != null && person.name.familia.Count > 0)
                         {
 
                             list_familia = person.name.familia;
                         }
-                        if (person.name.nombre_completo != null)
+                        if (person.name.nombre_completo != null && person.name.nombre_completo.Count > 0)
                         {
                             list_nombre_completo = person.name.nombre_completo;
 

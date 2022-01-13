@@ -216,7 +216,30 @@ namespace Gnoss.Web.ReprocessData.Models.Services
             }
             else if (message.Count() == 2 & message[0] == "publicación")
             {
-                // --- TODO: Hacer la parte de publicación.
+                try
+                {
+                    // Creación de la URL.
+                    Uri url = new Uri(string.Format(_configService.GetUrlPublicacion() + "Publication/GetRoPublication?pDoi={0}", message[1]));
+
+                    // Obtención de datos con la petición.
+                    string info_publication = httpCall(url.ToString(), "GET", headers).Result;
+                    FileLogger.Log($@"{DateTime.Now} - Publicación obtenida.");
+
+                    // Creación del directorio si no existe.
+                    if (!Directory.Exists(_configService.GetRutaDirectorioEscritura()))
+                    {
+                        Directory.CreateDirectory(_configService.GetRutaDirectorioEscritura());
+                        FileLogger.Log($@"{DateTime.Now} - Directorio creado: {_configService.GetRutaDirectorioEscritura()}");
+                    }
+
+                    // Guardado de la información en formato JSON.
+                    File.WriteAllText($@"{_configService.GetRutaDirectorioEscritura()}pub_{DateTime.Now.ToString().Replace('/', '-').Replace(':', '_')}.json", info_publication);
+                    FileLogger.Log($@"{DateTime.Now} - fichero JSON creado.");
+                }
+                catch (Exception e)
+                {
+                    FileLogger.Log($@"{DateTime.Now} - {e}");
+                }
             }
 
             return true;
