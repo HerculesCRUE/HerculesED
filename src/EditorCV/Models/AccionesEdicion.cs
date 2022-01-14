@@ -17,6 +17,11 @@ using EditorCV.Models.API.Response;
 using System.Threading.Tasks;
 using System.Net;
 using System.Threading;
+using System.Net.Http;
+using EditorCV.Models.Enrichment;
+using EditorCV.Controllers;
+using Gnoss.ApiWrapper.Model;
+using static EditorCV.Models.Enrichment.EnrichmentResponse;
 
 namespace GuardadoCV.Models
 {
@@ -31,6 +36,7 @@ namespace GuardadoCV.Models
         private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/configOAuth/OAuthV3.config");
         private static readonly CommunityApi mCommunityApi = new CommunityApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/configOAuth/OAuthV3.config");
 
+        private static Tuple<Dictionary<string, string>, Dictionary<string, string>> tuplaTesauro;
 
         #region Métodos públicos
         /// <summary>
@@ -751,8 +757,6 @@ namespace GuardadoCV.Models
 
         #endregion
 
-
-
         #region Métodos para pestañas
         /// <summary>
         /// Obtiene los datos de una pestaña 
@@ -924,7 +928,7 @@ namespace GuardadoCV.Models
             //Visibilidad
             string valorVisibilidad = GetPropValues(pId, UtilityCV.PropertyIspublic, pData).FirstOrDefault();
             item.ispublic = false;
-            if (!string.IsNullOrEmpty(valorVisibilidad) && valorVisibilidad=="true")
+            if (!string.IsNullOrEmpty(valorVisibilidad) && valorVisibilidad == "true")
             {
                 item.ispublic = true;
             }
@@ -1547,7 +1551,6 @@ namespace GuardadoCV.Models
         }
         #endregion
 
-
         #region Métodos de recolección de datos
 
         private Dictionary<string, List<ThesaurusItem>> GetTesauros(List<string> pListaTesauros)
@@ -1744,6 +1747,212 @@ namespace GuardadoCV.Models
                 values = aux;
             }
             return values;
+        }
+
+        /// <summary>
+        /// Hace la petición al servicio para obtener los descriptores temáticos y específicos.
+        /// </summary>
+        /// <param name="pConfig">Configuración.</param>
+        /// <param name="pTitulo">Título.</param>
+        /// <param name="pDesc">Descripción.</param>
+        /// <param name="pUrlPdf">URL del PDF.</param>
+        /// <returns>Objeto con los datos obtenidos.</returns>
+        /// <exception cref="Exception">StatusCode del error (Error al hacer la petición).</exception>
+        public EnrichmentResponseGlobal GetEnrichment(ConfigService pConfig, string pTitulo, string pDesc, string pUrlPdf)
+        {
+            // Obtención del tesáuro.
+            if (tuplaTesauro == null)
+            {
+                tuplaTesauro = ObtenerDatosTesauro();
+            }
+
+            // Cliente.
+            EnrichmentResponseGlobal respuesta = new EnrichmentResponseGlobal();
+            respuesta.tags = new EnrichmentResponse(); 
+            respuesta.tags.topics = new List<EnrichmentResponseItem>();
+            respuesta.categories = new EnrichmentResponseCategory();
+            respuesta.categories.topics = new List<List<EnrichmentResponseCategory.EnrichmentResponseItem>>();
+            HttpClient client = new HttpClient();
+            client.Timeout = TimeSpan.FromDays(1);
+
+            // Si la descripción llega nula o vacía...
+            if (string.IsNullOrEmpty(pDesc))
+            {
+                pDesc = string.Empty;
+            }
+
+            EnrichmentData enrichmentData = new EnrichmentData() { rotype = "papers", title = pTitulo, abstract_ = pDesc, pdfurl = pUrlPdf };
+
+            // Conversión de los datos.
+            string informacion = JsonConvert.SerializeObject(enrichmentData,
+                            Newtonsoft.Json.Formatting.None,
+                            new JsonSerializerSettings
+                            {
+                                NullValueHandling = NullValueHandling.Ignore
+                            });
+            StringContent contentData = new StringContent(informacion, System.Text.Encoding.UTF8, "application/json");
+
+            #region --- Tópicos Específicos (Tags)
+            var responseSpecific = client.PostAsync(pConfig.GetUrlSpecificEnrichment(), contentData).Result;
+
+            if (responseSpecific.IsSuccessStatusCode)
+            {
+                respuesta.tags = responseSpecific.Content.ReadAsAsync<EnrichmentResponse>().Result;
+            }
+            else
+            {
+                return respuesta;
+            }
+            #endregion
+
+            #region --- Tópicos Temáticos (Categorías)            
+            var responseThematic = client.PostAsync(pConfig.GetUrlThematicEnrichment(), contentData).Result;
+
+            EnrichmentResponse categoriasObtenidas = null;
+
+            if (responseThematic.IsSuccessStatusCode)
+            {
+                categoriasObtenidas = responseThematic.Content.ReadAsAsync<EnrichmentResponse>().Result;
+                EnrichmentResponseCategory listaCategoria = new EnrichmentResponseCategory();
+                listaCategoria.topics = new List<List<EnrichmentResponseCategory.EnrichmentResponseItem>>();
+
+                foreach (EnrichmentResponseItem cat in categoriasObtenidas.topics)
+                {
+                    List<EnrichmentResponseCategory.EnrichmentResponseItem> listaTesauro = new List<EnrichmentResponseCategory.EnrichmentResponseItem>();
+
+                    if (tuplaTesauro.Item2.ContainsKey("general " + cat.word.ToLower().Trim()))
+                    {
+                        string idTesauro = tuplaTesauro.Item2["general " + cat.word.ToLower().Trim()];
+                        listaTesauro.Add(new EnrichmentResponseCategory.EnrichmentResponseItem() { id = idTesauro });
+
+                        while (!idTesauro.EndsWith(".0.0.0"))
+                        {
+                            idTesauro = ObtenerIdTesauro(idTesauro);
+                            listaTesauro.Add(new EnrichmentResponseCategory.EnrichmentResponseItem() { id = idTesauro });
+                        }
+                    }
+                    else if (tuplaTesauro.Item2.ContainsKey(cat.word.ToLower().Trim()))
+                    {
+                        string idTesauro = tuplaTesauro.Item2[cat.word.ToLower().Trim()];
+                        listaTesauro.Add(new EnrichmentResponseCategory.EnrichmentResponseItem() { id = idTesauro });
+
+                        while (!idTesauro.EndsWith(".0.0.0"))
+                        {
+                            idTesauro = ObtenerIdTesauro(idTesauro);
+                            listaTesauro.Add(new EnrichmentResponseCategory.EnrichmentResponseItem() { id = idTesauro });
+                        }
+                    }
+
+
+                    if (listaTesauro.Count > 0)
+                    {
+                        listaCategoria.topics.Add(listaTesauro);
+                    }
+                }
+                respuesta.categories = listaCategoria;
+            }
+            else
+            {
+                return respuesta;
+            }
+            #endregion
+
+            return respuesta;
+        }
+
+        /// <summary>
+        /// Obtiene la ctaegoría padre.
+        /// </summary>
+        /// <param name="pIdTesauro">Categoría a consultar.</param>
+        /// <returns>Categoría padre.</returns>
+        private string ObtenerIdTesauro(string pIdTesauro)
+        {
+            string idTesauro = pIdTesauro.Split(new[] { "researcharea_" }, StringSplitOptions.None)[1];
+            int num1 = Int32.Parse(idTesauro.Split('.')[0]);
+            int num2 = Int32.Parse(idTesauro.Split('.')[1]);
+            int num3 = Int32.Parse(idTesauro.Split('.')[2]);
+            int num4 = Int32.Parse(idTesauro.Split('.')[3]);
+
+            if (num4 != 0)
+            {
+                idTesauro = $@"http://gnoss.com/items/researcharea_{num1}.{num2}.{num3}.0";
+            }
+            else if (num3 != 0 && num4 == 0)
+            {
+                idTesauro = $@"http://gnoss.com/items/researcharea_{num1}.{num2}.0.0";
+            }
+            else if (num2 != 0 && num3 == 0 && num4 == 0)
+            {
+                idTesauro = $@"http://gnoss.com/items/researcharea_{num1}.0.0.0";
+            }
+
+            return idTesauro;
+        }
+
+        /// <summary>
+        /// Obtiene las categorías del tesáuro.
+        /// </summary>
+        /// <returns>Tupla con (clave) diccionario de las idCategorias-idPadre y (valor) diccionario de nombreCategoria-idCategoria.</returns>
+        private static Tuple<Dictionary<string, string>, Dictionary<string, string>> ObtenerDatosTesauro()
+        {
+            Dictionary<string, string> dicAreasBroader = new Dictionary<string, string>();
+            Dictionary<string, string> dicAreasNombre = new Dictionary<string, string>();
+
+            string select = @"SELECT DISTINCT * ";
+            string where = @$"WHERE {{
+                ?concept a <http://www.w3.org/2008/05/skos#Concept>.
+                ?concept <http://www.w3.org/2008/05/skos#prefLabel> ?nombre.
+                ?concept <http://purl.org/dc/elements/1.1/source> 'researcharea'
+                OPTIONAL{{?concept <http://www.w3.org/2008/05/skos#broader> ?broader}}
+                }}";
+            SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "taxonomy");
+
+            foreach (Dictionary<string, SparqlObject.Data> fila in resultado.results.bindings)
+            {
+                string concept = fila["concept"].value;
+                string nombre = fila["nombre"].value;
+                string broader = "";
+                if (fila.ContainsKey("broader"))
+                {
+                    broader = fila["broader"].value;
+                }
+                dicAreasBroader.Add(concept, broader);
+                if (!dicAreasNombre.ContainsKey(nombre.ToLower()))
+                {
+                    dicAreasNombre.Add(nombre.ToLower(), concept);
+                }
+            }
+
+            Dictionary<string, string> dicAreasUltimoNivel = new Dictionary<string, string>();
+            foreach(KeyValuePair<string, string> item in dicAreasNombre)
+            {
+                bool tieneHijos = false;
+                string id = item.Value.Split(new[] { "researcharea_" }, StringSplitOptions.None)[1];
+                int num1 = Int32.Parse(id.Split('.')[0]);
+                int num2 = Int32.Parse(id.Split('.')[1]);
+                int num3 = Int32.Parse(id.Split('.')[2]);
+                int num4 = Int32.Parse(id.Split('.')[3]);
+
+                if (num2 == 0 && num3 == 0 && num4 == 0)
+                {
+                    tieneHijos = dicAreasNombre.ContainsValue($@"http://gnoss.com/items/researcharea_{num1}.1.0.0");
+                }
+                else if (num3 == 0 && num4 == 0)
+                {
+                    tieneHijos = dicAreasNombre.ContainsValue($@"http://gnoss.com/items/researcharea_{num1}.{num2}.1.0");
+                }
+                else if (num4 == 0)
+                {
+                    tieneHijos = dicAreasNombre.ContainsValue($@"http://gnoss.com/items/researcharea_{num1}.{num2}.{num3}.1");
+                }
+
+                if (!tieneHijos)
+                {
+                    dicAreasUltimoNivel.Add(item.Key, item.Value);
+                }
+            }
+
+            return new Tuple<Dictionary<string, string>, Dictionary<string, string>>(dicAreasBroader, dicAreasUltimoNivel);
         }
 
         #endregion

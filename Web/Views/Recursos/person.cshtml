@@ -690,10 +690,10 @@
                                                 <div class="dropdown-menu basic-dropdown dropdown-menu-right" aria-labelledby="dropdownVistaRed">
                                                     <ul class="no-list-style">
                                                         <li>
-                                                            <a href="javascript: actualizar('relation_project')" rel="nofollow" class="item-dropdown"><span class="texto">Proyectos</span></a>
+                                                            <a href="javascript: actualizarTypesOcultar('relation_project')" rel="nofollow" class="item-dropdown"><span class="texto">Proyectos</span></a>
                                                         </li>
                                                         <li>
-                                                            <a href="javascript: actualizar('relation_document')" rel="nofollow" class="item-dropdown"><span class="texto">Documentos</span></a>
+                                                            <a href="javascript: actualizarTypesOcultar('relation_document')" rel="nofollow" class="item-dropdown"><span class="texto">Documentos</span></a>
                                                         </li>
                                                     </ul>
                                                 </div>
@@ -705,10 +705,10 @@
                                                 <div class="dropdown-menu basic-dropdown dropdown-menu-right" aria-labelledby="dropdownTemas">
                                                     <ul class="no-list-style">
                                                         <li>
-                                                            <a href="javascript: void(0);" rel="nofollow" class="item-dropdown"><span class="texto">Si</span></a>
+                                                            <a href="javascript: newGrafProj.showRelation = true; newGrafProj.actualizarGraficaColaboradores();" rel="nofollow" class="item-dropdown"><span class="texto">Si</span></a>
                                                         </li>
                                                         <li>
-                                                            <a href="javascript: void(0);" rel="nofollow" class="item-dropdown"><span class="texto">No</span></a>
+                                                            <a href="javascript: newGrafProj.showRelation = false; newGrafProj.actualizarGraficaColaboradores();" rel="nofollow" class="item-dropdown"><span class="texto">No</span></a>
                                                         </li>
                                                     </ul>
                                                 </div>
@@ -814,34 +814,58 @@
         });
     }
 
-    // Datos gráfica colaboradores externos.
-    function CargarGraficaColaboradores(pIdPersona, parametros, idContenedor, mostrarCargando = false) {
-        var url = servicioExtermpBaseUrl + "servicioexterno/Hercules/DatosGraficaColaboradoresPersonas"
-        if (depuracion) {
-            url = localUrlBase + "Hercules/DatosGraficaColaboradoresPersonas"
-        }
-        var arg = {};
-        arg.pIdPersona = pIdPersona;
-        arg.pParametros = parametros;
-        arg.pMax = $('#numColaboradores').val();
-        $('#' + idContenedor).empty();
-        if (mostrarCargando) {
-            MostrarUpdateProgress();
-        }
+    class CargarGraficaProjectoObj {
+        dataCB = {};
+        idContenedorCB = "";
+        typesOcultar = [];
+        showRelation = true;
 
-        let optionsRelations = ["relation_project", "relation_document"];
+        actualizarGraficaColaboradores = () => {
+            AjustarGraficaArania(this.dataCB, this.idContenedorCB, this.typesOcultar, this.showRelation);
+        };
 
-        $.get(url, arg, function (data) {
-            // Establecer los valores en la variable externa
-            dataCB = data;
-            idContenedorCB = idContenedor;
-
-            ActualizarGraficaColaboradores();
-            if (mostrarCargando) {
-                OcultarUpdateProgress();
+        CargarGraficaColaboradores = (pIdPersona, parametros, idContenedor, mostrarCargando = false) => {
+            var url = servicioExtermpBaseUrl + "servicioexterno/Hercules/DatosGraficaColaboradoresPersonas";
+            if (depuracion) {
+                url = localUrlBase + "Hercules/DatosGraficaColaboradoresPersonas";
             }
-        });
+            var self = this;
+            var arg = {};
+            arg.pIdPersona = pIdPersona;
+            arg.pParametros = parametros;
+            arg.pMax = $('#numColaboradores').val();
+            $('#' + idContenedor).empty();
+            if (mostrarCargando) {
+                MostrarUpdateProgress();
+            }
 
+            let optionsRelations = ["relation_project", "relation_document"];
+
+            $.get(url, arg, function (data) {
+                // Establecer los valores en la variable externa
+                self.dataCB = data;
+                self.idContenedorCB = idContenedor;
+
+                self.actualizarGraficaColaboradores();
+                if (mostrarCargando) {
+                    OcultarUpdateProgress();
+                }
+            });
+
+        };
+
+    };
+
+    var newGrafProj = new CargarGraficaProjectoObj();
+
+    function actualizarTypesOcultar(type) {
+        var idx = newGrafProj.typesOcultar.indexOf(type);
+        if (idx !== -1) {
+            newGrafProj.typesOcultar.splice(idx, 1);
+        } else {
+            newGrafProj.typesOcultar.push(type);
+        }
+        newGrafProj.actualizarGraficaColaboradores();
     }
 
     function ActualizarGraficaColaboradores(typesOcultar = [], showRelation = true) {
@@ -978,7 +1002,7 @@
                 }
                 $('#numNodosCollaborators').html($('#numColaboradores').val());
                 var parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro;
-                CargarGraficaColaboradores("@pPerson.GNOSSID.Split('_')[1].ToUpper()", parametros, 'colaboratorsgraph', true);
+                newGrafProj.CargarGraficaColaboradores("@pPerson.GNOSSID.Split('_')[1].ToUpper()", parametros, 'colaboratorsgraph', true);
             });
 
             $('#addNodesCollaborators').unbind().click(function (e) {
@@ -987,7 +1011,7 @@
                 $('#numColaboradores').val((numColaboradores + 10));
                 $('#numNodosCollaborators').html($('#numColaboradores').val());
                 var parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro;
-                CargarGraficaColaboradores("@pPerson.GNOSSID.Split('_')[1].ToUpper()", parametros, 'colaboratorsgraph', true);
+                newGrafProj.CargarGraficaColaboradores("@pPerson.GNOSSID.Split('_')[1].ToUpper()", parametros, 'colaboratorsgraph', true);
             });
             //Fin métodos colaboradores
 
@@ -1033,7 +1057,7 @@
         }
         else if (comportamientoPaginaInvestigador.tabActive == "colaboradores")
         {
-            CargarGraficaColaboradores("@pPerson.GNOSSID.Split('_')[1].ToUpper()", parametros, 'colaboratorsgraph');
+            newGrafProj.CargarGraficaColaboradores("@pPerson.GNOSSID.Split('_')[1].ToUpper()", parametros, 'colaboratorsgraph');
         }
     }
 </script>

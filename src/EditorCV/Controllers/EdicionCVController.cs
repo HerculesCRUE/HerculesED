@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Cors;
 using System.Net.Http;
 using System.Collections.Generic;
 using System.Linq;
+using EditorCV.Controllers;
+using EditorCV.Models.Enrichment;
 
 namespace GuardadoCV.Controllers
 {
@@ -14,6 +16,12 @@ namespace GuardadoCV.Controllers
     [EnableCors("_myAllowSpecificOrigins")]
     public class EdicionCVController : ControllerBase
     {
+        readonly ConfigService _Configuracion;
+
+        public EdicionCVController(ConfigService pConfig)
+        {
+            _Configuracion = pConfig;
+        }
 
         /// <summary>
         /// Obtiene un listado de sugerencias con datos existentes para esa propiedad
@@ -144,14 +152,14 @@ namespace GuardadoCV.Controllers
             }
         }
 
-        
+
         [HttpPost("ValidateSignatures")]
         public IActionResult ValidateSignatures([FromForm] string pSignatures, [FromForm] string pCVID, [FromForm] string pPersonID, [FromForm] string pLang)
         {
             try
             {
                 AccionesEdicion accionesEdicion = new AccionesEdicion();
-                return Ok(accionesEdicion.ValidateSignatures(pSignatures, pCVID, pPersonID,pLang));
+                return Ok(accionesEdicion.ValidateSignatures(pSignatures, pCVID, pPersonID, pLang));
             }
             catch (Exception ex)
             {
@@ -159,7 +167,24 @@ namespace GuardadoCV.Controllers
             }
         }
 
-
+        /// <summary>
+        /// Obtiene los descriptores específicos y temáticos haciendo una petición a un servicio.
+        /// </summary>
+        /// <param name="pData">Objeto con los datos a querer obtener (Título, Descripción y URL del PDF).</param>
+        /// <returns>Categorías y Tags.</returns>
+        [HttpPost("EnrichmentTopics")]
+        public IActionResult EnrichmentTopics([FromForm] EnrichmentInput pData)
+        {
+            try
+            {
+                AccionesEdicion accionesEdicion = new AccionesEdicion();
+                return Ok(accionesEdicion.GetEnrichment(_Configuracion, pData.pTitulo, pData.pDesc, pData.pUrlPdf));
+            }
+            catch (Exception ex)
+            {
+                return Ok(new Models.API.Response.JsonResult() { error = ex.Message });
+            }
+        }
 
         //TODO es obligatorio añadirse a uno mismo como autor
         //TODO crear servicio que incluya/elimie en los CV a los autores

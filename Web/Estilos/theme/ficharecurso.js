@@ -135,6 +135,42 @@ function PintarGraficaPublicaciones(data,idContenedor) {
 		},
 		maintainAspectRatio: false
 	}
+
+	// Sugested max number - Set the max value into the graphic y axis
+	var itemsY1 = [];
+	var itemsY2 = [];
+	data.data.datasets.filter(e => e.yAxisID == "y1").forEach((e, index) => {
+		// Inicialize the array
+		if (itemsY1.length == 0) {
+			for (n = 0; n < e.data.length; n++)
+			{
+				itemsY1[n] = 0;
+				itemsY2[n] = 0;
+			}
+		}
+		e.data.forEach((itm, i) => {
+			itemsY1[i] = itemsY1[i] + itm;
+		})
+	});
+	// Get the max number for y1
+	var maxDataY1 = Math.max(...itemsY1);
+	// Set the option
+	data.options.scales.y1.suggestedMax = maxDataY1 + 1;
+
+    
+	// Sugested max number into y2 axis
+	data.data.datasets.filter(e => e.yAxisID == "y2").forEach((e, index) => {
+		e.data.forEach((itm, i) => {
+			itemsY2[i] = itemsY2[i] + itm;
+		})
+	});
+
+	// Get the max number for y2
+	var maxDataY2 = Math.max(...itemsY2);
+	// Set the option
+	data.options.scales.y2.suggestedMax = maxDataY2 + 1;
+
+
 	var parent = ctx.parentElement;
 	var height = parent.offsetHeight;
 	ctx.setAttribute('height', 400);
@@ -159,6 +195,16 @@ function PintarGraficaProyectos(data,idContenedorAnios,idContenedorMiembros,idCo
 		},
 		maintainAspectRatio: false
 	}
+
+	// Get the max suggested number for the y axio in graficaBarrasAnios graphic
+	var items = [];
+	data.graficaBarrasAnios.data.datasets.forEach(e => {
+		items = [...items, ...e.data];
+	});
+	var maxData = Math.max(...items);
+
+	data.graficaBarrasAnios.options.scale.suggestedMax = maxData + 1;
+
 	var myChartBarrasAnios = new Chart(ctxBarrasAnios, data.graficaBarrasAnios);
 	
 	
@@ -175,9 +221,10 @@ function PintarGraficaProyectos(data,idContenedorAnios,idContenedorMiembros,idCo
 	}
 
 
+	// Get the max suggested number for the y axio
 	var items = [];
 	data.graficaBarrasMiembros.data.datasets.forEach(e => {
-	  items = [...e.data];
+		items = [...items, ...e.data];
 	});
 	var maxData = Math.max(...items);
 
@@ -233,7 +280,12 @@ function AjustarGraficaArania(data,idContenedor,typesOcultar = [],showRelation =
 	PintarGraficaArania(data, idContenedor);
 }
 
-function PintarGraficaArania(data,idContenedor){
+function PintarGraficaArania(data,idContenedor) {
+	let currentData = [...data];
+	var repintar = false;
+	if (window.cy && window.cy._private && window.cy._private.ready !== true) {
+		repintar = true;
+	}
 	$('#'+idContenedor).empty();
 	var cy = window.cy = cytoscape({
 		// Contenedor
@@ -402,6 +454,10 @@ function PintarGraficaArania(data,idContenedor){
 			
 			yPos = yPos + onlyItems[i]._private.style.height.value + 50;
 		};
+
+		if (repintar) {
+			setTimeout(function(){ PintarGraficaArania(currentData,idContenedor); }, 1000);
+		}
     });
 }
 
