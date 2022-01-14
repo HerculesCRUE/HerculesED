@@ -318,7 +318,7 @@ namespace GuardadoCV.Models
                 }
 
                 listaPersonas = new Dictionary<string, List<Person>>();
-                Parallel.ForEach(signaturesList, new ParallelOptions { MaxDegreeOfParallelism = 10 }, firma =>
+                Parallel.ForEach(signaturesList, new ParallelOptions { MaxDegreeOfParallelism = 5 }, firma =>
                 {
                     if (firma.Trim() != "")
                     {
