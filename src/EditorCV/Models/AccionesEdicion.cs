@@ -306,18 +306,6 @@ namespace GuardadoCV.Models
                 }
 
                 listaPersonas = new Dictionary<string, List<Person>>();
-                foreach (string firma in signaturesList)
-                {
-                    if (firma.Trim() != "")
-                    {
-                        List<Person> personas = ObtenerPersonasFirma(firma.Trim());
-                        ObtenerScores(firma.Trim(), ref personas, colaboradoresDocumentos, colaboradoresProyectos);
-                        personas = personas.Where(x => x.score > 0.4f).OrderByDescending(x => x.score).ToList();
-                        listaPersonas.Add(firma.Trim(), personas);
-                    }
-                }
-
-                listaPersonas = new Dictionary<string, List<Person>>();
                 Parallel.ForEach(signaturesList, new ParallelOptions { MaxDegreeOfParallelism = 5 }, firma =>
                 {
                     if (firma.Trim() != "")
