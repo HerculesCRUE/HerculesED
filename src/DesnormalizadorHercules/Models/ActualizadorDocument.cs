@@ -806,5 +806,77 @@ namespace DesnormalizadorHercules.Models
             }
         }
 
+
+        public void ActualizarIndiceImpacto(string pDocument = null)
+        {
+            string filter = "";
+            if (!string.IsNullOrEmpty(pDocument))
+            {
+                filter = $" FILTER(?document =<{pDocument}>)";
+            }
+            //Eliminamos los duplicados
+            EliminarDuplicados("document", "http://purl.org/ontology/bibo/Document", "http://w3id.org/roh/impactIndexInYear");
+
+            //Actualizamos los datos
+            while (true)
+            {
+                int limit = 500;
+                //TODO Eliminar from
+                //TODO eliminar decha competa revista
+                //TODO agregar la fuente para el factor de impacto
+                String select = @"select distinct * where{select ?document ?indiceImpactoCargado ?indiceImpactoACargar  from <http://gnoss.com/maindocument.owl> ";
+                String where = @$"where{{
+                            ?document a <http://purl.org/ontology/bibo/Document>.
+                            {filter}
+                            OPTIONAL
+                            {{
+                              ?document <http://w3id.org/roh/impactIndexInYear> ?indiceImpactoCargado. 
+                            }}
+                            OPTIONAL
+                            {{
+                              select ?document max(?indiceImpactoACargar) as ?indiceImpactoACargar
+                              Where{{
+                                ?document a <http://purl.org/ontology/bibo/Document>.
+                                ?document <http://purl.org/dc/terms/issued> ?fechaDoc.
+                                BIND(substr(str(?fechaDoc),0,4) as ?anioDoc).
+
+                                ?document <http://vivoweb.org/ontology/core#hasPublicationVenue> ?revista. 
+
+                                ?revista a <http://w3id.org/roh/MainDocument>.
+                                ?revista <http://w3id.org/roh/impactIndex> ?impactIndex.
+                                ?impactIndex <http://w3id.org/roh/impactIndexInYear> ?indiceImpactoACargar.
+                                ?impactIndex <http://w3id.org/roh/year> ?fechaFactorImpactoRevista.
+                                BIND(substr(str(?fechaFactorImpactoRevista),0,4) as ?anioFactorImpactoRevista).
+                                
+                                FILTER(?anioDoc=?anioFactorImpactoRevista)
+                               
+                              }}
+                            }}
+                            FILTER(?indiceImpactoCargado!= ?indiceImpactoACargar)
+                            }}}} limit {limit}";
+                SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
+
+                foreach (Dictionary<string, SparqlObject.Data> fila in resultado.results.bindings)
+                {
+                    string document = fila["document"].value;
+                    string indiceImpactoACargar = "";
+                    if (fila.ContainsKey("indiceImpactoACargar"))
+                    {
+                        indiceImpactoACargar = fila["indiceImpactoACargar"].value;
+                    }
+                    string indiceImpactoCargado = "";
+                    if (fila.ContainsKey("indiceImpactoCargado"))
+                    {
+                        indiceImpactoCargado = fila["indiceImpactoCargado"].value;
+                    }
+                    ActualizadorTriple(document, "http://w3id.org/roh/impactIndexInYear", indiceImpactoCargado, indiceImpactoACargar);
+                }
+
+                if (resultado.results.bindings.Count != limit)
+                {
+                    break;
+                }
+            }
+        }
     }
 }

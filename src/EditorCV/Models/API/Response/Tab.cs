@@ -39,6 +39,10 @@ namespace GuardadoCV.Models.API.Response
         /// Items del listado de la sección
         /// </summary>
         public Dictionary<string, TabSectionItem> items { get; set; }
+        /// <summary>
+        /// Item de la sección
+        /// </summary>
+        public EntityEdit item { get; set; }
     }
 
     /// <summary>

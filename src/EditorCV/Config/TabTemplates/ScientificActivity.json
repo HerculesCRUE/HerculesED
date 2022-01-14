@@ -3,6 +3,45 @@
 	"property": "http://w3id.org/roh/scientificActivity",
 	"sections": [
 		{
+			"rdftype": "http://w3id.org/roh/GeneralQualityIndicator",
+			"property": "http://w3id.org/roh/generalQualityIndicators",
+			"presentation": {
+				"type": "item",
+				"title": {
+					"es": "Indicadores generales de calidad de la producción científica"
+				},
+				"itemPresentation": {
+					"property": "http://w3id.org/roh/generalQualityIndicatorCV",
+					"itemEdit": {
+						"rdftype": "http://w3id.org/roh/GeneralQualityIndicatorCV",
+						"graph": "curriculumvitae",
+						"sections": [
+							{
+								"rows": [
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Indicadores generales calidad"
+												},
+												"placeholder": {
+													"es": "Introduce los indicadores generales calidad"
+												},
+												"property": "http://w3id.org/roh/generalQualityIndicator",
+												"required": false,
+												"type": "textarea",
+												"width": 3
+											}
+										]
+									}
+								]
+							}
+						]
+					}
+				}
+			}
+		},
+		{
 			"rdftype": "http://w3id.org/roh/RelatedScientificPublication",
 			"property": "http://w3id.org/roh/scientificPublications",
 			"presentation": {
@@ -827,7 +866,7 @@
 													"rows": [
 														{
 															"properties": [
-																
+
 																{
 																	"title": {
 																		"es": "Fuente de citas"

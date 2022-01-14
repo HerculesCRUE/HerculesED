@@ -90,7 +90,7 @@ namespace DesnormalizadorHercules.Models
         /// los miembros actuales (sin fecha de alta o fecha de alta anterior a la actual y sin fecha de baja o fecha de baja posterior a la actual) 
         /// Cargamos en los investigadores con CV que tengan el proyecto PÚBLICO en su CV
         /// Cargamos en los investigadores sin CV sólo los proyectos OFICIALES
-        /// No tiene dependencias
+        /// Depende de actualizadorCV.ModificarProyectos
         /// </summary>
         /// <param name="pPerson">ID de la persona</param>
         /// <param name="pProject">ID del proyecto</param>

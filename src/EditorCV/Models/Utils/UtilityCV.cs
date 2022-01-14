@@ -333,6 +333,7 @@ namespace GuardadoCV.Models.Utils
                     foreach (string file in System.IO.Directory.EnumerateFiles($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/TabTemplates"))
                     {
                         Tab tab = JsonConvert.DeserializeObject<Tab>(System.IO.File.ReadAllText(file));
+                        /*
                         string nombreFicheo = new FileInfo(file).Name;
                         //Comprobaciones                        
                         if (string.IsNullOrEmpty(tab.rdftype))
@@ -399,7 +400,7 @@ namespace GuardadoCV.Models.Utils
                                     }
                                 }
                             }
-                        }
+                        }*/
                         mTabTemplates.Add(tab);
                     }
                 }

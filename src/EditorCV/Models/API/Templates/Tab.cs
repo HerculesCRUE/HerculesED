@@ -68,21 +68,38 @@ namespace GuardadoCV.Models.API.Templates
             switch (presentation.type)
             {
                 case TabSectionPresentationType.listitems:
-                    Utils.PropertyData propertyDataListItems = this.presentation.listItemsPresentation.listItem.GenerarPropertyData(pGraph);
-                    //Editabilidad
-                    foreach (string propEditabilidad in Utils.UtilityCV.PropertyNotEditable.Keys)
                     {
-                        propertyDataListItems.childs.First(x => x.graph == this.presentation.listItemsPresentation.listItemEdit.graph).childs.Add(
-                            //Editabilidad
-                            new Utils.PropertyData()
-                            {
-                                property = propEditabilidad,
-                                childs = new List<Utils.PropertyData>()
-                            }
-                        );
-                    }                    
-                    propertyDataListItems.property = this.property;
-                    return propertyDataListItems;
+                        Utils.PropertyData propertyDataListItems = this.presentation.listItemsPresentation.listItem.GenerarPropertyData(pGraph);
+                        //Editabilidad
+                        foreach (string propEditabilidad in Utils.UtilityCV.PropertyNotEditable.Keys)
+                        {
+                            propertyDataListItems.childs.First(x => x.graph == this.presentation.listItemsPresentation.listItemEdit.graph).childs.Add(
+                                //Editabilidad
+                                new Utils.PropertyData()
+                                {
+                                    property = propEditabilidad,
+                                    childs = new List<Utils.PropertyData>()
+                                }
+                            );
+                        }
+                        propertyDataListItems.property = this.property;
+                        return propertyDataListItems;
+                    }
+                case TabSectionPresentationType.item:
+                    {
+                        List<Utils.PropertyData> propertyDatasItem = this.presentation.itemPresentation.itemEdit.GenerarPropertyDatas(pGraph);
+                        Utils.PropertyData propertyData = new Utils.PropertyData();
+                        propertyData.property = this.property;
+                        propertyData.childs = new List<Utils.PropertyData>() { 
+                            new Utils.PropertyData() { 
+                                property = this.presentation.itemPresentation.property,
+                                childs=propertyDatasItem,
+                                graph=this.presentation.itemPresentation.itemEdit.graph
+                            } 
+                        };
+                        propertyData.graph = "curriculumvitae";
+                        return propertyData;
+                    }
                 default:
                     throw new Exception("No está implementado la presentación del tipo " + presentation.type);
             }
@@ -106,6 +123,10 @@ namespace GuardadoCV.Models.API.Templates
         /// Configuración de la presentación para los listados de items
         /// </summary>
         public TabSectionPresentationListItems listItemsPresentation;
+        /// <summary>
+        /// Configuración de la presentación para un item
+        /// </summary>
+        public TabSectionPresentationItem itemPresentation;
     }
 
     /// <summary>
@@ -125,6 +146,21 @@ namespace GuardadoCV.Models.API.Templates
         /// Datos de configuración de edición para los items del listado de la lista
         /// </summary>
         public ItemEdit listItemEdit;
+    }
+
+    /// <summary>
+    /// Configuración de la presentación para un item
+    /// </summary>
+    public class TabSectionPresentationItem
+    {
+        /// <summary>
+        /// Propiedad para acceder a la entidad desde la minificha
+        /// </summary>
+        public string property;
+        /// <summary>
+        /// Datos de configuración de edición para el item
+        /// </summary>
+        public ItemEdit itemEdit;
     }
 
     /// <summary>

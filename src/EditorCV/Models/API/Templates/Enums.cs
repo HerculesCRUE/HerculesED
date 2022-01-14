@@ -14,6 +14,8 @@ namespace GuardadoCV.Models.API.Templates
     {
         //Lista de items
         listitems,
+        //Un unico item
+        item
     }
 
     /// <summary>
