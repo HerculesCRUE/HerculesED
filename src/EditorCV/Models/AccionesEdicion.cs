@@ -140,17 +140,28 @@ namespace GuardadoCV.Models
         /// </summary>
         /// <param name="pIdSection">Identificador de la sección</param>
         /// <param name="pRdfTypeTab">Rdftype del tab</param>
-        /// <param name="pEntity">Identificador de la entidad</param>
+        /// <param name="pEntityID">Identificador de la entidad</param>
         /// <param name="pLang">Idioma</param>
         /// <returns></returns>
         public EntityEdit GetEdit(string pIdSection, string pRdfTypeTab, string pEntityID, string pLang)
         {
-            TabSectionPresentationListItems presentationListItems = UtilityCV.TabTemplates.First(x => x.rdftype == pRdfTypeTab).sections.First(x => x.property == pIdSection).presentation.listItemsPresentation;
-            ItemEdit templateEdit = presentationListItems.listItemEdit;
+            TabSectionPresentation tabSectionPresentation = UtilityCV.TabTemplates.First(x => x.rdftype == pRdfTypeTab).sections.First(x => x.property == pIdSection).presentation;
+            ItemEdit templateEdit = null;
+            string property = "";
+            if (tabSectionPresentation.listItemsPresentation!=null)
+            {
+                templateEdit = tabSectionPresentation.listItemsPresentation.listItemEdit;
+                property = tabSectionPresentation.listItemsPresentation.property;
+            }
+            else if(tabSectionPresentation.itemPresentation != null)
+            {
+                templateEdit = tabSectionPresentation.itemPresentation.itemEdit;
+                property = tabSectionPresentation.itemPresentation.property;
+            }
             string entityID = pEntityID;
 
             //obtenemos la entidad correspondiente
-            List<PropertyData> propertyData = new List<PropertyData>() { new PropertyData() { property = presentationListItems.property } };
+            List<PropertyData> propertyData = new List<PropertyData>() { new PropertyData() { property = property } };
             Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> dataAux = UtilityCV.GetProperties(new HashSet<string>() { pEntityID }, "curriculumvitae", propertyData, pLang);
             if (pEntityID != null && dataAux.ContainsKey(pEntityID))
             {
@@ -295,22 +306,8 @@ namespace GuardadoCV.Models
                 }
 
                 listaPersonas = new Dictionary<string, List<Person>>();
-                foreach (string firma in signaturesList)
+                Parallel.ForEach(signaturesList, new ParallelOptions { MaxDegreeOfParallelism = 5 }, firma =>
                 {
-                    if (firma.Trim() != "")
-                    {
-                        List<Person> personas = ObtenerPersonasFirma(firma.Trim());
-                        ObtenerScores(firma.Trim(), ref personas, colaboradoresDocumentos, colaboradoresProyectos);
-                        personas = personas.Where(x => x.score > 0.4f).OrderByDescending(x => x.score).ToList();
-                        listaPersonas.Add(firma.Trim(), personas);
-                    }
-                }
-
-                listaPersonas = new Dictionary<string, List<Person>>();
-                Parallel.ForEach(signaturesList, firma =>
-                {
-
-                    //System.Threading.Thread.Sleep(signaturesList.IndexOf(firma)*100);
                     if (firma.Trim() != "")
                     {
                         List<Person> personas = ObtenerPersonasFirma(firma.Trim());
@@ -804,41 +801,76 @@ namespace GuardadoCV.Models
                         title = UtilityCV.GetTextLang(pLang, templateSection.presentation.title),
                         orders = new List<TabSectionPresentationOrder>()
                     };
-                    if (templateSection.presentation.listItemsPresentation.listItem.orders != null)
+                    switch(templateSection.presentation.type)
                     {
-                        foreach (TabSectionListItemOrder listItemOrder in templateSection.presentation.listItemsPresentation.listItem.orders)
-                        {
-                            TabSectionPresentationOrder presentationOrderTabSection = new TabSectionPresentationOrder()
+                        case TabSectionPresentationType.listitems:
                             {
-                                name = UtilityCV.GetTextLang(pLang, listItemOrder.name),
-                                properties = new List<TabSectionPresentationOrderProperty>()
-                            };
-
-                            if (listItemOrder.properties != null)
-                            {
-                                foreach (TabSectionListItemOrderProperty listItemConfigOrderProperty in listItemOrder.properties)
+                                if (templateSection.presentation.listItemsPresentation.listItem.orders != null)
                                 {
-                                    TabSectionPresentationOrderProperty presentationOrderTabSectionProperty = new TabSectionPresentationOrderProperty()
+                                    foreach (TabSectionListItemOrder listItemOrder in templateSection.presentation.listItemsPresentation.listItem.orders)
                                     {
-                                        property = UtilityCV.GetPropComplete(listItemConfigOrderProperty),
-                                        asc = listItemConfigOrderProperty.asc
-                                    };
-                                    presentationOrderTabSection.properties.Add(presentationOrderTabSectionProperty);
+                                        TabSectionPresentationOrder presentationOrderTabSection = new TabSectionPresentationOrder()
+                                        {
+                                            name = UtilityCV.GetTextLang(pLang, listItemOrder.name),
+                                            properties = new List<TabSectionPresentationOrderProperty>()
+                                        };
+
+                                        if (listItemOrder.properties != null)
+                                        {
+                                            foreach (TabSectionListItemOrderProperty listItemConfigOrderProperty in listItemOrder.properties)
+                                            {
+                                                TabSectionPresentationOrderProperty presentationOrderTabSectionProperty = new TabSectionPresentationOrderProperty()
+                                                {
+                                                    property = UtilityCV.GetPropComplete(listItemConfigOrderProperty),
+                                                    asc = listItemConfigOrderProperty.asc
+                                                };
+                                                presentationOrderTabSection.properties.Add(presentationOrderTabSectionProperty);
+                                            }
+                                        }
+                                        tabSection.orders.Add(presentationOrderTabSection);
+                                    }
                                 }
+                                tabSection.items = new Dictionary<string, TabSectionItem>();
+                                string propiedadIdentificador = templateSection.property;
+                                if (pData.ContainsKey(pId))
+                                {
+                                    foreach (string idEntity in pData[pId].Where(x => x["p"].value == templateSection.property).Select(x => x["o"].value).Distinct())
+                                    {
+                                        tabSection.items.Add(idEntity, GetItem(idEntity, pData, templateSection.presentation.listItemsPresentation, pLang));
+                                    }
+                                }
+                                tab.sections.Add(tabSection);
                             }
-                            tabSection.orders.Add(presentationOrderTabSection);
-                        }
-                    }
-                    tabSection.items = new Dictionary<string, TabSectionItem>();
-                    string propiedadIdentificador = templateSection.property;
-                    if (pData.ContainsKey(pId))
-                    {
-                        foreach (string idEntity in pData[pId].Where(x => x["p"].value == templateSection.property).Select(x => x["o"].value).Distinct())
-                        {
-                            tabSection.items.Add(idEntity, GetItem(idEntity, pData, templateSection.presentation.listItemsPresentation, pLang));
-                        }
-                    }
-                    tab.sections.Add(tabSection);
+                            break;
+                        case TabSectionPresentationType.item:
+                            {
+                                string id = null;
+                                if (pData.ContainsKey(pId))
+                                {
+                                    foreach (string idEntity in pData[pId].Where(x => x["p"].value == templateSection.property).Select(x => x["o"].value).Distinct())
+                                    {
+                                        id = idEntity;
+                                    }
+                                    if (id!=null && pData.ContainsKey(id))
+                                    {
+                                        foreach (string idEntity in pData[id].Where(x => x["p"].value == templateSection.presentation.itemPresentation.property).Select(x => x["o"].value).Distinct())
+                                        {
+                                            id = idEntity;
+                                        }
+                                    }
+                                }
+                                tabSection.item= GetEditModel(id, templateSection.presentation.itemPresentation.itemEdit, pLang);
+                                if (string.IsNullOrEmpty(tabSection.item.entityID))
+                                {
+                                    tabSection.item.entityID = Guid.NewGuid().ToString().ToLower();
+                                }
+                                tab.sections.Add(tabSection);
+                            }
+                            break;
+                        default:
+                            throw new Exception("No está implementado el código para el tipo "+ templateSection.presentation.type.ToString());
+                    }               
+                    
                 }
             }
             return tab;

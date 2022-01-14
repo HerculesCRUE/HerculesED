@@ -21,6 +21,8 @@ namespace DesnormalizadorHercules.Models
         {
             try
             {
+                resourceApi.PersistentDelete(resourceApi.GetShortGuid("http://gnoss.com/items/MainDocument_30569404-2163-4d4d-a58b-8f323db09b8f_7dd7fd57-6175-4a43-ac8e-c23d8e98e0a8"));
+
                 ActualizadorCV actualizadorCV = new(resourceApi);
                 ActualizadorPerson actualizadorPersonas = new(resourceApi);
                 ActualizadorGroup actualizadorGrupos = new(resourceApi);
@@ -43,7 +45,7 @@ namespace DesnormalizadorHercules.Models
                 actualizadorGrupos.ActualizarPertenenciaLineas();
                 actualizadorPersonas.ActualizarPertenenciaGrupos();
                 actualizadorPersonas.ActualizarPertenenciaLineas();
-                actualizadorProject.ActualizarPertenenciaPersonas();
+                
                 actualizadorProject.ActualizarPertenenciaGrupos();
                 actualizadorProject.ActualizarNumeroAreasTematicas();
                 actualizadorProject.ActualizarNumeroPublicaciones();
@@ -57,6 +59,7 @@ namespace DesnormalizadorHercules.Models
                 actualizadorDocument.ActualizarPertenenciaPersonas();
 
                 //Otras dependencias
+                actualizadorProject.ActualizarPertenenciaPersonas();
                 actualizadorPersonas.ActualizarNumeroPublicaciones();
                 actualizadorPersonas.ActualizarNumeroProyectos();
                 actualizadorPersonas.ActualizarAreasPersonas();
@@ -71,6 +74,11 @@ namespace DesnormalizadorHercules.Models
                 actualizadorProject.ActualizarNumeroColaboradores();
                 actualizadorProject.ActualizarNumeroMiembros();
                 // actualizadorPersonas.EliminarPersonasNoReferenciadas();
+
+
+
+                //Reubicar
+                actualizadorDocument.ActualizarIndiceImpacto();
             }
             catch (Exception)
             {

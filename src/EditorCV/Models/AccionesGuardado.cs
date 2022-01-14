@@ -114,7 +114,7 @@ namespace GuardadoCV.Models
 
                 //Modificamos
                 Entity loadedEntity = GetLoadedEntity(pEntity.id, "curriculumvitae");
-                bool updated = UpdateEntityAux(new List<string>() { "http://w3id.org/roh/personalData" }, new List<string>() { pEntity.id }, loadedEntity, pEntity);
+                bool updated = UpdateEntityAux(mResourceApi.GetShortGuid(pCvID), new List<string>() { "http://w3id.org/roh/personalData" }, new List<string>() { pEntity.id }, loadedEntity, pEntity);
 
                 if (updated)
                 {
@@ -131,72 +131,168 @@ namespace GuardadoCV.Models
                 //Item de CV
                 GuardadoCV.Models.API.Templates.Tab template = UtilityCV.TabTemplates.First(x => x.rdftype == pRdfTypeTab);
                 GuardadoCV.Models.API.Templates.TabSection templateSection = template.sections.First(x => x.property == pSectionID);
-                mResourceApi.ChangeOntoly(templateSection.presentation.listItemsPresentation.listItemEdit.graph);
-                pEntity.ontology = templateSection.presentation.listItemsPresentation.listItemEdit.graph;
-                if (string.IsNullOrEmpty(pEntity.id))
+
+                ItemEdit itemEditConfig = null;
+                if (templateSection.presentation.listItemsPresentation != null)
+                {
+                    mResourceApi.ChangeOntoly(templateSection.presentation.listItemsPresentation.listItemEdit.graph);
+                    pEntity.ontology = templateSection.presentation.listItemsPresentation.listItemEdit.graph;
+                    itemEditConfig = templateSection.presentation.listItemsPresentation.listItemEdit;
+                }
+                else if (templateSection.presentation.itemPresentation != null)
+                {
+                    mResourceApi.ChangeOntoly(templateSection.presentation.itemPresentation.itemEdit.graph);
+                    pEntity.ontology = templateSection.presentation.itemPresentation.itemEdit.graph;
+                    itemEditConfig = templateSection.presentation.itemPresentation.itemEdit;
+                }
+                else
+                {
+                    throw new Exception("Código no implementadp");
+                }
+
+
+                if (string.IsNullOrEmpty(pEntity.id) || Guid.TryParse(pEntity.id, out Guid x))
                 {
                     //Creamos
-                    pEntity.propTitle = templateSection.presentation.listItemsPresentation.listItemEdit.proptitle;
-                    pEntity.propDescription = templateSection.presentation.listItemsPresentation.listItemEdit.propdescription;
-                    ProcesCompossedProperties(templateSection.presentation.listItemsPresentation.listItemEdit, pEntity);
-                    ProcesLoadPropertyValues(templateSection.presentation.listItemsPresentation.listItemEdit, pEntity);
-                    ComplexOntologyResource resource = ToGnossApiResource(pEntity);
-                    string result = mResourceApi.LoadComplexSemanticResource(resource, false, true);
-
-                    //En el caso de añadir en un listado añadir la entidad al listado
-                    if (resource.Uploaded && !string.IsNullOrEmpty(templateSection.property))
+                    pEntity.propTitle = itemEditConfig.proptitle;
+                    pEntity.propDescription = itemEditConfig.propdescription;
+                    ProcesCompossedProperties(itemEditConfig, pEntity);
+                    ProcesLoadPropertyValues(itemEditConfig, pEntity);
+                    if (pEntity.ontology != "curriculumvitae")
                     {
-                        //Obtenemos la auxiliar en la que cargar la entidad
-                        SparqlObject tab = mResourceApi.VirtuosoQuery("select *", "where{<" + pCvID + "> ?s ?o. ?o a <" + pRdfTypeTab + "> }", "curriculumvitae");
-                        string idTab = tab.results.bindings[0]["o"].value;
-                        string rdfTypePrefix = UtilityCV.AniadirPrefijo(templateSection.rdftype);
-                        rdfTypePrefix = rdfTypePrefix.Substring(rdfTypePrefix.IndexOf(":") + 1);
-                        string idNewAux = "http://gnoss.com/items/" + rdfTypePrefix + "_" + mResourceApi.GetShortGuid(pCvID) + "_" + Guid.NewGuid();
+                        //Creamos el recurso que no pertenece al CV
+                        ComplexOntologyResource resource = ToGnossApiResource(pEntity);
+                        string result = mResourceApi.LoadComplexSemanticResource(resource, false, true);
 
-                        List<TriplesToInclude> listaTriples = new List<TriplesToInclude>();
-                        string idEntityAux = idTab + "|" + idNewAux;
-
-                        //Privacidad, por defecto falso                    
-                        string predicadoPrivacidad = template.property + "|" + templateSection.property + "|" + UtilityCV.PropertyIspublic;
-                        TriplesToInclude tr2 = new TriplesToInclude(idEntityAux + "|false", predicadoPrivacidad);
-                        listaTriples.Add(tr2);
-
-                        //Entidad
-                        string predicadoEntidad = template.property + "|" + templateSection.property + "|" + templateSection.presentation.listItemsPresentation.property;
-                        TriplesToInclude tr1 = new TriplesToInclude(idEntityAux + "|" + result, predicadoEntidad);
-                        listaTriples.Add(tr1);
-
-                        Dictionary<Guid, List<TriplesToInclude>> triplesToInclude = new Dictionary<Guid, List<TriplesToInclude>>()
+                        //En el caso de añadir en un listado añadir la entidad al listado
+                        if (resource.Uploaded && !string.IsNullOrEmpty(templateSection.property))
                         {
+                            //Obtenemos la auxiliar en la que cargar la entidad
+                            SparqlObject tab = mResourceApi.VirtuosoQuery("select *", "where{<" + pCvID + "> ?s ?o. ?o a <" + pRdfTypeTab + "> }", "curriculumvitae");
+                            string idTab = tab.results.bindings[0]["o"].value;
+                            string rdfTypePrefix = UtilityCV.AniadirPrefijo(templateSection.rdftype);
+                            rdfTypePrefix = rdfTypePrefix.Substring(rdfTypePrefix.IndexOf(":") + 1);
+                            string idNewAux = "http://gnoss.com/items/" + rdfTypePrefix + "_" + mResourceApi.GetShortGuid(pCvID) + "_" + Guid.NewGuid();
+
+                            List<TriplesToInclude> listaTriples = new List<TriplesToInclude>();
+                            string idEntityAux = idTab + "|" + idNewAux;
+
+                            //Privacidad, por defecto falso                    
+                            string predicadoPrivacidad = template.property + "|" + templateSection.property + "|" + UtilityCV.PropertyIspublic;
+                            TriplesToInclude tr2 = new TriplesToInclude(idEntityAux + "|false", predicadoPrivacidad);
+                            listaTriples.Add(tr2);
+
+                            //Entidad
+                            string predicadoEntidad = template.property + "|" + templateSection.property + "|" + templateSection.presentation.listItemsPresentation.property;
+                            TriplesToInclude tr1 = new TriplesToInclude(idEntityAux + "|" + result, predicadoEntidad);
+                            listaTriples.Add(tr1);
+
+                            Dictionary<Guid, List<TriplesToInclude>> triplesToInclude = new Dictionary<Guid, List<TriplesToInclude>>()
                             {
-                                mResourceApi.GetShortGuid(pCvID), listaTriples
-                            }
-                        };
-                        Dictionary<Guid, bool> respuesta = mResourceApi.InsertPropertiesLoadedResources(triplesToInclude);
-                        return new JsonResult() { ok = respuesta[mResourceApi.GetShortGuid(pCvID)], id = idNewAux };
+                                {
+                                    mResourceApi.GetShortGuid(pCvID), listaTriples
+                                }
+                            };
+                            Dictionary<Guid, bool> respuesta = mResourceApi.InsertPropertiesLoadedResources(triplesToInclude);
+                            return new JsonResult() { ok = respuesta[mResourceApi.GetShortGuid(pCvID)], id = idNewAux };
+                        }
+                        return new JsonResult() { ok = resource.Uploaded, id = result };
                     }
-                    return new JsonResult() { ok = resource.Uploaded, id = result };
+                    else
+                    {
+                        string select = "   select ?id";
+                        string where = $@"  where{{
+                                                <{pCvID}> <{template.property}> ?id.
+                                            }}";
+                        //Creamos el recurso que pertenece al CV
+                        string id1 = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae").results.bindings.First()["id"].value;
+                        string nombreEntidad2 = templateSection.rdftype;
+                        if (nombreEntidad2.Contains("#"))
+                        {
+                            nombreEntidad2 = nombreEntidad2.Substring(nombreEntidad2.LastIndexOf("#") + 1);
+                        }
+                        if (nombreEntidad2.Contains("/"))
+                        {
+                            nombreEntidad2 = nombreEntidad2.Substring(nombreEntidad2.LastIndexOf("/") + 1);
+                        }
+                        string id2 = mResourceApi.GraphsUrl + "items/" + nombreEntidad2 + "_" + mResourceApi.GetShortGuid(pCvID).ToString().ToLower() + "_" + Guid.NewGuid().ToString().ToLower();
+                        string nombreEntidad3 = pEntity.rdfType;
+                        if (nombreEntidad3.Contains("#"))
+                        {
+                            nombreEntidad3 = nombreEntidad3.Substring(nombreEntidad3.LastIndexOf("#") + 1);
+                        }
+                        if (nombreEntidad3.Contains("/"))
+                        {
+                            nombreEntidad3 = nombreEntidad3.Substring(nombreEntidad3.LastIndexOf("/") + 1);
+                        }
+                        string id3 = mResourceApi.GraphsUrl + "items/" + nombreEntidad3 + "_" + mResourceApi.GetShortGuid(pCvID).ToString().ToLower() + "_" + Guid.NewGuid().ToString().ToLower();
+
+                        bool updated = UpdateEntityAux(mResourceApi.GetShortGuid(pCvID), new List<string>() { template.property, templateSection.property, templateSection.presentation.itemPresentation.property }, new List<string>() { id1, id2, id3 }, null, pEntity);
+
+                        if (updated)
+                        {
+                            return new JsonResult() { ok = true, id = id3 };
+                        }
+                        else
+                        {
+                            return new JsonResult() { ok = false };
+                        }
+                    }
                 }
                 else
                 {
                     //Modificamos
                     Entity loadedEntity = GetLoadedEntity(pEntity.id, pEntity.ontology);
-                    loadedEntity.propTitle = templateSection.presentation.listItemsPresentation.listItemEdit.proptitle;
-                    loadedEntity.propDescription = templateSection.presentation.listItemsPresentation.listItemEdit.propdescription;
-                    ProcesCompossedProperties(templateSection.presentation.listItemsPresentation.listItemEdit, loadedEntity);
-                    ProcesLoadPropertyValues(templateSection.presentation.listItemsPresentation.listItemEdit, loadedEntity);
-
-                    bool hasChange = MergeLoadedEntity(loadedEntity, pEntity);
-
-                    if (hasChange)
+                    loadedEntity.propTitle = itemEditConfig.proptitle;
+                    loadedEntity.propDescription = itemEditConfig.propdescription;
+                    ProcesCompossedProperties(itemEditConfig, loadedEntity);
+                    ProcesLoadPropertyValues(itemEditConfig, loadedEntity);
+                    if (pEntity.ontology != "curriculumvitae")
                     {
-                        ComplexOntologyResource resource = ToGnossApiResource(loadedEntity);
-                        mResourceApi.ModifyComplexOntologyResource(resource, false, true);
-                        return new JsonResult() { ok = resource.Modified, id = pEntity.id };
+                        bool hasChange = MergeLoadedEntity(loadedEntity, pEntity);
+
+                        if (hasChange)
+                        {
+                            ComplexOntologyResource resource = ToGnossApiResource(loadedEntity);
+                            mResourceApi.ModifyComplexOntologyResource(resource, false, true);
+                            return new JsonResult() { ok = resource.Modified, id = pEntity.id };
+                        }
+                        else
+                        {
+                            return new JsonResult() { ok = true, id = pEntity.id };
+                        }
                     }
                     else
                     {
-                        return new JsonResult() { ok = true, id = pEntity.id };
+                        //Modificamos
+                        string select1 = "   select ?id1";
+                        string where1 = $@"  where{{
+                                                <{pCvID}> <{template.property}> ?id1.
+                                            }}";                        
+                        string id1 = mResourceApi.VirtuosoQuery(select1, where1, "curriculumvitae").results.bindings.First()["id1"].value;
+
+                        string select2 = "   select ?id2";
+                        string where2 = $@"  where{{
+                                                <{id1}> <{templateSection.property}> ?id2.
+                                            }}";
+                        string id2 = mResourceApi.VirtuosoQuery(select2, where2, "curriculumvitae").results.bindings.First()["id2"].value;
+
+                        string select3 = "   select ?id3";
+                        string where3 = $@"  where{{
+                                                <{id2}> <{templateSection.presentation.itemPresentation.property}> ?id3.
+                                            }}";
+                        string id3 = mResourceApi.VirtuosoQuery(select3, where3, "curriculumvitae").results.bindings.First()["id3"].value;
+
+                        bool updated = UpdateEntityAux(mResourceApi.GetShortGuid(pCvID), new List<string>() { template.property, templateSection.property, templateSection.presentation.itemPresentation.property }, new List<string>() { id1,id2,id3 }, loadedEntity, pEntity);
+
+                        if (updated)
+                        {
+                            return new JsonResult() { ok = true, id = pEntity.id };
+                        }
+                        else
+                        {
+                            return new JsonResult() { ok = false };
+                        }
                     }
                 }
             }
@@ -593,34 +689,38 @@ namespace GuardadoCV.Models
         /// <summary>
         /// Fusiona dos entidades
         /// </summary>
-        /// <param name="pPropertyIDs">Propiedades que apuntan a la auxiliar separadas por '|'</param>
-        /// <param name="pEntityIDs">Entidades que apuntan a la auxiliar separadas por '|'</param>
+        /// <param name="pIdMainEntity">Identificador de la entidad a la que pertenece la entidad auxiliar</param>
+        /// <param name="pPropertyIDs">Propiedades que apuntan a la auxiliar</param>
+        /// <param name="pEntityIDs">Entidades que apuntan a la auxiliar</param>
         /// <param name="pLoadedEntity">Entidad cargada en BBDD</param>
         /// <param name="pUpdatedEntity">Nueva entidad</param>
         /// <returns>Devuelve true si se ha actualizado correctamente</returns>
-        private bool UpdateEntityAux(List<string> pPropertyIDs, List<string> pEntityIDs, Entity pLoadedEntity, Entity pUpdatedEntity)
+        private bool UpdateEntityAux(Guid pIdMainEntity, List<string> pPropertyIDs, List<string> pEntityIDs, Entity pLoadedEntity, Entity pUpdatedEntity)
         {
             bool update = true;
-            Guid guid = mResourceApi.GetShortGuid(pLoadedEntity.id);
-            Dictionary<Guid, List<Gnoss.ApiWrapper.Model.TriplesToInclude>> triplesInclude = new Dictionary<Guid, List<TriplesToInclude>>() { { guid, new List<TriplesToInclude>() } };
-            Dictionary<Guid, List<Gnoss.ApiWrapper.Model.RemoveTriples>> triplesRemove = new Dictionary<Guid, List<RemoveTriples>>() { { guid, new List<RemoveTriples>() } };
-            Dictionary<Guid, List<Gnoss.ApiWrapper.Model.TriplesToModify>> triplesModify = new Dictionary<Guid, List<TriplesToModify>>() { { guid, new List<TriplesToModify>() } };
+            Dictionary<Guid, List<Gnoss.ApiWrapper.Model.TriplesToInclude>> triplesInclude = new Dictionary<Guid, List<TriplesToInclude>>() { { pIdMainEntity, new List<TriplesToInclude>() } };
+            Dictionary<Guid, List<Gnoss.ApiWrapper.Model.RemoveTriples>> triplesRemove = new Dictionary<Guid, List<RemoveTriples>>() { { pIdMainEntity, new List<RemoveTriples>() } };
+            Dictionary<Guid, List<Gnoss.ApiWrapper.Model.TriplesToModify>> triplesModify = new Dictionary<Guid, List<TriplesToModify>>() { { pIdMainEntity, new List<TriplesToModify>() } };
 
             foreach (Entity.Property property in pUpdatedEntity.properties)
             {
                 bool remove = property.values == null || property.values.Count == 0 || !property.values.Exists(x => !string.IsNullOrEmpty(x));
                 //Recorremos las propiedades de la entidad a actualizar y modificamos la entidad recuperada de BBDD               
-                Entity.Property propertyLoadedEntity = pLoadedEntity.properties.FirstOrDefault(x => x.prop == property.prop);
+                Entity.Property propertyLoadedEntity = null;
+                if (pLoadedEntity != null)
+                {
+                    propertyLoadedEntity = pLoadedEntity.properties.FirstOrDefault(x => x.prop == property.prop);
+                }
                 if (propertyLoadedEntity != null)
                 {
                     if (remove)
                     {
                         foreach (string valor in propertyLoadedEntity.values)
                         {
-                            triplesRemove[guid].Add(new RemoveTriples()
+                            triplesRemove[pIdMainEntity].Add(new RemoveTriples()
                             {
                                 Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(property.prop),
-                                Value = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(guid, valor, property.prop)
+                                Value = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(pIdMainEntity, valor, property.prop)
                             });
                         }
                     }
@@ -647,12 +747,12 @@ namespace GuardadoCV.Models
                             {
                                 if (numLoaded == 1 && numNew == 1)
                                 {
-                                    triplesModify[guid].Add(new TriplesToModify()
+                                    triplesModify[pIdMainEntity].Add(new TriplesToModify()
                                     {
 
                                         Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(property.prop),
-                                        NewValue = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(guid, valuesEntity[0], property.prop),
-                                        OldValue = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(guid, valuesLoadedEntity[0], property.prop)
+                                        NewValue = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(pIdMainEntity, valuesEntity[0], property.prop),
+                                        OldValue = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(pIdMainEntity, valuesLoadedEntity[0], property.prop)
                                     });
                                 }
                                 else
@@ -660,11 +760,11 @@ namespace GuardadoCV.Models
                                     //Eliminaciones
                                     foreach (string valor in valuesLoadedEntity.Except(property.values))
                                     {
-                                        triplesRemove[guid].Add(new RemoveTriples()
+                                        triplesRemove[pIdMainEntity].Add(new RemoveTriples()
                                         {
 
                                             Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(property.prop),
-                                            Value = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(guid, valor, property.prop)
+                                            Value = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(pIdMainEntity, valor, property.prop)
                                         });
                                     }
                                     //Inserciones
@@ -672,11 +772,11 @@ namespace GuardadoCV.Models
                                     {
                                         if (!valor.EndsWith("@@@"))
                                         {
-                                            triplesInclude[guid].Add(new TriplesToInclude()
+                                            triplesInclude[pIdMainEntity].Add(new TriplesToInclude()
                                             {
 
                                                 Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(property.prop),
-                                                NewValue = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(guid, valor, property.prop)
+                                                NewValue = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(pIdMainEntity, valor, property.prop)
                                             });
                                         }
                                     }
@@ -691,11 +791,11 @@ namespace GuardadoCV.Models
                     {
                         if (!valor.EndsWith("@@@"))
                         {
-                            triplesInclude[guid].Add(new TriplesToInclude()
+                            triplesInclude[pIdMainEntity].Add(new TriplesToInclude()
                             {
 
                                 Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(property.prop),
-                                NewValue = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(guid, valor, property.prop)
+                                NewValue = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(pIdMainEntity, valor, property.prop)
                             });
                         }
                     }
@@ -707,11 +807,11 @@ namespace GuardadoCV.Models
                     {
                         foreach (string valor in propertyToRemove.values)
                         {
-                            triplesRemove[guid].Add(new RemoveTriples()
+                            triplesRemove[pIdMainEntity].Add(new RemoveTriples()
                             {
 
                                 Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(property.prop),
-                                Value = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(guid, valor, property.prop)
+                                Value = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(pIdMainEntity, valor, property.prop)
                             });
                         }
                     }
@@ -730,9 +830,9 @@ namespace GuardadoCV.Models
                                 if (valor.Contains(auxEntityRemove))
                                 {
                                     //Elmiminamos de la lista a aliminar los hijos de la entidad a eliminar
-                                    triplesRemove[guid].RemoveAll(x => x.Value.Contains(auxEntityRemove));
+                                    triplesRemove[pIdMainEntity].RemoveAll(x => x.Value.Contains(auxEntityRemove));
                                     //Eliminamos la entidad auxiliar
-                                    triplesRemove[guid].Add(new RemoveTriples()
+                                    triplesRemove[pIdMainEntity].Add(new RemoveTriples()
                                     {
 
                                         Predicate = string.Join("|", pPropertyIDs) + "|" + property.prop.Substring(0, property.prop.IndexOf("@@@")),
@@ -745,17 +845,17 @@ namespace GuardadoCV.Models
                     }
                 }
             }
-            if (triplesRemove[guid].Count > 0)
+            if (triplesRemove[pIdMainEntity].Count > 0)
             {
-                update = update && mResourceApi.DeletePropertiesLoadedResources(triplesRemove)[guid];
+                update = update && mResourceApi.DeletePropertiesLoadedResources(triplesRemove)[pIdMainEntity];
             }
-            if (triplesInclude[guid].Count > 0)
+            if (triplesInclude[pIdMainEntity].Count > 0)
             {
-                update = update && mResourceApi.InsertPropertiesLoadedResources(triplesInclude)[guid];
+                update = update && mResourceApi.InsertPropertiesLoadedResources(triplesInclude)[pIdMainEntity];
             }
-            if (triplesModify[guid].Count > 0)
+            if (triplesModify[pIdMainEntity].Count > 0)
             {
-                update = update && mResourceApi.ModifyPropertiesLoadedResources(triplesModify)[guid];
+                update = update && mResourceApi.ModifyPropertiesLoadedResources(triplesModify)[pIdMainEntity];
             }
             return update;
         }

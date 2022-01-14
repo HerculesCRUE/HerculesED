@@ -43,7 +43,7 @@ namespace DesnormalizadorHercules.Models
             {
                 while (true)
                 {
-                    //Añadimos documentos
+                    //Creamos CVs
                     int limit = 50;
                     //TODO eliminar from
                     String select = @"SELECT distinct ?person from <http://gnoss.com/curriculumvitae.owl> ";

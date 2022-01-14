@@ -151,6 +151,14 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                 fDocumento.Dc_title = id.Split(":")[1].Trim();
                                 documentoCargar.Bibo_identifier.Add(fDocumento);
                             }
+
+                            if (id.ToLower().Contains("scopus_id"))
+                            {
+                                fDocument fDocumento = new fDocument();
+                                fDocumento.Foaf_topic = "Scopus";
+                                fDocumento.Dc_title = id.Split(":")[1].Trim();
+                                documentoCargar.Bibo_identifier.Add(fDocumento);
+                            }
                         }
                     }
                 }
@@ -352,7 +360,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                         BFO_0000023 relacionPersona = new BFO_0000023();
                         string idPersona = ComprobarPersona(LimpiarORCID(itemAutor.orcid));
 
-                        if (string.IsNullOrEmpty(idPersona))
+                        if (string.IsNullOrEmpty(idPersona) && itemAutor.name != null)
                         {
                             Person persona = ConstruirPersona(itemAutor.name.nombre_completo, itemAutor.name.given, itemAutor.name.familia);
 
@@ -767,7 +775,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                     NewValue = pIdPadre
                                 }
                             });
-                        Dictionary<Guid,bool> resultado = mResourceApi.InsertPropertiesLoadedResources(triples);
+                        Dictionary<Guid, bool> resultado = mResourceApi.InsertPropertiesLoadedResources(triples);
                         bool comprobacion = resultado.ContainsKey(mResourceApi.GetShortGuid(pIdDocumento));
                     }
                     else
@@ -1154,7 +1162,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             string where = $@"WHERE {{
                                 ?revista a <http://w3id.org/roh/MainDocument>. 
                                 ?revista <http://w3id.org/roh/title> ?titulo. 
-                                FILTER(?titulo = '{pTitulo}')
+                                FILTER(?titulo = '{pTitulo.Replace("'", "\\'")}')
                             }}";
 
             SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "maindocument");
@@ -1176,6 +1184,11 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
         /// <returns>ID del recurso.</returns>
         public static string ComprobarPublicacion(string pDOI)
         {
+            if(string.IsNullOrEmpty(pDOI))
+            {
+                return string.Empty;
+            }
+
             // Consulta sparql.
             string select = "SELECT ?documento ";
             string where = $@"WHERE {{
@@ -1211,15 +1224,20 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                 FILTER(?titulo = '{pTitulo.Replace("'", "\\'")}')
                             }}";
 
-            SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "document");
-            if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+            try
             {
-                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "document");
+                if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
                 {
-                    return fila["documento"].value;
+                    foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                    {
+                        return fila["documento"].value;
+                    }
                 }
+            }catch(Exception e)
+            {
+                return string.Empty;
             }
-
             return string.Empty;
         }
 
