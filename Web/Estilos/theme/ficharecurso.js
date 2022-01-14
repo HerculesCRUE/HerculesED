@@ -96,7 +96,6 @@ var buscadorPersonalizado = {
 								</div>
 							</div>`;
 		$(this.contenedor).append(hmltBuscador);
-		console.log("config llamado")
 		callback();
 	}
 }
@@ -260,7 +259,7 @@ function PintarGraficaProyectos(data,idContenedorAnios,idContenedorMiembros,idCo
 }
 
 
-function AjustarGraficaArania(data,idContenedor,typesOcultar = [],showRelation = true) {
+function AjustarGraficaArania(data,idContenedor,typesOcultar = [],showRelation = true, graficaToShow = "default") {
 
 	if (typesOcultar.length > 0) {
 		data = data.filter(e => e.selectable === true || typesOcultar.includes(e.data.type));
@@ -277,15 +276,24 @@ function AjustarGraficaArania(data,idContenedor,typesOcultar = [],showRelation =
 		}
 	}
 
-	PintarGraficaArania(data, idContenedor);
+	if (graficaToShow === "default") {
+		PintarGraficaArania(data, idContenedor);
+	} else if (graficaToShow === "circle") {
+		PintarGraficaAraniaVersionCircle(data, idContenedor);
+	}
 }
+
 
 function PintarGraficaArania(data,idContenedor) {
 	let currentData = [...data];
+
+	// La primera vez se pinta de nuevo
 	var repintar = false;
 	if (window.cy && window.cy._private && window.cy._private.ready !== true) {
 		repintar = true;
 	}
+
+	// Se crea el objeto
 	$('#'+idContenedor).empty();
 	var cy = window.cy = cytoscape({
 		// Contenedor
@@ -454,6 +462,296 @@ function PintarGraficaArania(data,idContenedor) {
 			
 			yPos = yPos + onlyItems[i]._private.style.height.value + 50;
 		};
+
+		if (repintar) {
+			setTimeout(function(){ PintarGraficaArania(currentData,idContenedor); }, 1000);
+		}
+    });
+}
+
+
+function PintarGraficaAraniaVersionCircle(data,idContenedor) {
+	let currentData = [...data];
+
+	// Se repinta la primera vez
+	var repintar = false;
+	if (window.cy && window.cy._private && window.cy._private.ready !== true) {
+		repintar = true;
+	}
+
+	// Se crea el objeto de la gráfica
+	$('#'+idContenedor).empty();
+	var cy = window.cy = cytoscape({
+		// Contenedor
+		container: document.getElementById(idContenedor),
+		// Layout
+		layout: {
+			name: 'circle',
+			idealEdgeLength: 100,
+            nodeOverlap: 20,
+            refresh: 20,
+            padding: 30,
+            randomize: false,
+            componentSpacing: 100,
+            nodeRepulsion: 400000,
+            edgeElasticity: 100,
+            nestingFactor: 5,
+            gravity: 80,
+            numIter: 1000,
+            initialTemp: 200,
+            coolingFactor: 0.95,
+            minTemp: 1.0,
+			fit:true,
+		},
+		// Estilos
+		style: [{
+			"selector": "node",
+			"style": {
+				"target-text-rotation": "auto",
+				"width": "mapData(score, 0, 10, 45, 90)",
+				"height": "mapData(score, 0, 10, 45, 90)",
+				"content": "data(name)",
+				"font-size": "12px",
+				"font-family": 'Roboto',
+				"font-color": "#999999",
+				"background-color": "#c2c2c2",
+				"text-outline-width": "0px",
+				"overlay-padding": "6px",
+				"z-index": "10"
+			}
+		}, {
+			"selector": "edge",
+			"style": {
+				"curve-style": "haystack",
+				"content": "",
+				"font-size": "24px",
+				"font-family": 'Roboto',
+				"font-color": "#999999",
+				"background-color": "#c2c2c2",
+				"haystack-radius": "0.5",
+				"opacity": "0.5",
+				"line-color": "#E1E1E1",
+				"width": "mapData(weight, 0, 10, 0, 10)",
+				"overlay-padding": "1px",
+				"z-index": "11"
+			}
+		}],
+		// Datos
+		elements: data
+	});
+
+	var arrayNodes = [];
+	var nodos = cy.nodes();
+
+	for (i = 0; i < cy.nodes().length; i++) { //starts loop
+		arrayNodes.push(nodos[i]._private.data.name);                
+		switch (nodos[i]._private.data.type) {
+			case 'icon_ip':
+				cy.nodes()[i].style({
+					'background-color': 'white',
+					'background-image': 'https://cdn.iconscout.com/icon/free/png-256/user-1912184-1617653.png',
+					'background-fit': 'cover',
+					'border-width': '2px',
+					'border-color': 'rgb(0,0,0)',
+					'shape': 'circle'
+				})                        
+				break;
+			case 'icon_member':
+				cy.nodes()[i].style({
+					'background-color': 'white',
+					'background-image': 'https://cdn.iconscout.com/icon/free/png-256/user-1648810-1401302.png',
+					'background-fit': 'cover',
+					'border-width': '2px',
+					'border-color': 'rgb(4,184,209)',
+					'shape': 'circle'
+				})
+				break;
+			default:
+				nodos[i].style({
+					'border-width': '2px',
+					'border-color': 'black',
+					'shape': 'circle'
+				});
+				break;
+		}
+	};
+
+	var arrayEdges = [];
+	var edges = cy.edges();
+
+	for (i = 0; i < cy.edges().length; i++) { //starts loop
+		var data=edges[i]._private.data.id.split('~');	
+		arrayEdges.push(data[data.length-1]);
+		edges[i]._private.data.name = "";
+		switch (edges[i]._private.data.type) {
+			case 'relation_document':
+				edges[i].style({
+					"line-color": "#FF0000"
+				})
+				break;
+			case 'relation_project':
+				edges[i].style({
+					"line-color": "#0000FF"
+				})
+				break;
+			default:
+				edges[i].style({
+					"line-color": "#E1E1E1"
+				})
+				break;
+		}
+	}
+
+	cy.on('click', 'node', function (e) {
+		e = e.target;
+		var indice = cy.nodes().indexOf(e);
+		if (e._private.data.name === "") {
+			e._private.data.name = arrayNodes[indice];
+		}
+		else {
+			e._private.data.name = "";
+		}
+	})
+
+	cy.on('click', 'edge', function (e) {
+		e = e.target;
+		var indice = cy.edges().indexOf(e);
+		if (e._private.data.name === "") {
+			e._private.data.name = arrayEdges[indice];
+		}
+		else {
+			e._private.data.name = "";
+		}
+	});
+
+
+	//Se puede calcular el centro de la circunferencia mediante 3 puntos que la forman serían por ejemplo las coord de los 3 primeros nodos	
+	AX=	cy.nodes()[0]._private.position.x	
+	AY=	cy.nodes()[0]._private.position.y	
+	BX=	cy.nodes()[1]._private.position.x	
+	BY=	cy.nodes()[1]._private.position.y	
+	CX=	cy.nodes()[2]._private.position.x	
+	CY=	cy.nodes()[2]._private.position.y	
+
+	var yDelta_a = BY - AY 
+	var xDelta_a = BX - AX; 
+	var yDelta_b = CY - BY; 
+	var xDelta_b = CX - BX;
+
+	var aSlope = yDelta_a / xDelta_a; 
+	var bSlope = yDelta_b / xDelta_b;
+
+	//Este es el centro de la circunferencia(x,y)
+	coordCentroCircunferenciaX = (aSlope*bSlope*(AY - CY) + bSlope*(AX + BX) - aSlope*(BX+CX) )/(2* (bSlope-aSlope));
+	coordCentroCircunferenciaY = -1*(coordCentroCircunferenciaX- (AX+BX)/2)/aSlope +  (AY+BY)/2;	 
+	
+
+	// Obtener el investigador principal
+	let ipEl = cy.nodes().filter(e => e._private.data.type === "none" || e._private.data.type === "icon_ip");
+	if (ipEl.length > 0) {
+		let id = ipEl[0]._private.data.id;
+		
+		ipEl[0]._private.position.x=coordCentroCircunferenciaX
+		ipEl[0]._private.position.y=coordCentroCircunferenciaY
+	} 
+
+	let nodox,nodoy,angulo;
+
+
+	//Calculo de angulo para todos los nodos
+	for (i = 0; i< cy.nodes().length; i=i+1) { //starts loop
+		let nodo=cy.nodes()[i];
+
+		//calcular angulo inicial y rotacion
+		nodox=nodo._private.position.x
+		nodoy=nodo._private.position.y
+		
+
+		
+		//3 puntos el centro d la circunferencia el nodo y un punto sobre el eje x 
+		C = { x: coordCentroCircunferenciaX, y: coordCentroCircunferenciaY };
+		A = { x: nodox, y: 0 };
+		B = { x: nodox,y:nodoy  };
+
+
+		//Esta funcion calcula en angulo que forman 3 puntos 
+		function find_angle(A,B,C) {
+			var AB = Math.sqrt(Math.pow(B.x-A.x,2)+ Math.pow(B.y-A.y,2));    
+			var BC = Math.sqrt(Math.pow(B.x-C.x,2)+ Math.pow(B.y-C.y,2)); 
+			var AC = Math.sqrt(Math.pow(C.x-A.x,2)+ Math.pow(C.y-A.y,2));
+			return Math.acos((BC*BC+AB*AB-AC*AC) / (2*BC*AB)) * (180 / Math.PI);   
+		}
+
+		let angulo = Math.round (
+			find_angle(A,B,C)
+		)
+					
+		//it can be much better but it works	
+		while (angulo > 90) angulo -= 90 
+		
+		//Dependiendo del cuadrante del circulo son necesarios ajustar los angulos
+        if (nodoy <= coordCentroCircunferenciaY) {
+			if (nodox >= coordCentroCircunferenciaX) {  //0-90
+				angulo =- angulo
+			}
+			else { //270-360 este
+			}     
+		}
+		else {	
+			if (nodox >= coordCentroCircunferenciaX) { //90-180
+				angulo =- angulo + 90	
+			}
+			else {
+				if (angulo != 0) angulo -= 90 
+			}
+		}
+
+		//if(i<=q2) angulo=-90
+		//if(i>q2) angulo-=90;
+		var nodolabel = cy.nodes()[i]
+
+		variable = i > (cy.nodes().length/2) ? 'right' : 'left'
+
+		cy.nodes()[i].style({
+		    'text-rotation': `${angulo}deg`,
+			'background-color': 'white',
+			'border-width': '2px',
+			'border-color': 'rgb(4,184,209)',
+			'shape': 'circle'
+		});
+
+	}
+		
+	// var bton= document.getElementById("layout");
+	// bton.addEventListener("click",hola);
+
+ //    function hola(){
+	// 	var cy = window.cy
+	// 	let name = ["grid"]
+	// 	var item = name[Math.floor(Math.random()*name.length)];
+	// 	var layout = cy.layout({
+	// 		name: item
+	// 	});
+
+	// 	layout.run();
+	// }
+
+	// var bton= document.getElementById("layout");
+	// bton.addEventListener("click",hola);
+
+ //    function hola(){
+	// 	var cy = window.cy
+	// 	let name = ["circular"]
+	// 	var item = name[Math.floor(Math.random()*name.length)];
+	// 	var layout = cy.layout({
+	// 		name: item
+	// 	});
+
+	// 	layout.run();
+	// }
+
+
+	cy.ready(function(event) {
 
 		if (repintar) {
 			setTimeout(function(){ PintarGraficaArania(currentData,idContenedor); }, 1000);
