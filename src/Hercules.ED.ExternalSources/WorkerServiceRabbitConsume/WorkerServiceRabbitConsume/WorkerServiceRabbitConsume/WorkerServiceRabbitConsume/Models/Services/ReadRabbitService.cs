@@ -140,6 +140,7 @@ namespace Gnoss.Web.ReprocessData.Models.Services
             HttpResponseMessage response;
             using (var httpClient = new HttpClient())
             {
+                httpClient.Timeout = TimeSpan.FromHours(24);
                 using (var request = new HttpRequestMessage(new HttpMethod(method), url))
                 {
                     request.Headers.TryAddWithoutValidation("Accept", "application/json");
@@ -150,16 +151,8 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                         {
                             request.Headers.TryAddWithoutValidation(item.Key, item.Value);
                         }
-                    }
-
-                    try
-                    {
-                        response = await httpClient.SendAsync(request);
-                    }
-                    catch (System.Exception)
-                    {
-                        throw new Exception("Error in the http call");
-                    }
+                    }                    
+                    response = await httpClient.SendAsync(request);                    
                 }
             }
 
