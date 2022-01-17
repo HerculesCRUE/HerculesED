@@ -193,6 +193,7 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                 {
                     // Creación de la URL.
                     Uri url = new Uri(string.Format(_configService.GetUrlPublicacion() + "Publication/GetROs?orcid={0}&date={1}", message[1], message[2]));
+                    FileLogger.Log($@"Haciendo petición a {url}");
 
                     // Obtención de datos con la petición.
                     string info_publication = httpCall(url.ToString(), "GET", headers).Result;
