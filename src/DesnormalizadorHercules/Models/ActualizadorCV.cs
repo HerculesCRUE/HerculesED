@@ -66,7 +66,7 @@ namespace DesnormalizadorHercules.Models
                     // Obtenemos los CV a cargar
                     mResourceApi.ChangeOntoly("curriculumvitae");
                     List<CV> listaCVCargar = GenerateCVFromPersons(persons);
-                    foreach (CV cv in listaCVCargar)
+                    Parallel.ForEach(listaCVCargar, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, cv =>
                     {
                         ComplexOntologyResource resource = cv.ToGnossApiResource(mResourceApi, new());
                         if (listaCVCargar.Last() == cv)
@@ -77,7 +77,7 @@ namespace DesnormalizadorHercules.Models
                         {
                             mResourceApi.LoadComplexSemanticResource(resource);
                         }
-                    }
+                    });
 
                     if (resultado.results.bindings.Count != limit)
                     {
@@ -853,14 +853,14 @@ namespace DesnormalizadorHercules.Models
                 }
             }
 
-            foreach (Guid idCV in triplesToInclude.Keys)
+            Parallel.ForEach(triplesToInclude.Keys, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, idCV =>
             {
                 List<List<TriplesToInclude>> listasDeListas = SplitList(triplesToInclude[idCV], 50).ToList();
                 foreach (List<TriplesToInclude> triples in listasDeListas)
                 {
                     mResourceApi.InsertPropertiesLoadedResources(new() { { idCV, triples } });
                 }
-            }
+            });
         }
 
         private void EliminarDocumentosCV(SparqlObject pDatosCargar)
@@ -904,14 +904,14 @@ namespace DesnormalizadorHercules.Models
                 }
             }
 
-            foreach (Guid idCV in triplesToDelete.Keys)
+            Parallel.ForEach(triplesToDelete.Keys, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, idCV =>
             {
                 List<List<RemoveTriples>> listasDeListas = SplitList(triplesToDelete[idCV], 50).ToList();
                 foreach (List<RemoveTriples> triples in listasDeListas)
                 {
                     mResourceApi.DeletePropertiesLoadedResources(new() { { idCV, triples } });
                 }
-            }
+            });
         }
 
         private void PublicarDocumentosCV(SparqlObject pDatosCargar, string graphsUrl)
@@ -943,14 +943,14 @@ namespace DesnormalizadorHercules.Models
                 }
             }
 
-            foreach (Guid idCV in triplesToModify.Keys)
+            Parallel.ForEach(triplesToModify.Keys, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, idCV =>
             {
                 List<List<TriplesToModify>> listasDeListas = SplitList(triplesToModify[idCV], 50).ToList();
                 foreach (List<TriplesToModify> triples in listasDeListas)
                 {
                     mResourceApi.ModifyPropertiesLoadedResources(new() { { idCV, triples } });
                 }
-            }
+            });
         }
 
         private void InsertarProyectosCV(SparqlObject pDatosCargar, string graphsUrl)
@@ -1006,10 +1006,10 @@ namespace DesnormalizadorHercules.Models
                 }
             }
 
-            foreach (Guid idCV in triplesToInclude.Keys)
+            Parallel.ForEach(triplesToInclude.Keys, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, idCV =>
             {
                 mResourceApi.InsertPropertiesLoadedResources(new Dictionary<Guid, List<TriplesToInclude>>() { { idCV, triplesToInclude[idCV] } });
-            }
+            });
         }
 
         private void EliminarProyectosCV(SparqlObject pDatosCargar)
@@ -1047,10 +1047,10 @@ namespace DesnormalizadorHercules.Models
                 }
             }
 
-            foreach (Guid idCV in triplesToDelete.Keys)
+            Parallel.ForEach(triplesToDelete.Keys, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, idCV =>
             {
                 mResourceApi.DeletePropertiesLoadedResources(new Dictionary<Guid, List<RemoveTriples>>() { { idCV, triplesToDelete[idCV] } });
-            }
+            });
         }
 
         private void InsertarItemsCV(SparqlObject pDatosCargar, string graphsUrl, string pRdfType, string pSectionProperty, string pProperty, string pVarEntity, string pVarSection,bool pPublic)
@@ -1090,10 +1090,10 @@ namespace DesnormalizadorHercules.Models
                 }
             }
 
-            foreach (Guid idCV in triplesToInclude.Keys)
+            Parallel.ForEach(triplesToInclude.Keys, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, idCV =>
             {
                 mResourceApi.InsertPropertiesLoadedResources(new Dictionary<Guid, List<TriplesToInclude>>() { { idCV, triplesToInclude[idCV] } });
-            }
+            });
         }
         
         private void EliminarItemsCV(SparqlObject pDatosCargar, string pSectionProperty, string pProperty, string pVarItem, string pVarSection)
@@ -1119,10 +1119,10 @@ namespace DesnormalizadorHercules.Models
                 }
             }
 
-            foreach (Guid idCV in triplesToDelete.Keys)
+            Parallel.ForEach(triplesToDelete.Keys, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, idCV =>
             {
                 mResourceApi.DeletePropertiesLoadedResources(new Dictionary<Guid, List<RemoveTriples>>() { { idCV, triplesToDelete[idCV] } });
-            }
+            });
         }
 
 

@@ -66,7 +66,7 @@ namespace DesnormalizadorHercules.Models
                             }}}} limit {limit}";
                 SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "project");
 
-                foreach (Dictionary<string, SparqlObject.Data> fila in resultado.results.bindings)
+                Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                 {
                     string project = fila["project"].value;
                     string isPublicACargar = fila["isPublicACargar"].value;
@@ -76,7 +76,7 @@ namespace DesnormalizadorHercules.Models
                         isPublicCargado = fila["isPublicCargado"].value;
                     }
                     ActualizadorTriple(project, "http://w3id.org/roh/isPublic", isPublicCargado, isPublicACargar);
-                }
+                });
 
                 if (resultado.results.bindings.Count != limit)
                 {
@@ -392,7 +392,7 @@ namespace DesnormalizadorHercules.Models
                             }}}} limit {limit}";
                 SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "project");
 
-                foreach (Dictionary<string, SparqlObject.Data> fila in resultado.results.bindings)
+                Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                 {
                     string project = fila["project"].value;
                     string numAreasTematicasACargar = fila["numAreasTematicasACargar"].value;
@@ -402,7 +402,7 @@ namespace DesnormalizadorHercules.Models
                         numAreasTematicasCargadas = fila["numAreasTematicasCargadas"].value;
                     }
                     ActualizadorTriple(project, "http://w3id.org/roh/themedAreasNumber", numAreasTematicasCargadas, numAreasTematicasACargar);
-                }
+                });
 
                 if (resultado.results.bindings.Count != limit)
                 {
@@ -457,7 +457,7 @@ namespace DesnormalizadorHercules.Models
                             }}}} limit {limit}";
                 SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "project");
 
-                foreach (Dictionary<string, SparqlObject.Data> fila in resultado.results.bindings)
+                Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                 {
                     string project = fila["project"].value;
                     string numDocumentosACargar = fila["numDocumentosACargar"].value;
@@ -467,7 +467,7 @@ namespace DesnormalizadorHercules.Models
                         numDocumentosCargados = fila["numDocumentosCargados"].value;
                     }
                     ActualizadorTriple(project, "http://w3id.org/roh/publicationsNumber", numDocumentosCargados, numDocumentosACargar);
-                }
+                });
 
                 if (resultado.results.bindings.Count != limit)
                 {
@@ -541,7 +541,7 @@ namespace DesnormalizadorHercules.Models
                             }}}} limit {limit}";
                 SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "project");
 
-                foreach (Dictionary<string, SparqlObject.Data> fila in resultado.results.bindings)
+                Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                 {
                     string project = fila["project"].value;
                     string numColaboradoresACargar = fila["numColaboradoresACargar"].value;
@@ -551,7 +551,7 @@ namespace DesnormalizadorHercules.Models
                         numColaboradoresCargados = fila["numColaboradoresCargados"].value;
                     }
                     ActualizadorTriple(project, "http://w3id.org/roh/collaboratorsNumber", numColaboradoresCargados, numColaboradoresACargar);
-                }
+                });
 
                 if (resultado.results.bindings.Count != limit)
                 {
@@ -606,7 +606,7 @@ namespace DesnormalizadorHercules.Models
                             }}}} limit {limit}";
                 SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "project");
 
-                foreach (Dictionary<string, SparqlObject.Data> fila in resultado.results.bindings)
+                Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                 {
                     string project = fila["project"].value;
                     string numMiembrosACargar = fila["numMiembrosACargar"].value;
@@ -616,7 +616,7 @@ namespace DesnormalizadorHercules.Models
                         numMiembrosCargados = fila["numMiembrosCargados"].value;
                     }
                     ActualizadorTriple(project, "http://w3id.org/roh/researchersNumber", numMiembrosCargados, numMiembrosACargar);
-                }
+                });
 
                 if (resultado.results.bindings.Count != limit)
                 {
