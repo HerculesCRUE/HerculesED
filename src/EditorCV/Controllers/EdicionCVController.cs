@@ -26,18 +26,20 @@ namespace GuardadoCV.Controllers
         /// <summary>
         /// Obtiene un listado de sugerencias con datos existentes para esa propiedad
         /// </summary>
-        /// <param name="pSeach">Texto por el que se van a buscar sugerencias</param>
+        /// <param name="q">Texto por el que se van a buscar sugerencias</param>
         /// <param name="pProperty">Propiedad en la que se quiere buscar</param>
         /// <param name="pRdfType">Rdf:type de la entidad en la que se quiere buscar</param>
         /// <param name="pGraph">Grafo en el que se encuentra la propiedad</param>
+        /// <param name="pSection">Sección</param>
+        /// <param name="pRdfTypeTab">Pestaña del CV</param>
         /// <returns></returns>
         [HttpPost("GetAutocomplete")]
-        public IActionResult GetAutocomplete([FromForm] string q, [FromForm] string pProperty, [FromForm] string pRdfType, [FromForm] string pGraph, [FromForm] string lista)
+        public IActionResult GetAutocomplete([FromForm] string q, [FromForm] string pProperty, [FromForm] string pRdfType, [FromForm] string pGraph, [FromForm] string pSection,[FromForm] string pRdfTypeTab, [FromForm] string lista)
         {
             try
             {
-                AccionesEdicion accionesEdicion = new AccionesEdicion();
-                return Ok(accionesEdicion.GetAutocomplete(q.ToLower(), pProperty, pRdfType, pGraph, lista?.Split(',').ToList()));
+               AccionesEdicion accionesEdicion = new AccionesEdicion();
+                return Ok(accionesEdicion.GetAutocomplete(q.ToLower(), pProperty, pRdfType, pGraph,pSection,pRdfTypeTab, lista?.Split(',').ToList()));
             }
             catch (Exception ex)
             {
