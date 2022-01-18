@@ -111,6 +111,19 @@ namespace GuardadoCV.Models.API.Templates
             List<Utils.PropertyData> propertyDatas = new List<Utils.PropertyData>();
             foreach (ItemEditSectionRowProperty itemEditSectionRowProperty in this.properties)
             {
+                if(itemEditSectionRowProperty.autocompleteConfig!=null && !string.IsNullOrEmpty( itemEditSectionRowProperty.autocompleteConfig.propertyEntity))
+                {
+                    Utils.PropertyData propertyAC = new Utils.PropertyData()
+                    {
+                        property = itemEditSectionRowProperty.autocompleteConfig.propertyEntity,
+                        childs = new List<Utils.PropertyData>(),
+                        graph = pGraph
+                    };
+                    if (!propertyDatas.Exists(x => x.property == itemEditSectionRowProperty.property))
+                    {
+                        propertyDatas.Add(propertyAC);
+                    }
+                }
                 Utils.PropertyData property = new Utils.PropertyData()
                 {
                     property = itemEditSectionRowProperty.property,
@@ -244,6 +257,10 @@ namespace GuardadoCV.Models.API.Templates
         /// </summary>
         public bool autocomplete;
         /// <summary>
+        /// Configuracion del autocompletar
+        /// </summary>
+        public ItemEditSectionRowPropertyAutocompleteConfig autocompleteConfig { get; set; }
+        /// <summary>
         /// Indica si es obligatorio
         /// </summary>
         public bool required;
@@ -274,6 +291,28 @@ namespace GuardadoCV.Models.API.Templates
         public string compossed;
     }
 
+    /// <summary>
+    /// Configuración de un autocompletar para edición
+    /// </summary>
+    public class ItemEditSectionRowPropertyAutocompleteConfig
+    {
+        /// <summary>
+        /// Propiedad a recuperar de la entidad para el nombre
+        /// </summary>
+        public PropertyDataTemplate property;
+        /// <summary>
+        /// Grafo en el que está la entidad
+        /// </summary>
+        public string graph;
+        /// <summary>
+        /// Propiedad en la que se carga el ID de la entidad
+        /// </summary>
+        public string propertyEntity;
+        /// <summary>
+        /// rdf:type de la entidad a recuperar
+        /// </summary>
+        public string rdftype;
+    }
     public class ItemEditAuxEntityData
     {
         /// <summary>
@@ -346,7 +385,6 @@ namespace GuardadoCV.Models.API.Templates
     {
         /// <summary>
         /// Propiedad a recuperar de la entidad para el nombre
-        /// TODO
         /// </summary>
         public PropertyDataTemplate property;
         /// <summary>
