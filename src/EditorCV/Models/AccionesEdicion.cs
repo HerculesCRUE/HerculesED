@@ -42,16 +42,33 @@ namespace GuardadoCV.Models
         /// <summary>
         /// Obtiene un listado de sugerencias con datos existentes para esa propiedad
         /// </summary>
-        /// <param name="pSeach">Texto por el que se van a buscar sugerencias</param>
+        /// <param name="pSearch">Texto por el que se van a buscar sugerencias</param>
         /// <param name="pProperty">Propiedad en la que se quiere buscar</param>
         /// <param name="pRdfType">Rdf:type de la entidad en la que se quiere buscar</param>
+        /// <param name="pSection">Sección</param>
+        /// <param name="pRdfTypeTab">Pestaña del CV</param>
         /// <param name="pGraph">Grafo en el que se encuentra la propiedad</param>
         /// <returns></returns>
-        public List<string> GetAutocomplete(string pSeach, string pProperty, string pRdfType, string pGraph, List<string> pLista)
+        public object GetAutocomplete(string pSearch, string pProperty, string pRdfType, string pGraph, string pSection, string pRdfTypeTab, List<string> pLista)
         {
-            string searchText = pSeach.Trim();
+            TabSectionPresentationListItems presentationListItem = UtilityCV.TabTemplates.First(x => x.rdftype == pRdfTypeTab).sections.First(x => x.property == pSection).presentation.listItemsPresentation;
+
+            ItemEditSectionRowPropertyAutocompleteConfig autocompleteConfig = presentationListItem.listItemEdit.sections.SelectMany(x => x.rows).SelectMany(x => x.properties).Where(x => x.property == pProperty).FirstOrDefault().autocompleteConfig;
+            bool getEntityID = false;
+            if (autocompleteConfig != null)
+            {
+                pGraph = autocompleteConfig.graph;
+                pRdfType = autocompleteConfig.rdftype;
+                pProperty = autocompleteConfig.property.property;
+                if (!string.IsNullOrEmpty(autocompleteConfig.propertyEntity))
+                {
+                    getEntityID = true;
+                }
+            }
+
+            string searchText = pSearch.Trim();
             string filter = "";
-            if (!pSeach.EndsWith(' '))
+            if (!pSearch.EndsWith(' '))
             {
                 string[] splitSearch = searchText.Split(' ', StringSplitOptions.RemoveEmptyEntries);
                 if (splitSearch.Length > 1)
@@ -80,15 +97,32 @@ namespace GuardadoCV.Models
             {
                 filter = $"bif:contains(?o, \"'{ searchText }'\"){filter}";
             }
-            string select = "SELECT DISTINCT ?o ";
+            string select = "SELECT DISTINCT ?s ?o ";
             string where = $"WHERE {{ ?s a <{ pRdfType }>. ?s <{ pProperty }> ?o . FILTER( {filter} ) }} ORDER BY ?o";
             SparqlObject sparqlObjectAux = mResourceApi.VirtuosoQuery(select, where, pGraph);
-            var resultados = sparqlObjectAux.results.bindings.Select(x => x["o"].value).Distinct();
-            if (pLista != null)
+            if (!getEntityID)
             {
-                resultados = resultados.Except(pLista, StringComparer.OrdinalIgnoreCase);
+                var resultados = sparqlObjectAux.results.bindings.Select(x => x["o"].value).Distinct();
+                if (pLista != null)
+                {
+                    resultados = resultados.Except(pLista, StringComparer.OrdinalIgnoreCase);
+                }
+                return resultados.ToList();
             }
-            return resultados.ToList();
+            else
+            {
+                Dictionary<string, string> respuesta = new Dictionary<string, string>();
+                foreach (Dictionary<string, Data> fila in sparqlObjectAux.results.bindings)
+                {
+                    string s = fila["s"].value;
+                    string o = fila["o"].value;
+                    if (pLista == null || respuesta.Keys.Intersect(pLista).Count() == 0)
+                    {
+                        respuesta.Add(s, o);
+                    }
+                }
+                return respuesta;
+            }
         }
 
         /// <summary>
@@ -148,12 +182,12 @@ namespace GuardadoCV.Models
             TabSectionPresentation tabSectionPresentation = UtilityCV.TabTemplates.First(x => x.rdftype == pRdfTypeTab).sections.First(x => x.property == pIdSection).presentation;
             ItemEdit templateEdit = null;
             string property = "";
-            if (tabSectionPresentation.listItemsPresentation!=null)
+            if (tabSectionPresentation.listItemsPresentation != null)
             {
                 templateEdit = tabSectionPresentation.listItemsPresentation.listItemEdit;
                 property = tabSectionPresentation.listItemsPresentation.property;
             }
-            else if(tabSectionPresentation.itemPresentation != null)
+            else if (tabSectionPresentation.itemPresentation != null)
             {
                 templateEdit = tabSectionPresentation.itemPresentation.itemEdit;
                 property = tabSectionPresentation.itemPresentation.property;
@@ -801,7 +835,7 @@ namespace GuardadoCV.Models
                         title = UtilityCV.GetTextLang(pLang, templateSection.presentation.title),
                         orders = new List<TabSectionPresentationOrder>()
                     };
-                    switch(templateSection.presentation.type)
+                    switch (templateSection.presentation.type)
                     {
                         case TabSectionPresentationType.listitems:
                             {
@@ -851,7 +885,7 @@ namespace GuardadoCV.Models
                                     {
                                         id = idEntity;
                                     }
-                                    if (id!=null && pData.ContainsKey(id))
+                                    if (id != null && pData.ContainsKey(id))
                                     {
                                         foreach (string idEntity in pData[id].Where(x => x["p"].value == templateSection.presentation.itemPresentation.property).Select(x => x["o"].value).Distinct())
                                         {
@@ -859,7 +893,7 @@ namespace GuardadoCV.Models
                                         }
                                     }
                                 }
-                                tabSection.item= GetEditModel(id, templateSection.presentation.itemPresentation.itemEdit, pLang);
+                                tabSection.item = GetEditModel(id, templateSection.presentation.itemPresentation.itemEdit, pLang);
                                 if (string.IsNullOrEmpty(tabSection.item.entityID))
                                 {
                                     tabSection.item.entityID = Guid.NewGuid().ToString().ToLower();
@@ -868,9 +902,9 @@ namespace GuardadoCV.Models
                             }
                             break;
                         default:
-                            throw new Exception("No está implementado el código para el tipo "+ templateSection.presentation.type.ToString());
-                    }               
-                    
+                            throw new Exception("No está implementado el código para el tipo " + templateSection.presentation.type.ToString());
+                    }
+
                 }
             }
             return tab;
@@ -921,32 +955,35 @@ namespace GuardadoCV.Models
                 item.ispublic = true;
             }
             item.properties = new List<TabSectionItemProperty>();
-            foreach (TabSectionListItemProperty property in pListItemConfig.listItem.properties)
+            if (pListItemConfig.listItem.properties != null)
             {
-                string propertyIn = "";
-                TabSectionItemProperty itemProperty = new TabSectionItemProperty()
+                foreach (TabSectionListItemProperty property in pListItemConfig.listItem.properties)
                 {
-                    showMini = property.showMini,
-                    showMiniBold = property.showMiniBold,
-                    name = UtilityCV.GetTextLang(pLang, property.name)
-                };
-                if (property.childOR != null && property.childOR.Count > 0)
-                {
-                    propertyIn = "";
-                    string aux = "";
-                    foreach (PropertyDataTemplate propertyData in property.childOR)
+                    string propertyIn = "";
+                    TabSectionItemProperty itemProperty = new TabSectionItemProperty()
                     {
-                        propertyIn += aux + UtilityCV.GetPropComplete(propertyData);
-                        aux = "||";
+                        showMini = property.showMini,
+                        showMiniBold = property.showMiniBold,
+                        name = UtilityCV.GetTextLang(pLang, property.name)
+                    };
+                    if (property.childOR != null && property.childOR.Count > 0)
+                    {
+                        propertyIn = "";
+                        string aux = "";
+                        foreach (PropertyDataTemplate propertyData in property.childOR)
+                        {
+                            propertyIn += aux + UtilityCV.GetPropComplete(propertyData);
+                            aux = "||";
+                        }
                     }
+                    else
+                    {
+                        propertyIn = UtilityCV.GetPropComplete(property.child);
+                    }
+                    itemProperty.type = property.type.ToString();
+                    itemProperty.values = GetPropValues(pId, propertyIn, pData);
+                    item.properties.Add(itemProperty);
                 }
-                else
-                {
-                    propertyIn = UtilityCV.GetPropComplete(property.child);
-                }
-                itemProperty.type = property.type.ToString();
-                itemProperty.values = GetPropValues(pId, propertyIn, pData);
-                item.properties.Add(itemProperty);
             }
             item.orderProperties = new List<TabSectionItemOrderProperty>();
             if (pListItemConfig.listItem.orders != null)
@@ -1296,15 +1333,17 @@ namespace GuardadoCV.Models
                     }
 
                     entityEditSectionRowProperty.entityAuxData.propertiesConfig = new List<EntityEditRepresentativeProperty>();
-                    foreach (ItemEditEntityProperty entityProperty in pItemEditSectionRowProperty.auxEntityData.properties)
+                    if (pItemEditSectionRowProperty.auxEntityData.properties != null)
                     {
-                        entityEditSectionRowProperty.entityAuxData.propertiesConfig.Add(new EntityEditRepresentativeProperty()
+                        foreach (ItemEditEntityProperty entityProperty in pItemEditSectionRowProperty.auxEntityData.properties)
                         {
-                            name = UtilityCV.GetTextLang(pLang, entityProperty.name),
-                            route = entityProperty.child.GetRoute()
-                        });
+                            entityEditSectionRowProperty.entityAuxData.propertiesConfig.Add(new EntityEditRepresentativeProperty()
+                            {
+                                name = UtilityCV.GetTextLang(pLang, entityProperty.name),
+                                route = entityProperty.child.GetRoute()
+                            });
+                        }
                     }
-
                 }
                 if (pItemEditSectionRowProperty.entityData != null)
                 {
@@ -1361,6 +1400,12 @@ namespace GuardadoCV.Models
                     }
                 }
 
+                if (pItemEditSectionRowProperty.autocompleteConfig != null && !string.IsNullOrEmpty(pItemEditSectionRowProperty.autocompleteConfig.propertyEntity))
+                {
+                    entityEditSectionRowProperty.propertyEntity = pItemEditSectionRowProperty.autocompleteConfig.propertyEntity;
+                    entityEditSectionRowProperty.propertyEntityValue= pData[pId].Where(x => x["p"].value == entityEditSectionRowProperty.propertyEntity).Select(x => x["o"].value).Distinct().FirstOrDefault();
+                }
+
                 if (pItemEditSectionRowProperty.type == DataTypeEdit.thesaurus)
                 {
                     entityEditSectionRowProperty.thesaurus = pTesauros[pItemEditSectionRowProperty.thesaurus];
@@ -1396,47 +1441,8 @@ namespace GuardadoCV.Models
                     foreach (string id in entityEditSectionRowProperty.values)
                     {
                         entityEditSectionRowProperty.entityAuxData.entities.Add(id, GetRowsEdit(id, rowsEdit, pData, pCombos, pCombosDependency, pTesauros, pLang, pGraph));
-
-
-                        //    //Title
-                        //    string title = GetPropValues(id, "http://xmlns.com/foaf/0.1/nick", pData).FirstOrDefault();
-                        //    if (string.IsNullOrEmpty(title))
-                        //    {
-                        //        title = "";
-                        //    }
-                        //    entityEditSectionRowProperty.entityAuxData.titles.Add(id, new EntityEditRepresentativeProperty()
-                        //    {
-                        //        value = title,
-                        //        route = "http://xmlns.com/foaf/0.1/nick"
-                        //    });
-
-
-                        //    entityEditSectionRowProperty.entityAuxData.properties[id] = new List<EntityEditRepresentativeProperty>()
-                        //{
-                        //    new EntityEditRepresentativeProperty()
-                        //    {
-                        //        //TODO
-                        //        name = "Nombre",
-                        //        value = string.Join(", ", GetPropValues(id, "http://www.w3.org/1999/02/22-rdf-syntax-ns#member@@@http://xmlns.com/foaf/0.1/name", pData)),
-                        //        route = "http://www.w3.org/1999/02/22-rdf-syntax-ns#member||person||http://xmlns.com/foaf/0.1/name"
-                        //    },
-                        //    new EntityEditRepresentativeProperty()
-                        //    {
-                        //        //TODO
-                        //        name = "ORCID",
-                        //        value = string.Join(", ", GetPropValues(id, "http://www.w3.org/1999/02/22-rdf-syntax-ns#member@@@http://w3id.org/roh/ORCID", pData)),
-                        //        route = "http://www.w3.org/1999/02/22-rdf-syntax-ns#member||person||http://w3id.org/roh/ORCID"
-                        //    }
-                        //};
                     }
-
                     return entityEditSectionRowProperty;
-
-
-
-
-
-
                 }
 
                 if (pItemEditSectionRowProperty.type == DataTypeEdit.auxEntity)
@@ -1756,7 +1762,7 @@ namespace GuardadoCV.Models
 
             // Cliente.
             EnrichmentResponseGlobal respuesta = new EnrichmentResponseGlobal();
-            respuesta.tags = new EnrichmentResponse(); 
+            respuesta.tags = new EnrichmentResponse();
             respuesta.tags.topics = new List<EnrichmentResponseItem>();
             respuesta.categories = new EnrichmentResponseCategory();
             respuesta.categories.topics = new List<List<EnrichmentResponseCategory.EnrichmentResponseItem>>();
@@ -1912,7 +1918,7 @@ namespace GuardadoCV.Models
             }
 
             Dictionary<string, string> dicAreasUltimoNivel = new Dictionary<string, string>();
-            foreach(KeyValuePair<string, string> item in dicAreasNombre)
+            foreach (KeyValuePair<string, string> item in dicAreasNombre)
             {
                 bool tieneHijos = false;
                 string id = item.Value.Split(new[] { "researcharea_" }, StringSplitOptions.None)[1];
