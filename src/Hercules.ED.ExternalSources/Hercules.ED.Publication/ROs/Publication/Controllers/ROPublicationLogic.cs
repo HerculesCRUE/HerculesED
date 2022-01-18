@@ -27,22 +27,12 @@ namespace PublicationConnect.ROs.Publications.Controllers
         public static Dictionary<string, Dictionary<string, Dictionary<string, Tuple<string, string, string>>>> metricas_scie = LeerDatosExcel_WoS(@"Files/JCR_SCIE_2020.xlsx");
         public static Dictionary<string, Dictionary<string, Dictionary<string, Tuple<string, string, string>>>> metricas_ssci = LeerDatosExcel_WoS(@"Files/JCR_SSCI_2020.xlsx");
 
-        // Diccionario con las peticiones.
-        public static Dictionary<string, Publication> dicSemanticScholar;
-        public static Dictionary<string, Publication> dicOpenCitations;
-        public static Dictionary<string, Publication> dicCrossRef;
-        public static Dictionary<string, string> dicZenodo;
-
         // Configuración.
         readonly ConfigService _Configuracion;
 
         public ROPublicationLogic(ConfigService pConfig)
         {
             _Configuracion = pConfig;
-            dicSemanticScholar = new Dictionary<string, Publication>();
-            dicOpenCitations = new Dictionary<string, Publication>();
-            dicCrossRef = new Dictionary<string, Publication>();
-            dicZenodo = new Dictionary<string, string>();
         }
 
         /// <summary>
@@ -57,6 +47,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             HttpResponseMessage response;
             using (var httpClient = new HttpClient())
             {
+                httpClient.Timeout = TimeSpan.FromHours(24);
                 using (var request = new HttpRequestMessage(new HttpMethod(method), url))
                 {
                     //request.Headers.TryAddWithoutValidation("X-ApiKey", bareer);
@@ -103,6 +94,12 @@ namespace PublicationConnect.ROs.Publications.Controllers
         /// <returns></returns>
         public List<Publication> getPublications(string name, string date = "1500-01-01", string pDoi = null)
         {
+            // Diccionario con las peticiones.
+            Dictionary<string, Publication> dicSemanticScholar = new Dictionary<string, Publication>();
+            Dictionary<string, Publication> dicOpenCitations = new Dictionary<string, Publication>();
+            Dictionary<string, Publication> dicCrossRef = new Dictionary<string, Publication>();
+            Dictionary<string, string> dicZenodo = new Dictionary<string, string>();
+
             //Declaro el Resultado
             List<Publication> resultado = new List<Publication>();
             List<Publication> objInicial_Scopus = null;
@@ -123,41 +120,47 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 objInicial_woS = llamada_WoS(name, date);
             }
 
+            int contadorPubWos = 0;
             if (objInicial_woS != null && objInicial_woS.Count >= 1)
             {
                 foreach (Publication pub in objInicial_woS)
                 {
-                    Log.Information("Lista dois bibliografia...");
+                    Log.Information($@"[WoS] Publicación {contadorPubWos}/{objInicial_woS.Count}");
                     this.dois_bibliografia = new List<string>();
-                    Log.Information("Advertencia...");
                     this.advertencia = pub.problema;
                     string doi = pub.doi;
-                    Log.Information("Lista dois principales...");
                     this.dois_principales.Add(doi);
-                    Log.Information("Haciendo petición a SemanticScholar...");
-                    Publication objInicial_semanticScholar = llamadaSemanticScholar(pub.doi);
-                    Log.Information("Comparación...");
+                    Log.Information("[WoS] Haciendo petición a SemanticScholar...");
+                    Publication objInicial_semanticScholar = llamadaSemanticScholar(pub.doi, ref dicSemanticScholar);
+                    Log.Information("[WoS] Comparación (SemanticScholar)...");
                     Publication pub_completa = compatacion(pub, objInicial_semanticScholar);
-                    Log.Information("Haciendo petición a CrossRef...");
-                    Publication objInicial_CrossRef = llamadaCrossRef(doi);
+                    Log.Information("[WoS] Haciendo petición a CrossRef...");
+                    Publication objInicial_CrossRef = llamadaCrossRef(doi, ref dicCrossRef);
+                    Log.Information("[WoS] Comparación (CrossRef)...");
                     pub_completa = compatacion(pub_completa, objInicial_CrossRef);
                     if (objInicial_CrossRef != null)
                     {
                         pub_completa.bibliografia = objInicial_CrossRef.bibliografia;
                     }
-                    pub.pdf = llamadaZenodo(pub.doi);
+                    Log.Information("[WoS] Haciendo petición a Zenodo...");
+                    pub.pdf = llamadaZenodo(pub.doi, ref dicZenodo);
+                    Log.Information("[WoS] Obteniendo topics enriquecidos...");
                     pub.topics_enriquecidos = enriquedicmiento(pub);
+                    Log.Information("[WoS] Obteniendo freeTextKeywords enriquecidos...");
                     pub.freetextKeyword_enriquecidas = enriquedicmiento_pal(pub);
                     if (pub.dataIssued != null && pub.hasPublicationVenue != null && pub.hasPublicationVenue.issn != null)
                     {
+                        Log.Information("[WoS] Obteniendo métrica...");
                         pub.hasPublicationVenue = metrica_journal(pub.hasPublicationVenue, pub.dataIssued.datimeTime, pub.topics_enriquecidos);
                     }
                     if (pub_completa.pdf == "")
                     {
                         pub_completa.pdf = null;
                     }
-                    pub_completa = completar_bib(pub_completa);
-                    pub_completa = obtener_bib_citas(pub_completa);
+                    Log.Information("[WoS] Obteniendo bibliografia...");
+                    pub_completa = completar_bib(pub_completa, ref dicOpenCitations, ref dicSemanticScholar, ref dicCrossRef, ref dicZenodo);
+                    Log.Information("[WoS] Obteniendo citas...");
+                    pub_completa = obtener_bib_citas(pub_completa, ref dicOpenCitations, ref dicSemanticScholar, ref dicCrossRef, ref dicZenodo);
                     if (objInicial_Scopus != null && objInicial_Scopus.Count >= 1)
                     {
                         foreach (Publication pub_scopus in objInicial_Scopus)
@@ -176,62 +179,70 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     {
                         resultado.Add(pub_completa);
                     }
+                    contadorPubWos++;
                 }
             }
+
+            int contadoPubScopus = 0;
             if (objInicial_Scopus != null && objInicial_Scopus.Count >= 1)
             {
                 //llamada Scopus para completar publicaciones. 
                 foreach (Publication pub_scopus in objInicial_Scopus)
                 {
+                    Log.Information($@"[Scopus] Publicación {contadoPubScopus}/{objInicial_Scopus.Count}");
                     this.advertencia = pub_scopus.problema;
                     if (!dois_principales.Contains(pub_scopus.doi))
                     {
-                        Log.Information("Lista dois bibliografia2...");
                         this.dois_bibliografia = new List<string>();
-                        Log.Information("Advertencias2...");
                         this.advertencia = pub_scopus.problema;
                         string doi = pub_scopus.doi;
-                        Log.Information("Lista dois principales2...");
                         this.dois_principales.Add(doi);
-                        Log.Information("Llamada a SemanticScholar...");
-                        Publication objInicial_semanticScholar = llamadaSemanticScholar(pub_scopus.doi);
-                        Log.Information("Comparación...");
+                        Log.Information("[Scopus] Haciendo petición a SemanticScholar...");
+                        Publication objInicial_semanticScholar = llamadaSemanticScholar(pub_scopus.doi, ref dicSemanticScholar);
+                        Log.Information("[Scopus] Comparación (SemanticScholar)...");
                         Publication pub_completa = compatacion(pub_scopus, objInicial_semanticScholar);
-                        Log.Information("Llamada a CrossRef...");
-                        Publication objInicial_CrossRef = llamadaCrossRef(doi);
-                        Log.Information("Comparación...");
+                        Log.Information("[Scopus] Haciendo petición a CrossRef...");
+                        Publication objInicial_CrossRef = llamadaCrossRef(doi, ref dicCrossRef);
+                        Log.Information("[Scopus] Comparación (CrossRef)...");
                         pub_completa = compatacion(pub_completa, objInicial_CrossRef);
                         if (objInicial_CrossRef != null)
                         {
                             pub_completa.bibliografia = objInicial_CrossRef.bibliografia;
                         }
-                        Log.Information("Llamada a Zenodo...");
-                        pub_completa.pdf = llamadaZenodo(pub_completa.doi);
+                        Log.Information("[Scopus] Haciendo petición a Zenodo...");
+                        pub_completa.pdf = llamadaZenodo(pub_completa.doi, ref dicZenodo);
+                        Log.Information("[Scopus] Obteniendo topics enriquecidos...");
                         pub_completa.topics_enriquecidos = enriquedicmiento(pub_completa);
+                        Log.Information("[Scopus] Obteniendo freeTextKeywords enriquecidos...");
                         pub_completa.freetextKeyword_enriquecidas = enriquedicmiento_pal(pub_completa);
                         if (pub_completa.dataIssued != null & pub_completa.hasPublicationVenue.issn != null)
                         {
+                            Log.Information("[Scopus] Obteniendo métrica...");
                             pub_completa.hasPublicationVenue = metrica_journal(pub_completa.hasPublicationVenue, pub_completa.dataIssued.datimeTime, pub_completa.topics_enriquecidos);
                         }
                         if (pub_completa.pdf == "")
                         {
                             pub_completa.pdf = null;
                         }
-                        pub_completa = completar_bib(pub_completa);
-                        pub_completa = obtener_bib_citas(pub_completa);
+                        Log.Information("[Scopus] Obteniendo bibliografia...");
+                        pub_completa = completar_bib(pub_completa, ref dicOpenCitations, ref dicSemanticScholar, ref dicCrossRef, ref dicZenodo);
+                        Log.Information("[Scopus] Obteniendo citas...");
+                        pub_completa = obtener_bib_citas(pub_completa, ref dicOpenCitations, ref dicSemanticScholar, ref dicCrossRef, ref dicZenodo);
                         pub_completa.problema = this.advertencia;
                         if (pub_completa != null)
                         {
                             resultado.Add(pub_completa);
                         }
                     }
+                    contadoPubScopus++;
                 }
 
             }
 
-            string info = JsonConvert.SerializeObject(resultado);
-            string path = _Configuracion.GetRutaJsonSalida();
-            File.WriteAllText(@"Files/Resultado_final.json", info);
+            //string info = JsonConvert.SerializeObject(resultado);
+            //string path = _Configuracion.GetRutaJsonSalida();
+            //Log.Information("Escribiendo datos en fichero...");
+            //File.WriteAllText($@"Files/pub_{DateTime.Now}.json", info);
             return resultado;
 
         }
@@ -382,31 +393,40 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
         public string httpCall_2(string uri, string info)
         {
-            //try
-            //{
             HttpResponseMessage response = null;
             HttpClient client = new HttpClient();
-            client.Timeout = TimeSpan.FromDays(1);
+            client.Timeout = TimeSpan.FromHours(24);
+            string result = string.Empty;
 
             var contentData = new StringContent(info, System.Text.Encoding.UTF8, "application/json");
             client.Timeout = TimeSpan.FromDays(1);
-            response = client.PostAsync("http://herculesapi.elhuyar.eus/" + uri, contentData).Result;
 
-            // response.EnsureSuccessStatusCode();
-            string result = response.Content.ReadAsStringAsync().Result;
+            int contadorIntentos = 1;
+            while (result == "")
+            {
+                if (contadorIntentos > 3)
+                {
+                    break;
+                }
+
+                response = client.PostAsync("http://herculesapi.elhuyar.eus/" + uri, contentData).Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    result = response.Content.ReadAsStringAsync().Result;
+                }
+                contadorIntentos++;
+            }
+
             return result;
-
-            //}
-            //catch { return null; }
         }
 
 
-        public Publication obtener_bib_citas(Publication pub)
+        public Publication obtener_bib_citas(Publication pub, ref Dictionary<string, Publication> pDicOpenCitations, ref Dictionary<string, Publication> pDicSemanticScholar, ref Dictionary<string, Publication> pDicCrossRef, ref Dictionary<string, string> pDicZenodo)
         {
             string doi = pub.doi;
 
             // Consulta Open Citations 
-            Publication objInicial_OpenCitatons = llamadaOpenCitations(doi);
+            Publication objInicial_OpenCitatons = llamadaOpenCitations(doi, ref pDicOpenCitations);
             List<Publication> citas = new List<Publication>();
 
             if (objInicial_OpenCitatons != null && objInicial_OpenCitatons.citas != null)
@@ -415,13 +435,13 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 {
 
                     string doi_cita = pub_cita.doi;
-                    Publication objInicial_SemanticScholar = llamadaSemanticScholar(doi_cita);
-                    Publication pub_2 = this.llamadaCrossRef(doi_cita);
+                    Publication objInicial_SemanticScholar = llamadaSemanticScholar(doi_cita, ref pDicSemanticScholar);
+                    Publication pub_2 = this.llamadaCrossRef(doi_cita, ref pDicCrossRef);
                     Publication pub_completa = compatacion(pub_2, objInicial_SemanticScholar);
 
                     if (pub_completa != null)
                     {
-                        pub_completa.pdf = llamadaZenodo(pub_completa.doi);
+                        pub_completa.pdf = llamadaZenodo(pub_completa.doi, ref pDicZenodo);
                         pub_completa.topics_enriquecidos = enriquedicmiento(pub_completa);
                         pub_completa.freetextKeyword_enriquecidas = enriquedicmiento_pal(pub_completa);
                         if (pub_completa.dataIssued != null & pub_completa.hasPublicationVenue.issn != null)
@@ -462,15 +482,15 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         this.dois_bibliografia.Add(doi_bib);
 
                         //llamada Semantic Scholar 
-                        Publication objInicial_SemanticScholar = llamadaSemanticScholar(doi_bib);
-                        Publication pub_2 = this.llamadaCrossRef(doi_bib);
+                        Publication objInicial_SemanticScholar = llamadaSemanticScholar(doi_bib, ref pDicSemanticScholar);
+                        Publication pub_2 = this.llamadaCrossRef(doi_bib, ref pDicCrossRef);
                         Publication pub_completa = compatacion(pub_2, objInicial_SemanticScholar);
                         if (pub_completa != null)
                         {
-                            pub_completa.pdf = llamadaZenodo(pub_completa.doi);
+                            pub_completa.pdf = llamadaZenodo(pub_completa.doi, ref pDicZenodo);
                             pub_completa.topics_enriquecidos = enriquedicmiento(pub_completa);
                             pub_completa.freetextKeyword_enriquecidas = enriquedicmiento_pal(pub_completa);
-                            if (pub_completa.dataIssued != null & pub_completa.hasPublicationVenue.issn != null)
+                            if (pub_completa.dataIssued != null && pub_completa.hasPublicationVenue != null && pub_completa.hasPublicationVenue.issn != null)
                             {
                                 pub_completa.hasPublicationVenue = metrica_journal(pub_completa.hasPublicationVenue, pub_completa.dataIssued.datimeTime, pub_completa.topics_enriquecidos);
                             }
@@ -501,7 +521,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             return pub;
         }
 
-        public Publication completar_bib(Publication pub)
+        public Publication completar_bib(Publication pub, ref Dictionary<string, Publication> pDicOpenCitations, ref Dictionary<string, Publication> pDicSemanticScholar, ref Dictionary<string, Publication> pDicCrossRef, ref Dictionary<string, string> pDicZenodo)
         {
             List<Publication> bib = new List<Publication>();
             if (pub.bibliografia != null)
@@ -512,12 +532,12 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     {
                         string doi_bib = pub_bib.doi;
                         this.dois_bibliografia.Add(doi_bib);
-                        Publication pub_semntic_scholar = this.llamadaSemanticScholar(doi_bib);
-                        Publication pub_crossRef = this.llamadaCrossRef(doi_bib);
+                        Publication pub_semntic_scholar = this.llamadaSemanticScholar(doi_bib, ref pDicSemanticScholar);
+                        Publication pub_crossRef = this.llamadaCrossRef(doi_bib, ref pDicCrossRef);
                         Publication pub_final_bib = compatacion(pub_crossRef, pub_semntic_scholar);
                         if (pub_final_bib != null)
                         {
-                            pub_final_bib.pdf = llamadaZenodo(pub_final_bib.doi);
+                            pub_final_bib.pdf = llamadaZenodo(pub_final_bib.doi, ref pDicZenodo);
                             if (string.IsNullOrEmpty(pub_final_bib.pdf))
                             {
                                 pub_final_bib.pdf = null;
@@ -826,11 +846,11 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         completo = person_2.name.nombre_completo[0];
                     }
                 }
-                if (person_2.IDs != null)
+                if (person_2.IDs != null && person_2.IDs.Count > 0)
                 {
                     ids = person_2.IDs[0];
                 }
-                if (person_2.links != null)
+                if (person_2.links != null && person_2.links.Count > 0)
                 {
 
                     links = person_2.links[0];
@@ -1457,7 +1477,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
         /// </summary>
         /// <param name="pDoi">DOI de la publicación a consultar.</param>
         /// <returns>Objeto Publication con los datos recuperados.</returns>
-        public Publication llamadaSemanticScholar(string pDoi)
+        public Publication llamadaSemanticScholar(string pDoi, ref Dictionary<string, Publication> pDic)
         {
             Publication objInicial_SemanticScholar = null;
 
@@ -1469,16 +1489,16 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     Uri url = new Uri(string.Format(_Configuracion.GetUrlSemanticScholar() + "SemanticScholar/GetROs?doi={0}", pDoi));
 
                     // Comprobación de la petición.
-                    if (!dicSemanticScholar.ContainsKey(pDoi))
+                    if (!pDic.ContainsKey(pDoi))
                     {
                         string info_publication = httpCall(url.ToString(), "GET", headers).Result;
-                        Log.Information("Respuesta SemanticScholar --> " + info_publication);
+                        //Log.Information("Respuesta SemanticScholar --> " + info_publication);
                         objInicial_SemanticScholar = JsonConvert.DeserializeObject<Publication>(info_publication);
-                        dicSemanticScholar.Add(pDoi, objInicial_SemanticScholar);
+                        pDic.Add(pDoi, objInicial_SemanticScholar);
                     }
                     else
                     {
-                        objInicial_SemanticScholar = dicSemanticScholar[pDoi];
+                        objInicial_SemanticScholar = pDic[pDoi];
                     }
                 }
             }
@@ -1496,7 +1516,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
         /// </summary>
         /// <param name="pDoi">DOI de la publicación a consultar.</param>
         /// <returns>Objeto Publication con los datos recuperados.</returns>
-        public Publication llamadaOpenCitations(string pDoi)
+        public Publication llamadaOpenCitations(string pDoi, ref Dictionary<string, Publication> pDic)
         {
             Publication objInicial_OpenCitatons = null;
 
@@ -1508,16 +1528,16 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     Uri url = new Uri(string.Format(_Configuracion.GetUrlOpenCitations() + "OpenCitations/GetROs?doi={0}", pDoi));
 
                     // Comprobación de la petición.
-                    if (!dicOpenCitations.ContainsKey(pDoi))
+                    if (!pDic.ContainsKey(pDoi))
                     {
                         string info_publication = httpCall(url.ToString(), "GET", headers).Result;
-                        Log.Information("Respuesta OpenCitations --> " + info_publication);
+                        //Log.Information("Respuesta OpenCitations --> " + info_publication);
                         objInicial_OpenCitatons = JsonConvert.DeserializeObject<Publication>(info_publication);
-                        dicOpenCitations.Add(pDoi, objInicial_OpenCitatons);
+                        pDic.Add(pDoi, objInicial_OpenCitatons);
                     }
                     else
                     {
-                        objInicial_OpenCitatons = dicOpenCitations[pDoi];
+                        objInicial_OpenCitatons = pDic[pDoi];
                     }
                 }
 
@@ -1536,7 +1556,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
         /// </summary>
         /// <param name="pDoi">DOI de la publicación a consultar.</param>
         /// <returns>Objeto Publication con los datos obtenidos.</returns>
-        public Publication llamadaCrossRef(string pDoi)
+        public Publication llamadaCrossRef(string pDoi, ref Dictionary<string, Publication> pDic)
         {
             Publication objInicial_CrossRef = null;
 
@@ -1548,16 +1568,16 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     Uri url = new Uri(string.Format(_Configuracion.GetUrlCrossRef() + "CrossRef/GetROs?doi={0}", pDoi));
 
                     // Comprobación de la petición.
-                    if (!dicCrossRef.ContainsKey(pDoi))
+                    if (!pDic.ContainsKey(pDoi))
                     {
                         string info_publication = httpCall(url.ToString(), "GET", headers).Result;
-                        Log.Information("Respuesta CrossRef --> " + info_publication);
+                        //Log.Information("Respuesta CrossRef --> " + info_publication);
                         objInicial_CrossRef = JsonConvert.DeserializeObject<Publication>(info_publication);
-                        dicCrossRef.Add(pDoi, objInicial_CrossRef);
+                        pDic.Add(pDoi, objInicial_CrossRef);
                     }
                     else
                     {
-                        objInicial_CrossRef = dicCrossRef[pDoi];
+                        objInicial_CrossRef = pDic[pDoi];
                     }
                 }
             }
@@ -1574,7 +1594,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
         {
             Uri url = new Uri(string.Format(_Configuracion.GetUrlScopus() + "Scopus/GetROs?orcid={0}&date={1}", orcid, date));
             string info_publication = httpCall(url.ToString(), "GET", headers).Result;
-            Log.Information("Respuesta Scopus --> " + info_publication);
+            //Log.Information("Respuesta Scopus --> " + info_publication);
             List<Publication> objInicial_Scopus = null;
             try
             {
@@ -1591,7 +1611,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
         {
             Uri url = new Uri(string.Format(_Configuracion.GetUrlScopus() + "Scopus/GetPublicationByDOI?pDoi={0}", pDoi));
             string info_publication = httpCall(url.ToString(), "GET", headers).Result;
-            Log.Information("Respuesta Scopus --> " + info_publication);
+            //Log.Information("Respuesta Scopus --> " + info_publication);
             List<Publication> objInicial_Scopus = null;
             try
             {
@@ -1609,7 +1629,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
         {
             Uri url = new Uri(string.Format(_Configuracion.GetUrlWos() + "WoS/GetROs?orcid={0}&date={1}", orcid, date));
             string info_publication = httpCall(url.ToString(), "GET", headers).Result;
-            Log.Information("Respuesta WoS --> " + info_publication);
+            //Log.Information("Respuesta WoS --> " + info_publication);
             List<Publication> objInicial_woS = null;
             try
             {
@@ -1626,7 +1646,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
         {
             Uri url = new Uri(string.Format(_Configuracion.GetUrlWos() + "WoS/GetRoByDoi?pDoi={0}", pDoi));
             string info_publication = httpCall(url.ToString(), "GET", headers).Result;
-            Log.Information("Respuesta WoS --> " + info_publication);
+            //Log.Information("Respuesta WoS --> " + info_publication);
             List<Publication> objInicial_woS = null;
             try
             {
@@ -1645,7 +1665,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
         /// </summary>
         /// <param name="pDoi">DOI de la publicación a consultar.</param>
         /// <returns>String con la URL del archivo PDF obtenido.</returns>
-        public string llamadaZenodo(string pDoi)
+        public string llamadaZenodo(string pDoi, ref Dictionary<string, string> pDic)
         {
             string urlPdf = string.Empty;
 
@@ -1657,19 +1677,19 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     Uri url = new Uri(string.Format(_Configuracion.GetUrlZenodo() + "Zenodo/GetROs?ID={0}", pDoi));
 
                     // Comprobación de la petición.
-                    if (!dicZenodo.ContainsKey(pDoi))
+                    if (!pDic.ContainsKey(pDoi))
                     {
                         string info_publication = httpCall(url.ToString(), "GET", headers).Result;
-                        Log.Information("Respuesta Zenodo --> " + info_publication);
+                        //Log.Information("Respuesta Zenodo --> " + info_publication);
                         if (!string.IsNullOrEmpty(info_publication) && info_publication.EndsWith(".pdf"))
                         {
                             urlPdf = info_publication;
                         }
-                        dicZenodo.Add(pDoi, urlPdf);
+                        pDic.Add(pDoi, urlPdf);
                     }
                     else
                     {
-                        urlPdf = dicZenodo[pDoi];
+                        urlPdf = pDic[pDoi];
                     }
                 }
             }

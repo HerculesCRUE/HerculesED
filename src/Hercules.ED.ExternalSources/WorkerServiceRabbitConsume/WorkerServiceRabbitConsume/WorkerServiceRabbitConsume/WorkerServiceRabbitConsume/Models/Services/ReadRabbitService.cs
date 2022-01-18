@@ -140,6 +140,7 @@ namespace Gnoss.Web.ReprocessData.Models.Services
             HttpResponseMessage response;
             using (var httpClient = new HttpClient())
             {
+                httpClient.Timeout = TimeSpan.FromHours(24);
                 using (var request = new HttpRequestMessage(new HttpMethod(method), url))
                 {
                     request.Headers.TryAddWithoutValidation("Accept", "application/json");
@@ -150,16 +151,8 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                         {
                             request.Headers.TryAddWithoutValidation(item.Key, item.Value);
                         }
-                    }
-
-                    try
-                    {
-                        response = await httpClient.SendAsync(request);
-                    }
-                    catch (System.Exception)
-                    {
-                        throw new Exception("Error in the http call");
-                    }
+                    }                    
+                    response = await httpClient.SendAsync(request);                    
                 }
             }
 
@@ -193,6 +186,7 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                 {
                     // Creación de la URL.
                     Uri url = new Uri(string.Format(_configService.GetUrlPublicacion() + "Publication/GetROs?orcid={0}&date={1}", message[1], message[2]));
+                    FileLogger.Log($@"Haciendo petición a {url}");
 
                     // Obtención de datos con la petición.
                     string info_publication = httpCall(url.ToString(), "GET", headers).Result;
