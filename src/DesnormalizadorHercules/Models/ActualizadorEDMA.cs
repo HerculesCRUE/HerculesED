@@ -26,6 +26,7 @@ namespace DesnormalizadorHercules.Models
                 ActualizadorGroup actualizadorGrupos = new(resourceApi);
                 ActualizadorDocument actualizadorDocument = new(resourceApi);
                 ActualizadorProject actualizadorProject = new(resourceApi);
+                ActualizadorRO actualizadorRO = new(resourceApi);
 
                 //Ejecuciones ordenadas en función de sus dependencias
 
@@ -77,6 +78,8 @@ namespace DesnormalizadorHercules.Models
 
                 //Reubicar
                 actualizadorDocument.ActualizarIndiceImpacto();
+                actualizadorRO.ActualizarAreasRO();
+                actualizadorRO.ActualizarTagsRO();
             }
             catch (Exception)
             {
