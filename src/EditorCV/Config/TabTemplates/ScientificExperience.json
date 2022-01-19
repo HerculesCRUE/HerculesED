@@ -134,7 +134,7 @@
 							{
 								"property": "http://w3id.org/roh/scientificExperienceProject",
 								"values": [
-									"http://gnoss.com/items/scientificexperienceproject_SEP1"
+									"{GraphsUrl}items/scientificexperienceproject_SEP1"
 								]
 							}
 						],
@@ -618,7 +618,7 @@
 							{
 								"property": "http://w3id.org/roh/scientificExperienceProject",
 								"values": [
-									"http://gnoss.com/items/scientificexperienceproject_SEP1"
+									"{GraphsUrl}items/scientificexperienceproject_SEP1"
 								]
 							}
 						],

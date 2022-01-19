@@ -1869,15 +1869,15 @@ namespace GuardadoCV.Models
 
             if (num4 != 0)
             {
-                idTesauro = $@"http://gnoss.com/items/researcharea_{num1}.{num2}.{num3}.0";
+                idTesauro = $@"{mResourceApi.GraphsUrl}items/researcharea_{num1}.{num2}.{num3}.0";
             }
             else if (num3 != 0 && num4 == 0)
             {
-                idTesauro = $@"http://gnoss.com/items/researcharea_{num1}.{num2}.0.0";
+                idTesauro = $@"{mResourceApi.GraphsUrl}items/researcharea_{num1}.{num2}.0.0";
             }
             else if (num2 != 0 && num3 == 0 && num4 == 0)
             {
-                idTesauro = $@"http://gnoss.com/items/researcharea_{num1}.0.0.0";
+                idTesauro = $@"{mResourceApi.GraphsUrl}items/researcharea_{num1}.0.0.0";
             }
 
             return idTesauro;
@@ -1929,15 +1929,15 @@ namespace GuardadoCV.Models
 
                 if (num2 == 0 && num3 == 0 && num4 == 0)
                 {
-                    tieneHijos = dicAreasNombre.ContainsValue($@"http://gnoss.com/items/researcharea_{num1}.1.0.0");
+                    tieneHijos = dicAreasNombre.ContainsValue($@"{mResourceApi.GraphsUrl}items/researcharea_{num1}.1.0.0");
                 }
                 else if (num3 == 0 && num4 == 0)
                 {
-                    tieneHijos = dicAreasNombre.ContainsValue($@"http://gnoss.com/items/researcharea_{num1}.{num2}.1.0");
+                    tieneHijos = dicAreasNombre.ContainsValue($@"{mResourceApi.GraphsUrl}items/researcharea_{num1}.{num2}.1.0");
                 }
                 else if (num4 == 0)
                 {
-                    tieneHijos = dicAreasNombre.ContainsValue($@"http://gnoss.com/items/researcharea_{num1}.{num2}.{num3}.1");
+                    tieneHijos = dicAreasNombre.ContainsValue($@"{mResourceApi.GraphsUrl}items/researcharea_{num1}.{num2}.{num3}.1");
                 }
 
                 if (!tieneHijos)

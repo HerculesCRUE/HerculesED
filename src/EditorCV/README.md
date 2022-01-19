@@ -252,7 +252,7 @@ Finalmente, vamos a configurar los distintos campos que queremos que presente un
 		{
 			"property": "http://w3id.org/roh/scientificActivityDocument",
 			"values": [
-				"http://gnoss.com/items/scientificactivitydocument_SAD1"
+				"{GraphsUrl}items/scientificactivitydocument_SAD1"
 			]
 		}
 	],

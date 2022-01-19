@@ -107,7 +107,7 @@ namespace GuardadoCV.Models
         /// <param name="pRdfTypeTab">rdf:type de la pestaña (para la edición de un item de un listado)</param>
         /// <returns></returns>
         public JsonResult ActualizarEntidad(Entity pEntity, string pCvID, string pSectionID, string pRdfTypeTab)
-        {
+        {   
             if (pRdfTypeTab == "http://w3id.org/roh/PersonalData")
             {
                 GuardadoCV.Models.API.Templates.Tab template = UtilityCV.TabTemplates.First(x => x.rdftype == pRdfTypeTab);
@@ -172,7 +172,7 @@ namespace GuardadoCV.Models
                             string idTab = tab.results.bindings[0]["o"].value;
                             string rdfTypePrefix = UtilityCV.AniadirPrefijo(templateSection.rdftype);
                             rdfTypePrefix = rdfTypePrefix.Substring(rdfTypePrefix.IndexOf(":") + 1);
-                            string idNewAux = "http://gnoss.com/items/" + rdfTypePrefix + "_" + mResourceApi.GetShortGuid(pCvID) + "_" + Guid.NewGuid();
+                            string idNewAux = $"{mResourceApi.GraphsUrl}items/" + rdfTypePrefix + "_" + mResourceApi.GetShortGuid(pCvID) + "_" + Guid.NewGuid();
 
                             List<TriplesToInclude> listaTriples = new List<TriplesToInclude>();
                             string idEntityAux = idTab + "|" + idNewAux;
@@ -511,7 +511,7 @@ namespace GuardadoCV.Models
                     Entity.Property prop = new Entity.Property()
                     {
                         prop = propertyValue.property,
-                        values = propertyValue.values
+                        values = propertyValue.values.Select(x=>x.Replace("{GraphsUrl}",mResourceApi.GraphsUrl)).ToList()
                     };
                     Entity.Property propLoad = pLoadedEntity.properties.FirstOrDefault(x => x.prop == prop.prop);
                     if (propLoad == null)
