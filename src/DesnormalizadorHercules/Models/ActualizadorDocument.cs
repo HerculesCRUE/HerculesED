@@ -567,15 +567,15 @@ namespace DesnormalizadorHercules.Models
 
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                     {
-                        string person = fila["document"].value;
+                        string document = fila["document"].value;
                         string categoryNode = fila["categoryNode"].value;
                         //TODO from
                         select = @"select ?document ?hasKnowledgeArea   ?categoryNode from <http://gnoss.com/taxonomy.owl>";
                         where = @$"where{{
-                                    FILTER(?document=<{person}>)
+                                    FILTER(?document=<{document}>)
                                     FILTER(?categoryNode =<{categoryNode}>)
                                     {{ 
-                                        select distinct ?person ?hasKnowledgeArea  ?categoryNode
+                                        select distinct ?document ?hasKnowledgeArea  ?categoryNode
                                         where{{
                                             ?document a <http://purl.org/ontology/bibo/Document>.
                                             ?document  <http://w3id.org/roh/hasKnowledgeArea> ?hasKnowledgeArea.
@@ -598,7 +598,7 @@ namespace DesnormalizadorHercules.Models
                         }
                         if (triplesRemove.Count > 0)
                         {
-                            var resultadox = mResourceApi.DeletePropertiesLoadedResources(new Dictionary<Guid, List<Gnoss.ApiWrapper.Model.RemoveTriples>>() { { mResourceApi.GetShortGuid(person), triplesRemove } });
+                            var resultadox = mResourceApi.DeletePropertiesLoadedResources(new Dictionary<Guid, List<Gnoss.ApiWrapper.Model.RemoveTriples>>() { { mResourceApi.GetShortGuid(document), triplesRemove } });
                         }
                     });
 
