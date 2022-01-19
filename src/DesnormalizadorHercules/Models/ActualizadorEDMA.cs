@@ -21,8 +21,6 @@ namespace DesnormalizadorHercules.Models
         {
             try
             {
-                resourceApi.PersistentDelete(resourceApi.GetShortGuid("http://gnoss.com/items/MainDocument_30569404-2163-4d4d-a58b-8f323db09b8f_7dd7fd57-6175-4a43-ac8e-c23d8e98e0a8"));
-
                 ActualizadorCV actualizadorCV = new(resourceApi);
                 ActualizadorPerson actualizadorPersonas = new(resourceApi);
                 ActualizadorGroup actualizadorGrupos = new(resourceApi);
@@ -45,7 +43,7 @@ namespace DesnormalizadorHercules.Models
                 actualizadorGrupos.ActualizarPertenenciaLineas();
                 actualizadorPersonas.ActualizarPertenenciaGrupos();
                 actualizadorPersonas.ActualizarPertenenciaLineas();
-                
+
                 actualizadorProject.ActualizarPertenenciaGrupos();
                 actualizadorProject.ActualizarNumeroAreasTematicas();
                 actualizadorProject.ActualizarNumeroPublicaciones();
@@ -144,8 +142,8 @@ namespace DesnormalizadorHercules.Models
 
                 //No tienen dependencias
                 actualizadorProject.ActualizarProyectosPublicos(pProyecto);
-                actualizadorProject.ActualizarPertenenciaPersonas("",pProyecto);
-                actualizadorProject.ActualizarPertenenciaGrupos("",pProyecto);
+                actualizadorProject.ActualizarPertenenciaPersonas("", pProyecto);
+                actualizadorProject.ActualizarPertenenciaGrupos("", pProyecto);
                 actualizadorProject.ActualizarNumeroAreasTematicas(pProyecto);
                 actualizadorProject.ActualizarNumeroPublicaciones(pProyecto);
 
@@ -180,11 +178,11 @@ namespace DesnormalizadorHercules.Models
                 actualizadorGrupos.ActualizarGruposPublicos(pGrupo);
                 actualizadorDocument.ActualizarPertenenciaGrupos(pGrupo);
                 actualizadorGrupos.ActualizarPertenenciaLineas(pGrupo);
-                actualizadorPersonas.ActualizarPertenenciaGrupos("",pGrupo);
+                actualizadorPersonas.ActualizarPertenenciaGrupos("", pGrupo);
                 actualizadorProject.ActualizarPertenenciaGrupos(pGrupo);
 
                 //Dependen únicamente del CV
-                actualizadorCV.ModificarGrupos("",pGrupo);
+                actualizadorCV.ModificarGrupos("", pGrupo);
 
                 //Otras dependencias
                 actualizadorGrupos.ActualizarNumeroMiembros(pGrupo);
@@ -217,7 +215,7 @@ namespace DesnormalizadorHercules.Models
                 //Ejecuciones ordenadas en función de sus dependencias
 
                 //No tienen dependencias
-                actualizadorDocument.ActualizarPertenenciaGrupos("",pDocumento);
+                actualizadorDocument.ActualizarPertenenciaGrupos("", pDocumento);
                 actualizadorDocument.ActualizarNumeroCitasMaximas(pDocumento);
                 actualizadorDocument.ActualizarNumeroCitasCargadas(pDocumento);
                 actualizadorDocument.ActualizarNumeroReferenciasCargadas(pDocumento);
@@ -259,10 +257,11 @@ namespace DesnormalizadorHercules.Models
                                         }} limit {limit}";
 
                     SparqlObject resultado = resourceApi.VirtuosoQuery(select, where, "curriculumvitae");
-                    foreach (Dictionary<string, SparqlObject.Data> fila in resultado.results.bindings)
+
+                    Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                     {
                         resourceApi.PersistentDelete(resourceApi.GetShortGuid(fila["cv"].value));
-                    }
+                    });
                     if (resultado.results.bindings.Count != limit)
                     {
                         break;
@@ -379,7 +378,8 @@ namespace DesnormalizadorHercules.Models
                 SparqlObject resultado = resourceApi.VirtuosoQuery(select, where, pGrafo);
 
                 List<string> ids = resultado.results.bindings.Select(x => x["item"].value).Distinct().ToList();
-                foreach (string id in ids)
+
+                Parallel.ForEach(ids, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, id =>
                 {
                     Guid guid = resourceApi.GetShortGuid(id);
                     Dictionary<Guid, List<Gnoss.ApiWrapper.Model.TriplesToModify>> triples = new() { { guid, new List<TriplesToModify>() } };
@@ -392,7 +392,7 @@ namespace DesnormalizadorHercules.Models
                         triples[guid].Add(t);
                     }
                     resourceApi.ModifyPropertiesLoadedResources(triples);
-                }
+                });
                 if (resultado.results.bindings.Count != limit)
                 {
                     break;
@@ -414,7 +414,7 @@ namespace DesnormalizadorHercules.Models
                 SparqlObject resultado = resourceApi.VirtuosoQuery(select, where, pGrafo);
 
                 List<string> ids = resultado.results.bindings.Select(x => x["item"].value).Distinct().ToList();
-                foreach (string id in ids)
+                Parallel.ForEach(ids, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, id =>
                 {
                     Guid guid = resourceApi.GetShortGuid(id);
                     Dictionary<Guid, List<RemoveTriples>> triples = new() { { guid, new List<RemoveTriples>() } };
@@ -426,7 +426,7 @@ namespace DesnormalizadorHercules.Models
                         triples[guid].Add(t);
                     }
                     resourceApi.DeletePropertiesLoadedResources(triples);
-                }
+                });
                 if (resultado.results.bindings.Count != limit)
                 {
                     break;

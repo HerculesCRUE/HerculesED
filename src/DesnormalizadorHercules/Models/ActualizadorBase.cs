@@ -17,6 +17,9 @@ namespace DesnormalizadorHercules.Models
     /// </summary>
     public class ActualizadorBase
     {
+        //TODO configurable
+        public static int numParallel = 5;
+
         /// <summary>
         /// API Wrapper de GNOSS
         /// </summary>
@@ -62,7 +65,7 @@ namespace DesnormalizadorHercules.Models
         public void InsercionMultiple(List<Dictionary<string, Data>> pFilas, string pPredicado, string pPropSubject, string pPropObject)
         {
             List<string> ids = pFilas.Select(x => x[pPropSubject].value).Distinct().ToList();
-            foreach (string id in ids)
+            Parallel.ForEach(ids, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, id =>
             {
                 Guid guid = mResourceApi.GetShortGuid(id);
                 Dictionary<Guid, List<TriplesToInclude>> triples = new() { { guid, new List<TriplesToInclude>() } };
@@ -74,7 +77,7 @@ namespace DesnormalizadorHercules.Models
                     triples[guid].Add(t);
                 }
                 var resultado = mResourceApi.InsertPropertiesLoadedResources(triples);
-            }
+            });
         }
 
         /// <summary>
@@ -87,7 +90,7 @@ namespace DesnormalizadorHercules.Models
         public void EliminacionMultiple(List<Dictionary<string, Data>> pFilas, string pPredicado, string pPropSubject, string pPropObject)
         {
             List<string> ids = pFilas.Select(x => x[pPropSubject].value).Distinct().ToList();
-            foreach (string id in ids)
+            Parallel.ForEach(ids, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, id =>
             {
                 Guid guid = mResourceApi.GetShortGuid(id);
                 Dictionary<Guid, List<Gnoss.ApiWrapper.Model.RemoveTriples>> triples = new() { { guid, new List<RemoveTriples>() } };
@@ -99,7 +102,7 @@ namespace DesnormalizadorHercules.Models
                     triples[guid].Add(t);
                 }
                 var resultado = mResourceApi.DeletePropertiesLoadedResources(triples);
-            }
+            });
         }
 
         /// <summary>
@@ -158,21 +161,21 @@ namespace DesnormalizadorHercules.Models
                                 }}group by (?id) HAVING (COUNT(?data) > 1) limit {limit}";
                 SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, pGraph);
 
-                foreach (Dictionary<string, SparqlObject.Data> fila in resultado.results.bindings)
+                Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                 {
                     string id = fila["id"].value;
                     String select2 = @"select ?data ";
                     String where2 = @$"where
-                                {{
-                                    <{id}> <{pProperty}> ?data. 
-                                }}";
+                            {{
+                                <{id}> <{pProperty}> ?data. 
+                            }}";
                     SparqlObject resultado2 = mResourceApi.VirtuosoQuery(select2, where2, pGraph);
                     foreach (Dictionary<string, SparqlObject.Data> fila2 in resultado2.results.bindings.GetRange(1, resultado2.results.bindings.Count - 1))
                     {
                         string value = fila2["data"].value;
                         ActualizadorTriple(id, pProperty, value, "");
                     }
-                }
+                });
                 if (resultado.results.bindings.Count != limit)
                 {
                     break;
@@ -219,10 +222,10 @@ namespace DesnormalizadorHercules.Models
                     triplesToInclude.Add(idItem, listaTriples);
                 }
             }
-            foreach (Guid idItem in triplesToInclude.Keys)
+            Parallel.ForEach(triplesToInclude.Keys, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, idItem =>
             {
                 mResourceApi.InsertPropertiesLoadedResources(new() { { idItem, triplesToInclude[idItem] } });
-            }
+            });
         }
 
         /// <summary>
@@ -253,10 +256,10 @@ namespace DesnormalizadorHercules.Models
                     triplesToRemove.Add(idItem, new List<RemoveTriples>() { removeTriple });
                 }
             }
-            foreach (Guid idItem in triplesToRemove.Keys)
+            Parallel.ForEach(triplesToRemove.Keys, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, idItem =>
             {
                 mResourceApi.DeletePropertiesLoadedResources(new Dictionary<Guid, List<RemoveTriples>>() { { idItem, triplesToRemove[idItem] } });
-            }
+            });
         }
 
         /// <summary>

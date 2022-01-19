@@ -70,6 +70,14 @@ namespace GuardadoCV.Models.API.Response
         /// </summary>
         public string property { get; set; }
         /// <summary>
+        /// Url de la propiedad (en caso de que se trate de un autocompletar con la entidad)
+        /// </summary>
+        public string propertyEntity { get; set; }
+        /// <summary>
+        /// Valor de la entidad (en caso de que se trate de un autocompletar con la entidad)
+        /// </summary>
+        public string propertyEntityValue { get; set; }
+        /// <summary>
         /// Título/nopmbre
         /// </summary>
         public string title { get; set; }
@@ -90,7 +98,7 @@ namespace GuardadoCV.Models.API.Response
         /// </summary>
         public bool multiple { get; set; }
         /// <summary>
-        /// Indica si es multiple
+        /// Indica si tiene autocompletar
         /// </summary>
         public bool autocomplete { get; set; }
         /// <summary>

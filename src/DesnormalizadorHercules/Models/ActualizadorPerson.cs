@@ -65,7 +65,7 @@ namespace DesnormalizadorHercules.Models
                             }}}} limit {limit}";
                 SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
 
-                foreach (Dictionary<string, SparqlObject.Data> fila in resultado.results.bindings)
+                Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                 {
                     string person = fila["person"].value;
                     string isPublicACargar = fila["isPublicACargar"].value;
@@ -75,7 +75,8 @@ namespace DesnormalizadorHercules.Models
                         isPublicCargado = fila["isPublicCargado"].value;
                     }
                     ActualizadorTriple(person, "http://w3id.org/roh/isPublic", isPublicCargado, isPublicACargar);
-                }
+                });
+
 
                 if (resultado.results.bindings.Count != limit)
                 {
@@ -128,7 +129,7 @@ namespace DesnormalizadorHercules.Models
                             }}}} limit {limit}";
                 SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
 
-                foreach (Dictionary<string, SparqlObject.Data> fila in resultado.results.bindings)
+                Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                 {
                     string person = fila["person"].value;
                     string numDocumentosACargar = fila["numDocumentosACargar"].value;
@@ -138,7 +139,7 @@ namespace DesnormalizadorHercules.Models
                         numDocumentosCargados = fila["numDocumentosCargados"].value;
                     }
                     ActualizadorTriple(person, "http://w3id.org/roh/publicationsNumber", numDocumentosCargados, numDocumentosACargar);
-                }
+                });
 
                 if (resultado.results.bindings.Count != limit)
                 {
@@ -193,7 +194,7 @@ namespace DesnormalizadorHercules.Models
                             }}}} limit {limit}";
                 SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
 
-                foreach (Dictionary<string, SparqlObject.Data> fila in resultado.results.bindings)
+                Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                 {
                     string person = fila["person"].value;
                     string numProyectosACargar = fila["numProyectosACargar"].value;
@@ -203,7 +204,7 @@ namespace DesnormalizadorHercules.Models
                         numProyectosCargados = fila["numProyectosCargados"].value;
                     }
                     ActualizadorTriple(person, "http://w3id.org/roh/projectsNumber", numProyectosCargados, numProyectosACargar);
-                }
+                });
 
                 if (resultado.results.bindings.Count != limit)
                 {
@@ -508,7 +509,7 @@ namespace DesnormalizadorHercules.Models
                             }}group by ?person ?categoryNode HAVING (COUNT(*) > 1) limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
 
-                    foreach (Dictionary<string, SparqlObject.Data> fila in resultado.results.bindings)
+                    Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                     {
                         string person = fila["person"].value;
                         string categoryNode = fila["categoryNode"].value;
@@ -530,7 +531,7 @@ namespace DesnormalizadorHercules.Models
                                     }}
                                 }}";
                         resultado = mResourceApi.VirtuosoQuery(select, where, "person");
-                        List<RemoveTriples> triplesRemove = new ();
+                        List<RemoveTriples> triplesRemove = new();
                         foreach (string hasKnowledgeArea in resultado.results.bindings.GetRange(1, resultado.results.bindings.Count - 1).Select(x => x["hasKnowledgeArea"].value).ToList())
                         {
                             triplesRemove.Add(new RemoveTriples()
@@ -543,7 +544,7 @@ namespace DesnormalizadorHercules.Models
                         {
                             var resultadox = mResourceApi.DeletePropertiesLoadedResources(new Dictionary<Guid, List<Gnoss.ApiWrapper.Model.RemoveTriples>>() { { mResourceApi.GetShortGuid(person), triplesRemove } });
                         }
-                    }
+                    });
 
 
                     if (resultado.results.bindings.Count != limit)
@@ -555,7 +556,7 @@ namespace DesnormalizadorHercules.Models
 
 
                 //Cargamos el tesauro
-                Dictionary<string, string> dicAreasBroader = new ();
+                Dictionary<string, string> dicAreasBroader = new();
                 {
                     String select = @"select distinct * ";
                     String where = @$"where{{
@@ -613,7 +614,7 @@ namespace DesnormalizadorHercules.Models
                             }}
                             }}}}order by (?person) limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
-                    InsertarCategorias(resultado, dicAreasBroader, graphsUrl,"person", "http://vivoweb.org/ontology/core#hasResearchArea");
+                    InsertarCategorias(resultado, dicAreasBroader, graphsUrl, "person", "http://vivoweb.org/ontology/core#hasResearchArea");
                     if (resultado.results.bindings.Count != limit)
                     {
                         break;
@@ -656,7 +657,7 @@ namespace DesnormalizadorHercules.Models
                             }}
                             }}}}order by (?person) limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
-                    EliminarCategorias(resultado,"person", "http://vivoweb.org/ontology/core#hasResearchArea");
+                    EliminarCategorias(resultado, "person", "http://vivoweb.org/ontology/core#hasResearchArea");
                     if (resultado.results.bindings.Count != limit)
                     {
                         break;
@@ -717,7 +718,7 @@ namespace DesnormalizadorHercules.Models
                             }}}} limit {limit}";
                 SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
 
-                foreach (Dictionary<string, SparqlObject.Data> fila in resultado.results.bindings)
+                Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                 {
                     string person = fila["person"].value;
                     string numAreasTematicasACargar = fila["numAreasTematicasACargar"].value;
@@ -727,7 +728,7 @@ namespace DesnormalizadorHercules.Models
                         numAreasTematicasCargadas = fila["numAreasTematicasCargadas"].value;
                     }
                     ActualizadorTriple(person, "http://w3id.org/roh/themedAreasNumber", numAreasTematicasCargadas, numAreasTematicasACargar);
-                }
+                });
 
                 if (resultado.results.bindings.Count != limit)
                 {
@@ -809,8 +810,7 @@ namespace DesnormalizadorHercules.Models
                             FILTER(?numColaboradoresCargados!= ?numColaboradoresACargar OR !BOUND(?numColaboradoresCargados) )
                             }}}} limit {limit}";
                 SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
-
-                foreach (Dictionary<string, SparqlObject.Data> fila in resultado.results.bindings)
+                Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                 {
                     string person = fila["person"].value;
                     string numColaboradoresACargar = fila["numColaboradoresACargar"].value;
@@ -820,7 +820,7 @@ namespace DesnormalizadorHercules.Models
                         numColaboradoresCargados = fila["numColaboradoresCargados"].value;
                     }
                     ActualizadorTriple(person, "http://w3id.org/roh/collaboratorsNumber", numColaboradoresCargados, numColaboradoresACargar);
-                }
+                });
 
                 if (resultado.results.bindings.Count != limit)
                 {

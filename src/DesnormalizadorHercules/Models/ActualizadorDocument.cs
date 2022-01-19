@@ -77,7 +77,7 @@ namespace DesnormalizadorHercules.Models
                             }}}} limit {limit}";
                 SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
 
-                foreach (Dictionary<string, SparqlObject.Data> fila in resultado.results.bindings)
+                Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                 {
                     string document = fila["document"].value;
                     string isPublicACargar = fila["isPublicACargar"].value;
@@ -87,7 +87,7 @@ namespace DesnormalizadorHercules.Models
                         isPublicCargado = fila["isPublicCargado"].value;
                     }
                     ActualizadorTriple(document, "http://w3id.org/roh/isPublic", isPublicCargado, isPublicACargar);
-                }
+                });
 
                 if (resultado.results.bindings.Count != limit)
                 {
@@ -380,7 +380,7 @@ namespace DesnormalizadorHercules.Models
                             }}}} limit {limit}";
                 SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
 
-                foreach (Dictionary<string, SparqlObject.Data> fila in resultado.results.bindings)
+                Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                 {
                     string document = fila["document"].value;
                     string numCitasACargar = fila["numCitasACargar"].value;
@@ -390,7 +390,7 @@ namespace DesnormalizadorHercules.Models
                         numCitasCargadas = fila["numCitasCargadas"].value;
                     }
                     ActualizadorTriple(document, "http://w3id.org/roh/citationCount", numCitasCargadas, numCitasACargar);
-                }
+                });
 
                 if (resultado.results.bindings.Count != limit)
                 {
@@ -503,7 +503,7 @@ namespace DesnormalizadorHercules.Models
                             }}}} limit {limit}";
                 SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
 
-                foreach (Dictionary<string, SparqlObject.Data> fila in resultado.results.bindings)
+                Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                 {
                     string document = fila["document"].value;
                     string numReferenciasACargar = fila["numReferenciasACargar"].value;
@@ -513,7 +513,7 @@ namespace DesnormalizadorHercules.Models
                         numReferenciasCargadas = fila["numReferenciasCargadas"].value;
                     }
                     ActualizadorTriple(document, "http://w3id.org/roh/referencesLoadedCount", numReferenciasCargadas, numReferenciasACargar);
-                }
+                });
 
                 if (resultado.results.bindings.Count != limit)
                 {
@@ -565,7 +565,7 @@ namespace DesnormalizadorHercules.Models
                             }}group by ?document ?categoryNode HAVING (COUNT(*) > 1) limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
 
-                    foreach (Dictionary<string, SparqlObject.Data> fila in resultado.results.bindings)
+                    Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                     {
                         string person = fila["document"].value;
                         string categoryNode = fila["categoryNode"].value;
@@ -587,7 +587,7 @@ namespace DesnormalizadorHercules.Models
                                     }}
                                 }}";
                         resultado = mResourceApi.VirtuosoQuery(select, where, "document");
-                        List<RemoveTriples> triplesRemove = new ();
+                        List<RemoveTriples> triplesRemove = new();
                         foreach (string hasKnowledgeArea in resultado.results.bindings.GetRange(1, resultado.results.bindings.Count - 1).Select(x => x["hasKnowledgeArea"].value).ToList())
                         {
                             triplesRemove.Add(new RemoveTriples()
@@ -600,7 +600,7 @@ namespace DesnormalizadorHercules.Models
                         {
                             var resultadox = mResourceApi.DeletePropertiesLoadedResources(new Dictionary<Guid, List<Gnoss.ApiWrapper.Model.RemoveTriples>>() { { mResourceApi.GetShortGuid(person), triplesRemove } });
                         }
-                    }
+                    });
 
 
                     if (resultado.results.bindings.Count != limit)

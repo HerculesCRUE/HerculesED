@@ -214,17 +214,20 @@ namespace GuardadoCV.Models.API.Templates
             {
                 propertyData.childs.Add(property);
             }
-            foreach (TabSectionListItemProperty prop in properties)
+            if (properties != null)
             {
-                if (prop.child != null)
+                foreach (TabSectionListItemProperty prop in properties)
                 {
-                    propertyData.childs.Add(prop.child.GenerarPropertyData(pGraph));
-                }
-                else if (prop.childOR != null)
-                {
-                    foreach (PropertyDataTemplate propOR in prop.childOR)
+                    if (prop.child != null)
                     {
-                        propertyData.childs.Add(propOR.GenerarPropertyData(pGraph));
+                        propertyData.childs.Add(prop.child.GenerarPropertyData(pGraph));
+                    }
+                    else if (prop.childOR != null)
+                    {
+                        foreach (PropertyDataTemplate propOR in prop.childOR)
+                        {
+                            propertyData.childs.Add(propOR.GenerarPropertyData(pGraph));
+                        }
                     }
                 }
             }

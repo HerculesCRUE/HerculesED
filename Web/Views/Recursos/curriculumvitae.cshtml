@@ -27,6 +27,11 @@
     {
         urlJS = $"http://contentpruebas.didactalia.net/imagenes/proyectos/personalizacion/Didactalia/ecosistema/edicioncvfer.js";
     }
+	//TODO
+	if(Context.Request.Query["adri"].Count>0)
+    {
+        urlJS = $"http://staticpruebasinfobbva.gnoss.com/imagenes/proyectos/personalizacion/82cf33c3-af2c-4385-9516-b1c8ef28e8e0/theme/edicioncvadri.js";
+    }
     Html.GetListaJS().Add(urlJS);
     SemanticResourceModel semCmsModel = Model.SemanticFrom;
     GnossOCBase.LanguageEnum idiomaUsuario = (GnossOCBase.LanguageEnum)Enum.Parse(typeof(GnossOCBase.LanguageEnum), Html.GetUtilIdiomas().LanguageCode.ToLower());
@@ -54,6 +59,7 @@
 <input type="hidden" id="CV_DESPUBLICAR" value="@Html.Translate("CV_DESPUBLICAR")"/>
 <input type="hidden" id="CV_PLEGAR" value="@Html.Translate("CV_PLEGAR")"/>
 <input type="hidden" id="CV_DESPLEGAR" value="@Html.Translate("CV_DESPLEGAR")"/>
+<input type="hidden" id="CV_GUARDAR" value="@Html.Translate("CV_GUARDAR")"/>
 
 	
 <div class="row">
@@ -79,6 +85,7 @@
                                 <a class="item-dropdown active" href="#identificacion-tab" data-toggle="tab" role="tab" aria-controls="identificacion-panel" aria-selected="true">@Html.Translate("CV_DATOSIDENTIFICACION")</a>
                                 <a class="item-dropdown" href="#situacion-tab" data-toggle="tab" role="tab" aria-controls="situacion-panel" aria-selected="true">@Html.Translate("CV_SITUACIONPROFESIONAL")</a>
                                 <a class="item-dropdown" href="#formacion-tab" data-toggle="tab" role="tab" aria-controls="formacion-panel" aria-selected="true">@Html.Translate("CV_FORMACIONRECIBIDA")</a>
+								<a class="item-dropdown" href="#actividad-docente-tab" data-toggle="tab" role="tab" aria-controls="actividad-docente-panel" aria-selected="true">@Html.Translate("CV_ACTIVIDADDOCENTE")</a>
                                 <a class="item-dropdown" href="#experiencia-tab" data-toggle="tab" role="tab" aria-controls="experiencia-panel" aria-selected="true">@Html.Translate("CV_EXPERIENCIACIENTIFICAYTECNOLOGICA")</a>
                                 <a class="item-dropdown" href="#actividad-tab" data-toggle="tab" role="tab" aria-controls="actividad-panel" aria-selected="true">@Html.Translate("CV_ACTIVIDADCIENTIFICAYTECNOLOGICA")</a>
                                 <a class="item-dropdown" href="#resumen-tab" data-toggle="tab" role="tab" aria-controls="resumen-panel" aria-selected="true">@Html.Translate("CV_RESUMENTEXTOLIBRE")</a>
@@ -132,6 +139,9 @@
                         <li class="nav-item" role="presentation">
                             <a class="nav-link" id="formacion-tab" data-toggle="tab" href="#formacion-panel" role="tab" aria-controls="formacion-panel" aria-selected="true">@Html.Translate("CV_FORMACIONRECIBIDA")</a>
                         </li>
+						<li class="nav-item" role="presentation">
+                            <a class="nav-link" id="actividad-docente-tab" data-toggle="tab" href="#actividad-docente-panel" role="tab" aria-controls="actividad-docente-panel" aria-selected="true">@Html.Translate("CV_ACTIVIDADDOCENTE")</a>
+                        </li>
                         <li class="nav-item" role="presentation">
                             <a class="nav-link " id="experiencia-tab" data-toggle="tab" href="#experiencia-panel" role="tab" aria-controls="experiencia-panel" aria-selected="true">@Html.Translate("CV_EXPERIENCIACIENTIFICAYTECNOLOGICA")</a>
                         </li>
@@ -166,6 +176,17 @@
                                 <div class="col col-12 col-section-title">
                                     <div class="wrapCol">
                                         <p>3 - @Html.Translate("CV_FORMACIONRECIBIDA")</p>
+                                    </div>
+                                </div>
+                                <div class="col col-12 col-contenido">
+                                </div>
+                            </div>
+                        </div>
+						<div class="tab-pane fade" id="acitividad-docente-panel" role="tabpanel" aria-labelledby="acitividad-docente-tab">
+                            <div class="row">
+                                <div class="col col-12 col-section-title">
+                                    <div class="wrapCol">
+                                        <p>3 - @Html.Translate("CV_ACTIVIDADDOCENTE")</p>
                                     </div>
                                 </div>
                                 <div class="col col-12 col-contenido">
