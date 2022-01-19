@@ -9014,6 +9014,25 @@
 										]
 									}
 								]
+							},
+							{
+								"title": {
+									"es": "Más campos"
+								},
+								"rows": [									
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "Nº Vistas"
+												},
+												"property": "http://w3id.org/roh/viewsNumber",
+												"type": "number",
+												"width": 1
+											}
+										]
+									}
+								]
 							}
 						]
 					}
@@ -9436,18 +9455,6 @@
 														}
 													]
 												}
-											}
-										]
-									},
-									{
-										"properties": [
-											{
-												"title": {
-													"es": "Nº Vistas"
-												},
-												"property": "http://w3id.org/roh/viewsNumber",
-												"type": "number",
-												"width": 1
 											}
 										]
 									}
