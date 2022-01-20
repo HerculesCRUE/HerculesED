@@ -96,7 +96,7 @@ IMPORTATE:
 - Si se especifica el parámetro 'pdf_url' el sistema intentará extraer el texto a partir de la URL  proporcionada. Si eso no es posible, se utilizan el resto de campos porporcionados para obetener el texto a clasificar. El sistema devuelve un error si ninguno de los campos está disponible.
 
 
-*Papers*
+**Papers**
 
 Ejemplo CURL:
 
@@ -152,7 +152,7 @@ Repuesta para 'papers'
 ```
 
 
-*BioProtocol*
+**BioProtocol**
 
 Ejemplo CURL:
 ```
@@ -181,12 +181,13 @@ Respuesta para bio-protocol:
 ```
 
 
-*SourceForge*
+**SourceForge**
 
 Ejemplo CURL:
 ```
 curl -X POST -H 'Content-Type: application/json' -i 'http://herculesapi.elhuyar.eus/thematic' --data '{
-     "text":"Command line HTML calendar generator. Python 3 based HTML calendar generator. Generates either a single calendar month or a set of 12 calendar months for a given year. Adjust for leap year and system file separator differences.",
+    "title":"Command line HTML calendar generator.",
+    "abstract":"Python 3 based HTML calendar generator. Generates either a single calendar month or a set of 12 calendar months for a given year. Adjust for leap year and system file separator differences.",
      "rotype":"sourceForge"
 }'
 ```
@@ -236,64 +237,44 @@ IMPORTANTE:
 - El sistema devuelve un error si los parametros 'title', 'abstract' y 'body' son cadenas vacías.
 
 
-*Papers*
+**Papers**
 
 Ejemplo CURL (sin body, se utiliza el extractor de textos cortos):
 ```
 curl -X POST -H 'Content-Type: application/json' -i 'http://herculesapi.elhuyar.eus/specific' --data '{
-     "title":"Nitrate Assay for Plant Tissues Nitrogen",
-     "abstract": "Nitrate Assay for Plant Tissues Nitrogen is an essential macronutrient for plant growth and nitrate content in plants can reflect the nitrogen supply of soil. Here, we provide the salicylic acid method to evaluate the nitrate content in plant tissues. The method is reliable and stable, thus it can be a good choice for measurement of nitrate in plant tissues. Nitrogen is an important macronutrient required by plants for normal growth and development. Usually most plants absorb nitrogen mainly in the form of nitrate grown under aerobic conditions (Xu et al., 2016). To determine the nitrate accumulation in plants, we need to test the nitrate content in different tissues of plants. There are some methods for determination of nitrate, for example, potentiometric method (Carlson and Keeney, 1971), phenoldisulfonic acid method (Bremner, 1965), Cadium reduction (Huffman and Barbarick, 1981) and other methods. These methods have some disadvantages, such as lower sensitivity, interferences, technician exposure to carcinogenic chemicals (Cataldo et al., 1975; Vendrell and Zupancic, 1990)Here, we provide the salicylic acid method that is free of interferences, reliable and stable. Nitrosalicylic acid is formed by the reaction of nitrate and salicylic acid under highly acidic conditions. The complex is yellow under basic (pH > 12) condition with maximal absorption at 410 nm. The absorbance is directly proportional to nitrate content. Therefore the nitrate content in tissues can be calculated based on their absorbances.",
-     "rotype":"papers"
+    "title":"Physiological Effects of Exposure to Arsenic, Mercury, Antimony and Selenium in the Aquatic Moss Fontinalis antipyretica Hedw.",
+    "abstract": "Laboratory experiments were carried out to determine the effects of exposure to different concentrations of As, Hg, Sb and Se on photosynthetic and respiratory rates and on photosynthetic efficiency in the aquatic bryophyte Fontinalis antipyretica Hedw. Specimens of the moss, collected from a clean site, were incubated in solutions of As, Hg, Sb and Se (at concentrations ranging from 0.1 μg l−1 to 10,000 μg l−1) for up to 22 days. The photosynthetic and respiratory rates were then determined by the light/dark bottle technique, and the photosynthetic efficiency was measured by the saturation pulse method. Although different responses were observed in relation to the concentration of the elements, clear responses in net photosynthesis and photosynthetic efficiency were generally only observed in the moss exposed to the highest concentrations of these elements in solution. Mercury was apparently the most toxic of the elements studied. Net photosynthesis and photosynthetic efficiency were also related to tissue concentrations of these elements in the moss. Despite the higher toxicity of Hg, this element can be accumulated at high concentrations in moss.",
+    "rotype":"papers"
 }'
 ```
 
 Respuesta para 'papers':
 ```
 {
-	"abstract": "Nitrate Assay for Plant Tissues Nitrogen is an essential macronutrient for plant growth and nitrate content in plants can reflect the nitrogen supply of soil. Here, we provide the salicylic acid method to evaluate the nitrate content in plant tissues. The method is reliable and stable, thus it can be a good choice for measurement of nitrate in plant tissues. Nitrogen is an important macronutrient required by plants for normal growth and development. Usually most plants absorb nitrogen mainly in the form of nitrate grown under aerobic conditions (Xu et al., 2016). To determine the nitrate accumulation in plants, we need to test the nitrate content in different tissues of plants. There are some methods for determination of nitrate, for example, potentiometric method (Carlson and Keeney, 1971), phenoldisulfonic acid method (Bremner, 1965), Cadium reduction (Huffman and Barbarick, 1981) and other methods. These methods have some disadvantages, such as lower sensitivity, interferences, technician exposure to carcinogenic chemicals (Cataldo et al., 1975; Vendrell and Zupancic, 1990)Here, we provide the salicylic acid method that is free of interferences, reliable and stable. Nitrosalicylic acid is formed by the reaction of nitrate and salicylic acid under highly acidic conditions. The complex is yellow under basic (pH > 12) condition with maximal absorption at 410 nm. The absorbance is directly proportional to nitrate content. Therefore the nitrate content in tissues can be calculated based on their absorbances.",
-	"rotype": "papers",
-	"title": "Nitrate Assay for Plant Tissues Nitrogen",
- 	"topics": [
-		{
-			"word": "Plant Tissues Nitrogen",
-			"porcentaje": "0.8633405059572463"
-		},
-		{
-			"word": "macronutrient",
-			"porcentaje": "0.846938280334738"
-		},
-		{
-			"word": "nitrate",
-			"porcentaje": "0.8765461253234841"
-		},
-		{
-			"word": "nitrate assay",
-			"porcentaje": "0.828894843054286"
-		},
-		{
-			"word": "nitrate content",
-			"porcentaje": "0.8832315372454584"
-		},
-		{
-			"word": "nitrogen",
-			"porcentaje": "0.7911357418061463"
-		},
-		{
-			"word": "plant tissues",
-			"porcentaje": "0.8841652016373143"
-		},
-		{
-			"word": "salicylic acid",
-			"porcentaje": "0.7810347080813881"
-		},
-		{
-			"word": "salicylic acid method",
-			"porcentaje": "0.7754054795177857"
-		},
-		{
-			"word": "tissues",
-			"porcentaje": "0.7992677902889439"
-		}
-	]
+    "abstract":"Laboratory experiments were carried out to determine the effects of exposure to different concentrations of As, Hg, Sb and Se on photosynthetic and respiratory rates and on photosynthetic efficiency in the aquatic bryophyte Fontinalis antipyretica Hedw. Specimens of the moss, collected from a clean site, were incubated in solutions of As, Hg, Sb and Se (at concentrations ranging from 0.1 \u03bcg l\u22121 to 10,000 \u03bcg l\u22121) for up to 22 days. The photosynthetic and respiratory rates were then determined by the light/dark bottle technique, and the photosynthetic efficiency was measured by the saturation pulse method. Although different responses were observed in relation to the concentration of the elements, clear responses in net photosynthesis and photosynthetic efficiency were generally only observed in the moss exposed to the highest concentrations of these elements in solution. Mercury was apparently the most toxic of the elements studied. Net photosynthesis and photosynthetic efficiency were also related to tissue concentrations of these elements in the moss. Despite the higher toxicity of Hg, this element can be accumulated at high concentrations in moss.",
+    "rotype":"papers","title":"Physiological Effects of Exposure to Arsenic, Mercury, Antimony and Selenium in the Aquatic Moss Fontinalis antipyretica Hedw.",
+    "topics":
+    [
+	{"porcentaje":"0.8644","word":"antipyretica hedw"},
+	{"porcentaje":"0.8269","word":"exposure"},
+	{"porcentaje":"0.8226","word":"antimony"},
+	{"porcentaje":"0.7968","word":"fontinalis antipyretica hedw"},
+	{"porcentaje":"0.7943","word":"photosynthetic efficiency"},
+	{"porcentaje":"0.7853","word":"photosynthesis"},
+	{"porcentaje":"0.7490","word":"Mercury"},
+	{"porcentaje":"0.7441","word":"concentrations"},
+	{"porcentaje":"0.6893","word":"Arsenic"},
+	{"porcentaje":"0.6720","word":"efficiency"}
+    ]
 }
 ```
+
+
+**BioProtocol**
+
+*Not implemented*
+
+
+**SourceForge**
+
+*Not implemented*
