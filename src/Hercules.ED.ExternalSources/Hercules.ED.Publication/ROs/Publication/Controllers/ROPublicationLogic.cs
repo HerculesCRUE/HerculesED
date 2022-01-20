@@ -31,6 +31,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
         // Configuración.
         readonly ConfigService _Configuracion;
 
+        // TODO: Sacarlo al archivo de configuración.
+        public static string URL_ELHUYAR = "http://herculesapi.elhuyar.eus/";
+
         public ROPublicationLogic(ConfigService pConfig)
         {
             _Configuracion = pConfig;
@@ -101,19 +104,20 @@ namespace PublicationConnect.ROs.Publications.Controllers
             Dictionary<string, Publication> dicCrossRef = new Dictionary<string, Publication>();
             Dictionary<string, string> dicZenodo = new Dictionary<string, string>();
 
-            //Declaro el Resultado
+            // Lista para almacenar las publicaciones resultantes.
             List<Publication> resultado = new List<Publication>();
+
             List<PublicacionScopus> objInicial_Scopus = null;
             List<Publication> objInicial_woS = null;
 
-            if (pDoi != null)
+            if (pDoi != null) // Recuperar una publicación por DOI.
             {
                 Log.Information("Haciendo petición a Scopus...");
                 objInicial_Scopus = llamada_Scopus_Doi(pDoi);
                 Log.Information("Haciendo petición a Wos...");
                 objInicial_woS = llamada_WoS_Doi(pDoi);
             }
-            else
+            else // Recuperar las publicaciones de un autor desde 'X' fecha.
             {
                 Log.Information("Haciendo petición a Scopus...");
                 objInicial_Scopus = llamada_Scopus(name, date);
@@ -158,9 +162,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     {
                         pub_completa.pdf = null;
                     }
-                    Log.Information("[WoS] Obteniendo bibliografia...");
+                    Log.Information("[WoS] Completando bibliografía...");
                     pub_completa = completar_bib(pub_completa, dicOpenCitations, dicSemanticScholar, dicCrossRef, dicZenodo);
-                    Log.Information("[WoS] Obteniendo citas...");
+                    Log.Information("[WoS] Obteniendo bibliografías y citas...");
                     pub_completa = obtener_bib_citas(pub_completa, dicOpenCitations, dicSemanticScholar, dicCrossRef, dicZenodo);
                     if (objInicial_Scopus != null && objInicial_Scopus.Count >= 1)
                     {
@@ -174,7 +178,8 @@ namespace PublicationConnect.ROs.Publications.Controllers
                                     if (pub_scopus.doi == pub_completa.doi)
                                     {
                                         pub_completa = compatacion(pub_completa, pubScopus);
-                                        //todo combinar los erroees! ni puta idea de como hacerlo proqe depende de lo que juntes y lo que no! 
+                                        //todo combinar los erroees! ni puta idea de como hacerlo proqe depende de lo que juntes y lo que no!
+                                        // Bastante gracioso el comentario.
                                     }
                                 }
                             }
@@ -417,7 +422,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     break;
                 }
 
-                response = client.PostAsync("http://herculesapi.elhuyar.eus/" + uri, contentData).Result;
+                response = client.PostAsync(URL_ELHUYAR + uri, contentData).Result;
                 if (response.IsSuccessStatusCode)
                 {
                     result = response.Content.ReadAsStringAsync().Result;
@@ -1329,6 +1334,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                                 }
                             }
                         }
+                        //TODO: Unificar los cuartiles. Devolver 'Q1' o 1, pero no devolver de ambos tipos.
                         if (boole == false)
                         {
                             string quartil_inicial = "4";
@@ -1687,9 +1693,14 @@ namespace PublicationConnect.ROs.Publications.Controllers
             return objInicial_CrossRef;
         }
 
-        public List<PublicacionScopus> llamada_Scopus(string orcid, string date)
+        /// <summary>
+        /// Llamada al API de Web of Science mediante un código de autor.
+        /// </summary>
+        /// <param name="pOrcid">ORCID del autor.</param>
+        /// <returns>Publicación(es) con los datos obtenidos.</returns>
+        public List<PublicacionScopus> llamada_Scopus(string pOrcid, string date)
         {
-            Uri url = new Uri(string.Format(_Configuracion.GetUrlScopus() + "Scopus/GetROs?orcid={0}&date={1}", orcid, date));
+            Uri url = new Uri(string.Format(_Configuracion.GetUrlScopus() + "Scopus/GetROs?orcid={0}&date={1}", pOrcid, date));
             string info_publication = httpCall(url.ToString(), "GET", headers).Result;
             //Log.Information("Respuesta Scopus --> " + info_publication);
             List<PublicacionScopus> objInicial_Scopus = null;
@@ -1697,13 +1708,19 @@ namespace PublicationConnect.ROs.Publications.Controllers
             {
                 objInicial_Scopus = JsonConvert.DeserializeObject<List<PublicacionScopus>>(info_publication);
             }
-            catch (Exception error)
+            catch (Exception e)
             {
+                Log.Error("Petición Scopus --> " + e);
                 return objInicial_Scopus;
             }
             return objInicial_Scopus;
         }
 
+        /// <summary>
+        /// Llamada al API de Scopus mediante un código DOI.
+        /// </summary>
+        /// <param name="pDoi">ID de la publicación.</param>
+        /// <returns>Publicación(es) con los datos obtenidos.</returns>
         public List<PublicacionScopus> llamada_Scopus_Doi(string pDoi)
         {
             Uri url = new Uri(string.Format(_Configuracion.GetUrlScopus() + "Scopus/GetPublicationByDOI?pDoi={0}", pDoi));
@@ -1715,16 +1732,22 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 PublicacionScopus publicacion = JsonConvert.DeserializeObject<PublicacionScopus>(info_publication);
                 objInicial_Scopus = new List<PublicacionScopus>() { publicacion };
             }
-            catch (Exception error)
+            catch (Exception e)
             {
+                Log.Error("Petición Scopus --> " + e);
                 return objInicial_Scopus;
             }
             return objInicial_Scopus;
         }
 
-        public List<Publication> llamada_WoS(string orcid, string date)
+        /// <summary>
+        /// Llamada al API de Web of Science mediante un código de autor.
+        /// </summary>
+        /// <param name="pOrcid">ORCID del autor.</param>
+        /// <returns>Publicación(es) con los datos obtenidos.</returns>
+        public List<Publication> llamada_WoS(string pOrcid, string date)
         {
-            Uri url = new Uri(string.Format(_Configuracion.GetUrlWos() + "WoS/GetROs?orcid={0}&date={1}", orcid, date));
+            Uri url = new Uri(string.Format(_Configuracion.GetUrlWos() + "WoS/GetROs?orcid={0}&date={1}", pOrcid, date));
             string info_publication = httpCall(url.ToString(), "GET", headers).Result;
             //Log.Information("Respuesta WoS --> " + info_publication);
             List<Publication> objInicial_woS = null;
@@ -1732,13 +1755,19 @@ namespace PublicationConnect.ROs.Publications.Controllers
             {
                 objInicial_woS = JsonConvert.DeserializeObject<List<Publication>>(info_publication);
             }
-            catch (Exception error)
+            catch (Exception e)
             {
+                Log.Error("Petición WoS --> " + e);
                 return objInicial_woS;
             }
             return objInicial_woS;
         }
 
+        /// <summary>
+        /// Llamada al API de Web of Science mediante un código DOI.
+        /// </summary>
+        /// <param name="pDoi">ID de la publicación.</param>
+        /// <returns>Publicación(es) con los datos obtenidos.</returns>
         public List<Publication> llamada_WoS_Doi(string pDoi)
         {
             Uri url = new Uri(string.Format(_Configuracion.GetUrlWos() + "WoS/GetRoByDoi?pDoi={0}", pDoi));
@@ -1750,8 +1779,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 Publication publicacion = JsonConvert.DeserializeObject<Publication>(info_publication);
                 objInicial_woS = new List<Publication>() { publicacion };
             }
-            catch (Exception error)
+            catch (Exception e)
             {
+                Log.Error("Petición WoS --> " + e);
                 return objInicial_woS;
             }
             return objInicial_woS;
@@ -2065,6 +2095,11 @@ namespace PublicationConnect.ROs.Publications.Controllers
             return diccionario_final;
         }
 
+        /// <summary>
+        /// Mediante una publicación, compara todos sus autores entre ellos para quitar duplicados y fusionar la información.
+        /// </summary>
+        /// <param name="pPublicacion">Publicación a fusionar autores.</param>
+        /// <returns>Publicación con los autores fusionados.</returns>
         public Publication CompararAutores(Publication pPublicacion)
         {
             // Prioridad --> WOS > SemanticScholar > CrossRef
@@ -2073,6 +2108,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             dicPersonas.Add("SemanticScholar", new List<Models.Person>());
             dicPersonas.Add("CrossRef", new List<Models.Person>());
 
+            // Peso.
             double umbral = 0.7;
 
             foreach (Models.Person persona in pPublicacion.seqOfAuthors)
@@ -2253,6 +2289,11 @@ namespace PublicationConnect.ROs.Publications.Controllers
             return pPublicacion;
         }
 
+        /// <summary>
+        /// Mediante una publicación (cita o referencia), compara todos sus autores entre ellos para quitar duplicados y fusionar la información.
+        /// </summary>
+        /// <param name="pPublicacion">Publicación a fusionar autores.</param>
+        /// <returns>Publicación con los autores fusionados.</returns>
         public Publication CompararAutoresCitasReferencias(Publication pPublicacion)
         {
             // Prioridad --> SemanticScholar > CrossRef
@@ -2469,6 +2510,11 @@ namespace PublicationConnect.ROs.Publications.Controllers
             return pPersonaFinal;
         }
 
+        /// <summary>
+        /// Convierte el objeto de Scopus personalizado al objeto de Publicación.
+        /// </summary>
+        /// <param name="pPublicacionScopus">Datos a convertir.</param>
+        /// <returns>Objeto publicación.</returns>
         public Publication ObtenerPublicacionDeScopus(PublicacionScopus pPublicacionScopus)
         {
             Publication publicacion = new Publication();
