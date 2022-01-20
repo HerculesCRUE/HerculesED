@@ -51,7 +51,9 @@ namespace GuardadoCV.Models.API.Templates
         //Listado de autores
         auxEntityAuthorList,
         //Tesauro
-        thesaurus
+        thesaurus,
+        //Imagen
+        image,
     }
 
 }
