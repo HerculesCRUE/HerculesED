@@ -247,10 +247,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
             //}
 
-            string info = JsonConvert.SerializeObject(resultado);
-            string path = _Configuracion.GetRutaJsonSalida();
-            Log.Information("Escribiendo datos en fichero...");
-            File.WriteAllText($@"Files/pub_esquembre-17.json", info);
+            //string info = JsonConvert.SerializeObject(resultado);
+            //string path = _Configuracion.GetRutaJsonSalida();
+            //Log.Information("Escribiendo datos en fichero...");
+            //File.WriteAllText($@"Files/ejemplo.json", info);
             return resultado;
 
         }
