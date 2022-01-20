@@ -31,6 +31,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
         public static string CONFERENCE_PAPER = "Conference Paper";
         public static string REVISTA_JOURNAL = "Journal";
         public static string REVISTA_BOOK = "Book";
+        public static int MAX_INTENTOS = 3;
         #endregion
 
         public static void CargaMain()
@@ -67,11 +68,10 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
 
         private static void ProcesarPublicacion(Publication pPublicacion, Dictionary<string, string> pDicAreasBroader, Dictionary<string, string> pDicAreasNombre)
         {
-            // TODO: Comprueba si está la publicación cargada. (ASIO)
-
             // Comprubea si existe la publicación mediante el DOI.
             string idDocumento = ComprobarPublicacionDoi(pPublicacion.doi);
 
+            // Comprueba si existe la publicación mediante el DOI.
             if (pPublicacion.iDs != null && pPublicacion.iDs.Count > 0)
             {
                 foreach (string id in pPublicacion.iDs)
@@ -111,6 +111,12 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                 }
             }
 
+            // TODO: Comprueba si está la publicación cargada. (ASIO) (De momento, solo compruebo el titulo)
+            if (string.IsNullOrEmpty(pPublicacion.title))
+            {
+                idDocumento = ComprobarPublicacionTitulo(pPublicacion.title);
+            }
+
             if (string.IsNullOrEmpty(idDocumento))
             {
                 CargarDocumento(pPublicacion, pDicAreasBroader, pDicAreasNombre, idDocumento, true, false, false);
@@ -139,6 +145,9 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
         {
             // Creación del objeto con los datos.
             Document documentoCargar = new Document();
+
+            // Estado de validación (IsValidated)
+            documentoCargar.Roh_isValidated = true;
 
             // Diccionario para guardar los ORCID - ID_RECURSO de las personas de la publicación.
             Dictionary<string, string> dicOrcidRecurso = new Dictionary<string, string>();
@@ -210,7 +219,13 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                 // Descripción (Abstract)
                 if (!string.IsNullOrEmpty(pPublicacion.@abstract))
                 {
-                    documentoCargar.Bibo_abstract = pPublicacion.@abstract;
+                    string descpLimpia = pPublicacion.@abstract;
+                    if (pPublicacion.@abstract.StartsWith("[") && pPublicacion.@abstract.EndsWith("]"))
+                    {
+                        descpLimpia = pPublicacion.@abstract.Remove(0, 1);
+                        descpLimpia = descpLimpia.Remove(descpLimpia.Length - 1, 1);
+                    }
+                    documentoCargar.Bibo_abstract = descpLimpia.Trim();
                 }
 
                 // Tipo de publicación (TypeOfPublication)
@@ -304,9 +319,9 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     documentoCargar.Vcard_url = new List<string>();
                     foreach (string url in pPublicacion.url)
                     {
-                        urlSinRepetir.Add(url);                        
+                        urlSinRepetir.Add(url);
                     }
-                    foreach(string url in urlSinRepetir)
+                    foreach (string url in urlSinRepetir)
                     {
                         documentoCargar.Vcard_url.Add(url);
                     }
@@ -389,8 +404,20 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                         {
                             mResourceApi.ChangeOntoly("person");
                             ComplexOntologyResource resourcePersona = persona.ToGnossApiResource(mResourceApi, null);
-                            //mResourceApi.LoadComplexSemanticResource(resourcePersona, false, true);
+                            int numIntentos = 0;
+                            while (!resourcePersona.Uploaded)
+                            {
+                                numIntentos++;
+
+                                if (numIntentos > MAX_INTENTOS)
+                                {
+                                    break;
+                                }
+
+                                mResourceApi.LoadComplexSemanticResource(resourcePersona, false, true);
+                            }
                             idPersona = resourcePersona.GnossId;
+                            mResourceApi.ChangeOntoly("document");
                         }
 
                         if (!string.IsNullOrEmpty(orcidLimpio) && !dicOrcidRecurso.ContainsKey(orcidLimpio))
@@ -399,7 +426,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             dicOrcidRecurso.Add(orcidLimpio, idPersona);
                         }
                     }
-                    else if (!string.IsNullOrEmpty(LimpiarORCID(pPublicacion.correspondingAuthor.orcid)) && !dicOrcidRecurso.ContainsKey(LimpiarORCID(pPublicacion.correspondingAuthor.orcid)))
+                    else if (!string.IsNullOrEmpty(LimpiarORCID(pPublicacion.correspondingAuthor.orcid)) && !string.IsNullOrEmpty(LimpiarORCID(pPublicacion.correspondingAuthor.orcid)) && !dicOrcidRecurso.ContainsKey(LimpiarORCID(pPublicacion.correspondingAuthor.orcid)))
                     {
                         // Guardo la persona con su identificador.
                         dicOrcidRecurso.Add(LimpiarORCID(pPublicacion.correspondingAuthor.orcid), idPersona);
@@ -483,8 +510,19 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             {
                                 mResourceApi.ChangeOntoly("person");
                                 ComplexOntologyResource resourcePersona = persona.ToGnossApiResource(mResourceApi, null);
-                                //mResourceApi.LoadComplexSemanticResource(resourcePersona, false, true);
+                                int numIntentos = 0;
+                                while (!resourcePersona.Uploaded)
+                                {
+                                    numIntentos++;
+
+                                    if (numIntentos > MAX_INTENTOS)
+                                    {
+                                        break;
+                                    }
+                                    mResourceApi.LoadComplexSemanticResource(resourcePersona, false, true);
+                                }
                                 idPersona = resourcePersona.GnossId;
+                                mResourceApi.ChangeOntoly("document");
                             }
 
                             if (!string.IsNullOrEmpty(orcidLimpio) && !dicOrcidRecurso.ContainsKey(orcidLimpio) && !string.IsNullOrEmpty(persona.Foaf_name))
@@ -531,11 +569,11 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     documentoCargar.Roh_externalKnowledgeArea = new List<DocumentOntology.CategoryPath>();
                     foreach (HasKnowledgeArea knowledgearea in pPublicacion.hasKnowledgeAreas)
                     {
-                        if (knowledgearea.resource.ToLower() == "wos")
+                        if (knowledgearea.resource.ToLower() == "hércules")
                         {
                             foreach (KnowledgeArea area in knowledgearea.knowledgeArea)
                             {
-                                if (pDicAreasNombre.ContainsKey(area.name.ToLower()) && !string.IsNullOrEmpty(area.hasCode))
+                                if (pDicAreasNombre.ContainsKey(area.name.ToLower()))
                                 {
                                     DocumentOntology.CategoryPath categoria = new DocumentOntology.CategoryPath();
                                     categoria.IdsRoh_categoryNode = new List<string>();
@@ -648,7 +686,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                 }
 
                 // Revista (HasPublicationVenue)
-                if (pPublicacion.hasPublicationVenue != null && !string.IsNullOrEmpty(pPublicacion.hasPublicationVenue.name))
+                if (pPublicacion.hasPublicationVenue != null && !string.IsNullOrEmpty(pPublicacion.hasPublicationVenue.name) && (pPublicacion.hasPublicationVenue.type == "Journal" || string.IsNullOrEmpty(pPublicacion.hasPublicationVenue.type)))
                 {
                     // Comprobar si la revista existe o no.
                     string idRevista = string.Empty;
@@ -692,13 +730,13 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     }
 
                     // Apunte a la revista.
-                    if(!string.IsNullOrEmpty(idRevista))
+                    if (!string.IsNullOrEmpty(idRevista))
                     {
                         documentoCargar.IdVivo_hasPublicationVenue = idRevista;
                     }
 
                     if (pPublicacion.hasPublicationVenue.hasMetric != null && pPublicacion.hasPublicationVenue.hasMetric.Count > 0)
-                    {                       
+                    {
                         foreach (HasMetric metrica in pPublicacion.hasPublicationVenue.hasMetric)
                         {
                             if (float.TryParse(metrica.impactFactor.ToString(), out float numFloat1))
@@ -712,16 +750,28 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                     case "1":
                                         documentoCargar.Roh_quartile = 1;
                                         break;
+                                    case "Q1":
+                                        documentoCargar.Roh_quartile = 1;
+                                        break;
                                     case "2":
+                                        documentoCargar.Roh_quartile = 2;
+                                        break;
+                                    case "Q2":
                                         documentoCargar.Roh_quartile = 2;
                                         break;
                                     case "3":
                                         documentoCargar.Roh_quartile = 3;
                                         break;
+                                    case "Q3":
+                                        documentoCargar.Roh_quartile = 3;
+                                        break;
                                     case "4":
                                         documentoCargar.Roh_quartile = 4;
                                         break;
-                                }                               
+                                    case "Q4":
+                                        documentoCargar.Roh_quartile = 4;
+                                        break;
+                                }
                             }
                         }
                     }
@@ -780,6 +830,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             }
                         }
 
+                        // TODO: Comprueba si está la publicación cargada. (ASIO) (De momento, solo compruebo el titulo)
                         if (string.IsNullOrEmpty(idDocumentoAux))
                         {
                             idDocumentoAux = ComprobarPublicacionTitulo(pub.title);
@@ -861,11 +912,13 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             }
                         }
 
-                        if (string.IsNullOrEmpty(idDocumentoAux))
+                        // TODO: Comprueba si está la publicación cargada. (ASIO) (De momento, solo compruebo el titulo)
+                        if (string.IsNullOrEmpty(idDocumentoAux) && !string.IsNullOrEmpty(item.title))
                         {
                             idDocumentoAux = ComprobarPublicacionTitulo(item.title);
                         }
-                        if(string.IsNullOrEmpty(pIdDocumento))
+
+                        if (string.IsNullOrEmpty(pIdDocumento))
                         {
                             pIdDocumento = idDocumentoPrincipal;
                         }
@@ -901,23 +954,38 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     documentoCargar.Roh_assessmentStatus = pTuplaDatosRecuperados.Rest.Item1;
                 }
 
-                // Estado de validación (IsValidated)
-                if (pPubPrimaria)
-                {
-                    documentoCargar.Roh_isValidated = true;
-                }
-
                 // Carga de la publicación.
                 mResourceApi.ChangeOntoly("document");
                 if (pPubPrimaria) // Si es una publicación primaria
                 {
                     if (pTuplaDatosRecuperados != null) // Si hay datos obtenidos de la recuperación...
-                    {                       
-                        //mResourceApi.ModifyComplexOntologyResource(resourceDocumentoPrimaria, false, true); 
+                    {
+                        int numIntentos = 0;
+                        while (!resourceDocumentoPrimaria.Modified)
+                        {
+                            numIntentos++;
+
+                            if (numIntentos > MAX_INTENTOS)
+                            {
+                                break;
+                            }
+                            mResourceApi.ModifyComplexOntologyResource(resourceDocumentoPrimaria, false, true);
+                        }
                     }
                     else
                     {
-                        //mResourceApi.LoadComplexSemanticResource(resourceDocumentoPrimaria, false, true);
+                        int numIntentos = 0;
+                        while (!resourceDocumentoPrimaria.Uploaded)
+                        {
+                            numIntentos++;
+
+                            if (numIntentos > MAX_INTENTOS)
+                            {
+                                break;
+                            }
+                            mResourceApi.LoadComplexSemanticResource(resourceDocumentoPrimaria, false, true);
+
+                        }
                     }
                 }
                 else if (pPubSecundariaBiblio) // Si es una publicación secundaria de bibliografía
@@ -927,39 +995,60 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                         Guid gnossIdSecundario = mResourceApi.GetShortGuid(idDocumentoActual);
                         Guid articleIdSecundario = new Guid(idDocumentoActual.Split('_')[2]);
                         ComplexOntologyResource resourceDocumento = documentoCargar.ToGnossApiResource(mResourceApi, null, gnossIdSecundario, articleIdSecundario);
-                        //mResourceApi.LoadComplexSemanticResource(resourceDocumento, false, true);
+                        int numIntentos = 0;
+                        while (!resourceDocumento.Uploaded)
+                        {
+                            numIntentos++;
+
+                            if (numIntentos > MAX_INTENTOS)
+                            {
+                                break;
+                            }
+                            mResourceApi.LoadComplexSemanticResource(resourceDocumento, false, true);
+                        }
                     }
                 }
                 else if (pPubSecundariaCita) // Si es una publicación secundaria de cita
                 {
                     if (!string.IsNullOrEmpty(pIdDocumento)) // Si NO viene vacío...
                     {
-                        //Dictionary<Guid, List<TriplesToInclude>> triples = new Dictionary<Guid, List<TriplesToInclude>>();
-                        //triples.Add(mResourceApi.GetShortGuid(pIdDocumento), new List<TriplesToInclude>() {
-                        //    new TriplesToInclude(){
-                        //            Predicate = "http://purl.org/ontology/bibo/cites",
-                        //            NewValue = pIdPadre
-                        //        }
-                        //    });
-                        //Dictionary<Guid, bool> resultado = mResourceApi.InsertPropertiesLoadedResources(triples);
-                        //bool comprobacion = resultado.ContainsKey(mResourceApi.GetShortGuid(pIdDocumento));
+                        Dictionary<Guid, List<TriplesToInclude>> triples = new Dictionary<Guid, List<TriplesToInclude>>();
+                        triples.Add(mResourceApi.GetShortGuid(pIdDocumento), new List<TriplesToInclude>() {
+                            new TriplesToInclude(){
+                                    Predicate = "http://purl.org/ontology/bibo/cites",
+                                    NewValue = pIdPadre
+                                }
+                            });
+                        Dictionary<Guid, bool> resultado = mResourceApi.InsertPropertiesLoadedResources(triples);
+                        bool comprobacion = resultado.ContainsKey(mResourceApi.GetShortGuid(pIdDocumento));
                     }
                     else
                     {
-                        //Guid gnossId = mResourceApi.GetShortGuid(idDocumentoActual);
-                        //Guid articleId = new Guid(idDocumentoActual.Split('_')[2]);
-                        //ComplexOntologyResource resourceDocumento = documentoCargar.ToGnossApiResource(mResourceApi, null, gnossId, articleId);
-                        //string idCreado = mResourceApi.LoadComplexSemanticResource(resourceDocumento, false, true);
+                        Guid gnossId = mResourceApi.GetShortGuid(idDocumentoActual);
+                        Guid articleId = new Guid(idDocumentoActual.Split('_')[2]);
+                        ComplexOntologyResource resourceDocumento = documentoCargar.ToGnossApiResource(mResourceApi, null, gnossId, articleId);
+                        string idCreado = string.Empty;
+                        int numIntentos = 0;
+                        while (!resourceDocumento.Uploaded)
+                        {
+                            numIntentos++;
 
-                        //Dictionary<Guid, List<TriplesToInclude>> triples = new Dictionary<Guid, List<TriplesToInclude>>();
-                        //triples.Add(mResourceApi.GetShortGuid(idCreado), new List<TriplesToInclude>() {
-                        //    new TriplesToInclude(){
-                        //            Predicate = "http://purl.org/ontology/bibo/cites",
-                        //            NewValue = pIdPadre
-                        //        }
-                        //    });
-                        //Dictionary<Guid, bool> resultado = mResourceApi.InsertPropertiesLoadedResources(triples);
-                        //bool comprobacion = resultado.ContainsKey(mResourceApi.GetShortGuid(idDocumentoActual));
+                            if (numIntentos > MAX_INTENTOS)
+                            {
+                                break;
+                            }
+
+                            idCreado = mResourceApi.LoadComplexSemanticResource(resourceDocumento, false, true);
+                        }
+                        Dictionary<Guid, List<TriplesToInclude>> triples = new Dictionary<Guid, List<TriplesToInclude>>();
+                        triples.Add(mResourceApi.GetShortGuid(idCreado), new List<TriplesToInclude>() {
+                            new TriplesToInclude(){
+                                    Predicate = "http://purl.org/ontology/bibo/cites",
+                                    NewValue = pIdPadre
+                                }
+                            });
+                        Dictionary<Guid, bool> resultado = mResourceApi.InsertPropertiesLoadedResources(triples);
+                        bool comprobacion = resultado.ContainsKey(mResourceApi.GetShortGuid(idDocumentoActual));
                     }
                 }
 
@@ -1016,6 +1105,31 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                 );
 
             CargarDocumento(pPublicacion, pDicAreasBroader, pDicAreasNombre, pIdDocumento, true, false, false, pTuplaDatosRecuperados: tuplaDatos);
+        }
+
+        /// <summary>
+        /// Consulta en SPARQL si existe el documento con el DOI.
+        /// </summary>
+        /// <param name="pId">ID del recurso.</param>
+        /// <returns>ID del recurso.</returns>
+        public static string ObtenerDoiPublicacion(string pId)
+        {
+            // Consulta sparql.
+            string select = "SELECT ?doi";
+            string where = $@"WHERE {{
+                                <{pId}> <http://purl.org/ontology/bibo/doi> ?doi
+                            }}";
+
+            SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "document");
+            if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+            {
+                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                {
+                    return fila["doi"].value;
+                }
+            }
+
+            return string.Empty;
         }
 
         /// <summary>
@@ -1350,7 +1464,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
         /// <returns>ID del recurso.</returns>
         public static string ComprobarPublicacionDoi(string pDOI)
         {
-            if(string.IsNullOrEmpty(pDOI))
+            if (string.IsNullOrEmpty(pDOI))
             {
                 return string.Empty;
             }
@@ -1430,7 +1544,8 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                         return fila["documento"].value;
                     }
                 }
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
                 return string.Empty;
             }

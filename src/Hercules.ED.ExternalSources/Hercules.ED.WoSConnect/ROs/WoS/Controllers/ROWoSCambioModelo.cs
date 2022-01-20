@@ -58,10 +58,10 @@ namespace WoSConnect.ROs.WoS.Controllers
                     }
                 }
             }
-            
+
             return sol;
         }
-    
+
         public Publication cambioDeModeloPublicacion(PublicacionInicial objInicial, Boolean publicacion_principal)
         {
             Publication publicacion = new Publication();
@@ -310,53 +310,31 @@ namespace WoSConnect.ROs.WoS.Controllers
                         {
                             if (objInicial.static_data.fullrecord_metadata.abstracts.@abstract.abstract_text != null)
                             {
-                                bool esLista = false;
+                                //bool esLista = false;
+                                //try
+                                //{
+                                //    if (objInicial.static_data.fullrecord_metadata.abstracts.@abstract.abstract_text.ToString().Trim().StartsWith("[") && objInicial.static_data.fullrecord_metadata.abstracts.@abstract.abstract_text.ToString().Trim().EndsWith("]"))
+                                //    {
+                                //        AbstractText hey = JsonConvert.DeserializeObject<AbstractText>(objInicial.static_data.fullrecord_metadata.abstracts.@abstract.abstract_text.ToString());
+                                //        esLista = true;
+                                //    }
+                                //}
+                                //catch
+                                //{
+
+                                //}
+
                                 try
                                 {
-                                    if (objInicial.static_data.fullrecord_metadata.abstracts.@abstract.abstract_text.ToString().Trim().StartsWith("[") && objInicial.static_data.fullrecord_metadata.abstracts.@abstract.abstract_text.ToString().Trim().EndsWith("]"))
-                                    {
-                                        AbstractText hey = JsonConvert.DeserializeObject<AbstractText>(objInicial.static_data.fullrecord_metadata.abstracts.@abstract.abstract_text.ToString());
-                                        esLista = true;
-                                    }
+                                    string abstract_2 = "";
+                                    abstract_2 = objInicial.static_data.fullrecord_metadata.abstracts.@abstract.abstract_text.p.ToString();
+                                    return abstract_2;
                                 }
-                                catch
+                                catch (Exception)
                                 {
-
+                                    return "";
                                 }
 
-                                if (!esLista)
-                                {
-                                    try
-                                    {
-                                        AbstractText_list hey = JsonConvert.DeserializeObject<AbstractText_list>(objInicial.static_data.fullrecord_metadata.abstracts.@abstract.abstract_text.ToString());
-
-                                        string abstract_2 = "";
-                                        string advertencia = "Hay un problema con el abstract: se han encontrado varios, son los siguientes:\n ";
-                                        for (int i = 0; i < hey.p.Count; i++)
-                                        {
-                                            if (i == 0)
-                                            {
-                                                abstract_2 = hey.p[i];
-                                            }
-                                            advertencia = advertencia + " Abstract: " + hey.p[i] + " \n.";
-                                        }
-                                        if (this.advertencia == null)
-                                        {
-                                            List<string> ad = new List<string>();
-                                            ad.Add(advertencia);
-                                            this.advertencia = ad;
-                                        }
-                                        else
-                                        {
-                                            this.advertencia.Add(advertencia);
-                                        }
-                                        return abstract_2;
-                                    }
-                                    catch (Exception)
-                                    {
-                                        return "";
-                                    }
-                                }
                             }
                         }
                     }
@@ -442,7 +420,7 @@ namespace WoSConnect.ROs.WoS.Controllers
             }
             return null;
         }
-       
+
 
         public DateTimeValue getDate(PublicacionInicial objInicial)
         {
@@ -599,7 +577,7 @@ namespace WoSConnect.ROs.WoS.Controllers
                         listado.Add(area_taxonomia);
                         KnowledgeArea area_taxonomia_2 = new KnowledgeArea();
                         area_taxonomia_2.name = "Plasma Physics";
-                                                listado.Add(area_taxonomia_2);
+                        listado.Add(area_taxonomia_2);
                     }
                     else
                     {
@@ -610,7 +588,7 @@ namespace WoSConnect.ROs.WoS.Controllers
                 }
                 catch
                 {
-                    Console.Write("No se encuentra enla taxonomia el siguiente area: "+ area_wos_obtenida.name);
+                    Console.Write("No se encuentra enla taxonomia el siguiente area: " + area_wos_obtenida.name);
                     Console.Write("\n");
                 }
             }
@@ -637,7 +615,7 @@ namespace WoSConnect.ROs.WoS.Controllers
                             foreach (string keyword in objInicial.static_data.fullrecord_metadata.keywords.keyword)
                             {
                                 list.freetextKeyword.Add(keyword);
-                            }                            
+                            }
                             list.source = "WoS";
                             List<FreetextKeywords> sol_list = new List<FreetextKeywords>();
                             sol_list.Add(list);
@@ -663,7 +641,7 @@ namespace WoSConnect.ROs.WoS.Controllers
             return null;
         }
 
-        
+
         public List<Person> getAuthors(PublicacionInicial objInicial)
         {
             List<Person> result = new List<Person>();
@@ -679,9 +657,10 @@ namespace WoSConnect.ROs.WoS.Controllers
                             {
                                 //JArray hey = JsonConvert.DeserializeObject<JArray>(objInicial.static_data.summary.names.name.ToString());
 
-                                foreach(Models.Inicial.Name nombre in objInicial.static_data.summary.names.name)
+                                foreach (Models.Inicial.Name nombre in objInicial.static_data.summary.names.name)
                                 {
                                     Person persona = new Person();
+                                    persona.fuente = "WoS";
                                     string orcid = null;
                                     string name = null;
                                     string familia = null;
@@ -709,12 +688,12 @@ namespace WoSConnect.ROs.WoS.Controllers
                                         List<string> apellidos = new List<string>();
                                         List<string> nombres_completo = new List<string>();
 
-                                        if (nombre.display_name != null)
+                                        if (nombre.wos_standard != null)
                                         {
-                                            if (!nombres_completo.Contains(nombre.display_name) && !nombre.full_name.Contains("IEEE"))
+                                            if (!nombres_completo.Contains(nombre.wos_standard) && !nombre.full_name.Contains("IEEE"))
                                             {
-                                                nombres_completo.Add(nombre.display_name);
-                                                completo = nombre.display_name;
+                                                nombres_completo.Add(nombre.wos_standard);
+                                                completo = nombre.wos_standard;
                                             }
                                         }
                                         if (nombre.first_name != null)
@@ -729,7 +708,7 @@ namespace WoSConnect.ROs.WoS.Controllers
                                         {
                                             if (!nombres_completo.Contains(nombre.full_name) && !nombre.full_name.Contains("IEEE"))
                                             {
-                                                nombres_completo.Add(nombre.full_name);
+                                                //nombres_completo.Add(nombre.full_name);
                                                 if (completo != null)
                                                 {
                                                     completo = completo + "*" + nombre.first_name;
@@ -770,11 +749,11 @@ namespace WoSConnect.ROs.WoS.Controllers
                                         List<string> apellidos = new List<string>();
                                         List<string> nombres_completo = new List<string>();
 
-                                        if (nombre.display_name != null)
+                                        if (nombre.wos_standard != null)
                                         {
-                                            if (!nombres_completo.Contains(nombre.display_name) && !nombre.full_name.Contains("IEEE"))
+                                            if (!nombres_completo.Contains(nombre.wos_standard) && !nombre.full_name.Contains("IEEE"))
                                             {
-                                                nombres_completo.Add(nombre.display_name);
+                                                nombres_completo.Add(nombre.wos_standard);
                                                 completo = nombre.display_name;
                                             }
                                         }
@@ -791,7 +770,7 @@ namespace WoSConnect.ROs.WoS.Controllers
                                             if (!nombres_completo.Contains(nombre.full_name) && !nombre.full_name.Contains("IEEE"))
                                             {
 
-                                                nombres_completo.Add(nombre.full_name);
+                                                //nombres_completo.Add(nombre.full_name);
                                                 if (completo != null)
                                                 {
                                                     completo = completo + "*" + nombre.first_name;
@@ -846,11 +825,11 @@ namespace WoSConnect.ROs.WoS.Controllers
                                     List<string> apellidos = new List<string>();
                                     List<string> nombres_completo = new List<string>();
 
-                                    if (ee.display_name != null)
+                                    if (ee.wos_standard != null)
                                     {
-                                        if (!nombres_completo.Contains(ee.display_name))
+                                        if (!nombres_completo.Contains(ee.wos_standard))
                                         {
-                                            nombres_completo.Add(ee.display_name);
+                                            nombres_completo.Add(ee.wos_standard);
                                         }
                                     }
                                     if (ee.first_name != null)
@@ -860,13 +839,13 @@ namespace WoSConnect.ROs.WoS.Controllers
                                             nombres.Add(ee.first_name);
                                         }
                                     }
-                                    if (ee.full_name != null)
-                                    {
-                                        if (!nombres_completo.Contains(ee.full_name))
-                                        {
-                                            nombres_completo.Add(ee.full_name);
-                                        }
-                                    }
+                                    //if (ee.full_name != null)
+                                    //{
+                                    //    if (!nombres_completo.Contains(ee.full_name))
+                                    //    {
+                                    //        nombres_completo.Add(ee.full_name);
+                                    //    }
+                                    //}
                                     if (ee.last_name != null)
                                     {
                                         if (!apellidos.Contains(ee.last_name))
@@ -910,7 +889,7 @@ namespace WoSConnect.ROs.WoS.Controllers
                                     {
                                         if (!nombres_completo.Contains(ee.display_name))
                                         {
-                                            nombres_completo.Add(ee.display_name);
+                                            nombres_completo.Add(ee.wos_standard);
                                         }
                                     }
                                     if (ee.first_name != null)

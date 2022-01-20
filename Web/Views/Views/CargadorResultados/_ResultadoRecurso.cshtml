@@ -23,7 +23,6 @@
     {
         resoourceType = recursoVideo;
     }
-
     // Publicaciones
     if (Model.RdfTypeName == "Document")
     {
@@ -161,6 +160,421 @@
                                             foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
                                             {
                                                 string idQuery = "FechaDocumento";
+                                                if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
+                                                {
+                                                    string propiedad = "fecha";
+                                                    foreach (Dictionary<string, string> row in item.Rows)
+                                                    {
+                                                        if (row.ContainsKey(propiedad))
+                                                        {
+                                                            <span>@row[propiedad].Substring(0, 4)</span>
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                </span>
+                                @{
+                                    if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+                                    {
+                                        foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+                                        {
+                                            string idQuery = "Journal";
+                                            if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
+                                            {
+                                                string propiedad = "nombre";
+                                                foreach (Dictionary<string, string> row in item.Rows)
+                                                {
+                                                    if (row.ContainsKey(propiedad))
+                                                    {
+                                                        @row[propiedad]
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            </h3>
+                            <div class="list-wrap authors">
+                                <ul>
+                                    @{
+                                        List<Tuple<string, string, string, string>> listaTuplas = new List<Tuple<string, string, string, string>>();
+                                        Dictionary<string, int> dicOrganizaciones = new Dictionary<string, int>();
+                                        string orgExterna = "Organización Externa";
+
+                                        if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+                                        {
+                                            foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+                                            {
+                                                string idQuery = "Autores";
+                                                if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
+                                                {
+                                                    string propiedadId = "s";
+                                                    string propiedadNombre = "nombre";
+                                                    string propiedadFirma = "firma";
+                                                    string propiedadOrganizacion = "tituloOrg";
+                                                    foreach (Dictionary<string, string> row in item.Rows)
+                                                    {
+                                                        listaTuplas.Add(new Tuple<string, string, string, string>(row[propiedadId], row[propiedadOrganizacion], row[propiedadNombre], row[propiedadFirma]));
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        //Tupla<Id, Organizacion, Nombre, Firma>
+                                        int contador = 1;
+                                        foreach (Tuple<string, string, string, string> tupla in listaTuplas)
+                                        {
+                                            if (!dicOrganizaciones.ContainsKey(tupla.Item2) && !string.IsNullOrEmpty(tupla.Item2))
+                                            {
+                                                dicOrganizaciones.Add(tupla.Item2, contador);
+                                                contador++;
+                                            }
+                                            else if (!dicOrganizaciones.ContainsKey(orgExterna) && string.IsNullOrEmpty(tupla.Item2))
+                                            {
+                                                dicOrganizaciones.Add(orgExterna, contador);
+                                                contador++;
+                                            }
+                                        }
+
+                                        //Tupla<Id, Organizacion, Nombre, Firma>
+                                        foreach (Tuple<string, string, string, string> tupla in listaTuplas)
+                                        {
+                                            string filtroPersona = string.Empty;
+                                            string nombreFirma = string.Empty;
+                                            if (!string.IsNullOrEmpty(tupla.Item4))
+                                            {
+                                                nombreFirma = tupla.Item4;
+                                                filtroPersona = $@"bibo:authorList@@@foaf:nick={tupla.Item4}";
+                                            }
+                                            else if (!string.IsNullOrEmpty(tupla.Item3))
+                                            {
+                                                nombreFirma = tupla.Item3;
+                                                filtroPersona = $@"bibo:authorList@@@rdf:member@@@foaf:name={tupla.Item3}";
+                                            }
+
+                                            int numOrganizacion = 1;
+                                            if (dicOrganizaciones.ContainsKey(tupla.Item2))
+                                            {
+                                                numOrganizacion = dicOrganizaciones[tupla.Item2];
+                                            }
+                                            else if (dicOrganizaciones.ContainsKey(orgExterna) && string.IsNullOrEmpty(tupla.Item2))
+                                            {
+                                                numOrganizacion = dicOrganizaciones[orgExterna];
+                                            }
+
+                                            <li>
+                                                <a href="javascript: void(0);" class="faceta" name="@filtroPersona">@nombreFirma</a>
+                                                <sup>@numOrganizacion</sup>
+                                            </li>
+
+                                        }
+                                    }
+                                </ul>
+                            </div>
+                            <div class="list-wrap colleges">
+                                <ul>
+                                    @{
+                                        foreach (KeyValuePair<string, int> item in dicOrganizaciones)
+                                        {
+                                            <li>
+                                                <sup>@item.Value</sup>
+                                                <a href="javascript: void(0);">@item.Key</a>
+                                            </li>
+                                        }
+                                    }
+                                </ul>
+                            </div>
+                            <div class="list-wrap tags">
+                                <div class="label">@Html.Translate("AREAS_TEMATICAS")</div>
+                                <ul class="facetedSearch">
+                                    @{
+                                        int contadorCategorias = 0;
+                                        if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+                                        {
+                                            foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+                                            {
+                                                string idQuery = "Categorias";
+                                                if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
+                                                {
+                                                    string propiedadId = "idCategoria";
+                                                    string propiedadTitulo = "titulo";
+
+                                                    foreach (Dictionary<string, string> row in item.Rows)
+                                                    {
+                                                        if (row.ContainsKey(propiedadId) && row.ContainsKey(propiedadTitulo))
+                                                        {
+                                                            contadorCategorias++;
+                                                            string filtro = $@"roh:hasKnowledgeArea@@@roh:categoryNode={row[propiedadId]}";
+                                                            if (contadorCategorias <= 3)
+                                                            {
+                                                                <li>
+                                                                    <a href="javascript: void(0);" class="faceta" name="@filtro">
+                                                                        <span class="texto">@row[propiedadTitulo]</span>
+                                                                    </a>
+                                                                </li>
+                                                            }
+                                                            else
+                                                            {
+                                                                <li class="ocultar" style="display: none;">
+                                                                    <a href="javascript: void(0);" class="faceta" name="@filtro">
+                                                                        <span class="texto">@row[propiedadTitulo]</span>
+                                                                    </a>
+                                                                </li>
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            if (contadorCategorias == 0)
+                                            {
+                                                <li>
+                                                    <a>
+                                                        <span class="texto">---</span>
+                                                    </a>
+                                                </li>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <li>
+                                                <a>
+                                                    <span class="texto">---</span>
+                                                </a>
+                                            </li>
+                                        }
+                                    }
+                                </ul>
+                                @{
+                                    if (contadorCategorias > 3)
+                                    {
+                                        <p class="moreResults">
+                                            <a href="javascript: void(0);" class="ver-mas" style="display: flex;">@Html.Translate("VER_MAS")</a>
+                                            <a href="javascript: void(0);" class="ver-menos" style="display: none;">@Html.Translate("VER_MENOS")</a>
+                                        </p>
+                                    }
+                                }
+                            </div>
+                            <div class="list-wrap tags">
+                                <div class="label">@Html.Translate("ETIQUETAS")</div>
+                                <ul class="facetedSearch">
+                                    @{
+                                        int contadorEtiquetas = 0;
+                                        if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+                                        {
+                                            foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+                                            {
+                                                string idQuery = "FreeTextWords";
+                                                if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
+                                                {
+                                                    string propiedad = "freeTextWords";
+                                                    foreach (Dictionary<string, string> row in item.Rows)
+                                                    {
+                                                        if (row.ContainsKey(propiedad))
+                                                        {
+                                                            contadorEtiquetas++;
+                                                            string filtro = $@"vivo:freeTextKeyword={row[propiedad]}";
+                                                            if (contadorEtiquetas <= 3)
+                                                            {
+                                                                <li>
+                                                                    <a href="javascript: void(0);" class="faceta" name="@filtro">
+                                                                        <span class="texto">@row[propiedad]</span>
+                                                                    </a>
+                                                                </li>
+                                                            }
+                                                            else
+                                                            {
+                                                                <li class="ocultar" style="display: none;">
+                                                                    <a href="javascript: void(0);" class="faceta" name="@filtro">
+                                                                        <span class="texto">@row[propiedad]</span>
+                                                                    </a>
+                                                                </li>
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            if (contadorEtiquetas == 0)
+                                            {
+                                                <li>
+                                                    <a>
+                                                        <span class="texto">---</span>
+                                                    </a>
+                                                </li>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <li>
+                                                <a>
+                                                    <span class="texto">---</span>
+                                                </a>
+                                            </li>
+                                        }
+                                    }
+                                </ul>
+                                @{ if (contadorEtiquetas > 3)
+                                    {
+                                        <p class="moreResults">
+                                            <a href="javascript: void(0);" class="ver-mas" style="display: flex;">@Html.Translate("VER_MAS")</a>
+                                            <a href="javascript: void(0);" class="ver-menos" style="display: none;">@Html.Translate("VER_MENOS")</a>
+                                        </p>
+                                    }
+                                }
+                            </div>
+                            <div class="desc">
+                                @{
+                                    if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+                                    {
+                                        foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+                                        {
+                                            string idQuery = "Abstract";
+                                            if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
+                                            {
+                                                string propiedad = "abstract";
+                                                foreach (Dictionary<string, string> row in item.Rows)
+                                                {
+                                                    if (row.ContainsKey(propiedad))
+                                                    {
+                                                        <p>@row[propiedad]</p>
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            </div>
+                            @{
+                                if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+                                {
+                                    foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+                                    {
+                                        string idQuery = "Abstract";
+                                        if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
+                                        {
+                                            <p class="moreResults showMore">
+                                                <a href="javascript: void(0);" class="ver-mas" style="display: flex;">@Html.Translate("VER_MAS") <span class="material-icons">expand_more</span></a>
+                                                <a href="javascript: void(0);" class="ver-menos" style="display: none;">@Html.Translate("VER_MENOS") <span class="material-icons">expand_less</span></a>
+                                            </p>
+                                        }
+                                    }
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
+    }
+    else if (Model.RdfTypeName == "ResearchObject") 
+    {
+        <article class="resource publicacion" id="resource_@Model.Key" typeof="sioc_t:Item" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:sioc_t="http://rdfs.org/sioc/types#" xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:sioc="http://rdfs.org/sioc/ns#">
+            <div class="wrap">
+                <div class="middle-wrap">
+                    <div class="title-wrap">
+                        <h2 class="resource-title">
+                            <a href="@Model.CompletCardLink">@Model.Title</a>
+                        </h2>
+                        @{
+                            string valorInrecs = string.Empty;
+                            string valorWos = string.Empty;
+                            string valorScopus = string.Empty;
+
+                            if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+                            {
+                                foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+                                {
+                                    string idQuery = "Identificadores";
+                                    if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
+                                    {
+                                        string propInrecs = "inrecs";
+                                        string propWos = "wos";
+                                        string propScopus = "scopus";
+                                        foreach (Dictionary<string, string> row in item.Rows)
+                                        {
+                                            if (row.ContainsKey(propInrecs))
+                                            {
+                                                valorInrecs = row[propInrecs];
+                                            }
+
+                                            if (row.ContainsKey(propWos))
+                                            {
+                                                valorWos = row[propWos];
+                                            }
+
+                                            if (row.ContainsKey(propScopus))
+                                            {
+                                                valorScopus = row[propScopus];
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        @{
+                            string valorOtros = string.Empty;
+
+                            if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+                            {
+                                foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+                                {
+                                    string idQuery = "IdentificadoresOtros";
+                                    if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
+                                    {
+                                        string propNombre = "nombre";
+                                        string propNumCitas = "numCitas";
+                                        foreach (Dictionary<string, string> row in item.Rows)
+                                        {
+                                            if (row.ContainsKey(propNombre) && row.ContainsKey(propNumCitas))
+                                            {
+                                                valorOtros += row[propNombre] + "~" + row[propNumCitas] + "|";
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            if(valorOtros.Length > 0)
+                            {
+                                valorOtros = valorOtros.Substring(0, valorOtros.Length - 1);
+                            }
+                        }
+                        <div class="acciones-recurso-listado acciones-recurso-publicacion">
+                            <div class="dropdown">
+                                <a href="#" class="dropdown-toggle" role="button" id="dropdownMasOpciones" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <span class="material-icons">more_vert</span>
+                                </a>
+                                <div class="dropdown-menu basic-dropdown dropdown-icons dropdown-menu-right" aria-labelledby="dropdownMasOpciones" style="">
+                                    <p class="dropdown-title">Acciones</p>
+                                    <ul class="no-list-style">
+                                        <li>
+                                            <a class="item-dropdown" data-toggle="modal" data-target="#modal-enviar">
+                                                <span class="material-icons">person_add_alt_1</span>
+                                                <span class="texto">TODO: Añadir a clúster</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="item-dropdown" data-toggle="modal" data-target="#modal-enviar-produccion-cientifica">
+                                                <span class="material-icons">beenhere</span>
+                                                <span class="texto">@Html.Translate("ENVIAR_PRODUCCION_CIENTIFICA")</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="content-wrap">
+                        <div class="description-wrap">
+                            <h3>
+                                <span>
+                                    @{
+                                        if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+                                        {
+                                            foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+                                            {
+                                                string idQuery = "FechaResearchObject";
                                                 if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
                                                 {
                                                     string propiedad = "fecha";

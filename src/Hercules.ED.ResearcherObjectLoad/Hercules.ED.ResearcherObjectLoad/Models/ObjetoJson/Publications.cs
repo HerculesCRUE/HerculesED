@@ -46,6 +46,8 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.ObjetoJson
         public string orcid { get; set; }
         public List<string> iDs { get; set; }
         public List<string> links { get; set; }
+        public string fuente { get; set; }
+        public string nick { get; set; }
     }
 
     public class SeqOfAuthor
@@ -55,6 +57,8 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.ObjetoJson
         public string orcid { get; set; }
         public List<string> iDs { get; set; }
         public List<string> links { get; set; }
+        public string fuente { get; set; }
+        public string nick { get; set; }
     }
 
     public class KnowledgeArea

@@ -1,4 +1,4 @@
-@*[security|||document|||hercules]*@
+@*[security|||researchobject|||hercules]*@
 @using Es.Riam.Gnoss.Web.MVC.Models
 @using Es.Riam.Gnoss.Web.MVC.Controles.Helper
 @using Es.Riam.Gnoss.Web.MVC.Models.ViewModels
@@ -24,7 +24,7 @@
     Html.GetListaJS().Add(urlJS);
     SemanticResourceModel semCmsModel = Model.SemanticFrom;
     GnossOCBase.LanguageEnum idiomaUsuario = (GnossOCBase.LanguageEnum)Enum.Parse(typeof(GnossOCBase.LanguageEnum), Html.GetUtilIdiomas().LanguageCode.ToLower());
-    Document pDocument = new Document(semCmsModel, idiomaUsuario); }
+    ResearchObject pResearchObject = new ResearchObject(semCmsModel, idiomaUsuario); }
 
 <div class="col col-12 col-breadcrumb">
     <ul>
@@ -32,12 +32,12 @@
             <a href="@Comunidad.Url">Home</a>
         </li>
         <li>
-            @{string urlArticulos = Comunidad.Url + "/publicaciones"; }
-            <a href="@urlArticulos">Publicaciones</a>
+            @{string urlArticulos = Comunidad.Url + "/researchobjects"; }
+            <a href="@urlArticulos">ROs</a>
         </li>
-        @{ if (!string.IsNullOrEmpty(pDocument.Roh_title))
+        @{ if (!string.IsNullOrEmpty(pResearchObject.Roh_title))
             {
-                <li>@pDocument.Roh_title</li>
+                <li>@pResearchObject.Roh_title</li>
             }
             else
             {
@@ -57,19 +57,20 @@
                     <span class="material-icons">article</span>
                 </div>
                 <div class="ficha-title-wrap">
-                    @{ if (!string.IsNullOrEmpty(pDocument.Roh_title))
+                    @{ if (!string.IsNullOrEmpty(pResearchObject.Roh_title))
                         {
-                            <h1 about="@pDocument.GNOSSID" property="@pDocument.GetPropertyURI(nameof(pDocument.Roh_title))" class="ficha-title">
-                                @pDocument.Roh_title
+                            <h1 about="@pResearchObject.GNOSSID" property="@pResearchObject.GetPropertyURI(nameof(pResearchObject.Roh_title))" class="ficha-title">
+                                @pResearchObject.Roh_title
                                 @{
-                                    if (pDocument.Roh_isPublic)
+                                    if (pResearchObject.Roh_isPublic)
                                     {
-                                        <span class="material-icons candado-activo"></span>
+                                        <span class="material-icons eye"></span>
                                     } else
                                     {
-                                        <span class="material-icons candado"></span>
+                                        <span class="material-icons visibility-activo"></span>
                                     }
                                 }
+                                
                             </h1>
                         }
                         else
@@ -89,7 +90,7 @@
                 @{
                     string valorOtros = string.Empty;
 
-                    var metric = pDocument.Roh_hasMetric;
+                    var metric = pResearchObject.Roh_hasMetric;
                     metric.ForEach(e =>
                     {
                         valorOtros += e.Roh_metricName + "~" + e.Roh_citationCount + "|";
@@ -97,8 +98,8 @@
 
                 }
 
-                <div class="d-flex quotes" data-scopus="@pDocument.Roh_scopus" data-wos="@pDocument.Roh_wos" data-inrecs="@pDocument.Roh_inrecs" data-otros="@valorOtros">
-                    <p><span id="citas_number">@pDocument.Roh_citationCount</span> citas</p>
+                <div class="d-flex quotes" data-scopus="@pResearchObject.Roh_scopus" data-wos="@pResearchObject.Roh_wos" data-inrecs="@pResearchObject.Roh_inrecs" data-otros="@valorOtros">
+                    <p><span id="citas_number">@pResearchObject.Roh_citationCount</span> citas</p>
                 </div>
                 <div class="acciones-ficha-wrap">
                     <ul class="no-list-style d-flex">
@@ -118,9 +119,6 @@
                                                 <a class="item-dropdown">@Html.Translate("CITAR")</a>
                                             </li>
                                             <li>
-                                                <a class="item-dropdown">@Html.Translate("GUARDAR_ESPACIO_PERSONAL")</a>
-                                            </li>
-                                            <li>
                                                 <a class="item-dropdown">@Html.Translate("PROPONER_AREAS_TEMATICAS")</a>
                                             </li>
                                             <li>
@@ -135,20 +133,20 @@
                 </div>
             </div>
             <h3>
-                @{ if (pDocument.Dct_issued != null && pDocument.Dct_issued.HasValue)
+                @{ if (pResearchObject.Dct_issued != null && pResearchObject.Dct_issued.HasValue)
                     {
-                        string fecha = pDocument.Dct_issued.ToString().Split('/')[2].Split(' ')[0];
-                        <span about="@pDocument.GNOSSID" property="@pDocument.GetPropertyURI(nameof(pDocument.Dct_issued))">@fecha</span>
+                        string fecha = pResearchObject.Dct_issued.ToString().Split('/')[2].Split(' ')[0];
+                        <span about="@pResearchObject.GNOSSID" property="@pResearchObject.GetPropertyURI(nameof(pResearchObject.Dct_issued))">@fecha</span>
                     }
                     else
                     {
                         <span>---</span>
                     }
                 }
-                @{ if (pDocument.Vivo_hasPublicationVenue != null && !string.IsNullOrEmpty(pDocument.Vivo_hasPublicationVenue.Roh_title))
+                @{ if (pResearchObject.Vivo_hasPublicationVenue != null && !string.IsNullOrEmpty(pResearchObject.Vivo_hasPublicationVenue.Roh_title))
                     {
-                        <span about="@pDocument.Vivo_hasPublicationVenue.GNOSSID" property="@pDocument.GetPropertyURI(nameof(pDocument.Vivo_hasPublicationVenue.Roh_title))">
-                            @pDocument.Vivo_hasPublicationVenue.Roh_title
+                        <span about="@pResearchObject.Vivo_hasPublicationVenue.GNOSSID" property="@pResearchObject.GetPropertyURI(nameof(pResearchObject.Vivo_hasPublicationVenue.Roh_title))">
+                            @pResearchObject.Vivo_hasPublicationVenue.Roh_title
                         </span>
                     }
                 }
@@ -162,9 +160,9 @@
                         Dictionary<string, int> dicOrganizaciones = new Dictionary<string, int>();
                         string orgExterna = "Organización Externa";
 
-                        if (pDocument.Bibo_authorList != null && pDocument.Bibo_authorList.Count > 0)
+                        if (pResearchObject.Bibo_authorList != null && pResearchObject.Bibo_authorList.Count > 0)
                         {
-                            foreach (BFO_0000023 autor in pDocument.Bibo_authorList)
+                            foreach (BFO_0000023 autor in pResearchObject.Bibo_authorList)
                             {
                                 if (autor.Rdf_member != null)
                                 {
@@ -261,7 +259,7 @@
             </div>
             <div class="description-wrap">
                 <div class="desc" style="display: -webkit-box;">
-                    <p about="@pDocument.GNOSSID" property="@pDocument.GetPropertyURI(nameof(pDocument.Bibo_abstract))">@pDocument.Bibo_abstract</p>
+                    <p about="@pResearchObject.GNOSSID" property="@pResearchObject.GetPropertyURI(nameof(pResearchObject.Bibo_abstract))">@pResearchObject.Bibo_abstract</p>
                 </div>
                 <p class="moreResults showMore">
                     <a href="javascript: void(0);" class="ver-mas" style="display: flex;">@Html.Translate("VER_MAS")</a>
@@ -272,9 +270,9 @@
                 <div class="label">@Html.Translate("AREAS_TEMATICAS")</div>
                 <ul>
                     @{ int contadorAreaConocimiento = 0;
-                        if (pDocument.Roh_hasKnowledgeArea != null && pDocument.Roh_hasKnowledgeArea.Count > 0)
+                        if (pResearchObject.Roh_hasKnowledgeArea != null && pResearchObject.Roh_hasKnowledgeArea.Count > 0)
                         {
-                            foreach (CategoryPath area in pDocument.Roh_hasKnowledgeArea)
+                            foreach (CategoryPath area in pResearchObject.Roh_hasKnowledgeArea)
                             {
                                 if (area != null && area.Roh_categoryNode != null && area.Roh_categoryNode.Count > 0)
                                 {
@@ -319,16 +317,16 @@
                 <div class="label">@Html.Translate("ETIQUETAS")</div>
                 <ul>
                     @{ int contadorCategorias = 0;
-                        if (pDocument.Vivo_freeTextKeyword != null && pDocument.Vivo_freeTextKeyword.Count > 0)
+                        if (pResearchObject.Vivo_freeTextKeyword != null && pResearchObject.Vivo_freeTextKeyword.Count > 0)
                         {
-                            foreach (string etiquetas in pDocument.Vivo_freeTextKeyword)
+                            foreach (string etiquetas in pResearchObject.Vivo_freeTextKeyword)
                             {
                                 if (!string.IsNullOrEmpty(etiquetas) && contadorCategorias < 3)
                                 {
                                     contadorCategorias++;
                                     <li>
                                         <a href="http://edma.gnoss.com/comunidad/hercules/publicaciones?vivo:freeTextKeyword=@etiquetas">
-                                            <span about="@pDocument.GNOSSID" property="@pDocument.GetPropertyURI(nameof(pDocument.Vivo_freeTextKeyword))" class="texto">@etiquetas</span>
+                                            <span about="@pResearchObject.GNOSSID" property="@pResearchObject.GetPropertyURI(nameof(pResearchObject.Vivo_freeTextKeyword))" class="texto">@etiquetas</span>
                                         </a>
                                     </li>
                                 }
@@ -337,7 +335,7 @@
                                     contadorCategorias++;
                                     <li class="ocultar" style="display: none;">
                                         <a href="http://edma.gnoss.com/comunidad/hercules/publicaciones?vivo:freeTextKeyword=@etiquetas">
-                                            <span about="@pDocument.GNOSSID" property="@pDocument.GetPropertyURI(nameof(pDocument.Vivo_freeTextKeyword))" class="texto">@etiquetas</span>
+                                            <span about="@pResearchObject.GNOSSID" property="@pResearchObject.GetPropertyURI(nameof(pResearchObject.Vivo_freeTextKeyword))" class="texto">@etiquetas</span>
                                         </a>
                                     </li>
                                 }
@@ -367,7 +365,7 @@
                     <div class="label">@Html.Translate("DOI")</div>
                     <div class="value">
                         @{ 
-                            //foreach (var el in @pDocument.Bibo_identifier)
+                            //foreach (var el in @pResearchObject.Bibo_identifier)
                             //{
                             //    if (el.Foaf_primaryTopic != null && el.Foaf_primaryTopic.Dc_title != null && el.Foaf_primaryTopic.Dc_title[0] != null && el.Foaf_primaryTopic.Dc_title[0] == "DOI")
                             //    {
@@ -375,23 +373,23 @@
                             //    }
                             //}
                         }
-                        <a href="https://doi.org/@pDocument.Bibo_doi" target="_blank">@pDocument.Bibo_doi</a>
+                        <a href="https://doi.org/@pResearchObject.Bibo_doi" target="_blank">@pResearchObject.Bibo_doi</a>
                     </div>
                 </div>
             </div>
             <div class="list-wrap website">
                 <div class="label">@Html.Translate("WEBS")</div>
                 <ul>
-                    @{ if (pDocument.Vcard_url.Count > 0)
+                    @{ if (pResearchObject.Vcard_url.Count > 0)
                         {
-                            foreach (var item in pDocument.Vcard_url)
+                            foreach (var item in pResearchObject.Vcard_url)
                             {
                                 string web = item;
                                 if (web.Contains("scopus"))
                                     web = "SCOPUS";
 
                                 <li>
-                                    <a about="@pDocument.GNOSSID" property="@pDocument.GetPropertyURI(nameof(pDocument.Vcard_url))" target="_blank" href="@item">@web</a>
+                                    <a about="@pResearchObject.GNOSSID" property="@pResearchObject.GetPropertyURI(nameof(pResearchObject.Vcard_url))" target="_blank" href="@item">@web</a>
                                 </li>
                             }
                             
@@ -415,29 +413,56 @@
                 <div class="tabs">
                     <ul class="nav nav-tabs" id="navegacion-recurso" role="tablist">
                         <li class="nav-item" role="presentation">
-                            <!-- Relacionados -->
-                            <a class="nav-link active" id="relacionados-tab" data-toggle="tab" href="#relacionados-panel" role="tab" aria-controls="relacionados-panel" aria-selected="true">
+                            <!-- Información -->
+                            <a class="nav-link active" id="informacion-tab" data-toggle="tab" href="#informacion-panel" role="tab" aria-controls="informacion-panel" aria-selected="true">
                                 <div class="bloque">
-                                    <div class="label">@Html.Translate("RELACIONADOS")</div>
-                                    <!-- <div class="data">@pDocument.Roh_reviewsNumber</div> -->
+                                    <div class="label">@Html.Translate("INFORMACION")</div>
                                 </div>
                             </a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <!-- Citas -->
+                            <!-- Citado por -->
                             <a class="nav-link" id="citas-tab" data-toggle="tab" href="#citas-panel" role="tab" aria-controls="citas-panel" >
                                 <div class="bloque">
-                                    <div class="label">@Html.Translate("CITAS")</div>
-                                    <div class="data">@pDocument.Roh_citationLoadedCount</div>
+                                    <div class="label">@Html.Translate("CITADO_POR")</div>
+                                    <div class="data">@pResearchObject.Roh_citationLoadedCount</div>
                                 </div>
                             </a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <!-- Referencias -->
-                            <a class="nav-link" id="referencias-tab" data-toggle="tab" href="#referencias-panel" role="tab" aria-controls="referencias-panel">
+                            <!-- Citado por -->
+                            <a class="nav-link" id="temas-investigacion-tab" data-toggle="tab" href="#temas-investigacion-panel" role="tab" aria-controls="temas-investigacion-panel">
                                 <div class="bloque">
-                                    <div class="label">@Html.Translate("REFERENCIAS")</div>
-                                    <div class="data">@pDocument.Roh_referencesLoadedCount</div>
+                                    <div class="label">@Html.Translate("AREAS_TEMATICAS_CITAS")</div>
+                                    @{
+                                        // areas
+                                        if (pResearchObject.Roh_hasKnowledgeArea != null)
+                                        {
+                                            <div class="data">@pResearchObject.Roh_hasKnowledgeArea.Count</div>
+                                        }
+                                        else
+                                        {
+                                            <div class="data">---</div>
+                                        }
+                                    }
+                                </div>
+                            </a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <!-- Relacionados -->
+                            <a class="nav-link" id="relacionados-tab" data-toggle="tab" href="#relacionados-panel" role="tab" aria-controls="relacionados-panel">
+                                <div class="bloque">
+                                    <div class="label">@Html.Translate("ROS_RELACIONADOS")</div>
+                                    <!-- <div class="data">@pResearchObject.Roh_referencesLoadedCount</div> -->
+                                </div>
+                            </a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <!-- anotaciones -->
+                            <a class="nav-link" id="anotaciones-tab" data-toggle="tab" href="#anotaciones-panel" role="tab" aria-controls="anotaciones-panel" >
+                                <div class="bloque">
+                                    <div class="label">@Html.Translate("ANOTACIONES")</div>
+                                    <div class="data">@pResearchObject.Roh_citationLoadedCount</div>
                                 </div>
                             </a>
                         </li>
@@ -445,32 +470,90 @@
                 </div>
                 <div class="tab-content" id="paneles-recurso">
                 
-                    <div class="tab-pane fade show active" id="relacionados-panel" role="tabpanel" aria-labelledby="relacionados-tab">
-                        <div class="row" id="contenedorBuscadorRelacionados">
+                    <div class="tab-pane fade show active" id="informacion-panel" role="tabpanel" aria-labelledby="informacion-tab">
+                        <div class="row" id="contenedorBuscadorInformacion">
+                            <div class="col col-12">
+                                <div class="wrapCol">
+                                    <div class="group-wrap div4">
+                                        <div class="bloque">
+                                            <div class="label">Lenguajes de programación</div>
+                                            <div class="value">Phyton (80%), R (20%)</div>
+                                        </div>
+                                        <div class="bloque">
+                                            <div class="label">Licencia</div>
+                                            <div class="value">Open Acess</div>
+                                        </div>
+                                        <div class="bloque">
+                                            <div class="label">Fecha última actualización</div>
+                                            <div class="value">31 / 12 / 2010</div>
+                                        </div>
+                                        <div class="bloque">
+                                            <div class="label">Número de releases</div>
+                                            <div class="value">10</div>
+                                        </div>
+                                    </div>
+                                    <div class="group-wrap div4">
+                                        <div class="bloque">
+                                            <div class="label">Número de branches</div>
+                                            <div class="value">4</div>
+                                        </div>
+                                        <div class="bloque">
+                                            <div class="label">Número de packages</div>
+                                            <div class="value">100</div>
+                                        </div>
+                                        <div class="bloque">
+                                            <div class="label">Número de forks</div>
+                                            <div class="value">20</div>
+                                        </div>
+                                        <div class="bloque">
+                                            <div class="label">Número de issues</div>
+                                            <div class="value">40</div>
+                                        </div>
+                                    </div>
+                                </div>
+                             </div>
+                            <div class="col col-12">
+                                <img src="./theme/resources/imagenes-pre/github.png" alt="">
+                            </div>
                         </div>
                     </div>
 
                     <div class="tab-pane fade" id="citas-panel" role="tabpanel" aria-labelledby="citas-tab">
                         <div class="row" id="contenedorBuscadorCitas">
-                            <!-- <div class="col col-12 col-grafo mb-5">
+                            <div class="col col-12 col-grafo mb-5">
                                 <div class="wrapCol" id="graficaBuscadorCitas" style="width: 1224px; height: 500px;"></div>
-                            </div> -->
+                            </div>
                             <div class="col col-12 col-section-title font-weight-bold searcherTitle">
                                 <div class="wrapCol">
-                                    <p>@Html.Translate("CITAS")</p>
+                                    <p>@Html.Translate("CITADO_POR")</p>
                                 </div>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="tab-pane fade" id="referencias-panel" role="tabpanel" aria-labelledby="referencias-tab">
-                        <div class="row" id="contenedorBuscadorReferencias">
-                            <!-- <div class="col col-12 col-grafo mb-5">
-                                <div class="wrapCol" id="graficaBuscadorReferencias" style="width: 1224px; height: 500px;"></div>
-                            </div> -->
+                    <div class="tab-pane fade" id="temas-investigacion-panel" role="tabpanel" aria-labelledby="temas-investigacion-tab">
+                        <div class="row" id="contenedorBuscadorAreasTematicas">
+                            <div class="col col-12 col-grafo mb-5">
+                                <div class="wrapCol" id="graficaAreasTematicas" style="width: 1224px; height: 500px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-pane fade" id="relacionados-panel" role="tabpanel" aria-labelledby="relacionados-tab">
+                        <div class="row" id="contenedorBuscadorRelacionados">
                             <div class="col col-12 col-section-title font-weight-bold searcherTitle">
                                 <div class="wrapCol">
-                                    <p>@Html.Translate("REFERENCIAS")</p>
+                                    <p>@Html.Translate("ROS_RELACIONADOS")</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-pane fade" id="anotaciones-panel" role="tabpanel" aria-labelledby="anotaciones-tab">
+                        <div class="row" id="contenedorBuscadorAnotaciones">
+                            <div class="col col-12 col-section-title font-weight-bold searcherTitle">
+                                <div class="wrapCol">
+                                    <p>@Html.Translate("ANOTACIONES")</p>
                                 </div>
                             </div>
                         </div>
@@ -484,15 +567,22 @@
 <!-- JAVASCRIPT -->
 <script type="text/javascript">
     var depuracion = false;
+
     const localUrlBase = "https://localhost:44321/";
+    const servicioExtermpBaseUrl = "@Html.GetBaseUrlContent()/";
+
+    const urlBase = "@Html.GetBaseUrl()";
+    if (urlBase.includes("localhost") || urlBase.includes("depuracion")) {
+        depuracion = true;
+    }
 
     // Datos cabeceras de las fichas.
-    var url = "http://serviciosedma.gnoss.com/servicioexterno/Hercules/GetDatosCabeceraDocumento"
+    var url = servicioExtermpBaseUrl + "servicioexterno/Hercules/GetDatosCabeceraDocumento"
     if (depuracion) {
         url = localUrlBase + "Hercules/GetDatosCabeceraDocumento"
     }
     var arg = {};
-    arg.pIdDocumento = "@pDocument.GNOSSID";
+    arg.pIdDocumento = "@pResearchObject.GNOSSID";
     $.get(url, arg, function (data) {
         $("#relacionados-tab div div.data").text(data["numRelacionados"]);
     });
@@ -500,7 +590,7 @@
 
     // Datos gráfica referencias.
     function CargarGraficaReferencias(pIdDocumento, parametros) {
-        var url = "http://serviciosedma.gnoss.com/servicioexterno/Hercules/DatosGraficaReferencias"
+        var url = servicioExtermpBaseUrl + "servicioexterno/Hercules/DatosGraficaReferencias"
         if (depuracion) {
             url = localUrlBase + "Hercules/DatosGraficaReferencias"
         }
@@ -626,7 +716,7 @@
 
     // Datos gráfica citas.
     function CargarGraficaCitas(pIdDocumento, parametros) {
-        var url = "http://serviciosedma.gnoss.com/servicioexterno/Hercules/DatosGraficaCitas"
+        var url = servicioExtermpBaseUrl + "servicioexterno/Hercules/DatosGraficaCitas"
         if (depuracion) {
             url = localUrlBase + "Hercules/DatosGraficaCitas"
         }
@@ -755,7 +845,7 @@
         tabActive: null,
         init: function () {
             this.config();
-            $('#relacionados-tab').click();
+            $('#informacion-tab').click();
             return;
         },
         config: function () {
@@ -764,19 +854,19 @@
             $('#relacionados-tab').unbind().click(function (e) {
                 e.preventDefault();
                 that.tabActive = "relacionados";
-                buscadorPersonalizado.init("@Html.Translate("RELACIONADOS")", "#contenedorBuscadorRelacionados", "searchRelacionadosDocumento=@pDocument.GNOSSID.Split('_')[1].ToUpper()", "dct:issued", "rdf:type=document", "@Comunidad.Url", "@Comunidad.Key.ToString()", function() {
+                buscadorPersonalizado.init("@Html.Translate("RELACIONADOS")", "#contenedorBuscadorRelacionados", "searchRelacionadosDocumento=@pResearchObject.GNOSSID.Split('_')[1].ToUpper()", "dct:issued", "rdf:type=document", "@Comunidad.Url", "@Comunidad.Key.ToString()", function() {
                     $('#panNumResultados').hide();
                 });
             });
             $('#citas-tab').unbind().click(function (e) {
                 e.preventDefault();
                 that.tabActive = "citas";
-                buscadorPersonalizado.init("@Html.Translate("CITAS")", "#contenedorBuscadorCitas", "bibo:cites=http://gnoss/@pDocument.GNOSSID.Split('_')[1].ToUpper()", "dct:issued", "rdf:type=document", "@Comunidad.Url", "@Comunidad.Key.ToString()");
+                buscadorPersonalizado.init("@Html.Translate("CITAS")", "#contenedorBuscadorCitas", "bibo:cites=http://gnoss/@pResearchObject.GNOSSID.Split('_')[1].ToUpper()", "dct:issued", "rdf:type=document", "@Comunidad.Url", "@Comunidad.Key.ToString()");
             });
             $('#referencias-tab').unbind().click(function (e) {
                 e.preventDefault();
                 that.tabActive = "referencias";
-                buscadorPersonalizado.init("@Html.Translate("REFERENCIAS")", "#contenedorBuscadorReferencias", "searchReferenciasDocumento=@pDocument.GNOSSID.Split('_')[1].ToUpper()", "dct:issued", "rdf:type=document", "@Comunidad.Url", "@Comunidad.Key.ToString()");
+                buscadorPersonalizado.init("@Html.Translate("REFERENCIAS")", "#contenedorBuscadorReferencias", "searchReferenciasDocumento=@pResearchObject.GNOSSID.Split('_')[1].ToUpper()", "dct:issued", "rdf:type=document", "@Comunidad.Url", "@Comunidad.Key.ToString()");
             });
             return;
         }
@@ -792,11 +882,11 @@
         if(comportamientoPaginaDocumento.tabActive == "referencias")
         {
             var parametros = ObtenerHash2();
-            CargarGraficaReferencias("@pDocument.GNOSSID.Split('_')[1].ToUpper()", parametros);
+            CargarGraficaReferencias("@pResearchObject.GNOSSID.Split('_')[1].ToUpper()", parametros);
         } else if (comportamientoPaginaDocumento.tabActive == "citas")
         {
             var parametros = ObtenerHash2();
-            CargarGraficaCitas("@pDocument.GNOSSID.Split('_')[1].ToUpper()", parametros);
+            CargarGraficaCitas("@pResearchObject.GNOSSID.Split('_')[1].ToUpper()", parametros);
         }
     }
 
@@ -1114,8 +1204,8 @@
             this.Dc_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/dc/elements/1.1/title"));
         }
 
-        public virtual string RdfType { get { return "http://xmlns.com/foaf/0.1/Document"; } }
-        public virtual string RdfsLabel { get { return "http://xmlns.com/foaf/0.1/Document"; } }
+        public virtual string RdfType { get { return "http://xmlns.com/foaf/0.1/ResearchObject"; } }
+        public virtual string RdfsLabel { get { return "http://xmlns.com/foaf/0.1/ResearchObject"; } }
 
         [LABEL(LanguageEnum.es, "Identificador de Publicacion")]
         [RDFProperty("http://xmlns.com/foaf/0.1/primaryTopic")]
@@ -1314,12 +1404,12 @@
 
     }
 
-    public class Document : GnossOCBase
+    public class ResearchObject : GnossOCBase
     {
 
-        public Document() : base() { } 
+        public ResearchObject() : base() { } 
 
-        public Document(SemanticResourceModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
+        public ResearchObject(SemanticResourceModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
         {
             this.mGNOSSID = pSemCmsModel.RootEntities[0].Entity.Uri;
             this.Roh_suggestedKnowledgeArea = new List<CategoryPath>();
@@ -1479,14 +1569,14 @@
                     }
                 }
             }
-            this.Bibo_cites = new List<Document>();
+            this.Bibo_cites = new List<ResearchObject>();
             SemanticPropertyModel propBibo_cites = pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/cites");
             if(propBibo_cites != null && propBibo_cites.PropertyValues.Count > 0)
             {
                 foreach (SemanticPropertyModel.PropertyValue propValue in propBibo_cites.PropertyValues)
                 {
                     if(propValue.RelatedEntity!=null){
-                        Document bibo_cites = new Document(propValue.RelatedEntity,idiomaUsuario);
+                        ResearchObject bibo_cites = new ResearchObject(propValue.RelatedEntity,idiomaUsuario);
                         this.Bibo_cites.Add(bibo_cites);
                     }
                 }
@@ -1610,7 +1700,7 @@
             this.Roh_isPublic= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isPublic"));
         }
 
-        public Document(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
+        public ResearchObject(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
         {
             this.mGNOSSID = pSemCmsModel.Entity.Uri;
             this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
@@ -1771,14 +1861,14 @@
                     }
                 }
             }
-            this.Bibo_cites = new List<Document>();
+            this.Bibo_cites = new List<ResearchObject>();
             SemanticPropertyModel propBibo_cites = pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/cites");
             if(propBibo_cites != null && propBibo_cites.PropertyValues.Count > 0)
             {
                 foreach (SemanticPropertyModel.PropertyValue propValue in propBibo_cites.PropertyValues)
                 {
                     if(propValue.RelatedEntity!=null){
-                        Document bibo_cites = new Document(propValue.RelatedEntity,idiomaUsuario);
+                        ResearchObject bibo_cites = new ResearchObject(propValue.RelatedEntity,idiomaUsuario);
                         this.Bibo_cites.Add(bibo_cites);
                     }
                 }
@@ -1902,8 +1992,8 @@
             this.Roh_isPublic= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isPublic"));
         }
 
-        public virtual string RdfType { get { return "http://purl.org/ontology/bibo/Document"; } }
-        public virtual string RdfsLabel { get { return "http://purl.org/ontology/bibo/Document"; } }
+        public virtual string RdfType { get { return "http://purl.org/ontology/bibo/ResearchObject"; } }
+        public virtual string RdfsLabel { get { return "http://purl.org/ontology/bibo/ResearchObject"; } }
         [LABEL(LanguageEnum.es,"http://w3id.org/roh/suggestedKnowledgeArea")]
         [RDFProperty("http://w3id.org/roh/suggestedKnowledgeArea")]
         public  List<CategoryPath> Roh_suggestedKnowledgeArea { get; set;}
@@ -1979,7 +2069,7 @@
 
         [LABEL(LanguageEnum.es,"http://purl.org/ontology/bibo/cites")]
         [RDFProperty("http://purl.org/ontology/bibo/cites")]
-        public  List<Document> Bibo_cites { get; set;}
+        public  List<ResearchObject> Bibo_cites { get; set;}
         public List<string> IdsBibo_cites { get; set;}
 
         [LABEL(LanguageEnum.es,"http://w3id.org/roh/hasKnowledgeArea")]
@@ -2153,8 +2243,8 @@
             this.Dc_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/dc/elements/1.1/title"));
         }
 
-        public virtual string RdfType { get { return "http://xmlns.com/foaf/0.1/Document"; } }
-        public virtual string RdfsLabel { get { return "http://xmlns.com/foaf/0.1/Document"; } }
+        public virtual string RdfType { get { return "http://xmlns.com/foaf/0.1/ResearchObject"; } }
+        public virtual string RdfsLabel { get { return "http://xmlns.com/foaf/0.1/ResearchObject"; } }
 
         [LABEL(LanguageEnum.es, "http://xmlns.com/foaf/0.1/topic")]
         [RDFProperty("http://xmlns.com/foaf/0.1/topic")]
