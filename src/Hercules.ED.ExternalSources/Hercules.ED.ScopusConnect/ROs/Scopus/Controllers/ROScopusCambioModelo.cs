@@ -29,21 +29,18 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                 {
                     if (objInicial.SearchResults.entry != null)
                     {
-            
+
                         foreach (PublicacionInicial rec in objInicial.SearchResults.entry)
                         {
                             if (DateTime.Parse(rec.PrismCoverDate) > DateTime.Parse(date))
                             {
-                                
+
                                 Publication publicacion = cambioDeModeloPublicacion(rec, true);
-                                if(publicacion!=null){
-                                     if(this.advertencia !=null){
-                                            publicacion.problema = this.advertencia;
-                                            this.advertencia=null;
-                                        }
-                                sol.Add(publicacion);
+                                if (publicacion != null)
+                                {
+                                    sol.Add(publicacion);
                                 }
-                                
+
                             }
                         }
                     }
@@ -64,20 +61,14 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                 publicacion.typeOfPublication = getType(objInicial);
                 if (publicacion.typeOfPublication != null)
                 {
-                    publicacion.IDs = getIDs(objInicial);
+                    publicacion.scopusID = getIDs(objInicial);
                     publicacion.title = getTitle(objInicial);
-                    //publicacion.Abstract = getAbstract(objInicial);
-                    //publicacion.language = getLanguage(objInicial);
                     publicacion.doi = getDoi(objInicial);
                     publicacion.url = getLinks(objInicial);
-                    publicacion.dataIssued = getDate(objInicial);
+                    publicacion.datimeTime = getDate(objInicial);
                     publicacion.pageStart = getPageStart(objInicial);
                     publicacion.pageEnd = getPageEnd(objInicial);
-                    ///publicacion.hasKnowledgeArea = getKnowledgeAreas(objInicial);
-                    //publicacion.freetextKeyword = getFreetextKeyword(objInicial);
                     publicacion.correspondingAuthor = getAuthorPrincipal(objInicial);
-                    //publicacion.seqOfAuthors = getAuthors(objInicial);
-
                     publicacion.hasPublicationVenue = getJournal(objInicial);
                     publicacion.hasMetric = getPublicationMetric(objInicial);
                     return publicacion;
@@ -86,10 +77,8 @@ namespace ScopusConnect.ROs.Scopus.Controllers
             }
             else
             {
-
                 return null;
             }
-
         }
 
 
@@ -122,14 +111,14 @@ namespace ScopusConnect.ROs.Scopus.Controllers
 
 
         }
-        public List<string> getIDs(PublicacionInicial objInicial)
+        public string getIDs(PublicacionInicial objInicial)
         {
-            List<string> ids = new List<string>();
-            if (objInicial.DcIdentifier != null)
+            string id = null;
+            if (!string.IsNullOrEmpty(objInicial.DcIdentifier))
             {
-                ids.Add(objInicial.DcIdentifier);
+                id = objInicial.DcIdentifier;
             }
-            return ids;
+            return id;
         }
 
         public string getTitle(PublicacionInicial objInicial)
@@ -154,22 +143,25 @@ namespace ScopusConnect.ROs.Scopus.Controllers
         {
             if (objInicial.PrismDoi != null)
             {
-                if(objInicial.PrismDoi.Contains("https://doi.org/")){
-                     
-                                        
-                                            int indice = objInicial.PrismDoi.IndexOf("org/");
-                                            return objInicial.PrismDoi.Substring(indice + 4);
+                if (objInicial.PrismDoi.Contains("https://doi.org/"))
+                {
 
-                                        
-                }else{
-                return objInicial.PrismDoi;
+
+                    int indice = objInicial.PrismDoi.IndexOf("org/");
+                    return objInicial.PrismDoi.Substring(indice + 4);
+
+
+                }
+                else
+                {
+                    return objInicial.PrismDoi;
                 }
             }
             return null;
         }
-        public List<string> getLinks(PublicacionInicial objInicial)
+        public HashSet<string> getLinks(PublicacionInicial objInicial)
         {
-            List<string> links = new List<string>();
+            HashSet<string> links = new HashSet<string>();
             if (objInicial.link != null)
             {
                 foreach (Link link in objInicial.link)
@@ -183,15 +175,15 @@ namespace ScopusConnect.ROs.Scopus.Controllers
             return links;
         }
 
-        public DateTimeValue getDate(PublicacionInicial objInicial)
+        public string getDate(PublicacionInicial objInicial)
         {
-            DateTimeValue date = new DateTimeValue();
+            string date = null;
 
-            date.datimeTime = null;
-            if (objInicial.PrismCoverDate != null)
+            if (!string.IsNullOrEmpty(objInicial.PrismCoverDate))
             {
-                date.datimeTime = objInicial.PrismCoverDate;
+                date = objInicial.PrismCoverDate;
             }
+
             return date;
         }
 
@@ -199,9 +191,9 @@ namespace ScopusConnect.ROs.Scopus.Controllers
         {
             if (objInicial.PrismPageRange != null)
             {
-                if (objInicial.PrismCoverDate.Contains("-"))
+                if (objInicial.PrismPageRange.Contains("-"))
                 {
-                    string[] paginas = objInicial.PrismCoverDate.Split("-");
+                    string[] paginas = objInicial.PrismPageRange.Split("-");
                     return paginas[0];
                 }
             }
@@ -212,9 +204,9 @@ namespace ScopusConnect.ROs.Scopus.Controllers
         {
             if (objInicial.PrismPageRange != null)
             {
-                if (objInicial.PrismCoverDate.Contains("-"))
+                if (objInicial.PrismPageRange.Contains("-"))
                 {
-                    string[] paginas = objInicial.PrismCoverDate.Split("-");
+                    string[] paginas = objInicial.PrismPageRange.Split("-");
                     return paginas[1];
                 }
             }
@@ -235,19 +227,15 @@ namespace ScopusConnect.ROs.Scopus.Controllers
         // }
 
         public Person getAuthorPrincipal(PublicacionInicial objInicial)
-        {
-            Person autor = new Person();
-            
-            if (objInicial.DcCreator != null)
+        {            
+            if (!string.IsNullOrEmpty(objInicial.DcCreator))
             {
-                List<string> names = new List<string>();
-                names.Add(objInicial.DcCreator);
-                Name nombre =new Name();
-                nombre.nombre_completo=names;
-                autor.name = nombre;
-                                       
+                Person autor = new Person();
+                autor.nick = objInicial.DcCreator;
+                autor.fuente = "Scopus";
                 return autor;
             }
+
             return null;
         }
         // public List<Person> getAuthors(PublicacionInicial objInicial)
@@ -260,42 +248,47 @@ namespace ScopusConnect.ROs.Scopus.Controllers
             if (objInicial.PrismPublicationName != null || objInicial.PrismIssn != null)
             {
                 Source revista = new Source();
-                if (objInicial.PrismPublicationName != null)
+
+                // Nombre publicación
+                if (!string.IsNullOrEmpty(objInicial.PrismPublicationName))
                 {
                     revista.name = objInicial.PrismPublicationName;
                 }
-                if (objInicial.PrismIssn != null)
+
+                // ISSN
+                if (!string.IsNullOrEmpty(objInicial.PrismIssn))
                 {
+                    string issnFormado = $@"{objInicial.PrismIssn.Substring(0, 4)}-{objInicial.PrismIssn.Substring(4)}";
+
                     List<string> issn = new List<string>();
-                    issn.Add(objInicial.PrismIssn);
+                    issn.Add(issnFormado);
                     revista.issn = issn;
                 }
-                if(objInicial.PrismAggregationType!=null){
-                    if(objInicial.PrismAggregationType=="Book"){
-                        revista.type="Book";
-                    }
-                    else if(objInicial.PrismAggregationType=="Journal"){
-                        revista.type="Journal";
-                    }else{
-                        //error de no identificar el type en el que esta publicado la publicacion! 
-                        string ad= "No se ha identificado el tipo de recurso en el que esta publicado";
-                        if(this.advertencia==null){
-                            List<string> ads = new List<string>();
-                            ads.Add(ad);
-                            this.advertencia=ads;
-                        }else{this.advertencia.Add(ad);}
-                    }
-                
+
+                // EISSN
+                if (!string.IsNullOrEmpty(objInicial.PrismEIssn))
+                {
+                    string eissnFormado = $@"{objInicial.PrismEIssn.Substring(0, 4)}-{objInicial.PrismEIssn.Substring(4)}";
+                    revista.eissn = eissnFormado;
                 }
-                if(objInicial.PrismIsbn!=null){
-                    List<string> isbn_list=new List<string>();
-                    foreach(PrismIsbn isbn in objInicial.PrismIsbn){
-                        isbn_list.Add(isbn.id);
+
+                // Tipo de la revista
+                if (!string.IsNullOrEmpty(objInicial.PrismAggregationType))
+                {
+                    switch (objInicial.PrismAggregationType)
+                    {
+                        case "Book":
+                            revista.type = "Book";
+                            break;
+                        case "Journal":
+                            revista.type = "Journal";
+                            break;
                     }
-                    revista.isbn= isbn_list;
                 }
+
                 return revista;
             }
+
             return null;
         }
 

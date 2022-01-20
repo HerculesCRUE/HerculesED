@@ -89,7 +89,7 @@ public class Person
     public string ORCID {get;set;}
     public List<string> IDs { get; set; }
     public List<string> links { get; set; }
-
+    public string fuente { get; set; }
 }
 
 public class Name{

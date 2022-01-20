@@ -1,13 +1,10 @@
-using System;
-using System.Collections.Generic;
-using Newtonsoft.Json;
+﻿using System.Collections.Generic;
 
-namespace ScopusConnect.ROs.Scopus.Models
+namespace PublicationAPI.ROs.Publication.Models
 {
-
-    public class Publication
+    public class PublicacionScopus
     {
-        public string typeOfPublication { get; set; } 
+        public string typeOfPublication { get; set; }
         public string title { get; set; }
         public string doi { get; set; }
         public string datimeTime { get; set; }
@@ -39,6 +36,5 @@ namespace ScopusConnect.ROs.Scopus.Models
     public class Person
     {
         public string nick { get; set; }
-        public string fuente { get; set; }
     }
 }

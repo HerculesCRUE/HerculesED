@@ -45,7 +45,7 @@ namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
                 //publicacion.correspondingAuthor = getAuthorPrincipal(objInicial);
                 publicacion.seqOfAuthors = getAuthors(objInicial);
                 publicacion.hasPublicationVenue = getJournal(objInicial);
-                publicacion.hasMetric = getPublicationMetric(objInicial);
+                publicacion.hasMetric = getPublicationMetric(objInicial);                
 
                 return publicacion;
             }
@@ -174,7 +174,8 @@ namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
                 foreach (Author author in objInicial.authors)
                 {
                     Person persona = new Person();
-                   
+                    persona.fuente = "SemanticScholar";
+
                     if (author.name != null)
                     {
                         List<string> nombres = new List<string>();
