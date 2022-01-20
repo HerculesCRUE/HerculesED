@@ -7867,31 +7867,29 @@
 						"properties": [
 							{
 								"name": {
-									"es": "C. Autón./Reg. entidad acreditante"
+									"es": "Entidad acreditante"
 								},
-								"type": "text",
 								"child": {
 									"property": "http://vivoweb.org/ontology/core#relatedBy",
 									"graph": "accreditation",
 									"child": {
-										"property": "https://www.w3.org/2006/vcard/ns#hasRegion",
-										"graph": "feature",
-										"child": {
-											"property": "http://www.geonames.org/ontology#name"
-										}
+										"property": "http://w3id.org/roh/accreditationIssuedByTitle"
 									}
 								}
 							},
 							{
 								"name": {
-									"es": "Ciudad entidad acreditante"
+									"es": "Tipo entidad"
 								},
-								"type": "text",
 								"child": {
 									"property": "http://vivoweb.org/ontology/core#relatedBy",
 									"graph": "accreditation",
 									"child": {
-										"property": "https://www.w3.org/2006/vcard/ns#locality"
+										"property": "http://w3id.org/roh/organizationType",
+										"graph": "organizationtype",
+										"child": {
+											"property": "http://purl.org/dc/elements/1.1/title"
+										}
 									}
 								}
 							},
@@ -7924,7 +7922,38 @@
 										}
 									}
 								}
+							},
+							{
+								"name": {
+									"es": "C. Autón./Reg. entidad acreditante"
+								},
+								"type": "text",
+								"child": {
+									"property": "http://vivoweb.org/ontology/core#relatedBy",
+									"graph": "accreditation",
+									"child": {
+										"property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+										"graph": "feature",
+										"child": {
+											"property": "http://www.geonames.org/ontology#name"
+										}
+									}
+								}
+							},
+							{
+								"name": {
+									"es": "Ciudad entidad acreditante"
+								},
+								"type": "text",
+								"child": {
+									"property": "http://vivoweb.org/ontology/core#relatedBy",
+									"graph": "accreditation",
+									"child": {
+										"property": "https://www.w3.org/2006/vcard/ns#locality"
+									}
+								}
 							}
+
 						]
 					},
 					"listItemEdit": {
@@ -7957,11 +7986,8 @@
 										"properties": [
 											{
 												"title": {
-													"es": "Entidad acreditante TODO"
+													"es": "Entidad acreditante"
 												},
-												"TODO": "Autocompletado/texto libre. En caso de que haya que añadir una nueva organización, será por autocompletado o combo",
-												"TODO": "¿Datos de la entidad acreditante?",
-												"TODO": "Falta en representante",
 												"autocomplete": true,
 												"placeholder": {
 													"es": "Introduce la entidad acreditante"
@@ -7982,7 +8008,7 @@
 												"title": {
 													"es": "Tipo entidad"
 												},
-												"property": "http://purl.org/dc/elements/1.1/type",
+												"property": "http://w3id.org/roh/organizationType",
 												"combo": {
 													"rdftype": "http://w3id.org/roh/OrganizationType",
 													"graph": "organizationtype",

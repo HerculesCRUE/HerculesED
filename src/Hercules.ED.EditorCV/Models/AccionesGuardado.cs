@@ -107,7 +107,7 @@ namespace GuardadoCV.Models
         /// <param name="pRdfTypeTab">rdf:type de la pestaña (para la edición de un item de un listado)</param>
         /// <returns></returns>
         public JsonResult ActualizarEntidad(Entity pEntity, string pCvID, string pSectionID, string pRdfTypeTab)
-        {   
+        {
             if (pRdfTypeTab == "http://w3id.org/roh/PersonalData")
             {
                 GuardadoCV.Models.API.Templates.Tab template = UtilityCV.TabTemplates.First(x => x.rdftype == pRdfTypeTab);
@@ -268,7 +268,7 @@ namespace GuardadoCV.Models
                         string select1 = "   select ?id1";
                         string where1 = $@"  where{{
                                                 <{pCvID}> <{template.property}> ?id1.
-                                            }}";                        
+                                            }}";
                         string id1 = mResourceApi.VirtuosoQuery(select1, where1, "curriculumvitae").results.bindings.First()["id1"].value;
 
                         string select2 = "   select ?id2";
@@ -283,7 +283,7 @@ namespace GuardadoCV.Models
                                             }}";
                         string id3 = mResourceApi.VirtuosoQuery(select3, where3, "curriculumvitae").results.bindings.First()["id3"].value;
 
-                        bool updated = UpdateEntityAux(mResourceApi.GetShortGuid(pCvID), new List<string>() { template.property, templateSection.property, templateSection.presentation.itemPresentation.property }, new List<string>() { id1,id2,id3 }, loadedEntity, pEntity);
+                        bool updated = UpdateEntityAux(mResourceApi.GetShortGuid(pCvID), new List<string>() { template.property, templateSection.property, templateSection.presentation.itemPresentation.property }, new List<string>() { id1, id2, id3 }, loadedEntity, pEntity);
 
                         if (updated)
                         {
@@ -511,7 +511,7 @@ namespace GuardadoCV.Models
                     Entity.Property prop = new Entity.Property()
                     {
                         prop = propertyValue.property,
-                        values = propertyValue.values.Select(x=>x.Replace("{GraphsUrl}",mResourceApi.GraphsUrl)).ToList()
+                        values = propertyValue.values.Select(x => x.Replace("{GraphsUrl}", mResourceApi.GraphsUrl)).ToList()
                     };
                     Entity.Property propLoad = pLoadedEntity.properties.FirstOrDefault(x => x.prop == prop.prop);
                     if (propLoad == null)

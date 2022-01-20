@@ -452,8 +452,8 @@
             <AtrNombreLectura>Imagen</AtrNombreLectura>
 			<ImgMiniVP>
 				<Size Tipo="RecorteCuadrado">
-					<Alto>234</Alto>
-					<Ancho>234</Ancho>
+					<Alto>200</Alto>
+					<Ancho>200</Ancho>
 				</Size>
 			</ImgMiniVP>	
         </Propiedad>

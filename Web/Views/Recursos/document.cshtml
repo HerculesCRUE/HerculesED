@@ -61,7 +61,15 @@
                         {
                             <h1 about="@pDocument.GNOSSID" property="@pDocument.GetPropertyURI(nameof(pDocument.Roh_title))" class="ficha-title">
                                 @pDocument.Roh_title
-                                <span class="material-icons candado-activo"></span>
+                                @{
+                                    if (pDocument.Roh_isPublic)
+                                    {
+                                        <span class="material-icons candado-activo"></span>
+                                    } else
+                                    {
+                                        <span class="material-icons candado"></span>
+                                    }
+                                }
                             </h1>
                         }
                         else
