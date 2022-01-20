@@ -1403,7 +1403,10 @@ namespace GuardadoCV.Models
                 if (pItemEditSectionRowProperty.autocompleteConfig != null && !string.IsNullOrEmpty(pItemEditSectionRowProperty.autocompleteConfig.propertyEntity))
                 {
                     entityEditSectionRowProperty.propertyEntity = pItemEditSectionRowProperty.autocompleteConfig.propertyEntity;
-                    entityEditSectionRowProperty.propertyEntityValue= pData[pId].Where(x => x["p"].value == entityEditSectionRowProperty.propertyEntity).Select(x => x["o"].value).Distinct().FirstOrDefault();
+                    if (pId != null && pData.ContainsKey(pId))
+                    {
+                        entityEditSectionRowProperty.propertyEntityValue = pData[pId].Where(x => x["p"].value == entityEditSectionRowProperty.propertyEntity).Select(x => x["o"].value).Distinct().FirstOrDefault();
+                    }
                 }
 
                 if (pItemEditSectionRowProperty.type == DataTypeEdit.thesaurus)
