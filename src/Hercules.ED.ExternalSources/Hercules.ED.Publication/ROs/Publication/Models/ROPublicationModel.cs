@@ -17,7 +17,7 @@ public class Publication
    // public string identifier {get;set;}
     public DateTimeValue dataIssued { get; set; }
 
-    public List<string> url { get; set; }
+    public HashSet<string> url { get; set; }
     public string pdf {get;set;}
     public List<Knowledge_enriquecidos> topics_enriquecidos {get;set;}
     public List<Knowledge_enriquecidos>  freetextKeyword_enriquecidas {get;set;}
@@ -103,8 +103,9 @@ public class Person
     //public string surname { get; set; }
     public string ORCID {get;set;}
     public List<string> IDs { get; set; }
-    public List<string> links { get; set; }
-    //public string nick { get; set; }
+    public List<string> links { get; set; }    
+    public string fuente { get; set; }
+    public string nick { get; set; }
 
 }
 

@@ -202,6 +202,7 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
             if (objInicial.author != null)
             {
                 Person persona = new Person();
+                persona.fuente = "CrossRef";
                 foreach (Author autor in objInicial.author)
                 {
                     if (autor.sequence == "first")
@@ -256,7 +257,8 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                 foreach (Author autor in objInicial.author)
                 {
                     Person persona = new Person();
-                   
+                    persona.fuente = "CrossRef";
+
                     if (autor.ORCID != null)
                     {
                         if (autor.ORCID.Contains("https://orcid.org/") || autor.ORCID.Contains("http://orcid.org/") )
