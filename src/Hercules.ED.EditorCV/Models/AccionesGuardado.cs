@@ -114,7 +114,7 @@ namespace GuardadoCV.Models
 
                 //Modificamos
                 Entity loadedEntity = GetLoadedEntity(pEntity.id, "curriculumvitae");
-                bool updated = UpdateEntityAux(mResourceApi.GetShortGuid(pCvID), new List<string>() { "http://w3id.org/roh/personalData" }, new List<string>() { pEntity.id }, loadedEntity, pEntity, template.personalDataSections);
+                bool updated = UpdateEntityAux(mResourceApi.GetShortGuid(pCvID), new List<string>() { "http://w3id.org/roh/personalData" }, new List<string>() { pEntity.id }, loadedEntity, pEntity);
 
                 if (updated)
                 {
@@ -227,7 +227,7 @@ namespace GuardadoCV.Models
                         }
                         string id3 = mResourceApi.GraphsUrl + "items/" + nombreEntidad3 + "_" + mResourceApi.GetShortGuid(pCvID).ToString().ToLower() + "_" + Guid.NewGuid().ToString().ToLower();
 
-                        bool updated = UpdateEntityAux(mResourceApi.GetShortGuid(pCvID), new List<string>() { template.property, templateSection.property, templateSection.presentation.itemPresentation.property }, new List<string>() { id1, id2, id3 }, null, pEntity, itemEditConfig);
+                        bool updated = UpdateEntityAux(mResourceApi.GetShortGuid(pCvID), new List<string>() { template.property, templateSection.property, templateSection.presentation.itemPresentation.property }, new List<string>() { id1, id2, id3 }, null, pEntity);
 
                         if (updated)
                         {
@@ -283,7 +283,7 @@ namespace GuardadoCV.Models
                                             }}";
                         string id3 = mResourceApi.VirtuosoQuery(select3, where3, "curriculumvitae").results.bindings.First()["id3"].value;
 
-                        bool updated = UpdateEntityAux(mResourceApi.GetShortGuid(pCvID), new List<string>() { template.property, templateSection.property, templateSection.presentation.itemPresentation.property }, new List<string>() { id1, id2, id3 }, loadedEntity, pEntity, itemEditConfig);
+                        bool updated = UpdateEntityAux(mResourceApi.GetShortGuid(pCvID), new List<string>() { template.property, templateSection.property, templateSection.presentation.itemPresentation.property }, new List<string>() { id1, id2, id3 }, loadedEntity, pEntity);
 
                         if (updated)
                         {
@@ -694,9 +694,8 @@ namespace GuardadoCV.Models
         /// <param name="pEntityIDs">Entidades que apuntan a la auxiliar</param>
         /// <param name="pLoadedEntity">Entidad cargada en BBDD</param>
         /// <param name="pUpdatedEntity">Nueva entidad</param>
-        /// <param name="pItemEdit">Confifguracion de edición</param>
         /// <returns>Devuelve true si se ha actualizado correctamente</returns>
-        private bool UpdateEntityAux(Guid pIdMainEntity, List<string> pPropertyIDs, List<string> pEntityIDs, Entity pLoadedEntity, Entity pUpdatedEntity, ItemEdit pItemEdit)
+        private bool UpdateEntityAux(Guid pIdMainEntity, List<string> pPropertyIDs, List<string> pEntityIDs, Entity pLoadedEntity, Entity pUpdatedEntity)
         {
             bool update = true;
             Dictionary<Guid, List<Gnoss.ApiWrapper.Model.TriplesToInclude>> triplesInclude = new Dictionary<Guid, List<TriplesToInclude>>() { { pIdMainEntity, new List<TriplesToInclude>() } };
