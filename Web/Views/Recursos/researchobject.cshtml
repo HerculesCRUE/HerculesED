@@ -33,7 +33,7 @@
         </li>
         <li>
             @{string urlArticulos = Comunidad.Url + "/researchobjects"; }
-            <a href="@urlArticulos">Research Objects</a>
+            <a href="@urlArticulos">ROs</a>
         </li>
         @{ if (!string.IsNullOrEmpty(pResearchObject.Roh_title))
             {
@@ -61,7 +61,16 @@
                         {
                             <h1 about="@pResearchObject.GNOSSID" property="@pResearchObject.GetPropertyURI(nameof(pResearchObject.Roh_title))" class="ficha-title">
                                 @pResearchObject.Roh_title
-                                <span class="material-icons candado-activo"></span>
+                                @{
+                                    if (pResearchObject.Roh_isPublic)
+                                    {
+                                        <span class="material-icons eye"></span>
+                                    } else
+                                    {
+                                        <span class="material-icons visibility-activo"></span>
+                                    }
+                                }
+                                
                             </h1>
                         }
                         else
@@ -404,29 +413,56 @@
                 <div class="tabs">
                     <ul class="nav nav-tabs" id="navegacion-recurso" role="tablist">
                         <li class="nav-item" role="presentation">
-                            <!-- Relacionados -->
-                            <a class="nav-link active" id="relacionados-tab" data-toggle="tab" href="#relacionados-panel" role="tab" aria-controls="relacionados-panel" aria-selected="true">
+                            <!-- Información -->
+                            <a class="nav-link active" id="informacion-tab" data-toggle="tab" href="#informacion-panel" role="tab" aria-controls="informacion-panel" aria-selected="true">
                                 <div class="bloque">
-                                    <div class="label">@Html.Translate("RELACIONADOS")</div>
-                                    <!-- <div class="data">@pResearchObject.Roh_reviewsNumber</div> -->
+                                    <div class="label">@Html.Translate("INFORMACION")</div>
                                 </div>
                             </a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <!-- Citas -->
+                            <!-- Citado por -->
                             <a class="nav-link" id="citas-tab" data-toggle="tab" href="#citas-panel" role="tab" aria-controls="citas-panel" >
                                 <div class="bloque">
-                                    <div class="label">@Html.Translate("CITAS")</div>
+                                    <div class="label">@Html.Translate("CITADO_POR")</div>
                                     <div class="data">@pResearchObject.Roh_citationLoadedCount</div>
                                 </div>
                             </a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <!-- Referencias -->
-                            <a class="nav-link" id="referencias-tab" data-toggle="tab" href="#referencias-panel" role="tab" aria-controls="referencias-panel">
+                            <!-- Citado por -->
+                            <a class="nav-link" id="temas-investigacion-tab" data-toggle="tab" href="#temas-investigacion-panel" role="tab" aria-controls="temas-investigacion-panel">
                                 <div class="bloque">
-                                    <div class="label">@Html.Translate("REFERENCIAS")</div>
-                                    <div class="data">@pResearchObject.Roh_referencesLoadedCount</div>
+                                    <div class="label">@Html.Translate("AREAS_TEMATICAS_CITAS")</div>
+                                    @{
+                                        // areas
+                                        if (pResearchObject.Roh_hasKnowledgeArea != null)
+                                        {
+                                            <div class="data">@pResearchObject.Roh_hasKnowledgeArea.Count</div>
+                                        }
+                                        else
+                                        {
+                                            <div class="data">---</div>
+                                        }
+                                    }
+                                </div>
+                            </a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <!-- Relacionados -->
+                            <a class="nav-link" id="relacionados-tab" data-toggle="tab" href="#relacionados-panel" role="tab" aria-controls="relacionados-panel">
+                                <div class="bloque">
+                                    <div class="label">@Html.Translate("ROS_RELACIONADOS")</div>
+                                    <!-- <div class="data">@pResearchObject.Roh_referencesLoadedCount</div> -->
+                                </div>
+                            </a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <!-- anotaciones -->
+                            <a class="nav-link" id="anotaciones-tab" data-toggle="tab" href="#anotaciones-panel" role="tab" aria-controls="anotaciones-panel" >
+                                <div class="bloque">
+                                    <div class="label">@Html.Translate("ANOTACIONES")</div>
+                                    <div class="data">@pResearchObject.Roh_citationLoadedCount</div>
                                 </div>
                             </a>
                         </li>
@@ -434,32 +470,90 @@
                 </div>
                 <div class="tab-content" id="paneles-recurso">
                 
-                    <div class="tab-pane fade show active" id="relacionados-panel" role="tabpanel" aria-labelledby="relacionados-tab">
-                        <div class="row" id="contenedorBuscadorRelacionados">
+                    <div class="tab-pane fade show active" id="informacion-panel" role="tabpanel" aria-labelledby="informacion-tab">
+                        <div class="row" id="contenedorBuscadorInformacion">
+                            <div class="col col-12">
+                                <div class="wrapCol">
+                                    <div class="group-wrap div4">
+                                        <div class="bloque">
+                                            <div class="label">Lenguajes de programación</div>
+                                            <div class="value">Phyton (80%), R (20%)</div>
+                                        </div>
+                                        <div class="bloque">
+                                            <div class="label">Licencia</div>
+                                            <div class="value">Open Acess</div>
+                                        </div>
+                                        <div class="bloque">
+                                            <div class="label">Fecha última actualización</div>
+                                            <div class="value">31 / 12 / 2010</div>
+                                        </div>
+                                        <div class="bloque">
+                                            <div class="label">Número de releases</div>
+                                            <div class="value">10</div>
+                                        </div>
+                                    </div>
+                                    <div class="group-wrap div4">
+                                        <div class="bloque">
+                                            <div class="label">Número de branches</div>
+                                            <div class="value">4</div>
+                                        </div>
+                                        <div class="bloque">
+                                            <div class="label">Número de packages</div>
+                                            <div class="value">100</div>
+                                        </div>
+                                        <div class="bloque">
+                                            <div class="label">Número de forks</div>
+                                            <div class="value">20</div>
+                                        </div>
+                                        <div class="bloque">
+                                            <div class="label">Número de issues</div>
+                                            <div class="value">40</div>
+                                        </div>
+                                    </div>
+                                </div>
+                             </div>
+                            <div class="col col-12">
+                                <img src="./theme/resources/imagenes-pre/github.png" alt="">
+                            </div>
                         </div>
                     </div>
 
                     <div class="tab-pane fade" id="citas-panel" role="tabpanel" aria-labelledby="citas-tab">
                         <div class="row" id="contenedorBuscadorCitas">
-                            <!-- <div class="col col-12 col-grafo mb-5">
+                            <div class="col col-12 col-grafo mb-5">
                                 <div class="wrapCol" id="graficaBuscadorCitas" style="width: 1224px; height: 500px;"></div>
-                            </div> -->
+                            </div>
                             <div class="col col-12 col-section-title font-weight-bold searcherTitle">
                                 <div class="wrapCol">
-                                    <p>@Html.Translate("CITAS")</p>
+                                    <p>@Html.Translate("CITADO_POR")</p>
                                 </div>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="tab-pane fade" id="referencias-panel" role="tabpanel" aria-labelledby="referencias-tab">
-                        <div class="row" id="contenedorBuscadorReferencias">
-                            <!-- <div class="col col-12 col-grafo mb-5">
-                                <div class="wrapCol" id="graficaBuscadorReferencias" style="width: 1224px; height: 500px;"></div>
-                            </div> -->
+                    <div class="tab-pane fade" id="temas-investigacion-panel" role="tabpanel" aria-labelledby="temas-investigacion-tab">
+                        <div class="row" id="contenedorBuscadorAreasTematicas">
+                            <div class="col col-12 col-grafo mb-5">
+                                <div class="wrapCol" id="graficaAreasTematicas" style="width: 1224px; height: 500px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-pane fade" id="relacionados-panel" role="tabpanel" aria-labelledby="relacionados-tab">
+                        <div class="row" id="contenedorBuscadorRelacionados">
                             <div class="col col-12 col-section-title font-weight-bold searcherTitle">
                                 <div class="wrapCol">
-                                    <p>@Html.Translate("REFERENCIAS")</p>
+                                    <p>@Html.Translate("ROS_RELACIONADOS")</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-pane fade" id="anotaciones-panel" role="tabpanel" aria-labelledby="anotaciones-tab">
+                        <div class="row" id="contenedorBuscadorAnotaciones">
+                            <div class="col col-12 col-section-title font-weight-bold searcherTitle">
+                                <div class="wrapCol">
+                                    <p>@Html.Translate("ANOTACIONES")</p>
                                 </div>
                             </div>
                         </div>
@@ -473,10 +567,17 @@
 <!-- JAVASCRIPT -->
 <script type="text/javascript">
     var depuracion = false;
+
     const localUrlBase = "https://localhost:44321/";
+    const servicioExtermpBaseUrl = "@Html.GetBaseUrlContent()/";
+
+    const urlBase = "@Html.GetBaseUrl()";
+    if (urlBase.includes("localhost") || urlBase.includes("depuracion")) {
+        depuracion = true;
+    }
 
     // Datos cabeceras de las fichas.
-    var url = "http://serviciosedma.gnoss.com/servicioexterno/Hercules/GetDatosCabeceraDocumento"
+    var url = servicioExtermpBaseUrl + "servicioexterno/Hercules/GetDatosCabeceraDocumento"
     if (depuracion) {
         url = localUrlBase + "Hercules/GetDatosCabeceraDocumento"
     }
@@ -489,7 +590,7 @@
 
     // Datos gráfica referencias.
     function CargarGraficaReferencias(pIdDocumento, parametros) {
-        var url = "http://serviciosedma.gnoss.com/servicioexterno/Hercules/DatosGraficaReferencias"
+        var url = servicioExtermpBaseUrl + "servicioexterno/Hercules/DatosGraficaReferencias"
         if (depuracion) {
             url = localUrlBase + "Hercules/DatosGraficaReferencias"
         }
@@ -615,7 +716,7 @@
 
     // Datos gráfica citas.
     function CargarGraficaCitas(pIdDocumento, parametros) {
-        var url = "http://serviciosedma.gnoss.com/servicioexterno/Hercules/DatosGraficaCitas"
+        var url = servicioExtermpBaseUrl + "servicioexterno/Hercules/DatosGraficaCitas"
         if (depuracion) {
             url = localUrlBase + "Hercules/DatosGraficaCitas"
         }
@@ -744,7 +845,7 @@
         tabActive: null,
         init: function () {
             this.config();
-            $('#relacionados-tab').click();
+            $('#informacion-tab').click();
             return;
         },
         config: function () {
