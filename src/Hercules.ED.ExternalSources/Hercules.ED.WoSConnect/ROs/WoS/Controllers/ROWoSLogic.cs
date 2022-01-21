@@ -21,6 +21,7 @@ using System.IO;
 using System.Text;
 using ExcelDataReader;
 using System.IO;
+using System.Threading;
 
 namespace WoSConnect.ROs.WoS.Controllers
 {
@@ -70,13 +71,27 @@ namespace WoSConnect.ROs.WoS.Controllers
                             request.Headers.TryAddWithoutValidation(item.Key, item.Value);
                         }
                     }
-                    try
+
+                    int intentos = 3;
+                    while (true)
                     {
-                        response = await httpClient.SendAsync(request);
-                    }
-                    catch (System.Exception)
-                    {
-                        throw new Exception("Error in the http call");
+                        try
+                        {
+                            response = await httpClient.SendAsync(request);
+                            break;
+                        }
+                        catch
+                        {
+                            intentos--;
+                            if (intentos == 0)
+                            {
+                                throw;
+                            }
+                            else
+                            {
+                                Thread.Sleep(1000);
+                            }
+                        }
                     }
                 }
             }
@@ -123,11 +138,11 @@ namespace WoSConnect.ROs.WoS.Controllers
                         continuar = false;
                     }
                 }
-                catch(Exception error)
+                catch (Exception error)
                 {
                     // TODO: Revisar parseo JSON.
                     string msg = error.Message;
-                }                
+                }
             }
             return sol;
         }
@@ -159,7 +174,7 @@ namespace WoSConnect.ROs.WoS.Controllers
                     publicacionFinal = info.cambioDeModeloPublicacion(publicacionInicial, true);
                 }
             }
-            catch(Exception error)
+            catch (Exception error)
             {
                 return publicacionFinal;
             }
@@ -183,7 +198,7 @@ namespace WoSConnect.ROs.WoS.Controllers
                 ROWoSControllerJSON info = new ROWoSControllerJSON(this);
 
                 // Petición.
-                Uri url = new Uri($@"{baseUri}api/wos/?databaseId=WOK&usrQuery=DO=({pDoi})&count=1&firstRecord=1");                
+                Uri url = new Uri($@"{baseUri}api/wos/?databaseId=WOK&usrQuery=DO=({pDoi})&count=1&firstRecord=1");
                 string result = httpCall(url.ToString(), "GET", headers).Result;
 
                 // Obtención de datos.

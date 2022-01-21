@@ -12,6 +12,7 @@ using ExcelDataReader;
 using PublicationAPI.Controllers;
 using Serilog;
 using PublicationAPI.ROs.Publication.Models;
+using System.Threading;
 
 namespace PublicationConnect.ROs.Publications.Controllers
 {
@@ -414,20 +415,31 @@ namespace PublicationConnect.ROs.Publications.Controllers
             var contentData = new StringContent(info, System.Text.Encoding.UTF8, "application/json");
             client.Timeout = TimeSpan.FromDays(1);
 
-            int contadorIntentos = 1;
-            while (result == "")
+            int intentos = 3;
+            while (true)
             {
-                if (contadorIntentos > 3)
+                try
                 {
+                    response = client.PostAsync(URL_ELHUYAR + uri, contentData).Result;
                     break;
                 }
-
-                response = client.PostAsync(URL_ELHUYAR + uri, contentData).Result;
-                if (response.IsSuccessStatusCode)
+                catch
                 {
-                    result = response.Content.ReadAsStringAsync().Result;
+                    intentos--;
+                    if (intentos == 0)
+                    {
+                        throw;
+                    }
+                    else
+                    {
+                        Thread.Sleep(1000);
+                    }
                 }
-                contadorIntentos++;
+            }
+
+            if (response.IsSuccessStatusCode)
+            {
+                result = response.Content.ReadAsStringAsync().Result;
             }
 
             return result;

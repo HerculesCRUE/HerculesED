@@ -17,6 +17,7 @@ using System.Web;
 using System.Text.Json;
 using Newtonsoft.Json.Linq;
 using System.IO;
+using System.Threading;
 //using Newtonsoft.Json.Linq.JObject;
 
 namespace ZenodoConnect.ROs.Zenodo.Controllers
@@ -59,14 +60,28 @@ namespace ZenodoConnect.ROs.Zenodo.Controllers
                             request.Headers.TryAddWithoutValidation(item.Key, item.Value);
                         }
                     }
-                    try
+
+                    int intentos = 3;
+                    while (true)
                     {
-                        response = await httpClient.SendAsync(request);
-                    }
-                    catch (System.Exception)
-                    {
-                        return null;
-                        //throw new Exception("Error in the http call");
+                        try
+                        {
+                            response = await httpClient.SendAsync(request);
+                            break;
+                        }
+                        catch
+                        {
+                            intentos--;
+                            if (intentos == 0)
+                            {
+                                //throw;
+                                return null;
+                            }
+                            else
+                            {
+                                Thread.Sleep(1000);
+                            }
+                        }
                     }
                 }
             }

@@ -16,6 +16,7 @@ using SemanticScholarConnect.ROs.SemanticScholar.Models.Inicial;
 using System.Web;
 using System.Text.Json;
 using Newtonsoft.Json.Linq;
+using System.Threading;
 //using Newtonsoft.Json.Linq.JObject;
 
 
@@ -66,13 +67,27 @@ namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
                             request.Headers.TryAddWithoutValidation(item.Key, item.Value);
                         }
                     }
-                    try
+
+                    int intentos = 3;
+                    while (true)
                     {
-                        response = await httpClient.SendAsync(request);
-                    }
-                    catch (System.Exception)
-                    {
-                        throw new Exception("Error in the http call");
+                        try
+                        {
+                            response = await httpClient.SendAsync(request);
+                            break;
+                        }
+                        catch
+                        {
+                            intentos--;
+                            if (intentos == 0)
+                            {
+                                throw;
+                            }
+                            else
+                            {
+                                Thread.Sleep(1000);
+                            }
+                        }
                     }
                 }
             }
