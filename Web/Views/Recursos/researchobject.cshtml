@@ -86,21 +86,6 @@
 
 
 
-
-                @{
-                    string valorOtros = string.Empty;
-
-                    var metric = pResearchObject.Roh_hasMetric;
-                    metric.ForEach(e =>
-                    {
-                        valorOtros += e.Roh_metricName + "~" + e.Roh_citationCount + "|";
-                    });
-
-                }
-
-                <div class="d-flex quotes" data-scopus="@pResearchObject.Roh_scopus" data-wos="@pResearchObject.Roh_wos" data-inrecs="@pResearchObject.Roh_inrecs" data-otros="@valorOtros">
-                    <p><span id="citas_number">@pResearchObject.Roh_citationCount</span> citas</p>
-                </div>
                 <div class="acciones-ficha-wrap">
                     <ul class="no-list-style d-flex">
                         <li>
@@ -141,13 +126,6 @@
                     else
                     {
                         <span>---</span>
-                    }
-                }
-                @{ if (pResearchObject.Vivo_hasPublicationVenue != null && !string.IsNullOrEmpty(pResearchObject.Vivo_hasPublicationVenue.Roh_title))
-                    {
-                        <span about="@pResearchObject.Vivo_hasPublicationVenue.GNOSSID" property="@pResearchObject.GetPropertyURI(nameof(pResearchObject.Vivo_hasPublicationVenue.Roh_title))">
-                            @pResearchObject.Vivo_hasPublicationVenue.Roh_title
-                        </span>
                     }
                 }
             </h3>
@@ -373,39 +351,9 @@
                             //    }
                             //}
                         }
-                        <a href="https://doi.org/@pResearchObject.Bibo_doi" target="_blank">@pResearchObject.Bibo_doi</a>
+                        <a href="https://doi.org/@pResearchObject.Bibo_doi" target="_blank" about="@pResearchObject.GNOSSID" property="@pResearchObject.GetPropertyURI(nameof(pResearchObject.Bibo_doi))">@pResearchObject.Bibo_doi</a>
                     </div>
                 </div>
-            </div>
-            <div class="list-wrap website">
-                <div class="label">@Html.Translate("WEBS")</div>
-                <ul>
-                    @{ if (pResearchObject.Vcard_url.Count > 0)
-                        {
-                            foreach (var item in pResearchObject.Vcard_url)
-                            {
-                                string web = item;
-                                if (web.Contains("scopus"))
-                                    web = "SCOPUS";
-
-                                <li>
-                                    <a about="@pResearchObject.GNOSSID" property="@pResearchObject.GetPropertyURI(nameof(pResearchObject.Vcard_url))" target="_blank" href="@item">@web</a>
-                                </li>
-                            }
-                            
-                        }
-                        else
-                        {
-                            <li>
-                                <a>---</a>
-                            </li>
-                        }
-                    }
-                </ul>
-                @*<p class="moreResults">
-                    <a href="javascript: void(0);" class="ver-mas" style="display: flex;">@Html.Translate("VER_MAS")</a>
-                    <a href="javascript: void(0);" class="ver-menos" style="display: none;">@Html.Translate("VER_MENOS")</a>
-                    </p>*@
             </div>
         </div>
         <div class="contenido-ficha contenido-publicacion">
@@ -425,7 +373,7 @@
                             <a class="nav-link" id="citas-tab" data-toggle="tab" href="#citas-panel" role="tab" aria-controls="citas-panel" >
                                 <div class="bloque">
                                     <div class="label">@Html.Translate("CITADO_POR")</div>
-                                    <div class="data">@pResearchObject.Roh_citationLoadedCount</div>
+                                    <div class="data" about="@pResearchObject.GNOSSID" property="@pResearchObject.GetPropertyURI(nameof(pResearchObject.Roh_citationLoadedCount))">@pResearchObject.Roh_citationLoadedCount</div>
                                 </div>
                             </a>
                         </li>
@@ -438,7 +386,7 @@
                                         // areas
                                         if (pResearchObject.Roh_hasKnowledgeArea != null)
                                         {
-                                            <div class="data">@pResearchObject.Roh_hasKnowledgeArea.Count</div>
+                                            <div class="data" about="@pResearchObject.GNOSSID" property="@pResearchObject.GetPropertyURI(nameof(pResearchObject.Roh_hasKnowledgeArea))">@pResearchObject.Roh_hasKnowledgeArea.Count</div>
                                         }
                                         else
                                         {
@@ -453,7 +401,6 @@
                             <a class="nav-link" id="relacionados-tab" data-toggle="tab" href="#relacionados-panel" role="tab" aria-controls="relacionados-panel">
                                 <div class="bloque">
                                     <div class="label">@Html.Translate("ROS_RELACIONADOS")</div>
-                                    <!-- <div class="data">@pResearchObject.Roh_referencesLoadedCount</div> -->
                                 </div>
                             </a>
                         </li>
@@ -462,7 +409,7 @@
                             <a class="nav-link" id="anotaciones-tab" data-toggle="tab" href="#anotaciones-panel" role="tab" aria-controls="anotaciones-panel" >
                                 <div class="bloque">
                                     <div class="label">@Html.Translate("ANOTACIONES")</div>
-                                    <div class="data">@pResearchObject.Roh_citationLoadedCount</div>
+                                    <div class="data" about="@pResearchObject.GNOSSID" property="@pResearchObject.GetPropertyURI(nameof(pResearchObject.Roh_citationLoadedCount))">@pResearchObject.Roh_citationLoadedCount</div>
                                 </div>
                             </a>
                         </li>
@@ -475,40 +422,84 @@
                             <div class="col col-12">
                                 <div class="wrapCol">
                                     <div class="group-wrap div4">
-                                        <div class="bloque">
-                                            <div class="label">Lenguajes de programación</div>
-                                            <div class="value">Phyton (80%), R (20%)</div>
-                                        </div>
-                                        <div class="bloque">
-                                            <div class="label">Licencia</div>
-                                            <div class="value">Open Acess</div>
-                                        </div>
-                                        <div class="bloque">
-                                            <div class="label">Fecha última actualización</div>
-                                            <div class="value">31 / 12 / 2010</div>
-                                        </div>
-                                        <div class="bloque">
-                                            <div class="label">Número de releases</div>
-                                            <div class="value">10</div>
-                                        </div>
-                                    </div>
-                                    <div class="group-wrap div4">
-                                        <div class="bloque">
-                                            <div class="label">Número de branches</div>
-                                            <div class="value">4</div>
-                                        </div>
-                                        <div class="bloque">
-                                            <div class="label">Número de packages</div>
-                                            <div class="value">100</div>
-                                        </div>
-                                        <div class="bloque">
-                                            <div class="label">Número de forks</div>
-                                            <div class="value">20</div>
-                                        </div>
-                                        <div class="bloque">
-                                            <div class="label">Número de issues</div>
-                                            <div class="value">40</div>
-                                        </div>
+                                         @{
+                                            // LANGUAGE
+                                            if (pResearchObject.Vcard_hasLanguage != null)
+                                            {
+                                                <div class="bloque">
+                                                    <div class="label">@Html.Translate("LENGUAJES_PROGRAMACION")</div>
+                                                    <div class="value" about="@pResearchObject.GNOSSID" property="@pResearchObject.GetPropertyURI(nameof(pResearchObject.Vcard_hasLanguage))" >@pResearchObject.Vcard_hasLanguage</div>
+                                                </div>
+                                            }
+
+                                            // lICENCE
+                                            if (pResearchObject.Dct_license != null)
+                                            {
+                                                <div class="bloque">
+                                                    <div class="label">@Html.Translate("LICENCIA")</div>
+                                                    <div class="value" about="@pResearchObject.GNOSSID" property="@pResearchObject.GetPropertyURI(nameof(pResearchObject.Dct_license))" >@pResearchObject.Dct_license</div>
+                                                </div>
+                                            }
+
+                                            // LAST UPDATE DATE
+                                            if (pResearchObject.Roh_updatedDate != null)
+                                            {
+                                                string anio = pResearchObject.Roh_updatedDate.Value.Year.ToString();
+                                                string mesInicio = pResearchObject.Roh_updatedDate.Value.Month.ToString();
+                                                string diaInicio = pResearchObject.Roh_updatedDate.Value.Day.ToString();
+                                                string updatedDate = diaInicio + " / " + mesInicio + " / " + anio;
+                                                <div class="bloque">
+                                                    <div class="label">@Html.Translate("FECHA_ULTIMA_ACTUALIZACION")</div>
+                                                    <div class="value" about="@pResearchObject.GNOSSID" property="@pResearchObject.GetPropertyURI(nameof(pResearchObject.Roh_updatedDate))" >@updatedDate</div>
+                                                </div>
+                                            }
+                                            
+                                            // RELEASES NUMBER
+                                            if (pResearchObject.Roh_releasesNumber != null)
+                                            {
+                                                <div class="bloque">
+                                                    <div class="label">@Html.Translate("NUMERO_RELEASES")</div>
+                                                    <div class="value" about="@pResearchObject.GNOSSID" property="@pResearchObject.GetPropertyURI(nameof(pResearchObject.Roh_releasesNumber))" >@pResearchObject.Roh_releasesNumber</div>
+                                                </div>
+                                            }
+                                            
+                                            // BRANCHES NUMBER
+                                            if (pResearchObject.Roh_branchesNumber != null)
+                                            {
+                                                <div class="bloque">
+                                                    <div class="label">@Html.Translate("NUMERO_BRANCHES")</div>
+                                                    <div class="value" about="@pResearchObject.GNOSSID" property="@pResearchObject.GetPropertyURI(nameof(pResearchObject.Roh_branchesNumber))" >@pResearchObject.Roh_branchesNumber</div>
+                                                </div>
+                                            }
+                                            
+                                            // PACKAGE NUMBER
+                                            if (pResearchObject.Roh_packagesNumber != null)
+                                            {
+                                                <div class="bloque">
+                                                    <div class="label">@Html.Translate("NUMERO_PACKAGES")</div>
+                                                    <div class="value" about="@pResearchObject.GNOSSID" property="@pResearchObject.GetPropertyURI(nameof(pResearchObject.Roh_packagesNumber))" >@pResearchObject.Roh_packagesNumber</div>
+                                                </div>
+                                            }
+                                            
+                                            // FORK NUMBER
+                                            if (pResearchObject.Roh_forksNumber != null)
+                                            {
+                                                <div class="bloque">
+                                                    <div class="label">@Html.Translate("NUMERO_FORK")</div>
+                                                    <div class="value" about="@pResearchObject.GNOSSID" property="@pResearchObject.GetPropertyURI(nameof(pResearchObject.Roh_forksNumber))" >@pResearchObject.Roh_forksNumber</div>
+                                                </div>
+                                            }
+                                            
+                                            // ISSUES NUMBER
+                                            if (pResearchObject.Roh_issuesNumber != null)
+                                            {
+                                                <div class="bloque">
+                                                    <div class="label">@Html.Translate("NUMERO_ISSUES")</div>
+                                                    <div class="value" about="@pResearchObject.GNOSSID" property="@pResearchObject.GetPropertyURI(nameof(pResearchObject.Roh_issuesNumber))" >@pResearchObject.Roh_issuesNumber</div>
+                                                </div>
+                                            }
+
+                                        }
                                     </div>
                                 </div>
                              </div>
@@ -1412,6 +1403,18 @@
         public ResearchObject(SemanticResourceModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
         {
             this.mGNOSSID = pSemCmsModel.RootEntities[0].Entity.Uri;
+            this.Roh_annotations = new List<Annotation>();
+            SemanticPropertyModel propRoh_annotations = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/annotations");
+            if(propRoh_annotations != null && propRoh_annotations.PropertyValues.Count > 0)
+            {
+                foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_annotations.PropertyValues)
+                {
+                    if(propValue.RelatedEntity!=null){
+                        Annotation roh_annotations = new Annotation(propValue.RelatedEntity,idiomaUsuario);
+                        this.Roh_annotations.Add(roh_annotations);
+                    }
+                }
+            }
             this.Roh_suggestedKnowledgeArea = new List<CategoryPath>();
             SemanticPropertyModel propRoh_suggestedKnowledgeArea = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/suggestedKnowledgeArea");
             if(propRoh_suggestedKnowledgeArea != null && propRoh_suggestedKnowledgeArea.PropertyValues.Count > 0)
@@ -1424,22 +1427,10 @@
                     }
                 }
             }
-            SemanticPropertyModel propVcard_hasCountryName = pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#hasCountryName");
-            if(propVcard_hasCountryName != null && propVcard_hasCountryName.PropertyValues.Count > 0)
+            SemanticPropertyModel propRoh_project = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/project");
+            if(propRoh_project != null && propRoh_project.PropertyValues.Count > 0)
             {
-                this.Vcard_hasCountryName = new Feature(propVcard_hasCountryName.PropertyValues[0].RelatedEntity,idiomaUsuario);
-            }
-            this.Vcard_hasLanguage = new List<Language>();
-            SemanticPropertyModel propVcard_hasLanguage = pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#hasLanguage");
-            if(propVcard_hasLanguage != null && propVcard_hasLanguage.PropertyValues.Count > 0)
-            {
-                foreach (SemanticPropertyModel.PropertyValue propValue in propVcard_hasLanguage.PropertyValues)
-                {
-                    if(propValue.RelatedEntity!=null){
-                        Language vcard_hasLanguage = new Language(propValue.RelatedEntity,idiomaUsuario);
-                        this.Vcard_hasLanguage.Add(vcard_hasLanguage);
-                    }
-                }
+                this.Roh_project = new Project(propRoh_project.PropertyValues[0].RelatedEntity,idiomaUsuario);
             }
             this.Bibo_authorList = new List<BFO_0000023>();
             SemanticPropertyModel propBibo_authorList = pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/authorList");
@@ -1450,35 +1441,6 @@
                     if(propValue.RelatedEntity!=null){
                         BFO_0000023 bibo_authorList = new BFO_0000023(propValue.RelatedEntity,idiomaUsuario);
                         this.Bibo_authorList.Add(bibo_authorList);
-                    }
-                }
-            }
-            SemanticPropertyModel propRoh_project = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/project");
-            if(propRoh_project != null && propRoh_project.PropertyValues.Count > 0)
-            {
-                this.Roh_project = new Project(propRoh_project.PropertyValues[0].RelatedEntity,idiomaUsuario);
-            }
-            this.Roh_isProducedBy = new List<Group>();
-            SemanticPropertyModel propRoh_isProducedBy = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isProducedBy");
-            if(propRoh_isProducedBy != null && propRoh_isProducedBy.PropertyValues.Count > 0)
-            {
-                foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_isProducedBy.PropertyValues)
-                {
-                    if(propValue.RelatedEntity!=null){
-                        Group roh_isProducedBy = new Group(propValue.RelatedEntity,idiomaUsuario);
-                        this.Roh_isProducedBy.Add(roh_isProducedBy);
-                    }
-                }
-            }
-            this.Roh_externalKnowledgeArea = new List<CategoryPath>();
-            SemanticPropertyModel propRoh_externalKnowledgeArea = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/externalKnowledgeArea");
-            if(propRoh_externalKnowledgeArea != null && propRoh_externalKnowledgeArea.PropertyValues.Count > 0)
-            {
-                foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_externalKnowledgeArea.PropertyValues)
-                {
-                    if(propValue.RelatedEntity!=null){
-                        CategoryPath roh_externalKnowledgeArea = new CategoryPath(propValue.RelatedEntity,idiomaUsuario);
-                        this.Roh_externalKnowledgeArea.Add(roh_externalKnowledgeArea);
                     }
                 }
             }
@@ -1494,90 +1456,27 @@
                     }
                 }
             }
-            SemanticPropertyModel propBibo_presentedAt = pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/presentedAt");
-            if(propBibo_presentedAt != null && propBibo_presentedAt.PropertyValues.Count > 0)
+            this.Roh_externalKnowledgeArea = new List<CategoryPath>();
+            SemanticPropertyModel propRoh_externalKnowledgeArea = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/externalKnowledgeArea");
+            if(propRoh_externalKnowledgeArea != null && propRoh_externalKnowledgeArea.PropertyValues.Count > 0)
             {
-                this.Bibo_presentedAt = new Event(propBibo_presentedAt.PropertyValues[0].RelatedEntity,idiomaUsuario);
-            }
-            this.Roh_correspondingAuthor = new List<Person>();
-            SemanticPropertyModel propRoh_correspondingAuthor = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/correspondingAuthor");
-            if(propRoh_correspondingAuthor != null && propRoh_correspondingAuthor.PropertyValues.Count > 0)
-            {
-                foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_correspondingAuthor.PropertyValues)
+                foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_externalKnowledgeArea.PropertyValues)
                 {
                     if(propValue.RelatedEntity!=null){
-                        Person roh_correspondingAuthor = new Person(propValue.RelatedEntity,idiomaUsuario);
-                        this.Roh_correspondingAuthor.Add(roh_correspondingAuthor);
+                        CategoryPath roh_externalKnowledgeArea = new CategoryPath(propValue.RelatedEntity,idiomaUsuario);
+                        this.Roh_externalKnowledgeArea.Add(roh_externalKnowledgeArea);
                     }
                 }
             }
+            this.Dc_type = new List<PublicationType>();
             SemanticPropertyModel propDc_type = pSemCmsModel.GetPropertyByPath("http://purl.org/dc/elements/1.1/type");
             if(propDc_type != null && propDc_type.PropertyValues.Count > 0)
             {
-                this.Dc_type = new PublicationType(propDc_type.PropertyValues[0].RelatedEntity,idiomaUsuario);
-            }
-            this.Roh_publicGroupList = new List<Group>();
-            SemanticPropertyModel propRoh_publicGroupList = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/publicGroupList");
-            if(propRoh_publicGroupList != null && propRoh_publicGroupList.PropertyValues.Count > 0)
-            {
-                foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_publicGroupList.PropertyValues)
+                foreach (SemanticPropertyModel.PropertyValue propValue in propDc_type.PropertyValues)
                 {
                     if(propValue.RelatedEntity!=null){
-                        Group roh_publicGroupList = new Group(propValue.RelatedEntity,idiomaUsuario);
-                        this.Roh_publicGroupList.Add(roh_publicGroupList);
-                    }
-                }
-            }
-            this.Bibo_identifier = new List<fDocument>();
-            SemanticPropertyModel propBibo_identifier = pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/identifier");
-            if(propBibo_identifier != null && propBibo_identifier.PropertyValues.Count > 0)
-            {
-                foreach (SemanticPropertyModel.PropertyValue propValue in propBibo_identifier.PropertyValues)
-                {
-                    if(propValue.RelatedEntity!=null){
-                        fDocument bibo_identifier = new fDocument(propValue.RelatedEntity,idiomaUsuario);
-                        this.Bibo_identifier.Add(bibo_identifier);
-                    }
-                }
-            }
-            this.Roh_publicAuthorList = new List<Person>();
-            SemanticPropertyModel propRoh_publicAuthorList = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/publicAuthorList");
-            if(propRoh_publicAuthorList != null && propRoh_publicAuthorList.PropertyValues.Count > 0)
-            {
-                foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_publicAuthorList.PropertyValues)
-                {
-                    if(propValue.RelatedEntity!=null){
-                        Person roh_publicAuthorList = new Person(propValue.RelatedEntity,idiomaUsuario);
-                        this.Roh_publicAuthorList.Add(roh_publicAuthorList);
-                    }
-                }
-            }
-            SemanticPropertyModel propVcard_hasRegion = pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#hasRegion");
-            if(propVcard_hasRegion != null && propVcard_hasRegion.PropertyValues.Count > 0)
-            {
-                this.Vcard_hasRegion = new Feature(propVcard_hasRegion.PropertyValues[0].RelatedEntity,idiomaUsuario);
-            }
-            this.Roh_hasMetric = new List<PublicationMetric>();
-            SemanticPropertyModel propRoh_hasMetric = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/hasMetric");
-            if(propRoh_hasMetric != null && propRoh_hasMetric.PropertyValues.Count > 0)
-            {
-                foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_hasMetric.PropertyValues)
-                {
-                    if(propValue.RelatedEntity!=null){
-                        PublicationMetric roh_hasMetric = new PublicationMetric(propValue.RelatedEntity,idiomaUsuario);
-                        this.Roh_hasMetric.Add(roh_hasMetric);
-                    }
-                }
-            }
-            this.Bibo_cites = new List<ResearchObject>();
-            SemanticPropertyModel propBibo_cites = pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/cites");
-            if(propBibo_cites != null && propBibo_cites.PropertyValues.Count > 0)
-            {
-                foreach (SemanticPropertyModel.PropertyValue propValue in propBibo_cites.PropertyValues)
-                {
-                    if(propValue.RelatedEntity!=null){
-                        ResearchObject bibo_cites = new ResearchObject(propValue.RelatedEntity,idiomaUsuario);
-                        this.Bibo_cites.Add(bibo_cites);
+                        PublicationType dc_type = new PublicationType(propValue.RelatedEntity,idiomaUsuario);
+                        this.Dc_type.Add(dc_type);
                     }
                 }
             }
@@ -1593,11 +1492,6 @@
                     }
                 }
             }
-            SemanticPropertyModel propVivo_hasPublicationVenue = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#hasPublicationVenue");
-            if(propVivo_hasPublicationVenue != null && propVivo_hasPublicationVenue.PropertyValues.Count > 0)
-            {
-                this.Vivo_hasPublicationVenue = new MainDocument(propVivo_hasPublicationVenue.PropertyValues[0].RelatedEntity,idiomaUsuario);
-            }
             this.Roh_enrichedKnowledgeArea = new List<CategoryPath>();
             SemanticPropertyModel propRoh_enrichedKnowledgeArea = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/enrichedKnowledgeArea");
             if(propRoh_enrichedKnowledgeArea != null && propRoh_enrichedKnowledgeArea.PropertyValues.Count > 0)
@@ -1610,74 +1504,14 @@
                     }
                 }
             }
-            this.Roh_legalDeposit = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/legalDeposit"));
-            this.Roh_scopus = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/scopus"));
-            this.Roh_assessmentStatus = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/assessmentStatus"));
-            this.Roh_publicationTitle = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/publicationTitle"));
-            this.Vcard_locality = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#locality"));
-            this.Roh_authorsNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/authorsNumber"));
-            this.Roh_inrecs = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/inrecs"));
-            SemanticPropertyModel propRoh_externalKeywords = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/externalKeywords");
-            this.Roh_externalKeywords = new List<string>();
-            if (propRoh_externalKeywords != null && propRoh_externalKeywords.PropertyValues.Count > 0)
-            {
-                foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_externalKeywords.PropertyValues)
-                {
-                    this.Roh_externalKeywords.Add(propValue.Value);
-                }
-            }
-            this.Roh_reviewsNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/reviewsNumber"));
-            this.Roh_userJournal = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/userJournal"));
+            this.Roh_releasesNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/releasesNumber"));
             this.Bibo_abstract = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/abstract"));
-            this.Bibo_pmid = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/pmid"));
-            SemanticPropertyModel propVivo_freeTextKeyword = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#freeTextKeyword");
-            this.Vivo_freeTextKeyword = new List<string>();
-            if (propVivo_freeTextKeyword != null && propVivo_freeTextKeyword.PropertyValues.Count > 0)
-            {
-                foreach (SemanticPropertyModel.PropertyValue propValue in propVivo_freeTextKeyword.PropertyValues)
-                {
-                    this.Vivo_freeTextKeyword.Add(propValue.Value);
-                }
-            }
-            this.Bibo_handle = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/handle"));
-            this.Bibo_doi = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/doi"));
-            this.Roh_wos = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/wos"));
-            this.Bibo_issue = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/issue"));
-            SemanticPropertyModel propRoh_suggestedKeywords = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/suggestedKeywords");
-            this.Roh_suggestedKeywords = new List<string>();
-            if (propRoh_suggestedKeywords != null && propRoh_suggestedKeywords.PropertyValues.Count > 0)
-            {
-                foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_suggestedKeywords.PropertyValues)
-                {
-                    this.Roh_suggestedKeywords.Add(propValue.Value);
-                }
-            }
-            this.Bibo_volume = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/volume"));
-            SemanticPropertyModel propRoh_enrichedKeywords = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/enrichedKeywords");
-            this.Roh_enrichedKeywords = new List<string>();
-            if (propRoh_enrichedKeywords != null && propRoh_enrichedKeywords.PropertyValues.Count > 0)
-            {
-                foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_enrichedKeywords.PropertyValues)
-                {
-                    this.Roh_enrichedKeywords.Add(propValue.Value);
-                }
-            }
+            this.Roh_branchesNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/branchesNumber"));
+            this.Roh_updatedDate= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/updatedDate"));
+            this.Roh_packagesNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/packagesNumber"));
             this.Dct_issued= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/dc/terms/issued"));
-            this.Roh_typeOthers = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/typeOthers"));
-            this.Bibo_pageStart = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/pageStart"));
-            this.Roh_crisIdentifier = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/crisIdentifier"));
-            this.Roh_congressProceedingsPublication= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/congressProceedingsPublication"));
-            SemanticPropertyModel propVcard_url = pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#url");
-            this.Vcard_url = new List<string>();
-            if (propVcard_url != null && propVcard_url.PropertyValues.Count > 0)
-            {
-                foreach (SemanticPropertyModel.PropertyValue propValue in propVcard_url.PropertyValues)
-                {
-                    this.Vcard_url.Add(propValue.Value);
-                }
-            }
-            this.Bibo_pageEnd = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/pageEnd"));
-            this.Roh_collection = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/collection"));
+            this.Roh_forksNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/forksNumber"));
+            this.Vcard_url = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#url"));
             SemanticPropertyModel propRoh_userKeywords = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/userKeywords");
             this.Roh_userKeywords = new List<string>();
             if (propRoh_userKeywords != null && propRoh_userKeywords.PropertyValues.Count > 0)
@@ -1687,16 +1521,50 @@
                     this.Roh_userKeywords.Add(propValue.Value);
                 }
             }
-            this.Roh_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/title"));
-            SemanticPropertyModel propRoh_scientificActivityDocument = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/scientificActivityDocument");
-            if(propRoh_scientificActivityDocument != null && propRoh_scientificActivityDocument.PropertyValues.Count > 0)
+            SemanticPropertyModel propRoh_externalKeywords = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/externalKeywords");
+            this.Roh_externalKeywords = new List<string>();
+            if (propRoh_externalKeywords != null && propRoh_externalKeywords.PropertyValues.Count > 0)
             {
-                this.Roh_scientificActivityDocument = new ScientificActivityDocument(propRoh_scientificActivityDocument.PropertyValues[0].RelatedEntity,idiomaUsuario);
+                foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_externalKeywords.PropertyValues)
+                {
+                    this.Roh_externalKeywords.Add(propValue.Value);
+                }
             }
+            this.Dct_license = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/dc/terms/license"));
+            SemanticPropertyModel propVivo_freeTextKeyword = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#freeTextKeyword");
+            this.Vivo_freeTextKeyword = new List<string>();
+            if (propVivo_freeTextKeyword != null && propVivo_freeTextKeyword.PropertyValues.Count > 0)
+            {
+                foreach (SemanticPropertyModel.PropertyValue propValue in propVivo_freeTextKeyword.PropertyValues)
+                {
+                    this.Vivo_freeTextKeyword.Add(propValue.Value);
+                }
+            }
+            this.Roh_resolvedIssuesNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/resolvedIssuesNumber"));
+            this.Bibo_doi = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/doi"));
+            this.Roh_issuesNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/issuesNumber"));
+            SemanticPropertyModel propRoh_suggestedKeywords = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/suggestedKeywords");
+            this.Roh_suggestedKeywords = new List<string>();
+            if (propRoh_suggestedKeywords != null && propRoh_suggestedKeywords.PropertyValues.Count > 0)
+            {
+                foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_suggestedKeywords.PropertyValues)
+                {
+                    this.Roh_suggestedKeywords.Add(propValue.Value);
+                }
+            }
+            SemanticPropertyModel propRoh_enrichedKeywords = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/enrichedKeywords");
+            this.Roh_enrichedKeywords = new List<string>();
+            if (propRoh_enrichedKeywords != null && propRoh_enrichedKeywords.PropertyValues.Count > 0)
+            {
+                foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_enrichedKeywords.PropertyValues)
+                {
+                    this.Roh_enrichedKeywords.Add(propValue.Value);
+                }
+            }
+            this.Roh_viewsNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/viewsNumber"));
+            this.Roh_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/title"));
             this.Roh_isValidated= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isValidated"));
             this.Roh_citationLoadedCount = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/citationLoadedCount")).Value;
-            this.Roh_citationCount = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/citationCount")).Value;
-            this.Roh_referencesLoadedCount = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/referencesLoadedCount")).Value;
             this.Roh_isPublic= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isPublic"));
         }
 
@@ -1704,6 +1572,18 @@
         {
             this.mGNOSSID = pSemCmsModel.Entity.Uri;
             this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
+            this.Roh_annotations = new List<Annotation>();
+            SemanticPropertyModel propRoh_annotations = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/annotations");
+            if(propRoh_annotations != null && propRoh_annotations.PropertyValues.Count > 0)
+            {
+                foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_annotations.PropertyValues)
+                {
+                    if(propValue.RelatedEntity!=null){
+                        Annotation roh_annotations = new Annotation(propValue.RelatedEntity,idiomaUsuario);
+                        this.Roh_annotations.Add(roh_annotations);
+                    }
+                }
+            }
             this.Roh_suggestedKnowledgeArea = new List<CategoryPath>();
             SemanticPropertyModel propRoh_suggestedKnowledgeArea = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/suggestedKnowledgeArea");
             if(propRoh_suggestedKnowledgeArea != null && propRoh_suggestedKnowledgeArea.PropertyValues.Count > 0)
@@ -1716,22 +1596,10 @@
                     }
                 }
             }
-            SemanticPropertyModel propVcard_hasCountryName = pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#hasCountryName");
-            if(propVcard_hasCountryName != null && propVcard_hasCountryName.PropertyValues.Count > 0)
+            SemanticPropertyModel propRoh_project = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/project");
+            if(propRoh_project != null && propRoh_project.PropertyValues.Count > 0)
             {
-                this.Vcard_hasCountryName = new Feature(propVcard_hasCountryName.PropertyValues[0].RelatedEntity,idiomaUsuario);
-            }
-            this.Vcard_hasLanguage = new List<Language>();
-            SemanticPropertyModel propVcard_hasLanguage = pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#hasLanguage");
-            if(propVcard_hasLanguage != null && propVcard_hasLanguage.PropertyValues.Count > 0)
-            {
-                foreach (SemanticPropertyModel.PropertyValue propValue in propVcard_hasLanguage.PropertyValues)
-                {
-                    if(propValue.RelatedEntity!=null){
-                        Language vcard_hasLanguage = new Language(propValue.RelatedEntity,idiomaUsuario);
-                        this.Vcard_hasLanguage.Add(vcard_hasLanguage);
-                    }
-                }
+                this.Roh_project = new Project(propRoh_project.PropertyValues[0].RelatedEntity,idiomaUsuario);
             }
             this.Bibo_authorList = new List<BFO_0000023>();
             SemanticPropertyModel propBibo_authorList = pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/authorList");
@@ -1742,35 +1610,6 @@
                     if(propValue.RelatedEntity!=null){
                         BFO_0000023 bibo_authorList = new BFO_0000023(propValue.RelatedEntity,idiomaUsuario);
                         this.Bibo_authorList.Add(bibo_authorList);
-                    }
-                }
-            }
-            SemanticPropertyModel propRoh_project = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/project");
-            if(propRoh_project != null && propRoh_project.PropertyValues.Count > 0)
-            {
-                this.Roh_project = new Project(propRoh_project.PropertyValues[0].RelatedEntity,idiomaUsuario);
-            }
-            this.Roh_isProducedBy = new List<Group>();
-            SemanticPropertyModel propRoh_isProducedBy = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isProducedBy");
-            if(propRoh_isProducedBy != null && propRoh_isProducedBy.PropertyValues.Count > 0)
-            {
-                foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_isProducedBy.PropertyValues)
-                {
-                    if(propValue.RelatedEntity!=null){
-                        Group roh_isProducedBy = new Group(propValue.RelatedEntity,idiomaUsuario);
-                        this.Roh_isProducedBy.Add(roh_isProducedBy);
-                    }
-                }
-            }
-            this.Roh_externalKnowledgeArea = new List<CategoryPath>();
-            SemanticPropertyModel propRoh_externalKnowledgeArea = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/externalKnowledgeArea");
-            if(propRoh_externalKnowledgeArea != null && propRoh_externalKnowledgeArea.PropertyValues.Count > 0)
-            {
-                foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_externalKnowledgeArea.PropertyValues)
-                {
-                    if(propValue.RelatedEntity!=null){
-                        CategoryPath roh_externalKnowledgeArea = new CategoryPath(propValue.RelatedEntity,idiomaUsuario);
-                        this.Roh_externalKnowledgeArea.Add(roh_externalKnowledgeArea);
                     }
                 }
             }
@@ -1786,90 +1625,27 @@
                     }
                 }
             }
-            SemanticPropertyModel propBibo_presentedAt = pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/presentedAt");
-            if(propBibo_presentedAt != null && propBibo_presentedAt.PropertyValues.Count > 0)
+            this.Roh_externalKnowledgeArea = new List<CategoryPath>();
+            SemanticPropertyModel propRoh_externalKnowledgeArea = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/externalKnowledgeArea");
+            if(propRoh_externalKnowledgeArea != null && propRoh_externalKnowledgeArea.PropertyValues.Count > 0)
             {
-                this.Bibo_presentedAt = new Event(propBibo_presentedAt.PropertyValues[0].RelatedEntity,idiomaUsuario);
-            }
-            this.Roh_correspondingAuthor = new List<Person>();
-            SemanticPropertyModel propRoh_correspondingAuthor = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/correspondingAuthor");
-            if(propRoh_correspondingAuthor != null && propRoh_correspondingAuthor.PropertyValues.Count > 0)
-            {
-                foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_correspondingAuthor.PropertyValues)
+                foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_externalKnowledgeArea.PropertyValues)
                 {
                     if(propValue.RelatedEntity!=null){
-                        Person roh_correspondingAuthor = new Person(propValue.RelatedEntity,idiomaUsuario);
-                        this.Roh_correspondingAuthor.Add(roh_correspondingAuthor);
+                        CategoryPath roh_externalKnowledgeArea = new CategoryPath(propValue.RelatedEntity,idiomaUsuario);
+                        this.Roh_externalKnowledgeArea.Add(roh_externalKnowledgeArea);
                     }
                 }
             }
+            this.Dc_type = new List<PublicationType>();
             SemanticPropertyModel propDc_type = pSemCmsModel.GetPropertyByPath("http://purl.org/dc/elements/1.1/type");
             if(propDc_type != null && propDc_type.PropertyValues.Count > 0)
             {
-                this.Dc_type = new PublicationType(propDc_type.PropertyValues[0].RelatedEntity,idiomaUsuario);
-            }
-            this.Roh_publicGroupList = new List<Group>();
-            SemanticPropertyModel propRoh_publicGroupList = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/publicGroupList");
-            if(propRoh_publicGroupList != null && propRoh_publicGroupList.PropertyValues.Count > 0)
-            {
-                foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_publicGroupList.PropertyValues)
+                foreach (SemanticPropertyModel.PropertyValue propValue in propDc_type.PropertyValues)
                 {
                     if(propValue.RelatedEntity!=null){
-                        Group roh_publicGroupList = new Group(propValue.RelatedEntity,idiomaUsuario);
-                        this.Roh_publicGroupList.Add(roh_publicGroupList);
-                    }
-                }
-            }
-            this.Bibo_identifier = new List<fDocument>();
-            SemanticPropertyModel propBibo_identifier = pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/identifier");
-            if(propBibo_identifier != null && propBibo_identifier.PropertyValues.Count > 0)
-            {
-                foreach (SemanticPropertyModel.PropertyValue propValue in propBibo_identifier.PropertyValues)
-                {
-                    if(propValue.RelatedEntity!=null){
-                        fDocument bibo_identifier = new fDocument(propValue.RelatedEntity,idiomaUsuario);
-                        this.Bibo_identifier.Add(bibo_identifier);
-                    }
-                }
-            }
-            this.Roh_publicAuthorList = new List<Person>();
-            SemanticPropertyModel propRoh_publicAuthorList = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/publicAuthorList");
-            if(propRoh_publicAuthorList != null && propRoh_publicAuthorList.PropertyValues.Count > 0)
-            {
-                foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_publicAuthorList.PropertyValues)
-                {
-                    if(propValue.RelatedEntity!=null){
-                        Person roh_publicAuthorList = new Person(propValue.RelatedEntity,idiomaUsuario);
-                        this.Roh_publicAuthorList.Add(roh_publicAuthorList);
-                    }
-                }
-            }
-            SemanticPropertyModel propVcard_hasRegion = pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#hasRegion");
-            if(propVcard_hasRegion != null && propVcard_hasRegion.PropertyValues.Count > 0)
-            {
-                this.Vcard_hasRegion = new Feature(propVcard_hasRegion.PropertyValues[0].RelatedEntity,idiomaUsuario);
-            }
-            this.Roh_hasMetric = new List<PublicationMetric>();
-            SemanticPropertyModel propRoh_hasMetric = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/hasMetric");
-            if(propRoh_hasMetric != null && propRoh_hasMetric.PropertyValues.Count > 0)
-            {
-                foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_hasMetric.PropertyValues)
-                {
-                    if(propValue.RelatedEntity!=null){
-                        PublicationMetric roh_hasMetric = new PublicationMetric(propValue.RelatedEntity,idiomaUsuario);
-                        this.Roh_hasMetric.Add(roh_hasMetric);
-                    }
-                }
-            }
-            this.Bibo_cites = new List<ResearchObject>();
-            SemanticPropertyModel propBibo_cites = pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/cites");
-            if(propBibo_cites != null && propBibo_cites.PropertyValues.Count > 0)
-            {
-                foreach (SemanticPropertyModel.PropertyValue propValue in propBibo_cites.PropertyValues)
-                {
-                    if(propValue.RelatedEntity!=null){
-                        ResearchObject bibo_cites = new ResearchObject(propValue.RelatedEntity,idiomaUsuario);
-                        this.Bibo_cites.Add(bibo_cites);
+                        PublicationType dc_type = new PublicationType(propValue.RelatedEntity,idiomaUsuario);
+                        this.Dc_type.Add(dc_type);
                     }
                 }
             }
@@ -1885,11 +1661,6 @@
                     }
                 }
             }
-            SemanticPropertyModel propVivo_hasPublicationVenue = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#hasPublicationVenue");
-            if(propVivo_hasPublicationVenue != null && propVivo_hasPublicationVenue.PropertyValues.Count > 0)
-            {
-                this.Vivo_hasPublicationVenue = new MainDocument(propVivo_hasPublicationVenue.PropertyValues[0].RelatedEntity,idiomaUsuario);
-            }
             this.Roh_enrichedKnowledgeArea = new List<CategoryPath>();
             SemanticPropertyModel propRoh_enrichedKnowledgeArea = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/enrichedKnowledgeArea");
             if(propRoh_enrichedKnowledgeArea != null && propRoh_enrichedKnowledgeArea.PropertyValues.Count > 0)
@@ -1902,74 +1673,14 @@
                     }
                 }
             }
-            this.Roh_legalDeposit = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/legalDeposit"));
-            this.Roh_scopus = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/scopus"));
-            this.Roh_assessmentStatus = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/assessmentStatus"));
-            this.Roh_publicationTitle = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/publicationTitle"));
-            this.Vcard_locality = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#locality"));
-            this.Roh_authorsNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/authorsNumber"));
-            this.Roh_inrecs = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/inrecs"));
-            SemanticPropertyModel propRoh_externalKeywords = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/externalKeywords");
-            this.Roh_externalKeywords = new List<string>();
-            if (propRoh_externalKeywords != null && propRoh_externalKeywords.PropertyValues.Count > 0)
-            {
-                foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_externalKeywords.PropertyValues)
-                {
-                    this.Roh_externalKeywords.Add(propValue.Value);
-                }
-            }
-            this.Roh_reviewsNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/reviewsNumber"));
-            this.Roh_userJournal = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/userJournal"));
+            this.Roh_releasesNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/releasesNumber"));
             this.Bibo_abstract = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/abstract"));
-            this.Bibo_pmid = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/pmid"));
-            SemanticPropertyModel propVivo_freeTextKeyword = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#freeTextKeyword");
-            this.Vivo_freeTextKeyword = new List<string>();
-            if (propVivo_freeTextKeyword != null && propVivo_freeTextKeyword.PropertyValues.Count > 0)
-            {
-                foreach (SemanticPropertyModel.PropertyValue propValue in propVivo_freeTextKeyword.PropertyValues)
-                {
-                    this.Vivo_freeTextKeyword.Add(propValue.Value);
-                }
-            }
-            this.Bibo_handle = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/handle"));
-            this.Bibo_doi = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/doi"));
-            this.Roh_wos = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/wos"));
-            this.Bibo_issue = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/issue"));
-            SemanticPropertyModel propRoh_suggestedKeywords = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/suggestedKeywords");
-            this.Roh_suggestedKeywords = new List<string>();
-            if (propRoh_suggestedKeywords != null && propRoh_suggestedKeywords.PropertyValues.Count > 0)
-            {
-                foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_suggestedKeywords.PropertyValues)
-                {
-                    this.Roh_suggestedKeywords.Add(propValue.Value);
-                }
-            }
-            this.Bibo_volume = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/volume"));
-            SemanticPropertyModel propRoh_enrichedKeywords = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/enrichedKeywords");
-            this.Roh_enrichedKeywords = new List<string>();
-            if (propRoh_enrichedKeywords != null && propRoh_enrichedKeywords.PropertyValues.Count > 0)
-            {
-                foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_enrichedKeywords.PropertyValues)
-                {
-                    this.Roh_enrichedKeywords.Add(propValue.Value);
-                }
-            }
+            this.Roh_branchesNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/branchesNumber"));
+            this.Roh_updatedDate= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/updatedDate"));
+            this.Roh_packagesNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/packagesNumber"));
             this.Dct_issued= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/dc/terms/issued"));
-            this.Roh_typeOthers = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/typeOthers"));
-            this.Bibo_pageStart = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/pageStart"));
-            this.Roh_crisIdentifier = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/crisIdentifier"));
-            this.Roh_congressProceedingsPublication= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/congressProceedingsPublication"));
-            SemanticPropertyModel propVcard_url = pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#url");
-            this.Vcard_url = new List<string>();
-            if (propVcard_url != null && propVcard_url.PropertyValues.Count > 0)
-            {
-                foreach (SemanticPropertyModel.PropertyValue propValue in propVcard_url.PropertyValues)
-                {
-                    this.Vcard_url.Add(propValue.Value);
-                }
-            }
-            this.Bibo_pageEnd = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/pageEnd"));
-            this.Roh_collection = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/collection"));
+            this.Roh_forksNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/forksNumber"));
+            this.Vcard_url = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#url"));
             SemanticPropertyModel propRoh_userKeywords = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/userKeywords");
             this.Roh_userKeywords = new List<string>();
             if (propRoh_userKeywords != null && propRoh_userKeywords.PropertyValues.Count > 0)
@@ -1979,234 +1690,166 @@
                     this.Roh_userKeywords.Add(propValue.Value);
                 }
             }
-            this.Roh_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/title"));
-            SemanticPropertyModel propRoh_scientificActivityDocument = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/scientificActivityDocument");
-            if(propRoh_scientificActivityDocument != null && propRoh_scientificActivityDocument.PropertyValues.Count > 0)
+            SemanticPropertyModel propRoh_externalKeywords = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/externalKeywords");
+            this.Roh_externalKeywords = new List<string>();
+            if (propRoh_externalKeywords != null && propRoh_externalKeywords.PropertyValues.Count > 0)
             {
-                this.Roh_scientificActivityDocument = new ScientificActivityDocument(propRoh_scientificActivityDocument.PropertyValues[0].RelatedEntity,idiomaUsuario);
+                foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_externalKeywords.PropertyValues)
+                {
+                    this.Roh_externalKeywords.Add(propValue.Value);
+                }
             }
+            this.Dct_license = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/dc/terms/license"));
+            SemanticPropertyModel propVivo_freeTextKeyword = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#freeTextKeyword");
+            this.Vivo_freeTextKeyword = new List<string>();
+            if (propVivo_freeTextKeyword != null && propVivo_freeTextKeyword.PropertyValues.Count > 0)
+            {
+                foreach (SemanticPropertyModel.PropertyValue propValue in propVivo_freeTextKeyword.PropertyValues)
+                {
+                    this.Vivo_freeTextKeyword.Add(propValue.Value);
+                }
+            }
+            this.Roh_resolvedIssuesNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/resolvedIssuesNumber"));
+            this.Bibo_doi = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/doi"));
+            this.Roh_issuesNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/issuesNumber"));
+            SemanticPropertyModel propRoh_suggestedKeywords = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/suggestedKeywords");
+            this.Roh_suggestedKeywords = new List<string>();
+            if (propRoh_suggestedKeywords != null && propRoh_suggestedKeywords.PropertyValues.Count > 0)
+            {
+                foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_suggestedKeywords.PropertyValues)
+                {
+                    this.Roh_suggestedKeywords.Add(propValue.Value);
+                }
+            }
+            SemanticPropertyModel propRoh_enrichedKeywords = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/enrichedKeywords");
+            this.Roh_enrichedKeywords = new List<string>();
+            if (propRoh_enrichedKeywords != null && propRoh_enrichedKeywords.PropertyValues.Count > 0)
+            {
+                foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_enrichedKeywords.PropertyValues)
+                {
+                    this.Roh_enrichedKeywords.Add(propValue.Value);
+                }
+            }
+            this.Roh_viewsNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/viewsNumber"));
+            this.Roh_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/title"));
             this.Roh_isValidated= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isValidated"));
             this.Roh_citationLoadedCount = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/citationLoadedCount")).Value;
-            this.Roh_citationCount = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/citationCount")).Value;
-            this.Roh_referencesLoadedCount = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/referencesLoadedCount")).Value;
             this.Roh_isPublic= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isPublic"));
         }
 
-        public virtual string RdfType { get { return "http://purl.org/ontology/bibo/ResearchObject"; } }
-        public virtual string RdfsLabel { get { return "http://purl.org/ontology/bibo/ResearchObject"; } }
+        public virtual string RdfType { get { return "http://w3id.org/roh/ResearchObject"; } }
+        public virtual string RdfsLabel { get { return "http://w3id.org/roh/ResearchObject"; } }
+        [RDFProperty("http://w3id.org/roh/annotations")]
+        public  List<Annotation> Roh_annotations { get; set;}
+
         [LABEL(LanguageEnum.es,"http://w3id.org/roh/suggestedKnowledgeArea")]
         [RDFProperty("http://w3id.org/roh/suggestedKnowledgeArea")]
         public  List<CategoryPath> Roh_suggestedKnowledgeArea { get; set;}
-
-        [LABEL(LanguageEnum.es,"https://www.w3.org/2006/vcard/ns#hasCountryName")]
-        [RDFProperty("https://www.w3.org/2006/vcard/ns#hasCountryName")]
-        public  Feature Vcard_hasCountryName  { get; set;} 
-        public string IdVcard_hasCountryName  { get; set;} 
-
-        [LABEL(LanguageEnum.es,"https://www.w3.org/2006/vcard/ns#hasLanguage")]
-        [RDFProperty("https://www.w3.org/2006/vcard/ns#hasLanguage")]
-        public  List<Language> Vcard_hasLanguage { get; set;}
-        public List<string> IdsVcard_hasLanguage { get; set;}
-
-        [LABEL(LanguageEnum.es,"http://purl.org/ontology/bibo/authorList")]
-        [RDFProperty("http://purl.org/ontology/bibo/authorList")]
-        public  List<BFO_0000023> Bibo_authorList { get; set;}
 
         [LABEL(LanguageEnum.es,"http://w3id.org/roh/project")]
         [RDFProperty("http://w3id.org/roh/project")]
         public  Project Roh_project  { get; set;} 
         public string IdRoh_project  { get; set;} 
 
-        [LABEL(LanguageEnum.es,"http://w3id.org/roh/isProducedBy")]
-        [RDFProperty("http://w3id.org/roh/isProducedBy")]
-        public  List<Group> Roh_isProducedBy { get; set;}
-        public List<string> IdsRoh_isProducedBy { get; set;}
-
-        [LABEL(LanguageEnum.es,"http://w3id.org/roh/externalKnowledgeArea")]
-        [RDFProperty("http://w3id.org/roh/externalKnowledgeArea")]
-        public  List<CategoryPath> Roh_externalKnowledgeArea { get; set;}
+        [LABEL(LanguageEnum.es,"http://purl.org/ontology/bibo/authorList")]
+        [RDFProperty("http://purl.org/ontology/bibo/authorList")]
+        public  List<BFO_0000023> Bibo_authorList { get; set;}
 
         [LABEL(LanguageEnum.es,"http://w3id.org/roh/userKnowledgeArea")]
         [RDFProperty("http://w3id.org/roh/userKnowledgeArea")]
         public  List<CategoryPath> Roh_userKnowledgeArea { get; set;}
 
-        [LABEL(LanguageEnum.es,"http://purl.org/ontology/bibo/presentedAt")]
-        [RDFProperty("http://purl.org/ontology/bibo/presentedAt")]
-        public  Event Bibo_presentedAt { get; set;}
-
-        [LABEL(LanguageEnum.es,"http://w3id.org/roh/correspondingAuthor")]
-        [RDFProperty("http://w3id.org/roh/correspondingAuthor")]
-        public  List<Person> Roh_correspondingAuthor { get; set;}
-        public List<string> IdsRoh_correspondingAuthor { get; set;}
+        [LABEL(LanguageEnum.es,"http://w3id.org/roh/externalKnowledgeArea")]
+        [RDFProperty("http://w3id.org/roh/externalKnowledgeArea")]
+        public  List<CategoryPath> Roh_externalKnowledgeArea { get; set;}
 
         [LABEL(LanguageEnum.es,"http://purl.org/dc/elements/1.1/type")]
         [RDFProperty("http://purl.org/dc/elements/1.1/type")]
-        public  PublicationType Dc_type  { get; set;} 
-        public string IdDc_type  { get; set;} 
-
-        [LABEL(LanguageEnum.es,"http://w3id.org/roh/publicGroupList")]
-        [RDFProperty("http://w3id.org/roh/publicGroupList")]
-        public  List<Group> Roh_publicGroupList { get; set;}
-        public List<string> IdsRoh_publicGroupList { get; set;}
-
-        [LABEL(LanguageEnum.es,"http://purl.org/ontology/bibo/identifier")]
-        [RDFProperty("http://purl.org/ontology/bibo/identifier")]
-        public  List<fDocument> Bibo_identifier { get; set;}
-
-        [LABEL(LanguageEnum.es,"http://w3id.org/roh/publicAuthorList")]
-        [RDFProperty("http://w3id.org/roh/publicAuthorList")]
-        public  List<Person> Roh_publicAuthorList { get; set;}
-        public List<string> IdsRoh_publicAuthorList { get; set;}
-
-        [LABEL(LanguageEnum.es,"https://www.w3.org/2006/vcard/ns#hasRegion")]
-        [RDFProperty("https://www.w3.org/2006/vcard/ns#hasRegion")]
-        public  Feature Vcard_hasRegion  { get; set;} 
-        public string IdVcard_hasRegion  { get; set;} 
-
-        [LABEL(LanguageEnum.es,"http://w3id.org/roh/hasMetric")]
-        [RDFProperty("http://w3id.org/roh/hasMetric")]
-        public  List<PublicationMetric> Roh_hasMetric { get; set;}
-
-        [LABEL(LanguageEnum.es,"http://purl.org/ontology/bibo/cites")]
-        [RDFProperty("http://purl.org/ontology/bibo/cites")]
-        public  List<ResearchObject> Bibo_cites { get; set;}
-        public List<string> IdsBibo_cites { get; set;}
+        public  List<PublicationType> Dc_type { get; set;}
+        public List<string> IdsDc_type { get; set;}
 
         [LABEL(LanguageEnum.es,"http://w3id.org/roh/hasKnowledgeArea")]
         [RDFProperty("http://w3id.org/roh/hasKnowledgeArea")]
         public  List<CategoryPath> Roh_hasKnowledgeArea { get; set;}
 
-        [LABEL(LanguageEnum.es,"http://vivoweb.org/ontology/core#hasPublicationVenue")]
-        [RDFProperty("http://vivoweb.org/ontology/core#hasPublicationVenue")]
-        public  MainDocument Vivo_hasPublicationVenue  { get; set;} 
-        public string IdVivo_hasPublicationVenue  { get; set;} 
-
         [LABEL(LanguageEnum.es,"http://w3id.org/roh/enrichedKnowledgeArea")]
         [RDFProperty("http://w3id.org/roh/enrichedKnowledgeArea")]
         public  List<CategoryPath> Roh_enrichedKnowledgeArea { get; set;}
 
-        [LABEL(LanguageEnum.es,"http://w3id.org/roh/legalDeposit")]
-        [RDFProperty("http://w3id.org/roh/legalDeposit")]
-        public  string Roh_legalDeposit { get; set;}
+        [RDFProperty("http://w3id.org/roh/releasesNumber")]
+        public  int? Roh_releasesNumber { get; set;}
 
-        [LABEL(LanguageEnum.es,"http://w3id.org/roh/scopus")]
-        [RDFProperty("http://w3id.org/roh/scopus")]
-        public  int? Roh_scopus { get; set;}
-
-        [LABEL(LanguageEnum.es,"http://w3id.org/roh/assessmentStatus")]
-        [RDFProperty("http://w3id.org/roh/assessmentStatus")]
-        public  string Roh_assessmentStatus { get; set;}
-
-        [LABEL(LanguageEnum.es,"http://w3id.org/roh/publicationTitle")]
-        [RDFProperty("http://w3id.org/roh/publicationTitle")]
-        public  string Roh_publicationTitle { get; set;}
-
-        [LABEL(LanguageEnum.es,"https://www.w3.org/2006/vcard/ns#locality")]
-        [RDFProperty("https://www.w3.org/2006/vcard/ns#locality")]
-        public  string Vcard_locality { get; set;}
-
-        [LABEL(LanguageEnum.es,"http://w3id.org/roh/authorsNumber")]
-        [RDFProperty("http://w3id.org/roh/authorsNumber")]
-        public  int? Roh_authorsNumber { get; set;}
-
-        [LABEL(LanguageEnum.es,"http://w3id.org/roh/inrecs")]
-        [RDFProperty("http://w3id.org/roh/inrecs")]
-        public  int? Roh_inrecs { get; set;}
-
-        [LABEL(LanguageEnum.es,"http://w3id.org/roh/externalKeywords")]
-        [RDFProperty("http://w3id.org/roh/externalKeywords")]
-        public  List<string> Roh_externalKeywords { get; set;}
-
-        [LABEL(LanguageEnum.es,"http://w3id.org/roh/reviewsNumber")]
-        [RDFProperty("http://w3id.org/roh/reviewsNumber")]
-        public  int? Roh_reviewsNumber { get; set;}
-
-        [RDFProperty("http://w3id.org/roh/userJournal")]
-        public  string Roh_userJournal { get; set;}
+        [LABEL(LanguageEnum.es,"https://www.w3.org/2006/vcard/ns#hasLanguage")]
+        [RDFProperty("https://www.w3.org/2006/vcard/ns#hasLanguage")]
+        public  string Vcard_hasLanguage { get; set;}
 
         [LABEL(LanguageEnum.es,"http://purl.org/ontology/bibo/abstract")]
         [RDFProperty("http://purl.org/ontology/bibo/abstract")]
         public  string Bibo_abstract { get; set;}
 
-        [LABEL(LanguageEnum.es,"http://purl.org/ontology/bibo/pmid")]
-        [RDFProperty("http://purl.org/ontology/bibo/pmid")]
-        public  string Bibo_pmid { get; set;}
+        [RDFProperty("http://w3id.org/roh/branchesNumber")]
+        public  int? Roh_branchesNumber { get; set;}
 
-        [LABEL(LanguageEnum.es,"http://vivoweb.org/ontology/core#freeTextKeyword")]
-        [RDFProperty("http://vivoweb.org/ontology/core#freeTextKeyword")]
-        public  List<string> Vivo_freeTextKeyword { get; set;}
+        [RDFProperty("http://w3id.org/roh/updatedDate")]
+        public  DateTime? Roh_updatedDate { get; set;}
 
-        [LABEL(LanguageEnum.es,"http://purl.org/ontology/bibo/handle")]
-        [RDFProperty("http://purl.org/ontology/bibo/handle")]
-        public  string Bibo_handle { get; set;}
-
-        [LABEL(LanguageEnum.es,"http://purl.org/ontology/bibo/doi")]
-        [RDFProperty("http://purl.org/ontology/bibo/doi")]
-        public  string Bibo_doi { get; set;}
-
-        [LABEL(LanguageEnum.es,"http://w3id.org/roh/wos")]
-        [RDFProperty("http://w3id.org/roh/wos")]
-        public  int? Roh_wos { get; set;}
-
-        [LABEL(LanguageEnum.es,"http://purl.org/ontology/bibo/issue")]
-        [RDFProperty("http://purl.org/ontology/bibo/issue")]
-        public  string Bibo_issue { get; set;}
-
-        [LABEL(LanguageEnum.es,"http://w3id.org/roh/suggestedKeywords")]
-        [RDFProperty("http://w3id.org/roh/suggestedKeywords")]
-        public  List<string> Roh_suggestedKeywords { get; set;}
-
-        [LABEL(LanguageEnum.es,"http://purl.org/ontology/bibo/volume")]
-        [RDFProperty("http://purl.org/ontology/bibo/volume")]
-        public  string Bibo_volume { get; set;}
-
-        [LABEL(LanguageEnum.es,"http://w3id.org/roh/enrichedKeywords")]
-        [RDFProperty("http://w3id.org/roh/enrichedKeywords")]
-        public  List<string> Roh_enrichedKeywords { get; set;}
+        [RDFProperty("http://w3id.org/roh/packagesNumber")]
+        public  int? Roh_packagesNumber { get; set;}
 
         [LABEL(LanguageEnum.es,"http://purl.org/dc/terms/issued")]
         [RDFProperty("http://purl.org/dc/terms/issued")]
         public  DateTime? Dct_issued { get; set;}
 
-        [RDFProperty("http://w3id.org/roh/typeOthers")]
-        public  string Roh_typeOthers { get; set;}
-
-        [LABEL(LanguageEnum.es,"http://purl.org/ontology/bibo/pageStart")]
-        [RDFProperty("http://purl.org/ontology/bibo/pageStart")]
-        public  int? Bibo_pageStart { get; set;}
-
-        [LABEL(LanguageEnum.es,"http://w3id.org/roh/crisIdentifier")]
-        [RDFProperty("http://w3id.org/roh/crisIdentifier")]
-        public  string Roh_crisIdentifier { get; set;}
-
-        [LABEL(LanguageEnum.es,"http://w3id.org/roh/congressProceedingsPublication")]
-        [RDFProperty("http://w3id.org/roh/congressProceedingsPublication")]
-        public  bool Roh_congressProceedingsPublication { get; set;}
+        [RDFProperty("http://w3id.org/roh/forksNumber")]
+        public  int? Roh_forksNumber { get; set;}
 
         [LABEL(LanguageEnum.es,"https://www.w3.org/2006/vcard/ns#url")]
         [RDFProperty("https://www.w3.org/2006/vcard/ns#url")]
-        public  List<string> Vcard_url { get; set;}
-
-        [LABEL(LanguageEnum.es,"http://purl.org/ontology/bibo/pageEnd")]
-        [RDFProperty("http://purl.org/ontology/bibo/pageEnd")]
-        public  int? Bibo_pageEnd { get; set;}
-
-        [LABEL(LanguageEnum.es,"http://w3id.org/roh/collection")]
-        [RDFProperty("http://w3id.org/roh/collection")]
-        public  string Roh_collection { get; set;}
+        public  string Vcard_url { get; set;}
 
         [LABEL(LanguageEnum.es,"http://w3id.org/roh/userKeywords")]
         [RDFProperty("http://w3id.org/roh/userKeywords")]
         public  List<string> Roh_userKeywords { get; set;}
 
+        [LABEL(LanguageEnum.es,"http://w3id.org/roh/externalKeywords")]
+        [RDFProperty("http://w3id.org/roh/externalKeywords")]
+        public  List<string> Roh_externalKeywords { get; set;}
+
+        [RDFProperty("http://purl.org/dc/terms/license")]
+        public  string Dct_license { get; set;}
+
+        [LABEL(LanguageEnum.es,"http://vivoweb.org/ontology/core#freeTextKeyword")]
+        [RDFProperty("http://vivoweb.org/ontology/core#freeTextKeyword")]
+        public  List<string> Vivo_freeTextKeyword { get; set;}
+
+        [RDFProperty("http://w3id.org/roh/resolvedIssuesNumber")]
+        public  int? Roh_resolvedIssuesNumber { get; set;}
+
+        [LABEL(LanguageEnum.es,"http://purl.org/ontology/bibo/doi")]
+        [RDFProperty("http://purl.org/ontology/bibo/doi")]
+        public  string Bibo_doi { get; set;}
+
+        [RDFProperty("http://w3id.org/roh/issuesNumber")]
+        public  int? Roh_issuesNumber { get; set;}
+
+        [LABEL(LanguageEnum.es,"http://w3id.org/roh/suggestedKeywords")]
+        [RDFProperty("http://w3id.org/roh/suggestedKeywords")]
+        public  List<string> Roh_suggestedKeywords { get; set;}
+
+        [LABEL(LanguageEnum.es,"http://w3id.org/roh/enrichedKeywords")]
+        [RDFProperty("http://w3id.org/roh/enrichedKeywords")]
+        public  List<string> Roh_enrichedKeywords { get; set;}
+
+        [RDFProperty("http://w3id.org/roh/viewsNumber")]
+        public  int? Roh_viewsNumber { get; set;}
+
+        [RDFProperty("http://w3id.org/roh/researchObjectType")]
+        public  object Roh_researchObjectType  { get; set;} 
+        public string IdRoh_researchObjectType  { get; set;} 
+
         [LABEL(LanguageEnum.es,"http://w3id.org/roh/title")]
         [RDFProperty("http://w3id.org/roh/title")]
         public  string Roh_title { get; set;}
-
-        [LABEL(LanguageEnum.es,"http://w3id.org/roh/scientificActivityDocument")]
-        [RDFProperty("http://w3id.org/roh/scientificActivityDocument")]
-        public  ScientificActivityDocument Roh_scientificActivityDocument  { get; set;} 
-        public string IdRoh_scientificActivityDocument  { get; set;} 
 
         [LABEL(LanguageEnum.es,"http://w3id.org/roh/isValidated")]
         [RDFProperty("http://w3id.org/roh/isValidated")]
@@ -2216,16 +1859,42 @@
         [RDFProperty("http://w3id.org/roh/citationLoadedCount")]
         public  int Roh_citationLoadedCount { get; set;}
 
-        [RDFProperty("http://w3id.org/roh/citationCount")]
-        public  int Roh_citationCount { get; set;}
-
-        [LABEL(LanguageEnum.es,"http://w3id.org/roh/referencesLoadedCount")]
-        [RDFProperty("http://w3id.org/roh/referencesLoadedCount")]
-        public  int Roh_referencesLoadedCount { get; set;}
-
         [LABEL(LanguageEnum.es,"http://w3id.org/roh/isPublic")]
         [RDFProperty("http://w3id.org/roh/isPublic")]
         public  bool Roh_isPublic { get; set;}
+    }
+
+    public class Annotation : GnossOCBase
+    {
+
+        public Annotation() : base() { }
+
+        public Annotation(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
+        {
+            this.mGNOSSID = pSemCmsModel.Entity.Uri;
+            this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
+            this.Dct_issued= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/dc/terms/issued"));
+            this.Roh_annotation = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/annotation"));
+            SemanticPropertyModel propRdf_member = pSemCmsModel.GetPropertyByPath("http://www.w3.org/1999/02/22-rdf-syntax-ns#member");
+            if (propRdf_member != null && propRdf_member.PropertyValues.Count > 0)
+            {
+                this.Rdf_member = new Person(propRdf_member.PropertyValues[0].RelatedEntity, idiomaUsuario);
+            }
+        }
+
+        public virtual string RdfType { get { return "http://w3id.org/roh/Annotation"; } }
+        public virtual string RdfsLabel { get { return "http://w3id.org/roh/Annotation"; } }
+
+        [RDFProperty("http://purl.org/dc/terms/issued")]
+        public DateTime? Dct_issued { get; set; }
+
+        [RDFProperty("http://w3id.org/roh/annotation")]
+        public string Roh_annotation { get; set; }
+
+        [LABEL(LanguageEnum.es, "http://www.w3.org/1999/02/22-rdf-syntax-ns#member")]
+        [RDFProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#member")]
+        public Person Rdf_member { get; set; }
+        public string IdRdf_member { get; set; }
 
     }
 
