@@ -289,6 +289,22 @@ namespace GuardadoCV.Models.API.Templates
         /// Composición de la propiedad
         /// </summary>
         public string compossed;
+        /// <summary>
+        /// Dependencia (valor que tiene que tener una determinada propiedad para que el campo sea editable)
+        /// </summary>
+        public ItemEditSectionRowPropertyDependency dependency;
+    }
+
+    public class ItemEditSectionRowPropertyDependency
+    {
+        /// <summary>
+        /// Propiedad de la que depende
+        /// </summary>
+        public string property;
+        /// <summary>
+        /// Propiedad de la que va a obtener el valor
+        /// </summary>
+        public string propertyValue;
     }
 
     /// <summary>
