@@ -262,7 +262,7 @@
                                     {
                                         contadorAreaConocimiento++;
                                         <li>
-                                            <a href="@Comunidad.Url/@Html.Translate("PUBLICACIONES_URL")?roh:hasKnowledgeArea@("@@@")roh:categoryNode=@concept.GNOSSID">
+                                            <a href="@Comunidad.Url/@Html.Translate("ROS_URL")?roh:hasKnowledgeArea@("@@@")roh:categoryNode=@concept.GNOSSID">
                                                 <span about="@concept.GNOSSID" property="@concept.GetPropertyURI(nameof(concept.Skos_prefLabel))" class="texto">@concept.Skos_prefLabel</span>
                                             </a>
                                         </li>
@@ -271,7 +271,7 @@
                                     {
                                         contadorAreaConocimiento++;
                                         <li class="ocultar" style="display: none;">
-                                            <a href="@Comunidad.Url/@Html.Translate("PUBLICACIONES_URL")?roh:hasKnowledgeArea@("@@@")roh:categoryNode=@concept.GNOSSID">
+                                            <a href="@Comunidad.Url/@Html.Translate("ROS_URL")?roh:hasKnowledgeArea@("@@@")roh:categoryNode=@concept.GNOSSID">
                                                 <span about="@concept.GNOSSID" property="@concept.GetPropertyURI(nameof(concept.Skos_prefLabel))" class="texto">@concept.Skos_prefLabel</span>
                                             </a>
                                         </li>
@@ -303,7 +303,7 @@
                                 {
                                     contadorCategorias++;
                                     <li>
-                                        <a href="http://edma.gnoss.com/comunidad/hercules/publicaciones?vivo:freeTextKeyword=@etiquetas">
+                                        <a href="http://edma.gnoss.com/comunidad/hercules/researchobjects?vivo:freeTextKeyword=@etiquetas">
                                             <span about="@pResearchObject.GNOSSID" property="@pResearchObject.GetPropertyURI(nameof(pResearchObject.Vivo_freeTextKeyword))" class="texto">@etiquetas</span>
                                         </a>
                                     </li>
@@ -312,7 +312,7 @@
                                 {
                                     contadorCategorias++;
                                     <li class="ocultar" style="display: none;">
-                                        <a href="http://edma.gnoss.com/comunidad/hercules/publicaciones?vivo:freeTextKeyword=@etiquetas">
+                                        <a href="http://edma.gnoss.com/comunidad/hercules/researchobjects?vivo:freeTextKeyword=@etiquetas">
                                             <span about="@pResearchObject.GNOSSID" property="@pResearchObject.GetPropertyURI(nameof(pResearchObject.Vivo_freeTextKeyword))" class="texto">@etiquetas</span>
                                         </a>
                                     </li>
@@ -845,19 +845,19 @@
             $('#relacionados-tab').unbind().click(function (e) {
                 e.preventDefault();
                 that.tabActive = "relacionados";
-                buscadorPersonalizado.init("@Html.Translate("RELACIONADOS")", "#contenedorBuscadorRelacionados", "searchRelacionadosDocumento=@pResearchObject.GNOSSID.Split('_')[1].ToUpper()", "dct:issued", "rdf:type=document", "@Comunidad.Url", "@Comunidad.Key.ToString()", function() {
+                buscadorPersonalizado.init("@Html.Translate("RELACIONADOS")", "#contenedorBuscadorRelacionados", "searchRelacionadosROs=@pResearchObject.GNOSSID.Split('_')[1].ToUpper()", "dct:issued", "rdf:type=researchobject", "@Comunidad.Url", "@Comunidad.Key.ToString()", function() {
                     $('#panNumResultados').hide();
                 });
             });
             $('#citas-tab').unbind().click(function (e) {
                 e.preventDefault();
                 that.tabActive = "citas";
-                buscadorPersonalizado.init("@Html.Translate("CITAS")", "#contenedorBuscadorCitas", "bibo:cites=http://gnoss/@pResearchObject.GNOSSID.Split('_')[1].ToUpper()", "dct:issued", "rdf:type=document", "@Comunidad.Url", "@Comunidad.Key.ToString()");
+                buscadorPersonalizado.init("@Html.Translate("CITAS")", "#contenedorBuscadorCitas", "bibo:cites=http://gnoss/@pResearchObject.GNOSSID.Split('_')[1].ToUpper()", "dct:issued", "rdf:type=researchobject", "@Comunidad.Url", "@Comunidad.Key.ToString()");
             });
             $('#referencias-tab').unbind().click(function (e) {
                 e.preventDefault();
                 that.tabActive = "referencias";
-                buscadorPersonalizado.init("@Html.Translate("REFERENCIAS")", "#contenedorBuscadorReferencias", "searchReferenciasDocumento=@pResearchObject.GNOSSID.Split('_')[1].ToUpper()", "dct:issued", "rdf:type=document", "@Comunidad.Url", "@Comunidad.Key.ToString()");
+                buscadorPersonalizado.init("@Html.Translate("REFERENCIAS")", "#contenedorBuscadorReferencias", "searchReferenciasDocumento=@pResearchObject.GNOSSID.Split('_')[1].ToUpper()", "dct:issued", "rdf:type=researchobject", "@Comunidad.Url", "@Comunidad.Key.ToString()");
             });
             return;
         }
