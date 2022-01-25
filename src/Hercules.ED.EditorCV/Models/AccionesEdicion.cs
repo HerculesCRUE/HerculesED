@@ -39,33 +39,18 @@ namespace GuardadoCV.Models
         private static Tuple<Dictionary<string, string>, Dictionary<string, string>> tuplaTesauro;
 
         #region Métodos públicos
+
         /// <summary>
         /// Obtiene un listado de sugerencias con datos existentes para esa propiedad
         /// </summary>
         /// <param name="pSearch">Texto por el que se van a buscar sugerencias</param>
         /// <param name="pProperty">Propiedad en la que se quiere buscar</param>
         /// <param name="pRdfType">Rdf:type de la entidad en la que se quiere buscar</param>
-        /// <param name="pSection">Sección</param>
-        /// <param name="pRdfTypeTab">Pestaña del CV</param>
         /// <param name="pGraph">Grafo en el que se encuentra la propiedad</param>
+        /// <param name="pGetEntityID">Obtiene el ID de la entidad además del valor de la propiedad</param>
         /// <returns></returns>
-        public object GetAutocomplete(string pSearch, string pProperty, string pRdfType, string pGraph, string pSection, string pRdfTypeTab, List<string> pLista)
+        public object GetAutocomplete(string pSearch, string pProperty, string pRdfType, string pGraph, bool pGetEntityID, List<string> pLista)
         {
-            TabSectionPresentationListItems presentationListItem = UtilityCV.TabTemplates.First(x => x.rdftype == pRdfTypeTab).sections.First(x => x.property == pSection).presentation.listItemsPresentation;
-
-            ItemEditSectionRowPropertyAutocompleteConfig autocompleteConfig = presentationListItem.listItemEdit.sections.SelectMany(x => x.rows).SelectMany(x => x.properties).Where(x => x.property == pProperty).FirstOrDefault().autocompleteConfig;
-            bool getEntityID = false;
-            if (autocompleteConfig != null)
-            {
-                pGraph = autocompleteConfig.graph;
-                pRdfType = autocompleteConfig.rdftype;
-                pProperty = autocompleteConfig.property.property;
-                if (!string.IsNullOrEmpty(autocompleteConfig.propertyEntity))
-                {
-                    getEntityID = true;
-                }
-            }
-
             string searchText = pSearch.Trim();
             string filter = "";
             if (!pSearch.EndsWith(' '))
@@ -100,7 +85,7 @@ namespace GuardadoCV.Models
             string select = "SELECT DISTINCT ?s ?o ";
             string where = $"WHERE {{ ?s a <{ pRdfType }>. ?s <{ pProperty }> ?o . FILTER( {filter} ) }} ORDER BY ?o";
             SparqlObject sparqlObjectAux = mResourceApi.VirtuosoQuery(select, where, pGraph);
-            if (!getEntityID)
+            if (!pGetEntityID)
             {
                 var resultados = sparqlObjectAux.results.bindings.Select(x => x["o"].value).Distinct();
                 if (pLista != null)
@@ -339,7 +324,7 @@ namespace GuardadoCV.Models
                     signaturesList.Add(firmaActual.Trim());
                 }
 
-                listaPersonas = new Dictionary<string, List<Person>>();
+                Dictionary<string, List<Person>> listaPersonasAux = new Dictionary<string, List<Person>>();
                 Parallel.ForEach(signaturesList, new ParallelOptions { MaxDegreeOfParallelism = 5 }, firma =>
                 {
                     if (firma.Trim() != "")
@@ -347,9 +332,13 @@ namespace GuardadoCV.Models
                         List<Person> personas = ObtenerPersonasFirma(firma.Trim());
                         ObtenerScores(firma.Trim(), ref personas, colaboradoresDocumentos, colaboradoresProyectos);
                         personas = personas.Where(x => x.score > 0.4f).OrderByDescending(x => x.score).ToList();
-                        listaPersonas[firma.Trim()] = personas;
+                        listaPersonasAux[firma.Trim()] = personas;
                     }
                 });
+                foreach(string firma in signaturesList)
+                {
+                    listaPersonas.Add(firma, listaPersonasAux[firma]);
+                }
             }
 
             List<Guid> listaIDs = listaPersonas.SelectMany(x => x.Value).Select(x => mResourceApi.GetShortGuid(x.personid)).Distinct().ToList();
@@ -1400,6 +1389,18 @@ namespace GuardadoCV.Models
                     }
                 }
 
+                if (pItemEditSectionRowProperty.autocompleteConfig != null)
+                {
+
+                    entityEditSectionRowProperty.autocompleteConfig = new AutocompleteConfig()
+                    {
+                        property = UtilityCV.GetPropComplete(pItemEditSectionRowProperty.autocompleteConfig.property),
+                        rdftype = pItemEditSectionRowProperty.autocompleteConfig.rdftype,
+                        graph= pItemEditSectionRowProperty.autocompleteConfig.graph,
+                        getEntityId= !string.IsNullOrEmpty( pItemEditSectionRowProperty.autocompleteConfig.propertyEntity)
+                    };
+                }
+
                 if (pItemEditSectionRowProperty.autocompleteConfig != null && !string.IsNullOrEmpty(pItemEditSectionRowProperty.autocompleteConfig.propertyEntity))
                 {
                     entityEditSectionRowProperty.propertyEntity = pItemEditSectionRowProperty.autocompleteConfig.propertyEntity;
@@ -1408,7 +1409,7 @@ namespace GuardadoCV.Models
                         entityEditSectionRowProperty.propertyEntityValue = pData[pId].Where(x => x["p"].value == entityEditSectionRowProperty.propertyEntity).Select(x => x["o"].value).Distinct().FirstOrDefault();
                     }
                 }
-
+                    
                 if (pItemEditSectionRowProperty.type == DataTypeEdit.thesaurus)
                 {
                     entityEditSectionRowProperty.thesaurus = pTesauros[pItemEditSectionRowProperty.thesaurus];
@@ -1543,6 +1544,16 @@ namespace GuardadoCV.Models
                         }
                     }
                 }
+
+                if (pItemEditSectionRowProperty.dependency != null)
+                {
+                    entityEditSectionRowProperty.dependency = new Dependency()
+                    {
+                        parent = pItemEditSectionRowProperty.dependency.property,
+                        parentDependencyValue = pItemEditSectionRowProperty.dependency.propertyValue.Replace("{GraphsUrl}", mResourceApi.GraphsUrl)
+                    };
+                }
+
                 return entityEditSectionRowProperty;
             }
         }
