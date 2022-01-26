@@ -32,15 +32,10 @@ namespace ScopusConnect.ROs.Scopus.Controllers
 
                         foreach (PublicacionInicial rec in objInicial.SearchResults.entry)
                         {
-                            if (DateTime.Parse(rec.PrismCoverDate) > DateTime.Parse(date))
+                            Publication publicacion = cambioDeModeloPublicacion(rec, true);
+                            if (publicacion != null)
                             {
-
-                                Publication publicacion = cambioDeModeloPublicacion(rec, true);
-                                if (publicacion != null)
-                                {
-                                    sol.Add(publicacion);
-                                }
-
+                                sol.Add(publicacion);
                             }
                         }
                     }
@@ -227,7 +222,7 @@ namespace ScopusConnect.ROs.Scopus.Controllers
         // }
 
         public Person getAuthorPrincipal(PublicacionInicial objInicial)
-        {            
+        {
             if (!string.IsNullOrEmpty(objInicial.DcCreator))
             {
                 Person autor = new Person();
