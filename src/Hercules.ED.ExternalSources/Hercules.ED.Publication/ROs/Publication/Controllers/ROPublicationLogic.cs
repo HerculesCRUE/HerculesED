@@ -126,48 +126,56 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 objInicial_woS = llamada_WoS(name, date);
             }
 
-            int contadorPubWos = 0;
-            if (objInicial_woS != null && objInicial_woS.Count >= 1)
+            int contadorPubWos = 1;
+            if (objInicial_woS != null && objInicial_woS.Any())
             {
                 foreach (Publication pub in objInicial_woS)
                 {
                     Log.Information($@"[WoS] Publicación {contadorPubWos}/{objInicial_woS.Count}");
+
                     this.dois_bibliografia = new List<string>();
-                    this.advertencia = pub.problema;
-                    string doi = pub.doi;
-                    this.dois_principales.Add(doi);
+                    this.dois_principales.Add(pub.doi);
+
+                    // SemanticScholar
                     Log.Information("[WoS] Haciendo petición a SemanticScholar...");
                     Publication objInicial_semanticScholar = llamadaSemanticScholar(pub.doi, dicSemanticScholar);
                     Log.Information("[WoS] Comparación (SemanticScholar)...");
                     Publication pub_completa = compatacion(pub, objInicial_semanticScholar);
+
+                    // CrossRef
                     Log.Information("[WoS] Haciendo petición a CrossRef...");
-                    Publication objInicial_CrossRef = llamadaCrossRef(doi, dicCrossRef);
+                    Publication objInicial_CrossRef = llamadaCrossRef(pub.doi, dicCrossRef); // Bibliografía
                     Log.Information("[WoS] Comparación (CrossRef)...");
                     pub_completa = compatacion(pub_completa, objInicial_CrossRef);
                     if (objInicial_CrossRef != null)
                     {
                         pub_completa.bibliografia = objInicial_CrossRef.bibliografia;
                     }
+
+                    // Zenodo
                     Log.Information("[WoS] Haciendo petición a Zenodo...");
                     pub_completa.pdf = llamadaZenodo(pub.doi, dicZenodo);
-                    Log.Information("[WoS] Obteniendo topics enriquecidos...");
-                    pub_completa.topics_enriquecidos = enriquedicmiento(pub);
-                    Log.Information("[WoS] Obteniendo freeTextKeywords enriquecidos...");
-                    pub_completa.freetextKeyword_enriquecidas = enriquedicmiento_pal(pub);
-                    //if (pub.dataIssued != null && pub.hasPublicationVenue != null && pub.hasPublicationVenue.issn != null)
-                    //{
-                    //    Log.Information("[WoS] Obteniendo métrica...");
-                    //    pub.hasPublicationVenue = metrica_journal(pub.hasPublicationVenue, pub.dataIssued.datimeTime, pub.topics_enriquecidos);
-                    //}
                     if (pub_completa.pdf == "")
                     {
                         pub_completa.pdf = null;
                     }
+
+                    // Enriquecimiento
+                    Log.Information("[WoS] Obteniendo topics enriquecidos...");
+                    pub_completa.topics_enriquecidos = enriquedicmiento(pub);
+                    Log.Information("[WoS] Obteniendo freeTextKeywords enriquecidos...");
+                    pub_completa.freetextKeyword_enriquecidas = enriquedicmiento_pal(pub);
+                    
+                    // Completar bibliografía (Referencias)
                     Log.Information("[WoS] Completando bibliografía...");
                     pub_completa = completar_bib(pub_completa, dicOpenCitations, dicSemanticScholar, dicCrossRef, dicZenodo);
-                    Log.Information("[WoS] Obteniendo bibliografías y citas...");
-                    pub_completa = obtener_bib_citas(pub_completa, dicOpenCitations, dicSemanticScholar, dicCrossRef, dicZenodo);
-                    if (objInicial_Scopus != null && objInicial_Scopus.Count >= 1)
+
+                    // Obtención de Citas
+                    Log.Information("[WoS] Citas...");
+                    pub_completa = ObtenerCitas(pub_completa); 
+
+                    // Completar información faltante con las publicaciones de Scopus
+                    if (objInicial_Scopus != null && objInicial_Scopus.Any())
                     {
                         foreach (PublicacionScopus pub_scopus in objInicial_Scopus)
                         {
@@ -179,8 +187,6 @@ namespace PublicationConnect.ROs.Publications.Controllers
                                     if (pub_scopus.doi == pub_completa.doi)
                                     {
                                         pub_completa = compatacion(pub_completa, pubScopus);
-                                        //todo combinar los erroees! ni puta idea de como hacerlo proqe depende de lo que juntes y lo que no!
-                                        // Bastante gracioso el comentario.
                                     }
                                 }
                             }
@@ -194,69 +200,78 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     {
                         resultado.Add(pub_completa);
                     }
+
                     contadorPubWos++;
                 }
             }
 
-            //int contadoPubScopus = 0;
-            //if (objInicial_Scopus != null && objInicial_Scopus.Count >= 1)
-            //{
-            //    //llamada Scopus para completar publicaciones. 
-            //    foreach (PublicacionScopus pub_scopus in objInicial_Scopus)
-            //    {
-            //        Log.Information($@"[Scopus] Publicación {contadoPubScopus}/{objInicial_Scopus.Count}");
-            //        if (!dois_principales.Contains(pub_scopus.doi))
-            //        {
-            //            Publication pubScopus = ObtenerPublicacionDeScopus(pub_scopus);
-            //            this.dois_bibliografia = new List<string>();
-            //            string doi = pub_scopus.doi;
-            //            this.dois_principales.Add(doi);
-            //            Log.Information("[Scopus] Haciendo petición a SemanticScholar...");
-            //            Publication objInicial_semanticScholar = llamadaSemanticScholar(pub_scopus.doi, ref dicSemanticScholar);
-            //            Log.Information("[Scopus] Comparación (SemanticScholar)...");
-            //            Publication pub_completa = compatacion(pubScopus, objInicial_semanticScholar);
-            //            Log.Information("[Scopus] Haciendo petición a CrossRef...");
-            //            Publication objInicial_CrossRef = llamadaCrossRef(doi, ref dicCrossRef);
-            //            Log.Information("[Scopus] Comparación (CrossRef)...");
-            //            pub_completa = compatacion(pub_completa, objInicial_CrossRef);
-            //            if (objInicial_CrossRef != null)
-            //            {
-            //                pub_completa.bibliografia = objInicial_CrossRef.bibliografia;
-            //            }
-            //            Log.Information("[Scopus] Haciendo petición a Zenodo...");
-            //            pub_completa.pdf = llamadaZenodo(pub_completa.doi, ref dicZenodo);
-            //            Log.Information("[Scopus] Obteniendo topics enriquecidos...");
-            //            pub_completa.topics_enriquecidos = enriquedicmiento(pub_completa);
-            //            Log.Information("[Scopus] Obteniendo freeTextKeywords enriquecidos...");
-            //            pub_completa.freetextKeyword_enriquecidas = enriquedicmiento_pal(pub_completa);
-            //            if (pub_completa.dataIssued != null & pub_completa.hasPublicationVenue.issn != null)
-            //            {
-            //                Log.Information("[Scopus] Obteniendo métrica...");
-            //                pub_completa.hasPublicationVenue = metrica_journal(pub_completa.hasPublicationVenue, pub_completa.dataIssued.datimeTime, pub_completa.topics_enriquecidos);
-            //            }
-            //            if (pub_completa.pdf == "")
-            //            {
-            //                pub_completa.pdf = null;
-            //            }
-            //            Log.Information("[Scopus] Obteniendo bibliografia...");
-            //            pub_completa = completar_bib(pub_completa, ref dicOpenCitations, ref dicSemanticScholar, ref dicCrossRef, ref dicZenodo);
-            //            Log.Information("[Scopus] Obteniendo citas...");
-            //            pub_completa = obtener_bib_citas(pub_completa, ref dicOpenCitations, ref dicSemanticScholar, ref dicCrossRef, ref dicZenodo);
-            //            pub_completa.problema = this.advertencia;
-            //            if (pub_completa != null)
-            //            {
-            //                resultado.Add(pub_completa);
-            //            }
-            //        }
-            //        contadoPubScopus++;
-            //    }
+            int contadoPubScopus = 1;
+            if (objInicial_Scopus != null && objInicial_Scopus.Any())
+            {
+                // Llamada Scopus para completar publicaciones que no se hayan obtenido de WoS.
+                foreach (PublicacionScopus pub_scopus in objInicial_Scopus)
+                {
+                    Log.Information($@"[Scopus] Publicación {contadoPubScopus}/{objInicial_Scopus.Count}");
+                    if (!dois_principales.Contains(pub_scopus.doi))
+                    {
+                        Publication pubScopus = ObtenerPublicacionDeScopus(pub_scopus);
 
-            //}
+                        this.dois_bibliografia = new List<string>();
+                        this.dois_principales.Add(pub_scopus.doi);
 
-            //string info = JsonConvert.SerializeObject(resultado);
-            //string path = _Configuracion.GetRutaJsonSalida();
-            //Log.Information("Escribiendo datos en fichero...");
-            //File.WriteAllText($@"Files/ejemplo.json", info);
+                        // SemanticScholar
+                        Log.Information("[Scopus] Haciendo petición a SemanticScholar...");
+                        Publication objInicial_semanticScholar = llamadaSemanticScholar(pub_scopus.doi, dicSemanticScholar);
+                        Log.Information("[Scopus] Comparación (SemanticScholar)...");
+                        Publication pub_completa = compatacion(pubScopus, objInicial_semanticScholar);
+
+                        // CrossRef
+                        Log.Information("[Scopus] Haciendo petición a CrossRef...");
+                        Publication objInicial_CrossRef = llamadaCrossRef(pub_scopus.doi, dicCrossRef);
+                        Log.Information("[Scopus] Comparación (CrossRef)...");
+                        pub_completa = compatacion(pub_completa, objInicial_CrossRef);
+                        if (objInicial_CrossRef != null)
+                        {
+                            pub_completa.bibliografia = objInicial_CrossRef.bibliografia;
+                        }
+
+                        // Zenodo
+                        Log.Information("[Scopus] Haciendo petición a Zenodo...");
+                        pub_completa.pdf = llamadaZenodo(pub_completa.doi, dicZenodo);
+                        if (pub_completa.pdf == "")
+                        {
+                            pub_completa.pdf = null;
+                        }
+
+                        // Enriquecimiento
+                        Log.Information("[Scopus] Obteniendo topics enriquecidos...");
+                        pub_completa.topics_enriquecidos = enriquedicmiento(pub_completa);
+                        Log.Information("[Scopus] Obteniendo freeTextKeywords enriquecidos...");
+                        pub_completa.freetextKeyword_enriquecidas = enriquedicmiento_pal(pub_completa);
+
+                        // Completar bibliografía (Referencias)
+                        Log.Information("[Scopus] Completando bibliografia...");
+                        pub_completa = completar_bib(pub_completa, dicOpenCitations, dicSemanticScholar, dicCrossRef, dicZenodo);
+
+                        // Obtención de Citas
+                        Log.Information("[Scopus] Citas...");                        
+                        pub_completa = ObtenerCitasOpenCitations(pub_completa, dicOpenCitations, dicSemanticScholar, dicCrossRef, dicZenodo);
+                        
+                        // Unificar Autores
+                        pub_completa = CompararAutores(pub_completa);
+                        if (pub_completa != null)
+                        {
+                            resultado.Add(pub_completa);
+                        }                        
+                    }
+                    contadoPubScopus++;
+                }
+            }
+
+            string info = JsonConvert.SerializeObject(resultado);
+            string path = _Configuracion.GetRutaJsonSalida();
+            Log.Information("Escribiendo datos en fichero...");
+            File.WriteAllText($@"Files/skarmeta-ok.json", info);
             return resultado;
 
         }
@@ -445,8 +460,34 @@ namespace PublicationConnect.ROs.Publications.Controllers
             return result;
         }
 
+        /// <summary>
+        /// Obtiene las citas de una publicación WoS. A su vez, enriquece las etiquetas y categorías.
+        /// </summary>
+        /// <param name="pPublicacion">Publicación a obtener las citas.</param>
+        /// <returns></returns>
+        public Publication ObtenerCitas(Publication pPublicacion)
+        {
+            foreach (string item in pPublicacion.IDs)
+            {
+                if (item.ToLower().Contains("wos"))
+                {
+                    pPublicacion.citas = PeticionWosCitas(item.Split(':')[1]);
+                }
+            }
 
-        public Publication obtener_bib_citas(Publication pub, Dictionary<string, Publication> pDicOpenCitations, Dictionary<string, Publication> pDicSemanticScholar, Dictionary<string, Publication> pDicCrossRef, Dictionary<string, string> pDicZenodo)
+            if (pPublicacion.citas != null && pPublicacion.citas.Any())
+            {
+                foreach (Publication pub in pPublicacion.citas)
+                {
+                    pub.topics_enriquecidos = enriquedicmiento(pub);
+                    pub.freetextKeyword_enriquecidas = enriquedicmiento_pal(pub);
+                }
+            }
+
+            return pPublicacion;
+        }
+
+        public Publication ObtenerCitasOpenCitations(Publication pub, Dictionary<string, Publication> pDicOpenCitations, Dictionary<string, Publication> pDicSemanticScholar, Dictionary<string, Publication> pDicCrossRef, Dictionary<string, string> pDicZenodo)
         {
             string doi = pub.doi;
 
@@ -471,8 +512,11 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     if (pub_completa != null)
                     {
                         pub_completa.pdf = llamadaZenodo(pub_completa.doi, pDicZenodo);
+
+                        // Enriquecimiento
                         pub_completa.topics_enriquecidos = enriquedicmiento(pub_completa);
                         pub_completa.freetextKeyword_enriquecidas = enriquedicmiento_pal(pub_completa);
+
                         //if (pub_completa.dataIssued != null & pub_completa.hasPublicationVenue.issn != null)
                         //{
                         //    pub_completa.hasPublicationVenue = metrica_journal(pub_completa.hasPublicationVenue, pub_completa.dataIssued.datimeTime, pub_completa.topics_enriquecidos);
@@ -501,6 +545,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 }
             }
 
+            // No hace falta, ya que cogemos la bibliografía de CrossRef.
             //List<Publication> bibliografia = new List<Publication>();
             //if (objInicial_OpenCitatons != null && objInicial_OpenCitatons.bibliografia != null)
             //{
@@ -512,18 +557,23 @@ namespace PublicationConnect.ROs.Publications.Controllers
             //            this.dois_bibliografia.Add(doi_bib);
 
             //            //llamada Semantic Scholar 
-            //            Publication objInicial_SemanticScholar = llamadaSemanticScholar(doi_bib, ref pDicSemanticScholar);
-            //            Publication pub_2 = this.llamadaCrossRef(doi_bib, ref pDicCrossRef);
+            //            Publication objInicial_SemanticScholar = llamadaSemanticScholar(doi_bib, pDicSemanticScholar);
+            //            Publication pub_2 = this.llamadaCrossRef(doi_bib, pDicCrossRef);
             //            Publication pub_completa = compatacion(pub_2, objInicial_SemanticScholar);
+
+            //            // No necesitamos estos datos.
+            //            pub_completa.citas = null;
+            //            pub_completa.bibliografia = null;
+
             //            if (pub_completa != null)
             //            {
-            //                pub_completa.pdf = llamadaZenodo(pub_completa.doi, ref pDicZenodo);
+            //                pub_completa.pdf = llamadaZenodo(pub_completa.doi, pDicZenodo);
             //                pub_completa.topics_enriquecidos = enriquedicmiento(pub_completa);
             //                pub_completa.freetextKeyword_enriquecidas = enriquedicmiento_pal(pub_completa);
-            //                if (pub_completa.dataIssued != null && pub_completa.hasPublicationVenue != null && pub_completa.hasPublicationVenue.issn != null)
-            //                {
-            //                    pub_completa.hasPublicationVenue = metrica_journal(pub_completa.hasPublicationVenue, pub_completa.dataIssued.datimeTime, pub_completa.topics_enriquecidos);
-            //                }
+            //                //if (pub_completa.dataIssued != null && pub_completa.hasPublicationVenue != null && pub_completa.hasPublicationVenue.issn != null)
+            //                //{
+            //                //    pub_completa.hasPublicationVenue = metrica_journal(pub_completa.hasPublicationVenue, pub_completa.dataIssued.datimeTime, pub_completa.topics_enriquecidos);
+            //                //}
             //                if (pub_completa.pdf == "")
             //                {
             //                    pub_completa.pdf = null;
@@ -580,8 +630,11 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
                             //Console.Write(pub_final_bib.dataIssued);
                             //Console.Write("\n");
+
+                            // Enriquecimiento
                             pub_final_bib.topics_enriquecidos = enriquedicmiento(pub_final_bib);
                             pub_final_bib.freetextKeyword_enriquecidas = enriquedicmiento_pal(pub_final_bib);
+
                             //Console.Write(pub_final_bib);
                             // try
                             //{
@@ -1585,6 +1638,31 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 journal_inicial.hasMetric = metricas_revista;
             }
             return journal_inicial;
+        }
+
+        public List<Publication> PeticionWosCitas(string pIdWos)
+        {
+            List<Publication> listaPublicaciones = new List<Publication>();
+
+            try
+            {
+                if (!string.IsNullOrEmpty(pIdWos))
+                {
+                    // URL a la petición.
+                    Uri url = new Uri(string.Format(_Configuracion.GetUrlWos() + "WoS/GetCitesByWosId?pWosId={0}", pIdWos));
+
+                    string info_publication = httpCall(url.ToString(), "GET", headers).Result;
+                    //Log.Information("Respuesta SemanticScholar --> " + info_publication);
+                    listaPublicaciones = JsonConvert.DeserializeObject<List<Publication>>(info_publication);
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error("Petición SemanticScholar --> " + e);
+                return listaPublicaciones;
+            }
+
+            return listaPublicaciones;
         }
 
         /// <summary>
