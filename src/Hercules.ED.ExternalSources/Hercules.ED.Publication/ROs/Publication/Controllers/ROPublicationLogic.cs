@@ -258,7 +258,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         pub_completa = ObtenerCitasOpenCitations(pub_completa, dicOpenCitations, dicSemanticScholar, dicCrossRef, dicZenodo);
                         
                         // Unificar Autores
-                        pub_completa = CompararAutores(pub_completa);
+                        pub_completa = CompararAutoresCitasReferencias(pub_completa);
                         if (pub_completa != null)
                         {
                             resultado.Add(pub_completa);
