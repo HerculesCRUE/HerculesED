@@ -1,19 +1,17 @@
 Librería de conexión con repositorios externos
  
 
-
 # Microservicios de fuentes externas
 
-
 Los microservicios de Scopus, WoS, CrossRef, OpenCitations, Semantic Scholar y Zenodo tienen un funcionamiento similar:  
-- Desde la interfaz swagger de cada microservidor, se ejecuta el archivo APIcontroller del microservicio asociado. Dependiendo de la peticion que realicemos en ese programa se ejecutara una funcon u otra de este programa. En la ultima fila de la Tabla -- podemos observar la peticion http que ejecuta cada podible petiicon de cada microservicio.  
-- Esta funcion (petición) llamara al programa RO**servidor_name**Logic, que realizara la peticion al microservicio. En la tabla se puede observar exactamente que peticion http se realiza el microservidor en funcion de que petiicon (ultima columna) estemos realizando. Esta funcion, cuyo nombre se facilita en la tercera columna ejecutara esta peticion y obtendra un string del microservidor. 
+- Desde la interfaz swagger de cada microservidor, se ejecuta el archivo APIcontroller del microservicio asociado. Dependiendo de la petición que realicemos en ese programa se ejecutara una función u otra de este programa. En la última fila de la Tabla -- podemos observar la petición http que ejecuta cada posible petición de cada microservicio.  
+- Esta función (petición) llamara al programa RO**servidor_name**Logic, que realizara la petición al microservicio. En la tabla se puede observar exactamente que petición http se realiza el microservidor en función de que petición (última columna) estemos realizando. Esta función, cuyo nombre se facilita en la tercera columna ejecutara esta petición y obtendrá un string del microservidor. 
 - El texto devuelto será convertido a un objeto de C#, para ello el modelo devuelto por cada fuente externa se almacenará en el archivo  ROs/**servicor_name**/Models/ModeloInicial
-- Se llamará a las funcionalidades  de RO**servidor_name**CambioModelo que nos permitirá cambiar el modelo devuelto, por la fuente externa, al modelo final deseado. (mas adelante se hablara mas en detalle de como funciona este cambio de modelo).
-    - Este modelo final es igual en todos los microservicios y está guardado en el archivo  ROs/*servidor_name*/Models/ROPublicationModel. Si se realiza una modificación de este fichero se deberá hacer en todos los microservicios tambien.
+- Se llamará a las funcionalidades  de RO**servidor_name**CambioModelo que nos permitirá cambiar el modelo devuelto, por la fuente externa, al modelo final deseado. (Más adelante se hablara más en detalle de cómo funciona este cambio de modelo).
+    - Este modelo final es igual en todos los microservicios y está guardado en el archivo  ROs/*servidor_name*/Models/ROPublicationModel. Si se realiza una modificación de este fichero se deberá hacer en todos los microservicios también.
 - Una vez tenemos el modelo final con toda la información simplemente se devuelve el modelo generado.
  
-| Microservicio | peticion especifica | nombre de la funcion que ejecuta la peticion en el fichero RO*servidor_name*Logic |input | Url relativa de la peticion a realizar en el servidor| 
+| Microservicio | petición especifica | nombre de la función que ejecuta la petición en el fichero RO*servidor_name*Logic |input | Url relativa de la petición a realizar en el servidor| 
 |:---------------------:|:----------------------------:|:----------------------------:|:----------------------------------------------------------------------------------------------------------|:-----------------:|
 | WoS | https://wos-api.clarivate.com/api/wos/?databaseId=WOK&usrQuery=AI=({orcid})&count={numItems}&firstRecord={(numItems * n) + 1}&publishTimeSpan={date}%2B3000-12-31" |getPublications |orcid and date (opcional) | WoS/GetROs?**orcid={}**&**date={}**|
 | WoS | https://wos-api.clarivate.com/api/wos/id/WOS:{pIdWos}?databaseId=WOK&count=1&firstRecord=1" |getPublicationWos |Id de WoS de una publicación | WoS/GetRoByWosId?**pIdWos={}**|
@@ -25,8 +23,7 @@ Los microservicios de Scopus, WoS, CrossRef, OpenCitations, Semantic Scholar y Z
 | CrossRef |  https://api.crossref.org/works/{0} |getPublications | Doi de la publicación | CrossRef/GetROs?**DOI={}** |
 | SemanticScholar | https://api.semanticscholar.org/graph/v1/paper/{0}?fields=externalIds,title,abstract,url,venue,year,referenceCount,citationCount,authors,authors.name,authors.externalIds  |getPublications | doi de la publicacion | SemanticScholar/GetROs?**doi={}** |
 
-
-Respecto al cambio de modelo, en todos los microservicios se tienen las mismas funciones, denominadas del mismo modo, salvo que si esta fuente no nos proporciona informacion sobre dicho metadatado entonces esa funcion ha sido comentada/eliminada. En cada microservidor, estas funciones seran diferentes dependiendo de donde este la infromacion ncesaria en el modelo devuelto por la fuente esterna. Esta infomacion sera recoguida y puesta en el formato apropiado que el modelo final necesita, por eso en cada microservidor estan funciones son diferentes. Estas funciones estan definidas en ROs/**nombre_servidor**/Controllers/RO**nombre_servidor**CambioModelo.cs. En la siguiente lista se puede observar estas funciones.
+Respecto al cambio de modelo, en todos los microservicios se tienen las mismas funciones, denominadas del mismo modo, salvo que si esta fuente no nos proporciona informacion sobre dicho metadatado entonces esa función ha sido comentada/eliminada. En cada microservidor, estas funciones serán diferentes dependiendo de donde este la información necesaria en el modelo devuelto por la fuente externa. Esta información será recogida y puesta en el formato apropiado que el modelo final necesita, por eso en cada microservidor están funciones son diferentes. Estas funciones estan definidas en ROs/**nombre_servidor**/Controllers/RO**nombre_servidor**CambioModelo.cs. En la siguiente lista se puede observar estas funciones.
 
 - publicacion.typeOfPublication = getType(objInicial);        
 - publicacion.IDs = getIDs(objInicial);
@@ -50,20 +47,18 @@ Respecto al cambio de modelo, en todos los microservicios se tienen las mismas f
 
 
 
-
 # Microservicio de publicaciones 
 
 El microservicio más distintivo y diferente es el de publicación, en él se llama de una forma específica, siguiendo el algoritmo diseñado, a los microservicios descritos anteriormente. La mayor diferencia es que en este caso en vez de cambiar el modelo, las publicaciones obtenidas por las diversas fuentes externas van a ir convergiendo de una forma específica según el diseño del algoritmo. De esta tarea en específico se encarga el código de *ROPublicactionLogic*.
  
-Rste microservicio tambien debe devolver la informacion en el formato final deseado, por lo que este modelo se alamacena en ROs/Publication/Models/ROPublicacionModel.
+Este microservicio también debe devolver la informacion en el formato final deseado, por lo que este modelo se almacena en ROs/Publication/Models/ROPublicacionModel.
 - En este caso el formato es un poco diferente porque se han introducido dos entidades dentro del modelo que no están en los otros microservicios. Estas entidades son aquellas que modelan los metadatos enriquecidos. 
-
 
 A continuación, se describen los pasos que se llevarán a cabo durante el proceso de reclamación de publicaciones de un determinado autor. 
 
 ## Función principal.
 
-- Primeramente, el investigador ofrece su ORCID y una fecha a partir de la cial quiere obtener sus ROs, es decir, ejecuta el microservidoo de publi
+- Primeramente, el investigador ofrece su ORCID y una fecha a partir de la cual quiere obtener sus ROs, es decir, ejecuta el micro servido de publi
 - Se llamará a los servicios de WoS y Scopus para obtener la información de las publicaciones principales de este autor. 
 - Se recorre cada una de las publicaciones obtenidas en WoS. Por cada una de ellas: 
     - Se almacena el DOI en una lista para saber qué artículos ya hemos completado del investigador en cuestión. 
@@ -80,7 +75,7 @@ A continuación, se describen los pasos que se llevarán a cabo durante el proce
 
 ## Función de combinar dos publicaciones **compactacion**
 
-Con esta función se combinan todos los metadatos de las publicaciones recibidas. Cada metadato se combina de forma independiente. En el caso de los autores se hace de modo que no permita duplicidad de usuarios en el mismo conjunto de colaboradores de la publicación. Tambien se obtene la informacion de las metricas de la revista. 
+Con esta función se combinan todos los metadatos de las publicaciones recibidas. Cada metadato se combina de forma independiente. En el caso de los autores se hace de modo que no permita duplicidad de usuarios en el mismo conjunto de colaboradores de la publicación. También se obtiene la informacion de las métricas de la revista. 
 
 ## Función completar bibliografía **completar_bib**
 
@@ -109,3 +104,4 @@ Con esta función se combinan todos los metadatos de las publicaciones recibidas
     - Se llama al enriquecimiento de áreas temáticas y de palabras clave para completar la publicación. 
     - Se añaden las métricas de las revistas. 
 - Llegado a este punto la información de las publicaciones de bibliografía ya estaría completa. 
+
