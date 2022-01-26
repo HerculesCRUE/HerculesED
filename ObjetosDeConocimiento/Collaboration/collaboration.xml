@@ -7,7 +7,8 @@
         <ocultarTituloDescpImgDoc></ocultarTituloDescpImgDoc>
         <TituloDoc EntidadID="http://w3id.org/roh/Collaboration">http://w3id.org/roh/title</TituloDoc>
         <DescripcionDoc EntidadID="http://w3id.org/roh/Collaboration">http://w3id.org/roh/title</DescripcionDoc>
-        <HtmlNuevo>true</HtmlNuevo>
+        <HtmlNuevo>true</HtmlNuevo>		
+		<CategorizacionTesauroGnossObligatoria>false</CategorizacionTesauroGnossObligatoria>
     </ConfiguracionGeneral>
     <EspefPropiedad>
         <Propiedad  ID="http://xmlns.com/foaf/0.1/nick" EntidadID="http://purl.obolibrary.org/obo/BFO_0000023">
