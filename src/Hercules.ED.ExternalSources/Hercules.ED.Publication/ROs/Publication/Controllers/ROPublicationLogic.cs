@@ -268,10 +268,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 }
             }
 
-            string info = JsonConvert.SerializeObject(resultado);
-            string path = _Configuracion.GetRutaJsonSalida();
-            Log.Information("Escribiendo datos en fichero...");
-            File.WriteAllText($@"Files/skarmeta-ok.json", info);
+            //string info = JsonConvert.SerializeObject(resultado);
+            //string path = _Configuracion.GetRutaJsonSalida();
+            //Log.Information("Escribiendo datos en fichero...");
+            //File.WriteAllText($@"Files/prueba.json", info);
             return resultado;
 
         }
