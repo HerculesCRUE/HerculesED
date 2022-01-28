@@ -28,6 +28,111 @@
                 </PropsEntLectura>
             </SeleccionEntidad>
         </Propiedad>
+		<Propiedad  ID="http://w3id.org/roh/entityType" EntidadID="http://w3id.org/roh/Stay">
+            <AtrNombre>http://w3id.org/roh/entityType</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/entityType</AtrNombreLectura>
+			<SeleccionEntidad>
+                <TipoSeleccion>Autocompletar</TipoSeleccion>
+                <Grafo>organizationtype.owl</Grafo>
+                <UrlTipoEntSolicitada>http://w3id.org/roh/OrganizationType</UrlTipoEntSolicitada>              
+                <PropsEntEdicion>
+                    <NameProp>http://purl.org/dc/elements/1.1/title</NameProp>
+                </PropsEntEdicion>
+                <PropsEntLectura>
+                    <Propiedad ID="http://purl.org/dc/elements/1.1/title" EntidadID="http://w3id.org/roh/OrganizationType">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+                </PropsEntLectura>
+            </SeleccionEntidad>
+        </Propiedad>
+		
+		<Propiedad  ID="http://w3id.org/roh/fundedByType" EntidadID="http://w3id.org/roh/Stay">
+            <AtrNombre>http://w3id.org/roh/fundedByType</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/fundedByType</AtrNombreLectura>
+			<SeleccionEntidad>
+                <TipoSeleccion>Autocompletar</TipoSeleccion>
+                <Grafo>organizationtype.owl</Grafo>
+                <UrlTipoEntSolicitada>http://w3id.org/roh/OrganizationType</UrlTipoEntSolicitada>              
+                <PropsEntEdicion>
+                    <NameProp>http://purl.org/dc/elements/1.1/title</NameProp>
+                </PropsEntEdicion>
+                <PropsEntLectura>
+                    <Propiedad ID="http://purl.org/dc/elements/1.1/title" EntidadID="http://w3id.org/roh/OrganizationType">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+                </PropsEntLectura>
+            </SeleccionEntidad>
+        </Propiedad>
+		<Propiedad  ID="http://w3id.org/roh/fundedByHasRegion" EntidadID="http://w3id.org/roh/Stay">
+            <AtrNombre>hasRegion</AtrNombre>
+            <AtrNombreLectura>hasRegion</AtrNombreLectura>
+			<SeleccionEntidad>
+                <TipoSeleccion>Combo</TipoSeleccion>
+                <Grafo>feature.owl</Grafo>
+                <UrlTipoEntSolicitada>http://www.geonames.org/ontology#Feature</UrlTipoEntSolicitada>              
+                <PropsEntEdicion>
+                    <NameProp>http://www.geonames.org/ontology#name</NameProp>
+                </PropsEntEdicion>
+                <PropsEntLectura>
+                    <Propiedad ID="http://www.geonames.org/ontology#name" EntidadID="http://www.geonames.org/ontology#Feature">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+                </PropsEntLectura>
+            </SeleccionEntidad>
+        </Propiedad>
+        <Propiedad  ID="http://w3id.org/roh/fundedByHasCountryName" EntidadID="http://w3id.org/roh/Stay">
+            <AtrNombre>hasCountryName</AtrNombre>
+            <AtrNombreLectura>hasCountryName</AtrNombreLectura>
+			<SeleccionEntidad>
+                <TipoSeleccion>Combo</TipoSeleccion>
+                <Grafo>feature.owl</Grafo>
+                <UrlTipoEntSolicitada>http://www.geonames.org/ontology#Feature</UrlTipoEntSolicitada>              
+                <PropsEntEdicion>
+                    <NameProp>http://www.geonames.org/ontology#name</NameProp>
+                </PropsEntEdicion>
+                <PropsEntLectura>
+                    <Propiedad ID="http://www.geonames.org/ontology#name" EntidadID="http://www.geonames.org/ontology#Feature">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+                </PropsEntLectura>
+            </SeleccionEntidad>
+        </Propiedad>
+		
+		<Propiedad  ID="https://www.w3.org/2006/vcard/ns#hasRegion" EntidadID="http://w3id.org/roh/Stay">
+            <AtrNombre>hasRegion</AtrNombre>
+            <AtrNombreLectura>hasRegion</AtrNombreLectura>
+			<SeleccionEntidad>
+                <TipoSeleccion>Combo</TipoSeleccion>
+                <Grafo>feature.owl</Grafo>
+                <UrlTipoEntSolicitada>http://www.geonames.org/ontology#Feature</UrlTipoEntSolicitada>              
+                <PropsEntEdicion>
+                    <NameProp>http://www.geonames.org/ontology#name</NameProp>
+                </PropsEntEdicion>
+                <PropsEntLectura>
+                    <Propiedad ID="http://www.geonames.org/ontology#name" EntidadID="http://www.geonames.org/ontology#Feature">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+                </PropsEntLectura>
+            </SeleccionEntidad>
+        </Propiedad>
+        <Propiedad  ID="https://www.w3.org/2006/vcard/ns#hasCountryName" EntidadID="http://w3id.org/roh/Stay">
+            <AtrNombre>hasCountryName</AtrNombre>
+            <AtrNombreLectura>hasCountryName</AtrNombreLectura>
+			<SeleccionEntidad>
+                <TipoSeleccion>Combo</TipoSeleccion>
+                <Grafo>feature.owl</Grafo>
+                <UrlTipoEntSolicitada>http://www.geonames.org/ontology#Feature</UrlTipoEntSolicitada>              
+                <PropsEntEdicion>
+                    <NameProp>http://www.geonames.org/ontology#name</NameProp>
+                </PropsEntEdicion>
+                <PropsEntLectura>
+                    <Propiedad ID="http://www.geonames.org/ontology#name" EntidadID="http://www.geonames.org/ontology#Feature">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+                </PropsEntLectura>
+            </SeleccionEntidad>
+        </Propiedad>
+		
         <Propiedad  ID="http://w3id.org/roh/fundedBy" EntidadID="http://w3id.org/roh/Stay">
             <AtrNombre>fundedBy</AtrNombre>
             <AtrNombreLectura>fundedBy</AtrNombreLectura>

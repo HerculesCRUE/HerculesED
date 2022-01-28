@@ -76,8 +76,18 @@ namespace GuardadoCV.Models.Utils
                     int limit = paginacion;
                     while (limit == paginacion)
                     {
-                        string select = "select * where{select distinct ?s ?p ?o ";
-                        string where = $"where{{?s ?p ?o. FILTER( lang(?o) = '{pLang}' OR lang(?o) = '' OR !isLiteral(?o) )  FILTER(?s in(<{string.Join(">,<", list)}>)) FILTER(?p in(<{string.Join(">,<", pProperties.Where(x => string.IsNullOrEmpty(x.order)).Select(x => x.property).ToList())}>))}} order by asc(?o) asc(?p) asc(?s)}} limit {limit} offset {offset}";
+                        string select = @$" select * where
+                                            {{
+                                                select distinct ?s ?p ?o ";
+                        string where = @$"      where
+                                                {{
+                                                   ?s ?p ?o. 
+                                                   FILTER( lang(?o) = '{pLang}' OR lang(?o) = '' OR !isLiteral(?o) )  
+                                                   FILTER(?s in(<{string.Join(">,<", list)}>)) 
+                                                   FILTER(?p in(<{string.Join(">,<", pProperties.Where(x => string.IsNullOrEmpty(x.order)).Select(x => x.property).ToList())}>))
+                                                }} 
+                                                order by asc(?o) asc(?p) asc(?s)
+                                            }} limit {limit} offset {offset}";
                         SparqlObject sparqlObjectAux = mResourceApi.VirtuosoQuery(select, where, pGraph);
                         limit = sparqlObjectAux.results.bindings.Count;
                         offset += sparqlObjectAux.results.bindings.Count;
@@ -129,8 +139,19 @@ namespace GuardadoCV.Models.Utils
                         int limit = paginacion;
                         while (limit == paginacion)
                         {
-                            string select = "select * where{select distinct ?s ?p ?o ";
-                            string where = $"where{{?s ?p ?o. FILTER( lang(?o) = '{pLang}' OR lang(?o) = '' OR !isLiteral(?o) )  OPTIONAL{{{whereOrder}}} FILTER(?s in(<{string.Join(">,<", list)}>)) FILTER(?p =<{property.property}>)}} order by asc(?level{nivel - 1}) asc(?o) asc(?p) asc(?s)}} limit {limit} offset {offset}";
+                            string select = @$" select * where
+                                                {{
+                                                    select distinct ?s ?p ?o ";
+                            string where = @$"      where
+                                                    {{
+                                                        ?s ?p ?o. 
+                                                        FILTER( lang(?o) = '{pLang}' OR lang(?o) = '' OR !isLiteral(?o) )  
+                                                        OPTIONAL{{{whereOrder}}} 
+                                                        FILTER(?s in(<{string.Join(">,<", list)}>)) 
+                                                        FILTER(?p =<{property.property}>)
+                                                    }} 
+                                                    order by asc(?level{nivel - 1}) asc(?o) asc(?p) asc(?s)
+                                                }} limit {limit} offset {offset}";
                             SparqlObject sparqlObjectAux = mResourceApi.VirtuosoQuery(select, where, pGraph);
                             limit = sparqlObjectAux.results.bindings.Count;
                             offset += sparqlObjectAux.results.bindings.Count;
