@@ -651,7 +651,7 @@ namespace GuardadoCV.Models
                 }
                 else if (remove)
                 {
-                    List<Entity.Property> propertiesLoadedEntityRemove = pLoadedEntity.properties.Where(x => x.prop.StartsWith(property.prop)).ToList();
+                    List<Entity.Property> propertiesLoadedEntityRemove = pLoadedEntity.properties.Where(x =>x.prop== property.prop || x.prop.StartsWith(property.prop + "|") || x.prop.StartsWith(property.prop + "@@@")).ToList();
                     foreach (Entity.Property propertyToRemove in propertiesLoadedEntityRemove)
                     {
                         pLoadedEntity.properties.Remove(propertyToRemove);
