@@ -11,8 +11,10 @@
 @using System.Reflection;
 @using System.Net.Http
 @using System.Net.Http.Headers
+@using System.Globalization
 @model ResourceViewModel
-@{ ResourceModel FichaDocumento = Model.Resource;
+@{
+    ResourceModel FichaDocumento = Model.Resource;
     CommunityModel Comunidad = Html.GetComunidad();
     UserIdentityModel IdentidadActual = Html.GetIdentidadActual();
     Html.AddBodyClass(" fichaRecurso-publicacion ");
@@ -26,7 +28,15 @@
     Html.GetListaJS().Add(urlJS);
     SemanticResourceModel semCmsModel = Model.SemanticFrom;
     GnossOCBase.LanguageEnum idiomaUsuario = (GnossOCBase.LanguageEnum)Enum.Parse(typeof(GnossOCBase.LanguageEnum), Html.GetUtilIdiomas().LanguageCode.ToLower());
-    ResearchObject pResearchObject = new ResearchObject(semCmsModel, idiomaUsuario); }
+    ResearchObject pResearchObject = new ResearchObject(semCmsModel, idiomaUsuario); 
+
+
+
+    Dictionary<string, NumberFormatInfo > cultures = new Dictionary<string, NumberFormatInfo>();
+    cultures.Add("es", new CultureInfo("es-ES", false).NumberFormat);
+    cultures.Add("en", new CultureInfo("en-US", false).NumberFormat);
+
+}
 
 <div class="col col-12 col-breadcrumb">
     <ul>
@@ -383,7 +393,7 @@
                             <!-- Citado por -->
                             <a class="nav-link" id="temas-investigacion-tab" data-toggle="tab" href="#temas-investigacion-panel" role="tab" aria-controls="temas-investigacion-panel">
                                 <div class="bloque">
-                                    <div class="label">@Html.Translate("AREAS_TEMATICAS_CITAS")</div>
+                                    <div class="label">@Html.Translate("AREAS_TEMATICAS")</div>
                                     @{
                                         // areas
                                         if (pResearchObject.Roh_hasKnowledgeArea != null)
@@ -406,6 +416,8 @@
                                 </div>
                             </a>
                         </li>
+                        @{
+                        /** 
                         <li class="nav-item" role="presentation">
                             <!-- anotaciones -->
                             <a class="nav-link" id="anotaciones-tab" data-toggle="tab" href="#anotaciones-panel" role="tab" aria-controls="anotaciones-panel" >
@@ -414,7 +426,9 @@
                                     <div class="data" about="@pResearchObject.GNOSSID" property="@pResearchObject.GetPropertyURI(nameof(pResearchObject.Roh_citationLoadedCount))">@pResearchObject.Roh_citationLoadedCount</div>
                                 </div>
                             </a>
-                        </li>
+                         </li>
+                         */
+                        }
                     </ul>
                 </div>
                 <div class="tab-content" id="paneles-recurso">
@@ -424,9 +438,12 @@
                             <div class="col col-12">
                                 <div class="wrapCol">
                                     <div class="group-wrap div4">
-                                         @{
+                                        @{
+                                            var cultureFormat = cultures[idiomaUsuario.ToString()];
+                                            cultureFormat.NumberDecimalDigits = 0;
+
                                             // LANGUAGE
-                                            if (pResearchObject.Vcard_hasLanguage != null)
+                                            if (pResearchObject.Vcard_hasLanguage != null && pResearchObject.Vcard_hasLanguage != "")
                                             {
                                                 <div class="bloque">
                                                     <div class="label">@Html.Translate("LENGUAJES_PROGRAMACION")</div>
@@ -435,7 +452,7 @@
                                             }
 
                                             // lICENCE
-                                            if (pResearchObject.Dct_license != null)
+                                            if (pResearchObject.Dct_license != null && pResearchObject.Dct_license != "")
                                             {
                                                 <div class="bloque">
                                                     <div class="label">@Html.Translate("LICENCIA")</div>
@@ -457,47 +474,57 @@
                                             }
                                             
                                             // RELEASES NUMBER
-                                            if (pResearchObject.Roh_releasesNumber != null)
+                                            if (pResearchObject.Roh_releasesNumber != null && pResearchObject.Roh_releasesNumber != 0)
                                             {
                                                 <div class="bloque">
                                                     <div class="label">@Html.Translate("NUMERO_RELEASES")</div>
-                                                    <div class="value" about="@pResearchObject.GNOSSID" property="@pResearchObject.GetPropertyURI(nameof(pResearchObject.Roh_releasesNumber))" >@pResearchObject.Roh_releasesNumber</div>
+                                                    <div class="value" about="@pResearchObject.GNOSSID" property="@pResearchObject.GetPropertyURI(nameof(pResearchObject.Roh_releasesNumber))" >
+                                                        @(Int32.Parse(pResearchObject.Roh_releasesNumber.ToString()).ToString("N", cultureFormat))
+                                                    </div>
                                                 </div>
                                             }
                                             
                                             // BRANCHES NUMBER
-                                            if (pResearchObject.Roh_branchesNumber != null)
+                                            if (pResearchObject.Roh_branchesNumber != null && pResearchObject.Roh_branchesNumber != 0)
                                             {
                                                 <div class="bloque">
                                                     <div class="label">@Html.Translate("NUMERO_BRANCHES")</div>
-                                                    <div class="value" about="@pResearchObject.GNOSSID" property="@pResearchObject.GetPropertyURI(nameof(pResearchObject.Roh_branchesNumber))" >@pResearchObject.Roh_branchesNumber</div>
+                                                    <div class="value" about="@pResearchObject.GNOSSID" property="@pResearchObject.GetPropertyURI(nameof(pResearchObject.Roh_branchesNumber))" >
+                                                        @(Int32.Parse(pResearchObject.Roh_branchesNumber.ToString()).ToString("N", cultureFormat))
+                                                    </div>
                                                 </div>
                                             }
                                             
                                             // PACKAGE NUMBER
-                                            if (pResearchObject.Roh_packagesNumber != null)
+                                            if (pResearchObject.Roh_packagesNumber != null && pResearchObject.Roh_packagesNumber != 0)
                                             {
                                                 <div class="bloque">
                                                     <div class="label">@Html.Translate("NUMERO_PACKAGES")</div>
-                                                    <div class="value" about="@pResearchObject.GNOSSID" property="@pResearchObject.GetPropertyURI(nameof(pResearchObject.Roh_packagesNumber))" >@pResearchObject.Roh_packagesNumber</div>
+                                                    <div class="value" about="@pResearchObject.GNOSSID" property="@pResearchObject.GetPropertyURI(nameof(pResearchObject.Roh_packagesNumber))" >
+                                                        @(Int32.Parse(pResearchObject.Roh_packagesNumber.ToString()).ToString("N", cultureFormat))
+                                                    </div>
                                                 </div>
                                             }
                                             
                                             // FORK NUMBER
-                                            if (pResearchObject.Roh_forksNumber != null)
+                                            if (pResearchObject.Roh_forksNumber != null && pResearchObject.Roh_forksNumber != 0)
                                             {
                                                 <div class="bloque">
                                                     <div class="label">@Html.Translate("NUMERO_FORK")</div>
-                                                    <div class="value" about="@pResearchObject.GNOSSID" property="@pResearchObject.GetPropertyURI(nameof(pResearchObject.Roh_forksNumber))" >@pResearchObject.Roh_forksNumber</div>
+                                                    <div class="value" about="@pResearchObject.GNOSSID" property="@pResearchObject.GetPropertyURI(nameof(pResearchObject.Roh_forksNumber))" >
+                                                        @(Int32.Parse(pResearchObject.Roh_forksNumber.ToString()).ToString("N", cultureFormat))
+                                                    </div>
                                                 </div>
                                             }
                                             
                                             // ISSUES NUMBER
-                                            if (pResearchObject.Roh_issuesNumber != null)
+                                            if (pResearchObject.Roh_issuesNumber != null && pResearchObject.Roh_issuesNumber != 0)
                                             {
                                                 <div class="bloque">
                                                     <div class="label">@Html.Translate("NUMERO_ISSUES")</div>
-                                                    <div class="value" about="@pResearchObject.GNOSSID" property="@pResearchObject.GetPropertyURI(nameof(pResearchObject.Roh_issuesNumber))" >@pResearchObject.Roh_issuesNumber</div>
+                                                    <div class="value" about="@pResearchObject.GNOSSID" property="@pResearchObject.GetPropertyURI(nameof(pResearchObject.Roh_issuesNumber))" >
+                                                        @(Int32.Parse(pResearchObject.Roh_issuesNumber.ToString()).ToString("N", cultureFormat))
+                                                    </div>
                                                 </div>
                                             }
 
@@ -509,7 +536,6 @@
                                 string urlFrameVc = pResearchObject.Vcard_url;
                                 var type = pResearchObject.Roh_researchObjectType;
                                 string urlFrame;
-                                string idPublish;
 
                                 urlFrame = getUrlFrame(urlFrameVc);
 
@@ -555,7 +581,7 @@
                         </div>
                     </div>
                     
-                    <div class="tab-pane fade" id="anotaciones-panel" role="tabpanel" aria-labelledby="anotaciones-tab">
+                    <!-- <div class="tab-pane fade" id="anotaciones-panel" role="tabpanel" aria-labelledby="anotaciones-tab">
                         <div class="row" id="contenedorBuscadorAnotaciones">
                             <div class="col col-12 col-section-title font-weight-bold searcherTitle">
                                 <div class="wrapCol">
@@ -563,7 +589,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
@@ -910,7 +936,7 @@
         if (url != null)
         {
             // Get figshare -- "https://figshare.com/articles/dataset/BPI_Challenge_2013_incidents/12693914?file=24033596"
-            if (url.Contains("figshare.com"))
+            if (url.Contains("//figshare.com"))
             {
                 // Get the before text of the id
                 string charsBefore = System.Text.RegularExpressions.Regex.Match(url, @"articles/[^/,'""\s]+/[^/,'""\s]+/").Value;
@@ -923,9 +949,9 @@
                 urlFrame = "https://widgets.figshare.com/articles/"+ idPublish +"/embed?show_title=1";
             }
 
-            if (url.Contains("slideshare.net"))
+            if (url.Contains("//slideshare.net"))
             {
-                
+
                 try
                 {
                     // Get the product
@@ -941,6 +967,61 @@
                 {
                     Console.WriteLine(e.Message);
                 }
+            }
+
+            if (url.Contains("//github.com"))
+            {
+                
+                // https://api.github.com/repos/HerculesCRUE/HerculesED/contents/
+                // https://github.com/HerculesCRUE/HerculesED
+
+                // Get the id with the before text
+                idPublish = System.Text.RegularExpressions.Regex.Match(url, @"github.com/[^/,'""\s]+/[^/,'""\s]+").Value;
+                // Get the ID
+                idPublish = idPublish.Remove(0, "github.com/".Length);
+                // Build the iframe
+                var urlGitHubApiFolder = "https://api.github.com/repos/"+ idPublish +"/contents/";
+
+                <div id="gitHubFolder">
+                    <ul>
+                    </ul>
+                </div>
+                <script>
+                    var urlGitHubApiFolder = "@urlGitHubApiFolder";
+                    $.ajax({
+                        type: "GET",
+                        url: urlGitHubApiFolder,
+                        dataType: 'jsonp',
+                        success: function (data) {
+                            console.log(data)
+                            var gitHubJson = data.data;
+
+                            // Separate the dirs and files
+                            var folders = [...gitHubJson].filter(e => e.type == "dir");
+                            var files = [...gitHubJson].filter(e => e.type == "file");
+
+                            // Order by name
+                            folders.sort((a, b) => {
+                                return a.name - b.name;
+                            });
+                            files.sort((a, b) => {
+                                return a.name - b.name;
+                            });
+
+                            folders.forEach(e => {
+                                $('<li class="folder">'+ e.name +'</li>').appendTo('#gitHubFolder ul');
+                            });
+                            
+                            files.forEach(e => {
+                                $('<li class="file">'+ e.name +'</li>').appendTo('#gitHubFolder ul');
+                            });
+                        } 
+                    });
+
+                
+                </script>
+
+
             }
         }
 
@@ -1599,6 +1680,7 @@
             this.Dct_issued= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/dc/terms/issued"));
             this.Roh_forksNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/forksNumber"));
             this.Vcard_url = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#url"));
+            this.Vcard_hasLanguage = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#hasLanguage"));
             SemanticPropertyModel propRoh_userKeywords = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/userKeywords");
             this.Roh_userKeywords = new List<string>();
             if (propRoh_userKeywords != null && propRoh_userKeywords.PropertyValues.Count > 0)
@@ -1761,6 +1843,7 @@
                 }
             }
             this.Roh_releasesNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/releasesNumber"));
+            this.Vcard_hasLanguage = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#hasLanguage"));
             this.Bibo_abstract = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/abstract"));
             this.Roh_branchesNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/branchesNumber"));
             this.Roh_updatedDate= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/updatedDate"));
