@@ -140,9 +140,7 @@
                     </Propiedad>
                 </PropsEntLectura>
             </SeleccionEntidad>
-        </Propiedad>
-		
-		
+        </Propiedad>		
         <Propiedad  ID="http://www.w3.org/1999/02/22-rdf-syntax-ns#member" EntidadID="http://purl.obolibrary.org/obo/BFO_0000023">
             <AtrNombre>http://www.w3.org/1999/02/22-rdf-syntax-ns#member</AtrNombre>
             <AtrNombreLectura>http://www.w3.org/1999/02/22-rdf-syntax-ns#member</AtrNombreLectura>
