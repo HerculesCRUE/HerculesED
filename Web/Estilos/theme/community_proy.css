@@ -9,3 +9,37 @@
 .candado-wrapper { padding-left: 14px; }
 .candado::before { content: 'lock'; font-size: 1.4rem; /*color: #ababab;*/ }
 .candado-activo::before { content: 'lock_open'; font-size: 1.4rem;/* color: #00a8ff; */}
+
+
+
+/**
+ * Folder and file css for research Object code item
+ */
+
+ul.folderStructure {
+    list-style: none;
+    padding-left: 30px;
+}
+
+ul.folderStructure > li {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    padding: 3px 0;
+}
+
+ul.folderStructure > li span {
+    width: 20px;
+    height: 20px;
+    display: block;
+    margin-right: 5px;
+    background-size: contain;
+}
+
+ul.folderStructure > li.folder span {
+	background-image: url(resources/iconos/folder-1.svg);
+}
+
+ul.folderStructure > li.file span {
+	background-image: url(resources/iconos/file-icon.svg);
+}
