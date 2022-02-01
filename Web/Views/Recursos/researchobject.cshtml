@@ -385,39 +385,32 @@
                                 </div>
                             </a>
                         </li>
-                        <li class="nav-item" role="presentation">
-                            <!-- Citado por -->
-                            <a class="nav-link" id="citas-tab" data-toggle="tab" href="#citas-panel" role="tab" aria-controls="citas-panel" >
-                                <div class="bloque">
-                                    <div class="label">@Html.Translate("CITADO_POR")</div>
-                                    <div class="data" about="@pResearchObject.GNOSSID" property="@pResearchObject.GetPropertyURI(nameof(pResearchObject.Roh_citationLoadedCount))">@pResearchObject.Roh_citationLoadedCount</div>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <!-- Citado por -->
-                            <a class="nav-link" id="temas-investigacion-tab" data-toggle="tab" href="#temas-investigacion-panel" role="tab" aria-controls="temas-investigacion-panel">
-                                <div class="bloque">
-                                    <div class="label">@Html.Translate("AREAS_TEMATICAS")</div>
-                                    @{
-                                        // areas
-                                        if (pResearchObject.Roh_hasKnowledgeArea != null)
-                                        {
-                                            <div class="data" about="@pResearchObject.GNOSSID" property="@pResearchObject.GetPropertyURI(nameof(pResearchObject.Roh_hasKnowledgeArea))">@pResearchObject.Roh_hasKnowledgeArea.Count</div>
-                                        }
-                                        else
-                                        {
-                                            <div class="data">---</div>
-                                        }
-                                    }
-                                </div>
-                            </a>
-                        </li>
+                        
                         <li class="nav-item" role="presentation">
                             <!-- Relacionados -->
                             <a class="nav-link" id="relacionados-tab" data-toggle="tab" href="#relacionados-panel" role="tab" aria-controls="relacionados-panel">
                                 <div class="bloque">
                                     <div class="label">@Html.Translate("ROS_RELACIONADOS")</div>
+                                </div>
+                            </a>
+                        </li>
+
+                        <li class="nav-item" role="presentation">
+                            <!-- Citado por -->
+                            <a class="nav-link" id="citas-tab" data-toggle="tab" href="#citas-panel" role="tab" aria-controls="citas-panel" >
+                                <div class="bloque">
+                                    <div class="label">@Html.Translate("CITADO_POR")</div>
+                                    <!-- <div class="data" about="@pResearchObject.GNOSSID" property="@pResearchObject.GetPropertyURI(nameof(pResearchObject.Roh_citationLoadedCount))">@pResearchObject.Roh_citationLoadedCount</div> -->
+                                </div>
+                            </a>
+                        </li>
+
+                        <li class="nav-item" role="presentation">
+                            <!-- Referencias -->
+                            <a class="nav-link" id="referencias-tab" data-toggle="tab" href="#referencias-panel" role="tab" aria-controls="referencias-panel">
+                                <div class="bloque">
+                                    <div class="label">@Html.Translate("REFERENCIAS")</div>
+                                    <!-- <div class="data"></div> -->
                                 </div>
                             </a>
                         </li>
@@ -559,12 +552,22 @@
                             
                         </div>
                     </div>
+                    
+                    <div class="tab-pane fade" id="relacionados-panel" role="tabpanel" aria-labelledby="relacionados-tab">
+                        <div class="row" id="contenedorBuscadorRelacionados">
+                            <div class="col col-12 col-section-title font-weight-bold searcherTitle">
+                                <div class="wrapCol">
+                                    <p>@Html.Translate("ROS_RELACIONADOS")</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="tab-pane fade" id="citas-panel" role="tabpanel" aria-labelledby="citas-tab">
                         <div class="row" id="contenedorBuscadorCitas">
-                            <div class="col col-12 col-grafo mb-5">
+                            <!-- <div class="col col-12 col-grafo mb-5">
                                 <div class="wrapCol" id="graficaBuscadorCitas" style="width: 1224px; height: 500px;"></div>
-                            </div>
+                            </div> -->
                             <div class="col col-12 col-section-title font-weight-bold searcherTitle">
                                 <div class="wrapCol">
                                     <p>@Html.Translate("CITADO_POR")</p>
@@ -573,19 +576,14 @@
                         </div>
                     </div>
                     
-                    <div class="tab-pane fade" id="temas-investigacion-panel" role="tabpanel" aria-labelledby="temas-investigacion-tab">
-                        <div class="row" id="contenedorBuscadorAreasTematicas">
-                            <div class="col col-12 col-grafo mb-5">
-                                <div class="wrapCol" id="graficaAreasTematicas" style="width: 1224px; height: 500px;"></div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="tab-pane fade" id="relacionados-panel" role="tabpanel" aria-labelledby="relacionados-tab">
-                        <div class="row" id="contenedorBuscadorRelacionados">
+                    <div class="tab-pane fade" id="referencias-panel" role="tabpanel" aria-labelledby="referencias-tab">
+                        <div class="row" id="contenedorBuscadorReferencias">
+                            <!-- <div class="col col-12 col-grafo mb-5">
+                                <div class="wrapCol" id="graficaBuscadorReferencias" style="width: 1224px; height: 500px;"></div>
+                            </div> -->
                             <div class="col col-12 col-section-title font-weight-bold searcherTitle">
                                 <div class="wrapCol">
-                                    <p>@Html.Translate("ROS_RELACIONADOS")</p>
+                                    <p>@Html.Translate("REFERENCIAS")</p>
                                 </div>
                             </div>
                         </div>
@@ -896,7 +894,7 @@
             $('#relacionados-tab').unbind().click(function (e) {
                 e.preventDefault();
                 that.tabActive = "relacionados";
-                buscadorPersonalizado.init("@Html.Translate("RELACIONADOS")", "#contenedorBuscadorRelacionados", "searchRelacionadosROs=@pResearchObject.GNOSSID.Split('_')[1].ToUpper()", "dct:issued", "rdf:type=researchobject", "@Comunidad.Url", "@Comunidad.Key.ToString()", function() {
+                buscadorPersonalizado.init("@Html.Translate("RELACIONADOS")", "#contenedorBuscadorRelacionados", "searchRelacionadosROs=@pResearchObject.GNOSSID.Split('_')[1].ToUpper()", "", "rdf:type=researchobject", "@Comunidad.Url", "@Comunidad.Key.ToString()", function() {
                     $('#panNumResultados').hide();
                 });
             });

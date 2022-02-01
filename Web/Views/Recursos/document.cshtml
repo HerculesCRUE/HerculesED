@@ -768,7 +768,7 @@
             $('#relacionados-tab').unbind().click(function (e) {
                 e.preventDefault();
                 that.tabActive = "relacionados";
-                buscadorPersonalizado.init("@Html.Translate("RELACIONADOS")", "#contenedorBuscadorRelacionados", "searchRelacionadosDocumento=@pDocument.GNOSSID.Split('_')[1].ToUpper()", "dct:issued", "rdf:type=document", "@Comunidad.Url", "@Comunidad.Key.ToString()", function() {
+                buscadorPersonalizado.init("@Html.Translate("RELACIONADOS")", "#contenedorBuscadorRelacionados", "searchRelacionadosDocumento=@pDocument.GNOSSID.Split('_')[1].ToUpper()", "", "rdf:type=document", "@Comunidad.Url", "@Comunidad.Key.ToString()", function() {
                     $('#panNumResultados').hide();
                 });
             });
