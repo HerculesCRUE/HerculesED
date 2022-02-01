@@ -16,9 +16,25 @@
  * Folder and file css for research Object code item
  */
 
+.gitHubFolder {
+    padding: 5px;
+    border: 1px solid #e1e1e1;
+}
+
+.gitHubFolder .title {
+    font-size: 1.3rem;
+    margin-bottom: 4px;
+    background-color: #f2f2f2;
+    padding: 2px 10px;
+}
+
+.gitHubFolder .link {
+    padding: 2px 10px;
+}
+
 ul.folderStructure {
     list-style: none;
-    padding-left: 30px;
+    padding-left: 10px;
 }
 
 ul.folderStructure > li {
