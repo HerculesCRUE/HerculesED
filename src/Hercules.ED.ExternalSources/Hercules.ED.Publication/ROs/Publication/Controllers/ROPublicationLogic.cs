@@ -149,7 +149,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     pub_completa = compatacion(pub_completa, objInicial_CrossRef);
                     if (objInicial_CrossRef != null)
                     {
-                        pub_completa.bibliografia = objInicial_CrossRef.bibliografia;
+                        //pub_completa.bibliografia = objInicial_CrossRef.bibliografia;
                     }
 
                     // Zenodo
@@ -168,11 +168,11 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     
                     // Completar bibliografía (Referencias)
                     Log.Information("[WoS] Completando bibliografía...");
-                    pub_completa = completar_bib(pub_completa, dicOpenCitations, dicSemanticScholar, dicCrossRef, dicZenodo);
+                    //pub_completa = completar_bib(pub_completa, dicOpenCitations, dicSemanticScholar, dicCrossRef, dicZenodo);
 
                     // Obtención de Citas
                     Log.Information("[WoS] Citas...");
-                    pub_completa = ObtenerCitas(pub_completa); 
+                    //pub_completa = ObtenerCitasOpenCitations(pub_completa, dicOpenCitations, dicSemanticScholar, dicCrossRef, dicZenodo);
 
                     // Completar información faltante con las publicaciones de Scopus
                     if (objInicial_Scopus != null && objInicial_Scopus.Any())
@@ -196,8 +196,12 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     // Unificar Autores
                     pub_completa = CompararAutores(pub_completa);
 
-                    if (pub_completa.title != "One or more validation errors occurred.") // TODO
+                    if (pub_completa != null && !string.IsNullOrEmpty(pub_completa.title) && pub_completa.title != "One or more validation errors occurred.") // TODO
                     {
+                        if (pub_completa.bibliografia != null)
+                        {
+                            pub_completa.bibliografia = null;
+                        }
                         resultado.Add(pub_completa);
                     }
 
@@ -227,12 +231,13 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
                         // CrossRef
                         Log.Information("[Scopus] Haciendo petición a CrossRef...");
-                        Publication objInicial_CrossRef = llamadaCrossRef(pub_scopus.doi, dicCrossRef);
+                        Publication objInicial_CrossRef = llamadaCrossRef(pub_scopus.doi, dicCrossRef); // Bibliografía
+                        objInicial_CrossRef.bibliografia = null;
                         Log.Information("[Scopus] Comparación (CrossRef)...");
                         pub_completa = compatacion(pub_completa, objInicial_CrossRef);
                         if (objInicial_CrossRef != null)
                         {
-                            pub_completa.bibliografia = objInicial_CrossRef.bibliografia;
+                            //pub_completa.bibliografia = objInicial_CrossRef.bibliografia;
                         }
 
                         // Zenodo
@@ -251,16 +256,20 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
                         // Completar bibliografía (Referencias)
                         Log.Information("[Scopus] Completando bibliografia...");
-                        pub_completa = completar_bib(pub_completa, dicOpenCitations, dicSemanticScholar, dicCrossRef, dicZenodo);
+                        //pub_completa = completar_bib(pub_completa, dicOpenCitations, dicSemanticScholar, dicCrossRef, dicZenodo);
 
                         // Obtención de Citas
                         Log.Information("[Scopus] Citas...");                        
-                        pub_completa = ObtenerCitasOpenCitations(pub_completa, dicOpenCitations, dicSemanticScholar, dicCrossRef, dicZenodo);
+                        //pub_completa = ObtenerCitasOpenCitations(pub_completa, dicOpenCitations, dicSemanticScholar, dicCrossRef, dicZenodo);
                         
                         // Unificar Autores
                         pub_completa = CompararAutoresCitasReferencias(pub_completa);
-                        if (pub_completa != null)
+                        if (pub_completa != null && !string.IsNullOrEmpty(pub_completa.title))
                         {
+                            if (pub_completa.bibliografia != null)
+                            {
+                                pub_completa.bibliografia = null;
+                            }
                             resultado.Add(pub_completa);
                         }                        
                     }
@@ -271,7 +280,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             //string info = JsonConvert.SerializeObject(resultado);
             //string path = _Configuracion.GetRutaJsonSalida();
             //Log.Information("Escribiendo datos en fichero...");
-            //File.WriteAllText($@"Files/prueba.json", info);
+            //File.WriteAllText($@"Files/ejemplo.json", info);
             return resultado;
 
         }
@@ -730,14 +739,20 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     {
                         pub.language = pub_2.language;
                     }
-                    if (pub_1.doi != null)
+
+                    // Si es un capitulo de libro, no necesita DOI. (Da problemas en el motor de desambiguación.)
+                    if (pub.typeOfPublication != "Chapter") 
                     {
-                        pub.doi = pub_1.doi;
+                        if (pub_1.doi != null)
+                        {
+                            pub.doi = pub_1.doi;
+                        }
+                        else
+                        {
+                            pub.doi = pub_2.doi;
+                        }
                     }
-                    else
-                    {
-                        pub.doi = pub_2.doi;
-                    }
+
                     if (pub_1.dataIssued != null)
                     {
                         pub.dataIssued = pub_1.dataIssued;
