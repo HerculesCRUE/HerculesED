@@ -26,6 +26,9 @@
     }
     string urlJS = $"{Html.GetBaseUrlContent()}/imagenes/proyectos/personalizacion/{Comunidad.Key.ToString()}/theme/ficharecurso.js";
     Html.GetListaJS().Add(urlJS);
+    // Javascript Markdown to HTML converter
+    string urlJSMDReader = "https://unpkg.com/showdown/dist/showdown.min.js";
+    Html.GetListaJS().Add(urlJSMDReader);
     SemanticResourceModel semCmsModel = Model.SemanticFrom;
     GnossOCBase.LanguageEnum idiomaUsuario = (GnossOCBase.LanguageEnum)Enum.Parse(typeof(GnossOCBase.LanguageEnum), Html.GetUtilIdiomas().LanguageCode.ToLower());
     ResearchObject pResearchObject = new ResearchObject(semCmsModel, idiomaUsuario);
@@ -251,7 +254,7 @@
             </div>
             <div class="description-wrap">
                 <div class="desc" style="display: -webkit-box;">
-                    <p about="@pResearchObject.GNOSSID" property="@pResearchObject.GetPropertyURI(nameof(pResearchObject.Bibo_abstract))">@pResearchObject.Bibo_abstract</p>
+                    <p about="@pResearchObject.GNOSSID" property="@pResearchObject.GetPropertyURI(nameof(pResearchObject.Bibo_abstract))">@Html.Raw(pResearchObject.Bibo_abstract)</p>
                 </div>
                 <p class="moreResults showMore">
                     <a href="javascript: void(0);" class="ver-mas" style="display: flex;">@Html.Translate("VER_MAS")</a>
@@ -372,6 +375,18 @@
                     </div>
                 </div>
             }
+
+            @if (pResearchObject.Vcard_url != null && pResearchObject.Vcard_url != "")
+            {
+                <div class="group-wrap">
+                    <div class="bloque">
+                        <div class="label">@Html.Translate("URL")</div>
+                        <div class="value">
+                            <a href="@pResearchObject.Vcard_url" target="_blank" about="@pResearchObject.GNOSSID" property="@pResearchObject.GetPropertyURI(nameof(pResearchObject.Vcard_url))">@pResearchObject.Vcard_url</a>
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
         <div class="contenido-ficha contenido-publicacion">
             <div class="tab-paneles-ficha">
@@ -443,13 +458,19 @@
                                             // LANGUAGE
                                             if (pResearchObject.Vcard_hasLanguage != null && pResearchObject.Vcard_hasLanguage.Count > 0)
                                             {
-                                                <div class="bloque">
+
+                                                string textInline = "";
+                                                string textData = "";
+                                                @foreach (Language languageItem in pResearchObject.Vcard_hasLanguage)
+                                                {
+                                                    textInline += languageItem.Roh_title + " <span>(" + languageItem.Roh_percentage + "%)</span> ";
+                                                    textData += "data-" + languageItem.Roh_title + "=\""+ languageItem.Roh_percentage +"%\" ";
+                                                }
+
+                                                <div class="bloque code-tooltip" @Html.Raw(textData)>
                                                     <div class="label">@Html.Translate("LENGUAJES_PROGRAMACION")</div>
                                                     <div class="value" about="@pResearchObject.GNOSSID" property="@pResearchObject.GetPropertyURI(nameof(pResearchObject.Vcard_hasLanguage))" >
-                                                        @foreach (Language languageItem in pResearchObject.Vcard_hasLanguage)
-                                                        {
-                                                            @languageItem.Roh_title <span>(@languageItem.Roh_percentage%)</span>
-                                                        }
+                                                        @Html.Raw(textInline)
                                                     </div>
                                                 </div>
                                             }
@@ -953,7 +974,7 @@
                 idPublish = System.Text.RegularExpressions.Regex.Match(url, @"articles/[^/,'""\s]+/[^/,'""\s]+/\d+").Value;
                 // Get the ID
                 idPublish = idPublish.Remove(0, charsBefore.Length);
-                
+
                 // Build the iframe
                 if (idPublish != "")
                 {
@@ -987,7 +1008,7 @@
 
             if (url.Contains("//github.com"))
             {
-                
+
                 // https://api.github.com/repos/HerculesCRUE/HerculesED/contents/
                 // https://github.com/HerculesCRUE/HerculesED
 
@@ -996,59 +1017,151 @@
                 // Get the ID
                 idPublish = idPublish.Remove(0, "github.com/".Length);
                 // Build the iframe
-                var urlGitHubApiFolder = "https://api.github.com/repos/"+ idPublish +"/contents/";
+
+                var urlGitHubApiFolder = "";
+                if (idPublish != "")
+                {  
+                    urlGitHubApiFolder = "https://api.github.com/repos/"+ idPublish +"/contents/";
+                }
 
                 <div class="col-12">
                     <div class="wrapCol">
                         <div id="gitHubFolder" class="gitHubFolder">
-                            <div class="title hide"></div>
+                            <div class="title"></div>
                             <ul class="folderStructure">
                             </ul>
                             <div class="link"></div>
                         </div>
                     </div>
                 </div>
+                <div class="col-12">
+                    <div class="wrapCol">
+                        <div id="gitHubReadmeMDFIle" class="gitHubReadmeMDFIle">
+                            <div class="filename"></div>
+                            <div class="file-text markdown-body"></div>
+                        </div>
+                    </div>
+                </div>
                 <script>
                     // Scrit to get data from github by ajax call & print the result
                     var urlGitHubApiFolder = "@urlGitHubApiFolder";
-                    $.ajax({
-                        type: "GET",
-                        url: urlGitHubApiFolder,
-                        dataType: 'jsonp',
-                        success: function (data) {
-                            console.log(data)
-                            var gitHubJson = data.data;
+                    if (urlGitHubApiFolder) {
+                        $.ajax({
+                            type: "GET",
+                            url: urlGitHubApiFolder,
+                            dataType: 'jsonp',
+                            success: function (data) {
 
-                            // Separate the dirs and files
-                            var folders = [...gitHubJson].filter(e => e.type == "dir");
-                            var files = [...gitHubJson].filter(e => e.type == "file");
+                                var gitHubJson = data.data;
 
-                            // Order by name
-                            folders.sort((a, b) => {
-                                return a.name - b.name;
-                            });
-                            files.sort((a, b) => {
-                                return a.name - b.name;
-                            });
+                                // Separate the dirs and files
+                                var folders = [...gitHubJson].filter(e => e.type == "dir");
+                                var files = [...gitHubJson].filter(e => e.type == "file");
 
-                            // Print each folder
-                            folders.forEach(e => {
-                                $('<li class="folder"><span></span>'+ e.name +'</li>').appendTo('#gitHubFolder ul');
-                            });
+                                // Order by name
+                                folders.sort((a, b) => {
+                                    return a.name - b.name;
+                                });
+                                files.sort((a, b) => {
+                                    return a.name - b.name;
+                                });
+
+                                // Print each folder
+                                folders.forEach(e => {
+                                    $('<li class="folder"><span></span>'+ e.name +'</li>').appendTo('#gitHubFolder ul');
+                                });
+
+                                var fileReadme = "";
+                                var fileReadmeName = "";
+                                // Print each file
+                                files.forEach(e => {
+                                    $('<li class="file"><span></span>'+ e.name +'</li>').appendTo('#gitHubFolder ul');
+                                    fileReadme = (e.name.toLowerCase() == "readme.md") ? e.download_url : fileReadme;
+                                    fileReadmeName = (e.name.toLowerCase() == "readme.md") ? e.name : fileReadmeName;
+                                });
+
+                                // Print the title
+                                let title = $('#idPage').data('title')
+                                $('#gitHubFolder .title').html('<a href="@url" target="_blank">' + title + '</a>');
+
+                                // Print link
+                                // $('#gitHubFolder .link').html('<a href="@url" target="_blank"> @url </a>');
+
+                                if (fileReadme != null) {
+                                    getReadmemd(fileReadme, fileReadmeName);
+                                } else {
+                                    $('#gitHubReadmeMDFIle').hide();
+                                }
+
+                            } 
+                        });
+                    } else {
+                        $('#gitHubFolder').hide();
+                        $('#gitHubReadmeMDFIle').hide();
+                    }
+                    
+
+                    // Function to convert markdown README.md file to html
+                    var getReadmemd = function (fileUrl, fileName) {
+
+                        $.ajax({
+                            type: "GET",
+                            url: fileUrl,
+                            dataType: 'text',
+                            success: function (readmeFileText) {
                             
-                            // Print each file
-                            files.forEach(e => {
-                                $('<li class="file"><span></span>'+ e.name +'</li>').appendTo('#gitHubFolder ul');
-                            });
+                                // console.log("readmeFileText", readmeFileText);
 
-                            // Print the title
-                            let title = $('#idPage').data('title')
-                            $('#gitHubFolder .title').text(title);
+                                var options = {
+                                    "omitExtraWLInCodeBlocks": false,
+                                    "noHeaderId": false,
+                                    "prefixHeaderId": false,
+                                    "rawPrefixHeaderId": false,
+                                    "ghCompatibleHeaderId": false,
+                                    "rawHeaderId": false,
+                                    "headerLevelStart": false,
+                                    "parseImgDimensions": false,
+                                    "simplifiedAutoLink": true,
+                                    "excludeTrailingPunctuationFromURLs": false,
+                                    "literalMidWordUnderscores": false,
+                                    "literalMidWordAsterisks": false,
+                                    "strikethrough": false,
+                                    "tables": true,
+                                    "tablesHeaderId": false,
+                                    "ghCodeBlocks": true,
+                                    "tasklists": true,
+                                    "smoothLivePreview": false,
+                                    "smartIndentationFix": false,
+                                    "disableForced4SpacesIndentedSublists": false,
+                                    "simpleLineBreaks": false,
+                                    "requireSpaceBeforeHeadingText": false,
+                                    "ghMentions": false,
+                                    "ghMentionsLink": "https://github.com/{u}",
+                                    "encodeEmails": true,
+                                    "openLinksInNewWindow": true,
+                                    "backslashEscapesHTMLTags": false,
+                                    "emoji": true,
+                                    "underline": true,
+                                    "completeHTMLDocument": false,
+                                    "metadata": false,
+                                    "splitAdjacentBlockquotes": false
+                                }
 
-                            // Print link
-                            $('#gitHubFolder .link').html('<a href="@url" target="_blank"> @url </a>');
-                        } 
-                    });
+                                // Convert markdown to html
+                                var converter = new showdown.Converter(options);
+                                
+                                var html = converter.makeHtml(readmeFileText);
+                                // console.log("html", html);
+
+                                // Set the HTML
+                                $('#gitHubReadmeMDFIle .file-text').html(html)
+                                // Set the file Name
+                                $('#gitHubReadmeMDFIle .filename').text(fileName)
+
+                            } 
+                        });
+
+                    }
 
                 
                 </script>
