@@ -122,7 +122,10 @@ namespace WoSConnect.ROs.WoS.Controllers
             publicacion.correspondingAuthor = publicacion.seqOfAuthors[0];
             publicacion.hasPublicationVenue = getJournal(objInicial);
             publicacion.hasMetric = getPublicationMetric(objInicial);
-
+            if(publicacion.typeOfPublication==CHAPTER)
+            {
+                publicacion.doi = null;
+            }
             return publicacion;
         }
 
@@ -135,21 +138,25 @@ namespace WoSConnect.ROs.WoS.Controllers
         {
             if (pPublicacionIn.static_data != null && pPublicacionIn.static_data.summary != null && pPublicacionIn.static_data.summary.doctypes != null && pPublicacionIn.static_data.summary.doctypes.doctype != null)
             {
-                foreach (string item in pPublicacionIn.static_data.summary.doctypes.doctype)
+                if (pPublicacionIn.static_data.summary.doctypes.doctype.Contains(BOOK_CHAPTER))
                 {
-                    switch (item)
-                    {
-                        case ARTICLE:
-                            return JOURNAL_ARTICLE;
-                        case BOOK:
-                            return BOOK;
-                        case BOOK_CHAPTER:
-                            return CHAPTER;
-                        case PROCEEDINGS_PAPER:
-                            return CONFERENCE_PAPER;
-                        default: // Por defecto, son publicaciones.
-                            return JOURNAL_ARTICLE;
-                    }
+                    return CHAPTER;
+                }
+                else if (pPublicacionIn.static_data.summary.doctypes.doctype.Contains(BOOK))
+                {
+                    return BOOK;
+                }
+                else if (pPublicacionIn.static_data.summary.doctypes.doctype.Contains(PROCEEDINGS_PAPER))
+                {
+                    return CONFERENCE_PAPER;
+                }
+                else if (pPublicacionIn.static_data.summary.doctypes.doctype.Contains(ARTICLE))
+                {
+                    return JOURNAL_ARTICLE;
+                }
+                else
+                {
+                    return JOURNAL_ARTICLE;
                 }
             }
 
