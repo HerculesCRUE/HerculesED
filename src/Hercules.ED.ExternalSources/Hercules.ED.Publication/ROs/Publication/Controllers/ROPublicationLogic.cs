@@ -280,7 +280,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             //string info = JsonConvert.SerializeObject(resultado);
             //string path = _Configuracion.GetRutaJsonSalida();
             //Log.Information("Escribiendo datos en fichero...");
-            //File.WriteAllText($@"Files/ejemplo.json", info);
+            //File.WriteAllText($@"Files/prueba.json", info);
             return resultado;
 
         }
@@ -297,9 +297,8 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
                 info = JsonConvert.SerializeObject(a);
                 string info_publication = httpCall_2("specific", info);
-                if (info_publication != null)
+                if (!string.IsNullOrEmpty(info_publication))
                 {
-
                     palabras_enriquecidas objInic = JsonConvert.DeserializeObject<palabras_enriquecidas>(info_publication);
                     return objInic.topics;
 
@@ -405,7 +404,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         if (info != null)
                         {
                             string info_publication = httpCall_2("thematic", info);
-                            if (info_publication != null)
+                            if (!string.IsNullOrEmpty(info_publication))
                             {
 
                                 Topics_enriquecidos objInic = JsonConvert.DeserializeObject<Topics_enriquecidos>(info_publication);
@@ -1882,7 +1881,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
             try
             {
                 Publication publicacion = JsonConvert.DeserializeObject<Publication>(info_publication);
-                objInicial_woS = new List<Publication>() { publicacion };
+                if (publicacion != null)
+                {
+                    objInicial_woS = new List<Publication>() { publicacion };
+                }
             }
             catch (Exception e)
             {
@@ -2388,6 +2390,15 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         break;
                     }
                 }
+
+                if(!string.IsNullOrEmpty(pPublicacion.correspondingAuthor.nick))
+                {
+                    if (GetNameSimilarity(personaFinal.name.nombre_completo[0], pPublicacion.correspondingAuthor.nick) >= 0.01)
+                    {
+                        pPublicacion.correspondingAuthor = UnirPersonas(personaFinal, pPublicacion.correspondingAuthor);
+                        break;
+                    }
+                }
             }
 
             pPublicacion.seqOfAuthors = listaPersonasDefinitivas;
@@ -2519,13 +2530,13 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     if (!string.IsNullOrEmpty(nombreCompleto2))
                     {
                         pPublicacion.correspondingAuthor.name.nombre_completo = new List<string>() { nombreCompleto2.Trim() };
-                    }
+                    }                    
 
-                    if (personaFinal.name.nombre_completo != null && personaFinal.name.nombre_completo.Any() && pPublicacion.correspondingAuthor != null && pPublicacion.correspondingAuthor.name != null && pPublicacion.correspondingAuthor.name.nombre_completo != null && pPublicacion.correspondingAuthor.name.nombre_completo.Any())
+                    if (!string.IsNullOrEmpty(pPublicacion.correspondingAuthor.nick))
                     {
-                        if (GetNameSimilarity(personaFinal.name.nombre_completo[0], pPublicacion.correspondingAuthor.name.nombre_completo[0]) >= umbral)
+                        if (GetNameSimilarity(personaFinal.name.nombre_completo[0], pPublicacion.correspondingAuthor.nick) >= 0.01)
                         {
-                            pPublicacion.correspondingAuthor = personaFinal;
+                            pPublicacion.correspondingAuthor = UnirPersonas(personaFinal, pPublicacion.correspondingAuthor);
                             break;
                         }
                     }
@@ -2610,6 +2621,12 @@ namespace PublicationConnect.ROs.Publications.Controllers
             if (pPersonaFinal.name.familia == null || !pPersonaFinal.name.familia.Any())
             {
                 pPersonaFinal.name.familia = pPersonaAUnir.name.familia;
+            }
+
+            // Nick
+            if(string.IsNullOrEmpty(pPersonaFinal.nick) && !string.IsNullOrEmpty(pPersonaAUnir.nick))
+            {
+                pPersonaFinal.nick = pPersonaAUnir.nick;
             }
 
             return pPersonaFinal;
