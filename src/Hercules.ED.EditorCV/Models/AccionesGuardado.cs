@@ -177,7 +177,7 @@ namespace GuardadoCV.Models
                         string result = mResourceApi.LoadComplexSemanticResource(resource, false, true);
                         if (!resource.Uploaded)
                         {
-                            return new JsonResult() { ok = false};
+                            return new JsonResult() { ok = false };
                         }
                         //En el caso de añadir en un listado añadir la entidad al listado
                         if (resource.Uploaded && !string.IsNullOrEmpty(templateSection.property))
@@ -430,28 +430,28 @@ namespace GuardadoCV.Models
                         entity.rdfType = "http://xmlns.com/foaf/0.1/Person";
                         entity.propTitle = "http://xmlns.com/foaf/0.1/name";
                         entity.properties = new List<Entity.Property>()
-                    {
-                        new Entity.Property()
                         {
-                            prop = "http://xmlns.com/foaf/0.1/name",
-                            values = new List<string>() { person.name.given_names.value.Trim() + " "+ person.name.family_name.value.Trim() }
-                        },
-                        new Entity.Property()
-                        {
-                            prop = "http://xmlns.com/foaf/0.1/firstName",
-                            values = new List<string>() { person.name.given_names.value.Trim() }
-                        },
-                        new Entity.Property()
-                        {
-                            prop = "http://xmlns.com/foaf/0.1/lastName",
-                            values = new List<string>() { person.name.family_name.value.Trim() }
-                        },
-                        new Entity.Property()
-                        {
-                            prop = "http://w3id.org/roh/ORCID",
-                            values = new List<string>() {pORCID }
-                        }
-                    };
+                            new Entity.Property()
+                            {
+                                prop = "http://xmlns.com/foaf/0.1/name",
+                                values = new List<string>() { person.name.given_names.value.Trim() + " "+ person.name.family_name.value.Trim() }
+                            },
+                            new Entity.Property()
+                            {
+                                prop = "http://xmlns.com/foaf/0.1/firstName",
+                                values = new List<string>() { person.name.given_names.value.Trim() }
+                            },
+                            new Entity.Property()
+                            {
+                                prop = "http://xmlns.com/foaf/0.1/lastName",
+                                values = new List<string>() { person.name.family_name.value.Trim() }
+                            },
+                            new Entity.Property()
+                            {
+                                prop = "http://w3id.org/roh/ORCID",
+                                values = new List<string>() {pORCID }
+                            }
+                        };
                         //TODO privacidad
                         mResourceApi.ChangeOntoly("person");
                         ComplexOntologyResource resource = ToGnossApiResource(entity);
