@@ -129,13 +129,13 @@
             <AtrNombreLectura>http://purl.org/dc/elements/1.1/type</AtrNombreLectura>
 			<SeleccionEntidad>
                 <TipoSeleccion>Autocompletar</TipoSeleccion>
-                <Grafo>publicationtype.owl</Grafo>
-                <UrlTipoEntSolicitada>http://w3id.org/roh/PublicationType</UrlTipoEntSolicitada>              
+                <Grafo>researchobjecttype.owl</Grafo>
+                <UrlTipoEntSolicitada>http://w3id.org/roh/ResearchObjectType</UrlTipoEntSolicitada>              
                 <PropsEntEdicion>
                     <NameProp>http://purl.org/dc/elements/1.1/title</NameProp>
                 </PropsEntEdicion>
                 <PropsEntLectura>
-                    <Propiedad ID="http://purl.org/dc/elements/1.1/title" EntidadID="http://w3id.org/roh/PublicationType">
+                    <Propiedad ID="http://purl.org/dc/elements/1.1/title" EntidadID="http://w3id.org/roh/ResearchObjectType">
                         <AtrNombreLectura></AtrNombreLectura>
                     </Propiedad>
                 </PropsEntLectura>
