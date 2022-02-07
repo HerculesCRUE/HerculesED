@@ -386,17 +386,37 @@
             <div class="list-wrap website">
                 <div class="label">@Html.Translate("WEBS")</div>
                 <ul>
-                    @{ if (pDocument.Vcard_url.Count > 0)
+                    @{ 
+                        if (pDocument.Vcard_url.Count > 0)
                         {
                             foreach (var item in pDocument.Vcard_url)
                             {
                                 string web = item;
-                                if (web.Contains("scopus"))
-                                    web = "SCOPUS";
+                                
 
-                                <li>
-                                    <a about="@pDocument.GNOSSID" property="@pDocument.GetPropertyURI(nameof(pDocument.Vcard_url))" target="_blank" href="@item">@web</a>
-                                </li>
+                                if (web.Contains(","))
+                                {
+                                    foreach (var el in item.Split(","))
+                                    {
+                                        string webi = el;
+                                        webi = el;
+                                        if (webi.Contains("scopus"))
+                                            webi = "SCOPUS";
+                                        <li>
+                                            <a about="@pDocument.GNOSSID" property="@pDocument.GetPropertyURI(nameof(pDocument.Vcard_url))" target="_blank" href="@el">@webi</a>
+                                        </li>
+                                    }
+                                } 
+                                else
+                                {
+                                    if (web.Contains("scopus"))
+                                        web = "SCOPUS";
+
+                                    <li>
+                                        <a about="@pDocument.GNOSSID" property="@pDocument.GetPropertyURI(nameof(pDocument.Vcard_url))" target="_blank" href="@item">@web</a>
+                                    </li>
+                                }
+                                
                             }
                             
                         }
@@ -427,15 +447,19 @@
                                 </div>
                             </a>
                         </li>
-                        <li class="nav-item" role="presentation">
-                            <!-- Citas -->
-                            <a class="nav-link" id="citas-tab" data-toggle="tab" href="#citas-panel" role="tab" aria-controls="citas-panel" >
-                                <div class="bloque">
-                                    <div class="label">@Html.Translate("CITAS")</div>
-                                    <div class="data">@pDocument.Roh_citationLoadedCount</div>
-                                </div>
-                            </a>
-                        </li>
+                        @{
+                            /*
+                                <li class="nav-item" role="presentation">
+                                    <!-- Citas -->
+                                    <a class="nav-link" id="citas-tab" data-toggle="tab" href="#citas-panel" role="tab" aria-controls="citas-panel" >
+                                        <div class="bloque">
+                                            <div class="label">@Html.Translate("CITAS")</div>
+                                            <div class="data">@pDocument.Roh_citationLoadedCount</div>
+                                        </div>
+                                    </a>
+                                </li>
+                            */
+                        }
                         <li class="nav-item" role="presentation">
                             <!-- Referencias -->
                             <a class="nav-link" id="referencias-tab" data-toggle="tab" href="#referencias-panel" role="tab" aria-controls="referencias-panel">
@@ -454,18 +478,22 @@
                         </div>
                     </div>
 
-                    <div class="tab-pane fade" id="citas-panel" role="tabpanel" aria-labelledby="citas-tab">
-                        <div class="row" id="contenedorBuscadorCitas">
-                            <!-- <div class="col col-12 col-grafo mb-5">
-                                <div class="wrapCol" id="graficaBuscadorCitas" style="width: 1224px; height: 500px;"></div>
-                            </div> -->
-                            <div class="col col-12 col-section-title font-weight-bold searcherTitle">
-                                <div class="wrapCol">
-                                    <p>@Html.Translate("CITAS")</p>
+                    @{
+                        /* 
+                            <div class="tab-pane fade" id="citas-panel" role="tabpanel" aria-labelledby="citas-tab">
+                                <div class="row" id="contenedorBuscadorCitas">
+                                    <!-- <div class="col col-12 col-grafo mb-5">
+                                        <div class="wrapCol" id="graficaBuscadorCitas" style="width: 1224px; height: 500px;"></div>
+                                    </div> -->
+                                    <div class="col col-12 col-section-title font-weight-bold searcherTitle">
+                                        <div class="wrapCol">
+                                            <p>@Html.Translate("CITAS")</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                        */
+                    }
                     
                     <div class="tab-pane fade" id="referencias-panel" role="tabpanel" aria-labelledby="referencias-tab">
                         <div class="row" id="contenedorBuscadorReferencias">
@@ -629,129 +657,129 @@
 
 
     // Datos gráfica citas.
-    function CargarGraficaCitas(pIdDocumento, parametros) {
-        var url = "http://serviciosedma.gnoss.com/servicioexterno/Hercules/DatosGraficaCitas"
-        if (depuracion) {
-            url = localUrlBase + "Hercules/DatosGraficaCitas"
-        }
-        var arg = {};
-        arg.pIdDocumento = pIdDocumento;
-        arg.pParametros = parametros;
-        $('#graficaBuscadorCitas').empty();
-        $.get(url, arg, function (data) {
-            $('#graficaBuscadorCitas').empty();
+    //function CargarGraficaCitas(pIdDocumento, parametros) {
+    //    var url = "http://serviciosedma.gnoss.com/servicioexterno/Hercules/DatosGraficaCitas"
+    //    if (depuracion) {
+    //        url = localUrlBase + "Hercules/DatosGraficaCitas"
+    //    }
+    //    var arg = {};
+    //    arg.pIdDocumento = pIdDocumento;
+    //    arg.pParametros = parametros;
+    //    $('#graficaBuscadorCitas').empty();
+    //    $.get(url, arg, function (data) {
+    //        $('#graficaBuscadorCitas').empty();
 
-            var cy = window.cy = cytoscape({
-                // Contenedor
-                container: document.getElementById('graficaBuscadorCitas'),
-                // Layout
-                layout: {
-                    name: 'cose',
-                    idealEdgeLength: 100,
-                    nodeOverlap: 20,
-                    refresh: 20,
-                    padding: 30,
-                    randomize: false,
-                    componentSpacing: 100,
-                    nodeRepulsion: 400000,
-                    edgeElasticity: 100,
-                    nestingFactor: 5,
-                    gravity: 80,
-                    numIter: 1000,
-                    initialTemp: 200,
-                    coolingFactor: 0.95,
-                    minTemp: 1.0
+    //        var cy = window.cy = cytoscape({
+    //            // Contenedor
+    //            container: document.getElementById('graficaBuscadorCitas'),
+    //            // Layout
+    //            layout: {
+    //                name: 'cose',
+    //                idealEdgeLength: 100,
+    //                nodeOverlap: 20,
+    //                refresh: 20,
+    //                padding: 30,
+    //                randomize: false,
+    //                componentSpacing: 100,
+    //                nodeRepulsion: 400000,
+    //                edgeElasticity: 100,
+    //                nestingFactor: 5,
+    //                gravity: 80,
+    //                numIter: 1000,
+    //                initialTemp: 200,
+    //                coolingFactor: 0.95,
+    //                minTemp: 1.0
 
-                }, pan: { x: 350, y: 50 },
-                // Estilos
-                style: [{
-                    "selector": "node",
-                    "style": {
+    //            }, pan: { x: 350, y: 50 },
+    //            // Estilos
+    //            style: [{
+    //                "selector": "node",
+    //                "style": {
 
-                        "width": "mapData(score, 0, 25, 30, 70)",
-                        "height": "mapData(score, 0, 25, 30, 70)",
-                        "content": "data(name)",
-                        "font-size": "12px",
-                        "font-family": 'Roboto',
-                        "font-color": "#999999",
-                        "background-color": "#c2c2c2",
+    //                    "width": "mapData(score, 0, 25, 30, 70)",
+    //                    "height": "mapData(score, 0, 25, 30, 70)",
+    //                    "content": "data(name)",
+    //                    "font-size": "12px",
+    //                    "font-family": 'Roboto',
+    //                    "font-color": "#999999",
+    //                    "background-color": "#c2c2c2",
 
-                        "text-outline-width": "0px",
+    //                    "text-outline-width": "0px",
 
-                        "overlay-padding": "6px",
-                        "z-index": "10"
-                    }
-                }, {
-                    "selector": "edge",
-                    "style": {
-                        "curve-style": "haystack",
-                        "haystack-radius": "0.5",
-                        "opacity": "0.4",
-                        "line-color": "#E1E1E1",
-                        "width": "mapData(weight, 0, 10, 0, 10)",
-                        "overlay-padding": "1px",
-                        "font-family": 'Arial Black',
-                        "font-color": 'black'
-                    }
-                }],
-                // Datos
-                elements: data
-            });
-            cy.zoomingEnabled(false);
+    //                    "overlay-padding": "6px",
+    //                    "z-index": "10"
+    //                }
+    //            }, {
+    //                "selector": "edge",
+    //                "style": {
+    //                    "curve-style": "haystack",
+    //                    "haystack-radius": "0.5",
+    //                    "opacity": "0.4",
+    //                    "line-color": "#E1E1E1",
+    //                    "width": "mapData(weight, 0, 10, 0, 10)",
+    //                    "overlay-padding": "1px",
+    //                    "font-family": 'Arial Black',
+    //                    "font-color": 'black'
+    //                }
+    //            }],
+    //            // Datos
+    //            elements: data
+    //        });
+    //        cy.zoomingEnabled(false);
 
-            var array = []
-            var nodos = cy.nodes()
+    //        var array = []
+    //        var nodos = cy.nodes()
 
-            //Quita el nombre de la publicación.
-            array.push(nodos[0]._private.data.name);
-            cy.nodes()[0]._private.data.name = "";
+    //        //Quita el nombre de la publicación.
+    //        array.push(nodos[0]._private.data.name);
+    //        cy.nodes()[0]._private.data.name = "";
 
-            cy.nodes()[0].style({
-                'border-width': '2px',
-                'border-color': 'black',
-                'shape': 'circle'
-            });
+    //        cy.nodes()[0].style({
+    //            'border-width': '2px',
+    //            'border-color': 'black',
+    //            'shape': 'circle'
+    //        });
 
-            var f = cy.nodes().length
+    //        var f = cy.nodes().length
 
-            for (i = 1; i < cy.nodes().length; i++) { //starts loop
-                array.push(nodos[i]._private.data.name);
-                //cy.nodes()[i]._private.data.name="";
-                cy.nodes()[i].style({
-                    'background-color': 'white',
-                    'background-image': 'https://cdn.iconscout.com/icon/free/png-256/user-1648810-1401302.png',
-                    'background-fit': 'cover',
-                    'border-width': '2px',
-                    'border-color': 'rgb(4,184,209)',
-                    'shape': 'circle'
-                })
-            };
+    //        for (i = 1; i < cy.nodes().length; i++) { //starts loop
+    //            array.push(nodos[i]._private.data.name);
+    //            //cy.nodes()[i]._private.data.name="";
+    //            cy.nodes()[i].style({
+    //                'background-color': 'white',
+    //                'background-image': 'https://cdn.iconscout.com/icon/free/png-256/user-1648810-1401302.png',
+    //                'background-fit': 'cover',
+    //                'border-width': '2px',
+    //                'border-color': 'rgb(4,184,209)',
+    //                'shape': 'circle'
+    //            })
+    //        };
 
-            cy.on('mouseover', 'edges', function (event) {
-                $('#numRelaciones').text('(' + event.target.id().split("~")[2] + ')');
-            });
+    //        cy.on('mouseover', 'edges', function (event) {
+    //            $('#numRelaciones').text('(' + event.target.id().split("~")[2] + ')');
+    //        });
 
-            cy.on('click', 'node', function (e) {
-                e = e.target;
-                var indice = cy.nodes().indexOf(e)
-                if (e._private.data.name === "") {
-                    e._private.data.name = array[indice]
-                    //nodo proyect.
-                    if (indice === 0) {
-                        e.style('border-color', 'rgb(12,121,212)')
-                    }
-                    else {
-                        e.style('border-color', 'rgb(4,184,209)')
-                    }
-                }
-                else {
-                    e._private.data.name = ""
-                    if (indice == 0) e.style('border-color', 'black');
-                    else e.style('border-color', 'grey');
-                }
-            })
-        });
-    }
+    //        cy.on('click', 'node', function (e) {
+    //            e = e.target;
+    //            var indice = cy.nodes().indexOf(e)
+    //            if (e._private.data.name === "") {
+    //                e._private.data.name = array[indice]
+    //                //nodo proyect.
+    //                if (indice === 0) {
+    //                    e.style('border-color', 'rgb(12,121,212)')
+    //                }
+    //                else {
+    //                    e.style('border-color', 'rgb(4,184,209)')
+    //                }
+    //            }
+    //            else {
+    //                e._private.data.name = ""
+    //                if (indice == 0) e.style('border-color', 'black');
+    //                else e.style('border-color', 'grey');
+    //            }
+    //        })
+    //    });
+    //}
 
 
     // Comportamiento página proyecto
@@ -772,11 +800,11 @@
                     $('#panNumResultados').hide();
                 });
             });
-            $('#citas-tab').unbind().click(function (e) {
-                e.preventDefault();
-                that.tabActive = "citas";
-                buscadorPersonalizado.init("@Html.Translate("CITAS")", "#contenedorBuscadorCitas", "bibo:cites=http://gnoss/@pDocument.GNOSSID.Split('_')[1].ToUpper()", "dct:issued", "rdf:type=document", "@Comunidad.Url", "@Comunidad.Key.ToString()");
-            });
+            //$('#citas-tab').unbind().click(function (e) {
+            //    e.preventDefault();
+            //    that.tabActive = "citas";
+            //    buscadorPersonalizado.init("@Html.Translate("CITAS")", "#contenedorBuscadorCitas", "bibo:cites=http://gnoss/@pDocument.GNOSSID.Split('_')[1].ToUpper()", "dct:issued", "rdf:type=document", "@Comunidad.Url", "@Comunidad.Key.ToString()");
+            //});
             $('#referencias-tab').unbind().click(function (e) {
                 e.preventDefault();
                 that.tabActive = "referencias";
@@ -799,8 +827,8 @@
             CargarGraficaReferencias("@pDocument.GNOSSID.Split('_')[1].ToUpper()", parametros);
         } else if (comportamientoPaginaDocumento.tabActive == "citas")
         {
-            var parametros = ObtenerHash2();
-            CargarGraficaCitas("@pDocument.GNOSSID.Split('_')[1].ToUpper()", parametros);
+            //var parametros = ObtenerHash2();
+            //CargarGraficaCitas("@pDocument.GNOSSID.Split('_')[1].ToUpper()", parametros);
         }
     }
 
