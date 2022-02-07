@@ -139,6 +139,14 @@ namespace GuardadoCV.Models.API.Templates
         /// </summary>
         public string property;
         /// <summary>
+        /// Propiedad para acceder a la entidad del cv desde la minificha
+        /// </summary>
+        public string property_cv;
+        /// <summary>
+        /// Rdf:type de ña entidad del cv 
+        /// </summary>
+        public string rdftype_cv;        
+        /// <summary>
         /// Datos de configuración para la presentación de los items del listado de la lista
         /// </summary>
         public TabSectionListItem listItem;

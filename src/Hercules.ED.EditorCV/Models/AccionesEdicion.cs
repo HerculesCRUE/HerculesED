@@ -22,6 +22,7 @@ using EditorCV.Models.Enrichment;
 using EditorCV.Controllers;
 using Gnoss.ApiWrapper.Model;
 using static EditorCV.Models.Enrichment.EnrichmentResponse;
+using System.Globalization;
 
 namespace GuardadoCV.Models
 {
@@ -181,13 +182,19 @@ namespace GuardadoCV.Models
 
             //obtenemos la entidad correspondiente
             List<PropertyData> propertyData = new List<PropertyData>() { new PropertyData() { property = property } };
-            Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> dataAux = UtilityCV.GetProperties(new HashSet<string>() { pEntityID }, "curriculumvitae", propertyData, pLang);
+            Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> dataAux = UtilityCV.GetProperties(new HashSet<string>() { pEntityID }, "curriculumvitae", propertyData, pLang, new Dictionary<string, SparqlObject>());
             if (pEntityID != null && dataAux.ContainsKey(pEntityID))
             {
                 entityID = dataAux[pEntityID].First()["o"].value;
             }
-
-            return GetEditModel(entityID, templateEdit, pLang);
+            if (tabSectionPresentation.listItemsPresentation != null && !string.IsNullOrEmpty(tabSectionPresentation.listItemsPresentation.property_cv))
+            {
+                return GetEditModel(entityID, templateEdit, pLang, pEntityID, tabSectionPresentation.listItemsPresentation.property_cv);
+            }
+            else
+            {
+                return GetEditModel(entityID, templateEdit, pLang);
+            }
         }
 
         /// <summary>
@@ -280,7 +287,7 @@ namespace GuardadoCV.Models
                 foreach (LoadProp loadProp in pItemsLoad.items)
                 {
                     KeyValuePair<string, PropertyData> propertyData = loadProp.GenerarPropertyData();
-                    Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> data = UtilityCV.GetProperties(new HashSet<string>() { loadProp.id }, propertyData.Key, new List<PropertyData>() { propertyData.Value }, pLang);
+                    Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> data = UtilityCV.GetProperties(new HashSet<string>() { loadProp.id }, propertyData.Key, new List<PropertyData>() { propertyData.Value }, pLang, new Dictionary<string, SparqlObject>());
                     loadProp.values = GetPropValues(loadProp.id, loadProp.GetPropComplete(), data);
                 }
             }
@@ -784,7 +791,7 @@ namespace GuardadoCV.Models
             {
                 propertyDatas.Add(templateSection.GenerarPropertyData(graph));
             }
-            return UtilityCV.GetProperties(new HashSet<string>() { pId }, graph, propertyDatas, pLang);
+            return UtilityCV.GetProperties(new HashSet<string>() { pId }, graph, propertyDatas, pLang, new Dictionary<string, SparqlObject>());
         }
 
         /// <summary>
@@ -797,7 +804,7 @@ namespace GuardadoCV.Models
         private Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> GetItemMiniData(string pId, TabSectionListItem pListItemConfig, string pLang)
         {
             string graph = "curriculumvitae";
-            return UtilityCV.GetProperties(new HashSet<string>() { pId }, graph, pListItemConfig.GenerarPropertyData(graph).childs, pLang);
+            return UtilityCV.GetProperties(new HashSet<string>() { pId }, graph, pListItemConfig.GenerarPropertyData(graph).childs, pLang, new Dictionary<string, SparqlObject>());
         }
 
         /// <summary>
@@ -971,6 +978,10 @@ namespace GuardadoCV.Models
                     }
                     itemProperty.type = property.type.ToString();
                     itemProperty.values = GetPropValues(pId, propertyIn, pData);
+                    if(property.type==DataTypeListItem.number)
+                    {
+                        itemProperty.values = itemProperty.values.Select(x=>UtilityCV.GetTextNumber(x)).ToList();
+                    }
                     item.properties.Add(itemProperty);
                 }
             }
@@ -1010,8 +1021,10 @@ namespace GuardadoCV.Models
         /// <param name="pItemEdit">Configuración de edición</param>
         /// <param name="pGraph">Grafo de la entidad</param>
         /// <param name="pLang">Idioma</param>
+        /// <param name="pEntityCV">Entidad del cv desde la que se apunta a la entidad</param>
+        /// <param name="pPropertyCV">Propiedad que apunta a la entidad en el CV</param>
         /// <returns></returns>
-        private Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> GetEditData(string pId, ItemEdit pItemEdit, string pGraph, string pLang)
+        private Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> GetEditData(string pId, ItemEdit pItemEdit, string pGraph, string pLang, string pEntityCV = null, string pPropertyCV = null)
         {
             List<PropertyData> propertyDatas = pItemEdit.GenerarPropertyDatas(pGraph);
             //Editabilidad
@@ -1023,7 +1036,40 @@ namespace GuardadoCV.Models
                     childs = new List<Utils.PropertyData>()
                 });
             }
-            Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> respuesta = UtilityCV.GetProperties(new HashSet<string>() { pId }, pGraph, propertyDatas, pLang);
+            Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> respuesta = UtilityCV.GetProperties(new HashSet<string>() { pId }, pGraph, propertyDatas, pLang, new Dictionary<string, SparqlObject>());
+
+            List<PropertyData> propertyDatasCV = pItemEdit.GenerarPropertyDatas(pGraph,true);
+            if (propertyDatasCV.Count > 0)
+            {
+                SparqlObject idEntityInCV = mResourceApi.VirtuosoQuery("select ?id", "where{<" + pEntityCV + "> <" + pPropertyCV + "> ?id}", "curriculumvitae");
+                if (idEntityInCV.results.bindings.Count > 0)
+                {
+                    string id = idEntityInCV.results.bindings[0]["id"].value;
+                    Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> respuestaCV = UtilityCV.GetProperties(new HashSet<string>() { id }, "curriculumvitae", propertyDatasCV, pLang, new Dictionary<string, SparqlObject>());
+                    foreach(string idrespuesta in respuestaCV.Keys)
+                    {
+                        string idAux = idrespuesta;
+                        if (idrespuesta== id)
+                        {
+                            idAux = pId;
+                        }
+                        if(!respuesta.ContainsKey(idAux))
+                        {
+                            respuesta.Add(idAux,new List<Dictionary<string, Data>>());
+                        }
+                        foreach (Dictionary<string, SparqlObject.Data> fila in respuestaCV[idrespuesta])
+                        {
+                            Dictionary<string, SparqlObject.Data> filaAux = new Dictionary<string, Data>();
+                            filaAux.Add("s", fila["s"]);
+                            filaAux.Add("p", fila["p"]);
+                            filaAux.Add("o", fila["o"]);
+                            filaAux["s"].value = filaAux["s"].value.Replace(id,pId);
+                            respuesta[idAux].Add(filaAux);
+                        }
+                    }
+                }
+            }
+
             return respuesta;
         }
 
@@ -1031,15 +1077,14 @@ namespace GuardadoCV.Models
         /// Genera el modelo de edición de una entidad una vez tenemos todos los datos de la entidad cargados
         /// </summary>
         /// <param name="pId">Identificador de la entidad</param>
-        /// <param name="pData">Datos de la entidad</param>
         /// <param name="pPresentationEdit">Configuración de presentación</param>
         /// <param name="pLang">Idioma</param>
-        /// <param name="pCombos">Combos</param>
-        /// <param name="pGraph">Grafo de la entidad</param>
+        /// <param name="pEntityCV">Entidad del cv desde la que se apunta a la entidad</param>
+        /// <param name="pPropertyCV">Propiedad que apunta a la entidad en el CV</param>
         /// <returns></returns>
-        private EntityEdit GetEditModel(string pId, ItemEdit pPresentationEdit, string pLang)
+        private EntityEdit GetEditModel(string pId, ItemEdit pPresentationEdit, string pLang,string pEntityCV=null,string pPropertyCV=null)
         {
-            Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> data = GetEditData(pId, pPresentationEdit, pPresentationEdit.graph, pLang);
+            Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> data = GetEditData(pId, pPresentationEdit, pPresentationEdit.graph, pLang, pEntityCV,pPropertyCV);
 
             List<ItemEditSectionRowPropertyCombo> listCombosConfig = GetEditCombos(pPresentationEdit.sections.SelectMany(x => x.rows).SelectMany(x => x.properties).ToList());
             Dictionary<ItemEditSectionRowPropertyCombo, Dictionary<string, string>> combos = new Dictionary<ItemEditSectionRowPropertyCombo, Dictionary<string, string>>();
@@ -1366,7 +1411,31 @@ namespace GuardadoCV.Models
                         entityEditSectionRowProperty.values.Add(value);
                     }
                 }
-                if (pItemEditSectionRowProperty.combo != null)
+                if (pItemEditSectionRowProperty.type ==DataTypeEdit.boolean)
+                {
+                    entityEditSectionRowProperty.comboValues = new Dictionary<string, string>();
+                    entityEditSectionRowProperty.comboValues[""] = "-";
+                    string si = "";
+                    string no = "";
+                    switch (pLang)
+                    {
+                        case "es":
+                            si = "Sí";
+                            no = "No";
+                            break;
+                        case "en":
+                            si = "Yes";
+                            no = "No";
+                            break;
+                        default:
+                            si = "Sí";
+                            no = "No";
+                            break;
+                    }
+                    entityEditSectionRowProperty.comboValues["true"] = si;
+                    entityEditSectionRowProperty.comboValues["false"] = no;
+                }
+                else if (pItemEditSectionRowProperty.combo != null)
                 {
                     entityEditSectionRowProperty.comboValues = pCombos.FirstOrDefault(x =>
                       UtilityCV.GetPropComplete(x.Key.property) == UtilityCV.GetPropComplete(pItemEditSectionRowProperty.combo.property) &&
@@ -1391,13 +1460,13 @@ namespace GuardadoCV.Models
 
                 if (pItemEditSectionRowProperty.autocompleteConfig != null)
                 {
-
                     entityEditSectionRowProperty.autocompleteConfig = new AutocompleteConfig()
                     {
                         property = UtilityCV.GetPropComplete(pItemEditSectionRowProperty.autocompleteConfig.property),
                         rdftype = pItemEditSectionRowProperty.autocompleteConfig.rdftype,
                         graph= pItemEditSectionRowProperty.autocompleteConfig.graph,
-                        getEntityId= !string.IsNullOrEmpty( pItemEditSectionRowProperty.autocompleteConfig.propertyEntity)
+                        getEntityId= !string.IsNullOrEmpty( pItemEditSectionRowProperty.autocompleteConfig.propertyEntity),
+                        mandatory = pItemEditSectionRowProperty.autocompleteConfig.mandatory,
                     };
                 }
 
@@ -1409,7 +1478,21 @@ namespace GuardadoCV.Models
                         entityEditSectionRowProperty.propertyEntityValue = pData[pId].Where(x => x["p"].value == entityEditSectionRowProperty.propertyEntity).Select(x => x["o"].value).Distinct().FirstOrDefault();
                     }
                 }
-                    
+
+                if (pItemEditSectionRowProperty.autocompleteConfig != null && pItemEditSectionRowProperty.type==DataTypeEdit.entityautocomplete)
+                {
+                    entityEditSectionRowProperty.propertyEntityValue = "";
+                    if (pId != null && pData.ContainsKey(pId))
+                    {
+                        string entity = pData[pId].Where(x => x["p"].value == entityEditSectionRowProperty.property).Select(x => x["o"].value).Distinct().FirstOrDefault();
+                        if (!string.IsNullOrEmpty(entity))
+                        {
+                            string entityText = pData[entity].Where(x => x["p"].value == pItemEditSectionRowProperty.autocompleteConfig.property.property).Select(x => x["o"].value).Distinct().FirstOrDefault();
+                            entityEditSectionRowProperty.propertyEntityValue = entityText;
+                        }
+                    }
+                }
+
                 if (pItemEditSectionRowProperty.type == DataTypeEdit.thesaurus)
                 {
                     entityEditSectionRowProperty.thesaurus = pTesauros[pItemEditSectionRowProperty.thesaurus];
@@ -1549,10 +1632,18 @@ namespace GuardadoCV.Models
                 {
                     entityEditSectionRowProperty.dependency = new Dependency()
                     {
-                        parent = pItemEditSectionRowProperty.dependency.property,
-                        parentDependencyValue = pItemEditSectionRowProperty.dependency.propertyValue.Replace("{GraphsUrl}", mResourceApi.GraphsUrl)
+                        parent = pItemEditSectionRowProperty.dependency.property
                     };
+                    if(!string.IsNullOrEmpty(pItemEditSectionRowProperty.dependency.propertyValue))
+                    {
+                        entityEditSectionRowProperty.dependency.parentDependencyValue = pItemEditSectionRowProperty.dependency.propertyValue.Replace("{GraphsUrl}", mResourceApi.GraphsUrl);
+                    }
+                    if (!string.IsNullOrEmpty(pItemEditSectionRowProperty.dependency.propertyValueDistinct))
+                    {
+                        entityEditSectionRowProperty.dependency.parentDependencyValueDistinct = pItemEditSectionRowProperty.dependency.propertyValueDistinct.Replace("{GraphsUrl}", mResourceApi.GraphsUrl);
+                    }
                 }
+                entityEditSectionRowProperty.entity_cv = pItemEditSectionRowProperty.entity_cv;
 
                 return entityEditSectionRowProperty;
             }
@@ -1634,7 +1725,7 @@ namespace GuardadoCV.Models
                 });
             }
 
-            return UtilityCV.GetProperties(ids, pItemEditSectionRowPropertyCombo.graph, propertyDatas, pLang);
+            return UtilityCV.GetProperties(ids, pItemEditSectionRowPropertyCombo.graph, propertyDatas, pLang, new Dictionary<string, SparqlObject>());
         }
 
         /// <summary>
@@ -1644,7 +1735,7 @@ namespace GuardadoCV.Models
         /// <param name="pProp">Propiedad</param>
         /// <param name="pData">Datos cargados</param>
         /// <returns></returns>
-        private List<string> GetPropValues(string pId, string pProp, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> pData)
+        public static List<string> GetPropValues(string pId, string pProp, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> pData)
         {
             List<string> idAux = new List<string>();
 
@@ -1708,9 +1799,12 @@ namespace GuardadoCV.Models
                     List<string> idAux2 = new List<string>();
                     foreach (string id in idAux)
                     {
-                        if (pData.ContainsKey(id))
+                        if (!string.IsNullOrEmpty(id))
                         {
-                            idAux2.AddRange(pData[id].Where(x => x["p"].value == prop).Select(x => x["o"].value).Distinct().ToList());
+                            if (pData.ContainsKey(id))
+                            {
+                                idAux2.AddRange(pData[id].Where(x => x["p"].value == prop).Select(x => x["o"].value).Distinct().ToList());
+                            }
                         }
                     }
                     idAux = idAux2;
@@ -1726,7 +1820,7 @@ namespace GuardadoCV.Models
         /// <param name="pPropertyData">Propiedades a recuperar</param>
         /// <param name="pData">Datos cargados</param>
         /// <returns></returns>
-        private List<string> GetPropValuesAux(List<string> pIds, PropertyData pPropertyData, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> pData)
+        private static List<string> GetPropValuesAux(List<string> pIds, PropertyData pPropertyData, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> pData)
         {
             List<string> values = new List<string>();
             List<string> aux = new List<string>();

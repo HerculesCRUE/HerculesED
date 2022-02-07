@@ -41,8 +41,9 @@ namespace GuardadoCV.Models.API.Templates
         /// Genera el PropertyData para recuperar los datos
         /// </summary>
         /// <param name="pGraph">Grafo</param>
+        /// <param name="pCV">Indica si la propiedad se busca en realidad en el cv</param>
         /// <returns></returns>
-        public List<Utils.PropertyData> GenerarPropertyDatas(string pGraph)
+        public List<Utils.PropertyData> GenerarPropertyDatas(string pGraph, bool pCV = false)
         {
             List<Utils.PropertyData> propertyDatas = new List<Utils.PropertyData>();
             if (this.sections != null)
@@ -53,7 +54,7 @@ namespace GuardadoCV.Models.API.Templates
                     {
                         foreach (ItemEditSectionRow itemEditSectionRow in itemEditSection.rows)
                         {
-                            List<Utils.PropertyData> aux = itemEditSectionRow.GenerarPropertyDatas(pGraph);
+                            List<Utils.PropertyData> aux = itemEditSectionRow.GenerarPropertyDatas(pGraph,pCV);
                             propertyDatas.AddRange(aux);
                         }
                     }
@@ -105,92 +106,112 @@ namespace GuardadoCV.Models.API.Templates
         /// Genera el PropertyData para recuperar los datos
         /// </summary>
         /// <param name="pGraph">Grafo</param>
+        /// <param name="pCV">Indica si la propiedad se busca en realidad en el cv</param>
         /// <returns></returns>
-        public List<Utils.PropertyData> GenerarPropertyDatas(string pGraph)
+        public List<Utils.PropertyData> GenerarPropertyDatas(string pGraph, bool pCV = false)
         {
             List<Utils.PropertyData> propertyDatas = new List<Utils.PropertyData>();
             foreach (ItemEditSectionRowProperty itemEditSectionRowProperty in this.properties)
             {
-                if(itemEditSectionRowProperty.autocompleteConfig!=null && !string.IsNullOrEmpty( itemEditSectionRowProperty.autocompleteConfig.propertyEntity))
+                if ((!pCV && !itemEditSectionRowProperty.entity_cv) || (pCV && itemEditSectionRowProperty.entity_cv))
                 {
-                    Utils.PropertyData propertyAC = new Utils.PropertyData()
+                    if (itemEditSectionRowProperty.autocompleteConfig != null && !string.IsNullOrEmpty(itemEditSectionRowProperty.autocompleteConfig.propertyEntity))
                     {
-                        property = itemEditSectionRowProperty.autocompleteConfig.propertyEntity,
+                        if (!string.IsNullOrEmpty(itemEditSectionRowProperty.autocompleteConfig.propertyEntity))
+                        {
+                            Utils.PropertyData propertyAC = new Utils.PropertyData()
+                            {
+                                property = itemEditSectionRowProperty.autocompleteConfig.propertyEntity,
+                                childs = new List<Utils.PropertyData>(),
+                                graph = pGraph
+                            };
+                            if (!propertyDatas.Exists(x => x.property == itemEditSectionRowProperty.property))
+                            {
+                                propertyDatas.Add(propertyAC);
+                            }
+                        }
+                    }
+                    Utils.PropertyData property = new Utils.PropertyData()
+                    {
+                        property = itemEditSectionRowProperty.property,
                         childs = new List<Utils.PropertyData>(),
                         graph = pGraph
                     };
+                    if (itemEditSectionRowProperty.type == DataTypeEdit.entityautocomplete)
+                    {
+                        Utils.PropertyData propertyAC = new Utils.PropertyData()
+                        {
+                            property = itemEditSectionRowProperty.autocompleteConfig.property.property,
+                            childs = new List<Utils.PropertyData>()
+                        };
+                        property.graph = itemEditSectionRowProperty.autocompleteConfig.graph;
+                        if (!property.childs.Exists(x => x.property == itemEditSectionRowProperty.property))
+                        {
+                            property.childs.Add(propertyAC);
+                        }
+                    }
                     if (!propertyDatas.Exists(x => x.property == itemEditSectionRowProperty.property))
                     {
-                        propertyDatas.Add(propertyAC);
+                        propertyDatas.Add(property);
                     }
-                }
-                Utils.PropertyData property = new Utils.PropertyData()
-                {
-                    property = itemEditSectionRowProperty.property,
-                    childs = new List<Utils.PropertyData>(),
-                    graph = pGraph
-                };
-                if (!propertyDatas.Exists(x => x.property == itemEditSectionRowProperty.property))
-                {
-                    propertyDatas.Add(property);
-                }
-                else
-                {
-                    property = propertyDatas.First(x => x.property == property.property);
-                }
-                if(itemEditSectionRowProperty.type== DataTypeEdit.auxEntityAuthorList)
-                {
-                    property.childs.AddRange(GetPropertyDataAuthorList());
-                }
-                if (itemEditSectionRowProperty.type == DataTypeEdit.thesaurus)
-                {
-                    property.childs.AddRange(new List<Utils.PropertyData>() { new Utils.PropertyData { property = "http://w3id.org/roh/categoryNode" } });
-                }
-                if (itemEditSectionRowProperty.auxEntityData != null && itemEditSectionRowProperty.auxEntityData.rows != null)
-                {
-                    foreach (ItemEditSectionRow itemEditSectionRowIn in itemEditSectionRowProperty.auxEntityData.rows)
+                    else
                     {
-                        property.childs.AddRange(itemEditSectionRowIn.GenerarPropertyDatas(pGraph));
+                        property = propertyDatas.First(x => x.property == property.property);
                     }
-                }
-                if (itemEditSectionRowProperty.auxEntityData != null)
-                {
-                    if (!string.IsNullOrEmpty(itemEditSectionRowProperty.auxEntityData.propertyOrder))
+                    if (itemEditSectionRowProperty.type == DataTypeEdit.auxEntityAuthorList)
                     {
-                        property.childs.Add(new Utils.PropertyData() { property = itemEditSectionRowProperty.auxEntityData.propertyOrder, graph = pGraph });
+                        property.childs.AddRange(GetPropertyDataAuthorList());
                     }
-                    if (itemEditSectionRowProperty.auxEntityData.propertyTitle != null)
+                    if (itemEditSectionRowProperty.type == DataTypeEdit.thesaurus)
                     {
-                        property.childs.Add(itemEditSectionRowProperty.auxEntityData.propertyTitle.GenerarPropertyData(pGraph));
+                        property.childs.AddRange(new List<Utils.PropertyData>() { new Utils.PropertyData { property = "http://w3id.org/roh/categoryNode" } });
                     }
-                    if (itemEditSectionRowProperty.auxEntityData.properties != null)
+                    if (itemEditSectionRowProperty.auxEntityData != null && itemEditSectionRowProperty.auxEntityData.rows != null)
                     {
-                        foreach (ItemEditEntityProperty entityProperty in itemEditSectionRowProperty.auxEntityData.properties)
+                        foreach (ItemEditSectionRow itemEditSectionRowIn in itemEditSectionRowProperty.auxEntityData.rows)
                         {
-                            property.childs.Add(entityProperty.child.GenerarPropertyData(pGraph));
+                            property.childs.AddRange(itemEditSectionRowIn.GenerarPropertyDatas(pGraph));
                         }
                     }
-                }
-
-                if (itemEditSectionRowProperty.entityData != null)
-                {
-                    property.graph = itemEditSectionRowProperty.entityData.graph;
-                    if (itemEditSectionRowProperty.entityData.propertyTitle != null)
+                    if (itemEditSectionRowProperty.auxEntityData != null)
                     {
-                        property.childs.Add(itemEditSectionRowProperty.entityData.propertyTitle.GenerarPropertyData(property.graph));
-                    }
-                    if (itemEditSectionRowProperty.entityData.properties != null)
-                    {
-                        foreach (ItemEditEntityProperty entityProperty in itemEditSectionRowProperty.entityData.properties)
+                        if (!string.IsNullOrEmpty(itemEditSectionRowProperty.auxEntityData.propertyOrder))
                         {
-                            property.childs.Add(entityProperty.child.GenerarPropertyData(property.graph));
+                            property.childs.Add(new Utils.PropertyData() { property = itemEditSectionRowProperty.auxEntityData.propertyOrder, graph = pGraph });
+                        }
+                        if (itemEditSectionRowProperty.auxEntityData.propertyTitle != null)
+                        {
+                            property.childs.Add(itemEditSectionRowProperty.auxEntityData.propertyTitle.GenerarPropertyData(pGraph));
+                        }
+                        if (itemEditSectionRowProperty.auxEntityData.properties != null)
+                        {
+                            foreach (ItemEditEntityProperty entityProperty in itemEditSectionRowProperty.auxEntityData.properties)
+                            {
+                                property.childs.Add(entityProperty.child.GenerarPropertyData(pGraph));
+                            }
                         }
                     }
-                }
 
-                if (property.childs == null || property.childs.Count == 0)
-                {
-                    property.graph = null;
+                    if (itemEditSectionRowProperty.entityData != null)
+                    {
+                        property.graph = itemEditSectionRowProperty.entityData.graph;
+                        if (itemEditSectionRowProperty.entityData.propertyTitle != null)
+                        {
+                            property.childs.Add(itemEditSectionRowProperty.entityData.propertyTitle.GenerarPropertyData(property.graph));
+                        }
+                        if (itemEditSectionRowProperty.entityData.properties != null)
+                        {
+                            foreach (ItemEditEntityProperty entityProperty in itemEditSectionRowProperty.entityData.properties)
+                            {
+                                property.childs.Add(entityProperty.child.GenerarPropertyData(property.graph));
+                            }
+                        }
+                    }
+
+                    if (property.childs == null || property.childs.Count == 0)
+                    {
+                        property.graph = null;
+                    }
                 }
             }
             return propertyDatas;
@@ -293,6 +314,10 @@ namespace GuardadoCV.Models.API.Templates
         /// Dependencia (valor que tiene que tener una determinada propiedad para que el campo sea editable)
         /// </summary>
         public ItemEditSectionRowPropertyDependency dependency;
+        /// <summary>
+        /// Indica si la propiedad pertenece al CV y no a la entidad
+        /// </summary>
+        public bool entity_cv;
     }
 
     public class ItemEditSectionRowPropertyDependency
@@ -302,9 +327,13 @@ namespace GuardadoCV.Models.API.Templates
         /// </summary>
         public string property;
         /// <summary>
-        /// Propiedad de la que va a obtener el valor
+        /// Valor de la propiedad para que se muestre
         /// </summary>
         public string propertyValue;
+        /// <summary>
+        /// Valor de la propiedad para que no se muestre
+        /// </summary>
+        public string propertyValueDistinct;
     }
 
     /// <summary>
@@ -328,6 +357,10 @@ namespace GuardadoCV.Models.API.Templates
         /// rdf:type de la entidad a recuperar
         /// </summary>
         public string rdftype;
+        /// <summary>
+        /// Indica si sólo se pueden seleccionar opciones del autocompletar
+        /// </summary>
+        public bool mandatory;
     }
     public class ItemEditAuxEntityData
     {

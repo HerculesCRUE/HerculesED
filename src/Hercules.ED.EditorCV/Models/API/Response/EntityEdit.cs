@@ -137,6 +137,10 @@ namespace GuardadoCV.Models.API.Response
         /// Configuracion del autocompletar
         /// </summary>
         public AutocompleteConfig autocompleteConfig { get; set; }
+        /// <summary>
+        /// Indica si la propiedad pertenece al CV y no a la entidad
+        /// </summary>
+        public bool entity_cv { get; set; }
     }
 
     //TODO comentarios
@@ -146,7 +150,10 @@ namespace GuardadoCV.Models.API.Response
         public string rdftype { get; set; }
         public string graph { get; set; }
         public bool getEntityId { get; set; }
-        
+        /// <summary>
+        /// Indica si sólo se pueden seleccionar opciones del autocompletar
+        /// </summary>
+        public bool mandatory;
     }
 
 
@@ -154,6 +161,7 @@ namespace GuardadoCV.Models.API.Response
     {
         public string parent { get; set; }
         public string parentDependencyValue { get; set; }
+        public string parentDependencyValueDistinct { get; set; }
     }
 
     public class ComboDependency

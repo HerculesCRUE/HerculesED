@@ -49,10 +49,15 @@ namespace GuardadoCV.Models.API.Input
         /// <summary>
         /// Identificador
         /// </summary>
-        public string id { get; set; }
+        public string id { get; set; }        
         /// <summary>
         /// Lista de entidades auxiliares a eliminar
         /// </summary>
         public List<string> auxEntityRemove { get; set; }
+        /// <summary>
+        /// Lista de propiedades pra guardar dentro del CV
+        /// </summary>
+        public List<Property> properties_cv { get; set; }
+
     }
 }

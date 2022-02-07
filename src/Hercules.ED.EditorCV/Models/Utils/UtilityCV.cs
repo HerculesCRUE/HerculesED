@@ -6,6 +6,7 @@ using GuardadoCV.Models.API.Templates;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -58,8 +59,9 @@ namespace GuardadoCV.Models.Utils
         /// <param name="pGraph">Grafo en el que realizar las consultas</param>
         /// <param name="pProperties">Propiedades a recuperar</param>        
         /// <param name="pLang">Idioma para recuperar los datos</param>
+        /// <param name="pDicQueries">Caché para las queries (select + where +graph)</param>
         /// <returns></returns>
-        public static Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> GetProperties(HashSet<string> pIds, string pGraph, List<PropertyData> pProperties, string pLang)
+        public static Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> GetProperties(HashSet<string> pIds, string pGraph, List<PropertyData> pProperties, string pLang, Dictionary<string, SparqlObject> pDicQueries)
         {
             int paginacion = 10000;
             int maxIn = 1000;
@@ -83,12 +85,22 @@ namespace GuardadoCV.Models.Utils
                                                 {{
                                                    ?s ?p ?o. 
                                                    FILTER( lang(?o) = '{pLang}' OR lang(?o) = '' OR !isLiteral(?o) )  
-                                                   FILTER(?s in(<{string.Join(">,<", list)}>)) 
-                                                   FILTER(?p in(<{string.Join(">,<", pProperties.Where(x => string.IsNullOrEmpty(x.order)).Select(x => x.property).ToList())}>))
+                                                   FILTER(?s in(<{string.Join(">,<", list.OrderByDescending(x=>x))}>)) 
+                                                   FILTER(?p in(<{string.Join(">,<", pProperties.Where(x => string.IsNullOrEmpty(x.order)).Select(x => x.property).ToList().OrderByDescending(x => x))}>))
                                                 }} 
                                                 order by asc(?o) asc(?p) asc(?s)
                                             }} limit {limit} offset {offset}";
-                        SparqlObject sparqlObjectAux = mResourceApi.VirtuosoQuery(select, where, pGraph);
+                        string claveCache = select + where + pGraph;
+                        SparqlObject sparqlObjectAux = null;
+                        if (pDicQueries.ContainsKey(claveCache))
+                        {
+                            sparqlObjectAux = pDicQueries[claveCache];
+                        }
+                        else
+                        {
+                            sparqlObjectAux = mResourceApi.VirtuosoQuery(select, where, pGraph);
+                            pDicQueries[claveCache] = sparqlObjectAux;
+                        }
                         limit = sparqlObjectAux.results.bindings.Count;
                         offset += sparqlObjectAux.results.bindings.Count;
                         foreach (Dictionary<string, SparqlObject.Data> fila in sparqlObjectAux.results.bindings)
@@ -147,12 +159,22 @@ namespace GuardadoCV.Models.Utils
                                                         ?s ?p ?o. 
                                                         FILTER( lang(?o) = '{pLang}' OR lang(?o) = '' OR !isLiteral(?o) )  
                                                         OPTIONAL{{{whereOrder}}} 
-                                                        FILTER(?s in(<{string.Join(">,<", list)}>)) 
+                                                        FILTER(?s in(<{string.Join(">,<", list.OrderByDescending(x => x))}>)) 
                                                         FILTER(?p =<{property.property}>)
                                                     }} 
                                                     order by asc(?level{nivel - 1}) asc(?o) asc(?p) asc(?s)
                                                 }} limit {limit} offset {offset}";
-                            SparqlObject sparqlObjectAux = mResourceApi.VirtuosoQuery(select, where, pGraph);
+                            string claveCache = select + where + pGraph;
+                            SparqlObject sparqlObjectAux = null;
+                            if (pDicQueries.ContainsKey(claveCache))
+                            {
+                                sparqlObjectAux = pDicQueries[claveCache];
+                            }
+                            else
+                            {
+                                sparqlObjectAux = mResourceApi.VirtuosoQuery(select, where, pGraph);
+                                pDicQueries[claveCache] = sparqlObjectAux;
+                            }
                             limit = sparqlObjectAux.results.bindings.Count;
                             offset += sparqlObjectAux.results.bindings.Count;
                             foreach (Dictionary<string, SparqlObject.Data> fila in sparqlObjectAux.results.bindings)
@@ -181,7 +203,7 @@ namespace GuardadoCV.Models.Utils
                 if (property.childs != null && property.childs.Count() > 0 && sparqlObject != null)
                 {
                     HashSet<string> ids = new HashSet<string>(sparqlObject.results.bindings.Where(x => x["p"].value == property.property).Select(x => x["o"].value).ToList());
-                    Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> dataAux = GetProperties(ids, property.graph, property.childs.ToList(), pLang);
+                    Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> dataAux = GetProperties(ids, property.graph, property.childs.ToList(), pLang, pDicQueries);
                     foreach (string id in dataAux.Keys)
                     {
                         if (!data.ContainsKey(id))
@@ -321,6 +343,28 @@ namespace GuardadoCV.Models.Utils
             {
                 return "";
             }
+        }
+
+        public static string GetTextNumber(string pInput)
+        {
+            string input = pInput.Replace(",", ".");
+            string entero = "";
+            string decimales = "";
+            if(input.Contains("."))
+            {
+                entero = input.Substring(0, input.IndexOf("."));
+                decimales = input.Substring(input.IndexOf(".")+1);
+            }else
+            {
+                entero = input;
+            }
+
+            string textNumber = long.Parse(entero, CultureInfo.InvariantCulture).ToString("N0", new System.Globalization.CultureInfo("es-ES"));
+            if(!string.IsNullOrEmpty(decimales))
+            {
+                textNumber += "," + decimales;
+            }
+            return textNumber;
         }
 
 
