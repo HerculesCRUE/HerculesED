@@ -317,6 +317,23 @@
                 </PropsEntLectura>
             </SeleccionEntidad>
         </Propiedad>
+		<Propiedad  ID="http://w3id.org/roh/supportType" EntidadID="http://purl.org/ontology/bibo/Document">
+            <AtrNombre>http://w3id.org/roh/supportType</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/supportType</AtrNombreLectura>
+			<SeleccionEntidad>
+                <TipoSeleccion>Autocompletar</TipoSeleccion>
+                <Grafo>supporttype.owl</Grafo>
+                <UrlTipoEntSolicitada>http://w3id.org/roh/DocumentFormat</UrlTipoEntSolicitada>              
+                <PropsEntEdicion>
+                    <NameProp>http://purl.org/dc/elements/1.1/title</NameProp>
+                </PropsEntEdicion>
+                <PropsEntLectura>
+                    <Propiedad ID="http://purl.org/dc/elements/1.1/title" EntidadID="http://w3id.org/roh/DocumentFormat">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+                </PropsEntLectura>
+            </SeleccionEntidad>
+        </Propiedad>
         <Propiedad  ID="http://vivoweb.org/ontology/core#hasPublicationVenue" EntidadID="http://purl.org/ontology/bibo/Document">
             <AtrNombre>http://vivoweb.org/ontology/core#hasPublicationVenue</AtrNombre>
             <AtrNombreLectura>http://vivoweb.org/ontology/core#hasPublicationVenue</AtrNombreLectura>
