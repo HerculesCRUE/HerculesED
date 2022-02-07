@@ -362,23 +362,27 @@
                     }
                 }
             </div>
-            <div class="group-wrap">
-                <div class="bloque">
-                    <div class="label">@Html.Translate("DOI")</div>
-                    <div class="value">
-                        @{ 
-                            //foreach (var el in @pDocument.Bibo_identifier)
-                            //{
-                            //    if (el.Foaf_primaryTopic != null && el.Foaf_primaryTopic.Dc_title != null && el.Foaf_primaryTopic.Dc_title[0] != null && el.Foaf_primaryTopic.Dc_title[0] == "DOI")
-                            //    {
-                            //        <a href="https://doi.org/@el.Dc_title" target="_blank">@el.Dc_title</a>
-                            //    }
-                            //}
-                        }
-                        <a href="https://doi.org/@pDocument.Bibo_doi" target="_blank">@pDocument.Bibo_doi</a>
+            @if (pDocument.Bibo_doi != "")
+            {
+                <div class="group-wrap">
+                    <div class="bloque">
+                        <div class="label">@Html.Translate("DOI")</div>
+                        <div class="value">
+                            @{ 
+                                //foreach (var el in @pDocument.Bibo_identifier)
+                                //{
+                                //    if (el.Foaf_primaryTopic != null && el.Foaf_primaryTopic.Dc_title != null && el.Foaf_primaryTopic.Dc_title[0] != null && el.Foaf_primaryTopic.Dc_title[0] == "DOI")
+                                //    {
+                                //        <a href="https://doi.org/@el.Dc_title" target="_blank">@el.Dc_title</a>
+                                //    }
+                                //}
+                            }
+                            <a href="https://doi.org/@pDocument.Bibo_doi" target="_blank" about="@pDocument.GNOSSID" property="@pDocument.GetPropertyURI(nameof(pDocument.Bibo_doi))">@pDocument.Bibo_doi</a>
+                        </div>
                     </div>
-                </div>
-            </div>
+                </div>  
+            }
+                
             <div class="list-wrap website">
                 <div class="label">@Html.Translate("WEBS")</div>
                 <ul>
@@ -764,7 +768,7 @@
             $('#relacionados-tab').unbind().click(function (e) {
                 e.preventDefault();
                 that.tabActive = "relacionados";
-                buscadorPersonalizado.init("@Html.Translate("RELACIONADOS")", "#contenedorBuscadorRelacionados", "searchRelacionadosDocumento=@pDocument.GNOSSID.Split('_')[1].ToUpper()", "dct:issued", "rdf:type=document", "@Comunidad.Url", "@Comunidad.Key.ToString()", function() {
+                buscadorPersonalizado.init("@Html.Translate("RELACIONADOS")", "#contenedorBuscadorRelacionados", "searchRelacionadosDocumento=@pDocument.GNOSSID.Split('_')[1].ToUpper()", "", "rdf:type=document", "@Comunidad.Url", "@Comunidad.Key.ToString()", function() {
                     $('#panNumResultados').hide();
                 });
             });

@@ -599,10 +599,10 @@
                                     {
                                         foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
                                         {
-                                            string idQuery = "Journal";
+                                            string idQuery = "PublicactionType";
                                             if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
                                             {
-                                                string propiedad = "nombre";
+                                                string propiedad = "title";
                                                 foreach (Dictionary<string, string> row in item.Rows)
                                                 {
                                                     if (row.ContainsKey(propiedad))

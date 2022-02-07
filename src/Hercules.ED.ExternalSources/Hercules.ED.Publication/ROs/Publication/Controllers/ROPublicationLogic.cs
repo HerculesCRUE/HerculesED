@@ -149,7 +149,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     pub_completa = compatacion(pub_completa, objInicial_CrossRef);
                     if (objInicial_CrossRef != null)
                     {
-                        pub_completa.bibliografia = objInicial_CrossRef.bibliografia;
+                        //pub_completa.bibliografia = objInicial_CrossRef.bibliografia;
                     }
 
                     // Zenodo
@@ -168,11 +168,11 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     
                     // Completar bibliografía (Referencias)
                     Log.Information("[WoS] Completando bibliografía...");
-                    pub_completa = completar_bib(pub_completa, dicOpenCitations, dicSemanticScholar, dicCrossRef, dicZenodo);
+                    //pub_completa = completar_bib(pub_completa, dicOpenCitations, dicSemanticScholar, dicCrossRef, dicZenodo);
 
                     // Obtención de Citas
                     Log.Information("[WoS] Citas...");
-                    pub_completa = ObtenerCitas(pub_completa); 
+                    //pub_completa = ObtenerCitasOpenCitations(pub_completa, dicOpenCitations, dicSemanticScholar, dicCrossRef, dicZenodo);
 
                     // Completar información faltante con las publicaciones de Scopus
                     if (objInicial_Scopus != null && objInicial_Scopus.Any())
@@ -196,8 +196,12 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     // Unificar Autores
                     pub_completa = CompararAutores(pub_completa);
 
-                    if (pub_completa.title != "One or more validation errors occurred.") // TODO
+                    if (pub_completa != null && !string.IsNullOrEmpty(pub_completa.title) && pub_completa.title != "One or more validation errors occurred.") // TODO
                     {
+                        if (pub_completa.bibliografia != null)
+                        {
+                            pub_completa.bibliografia = null;
+                        }
                         resultado.Add(pub_completa);
                     }
 
@@ -227,12 +231,13 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
                         // CrossRef
                         Log.Information("[Scopus] Haciendo petición a CrossRef...");
-                        Publication objInicial_CrossRef = llamadaCrossRef(pub_scopus.doi, dicCrossRef);
+                        Publication objInicial_CrossRef = llamadaCrossRef(pub_scopus.doi, dicCrossRef); // Bibliografía
+                        objInicial_CrossRef.bibliografia = null;
                         Log.Information("[Scopus] Comparación (CrossRef)...");
                         pub_completa = compatacion(pub_completa, objInicial_CrossRef);
                         if (objInicial_CrossRef != null)
                         {
-                            pub_completa.bibliografia = objInicial_CrossRef.bibliografia;
+                            //pub_completa.bibliografia = objInicial_CrossRef.bibliografia;
                         }
 
                         // Zenodo
@@ -251,16 +256,20 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
                         // Completar bibliografía (Referencias)
                         Log.Information("[Scopus] Completando bibliografia...");
-                        pub_completa = completar_bib(pub_completa, dicOpenCitations, dicSemanticScholar, dicCrossRef, dicZenodo);
+                        //pub_completa = completar_bib(pub_completa, dicOpenCitations, dicSemanticScholar, dicCrossRef, dicZenodo);
 
                         // Obtención de Citas
                         Log.Information("[Scopus] Citas...");                        
-                        pub_completa = ObtenerCitasOpenCitations(pub_completa, dicOpenCitations, dicSemanticScholar, dicCrossRef, dicZenodo);
+                        //pub_completa = ObtenerCitasOpenCitations(pub_completa, dicOpenCitations, dicSemanticScholar, dicCrossRef, dicZenodo);
                         
                         // Unificar Autores
                         pub_completa = CompararAutoresCitasReferencias(pub_completa);
-                        if (pub_completa != null)
+                        if (pub_completa != null && !string.IsNullOrEmpty(pub_completa.title))
                         {
+                            if (pub_completa.bibliografia != null)
+                            {
+                                pub_completa.bibliografia = null;
+                            }
                             resultado.Add(pub_completa);
                         }                        
                     }
@@ -288,9 +297,8 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
                 info = JsonConvert.SerializeObject(a);
                 string info_publication = httpCall_2("specific", info);
-                if (info_publication != null)
+                if (!string.IsNullOrEmpty(info_publication))
                 {
-
                     palabras_enriquecidas objInic = JsonConvert.DeserializeObject<palabras_enriquecidas>(info_publication);
                     return objInic.topics;
 
@@ -396,7 +404,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         if (info != null)
                         {
                             string info_publication = httpCall_2("thematic", info);
-                            if (info_publication != null)
+                            if (!string.IsNullOrEmpty(info_publication))
                             {
 
                                 Topics_enriquecidos objInic = JsonConvert.DeserializeObject<Topics_enriquecidos>(info_publication);
@@ -730,14 +738,20 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     {
                         pub.language = pub_2.language;
                     }
-                    if (pub_1.doi != null)
+
+                    // Si es un capitulo de libro, no necesita DOI. (Da problemas en el motor de desambiguación.)
+                    if (pub.typeOfPublication != "Chapter") 
                     {
-                        pub.doi = pub_1.doi;
+                        if (pub_1.doi != null)
+                        {
+                            pub.doi = pub_1.doi;
+                        }
+                        else
+                        {
+                            pub.doi = pub_2.doi;
+                        }
                     }
-                    else
-                    {
-                        pub.doi = pub_2.doi;
-                    }
+
                     if (pub_1.dataIssued != null)
                     {
                         pub.dataIssued = pub_1.dataIssued;
@@ -1867,7 +1881,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
             try
             {
                 Publication publicacion = JsonConvert.DeserializeObject<Publication>(info_publication);
-                objInicial_woS = new List<Publication>() { publicacion };
+                if (publicacion != null)
+                {
+                    objInicial_woS = new List<Publication>() { publicacion };
+                }
             }
             catch (Exception e)
             {
@@ -2373,6 +2390,15 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         break;
                     }
                 }
+
+                if(!string.IsNullOrEmpty(pPublicacion.correspondingAuthor.nick))
+                {
+                    if (GetNameSimilarity(personaFinal.name.nombre_completo[0], pPublicacion.correspondingAuthor.nick) >= 0.01)
+                    {
+                        pPublicacion.correspondingAuthor = UnirPersonas(personaFinal, pPublicacion.correspondingAuthor);
+                        break;
+                    }
+                }
             }
 
             pPublicacion.seqOfAuthors = listaPersonasDefinitivas;
@@ -2504,13 +2530,13 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     if (!string.IsNullOrEmpty(nombreCompleto2))
                     {
                         pPublicacion.correspondingAuthor.name.nombre_completo = new List<string>() { nombreCompleto2.Trim() };
-                    }
+                    }                    
 
-                    if (personaFinal.name.nombre_completo != null && personaFinal.name.nombre_completo.Any() && pPublicacion.correspondingAuthor != null && pPublicacion.correspondingAuthor.name != null && pPublicacion.correspondingAuthor.name.nombre_completo != null && pPublicacion.correspondingAuthor.name.nombre_completo.Any())
+                    if (!string.IsNullOrEmpty(pPublicacion.correspondingAuthor.nick))
                     {
-                        if (GetNameSimilarity(personaFinal.name.nombre_completo[0], pPublicacion.correspondingAuthor.name.nombre_completo[0]) >= umbral)
+                        if (GetNameSimilarity(personaFinal.name.nombre_completo[0], pPublicacion.correspondingAuthor.nick) >= 0.01)
                         {
-                            pPublicacion.correspondingAuthor = personaFinal;
+                            pPublicacion.correspondingAuthor = UnirPersonas(personaFinal, pPublicacion.correspondingAuthor);
                             break;
                         }
                     }
@@ -2595,6 +2621,12 @@ namespace PublicationConnect.ROs.Publications.Controllers
             if (pPersonaFinal.name.familia == null || !pPersonaFinal.name.familia.Any())
             {
                 pPersonaFinal.name.familia = pPersonaAUnir.name.familia;
+            }
+
+            // Nick
+            if(string.IsNullOrEmpty(pPersonaFinal.nick) && !string.IsNullOrEmpty(pPersonaAUnir.nick))
+            {
+                pPersonaFinal.nick = pPersonaAUnir.nick;
             }
 
             return pPersonaFinal;

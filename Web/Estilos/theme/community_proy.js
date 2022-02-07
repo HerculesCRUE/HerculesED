@@ -12,6 +12,7 @@ $(document).ready(function () {
 		 enlazarFacetasBusqueda();
         }
 	}
+	montarTooltipCode.init();
 });
 
 function comportamientoCargaFacetasComunidad() {	
@@ -735,6 +736,62 @@ montarTooltip.montarTooltips= function () {
 			}
 	});
 }
+
+
+var montarTooltipCode = {
+	// Init the function
+    init: function () {
+        this.config();
+        this.comportamiento();
+    },
+    // Get the items to set the tooltip
+    config: function () {
+        this.body = body;
+        this.codeTooltip = this.body.find('.code-tooltip');
+    },
+    // Create & initialize the tooltip
+    comportamiento: function () {
+        var that = this;
+
+        // Create the tooltip
+        if (this.codeTooltip.length > 0) {
+			this.codeTooltip.tooltip({
+	            html: true,
+	            placement: 'bottom',
+	            template: '<div class="tooltip background-blanco code-lang-tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
+	            title: that.getTooltipCode()
+	        });
+        }
+        
+    },
+    // Get the code into the tooltip
+    getTooltipCode: function () {
+        	var that = this;
+
+        	// Get all data from the element
+			var dataLang = this.codeTooltip.data();
+			var htmlResData = "";
+
+			// Fill the data into the tooltip
+			Object.keys(dataLang).forEach(e => {
+				if(typeof dataLang[e] !== "undefined" && dataLang[e] != "" && dataLang[e] != "0"){
+					htmlResData += `
+					<li>					
+						<span class="texto">${e}</span>
+						<span class="num-resultado">${dataLang[e]}</span>					
+					</li>`;
+				}
+			});
+			
+			// Set the final html
+			var html=`<p class="tooltip-title">Lenguajes de programación</p>
+                <ul class="no-list-style">
+				${htmlResData}
+                </ul>`;
+
+            return html;
+    }
+};
 
 function MontarResultados(pFiltros, pPrimeraCarga, pNumeroResultados, pPanelID, pTokenAfinidad) {
     contResultados = contResultados + 1;
