@@ -200,7 +200,7 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                     }
 
                     // Guardado de la información en formato JSON.
-                    File.WriteAllText($@"{_configService.GetRutaDirectorioEscritura()}{message[1]}_{DateTime.Now.ToString().Replace('/', '-').Replace(':', '_')}.json", info_publication);
+                    File.WriteAllText($@"{_configService.GetRutaDirectorioEscritura()}{message[1]}_{DateTime.Now.ToString().Replace('/', '-').Replace(':', '-')}.json", info_publication);
                     FileLogger.Log($@"{DateTime.Now} - fichero JSON creado.");
                 }
                 catch (Exception e)
@@ -227,7 +227,7 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                     }
 
                     // Guardado de la información en formato JSON.
-                    File.WriteAllText($@"{_configService.GetRutaDirectorioEscritura()}{message[1]}_{DateTime.Now.ToString().Replace('/', '-').Replace(':', '_')}.json", info_publication);
+                    File.WriteAllText($@"{_configService.GetRutaDirectorioEscritura()}{message[1]}_{DateTime.Now.ToString().Replace('/', '-').Replace(':', '-')}.json", info_publication);
                     FileLogger.Log($@"{DateTime.Now} - fichero JSON creado.");
                 }
                 catch (Exception e)
