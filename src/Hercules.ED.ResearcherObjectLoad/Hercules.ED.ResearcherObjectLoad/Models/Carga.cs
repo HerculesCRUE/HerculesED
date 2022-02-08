@@ -113,41 +113,42 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             listaDesambiguar.AddRange(coautores);
 
                         }
-                        
+
                         dicIdDatosPub.Add(idPub, publication);
                         dicIdPublication.Add(idPub, ContruirDocument(publication, tupla.Item1, tupla.Item2));
                     }
 
                     // Obtención de la lista de equivalencias.
-                    Dictionary<string, Dictionary<string, float>> listaEquivalencias = new Dictionary<string, Dictionary<string, float>>();
-                    Dictionary<string, HashSet<string>> listaEquivalencias2 = Disambiguation.Disambiguate(listaDesambiguar, listaDesambiguarBBDD);
+                    Dictionary<string, HashSet<string>> listaEquivalencias = Disambiguation.Disambiguate(listaDesambiguar, listaDesambiguarBBDD);
 
                     Dictionary<Person, List<string>> listaPersonasCreadas = new Dictionary<Person, List<string>>();
                     Dictionary<string, List<string>> dicIdsPersonas = new Dictionary<string, List<string>>();
                     Dictionary<Document, List<string>> listaPublicacionesCreadas = new Dictionary<Document, List<string>>();
                     Dictionary<string, List<string>> dicIdsPublicaciones = new Dictionary<string, List<string>>();
 
-                    // --- PERSONAS
-                    foreach (KeyValuePair<string, Dictionary<string, float>> item in listaEquivalencias)
+                    foreach (KeyValuePair<string, HashSet<string>> item in listaEquivalencias)
                     {
-                        string tipo = item.Key.Split("_")[0];
-                        string idA = item.Key.Split("_")[1];
-
-                        HashSet<string> listaIds = new HashSet<string>();
-
-                        foreach (KeyValuePair<string, float> item2 in item.Value)
+                        // Recurso NO cargado previamente en BBDD.
+                        if (Guid.TryParse(item.Key, out var newGuid))
                         {
-                            string idB = item2.Key.Split("_")[1];
-
-                            if (item2.Value >= 0.25) // TODO: Umbral.
+                            string tipo = string.Empty;
+                            HashSet<string> listaIds = new HashSet<string>();
+                            foreach (string id in item.Value)
                             {
-                                listaIds.Add(idB);
+                                tipo = id.Split("_")[0];
+                                listaIds.Add(id.Split("_")[1]);
+                            }
+                            string idA = listaIds.FirstOrDefault();
+                            listaIds.Remove(idA);
+
+                            if (tipo == DISAMBIGUATION_PERSON && listaIds.ToList().Any())
+                            {
+                                CrearPersonDesambiguada(idA, listaIds.ToList(), dicIdPersona, listaPersonasCreadas, dicIdsPersonas);
                             }
                         }
-
-                        if (tipo == DISAMBIGUATION_PERSON && listaIds.ToList().Any())
+                        else
                         {
-                            CrearPersonDesambiguada(idA, listaIds.ToList(), dicIdPersona, listaPersonasCreadas, dicIdsPersonas);
+
                         }
                     }
 
@@ -191,25 +192,29 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     }
 
                     // --- PUBLICACIONES
-                    foreach (KeyValuePair<string, Dictionary<string, float>> item in listaEquivalencias)
+                    foreach (KeyValuePair<string, HashSet<string>> item in listaEquivalencias)
                     {
-                        string tipo = item.Key.Split("_")[0];
-                        string idA = item.Key.Split("_")[1];
-
-                        HashSet<string> listaIds = new HashSet<string>();
-
-                        foreach (KeyValuePair<string, float> item2 in item.Value)
+                        // Recurso NO cargado previamente en BBDD.
+                        if (Guid.TryParse(item.Key, out var newGuid))
                         {
-                            if (item2.Value >= 0.5) // TODO: Umbral.
+                            string tipo = string.Empty;
+                            HashSet<string> listaIds = new HashSet<string>();
+                            foreach (string id in item.Value)
                             {
-                                string idB = item2.Key.Split("_")[1];
-                                listaIds.Add(idB);
+                                tipo = id.Split("_")[0];
+                                listaIds.Add(id.Split("_")[1]);
+                            }
+                            string idA = listaIds.FirstOrDefault();
+                            listaIds.Remove(idA);
+
+                            if (tipo == DISAMBIGUATION_PUBLICATION && listaIds.ToList().Any())
+                            {
+                                CrearDocumentDesambiguado(idA, listaIds.ToList(), dicIdDatosPub, listaPublicacionesCreadas, dicIdsPublicaciones, tupla.Item1, tupla.Item2);
                             }
                         }
-
-                        if (tipo == DISAMBIGUATION_PUBLICATION && listaIds.ToList().Any())
+                        else
                         {
-                            CrearDocumentDesambiguado(idA, listaIds.ToList(), dicIdDatosPub, listaPublicacionesCreadas, dicIdsPublicaciones, tupla.Item1, tupla.Item2);
+
                         }
                     }
 
@@ -323,7 +328,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             // Consulta sparql.
             do
             {
-                string select = "SELECT * where {select DISTINCT ?persona2 ?orcid2 ?nombreCompleto FROM <http://gnoss.com/person.owl> ";
+                string select = "SELECT * WHERE { SELECT DISTINCT ?persona3 ?orcid3 ?nombreCompleto FROM <http://gnoss.com/person.owl> ";
                 string where = $@"WHERE {{
                                 ?documento a <http://purl.org/ontology/bibo/Document>. 
                                 ?documento <http://purl.org/ontology/bibo/authorList> ?listaAutores. 
@@ -331,15 +336,13 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                 ?persona <http://w3id.org/roh/ORCID> ?orcid. 
                                 FILTER(?orcid = '{pOrcid}')
                                 ?documento <http://purl.org/ontology/bibo/authorList> ?listaAutores2. 
-                                ?listaAutores2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?persona2. 
-                                #OPTIONAL{{?persona2 <http://w3id.org/roh/ORCID> ?orcid2. }}
-                                #?persona2 <http://xmlns.com/foaf/0.1/name> ?nombreCompleto.
+                                ?listaAutores2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?persona2.
                                 ?documento2 <http://purl.org/ontology/bibo/authorList> ?listaAutores3. 
                                 ?listaAutores3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?persona2. 
                                 ?listaAutores3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?persona3. 
                                 OPTIONAL{{?persona3 <http://w3id.org/roh/ORCID> ?orcid3. }}
                                 ?persona3 <http://xmlns.com/foaf/0.1/name> ?nombreCompleto.
-                            }}order by desc(?persona2) }} LIMIT {limit} OFFSET {offset}";
+                            }} ORDER BY DESC(?persona2) }} LIMIT {limit} OFFSET {offset}";
 
                 SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "document");
                 if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
@@ -348,16 +351,16 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
                     {
                         PersonaPub persona = new PersonaPub();
-                        if (fila.ContainsKey("orcid2"))
+                        if (fila.ContainsKey("orcid3"))
                         {
-                            persona.orcid = fila["orcid2"].value;
+                            persona.orcid = fila["orcid3"].value;
                         }
                         persona.name = new Name();
                         persona.name.nombre_completo = new List<string>() { fila["nombreCompleto"].value };
                         DisambiguationPerson person = GetDisambiguationPerson(persona);
-                        listaPersonas.Add(fila["persona2"].value, person);
+                        listaPersonas.Add(fila["persona3"].value, person);
                     }
-                    if(resultadoQuery.results.bindings.Count< limit)
+                    if (resultadoQuery.results.bindings.Count < limit)
                     {
                         salirBucle = true;
                     }
@@ -386,7 +389,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             // Consulta sparql.
             do
             {
-                string select = "SELECT * where {select DISTINCT ?documento ?doi ?titulo FROM <http://gnoss.com/person.owl> ";
+                string select = "SELECT * WHERE { SELECT DISTINCT ?documento ?doi ?titulo FROM <http://gnoss.com/person.owl> ";
                 string where = $@"WHERE {{
                                 ?documento a <http://purl.org/ontology/bibo/Document>. 
                                 OPTIONAL{{?documento <http://purl.org/ontology/bibo/doi> ?doi. }}
@@ -395,7 +398,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                 ?listaAutores <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?persona. 
                                 ?persona <http://w3id.org/roh/ORCID> ?orcid. 
                                 FILTER(?orcid = '{pOrcid}') 
-                            }}order by desc(?documento) }} LIMIT {limit} OFFSET {offset}";
+                            }} ORDER BY DESC(?documento) }} LIMIT {limit} OFFSET {offset}";
 
                 SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "document");
                 if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
@@ -2798,7 +2801,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                 }
             }
             else
-            {                
+            {
                 if (pPersona.nick.Contains(","))
                 {
                     person.Foaf_firstName = pPersona.nick.Split(',')[1].Trim();
