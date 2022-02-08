@@ -316,14 +316,14 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
         private static Dictionary<string, DisambiguableEntity> ObtenerCoAutoresBBDD(string pOrcid)
         {
             Dictionary<string, DisambiguableEntity> listaPersonas = new Dictionary<string, DisambiguableEntity>();
-            int limit = 1000;
+            int limit = 10000;
             int offset = 0;
             bool salirBucle = false;
 
             // Consulta sparql.
             do
             {
-                string select = "SELECT DISTINCT(?persona2) ?orcid2 ?nombreCompleto FROM <http://gnoss.com/person.owl> ";
+                string select = "SELECT * where {select DISTINCT ?persona2 ?orcid2 ?nombreCompleto FROM <http://gnoss.com/person.owl> ";
                 string where = $@"WHERE {{
                                 ?documento a <http://purl.org/ontology/bibo/Document>. 
                                 ?documento <http://purl.org/ontology/bibo/authorList> ?listaAutores. 
@@ -332,9 +332,14 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                 FILTER(?orcid = '{pOrcid}')
                                 ?documento <http://purl.org/ontology/bibo/authorList> ?listaAutores2. 
                                 ?listaAutores2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?persona2. 
-                                OPTIONAL{{?persona2 <http://w3id.org/roh/ORCID> ?orcid2. }}
-                                ?persona2 <http://xmlns.com/foaf/0.1/name> ?nombreCompleto. 
-                            }} LIMIT {limit} OFFSET {offset}";
+                                #OPTIONAL{{?persona2 <http://w3id.org/roh/ORCID> ?orcid2. }}
+                                #?persona2 <http://xmlns.com/foaf/0.1/name> ?nombreCompleto.
+                                ?documento2 <http://purl.org/ontology/bibo/authorList> ?listaAutores3. 
+                                ?listaAutores3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?persona2. 
+                                ?listaAutores3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?persona3. 
+                                OPTIONAL{{?persona3 <http://w3id.org/roh/ORCID> ?orcid3. }}
+                                ?persona3 <http://xmlns.com/foaf/0.1/name> ?nombreCompleto.
+                            }}order by desc(?persona2) }} LIMIT {limit} OFFSET {offset}";
 
                 SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "document");
                 if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
@@ -351,6 +356,10 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                         persona.name.nombre_completo = new List<string>() { fila["nombreCompleto"].value };
                         DisambiguationPerson person = GetDisambiguationPerson(persona);
                         listaPersonas.Add(fila["persona2"].value, person);
+                    }
+                    if(resultadoQuery.results.bindings.Count< limit)
+                    {
+                        salirBucle = true;
                     }
                 }
                 else
@@ -370,14 +379,14 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
         private static Dictionary<string, DisambiguableEntity> ObtenerPublicacionesBBDD(string pOrcid)
         {
             Dictionary<string, DisambiguableEntity> listaDocumentos = new Dictionary<string, DisambiguableEntity>();
-            int limit = 1000;
+            int limit = 10000;
             int offset = 0;
             bool salirBucle = false;
 
             // Consulta sparql.
             do
             {
-                string select = "SELECT DISTINCT(?documento) ?doi ?titulo FROM <http://gnoss.com/person.owl> ";
+                string select = "SELECT * where {select DISTINCT ?documento ?doi ?titulo FROM <http://gnoss.com/person.owl> ";
                 string where = $@"WHERE {{
                                 ?documento a <http://purl.org/ontology/bibo/Document>. 
                                 OPTIONAL{{?documento <http://purl.org/ontology/bibo/doi> ?doi. }}
@@ -386,7 +395,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                 ?listaAutores <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?persona. 
                                 ?persona <http://w3id.org/roh/ORCID> ?orcid. 
                                 FILTER(?orcid = '{pOrcid}') 
-                            }} LIMIT {limit} OFFSET {offset}";
+                            }}order by desc(?documento) }} LIMIT {limit} OFFSET {offset}";
 
                 SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "document");
                 if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
@@ -402,6 +411,10 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                         publicacion.title = fila["titulo"].value;
                         DisambiguationPublication pub = GetDisambiguationPublication(publicacion);
                         listaDocumentos.Add(fila["documento"].value, pub);
+                    }
+                    if (resultadoQuery.results.bindings.Count < limit)
+                    {
+                        salirBucle = true;
                     }
                 }
                 else
