@@ -42,6 +42,8 @@ namespace Hercules.ED.DisambiguationEngine.Models
                             cambios = true;
                         }
                     }
+
+                    //2º Aplicamos la desambiguación con los items de BBDD
                 }
             }
 
@@ -1310,50 +1312,6 @@ namespace Hercules.ED.DisambiguationEngine.Models
                 }
             }
             return ngramas;
-        }
-
-        private static DisambiguableEntity CreateDisambiguationObject(string pType, List<DisambiguationData> pDataA, List<DisambiguationData> pDataB)
-        {
-            switch (pType)
-            {
-                case "DisambiguationPublication":
-                    DisambiguationPublication disambiguatedPublication = new DisambiguationPublication();
-                    disambiguatedPublication.ID = Guid.NewGuid().ToString();
-                    for (int j = 0; j < pDataA.Count; j++)
-                    {
-                        PropertyInfo prop = disambiguatedPublication.GetType().GetProperty(pDataA[j].@property, BindingFlags.Public | BindingFlags.Instance);
-
-                        if (!string.IsNullOrEmpty(pDataA[j].value))
-                        {
-                            prop.SetValue(disambiguatedPublication, pDataA[j].value, null);
-                        }
-                        else if (!string.IsNullOrEmpty(pDataB[j].value))
-                        {
-                            prop.SetValue(disambiguatedPublication, pDataB[j].value, null);
-                        }
-                    }
-                    return disambiguatedPublication;
-
-                case "DisambiguationPerson":
-                    DisambiguationPerson disambiguatedPerson = new DisambiguationPerson();
-                    disambiguatedPerson.ID = Guid.NewGuid().ToString();
-                    for (int j = 0; j < pDataA.Count; j++)
-                    {
-                        PropertyInfo prop = disambiguatedPerson.GetType().GetProperty(pDataA[j].@property, BindingFlags.Public | BindingFlags.Instance);
-
-                        if (!string.IsNullOrEmpty(pDataA[j].value))
-                        {
-                            prop.SetValue(disambiguatedPerson, pDataA[j].value, null);
-                        }
-                        else if (!string.IsNullOrEmpty(pDataB[j].value))
-                        {
-                            prop.SetValue(disambiguatedPerson, pDataB[j].value, null);
-                        }
-                    }
-                    return disambiguatedPerson;
-                default:
-                    throw new Exception("Tipo de objeto no implementado");
-            }
         }
     }
 }
