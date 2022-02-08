@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Hercules.ED.DisambiguationEngine.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Hercules.ED.DisambiguationEngine.Models
+namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
 {
     public class DisambiguationPublication : DisambiguableEntity
     {

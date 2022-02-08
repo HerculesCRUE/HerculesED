@@ -17,6 +17,7 @@ using Hercules.ED.ResearcherObjectLoad.Config;
 using System.Threading;
 using Hercules.ED.DisambiguationEngine.Models;
 using System.Reflection;
+using Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects;
 
 namespace Hercules.ED.ResearcherObjectLoad.Models
 {
@@ -29,17 +30,17 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
         #region --- Constantes
         public const string DISAMBIGUATION_PERSON = "DisambiguationPerson";
         public const string DISAMBIGUATION_PUBLICATION = "DisambiguationPublication";
+
         public const string JOURNAL_ARTICLE = "Journal Article";
         public const string BOOK = "Book";
         public const string CHAPTER = "Chapter";
         public const string CONFERENCE_PAPER = "Conference Paper";
         public const string REVISTA_JOURNAL = "Journal";
         public const string REVISTA_BOOK = "Book";
-        public const int MAX_INTENTOS = 3;
-        #endregion
 
-        // TODO: Limpiar y quitar duplicaciones de código.
-        // TODO: En la consulta SPARQL, obtener todo aquello que se necesite para desambiguar.
+        public const int MAX_INTENTOS = 3;
+        public const int NUM_HILOS = 6;
+        #endregion
 
         public static void CargaMain()
         {
@@ -48,10 +49,6 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
 
         public static void ProcesarFichero(string pRutaLectura, string pRutaEscritura)
         {
-            // Diccionarios para almacenar los recursos que se van a desambiguar.
-            Dictionary<List<string>, string> dicGnossIdPerson = new Dictionary<List<string>, string>();
-            Dictionary<List<string>, string> dicGnossIdPub = new Dictionary<List<string>, string>();
-
             DirectoryInfo directorio = new DirectoryInfo(pRutaLectura);
 
             // Obtención de las categorías.
@@ -59,14 +56,20 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
 
             while (true)
             {
+                // Diccionarios para almacenar los recursos que se van a desambiguar.
+                Dictionary<List<string>, string> dicGnossIdPerson = new Dictionary<List<string>, string>();
+                Dictionary<List<string>, string> dicGnossIdPub = new Dictionary<List<string>, string>();
+
                 foreach (var fichero in directorio.GetFiles("*.json"))
                 {
+                    // Obtención de los datos cargados de BBDD.
                     List<DisambiguableEntity> listaDesambiguarBBDD = new List<DisambiguableEntity>();
                     Dictionary<string, DisambiguableEntity> documentosBBDD = ObtenerPublicacionesBBDD(fichero.Name.Split("_")[0]);
                     Dictionary<string, DisambiguableEntity> personasBBDD = ObtenerCoAutoresBBDD(fichero.Name.Split("_")[0]);
                     listaDesambiguarBBDD.AddRange(documentosBBDD.Values.ToList());
                     listaDesambiguarBBDD.AddRange(personasBBDD.Values.ToList());
 
+                    // Obtención de los datos del JSON.
                     string jsonString = File.ReadAllText(fichero.FullName);
                     List<Publication> listaPublicaciones = JsonConvert.DeserializeObject<List<Publication>>(jsonString);
 
@@ -103,7 +106,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                 dicIdPersona.Add(idPerson, ContruirPersona(autor));
                             }
                         }
-
+                        
                         dicIdDatosPub.Add(idPub, publication);
                         dicIdPublication.Add(idPub, ContruirDocument(publication, tupla.Item1, tupla.Item2));
                     }
@@ -128,7 +131,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                         {
                             string idB = item2.Key.Split("_")[1];
 
-                            if (item2.Value >= 0.5) // TODO: Umbral.
+                            if (item2.Value >= 0.25) // TODO: Umbral.
                             {
                                 listaIds.Add(idB);
                             }
@@ -169,11 +172,13 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     }
                     #endregion
 
-                    // Creación de los ComplexOntologyResources.                   
+                    // Creación de los ComplexOntologyResources.
+                    List<ComplexOntologyResource> listaPersonasCargar = new List<ComplexOntologyResource>();
                     mResourceApi.ChangeOntoly("person");
                     foreach (KeyValuePair<List<string>, Person> item in dicPersonasFinales)
                     {
                         ComplexOntologyResource resourcePersona = item.Value.ToGnossApiResource(mResourceApi, null);
+                        listaPersonasCargar.Add(resourcePersona);
                         dicGnossIdPerson.Add(item.Key, resourcePersona.GnossId);
                     }
 
@@ -228,7 +233,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     }
                     #endregion
 
-                    // Creación del vínculo entre los documentos y las peronas. (Document apunta a Person)
+                    // Creación del vínculo entre los documentos y las peronas (Document apunta a Person).
                     foreach (KeyValuePair<List<string>, Document> item in dicPublicacionesFinales)
                     {
                         foreach (string id in item.Key)
@@ -264,13 +269,19 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                         }
                     }
 
-                    // Creación de los ComplexOntologyResources.                
+                    // Creación de los ComplexOntologyResources.
+                    List<ComplexOntologyResource> listaPublicacionesCargar = new List<ComplexOntologyResource>();
                     mResourceApi.ChangeOntoly("document");
                     foreach (KeyValuePair<List<string>, Document> item in dicPublicacionesFinales)
                     {
                         ComplexOntologyResource resourcePub = item.Value.ToGnossApiResource(mResourceApi, null);
+                        listaPublicacionesCargar.Add(resourcePub);
                         dicGnossIdPub.Add(item.Key, resourcePub.GnossId);
                     }
+
+                    // ------------------------------ CARGA
+                    //CargarDatos(listaPersonasCargar);
+                    //CargarDatos(listaPublicacionesCargar);
 
                     return;
 
@@ -289,6 +300,11 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             }
         }
 
+        /// <summary>
+        /// Obtiene los coautores de las publicaciones del ORCID dado.
+        /// </summary>
+        /// <param name="pOrcid">Código ORCID de la persona a obtener los datos.</param>
+        /// <returns>Diccionario con el ID del recurso cargado como clave, y el objeto desambiguable como valor.</returns>
         private static Dictionary<string, DisambiguableEntity> ObtenerCoAutoresBBDD(string pOrcid)
         {
             Dictionary<string, DisambiguableEntity> listaPersonas = new Dictionary<string, DisambiguableEntity>();
@@ -310,9 +326,6 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                 ?listaAutores2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?persona2. 
                                 OPTIONAL{{?persona2 <http://w3id.org/roh/ORCID> ?orcid2. }}
                                 ?persona2 <http://xmlns.com/foaf/0.1/name> ?nombreCompleto. 
-                                MINUS{{
-                                ?persona2 <http://w3id.org/roh/ORCID> ?orcid.
-                                }}
                             }} LIMIT {limit} OFFSET {offset}";
 
                 SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "document");
@@ -341,6 +354,11 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             return listaPersonas;
         }
 
+        /// <summary>
+        /// Obtiene las publicaciones cargadas de BBDD mediante un orcid.
+        /// </summary>
+        /// <param name="pOrcid">Código ORCID de la persona a obtener los datos.</param>
+        /// <returns>Diccionario con el ID del recurso cargado como clave, y el objeto desambiguable como valor.</returns>
         private static Dictionary<string, DisambiguableEntity> ObtenerPublicacionesBBDD(string pOrcid)
         {
             Dictionary<string, DisambiguableEntity> listaDocumentos = new Dictionary<string, DisambiguableEntity>();
@@ -351,7 +369,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             // Consulta sparql.
             do
             {
-                string select = "SELECT DISTINCT(?documento) ?doi ?titulo FROM <http://gnoss.com/person.owl>";
+                string select = "SELECT DISTINCT(?documento) ?doi ?titulo FROM <http://gnoss.com/person.owl> ";
                 string where = $@"WHERE {{
                                 ?documento a <http://purl.org/ontology/bibo/Document>. 
                                 OPTIONAL{{?documento <http://purl.org/ontology/bibo/doi> ?doi. }}
@@ -390,11 +408,11 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
         /// <summary>
         /// Obtiene las personas iguales para poder desambiguarlas.
         /// </summary>
-        /// <param name="idPersona"></param>
-        /// <param name="pListaIds"></param>
-        /// <param name="pDicIdPersona"></param>
-        /// <param name="pListaPersonasCreadas"></param>
-        /// <param name="pDicIdsPersonasCreadas"></param>
+        /// <param name="idPersona">ID de la persona a desambiguar.</param>
+        /// <param name="pListaIds">Listado de IDs de las personas iguales.</param>
+        /// <param name="pDicIdPersona">Diccionario con el ID de la persona y el objeto al que corresponde.</param>
+        /// <param name="pListaPersonasCreadas">Diccionario con el objeto creado y la lista de IDs de las personas que le corresponden.</param>
+        /// <param name="pDicIdsPersonasCreadas">Diccionario con el ID de la persona creada y la lista de IDs de las personas que le corresponden.</param>
         private static void CrearPersonDesambiguada(string idPersona, List<string> pListaIds, Dictionary<string, Person> pDicIdPersona, Dictionary<Person, List<string>> pListaPersonasCreadas, Dictionary<string, List<string>> pDicIdsPersonasCreadas)
         {
             bool encontrado = false;
@@ -445,8 +463,8 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
         /// <summary>
         /// Compara las propiedades para rellenar los datos faltantes.
         /// </summary>
-        /// <param name="pPersonaA">Primera persona.</param>
-        /// <param name="pPersonaB">Segunda persona.</param>
+        /// <param name="pPersonaA">Primera persona (A).</param>
+        /// <param name="pPersonaB">Segunda persona (B).</param>
         private static void ConstruirPerson(Person pPersonaA, Person pPersonaB)
         {
             if (string.IsNullOrEmpty(pPersonaA.Roh_ORCID) && !string.IsNullOrEmpty(pPersonaB.Roh_ORCID))
@@ -1197,6 +1215,36 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             }
 
             return document;
+        }
+
+        /// <summary>
+        /// Permite cargar los recursos.
+        /// </summary>
+        /// <param name="pListaRecursosCargar">Lista de recursos a cargar.</param>
+        private static void CargarDatos(List<ComplexOntologyResource> pListaRecursosCargar)
+        {
+            //Carga.
+            Parallel.ForEach(pListaRecursosCargar, new ParallelOptions { MaxDegreeOfParallelism = NUM_HILOS }, recursoCargar =>
+            {
+                int numIntentos = 0;
+                while (!recursoCargar.Uploaded)
+                {
+                    numIntentos++;
+
+                    if (numIntentos > MAX_INTENTOS)
+                    {
+                        break;
+                    }
+                    if (pListaRecursosCargar.Last() == recursoCargar)
+                    {
+                        mResourceApi.LoadComplexSemanticResource(recursoCargar, false, true);
+                    }
+                    else
+                    {
+                        mResourceApi.LoadComplexSemanticResource(recursoCargar);
+                    }
+                }
+            });
         }
 
         private static void ProcesarPublicacion(Publication pPublicacion, Dictionary<string, string> pDicAreasBroader, Dictionary<string, string> pDicAreasNombre)
@@ -2704,13 +2752,13 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
         {
             Person person = new Person();
 
-            if (pPersona.name.given != null && pPersona.name.given.Any() && pPersona.name.given[0] != null && pPersona.name.familia != null && pPersona.name.familia.Any() && pPersona.name.familia[0] != null)
+            if (pPersona.name != null && pPersona.name.given != null && pPersona.name.given.Any() && pPersona.name.given[0] != null && pPersona.name.familia != null && pPersona.name.familia.Any() && pPersona.name.familia[0] != null)
             {
                 person.Foaf_name = pPersona.name.given[0].Trim() + " " + pPersona.name.familia[0].Trim();
                 person.Foaf_firstName = pPersona.name.given[0].Trim();
                 person.Foaf_lastName = pPersona.name.familia[0].Trim();
             }
-            else if (pPersona.name.nombre_completo != null && pPersona.name.nombre_completo.Any())
+            else if (pPersona.name != null && pPersona.name.nombre_completo != null && pPersona.name.nombre_completo.Any())
             {
                 person.Foaf_name = pPersona.name.nombre_completo[0].Trim();
                 if (person.Foaf_name.Contains(","))
@@ -2727,6 +2775,24 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                 {
                     person.Foaf_firstName = pPersona.name.nombre_completo[0].Trim();
                 }
+            }
+            else
+            {                
+                if (pPersona.nick.Contains(","))
+                {
+                    person.Foaf_firstName = pPersona.nick.Split(',')[1].Trim();
+                    person.Foaf_lastName = pPersona.nick.Split(',')[0].Trim();
+                }
+                else if (pPersona.nick.Contains(" "))
+                {
+                    person.Foaf_firstName = pPersona.nick.Trim().Split(' ')[1].Trim();
+                    person.Foaf_lastName = pPersona.nick.Trim().Split(' ')[0].Trim();
+                }
+                else
+                {
+                    person.Foaf_firstName = pPersona.nick.Trim();
+                }
+                person.Foaf_name = person.Foaf_firstName + " " + person.Foaf_lastName;
             }
 
             if (!string.IsNullOrEmpty(pPersona.orcid))
