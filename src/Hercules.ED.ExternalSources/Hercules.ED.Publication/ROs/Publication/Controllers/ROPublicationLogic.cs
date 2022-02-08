@@ -165,7 +165,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     pub_completa.topics_enriquecidos = enriquedicmiento(pub);
                     Log.Information("[WoS] Obteniendo freeTextKeywords enriquecidos...");
                     pub_completa.freetextKeyword_enriquecidas = enriquedicmiento_pal(pub);
-                    
+
                     // Completar bibliografía (Referencias)
                     Log.Information("[WoS] Completando bibliografía...");
                     //pub_completa = completar_bib(pub_completa, dicOpenCitations, dicSemanticScholar, dicCrossRef, dicZenodo);
@@ -259,9 +259,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         //pub_completa = completar_bib(pub_completa, dicOpenCitations, dicSemanticScholar, dicCrossRef, dicZenodo);
 
                         // Obtención de Citas
-                        Log.Information("[Scopus] Citas...");                        
+                        Log.Information("[Scopus] Citas...");
                         //pub_completa = ObtenerCitasOpenCitations(pub_completa, dicOpenCitations, dicSemanticScholar, dicCrossRef, dicZenodo);
-                        
+
                         // Unificar Autores
                         pub_completa = CompararAutoresCitasReferencias(pub_completa);
                         if (pub_completa != null && !string.IsNullOrEmpty(pub_completa.title))
@@ -271,7 +271,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                                 pub_completa.bibliografia = null;
                             }
                             resultado.Add(pub_completa);
-                        }                        
+                        }
                     }
                     contadoPubScopus++;
                 }
@@ -280,7 +280,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             //string info = JsonConvert.SerializeObject(resultado);
             //string path = _Configuracion.GetRutaJsonSalida();
             //Log.Information("Escribiendo datos en fichero...");
-            //File.WriteAllText($@"Files/prueba.json", info);
+            //File.WriteAllText($@"Files/ORCID_FECHA.json", info);
             return resultado;
 
         }
@@ -740,7 +740,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     }
 
                     // Si es un capitulo de libro, no necesita DOI. (Da problemas en el motor de desambiguación.)
-                    if (pub.typeOfPublication != "Chapter") 
+                    if (pub.typeOfPublication != "Chapter")
                     {
                         if (pub_1.doi != null)
                         {
@@ -2391,7 +2391,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     }
                 }
 
-                if(!string.IsNullOrEmpty(pPublicacion.correspondingAuthor.nick))
+                if (!string.IsNullOrEmpty(pPublicacion.correspondingAuthor.nick))
                 {
                     if (GetNameSimilarity(personaFinal.name.nombre_completo[0], pPublicacion.correspondingAuthor.nick) >= 0.01)
                     {
@@ -2530,7 +2530,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     if (!string.IsNullOrEmpty(nombreCompleto2))
                     {
                         pPublicacion.correspondingAuthor.name.nombre_completo = new List<string>() { nombreCompleto2.Trim() };
-                    }                    
+                    }
 
                     if (!string.IsNullOrEmpty(pPublicacion.correspondingAuthor.nick))
                     {
@@ -2616,15 +2616,29 @@ namespace PublicationConnect.ROs.Publications.Controllers
             // Nombre
             if (pPersonaFinal.name.given == null || !pPersonaFinal.name.given.Any())
             {
-                pPersonaFinal.name.given = pPersonaAUnir.name.given;
+                if (pPersonaAUnir.name != null && pPersonaAUnir.name.given != null && pPersonaAUnir.name.given.Any())
+                {
+                    pPersonaFinal.name.given = pPersonaAUnir.name.given;
+                }
+                else if (pPersonaAUnir.name != null && pPersonaAUnir.name.given == null && pPersonaAUnir.name.nombre_completo != null && pPersonaAUnir.name.nombre_completo.Any())
+                {
+                    pPersonaFinal.name.given = new List<string>() { pPersonaAUnir.name.nombre_completo[0].Split(" ")[0] };
+                }
             }
             if (pPersonaFinal.name.familia == null || !pPersonaFinal.name.familia.Any())
             {
-                pPersonaFinal.name.familia = pPersonaAUnir.name.familia;
+                if (pPersonaAUnir.name != null && pPersonaAUnir.name.familia != null && pPersonaAUnir.name.familia.Any())
+                {
+                    pPersonaFinal.name.familia = pPersonaAUnir.name.familia;
+                }
+                else if (pPersonaAUnir.name != null && pPersonaAUnir.name.familia == null && pPersonaAUnir.name.nombre_completo != null && pPersonaAUnir.name.nombre_completo.Any())
+                {
+                    pPersonaFinal.name.familia = new List<string>() { pPersonaAUnir.name.nombre_completo[0].Split(" ")[1] };
+                }
             }
 
             // Nick
-            if(string.IsNullOrEmpty(pPersonaFinal.nick) && !string.IsNullOrEmpty(pPersonaAUnir.nick))
+            if (string.IsNullOrEmpty(pPersonaFinal.nick) && !string.IsNullOrEmpty(pPersonaAUnir.nick))
             {
                 pPersonaFinal.nick = pPersonaAUnir.nick;
             }
