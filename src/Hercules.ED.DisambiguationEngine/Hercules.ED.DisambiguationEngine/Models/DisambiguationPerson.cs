@@ -48,17 +48,41 @@ namespace Hercules.ED.DisambiguationEngine.Models
             }
         }
 
+        private HashSet<string> mCoautores { get; set; }
+        public HashSet<string> coautores
+        {
+            get
+            {
+                return mCoautores;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    mCoautores = new HashSet<string>();
+                }
+                else
+                {
+                    mCoautores = value;
+                }
+            }
+        }
+
         private static DisambiguationDataConfig configCompleteName = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.algoritmoNombres,
-            score = 0.5f
+            score = 0.9f
         };
 
         private static DisambiguationDataConfig configORCID = new DisambiguationDataConfig()
         {
-            type = DisambiguationDataConfigType.equalsIdentifiers,
-            score = 1f,
-            scoreMinus = 1f
+            type = DisambiguationDataConfigType.equalsIdentifiers
+        };
+
+        private static DisambiguationDataConfig configCoautores = new DisambiguationDataConfig()
+        {
+            type = DisambiguationDataConfigType.equalsItemList,
+            score = 0.1f
         };
 
         public override List<DisambiguationData> GetDisambiguationData()
@@ -77,6 +101,13 @@ namespace Hercules.ED.DisambiguationEngine.Models
                 property = "orcid",
                 config = configORCID,
                 value = orcid
+            });
+
+            data.Add(new DisambiguationData()
+            {
+                property = "coautores",
+                config = configCoautores,
+                values = coautores
             });
 
             return data;

@@ -10,7 +10,8 @@ namespace Hercules.ED.DisambiguationEngine.Models
     {
         equalsIdentifiers,
         equalsTitle,
-        //equalsItem,
+        equalsItem,
+        equalsItemList,
         //equalsIgnoreCaseItem,
         algoritmoNombres
     }

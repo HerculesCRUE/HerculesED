@@ -48,17 +48,42 @@ namespace Hercules.ED.DisambiguationEngine.Models
             }
         }
 
+        private string mFecha { get; set; }
+        public string fecha
+        {
+            get
+            {
+                return mFecha;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    mFecha = string.Empty;
+                }
+                else
+                {
+                    mFecha = value;
+                }
+            }
+        }
+
         private static DisambiguationDataConfig configTitulo = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsTitle,
             score = 0.5f
         };
 
+        private static DisambiguationDataConfig configFecha = new DisambiguationDataConfig()
+        {
+            type = DisambiguationDataConfigType.equalsItem,
+            score = 0.5f,
+            scoreMinus = 0.5f
+        };
+
         private static DisambiguationDataConfig configDOI = new DisambiguationDataConfig()
         {
-            type = DisambiguationDataConfigType.equalsIdentifiers,
-            score = 1f,
-            scoreMinus = 1f
+            type = DisambiguationDataConfigType.equalsIdentifiers
         };
 
         public override List<DisambiguationData> GetDisambiguationData()
@@ -77,6 +102,13 @@ namespace Hercules.ED.DisambiguationEngine.Models
                 property = "doi",
                 config = configDOI,
                 value = doi
+            });
+
+            data.Add(new DisambiguationData()
+            {
+                property = "fecha",
+                config = configFecha,
+                value = fecha
             });
 
             return data;

@@ -95,13 +95,20 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                         // --- Autores
                         if (publication.seqOfAuthors != null && publication.seqOfAuthors.Any())
                         {
+                            List<DisambiguationPerson> coautores = new List<DisambiguationPerson>();
                             foreach (PersonaPub autor in publication.seqOfAuthors)
                             {
                                 DisambiguationPerson disambiguationPerson = GetDisambiguationPerson(autor);
                                 string idPerson = disambiguationPerson.ID;
-                                listaDesambiguar.Add(disambiguationPerson);
+                                coautores.Add(disambiguationPerson);
                                 dicIdPersona.Add(idPerson, ContruirPersona(autor));
                             }
+                            foreach (DisambiguationPerson coautor in coautores)
+                            {
+                                coautor.coautores = new HashSet<string>(coautores.Where(x => x.ID != coautor.ID).Select(x => x.ID));
+                            }
+                            listaDesambiguar.AddRange(coautores);
+
                         }
 
                         dicIdDatosPub.Add(idPub, publication);
@@ -109,7 +116,8 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     }
 
                     // Obtención de la lista de equivalencias.
-                    Dictionary<string, Dictionary<string, float>> listaEquivalencias = Disambiguation.Disambiguate(listaDesambiguar, listaDesambiguarBBDD);
+                    Dictionary<string, Dictionary<string, float>> listaEquivalencias = new Dictionary<string, Dictionary<string, float>>();
+                    Dictionary<string, HashSet<string>> listaEquivalencias2 = Disambiguation.Disambiguate(listaDesambiguar, listaDesambiguarBBDD);
 
                     Dictionary<Person, List<string>> listaPersonasCreadas = new Dictionary<Person, List<string>>();
                     Dictionary<string, List<string>> dicIdsPersonas = new Dictionary<string, List<string>>();
@@ -310,9 +318,6 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                 ?listaAutores2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?persona2. 
                                 OPTIONAL{{?persona2 <http://w3id.org/roh/ORCID> ?orcid2. }}
                                 ?persona2 <http://xmlns.com/foaf/0.1/name> ?nombreCompleto. 
-                                MINUS{{
-                                ?persona2 <http://w3id.org/roh/ORCID> ?orcid.
-                                }}
                             }} LIMIT {limit} OFFSET {offset}";
 
                 SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "document");
