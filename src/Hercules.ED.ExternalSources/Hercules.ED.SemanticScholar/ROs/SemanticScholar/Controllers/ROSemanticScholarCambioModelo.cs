@@ -1,10 +1,13 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using SemanticScholarAPI.ROs.SemanticScholar.Models;
 using SemanticScholarConnect.ROs.SemanticScholar.Models;
 using SemanticScholarConnect.ROs.SemanticScholar.Models.Inicial;
 
 namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
 {
-    public class ROSemanticScholarControllerJSON 
+    public class ROSemanticScholarControllerJSON
     {
         public ROSemanticScholarLogic SemanticScholarLogic;
         public ROSemanticScholarControllerJSON(ROSemanticScholarLogic SemanticScholarLogic)
@@ -24,7 +27,82 @@ namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
         //     return sol;
         // }
 
+        public List<PubReferencias> getReferences(SemanticScholarObj pData)
+        {
+            List<PubReferencias> listaReferencias = new List<PubReferencias>();
 
+            if (pData.references != null && pData.references.Any())
+            {
+                foreach (Reference pubRef in pData.references)
+                {
+                    PubReferencias referencia = new PubReferencias();
+
+                    // DOI
+                    if (!string.IsNullOrEmpty(pubRef.doi))
+                    {
+                        referencia.doi = pubRef.doi;
+                    }
+
+                    // URL
+                    if (!string.IsNullOrEmpty(pubRef.url))
+                    {
+                        referencia.url = pubRef.url;
+                    }
+
+                    // Año de la publicación
+                    if (pubRef.year != null)
+                    {
+                        referencia.anyoPublicacion = pubRef.year;
+                    }
+
+                    // Título
+                    if (!string.IsNullOrEmpty(pubRef.title))
+                    {
+                        referencia.titulo = pubRef.title;
+                    }
+
+                    // Revista
+                    if (!string.IsNullOrEmpty(pubRef.venue))
+                    {
+                        referencia.revista = pubRef.venue;
+                    }
+
+                    // Autores
+                    if (pubRef.authors != null && pubRef.authors.Any())
+                    {
+                        referencia.autores = new Dictionary<string, string>();
+                        foreach (SemanticScholarAPI.ROs.SemanticScholar.Models.Author autor in pubRef.authors)
+                        {
+                            if (!referencia.autores.ContainsKey(autor.name))
+                            {
+                                referencia.autores.Add(autor.authorId, autor.name);
+                            }
+                            else
+                            {
+                                referencia.autores[autor.authorId] = autor.name;
+                            }
+                        }
+                    }
+
+                    // Si no tiene título ni doi, no es una referencia válida...
+                    if (string.IsNullOrEmpty(referencia.doi) && string.IsNullOrEmpty(referencia.titulo))
+                    {
+                        continue;
+                    }
+
+                    listaReferencias.Add(referencia);
+                }
+            }
+
+            if (!listaReferencias.Any())
+            {
+                return null;
+            }
+            else
+            {
+                return listaReferencias;
+            }
+        }
 
         public Publication cambioDeModeloPublicacion(Root objInicial)
         {
@@ -45,7 +123,7 @@ namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
                 //publicacion.correspondingAuthor = getAuthorPrincipal(objInicial);
                 publicacion.seqOfAuthors = getAuthors(objInicial);
                 publicacion.hasPublicationVenue = getJournal(objInicial);
-                publicacion.hasMetric = getPublicationMetric(objInicial);                
+                publicacion.hasMetric = getPublicationMetric(objInicial);
 
                 return publicacion;
             }
@@ -171,7 +249,7 @@ namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
             if (objInicial.authors != null)
             {
                 List<Person> autores = new List<Person>();
-                foreach (Author author in objInicial.authors)
+                foreach (SemanticScholarConnect.ROs.SemanticScholar.Models.Inicial.Author author in objInicial.authors)
                 {
                     Person persona = new Person();
                     persona.fuente = "SemanticScholar";
@@ -190,8 +268,8 @@ namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
                         ids.Add("SemanticScholar: " + author.authorId);
                         persona.IDs = ids;
                     }
-                    
-                     autores.Add(persona);                   
+
+                    autores.Add(persona);
                 }
                 return autores;
             }

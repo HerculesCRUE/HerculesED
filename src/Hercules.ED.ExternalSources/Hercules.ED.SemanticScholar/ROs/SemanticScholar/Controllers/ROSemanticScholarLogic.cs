@@ -17,6 +17,7 @@ using System.Web;
 using System.Text.Json;
 using Newtonsoft.Json.Linq;
 using System.Threading;
+using SemanticScholarAPI.ROs.SemanticScholar.Models;
 //using Newtonsoft.Json.Linq.JObject;
 
 
@@ -119,6 +120,16 @@ namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
             sol.doi = name;
 
             return sol;
+        }
+
+
+        public List<PubReferencias> getReferencias(string pDoi)
+        {
+            Uri url = new Uri($@"https://api.semanticscholar.org/v1/paper/{pDoi}");
+            string result = httpCall(url.ToString(), "GET", headers).Result;
+            SemanticScholarObj data = JsonConvert.DeserializeObject<SemanticScholarObj>(result);
+            ROSemanticScholarControllerJSON info = new ROSemanticScholarControllerJSON(this);
+            return info.getReferences(data);
         }
     }
 }

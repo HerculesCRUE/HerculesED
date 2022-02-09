@@ -13,7 +13,7 @@ using System.IO;
 using ClosedXML.Excel;
 using System.Text;
 using ExcelDataReader;
-
+using SemanticScholarAPI.ROs.SemanticScholar.Models;
 
 namespace SemanticScholarConnect.Controllers
 {
@@ -54,7 +54,15 @@ namespace SemanticScholarConnect.Controllers
             return publication;
         }
 
-
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public List<PubReferencias> GetReferences([FromQuery][Required] string pDoi)
+        {
+            ROSemanticScholarLogic SemanticScholarObject = new ROSemanticScholarLogic();
+            return SemanticScholarObject.getReferencias(pDoi);
+        }
     }
 }
 
