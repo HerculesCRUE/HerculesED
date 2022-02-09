@@ -142,9 +142,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     Log.Information("[WoS] Comparación (SemanticScholar)...");
                     Publication pub_completa = compatacion(pub, objInicial_semanticScholar);
 
-                    // CrossRef - Obtención de las referencias.
+                    // SemanticScholar - Obtención de las referencias.
                     Log.Information("[WoS] Completando bibliografía...");
                     pub_completa.bibliografia = ObtenerPubReferencias(pub, dicCrossRef);
+                    Thread.Sleep(1000); // TODO: Revisar tema de los tiempos de las peticiones.
 
                     // Zenodo - Archivos pdf...
                     Log.Information("[WoS] Haciendo petición a Zenodo...");
@@ -211,9 +212,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         Log.Information("[Scopus] Comparación (SemanticScholar)...");
                         Publication pub_completa = compatacion(pubScopus, objInicial_semanticScholar);
 
-                        // CrossRef - Obtención de las referencias.
+                        // SemanticScholar - Obtención de las referencias.
                         Log.Information("[Scopus] Completando bibliografia...");
                         pub_completa.bibliografia = ObtenerPubReferencias(pubScopus, dicCrossRef);
+                        Thread.Sleep(1000); // TODO: Revisar tema de los tiempos de las peticiones.
 
                         // Zenodo - Archivos pdf...
                         Log.Information("[Scopus] Haciendo petición a Zenodo...");
@@ -240,10 +242,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 }
             }
 
-            string info = JsonConvert.SerializeObject(resultado);
-            string path = _Configuracion.GetRutaJsonSalida();
-            Log.Information("Escribiendo datos en fichero...");
-            File.WriteAllText($@"Files/0000-0002-5233-3769_manuel-campos.json", info);
+            //string info = JsonConvert.SerializeObject(resultado);
+            //string path = _Configuracion.GetRutaJsonSalida();
+            //Log.Information("Escribiendo datos en fichero...");
+            //File.WriteAllText($@"Files/ORCID_EJEMPLO.json", info);
             return resultado;
 
         }
@@ -575,7 +577,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
         public List<PubReferencias> ObtenerPubReferencias(Publication pub, Dictionary<string, List<PubReferencias>> pDicCrossRef)
         {
-            return llamadaCrossRef(pub.doi, pDicCrossRef);
+            return llamadaRefSemanticScholar(pub.doi, pDicCrossRef);
         }
 
         //public Publication completar_bib(Publication pub, Dictionary<string, Publication> pDicOpenCitations, Dictionary<string, Publication> pDicSemanticScholar, Dictionary<string, Publication> pDicCrossRef, Dictionary<string, string> pDicZenodo)
@@ -1726,6 +1728,45 @@ namespace PublicationConnect.ROs.Publications.Controllers
             }
 
             return objInicial_OpenCitatons;
+        }
+
+        /// <summary>
+        /// Hace la llamada al API de SemanticScholar.
+        /// </summary>
+        /// <param name="pDoi">DOI de la publicación a consultar.</param>
+        /// <returns>Objeto Publication con los datos obtenidos.</returns>
+        public List<PubReferencias> llamadaRefSemanticScholar(string pDoi, Dictionary<string, List<PubReferencias>> pDic)
+        {
+            List<PubReferencias> objInicial_SemanticScholar = null;
+
+            try
+            {
+                if (!string.IsNullOrEmpty(pDoi))
+                {
+                    // URL a la petición.
+                    Uri url = new Uri(string.Format(_Configuracion.GetUrlSemanticScholar() + "SemanticScholar/GetReferences?pDoi={0}", pDoi));
+
+                    // Comprobación de la petición.
+                    if (!pDic.ContainsKey(pDoi))
+                    {
+                        string info_publication = httpCall(url.ToString(), "GET", headers).Result;
+                        //Log.Information("Respuesta CrossRef --> " + info_publication);
+                        objInicial_SemanticScholar = JsonConvert.DeserializeObject<List<PubReferencias>>(info_publication);
+                        pDic[pDoi] = objInicial_SemanticScholar;
+                    }
+                    else
+                    {
+                        objInicial_SemanticScholar = pDic[pDoi];
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error("Petición SemanticScholar --> " + e);
+                return objInicial_SemanticScholar;
+            }
+
+            return objInicial_SemanticScholar;
         }
 
         /// <summary>
