@@ -126,8 +126,6 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 objInicial_woS = llamada_WoS(name, date);
             }
 
-
-
             int contadorPubWos = 1;
             if (objInicial_woS != null && objInicial_woS.Any())
             {
@@ -145,19 +143,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     Publication pub_completa = compatacion(pub, objInicial_semanticScholar);
 
                     // CrossRef - Obtención de las referencias.
+                    Log.Information("[WoS] Completando bibliografía...");
                     pub_completa.bibliografia = ObtenerPubReferencias(pub, dicCrossRef);
 
-                    // CrossRef
-                    //Log.Information("[WoS] Haciendo petición a CrossRef...");
-                    //List<PubReferencias> objInicial_CrossRef = llamadaCrossRef(pub.doi, dicCrossRef); // Bibliografía
-                    //Log.Information("[WoS] Comparación (CrossRef)...");
-                    //pub_completa = compatacion(pub_completa, objInicial_CrossRef);
-                    //if (objInicial_CrossRef != null)
-                    //{
-                    //    //pub_completa.bibliografia = objInicial_CrossRef.bibliografia;
-                    //}
-
-                    // Zenodo
+                    // Zenodo - Archivos pdf...
                     Log.Information("[WoS] Haciendo petición a Zenodo...");
                     pub_completa.pdf = llamadaZenodo(pub.doi, dicZenodo);
                     if (pub_completa.pdf == "")
@@ -171,15 +160,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     Log.Information("[WoS] Obteniendo freeTextKeywords enriquecidos...");
                     pub_completa.freetextKeyword_enriquecidas = enriquedicmiento_pal(pub);
 
-                    // Completar bibliografía (Referencias)
-                    Log.Information("[WoS] Completando bibliografía...");
-                    //pub_completa = completar_bib(pub_completa, dicOpenCitations, dicSemanticScholar, dicCrossRef, dicZenodo);
-
-                    // Obtención de Citas
-                    Log.Information("[WoS] Citas...");
-                    //pub_completa = ObtenerCitasOpenCitations(pub_completa, dicOpenCitations, dicSemanticScholar, dicCrossRef, dicZenodo);
-
-                    // Completar información faltante con las publicaciones de Scopus
+                    // Completar información faltante con las publicaciones de Scopus.
                     if (objInicial_Scopus != null && objInicial_Scopus.Any())
                     {
                         foreach (PublicacionScopus pub_scopus in objInicial_Scopus)
@@ -231,20 +212,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         Publication pub_completa = compatacion(pubScopus, objInicial_semanticScholar);
 
                         // CrossRef - Obtención de las referencias.
+                        Log.Information("[Scopus] Completando bibliografia...");
                         pub_completa.bibliografia = ObtenerPubReferencias(pubScopus, dicCrossRef);
 
-                        // CrossRef
-                        //Log.Information("[Scopus] Haciendo petición a CrossRef...");
-                        //List<PubReferencias> objInicial_CrossRef = llamadaCrossRef(pub_scopus.doi, dicCrossRef); // Bibliografía
-                        //objInicial_CrossRef.bibliografia = null;
-                        //Log.Information("[Scopus] Comparación (CrossRef)...");
-                        //pub_completa = compatacion(pub_completa, objInicial_CrossRef);
-                        //if (objInicial_CrossRef != null)
-                        //{
-                        //    //pub_completa.bibliografia = objInicial_CrossRef.bibliografia;
-                        //}
-
-                        // Zenodo
+                        // Zenodo - Archivos pdf...
                         Log.Information("[Scopus] Haciendo petición a Zenodo...");
                         pub_completa.pdf = llamadaZenodo(pub_completa.doi, dicZenodo);
                         if (pub_completa.pdf == "")
@@ -258,14 +229,6 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         Log.Information("[Scopus] Obteniendo freeTextKeywords enriquecidos...");
                         pub_completa.freetextKeyword_enriquecidas = enriquedicmiento_pal(pub_completa);
 
-                        // Completar bibliografía (Referencias)
-                        Log.Information("[Scopus] Completando bibliografia...");
-                        //pub_completa = completar_bib(pub_completa, dicOpenCitations, dicSemanticScholar, dicCrossRef, dicZenodo);
-
-                        // Obtención de Citas
-                        Log.Information("[Scopus] Citas...");
-                        //pub_completa = ObtenerCitasOpenCitations(pub_completa, dicOpenCitations, dicSemanticScholar, dicCrossRef, dicZenodo);
-
                         // Unificar Autores
                         pub_completa = CompararAutoresCitasReferencias(pub_completa);
                         if (pub_completa != null && !string.IsNullOrEmpty(pub_completa.title))
@@ -277,10 +240,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 }
             }
 
-            //string info = JsonConvert.SerializeObject(resultado);
-            //string path = _Configuracion.GetRutaJsonSalida();
-            //Log.Information("Escribiendo datos en fichero...");
-            //File.WriteAllText($@"Files/ORCID_FECHA.json", info);
+            string info = JsonConvert.SerializeObject(resultado);
+            string path = _Configuracion.GetRutaJsonSalida();
+            Log.Information("Escribiendo datos en fichero...");
+            File.WriteAllText($@"Files/0000-0002-5233-3769_manuel-campos.json", info);
             return resultado;
 
         }

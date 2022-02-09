@@ -34,70 +34,74 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
             {
                 foreach (Reference bibliografia in pPublicacionPrincipal.reference)
                 {
-                    if (string.IsNullOrEmpty(bibliografia.unstructured))
+                    PubReferencias pubRef = new PubReferencias();
+
+                    // DOI
+                    if (!string.IsNullOrEmpty(bibliografia.DOI))
                     {
-                        PubReferencias pubRef = new PubReferencias();
-
-                        // DOI
-                        if (!string.IsNullOrEmpty(bibliografia.DOI))
+                        if (bibliografia.DOI.Contains("https://doi.org/"))
                         {
-                            if (bibliografia.DOI.Contains("https://doi.org/"))
-                            {
-                                int indice = bibliografia.DOI.IndexOf("org/");
-                                pubRef.doi = bibliografia.DOI.Substring(indice + 4);
-                            }
-                            else
-                            {
-                                pubRef.doi = bibliografia.DOI;
-                            }
+                            int indice = bibliografia.DOI.IndexOf("org/");
+                            pubRef.doi = bibliografia.DOI.Substring(indice + 4);
                         }
-
-                        // Año de publicación
-                        if (!string.IsNullOrEmpty(bibliografia.year))
+                        else
                         {
-                            pubRef.anyoPublicacion = bibliografia.year;
+                            pubRef.doi = bibliografia.DOI;
                         }
-
-                        // Título
-                        if (!string.IsNullOrEmpty(bibliografia.ArticleTitle))
-                        {
-                            pubRef.tituto = bibliografia.ArticleTitle;
-                        }
-                        if (string.IsNullOrEmpty(pubRef.tituto) && !string.IsNullOrEmpty(bibliografia.SeriesTitle))
-                        {
-                            pubRef.tituto = bibliografia.SeriesTitle;
-                        }
-
-                        // Autor de correspondencia
-                        if (!string.IsNullOrEmpty(bibliografia.author))
-                        {
-                            pubRef.autorCorrespondencia = bibliografia.author;
-                        }
-
-                        // Nombre de la revista
-                        if (!string.IsNullOrEmpty(bibliografia.JournalTitle))
-                        {
-                            pubRef.revista = bibliografia.JournalTitle;
-                        }
-
-                        // Página de inicio
-                        if (!string.IsNullOrEmpty(bibliografia.FirstPage))
-                        {
-                            pubRef.paginaInicio = bibliografia.FirstPage;
-                        }
-
-                        // Si no tiene título ni doi, no es una referencia válida...
-                        if (string.IsNullOrEmpty(pubRef.doi) && string.IsNullOrEmpty(pubRef.tituto))
-                        {
-                            continue;
-                        }
-
-                        listaReferencias.Add(pubRef);
                     }
+
+                    // Año de publicación
+                    if (!string.IsNullOrEmpty(bibliografia.year))
+                    {
+                        pubRef.anyoPublicacion = bibliografia.year;
+                    }
+
+                    // Título
+                    if (!string.IsNullOrEmpty(bibliografia.ArticleTitle))
+                    {
+                        pubRef.tituto = bibliografia.ArticleTitle;
+                    }
+                    if (string.IsNullOrEmpty(pubRef.tituto) && !string.IsNullOrEmpty(bibliografia.SeriesTitle))
+                    {
+                        pubRef.tituto = bibliografia.SeriesTitle;
+                    }
+
+                    // Autor de correspondencia
+                    if (!string.IsNullOrEmpty(bibliografia.author))
+                    {
+                        pubRef.autorCorrespondencia = bibliografia.author;
+                    }
+
+                    // Nombre de la revista
+                    if (!string.IsNullOrEmpty(bibliografia.JournalTitle))
+                    {
+                        pubRef.revista = bibliografia.JournalTitle;
+                    }
+
+                    // Página de inicio
+                    if (!string.IsNullOrEmpty(bibliografia.FirstPage))
+                    {
+                        pubRef.paginaInicio = bibliografia.FirstPage;
+                    }
+
+                    // Si no tiene título ni doi, no es una referencia válida...
+                    if (string.IsNullOrEmpty(pubRef.doi) && string.IsNullOrEmpty(pubRef.tituto))
+                    {
+                        continue;
+                    }
+
+                    listaReferencias.Add(pubRef);
                 }
             }
 
-            return listaReferencias;
+            if (!listaReferencias.Any())
+            {
+                return null;
+            }
+            else
+            {
+                return listaReferencias;
+            }
         }
 
         public Publication cambioDeModeloPublicacion(PublicacionInicial objInicial, string doi, Boolean publicacion_principal)
