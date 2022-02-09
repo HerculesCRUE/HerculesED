@@ -121,5 +121,23 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
             ROCrossRefControllerJSON info = new ROCrossRefControllerJSON(this);
             return info.ObtenerReferencias(objInicial.message);
         }
+
+        /// <summary>
+        /// Main function from get all repositories from the RO account
+        /// </summary>
+        /// <param name="Doi"></param>
+        /// <returns></returns>
+        public Root getEnrichmentPublication(string pDoi, string pUri = "works/{0}")
+        {
+            Uri url = new Uri("https://api.crossref.org/" + string.Format(pUri, pDoi));
+            string info_publication = httpCall(url.ToString(), "GET", headers).Result;
+
+            if (info_publication == "Resource not found." || info_publication.StartsWith("<html>"))
+            {
+                return null;
+            }
+
+            return JsonConvert.DeserializeObject<Root>(info_publication);            
+        }
     }
 }

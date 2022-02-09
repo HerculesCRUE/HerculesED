@@ -51,25 +51,26 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                     }
 
                     // Año de publicación
-                    if (!string.IsNullOrEmpty(bibliografia.year))
+                    if (!string.IsNullOrEmpty(bibliografia.year) && Int32.TryParse(bibliografia.year, out var anyo))
                     {
-                        pubRef.anyoPublicacion = bibliografia.year;
+                        pubRef.anyoPublicacion = Int32.Parse(bibliografia.year);
                     }
 
                     // Título
                     if (!string.IsNullOrEmpty(bibliografia.ArticleTitle))
                     {
-                        pubRef.tituto = bibliografia.ArticleTitle;
+                        pubRef.titulo = bibliografia.ArticleTitle;
                     }
-                    if (string.IsNullOrEmpty(pubRef.tituto) && !string.IsNullOrEmpty(bibliografia.SeriesTitle))
+                    if (string.IsNullOrEmpty(pubRef.titulo) && !string.IsNullOrEmpty(bibliografia.SeriesTitle))
                     {
-                        pubRef.tituto = bibliografia.SeriesTitle;
+                        pubRef.titulo = bibliografia.SeriesTitle;
                     }
 
-                    // Autor de correspondencia
+                    // Autores
                     if (!string.IsNullOrEmpty(bibliografia.author))
                     {
-                        pubRef.autorCorrespondencia = bibliografia.author;
+                        pubRef.autores = new Dictionary<string, string>();
+                        pubRef.autores.Add(bibliografia.author, string.Empty);
                     }
 
                     // Nombre de la revista
@@ -78,14 +79,8 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                         pubRef.revista = bibliografia.JournalTitle;
                     }
 
-                    // Página de inicio
-                    if (!string.IsNullOrEmpty(bibliografia.FirstPage))
-                    {
-                        pubRef.paginaInicio = bibliografia.FirstPage;
-                    }
-
                     // Si no tiene título ni doi, no es una referencia válida...
-                    if (string.IsNullOrEmpty(pubRef.doi) && string.IsNullOrEmpty(pubRef.tituto))
+                    if (string.IsNullOrEmpty(pubRef.doi) && string.IsNullOrEmpty(pubRef.titulo))
                     {
                         continue;
                     }
@@ -100,6 +95,124 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
             }
             else
             {
+                ROCrossRefLogic CrossRefObject = new ROCrossRefLogic();
+
+                // Obtención de los datos faltantes de las referencias.
+                foreach (PubReferencias pubRef in listaReferencias)
+                {
+                    if (!string.IsNullOrEmpty(pubRef.doi))
+                    {
+                        Root pubObtenida = CrossRefObject.getEnrichmentPublication(pubRef.doi);
+
+                        if (pubObtenida != null)
+                        {
+                            PublicacionInicial publicacion = pubObtenida.message;
+
+                            // Año de publicación
+                            if (publicacion.created != null && !string.IsNullOrEmpty(publicacion.created.DateTime) && publicacion.created.DateTime.Contains("-"))
+                            {
+                                string anyo = publicacion.created.DateTime.Split("-")[0];
+                                if (Int32.TryParse(anyo, out var anyoPub))
+                                {
+                                    pubRef.anyoPublicacion = Int32.Parse(anyo);
+                                }
+                            }
+
+                            // Título
+                            if (publicacion.title != null && publicacion.title.Any())
+                            {
+                                pubRef.titulo = publicacion.title[0];
+                            }
+
+                            // Autores
+                            if (publicacion.author != null && publicacion.author.Any())
+                            {
+                                pubRef.autores = new Dictionary<string, string>();
+                                foreach (Author autor in publicacion.author)
+                                {
+                                    string nombre = $@"{autor.given} {autor.family}".Trim();
+                                    string orcid = string.Empty;
+
+                                    if (!string.IsNullOrEmpty(autor.ORCID))
+                                    {
+                                        if (autor.ORCID.Contains("http://orcid.org/"))
+                                        {
+                                            int indice = autor.ORCID.IndexOf("org/");
+                                            orcid = autor.ORCID.Substring(indice + 4);
+                                        }
+                                        else
+                                        {
+                                            orcid = autor.ORCID;
+                                        }
+                                    }
+
+                                    if (!pubRef.autores.ContainsKey(nombre))
+                                    {
+                                        pubRef.autores.Add(nombre, orcid);
+                                    }
+                                    else
+                                    {
+                                        pubRef.autores[nombre] = orcid;
+                                    }
+                                }
+
+                                // Nombre de la revista
+                                if (publicacion.ContainerTitle != null && publicacion.ContainerTitle.Any())
+                                {
+                                    pubRef.revista = publicacion.ContainerTitle[0];
+                                }
+
+                                // Página de inicio
+                                if (!string.IsNullOrEmpty(publicacion.page))
+                                {
+                                    if (publicacion.page.Contains("-"))
+                                    {
+                                        string inicio = publicacion.page.Split("-")[0];
+                                        string fin = publicacion.page.Split("-")[1];
+
+                                        if (Int32.TryParse(inicio, out var pagInicio))
+                                        {
+                                            pubRef.paginaInicio = Int32.Parse(inicio);
+                                        }
+                                        if (Int32.TryParse(fin, out var pagFin))
+                                        {
+                                            pubRef.paginaFin = Int32.Parse(fin);
+                                        }
+                                    }
+                                    else if (publicacion.page.Contains(" "))
+                                    {
+                                        string inicio = publicacion.page.Split(" ")[0];
+                                        string fin = publicacion.page.Split(" ")[1];
+
+                                        if (Int32.TryParse(inicio, out var pagInicio))
+                                        {
+                                            pubRef.paginaInicio = Int32.Parse(inicio);
+                                        }
+                                        if (Int32.TryParse(fin, out var pagFin))
+                                        {
+                                            pubRef.paginaFin = Int32.Parse(fin);
+                                        }
+                                    }
+                                    else if (publicacion.page.Contains("/"))
+                                    {
+                                        string inicio = publicacion.page.Split("/")[0];
+                                        string fin = publicacion.page.Split("/")[1];
+
+                                        if (Int32.TryParse(inicio, out var pagInicio))
+                                        {
+                                            pubRef.paginaInicio = Int32.Parse(inicio);
+                                        }
+                                        if (Int32.TryParse(fin, out var pagFin))
+                                        {
+                                            pubRef.paginaFin = Int32.Parse(fin);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
                 return listaReferencias;
             }
         }
