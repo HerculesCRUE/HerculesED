@@ -13,6 +13,7 @@ using System.IO;
 using ClosedXML.Excel;
 using System.Text;
 using ExcelDataReader;
+using CrossRefAPI.ROs.CrossRef.Models;
 
 namespace CrossRefConnect.Controllers
 {
@@ -47,14 +48,12 @@ namespace CrossRefConnect.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public Publication GetROs([FromQuery][Required] string DOI)
+        public List<PubReferencias> GetROs([FromQuery][Required] string DOI)
         {
             ROCrossRefLogic CrossRefObject = new ROCrossRefLogic();
-            Publication publication = CrossRefObject.getPublications(DOI);
-            return publication;
+            List<PubReferencias> listaReferencias = CrossRefObject.getPublications(DOI);
+            return listaReferencias;
         }
-
-
     }
 }
 

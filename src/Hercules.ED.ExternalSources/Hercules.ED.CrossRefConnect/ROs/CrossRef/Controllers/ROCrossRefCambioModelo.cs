@@ -7,7 +7,8 @@ using System;
 using System.Threading;
 
 using Newtonsoft.Json;
-
+using CrossRefAPI.ROs.CrossRef.Models;
+using System.Linq;
 
 namespace CrossRefConnect.ROs.CrossRef.Controllers
 {
@@ -18,6 +19,85 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
         {
             this.CrossRefLogic = CrossRefLogic;
 
+        }
+
+        /// <summary>
+        /// Obtiene los datos necesarios de las referencias.
+        /// </summary>
+        /// <param name="pPublicacionPrincipal">Publicación principal.</param>
+        /// <returns>Listado con los datos necesarios de las referencias.</returns>
+        public List<PubReferencias> ObtenerReferencias(PublicacionInicial pPublicacionPrincipal)
+        {
+            List<PubReferencias> listaReferencias = new List<PubReferencias>();
+
+            if (pPublicacionPrincipal.reference != null && pPublicacionPrincipal.reference.Any())
+            {
+                foreach (Reference bibliografia in pPublicacionPrincipal.reference)
+                {
+                    if (string.IsNullOrEmpty(bibliografia.unstructured))
+                    {
+                        PubReferencias pubRef = new PubReferencias();
+
+                        // DOI
+                        if (!string.IsNullOrEmpty(bibliografia.DOI))
+                        {
+                            if (bibliografia.DOI.Contains("https://doi.org/"))
+                            {
+                                int indice = bibliografia.DOI.IndexOf("org/");
+                                pubRef.doi = bibliografia.DOI.Substring(indice + 4);
+                            }
+                            else
+                            {
+                                pubRef.doi = bibliografia.DOI;
+                            }
+                        }
+
+                        // Año de publicación
+                        if (!string.IsNullOrEmpty(bibliografia.year))
+                        {
+                            pubRef.anyoPublicacion = bibliografia.year;
+                        }
+
+                        // Título
+                        if (!string.IsNullOrEmpty(bibliografia.ArticleTitle))
+                        {
+                            pubRef.tituto = bibliografia.ArticleTitle;
+                        }
+                        if (string.IsNullOrEmpty(pubRef.tituto) && !string.IsNullOrEmpty(bibliografia.SeriesTitle))
+                        {
+                            pubRef.tituto = bibliografia.SeriesTitle;
+                        }
+
+                        // Autor de correspondencia
+                        if (!string.IsNullOrEmpty(bibliografia.author))
+                        {
+                            pubRef.autorCorrespondencia = bibliografia.author;
+                        }
+
+                        // Nombre de la revista
+                        if (!string.IsNullOrEmpty(bibliografia.JournalTitle))
+                        {
+                            pubRef.revista = bibliografia.JournalTitle;
+                        }
+
+                        // Página de inicio
+                        if (!string.IsNullOrEmpty(bibliografia.FirstPage))
+                        {
+                            pubRef.paginaInicio = bibliografia.FirstPage;
+                        }
+
+                        // Si no tiene título ni doi, no es una referencia válida...
+                        if (string.IsNullOrEmpty(pubRef.doi) && string.IsNullOrEmpty(pubRef.tituto))
+                        {
+                            continue;
+                        }
+
+                        listaReferencias.Add(pubRef);
+                    }
+                }
+            }
+
+            return listaReferencias;
         }
 
         public Publication cambioDeModeloPublicacion(PublicacionInicial objInicial, string doi, Boolean publicacion_principal)
@@ -125,19 +205,25 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
             return null;
         }
 
-         public DateTimeValue getDate(PublicacionInicial objInicial)
-         {
-             if(objInicial!=null){
-                 if(objInicial.created!=null){
-                    if(objInicial.created.DateTime!=null){
-                         DateTimeValue date = new DateTimeValue();
-                        date.datimeTime = objInicial.created.DateTime.Substring(0,10);
-             
-                    return date;
-                    }else{return null;}
-                 }else{return null;}
-             }else{return null;}
-         }
+        public DateTimeValue getDate(PublicacionInicial objInicial)
+        {
+            if (objInicial != null)
+            {
+                if (objInicial.created != null)
+                {
+                    if (objInicial.created.DateTime != null)
+                    {
+                        DateTimeValue date = new DateTimeValue();
+                        date.datimeTime = objInicial.created.DateTime.Substring(0, 10);
+
+                        return date;
+                    }
+                    else { return null; }
+                }
+                else { return null; }
+            }
+            else { return null; }
+        }
 
         public string getPageStart(PublicacionInicial objInicial)
         {
@@ -242,7 +328,7 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                                 nombre.familia = apellido;
                             }
                             persona.name = nombre;
-                        }       
+                        }
                         return persona;
                     }
                 }
@@ -261,7 +347,7 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
 
                     if (autor.ORCID != null)
                     {
-                        if (autor.ORCID.Contains("https://orcid.org/") || autor.ORCID.Contains("http://orcid.org/") )
+                        if (autor.ORCID.Contains("https://orcid.org/") || autor.ORCID.Contains("http://orcid.org/"))
                         {
                             int indice = autor.ORCID.IndexOf("org/");
                             persona.ORCID = autor.ORCID.Substring(indice + 4);
@@ -296,7 +382,7 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                         persona.name = nombre;
                     }
 
-                  autores.Add(persona);  
+                    autores.Add(persona);
                 }
                 return autores;
             }

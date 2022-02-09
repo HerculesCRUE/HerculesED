@@ -17,12 +17,13 @@ using System.Web;
 using System.Text.Json;
 using Newtonsoft.Json.Linq;
 using System.Threading;
+using CrossRefAPI.ROs.CrossRef.Models;
 //using Newtonsoft.Json.Linq.JObject;WoS
 
 
 namespace CrossRefConnect.ROs.CrossRef.Controllers
 {
-    public class ROCrossRefLogic : CrossRefInterface
+    public class ROCrossRefLogic
     {
         //protected string bareer;
         //ROScopusControllerJSON info = new ROScopusControllerJSON();
@@ -51,7 +52,7 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
             {
                 using (var request = new HttpRequestMessage(new HttpMethod(method), url))
                 {
-                   // request.Headers.TryAddWithoutValidation("X-ApiKey", bareer);
+                    // request.Headers.TryAddWithoutValidation("X-ApiKey", bareer);
                     //request.Headers.TryAddWithoutValidation("Connection", "keep-alive");
                     request.Headers.TryAddWithoutValidation("Accept", "application/json");
 
@@ -106,19 +107,19 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
         /// </summary>
         /// <param name="Doi"></param>
         /// <returns></returns>
-        public Publication getPublications(string name, Boolean articulo_primer_order=true, string uri = "works/{0}")
+        public List<PubReferencias> getPublications(string pDoi, string pUri = "works/{0}")
         {
-            Uri url = new Uri("https://api.crossref.org/" + string.Format(uri, name));
+            Uri url = new Uri("https://api.crossref.org/" + string.Format(pUri, pDoi));
             string info_publication = httpCall(url.ToString(), "GET", headers).Result;
-            // MODELO DEVUELTO 
-            if(info_publication=="Resource not found." || info_publication.StartsWith("<html>")){
+
+            if (info_publication == "Resource not found." || info_publication.StartsWith("<html>"))
+            {
                 return null;
             }
+
             Root objInicial = JsonConvert.DeserializeObject<Root>(info_publication);
-            // CAMBIO DE MODELO -- PAra ello llamamos al controlador de cambio de modelo! 
             ROCrossRefControllerJSON info = new ROCrossRefControllerJSON(this);
-            Publication sol = info.cambioDeModeloPublicacion(objInicial.message, name, articulo_primer_order);
-            return sol;
+            return info.ObtenerReferencias(objInicial.message);
         }
     }
 }
