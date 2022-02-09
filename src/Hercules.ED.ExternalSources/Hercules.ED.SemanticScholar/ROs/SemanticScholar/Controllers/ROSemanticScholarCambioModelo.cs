@@ -73,7 +73,7 @@ namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
                         referencia.autores = new Dictionary<string, string>();
                         foreach (SemanticScholarAPI.ROs.SemanticScholar.Models.Author autor in pubRef.authors)
                         {
-                            if (!referencia.autores.ContainsKey(autor.name))
+                            if (!referencia.autores.ContainsKey(autor.authorId))
                             {
                                 referencia.autores.Add(autor.authorId, autor.name);
                             }
