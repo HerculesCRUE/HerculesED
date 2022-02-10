@@ -3817,35 +3817,59 @@
                   {
                     "properties": [
                       {
+                        "title": {
+                          "es": "Identificador DOI"
+                        },
+                        "placeholder": {
+                          "es": "Introduce el identificador DOI"
+                        },
+                        "property": "http://purl.org/ontology/bibo/doi",
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Identificador Handle"
+                        },
+                        "placeholder": {
+                          "es": "Introduce el identificador Handle"
+                        },
+                        "property": "http://purl.org/ontology/bibo/handle",
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Identificador PMID"
+                        },
+                        "placeholder": {
+                          "es": "Introduce el identificador PMID"
+                        },
+                        "property": "http://purl.org/ontology/bibo/pmid",
+                        "type": "text",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
                         "property": "http://purl.org/ontology/bibo/identifier",
-                        "TODO": "Auxiliar múltiple. Incluir los valores del tipo de identificador en la tabla, junto a un 'Otros' que permita añadir un nuevo tipo.",
                         "type": "auxEntity",
                         "title": {
-                          "es": "Identificador de la publicación"
+                          "es": "Otros identificadores"
                         },
                         "multiple": true,
                         "width": 3,
                         "auxEntityData": {
                           "rdftype": "http://xmlns.com/foaf/0.1/Document",
                           "propertyTitle": {
-                            "property": "http://xmlns.com/foaf/0.1/primaryTopic"
+                            "property": "http://xmlns.com/foaf/0.1/topic"
                           },
                           "properties": [
                             {
                               "name": {
-                                "es": "Tipo identificador"
-                              },
-                              "child": {
-                                "property": "http://xmlns.com/foaf/0.1/primaryTopic",
-                                "graph": "publicationidentifiertype",
-                                "child": {
-                                  "property": "http://purl.org/dc/elements/1.1/title"
-                                }
-                              }
-                            },
-                            {
-                              "name": {
-                                "es": "Otros"
+                                "es": "Nombre del identificador"
                               },
                               "child": {
                                 "property": "http://xmlns.com/foaf/0.1/topic"
@@ -3853,7 +3877,7 @@
                             },
                             {
                               "name": {
-                                "es": "Identificador publicación"
+                                "es": "Identificador"
                               },
                               "child": {
                                 "property": "http://purl.org/dc/elements/1.1/title"
@@ -3863,37 +3887,28 @@
                           "rows": [
                             {
                               "properties": [
+
                                 {
                                   "title": {
-                                    "es": "Tipo identificador"
+                                    "es": "Nombre del identificador"
                                   },
-                                  "required": true,
-                                  "property": "http://xmlns.com/foaf/0.1/primaryTopic",
-                                  "combo": {
-                                    "rdftype": "http://w3id.org/roh/PublicationIdentifierType",
-                                    "graph": "publicationidentifiertype",
-                                    "property": {
-                                      "property": "http://purl.org/dc/elements/1.1/title"
-                                    }
-                                  },
-                                  "type": "selectCombo",
-                                  "width": 1
-                                },
-                                {
-                                  "title": {
-                                    "es": "Otros"
+                                  "placeholder": {
+                                    "es": "Introduce el nombre del identificador"
                                   },
                                   "type": "text",
-                                  "required": false,
+                                  "required": true,
                                   "property": "http://xmlns.com/foaf/0.1/topic",
                                   "width": 1
                                 },
                                 {
                                   "title": {
-                                    "es": "Identificador publicación"
+                                    "es": "Identificador"
+                                  },
+                                  "placeholder": {
+                                    "es": "Introduce el identificador"
                                   },
                                   "type": "text",
-                                  "required": false,
+                                  "required": true,
                                   "property": "http://purl.org/dc/elements/1.1/title",
                                   "width": 1
                                 }
