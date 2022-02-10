@@ -4687,6 +4687,128 @@
                     "property": "http://w3id.org/roh/title"
                   }
                 }
+              },
+              {
+                "name": {
+                  "es": "Ámbito geográfico"
+                },
+                "childOR": [
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "activity",
+                    "child": {
+                      "property": "http://w3id.org/roh/geographicFocusOther"
+                    }
+                  },
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "activity",
+                    "child": {
+                      "property": "http://vivoweb.org/ontology/core#geographicFocus",
+                      "graph": "geographicregion",
+                      "child": {
+                        "property": "http://purl.org/dc/elements/1.1/title"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "name": {
+                  "es": "Fecha de inicio"
+                },
+                "type": "date",
+                "showMiniBold": true,
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "activity",
+                  "child": {
+                    "property": "http://vivoweb.org/ontology/core#start"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Perfil grupo receptor"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "activity",
+                  "child": {
+                    "property": "http://w3id.org/roh/targetGroupProfile",
+                    "graph": "targetgroupprofile",
+                    "child": {
+                      "property": "http://purl.org/dc/elements/1.1/title"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "País entidad realización"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "activity",
+                  "child": {
+                    "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+                    "graph": "feature",
+                    "child": {
+                      "property": "http://www.geonames.org/ontology#name"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Entidad de realización"
+                },
+                "showMini": true,
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "activity",
+                  "child": {
+                    "property": "http://w3id.org/roh/promotedByTitle"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Funciones desempeñadas"
+                },
+                "showMini": true,
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "activity",
+                  "child": {
+                    "property": "http://w3id.org/roh/functions"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Tipología de la gestión"
+                },
+                "childOR": [
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "activity",
+                    "child": {
+                      "property": "http://w3id.org/roh/managementTypeOther"
+                    }
+                  },
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "activity",
+                    "child": {
+                      "property": "http://w3id.org/roh/managementType",
+                      "graph": "managementtypeactivity",
+                      "child": {
+                        "property": "http://purl.org/dc/elements/1.1/title"
+                      }
+                    }
+                  }
+                ]
               }
             ]
           },
@@ -4869,7 +4991,7 @@
                     "properties": [
                       {
                         "title": {
-                          "es": "Ciudad de realización"
+                          "es": "Ciudad entidad realización"
                         },
                         "placeholder": {
                           "es": "Introduce la ciudad de realización"
@@ -4880,7 +5002,7 @@
                       },
                       {
                         "title": {
-                          "es": "País de celebración"
+                          "es": "País entidad realización"
                         },
                         "placeholder": {
                           "es": "Introduce el país de realización"
@@ -4902,10 +5024,10 @@
                       },
                       {
                         "title": {
-                          "es": "C. Autón./Reg. de realización"
+                          "es": "C. Autón./Reg. entidad realización"
                         },
                         "placeholder": {
-                          "es": "Introduce la C. Autón./Reg. de celebración"
+                          "es": "Introduce la C. Autón./Reg. de realización"
                         },
                         "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                         "combo": {
