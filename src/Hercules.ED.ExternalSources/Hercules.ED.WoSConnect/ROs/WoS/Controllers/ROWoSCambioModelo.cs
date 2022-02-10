@@ -448,6 +448,16 @@ namespace WoSConnect.ROs.WoS.Controllers
                     {
                         person.ORCID = item.orcid_id;
                     }
+                    else if (string.IsNullOrEmpty(item.orcid_id) && !string.IsNullOrEmpty(item.r_id) && pPublicacionIn.static_data.contributors != null && pPublicacionIn.static_data.contributors.contributor != null && pPublicacionIn.static_data.contributors.contributor.Any())
+                    {
+                        foreach(Contributor itemContributor in pPublicacionIn.static_data.contributors.contributor)
+                        {
+                            if(itemContributor.name.r_id == item.r_id)
+                            {
+                                person.ORCID = itemContributor.name.orcid_id;
+                            }
+                        }
+                    }
 
                     if (person.name.nombre_completo != null || !string.IsNullOrEmpty(person.ORCID))
                     {

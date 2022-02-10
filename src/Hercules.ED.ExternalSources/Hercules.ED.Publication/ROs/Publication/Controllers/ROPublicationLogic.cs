@@ -245,7 +245,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             //string info = JsonConvert.SerializeObject(resultado);
             //string path = _Configuracion.GetRutaJsonSalida();
             //Log.Information("Escribiendo datos en fichero...");
-            //File.WriteAllText($@"Files/ORCID_EJEMPLO.json", info);
+            //File.WriteAllText($@"Files/ORCID_FECHA.json", info);
             return resultado;
 
         }

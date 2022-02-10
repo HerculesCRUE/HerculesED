@@ -173,8 +173,32 @@ namespace WoSConnect.ROs.WoS.Models.Inicial
     {
         public Summary summary { get; set; }
         public FullrecordMetadata fullrecord_metadata { get; set; }
+
+        public Contributors contributors { get; set; }
     }
 
+    public class NameContributor
+    {
+        public int seq_no { get; set; }
+        public string orcid_id { get; set; }
+        public string role { get; set; }
+        public string full_name { get; set; }
+        public string last_name { get; set; }
+        public string display_name { get; set; }
+        public string r_id { get; set; }
+        public string first_name { get; set; }
+    }
+
+    public class Contributor
+    {
+        public NameContributor name { get; set; }
+    }
+
+    public class Contributors
+    {
+        public List<Contributor> contributor { get; set; }
+        public int count { get; set; }
+    }
     public class SiloTc
     {
         public string coll_id { get; set; }
