@@ -33,10 +33,10 @@ namespace FigShareAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public List<int> GetIdentifiers()
+        public List<int> GetIdentifiers(string pToken)
         {
             FigShare figShare = new FigShare(_Configuracion);
-            return figShare.getIdentifiers();
+            return figShare.getIdentifiers(pToken);
         }
 
         /// <summary>
@@ -47,12 +47,11 @@ namespace FigShareAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public List<Article> GetData()
+        public List<Article> GetData(string pToken)
         {
-            List<int> identificadores = GetIdentifiers();
-
+            List<int> identificadores = GetIdentifiers(pToken);
             FigShare figShare = new FigShare(_Configuracion);
-            return figShare.getData(identificadores);
+            return figShare.getData(identificadores, pToken);
         }
 
         /// <summary>
@@ -63,11 +62,9 @@ namespace FigShareAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public List<RO> GetROs()
+        public List<RO> GetROs(string pToken)
         {
-            List<int> identificadores = GetIdentifiers();
-            List<Article> articulos = GetData();
-
+            List<Article> articulos = GetData(pToken);
             FigShare figShare = new FigShare(_Configuracion);
             return figShare.getROs(articulos);
         }

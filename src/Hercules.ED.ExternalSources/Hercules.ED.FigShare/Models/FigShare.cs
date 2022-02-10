@@ -31,7 +31,7 @@ namespace FigShareAPI.Models
         /// <param name="pMethod"></param>
         /// <param name="pHeaders"></param>
         /// <returns></returns>
-        protected async Task<string> httpCall(string pUrl, string pMethod = "GET", Dictionary<string, string> pHeaders = null)
+        protected async Task<string> httpCall(string pUrl, string pToken, string pMethod = "GET", Dictionary<string, string> pHeaders = null)
         {
             HttpResponseMessage response;
             using (var httpClient = new HttpClient())
@@ -40,7 +40,7 @@ namespace FigShareAPI.Models
                 {
                     request.Headers.Add("Accept", "application/json");
                     request.Headers.Add("Host", "api.figshare.com");
-                    request.Headers.Add("Authorization", _Configuracion.GetToken());
+                    request.Headers.Add("Authorization", pToken);
 
                     if (pHeaders != null && pHeaders.Count > 0)
                     {
@@ -87,11 +87,11 @@ namespace FigShareAPI.Models
         /// Obtiene la lista de IDs de los ROs que son públicos.
         /// </summary>
         /// <returns>Lista de identificadores.</returns>
-        public List<int> getIdentifiers()
+        public List<int> getIdentifiers(string pToken)
         {
             // Petición.
             Uri url = new Uri($@"{_Configuracion.GetUrlBase()}/account/articles");
-            string result = httpCall(url.ToString(), "GET").Result;
+            string result = httpCall(url.ToString(), pToken, pMethod: "GET").Result;
             List<ArticleScheme> listaArticulos = JsonConvert.DeserializeObject<List<ArticleScheme>>(result);
 
             // Obtención de IDs de los ROs que son PÚBLICOS.
@@ -112,7 +112,7 @@ namespace FigShareAPI.Models
         /// </summary>
         /// <param name="pListaIdentificadores">Lista de IDs a obtener los datos.</param>
         /// <returns>Lista de datos.</returns>
-        public List<Article> getData(List<int> pListaIdentificadores)
+        public List<Article> getData(List<int> pListaIdentificadores, string pToken)
         {
             List<Article> listaArticulos = new List<Article>();
 
@@ -120,7 +120,7 @@ namespace FigShareAPI.Models
             {
                 // Petición.
                 Uri url = new Uri($@"{_Configuracion.GetUrlBase()}/account/articles/{id}");
-                string result = httpCall(url.ToString(), "GET").Result;
+                string result = httpCall(url.ToString(), pToken, pMethod: "GET").Result;
                 listaArticulos.Add(JsonConvert.DeserializeObject<Article>(result));
             }
 
@@ -169,8 +169,8 @@ namespace FigShareAPI.Models
                 if (articulo.tags != null && articulo.tags.Any())
                 {
                     researchObject.etiquetas = articulo.tags;
-                }                
-                if(articulo.authors != null && articulo.authors.Any())
+                }
+                if (articulo.authors != null && articulo.authors.Any())
                 {
                     researchObject.autores = new List<Person>();
                     foreach (Author autor in articulo.authors)
