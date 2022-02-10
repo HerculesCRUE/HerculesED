@@ -125,11 +125,20 @@ namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
 
         public List<PubReferencias> getReferencias(string pDoi)
         {
-            Uri url = new Uri($@"https://api.semanticscholar.org/v1/paper/{pDoi}");
-            string result = httpCall(url.ToString(), "GET", headers).Result;
-            SemanticScholarObj data = JsonConvert.DeserializeObject<SemanticScholarObj>(result);
-            ROSemanticScholarControllerJSON info = new ROSemanticScholarControllerJSON(this);
-            return info.getReferences(data);
+            List<PubReferencias> publications = new List<PubReferencias>();
+            try
+            {
+                Uri url = new Uri($@"https://api.semanticscholar.org/v1/paper/{pDoi}");
+                string result = httpCall(url.ToString(), "GET", headers).Result;
+                SemanticScholarObj data = JsonConvert.DeserializeObject<SemanticScholarObj>(result);
+                ROSemanticScholarControllerJSON info = new ROSemanticScholarControllerJSON(this);
+                publications = info.getReferences(data);
+            }
+            catch(Exception e)
+            {
+
+            }
+            return publications;
         }
     }
 }
