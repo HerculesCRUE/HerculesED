@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32126.317
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FigShareAPI", "FigShareAPI\FigShareAPI.csproj", "{C5319724-FF4A-4219-A801-3A24F8BE49DA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FigShareAPI", "FigShareAPI.csproj", "{A17ABDC0-8E95-49F0-81DC-9BB74BBC72D2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C5319724-FF4A-4219-A801-3A24F8BE49DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C5319724-FF4A-4219-A801-3A24F8BE49DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C5319724-FF4A-4219-A801-3A24F8BE49DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C5319724-FF4A-4219-A801-3A24F8BE49DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A17ABDC0-8E95-49F0-81DC-9BB74BBC72D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A17ABDC0-8E95-49F0-81DC-9BB74BBC72D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A17ABDC0-8E95-49F0-81DC-9BB74BBC72D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A17ABDC0-8E95-49F0-81DC-9BB74BBC72D2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {AC891179-879A-4719-8924-226D7F28DA6A}
+		SolutionGuid = {1A98F8E6-4C22-4583-9BE2-EFF8E6A8ACCE}
 	EndGlobalSection
 EndGlobal
