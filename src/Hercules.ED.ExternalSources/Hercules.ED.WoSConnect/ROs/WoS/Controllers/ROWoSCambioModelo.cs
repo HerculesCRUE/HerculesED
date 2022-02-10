@@ -75,7 +75,7 @@ namespace WoSConnect.ROs.WoS.Controllers
                                 {
                                     try
                                     {
-                                        if(rec.UID== "WOS:000224385500052")
+                                        if (rec.UID == "WOS:000224385500052")
                                         {
 
                                         }
@@ -90,7 +90,8 @@ namespace WoSConnect.ROs.WoS.Controllers
                                             }
                                             sol.Add(publicacion);
                                         }
-                                    }catch(Exception e)
+                                    }
+                                    catch (Exception e)
                                     {
 
                                     }
@@ -122,7 +123,7 @@ namespace WoSConnect.ROs.WoS.Controllers
             publicacion.correspondingAuthor = publicacion.seqOfAuthors[0];
             publicacion.hasPublicationVenue = getJournal(objInicial);
             publicacion.hasMetric = getPublicationMetric(objInicial);
-            if(publicacion.typeOfPublication==CHAPTER)
+            if (publicacion.typeOfPublication == CHAPTER)
             {
                 publicacion.doi = null;
             }
@@ -444,19 +445,26 @@ namespace WoSConnect.ROs.WoS.Controllers
                     }
 
                     // ORCID
-                    if (!string.IsNullOrEmpty(item.orcid_id))
+                    try
                     {
-                        person.ORCID = item.orcid_id;
-                    }
-                    else if (string.IsNullOrEmpty(item.orcid_id) && !string.IsNullOrEmpty(item.r_id) && pPublicacionIn.static_data.contributors != null && pPublicacionIn.static_data.contributors.contributor != null && pPublicacionIn.static_data.contributors.contributor.Any())
-                    {
-                        foreach(Contributor itemContributor in pPublicacionIn.static_data.contributors.contributor)
+                        if (!string.IsNullOrEmpty(item.orcid_id))
                         {
-                            if(itemContributor.name.r_id == item.r_id)
+                            person.ORCID = item.orcid_id;
+                        }
+                        else if (string.IsNullOrEmpty(item.orcid_id) && !string.IsNullOrEmpty(item.r_id) && pPublicacionIn.static_data.contributors != null && pPublicacionIn.static_data.contributors.contributor != null && pPublicacionIn.static_data.contributors.contributor.Any())
+                        {
+                            foreach (Contributor itemContributor in pPublicacionIn.static_data.contributors.contributor)
                             {
-                                person.ORCID = itemContributor.name.orcid_id;
+                                if (itemContributor.name.r_id == item.r_id)
+                                {
+                                    person.ORCID = itemContributor.name.orcid_id;
+                                }
                             }
                         }
+                    }
+                    catch (Exception e)
+                    {
+
                     }
 
                     if (person.name.nombre_completo != null || !string.IsNullOrEmpty(person.ORCID))

@@ -196,6 +196,7 @@ namespace WoSConnect.ROs.WoS.Models.Inicial
 
     public class Contributors
     {
+        [JsonConverter(typeof(SingleOrArrayConverter<Contributor>))]
         public List<Contributor> contributor { get; set; }
         public int count { get; set; }
     }
