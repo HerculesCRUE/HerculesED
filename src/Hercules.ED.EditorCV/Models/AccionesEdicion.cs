@@ -303,33 +303,7 @@ namespace GuardadoCV.Models
                 Dictionary<string, int> colaboradoresDocumentos = ObtenerColaboradoresPublicaciones(pPersonID);
                 Dictionary<string, int> colaboradoresProyectos = ObtenerColaboradoresProyectos(pPersonID);
 
-                string[] firmas = pSignatures.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries).Distinct().ToArray();
-
-                List<string> signaturesList = new List<string>(); ;
-                string firmaActual = "";
-                foreach (string firma in firmas)
-                {
-                    string actual = firma.Trim();
-                    if (firmaActual != "" && actual.Replace(".", "").Trim().Length < 4)
-                    {
-                        firmaActual += ", " + actual;
-                        firmaActual = firmaActual.Trim();
-                        signaturesList.Add(firmaActual.Trim());
-                        firmaActual = "";
-                    }
-                    else
-                    {
-                        if (firmaActual != "")
-                        {
-                            signaturesList.Add(firmaActual.Trim());
-                        }
-                        firmaActual = actual.Trim();
-                    }
-                }
-                if (firmaActual != "")
-                {
-                    signaturesList.Add(firmaActual.Trim());
-                }
+                List<string> signaturesList = pSignatures.Split(new string[] { ";" }, StringSplitOptions.RemoveEmptyEntries).Distinct().Select(x=>x.Trim()).ToList();
 
                 Dictionary<string, List<Person>> listaPersonasAux = new Dictionary<string, List<Person>>();
                 Parallel.ForEach(signaturesList, new ParallelOptions { MaxDegreeOfParallelism = 5 }, firma =>
