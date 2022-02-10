@@ -28,6 +28,7 @@ namespace FigShareAPI.Models
         /// Contrucción de la cabecera de envío.
         /// </summary>
         /// <param name="pUrl"></param>
+        /// <param name="pToken"></param>
         /// <param name="pMethod"></param>
         /// <param name="pHeaders"></param>
         /// <returns></returns>
@@ -86,6 +87,7 @@ namespace FigShareAPI.Models
         /// <summary>
         /// Obtiene la lista de IDs de los ROs que son públicos.
         /// </summary>
+        /// <param name="pToken">Token de usuario.</param>
         /// <returns>Lista de identificadores.</returns>
         public List<int> getIdentifiers(string pToken)
         {
@@ -111,6 +113,7 @@ namespace FigShareAPI.Models
         /// Obtiene los datos más detallados de los IDs de la lista.
         /// </summary>
         /// <param name="pListaIdentificadores">Lista de IDs a obtener los datos.</param>
+        /// <param name="pToken">Token de usuario.</param>
         /// <returns>Lista de datos.</returns>
         public List<Article> getData(List<int> pListaIdentificadores, string pToken)
         {
