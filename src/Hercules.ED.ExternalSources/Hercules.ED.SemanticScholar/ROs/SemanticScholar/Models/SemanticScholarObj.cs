@@ -8,7 +8,7 @@ namespace SemanticScholarAPI.ROs.SemanticScholar.Models
         public string ArXiv { get; set; }
         public string DBLP { get; set; }
         public string PubMedCentral { get; set; }
-        public int ORCID { get; set; }
+        public int? ORCID { get; set; }
     }
 
     public class Author
@@ -20,9 +20,9 @@ namespace SemanticScholarAPI.ROs.SemanticScholar.Models
         public List<string> aliases { get; set; }
         public List<string> affiliations { get; set; }
         public string homepage { get; set; }
-        public int paperCount { get; set; }
-        public int citationCount { get; set; }
-        public int hIndex { get; set; }
+        public int? paperCount { get; set; }
+        public int? citationCount { get; set; }
+        public int? hIndex { get; set; }
     }
 
     public class Citation
@@ -31,7 +31,7 @@ namespace SemanticScholarAPI.ROs.SemanticScholar.Models
         public string url { get; set; }
         public string title { get; set; }
         public string venue { get; set; }
-        public int year { get; set; }
+        public int? year { get; set; }
         public List<Author> authors { get; set; }
     }
 
@@ -66,10 +66,10 @@ namespace SemanticScholarAPI.ROs.SemanticScholar.Models
         public string title { get; set; }
         public string @abstract { get; set; }
         public string venue { get; set; }
-        public int year { get; set; }
-        public int referenceCount { get; set; }
-        public int citationCount { get; set; }
-        public int influentialCitationCount { get; set; }
+        public int? year { get; set; }
+        public int? referenceCount { get; set; }
+        public int? citationCount { get; set; }
+        public int? influentialCitationCount { get; set; }
         public bool isOpenAccess { get; set; }
         public List<string> fieldsOfStudy { get; set; }
         public List<Author> authors { get; set; }
