@@ -27,9 +27,8 @@ namespace GuardadoCV.Models.Utils
         /// </summary>
         public static Dictionary<string, List<string>> PropertyNotEditable = new Dictionary<string, List<string>>()
         {
-            //TODO descomentar
-            //{ "http://w3id.org/roh/crisIdentifier", new List<string>() },
-            //{ "http://w3id.org/roh/isValidated", new List<string>(){ "true"} }
+            { "http://w3id.org/roh/crisIdentifier", new List<string>() },
+            { "http://w3id.org/roh/isValidated", new List<string>(){ "true"} }
             //TODO estado de validacion
         };
 
