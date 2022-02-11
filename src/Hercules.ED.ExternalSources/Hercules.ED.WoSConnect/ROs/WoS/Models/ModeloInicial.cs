@@ -56,6 +56,23 @@ namespace WoSConnect.ROs.WoS.Models.Inicial
         public PreferredName preferred_name { get; set; }
         public string suffix { get; set; }
         public string unified_name { get; set; }
+        [JsonProperty("data-item-ids")]
+        public DataItemIds data_item_ids { get; set; }
+    }
+
+    public class DataItemIds
+    {
+        [JsonConverter(typeof(SingleOrArrayConverter<DataItemId>))]
+        [JsonProperty("data-item-id")]
+        public List<DataItemId> DataItemId { get; set; }
+    }
+
+    public class DataItemId
+    {
+        public string type { get; set; }
+        public string content { get; set; }
+        [JsonProperty("id-type")]
+        public string IdType { get; set; }
     }
 
     public class Names

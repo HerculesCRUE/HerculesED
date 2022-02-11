@@ -48,6 +48,7 @@ namespace WoSConnect.ROs.WoS.Models
     {
         public Name name { get; set; }
         public string ORCID { get; set; }
+        public string researcherID { get; set; }
         public string fuente { get; set; }
     }
     public class Name
