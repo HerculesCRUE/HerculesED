@@ -1,6 +1,8 @@
 Librería de conexión con repositorios externos
  
 
+El funcionamiento de los servicios de extracción está documentado en [Fuentes externas de publicaciones científicas](https://confluence.um.es/confluence/pages/viewpage.action?pageId=397534572)
+
 # Microservicios de fuentes externas
 
 Los microservicios de Scopus, WoS, CrossRef, OpenCitations, Semantic Scholar y Zenodo tienen un funcionamiento similar:  
