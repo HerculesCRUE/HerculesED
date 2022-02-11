@@ -271,10 +271,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 }
             }
 
-            string info = JsonConvert.SerializeObject(resultado);
-            string path = _Configuracion.GetRutaJsonSalida();
-            Log.Information("Escribiendo datos en fichero...");
-            File.WriteAllText($@"Files/{name}-skarmeta.json", info);
+            //string info = JsonConvert.SerializeObject(resultado);
+            //string path = _Configuracion.GetRutaJsonSalida();
+            //Log.Information("Escribiendo datos en fichero...");
+            //File.WriteAllText($@"Files/{name}_FECHA.json", info);
             return resultado;
 
         }
@@ -1985,7 +1985,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         }
                     }
 
-                    personaFinal.name.nombre_completo[0] = $@"{personaFinal.name.given[0]} {personaFinal.name.familia[0]}";
+                    if (personaFinal.name.given != null && personaFinal.name.given.Any() && !string.IsNullOrEmpty(personaFinal.name.given[0]) && personaFinal.name.familia != null && personaFinal.name.familia.Any() && !string.IsNullOrEmpty(personaFinal.name.familia[0]))
+                    {
+                        personaFinal.name.nombre_completo[0] = $@"{personaFinal.name.given[0]} {personaFinal.name.familia[0]}";
+                    }
                 }
 
                 listaPersonasDefinitivas.Add(personaFinal);
@@ -2052,8 +2055,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         break;
                     }
                 }
-
-                personaFinal.name.nombre_completo[0] = $@"{personaFinal.name.given[0]} {personaFinal.name.familia[0]}";
+                if (personaFinal.name.given != null && personaFinal.name.given.Any() && !string.IsNullOrEmpty(personaFinal.name.given[0]) && personaFinal.name.familia != null && personaFinal.name.familia.Any() && !string.IsNullOrEmpty(personaFinal.name.familia[0]))
+                {
+                    personaFinal.name.nombre_completo[0] = $@"{personaFinal.name.given[0]} {personaFinal.name.familia[0]}";
+                }
             }
 
             pPublicacion.seqOfAuthors = listaPersonasDefinitivas;
@@ -2138,8 +2143,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
                                 break;
                             }
                         }
-
-                        personaFinal.name.nombre_completo[0] = $@"{personaFinal.name.given[0]} {personaFinal.name.familia[0]}";
+                        if (personaFinal.name.given != null && personaFinal.name.given.Any() && !string.IsNullOrEmpty(personaFinal.name.given[0]) && personaFinal.name.familia != null && personaFinal.name.familia.Any() && !string.IsNullOrEmpty(personaFinal.name.familia[0]))
+                        {
+                            personaFinal.name.nombre_completo[0] = $@"{personaFinal.name.given[0]} {personaFinal.name.familia[0]}";
+                        }
                     }
 
                     listaPersonasDefinitivas.Add(personaFinal);
@@ -2198,7 +2205,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         }
                     }
 
-                    personaFinal.name.nombre_completo[0] = $@"{personaFinal.name.given[0]} {personaFinal.name.familia[0]}";
+                    if (personaFinal.name.given != null && personaFinal.name.given.Any() && !string.IsNullOrEmpty(personaFinal.name.given[0]) && personaFinal.name.familia != null && personaFinal.name.familia.Any() && !string.IsNullOrEmpty(personaFinal.name.familia[0]))
+                    {
+                        personaFinal.name.nombre_completo[0] = $@"{personaFinal.name.given[0]} {personaFinal.name.familia[0]}";
+                    }
                 }
 
                 pPublicacion.seqOfAuthors = listaPersonasDefinitivas;
@@ -2295,7 +2305,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     pPersonaFinal.name.familia = new List<string>() { pPersonaAUnir.name.nombre_completo[0].Split(" ")[1] };
                 }
             }
-            pPersonaFinal.name.nombre_completo[0] = $@"{pPersonaFinal.name.given[0]} {pPersonaFinal.name.familia[0]}";
+            if (pPersonaFinal.name.given != null && pPersonaFinal.name.given.Any() && !string.IsNullOrEmpty(pPersonaFinal.name.given[0]) && pPersonaFinal.name.familia != null && pPersonaFinal.name.familia.Any() && !string.IsNullOrEmpty(pPersonaFinal.name.familia[0]))
+            {
+                pPersonaFinal.name.nombre_completo[0] = $@"{pPersonaFinal.name.given[0]} {pPersonaFinal.name.familia[0]}";
+            }
 
             // Nick
             if (string.IsNullOrEmpty(pPersonaFinal.nick) && !string.IsNullOrEmpty(pPersonaAUnir.nick))
