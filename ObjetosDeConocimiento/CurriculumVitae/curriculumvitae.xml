@@ -895,6 +895,23 @@
                 </PropsEntLectura>
             </SeleccionEntidad>
         </Propiedad>
+		<Propiedad  ID="http://vivoweb.org/ontology/core#relatedBy" EntidadID="http://w3id.org/roh/RelatedResearchObject">
+            <AtrNombre>http://vivoweb.org/ontology/core#relatedBy</AtrNombre>
+            <AtrNombreLectura>http://vivoweb.org/ontology/core#relatedBy</AtrNombreLectura>
+			<SeleccionEntidad>
+                <TipoSeleccion>Autocompletar</TipoSeleccion>
+                <Grafo>researchobject.owl</Grafo>
+                <UrlTipoEntSolicitada>http://w3id.org/roh/ResearchObject</UrlTipoEntSolicitada>              
+                <PropsEntEdicion>
+                    <NameProp>http://w3id.org/roh/title</NameProp>
+                </PropsEntEdicion>
+                <PropsEntLectura>
+                    <Propiedad ID="http://w3id.org/roh/title" EntidadID="http://w3id.org/roh/ResearchObject">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+                </PropsEntLectura>
+            </SeleccionEntidad>
+        </Propiedad>
         <Propiedad  ID="http://w3id.org/roh/isPublic" EntidadID="http://w3id.org/roh/RelatedGroup">
             <AtrNombre>http://w3id.org/roh/isPublic</AtrNombre>
             <AtrNombreLectura>http://w3id.org/roh/isPublic</AtrNombreLectura>
