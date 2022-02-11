@@ -179,9 +179,18 @@ namespace FigShareAPI.Models
                     foreach (Author autor in articulo.authors)
                     {
                         Person person = new Person();
-                        person.id = autor.id;
-                        person.nombreCompleto = autor.full_name;
-                        person.orcid = autor.orcid_id;
+                        if (autor.id != null)
+                        {
+                            person.id = autor.id;
+                        }
+                        if (!string.IsNullOrEmpty(autor.full_name))
+                        {
+                            person.nombreCompleto = autor.full_name;
+                        }
+                        if (!string.IsNullOrEmpty(autor.orcid_id))
+                        {
+                            person.orcid = autor.orcid_id;
+                        }
                         researchObject.autores.Add(person);
                     }
                 }
