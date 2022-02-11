@@ -127,13 +127,7 @@
         <Propiedad  ID="http://w3id.org/roh/title" EntidadID="http://w3id.org/roh/Collaboration">
             <AtrNombre>title</AtrNombre>
             <AtrNombreLectura>title</AtrNombreLectura>
-        </Propiedad>
-		
-		
-		
-		
-		
-		
+        </Propiedad>		
 		<Propiedad  ID="https://www.w3.org/2006/vcard/ns#hasRegion" EntidadID="http://w3id.org/roh/Organization">
             <AtrNombre>hasRegion</AtrNombre>
             <AtrNombreLectura>hasRegion</AtrNombreLectura>
