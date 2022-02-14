@@ -204,7 +204,7 @@ namespace Hercules.ED.DisambiguationEngine.Models
                         {
                             // Algoritmo de similaridad.
                             float similarity = GetSimilarity(itemA.Value, itemsPorTipoBBDDList[i].Value, dicNomPersonasDesnormalizadas, dicTitulosDesnormalizados, null);
-                            if (similarity > pUmbral)
+                            if (similarity >= pUmbral)
                             {
                                 listaEquivalencias[itemA.Key.ID][itemsPorTipoBBDDList[i].Key.ID] = similarity;
                             }
