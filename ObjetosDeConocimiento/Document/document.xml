@@ -322,7 +322,7 @@
             <AtrNombreLectura>http://w3id.org/roh/supportType</AtrNombreLectura>
 			<SeleccionEntidad>
                 <TipoSeleccion>Autocompletar</TipoSeleccion>
-                <Grafo>supporttype.owl</Grafo>
+                <Grafo>documentformat.owl</Grafo>
                 <UrlTipoEntSolicitada>http://w3id.org/roh/DocumentFormat</UrlTipoEntSolicitada>              
                 <PropsEntEdicion>
                     <NameProp>http://purl.org/dc/elements/1.1/title</NameProp>
