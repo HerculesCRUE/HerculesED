@@ -101,9 +101,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
         public List<Publication> getPublications(string name, string date = "1500-01-01", string pDoi = null)
         {
             // Diccionario con las peticiones.
-            Dictionary<string, Publication> dicSemanticScholar = new Dictionary<string, Publication>();
-            Dictionary<string, Publication> dicOpenCitations = new Dictionary<string, Publication>();
-            Dictionary<string, List<PubReferencias>> dicCrossRef = new Dictionary<string, List<PubReferencias>>();
+            Tuple<string, Dictionary<Publication, List<PubReferencias>>> dicSemanticScholar;
             Dictionary<string, string> dicZenodo = new Dictionary<string, string>();
 
             // Lista para almacenar las publicaciones resultantes.
@@ -139,14 +137,14 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
                     // SemanticScholar
                     Log.Information("[WoS] Haciendo petición a SemanticScholar...");
-                    Publication objInicial_semanticScholar = llamadaSemanticScholar(pub.doi, dicSemanticScholar);
+                    Tuple<Publication, List<PubReferencias>> dataSemanticScholar = ObtenerPubSemanticScholar(pub);
                     Log.Information("[WoS] Comparación (SemanticScholar)...");
-                    Publication pub_completa = compatacion(pub, objInicial_semanticScholar);
-                    Thread.Sleep(1000); // TODO: Revisar tema de los tiempos de las peticiones.
-
-                    // SemanticScholar - Obtención de las referencias.
-                    Log.Information("[WoS] Completando bibliografía...");
-                    pub_completa.bibliografia = ObtenerPubReferencias(pub, dicCrossRef);
+                    Publication pub_completa = pub;
+                    if (dataSemanticScholar != null)
+                    {
+                        pub_completa = compatacion(pub, dataSemanticScholar.Item1);
+                        pub_completa.bibliografia = dataSemanticScholar.Item2;
+                    }
                     Thread.Sleep(1000); // TODO: Revisar tema de los tiempos de las peticiones.
 
                     // Zenodo - Archivos pdf...
@@ -188,9 +186,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     if (pub_completa != null && !string.IsNullOrEmpty(pub_completa.title) && pub_completa.seqOfAuthors != null && pub_completa.seqOfAuthors.Any() && pub_completa.title != "One or more validation errors occurred.") // TODO
                     {
                         bool encontrado = false;
-                        foreach(Person persona in pub_completa.seqOfAuthors)
+                        foreach (Person persona in pub_completa.seqOfAuthors)
                         {
-                            if(persona.ORCID == name)
+                            if (persona.ORCID == name)
                             {
                                 encontrado = true;
                                 break;
@@ -223,15 +221,14 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
                         // SemanticScholar
                         Log.Information("[Scopus] Haciendo petición a SemanticScholar...");
-                        Publication objInicial_semanticScholar = llamadaSemanticScholar(pub_scopus.doi, dicSemanticScholar);
+                        Tuple<Publication, List<PubReferencias>> dataSemanticScholar = ObtenerPubSemanticScholar(pubScopus);
                         Log.Information("[Scopus] Comparación (SemanticScholar)...");
-                        Publication pub_completa = compatacion(pubScopus, objInicial_semanticScholar);
-                        Thread.Sleep(1000); // TODO: Revisar tema de los tiempos de las peticiones.
-
-                        // SemanticScholar - Obtención de las referencias.
-                        Log.Information("[Scopus] Completando bibliografia...");
-                        pub_completa.bibliografia = ObtenerPubReferencias(pubScopus, dicCrossRef);
-                        Thread.Sleep(1000); // TODO: Revisar tema de los tiempos de las peticiones.
+                        Publication pub_completa = pubScopus;
+                        if (dataSemanticScholar != null)
+                        {
+                            pub_completa = compatacion(pubScopus, dataSemanticScholar.Item1);
+                            pub_completa.bibliografia = dataSemanticScholar.Item2;
+                        }
 
                         // Zenodo - Archivos pdf...
                         Log.Information("[Scopus] Haciendo petición a Zenodo...");
@@ -271,10 +268,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 }
             }
 
-            //string info = JsonConvert.SerializeObject(resultado);
-            //string path = _Configuracion.GetRutaJsonSalida();
-            //Log.Information("Escribiendo datos en fichero...");
-            //File.WriteAllText($@"Files/{name}_FECHA.json", info);
+            string info = JsonConvert.SerializeObject(resultado);
+            string path = _Configuracion.GetRutaJsonSalida();
+            Log.Information("Escribiendo datos en fichero...");
+            File.WriteAllText($@"Files/{name}_2022-02-14.json", info);
             return resultado;
 
         }
@@ -604,9 +601,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
         //}
 
 
-        public List<PubReferencias> ObtenerPubReferencias(Publication pub, Dictionary<string, List<PubReferencias>> pDicCrossRef)
+        public Tuple<Publication, List<PubReferencias>> ObtenerPubSemanticScholar(Publication pub)
         {
-            return llamadaRefSemanticScholar(pub.doi, pDicCrossRef);
+            return llamadaRefSemanticScholar(pub.doi);
         }
 
         //public Publication completar_bib(Publication pub, Dictionary<string, Publication> pDicOpenCitations, Dictionary<string, Publication> pDicSemanticScholar, Dictionary<string, Publication> pDicCrossRef, Dictionary<string, string> pDicZenodo)
@@ -1373,9 +1370,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
         /// </summary>
         /// <param name="pDoi">DOI de la publicación a consultar.</param>
         /// <returns>Objeto Publication con los datos obtenidos.</returns>
-        public List<PubReferencias> llamadaRefSemanticScholar(string pDoi, Dictionary<string, List<PubReferencias>> pDic)
+        public Tuple<Publication, List<PubReferencias>> llamadaRefSemanticScholar(string pDoi)
         {
-            List<PubReferencias> objInicial_SemanticScholar = null;
+            Tuple<Publication, List<PubReferencias>> objInicial_SemanticScholar = null;
 
             try
             {
@@ -1384,18 +1381,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     // URL a la petición.
                     Uri url = new Uri(string.Format(_Configuracion.GetUrlSemanticScholar() + "SemanticScholar/GetReferences?pDoi={0}", pDoi));
 
-                    // Comprobación de la petición.
-                    if (!pDic.ContainsKey(pDoi))
-                    {
-                        string info_publication = httpCall(url.ToString(), "GET", headers).Result;
-                        //Log.Information("Respuesta CrossRef --> " + info_publication);
-                        objInicial_SemanticScholar = JsonConvert.DeserializeObject<List<PubReferencias>>(info_publication);
-                        pDic[pDoi] = objInicial_SemanticScholar;
-                    }
-                    else
-                    {
-                        objInicial_SemanticScholar = pDic[pDoi];
-                    }
+                    string info_publication = httpCall(url.ToString(), "GET", headers).Result;
+                    //Log.Information("Respuesta CrossRef --> " + info_publication);
+                    objInicial_SemanticScholar = JsonConvert.DeserializeObject<Tuple<Publication, List<PubReferencias>>>(info_publication);
                 }
             }
             catch (Exception e)

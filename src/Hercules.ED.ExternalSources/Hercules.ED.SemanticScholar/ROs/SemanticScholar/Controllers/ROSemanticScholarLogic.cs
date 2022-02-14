@@ -10,9 +10,7 @@ using System.Net;
 using Newtonsoft.Json;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using SemanticScholarConnect.ROs.SemanticScholar;
-using SemanticScholarConnect.ROs.SemanticScholar.Models;
-using SemanticScholarConnect.ROs.SemanticScholar.Models.Inicial;
+using SemanticScholarAPI.ROs.SemanticScholar.Models.Inicial;
 using System.Web;
 using System.Text.Json;
 using Newtonsoft.Json.Linq;
@@ -22,9 +20,9 @@ using SemanticScholarAPI.ROs.SemanticScholar.Models;
 
 
 
-namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
+namespace SemanticScholarAPI.ROs.SemanticScholar.Controllers
 {
-    public class ROSemanticScholarLogic : SemanticScholarInterface
+    public class ROSemanticScholarLogic
     {
         protected string bareer;
         //ROScopusControllerJSON info = new ROScopusControllerJSON();
@@ -123,22 +121,27 @@ namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
         }
 
 
-        public List<PubReferencias> getReferencias(string pDoi)
+        public Tuple<Publication, List<PubReferencias>> getReferencias(string pDoi)
         {
+            Tuple<Publication, List<PubReferencias>> tupla = null;
+            Publication publicacionPrincipal = new Publication();
             List<PubReferencias> publications = new List<PubReferencias>();
             try
             {
                 Uri url = new Uri($@"https://api.semanticscholar.org/v1/paper/{pDoi}");
                 string result = httpCall(url.ToString(), "GET", headers).Result;
+                Root objInicial = JsonConvert.DeserializeObject<Root>(result);
                 SemanticScholarObj data = JsonConvert.DeserializeObject<SemanticScholarObj>(result);
                 ROSemanticScholarControllerJSON info = new ROSemanticScholarControllerJSON(this);
+                publicacionPrincipal = info.cambioDeModeloPublicacion(objInicial);
                 publications = info.getReferences(data);
+                tupla = new Tuple<Publication, List<PubReferencias>>(publicacionPrincipal, publications);
             }
             catch(Exception e)
             {
 
             }
-            return publications;
+            return tupla;
         }
     }
 }

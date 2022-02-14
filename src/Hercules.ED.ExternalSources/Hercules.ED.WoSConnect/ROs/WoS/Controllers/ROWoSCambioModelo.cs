@@ -530,7 +530,23 @@ namespace WoSConnect.ROs.WoS.Controllers
 
                     if (person.name.nombre_completo != null || !string.IsNullOrEmpty(person.ORCID))
                     {
-                        listaPersonas.Add(person);
+                        string orcid = person.ORCID;
+                        string researcherId = person.researcherID;
+                        bool encontrado = false;
+
+                        foreach(Person persona in listaPersonas)
+                        {
+                            if(!string.IsNullOrEmpty(orcid) && orcid == persona.ORCID)
+                            {
+                                encontrado = true;
+                                break;
+                            }
+                        }
+
+                        if (!encontrado)
+                        {
+                            listaPersonas.Add(person);
+                        }
                     }
                 }
 

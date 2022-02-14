@@ -2,7 +2,7 @@ using System;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace SemanticScholarConnect.ROs.SemanticScholar.Models.Inicial
+namespace SemanticScholarAPI.ROs.SemanticScholar.Models.Inicial
 {
 
  // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse); 

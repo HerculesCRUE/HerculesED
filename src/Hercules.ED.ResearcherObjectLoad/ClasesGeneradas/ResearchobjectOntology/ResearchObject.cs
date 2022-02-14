@@ -106,17 +106,10 @@ namespace ResearchobjectOntology
 					}
 				}
 			}
-			this.Dc_type = new List<ResearchObjectType>();
 			SemanticPropertyModel propDc_type = pSemCmsModel.GetPropertyByPath("http://purl.org/dc/elements/1.1/type");
 			if(propDc_type != null && propDc_type.PropertyValues.Count > 0)
 			{
-				foreach (SemanticPropertyModel.PropertyValue propValue in propDc_type.PropertyValues)
-				{
-					if(propValue.RelatedEntity!=null){
-						ResearchObjectType dc_type = new ResearchObjectType(propValue.RelatedEntity,idiomaUsuario);
-						this.Dc_type.Add(dc_type);
-					}
-				}
+				this.Dc_type = new ResearchObjectType(propDc_type.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
 			this.Roh_hasKnowledgeArea = new List<CategoryPath>();
 			SemanticPropertyModel propRoh_hasKnowledgeArea = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/hasKnowledgeArea");
@@ -287,17 +280,10 @@ namespace ResearchobjectOntology
 					}
 				}
 			}
-			this.Dc_type = new List<ResearchObjectType>();
 			SemanticPropertyModel propDc_type = pSemCmsModel.GetPropertyByPath("http://purl.org/dc/elements/1.1/type");
 			if(propDc_type != null && propDc_type.PropertyValues.Count > 0)
 			{
-				foreach (SemanticPropertyModel.PropertyValue propValue in propDc_type.PropertyValues)
-				{
-					if(propValue.RelatedEntity!=null){
-						ResearchObjectType dc_type = new ResearchObjectType(propValue.RelatedEntity,idiomaUsuario);
-						this.Dc_type.Add(dc_type);
-					}
-				}
+				this.Dc_type = new ResearchObjectType(propDc_type.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
 			this.Roh_hasKnowledgeArea = new List<CategoryPath>();
 			SemanticPropertyModel propRoh_hasKnowledgeArea = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/hasKnowledgeArea");
@@ -419,8 +405,8 @@ namespace ResearchobjectOntology
 
 		[LABEL(LanguageEnum.es,"http://purl.org/dc/elements/1.1/type")]
 		[RDFProperty("http://purl.org/dc/elements/1.1/type")]
-		public  List<ResearchObjectType> Dc_type { get; set;}
-		public List<string> IdsDc_type { get; set;}
+		public  ResearchObjectType Dc_type  { get; set;} 
+		public string IdDc_type  { get; set;} 
 
 		[LABEL(LanguageEnum.es,"http://w3id.org/roh/hasKnowledgeArea")]
 		[RDFProperty("http://w3id.org/roh/hasKnowledgeArea")]
@@ -514,7 +500,7 @@ namespace ResearchobjectOntology
 		{
 			base.GetProperties();
 			propList.Add(new StringOntologyProperty("roh:project", this.IdRoh_project));
-			propList.Add(new ListStringOntologyProperty("dc:type", this.IdsDc_type));
+			propList.Add(new StringOntologyProperty("dc:type", this.IdDc_type));
 			propList.Add(new StringOntologyProperty("roh:releasesNumber", this.Roh_releasesNumber.ToString()));
 			propList.Add(new StringOntologyProperty("bibo:abstract", this.Bibo_abstract));
 			propList.Add(new StringOntologyProperty("roh:branchesNumber", this.Roh_branchesNumber.ToString()));
@@ -804,12 +790,9 @@ namespace ResearchobjectOntology
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ResearchObject_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/project", $"<{this.IdRoh_project}>", list, " . ");
 				}
-				if(this.IdsDc_type != null)
+				if(this.IdDc_type != null)
 				{
-					foreach(var item2 in this.IdsDc_type)
-					{
-						AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ResearchObject_{ResourceID}_{ArticleID}", "http://purl.org/dc/elements/1.1/type", $"<{item2}>", list, " . ");
-					}
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ResearchObject_{ResourceID}_{ArticleID}",  "http://purl.org/dc/elements/1.1/type", $"<{this.IdDc_type}>", list, " . ");
 				}
 				if(this.Roh_releasesNumber != null)
 				{
@@ -1139,12 +1122,10 @@ namespace ResearchobjectOntology
 					}
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/project", $"<{itemRegex}>", list, " . ");
 				}
-				if(this.IdsDc_type != null)
+				if(this.IdDc_type != null)
 				{
-					foreach(var item2 in this.IdsDc_type)
-					{
 					Regex regex = new Regex(@"\/items\/.+_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}");
-					string itemRegex = item2;
+					string itemRegex = this.IdDc_type;
 					if (regex.IsMatch(itemRegex))
 					{
 						itemRegex = $"http://gnoss/{resourceAPI.GetShortGuid(itemRegex).ToString().ToUpper()}";
@@ -1153,8 +1134,7 @@ namespace ResearchobjectOntology
 					{
 						itemRegex = itemRegex.ToLower();
 					}
-						AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://purl.org/dc/elements/1.1/type", $"<{itemRegex}>", list, " . ");
-					}
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://purl.org/dc/elements/1.1/type", $"<{itemRegex}>", list, " . ");
 				}
 				if(this.Roh_releasesNumber != null)
 				{
