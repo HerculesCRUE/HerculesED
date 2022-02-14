@@ -1840,7 +1840,7 @@ namespace Hercules.ED.DisambiguationEngine.Models
                 {
                     peso = 1;
                 }
-                else if (pEquivalencias.ContainsKey(pValorA))
+                else if (pEquivalencias!=null && pEquivalencias.ContainsKey(pValorA))
                 {
                     foreach (string equivalence in pEquivalencias[pValorA].Keys)
                     {
@@ -1866,7 +1866,7 @@ namespace Hercules.ED.DisambiguationEngine.Models
                         }
                     }
                 }
-                else if (pEquivalencias.ContainsKey(pValorB) && !pEquivalencias.ContainsKey(pValorA))
+                else if (pEquivalencias != null && pEquivalencias.ContainsKey(pValorB) && !pEquivalencias.ContainsKey(pValorA))
                 {
                     foreach (string equivalence2 in pEquivalencias[pValorB].Keys)
                     {
