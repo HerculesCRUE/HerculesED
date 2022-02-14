@@ -192,9 +192,9 @@
                 </PropsEntLectura>
             </SeleccionEntidad>
         </Propiedad>
-		<Propiedad  ID="http://w3id.org/roh/orgnizationType" EntidadID="http://w3id.org/roh/Organization">
-            <AtrNombre>http://w3id.org/roh/orgnizationType</AtrNombre>
-            <AtrNombreLectura>http://w3id.org/roh/orgnizationType</AtrNombreLectura>
+		<Propiedad  ID="http://w3id.org/roh/organizationType" EntidadID="http://w3id.org/roh/Organization">
+            <AtrNombre>http://w3id.org/roh/organizationType</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/organizationType</AtrNombreLectura>
 			<SeleccionEntidad>
                 <TipoSeleccion>Autocompletar</TipoSeleccion>
                 <Grafo>organizationtype.owl</Grafo>
