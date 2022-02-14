@@ -11819,10 +11819,10 @@
                     "properties": [
                       {
                         "title": {
-                          "es": "Descripción del mérito"
+                          "es": "Descripción"
                         },
                         "placeholder": {
-                          "es": "Introduce la descripción del mérito"
+                          "es": "Introduce la descripción"
                         },
                         "property": "http://w3id.org/roh/title",
                         "required": true,
