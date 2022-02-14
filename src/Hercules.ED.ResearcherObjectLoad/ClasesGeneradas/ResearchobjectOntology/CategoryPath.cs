@@ -15,65 +15,48 @@ using System.Globalization;
 using System.Collections;
 using Gnoss.ApiWrapper.Exceptions;
 using System.Diagnostics.CodeAnalysis;
+using Concept = TaxonomyOntology.Concept;
 
-namespace CurriculumvitaeOntology
+namespace ResearchobjectOntology
 {
 	[ExcludeFromCodeCoverage]
-	public class RelatedResearchActivityPeriodCV : GnossOCBase
+	public class CategoryPath : GnossOCBase
 	{
 
-		public RelatedResearchActivityPeriodCV() : base() { } 
+		public CategoryPath() : base() { } 
 
-		public RelatedResearchActivityPeriodCV(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
+		public CategoryPath(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
 		{
 			this.mGNOSSID = pSemCmsModel.Entity.Uri;
 			this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
-			this.Vivo_start = new List<DateTime>();
-			SemanticPropertyModel propVivo_start = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#start");
-			if (propVivo_start != null && propVivo_start.PropertyValues.Count > 0)
+			this.Roh_categoryNode = new List<Concept>();
+			SemanticPropertyModel propRoh_categoryNode = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/categoryNode");
+			if(propRoh_categoryNode != null && propRoh_categoryNode.PropertyValues.Count > 0)
 			{
-				foreach (SemanticPropertyModel.PropertyValue propValue in propVivo_start.PropertyValues)
+				foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_categoryNode.PropertyValues)
 				{
-					DateTime fecha = new DateTime();
-					DateTime.TryParse(propValue.Value,out fecha);
-					this.Vivo_start.Add(fecha);
-				}
-			}
-			this.Vivo_end = new List<DateTime>();
-			SemanticPropertyModel propVivo_end = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#end");
-			if (propVivo_end != null && propVivo_end.PropertyValues.Count > 0)
-			{
-				foreach (SemanticPropertyModel.PropertyValue propValue in propVivo_end.PropertyValues)
-				{
-					DateTime fecha = new DateTime();
-					DateTime.TryParse(propValue.Value,out fecha);
-					this.Vivo_end.Add(fecha);
+					if(propValue.RelatedEntity!=null){
+						Concept roh_categoryNode = new Concept(propValue.RelatedEntity,idiomaUsuario);
+						this.Roh_categoryNode.Add(roh_categoryNode);
+					}
 				}
 			}
 		}
 
-		public virtual string RdfType { get { return "http://w3id.org/roh/RelatedResearchActivityPeriodCV"; } }
-		public virtual string RdfsLabel { get { return "http://w3id.org/roh/RelatedResearchActivityPeriodCV"; } }
+		public virtual string RdfType { get { return "http://w3id.org/roh/CategoryPath"; } }
+		public virtual string RdfsLabel { get { return "http://w3id.org/roh/CategoryPath"; } }
 		public OntologyEntity Entity { get; set; }
 
-		[LABEL(LanguageEnum.es,"http://vivoweb.org/ontology/core#start")]
-		[RDFProperty("http://vivoweb.org/ontology/core#start")]
-		public  List<DateTime> Vivo_start { get; set;}
-
-		[LABEL(LanguageEnum.es,"http://vivoweb.org/ontology/core#end")]
-		[RDFProperty("http://vivoweb.org/ontology/core#end")]
-		public  List<DateTime> Vivo_end { get; set;}
+		[LABEL(LanguageEnum.es,"http://w3id.org/roh/categoryNode")]
+		[RDFProperty("http://w3id.org/roh/categoryNode")]
+		public  List<Concept> Roh_categoryNode { get; set;}
+		public List<string> IdsRoh_categoryNode { get; set;}
 
 
 		internal override void GetProperties()
 		{
 			base.GetProperties();
-			foreach (DateTime fecha in this.Vivo_start){
-				propList.Add(new DateOntologyProperty("vivo:start", fecha));
-			}
-			foreach (DateTime fecha in this.Vivo_end){
-				propList.Add(new DateOntologyProperty("vivo:end", fecha));
-			}
+			propList.Add(new ListStringOntologyProperty("roh:categoryNode", this.IdsRoh_categoryNode));
 		}
 
 		internal override void GetEntities()

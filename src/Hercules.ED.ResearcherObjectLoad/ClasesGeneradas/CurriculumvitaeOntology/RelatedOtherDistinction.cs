@@ -29,11 +29,6 @@ namespace CurriculumvitaeOntology
 		{
 			this.mGNOSSID = pSemCmsModel.Entity.Uri;
 			this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
-			SemanticPropertyModel propRoh_relatedOtherDistinctionCV = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/relatedOtherDistinctionCV");
-			if(propRoh_relatedOtherDistinctionCV != null && propRoh_relatedOtherDistinctionCV.PropertyValues.Count > 0)
-			{
-				this.Roh_relatedOtherDistinctionCV = new RelatedOtherDistinctionCV(propRoh_relatedOtherDistinctionCV.PropertyValues[0].RelatedEntity,idiomaUsuario);
-			}
 			SemanticPropertyModel propVivo_relatedBy = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#relatedBy");
 			if(propVivo_relatedBy != null && propVivo_relatedBy.PropertyValues.Count > 0)
 			{
@@ -45,9 +40,6 @@ namespace CurriculumvitaeOntology
 		public virtual string RdfType { get { return "http://w3id.org/roh/RelatedOtherDistinction"; } }
 		public virtual string RdfsLabel { get { return "http://w3id.org/roh/RelatedOtherDistinction"; } }
 		public OntologyEntity Entity { get; set; }
-
-		[RDFProperty("http://w3id.org/roh/relatedOtherDistinctionCV")]
-		public  RelatedOtherDistinctionCV Roh_relatedOtherDistinctionCV { get; set;}
 
 		[LABEL(LanguageEnum.es,"http://vivoweb.org/ontology/core#relatedBy")]
 		[RDFProperty("http://vivoweb.org/ontology/core#relatedBy")]
@@ -70,12 +62,6 @@ namespace CurriculumvitaeOntology
 		internal override void GetEntities()
 		{
 			base.GetEntities();
-			if(Roh_relatedOtherDistinctionCV!=null){
-				Roh_relatedOtherDistinctionCV.GetProperties();
-				Roh_relatedOtherDistinctionCV.GetEntities();
-				OntologyEntity entityRoh_relatedOtherDistinctionCV = new OntologyEntity("http://w3id.org/roh/RelatedOtherDistinctionCV", "http://w3id.org/roh/RelatedOtherDistinctionCV", "roh:relatedOtherDistinctionCV", Roh_relatedOtherDistinctionCV.propList, Roh_relatedOtherDistinctionCV.entList);
-				entList.Add(entityRoh_relatedOtherDistinctionCV);
-			}
 		} 
 
 

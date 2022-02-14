@@ -15,48 +15,54 @@ using System.Globalization;
 using System.Collections;
 using Gnoss.ApiWrapper.Exceptions;
 using System.Diagnostics.CodeAnalysis;
-using Accreditation = AccreditationOntology.Accreditation;
+using Person = PersonOntology.Person;
 
-namespace CurriculumvitaeOntology
+namespace ResearchobjectOntology
 {
 	[ExcludeFromCodeCoverage]
-	public class RelatedObtainedRecognition : GnossOCBase
+	public class BFO_0000023 : GnossOCBase
 	{
 
-		public RelatedObtainedRecognition() : base() { } 
+		public BFO_0000023() : base() { } 
 
-		public RelatedObtainedRecognition(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
+		public BFO_0000023(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
 		{
 			this.mGNOSSID = pSemCmsModel.Entity.Uri;
 			this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
-			SemanticPropertyModel propVivo_relatedBy = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#relatedBy");
-			if(propVivo_relatedBy != null && propVivo_relatedBy.PropertyValues.Count > 0)
+			this.Foaf_nick = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/nick"));
+			this.Rdf_comment = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://www.w3.org/1999/02/22-rdf-syntax-ns#comment")).Value;
+			SemanticPropertyModel propRdf_member = pSemCmsModel.GetPropertyByPath("http://www.w3.org/1999/02/22-rdf-syntax-ns#member");
+			if(propRdf_member != null && propRdf_member.PropertyValues.Count > 0)
 			{
-				this.Vivo_relatedBy = new Accreditation(propVivo_relatedBy.PropertyValues[0].RelatedEntity,idiomaUsuario);
+				this.Rdf_member = new Person(propRdf_member.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
-			this.Roh_isPublic= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isPublic"));
 		}
 
-		public virtual string RdfType { get { return "http://w3id.org/roh/RelatedObtainedRecognition"; } }
-		public virtual string RdfsLabel { get { return "http://w3id.org/roh/RelatedObtainedRecognition"; } }
+		public virtual string RdfType { get { return "http://purl.obolibrary.org/obo/BFO_0000023"; } }
+		public virtual string RdfsLabel { get { return "http://purl.obolibrary.org/obo/BFO_0000023"; } }
 		public OntologyEntity Entity { get; set; }
 
-		[LABEL(LanguageEnum.es,"http://vivoweb.org/ontology/core#relatedBy")]
-		[RDFProperty("http://vivoweb.org/ontology/core#relatedBy")]
-		[Required]
-		public  Accreditation Vivo_relatedBy  { get; set;} 
-		public string IdVivo_relatedBy  { get; set;} 
+		[LABEL(LanguageEnum.es,"http://xmlns.com/foaf/0.1/nick")]
+		[RDFProperty("http://xmlns.com/foaf/0.1/nick")]
+		public  string Foaf_nick { get; set;}
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/isPublic")]
-		[RDFProperty("http://w3id.org/roh/isPublic")]
-		public  bool Roh_isPublic { get; set;}
+		[LABEL(LanguageEnum.es,"http://www.w3.org/1999/02/22-rdf-syntax-ns#comment")]
+		[RDFProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#comment")]
+		public  int Rdf_comment { get; set;}
+
+		[LABEL(LanguageEnum.es,"http://www.w3.org/1999/02/22-rdf-syntax-ns#member")]
+		[RDFProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#member")]
+		[Required]
+		public  Person Rdf_member  { get; set;} 
+		public string IdRdf_member  { get; set;} 
 
 
 		internal override void GetProperties()
 		{
 			base.GetProperties();
-			propList.Add(new StringOntologyProperty("vivo:relatedBy", this.IdVivo_relatedBy));
-			propList.Add(new BoolOntologyProperty("roh:isPublic", this.Roh_isPublic));
+			propList.Add(new StringOntologyProperty("foaf:nick", this.Foaf_nick));
+			propList.Add(new StringOntologyProperty("rdf:comment", this.Rdf_comment.ToString()));
+			propList.Add(new StringOntologyProperty("rdf:member", this.IdRdf_member));
 		}
 
 		internal override void GetEntities()
