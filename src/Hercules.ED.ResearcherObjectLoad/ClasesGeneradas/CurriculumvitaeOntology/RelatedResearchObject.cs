@@ -15,39 +15,38 @@ using System.Globalization;
 using System.Collections;
 using Gnoss.ApiWrapper.Exceptions;
 using System.Diagnostics.CodeAnalysis;
-using Accreditation = AccreditationOntology.Accreditation;
+using ResearchObject = ResearchobjectOntology.ResearchObject;
 
 namespace CurriculumvitaeOntology
 {
 	[ExcludeFromCodeCoverage]
-	public class RelatedObtainedRecognition : GnossOCBase
+	public class RelatedResearchObject : GnossOCBase
 	{
 
-		public RelatedObtainedRecognition() : base() { } 
+		public RelatedResearchObject() : base() { } 
 
-		public RelatedObtainedRecognition(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
+		public RelatedResearchObject(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
 		{
 			this.mGNOSSID = pSemCmsModel.Entity.Uri;
 			this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
 			SemanticPropertyModel propVivo_relatedBy = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#relatedBy");
 			if(propVivo_relatedBy != null && propVivo_relatedBy.PropertyValues.Count > 0)
 			{
-				this.Vivo_relatedBy = new Accreditation(propVivo_relatedBy.PropertyValues[0].RelatedEntity,idiomaUsuario);
+				this.Vivo_relatedBy = new ResearchObject(propVivo_relatedBy.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
 			this.Roh_isPublic= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isPublic"));
 		}
 
-		public virtual string RdfType { get { return "http://w3id.org/roh/RelatedObtainedRecognition"; } }
-		public virtual string RdfsLabel { get { return "http://w3id.org/roh/RelatedObtainedRecognition"; } }
+		public virtual string RdfType { get { return "http://w3id.org/roh/RelatedResearchObject"; } }
+		public virtual string RdfsLabel { get { return "http://w3id.org/roh/RelatedResearchObject"; } }
 		public OntologyEntity Entity { get; set; }
 
 		[LABEL(LanguageEnum.es,"http://vivoweb.org/ontology/core#relatedBy")]
 		[RDFProperty("http://vivoweb.org/ontology/core#relatedBy")]
 		[Required]
-		public  Accreditation Vivo_relatedBy  { get; set;} 
+		public  ResearchObject Vivo_relatedBy  { get; set;} 
 		public string IdVivo_relatedBy  { get; set;} 
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/isPublic")]
 		[RDFProperty("http://w3id.org/roh/isPublic")]
 		public  bool Roh_isPublic { get; set;}
 
