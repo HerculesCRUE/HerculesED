@@ -1425,6 +1425,9 @@
                     <Propiedad ID="http://xmlns.com/foaf/0.1/name" EntidadID="http://xmlns.com/foaf/0.1/Person">
                         <AtrNombreLectura></AtrNombreLectura>
                     </Propiedad>
+					<Propiedad ID="http://w3id.org/roh/gnossUser" EntidadID="http://xmlns.com/foaf/0.1/Person">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
                 </PropsEntLectura>
             </SeleccionEntidad>
         </Propiedad>
@@ -2906,7 +2909,6 @@
                 <Grupo class="formtheme02">
                     <Grupo class="fieldset">
                         <Grupo Tipo="fieldset" class="mediumLabels">
-                            <NameProp>http://w3id.org/roh/gnossUser</NameProp> 
                             <NameProp>http://w3id.org/roh/personalData</NameProp> 
                             <NameProp>http://w3id.org/roh/cvOf</NameProp> 
                             <NameProp>http://w3id.org/roh/scientificExperience</NameProp> 
@@ -2921,7 +2923,6 @@
                     <Grupo classLectura="group group_info">
                         <AtrNombreGrupo>Propiedades</AtrNombreGrupo>
                         <Grupo classLectura="contentGroup">
-                            <NameProp>http://w3id.org/roh/gnossUser</NameProp> 
                             <NameProp>http://w3id.org/roh/personalData</NameProp> 
                             <NameProp>http://w3id.org/roh/cvOf</NameProp> 
                             <NameProp>http://w3id.org/roh/scientificExperience</NameProp> 
