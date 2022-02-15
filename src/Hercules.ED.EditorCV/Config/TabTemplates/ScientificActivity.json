@@ -4587,7 +4587,7 @@
                   "property": "http://vivoweb.org/ontology/core#relatedBy",
                   "graph": "activity",
                   "child": {
-                    "property": "http://w3id.org/roh/functions"
+                    "property": "http://w3id.org/roh/concreteFunctions"
                   }
                 }
               },
@@ -4742,7 +4742,7 @@
                         "placeholder": {
                           "es": "Introduce el tipo de actividad"
                         },
-                        "property": "http://w3id.org/roh/functions",
+                        "property": "http://w3id.org/roh/concreteFunctions",
                         "type": "text",
                         "width": 1
                       }
@@ -5027,12 +5027,12 @@
                     "properties": [
                       {
                         "title": {
-                          "es": "Modalidad de actividad"
+                          "es": "Modo de participación"
                         },
-                        "property": "http://w3id.org/roh/activityModality",
+                        "property": "http://w3id.org/roh/participationType",
                         "combo": {
-                          "rdftype": "http://w3id.org/roh/ActivityModality",
-                          "graph": "activitymodality",
+                          "rdftype": "http://w3id.org/roh/ParticipationTypeActivity",
+                          "graph": "participationtypeactivity",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
                           }
@@ -5044,11 +5044,11 @@
                         "title": {
                           "es": "Otros"
                         },
-                        "property": "http://w3id.org/roh/activityModalityOther",
+                        "property": "http://w3id.org/roh/participationTypeOther",
                         "required": true,
                         "dependency": {
-                          "property": "http://w3id.org/roh/activityModality",
-                          "propertyValue": "{GraphsUrl}items/activitymodality_OTHERS"
+                          "property": "http://w3id.org/roh/participationType",
+                          "propertyValue": "{GraphsUrl}items/participationtypeactivity_OTHERS"
                         },
                         "type": "text",
                         "width": 1
@@ -5367,28 +5367,76 @@
                         "property": "http://purl.org/dc/elements/1.1/title"
                       }
                     }
-                  },
-                  {
-                    "name": {
-                      "es": "Áreas temáticas"
-                    },
+                  }
+                ]
+              },
+              {
+                "name": {
+                  "es": "Promedio presupuesto anual"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "activity",
+                  "child": {
+                    "property": "http://w3id.org/roh/averageAnnualBudget"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Nº de personas"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "activity",
+                  "child": {
+                    "property": "http://w3id.org/roh/attendants"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Tareas concretas"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "activity",
+                  "child": {
+                    "property": "http://w3id.org/roh/concreteFunctions"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Objetivos del evento"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "activity",
+                  "child": {
+                    "property": "http://w3id.org/roh/goals"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Áreas temáticas"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "activity",
+                  "child": {
+                    "property": "http://w3id.org/roh/hasKnowledgeArea",
+                    "graph": "activity",
                     "child": {
-                      "property": "http://vivoweb.org/ontology/core#relatedBy",
-                      "graph": "activity",
+                      "property": "http://w3id.org/roh/categoryNode",
+                      "graph": "taxonomy",
                       "child": {
-                        "property": "http://w3id.org/roh/hasKnowledgeArea",
-                        "graph": "activity",
-                        "child": {
-                          "property": "http://w3id.org/roh/categoryNode",
-                          "graph": "taxonomy",
-                          "child": {
-                            "property": "http://purl.org/dc/elements/1.1/source"
-                          }
-                        }
+                        "property": "http://www.w3.org/2008/05/skos#prefLabel"
                       }
                     }
                   }
-                ]
+                }
               }
             ]
           },
@@ -5666,7 +5714,36 @@
                     "properties": [
                       {
                         "title": {
+                          "es": "Promedio presupuesto anual"
+                        },
+                        "placeholder": {
+                          "es": "Introduce el presupuesto (en euros) de la actividad"
+                        },
+                        "property": "http://w3id.org/roh/averageAnnualBudget",
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Nº de personas"
+                        },
+                        "placeholder": {
+                          "es": "Introduce el número aproximado de personas que han asistido"
+                        },
+                        "property": "http://w3id.org/roh/attendants",
+                        "type": "number",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
                           "es": "Perfil grupo receptor"
+                        },
+                        "placeholder": {
+                          "es": "Introduce el perfil del grupo receptor"
                         },
                         "property": "http://w3id.org/roh/targetGroupProfile",
                         "combo": {
@@ -5686,6 +5763,9 @@
                       {
                         "title": {
                           "es": "Ámbito geográfico"
+                        },
+                        "placeholder": {
+                          "es": "Introduce el ámbito geográfico"
                         },
                         "property": "http://vivoweb.org/ontology/core#geographicFocus",
                         "combo": {
@@ -5708,6 +5788,32 @@
                           "property": "http://vivoweb.org/ontology/core#geographicFocus",
                           "propertyValue": "{GraphsUrl}items/geographicregion_OTHERS"
                         },
+                        "type": "text",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Tareas concretas"
+                        },
+                        "placeholder": {
+                          "es": "Introduce las tareas realizadas durante el tiempo que desempeñó funciones de gestión en I+D+i"
+                        },
+                        "property": "http://w3id.org/roh/concreteFunctions",
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Objetivos del evento"
+                        },
+                        "placeholder": {
+                          "es": "Introduce las metas que la entidad se propone alcanzar como resultado de la participación"
+                        },
+                        "property": "http://w3id.org/roh/goals",
                         "type": "text",
                         "width": 1
                       }
@@ -5745,7 +5851,7 @@
                     "properties": [
                       {
                         "title": {
-                          "es": "Áreas temáticas"
+                          "es": "Identificar palabras clave"
                         },
                         "property": "http://w3id.org/roh/hasKnowledgeArea",
                         "thesaurus": "researcharea",
