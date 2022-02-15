@@ -54,7 +54,23 @@
                 </PropsEntLectura>
             </SeleccionEntidad>
         </Propiedad>
-		
+		<Propiedad  ID="http://w3id.org/roh/participationType" EntidadID="http://w3id.org/roh/Activity">
+            <AtrNombre>http://w3id.org/roh/participationType</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/participationType</AtrNombreLectura>
+			<SeleccionEntidad>
+                <TipoSeleccion>Combo</TipoSeleccion>
+                <Grafo>participationtypeactivity.owl</Grafo>
+                <UrlTipoEntSolicitada>http://w3id.org/roh/ParticipationTypeActivity</UrlTipoEntSolicitada>              
+                <PropsEntEdicion>
+                    <NameProp>http://purl.org/dc/elements/1.1/title</NameProp>
+                </PropsEntEdicion>
+                <PropsEntLectura>
+                    <Propiedad ID="http://purl.org/dc/elements/1.1/title" EntidadID="http://w3id.org/roh/ParticipationTypeActivity">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+                </PropsEntLectura>
+            </SeleccionEntidad>
+        </Propiedad>
         <Propiedad  ID="https://www.w3.org/2006/vcard/ns#hasRegion" EntidadID="http://w3id.org/roh/Activity">
             <AtrNombre>https://www.w3.org/2006/vcard/ns#hasRegion</AtrNombre>
             <AtrNombreLectura>https://www.w3.org/2006/vcard/ns#hasRegion</AtrNombreLectura>
