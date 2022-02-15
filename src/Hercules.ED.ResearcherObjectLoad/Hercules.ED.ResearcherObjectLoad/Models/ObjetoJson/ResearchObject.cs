@@ -8,6 +8,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.ObjetoJson
 {
     public class ResearchObject
     {
+        public string ID { get; set; }
         public int? id { get; set; }
         public string titulo { get; set; }
         public string tipo { get; set; }
@@ -22,6 +23,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.ObjetoJson
 
     public class PersonRO
     {
+        public string ID { get; set; }
         public int? id { get; set; }
         public string orcid { get; set; }
         public string nombreCompleto { get; set; }
