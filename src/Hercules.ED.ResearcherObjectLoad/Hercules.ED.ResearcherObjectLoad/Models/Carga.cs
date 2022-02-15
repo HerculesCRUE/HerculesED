@@ -62,35 +62,59 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
 
                 foreach (var fichero in directorio.GetFiles("*.json"))
                 {
+                    // Obtención de los datos cargados de BBDD.
+                    List<DisambiguableEntity> listaDesambiguarBBDD = new List<DisambiguableEntity>();
+                    Dictionary<string, DisambiguableEntity> documentosBBDD = ObtenerPublicacionesBBDD(fichero.Name.Split("_")[0]);
+                    Dictionary<string, DisambiguableEntity> personasBBDD = ObtenerCoAutoresBBDD(fichero.Name.Split("_")[0]);
+                    listaDesambiguarBBDD.AddRange(documentosBBDD.Values.ToList());
+                    listaDesambiguarBBDD.AddRange(personasBBDD.Values.ToList());
+
+                    List<DisambiguableEntity> listaDesambiguar = new List<DisambiguableEntity>();
+                    Dictionary<string, Person> dicIdPersona = new Dictionary<string, Person>();
+                    Dictionary<string, Document> dicIdPublication = new Dictionary<string, Document>();                    
+                    Dictionary<string, Publication> dicIdDatosPub = new Dictionary<string, Publication>();
+                    Dictionary<string, ResearchObject> dicIdRo = new Dictionary<string, ResearchObject>();
+                    Dictionary<string, ResearchobjectOntology.ResearchObject> dicIdDatosRo = new Dictionary<string, ResearchobjectOntology.ResearchObject>();
+
                     if (fichero.Name.Split("_")[0] == "ResearchObject")
                     {
-                        // De momento, cargamos TODOS los ResearchObject. (sin desduplicar)
                         // Obtención de los datos del JSON.
                         string jsonString = File.ReadAllText(fichero.FullName);
                         List<ResearchObject> listaResearchObjects = JsonConvert.DeserializeObject<List<ResearchObject>>(jsonString);
                         foreach (ResearchObject researchObject in listaResearchObjects)
                         {
-                            ConstruirRO(researchObject, null);
+                            // --- ROs
+                            DisambiguationRO disambiguationRo = GetDisambiguationRO(researchObject);
+                            string idRo = disambiguationRo.ID;
+                            listaDesambiguar.Add(disambiguationRo);
+
+                            // --- Autores
+                            if (researchObject.autores != null && researchObject.autores.Any())
+                            {
+                                List<DisambiguationPerson> coautores = new List<DisambiguationPerson>();
+                                foreach (PersonRO autor in researchObject.autores)
+                                {
+                                    DisambiguationPerson disambiguationPerson = GetDisambiguationPerson(pPersonaRo: autor);
+                                    string idPerson = disambiguationPerson.ID;
+                                    coautores.Add(disambiguationPerson);
+                                    dicIdPersona.Add(idPerson, ContruirPersona(pPersonaRO: autor));
+                                }
+                                foreach (DisambiguationPerson coautor in coautores)
+                                {
+                                    coautor.coautores = new HashSet<string>(coautores.Where(x => x.ID != coautor.ID).Select(x => x.ID));
+                                }
+                                listaDesambiguar.AddRange(coautores);
+                            }
+
+                            dicIdRo.Add(idRo, researchObject);
+                            dicIdDatosRo.Add(idRo, ConstruirRO(researchObject)); //TODO
                         }
                     }
                     else
                     {
-                        // Obtención de los datos cargados de BBDD.
-                        List<DisambiguableEntity> listaDesambiguarBBDD = new List<DisambiguableEntity>();
-                        Dictionary<string, DisambiguableEntity> documentosBBDD = ObtenerPublicacionesBBDD(fichero.Name.Split("_")[0]);
-                        Dictionary<string, DisambiguableEntity> personasBBDD = ObtenerCoAutoresBBDD(fichero.Name.Split("_")[0]);
-                        listaDesambiguarBBDD.AddRange(documentosBBDD.Values.ToList());
-                        listaDesambiguarBBDD.AddRange(personasBBDD.Values.ToList());
-
                         // Obtención de los datos del JSON.
                         string jsonString = File.ReadAllText(fichero.FullName);
                         List<Publication> listaPublicaciones = JsonConvert.DeserializeObject<List<Publication>>(jsonString);
-
-                        List<DisambiguableEntity> listaDesambiguar = new List<DisambiguableEntity>();
-
-                        Dictionary<string, Person> dicIdPersona = new Dictionary<string, Person>();
-                        Dictionary<string, Document> dicIdPublication = new Dictionary<string, Document>();
-                        Dictionary<string, Publication> dicIdDatosPub = new Dictionary<string, Publication>();
 
                         foreach (Publication publication in listaPublicaciones)
                         {
@@ -124,7 +148,6 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                     coautor.coautores = new HashSet<string>(coautores.Where(x => x.ID != coautor.ID).Select(x => x.ID));
                                 }
                                 listaDesambiguar.AddRange(coautores);
-
                             }
 
                             dicIdDatosPub.Add(idPub, publication);
@@ -646,7 +669,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             }
         }
 
-        public static ResearchobjectOntology.ResearchObject ConstruirRO(ResearchObject pResearchObject, Dictionary<string, string> pDicPersonasCargadas)
+        public static ResearchobjectOntology.ResearchObject ConstruirRO(ResearchObject pResearchObject)
         {
             ResearchobjectOntology.ResearchObject ro = new ResearchobjectOntology.ResearchObject();
 
@@ -716,7 +739,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             // TODO: Autores 
             ro.Bibo_authorList = new List<ResearchobjectOntology.BFO_0000023>();
             ResearchobjectOntology.BFO_0000023 autor = new ResearchobjectOntology.BFO_0000023();
-            autor.IdRdf_member = pDicPersonasCargadas["0000-0002-5525-1259"]; // TODO: ---------------------------------------- ÑAPA
+            //autor.IdRdf_member = pDicPersonasCargadas["0000-0002-5525-1259"]; // TODO: ---------------------------------------- ÑAPA
             autor.Rdf_comment = 1;
             ro.Bibo_authorList.Add(autor);
 
@@ -1015,29 +1038,29 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     urlSinRepetir.Add(url);
                 }
             }
-            //document.Vcard_url = urlSinRepetir.ToList();
+            document.Vcard_url = urlSinRepetir.ToList().First(); // TODO: Mirar el tema de las diversas URLs.
 
             //// Página de inicio (PageStart)
-            //if (!string.IsNullOrEmpty(pPublicacion.pageStart) && Int32.TryParse(pPublicacion.pageStart, out int n1))
-            //{
-            //    document.Bibo_pageStart = Int32.Parse(pPublicacion.pageStart);
+            if (!string.IsNullOrEmpty(pPublicacion.pageStart) && Int32.TryParse(pPublicacion.pageStart, out int n1))
+            {
+                document.Bibo_pageStart = pPublicacion.pageStart;
 
-            //    if (pPublicacionB != null && !string.IsNullOrEmpty(pPublicacionB.pageStart) && Int32.TryParse(pPublicacionB.pageStart, out int n11) && document.Bibo_pageStart == null)
-            //    {
-            //        document.Bibo_pageStart = Int32.Parse(pPublicacionB.pageStart);
-            //    }
-            //}
+                if (pPublicacionB != null && !string.IsNullOrEmpty(pPublicacionB.pageStart) && Int32.TryParse(pPublicacionB.pageStart, out int n11) && document.Bibo_pageStart == null)
+                {
+                    document.Bibo_pageStart = pPublicacionB.pageStart;
+                }
+            }
 
             // Página de fin (PageEnd)
-            //if (!string.IsNullOrEmpty(pPublicacion.pageEnd) && Int32.TryParse(pPublicacion.pageEnd, out int n3))
-            //{
-            //    document.Bibo_pageEnd = Int32.Parse(pPublicacion.pageEnd);
+            if (!string.IsNullOrEmpty(pPublicacion.pageEnd) && Int32.TryParse(pPublicacion.pageEnd, out int n3))
+            {
+                document.Bibo_pageEnd = pPublicacion.pageEnd;
 
-            //    if (pPublicacionB != null && !string.IsNullOrEmpty(pPublicacionB.pageEnd) && Int32.TryParse(pPublicacion.pageEnd, out int n33) && document.Bibo_pageEnd == null)
-            //    {
-            //        document.Bibo_pageEnd = Int32.Parse(pPublicacionB.pageEnd);
-            //    }
-            //}
+                if (pPublicacionB != null && !string.IsNullOrEmpty(pPublicacionB.pageEnd) && Int32.TryParse(pPublicacion.pageEnd, out int n33) && document.Bibo_pageEnd == null)
+                {
+                    document.Bibo_pageEnd = pPublicacionB.pageEnd;
+                }
+            }
 
             // Áreas de conocimiento externas (ExternalKnowledgeArea)
             HashSet<string> listaIDs = new HashSet<string>();
@@ -2907,75 +2930,103 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
         /// <param name="pNombre">Nombre de la persona.</param>
         /// <param name="pApellidos">Apellidos de la persona.</param>
         /// <returns>Objeto persona con los datos.</returns>
-        public static Person ContruirPersona(PersonaPub pPersona)
+        public static Person ContruirPersona(PersonaPub pPersona = null, PersonRO pPersonaRO = null)
         {
-            Person person = new Person();
+            if (pPersona != null)
+            {
+                Person person = new Person();
 
-            if (pPersona.name != null && pPersona.name.given != null && pPersona.name.given.Any() && pPersona.name.given[0] != null && pPersona.name.familia != null && pPersona.name.familia.Any() && pPersona.name.familia[0] != null)
-            {
-                person.Foaf_name = pPersona.name.given[0].Trim() + " " + pPersona.name.familia[0].Trim();
-                person.Foaf_firstName = pPersona.name.given[0].Trim();
-                person.Foaf_lastName = pPersona.name.familia[0].Trim();
-            }
-            else if (pPersona.name != null && pPersona.name.nombre_completo != null && pPersona.name.nombre_completo.Any())
-            {
-                person.Foaf_name = pPersona.name.nombre_completo[0].Trim();
-                if (person.Foaf_name.Contains(","))
+                if (pPersona.name != null && pPersona.name.given != null && pPersona.name.given.Any() && pPersona.name.given[0] != null && pPersona.name.familia != null && pPersona.name.familia.Any() && pPersona.name.familia[0] != null)
                 {
-                    person.Foaf_firstName = pPersona.name.nombre_completo[0].Split(',')[1].Trim();
-                    person.Foaf_lastName = pPersona.name.nombre_completo[0].Split(',')[0].Trim();
+                    person.Foaf_name = pPersona.name.given[0].Trim() + " " + pPersona.name.familia[0].Trim();
+                    person.Foaf_firstName = pPersona.name.given[0].Trim();
+                    person.Foaf_lastName = pPersona.name.familia[0].Trim();
                 }
-                else if (person.Foaf_name.Contains(" "))
+                else if (pPersona.name != null && pPersona.name.nombre_completo != null && pPersona.name.nombre_completo.Any())
                 {
-                    person.Foaf_firstName = pPersona.name.nombre_completo[0].Trim().Split(' ')[0].Trim();
-                    person.Foaf_lastName = pPersona.name.nombre_completo[0].Trim().Substring(pPersona.name.nombre_completo[0].Trim().IndexOf(' ')).Trim();
-                }
-                else
-                {
-                    person.Foaf_firstName = pPersona.name.nombre_completo[0].Trim();
-                }
-            }
-            else
-            {
-                if (pPersona.nick.Contains(","))
-                {
-                    person.Foaf_firstName = pPersona.nick.Split(',')[1].Trim();
-                    person.Foaf_lastName = pPersona.nick.Split(',')[0].Trim();
-                }
-                else if (pPersona.nick.Contains(" "))
-                {
-                    person.Foaf_firstName = pPersona.nick.Trim().Split(' ')[1].Trim();
-                    person.Foaf_lastName = pPersona.nick.Trim().Split(' ')[0].Trim();
-                }
-                else
-                {
-                    person.Foaf_firstName = pPersona.nick.Trim();
-                }
-                person.Foaf_name = person.Foaf_firstName + " " + person.Foaf_lastName;
-            }
-
-            if (!string.IsNullOrEmpty(pPersona.orcid))
-            {
-                person.Roh_ORCID = pPersona.orcid;
-            }
-
-            if (!string.IsNullOrEmpty(pPersona.researcherID))
-            {
-                person.Vivo_researcherId = pPersona.researcherID;
-            }
-
-            if (pPersona.iDs != null && pPersona.iDs.Any())
-            {
-                foreach (string item in pPersona.iDs)
-                {
-                    if (item.ToLower().Contains("semanticscholar"))
+                    person.Foaf_name = pPersona.name.nombre_completo[0].Trim();
+                    if (person.Foaf_name.Contains(","))
                     {
-                        person.Roh_semanticScholarId = item.Split(":")[1].Trim();
+                        person.Foaf_firstName = pPersona.name.nombre_completo[0].Split(',')[1].Trim();
+                        person.Foaf_lastName = pPersona.name.nombre_completo[0].Split(',')[0].Trim();
+                    }
+                    else if (person.Foaf_name.Contains(" "))
+                    {
+                        person.Foaf_firstName = pPersona.name.nombre_completo[0].Trim().Split(' ')[0].Trim();
+                        person.Foaf_lastName = pPersona.name.nombre_completo[0].Trim().Substring(pPersona.name.nombre_completo[0].Trim().IndexOf(' ')).Trim();
+                    }
+                    else
+                    {
+                        person.Foaf_firstName = pPersona.name.nombre_completo[0].Trim();
                     }
                 }
+                else
+                {
+                    if (pPersona.nick.Contains(","))
+                    {
+                        person.Foaf_firstName = pPersona.nick.Split(',')[1].Trim();
+                        person.Foaf_lastName = pPersona.nick.Split(',')[0].Trim();
+                    }
+                    else if (pPersona.nick.Contains(" "))
+                    {
+                        person.Foaf_firstName = pPersona.nick.Trim().Split(' ')[1].Trim();
+                        person.Foaf_lastName = pPersona.nick.Trim().Split(' ')[0].Trim();
+                    }
+                    else
+                    {
+                        person.Foaf_firstName = pPersona.nick.Trim();
+                    }
+                    person.Foaf_name = person.Foaf_firstName + " " + person.Foaf_lastName;
+                }
+
+                if (!string.IsNullOrEmpty(pPersona.orcid))
+                {
+                    person.Roh_ORCID = pPersona.orcid;
+                }
+
+                if (!string.IsNullOrEmpty(pPersona.researcherID))
+                {
+                    person.Vivo_researcherId = pPersona.researcherID;
+                }
+
+                if (pPersona.iDs != null && pPersona.iDs.Any())
+                {
+                    foreach (string item in pPersona.iDs)
+                    {
+                        if (item.ToLower().Contains("semanticscholar"))
+                        {
+                            person.Roh_semanticScholarId = item.Split(":")[1].Trim();
+                        }
+                    }
+                }
+
+                return person;
             }
 
-            return person;
+            if(pPersonaRO != null)
+            {
+                Person person = new Person();
+
+                if (!string.IsNullOrEmpty(pPersonaRO.orcid))
+                {
+                    person.Roh_ORCID = pPersonaRO.orcid;
+                }
+
+                if(!string.IsNullOrEmpty(pPersonaRO.nombreCompleto) && pPersonaRO.nombreCompleto.Contains(" "))
+                {
+                    person.Foaf_firstName = pPersonaRO.nombreCompleto.Split(" ")[0];
+                    person.Foaf_lastName = pPersonaRO.nombreCompleto.Split(" ")[1];
+                    person.Foaf_name = pPersonaRO.nombreCompleto;
+                }
+                else if (!string.IsNullOrEmpty(pPersonaRO.nombreCompleto))
+                {
+                    person.Foaf_name = pPersonaRO.nombreCompleto;
+                }
+
+                return person;
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -3097,6 +3148,21 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             return pub;
         }
 
+        private static DisambiguationRO GetDisambiguationRO(ResearchObject pResearchObject)
+        {
+            pResearchObject.ID = Guid.NewGuid().ToString();
+
+            DisambiguationRO ro = new DisambiguationRO()
+            {
+                ID = pResearchObject.ID,
+                doi = pResearchObject.doi,
+                tipo = pResearchObject.tipo,
+                title = pResearchObject.titulo
+            };
+
+            return ro;
+        }
+
         /// <summary>
         /// Obtiene el ID indicado de una persona dada.
         /// </summary>
@@ -3124,30 +3190,42 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
         /// </summary>
         /// <param name="pPersona">Persona a convertir.</param>
         /// <returns>Objeto para desambiguar.</returns>
-        private static DisambiguationPerson GetDisambiguationPerson(PersonaPub pPersona)
+        private static DisambiguationPerson GetDisambiguationPerson(PersonaPub pPersona = null, PersonRO pPersonaRo = null)
         {
-            pPersona.ID = Guid.NewGuid().ToString();
-
-            // Obtención de IDs.
-            string idWos = GetPersonId(pPersona, "wos");
-            string idSemanticScholar = GetPersonId(pPersona, "semanticscholar");
-            string idMag = GetPersonId(pPersona, "mag");
-            string idScopus = GetPersonId(pPersona, "scopus_id");
-
-            string nombreCompleto = string.Empty;
-            if (pPersona.name != null && pPersona.name.nombre_completo != null && pPersona.name.nombre_completo.Any())
+            if (pPersona != null)
             {
-                nombreCompleto = pPersona.name.nombre_completo[0];
+                pPersona.ID = Guid.NewGuid().ToString();
+                string nombreCompleto = string.Empty;
+
+                if (pPersona.name != null && pPersona.name.nombre_completo != null && pPersona.name.nombre_completo.Any())
+                {
+                    nombreCompleto = pPersona.name.nombre_completo[0];
+                }
+
+                DisambiguationPerson persona = new DisambiguationPerson()
+                {
+                    ID = pPersona.ID,
+                    orcid = pPersona.orcid,
+                    completeName = nombreCompleto
+                };
+
+                return persona;
             }
 
-            DisambiguationPerson persona = new DisambiguationPerson()
+            if (pPersonaRo != null)
             {
-                ID = pPersona.ID,
-                orcid = pPersona.orcid,
-                completeName = nombreCompleto
-            };
+                pPersonaRo.ID = Guid.NewGuid().ToString();
+                DisambiguationPerson persona = new DisambiguationPerson()
+                {
+                    ID = pPersonaRo.ID,
+                    orcid = pPersonaRo.orcid,
+                    completeName = pPersonaRo.nombreCompleto
+                };
 
-            return persona;
+                return persona;
+            }
+
+            return null;
         }
 
         /// <summary>

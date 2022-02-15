@@ -428,6 +428,11 @@ namespace WoSConnect.ROs.WoS.Controllers
                         continue;
                     }
 
+                    if(item.role != "author")
+                    {
+                        continue;
+                    }
+
                     Person person = new Person();
                     person.fuente = "WoS";
                     person.name = new Models.Name();
