@@ -536,23 +536,7 @@
 				<UrlPropiedad>um</UrlPropiedad>                
 			</SeleccionEntidad>
         </Propiedad>
-        <Propiedad  ID="http://w3id.org/roh/participationType" EntidadID="http://w3id.org/roh/RelatedActivityOrganizationCV">
-            <AtrNombre>http://w3id.org/roh/participationType</AtrNombre>
-            <AtrNombreLectura>http://w3id.org/roh/participationType</AtrNombreLectura>
-			<SeleccionEntidad>
-                <TipoSeleccion>Combo</TipoSeleccion>
-                <Grafo>participationtypeactivity.owl</Grafo>
-                <UrlTipoEntSolicitada>http://w3id.org/roh/ParticipationTypeActivity</UrlTipoEntSolicitada>              
-                <PropsEntEdicion>
-                    <NameProp>http://purl.org/dc/elements/1.1/title</NameProp>
-                </PropsEntEdicion>
-                <PropsEntLectura>
-                    <Propiedad ID="http://purl.org/dc/elements/1.1/title" EntidadID="http://w3id.org/roh/ParticipationTypeActivity">
-                        <AtrNombreLectura></AtrNombreLectura>
-                    </Propiedad>
-                </PropsEntLectura>
-            </SeleccionEntidad>
-        </Propiedad>
+        
         <Propiedad  ID="http://w3id.org/roh/durationDays" EntidadID="http://w3id.org/roh/RelatedActivityOrganizationCV">
             <AtrNombre>http://w3id.org/roh/durationDays</AtrNombre>
             <AtrNombreLectura>http://w3id.org/roh/durationDays</AtrNombreLectura>
