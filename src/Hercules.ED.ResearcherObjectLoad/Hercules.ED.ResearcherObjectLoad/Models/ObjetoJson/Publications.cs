@@ -48,6 +48,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.ObjetoJson
         public List<string> iDs { get; set; }
         public List<string> links { get; set; }
         public string fuente { get; set; }
+        public string researcherID { get; set; }
         public string nick { get; set; }
     }
 
@@ -106,9 +107,20 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.ObjetoJson
         public object presentedAt { get; set; }
         public HasPublicationVenue hasPublicationVenue { get; set; }
         public List<HasMetric> hasMetric { get; set; }
-        public List<Publication> bibliografia { get; set; }
+        public List<Bibliografia> bibliografia { get; set; }
         public List<Publication> citas { get; set; }
     }
+
+    public class Bibliografia
+    {
+        public string doi { get; set; }
+        public string url { get; set; }
+        public int? anyoPublicacion { get; set; }
+        public string titulo { get; set; }
+        public string revista { get; set; }
+        public Dictionary<string, string> autores { get; set; }
+    }
+
     // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse); 
     //public class FreetextKeyword
     //{

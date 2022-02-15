@@ -181,7 +181,7 @@
             </SeleccionEntidad>
         </Propiedad>
 		
-		<Propiedad  ID="http://vivoweb.org/ontology/core#organization" EntidadID="http://w3id.org/roh/Organization">
+		<Propiedad  ID="http://w3id.org/roh/organization" EntidadID="http://w3id.org/roh/Organization">
             <AtrNombre>organization</AtrNombre>
             <AtrNombreLectura>organization</AtrNombreLectura>
 			<SeleccionEntidad>

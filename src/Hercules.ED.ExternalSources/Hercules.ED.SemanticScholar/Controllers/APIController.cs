@@ -4,9 +4,6 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SemanticScholarConnect.ROs.SemanticScholar.Controllers;
-using SemanticScholarConnect.ROs.SemanticScholar.Models;
-using SemanticScholarConnect.ROs.SemanticScholar.Models.Inicial;
 using Newtonsoft.Json;
 using System.Data;
 using System.IO;
@@ -14,8 +11,9 @@ using ClosedXML.Excel;
 using System.Text;
 using ExcelDataReader;
 using SemanticScholarAPI.ROs.SemanticScholar.Models;
+using SemanticScholarAPI.ROs.SemanticScholar.Controllers;
 
-namespace SemanticScholarConnect.Controllers
+namespace SemanticScholarAPI.Controllers
 {
     [Produces("application/json")]
     [ApiController]
@@ -58,7 +56,7 @@ namespace SemanticScholarConnect.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public List<PubReferencias> GetReferences([FromQuery][Required] string pDoi)
+        public Tuple<Publication, List<PubReferencias>> GetReferences([FromQuery][Required] string pDoi)
         {
             ROSemanticScholarLogic SemanticScholarObject = new ROSemanticScholarLogic();
             return SemanticScholarObject.getReferencias(pDoi);

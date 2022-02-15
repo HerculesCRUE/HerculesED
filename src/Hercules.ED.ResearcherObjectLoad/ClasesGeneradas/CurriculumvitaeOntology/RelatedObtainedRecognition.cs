@@ -29,11 +29,6 @@ namespace CurriculumvitaeOntology
 		{
 			this.mGNOSSID = pSemCmsModel.Entity.Uri;
 			this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
-			SemanticPropertyModel propRoh_relatedObtainedRecognition = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/relatedObtainedRecognition");
-			if(propRoh_relatedObtainedRecognition != null && propRoh_relatedObtainedRecognition.PropertyValues.Count > 0)
-			{
-				this.Roh_relatedObtainedRecognition = new RelatedObtainedRecognitionCV(propRoh_relatedObtainedRecognition.PropertyValues[0].RelatedEntity,idiomaUsuario);
-			}
 			SemanticPropertyModel propVivo_relatedBy = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#relatedBy");
 			if(propVivo_relatedBy != null && propVivo_relatedBy.PropertyValues.Count > 0)
 			{
@@ -45,9 +40,6 @@ namespace CurriculumvitaeOntology
 		public virtual string RdfType { get { return "http://w3id.org/roh/RelatedObtainedRecognition"; } }
 		public virtual string RdfsLabel { get { return "http://w3id.org/roh/RelatedObtainedRecognition"; } }
 		public OntologyEntity Entity { get; set; }
-
-		[RDFProperty("http://w3id.org/roh/relatedObtainedRecognition")]
-		public  RelatedObtainedRecognitionCV Roh_relatedObtainedRecognition { get; set;}
 
 		[LABEL(LanguageEnum.es,"http://vivoweb.org/ontology/core#relatedBy")]
 		[RDFProperty("http://vivoweb.org/ontology/core#relatedBy")]
@@ -70,12 +62,6 @@ namespace CurriculumvitaeOntology
 		internal override void GetEntities()
 		{
 			base.GetEntities();
-			if(Roh_relatedObtainedRecognition!=null){
-				Roh_relatedObtainedRecognition.GetProperties();
-				Roh_relatedObtainedRecognition.GetEntities();
-				OntologyEntity entityRoh_relatedObtainedRecognition = new OntologyEntity("http://w3id.org/roh/RelatedObtainedRecognitionCV", "http://w3id.org/roh/RelatedObtainedRecognitionCV", "roh:relatedObtainedRecognition", Roh_relatedObtainedRecognition.propList, Roh_relatedObtainedRecognition.entList);
-				entList.Add(entityRoh_relatedObtainedRecognition);
-			}
 		} 
 
 

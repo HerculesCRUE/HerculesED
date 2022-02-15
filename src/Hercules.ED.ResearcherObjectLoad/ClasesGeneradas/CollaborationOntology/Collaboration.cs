@@ -16,7 +16,6 @@ using System.Collections;
 using Gnoss.ApiWrapper.Exceptions;
 using System.Diagnostics.CodeAnalysis;
 using Feature = FeatureOntology.Feature;
-using Organization = OrganizationOntology.Organization;
 using RelationshipType = RelationshiptypeOntology.RelationshipType;
 
 namespace CollaborationOntology
@@ -30,11 +29,6 @@ namespace CollaborationOntology
 		public Collaboration(SemanticResourceModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
 		{
 			this.mGNOSSID = pSemCmsModel.RootEntities[0].Entity.Uri;
-			SemanticPropertyModel propVcard_hasRegion = pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#hasRegion");
-			if(propVcard_hasRegion != null && propVcard_hasRegion.PropertyValues.Count > 0)
-			{
-				this.Vcard_hasRegion = new Feature(propVcard_hasRegion.PropertyValues[0].RelatedEntity,idiomaUsuario);
-			}
 			this.Vivo_freeTextKeywords = new List<CategoryPath>();
 			SemanticPropertyModel propVivo_freeTextKeywords = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#freeTextKeywords");
 			if(propVivo_freeTextKeywords != null && propVivo_freeTextKeywords.PropertyValues.Count > 0)
@@ -44,18 +38,6 @@ namespace CollaborationOntology
 					if(propValue.RelatedEntity!=null){
 						CategoryPath vivo_freeTextKeywords = new CategoryPath(propValue.RelatedEntity,idiomaUsuario);
 						this.Vivo_freeTextKeywords.Add(vivo_freeTextKeywords);
-					}
-				}
-			}
-			this.Roh_researchers = new List<BFO_0000023>();
-			SemanticPropertyModel propRoh_researchers = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/researchers");
-			if(propRoh_researchers != null && propRoh_researchers.PropertyValues.Count > 0)
-			{
-				foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_researchers.PropertyValues)
-				{
-					if(propValue.RelatedEntity!=null){
-						BFO_0000023 roh_researchers = new BFO_0000023(propValue.RelatedEntity,idiomaUsuario);
-						this.Roh_researchers.Add(roh_researchers);
 					}
 				}
 			}
@@ -71,6 +53,23 @@ namespace CollaborationOntology
 					}
 				}
 			}
+			SemanticPropertyModel propVcard_hasRegion = pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#hasRegion");
+			if(propVcard_hasRegion != null && propVcard_hasRegion.PropertyValues.Count > 0)
+			{
+				this.Vcard_hasRegion = new Feature(propVcard_hasRegion.PropertyValues[0].RelatedEntity,idiomaUsuario);
+			}
+			this.Roh_researchers = new List<BFO_0000023>();
+			SemanticPropertyModel propRoh_researchers = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/researchers");
+			if(propRoh_researchers != null && propRoh_researchers.PropertyValues.Count > 0)
+			{
+				foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_researchers.PropertyValues)
+				{
+					if(propValue.RelatedEntity!=null){
+						BFO_0000023 roh_researchers = new BFO_0000023(propValue.RelatedEntity,idiomaUsuario);
+						this.Roh_researchers.Add(roh_researchers);
+					}
+				}
+			}
 			SemanticPropertyModel propVcard_hasCountryName = pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#hasCountryName");
 			if(propVcard_hasCountryName != null && propVcard_hasCountryName.PropertyValues.Count > 0)
 			{
@@ -81,11 +80,14 @@ namespace CollaborationOntology
 			{
 				this.Roh_relationshipType = new RelationshipType(propRoh_relationshipType.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
+			this.Roh_durationYears = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/durationYears"));
 			this.Roh_relevantResults = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/relevantResults"));
-			this.Vcard_locality = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#locality"));
+			this.Roh_durationMonths = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/durationMonths"));
 			this.Roh_crisIdentifier = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/crisIdentifier"));
-			this.Roh_relationshipTypeOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/relationshipTypeOther"));
+			this.Roh_durationDays = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/durationDays"));
 			this.Vivo_start= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#start"));
+			this.Roh_relationshipTypeOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/relationshipTypeOther"));
+			this.Vcard_locality = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#locality"));
 			this.Roh_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/title"));
 		}
 
@@ -93,11 +95,6 @@ namespace CollaborationOntology
 		{
 			this.mGNOSSID = pSemCmsModel.Entity.Uri;
 			this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
-			SemanticPropertyModel propVcard_hasRegion = pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#hasRegion");
-			if(propVcard_hasRegion != null && propVcard_hasRegion.PropertyValues.Count > 0)
-			{
-				this.Vcard_hasRegion = new Feature(propVcard_hasRegion.PropertyValues[0].RelatedEntity,idiomaUsuario);
-			}
 			this.Vivo_freeTextKeywords = new List<CategoryPath>();
 			SemanticPropertyModel propVivo_freeTextKeywords = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#freeTextKeywords");
 			if(propVivo_freeTextKeywords != null && propVivo_freeTextKeywords.PropertyValues.Count > 0)
@@ -107,18 +104,6 @@ namespace CollaborationOntology
 					if(propValue.RelatedEntity!=null){
 						CategoryPath vivo_freeTextKeywords = new CategoryPath(propValue.RelatedEntity,idiomaUsuario);
 						this.Vivo_freeTextKeywords.Add(vivo_freeTextKeywords);
-					}
-				}
-			}
-			this.Roh_researchers = new List<BFO_0000023>();
-			SemanticPropertyModel propRoh_researchers = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/researchers");
-			if(propRoh_researchers != null && propRoh_researchers.PropertyValues.Count > 0)
-			{
-				foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_researchers.PropertyValues)
-				{
-					if(propValue.RelatedEntity!=null){
-						BFO_0000023 roh_researchers = new BFO_0000023(propValue.RelatedEntity,idiomaUsuario);
-						this.Roh_researchers.Add(roh_researchers);
 					}
 				}
 			}
@@ -134,6 +119,23 @@ namespace CollaborationOntology
 					}
 				}
 			}
+			SemanticPropertyModel propVcard_hasRegion = pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#hasRegion");
+			if(propVcard_hasRegion != null && propVcard_hasRegion.PropertyValues.Count > 0)
+			{
+				this.Vcard_hasRegion = new Feature(propVcard_hasRegion.PropertyValues[0].RelatedEntity,idiomaUsuario);
+			}
+			this.Roh_researchers = new List<BFO_0000023>();
+			SemanticPropertyModel propRoh_researchers = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/researchers");
+			if(propRoh_researchers != null && propRoh_researchers.PropertyValues.Count > 0)
+			{
+				foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_researchers.PropertyValues)
+				{
+					if(propValue.RelatedEntity!=null){
+						BFO_0000023 roh_researchers = new BFO_0000023(propValue.RelatedEntity,idiomaUsuario);
+						this.Roh_researchers.Add(roh_researchers);
+					}
+				}
+			}
 			SemanticPropertyModel propVcard_hasCountryName = pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#hasCountryName");
 			if(propVcard_hasCountryName != null && propVcard_hasCountryName.PropertyValues.Count > 0)
 			{
@@ -144,33 +146,34 @@ namespace CollaborationOntology
 			{
 				this.Roh_relationshipType = new RelationshipType(propRoh_relationshipType.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
+			this.Roh_durationYears = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/durationYears"));
 			this.Roh_relevantResults = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/relevantResults"));
-			this.Vcard_locality = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#locality"));
+			this.Roh_durationMonths = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/durationMonths"));
 			this.Roh_crisIdentifier = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/crisIdentifier"));
-			this.Roh_relationshipTypeOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/relationshipTypeOther"));
+			this.Roh_durationDays = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/durationDays"));
 			this.Vivo_start= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#start"));
+			this.Roh_relationshipTypeOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/relationshipTypeOther"));
+			this.Vcard_locality = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#locality"));
 			this.Roh_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/title"));
 		}
 
 		public virtual string RdfType { get { return "http://w3id.org/roh/Collaboration"; } }
 		public virtual string RdfsLabel { get { return "http://w3id.org/roh/Collaboration"; } }
+		[LABEL(LanguageEnum.es,"freeTextKeywords")]
+		[RDFProperty("http://vivoweb.org/ontology/core#freeTextKeywords")]
+		public  List<CategoryPath> Vivo_freeTextKeywords { get; set;}
+
+		[RDFProperty("http://w3id.org/roh/participates")]
+		public  List<Organization> Roh_participates { get; set;}
+
 		[LABEL(LanguageEnum.es,"hasRegion")]
 		[RDFProperty("https://www.w3.org/2006/vcard/ns#hasRegion")]
 		public  Feature Vcard_hasRegion  { get; set;} 
 		public string IdVcard_hasRegion  { get; set;} 
 
-		[LABEL(LanguageEnum.es,"freeTextKeywords")]
-		[RDFProperty("http://vivoweb.org/ontology/core#freeTextKeywords")]
-		public  List<CategoryPath> Vivo_freeTextKeywords { get; set;}
-
 		[LABEL(LanguageEnum.es,"researchers")]
 		[RDFProperty("http://w3id.org/roh/researchers")]
 		public  List<BFO_0000023> Roh_researchers { get; set;}
-
-		[LABEL(LanguageEnum.es,"participates")]
-		[RDFProperty("http://w3id.org/roh/participates")]
-		public  List<Organization> Roh_participates { get; set;}
-		public List<string> IdsRoh_participates { get; set;}
 
 		[LABEL(LanguageEnum.es,"hasCountryName")]
 		[RDFProperty("https://www.w3.org/2006/vcard/ns#hasCountryName")]
@@ -182,25 +185,34 @@ namespace CollaborationOntology
 		public  RelationshipType Roh_relationshipType  { get; set;} 
 		public string IdRoh_relationshipType  { get; set;} 
 
+		[RDFProperty("http://w3id.org/roh/durationYears")]
+		public  int? Roh_durationYears { get; set;}
+
 		[LABEL(LanguageEnum.es,"relevantResults")]
 		[RDFProperty("http://w3id.org/roh/relevantResults")]
 		public  string Roh_relevantResults { get; set;}
 
-		[LABEL(LanguageEnum.es,"locality")]
-		[RDFProperty("https://www.w3.org/2006/vcard/ns#locality")]
-		public  string Vcard_locality { get; set;}
+		[RDFProperty("http://w3id.org/roh/durationMonths")]
+		public  int? Roh_durationMonths { get; set;}
 
 		[LABEL(LanguageEnum.es,"crisIdentifier")]
 		[RDFProperty("http://w3id.org/roh/crisIdentifier")]
 		public  string Roh_crisIdentifier { get; set;}
 
-		[LABEL(LanguageEnum.es,"relationshipTypeOther")]
-		[RDFProperty("http://w3id.org/roh/relationshipTypeOther")]
-		public  string Roh_relationshipTypeOther { get; set;}
+		[RDFProperty("http://w3id.org/roh/durationDays")]
+		public  string Roh_durationDays { get; set;}
 
 		[LABEL(LanguageEnum.es,"start")]
 		[RDFProperty("http://vivoweb.org/ontology/core#start")]
 		public  DateTime? Vivo_start { get; set;}
+
+		[LABEL(LanguageEnum.es,"relationshipTypeOther")]
+		[RDFProperty("http://w3id.org/roh/relationshipTypeOther")]
+		public  string Roh_relationshipTypeOther { get; set;}
+
+		[LABEL(LanguageEnum.es,"locality")]
+		[RDFProperty("https://www.w3.org/2006/vcard/ns#locality")]
+		public  string Vcard_locality { get; set;}
 
 		[LABEL(LanguageEnum.es,"title")]
 		[RDFProperty("http://w3id.org/roh/title")]
@@ -211,16 +223,18 @@ namespace CollaborationOntology
 		{
 			base.GetProperties();
 			propList.Add(new StringOntologyProperty("vcard:hasRegion", this.IdVcard_hasRegion));
-			propList.Add(new ListStringOntologyProperty("roh:participates", this.IdsRoh_participates));
 			propList.Add(new StringOntologyProperty("vcard:hasCountryName", this.IdVcard_hasCountryName));
 			propList.Add(new StringOntologyProperty("roh:relationshipType", this.IdRoh_relationshipType));
+			propList.Add(new StringOntologyProperty("roh:durationYears", this.Roh_durationYears.ToString()));
 			propList.Add(new StringOntologyProperty("roh:relevantResults", this.Roh_relevantResults));
-			propList.Add(new StringOntologyProperty("vcard:locality", this.Vcard_locality));
+			propList.Add(new StringOntologyProperty("roh:durationMonths", this.Roh_durationMonths.ToString()));
 			propList.Add(new StringOntologyProperty("roh:crisIdentifier", this.Roh_crisIdentifier));
-			propList.Add(new StringOntologyProperty("roh:relationshipTypeOther", this.Roh_relationshipTypeOther));
+			propList.Add(new StringOntologyProperty("roh:durationDays", this.Roh_durationDays));
 			if (this.Vivo_start.HasValue){
 				propList.Add(new DateOntologyProperty("vivo:start", this.Vivo_start.Value));
 				}
+			propList.Add(new StringOntologyProperty("roh:relationshipTypeOther", this.Roh_relationshipTypeOther));
+			propList.Add(new StringOntologyProperty("vcard:locality", this.Vcard_locality));
 			propList.Add(new StringOntologyProperty("roh:title", this.Roh_title));
 		}
 
@@ -234,6 +248,15 @@ namespace CollaborationOntology
 					OntologyEntity entityCategoryPath = new OntologyEntity("http://w3id.org/roh/CategoryPath", "http://w3id.org/roh/CategoryPath", "vivo:freeTextKeywords", prop.propList, prop.entList);
 				entList.Add(entityCategoryPath);
 				prop.Entity= entityCategoryPath;
+				}
+			}
+			if(Roh_participates!=null){
+				foreach(Organization prop in Roh_participates){
+					prop.GetProperties();
+					prop.GetEntities();
+					OntologyEntity entityOrganization = new OntologyEntity("http://w3id.org/roh/Organization", "http://w3id.org/roh/Organization", "roh:participates", prop.propList, prop.entList);
+				entList.Add(entityOrganization);
+				prop.Entity= entityOrganization;
 				}
 			}
 			if(Roh_researchers!=null){
@@ -297,6 +320,44 @@ namespace CollaborationOntology
 				}
 			}
 			}
+			if(this.Roh_participates != null)
+			{
+			foreach(var item0 in this.Roh_participates)
+			{
+				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Organization_{ResourceID}_{item0.ArticleID}", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", $"<http://w3id.org/roh/Organization>", list, " . ");
+				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Organization_{ResourceID}_{item0.ArticleID}", "http://www.w3.org/2000/01/rdf-schema#label", $"\"http://w3id.org/roh/Organization\"", list, " . ");
+				AgregarTripleALista($"{resourceAPI.GraphsUrl}{ResourceID}", "http://gnoss/hasEntidad", $"<{resourceAPI.GraphsUrl}items/Organization_{ResourceID}_{item0.ArticleID}>", list, " . ");
+				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Collaboration_{ResourceID}_{ArticleID}", "http://w3id.org/roh/participates", $"<{resourceAPI.GraphsUrl}items/Organization_{ResourceID}_{item0.ArticleID}>", list, " . ");
+				if(item0.IdVcard_hasRegion != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Organization_{ResourceID}_{item0.ArticleID}",  "https://www.w3.org/2006/vcard/ns#hasRegion", $"<{item0.IdVcard_hasRegion}>", list, " . ");
+				}
+				if(item0.IdVcard_hasCountryName != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Organization_{ResourceID}_{item0.ArticleID}",  "https://www.w3.org/2006/vcard/ns#hasCountryName", $"<{item0.IdVcard_hasCountryName}>", list, " . ");
+				}
+				if(item0.IdRoh_organization != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Organization_{ResourceID}_{item0.ArticleID}",  "http://w3id.org/roh/organization", $"<{item0.IdRoh_organization}>", list, " . ");
+				}
+				if(item0.IdRoh_organizationType != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Organization_{ResourceID}_{item0.ArticleID}",  "http://w3id.org/roh/organizationType", $"<{item0.IdRoh_organizationType}>", list, " . ");
+				}
+				if(item0.Vcard_locality != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Organization_{ResourceID}_{item0.ArticleID}",  "https://www.w3.org/2006/vcard/ns#locality", $"\"{GenerarTextoSinSaltoDeLinea(item0.Vcard_locality)}\"", list, " . ");
+				}
+				if(item0.Roh_organizationTypeOther != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Organization_{ResourceID}_{item0.ArticleID}",  "http://w3id.org/roh/organizationTypeOther", $"\"{GenerarTextoSinSaltoDeLinea(item0.Roh_organizationTypeOther)}\"", list, " . ");
+				}
+				if(item0.Roh_organizationTitle != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Organization_{ResourceID}_{item0.ArticleID}",  "http://w3id.org/roh/organizationTitle", $"\"{GenerarTextoSinSaltoDeLinea(item0.Roh_organizationTitle)}\"", list, " . ");
+				}
+			}
+			}
 			if(this.Roh_researchers != null)
 			{
 			foreach(var item0 in this.Roh_researchers)
@@ -323,13 +384,6 @@ namespace CollaborationOntology
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Collaboration_{ResourceID}_{ArticleID}",  "https://www.w3.org/2006/vcard/ns#hasRegion", $"<{this.IdVcard_hasRegion}>", list, " . ");
 				}
-				if(this.IdsRoh_participates != null)
-				{
-					foreach(var item2 in this.IdsRoh_participates)
-					{
-						AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Collaboration_{ResourceID}_{ArticleID}", "http://w3id.org/roh/participates", $"<{item2}>", list, " . ");
-					}
-				}
 				if(this.IdVcard_hasCountryName != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Collaboration_{ResourceID}_{ArticleID}",  "https://www.w3.org/2006/vcard/ns#hasCountryName", $"<{this.IdVcard_hasCountryName}>", list, " . ");
@@ -338,25 +392,37 @@ namespace CollaborationOntology
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Collaboration_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/relationshipType", $"<{this.IdRoh_relationshipType}>", list, " . ");
 				}
+				if(this.Roh_durationYears != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Collaboration_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/durationYears", $"{this.Roh_durationYears.Value.ToString()}", list, " . ");
+				}
 				if(this.Roh_relevantResults != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Collaboration_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/relevantResults", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_relevantResults)}\"", list, " . ");
 				}
-				if(this.Vcard_locality != null)
+				if(this.Roh_durationMonths != null)
 				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Collaboration_{ResourceID}_{ArticleID}",  "https://www.w3.org/2006/vcard/ns#locality", $"\"{GenerarTextoSinSaltoDeLinea(this.Vcard_locality)}\"", list, " . ");
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Collaboration_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/durationMonths", $"{this.Roh_durationMonths.Value.ToString()}", list, " . ");
 				}
 				if(this.Roh_crisIdentifier != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Collaboration_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/crisIdentifier", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_crisIdentifier)}\"", list, " . ");
 				}
-				if(this.Roh_relationshipTypeOther != null)
+				if(this.Roh_durationDays != null)
 				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Collaboration_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/relationshipTypeOther", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_relationshipTypeOther)}\"", list, " . ");
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Collaboration_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/durationDays", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_durationDays)}\"", list, " . ");
 				}
 				if(this.Vivo_start != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Collaboration_{ResourceID}_{ArticleID}",  "http://vivoweb.org/ontology/core#start", $"\"{this.Vivo_start.Value.ToString("yyyyMMddHHmmss")}\"", list, " . ");
+				}
+				if(this.Roh_relationshipTypeOther != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Collaboration_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/relationshipTypeOther", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_relationshipTypeOther)}\"", list, " . ");
+				}
+				if(this.Vcard_locality != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Collaboration_{ResourceID}_{ArticleID}",  "https://www.w3.org/2006/vcard/ns#locality", $"\"{GenerarTextoSinSaltoDeLinea(this.Vcard_locality)}\"", list, " . ");
 				}
 				if(this.Roh_title != null)
 				{
@@ -404,6 +470,81 @@ namespace CollaborationOntology
 				}
 			}
 			}
+			if(this.Roh_participates != null)
+			{
+			foreach(var item0 in this.Roh_participates)
+			{
+				AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://w3id.org/roh/participates", $"<{resourceAPI.GraphsUrl}items/organization_{ResourceID}_{item0.ArticleID}>", list, " . ");
+				if(item0.IdVcard_hasRegion != null)
+				{
+					Regex regex = new Regex(@"\/items\/.+_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}");
+					string itemRegex = item0.IdVcard_hasRegion;
+					if (regex.IsMatch(itemRegex))
+					{
+						itemRegex = $"http://gnoss/{resourceAPI.GetShortGuid(itemRegex).ToString().ToUpper()}";
+					}
+					else
+					{
+						itemRegex = itemRegex.ToLower();
+					}
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/organization_{ResourceID}_{item0.ArticleID}",  "https://www.w3.org/2006/vcard/ns#hasRegion", $"<{itemRegex}>", list, " . ");
+				}
+				if(item0.IdVcard_hasCountryName != null)
+				{
+					Regex regex = new Regex(@"\/items\/.+_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}");
+					string itemRegex = item0.IdVcard_hasCountryName;
+					if (regex.IsMatch(itemRegex))
+					{
+						itemRegex = $"http://gnoss/{resourceAPI.GetShortGuid(itemRegex).ToString().ToUpper()}";
+					}
+					else
+					{
+						itemRegex = itemRegex.ToLower();
+					}
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/organization_{ResourceID}_{item0.ArticleID}",  "https://www.w3.org/2006/vcard/ns#hasCountryName", $"<{itemRegex}>", list, " . ");
+				}
+				if(item0.IdRoh_organization != null)
+				{
+					Regex regex = new Regex(@"\/items\/.+_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}");
+					string itemRegex = item0.IdRoh_organization;
+					if (regex.IsMatch(itemRegex))
+					{
+						itemRegex = $"http://gnoss/{resourceAPI.GetShortGuid(itemRegex).ToString().ToUpper()}";
+					}
+					else
+					{
+						itemRegex = itemRegex.ToLower();
+					}
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/organization_{ResourceID}_{item0.ArticleID}",  "http://w3id.org/roh/organization", $"<{itemRegex}>", list, " . ");
+				}
+				if(item0.IdRoh_organizationType != null)
+				{
+					Regex regex = new Regex(@"\/items\/.+_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}");
+					string itemRegex = item0.IdRoh_organizationType;
+					if (regex.IsMatch(itemRegex))
+					{
+						itemRegex = $"http://gnoss/{resourceAPI.GetShortGuid(itemRegex).ToString().ToUpper()}";
+					}
+					else
+					{
+						itemRegex = itemRegex.ToLower();
+					}
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/organization_{ResourceID}_{item0.ArticleID}",  "http://w3id.org/roh/organizationType", $"<{itemRegex}>", list, " . ");
+				}
+				if(item0.Vcard_locality != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/organization_{ResourceID}_{item0.ArticleID}",  "https://www.w3.org/2006/vcard/ns#locality", $"\"{GenerarTextoSinSaltoDeLinea(item0.Vcard_locality).ToLower()}\"", list, " . ");
+				}
+				if(item0.Roh_organizationTypeOther != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/organization_{ResourceID}_{item0.ArticleID}",  "http://w3id.org/roh/organizationTypeOther", $"\"{GenerarTextoSinSaltoDeLinea(item0.Roh_organizationTypeOther).ToLower()}\"", list, " . ");
+				}
+				if(item0.Roh_organizationTitle != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/organization_{ResourceID}_{item0.ArticleID}",  "http://w3id.org/roh/organizationTitle", $"\"{GenerarTextoSinSaltoDeLinea(item0.Roh_organizationTitle).ToLower()}\"", list, " . ");
+				}
+			}
+			}
 			if(this.Roh_researchers != null)
 			{
 			foreach(var item0 in this.Roh_researchers)
@@ -447,23 +588,6 @@ namespace CollaborationOntology
 					}
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "https://www.w3.org/2006/vcard/ns#hasRegion", $"<{itemRegex}>", list, " . ");
 				}
-				if(this.IdsRoh_participates != null)
-				{
-					foreach(var item2 in this.IdsRoh_participates)
-					{
-					Regex regex = new Regex(@"\/items\/.+_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}");
-					string itemRegex = item2;
-					if (regex.IsMatch(itemRegex))
-					{
-						itemRegex = $"http://gnoss/{resourceAPI.GetShortGuid(itemRegex).ToString().ToUpper()}";
-					}
-					else
-					{
-						itemRegex = itemRegex.ToLower();
-					}
-						AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://w3id.org/roh/participates", $"<{itemRegex}>", list, " . ");
-					}
-				}
 				if(this.IdVcard_hasCountryName != null)
 				{
 					Regex regex = new Regex(@"\/items\/.+_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}");
@@ -492,25 +616,37 @@ namespace CollaborationOntology
 					}
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/relationshipType", $"<{itemRegex}>", list, " . ");
 				}
+				if(this.Roh_durationYears != null)
+				{
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/durationYears", $"{this.Roh_durationYears.Value.ToString()}", list, " . ");
+				}
 				if(this.Roh_relevantResults != null)
 				{
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/relevantResults", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_relevantResults).ToLower()}\"", list, " . ");
 				}
-				if(this.Vcard_locality != null)
+				if(this.Roh_durationMonths != null)
 				{
-					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "https://www.w3.org/2006/vcard/ns#locality", $"\"{GenerarTextoSinSaltoDeLinea(this.Vcard_locality).ToLower()}\"", list, " . ");
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/durationMonths", $"{this.Roh_durationMonths.Value.ToString()}", list, " . ");
 				}
 				if(this.Roh_crisIdentifier != null)
 				{
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/crisIdentifier", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_crisIdentifier).ToLower()}\"", list, " . ");
 				}
-				if(this.Roh_relationshipTypeOther != null)
+				if(this.Roh_durationDays != null)
 				{
-					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/relationshipTypeOther", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_relationshipTypeOther).ToLower()}\"", list, " . ");
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/durationDays", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_durationDays).ToLower()}\"", list, " . ");
 				}
 				if(this.Vivo_start != null)
 				{
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://vivoweb.org/ontology/core#start", $"{this.Vivo_start.Value.ToString("yyyyMMddHHmmss")}", list, " . ");
+				}
+				if(this.Roh_relationshipTypeOther != null)
+				{
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/relationshipTypeOther", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_relationshipTypeOther).ToLower()}\"", list, " . ");
+				}
+				if(this.Vcard_locality != null)
+				{
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "https://www.w3.org/2006/vcard/ns#locality", $"\"{GenerarTextoSinSaltoDeLinea(this.Vcard_locality).ToLower()}\"", list, " . ");
 				}
 				if(this.Roh_title != null)
 				{
@@ -525,7 +661,7 @@ namespace CollaborationOntology
 			}
 			if(!string.IsNullOrEmpty(search))
 			{
-				AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://gnoss/search", $"\"{search.ToLower()}\"", list, " . ");
+				AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://gnoss/search", $"\"{GenerarTextoSinSaltoDeLinea(search.ToLower())}\"", list, " . ");
 			}
 			return list;
 		}
@@ -534,9 +670,18 @@ namespace CollaborationOntology
 		{
 
 			//Insert en la tabla Documento
+			string tags = "";
+			foreach(string tag in tagList)
+			{
+				tags += $"{tag}, ";
+			}
+			if (!string.IsNullOrEmpty(tags))
+			{
+				tags = tags.Substring(0, tags.LastIndexOf(','));
+			}
 			string titulo = $"{this.Roh_title.Replace("\r\n", "").Replace("\n", "").Replace("\r", "").Replace("\"", "\"\"").Replace("'", "''").Replace("|", "#PIPE#")}";
 			string descripcion = $"{this.Roh_title.Replace("\r\n", "").Replace("\n", "").Replace("\r", "").Replace("\"", "\"\"").Replace("'", "''").Replace("|", "#PIPE#")}";
-			string tablaDoc = $"'{titulo}', '{descripcion}', '{resourceAPI.GraphsUrl}'";
+			string tablaDoc = $"'{titulo}', '{descripcion}', '{resourceAPI.GraphsUrl}', '{tags}'";
 			KeyValuePair<Guid, string> valor = new KeyValuePair<Guid, string>(ResourceID, tablaDoc);
 
 			return valor;

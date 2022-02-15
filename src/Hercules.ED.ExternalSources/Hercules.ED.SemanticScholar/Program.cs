@@ -6,10 +6,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using SemanticScholarConnect;
 
-namespace SemanticScholarConnect
+namespace SemanticScholarAPI
 {
-#pragma warning disable CS1591
     public class Program
     {
         public static void Main(string[] args)
@@ -24,5 +24,4 @@ namespace SemanticScholarConnect
                     webBuilder.UseStartup<Startup>();
                 });
     }
-#pragma warning restore CS1591
 }

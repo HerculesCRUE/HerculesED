@@ -53,7 +53,7 @@ namespace GnossBase
 		{
 			es,
 			en,
-            ca,
+			ca,
 			eu,
 			gl,
 			fr
@@ -70,18 +70,18 @@ namespace GnossBase
 		public List<string> tagList = new List<string>();
 		public GnossOCBase()
 		{
-			prefList.Add("xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"");
-			prefList.Add("xmlns:owl=\"http://www.w3.org/2002/07/owl#\"");
-			prefList.Add("xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\"");
-			prefList.Add("xmlns:roh=\"http://w3id.org/roh/\"");
+			prefList.Add("xmlns:foaf=\"http://xmlns.com/foaf/0.1/\"");
 			prefList.Add("xmlns:vivo=\"http://vivoweb.org/ontology/core#\"");
+			prefList.Add("xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\"");
+			prefList.Add("xmlns:owl=\"http://www.w3.org/2002/07/owl#\"");
+			prefList.Add("xmlns:bibo=\"http://purl.org/ontology/bibo/\"");
+			prefList.Add("xmlns:roh=\"http://w3id.org/roh/\"");
+			prefList.Add("xmlns:dct=\"http://purl.org/dc/terms/\"");
+			prefList.Add("xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"");
 			prefList.Add("xmlns:xsd=\"http://www.w3.org/2001/XMLSchema#\"");
-			prefList.Add("xmlns:dc=\"http://purl.org/dc/elements/1.1/\"");
 			prefList.Add("xmlns:obo=\"http://purl.obolibrary.org/obo/\"");
 			prefList.Add("xmlns:vcard=\"https://www.w3.org/2006/vcard/ns#\"");
-			prefList.Add("xmlns:foaf=\"http://xmlns.com/foaf/0.1/\"");
-			prefList.Add("xmlns:bibo=\"http://purl.org/ontology/bibo/\"");
-			prefList.Add("xmlns:dct=\"http://purl.org/dc/terms/\"");
+			prefList.Add("xmlns:dc=\"http://purl.org/dc/elements/1.1/\"");
 			prefList.Add("xmlns:schema=\"http://www.schema.org/\"");
 			prefList.Add("xmlns:skos=\"http://www.w3.org/2008/05/skos#\"");
 			prefList.Add("xmlns:gn=\"http://www.geonames.org/ontology#\"");
