@@ -1422,14 +1422,7 @@
         <Propiedad  ID="http://w3id.org/roh/applicantContribution" EntidadID="http://w3id.org/roh/RelatedCompetitiveProjectCV">
             <AtrNombre>http://w3id.org/roh/applicantContribution</AtrNombre>
             <AtrNombreLectura>http://w3id.org/roh/applicantContribution</AtrNombreLectura>
-        </Propiedad>
-        <Propiedad  ID="http://w3id.org/roh/gnossUser" EntidadID="http://w3id.org/roh/CV">
-			<AtrNombre>Usuario Gnoss</AtrNombre>
-			<AtrNombreLectura>Usuario Gnoss</AtrNombreLectura>
-			<SeleccionEntidad>
-				<TipoSeleccion MultiIdioma="false">PersonaGnoss</TipoSeleccion>
-			</SeleccionEntidad>
-        </Propiedad>
+        </Propiedad>        
         <Propiedad  ID="http://w3id.org/roh/personalData" EntidadID="http://w3id.org/roh/CV">
             <AtrNombre>http://w3id.org/roh/personalData</AtrNombre>
             <AtrNombreLectura>http://w3id.org/roh/personalData</AtrNombreLectura>
