@@ -37,6 +37,10 @@ namespace CurriculumvitaeOntology
 		[RDFProperty("http://w3id.org/roh/scientificActivity")]
 		public  ScientificActivity Roh_scientificActivity { get; set;}
 
+		[LABEL(LanguageEnum.es, "http://w3id.org/roh/researchObject")]
+		[RDFProperty("http://w3id.org/roh/researchObject")]
+		public ResearchObjects Roh_researchObject { get; set; }
+
 		[LABEL(LanguageEnum.es,"http://w3id.org/roh/personalData")]
 		[RDFProperty("http://w3id.org/roh/personalData")]
 		public  PersonalData Roh_personalData { get; set;}
@@ -69,6 +73,10 @@ namespace CurriculumvitaeOntology
 			Roh_personalData.GetEntities();
 			OntologyEntity entityRoh_personalData = new ("http://w3id.org/roh/PersonalData", "http://w3id.org/roh/PersonalData", "roh:personalData", Roh_personalData.propList, Roh_personalData.entList);
 			entList.Add(entityRoh_personalData);
+			Roh_researchObject.GetProperties();
+			Roh_researchObject.GetEntities();
+			OntologyEntity entityRoh_researchObject = new("http://w3id.org/roh/ResearchObjects", "http://w3id.org/roh/ResearchObjects", "roh:researchObject", Roh_researchObject.propList, Roh_researchObject.entList);
+			entList.Add(entityRoh_researchObject);
 		} 
 
 		public virtual ComplexOntologyResource ToGnossApiResource(ResourceApi resourceAPI, List<string> listaDeCategorias)
