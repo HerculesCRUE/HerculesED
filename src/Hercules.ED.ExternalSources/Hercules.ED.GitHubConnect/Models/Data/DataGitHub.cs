@@ -8,6 +8,7 @@ namespace GitHubAPI.Models.Data
         public string tipo { get; set; }
         public string titulo { get; set; }
         public string descripcion { get; set; }
+        public string url { get; set; }
         public List<string> listaAutores { get; set; }
         public string fechaCreacion { get;set; }
         public string fechaActualizacion { get; set; }

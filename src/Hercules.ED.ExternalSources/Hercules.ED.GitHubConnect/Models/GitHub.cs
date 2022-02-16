@@ -128,6 +128,10 @@ namespace GitHubAPI.ROs.Codes.Controllers
                     {
                         data.descripcion = repositorio.description;
                     }
+                    if (!string.IsNullOrEmpty(repositorio.html_url))
+                    {
+                        data.url = repositorio.html_url;
+                    }
                     if (repositorio.created_at != null)
                     {
                         data.fechaCreacion = repositorio.created_at.ToString();
