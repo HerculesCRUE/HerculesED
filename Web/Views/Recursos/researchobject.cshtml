@@ -110,17 +110,35 @@
                                     <div class="dropdown-menu basic-dropdown dropdown-icons dropdown-menu-right" aria-labelledby="dropdownMasOpciones">
                                         <p class="dropdown-title">@Html.Translate("ACCIONES")</p>
                                         <ul class="no-list-style">
+											@if (pResearchObject.Bibo_authorList != null)
+                                            {
+                                                string urlCV = "";
+                                                foreach (BFO_0000023 bfo_0000023 in pResearchObject.Bibo_authorList)
+                                                {
+                                                    if (bfo_0000023.Rdf_member != null && bfo_0000023.Rdf_member.Roh_cvOf != null && bfo_0000023.Rdf_member.Roh_gnossUser.Replace("http://gnoss/", "").ToLower() == IdentidadActual.KeyUser.ToString().ToLower())
+                                                    {
+                                                        urlCV = bfo_0000023.Rdf_member.Roh_cvOf.URL;
+                                                        urlCV += "?tab=researchobject-tab&id=" + FichaDocumento.Key.ToString().ToLower();
+                                                    }
+                                                }
+                                                if (!string.IsNullOrEmpty(urlCV))
+                                                {
+                                                    <li>
+                                                        <a href="@urlCV" target="_blank" class="item-dropdown">@Html.GetText("COMMON", "EDITAR")</a>
+                                                    </li>
+                                                }
+                                            }
                                             <li>
-                                                <a class="item-dropdown">@Html.Translate("COMPARTIR")</a>
+                                                <a class="item-dropdown">TODO @Html.Translate("COMPARTIR")</a>
                                             </li>
                                             <li>
-                                                <a class="item-dropdown">@Html.Translate("CITAR")</a>
+                                                <a class="item-dropdown">TODO @Html.Translate("CITAR")</a>
                                             </li>
                                             <li>
-                                                <a class="item-dropdown">@Html.Translate("PROPONER_AREAS_TEMATICAS")</a>
+                                                <a class="item-dropdown">TODO @Html.Translate("PROPONER_AREAS_TEMATICAS")</a>
                                             </li>
                                             <li>
-                                                <a class="item-dropdown">@Html.Translate("PROPONER_ETIQUETAS")</a>
+                                                <a class="item-dropdown">TODO @Html.Translate("PROPONER_ETIQUETAS")</a>
                                             </li>
                                         </ul>
                                     </div>
@@ -2865,114 +2883,28 @@
         [RDFProperty("http://purl.org/dc/elements/1.1/source")]
         public string Dc_source { get; set; }
     }
+	
+	public class CV : GnossOCBase
+    {
+
+        public CV() : base() { }
+
+        public CV(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
+        {
+            this.mGNOSSID = pSemCmsModel.Entity.Uri;
+            this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
+        }
+
+        public virtual string RdfType { get { return "http://w3id.org/roh/CV"; } }
+        public virtual string RdfsLabel { get { return "http://w3id.org/roh/CV"; } }
+
+    }
 
     public class Person : GnossOCBase
     {
 
         public Person() : base() { } 
-
-        public Person(SemanticResourceModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
-        {
-            this.mGNOSSID = pSemCmsModel.RootEntities[0].Entity.Uri;
-            SemanticPropertyModel propRoh_hasRole = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/hasRole");
-            if(propRoh_hasRole != null && propRoh_hasRole.PropertyValues.Count > 0)
-            {
-                this.Roh_hasRole = new Organization(propRoh_hasRole.PropertyValues[0].RelatedEntity,idiomaUsuario);
-            }
-            SemanticPropertyModel propVivo_departmentOrSchool = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#departmentOrSchool");
-            if(propVivo_departmentOrSchool != null && propVivo_departmentOrSchool.PropertyValues.Count > 0)
-            {
-                this.Vivo_departmentOrSchool = new Department(propVivo_departmentOrSchool.PropertyValues[0].RelatedEntity,idiomaUsuario);
-            }
-            this.Vivo_hasResearchArea = new List<CategoryPath>();
-            SemanticPropertyModel propVivo_hasResearchArea = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#hasResearchArea");
-            if(propVivo_hasResearchArea != null && propVivo_hasResearchArea.PropertyValues.Count > 0)
-            {
-                foreach (SemanticPropertyModel.PropertyValue propValue in propVivo_hasResearchArea.PropertyValues)
-                {
-                    if(propValue.RelatedEntity!=null){
-                        CategoryPath vivo_hasResearchArea = new CategoryPath(propValue.RelatedEntity,idiomaUsuario);
-                        this.Vivo_hasResearchArea.Add(vivo_hasResearchArea);
-                    }
-                }
-            }
-            this.Vivo_relates = new List<Group>();
-            SemanticPropertyModel propVivo_relates = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#relates");
-            if(propVivo_relates != null && propVivo_relates.PropertyValues.Count > 0)
-            {
-                foreach (SemanticPropertyModel.PropertyValue propValue in propVivo_relates.PropertyValues)
-                {
-                    if(propValue.RelatedEntity!=null){
-                        Group vivo_relates = new Group(propValue.RelatedEntity,idiomaUsuario);
-                        this.Vivo_relates.Add(vivo_relates);
-                    }
-                }
-            }
-            SemanticPropertyModel propRoh_lineResearch = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/lineResearch");
-            this.Roh_lineResearch = new List<string>();
-            if (propRoh_lineResearch != null && propRoh_lineResearch.PropertyValues.Count > 0)
-            {
-                foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_lineResearch.PropertyValues)
-                {
-                    this.Roh_lineResearch.Add(propValue.Value);
-                }
-            }
-            this.Roh_publicationsNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/publicationsNumber"));
-            this.Vivo_researcherId = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#researcherId"));
-            this.Vivo_scopusId = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#scopusId"));
-            this.Roh_projectsNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/projectsNumber"));
-            this.Vcard_address = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#address"));
-            this.Roh_hasPosition = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/hasPosition"));
-            SemanticPropertyModel propFoaf_homepage = pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/homepage");
-            this.Foaf_homepage = new List<string>();
-            if (propFoaf_homepage != null && propFoaf_homepage.PropertyValues.Count > 0)
-            {
-                foreach (SemanticPropertyModel.PropertyValue propValue in propFoaf_homepage.PropertyValues)
-                {
-                    this.Foaf_homepage.Add(propValue.Value);
-                }
-            }
-            SemanticPropertyModel propVcard_email = pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#email");
-            this.Vcard_email = new List<string>();
-            if (propVcard_email != null && propVcard_email.PropertyValues.Count > 0)
-            {
-                foreach (SemanticPropertyModel.PropertyValue propValue in propVcard_email.PropertyValues)
-                {
-                    this.Vcard_email.Add(propValue.Value);
-                }
-            }
-            this.Roh_crisIdentifier = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/crisIdentifier"));
-            this.Vivo_description = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#description"));
-            this.Roh_semanticScholarId = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/semanticScholarId"));
-            this.Roh_ORCID = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/ORCID"));
-            this.Roh_h_index = GetNumberFloatPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/h-index"));
-            SemanticPropertyModel propVcard_hasTelephone = pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#hasTelephone");
-            this.Vcard_hasTelephone = new List<string>();
-            if (propVcard_hasTelephone != null && propVcard_hasTelephone.PropertyValues.Count > 0)
-            {
-                foreach (SemanticPropertyModel.PropertyValue propValue in propVcard_hasTelephone.PropertyValues)
-                {
-                    this.Vcard_hasTelephone.Add(propValue.Value);
-                }
-            }
-            this.Roh_collaboratorsNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/collaboratorsNumber"));
-            SemanticPropertyModel propFoaf_nick = pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/nick");
-            this.Foaf_nick = new List<string>();
-            if (propFoaf_nick != null && propFoaf_nick.PropertyValues.Count > 0)
-            {
-                foreach (SemanticPropertyModel.PropertyValue propValue in propFoaf_nick.PropertyValues)
-                {
-                    this.Foaf_nick.Add(propValue.Value);
-                }
-            }
-            this.Roh_isSynchronized= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isSynchronized"));
-            this.Foaf_firstName = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/firstName"));
-            this.Roh_isActive= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isActive"));
-            this.Foaf_name = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/name"));
-            this.Roh_hasResearchAreaEdited= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/hasResearchAreaEdited"));
-            this.Foaf_lastName = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/lastName"));
-            this.Roh_isPublic= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isPublic"));
-        }
+        
 
         public Person(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
         {
@@ -3076,6 +3008,12 @@
             this.Roh_hasResearchAreaEdited= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/hasResearchAreaEdited"));
             this.Foaf_lastName = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/lastName"));
             this.Roh_isPublic= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isPublic"));
+			SemanticPropertyModel propRoh_cvOf = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/cvOf");
+            if (propRoh_hasRole != null && propRoh_hasRole.PropertyValues.Count > 0)
+            {
+                this.Roh_cvOf = new CV(propRoh_cvOf.PropertyValues[0].RelatedEntity, idiomaUsuario);
+            }
+            this.Roh_gnossUser = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/gnossUser"));
         }
 
         public virtual string RdfType { get { return "http://xmlns.com/foaf/0.1/Person"; } }
@@ -3194,6 +3132,14 @@
         [LABEL(LanguageEnum.es,"http://w3id.org/roh/isPublic")]
         [RDFProperty("http://w3id.org/roh/isPublic")]
         public  bool Roh_isPublic { get; set;}
+		
+		[LABEL(LanguageEnum.es, "http://w3id.org/roh/cvOf")]
+        [RDFProperty("http://w3id.org/roh/cvOf")]
+        public CV Roh_cvOf { get; set; }
+
+        [LABEL(LanguageEnum.es, "http://w3id.org/roh/gnossUser")]
+        [RDFProperty("http://w3id.org/roh/gnossUser")]
+        public string Roh_gnossUser { get; set; }
 
     }
 
