@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using static WorkerServiceRabbitConsume.Program;
 
 namespace WorkerServiceRabbitConsume
 {
@@ -45,6 +46,7 @@ namespace WorkerServiceRabbitConsume
             {
                 ConfigService configService = scope.ServiceProvider.GetRequiredService<ConfigService>();
                 ReadRabbitService rabbitMQService = scope.ServiceProvider.GetRequiredService<ReadRabbitService>();
+                FileLogger.Log($@"{DateTime.Now} --- {configService.GetrabbitConnectionString()}");
                 rabbitMQService.ListenToQueue(new ReadRabbitService.ReceivedDelegate(rabbitMQService.ProcessItem), new ReadRabbitService.ShutDownDelegate(OnShutDown), configService.GetQueueRabbit());
             }
         }
