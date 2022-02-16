@@ -1,5 +1,5 @@
 {
-  "rdftype": "http://w3id.org/roh/ResearchObject",
+  "rdftype": "http://w3id.org/roh/ResearchObjects",
   "property": "http://w3id.org/roh/researchObject",
   "sections": [
     {
