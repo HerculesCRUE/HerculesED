@@ -235,7 +235,18 @@ var edicionCV = {
             var rdfType = $($(this).attr('href')).find('.cvTab').attr('rdftype');
             that.loadTab(entityID, rdfType);
         });
-        $('#identificacion-tab').click();
+		
+		if(getParam('tab')!=null)
+		{
+			$('#'+getParam('tab')).click();
+			
+		}else
+		{		
+			$('#identificacion-tab').click();
+		}
+		
+		
+		
         return;
     },
     //Métodos de pestañas
@@ -247,6 +258,23 @@ var edicionCV = {
         $.get(urlEdicionCV + 'GetTab?pId=' + entityID + "&pRdfType=" + rdfType + "&pLang=" + lang, null, function(data) {
             that.printTab(entityID, data);
             OcultarUpdateProgress();
+			
+			if(getParam('tab')!=null)
+			{
+				if(getParam('id')!=null)
+				{
+					//Abrimos edición
+					$('a[internal-id="'+getParam('id')+'"]').click();
+				}
+				if(getParam('section')!=null)
+				{
+					//Abrimos creacion
+					$('div[section="'+getParam('section')+'"] a.aniadirEntidad').click();
+				}
+				
+				//reseteamos la url
+				history.pushState(null, '', document.location.origin+document.location.pathname);
+			}		
         });
         return;
     },
@@ -620,7 +648,7 @@ var edicionCV = {
 											</div>
 											<div class="title-wrap">
 												<h2 class="resource-title">
-													<a href="#" data-id="${id}">${data.title}</a>
+													<a href="#" data-id="${id}" internal-id="${data.identifier}">${data.title}</a>
 													${this.printHtmlListItemVisibilidad(data)}
 													${this.printHtmlListItemEditable(data)}
 												</h2>
@@ -1108,23 +1136,29 @@ var edicionCV = {
             var htmlInput = '';
 
             switch (property.type) {
+				case 'boolean':
+                    htmlInput = this.printSelectCombo(property.property, value, property.comboValues, property.comboDependency, property.required, !iseditable,property.entity_cv,property.dependency);
+                    break;
 				case 'image':
                     htmlInput = this.printPropertyEditImage(property.property, property.placeholder, value);
                     break;
-                case 'text':
-                    htmlInput = this.printPropertyEditTextInput(property.property, property.placeholder, value, property.required, !iseditable, property.autocomplete, property.dependency,property.autocompleteConfig);
+                case "entityautocomplete":
+                    htmlInput = this.printPropertyEditEntityAutocomplete(property.property, property.placeholder, property.propertyEntityValue, property.required, !iseditable, property.autocomplete, property.dependency,property.autocompleteConfig);
+                    break;
+				case 'text':
+                    htmlInput = this.printPropertyEditTextInput(property.property, property.placeholder, value, property.required, !iseditable, property.autocomplete, property.dependency,property.autocompleteConfig,property.entity_cv);
                     break;
                 case 'number':
-                    htmlInput = this.printPropertyEditNumberInput(property.property, property.placeholder, value, property.required, !iseditable);
+                    htmlInput = this.printPropertyEditNumberInput(property.property, property.placeholder, value, property.required, !iseditable, property.dependency);
                     break;
                 case 'selectCombo':
-                    htmlInput = this.printSelectCombo(property.property, value, property.comboValues, property.comboDependency, property.required, !iseditable);
+                    htmlInput = this.printSelectCombo(property.property, value, property.comboValues, property.comboDependency, property.required, !iseditable,property.entity_cv,property.dependency);
                     break;
                 case 'textarea':
-                    htmlInput = this.printPropertyEditTextArea(property.property, property.placeholder, value, property.required, !iseditable);
+                    htmlInput = this.printPropertyEditTextArea(property.property, property.placeholder, value, property.required, !iseditable,property.entity_cv);
                     break;
                 case 'date':
-                    htmlInput = this.printPropertyEditDate(property.property, property.placeholder, value, property.required, !iseditable);
+                    htmlInput = this.printPropertyEditDate(property.property, property.placeholder, value, property.required, !iseditable, property.dependency);
                     break;
                 case 'auxEntity':
                 case 'auxEntityAuthorList':
@@ -1190,6 +1224,24 @@ var edicionCV = {
 				}
 				htmlInput+=`<input propertyorigin="${property.property}" propertyrdf="${property.propertyEntity}" value="${propertyEntityValue}" type="hidden" class="form-control not-outline ">`;
 			}
+			if(property.type=="entityautocomplete")
+			{
+				var htmlDependency = '';
+				var cssDependency=''
+				if(property.dependency!=null)
+				{
+					cssDependency+=' hasdependency';
+					if(property.dependency.parentDependencyValue!=null)
+					{
+						htmlDependency=` dependencyproperty="${property.dependency.parent}" dependencypropertyvalue="${property.dependency.parentDependencyValue}"` ;			
+					}else if(property.dependency.parentDependencyValueDistinct!=null)
+					{
+						htmlDependency=` dependencyproperty="${property.dependency.parent}" dependencypropertyvaluedistinct="${property.dependency.parentDependencyValueDistinct}"` ;			
+					}
+				}
+				
+				htmlInput+=`<input propertyorigin="${property.property}_aux" propertyrdf="${property.property}" value="${value}" type="hidden" class="form-control not-outline ${cssDependency} " ${htmlDependency} >`;
+			}
             return `<div class="form-group ${css}" ${rdftype}>
 					<label class="control-label d-block">${property.title}${required}</label>
 					${htmlInput}
@@ -1197,7 +1249,7 @@ var edicionCV = {
         } else {
             if (property.multiple) {
                 css += ' multiple';
-            }
+            }			
             var htmlMultiple = `<div class='item aux'>`;
             if (property.type == 'auxEntity' || property.type == 'auxEntityAuthorList' || property.type == 'thesaurus') {
                 htmlMultiple = `<div class='item aux entityaux' propertyrdf='${property.property}' rdftype='${property.entityAuxData.rdftype}' about=''>`;
@@ -1206,13 +1258,13 @@ var edicionCV = {
             }
             switch (property.type) {
                 case 'text':
-                    htmlMultiple += this.printPropertyEditTextInput(property.property, property.placeholder, '', property.required, !iseditable, property.autocomplete, property.dependency,property.autocompleteConfig);
+                    htmlMultiple += this.printPropertyEditTextInput(property.property, property.placeholder, '', property.required, !iseditable, property.autocomplete, property.dependency,property.autocompleteConfig,property.entity_cv);
                     break;
                 case 'number':
-                    htmlMultiple = this.printPropertyEditNumberInput(property.property, property.placeholder, value, property.required, !iseditable);
+                    htmlMultiple = this.printPropertyEditNumberInput(property.property, property.placeholder, value, property.required, !iseditable, property.dependency);
                     break;
                 case 'selectCombo':
-                    htmlMultiple += this.printSelectCombo(property.property, '', property.comboValues, property.comboDependency, property.required, !iseditable);
+                    htmlMultiple += this.printSelectCombo(property.property, '', property.comboValues, property.comboDependency, property.required, !iseditable,property.entity_cv,property.dependency);
                     break;
                 case 'thesaurus':
                     var valuesThesaurus = $.map(property.entityAuxData.entities, function(entity) {
@@ -1223,10 +1275,10 @@ var edicionCV = {
                     htmlMultiple += this.printRowsEdit(iseditable, property.entityAuxData.rows);
                     break;
                 case 'textarea':
-                    htmlMultiple += this.printPropertyEditTextArea(property.property, property.placeholder, '', property.required, !iseditable);
+                    htmlMultiple += this.printPropertyEditTextArea(property.property, property.placeholder, '', property.required, !iseditable,property.entity_cv);
                     break;
                 case 'date':
-                    htmlMultiple += this.printPropertyEditDate(property.property, property.placeholder, '', property.required, !iseditable);
+                    htmlMultiple += this.printPropertyEditDate(property.property, property.placeholder, '', property.required, !iseditable, property.dependency);
                     break;
                 case 'auxEntity':
                 case 'auxEntityAuthorList':
@@ -1306,10 +1358,10 @@ var edicionCV = {
                         htmlMultiple += this.printPropertyEditNumberInput(property.property, property.placeholder, property.values[valor], property.required, true);
                         break;
                     case 'selectCombo':
-                        htmlMultiple += this.printSelectCombo(property.property, property.values[valor], property.comboValues, property.comboDependency, property.required, true);
+                        htmlMultiple += this.printSelectCombo(property.property, property.values[valor], property.comboValues, property.comboDependency, property.required, true,property.entity_cv,property.dependency);
                         break;
                     case 'textarea':
-                        htmlMultiple += this.printPropertyEditTextArea(property.property, property.placeholder, property.values[valor], property.required, true);
+                        htmlMultiple += this.printPropertyEditTextArea(property.property, property.placeholder, property.values[valor], property.required, true,property.entity_cv);
                         break;
                     case 'date':
                         htmlMultiple += this.printPropertyEditDate(property.property, property.placeholder, property.values[valor], property.required, true);
@@ -1370,7 +1422,22 @@ var edicionCV = {
                 }
                 htmlMultiple += '</div>';
             }
-            return `<div class="form-group ${css}" ${order} ${rdftype}>
+			var htmlDependency = '';
+			if(property.dependency!=null)
+			{
+				css+=' hasdependency';
+
+				if(property.dependency.parentDependencyValue!=null)
+				{
+					htmlDependency=` dependencyproperty="${property.dependency.parent}" dependencypropertyvalue="${property.dependency.parentDependencyValue}"` ;		
+		
+				}else if(property.dependency.parentDependencyValueDistinct!=null)
+				{
+					htmlDependency=` dependencyproperty="${property.dependency.parent}" dependencypropertyvaluedistinct="${property.dependency.parentDependencyValueDistinct}"` ;			
+				}
+				
+			}
+            return `<div ${htmlDependency} class="form-group ${css}" ${order} ${rdftype}>
 					<label class="control-label d-block">${property.title}${required}</label>
 					${htmlMultiple}
 				</div>`;
@@ -1403,11 +1470,15 @@ var edicionCV = {
 					<input propertyrdf="${property}" type="hidden">
 				</div>`;
     },
-    printPropertyEditTextInput: function(property, placeholder, value, required, pDisabled, autocomplete, dependency,autocompleteConfig) {
+    printPropertyEditTextInput: function(property, placeholder, value, required, pDisabled, autocomplete, dependency,autocompleteConfig,pEntity_cv) {
         var css = "";
         if (required) {
             css = "obligatorio";
         }
+		if(pEntity_cv)
+		{
+			css+=" entity_cv";
+		}
         var prop_property = 'propertyrdf';
         var disabled = '';
         if (pDisabled) {
@@ -1443,12 +1514,20 @@ var edicionCV = {
 		if(dependency!=null)
 		{
 			css+=' hasdependency';
-			htmlDependency=` dependencyproperty="${dependency.parent}" dependencypropertyvalue="${dependency.parentDependencyValue}"` ;			
+			if(dependency.parentDependencyValue!=null)
+			{
+				htmlDependency=` dependencyproperty="${dependency.parent}" dependencypropertyvalue="${dependency.parentDependencyValue}"` ;		
+	
+			}else if(dependency.parentDependencyValueDistinct!=null)
+			{
+				htmlDependency=` dependencyproperty="${dependency.parent}" dependencypropertyvaluedistinct="${dependency.parentDependencyValueDistinct}"` ;			
+			}
+			
 		}
 
         return `<input ${disabled} ${atributesAutocomplete} propertyrdf="${property}" placeholder="${placeholder}" value="${value}" value="${value}" onclick="${action}" type="text" class="form-control not-outline ${css}" ${htmlDependency}>`;
     },
-    printPropertyEditNumberInput: function(property, placeholder, value, required, pDisabled) {
+    printPropertyEditEntityAutocomplete: function(property, placeholder, value, required, pDisabled, autocomplete, dependency,autocompleteConfig) {
         var css = "";
         if (required) {
             css = "obligatorio";
@@ -1458,9 +1537,72 @@ var edicionCV = {
         if (pDisabled) {
             disabled = 'disabled';
         }
-        return `<input ${disabled} propertyrdf="${property}" placeholder="${placeholder}" value="${value}" type="number" class="form-control not-outline ${css}">`;
+
+        var action = '';
+		var atributesAutocomplete='';
+        if (autocomplete) {
+            action = 'addAutocompletar(this)';
+			if(autocompleteConfig!=null)
+			{
+				if(autocompleteConfig.property!=null)
+				{
+					atributesAutocomplete+=' propertyautocomplete="'+autocompleteConfig.property+'" ';
+				}
+				if(autocompleteConfig.rdftype!=null)
+				{
+					atributesAutocomplete+=' rdftypeautocomplete="'+autocompleteConfig.rdftype+'" ';
+				}
+				if(autocompleteConfig.graph!=null)
+				{
+					atributesAutocomplete+=' graphautocomplete="'+autocompleteConfig.graph+'" ';
+				}				
+				atributesAutocomplete+=' entityidautocomplete="true" ';
+			}
+        }
+		
+		var htmlDependency = '';
+		if(dependency!=null)
+		{
+			css+=' hasdependency';
+			if(dependency.parentDependencyValue!=null)
+			{
+				htmlDependency=` dependencyproperty="${dependency.parent}" dependencypropertyvalue="${dependency.parentDependencyValue}"` ;		
+	
+			}else if(dependency.parentDependencyValueDistinct!=null)
+			{
+				htmlDependency=` dependencyproperty="${dependency.parent}" dependencypropertyvaluedistinct="${dependency.parentDependencyValueDistinct}"` ;			
+			}			
+		}
+
+        return `<input ${disabled} ${atributesAutocomplete} propertyrdf="${property}_aux" placeholder="${placeholder}" value="${value}" value="${value}" onclick="${action}" type="text" class="form-control not-outline autocompleteentity ${css}" ${htmlDependency}>`;
     },
-    printPropertyEditDate: function(property, placeholder, value, required, pDisabled) {
+    printPropertyEditNumberInput: function(property, placeholder, value, required, pDisabled, dependency) {
+        var css = "";
+        if (required) {
+            css = "obligatorio";
+        }
+        var prop_property = 'propertyrdf';
+        var disabled = '';
+        if (pDisabled) {
+            disabled = 'disabled';
+        }
+		var htmlDependency = '';
+		if(dependency!=null)
+		{
+			css+=' hasdependency';
+			
+			if(dependency.parentDependencyValue!=null)
+			{
+				htmlDependency=` dependencyproperty="${dependency.parent}" dependencypropertyvalue="${dependency.parentDependencyValue}"` ;		
+	
+			}else if(dependency.parentDependencyValueDistinct!=null)
+			{
+				htmlDependency=` dependencyproperty="${dependency.parent}" dependencypropertyvaluedistinct="${dependency.parentDependencyValueDistinct}"` ;			
+			}
+		}
+        return `<input ${disabled} propertyrdf="${property}" placeholder="${placeholder}" value="${value}" type="number" class="form-control not-outline ${css}" ${htmlDependency}>`;
+    },
+    printPropertyEditDate: function(property, placeholder, value, required, pDisabled, dependency) {
         var valueDate = "";
         if (value != '') {
             valueDate = value.substring(6, 8) + "/" + value.substring(4, 6) + "/" + value.substring(0, 4);
@@ -1473,22 +1615,38 @@ var edicionCV = {
         if (pDisabled) {
             disabled = 'disabled';
         }
-        return `<input propertyrdf="${property}" value="${value}" type="hidden">
+		var htmlDependency = '';
+		if(dependency!=null)
+		{
+			if(dependency.parentDependencyValue!=null)
+			{
+				htmlDependency=` dependencyproperty="${dependency.parent}" dependencypropertyvalue="${dependency.parentDependencyValue}" class="hasdependency"` ;		
+	
+			}else if(dependency.parentDependencyValueDistinct!=null)
+			{
+				htmlDependency=` dependencyproperty="${dependency.parent}" dependencypropertyvaluedistinct="${dependency.parentDependencyValueDistinct}" class="hasdependency"` ;			
+			}			
+		}
+        return `<input propertyrdf="${property}" value="${value}" type="hidden" ${htmlDependency}>
 		<input ${disabled} propertyrdf="${property}" placeholder="${placeholder}" value="${valueDate}" type="text" class="form-control aux not-outline form-group-date datepicker ${css}">
 				<span class="material-icons form-group-date">today</span>`;
     },
-    printPropertyEditTextArea: function(property, placeholder, value, required, pDisabled) {
+    printPropertyEditTextArea: function(property, placeholder, value, required, pDisabled,pEntity_cv) {
         var css = "";
         if (required) {
             css = "obligatorio";
         }
+		if(pEntity_cv)
+		{
+			css+=" entity_cv";
+		}
         var disabled = '';
         if (pDisabled) {
             disabled = 'disabled';
         }
         return `<textarea ${disabled} propertyrdf="${property}" placeholder="${placeholder}" type="text" class="form-control not-outline ${css}">${value}</textarea>`;
     },
-    printSelectCombo: function(property, pId, pItems, pDependency, required, pDisabled) {
+    printSelectCombo: function(property, pId, pItems, pComboDependency, required, pDisabled,pEntity_cv,pDependency) {
         var disabled = '';
         if (pDisabled) {
             disabled = 'disabled';
@@ -1497,48 +1655,45 @@ var edicionCV = {
         if (required) {
             css = "obligatorio";
         }
+		if(pEntity_cv)
+		{
+			css+=" entity_cv";
+		}
         var dependency = "";
-        if (pDependency != null) {
+        if (pComboDependency != null) {
             css += " hasdependency";
-            dependency = pDependency.parent;
+            dependency = pComboDependency.parent;
         }
-        var selector = `<select ${disabled} propertyrdf="${property}" class="js-select2 ${css}" dependency="${dependency}" data-select-search="true">`;
+		
+		var htmlDependency = '';
+		if(pDependency!=null)
+		{
+			css+=' hasdependency';
+			if(pDependency.parentDependencyValue!=null)
+			{
+				htmlDependency=` dependencyproperty="${pDependency.parent}" dependencypropertyvalue="${pDependency.parentDependencyValue}"` ;		
+	
+			}else if(pDependency.parentDependencyValueDistinct!=null)
+			{
+				htmlDependency=` dependencyproperty="${pDependency.parent}" dependencypropertyvaluedistinct="${pDependency.parentDependencyValueDistinct}"` ;			
+			}			
+		}
+		
+		
+		
+        var selector = `<select ${disabled} ${htmlDependency} propertyrdf="${property}" class="js-select2 ${css}" dependency="${dependency}" data-select-search="true">`;
         for (var propiedad in pItems) {
             var propAux = '';
             if (propiedad == pId) {
                 propAux = ' selected ';
             }
-            if (pDependency != null && propiedad != "") {
-                propAux += ' disabled data-dependency="' + pDependency.parentDependency[propiedad] + '"';
+            if (pComboDependency != null && propiedad != "") {
+                propAux += ' disabled data-dependency="' + pComboDependency.parentDependency[propiedad] + '"';
             }
 
             selector += `<option ${propAux} value="${propiedad}">${pItems[propiedad]}</option>`;
         }
         selector += "</select>";
-        if (pDependency != null) {
-            /*
-            var script = ` $('select[propertyrdf="${pDependency.parent}"]').change(function(){
-            	var valorSeleccionado = $(this).val();
-            	var comboHijo = $('select[propertyrdf="${property}"]');
-            	comboHijo.find('option').each(function(){
-            		if($(this).attr('data-dependency') == valorSeleccionado || $(this).attr('data-dependency') == null){
-            			$(this).removeAttr('disabled');
-            		}
-            		else{
-            			$(this).attr('disabled', 'disabled');
-            		}
-            	})
-            	var opcionHijaSelecccionada = comboHijo.find('option:selected');
-            	if(opcionHijaSelecccionada.length > 0 && opcionHijaSelecccionada.attr("data-dependency") != valorSeleccionado)
-            	{
-            		comboHijo.find('option:nth-child(1)')
-            		  .prop('selected',true)
-            		  .trigger('change')
-            	}
-            });
-            $('select[propertyrdf="${pDependency.parent}"]').trigger('change')`;
-            selector += '<script>' + script + '</script>'*/
-        }
         return selector;
     },
     printThesaurus: function(property, values, pItems, required, pDisabled) {
@@ -1942,12 +2097,12 @@ var edicionCV = {
                 var htmlSearch = "";
                 if (items.length > 1) {
 
-                    htmlSearch = `	<div id="buscador" class="buscador">
+                    /*htmlSearch = `	<div id="buscador" class="buscador">
 										<input type="text" id="txtBusquedaPrincipal" class="not-outline text txtBusqueda autocompletar personalizado ac_input" placeholder="${GetText('CV_ESCRIBE_ALGO')}" value="${texto}" autocomplete="off">
 										<span class="botonSearch">
 											<span class="material-icons">search</span>
 										</span>
-									</div>`;
+									</div>`;*/
                 }
                 var htmlAcciones = `
 									<div class="simple-collapse-content">
@@ -2435,6 +2590,12 @@ var edicionCV = {
     },
     //Fin de métodos de edición
     engancharComportamientosCV: function() {
+		 $('select').unbind("change.selectitem").bind("change.selectitem", function() {
+			var valor=$(this).val();
+			$(this).find('option[value="'+valor+'"]').attr('selected',''); 
+			$(this).find('option[value!="'+valor+'"]').removeAttr('selected'); 
+		});
+		
         $('.select2-container').remove();
         iniciarSelects2.init();
         iniciarDatepicker.init();
@@ -2595,6 +2756,8 @@ var edicionCV = {
                     $('#inputsignatures').val('');
                     $('#inputsignatures').removeAttr('disabled');
                     $('#modal-anadir-autor .validar').removeAttr('disabled');
+					$('#modal-anadir-autor .validar').text(GetText('CV_BUSCAR'));
+					$('#modal-anadir-autor .validar').removeAttr('reset');
                     $('#modal-anadir-autor').attr('propertyrdf', $(this).closest('.entityauxauthorlist').find('.item.aux.entityaux').attr('propertyrdf'));
                 } else {
                     //Edición
@@ -2824,9 +2987,10 @@ var edicionCV = {
                 that.validarFirmas();
             }else{
 				$('#inputsignatures').removeAttr('disabled');
-				$(this).attr('reset').removeAttr('reset');
+				$(this).removeAttr('reset');
 				$('#modal-anadir-autor .validar').text(GetText('CV_BUSCAR'));
 				$('#inputsignatures').val('');
+				$('#modal-anadir-autor div.custom-form-row.resultados').empty();
 			}
         });
 
@@ -3072,26 +3236,84 @@ var edicionCV = {
         $('select.hasdependency').each(function() {
             //Obtenemos el input del que es dependiente
             var dependency = $(this).attr('dependency');
-            //Seleccionamos el input del que es dependiente y le añadimos el input sobre el que tiene que actuar
-            $('select[propertyrdf="' + dependency + '"]').attr('dependencyact', $(this).attr('propertyrdf'));
-            $('select[propertyrdf="' + dependency + '"]').unbind("change.dependency").bind("change.dependency", function() {
-                var valorSeleccionado = $(this).val();
-                var comboHijo = $(this).closest('.custom-form-row').find('select[propertyrdf="' + $(this).attr('dependencyact') + '"]');
-                comboHijo.find('option').each(function() {
-                    if ($(this).attr('data-dependency') == valorSeleccionado || $(this).attr('data-dependency') == null) {
-                        $(this).removeAttr('disabled');
-                    } else {
-                        $(this).attr('disabled', 'disabled');
-                    }
-                })
-                var opcionHijaSelecccionada = comboHijo.find('option:selected');
-                if (opcionHijaSelecccionada.length > 0 && opcionHijaSelecccionada.attr("data-dependency") != valorSeleccionado) {
-                    comboHijo.find('option:nth-child(1)')
-                        .prop('selected', true)
-                        .trigger('change')
-                }
-            });
-            $('select[propertyrdf="' + dependency + '"]').trigger('change');
+			if(dependency!='')
+			{
+				//Seleccionamos el input del que es dependiente y le añadimos el input sobre el que tiene que actuar
+				$('select[propertyrdf="' + dependency + '"]').attr('dependencyact', $(this).attr('propertyrdf'));
+				$('select[propertyrdf="' + dependency + '"]').unbind("change.dependencycombo").bind("change.dependencycombo", function() {
+					var valorSeleccionado = $(this).val();
+					var comboHijo = $(this).closest('.custom-form-row').find('select[propertyrdf="' + $(this).attr('dependencyact') + '"]');
+					comboHijo.find('option').each(function() {
+						if ($(this).attr('data-dependency') == valorSeleccionado || $(this).attr('data-dependency') == null) {
+							$(this).removeAttr('disabled');
+						} else {
+							$(this).attr('disabled', 'disabled');
+						}
+					})
+					var opcionHijaSelecccionada = comboHijo.find('option:selected');
+					if (opcionHijaSelecccionada.length > 0 && opcionHijaSelecccionada.attr("data-dependency") != valorSeleccionado) {
+						comboHijo.find('option:nth-child(1)')
+							.prop('selected', true)
+							.trigger('change')
+					}
+				});
+				$('select[propertyrdf="' + dependency + '"]').trigger('change');
+			}else
+			{
+				//Obtenemos el input del que es dependiente
+				var dependencyproperty = $(this).attr('dependencyproperty');
+				//Seleccionamos el input del que es dependiente y le añadimos el/los input sobre el que tiene que actuar
+				var lista=[];
+				if($('select[propertyrdf="' + dependencyproperty + '"]').attr('dependencyactcombo')!=null)
+				{
+					lista=$('select[propertyrdf="' + dependencyproperty + '"]').attr('dependencyactcombo').split(',');
+				}
+				if(lista.indexOf($(this).attr('propertyrdf'))==-1)
+				{
+					lista.push($(this).attr('propertyrdf'));
+				}
+				$('select[propertyrdf="' + dependencyproperty + '"],input[propertyrdf="' + dependencyproperty + '"]').attr('dependencyactcombo',lista.join(','));
+				$('select[propertyrdf="' + dependencyproperty + '"],input[propertyrdf="' + dependencyproperty + '"]').unbind("change.dependencycombo").bind("change.dependencycombo", function() {
+					var valorSeleccionado = $(this).val();
+					var that2=this;
+					$.each($(this).attr('dependencyactcombo').split(','), function (ind, elem) { 
+						var inputDestino=$(that2).closest('.entityaux').find('input[propertyrdf="' + elem + '"],select[propertyrdf="' + elem + '"]');
+						if(inputDestino.length==0)
+						{
+							var inputDestino=$(that2).closest('form').find('input[propertyrdf="' + elem + '"],select[propertyrdf="' + elem + '"]');
+						}
+						if(inputDestino.attr('dependencypropertyvalue')!=null)
+						{						
+							var dependencyDestinoValue=inputDestino.attr('dependencypropertyvalue');
+							if((valorSeleccionado==dependencyDestinoValue) || (dependencyDestinoValue=="*" && valorSeleccionado!='') )
+							{
+								$(inputDestino).parent().show();
+							}else
+							{
+								$(inputDestino).parent().hide();
+								$(inputDestino).val('');
+								$(inputDestino).trigger('change');
+							}
+						}
+						if(inputDestino.attr('dependencypropertyvaluedistinct')!=null)
+						{						
+							var dependencyDestinoValueDistinct=inputDestino.attr('dependencypropertyvaluedistinct');
+							if(valorSeleccionado!=dependencyDestinoValueDistinct)
+							{
+								$(inputDestino).parent().show();
+							}else
+							{
+								$(inputDestino).parent().hide();
+								$(inputDestino).val('');
+								$(inputDestino).trigger('change');
+							}
+						}
+					}); 
+					
+					
+				});
+				$('select[propertyrdf="' + dependencyproperty + '"],input[propertyrdf="' + dependencyproperty + '"]').trigger('change');
+			}
         });
 
         //Petición de enriquecimiento
@@ -3101,23 +3323,94 @@ var edicionCV = {
         });
 		
 		//campos de texto dependientes
-        $('input.hasdependency[type=text]').each(function() {
+        $('input.hasdependency[type=text],input.hasdependency[type=hidden],input.hasdependency[type=number]').each(function() {
             //Obtenemos el input del que es dependiente
             var dependencyproperty = $(this).attr('dependencyproperty');
-            //Seleccionamos el input del que es dependiente y le añadimos el input sobre el que tiene que actuar
-            $('select[propertyrdf="' + dependencyproperty + '"]').attr('dependencyact', $(this).attr('propertyrdf'));
-            $('select[propertyrdf="' + dependencyproperty + '"]').unbind("change.dependency").bind("change.dependency", function() {
+            //Seleccionamos el input del que es dependiente y le añadimos el/los input sobre el que tiene que actuar
+			var lista=[];
+			if($('select[propertyrdf="' + dependencyproperty + '"]').attr('dependencyact')!=null)
+			{
+				lista=$('select[propertyrdf="' + dependencyproperty + '"]').attr('dependencyact').split(',');
+			}
+			if(lista.indexOf($(this).attr('propertyrdf'))==-1)
+			{
+				lista.push($(this).attr('propertyrdf'));
+			}
+            $('select[propertyrdf="' + dependencyproperty + '"],input[propertyrdf="' + dependencyproperty + '"]').attr('dependencyact',lista.join(','));
+            $('select[propertyrdf="' + dependencyproperty + '"],input[propertyrdf="' + dependencyproperty + '"]').unbind("change.dependency").bind("change.dependency", function() {
                 var valorSeleccionado = $(this).val();
-				var inputDestino=$(this).closest('.custom-form-row').find('input[propertyrdf="' + $(this).attr('dependencyact') + '"]');
-				var dependencyDestinoValue=inputDestino.attr('dependencypropertyvalue');
-				if(valorSeleccionado==dependencyDestinoValue)
-				{
-					$(inputDestino).parent().show();
-				}else
-				{
-					$(inputDestino).parent().hide();
-					$(inputDestino).val('');
-				}
+				var that2=this;
+				$.each($(this).attr('dependencyact').split(','), function (ind, elem) { 
+					var inputDestino=$(that2).closest('.entityaux').find('input[propertyrdf="' + elem + '"],select[propertyrdf="' + elem + '"]');
+					if(inputDestino.length==0)
+					{
+						var inputDestino=$(that2).closest('form').find('input[propertyrdf="' + elem + '"],select[propertyrdf="' + elem + '"]');
+					}			
+					if(inputDestino.attr('dependencypropertyvalue')!=null)
+					{						
+						var dependencyDestinoValue=inputDestino.attr('dependencypropertyvalue');
+						if((valorSeleccionado==dependencyDestinoValue) || (dependencyDestinoValue=="*" && valorSeleccionado!='') )
+						{
+							$(inputDestino).parent().show();
+						}else
+						{
+							$(inputDestino).parent().hide();
+							$(inputDestino).val('');
+							$(inputDestino).trigger('change');
+						}
+					}
+					if(inputDestino.attr('dependencypropertyvaluedistinct')!=null)
+					{						
+						var dependencyDestinoValueDistinct=inputDestino.attr('dependencypropertyvaluedistinct');
+						if(valorSeleccionado!=dependencyDestinoValueDistinct)
+						{
+							$(inputDestino).parent().show();
+						}else
+						{
+							$(inputDestino).parent().hide();
+							$(inputDestino).val('');
+							$(inputDestino).trigger('change');
+						}
+					}
+				}); 
+				
+				
+            });
+			$('select[propertyrdf="' + dependencyproperty + '"],input[propertyrdf="' + dependencyproperty + '"]').trigger('change');
+        });
+		
+		//entidades auxiliares dependientes
+        $('div.entityauxcontainer.hasdependency').each(function() {
+            //Obtenemos el input del que es dependiente
+            var dependencyproperty = $(this).attr('dependencyproperty');
+            //Seleccionamos el input del que es dependiente y le añadimos la/las entidades auxiliares sobre el que tiene que actuar
+			var lista=[];
+			if($('select[propertyrdf="' + dependencyproperty + '"]').attr('dependencyactentity')!=null)
+			{
+				lista=$('select[propertyrdf="' + dependencyproperty + '"]').attr('dependencyactentity').split(',');
+			}
+			if(lista.indexOf($($(this).find('div.item.aux.entityaux')[0]).attr('propertyrdf'))==-1)
+			{
+				lista.push($($(this).find('div.item.aux.entityaux')[0]).attr('propertyrdf'));
+			}
+            $('select[propertyrdf="' + dependencyproperty + '"]').attr('dependencyactentity',lista.join(','));
+            $('select[propertyrdf="' + dependencyproperty + '"]').unbind("change.dependencyentity");
+			$('select[propertyrdf="' + dependencyproperty + '"]').bind("change.dependencyentity", function() {
+                var valorSeleccionado = $(this).val();
+				var that2=this;
+				$.each($(this).attr('dependencyactentity').split(','), function (ind, elem) { 					
+					var entidadDestino=$(that2).closest('form').find('div.item.aux.entityaux[propertyrdf="' + elem + '"]').closest('div.entityauxcontainer');
+					var dependencyDestinoValue=entidadDestino.attr('dependencypropertyvalue');
+					if(valorSeleccionado==dependencyDestinoValue)
+					{
+						$(entidadDestino).parent().show();
+					}else
+					{
+						$(entidadDestino).parent().hide();
+						$(entidadDestino).find('div.item.added.entityaux').remove();
+						$(entidadDestino).find('div.simple-collapse-content .resource-list-wrap').empty();
+					}				
+				}); 			
             });
             $('select[propertyrdf="' + dependencyproperty + '"]').trigger('change');
         });
@@ -3268,9 +3561,11 @@ var edicionCV = {
             entidad.rdfTypeTab = $(pFormulario).attr('rdftypetab');
             entidad.cvID = this.idCV;
             entidad.properties = [];
-            $(pFormulario).find('input, select, textarea').each(function(index) {
-				if($(this).attr('type')!='file')
+			entidad.properties_cv = [];
+            $(pFormulario).find('input, select, textarea').each(function(index) {				
+				if($(this).attr('type')!='file' && !$(this).hasClass('autocompleteentity'))
 				{
+					var entityCV=$(this).hasClass('entity_cv');
 					if ($(this).attr('propertyrdf') != null) {
 						if ($(this).closest('.item').hasClass('aux') || $(this).hasClass('aux')) {
 							//Si es multiple y no es una entidad auxiliar y no tiene otros valores añadidos continua pero con valor vacío
@@ -3290,16 +3585,30 @@ var edicionCV = {
 						}
 
 						var prop = null;
-						for (var indice in entidad.properties) {
-							if (entidad.properties[indice].prop == property) {
-								prop = entidad.properties[indice];
-							}
-						};
+						if(entityCV)
+						{
+							for (var indice in entidad.properties_cv) {
+								if (entidad.properties_cv[indice].prop == property) {
+									prop = entidad.properties_cv[indice];
+								}
+							};
+						}else{
+							for (var indice in entidad.properties) {
+								if (entidad.properties[indice].prop == property) {
+									prop = entidad.properties[indice];
+								}
+							};
+						}
 						if (prop == null) {
 							prop = {};
 							prop.prop = property;
 							prop.values = [];
-							entidad.properties.push(prop);
+							if(entityCV)
+							{
+								entidad.properties_cv.push(prop);
+							}else{
+								entidad.properties.push(prop);
+							}
 						}
 						var valor = $(this).val();
 						if ($(this).closest('.entityaux').length == 1) {
@@ -3324,7 +3633,7 @@ var edicionCV = {
 
             MostrarUpdateProgress();
             if (entidadPrincipal) {
-                //Entidad principal		
+                //Entidad principal							
                 $.post(urlGuardadoCV + 'updateEntity', entidad, function(data) {
                     if (data.ok) {
                         $(modal).modal('hide');
@@ -3410,27 +3719,16 @@ var edicionCV = {
         $('#modal-anadir-autor .formulario-edicion .form-actions .ko').html("");
         var error = "";
         //Comprobamos que en el texto introducido no haya firmas duplicadas
-        var signatures = $('#inputsignatures').val().toLowerCase().split(',');
+        var signatures = $('#inputsignatures').val().toLowerCase().split(';');
 
         var signaturesArray = [];
-        var firmaActual = "";
         signatures.forEach(function(signature) {
             var actual = signature.toLowerCase().trim();
-            if (firmaActual != '' && actual.replaceAll(".", "").trim().length < 4) {
-                firmaActual += ", " + actual;
-                firmaActual = firmaActual.trim();
-                signaturesArray.push(firmaActual);
-                firmaActual = '';
-            } else {
-                if (firmaActual != '') {
-                    signaturesArray.push(firmaActual);
-                }
-                firmaActual = actual.trim();
-            }
+			if(actual!='')
+			{
+				signaturesArray.push(actual);
+			}
         });
-        if (firmaActual != '') {
-            signaturesArray.push(firmaActual);
-        }
 
         var signaturesProcessed = [];
         signaturesArray.forEach(function(signature) {
@@ -3675,6 +3973,17 @@ function addAutocompletar(control) {
 	$(control).on('keydown', e => {
 		$(e.target).data('previousValue', $(e.target).val());
 	})
+	
+	if($(control).hasClass('autocompleteentity'))
+	{
+		$(control).on("change", e => {
+			//Si no está la entidad se elimina el valor
+			if($(control).parent().find('input[propertyorigin="'+$(control).attr('propertyrdf')+'"]').val()=='')
+			{
+				$(control).val('');
+			}
+		});
+	}
 	
 	var urlAutocomplete=null
 	var pGetEntityID=false;
@@ -5481,4 +5790,23 @@ function aleatorio(inferior,superior){
     aleat = Math.random() * numPosibilidades;
     aleat = Math.round(aleat);
     return parseInt(inferior) + aleat;
+}
+
+
+function getParam(param)
+{
+	var url=window.location.href;
+	url = String(url.match(/\?+.+/));
+	url = url.replace("?", "");
+	url = url.split("&");	
+	x = 0;
+	while (x < url.length)
+	{
+		p = url[x].split("=");
+		if (p[0] == param)
+		{
+			return decodeURIComponent(p[1]);
+		}
+		x++;
+	}
 }
