@@ -47,8 +47,9 @@ namespace WorkerServiceRabbitConsume
                 FileLogger.Log($@"{DateTime.Now} --- Obteniendo config...");
                 ConfigService configService = scope.ServiceProvider.GetRequiredService<ConfigService>();
                 FileLogger.Log($@"{DateTime.Now} --- ReadRabbitService...");
-                ReadRabbitService rabbitMQService = scope.ServiceProvider.GetRequiredService<ReadRabbitService>();
                 FileLogger.Log($@"{DateTime.Now} --- {configService.GetrabbitConnectionString()}");
+                ReadRabbitService rabbitMQService = scope.ServiceProvider.GetRequiredService<ReadRabbitService>();
+                FileLogger.Log($@"X");
                 rabbitMQService.ListenToQueue(new ReadRabbitService.ReceivedDelegate(rabbitMQService.ProcessItem), new ReadRabbitService.ShutDownDelegate(OnShutDown), configService.GetQueueRabbit());
             }
         }
