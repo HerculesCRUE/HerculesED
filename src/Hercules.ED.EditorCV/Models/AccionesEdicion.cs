@@ -303,7 +303,7 @@ namespace GuardadoCV.Models
                 Dictionary<string, int> colaboradoresDocumentos = ObtenerColaboradoresPublicaciones(pPersonID);
                 Dictionary<string, int> colaboradoresProyectos = ObtenerColaboradoresProyectos(pPersonID);
 
-                List<string> signaturesList = pSignatures.Split(new string[] { ";" }, StringSplitOptions.RemoveEmptyEntries).Distinct().Select(x=>x.Trim()).ToList();
+                List<string> signaturesList = pSignatures.Split(new string[] { ";" }, StringSplitOptions.RemoveEmptyEntries).Distinct().Select(x => x.Trim()).ToList();
 
                 Dictionary<string, List<Person>> listaPersonasAux = new Dictionary<string, List<Person>>();
                 Parallel.ForEach(signaturesList, new ParallelOptions { MaxDegreeOfParallelism = 5 }, firma =>
@@ -316,7 +316,7 @@ namespace GuardadoCV.Models
                         listaPersonasAux[firma.Trim()] = personas;
                     }
                 });
-                foreach(string firma in signaturesList)
+                foreach (string firma in signaturesList)
                 {
                     listaPersonas.Add(firma, listaPersonasAux[firma]);
                 }
@@ -899,6 +899,7 @@ namespace GuardadoCV.Models
             {
                 item.title = "";
             }
+            item.identifier = mResourceApi.GetShortGuid(GetPropValues(pId, pListItemConfig.listItem.propertyTitle.property, pData).FirstOrDefault()).ToString().ToLower();
             //Editabilidad
             item.iseditable = true;
             if (!string.IsNullOrEmpty(pId))
@@ -952,9 +953,9 @@ namespace GuardadoCV.Models
                     }
                     itemProperty.type = property.type.ToString();
                     itemProperty.values = GetPropValues(pId, propertyIn, pData);
-                    if(property.type==DataTypeListItem.number)
+                    if (property.type == DataTypeListItem.number)
                     {
-                        itemProperty.values = itemProperty.values.Select(x=>UtilityCV.GetTextNumber(x)).ToList();
+                        itemProperty.values = itemProperty.values.Select(x => UtilityCV.GetTextNumber(x)).ToList();
                     }
                     item.properties.Add(itemProperty);
                 }
@@ -1012,7 +1013,7 @@ namespace GuardadoCV.Models
             }
             Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> respuesta = UtilityCV.GetProperties(new HashSet<string>() { pId }, pGraph, propertyDatas, pLang, new Dictionary<string, SparqlObject>());
 
-            List<PropertyData> propertyDatasCV = pItemEdit.GenerarPropertyDatas(pGraph,true);
+            List<PropertyData> propertyDatasCV = pItemEdit.GenerarPropertyDatas(pGraph, true);
             if (propertyDatasCV.Count > 0)
             {
                 SparqlObject idEntityInCV = mResourceApi.VirtuosoQuery("select ?id", "where{<" + pEntityCV + "> <" + pPropertyCV + "> ?id}", "curriculumvitae");
@@ -1020,16 +1021,16 @@ namespace GuardadoCV.Models
                 {
                     string id = idEntityInCV.results.bindings[0]["id"].value;
                     Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> respuestaCV = UtilityCV.GetProperties(new HashSet<string>() { id }, "curriculumvitae", propertyDatasCV, pLang, new Dictionary<string, SparqlObject>());
-                    foreach(string idrespuesta in respuestaCV.Keys)
+                    foreach (string idrespuesta in respuestaCV.Keys)
                     {
                         string idAux = idrespuesta;
-                        if (idrespuesta== id)
+                        if (idrespuesta == id)
                         {
                             idAux = pId;
                         }
-                        if(!respuesta.ContainsKey(idAux))
+                        if (!respuesta.ContainsKey(idAux))
                         {
-                            respuesta.Add(idAux,new List<Dictionary<string, Data>>());
+                            respuesta.Add(idAux, new List<Dictionary<string, Data>>());
                         }
                         foreach (Dictionary<string, SparqlObject.Data> fila in respuestaCV[idrespuesta])
                         {
@@ -1037,7 +1038,7 @@ namespace GuardadoCV.Models
                             filaAux.Add("s", fila["s"]);
                             filaAux.Add("p", fila["p"]);
                             filaAux.Add("o", fila["o"]);
-                            filaAux["s"].value = filaAux["s"].value.Replace(id,pId);
+                            filaAux["s"].value = filaAux["s"].value.Replace(id, pId);
                             respuesta[idAux].Add(filaAux);
                         }
                     }
@@ -1056,9 +1057,9 @@ namespace GuardadoCV.Models
         /// <param name="pEntityCV">Entidad del cv desde la que se apunta a la entidad</param>
         /// <param name="pPropertyCV">Propiedad que apunta a la entidad en el CV</param>
         /// <returns></returns>
-        private EntityEdit GetEditModel(string pId, ItemEdit pPresentationEdit, string pLang,string pEntityCV=null,string pPropertyCV=null)
+        private EntityEdit GetEditModel(string pId, ItemEdit pPresentationEdit, string pLang, string pEntityCV = null, string pPropertyCV = null)
         {
-            Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> data = GetEditData(pId, pPresentationEdit, pPresentationEdit.graph, pLang, pEntityCV,pPropertyCV);
+            Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> data = GetEditData(pId, pPresentationEdit, pPresentationEdit.graph, pLang, pEntityCV, pPropertyCV);
 
             List<ItemEditSectionRowPropertyCombo> listCombosConfig = GetEditCombos(pPresentationEdit.sections.SelectMany(x => x.rows).SelectMany(x => x.properties).ToList());
             Dictionary<ItemEditSectionRowPropertyCombo, Dictionary<string, string>> combos = new Dictionary<ItemEditSectionRowPropertyCombo, Dictionary<string, string>>();
@@ -1385,7 +1386,7 @@ namespace GuardadoCV.Models
                         entityEditSectionRowProperty.values.Add(value);
                     }
                 }
-                if (pItemEditSectionRowProperty.type ==DataTypeEdit.boolean)
+                if (pItemEditSectionRowProperty.type == DataTypeEdit.boolean)
                 {
                     entityEditSectionRowProperty.comboValues = new Dictionary<string, string>();
                     entityEditSectionRowProperty.comboValues[""] = "-";
@@ -1438,8 +1439,8 @@ namespace GuardadoCV.Models
                     {
                         property = UtilityCV.GetPropComplete(pItemEditSectionRowProperty.autocompleteConfig.property),
                         rdftype = pItemEditSectionRowProperty.autocompleteConfig.rdftype,
-                        graph= pItemEditSectionRowProperty.autocompleteConfig.graph,
-                        getEntityId= !string.IsNullOrEmpty( pItemEditSectionRowProperty.autocompleteConfig.propertyEntity),
+                        graph = pItemEditSectionRowProperty.autocompleteConfig.graph,
+                        getEntityId = !string.IsNullOrEmpty(pItemEditSectionRowProperty.autocompleteConfig.propertyEntity),
                         mandatory = pItemEditSectionRowProperty.autocompleteConfig.mandatory,
                     };
                 }
@@ -1453,7 +1454,7 @@ namespace GuardadoCV.Models
                     }
                 }
 
-                if (pItemEditSectionRowProperty.autocompleteConfig != null && pItemEditSectionRowProperty.type==DataTypeEdit.entityautocomplete)
+                if (pItemEditSectionRowProperty.autocompleteConfig != null && pItemEditSectionRowProperty.type == DataTypeEdit.entityautocomplete)
                 {
                     entityEditSectionRowProperty.propertyEntityValue = "";
                     if (pId != null && pData.ContainsKey(pId))
@@ -1608,7 +1609,7 @@ namespace GuardadoCV.Models
                     {
                         parent = pItemEditSectionRowProperty.dependency.property
                     };
-                    if(!string.IsNullOrEmpty(pItemEditSectionRowProperty.dependency.propertyValue))
+                    if (!string.IsNullOrEmpty(pItemEditSectionRowProperty.dependency.propertyValue))
                     {
                         entityEditSectionRowProperty.dependency.parentDependencyValue = pItemEditSectionRowProperty.dependency.propertyValue.Replace("{GraphsUrl}", mResourceApi.GraphsUrl);
                     }
