@@ -12,6 +12,8 @@ namespace GitHubAPI.Controllers
         // URLs
         private string urlBase { get; set; }
 
+        private string urlBaseEnriquecimiento { get; set; }
+
         /// <summary>
         /// Constructor.
         /// </summary>
@@ -43,6 +45,31 @@ namespace GitHubAPI.Controllers
             }
 
             return urlBase;
+        }
+
+        /// <summary>
+        /// Obtiene la URL base del API de Enriquecimiento que ha sido configurada.
+        /// </summary>
+        /// <returns>URI del API de Enriquecimiento.</returns>
+        public string GetUrlBaseEnriquecimiento()
+        {
+            if (string.IsNullOrEmpty(urlBaseEnriquecimiento))
+            {
+                string connectionString = string.Empty;
+                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                if (environmentVariables.Contains("UrlBaseEnriquecimiento"))
+                {
+                    connectionString = environmentVariables["UrlBaseEnriquecimiento"] as string;
+                }
+                else
+                {
+                    connectionString = configuracion["UrlBaseEnriquecimiento"];
+                }
+
+                urlBaseEnriquecimiento = connectionString;
+            }
+
+            return urlBaseEnriquecimiento;
         }
     }
 }
