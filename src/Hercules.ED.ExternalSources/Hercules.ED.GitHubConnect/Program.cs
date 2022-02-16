@@ -9,7 +9,6 @@ using Microsoft.Extensions.Logging;
 
 namespace GitHubAPI
 {
-#pragma warning disable CS1591
     public class Program
     {
         public static void Main(string[] args)
@@ -24,5 +23,4 @@ namespace GitHubAPI
                     webBuilder.UseStartup<Startup>();
                 });
     }
-#pragma warning restore CS1591
 }

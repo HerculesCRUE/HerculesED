@@ -9,6 +9,26 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
 {
     public class DisambiguationRO : DisambiguableEntity
     {
+        private string mIdRo { get; set; }
+        public string idRo
+        {
+            get
+            {
+                return mIdRo;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    mIdRo = string.Empty;
+                }
+                else
+                {
+                    mIdRo = value;
+                }
+            }
+        }
+
         private string mTitle { get; set; }
         public string title
         {
@@ -86,6 +106,11 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
             type = DisambiguationDataConfigType.equalsIdentifiers
         };
 
+        private static DisambiguationDataConfig configIdRo = new DisambiguationDataConfig()
+        {
+            type = DisambiguationDataConfigType.equalsIdentifiers
+        };
+
         public override List<DisambiguationData> GetDisambiguationData()
         {
             List<DisambiguationData> data = new List<DisambiguationData>();
@@ -109,6 +134,13 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
                 property = "tipo",
                 config = configTipo,
                 value = tipo
+            });
+
+            data.Add(new DisambiguationData()
+            {
+                property = "idRo",
+                config = configIdRo,
+                value = idRo
             });
 
             return data;
