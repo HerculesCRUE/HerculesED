@@ -1481,7 +1481,7 @@ var edicionCV = {
 		}
         var prop_property = 'propertyrdf';
         var disabled = '';
-        if (pDisabled) {
+        if (pDisabled && !pEntity_cv) {
             disabled = 'disabled';
         }
 
@@ -1641,14 +1641,14 @@ var edicionCV = {
 			css+=" entity_cv";
 		}
         var disabled = '';
-        if (pDisabled) {
+        if (pDisabled && !pEntity_cv) {
             disabled = 'disabled';
         }
         return `<textarea ${disabled} propertyrdf="${property}" placeholder="${placeholder}" type="text" class="form-control not-outline ${css}">${value}</textarea>`;
     },
     printSelectCombo: function(property, pId, pItems, pComboDependency, required, pDisabled,pEntity_cv,pDependency) {
         var disabled = '';
-        if (pDisabled) {
+        if (pDisabled && !pEntity_cv) {
             disabled = 'disabled';
         }
         var css = "";
