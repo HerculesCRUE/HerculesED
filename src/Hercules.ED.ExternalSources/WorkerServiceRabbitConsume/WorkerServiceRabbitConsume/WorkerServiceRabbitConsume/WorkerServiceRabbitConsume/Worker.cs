@@ -44,11 +44,8 @@ namespace WorkerServiceRabbitConsume
         {
             using (var scope = _serviceScopeFactory.CreateScope())
             {
-                FileLogger.Log($@"{DateTime.Now} --- Obteniendo config...");
                 ConfigService configService = scope.ServiceProvider.GetRequiredService<ConfigService>();
-                FileLogger.Log($@"{DateTime.Now} --- ReadRabbitService...");
                 ReadRabbitService rabbitMQService = scope.ServiceProvider.GetRequiredService<ReadRabbitService>();
-                FileLogger.Log($@"{DateTime.Now} --- {configService.GetrabbitConnectionString()}");
                 rabbitMQService.ListenToQueue(new ReadRabbitService.ReceivedDelegate(rabbitMQService.ProcessItem), new ReadRabbitService.ShutDownDelegate(OnShutDown), configService.GetQueueRabbit());
             }
         }
