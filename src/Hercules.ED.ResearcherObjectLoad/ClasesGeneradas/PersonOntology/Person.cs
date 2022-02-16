@@ -65,6 +65,7 @@ namespace PersonOntology
 				}
 			}
 			this.Roh_themedAreasNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/themedAreasNumber"));
+			this.Roh_usuarioGitHub = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/usuarioGitHub"));
 			this.Roh_lastUpdatedDate= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/lastUpdatedDate"));
 			SemanticPropertyModel propRoh_lineResearch = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/lineResearch");
 			this.Roh_lineResearch = new List<string>();
@@ -77,6 +78,8 @@ namespace PersonOntology
 			}
 			this.Roh_publicationsNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/publicationsNumber"));
 			this.Vivo_researcherId = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#researcherId"));
+			this.Roh_tokenFigShare = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/tokenFigShare"));
+			this.Roh_tokenGitHub = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/tokenGitHub"));
 			this.Vivo_scopusId = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#scopusId"));
 			this.Roh_projectsNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/projectsNumber"));
 			this.Roh_hasPosition = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/hasPosition"));
@@ -103,6 +106,7 @@ namespace PersonOntology
 			this.Vivo_description = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#description"));
 			this.Roh_semanticScholarId = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/semanticScholarId"));
 			this.Roh_ORCID = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/ORCID"));
+			this.Roh_h_index = GetNumberFloatPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/h-index"));
 			SemanticPropertyModel propVcard_hasTelephone = pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#hasTelephone");
 			this.Vcard_hasTelephone = new List<string>();
 			if (propVcard_hasTelephone != null && propVcard_hasTelephone.PropertyValues.Count > 0)
@@ -112,8 +116,6 @@ namespace PersonOntology
 					this.Vcard_hasTelephone.Add(propValue.Value);
 				}
 			}
-			this.Roh_h_index = GetNumberFloatPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/h-index"));
-			this.Roh_collaboratorsNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/collaboratorsNumber"));
 			SemanticPropertyModel propFoaf_nick = pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/nick");
 			this.Foaf_nick = new List<string>();
 			if (propFoaf_nick != null && propFoaf_nick.PropertyValues.Count > 0)
@@ -123,6 +125,7 @@ namespace PersonOntology
 					this.Foaf_nick.Add(propValue.Value);
 				}
 			}
+			this.Roh_collaboratorsNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/collaboratorsNumber"));
 			this.Roh_isSynchronized= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isSynchronized"));
 			this.Foaf_firstName = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/firstName"));
 			this.Roh_isActive= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isActive"));
@@ -171,6 +174,7 @@ namespace PersonOntology
 				}
 			}
 			this.Roh_themedAreasNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/themedAreasNumber"));
+			this.Roh_usuarioGitHub = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/usuarioGitHub"));
 			this.Roh_lastUpdatedDate= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/lastUpdatedDate"));
 			SemanticPropertyModel propRoh_lineResearch = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/lineResearch");
 			this.Roh_lineResearch = new List<string>();
@@ -183,6 +187,8 @@ namespace PersonOntology
 			}
 			this.Roh_publicationsNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/publicationsNumber"));
 			this.Vivo_researcherId = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#researcherId"));
+			this.Roh_tokenFigShare = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/tokenFigShare"));
+			this.Roh_tokenGitHub = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/tokenGitHub"));
 			this.Vivo_scopusId = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#scopusId"));
 			this.Roh_projectsNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/projectsNumber"));
 			this.Roh_hasPosition = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/hasPosition"));
@@ -209,6 +215,7 @@ namespace PersonOntology
 			this.Vivo_description = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#description"));
 			this.Roh_semanticScholarId = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/semanticScholarId"));
 			this.Roh_ORCID = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/ORCID"));
+			this.Roh_h_index = GetNumberFloatPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/h-index"));
 			SemanticPropertyModel propVcard_hasTelephone = pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#hasTelephone");
 			this.Vcard_hasTelephone = new List<string>();
 			if (propVcard_hasTelephone != null && propVcard_hasTelephone.PropertyValues.Count > 0)
@@ -218,8 +225,6 @@ namespace PersonOntology
 					this.Vcard_hasTelephone.Add(propValue.Value);
 				}
 			}
-			this.Roh_h_index = GetNumberFloatPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/h-index"));
-			this.Roh_collaboratorsNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/collaboratorsNumber"));
 			SemanticPropertyModel propFoaf_nick = pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/nick");
 			this.Foaf_nick = new List<string>();
 			if (propFoaf_nick != null && propFoaf_nick.PropertyValues.Count > 0)
@@ -229,6 +234,7 @@ namespace PersonOntology
 					this.Foaf_nick.Add(propValue.Value);
 				}
 			}
+			this.Roh_collaboratorsNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/collaboratorsNumber"));
 			this.Roh_isSynchronized= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isSynchronized"));
 			this.Foaf_firstName = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/firstName"));
 			this.Roh_isActive= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isActive"));
@@ -250,6 +256,11 @@ namespace PersonOntology
 		public  Department Vivo_departmentOrSchool  { get; set;} 
 		public string IdVivo_departmentOrSchool  { get; set;} 
 
+		[LABEL(LanguageEnum.es,"Usuario Gnoss")]
+		[RDFProperty("http://w3id.org/roh/gnossUser")]
+		public  object Roh_gnossUser  { get; set;} 
+		public string IdRoh_gnossUser  { get; set;} 
+
 		[LABEL(LanguageEnum.es,"http://vivoweb.org/ontology/core#hasResearchArea")]
 		[RDFProperty("http://vivoweb.org/ontology/core#hasResearchArea")]
 		public  List<CategoryPath> Vivo_hasResearchArea { get; set;}
@@ -261,6 +272,9 @@ namespace PersonOntology
 
 		[RDFProperty("http://w3id.org/roh/themedAreasNumber")]
 		public  int? Roh_themedAreasNumber { get; set;}
+
+		[RDFProperty("http://w3id.org/roh/usuarioGitHub")]
+		public  string Roh_usuarioGitHub { get; set;}
 
 		[LABEL(LanguageEnum.es,"http://w3id.org/roh/lastUpdatedDate")]
 		[RDFProperty("http://w3id.org/roh/lastUpdatedDate")]
@@ -277,6 +291,12 @@ namespace PersonOntology
 		[LABEL(LanguageEnum.es,"http://vivoweb.org/ontology/core#researcherId")]
 		[RDFProperty("http://vivoweb.org/ontology/core#researcherId")]
 		public  string Vivo_researcherId { get; set;}
+
+		[RDFProperty("http://w3id.org/roh/tokenFigShare")]
+		public  string Roh_tokenFigShare { get; set;}
+
+		[RDFProperty("http://w3id.org/roh/tokenGitHub")]
+		public  string Roh_tokenGitHub { get; set;}
 
 		[LABEL(LanguageEnum.es,"http://vivoweb.org/ontology/core#scopusId")]
 		[RDFProperty("http://vivoweb.org/ontology/core#scopusId")]
@@ -318,21 +338,21 @@ namespace PersonOntology
 		[RDFProperty("http://w3id.org/roh/ORCID")]
 		public  string Roh_ORCID { get; set;}
 
-		[LABEL(LanguageEnum.es,"https://www.w3.org/2006/vcard/ns#hasTelephone")]
-		[RDFProperty("https://www.w3.org/2006/vcard/ns#hasTelephone")]
-		public  List<string> Vcard_hasTelephone { get; set;}
-
 		[LABEL(LanguageEnum.es,"http://w3id.org/roh/h-index")]
 		[RDFProperty("http://w3id.org/roh/h-index")]
 		public  float? Roh_h_index { get; set;}
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/collaboratorsNumber")]
-		[RDFProperty("http://w3id.org/roh/collaboratorsNumber")]
-		public  int? Roh_collaboratorsNumber { get; set;}
+		[LABEL(LanguageEnum.es,"https://www.w3.org/2006/vcard/ns#hasTelephone")]
+		[RDFProperty("https://www.w3.org/2006/vcard/ns#hasTelephone")]
+		public  List<string> Vcard_hasTelephone { get; set;}
 
 		[LABEL(LanguageEnum.es,"http://xmlns.com/foaf/0.1/nick")]
 		[RDFProperty("http://xmlns.com/foaf/0.1/nick")]
 		public  List<string> Foaf_nick { get; set;}
+
+		[LABEL(LanguageEnum.es,"http://w3id.org/roh/collaboratorsNumber")]
+		[RDFProperty("http://w3id.org/roh/collaboratorsNumber")]
+		public  int? Roh_collaboratorsNumber { get; set;}
 
 		[LABEL(LanguageEnum.es,"http://w3id.org/roh/isSynchronized")]
 		[RDFProperty("http://w3id.org/roh/isSynchronized")]
@@ -368,14 +388,18 @@ namespace PersonOntology
 			base.GetProperties();
 			propList.Add(new StringOntologyProperty("roh:hasRole", this.IdRoh_hasRole));
 			propList.Add(new StringOntologyProperty("vivo:departmentOrSchool", this.IdVivo_departmentOrSchool));
+			//propList.Add(new StringOntologyProperty("roh:gnossUser", this.Roh_gnossUser));
 			propList.Add(new ListStringOntologyProperty("vivo:relates", this.IdsVivo_relates));
 			propList.Add(new StringOntologyProperty("roh:themedAreasNumber", this.Roh_themedAreasNumber.ToString()));
+			propList.Add(new StringOntologyProperty("roh:usuarioGitHub", this.Roh_usuarioGitHub));
 			if (this.Roh_lastUpdatedDate.HasValue){
 				propList.Add(new DateOntologyProperty("roh:lastUpdatedDate", this.Roh_lastUpdatedDate.Value));
 				}
 			propList.Add(new ListStringOntologyProperty("roh:lineResearch", this.Roh_lineResearch));
 			propList.Add(new StringOntologyProperty("roh:publicationsNumber", this.Roh_publicationsNumber.ToString()));
 			propList.Add(new StringOntologyProperty("vivo:researcherId", this.Vivo_researcherId));
+			propList.Add(new StringOntologyProperty("roh:tokenFigShare", this.Roh_tokenFigShare));
+			propList.Add(new StringOntologyProperty("roh:tokenGitHub", this.Roh_tokenGitHub));
 			propList.Add(new StringOntologyProperty("vivo:scopusId", this.Vivo_scopusId));
 			propList.Add(new StringOntologyProperty("roh:projectsNumber", this.Roh_projectsNumber.ToString()));
 			propList.Add(new StringOntologyProperty("roh:hasPosition", this.Roh_hasPosition));
@@ -386,10 +410,10 @@ namespace PersonOntology
 			propList.Add(new StringOntologyProperty("vivo:description", this.Vivo_description));
 			propList.Add(new StringOntologyProperty("roh:semanticScholarId", this.Roh_semanticScholarId));
 			propList.Add(new StringOntologyProperty("roh:ORCID", this.Roh_ORCID));
-			propList.Add(new ListStringOntologyProperty("vcard:hasTelephone", this.Vcard_hasTelephone));
 			propList.Add(new StringOntologyProperty("roh:h-index", this.Roh_h_index.ToString()));
-			propList.Add(new StringOntologyProperty("roh:collaboratorsNumber", this.Roh_collaboratorsNumber.ToString()));
+			propList.Add(new ListStringOntologyProperty("vcard:hasTelephone", this.Vcard_hasTelephone));
 			propList.Add(new ListStringOntologyProperty("foaf:nick", this.Foaf_nick));
+			propList.Add(new StringOntologyProperty("roh:collaboratorsNumber", this.Roh_collaboratorsNumber.ToString()));
 			propList.Add(new BoolOntologyProperty("roh:isSynchronized", this.Roh_isSynchronized));
 			propList.Add(new StringOntologyProperty("foaf:firstName", this.Foaf_firstName));
 			propList.Add(new BoolOntologyProperty("roh:isActive", this.Roh_isActive));
@@ -471,6 +495,10 @@ namespace PersonOntology
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Person_{ResourceID}_{ArticleID}",  "http://vivoweb.org/ontology/core#departmentOrSchool", $"<{this.IdVivo_departmentOrSchool}>", list, " . ");
 				}
+				if(this.IdRoh_gnossUser != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Person_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/gnossUser", $"<{this.IdRoh_gnossUser}>", list, " . ");
+				}
 				if(this.IdsVivo_relates != null)
 				{
 					foreach(var item2 in this.IdsVivo_relates)
@@ -481,6 +509,10 @@ namespace PersonOntology
 				if(this.Roh_themedAreasNumber != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Person_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/themedAreasNumber", $"{this.Roh_themedAreasNumber.Value.ToString()}", list, " . ");
+				}
+				if(this.Roh_usuarioGitHub != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Person_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/usuarioGitHub", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_usuarioGitHub)}\"", list, " . ");
 				}
 				if(this.Roh_lastUpdatedDate != null && this.Roh_lastUpdatedDate != DateTime.MinValue)
 				{
@@ -500,6 +532,14 @@ namespace PersonOntology
 				if(this.Vivo_researcherId != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Person_{ResourceID}_{ArticleID}",  "http://vivoweb.org/ontology/core#researcherId", $"\"{GenerarTextoSinSaltoDeLinea(this.Vivo_researcherId)}\"", list, " . ");
+				}
+				if(this.Roh_tokenFigShare != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Person_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/tokenFigShare", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_tokenFigShare)}\"", list, " . ");
+				}
+				if(this.Roh_tokenGitHub != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Person_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/tokenGitHub", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_tokenGitHub)}\"", list, " . ");
 				}
 				if(this.Vivo_scopusId != null)
 				{
@@ -547,6 +587,10 @@ namespace PersonOntology
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Person_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/ORCID", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_ORCID)}\"", list, " . ");
 				}
+				if(this.Roh_h_index != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Person_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/h-index", $"{this.Roh_h_index.Value.ToString(new CultureInfo("en-US"))}", list, " . ");
+				}
 				if(this.Vcard_hasTelephone != null)
 				{
 					foreach(var item2 in this.Vcard_hasTelephone)
@@ -554,20 +598,16 @@ namespace PersonOntology
 						AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Person_{ResourceID}_{ArticleID}", "https://www.w3.org/2006/vcard/ns#hasTelephone", $"\"{GenerarTextoSinSaltoDeLinea(item2)}\"", list, " . ");
 					}
 				}
-				if(this.Roh_h_index != null)
-				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Person_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/h-index", $"{this.Roh_h_index.Value.ToString(new CultureInfo("en-US"))}", list, " . ");
-				}
-				if(this.Roh_collaboratorsNumber != null)
-				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Person_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/collaboratorsNumber", $"{this.Roh_collaboratorsNumber.Value.ToString()}", list, " . ");
-				}
 				if(this.Foaf_nick != null)
 				{
 					foreach(var item2 in this.Foaf_nick)
 					{
 						AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Person_{ResourceID}_{ArticleID}", "http://xmlns.com/foaf/0.1/nick", $"\"{GenerarTextoSinSaltoDeLinea(item2)}\"", list, " . ");
 					}
+				}
+				if(this.Roh_collaboratorsNumber != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Person_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/collaboratorsNumber", $"{this.Roh_collaboratorsNumber.Value.ToString()}", list, " . ");
 				}
 				if(this.Roh_isSynchronized != null)
 				{
@@ -667,6 +707,20 @@ namespace PersonOntology
 					}
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://vivoweb.org/ontology/core#departmentOrSchool", $"<{itemRegex}>", list, " . ");
 				}
+				if(this.IdRoh_gnossUser != null)
+				{
+					Regex regex = new Regex(@"\/items\/.+_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}");
+					string itemRegex = this.IdRoh_gnossUser;
+					if (regex.IsMatch(itemRegex))
+					{
+						itemRegex = $"http://gnoss/{resourceAPI.GetShortGuid(itemRegex).ToString().ToUpper()}";
+					}
+					else
+					{
+						itemRegex = itemRegex.ToLower();
+					}
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/gnossUser", $"<{itemRegex}>", list, " . ");
+				}
 				if(this.IdsVivo_relates != null)
 				{
 					foreach(var item2 in this.IdsVivo_relates)
@@ -688,6 +742,10 @@ namespace PersonOntology
 				{
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/themedAreasNumber", $"{this.Roh_themedAreasNumber.Value.ToString()}", list, " . ");
 				}
+				if(this.Roh_usuarioGitHub != null)
+				{
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/usuarioGitHub", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_usuarioGitHub).ToLower()}\"", list, " . ");
+				}
 				if(this.Roh_lastUpdatedDate != null && this.Roh_lastUpdatedDate != DateTime.MinValue)
 				{
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/lastUpdatedDate", $"{this.Roh_lastUpdatedDate.Value.ToString("yyyyMMddHHmmss")}", list, " . ");
@@ -706,6 +764,14 @@ namespace PersonOntology
 				if(this.Vivo_researcherId != null)
 				{
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://vivoweb.org/ontology/core#researcherId", $"\"{GenerarTextoSinSaltoDeLinea(this.Vivo_researcherId).ToLower()}\"", list, " . ");
+				}
+				if(this.Roh_tokenFigShare != null)
+				{
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/tokenFigShare", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_tokenFigShare).ToLower()}\"", list, " . ");
+				}
+				if(this.Roh_tokenGitHub != null)
+				{
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/tokenGitHub", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_tokenGitHub).ToLower()}\"", list, " . ");
 				}
 				if(this.Vivo_scopusId != null)
 				{
@@ -753,6 +819,10 @@ namespace PersonOntology
 				{
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/ORCID", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_ORCID).ToLower()}\"", list, " . ");
 				}
+				if(this.Roh_h_index != null)
+				{
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/h-index", $"{this.Roh_h_index.Value.ToString(new CultureInfo("en-US"))}", list, " . ");
+				}
 				if(this.Vcard_hasTelephone != null)
 				{
 					foreach(var item2 in this.Vcard_hasTelephone)
@@ -760,20 +830,16 @@ namespace PersonOntology
 						AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "https://www.w3.org/2006/vcard/ns#hasTelephone", $"\"{GenerarTextoSinSaltoDeLinea(item2).ToLower()}\"", list, " . ");
 					}
 				}
-				if(this.Roh_h_index != null)
-				{
-					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/h-index", $"{this.Roh_h_index.Value.ToString(new CultureInfo("en-US"))}", list, " . ");
-				}
-				if(this.Roh_collaboratorsNumber != null)
-				{
-					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/collaboratorsNumber", $"{this.Roh_collaboratorsNumber.Value.ToString()}", list, " . ");
-				}
 				if(this.Foaf_nick != null)
 				{
 					foreach(var item2 in this.Foaf_nick)
 					{
 						AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://xmlns.com/foaf/0.1/nick", $"\"{GenerarTextoSinSaltoDeLinea(item2).ToLower()}\"", list, " . ");
 					}
+				}
+				if(this.Roh_collaboratorsNumber != null)
+				{
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/collaboratorsNumber", $"{this.Roh_collaboratorsNumber.Value.ToString()}", list, " . ");
 				}
 				if(this.Roh_isSynchronized != null)
 				{
