@@ -16,8 +16,9 @@ using System.Collections;
 using Gnoss.ApiWrapper.Exceptions;
 using System.Diagnostics.CodeAnalysis;
 using Organization = OrganizationOntology.Organization;
-using GeographicRegion = GeographicregionOntology.GeographicRegion;
 using Feature = FeatureOntology.Feature;
+using GeographicRegion = GeographicregionOntology.GeographicRegion;
+using OrganizationType = OrganizationtypeOntology.OrganizationType;
 
 namespace CommitteeOntology
 {
@@ -35,20 +36,42 @@ namespace CommitteeOntology
 			{
 				this.Vivo_affiliatedOrganization = new Organization(propVivo_affiliatedOrganization.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
-			SemanticPropertyModel propVivo_geographicFocus = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#geographicFocus");
-			if(propVivo_geographicFocus != null && propVivo_geographicFocus.PropertyValues.Count > 0)
+			SemanticPropertyModel propRoh_affiliatedOrganizationHasCountryName = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/affiliatedOrganizationHasCountryName");
+			if(propRoh_affiliatedOrganizationHasCountryName != null && propRoh_affiliatedOrganizationHasCountryName.PropertyValues.Count > 0)
 			{
-				this.Vivo_geographicFocus = new GeographicRegion(propVivo_geographicFocus.PropertyValues[0].RelatedEntity,idiomaUsuario);
+				this.Roh_affiliatedOrganizationHasCountryName = new Feature(propRoh_affiliatedOrganizationHasCountryName.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
 			SemanticPropertyModel propVcard_hasRegion = pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#hasRegion");
 			if(propVcard_hasRegion != null && propVcard_hasRegion.PropertyValues.Count > 0)
 			{
 				this.Vcard_hasRegion = new Feature(propVcard_hasRegion.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
+			SemanticPropertyModel propVivo_geographicFocus = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#geographicFocus");
+			if(propVivo_geographicFocus != null && propVivo_geographicFocus.PropertyValues.Count > 0)
+			{
+				this.Vivo_geographicFocus = new GeographicRegion(propVivo_geographicFocus.PropertyValues[0].RelatedEntity,idiomaUsuario);
+			}
 			SemanticPropertyModel propVcard_hasCountryName = pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#hasCountryName");
 			if(propVcard_hasCountryName != null && propVcard_hasCountryName.PropertyValues.Count > 0)
 			{
 				this.Vcard_hasCountryName = new Feature(propVcard_hasCountryName.PropertyValues[0].RelatedEntity,idiomaUsuario);
+			}
+			this.Roh_affiliatedOrganizationType = new List<OrganizationType>();
+			SemanticPropertyModel propRoh_affiliatedOrganizationType = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/affiliatedOrganizationType");
+			if(propRoh_affiliatedOrganizationType != null && propRoh_affiliatedOrganizationType.PropertyValues.Count > 0)
+			{
+				foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_affiliatedOrganizationType.PropertyValues)
+				{
+					if(propValue.RelatedEntity!=null){
+						OrganizationType roh_affiliatedOrganizationType = new OrganizationType(propValue.RelatedEntity,idiomaUsuario);
+						this.Roh_affiliatedOrganizationType.Add(roh_affiliatedOrganizationType);
+					}
+				}
+			}
+			SemanticPropertyModel propRoh_affiliatedOrganizationHasRegion = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/affiliatedOrganizationHasRegion");
+			if(propRoh_affiliatedOrganizationHasRegion != null && propRoh_affiliatedOrganizationHasRegion.PropertyValues.Count > 0)
+			{
+				this.Roh_affiliatedOrganizationHasRegion = new Feature(propRoh_affiliatedOrganizationHasRegion.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
 			this.Roh_hasKnowledgeArea = new List<CategoryPath>();
 			SemanticPropertyModel propRoh_hasKnowledgeArea = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/hasKnowledgeArea");
@@ -62,8 +85,13 @@ namespace CommitteeOntology
 					}
 				}
 			}
+			this.Roh_affiliatedOrganizationLocality = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/affiliatedOrganizationLocality"));
 			this.Roh_crisIdentifier = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/crisIdentifier"));
 			this.Roh_geographicFocusOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/geographicFocusOther"));
+			this.Vivo_end= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#end"));
+			this.Vivo_start= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#start"));
+			this.Roh_affiliatedOrganizationTypeOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/affiliatedOrganizationTypeOther"));
+			this.Roh_affiliatedOrganizationTitle = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/affiliatedOrganizationTitle"));
 			this.Vcard_locality = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#locality"));
 			this.Roh_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/title"));
 		}
@@ -77,20 +105,42 @@ namespace CommitteeOntology
 			{
 				this.Vivo_affiliatedOrganization = new Organization(propVivo_affiliatedOrganization.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
-			SemanticPropertyModel propVivo_geographicFocus = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#geographicFocus");
-			if(propVivo_geographicFocus != null && propVivo_geographicFocus.PropertyValues.Count > 0)
+			SemanticPropertyModel propRoh_affiliatedOrganizationHasCountryName = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/affiliatedOrganizationHasCountryName");
+			if(propRoh_affiliatedOrganizationHasCountryName != null && propRoh_affiliatedOrganizationHasCountryName.PropertyValues.Count > 0)
 			{
-				this.Vivo_geographicFocus = new GeographicRegion(propVivo_geographicFocus.PropertyValues[0].RelatedEntity,idiomaUsuario);
+				this.Roh_affiliatedOrganizationHasCountryName = new Feature(propRoh_affiliatedOrganizationHasCountryName.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
 			SemanticPropertyModel propVcard_hasRegion = pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#hasRegion");
 			if(propVcard_hasRegion != null && propVcard_hasRegion.PropertyValues.Count > 0)
 			{
 				this.Vcard_hasRegion = new Feature(propVcard_hasRegion.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
+			SemanticPropertyModel propVivo_geographicFocus = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#geographicFocus");
+			if(propVivo_geographicFocus != null && propVivo_geographicFocus.PropertyValues.Count > 0)
+			{
+				this.Vivo_geographicFocus = new GeographicRegion(propVivo_geographicFocus.PropertyValues[0].RelatedEntity,idiomaUsuario);
+			}
 			SemanticPropertyModel propVcard_hasCountryName = pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#hasCountryName");
 			if(propVcard_hasCountryName != null && propVcard_hasCountryName.PropertyValues.Count > 0)
 			{
 				this.Vcard_hasCountryName = new Feature(propVcard_hasCountryName.PropertyValues[0].RelatedEntity,idiomaUsuario);
+			}
+			this.Roh_affiliatedOrganizationType = new List<OrganizationType>();
+			SemanticPropertyModel propRoh_affiliatedOrganizationType = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/affiliatedOrganizationType");
+			if(propRoh_affiliatedOrganizationType != null && propRoh_affiliatedOrganizationType.PropertyValues.Count > 0)
+			{
+				foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_affiliatedOrganizationType.PropertyValues)
+				{
+					if(propValue.RelatedEntity!=null){
+						OrganizationType roh_affiliatedOrganizationType = new OrganizationType(propValue.RelatedEntity,idiomaUsuario);
+						this.Roh_affiliatedOrganizationType.Add(roh_affiliatedOrganizationType);
+					}
+				}
+			}
+			SemanticPropertyModel propRoh_affiliatedOrganizationHasRegion = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/affiliatedOrganizationHasRegion");
+			if(propRoh_affiliatedOrganizationHasRegion != null && propRoh_affiliatedOrganizationHasRegion.PropertyValues.Count > 0)
+			{
+				this.Roh_affiliatedOrganizationHasRegion = new Feature(propRoh_affiliatedOrganizationHasRegion.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
 			this.Roh_hasKnowledgeArea = new List<CategoryPath>();
 			SemanticPropertyModel propRoh_hasKnowledgeArea = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/hasKnowledgeArea");
@@ -104,8 +154,13 @@ namespace CommitteeOntology
 					}
 				}
 			}
+			this.Roh_affiliatedOrganizationLocality = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/affiliatedOrganizationLocality"));
 			this.Roh_crisIdentifier = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/crisIdentifier"));
 			this.Roh_geographicFocusOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/geographicFocusOther"));
+			this.Vivo_end= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#end"));
+			this.Vivo_start= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#start"));
+			this.Roh_affiliatedOrganizationTypeOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/affiliatedOrganizationTypeOther"));
+			this.Roh_affiliatedOrganizationTitle = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/affiliatedOrganizationTitle"));
 			this.Vcard_locality = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#locality"));
 			this.Roh_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/title"));
 		}
@@ -117,24 +172,42 @@ namespace CommitteeOntology
 		public  Organization Vivo_affiliatedOrganization  { get; set;} 
 		public string IdVivo_affiliatedOrganization  { get; set;} 
 
-		[LABEL(LanguageEnum.es,"http://vivoweb.org/ontology/core#geographicFocus")]
-		[RDFProperty("http://vivoweb.org/ontology/core#geographicFocus")]
-		public  GeographicRegion Vivo_geographicFocus  { get; set;} 
-		public string IdVivo_geographicFocus  { get; set;} 
+		[LABEL(LanguageEnum.es,"http://w3id.org/roh/affiliatedOrganizationHasCountryName")]
+		[RDFProperty("http://w3id.org/roh/affiliatedOrganizationHasCountryName")]
+		public  Feature Roh_affiliatedOrganizationHasCountryName  { get; set;} 
+		public string IdRoh_affiliatedOrganizationHasCountryName  { get; set;} 
 
 		[LABEL(LanguageEnum.es,"https://www.w3.org/2006/vcard/ns#hasRegion")]
 		[RDFProperty("https://www.w3.org/2006/vcard/ns#hasRegion")]
 		public  Feature Vcard_hasRegion  { get; set;} 
 		public string IdVcard_hasRegion  { get; set;} 
 
+		[LABEL(LanguageEnum.es,"http://vivoweb.org/ontology/core#geographicFocus")]
+		[RDFProperty("http://vivoweb.org/ontology/core#geographicFocus")]
+		public  GeographicRegion Vivo_geographicFocus  { get; set;} 
+		public string IdVivo_geographicFocus  { get; set;} 
+
 		[LABEL(LanguageEnum.es,"https://www.w3.org/2006/vcard/ns#hasCountryName")]
 		[RDFProperty("https://www.w3.org/2006/vcard/ns#hasCountryName")]
 		public  Feature Vcard_hasCountryName  { get; set;} 
 		public string IdVcard_hasCountryName  { get; set;} 
 
+		[LABEL(LanguageEnum.es,"http://w3id.org/roh/affiliatedOrganizationType")]
+		[RDFProperty("http://w3id.org/roh/affiliatedOrganizationType")]
+		public  List<OrganizationType> Roh_affiliatedOrganizationType { get; set;}
+		public List<string> IdsRoh_affiliatedOrganizationType { get; set;}
+
+		[LABEL(LanguageEnum.es,"http://w3id.org/roh/affiliatedOrganizationHasRegion")]
+		[RDFProperty("http://w3id.org/roh/affiliatedOrganizationHasRegion")]
+		public  Feature Roh_affiliatedOrganizationHasRegion  { get; set;} 
+		public string IdRoh_affiliatedOrganizationHasRegion  { get; set;} 
+
 		[LABEL(LanguageEnum.es,"http://w3id.org/roh/hasKnowledgeArea")]
 		[RDFProperty("http://w3id.org/roh/hasKnowledgeArea")]
 		public  List<CategoryPath> Roh_hasKnowledgeArea { get; set;}
+
+		[RDFProperty("http://w3id.org/roh/affiliatedOrganizationLocality")]
+		public  string Roh_affiliatedOrganizationLocality { get; set;}
 
 		[LABEL(LanguageEnum.es,"http://w3id.org/roh/crisIdentifier")]
 		[RDFProperty("http://w3id.org/roh/crisIdentifier")]
@@ -143,6 +216,18 @@ namespace CommitteeOntology
 		[LABEL(LanguageEnum.es,"http://w3id.org/roh/geographicFocusOther")]
 		[RDFProperty("http://w3id.org/roh/geographicFocusOther")]
 		public  string Roh_geographicFocusOther { get; set;}
+
+		[RDFProperty("http://vivoweb.org/ontology/core#end")]
+		public  DateTime? Vivo_end { get; set;}
+
+		[RDFProperty("http://vivoweb.org/ontology/core#start")]
+		public  DateTime? Vivo_start { get; set;}
+
+		[RDFProperty("http://w3id.org/roh/affiliatedOrganizationTypeOther")]
+		public  string Roh_affiliatedOrganizationTypeOther { get; set;}
+
+		[RDFProperty("http://w3id.org/roh/affiliatedOrganizationTitle")]
+		public  string Roh_affiliatedOrganizationTitle { get; set;}
 
 		[LABEL(LanguageEnum.es,"https://www.w3.org/2006/vcard/ns#locality")]
 		[RDFProperty("https://www.w3.org/2006/vcard/ns#locality")]
@@ -157,11 +242,23 @@ namespace CommitteeOntology
 		{
 			base.GetProperties();
 			propList.Add(new StringOntologyProperty("vivo:affiliatedOrganization", this.IdVivo_affiliatedOrganization));
-			propList.Add(new StringOntologyProperty("vivo:geographicFocus", this.IdVivo_geographicFocus));
+			propList.Add(new StringOntologyProperty("roh:affiliatedOrganizationHasCountryName", this.IdRoh_affiliatedOrganizationHasCountryName));
 			propList.Add(new StringOntologyProperty("vcard:hasRegion", this.IdVcard_hasRegion));
+			propList.Add(new StringOntologyProperty("vivo:geographicFocus", this.IdVivo_geographicFocus));
 			propList.Add(new StringOntologyProperty("vcard:hasCountryName", this.IdVcard_hasCountryName));
+			propList.Add(new ListStringOntologyProperty("roh:affiliatedOrganizationType", this.IdsRoh_affiliatedOrganizationType));
+			propList.Add(new StringOntologyProperty("roh:affiliatedOrganizationHasRegion", this.IdRoh_affiliatedOrganizationHasRegion));
+			propList.Add(new StringOntologyProperty("roh:affiliatedOrganizationLocality", this.Roh_affiliatedOrganizationLocality));
 			propList.Add(new StringOntologyProperty("roh:crisIdentifier", this.Roh_crisIdentifier));
 			propList.Add(new StringOntologyProperty("roh:geographicFocusOther", this.Roh_geographicFocusOther));
+			if (this.Vivo_end.HasValue){
+				propList.Add(new DateOntologyProperty("vivo:end", this.Vivo_end.Value));
+				}
+			if (this.Vivo_start.HasValue){
+				propList.Add(new DateOntologyProperty("vivo:start", this.Vivo_start.Value));
+				}
+			propList.Add(new StringOntologyProperty("roh:affiliatedOrganizationTypeOther", this.Roh_affiliatedOrganizationTypeOther));
+			propList.Add(new StringOntologyProperty("roh:affiliatedOrganizationTitle", this.Roh_affiliatedOrganizationTitle));
 			propList.Add(new StringOntologyProperty("vcard:locality", this.Vcard_locality));
 			propList.Add(new StringOntologyProperty("roh:title", this.Roh_title));
 		}
@@ -234,17 +331,36 @@ namespace CommitteeOntology
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Committee_{ResourceID}_{ArticleID}",  "http://vivoweb.org/ontology/core#affiliatedOrganization", $"<{this.IdVivo_affiliatedOrganization}>", list, " . ");
 				}
-				if(this.IdVivo_geographicFocus != null)
+				if(this.IdRoh_affiliatedOrganizationHasCountryName != null)
 				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Committee_{ResourceID}_{ArticleID}",  "http://vivoweb.org/ontology/core#geographicFocus", $"<{this.IdVivo_geographicFocus}>", list, " . ");
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Committee_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/affiliatedOrganizationHasCountryName", $"<{this.IdRoh_affiliatedOrganizationHasCountryName}>", list, " . ");
 				}
 				if(this.IdVcard_hasRegion != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Committee_{ResourceID}_{ArticleID}",  "https://www.w3.org/2006/vcard/ns#hasRegion", $"<{this.IdVcard_hasRegion}>", list, " . ");
 				}
+				if(this.IdVivo_geographicFocus != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Committee_{ResourceID}_{ArticleID}",  "http://vivoweb.org/ontology/core#geographicFocus", $"<{this.IdVivo_geographicFocus}>", list, " . ");
+				}
 				if(this.IdVcard_hasCountryName != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Committee_{ResourceID}_{ArticleID}",  "https://www.w3.org/2006/vcard/ns#hasCountryName", $"<{this.IdVcard_hasCountryName}>", list, " . ");
+				}
+				if(this.IdsRoh_affiliatedOrganizationType != null)
+				{
+					foreach(var item2 in this.IdsRoh_affiliatedOrganizationType)
+					{
+						AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Committee_{ResourceID}_{ArticleID}", "http://w3id.org/roh/affiliatedOrganizationType", $"<{item2}>", list, " . ");
+					}
+				}
+				if(this.IdRoh_affiliatedOrganizationHasRegion != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Committee_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/affiliatedOrganizationHasRegion", $"<{this.IdRoh_affiliatedOrganizationHasRegion}>", list, " . ");
+				}
+				if(this.Roh_affiliatedOrganizationLocality != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Committee_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/affiliatedOrganizationLocality", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_affiliatedOrganizationLocality)}\"", list, " . ");
 				}
 				if(this.Roh_crisIdentifier != null)
 				{
@@ -253,6 +369,22 @@ namespace CommitteeOntology
 				if(this.Roh_geographicFocusOther != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Committee_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/geographicFocusOther", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_geographicFocusOther)}\"", list, " . ");
+				}
+				if(this.Vivo_end != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Committee_{ResourceID}_{ArticleID}",  "http://vivoweb.org/ontology/core#end", $"\"{this.Vivo_end.Value.ToString("yyyyMMddHHmmss")}\"", list, " . ");
+				}
+				if(this.Vivo_start != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Committee_{ResourceID}_{ArticleID}",  "http://vivoweb.org/ontology/core#start", $"\"{this.Vivo_start.Value.ToString("yyyyMMddHHmmss")}\"", list, " . ");
+				}
+				if(this.Roh_affiliatedOrganizationTypeOther != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Committee_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/affiliatedOrganizationTypeOther", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_affiliatedOrganizationTypeOther)}\"", list, " . ");
+				}
+				if(this.Roh_affiliatedOrganizationTitle != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Committee_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/affiliatedOrganizationTitle", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_affiliatedOrganizationTitle)}\"", list, " . ");
 				}
 				if(this.Vcard_locality != null)
 				{
@@ -318,10 +450,10 @@ namespace CommitteeOntology
 					}
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://vivoweb.org/ontology/core#affiliatedOrganization", $"<{itemRegex}>", list, " . ");
 				}
-				if(this.IdVivo_geographicFocus != null)
+				if(this.IdRoh_affiliatedOrganizationHasCountryName != null)
 				{
 					Regex regex = new Regex(@"\/items\/.+_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}");
-					string itemRegex = this.IdVivo_geographicFocus;
+					string itemRegex = this.IdRoh_affiliatedOrganizationHasCountryName;
 					if (regex.IsMatch(itemRegex))
 					{
 						itemRegex = $"http://gnoss/{resourceAPI.GetShortGuid(itemRegex).ToString().ToUpper()}";
@@ -330,7 +462,7 @@ namespace CommitteeOntology
 					{
 						itemRegex = itemRegex.ToLower();
 					}
-					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://vivoweb.org/ontology/core#geographicFocus", $"<{itemRegex}>", list, " . ");
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/affiliatedOrganizationHasCountryName", $"<{itemRegex}>", list, " . ");
 				}
 				if(this.IdVcard_hasRegion != null)
 				{
@@ -346,6 +478,20 @@ namespace CommitteeOntology
 					}
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "https://www.w3.org/2006/vcard/ns#hasRegion", $"<{itemRegex}>", list, " . ");
 				}
+				if(this.IdVivo_geographicFocus != null)
+				{
+					Regex regex = new Regex(@"\/items\/.+_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}");
+					string itemRegex = this.IdVivo_geographicFocus;
+					if (regex.IsMatch(itemRegex))
+					{
+						itemRegex = $"http://gnoss/{resourceAPI.GetShortGuid(itemRegex).ToString().ToUpper()}";
+					}
+					else
+					{
+						itemRegex = itemRegex.ToLower();
+					}
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://vivoweb.org/ontology/core#geographicFocus", $"<{itemRegex}>", list, " . ");
+				}
 				if(this.IdVcard_hasCountryName != null)
 				{
 					Regex regex = new Regex(@"\/items\/.+_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}");
@@ -360,6 +506,41 @@ namespace CommitteeOntology
 					}
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "https://www.w3.org/2006/vcard/ns#hasCountryName", $"<{itemRegex}>", list, " . ");
 				}
+				if(this.IdsRoh_affiliatedOrganizationType != null)
+				{
+					foreach(var item2 in this.IdsRoh_affiliatedOrganizationType)
+					{
+					Regex regex = new Regex(@"\/items\/.+_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}");
+					string itemRegex = item2;
+					if (regex.IsMatch(itemRegex))
+					{
+						itemRegex = $"http://gnoss/{resourceAPI.GetShortGuid(itemRegex).ToString().ToUpper()}";
+					}
+					else
+					{
+						itemRegex = itemRegex.ToLower();
+					}
+						AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://w3id.org/roh/affiliatedOrganizationType", $"<{itemRegex}>", list, " . ");
+					}
+				}
+				if(this.IdRoh_affiliatedOrganizationHasRegion != null)
+				{
+					Regex regex = new Regex(@"\/items\/.+_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}");
+					string itemRegex = this.IdRoh_affiliatedOrganizationHasRegion;
+					if (regex.IsMatch(itemRegex))
+					{
+						itemRegex = $"http://gnoss/{resourceAPI.GetShortGuid(itemRegex).ToString().ToUpper()}";
+					}
+					else
+					{
+						itemRegex = itemRegex.ToLower();
+					}
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/affiliatedOrganizationHasRegion", $"<{itemRegex}>", list, " . ");
+				}
+				if(this.Roh_affiliatedOrganizationLocality != null)
+				{
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/affiliatedOrganizationLocality", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_affiliatedOrganizationLocality).ToLower()}\"", list, " . ");
+				}
 				if(this.Roh_crisIdentifier != null)
 				{
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/crisIdentifier", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_crisIdentifier).ToLower()}\"", list, " . ");
@@ -367,6 +548,22 @@ namespace CommitteeOntology
 				if(this.Roh_geographicFocusOther != null)
 				{
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/geographicFocusOther", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_geographicFocusOther).ToLower()}\"", list, " . ");
+				}
+				if(this.Vivo_end != null)
+				{
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://vivoweb.org/ontology/core#end", $"{this.Vivo_end.Value.ToString("yyyyMMddHHmmss")}", list, " . ");
+				}
+				if(this.Vivo_start != null)
+				{
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://vivoweb.org/ontology/core#start", $"{this.Vivo_start.Value.ToString("yyyyMMddHHmmss")}", list, " . ");
+				}
+				if(this.Roh_affiliatedOrganizationTypeOther != null)
+				{
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/affiliatedOrganizationTypeOther", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_affiliatedOrganizationTypeOther).ToLower()}\"", list, " . ");
+				}
+				if(this.Roh_affiliatedOrganizationTitle != null)
+				{
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/affiliatedOrganizationTitle", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_affiliatedOrganizationTitle).ToLower()}\"", list, " . ");
 				}
 				if(this.Vcard_locality != null)
 				{

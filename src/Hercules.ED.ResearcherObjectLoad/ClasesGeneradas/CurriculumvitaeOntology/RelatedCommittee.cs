@@ -29,11 +29,6 @@ namespace CurriculumvitaeOntology
 		{
 			this.mGNOSSID = pSemCmsModel.Entity.Uri;
 			this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
-			SemanticPropertyModel propRoh_relatedCommitteeCV = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/relatedCommitteeCV");
-			if(propRoh_relatedCommitteeCV != null && propRoh_relatedCommitteeCV.PropertyValues.Count > 0)
-			{
-				this.Roh_relatedCommitteeCV = new RelatedCommitteeCV(propRoh_relatedCommitteeCV.PropertyValues[0].RelatedEntity,idiomaUsuario);
-			}
 			SemanticPropertyModel propVivo_relatedBy = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#relatedBy");
 			if(propVivo_relatedBy != null && propVivo_relatedBy.PropertyValues.Count > 0)
 			{
@@ -45,10 +40,6 @@ namespace CurriculumvitaeOntology
 		public virtual string RdfType { get { return "http://w3id.org/roh/RelatedCommittee"; } }
 		public virtual string RdfsLabel { get { return "http://w3id.org/roh/RelatedCommittee"; } }
 		public OntologyEntity Entity { get; set; }
-
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/relatedCommitteeCV")]
-		[RDFProperty("http://w3id.org/roh/relatedCommitteeCV")]
-		public  RelatedCommitteeCV Roh_relatedCommitteeCV { get; set;}
 
 		[LABEL(LanguageEnum.es,"http://vivoweb.org/ontology/core#relatedBy")]
 		[RDFProperty("http://vivoweb.org/ontology/core#relatedBy")]
@@ -71,12 +62,6 @@ namespace CurriculumvitaeOntology
 		internal override void GetEntities()
 		{
 			base.GetEntities();
-			if(Roh_relatedCommitteeCV!=null){
-				Roh_relatedCommitteeCV.GetProperties();
-				Roh_relatedCommitteeCV.GetEntities();
-				OntologyEntity entityRoh_relatedCommitteeCV = new OntologyEntity("http://w3id.org/roh/RelatedCommitteeCV", "http://w3id.org/roh/RelatedCommitteeCV", "roh:relatedCommitteeCV", Roh_relatedCommitteeCV.propList, Roh_relatedCommitteeCV.entList);
-				entList.Add(entityRoh_relatedCommitteeCV);
-			}
 		} 
 
 
