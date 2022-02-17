@@ -28,6 +28,11 @@ namespace CurriculumvitaeOntology
 		{
 			this.mGNOSSID = pSemCmsModel.Entity.Uri;
 			this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
+			SemanticPropertyModel propRoh_generalQualityIndicators = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/generalQualityIndicators");
+			if(propRoh_generalQualityIndicators != null && propRoh_generalQualityIndicators.PropertyValues.Count > 0)
+			{
+				this.Roh_generalQualityIndicators = new GeneralQualityIndicator(propRoh_generalQualityIndicators.PropertyValues[0].RelatedEntity,idiomaUsuario);
+			}
 			this.Roh_otherDistinctions = new List<RelatedOtherDistinction>();
 			SemanticPropertyModel propRoh_otherDistinctions = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/otherDistinctions");
 			if(propRoh_otherDistinctions != null && propRoh_otherDistinctions.PropertyValues.Count > 0)
@@ -39,11 +44,6 @@ namespace CurriculumvitaeOntology
 						this.Roh_otherDistinctions.Add(roh_otherDistinctions);
 					}
 				}
-			}
-			SemanticPropertyModel propRoh_generalQualityIndicators = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/generalQualityIndicators");
-			if(propRoh_generalQualityIndicators != null && propRoh_generalQualityIndicators.PropertyValues.Count > 0)
-			{
-				this.Roh_generalQualityIndicators = new GeneralQualityIndicator(propRoh_generalQualityIndicators.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
 			this.Roh_worksSubmittedConferences = new List<RelatedWorkSubmittedConferences>();
 			SemanticPropertyModel propRoh_worksSubmittedConferences = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/worksSubmittedConferences");
@@ -69,18 +69,6 @@ namespace CurriculumvitaeOntology
 					}
 				}
 			}
-			this.Roh_otherDisseminationActivities = new List<relatedOtherDisseminationActivity>();
-			SemanticPropertyModel propRoh_otherDisseminationActivities = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/otherDisseminationActivities");
-			if(propRoh_otherDisseminationActivities != null && propRoh_otherDisseminationActivities.PropertyValues.Count > 0)
-			{
-				foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_otherDisseminationActivities.PropertyValues)
-				{
-					if(propValue.RelatedEntity!=null){
-						relatedOtherDisseminationActivity roh_otherDisseminationActivities = new relatedOtherDisseminationActivity(propValue.RelatedEntity,idiomaUsuario);
-						this.Roh_otherDisseminationActivities.Add(roh_otherDisseminationActivities);
-					}
-				}
-			}
 			this.Roh_councils = new List<RelatedCouncil>();
 			SemanticPropertyModel propRoh_councils = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/councils");
 			if(propRoh_councils != null && propRoh_councils.PropertyValues.Count > 0)
@@ -90,6 +78,18 @@ namespace CurriculumvitaeOntology
 					if(propValue.RelatedEntity!=null){
 						RelatedCouncil roh_councils = new RelatedCouncil(propValue.RelatedEntity,idiomaUsuario);
 						this.Roh_councils.Add(roh_councils);
+					}
+				}
+			}
+			this.Roh_otherDisseminationActivities = new List<relatedOtherDisseminationActivity>();
+			SemanticPropertyModel propRoh_otherDisseminationActivities = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/otherDisseminationActivities");
+			if(propRoh_otherDisseminationActivities != null && propRoh_otherDisseminationActivities.PropertyValues.Count > 0)
+			{
+				foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_otherDisseminationActivities.PropertyValues)
+				{
+					if(propValue.RelatedEntity!=null){
+						relatedOtherDisseminationActivity roh_otherDisseminationActivities = new relatedOtherDisseminationActivity(propValue.RelatedEntity,idiomaUsuario);
+						this.Roh_otherDisseminationActivities.Add(roh_otherDisseminationActivities);
 					}
 				}
 			}
@@ -138,18 +138,6 @@ namespace CurriculumvitaeOntology
 					if(propValue.RelatedEntity!=null){
 						RelatedOtherAchievement roh_otherAchievements = new RelatedOtherAchievement(propValue.RelatedEntity,idiomaUsuario);
 						this.Roh_otherAchievements.Add(roh_otherAchievements);
-					}
-				}
-			}
-			this.Roh_researchObjects = new List<RelatedResearchObject>();
-			SemanticPropertyModel propRoh_researchObjects = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/researchObjects");
-			if(propRoh_researchObjects != null && propRoh_researchObjects.PropertyValues.Count > 0)
-			{
-				foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_researchObjects.PropertyValues)
-				{
-					if(propValue.RelatedEntity!=null){
-						RelatedResearchObject roh_researchObjects = new RelatedResearchObject(propValue.RelatedEntity,idiomaUsuario);
-						this.Roh_researchObjects.Add(roh_researchObjects);
 					}
 				}
 			}
@@ -292,12 +280,12 @@ namespace CurriculumvitaeOntology
 		public virtual string RdfsLabel { get { return "http://w3id.org/roh/ScientificActivity"; } }
 		public OntologyEntity Entity { get; set; }
 
+		[RDFProperty("http://w3id.org/roh/generalQualityIndicators")]
+		public  GeneralQualityIndicator Roh_generalQualityIndicators { get; set;}
+
 		[LABEL(LanguageEnum.es,"http://w3id.org/roh/otherDistinctions")]
 		[RDFProperty("http://w3id.org/roh/otherDistinctions")]
 		public  List<RelatedOtherDistinction> Roh_otherDistinctions { get; set;}
-
-		[RDFProperty("http://w3id.org/roh/generalQualityIndicators")]
-		public  GeneralQualityIndicator Roh_generalQualityIndicators { get; set;}
 
 		[LABEL(LanguageEnum.es,"http://w3id.org/roh/worksSubmittedConferences")]
 		[RDFProperty("http://w3id.org/roh/worksSubmittedConferences")]
@@ -307,13 +295,13 @@ namespace CurriculumvitaeOntology
 		[RDFProperty("http://w3id.org/roh/societies")]
 		public  List<RelatedSociety> Roh_societies { get; set;}
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/otherDisseminationActivities")]
-		[RDFProperty("http://w3id.org/roh/otherDisseminationActivities")]
-		public  List<relatedOtherDisseminationActivity> Roh_otherDisseminationActivities { get; set;}
-
 		[LABEL(LanguageEnum.es,"http://w3id.org/roh/councils")]
 		[RDFProperty("http://w3id.org/roh/councils")]
 		public  List<RelatedCouncil> Roh_councils { get; set;}
+
+		[LABEL(LanguageEnum.es,"http://w3id.org/roh/otherDisseminationActivities")]
+		[RDFProperty("http://w3id.org/roh/otherDisseminationActivities")]
+		public  List<relatedOtherDisseminationActivity> Roh_otherDisseminationActivities { get; set;}
 
 		[LABEL(LanguageEnum.es,"http://w3id.org/roh/forums")]
 		[RDFProperty("http://w3id.org/roh/forums")]
@@ -330,9 +318,6 @@ namespace CurriculumvitaeOntology
 		[LABEL(LanguageEnum.es,"http://w3id.org/roh/otherAchievements")]
 		[RDFProperty("http://w3id.org/roh/otherAchievements")]
 		public  List<RelatedOtherAchievement> Roh_otherAchievements { get; set;}
-
-		[RDFProperty("http://w3id.org/roh/researchObjects")]
-		public  List<RelatedResearchObject> Roh_researchObjects { get; set;}
 
 		[LABEL(LanguageEnum.es,"http://w3id.org/roh/researchEvaluations")]
 		[RDFProperty("http://w3id.org/roh/researchEvaluations")]
@@ -392,6 +377,12 @@ namespace CurriculumvitaeOntology
 		internal override void GetEntities()
 		{
 			base.GetEntities();
+			if(Roh_generalQualityIndicators!=null){
+				Roh_generalQualityIndicators.GetProperties();
+				Roh_generalQualityIndicators.GetEntities();
+				OntologyEntity entityRoh_generalQualityIndicators = new OntologyEntity("http://w3id.org/roh/GeneralQualityIndicator", "http://w3id.org/roh/GeneralQualityIndicator", "roh:generalQualityIndicators", Roh_generalQualityIndicators.propList, Roh_generalQualityIndicators.entList);
+				entList.Add(entityRoh_generalQualityIndicators);
+			}
 			if(Roh_otherDistinctions!=null){
 				foreach(RelatedOtherDistinction prop in Roh_otherDistinctions){
 					prop.GetProperties();
@@ -400,12 +391,6 @@ namespace CurriculumvitaeOntology
 				entList.Add(entityRelatedOtherDistinction);
 				prop.Entity= entityRelatedOtherDistinction;
 				}
-			}
-			if(Roh_generalQualityIndicators!=null){
-				Roh_generalQualityIndicators.GetProperties();
-				Roh_generalQualityIndicators.GetEntities();
-				OntologyEntity entityRoh_generalQualityIndicators = new OntologyEntity("http://w3id.org/roh/GeneralQualityIndicator", "http://w3id.org/roh/GeneralQualityIndicator", "roh:generalQualityIndicators", Roh_generalQualityIndicators.propList, Roh_generalQualityIndicators.entList);
-				entList.Add(entityRoh_generalQualityIndicators);
 			}
 			if(Roh_worksSubmittedConferences!=null){
 				foreach(RelatedWorkSubmittedConferences prop in Roh_worksSubmittedConferences){
@@ -425,15 +410,6 @@ namespace CurriculumvitaeOntology
 				prop.Entity= entityRelatedSociety;
 				}
 			}
-			if(Roh_otherDisseminationActivities!=null){
-				foreach(relatedOtherDisseminationActivity prop in Roh_otherDisseminationActivities){
-					prop.GetProperties();
-					prop.GetEntities();
-					OntologyEntity entityrelatedOtherDisseminationActivity = new OntologyEntity("http://w3id.org/roh/relatedOtherDisseminationActivity", "http://w3id.org/roh/relatedOtherDisseminationActivity", "roh:otherDisseminationActivities", prop.propList, prop.entList);
-				entList.Add(entityrelatedOtherDisseminationActivity);
-				prop.Entity= entityrelatedOtherDisseminationActivity;
-				}
-			}
 			if(Roh_councils!=null){
 				foreach(RelatedCouncil prop in Roh_councils){
 					prop.GetProperties();
@@ -441,6 +417,15 @@ namespace CurriculumvitaeOntology
 					OntologyEntity entityRelatedCouncil = new OntologyEntity("http://w3id.org/roh/RelatedCouncil", "http://w3id.org/roh/RelatedCouncil", "roh:councils", prop.propList, prop.entList);
 				entList.Add(entityRelatedCouncil);
 				prop.Entity= entityRelatedCouncil;
+				}
+			}
+			if(Roh_otherDisseminationActivities!=null){
+				foreach(relatedOtherDisseminationActivity prop in Roh_otherDisseminationActivities){
+					prop.GetProperties();
+					prop.GetEntities();
+					OntologyEntity entityrelatedOtherDisseminationActivity = new OntologyEntity("http://w3id.org/roh/relatedOtherDisseminationActivity", "http://w3id.org/roh/relatedOtherDisseminationActivity", "roh:otherDisseminationActivities", prop.propList, prop.entList);
+				entList.Add(entityrelatedOtherDisseminationActivity);
+				prop.Entity= entityrelatedOtherDisseminationActivity;
 				}
 			}
 			if(Roh_forums!=null){
@@ -477,15 +462,6 @@ namespace CurriculumvitaeOntology
 					OntologyEntity entityRelatedOtherAchievement = new OntologyEntity("http://w3id.org/roh/RelatedOtherAchievement", "http://w3id.org/roh/RelatedOtherAchievement", "roh:otherAchievements", prop.propList, prop.entList);
 				entList.Add(entityRelatedOtherAchievement);
 				prop.Entity= entityRelatedOtherAchievement;
-				}
-			}
-			if(Roh_researchObjects!=null){
-				foreach(RelatedResearchObject prop in Roh_researchObjects){
-					prop.GetProperties();
-					prop.GetEntities();
-					OntologyEntity entityRelatedResearchObject = new OntologyEntity("http://w3id.org/roh/RelatedResearchObject", "http://w3id.org/roh/RelatedResearchObject", "roh:researchObjects", prop.propList, prop.entList);
-				entList.Add(entityRelatedResearchObject);
-				prop.Entity= entityRelatedResearchObject;
 				}
 			}
 			if(Roh_researchEvaluations!=null){

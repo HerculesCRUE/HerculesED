@@ -778,7 +778,27 @@ namespace GuardadoCV.Models
         private Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> GetItemMiniData(string pId, TabSectionListItem pListItemConfig, string pLang)
         {
             string graph = "curriculumvitae";
-            return UtilityCV.GetProperties(new HashSet<string>() { pId }, graph, pListItemConfig.GenerarPropertyData(graph).childs, pLang, new Dictionary<string, SparqlObject>());
+
+            List<PropertyData> propertyDatas = pListItemConfig.GenerarPropertyData(graph).childs;
+            //Editabilidad
+            foreach (string propEditabilidad in Utils.UtilityCV.PropertyNotEditable.Keys)
+            {
+                PropertyData propertyItem = propertyDatas.FirstOrDefault(x => x.property == "http://vivoweb.org/ontology/core#relatedBy");
+                if (propertyItem != null)
+                {
+                    propertyItem.childs.Add(
+                        //Editabilidad
+                        new Utils.PropertyData()
+                        {
+                            property = propEditabilidad,
+                            childs = new List<Utils.PropertyData>()
+                        }
+                    );
+                }
+
+            }
+
+            return UtilityCV.GetProperties(new HashSet<string>() { pId }, graph, propertyDatas, pLang, new Dictionary<string, SparqlObject>());
         }
 
         /// <summary>

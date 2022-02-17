@@ -31,6 +31,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
         public const string DISAMBIGUATION_PERSON = "DisambiguationPerson";
         public const string DISAMBIGUATION_PUBLICATION = "DisambiguationPublication";
         public const string DISAMBIGUATION_RO = "DisambiguationRO";
+        public const string DISAMBIGUATION_RO_GITHUB = "DisambiguationRoGithub";
 
         public const string JOURNAL_ARTICLE = "Journal Article";
         public const string BOOK = "Book";
@@ -72,6 +73,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     Dictionary<string, Publication> dicIdDatosPub = new Dictionary<string, Publication>();
                     Dictionary<string, ResearchobjectOntology.ResearchObject> dicIdRo = new Dictionary<string, ResearchobjectOntology.ResearchObject>();
                     Dictionary<string, ResearchObject> dicIdDatosRo = new Dictionary<string, ResearchObject>();
+                    Dictionary<string, GitHubObj> dicIdDatosGitHub = new Dictionary<string, GitHubObj>();
 
                     if (fichero.Name.Split("_")[0] == "ResearchObject")
                     {
@@ -103,8 +105,23 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                 listaDesambiguar.AddRange(coautores);
                             }
 
-                            dicIdRo.Add(idRo, ConstruirRO(researchObject));
+                            dicIdRo.Add(idRo, ConstruirRO("FigShare", researchObject, null, tupla.Item1, tupla.Item2));
                             dicIdDatosRo.Add(idRo, researchObject);
+                        }
+                    }
+                    else if (fichero.Name.Split("_")[0] == "RO-GitHub")
+                    {
+                        // Obtención de los datos del JSON.
+                        string jsonString = File.ReadAllText(fichero.FullName);
+                        List<GitHubObj> listaGithubData = JsonConvert.DeserializeObject<List<GitHubObj>>(jsonString);
+                        foreach (GitHubObj githubObject in listaGithubData)
+                        {
+                            // --- ROs
+                            DisambiguationRoGithub disambiguationRoGitHub = GetDisambiguationRoGithub(githubObject);
+                            string idRo = disambiguationRoGitHub.ID;
+                            listaDesambiguar.Add(disambiguationRoGitHub);
+                            dicIdRo.Add(idRo, ConstruirRO("GitHub", null, githubObject, tupla.Item1, tupla.Item2));
+                            dicIdDatosGitHub.Add(idRo, githubObject);
                         }
                     }
                     else
@@ -341,7 +358,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                         dicGnossIdPub.Add(item.Key, resourcePub.GnossId);
                     }
 
-                    // --- RESEARCHOBJECT
+                    // --- RESEARCHOBJECT (FIGSHARE)
                     foreach (KeyValuePair<string, HashSet<string>> item in listaEquivalencias)
                     {
                         if (Guid.TryParse(item.Key, out var newGuid))
@@ -359,7 +376,34 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
 
                             if (tipo == DISAMBIGUATION_RO && listaIds.ToList().Any())
                             {
-                                CrearRoDesambiguado(idA, listaIds.ToList(), dicIdDatosRo, listaRosCreados, dicIdsRos);
+                                CrearRoDesambiguado(idA, listaIds.ToList(), dicIdDatosRo, listaRosCreados, dicIdsRos, tupla.Item1, tupla.Item2);
+                            }
+                        }
+                        else
+                        {
+                            // Recurso previamente cargado previamente en BBDD.
+                        }
+                    }
+
+                    // --- RESEARCHOBJECT (GITHUB)
+                    foreach (KeyValuePair<string, HashSet<string>> item in listaEquivalencias)
+                    {
+                        if (Guid.TryParse(item.Key, out var newGuid))
+                        {
+                            // Recurso NO cargado previamente en BBDD.
+                            string tipo = string.Empty;
+                            HashSet<string> listaIds = new HashSet<string>();
+                            foreach (string id in item.Value)
+                            {
+                                tipo = id.Split("|")[0];
+                                listaIds.Add(id.Split("|")[1]);
+                            }
+                            string idA = listaIds.FirstOrDefault();
+                            listaIds.Remove(idA);
+
+                            if (tipo == DISAMBIGUATION_RO_GITHUB && listaIds.ToList().Any())
+                            {
+                                CrearRoGitHubDesambiguado(idA, listaIds.ToList(), dicIdDatosGitHub, listaRosCreados, dicIdsRos, tupla.Item1, tupla.Item2);
                             }
                         }
                         else
@@ -436,7 +480,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     }
 
                     var xx = "";
-
+                                       
                     // ------------------------------ CARGA
                     //CargarDatos(listaPersonasCargar);
                     //CargarDatos(listaPublicacionesCargar);
@@ -772,7 +816,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             }
         }
 
-        private static void CrearRoDesambiguado(string idRo, List<string> pListaIds, Dictionary<string, ResearchObject> pDicIdRo, Dictionary<ResearchobjectOntology.ResearchObject, List<string>> pListaRosCreados, Dictionary<string, List<string>> pDicIdsRosCreados)
+        private static void CrearRoDesambiguado(string idRo, List<string> pListaIds, Dictionary<string, ResearchObject> pDicIdRo, Dictionary<ResearchobjectOntology.ResearchObject, List<string>> pListaRosCreados, Dictionary<string, List<string>> pDicIdsRosCreados, Dictionary<string, string> pDicAreasBroader, Dictionary<string, string> pDicAreasNombre)
         {
             bool encontrado = false;
             string idEncontrado = string.Empty;
@@ -796,7 +840,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     if (idSimilar != idEncontrado)
                     {
                         ResearchObject roB = pDicIdRo[idSimilar];
-                        roCreado = ConstruirRO(roA, pResearchObjectB: roB);
+                        roCreado = ConstruirRO("FigShare", roA, null, pDicAreasBroader, pDicAreasNombre, pResearchObjectB: roB);
                     }
                 }
 
@@ -820,7 +864,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             {
                                 ResearchObject roB = pDicIdRo[idSimilar];
                                 listaAux = item.Value;
-                                roCreado = ConstruirRO(roA, pResearchObjectB: roB);
+                                roCreado = ConstruirRO("FigShare", roA, null, pDicAreasBroader, pDicAreasNombre, pResearchObjectB: roB);
                             }
                         }
                     }
@@ -833,43 +877,91 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             }
         }
 
-        public static ResearchobjectOntology.ResearchObject ConstruirRO(ResearchObject pResearchObject, ResearchObject pResearchObjectB = null)
+        private static void CrearRoGitHubDesambiguado(string idRo, List<string> pListaIds, Dictionary<string, GitHubObj> pDicIdRo, Dictionary<ResearchobjectOntology.ResearchObject, List<string>> pListaRosCreados, Dictionary<string, List<string>> pDicIdsRosCreados, Dictionary<string, string> pDicAreasBroader, Dictionary<string, string> pDicAreasNombre)
+        {
+            bool encontrado = false;
+            string idEncontrado = string.Empty;
+            foreach (KeyValuePair<string, List<string>> item in pDicIdsRosCreados)
+            {
+                if (item.Value.Contains(idRo))
+                {
+                    idEncontrado = item.Key;
+                    encontrado = true;
+                    break;
+                }
+            }
+
+            if (!encontrado)
+            {
+                GitHubObj roA = pDicIdRo[idRo];
+                ResearchobjectOntology.ResearchObject roCreado = new ResearchobjectOntology.ResearchObject();
+
+                foreach (string idSimilar in pListaIds)
+                {
+                    if (idSimilar != idEncontrado)
+                    {
+                        GitHubObj roB = pDicIdRo[idSimilar];
+                        roCreado = ConstruirRO("GitHub", null, roA, pDicAreasBroader, pDicAreasNombre, pGitHubObjB: roB);
+                    }
+                }
+
+                List<string> listaTotalIds = pListaIds;
+                listaTotalIds.Add(idRo);
+                pDicIdsRosCreados.Add(idRo, listaTotalIds);
+                pListaRosCreados.Add(roCreado, listaTotalIds);
+            }
+            else
+            {
+                GitHubObj roA = pDicIdRo[idRo];
+                ResearchobjectOntology.ResearchObject roCreado = new ResearchobjectOntology.ResearchObject();
+                List<string> listaAux = new List<string>();
+                foreach (KeyValuePair<ResearchobjectOntology.ResearchObject, List<string>> item in pListaRosCreados)
+                {
+                    if (item.Value.Contains(idEncontrado))
+                    {
+                        foreach (string idSimilar in pListaIds)
+                        {
+                            if (idSimilar != idEncontrado)
+                            {
+                                GitHubObj roB = pDicIdRo[idSimilar];
+                                listaAux = item.Value;
+                                roCreado = ConstruirRO("GitHub", null, roA, pDicAreasBroader, pDicAreasNombre, pGitHubObjB: roB);
+                            }
+                        }
+                    }
+                }
+                if (listaAux != null && listaAux.Any())
+                {
+                    pListaRosCreados.Remove(pListaRosCreados.FirstOrDefault(x => x.Value.SequenceEqual(listaAux)).Key);
+                    pListaRosCreados.Add(roCreado, listaAux);
+                }
+            }
+        }
+
+        public static ResearchobjectOntology.ResearchObject ConstruirRO(string pTipo, ResearchObject pResearchObject, GitHubObj pGitHubObj, Dictionary<string, string> pDicAreasBroader, Dictionary<string, string> pDicAreasNombre, ResearchObject pResearchObjectB = null, GitHubObj pGitHubObjB = null)
         {
             ResearchobjectOntology.ResearchObject ro = new ResearchobjectOntology.ResearchObject();
 
             // Estado de validación (IsValidated)
             ro.Roh_isValidated = true;
 
-            // DOI
-            if (!string.IsNullOrEmpty(pResearchObject.doi))
+            if (pTipo == "FigShare")
             {
-                ro.Bibo_doi = pResearchObject.doi;
-
-                if (pResearchObjectB != null && !string.IsNullOrEmpty(pResearchObjectB.doi) && string.IsNullOrEmpty(ro.Bibo_doi))
+                // DOI
+                if (!string.IsNullOrEmpty(pResearchObject.doi))
                 {
-                    ro.Bibo_doi = pResearchObjectB.doi;
-                }
-            }
+                    ro.Bibo_doi = pResearchObject.doi;
 
-            // ResearchObject Type
-            if (!string.IsNullOrEmpty(pResearchObject.tipo))
-            {
-                switch (pResearchObject.tipo)
-                {
-                    case "dataset":
-                        ro.IdDc_type = "http://gnoss.com/items/researchobjecttype_1";
-                        break;
-                    case "presentation":
-                        ro.IdDc_type = "http://gnoss.com/items/researchobjecttype_2";
-                        break;
-                    case "figure":
-                        ro.IdDc_type = "http://gnoss.com/items/researchobjecttype_3";
-                        break;
+                    if (pResearchObjectB != null && !string.IsNullOrEmpty(pResearchObjectB.doi) && string.IsNullOrEmpty(ro.Bibo_doi))
+                    {
+                        ro.Bibo_doi = pResearchObjectB.doi;
+                    }
                 }
 
-                if (pResearchObjectB != null && !string.IsNullOrEmpty(pResearchObjectB.tipo) && string.IsNullOrEmpty(ro.IdDc_type))
+                // ResearchObject Type
+                if (!string.IsNullOrEmpty(pResearchObject.tipo))
                 {
-                    switch (pResearchObjectB.tipo)
+                    switch (pResearchObject.tipo)
                     {
                         case "dataset":
                             ro.IdDc_type = "http://gnoss.com/items/researchobjecttype_1";
@@ -881,80 +973,404 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             ro.IdDc_type = "http://gnoss.com/items/researchobjecttype_3";
                             break;
                     }
+
+                    if (pResearchObjectB != null && !string.IsNullOrEmpty(pResearchObjectB.tipo) && string.IsNullOrEmpty(ro.IdDc_type))
+                    {
+                        switch (pResearchObjectB.tipo)
+                        {
+                            case "dataset":
+                                ro.IdDc_type = "http://gnoss.com/items/researchobjecttype_1";
+                                break;
+                            case "presentation":
+                                ro.IdDc_type = "http://gnoss.com/items/researchobjecttype_2";
+                                break;
+                            case "figure":
+                                ro.IdDc_type = "http://gnoss.com/items/researchobjecttype_3";
+                                break;
+                        }
+                    }
                 }
-            }
 
-            // Título.
-            if (!string.IsNullOrEmpty(pResearchObject.titulo))
-            {
-                ro.Roh_title = pResearchObject.titulo;
-
-                if (pResearchObjectB != null && !string.IsNullOrEmpty(pResearchObjectB.titulo) && string.IsNullOrEmpty(ro.Roh_title))
+                // Título.
+                if (!string.IsNullOrEmpty(pResearchObject.titulo))
                 {
-                    ro.Roh_title = pResearchObjectB.titulo;
+                    ro.Roh_title = pResearchObject.titulo;
+
+                    if (pResearchObjectB != null && !string.IsNullOrEmpty(pResearchObjectB.titulo) && string.IsNullOrEmpty(ro.Roh_title))
+                    {
+                        ro.Roh_title = pResearchObjectB.titulo;
+                    }
                 }
-            }
 
-            // Descripción.
-            if (!string.IsNullOrEmpty(pResearchObject.descripcion))
-            {
-                ro.Bibo_abstract = pResearchObject.descripcion;
-
-                if (pResearchObjectB != null && !string.IsNullOrEmpty(pResearchObjectB.descripcion) && string.IsNullOrEmpty(ro.Bibo_abstract))
+                // Descripción.
+                if (!string.IsNullOrEmpty(pResearchObject.descripcion))
                 {
-                    ro.Bibo_abstract = pResearchObjectB.descripcion;
+                    ro.Bibo_abstract = pResearchObject.descripcion;
+
+                    if (pResearchObjectB != null && !string.IsNullOrEmpty(pResearchObjectB.descripcion) && string.IsNullOrEmpty(ro.Bibo_abstract))
+                    {
+                        ro.Bibo_abstract = pResearchObjectB.descripcion;
+                    }
                 }
-            }
 
-            // URL
-            if (!string.IsNullOrEmpty(pResearchObject.url))
-            {
-                ro.Vcard_url = pResearchObject.url;
-
-                if (pResearchObjectB != null && !string.IsNullOrEmpty(pResearchObjectB.url) && string.IsNullOrEmpty(ro.Vcard_url))
+                // URL
+                if (!string.IsNullOrEmpty(pResearchObject.url))
                 {
-                    ro.Vcard_url = pResearchObjectB.url;
+                    ro.Vcard_url = pResearchObject.url;
+
+                    if (pResearchObjectB != null && !string.IsNullOrEmpty(pResearchObjectB.url) && string.IsNullOrEmpty(ro.Vcard_url))
+                    {
+                        ro.Vcard_url = pResearchObjectB.url;
+                    }
                 }
-            }
 
-            // Fecha Publicación
-            if (!string.IsNullOrEmpty(pResearchObject.fechaPublicacion))
-            {
-                int dia = Int32.Parse(pResearchObject.fechaPublicacion.Split(" ")[0].Split("/")[0]);
-                int mes = Int32.Parse(pResearchObject.fechaPublicacion.Split(" ")[0].Split("/")[1]);
-                int anyo = Int32.Parse(pResearchObject.fechaPublicacion.Split(" ")[0].Split("/")[2]);
-
-                ro.Roh_updatedDate = new DateTime(anyo, mes, dia);
-
-                if (pResearchObjectB != null && !string.IsNullOrEmpty(pResearchObjectB.fechaPublicacion) && ro.Roh_updatedDate == null)
+                // Fecha Publicación
+                if (!string.IsNullOrEmpty(pResearchObject.fechaPublicacion))
                 {
-                    dia = Int32.Parse(pResearchObjectB.fechaPublicacion.Split(" ")[0].Split("/")[0]);
-                    mes = Int32.Parse(pResearchObjectB.fechaPublicacion.Split(" ")[0].Split("/")[1]);
-                    anyo = Int32.Parse(pResearchObjectB.fechaPublicacion.Split(" ")[0].Split("/")[2]);
+                    int dia = Int32.Parse(pResearchObject.fechaPublicacion.Split(" ")[0].Split("/")[0]);
+                    int mes = Int32.Parse(pResearchObject.fechaPublicacion.Split(" ")[0].Split("/")[1]);
+                    int anyo = Int32.Parse(pResearchObject.fechaPublicacion.Split(" ")[0].Split("/")[2]);
 
                     ro.Roh_updatedDate = new DateTime(anyo, mes, dia);
+
+                    if (pResearchObjectB != null && !string.IsNullOrEmpty(pResearchObjectB.fechaPublicacion) && ro.Roh_updatedDate == null)
+                    {
+                        dia = Int32.Parse(pResearchObjectB.fechaPublicacion.Split(" ")[0].Split("/")[0]);
+                        mes = Int32.Parse(pResearchObjectB.fechaPublicacion.Split(" ")[0].Split("/")[1]);
+                        anyo = Int32.Parse(pResearchObjectB.fechaPublicacion.Split(" ")[0].Split("/")[2]);
+
+                        ro.Roh_updatedDate = new DateTime(anyo, mes, dia);
+                    }
+                }
+
+                // Etiquetas
+                if (pResearchObject.etiquetas != null && pResearchObject.etiquetas.Any())
+                {
+                    ro.Roh_externalKeywords = pResearchObject.etiquetas;
+
+                    if (pResearchObjectB != null && pResearchObjectB.etiquetas != null && pResearchObjectB.etiquetas.Any())
+                    {
+                        ro.Roh_externalKeywords = pResearchObjectB.etiquetas;
+                    }
+                }
+
+                // Etiquetas Enriquecidas
+                if (pResearchObject.etiquetasEnriquecidas != null && pResearchObject.etiquetasEnriquecidas.Any())
+                {
+                    ro.Roh_enrichedKeywords = pResearchObject.etiquetasEnriquecidas;
+
+                    if (pResearchObjectB != null && pResearchObjectB.etiquetasEnriquecidas != null && pResearchObjectB.etiquetasEnriquecidas.Any())
+                    {
+                        ro.Roh_enrichedKeywords = pResearchObjectB.etiquetasEnriquecidas;
+                    }
+                }
+
+                // Categorias Enriquecidas
+                HashSet<string> listaIDs = new HashSet<string>();
+                if (pResearchObject.categoriasEnriquecidas != null && pResearchObject.categoriasEnriquecidas.Count > 0)
+                {
+                    ro.Roh_enrichedKnowledgeArea = new List<ResearchobjectOntology.CategoryPath>();
+                    foreach (string area in pResearchObject.categoriasEnriquecidas)
+                    {
+                        if (pDicAreasNombre.ContainsKey(area.ToLower()))
+                        {
+                            ResearchobjectOntology.CategoryPath categoria = new ResearchobjectOntology.CategoryPath();
+                            categoria.IdsRoh_categoryNode = new List<string>();
+                            categoria.IdsRoh_categoryNode.Add(pDicAreasNombre[area.ToLower()]);
+                            string idHijo = pDicAreasNombre[area.ToLower()];
+                            string idHijoAux = idHijo;
+                            if (!listaIDs.Contains(idHijo))
+                            {
+                                while (!idHijo.EndsWith(".0.0.0"))
+                                {
+                                    categoria.IdsRoh_categoryNode.Add(pDicAreasBroader[idHijo]);
+                                    idHijo = pDicAreasBroader[idHijo];
+                                }
+                                if (categoria.IdsRoh_categoryNode.Count > 0)
+                                {
+                                    ro.Roh_enrichedKnowledgeArea.Add(categoria);
+                                }
+                            }
+                            listaIDs.Add(idHijoAux);
+                        }
+                    }
+
+                    if (pResearchObjectB != null && pResearchObjectB.categoriasEnriquecidas != null && pResearchObjectB.categoriasEnriquecidas.Any())
+                    {
+                        ro.Roh_enrichedKnowledgeArea = new List<ResearchobjectOntology.CategoryPath>();
+                        foreach (string area in pResearchObjectB.categoriasEnriquecidas)
+                        {
+                            if (pDicAreasNombre.ContainsKey(area.ToLower()))
+                            {
+                                ResearchobjectOntology.CategoryPath categoria = new ResearchobjectOntology.CategoryPath();
+                                categoria.IdsRoh_categoryNode = new List<string>();
+                                categoria.IdsRoh_categoryNode.Add(pDicAreasNombre[area.ToLower()]);
+                                string idHijo = pDicAreasNombre[area.ToLower()];
+                                string idHijoAux = idHijo;
+                                if (!listaIDs.Contains(idHijo))
+                                {
+                                    while (!idHijo.EndsWith(".0.0.0"))
+                                    {
+                                        categoria.IdsRoh_categoryNode.Add(pDicAreasBroader[idHijo]);
+                                        idHijo = pDicAreasBroader[idHijo];
+                                    }
+                                    if (categoria.IdsRoh_categoryNode.Count > 0)
+                                    {
+                                        ro.Roh_enrichedKnowledgeArea.Add(categoria);
+                                    }
+                                }
+                                listaIDs.Add(idHijoAux);
+                            }
+                        }
+                    }
+                }
+
+                // Licencia
+                if (!string.IsNullOrEmpty(pResearchObject.licencia))
+                {
+                    ro.Dct_license = pResearchObject.licencia;
+
+                    if (pResearchObjectB != null && !string.IsNullOrEmpty(pResearchObjectB.licencia) && string.IsNullOrEmpty(ro.Dct_license))
+                    {
+                        ro.Dct_license = pResearchObjectB.licencia;
+                    }
                 }
             }
-
-            // Etiquetas
-            if (pResearchObject.etiquetas != null && pResearchObject.etiquetas.Any())
+            else if (pTipo == "GitHub")
             {
-                ro.Roh_externalKeywords = pResearchObject.etiquetas;
-
-                if (pResearchObjectB != null && pResearchObjectB.etiquetas != null && pResearchObjectB.etiquetas.Any())
+                // ResearchObject Type
+                if (!string.IsNullOrEmpty(pGitHubObj.tipo))
                 {
-                    ro.Roh_externalKeywords = pResearchObjectB.etiquetas;
+                    ro.IdDc_type = "http://gnoss.com/items/researchobjecttype_9";
+
+                    if (pGitHubObjB != null && !string.IsNullOrEmpty(pGitHubObjB.tipo) && string.IsNullOrEmpty(ro.IdDc_type))
+                    {
+                        ro.IdDc_type = "http://gnoss.com/items/researchobjecttype_9";
+                    }
                 }
-            }
 
-            // Licencia
-            if (!string.IsNullOrEmpty(pResearchObject.licencia))
-            {
-                ro.Dct_license = pResearchObject.licencia;
-
-                if (pResearchObjectB != null && !string.IsNullOrEmpty(pResearchObjectB.licencia) && string.IsNullOrEmpty(ro.Dct_license))
+                // Título.
+                if (!string.IsNullOrEmpty(pGitHubObj.titulo))
                 {
-                    ro.Dct_license = pResearchObjectB.licencia;
+                    ro.Roh_title = pGitHubObj.titulo;
+
+                    if (pGitHubObjB != null && !string.IsNullOrEmpty(pGitHubObjB.titulo) && string.IsNullOrEmpty(ro.Roh_title))
+                    {
+                        ro.Roh_title = pGitHubObjB.titulo;
+                    }
+                }
+
+                // Descripción.
+                if (!string.IsNullOrEmpty(pGitHubObj.descripcion))
+                {
+                    ro.Bibo_abstract = pGitHubObj.descripcion;
+
+                    if (pGitHubObjB != null && !string.IsNullOrEmpty(pGitHubObjB.descripcion) && string.IsNullOrEmpty(ro.Bibo_abstract))
+                    {
+                        ro.Bibo_abstract = pGitHubObjB.descripcion;
+                    }
+                }
+
+                // URL
+                if (!string.IsNullOrEmpty(pGitHubObj.url))
+                {
+                    ro.Vcard_url = pGitHubObj.url;
+
+                    if (pGitHubObjB != null && !string.IsNullOrEmpty(pGitHubObjB.url) && string.IsNullOrEmpty(ro.Vcard_url))
+                    {
+                        ro.Vcard_url = pGitHubObjB.url;
+                    }
+                }
+
+                // Fecha Actualización
+                if (!string.IsNullOrEmpty(pGitHubObj.fechaActualizacion))
+                {
+                    int dia = Int32.Parse(pGitHubObj.fechaActualizacion.Split(" ")[0].Split("/")[1]);
+                    int mes = Int32.Parse(pGitHubObj.fechaActualizacion.Split(" ")[0].Split("/")[0]);
+                    int anyo = Int32.Parse(pGitHubObj.fechaActualizacion.Split(" ")[0].Split("/")[2]);
+
+                    ro.Roh_updatedDate = new DateTime(anyo, mes, dia);
+
+                    if (pGitHubObjB != null && !string.IsNullOrEmpty(pGitHubObjB.fechaActualizacion) && ro.Roh_updatedDate == null)
+                    {
+                        dia = Int32.Parse(pGitHubObjB.fechaActualizacion.Split(" ")[0].Split("/")[1]);
+                        mes = Int32.Parse(pGitHubObjB.fechaActualizacion.Split(" ")[0].Split("/")[0]);
+                        anyo = Int32.Parse(pGitHubObjB.fechaActualizacion.Split(" ")[0].Split("/")[2]);
+
+                        ro.Roh_updatedDate = new DateTime(anyo, mes, dia);
+                    }
+                }
+
+                // Fecha Creación
+                if (!string.IsNullOrEmpty(pGitHubObj.fechaCreacion))
+                {
+                    int dia = Int32.Parse(pGitHubObj.fechaCreacion.Split(" ")[0].Split("/")[1]);
+                    int mes = Int32.Parse(pGitHubObj.fechaCreacion.Split(" ")[0].Split("/")[0]);
+                    int anyo = Int32.Parse(pGitHubObj.fechaCreacion.Split(" ")[0].Split("/")[2]);
+
+                    ro.Dct_issued = new DateTime(anyo, mes, dia);
+
+                    if (pGitHubObjB != null && !string.IsNullOrEmpty(pGitHubObjB.fechaCreacion) && ro.Roh_updatedDate == null)
+                    {
+                        dia = Int32.Parse(pGitHubObjB.fechaCreacion.Split(" ")[0].Split("/")[1]);
+                        mes = Int32.Parse(pGitHubObjB.fechaCreacion.Split(" ")[0].Split("/")[0]);
+                        anyo = Int32.Parse(pGitHubObjB.fechaCreacion.Split(" ")[0].Split("/")[2]);
+
+                        ro.Dct_issued = new DateTime(anyo, mes, dia);
+                    }
+                }
+
+                // Lenguajes de programación.
+                if (pGitHubObj.lenguajes != null && pGitHubObj.lenguajes.Any())
+                {
+                    ro.Vcard_hasLanguage = new List<ResearchobjectOntology.Language>();
+
+                    foreach (KeyValuePair<string, float> item in pGitHubObj.lenguajes)
+                    {
+                        ResearchobjectOntology.Language lenguajeProg = new ResearchobjectOntology.Language();
+                        lenguajeProg.Roh_title = item.Key;
+                        lenguajeProg.Roh_percentage = item.Value;
+                        ro.Vcard_hasLanguage.Add(lenguajeProg);
+                    }
+
+                    if (pGitHubObjB != null && pGitHubObjB.lenguajes != null && pGitHubObjB.lenguajes.Any() && ro.Vcard_hasLanguage == null)
+                    {
+                        ro.Vcard_hasLanguage = new List<ResearchobjectOntology.Language>();
+
+                        foreach (KeyValuePair<string, float> item in pGitHubObjB.lenguajes)
+                        {
+                            ResearchobjectOntology.Language lenguajeProg = new ResearchobjectOntology.Language();
+                            lenguajeProg.Roh_title = item.Key;
+                            lenguajeProg.Roh_percentage = item.Value;
+                            ro.Vcard_hasLanguage.Add(lenguajeProg);
+                        }
+                    }
+                }
+
+                // Licencia
+                if (!string.IsNullOrEmpty(pGitHubObj.licencia))
+                {
+                    ro.Dct_license = pGitHubObj.licencia;
+
+                    if (pGitHubObjB != null && !string.IsNullOrEmpty(pGitHubObjB.licencia) && string.IsNullOrEmpty(ro.Dct_license))
+                    {
+                        ro.Dct_license = pGitHubObjB.licencia;
+                    }
+                }
+
+                // Número de Releases
+                if (pGitHubObj.numReleases.HasValue)
+                {
+                    ro.Roh_releasesNumber = pGitHubObj.numReleases.Value;
+
+                    if (pGitHubObjB != null && pGitHubObjB.numReleases.HasValue && ro.Roh_releasesNumber == null)
+                    {
+                        ro.Roh_releasesNumber = pGitHubObjB.numReleases.Value;
+                    }
+                }
+
+                // Número de Forks
+                if (pGitHubObj.numForks.HasValue)
+                {
+                    ro.Roh_forksNumber = pGitHubObj.numForks.Value;
+
+                    if (pGitHubObjB != null && pGitHubObjB.numForks.HasValue && ro.Roh_forksNumber == null)
+                    {
+                        ro.Roh_forksNumber = pGitHubObjB.numForks.Value;
+                    }
+                }
+
+                // Número de Issues
+                if (pGitHubObj.numIssues.HasValue)
+                {
+                    ro.Roh_issuesNumber = pGitHubObj.numIssues.Value;
+
+                    if (pGitHubObjB != null && pGitHubObjB.numIssues.HasValue && ro.Roh_issuesNumber == null)
+                    {
+                        ro.Roh_issuesNumber = pGitHubObjB.numIssues.Value;
+                    }
+                }
+
+                // Etiquetas
+                if (pGitHubObj.etiquetas != null && pGitHubObj.etiquetas.Any())
+                {
+                    ro.Roh_externalKeywords = pGitHubObj.etiquetas;
+
+                    if (pGitHubObjB != null && pGitHubObjB.etiquetas != null && pGitHubObjB.etiquetas.Any())
+                    {
+                        ro.Roh_externalKeywords = pGitHubObjB.etiquetas;
+                    }
+                }
+
+                // Etiquetas Enriquecidas
+                if (pGitHubObj.etiquetasEnriquecidas != null && pGitHubObj.etiquetasEnriquecidas.Any())
+                {
+                    ro.Roh_enrichedKeywords = pGitHubObj.etiquetasEnriquecidas;
+
+                    if (pGitHubObjB != null && pGitHubObjB.etiquetasEnriquecidas != null && pGitHubObjB.etiquetasEnriquecidas.Any())
+                    {
+                        ro.Roh_enrichedKeywords = pGitHubObjB.etiquetasEnriquecidas;
+                    }
+                }
+
+                // Categorias Enriquecidas
+                HashSet<string> listaIDs = new HashSet<string>();
+                if (pGitHubObj.categoriasEnriquecidas != null && pGitHubObj.categoriasEnriquecidas.Count > 0)
+                {
+                    ro.Roh_enrichedKnowledgeArea = new List<ResearchobjectOntology.CategoryPath>();
+                    foreach (string area in pGitHubObj.categoriasEnriquecidas)
+                    {
+                        if (pDicAreasNombre.ContainsKey(area.ToLower()))
+                        {
+                            ResearchobjectOntology.CategoryPath categoria = new ResearchobjectOntology.CategoryPath();
+                            categoria.IdsRoh_categoryNode = new List<string>();
+                            categoria.IdsRoh_categoryNode.Add(pDicAreasNombre[area.ToLower()]);
+                            string idHijo = pDicAreasNombre[area.ToLower()];
+                            string idHijoAux = idHijo;
+                            if (!listaIDs.Contains(idHijo))
+                            {
+                                while (!idHijo.EndsWith(".0.0.0"))
+                                {
+                                    categoria.IdsRoh_categoryNode.Add(pDicAreasBroader[idHijo]);
+                                    idHijo = pDicAreasBroader[idHijo];
+                                }
+                                if (categoria.IdsRoh_categoryNode.Count > 0)
+                                {
+                                    ro.Roh_enrichedKnowledgeArea.Add(categoria);
+                                }
+                            }
+                            listaIDs.Add(idHijoAux);
+                        }
+                    }
+
+                    if (pGitHubObjB != null && pGitHubObjB.categoriasEnriquecidas != null && pGitHubObjB.categoriasEnriquecidas.Any())
+                    {
+                        ro.Roh_enrichedKnowledgeArea = new List<ResearchobjectOntology.CategoryPath>();
+                        foreach (string area in pGitHubObjB.categoriasEnriquecidas)
+                        {
+                            if (pDicAreasNombre.ContainsKey(area.ToLower()))
+                            {
+                                ResearchobjectOntology.CategoryPath categoria = new ResearchobjectOntology.CategoryPath();
+                                categoria.IdsRoh_categoryNode = new List<string>();
+                                categoria.IdsRoh_categoryNode.Add(pDicAreasNombre[area.ToLower()]);
+                                string idHijo = pDicAreasNombre[area.ToLower()];
+                                string idHijoAux = idHijo;
+                                if (!listaIDs.Contains(idHijo))
+                                {
+                                    while (!idHijo.EndsWith(".0.0.0"))
+                                    {
+                                        categoria.IdsRoh_categoryNode.Add(pDicAreasBroader[idHijo]);
+                                        idHijo = pDicAreasBroader[idHijo];
+                                    }
+                                    if (categoria.IdsRoh_categoryNode.Count > 0)
+                                    {
+                                        ro.Roh_enrichedKnowledgeArea.Add(categoria);
+                                    }
+                                }
+                                listaIDs.Add(idHijoAux);
+                            }
+                        }
+                    }
                 }
             }
 
@@ -3508,6 +3924,20 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                 tipo = pResearchObject.tipo,
                 title = pResearchObject.titulo,
                 idRo = pResearchObject.url.Substring(pResearchObject.url.LastIndexOf("/") + 1)
+            };
+
+            return ro;
+        }
+
+        private static DisambiguationRoGithub GetDisambiguationRoGithub(GitHubObj pGithubObj)
+        {
+            pGithubObj.ID = Guid.NewGuid().ToString();
+
+            DisambiguationRoGithub ro = new DisambiguationRoGithub()
+            {
+                ID = pGithubObj.ID,
+                tipo = pGithubObj.tipo,
+                idRo = pGithubObj.id.ToString()
             };
 
             return ro;

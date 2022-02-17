@@ -18,5 +18,7 @@ namespace GitHubAPI.Models.Data
         public int? numForks { get; set; }
         public int? numIssues { get; set; }
         public List<string> etiquetas { get; set; }
+        public List<string> etiquetasEnriquecidas { get; set; }
+        public List<string> categoriasEnriquecidas { get; set; }
     }    
 }

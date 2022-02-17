@@ -20,13 +20,12 @@ namespace Hercules.ED.DisambiguationEngine.Models
         /// </summary>
         private static Dictionary<string, int> mFrecuenciaNombres = null;
         /// <summary>
-        /// Frecuencia relativa de los nombres
+        /// Score de los nombres 
         /// </summary>
-        private static Dictionary<string, float> mScoreNombres = null;
         private static Dictionary<string, float> mScoreNombresCalculado = null;
-        //Valores entre 0.4 y 0.99
-        private static float minimoScoreNombres = 0.4f;
-        private static float maximoScoreNombres = 0.99f;
+        //Valores entre 0.01 y 0.6
+        private static float minimoScoreNombres = 0.01f;
+        private static float maximoScoreNombres = 0.6f;
 
         private static Dictionary<string, int> FrecuenciaNombres
         {
@@ -41,7 +40,6 @@ namespace Hercules.ED.DisambiguationEngine.Models
                             while (true)
                             {
                                 Dictionary<string, int> frecuenciaNombresAux = new Dictionary<string, int>();
-                                Dictionary<string, float> scoreNombresAux = new Dictionary<string, float>();
                                 Dictionary<string, float> scoreNombresCalculadoAux = new Dictionary<string, float>();
                                 int limit = 10000;
                                 int offset = 0;
@@ -85,10 +83,6 @@ namespace Hercules.ED.DisambiguationEngine.Models
                                     }
                                 }
                                 frecuenciaNombresAux = frecuenciaNombresAux.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
-                                foreach (string nombre in frecuenciaNombresAux.Keys)
-                                {
-                                    scoreNombresAux[nombre] = (float)frecuenciaNombresAux[nombre] / numPersonas;
-                                }
 
                                 int max = frecuenciaNombresAux.Where(x => x.Key.Length > 1).Select(x => x.Value).Max();
                                 int min = frecuenciaNombresAux.Where(x => x.Key.Length > 1).Select(x => x.Value).Min();
@@ -99,14 +93,14 @@ namespace Hercules.ED.DisambiguationEngine.Models
                                 foreach (int frecuencia in frecuenciaNombresAux.Where(x => x.Key.Length > 1).Select(x => x.Value).Reverse().Distinct())
                                 {
                                     var f = (float)i / numFrecuencias;
-                                    frecuenciaValor.Add(frecuencia, f);
+                                    frecuenciaValor.Add(frecuencia, 1 - f);
                                     i++;
                                 }
                                 foreach (string nombre in frecuenciaNombresAux.Keys)
                                 {
                                     if (nombre.Length == 1)
                                     {
-                                        scoreNombresCalculadoAux[nombre] = maximoScoreNombres;
+                                        scoreNombresCalculadoAux[nombre] = minimoScoreNombres;
                                     }
                                     else
                                     {
@@ -124,7 +118,6 @@ namespace Hercules.ED.DisambiguationEngine.Models
                                 }
                                 scoreNombresCalculadoAux = scoreNombresCalculadoAux.OrderBy(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
                                 mFrecuenciaNombres = frecuenciaNombresAux;
-                                mScoreNombres = scoreNombresAux;
                                 mScoreNombresCalculado = scoreNombresCalculadoAux;
 
 
@@ -146,15 +139,6 @@ namespace Hercules.ED.DisambiguationEngine.Models
             }
         }
 
-        private static Dictionary<string, float> ScoreNombres
-        {
-            get
-            {
-                var x = FrecuenciaNombres;
-                return mScoreNombres;
-            }
-        }
-
         private static Dictionary<string, float> ScoreNombresCalculado
         {
             get
@@ -164,7 +148,7 @@ namespace Hercules.ED.DisambiguationEngine.Models
             }
         }
 
-        public static Dictionary<string, string> SimilarityBBDD(List<DisambiguableEntity> pItems, List<DisambiguableEntity> pItemBBDD, float pUmbral = 0.8f)
+        public static Dictionary<string, string> SimilarityBBDD(List<DisambiguableEntity> pItems, List<DisambiguableEntity> pItemBBDD, float pUmbral = 0.8f, float pToleranciaNombres = 0f)
         {
             Dictionary<string, Dictionary<string, float>> listaEquivalencias = new Dictionary<string, Dictionary<string, float>>();
             if (pItemBBDD != null && pItemBBDD.Count > 0)
@@ -203,7 +187,7 @@ namespace Hercules.ED.DisambiguationEngine.Models
                         for (int i = 0; i < itemsPorTipoBBDD[tipo].Count; i++)
                         {
                             // Algoritmo de similaridad.
-                            float similarity = GetSimilarity(itemA.Value, itemsPorTipoBBDDList[i].Value, dicNomPersonasDesnormalizadas, dicTitulosDesnormalizados, null);
+                            float similarity = GetSimilarity(itemA, itemsPorTipoBBDDList[i], dicNomPersonasDesnormalizadas, dicTitulosDesnormalizados, null, new Dictionary<string, HashSet<string>>(), pToleranciaNombres);
                             if (similarity >= pUmbral)
                             {
                                 listaEquivalencias[itemA.Key.ID][itemsPorTipoBBDDList[i].Key.ID] = similarity;
@@ -244,7 +228,7 @@ namespace Hercules.ED.DisambiguationEngine.Models
                     {
                         listaEquivalenciasFinal[id] = id2;
                         idBBDDSeleccionados.Add(id2);
-                    }                   
+                    }
                 }
             }
 
@@ -261,18 +245,29 @@ namespace Hercules.ED.DisambiguationEngine.Models
         /// <summary>
         /// Proceso de desambiguación.
         /// </summary>
-        /// <param name="pItems">Lista de datos a desambiguar.</param>
+        /// <param name="pItems">Lista de datos a desambiguar.</param>        
+        /// <param name="pItemBBDD">Lista de datos de BBDD.</param>
+        /// <param name="pDisambiguateItems">Indica si hay que disambiguar entr los pItems</param>
+        /// <param name="pUmbral">Umbral para la desambiguación</param>
+        /// <param name="pToleranciaNombres">Tolerancia para los nombres de las personas (porcentaje máximo de nombres no coincidentes admitidos)</param>
         /// <returns>Lista de datos desambiguables.</returns>
-        public static Dictionary<string, HashSet<string>> Disambiguate(List<DisambiguableEntity> pItems, List<DisambiguableEntity> pItemBBDD, bool pDisambiguateItems = true, float pUmbral = 0.8f)
+        public static Dictionary<string, HashSet<string>> Disambiguate(List<DisambiguableEntity> pItems, List<DisambiguableEntity> pItemBBDD, bool pDisambiguateItems = true, float pUmbral = 0.8f, float pToleranciaNombres = 0f)
         {
+            //TODO confiuracion personas
             //TODO tener en cuenta las probabilidades cuando se apunta a entidades (autores de docs) (test 2 docs con 2 autores)
             //TODO block
             //TODO tener en cuenta negativos
 
             //En esta variable se almacenarán todas las equivalencias encontradas con su peso
             Dictionary<string, Dictionary<string, float>> listaEquivalencias = new Dictionary<string, Dictionary<string, float>>();
+            #region Diccionarios auxiliares para la desmbiguación
+            Dictionary<string, string> dicNomPersonasDesnormalizadas = new Dictionary<string, string>();
+            Dictionary<string, string> dicTitulosDesnormalizados = new Dictionary<string, string>();
+            #endregion
 
             //En esta variable se almacenarán todas las entidades que nunca podrán ser equivalentes
+            //TODO que pasa sin en plistadistinntos hay cosas con el mismo ORCID
+            //Ver que pasa cuando hay multiples
             Dictionary<string, HashSet<string>> listaDistintos = new Dictionary<string, HashSet<string>>();
             foreach (DisambiguableEntity item in pItems)
             {
@@ -281,7 +276,7 @@ namespace Hercules.ED.DisambiguationEngine.Models
                     //TODO mover a funcion
                     foreach (string distinct in item.distincts)
                     {
-                        if (!listaDistintos.ContainsKey(distinct))
+                        if (!listaDistintos.ContainsKey(item.ID))
                         {
                             listaDistintos[item.ID] = new HashSet<string>();
                         }
@@ -314,8 +309,8 @@ namespace Hercules.ED.DisambiguationEngine.Models
                     bool cambiosItems = true;
                     while (cambiosItems)
                     {
-                        Dictionary<string, Dictionary<string, float>> listaEquivalenciasItemsACargar = ApplyDisambiguation(disambiguationDataItemsACargarAux, null, listaDistintos);
-                        cambiosItems = ProcesarEquivalencias(pItems, null, listaEquivalenciasItemsACargar, disambiguationDataItemsACargarAux, disambiguationDataItemsBBDD, listaEquivalencias, pUmbral);
+                        Dictionary<string, Dictionary<string, float>> listaEquivalenciasItemsACargar = ApplyDisambiguation(disambiguationDataItemsACargarAux, null, listaDistintos, dicNomPersonasDesnormalizadas, dicTitulosDesnormalizados, pToleranciaNombres);
+                        cambiosItems = ProcesarEquivalencias(pItems, null, listaEquivalenciasItemsACargar, disambiguationDataItemsACargarAux, disambiguationDataItemsBBDD, listaEquivalencias, listaDistintos, pUmbral);
                         if (cambiosItems)
                         {
                             cambios = true;
@@ -330,8 +325,8 @@ namespace Hercules.ED.DisambiguationEngine.Models
                     bool cambiosBBDD = true;
                     while (cambiosBBDD)
                     {
-                        Dictionary<string, Dictionary<string, float>> listaEquivalenciasItemsACargar = ApplyDisambiguation(disambiguationDataItemsACargarAux, disambiguationDataItemsBBDD, listaDistintos);
-                        cambiosBBDD = ProcesarEquivalencias(pItems, pItemBBDD, listaEquivalenciasItemsACargar, disambiguationDataItemsACargarAux, disambiguationDataItemsBBDD, listaEquivalencias, pUmbral);
+                        Dictionary<string, Dictionary<string, float>> listaEquivalenciasItemsACargar = ApplyDisambiguation(disambiguationDataItemsACargarAux, disambiguationDataItemsBBDD, listaDistintos, dicNomPersonasDesnormalizadas, dicTitulosDesnormalizados, pToleranciaNombres);
+                        cambiosBBDD = ProcesarEquivalencias(pItems, pItemBBDD, listaEquivalenciasItemsACargar, disambiguationDataItemsACargarAux, disambiguationDataItemsBBDD, listaEquivalencias, listaDistintos, pUmbral);
                         if (cambiosBBDD)
                         {
                             cambios = true;
@@ -494,7 +489,7 @@ namespace Hercules.ED.DisambiguationEngine.Models
         /// <param name="pListaEquivalencias">Lista de equivalencias</param>
         /// <param name="pUmbral">Umbral</param>
         private static bool ProcesarEquivalencias(List<DisambiguableEntity> pItems, List<DisambiguableEntity> pItemsBBDD, Dictionary<string, Dictionary<string, float>> pListaEquivalenciasItemsACargar,
-            Dictionary<DisambiguableEntity, List<DisambiguationData>> pDisambiguationDataItemsACargar, Dictionary<DisambiguableEntity, List<DisambiguationData>> pDisambiguationDataItemsACargarBBDD, Dictionary<string, Dictionary<string, float>> pListaEquivalencias, float pUmbral)
+            Dictionary<DisambiguableEntity, List<DisambiguationData>> pDisambiguationDataItemsACargar, Dictionary<DisambiguableEntity, List<DisambiguationData>> pDisambiguationDataItemsACargarBBDD, Dictionary<string, Dictionary<string, float>> pListaEquivalencias, Dictionary<string, HashSet<string>> pListaDistintos, float pUmbral)
         {
             Dictionary<string, DisambiguableEntity> dicItems = new Dictionary<string, DisambiguableEntity>();
             foreach (DisambiguableEntity item in pItems)
@@ -523,6 +518,10 @@ namespace Hercules.ED.DisambiguationEngine.Models
 
                     if (pListaEquivalenciasItemsACargar[idA][idB] > pUmbral)
                     {
+                        if (pListaDistintos.ContainsKey(idA) && pListaDistintos[idA].Contains(idB))
+                        {
+                            continue;
+                        }
                         cambios = true;
                         //TODO priorizar BBDD ¿que pasa sin en los que vamos a cargar esta el mismo ID dos veces?
 
@@ -765,8 +764,9 @@ namespace Hercules.ED.DisambiguationEngine.Models
         /// <param name="pItemsToLoad">Diccionario con el tipo de dato y la lista de los datos a desambiguar.</param>
         /// <param name="pItemsBBDD">Diccionario con el tipo de dato y la lista de los datos de BBDD.</param>
         /// <param name="pListaDistintos">Diccionario con los items que no pueden ser iguales</param>
+        /// <param name="pToleranciaNombres">Tolerancia para los nombres de las personas (porcentaje máximo de nombres no coincidentes admitidos)</param>
         /// <returns>Listado con las equivalencias y su peso.</returns>
-        private static Dictionary<string, Dictionary<string, float>> ApplyDisambiguation(Dictionary<DisambiguableEntity, List<DisambiguationData>> pItemsToLoad, Dictionary<DisambiguableEntity, List<DisambiguationData>> pItemsBBDD, Dictionary<string, HashSet<string>> pListaDistintos)
+        private static Dictionary<string, Dictionary<string, float>> ApplyDisambiguation(Dictionary<DisambiguableEntity, List<DisambiguationData>> pItemsToLoad, Dictionary<DisambiguableEntity, List<DisambiguationData>> pItemsBBDD, Dictionary<string, HashSet<string>> pListaDistintos, Dictionary<string, string> pDicNomPersonasDesnormalizadas, Dictionary<string, string> pDicTitulosDesnormalizados, float pToleranciaNombres)
         {
             //TODO los ids de bbdd no hay que compararlos con nada
 
@@ -809,7 +809,7 @@ namespace Hercules.ED.DisambiguationEngine.Models
                             }
                         }
                     }
-                    Dictionary<string, Dictionary<string, float>> equivalencesAux = ProcesadoNormal(itemsPorTipoToLoad[tipo], itemsBBDD, tipo, equivalencesAyuda, pListaDistintos);
+                    Dictionary<string, Dictionary<string, float>> equivalencesAux = ProcesadoNormal(itemsPorTipoToLoad[tipo], itemsBBDD, tipo, equivalencesAyuda, pListaDistintos, pDicNomPersonasDesnormalizadas, pDicTitulosDesnormalizados, pToleranciaNombres);
                     foreach (string key in equivalencesAux.Keys)
                     {
                         equivalences[key] = equivalencesAux[key];
@@ -819,185 +819,6 @@ namespace Hercules.ED.DisambiguationEngine.Models
             return equivalences;
         }
 
-        ///// <summary>
-        ///// Procesado especial de desambiguación (propiedades limitadas)
-        ///// </summary>
-        ///// <param name="pItemsToLoad">Items para desambiguar</param>
-        ///// <param name="pItemsBBDD">Items para desambiguar de la BBDD</param>
-        ///// <param name="pTipo">Tipo</param>
-        ///// <returns></returns>
-        //private static Dictionary<string, Dictionary<string, float>> ProcesadoEspecial(Dictionary<DisambiguableEntity, List<DisambiguationData>> pItemsToLoad, Dictionary<DisambiguableEntity, List<DisambiguationData>> pItemsBBDD, string pTipo)
-        //{
-        //    //Respuesta
-        //    Dictionary<string, Dictionary<string, float>> equivalences = new Dictionary<string, Dictionary<string, float>>();
-
-        //    //Propiedad - Valor - IDs
-        //    Dictionary<string, Dictionary<string, HashSet<string>>> dicComparacionEqualsTitle = new Dictionary<string, Dictionary<string, HashSet<string>>>();
-        //    //Propiedad - ScorePositivo
-        //    Dictionary<string, KeyValuePair<float, float>> dicComparacionEqualsTitleScore = new Dictionary<string, KeyValuePair<float, float>>();
-        //    //ID - Propiedad - Valor
-        //    Dictionary<string, Dictionary<string, string>> dicComparacionEqualsTitleValues = new Dictionary<string, Dictionary<string, string>>();
-
-        //    //Propiedad - Valor - IDs
-        //    Dictionary<string, Dictionary<string, HashSet<string>>> dicComparacionEqualsIdentifiers = new Dictionary<string, Dictionary<string, HashSet<string>>>();
-        //    //Propiedad - ScorePositivo/ScoreNegativo
-        //    Dictionary<string, KeyValuePair<float, float>> dicComparacionEqualsIdentifiersScore = new Dictionary<string, KeyValuePair<float, float>>();
-        //    //ID - Propiedad - Valor
-        //    Dictionary<string, Dictionary<string, string>> dicComparacionEqualsIdentifiersValues = new Dictionary<string, Dictionary<string, string>>();
-
-        //    //Propiedad - Valor - IDs
-        //    Dictionary<string, Dictionary<string, HashSet<string>>> dicComparacionEqualsItem = new Dictionary<string, Dictionary<string, HashSet<string>>>();
-        //    //Propiedad - ScorePositivo/ScoreNegativo
-        //    Dictionary<string, KeyValuePair<float, float>> dicComparacionEqualsItemScore = new Dictionary<string, KeyValuePair<float, float>>();
-        //    //ID - Propiedad - Valor
-        //    Dictionary<string, Dictionary<string, string>> dicComparacionEqualsItemValues = new Dictionary<string, Dictionary<string, string>>();
-
-        //    HashSet<string> idsToCompare = new HashSet<string>();
-
-        //    foreach (var itemA in pItemsToLoad)
-        //    {
-        //        idsToCompare.Add(itemA.Key.ID);
-        //        for (int i = 0; i < itemA.Value.Count; i++)
-        //        {
-        //            switch (itemA.Value[i].config.@type)
-        //            {
-        //                case DisambiguationDataConfigType.equalsTitle:
-        //                    ProcessItem(dicComparacionEqualsTitle, dicComparacionEqualsTitleValues, dicComparacionEqualsTitleScore, itemA, i, itemA.Value[i].config.@type);
-        //                    break;
-        //                case DisambiguationDataConfigType.equalsIdentifiers:
-        //                    ProcessItem(dicComparacionEqualsIdentifiers, dicComparacionEqualsIdentifiersValues, dicComparacionEqualsIdentifiersScore, itemA, i, itemA.Value[i].config.@type);
-        //                    break;
-        //                case DisambiguationDataConfigType.equalsItem:
-        //                    ProcessItem(dicComparacionEqualsItem, dicComparacionEqualsItemValues, dicComparacionEqualsItemScore, itemA, i, itemA.Value[i].config.@type);
-        //                    break;
-        //                default:
-        //                    throw new Exception("No implementado");
-        //            }
-        //        }
-        //    }
-
-        //    bool compareBBDD = false;
-        //    if (pItemsBBDD != null)
-        //    {
-        //        idsToCompare = new HashSet<string>();
-        //        compareBBDD = true;
-        //        foreach (var itemA in pItemsBBDD)
-        //        {
-        //            idsToCompare.Add(itemA.Key.ID);
-        //            for (int i = 0; i < itemA.Value.Count; i++)
-        //            {
-        //                switch (itemA.Value[i].config.@type)
-        //                {
-        //                    case DisambiguationDataConfigType.equalsTitle:
-        //                        ProcessItem(dicComparacionEqualsTitle, dicComparacionEqualsTitleValues, dicComparacionEqualsTitleScore, itemA, i, itemA.Value[i].config.@type);
-        //                        break;
-        //                    case DisambiguationDataConfigType.equalsIdentifiers:
-        //                        ProcessItem(dicComparacionEqualsIdentifiers, dicComparacionEqualsIdentifiersValues, dicComparacionEqualsIdentifiersScore, itemA, i, itemA.Value[i].config.@type);
-        //                        break;
-        //                    case DisambiguationDataConfigType.equalsItem:
-        //                        ProcessItem(dicComparacionEqualsItem, dicComparacionEqualsItemValues, dicComparacionEqualsItemScore, itemA, i, itemA.Value[i].config.@type);
-        //                        break;
-        //                    default:
-        //                        throw new Exception("No implementado");
-        //                }
-        //            }
-        //        }
-        //    }
-
-        //    int indice = 0;
-        //    foreach (var itemA in pItemsToLoad)
-        //    {
-        //        indice++;
-        //        string idA = itemA.Key.ID;
-        //        if (!Guid.TryParse(idA, out Guid aux))
-        //        {
-        //            //Si es un ID de BBDD no jay que comparar
-        //            continue;
-        //        }
-
-        //        //Obtenemos las equivalencias en función de los IDs
-        //        Dictionary<string, float> dicEquivalenciasIdentifiers = new Dictionary<string, float>();
-        //        CalculateEquivalencesPositives(dicComparacionEqualsIdentifiers, dicComparacionEqualsIdentifiersValues, dicComparacionEqualsIdentifiersScore, dicEquivalenciasIdentifiers, idA, idsToCompare);
-        //        CalculateEquivalencesNegatives(dicComparacionEqualsIdentifiers, dicComparacionEqualsIdentifiersValues, dicComparacionEqualsIdentifiersScore, dicEquivalenciasIdentifiers, idA, idsToCompare);
-
-        //        //Obtenemos las equivalencias de los títulos
-        //        Dictionary<string, float> dicEquivalenciasTitle = new Dictionary<string, float>();
-        //        CalculateEquivalencesPositives(dicComparacionEqualsTitle, dicComparacionEqualsTitleValues, dicComparacionEqualsTitleScore, dicEquivalenciasTitle, idA, idsToCompare);
-        //        CalculateEquivalencesPositives(dicComparacionEqualsItem, dicComparacionEqualsItemValues, dicComparacionEqualsItemScore, dicEquivalenciasTitle, idA, idsToCompare);
-        //        CalculateEquivalencesNegatives(dicComparacionEqualsIdentifiers, dicComparacionEqualsIdentifiersValues, dicComparacionEqualsIdentifiersScore, dicEquivalenciasTitle, idA, idsToCompare);
-        //        CalculateEquivalencesNegatives(dicComparacionEqualsTitle, dicComparacionEqualsTitleValues, dicComparacionEqualsTitleScore, dicEquivalenciasTitle, idA, idsToCompare);
-        //        CalculateEquivalencesNegatives(dicComparacionEqualsItem, dicComparacionEqualsItemValues, dicComparacionEqualsItemScore, dicEquivalenciasTitle, idA, idsToCompare);
-
-        //        //Obtenemos las equivalencias de los items
-        //        Dictionary<string, float> dicEquivalenciasItem = new Dictionary<string, float>();
-        //        CalculateEquivalencesPositives(dicComparacionEqualsItem, dicComparacionEqualsItemValues, dicComparacionEqualsItemScore, dicEquivalenciasItem, idA, idsToCompare);
-        //        CalculateEquivalencesNegatives(dicComparacionEqualsItem, dicComparacionEqualsItemValues, dicComparacionEqualsItemScore, dicEquivalenciasItem, idA, idsToCompare);
-        //        CalculateEquivalencesNegatives(dicComparacionEqualsIdentifiers, dicComparacionEqualsIdentifiersValues, dicComparacionEqualsIdentifiersScore, dicEquivalenciasItem, idA, idsToCompare);
-        //        CalculateEquivalencesNegatives(dicComparacionEqualsTitle, dicComparacionEqualsTitleValues, dicComparacionEqualsTitleScore, dicEquivalenciasItem, idA, idsToCompare);
-
-        //        //Almacenamos las equivalencias en función de los IDs
-        //        Dictionary<string, float> dicEquivalencias = new Dictionary<string, float>();
-        //        foreach (string id in dicEquivalenciasIdentifiers.Keys)
-        //        {
-        //            if (dicEquivalenciasIdentifiers[id] > 0)
-        //            {
-        //                dicEquivalencias[id] = dicEquivalenciasIdentifiers[id];
-        //            }
-        //        }
-
-        //        //Almacenamos las equivalencias en función de los Títulos
-        //        foreach (string id in dicEquivalenciasTitle.Keys)
-        //        {
-        //            if (!dicEquivalencias.ContainsKey(id) && dicEquivalenciasTitle[id] > 0)
-        //            {
-        //                dicEquivalencias[id] = dicEquivalenciasTitle[id];
-        //            }
-        //        }
-
-        //        //Almacenamos las equivalencias en función de los items
-        //        foreach (string id in dicEquivalenciasItem.Keys)
-        //        {
-        //            if (!dicEquivalencias.ContainsKey(id) && dicEquivalenciasItem[id] > 0)
-        //            {
-        //                dicEquivalencias[id] = dicEquivalenciasItem[id];
-        //            }
-        //        }
-
-        //        //Si hay mas de una equivalencia con BBDD sólo nos quedamos con la más alta
-        //        int numBBDD = 0;
-        //        float scoreBBDD = 0;
-        //        string itemBBDD = null;
-        //        foreach (string idB in dicEquivalencias.Keys)
-        //        {
-        //            if (!Guid.TryParse(idB, out Guid aux2))
-        //            {
-        //                numBBDD++;
-        //            }
-        //            if (dicEquivalencias[idB] > scoreBBDD)
-        //            {
-        //                itemBBDD = idB;
-        //                scoreBBDD = dicEquivalencias[idB];
-        //            }
-        //        }
-        //        foreach (string idB in dicEquivalencias.Keys)
-        //        {
-        //            if (!Guid.TryParse(idB, out Guid aux2))
-        //            {
-        //                if (idB == itemBBDD)
-        //                {
-        //                    AddSimilarityId(pTipo, equivalences, dicEquivalencias[idB], idA, idB);
-        //                }
-        //            }
-        //            else
-        //            {
-        //                // Agregación de los IDs similares.
-        //                AddSimilarityId(pTipo, equivalences, dicEquivalencias[idB], idA, idB);
-        //            }
-        //        }
-        //    }
-        //    return equivalences;
-        //}
-
         /// <summary>
         /// Procesado especial de desambiguación (propiedades limitadas)
         /// </summary>
@@ -1005,18 +826,12 @@ namespace Hercules.ED.DisambiguationEngine.Models
         /// <param name="pItemsBBDD">Items para desambiguar de la BBDD</param>
         /// <param name="pTipo">Tipo</param>
         /// <param name="pListaDistintos">Diccionario con la lista de los IDs que no puden ser iguales</param>
+        /// <param name="pToleranciaNombres">Tolerancia para los nombres de las personas (porcentaje máximo de nombres no coincidentes admitidos)</param>
         /// <returns></returns>
-        private static Dictionary<string, Dictionary<string, float>> ProcesadoNormal(Dictionary<DisambiguableEntity, List<DisambiguationData>> pItemsToLoad, Dictionary<DisambiguableEntity, List<DisambiguationData>> pItemsBBDD, string pTipo, Dictionary<string, Dictionary<string, float>> pEquivalencesAux, Dictionary<string, HashSet<string>> pListaDistintos)
+        private static Dictionary<string, Dictionary<string, float>> ProcesadoNormal(Dictionary<DisambiguableEntity, List<DisambiguationData>> pItemsToLoad, Dictionary<DisambiguableEntity, List<DisambiguationData>> pItemsBBDD, string pTipo, Dictionary<string, Dictionary<string, float>> pEquivalencesAux, Dictionary<string, HashSet<string>> pListaDistintos, Dictionary<string, string> pDicNomPersonasDesnormalizadas, Dictionary<string, string> pDicTitulosDesnormalizados, float pToleranciaNombres)
         {
             //Respuesta
             Dictionary<string, Dictionary<string, float>> equivalences = new Dictionary<string, Dictionary<string, float>>();
-
-            #region Diccionarios auxiliares para la desmbiguación
-            //TODO Diccionario Nombres Personas Desnormalizadas Mover afuera
-            Dictionary<string, string> dicNomPersonasDesnormalizadas = new Dictionary<string, string>();
-            //TODO Diccionario Titulos Desnormalizadas Mover afuera
-            Dictionary<string, string> dicTitulosDesnormalizados = new Dictionary<string, string>();
-            #endregion
 
             // Lista con los items del tipo actual
             List<KeyValuePair<DisambiguableEntity, List<DisambiguationData>>> listaItemsCompare = pItemsToLoad.ToList();
@@ -1042,7 +857,7 @@ namespace Hercules.ED.DisambiguationEngine.Models
                             continue;
                         }
                         // Algoritmo de similaridad.
-                        float similarity = GetSimilarity(itemA.Value, listaItemsCompare[i].Value, dicNomPersonasDesnormalizadas, dicTitulosDesnormalizados, pEquivalencesAux);
+                        float similarity = GetSimilarity(itemA, listaItemsCompare[i], pDicNomPersonasDesnormalizadas, pDicTitulosDesnormalizados, pEquivalencesAux, pListaDistintos, pToleranciaNombres);
 
                         // Agregación de los IDs similares.
                         AddSimilarityId(pTipo, equivalences, similarity, idA, idB);
@@ -1067,7 +882,7 @@ namespace Hercules.ED.DisambiguationEngine.Models
                     for (int i = 0; i < listaItemsCompare.Count; i++)
                     {
                         // Algoritmo de similaridad.
-                        float similarity = GetSimilarity(itemA.Value, listaItemsCompare[i].Value, dicNomPersonasDesnormalizadas, dicTitulosDesnormalizados, pEquivalencesAux);
+                        float similarity = GetSimilarity(itemA, listaItemsCompare[i], pDicNomPersonasDesnormalizadas, pDicTitulosDesnormalizados, pEquivalencesAux, pListaDistintos, pToleranciaNombres);
                         if (similarity > similarityMax)
                         {
                             similarityMax = similarity;
@@ -1390,19 +1205,21 @@ namespace Hercules.ED.DisambiguationEngine.Models
         /// </summary>
         /// <param name="pDataA">Dato A</param>
         /// <param name="pDataB">Dato B</param>
+        /// <param name="pListaDistintos">Diccionario con la lista de los IDs que no puden ser iguales</param>
+        /// <param name="pToleranciaNombres">Tolerancia para los nombres de las personas (porcentaje máximo de nombres no coincidentes admitidos)</param>
         /// <returns>Número de similitud. A más cerca de 1, más similar es.</returns>
         /// <exception cref="Exception">Configuración no implementada.</exception>
-        private static float GetSimilarity(List<DisambiguationData> pDataA, List<DisambiguationData> pDataB, Dictionary<string, string> pDicNomAutoresDesnormalizados, Dictionary<string, string> pDicTitulosDesnormalizados, Dictionary<string, Dictionary<string, float>> pEquivalencesAux)
+        private static float GetSimilarity(KeyValuePair<DisambiguableEntity, List<DisambiguationData>> pDataA, KeyValuePair<DisambiguableEntity, List<DisambiguationData>> pDataB, Dictionary<string, string> pDicNomAutoresDesnormalizados, Dictionary<string, string> pDicTitulosDesnormalizados, Dictionary<string, Dictionary<string, float>> pEquivalencesAux, Dictionary<string, HashSet<string>> pListaDistintos, float pToleranciaNombres)
         {
             float result = 0;
             #region Con identificadores con valor
-            if (pDataA.Count > 0 && pDataA.Exists(x => x.config.type == DisambiguationDataConfigType.equalsIdentifiers))
+            if (pDataA.Value.Count > 0 && pDataA.Value.Exists(x => x.config.type == DisambiguationDataConfigType.equalsIdentifiers))
             {
                 bool existenIdentificadores = false;
-                for (int i = 0; i < pDataA.Count; i++)
+                for (int i = 0; i < pDataA.Value.Count; i++)
                 {
-                    DisambiguationData dataAAux = pDataA[i];
-                    DisambiguationData dataBAux = pDataB[i];
+                    DisambiguationData dataAAux = pDataA.Value[i];
+                    DisambiguationData dataBAux = pDataB.Value[i];
                     if (dataAAux.config.type == DisambiguationDataConfigType.equalsIdentifiers)
                     {
                         if (!string.IsNullOrEmpty(dataAAux.value) && !string.IsNullOrEmpty(dataBAux.value))
@@ -1418,10 +1235,10 @@ namespace Hercules.ED.DisambiguationEngine.Models
 
                 if (existenIdentificadores && result > 0)
                 {
-                    for (int i = 0; i < pDataA.Count; i++)
+                    for (int i = 0; i < pDataA.Value.Count; i++)
                     {
-                        DisambiguationData dataAAux = pDataA[i];
-                        DisambiguationData dataBAux = pDataB[i];
+                        DisambiguationData dataAAux = pDataA.Value[i];
+                        DisambiguationData dataBAux = pDataB.Value[i];
                         if (dataAAux.config.type == DisambiguationDataConfigType.equalsIdentifiers)
                         {
                             if (!string.IsNullOrEmpty(dataAAux.value) && !string.IsNullOrEmpty(dataBAux.value) && !dataAAux.value.Equals(dataBAux.value))
@@ -1433,19 +1250,32 @@ namespace Hercules.ED.DisambiguationEngine.Models
                 }
                 if (existenIdentificadores)
                 {
+                    if (result == 0)
+                    {
+                        if (!pListaDistintos.ContainsKey(pDataB.Key.ID))
+                        {
+                            pListaDistintos[pDataB.Key.ID] = new HashSet<string>();
+                        }
+                        if (!pListaDistintos.ContainsKey(pDataA.Key.ID))
+                        {
+                            pListaDistintos[pDataA.Key.ID] = new HashSet<string>();
+                        }
+                        pListaDistintos[pDataB.Key.ID].Add(pDataA.Key.ID);
+                        pListaDistintos[pDataA.Key.ID].Add(pDataB.Key.ID);
+                    }
                     return result;
                 }
             }
             #endregion
 
             #region Con título configurado
-            if (pDataA.Count > 0 && pDataA.Exists(x => x.config.type == DisambiguationDataConfigType.equalsTitle))
+            if (pDataA.Value.Count > 0 && pDataA.Value.Exists(x => x.config.type == DisambiguationDataConfigType.equalsTitle))
             {
                 //Títulos
-                for (int i = 0; i < pDataA.Count; i++)
+                for (int i = 0; i < pDataA.Value.Count; i++)
                 {
-                    DisambiguationData dataAAux = pDataA[i];
-                    DisambiguationData dataBAux = pDataB[i];
+                    DisambiguationData dataAAux = pDataA.Value[i];
+                    DisambiguationData dataBAux = pDataB.Value[i];
                     if (dataAAux.config.type == DisambiguationDataConfigType.equalsTitle)
                     {
                         if (GetTitleSimilarity(dataAAux.value, dataBAux.value, pDicTitulosDesnormalizados))
@@ -1459,10 +1289,10 @@ namespace Hercules.ED.DisambiguationEngine.Models
                 {
                     //ItemA ItemB Prop
                     Dictionary<string, Dictionary<string, HashSet<string>>> dicEqualsItem = new Dictionary<string, Dictionary<string, HashSet<string>>>();
-                    for (int i = 0; i < pDataA.Count; i++)
+                    for (int i = 0; i < pDataA.Value.Count; i++)
                     {
-                        DisambiguationData dataAAux = pDataA[i];
-                        DisambiguationData dataBAux = pDataB[i];
+                        DisambiguationData dataAAux = pDataA.Value[i];
+                        DisambiguationData dataBAux = pDataB.Value[i];
 
                         if (dataAAux.config.score > 0)
                         {
@@ -1500,10 +1330,10 @@ namespace Hercules.ED.DisambiguationEngine.Models
 
                     if (result > 0)
                     {
-                        for (int i = 0; i < pDataA.Count; i++)
+                        for (int i = 0; i < pDataA.Value.Count; i++)
                         {
-                            DisambiguationData dataAAux = pDataA[i];
-                            DisambiguationData dataBAux = pDataB[i];
+                            DisambiguationData dataAAux = pDataA.Value[i];
+                            DisambiguationData dataBAux = pDataB.Value[i];
 
                             if (dataAAux.config.scoreMinus > 0)
                             {
@@ -1543,16 +1373,16 @@ namespace Hercules.ED.DisambiguationEngine.Models
             #endregion
 
             #region Con nombre configurado
-            if (pDataA.Count > 0 && pDataA.Exists(x => x.config.type == DisambiguationDataConfigType.algoritmoNombres))
+            if (pDataA.Value.Count > 0 && pDataA.Value.Exists(x => x.config.type == DisambiguationDataConfigType.algoritmoNombres))
             {
                 //Nombres
-                for (int i = 0; i < pDataA.Count; i++)
+                for (int i = 0; i < pDataA.Value.Count; i++)
                 {
-                    DisambiguationData dataAAux = pDataA[i];
-                    DisambiguationData dataBAux = pDataB[i];
+                    DisambiguationData dataAAux = pDataA.Value[i];
+                    DisambiguationData dataBAux = pDataB.Value[i];
                     if (dataAAux.config.type == DisambiguationDataConfigType.algoritmoNombres)
                     {
-                        float nameSimilarity = GetNameSimilarity(dataAAux.value, dataBAux.value, pDicNomAutoresDesnormalizados);
+                        float nameSimilarity = GetNameSimilarity(dataAAux.value, dataBAux.value, pDicNomAutoresDesnormalizados, pToleranciaNombres);
                         result += (1 - result) * nameSimilarity * dataAAux.config.score;
                     }
                 }
@@ -1560,10 +1390,10 @@ namespace Hercules.ED.DisambiguationEngine.Models
                 if (result > 0)
                 {
                     Dictionary<string, Dictionary<string, HashSet<string>>> dicEqualsItem = new Dictionary<string, Dictionary<string, HashSet<string>>>();
-                    for (int i = 0; i < pDataA.Count; i++)
+                    for (int i = 0; i < pDataA.Value.Count; i++)
                     {
-                        DisambiguationData dataAAux = pDataA[i];
-                        DisambiguationData dataBAux = pDataB[i];
+                        DisambiguationData dataAAux = pDataA.Value[i];
+                        DisambiguationData dataBAux = pDataB.Value[i];
 
                         if (dataAAux.config.score > 0)
                         {
@@ -1601,10 +1431,10 @@ namespace Hercules.ED.DisambiguationEngine.Models
 
                     if (result > 0)
                     {
-                        for (int i = 0; i < pDataA.Count; i++)
+                        for (int i = 0; i < pDataA.Value.Count; i++)
                         {
-                            DisambiguationData dataAAux = pDataA[i];
-                            DisambiguationData dataBAux = pDataB[i];
+                            DisambiguationData dataAAux = pDataA.Value[i];
+                            DisambiguationData dataBAux = pDataB.Value[i];
 
                             if (dataAAux.config.scoreMinus > 0)
                             {
@@ -1649,10 +1479,10 @@ namespace Hercules.ED.DisambiguationEngine.Models
 
             #region resto
             Dictionary<string, Dictionary<string, HashSet<string>>> dicEqualsItemResto = new Dictionary<string, Dictionary<string, HashSet<string>>>();
-            for (int i = 0; i < pDataA.Count; i++)
+            for (int i = 0; i < pDataA.Value.Count; i++)
             {
-                DisambiguationData dataAAux = pDataA[i];
-                DisambiguationData dataBAux = pDataB[i];
+                DisambiguationData dataAAux = pDataA.Value[i];
+                DisambiguationData dataBAux = pDataB.Value[i];
 
                 if (dataAAux.config.score > 0)
                 {
@@ -1663,7 +1493,7 @@ namespace Hercules.ED.DisambiguationEngine.Models
                             //No se comprueba
                             break;
                         case DisambiguationDataConfigType.algoritmoNombres:
-                            float similaridad = GetNameSimilarity(dataAAux.value, dataBAux.value, pDicNomAutoresDesnormalizados);
+                            float similaridad = GetNameSimilarity(dataAAux.value, dataBAux.value, pDicNomAutoresDesnormalizados, pToleranciaNombres);
                             result += (1 - result) * similaridad * dataAAux.config.score;
                             break;
                         case DisambiguationDataConfigType.equalsItem:
@@ -1688,10 +1518,10 @@ namespace Hercules.ED.DisambiguationEngine.Models
 
             if (result > 0)
             {
-                for (int i = 0; i < pDataA.Count; i++)
+                for (int i = 0; i < pDataA.Value.Count; i++)
                 {
-                    DisambiguationData dataAAux = pDataA[i];
-                    DisambiguationData dataBAux = pDataB[i];
+                    DisambiguationData dataAAux = pDataA.Value[i];
+                    DisambiguationData dataBAux = pDataB.Value[i];
 
                     if (dataAAux.config.scoreMinus > 0)
                     {
@@ -1735,87 +1565,60 @@ namespace Hercules.ED.DisambiguationEngine.Models
         /// <returns></returns>
         private static float PesoEqualsItemList(float pPesoInicial, float pScore, HashSet<string> pValoresA, HashSet<string> pValoresB, Dictionary<string, Dictionary<string, float>> pEquivalencias)
         {
-            //TODO optimizar
-            HashSet<string> equivalenciasAaux = new HashSet<string>();
-            HashSet<string> equivalenciasBaux = new HashSet<string>();
+            Dictionary<string, Dictionary<string, float>> dicFinal = new Dictionary<string, Dictionary<string, float>>();
             foreach (string id in pValoresA)
             {
-                if (pEquivalencias != null && pEquivalencias.ContainsKey(id))
+                foreach (string id2 in pValoresB)
                 {
-                    equivalenciasAaux = new HashSet<string>() { id };
-                    equivalenciasAaux.UnionWith(pEquivalencias[id].Keys);
-                }
-                else
-                {
-                    equivalenciasAaux = new HashSet<string>();
-                }
-                equivalenciasAaux.Add(id);
-            }
-            foreach (string id in pValoresB)
-            {
-                if (pEquivalencias != null && pEquivalencias.ContainsKey(id))
-                {
-                    equivalenciasBaux = new HashSet<string>() { id };
-                    equivalenciasBaux.UnionWith(pEquivalencias[id].Keys);
-                }
-                else
-                {
-                    equivalenciasBaux = new HashSet<string>();
-                }
-                equivalenciasBaux.Add(id);
-            }
-            HashSet<string> bAsigandos = new HashSet<string>();
-            Dictionary<string, Dictionary<string, float>> dicFinal = new Dictionary<string, Dictionary<string, float>>();
-            foreach (string igual in equivalenciasAaux.Intersect(equivalenciasBaux))
-            {
-                foreach (string id in pValoresA)
-                {
-                    foreach (string id2 in pValoresB)
+                    if (id == id2)
                     {
-                        if (!bAsigandos.Contains(id2))
+                        if (!dicFinal.ContainsKey(id))
                         {
-                            float score = 0;
-                            if (id == igual && id2 == igual)
-                            {
-                                score = 1;
-                            }
-                            else if (pEquivalencias != null)
-                            {
-                                if (pEquivalencias.ContainsKey(id) && pEquivalencias[id].ContainsKey(id2))
-                                {
-                                    score = pEquivalencias[id][id2];
-                                }
-                                else if (pEquivalencias.ContainsKey(id2) && pEquivalencias[id2].ContainsKey(id))
-                                {
-                                    score = pEquivalencias[id2][id];
-                                }
-                            }
-                            if (score > 0)
-                            {
-                                if (!dicFinal.ContainsKey(id))
-                                {
-                                    dicFinal[id] = new Dictionary<string, float>();
-                                }
-                                if (!dicFinal[id].ContainsKey(id2))
-                                {
-                                    dicFinal[id][id2] = 0;
-                                    bAsigandos.Add(id2);
-                                }
-                                if (dicFinal[id][id2] < score)
-                                {
-                                    dicFinal[id][id2] = score;
-                                }
-                            }
+                            dicFinal.Add(id, new Dictionary<string, float>());
                         }
-
+                        dicFinal[id][id2] = 1;
                     }
                 }
             }
+            if (pEquivalencias != null)
+            {
+                foreach (string id in pValoresA)
+                {
+                    if (pEquivalencias.ContainsKey(id))
+                    {
+                        foreach (string id2 in pValoresB)
+                        {
+                            if (pEquivalencias[id].ContainsKey(id2))
+                            {
+                                if (!dicFinal.ContainsKey(id))
+                                {
+                                    dicFinal.Add(id, new Dictionary<string, float>());
+                                }
+                                if (dicFinal[id].ContainsKey(id2))
+                                {
+                                    if (pEquivalencias[id][id2] > dicFinal[id][id2])
+                                    {
+                                        dicFinal[id][id2] = pEquivalencias[id][id2];
+                                    }
+                                }
+                                else
+                                {
+                                    dicFinal[id][id2] = pEquivalencias[id][id2];
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            HashSet<string> id2Agnadidos = new HashSet<string>();
             foreach (string id1 in dicFinal.Keys)
             {
                 foreach (string id2 in dicFinal[id1].Keys)
                 {
-                    pPesoInicial += (1 - pPesoInicial) * dicFinal[id1][id2] * pScore;
+                    if (id2Agnadidos.Add(id2))
+                    {
+                        pPesoInicial += (1 - pPesoInicial) * dicFinal[id1][id2] * pScore;
+                    }
                 }
             }
             return pPesoInicial;
@@ -1840,7 +1643,7 @@ namespace Hercules.ED.DisambiguationEngine.Models
                 {
                     peso = 1;
                 }
-                else if (pEquivalencias!=null && pEquivalencias.ContainsKey(pValorA))
+                else if (pEquivalencias != null && pEquivalencias.ContainsKey(pValorA))
                 {
                     foreach (string equivalence in pEquivalencias[pValorA].Keys)
                     {
@@ -1933,7 +1736,7 @@ namespace Hercules.ED.DisambiguationEngine.Models
             }
         }
 
-        public static float GetNameSimilarity(string pSource, string pTarget, Dictionary<string, string> pDicNomAutoresDesnormalizados)
+        public static float GetNameSimilarity(string pSource, string pTarget, Dictionary<string, string> pDicNomAutoresDesnormalizados, float pToleranciaNombres)
         {
             pSource = ObtenerTextosNombresNormalizados(pSource, pDicNomAutoresDesnormalizados);
             pTarget = ObtenerTextosNombresNormalizados(pTarget, pDicNomAutoresDesnormalizados);
@@ -1970,20 +1773,9 @@ namespace Hercules.ED.DisambiguationEngine.Models
                         }
                         if (wordSource[0] == wordTarget[0])
                         {
-                            if (wordSourceInicial != wordTargetInicial)
-                            {
-                                //Una de las dos es inicial                                
-                                score = scoreWord;
-                                indexTarget = j + 1;
-                                break;
-                            }
-                            else
-                            {
-                                //Son las dos iniciales                            
-                                score = scoreWord;
-                                indexTarget = j + 1;
-                                break;
-                            }
+                            score = scoreWord;
+                            indexTarget = j + 1;
+                            break;
                         }
                     }
                     //Ninguna de las dos es inicial
@@ -2006,46 +1798,26 @@ namespace Hercules.ED.DisambiguationEngine.Models
                 }
             }
 
-            //Coincide algo que no sea inicial  
+            //Coincide algo que no sea inicial y hay algun asimilitud
             if (coincidenciaNombreNoinicial && scores.Count > 0)
             {
-                if (pSource.Contains("skarmeta") && pTarget.Contains("skarmeta"))
-                {
-
-                }
                 int longMin = Math.Min(source.Length, target.Length);
-                //Cuanto mas bajo mejor
+                if (1 - (scores.Count / (float)longMin) > pToleranciaNombres)
+                {
+                    return 0;
+                }
+
                 //Calculamos las coincidencias
-                float temp = 1;
+                float scoreFinal = 0;
                 foreach (float score in scores)
                 {
-                    temp = temp * score;
+                    scoreFinal += (1 - scoreFinal) * score;
                 }
-                float scoreFinal = 1 - temp;
-                //Si hay alguna cosa que no coincida restamos
-                if (scores.Count < longMin)
-                {
-                    //Coincidencias
-                    int coincidencias = scores.Count;
-                    //No coincidencias
-                    int noCoincidencias = longMin - scores.Count;
-                    //Si hay sólo una no coincidencia aplicamos corrector
-                    if (noCoincidencias < 2)
-                    {
-                        scoreFinal = scoreFinal / 2;
-                    }
-                    else
-                    {
-                        //Si hay mas de una no coincidencia devolcemos cero
-                        return 0;
-                    }
-                }
-                //Si solo hay una coincidencia restamos
+                //Si solo hay una coincidencia dividimos por 2
                 if (scores.Count == 1)
                 {
                     scoreFinal = scoreFinal / 2;
                 }
-                //En función del nº de coincidencias aplicamos algo (si solo es un apalabra pasamos)
                 return scoreFinal;
             }
             return 0;

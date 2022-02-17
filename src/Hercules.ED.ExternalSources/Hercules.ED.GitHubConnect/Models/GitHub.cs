@@ -169,6 +169,20 @@ namespace GitHubAPI.ROs.Codes.Controllers
                         data.numReleases = getNumReleases(repositorio.releases_url, pToken);
                     }
 
+                    // Enriquecimiento
+                    string dataEnriquecimientoSinPdf = JsonConvert.SerializeObject(obtenerObjEnriquecimiento(data));
+                    data.etiquetasEnriquecidas = getDescriptores(dataEnriquecimientoSinPdf, "specific");
+                    if (data.etiquetasEnriquecidas != null && !data.etiquetasEnriquecidas.Any())
+                    {
+                        data.etiquetasEnriquecidas = null;
+                    }
+                   
+                    data.categoriasEnriquecidas = getDescriptores(dataEnriquecimientoSinPdf, "thematic");                    
+                    if (data.categoriasEnriquecidas != null && !data.categoriasEnriquecidas.Any())
+                    {
+                        data.categoriasEnriquecidas = null;
+                    }
+
                     if (!string.IsNullOrEmpty(data.titulo))
                     {
                         listaDatos.Add(data);
@@ -295,6 +309,101 @@ namespace GitHubAPI.ROs.Codes.Controllers
             {
                 return 0;
             }
+        }
+
+        public ObjEnriquecimientoConPdf obtenerObjEnriquecimientoPdf(DataGitHub pRo)
+        {
+            if (!string.IsNullOrEmpty(pRo.titulo) && !string.IsNullOrEmpty(pRo.descripcion))
+            {
+                ObjEnriquecimientoConPdf objEnriquecimiento = new ObjEnriquecimientoConPdf();
+                objEnriquecimiento.rotype = "papers";
+                objEnriquecimiento.title = pRo.titulo;
+                objEnriquecimiento.abstract_ = pRo.descripcion;
+
+                return objEnriquecimiento;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public ObjEnriquecimientoSinPdf obtenerObjEnriquecimiento(DataGitHub pRo)
+        {
+            if (!string.IsNullOrEmpty(pRo.titulo) && !string.IsNullOrEmpty(pRo.descripcion))
+            {
+                ObjEnriquecimientoSinPdf objEnriquecimiento = new ObjEnriquecimientoSinPdf();
+                objEnriquecimiento.rotype = "papers";
+                objEnriquecimiento.title = pRo.titulo;
+                objEnriquecimiento.abstract_ = pRo.descripcion;
+
+                return objEnriquecimiento;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public List<string> getDescriptores(string pDataEnriquecimiento, string pTipo)
+        {
+            // Petición.
+            HttpResponseMessage response = null;
+            HttpClient client = new HttpClient();
+            string result = string.Empty;
+            var contentData = new StringContent(pDataEnriquecimiento, System.Text.Encoding.UTF8, "application/json");
+
+            int intentos = 3;
+            while (true)
+            {
+                try
+                {
+                    response = client.PostAsync($@"{_Configuracion.GetUrlBaseEnriquecimiento()}/{pTipo}", contentData).Result;
+                    break;
+                }
+                catch
+                {
+                    intentos--;
+                    if (intentos == 0)
+                    {
+                        throw;
+                    }
+                    else
+                    {
+                        Thread.Sleep(1000);
+                    }
+                }
+            }
+
+            if (response.IsSuccessStatusCode)
+            {
+                result = response.Content.ReadAsStringAsync().Result;
+            }
+
+            if (!string.IsNullOrEmpty(result))
+            {
+                Topics_enriquecidos data = null;
+                try
+                {
+                    data = JsonConvert.DeserializeObject<Topics_enriquecidos>(result);
+                }
+                catch (Exception e)
+                {
+                    return null;
+                }
+
+                if (data != null)
+                {
+                    HashSet<string> listaTopics = new HashSet<string>();
+                    foreach (Knowledge_enriquecidos item in data.topics)
+                    {
+                        listaTopics.Add(item.word);
+                    }
+                    return listaTopics.ToList();
+                }
+            }
+
+            return null;
         }
     }
 }
