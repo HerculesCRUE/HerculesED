@@ -683,32 +683,55 @@
                                                     </div>
                                                 </div> -->
                                             </div>
-                                            <div class="vista-red dropdown">
-                                                <a href="#" class="dropdown-toggle btn btn-outline-grey" role="button" id="dropdownVistaRed" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <span class="texto">Relaciones a mostrar</span>
+                                            
+                                            <div class="vista-red dropdown dropdown-select show">
+                                                <a href="#" class="dropdown-toggle btn btn-outline-grey" role="button" id="dropdownVistaRed" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                                    @Html.Translate("RELACIONES"):
+                                                    <span class="texto">@Html.Translate("TODOS")</span>
                                                 </a>
-                                                <div class="dropdown-menu basic-dropdown dropdown-menu-right" aria-labelledby="dropdownVistaRed">
+                                                <div class="dropdown-menu basic-dropdown dropdown-menu-right" aria-labelledby="dropdownVistaRed" x-placement="bottom-end">
                                                     <ul class="no-list-style">
                                                         <li>
-                                                            <a href="javascript: actualizarTypesOcultar('relation_project')" rel="nofollow" class="item-dropdown"><span class="texto">Proyectos</span></a>
+                                                            <a href="javascript: actualizarTypesOcultar('relation_todas')" rel="nofollow" class="item-dropdown activeView">
+                                                                <span class="textoAlternativo">@Html.Translate("RELACIONES"):</span>
+                                                                <span class="texto">@Html.Translate("TODOS")</span>
+                                                            </a>
                                                         </li>
                                                         <li>
-                                                            <a href="javascript: actualizarTypesOcultar('relation_document')" rel="nofollow" class="item-dropdown"><span class="texto">Documentos</span></a>
+                                                            <a href="javascript: actualizarTypesOcultar('relation_project')" rel="nofollow" class="item-dropdown activeView">
+                                                                <span class="textoAlternativo">@Html.Translate("RELACIONES"):</span>
+                                                                <span class="texto">@Html.Translate("PROYECTOS")</span>
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="javascript: actualizarTypesOcultar('relation_document')" rel="nofollow" class="item-dropdown">
+                                                                <span class="textoAlternativo">@Html.Translate("RELACIONES"):</span>
+                                                                <span class="texto">@Html.Translate("DOCUMENTOS")</span>
+                                                            </a>
                                                         </li>
                                                     </ul>
                                                 </div>
                                             </div>
-                                            <div class="temas dropdown">
-                                                <a href="#" class="dropdown-toggle btn btn-outline-grey" role="button" id="dropdownTemas" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <span class="texto">Relaciones entre los miembros</span>
+
+                                            
+                                            <div class="vista-red dropdown dropdown-select show">
+                                                <a href="#" class="dropdown-toggle btn btn-outline-grey" role="button" id="dropdownVistaRed" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                                    @Html.Translate("RELACIONES_MIEMBROS"):
+                                                    <span class="texto">@Html.Translate("SI")</span>
                                                 </a>
-                                                <div class="dropdown-menu basic-dropdown dropdown-menu-right" aria-labelledby="dropdownTemas">
+                                                <div class="dropdown-menu basic-dropdown dropdown-menu-right" aria-labelledby="dropdownVistaRed" x-placement="bottom-end">
                                                     <ul class="no-list-style">
                                                         <li>
-                                                            <a href="javascript: newGrafProj.showRelation = true; newGrafProj.actualizarGraficaColaboradores();" rel="nofollow" class="item-dropdown"><span class="texto">Si</span></a>
+                                                            <a href="javascript: newGrafProj.showRelation = true; newGrafProj.actualizarGraficaColaboradores();" rel="nofollow" class="item-dropdown activeView">
+                                                                <span class="textoAlternativo">@Html.Translate("RELACIONES_MIEMBROS"):</span>
+                                                                <span class="texto">@Html.Translate("SI")</span>
+                                                            </a>
                                                         </li>
                                                         <li>
-                                                            <a href="javascript: newGrafProj.showRelation = false; newGrafProj.actualizarGraficaColaboradores();" rel="nofollow" class="item-dropdown"><span class="texto">No</span></a>
+                                                            <a href="javascript: newGrafProj.showRelation = false; newGrafProj.actualizarGraficaColaboradores();" rel="nofollow" class="item-dropdown activeView">
+                                                                <span class="textoAlternativo">@Html.Translate("RELACIONES_MIEMBROS"):</span>
+                                                                <span class="texto">@Html.Translate("NO")</span>
+                                                            </a>
                                                         </li>
                                                     </ul>
                                                 </div>
@@ -859,11 +882,17 @@
     var newGrafProj = new CargarGraficaProjectoObj();
 
     function actualizarTypesOcultar(type) {
-        var idx = newGrafProj.typesOcultar.indexOf(type);
-        if (idx !== -1) {
-            newGrafProj.typesOcultar.splice(idx, 1);
+        //var idx = newGrafProj.typesOcultar.indexOf(type);
+        //if (idx !== -1) {
+        //    newGrafProj.typesOcultar.splice(idx, 1);
+        //} else {
+        //    newGrafProj.typesOcultar.push(type);
+        //}
+
+        if (type == "relation_todas") {
+            newGrafProj.typesOcultar = [];
         } else {
-            newGrafProj.typesOcultar.push(type);
+            newGrafProj.typesOcultar = [type];
         }
         newGrafProj.actualizarGraficaColaboradores();
     }
