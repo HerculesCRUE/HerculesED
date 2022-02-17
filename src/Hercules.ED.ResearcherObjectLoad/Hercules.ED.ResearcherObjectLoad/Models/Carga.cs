@@ -75,9 +75,9 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     Dictionary<string, ResearchObject> dicIdDatosRo = new Dictionary<string, ResearchObject>();
                     Dictionary<string, GitHubObj> dicIdDatosGitHub = new Dictionary<string, GitHubObj>();
 
-                    if (fichero.Name.StartsWith("ResearchObject"))
+                    if (fichero.Name.StartsWith("figshare___"))
                     {
-                        string idAutor = fichero.Name.Split("_")[0].Split("-")[1];
+                        string idAutor = fichero.Name.Split("___")[1];
                         Dictionary<string, DisambiguableEntity> personasBBDD = ObtenerCoAutoresResearchObjectBBDD(idAutor, "usuarioFigShare");
                         listaDesambiguarBBDD.AddRange(personasBBDD.Values.ToList());
 
@@ -112,7 +112,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             dicIdDatosRo.Add(idRo, researchObject);
                         }
                     }
-                    else if (fichero.Name.StartsWith("ROGitHub"))
+                    else if (fichero.Name.StartsWith("github___"))
                     {
                         string idAutor = fichero.Name.Split("___")[1];
                         Dictionary<string, DisambiguableEntity> personasBBDD = ObtenerCoAutoresResearchObjectBBDD(idAutor, "usuarioGitHub");
