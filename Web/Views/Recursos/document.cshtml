@@ -13,6 +13,7 @@
 @{ ResourceModel FichaDocumento = Model.Resource;
     CommunityModel Comunidad = Html.GetComunidad();
     UserIdentityModel IdentidadActual = Html.GetIdentidadActual();
+	Html.AddBodyClass(" fichaRecurso ");
     Html.AddBodyClass(" fichaRecurso-publicacion ");
     if (FichaDocumento.ItemLinkedFotoVersion != 0 && !string.IsNullOrEmpty(FichaDocumento.ItemLinked.ToString()) && FichaDocumento.ItemLinked != Guid.Empty)
     {
@@ -3178,7 +3179,7 @@
             this.Foaf_lastName = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/lastName"));
             this.Roh_isPublic = GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isPublic"));
             SemanticPropertyModel propRoh_cvOf = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/cvOf");
-            if (propRoh_hasRole != null && propRoh_hasRole.PropertyValues.Count > 0)
+            if (propRoh_cvOf != null && propRoh_cvOf.PropertyValues.Count > 0)
             {
                 this.Roh_cvOf = new CV(propRoh_cvOf.PropertyValues[0].RelatedEntity, idiomaUsuario);
             }
