@@ -148,8 +148,8 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     else
                     {
                         // Obtención de los datos cargados de BBDD.
-                        Dictionary<string, DisambiguableEntity> documentosBBDD = ObtenerPublicacionesBBDD(fichero.Name.Split("_")[0]);
-                        Dictionary<string, DisambiguableEntity> personasBBDD = ObtenerCoAutoresBBDD(fichero.Name.Split("_")[0]);
+                        Dictionary<string, DisambiguableEntity> documentosBBDD = ObtenerPublicacionesBBDD(fichero.Name.Split("___")[0]);
+                        Dictionary<string, DisambiguableEntity> personasBBDD = ObtenerCoAutoresBBDD(fichero.Name.Split("___")[0]);
                         listaDesambiguarBBDD.AddRange(documentosBBDD.Values.ToList());
                         listaDesambiguarBBDD.AddRange(personasBBDD.Values.ToList());
 
