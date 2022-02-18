@@ -49,6 +49,46 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
             }
         }
 
+        private string mGitHubId { get; set; }
+        public string gitHubId
+        {
+            get
+            {
+                return mGitHubId;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    mGitHubId = string.Empty;
+                }
+                else
+                {
+                    mGitHubId = value;
+                }
+            }
+        }
+
+        private string mFigShareId { get; set; }
+        public string figShareId
+        {
+            get
+            {
+                return mFigShareId;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    mFigShareId = string.Empty;
+                }
+                else
+                {
+                    mFigShareId = value;
+                }
+            }
+        }
+
         private HashSet<string> mCoautores { get; set; }
         public HashSet<string> coautores
         {
@@ -76,6 +116,16 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
         };
 
         private static DisambiguationDataConfig configORCID = new DisambiguationDataConfig()
+        {
+            type = DisambiguationDataConfigType.equalsIdentifiers
+        };
+
+        private static DisambiguationDataConfig configFigshare = new DisambiguationDataConfig()
+        {
+            type = DisambiguationDataConfigType.equalsIdentifiers
+        };
+
+        private static DisambiguationDataConfig configGithub = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsIdentifiers
         };
@@ -109,6 +159,20 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
                 property = "coautores",
                 config = configCoautores,
                 values = coautores
+            });
+
+            data.Add(new DisambiguationData()
+            {
+                property = "figshare",
+                config = configFigshare,
+                value = figShareId
+            });
+
+            data.Add(new DisambiguationData()
+            {
+                property = "github",
+                config = configGithub,
+                value = gitHubId
             });
 
             return data;
