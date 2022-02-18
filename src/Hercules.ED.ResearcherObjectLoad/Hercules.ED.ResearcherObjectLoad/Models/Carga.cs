@@ -252,6 +252,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                         idROs = idROs.Substring(0, idROs.LastIndexOf(", "));
                     }
 
+                    // TODO: Aplicar método de dividir listas en los IDs.
                     List<Tuple<string, string, string, string, string, string>> listaPersonasBBDD = ObtenerPersonas(idPersonas);
                     List<Tuple<string, string>> listaDocumentosBBDD = ObtenerDocumentos(idDocumentos);
                     List<Tuple<string, string>> listaRosBBDD = ObtenerRos(idDocumentos);
@@ -612,9 +613,9 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     var xx = "";
 
                     // ------------------------------ CARGA
-                    //CargarDatos(listaPersonasCargar);
-                    //CargarDatos(listaPublicacionesCargar);
-                    //CargarDatos(listaRosCargar);
+                    CargarDatos(listaPersonasCargar);
+                    CargarDatos(listaPublicacionesCargar);
+                    CargarDatos(listaRosCargar);
 
                     // Hace una copia del fichero y elimina el original.
                     //CrearZip(pRutaEscritura, fichero.Name, jsonString);
@@ -4620,7 +4621,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                 triple.NewValue = orcid;
                 Dictionary<Guid, List<TriplesToInclude>> dic = new Dictionary<Guid, List<TriplesToInclude>>();
                 dic.Add(guid, new List<TriplesToInclude>() { triple });
-                //mResourceApi.InsertPropertiesLoadedResources(dic); // -------------------- INSERCIÓN
+                mResourceApi.InsertPropertiesLoadedResources(dic); // -------------------- INSERCIÓN
             }
         }
 
@@ -4680,7 +4681,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
 
             if (listaTriples != null && listaTriples.Any())
             {
-                //mResourceApi.ModifyPropertiesLoadedResources(dic); // -------------------- MODIFICACIÓN
+                mResourceApi.ModifyPropertiesLoadedResources(dic); // -------------------- MODIFICACIÓN
             }
         }
 
@@ -4693,6 +4694,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                 {
                     if (item.Key.Contains(id))
                     {
+                        // TODO: ¿Enviar a validación?
                         listaAux = item.Key;
 
                         if (!string.IsNullOrEmpty(pCrisIdentifier))
@@ -4703,7 +4705,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                         mResourceApi.ChangeOntoly("document");
                         Guid guid = new Guid(pIdRecurso.Split("_")[1]);
                         ComplexOntologyResource resourceRo = item.Value.ToGnossApiResource(mResourceApi, null);
-                        //mResourceApi.ModifyComplexOntologyResource(resourceRo, true, true); // -------------------- MODIFICACIÓN
+                        mResourceApi.ModifyComplexOntologyResource(resourceRo, true, true); // -------------------- MODIFICACIÓN
                         break;
                     }
                 }
@@ -4729,7 +4731,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                         mResourceApi.ChangeOntoly("researchobject");
                         Guid guid = new Guid(pIdRecurso.Split("_")[1]);
                         ComplexOntologyResource resourceRo = item.Value.ToGnossApiResource(mResourceApi, null);
-                        //mResourceApi.ModifyComplexOntologyResource(resourceRo, true, true); // -------------------- MODIFICACIÓN
+                        mResourceApi.ModifyComplexOntologyResource(resourceRo, true, true); // -------------------- MODIFICACIÓN
                         break;
                     }
                 }
