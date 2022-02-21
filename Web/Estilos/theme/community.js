@@ -89,6 +89,247 @@ var accionesBuscadorCabecera = {
     }
 };
 
+var menusLateralesManagement = {
+    init: function () {
+        this.config();
+        this.montarMenusLaterales();
+        this.comportamientoBotonCerrar();
+        return;
+    },
+    config: function () {
+        this.body = body;
+        this.header = this.body.find('#header');
+        this.buscador = this.header.find('.col-buscador');
+        this.main = this.body.find('main');
+        return;
+    },
+    montarMenusLaterales: function () {
+        this.montarMenuLateral();
+        this.montarMenuLateralComunidad();
+        this.montarMenuLateralMetabuscador();
+        this.montarMenuLateralUsuario();
+        // this.onResize();
+    },
+    montarMenuLateralUsuario: function () {
+        if (!$('#menuLateralUsuario').length > 0) return;
+
+        $('#menuLateralUsuario').slideReveal({
+            trigger: $("#menuLateralUsuarioTrigger"),
+            width: 320,
+            overlay: true,
+            position: 'right',
+            push: false,
+        });
+    },
+    montarMenuLateralMetabuscador: function () {
+        var that = this;
+        var container = that.main.find('.container');
+
+        if (!$('#menuLateralMetabuscador').length > 0) return;
+
+        $('#menuLateralMetabuscador').slideReveal({
+            trigger: $('#txtBusquedaPrincipal'),
+            width: 740,
+            overlay: true,
+            position: 'left',
+            push: false,
+            show: function (slider) {
+                var position;
+                that.body.addClass('metabuscador-abierto');
+                setTimeout(() => {
+                    if (container.offset().left < 177) {
+                        position = that.buscador.offset().left;
+                    } else {
+                        position = container.offset().left;
+                    }
+                    slider.css('left', position);
+                });
+                $(document).on('click', '#menuLateralMetabuscador, .row.upper-row', function (e) {
+                    e.stopPropagation();
+                    var target = $(e.target);
+                    if (target.parents('#menuLateralMetabuscador').length < 1) {
+                        $('#menuLateralMetabuscador').slideReveal('hide');
+                    }
+                });
+            },
+            hide: function () {
+                that.body.removeClass('metabuscador-abierto');
+            }
+        });
+    },
+    montarMenuLateral: function () {
+        if (!$('#menuLateral').length > 0) return;
+
+        $('#menuLateral').slideReveal({
+            trigger: $("#menuLateralTrigger"),
+            width: 320,
+            overlay: true,
+            position: 'left',
+            push: false,
+        });
+    },
+    montarMenuLateralComunidad: function () {
+        if (!$('#menuLateralComunidad').length > 0) return;
+
+        body.append($('#menuLateralComunidad'))
+
+        $('#menuLateralComunidad').slideReveal({
+            trigger: $("#menuLateralComunidadTrigger"),
+            width: 320,
+            overlay: true,
+            position: 'left',
+            push: false,
+        });
+    },
+    comportamientoBotonCerrar: function () {
+        var localBody = this.body;
+        var menus = localBody.find('.menuLateral');
+        var cerrar = menus.find('.header .cerrar');
+
+        cerrar.on('click', function () {
+
+            var item = $(this);
+            var menu = item.closest('.menuLateral');
+            menu.slideReveal("hide");
+
+        });
+
+        return;
+    }
+};
+
+var metabuscador = {
+    init: function () {
+        this.config();
+        this.comportamiento();
+        return;
+    },
+    config: function () {
+        this.body = body;
+        this.header = this.body.find('#header');
+        this.metabuscadorTrigger = this.header.find('.col-buscador');
+        this.metabuscador = this.body.find('#menuLateralMetabuscador');
+        this.input = this.metabuscadorTrigger.find('#txtBusquedaPrincipal');
+        this.resultadosMetabuscador = this.body.find('#resultadosMetabuscador');
+        this.verMasEcosistema = this.body.find('#verMasEcosistema');
+        return;
+    },
+    comportamiento: function () {
+        var that = this;
+
+        that.metabuscadorTrigger.on('click', function (e) {
+            that.input.focus();
+        });
+
+        that.input.on('keyup', function () {
+            var val = that.input.val();
+            if (val.length > 0) {
+                that.cargarResultados();
+            } else {
+                that.ocultarResultados();
+            }
+        });
+
+        return;
+    },
+    ocultarResultados: function () {
+        this.metabuscador.removeClass('mostrarResultados');
+    },
+    cargarResultados: function () {
+        var that = this;
+        this.metabuscador.addClass('mostrarResultados');
+        // simular la carga de cada sección
+        that.cargarRecursos();
+        that.cargarDebates();
+        that.cargarPreguntas();
+        that.cargarPersonas();
+        that.linkVerEnElEcosistema();
+    },
+    showLoader: function (loader_div, time) {
+        var loaderBar = loader_div.progressBarTimer({
+            autostart: false,
+            timeLimit: time,
+            warningThreshold: 0,
+            baseStyle: '',
+            warningStyle: '',
+            completeStyle: '',
+            smooth: true,
+            striped: false,
+            animated: false,
+            height: 12
+        });
+        return loaderBar;
+
+    },
+    cargar: function (tipo_recurso, tiempo) {
+        var loader_container = $('#loader-' + tipo_recurso + '-wrap');
+        loader_container.find('.progress-bar').remove();
+
+        var loader_div = $('<div id="#loader-' + tipo_recurso + '" class="progress-bar"></div>');
+        loader_container.append(loader_div);
+        loader_container.show();
+
+        var loader = this.showLoader(loader_div, tiempo);
+        loader.start();
+
+        return new Promise((resolve, reject) => {
+            setTimeout(function () {
+                loader.stop();
+                loader_div.remove();
+                loader_container.hide();
+                resolve();
+            }, tiempo * 1000);
+        });
+    },
+    cargarRecursos: function () {
+        var that = this;
+        var bloque = that.resultadosMetabuscador.find('.bloque.recursos');
+        bloque.hide();
+
+        var procesoCarga = this.cargar('recursos', 5);
+        procesoCarga.then(function () {
+            bloque.show();
+        });
+    },
+    cargarDebates: function () {
+        var that = this;
+        var bloque = that.resultadosMetabuscador.find('.bloque.debates');
+        bloque.hide();
+
+        var procesoCarga = this.cargar('debates', 4);
+        procesoCarga.then(function () {
+            bloque.show();
+        });
+    },
+    cargarPreguntas: function () {
+        var that = this;
+        var bloque = that.resultadosMetabuscador.find('.bloque.preguntas');
+        bloque.hide();
+
+        var procesoCarga = this.cargar('preguntas', 3);
+        procesoCarga.then(function () {
+            bloque.show();
+        });
+    },
+    cargarPersonas: function () {
+        var that = this;
+        var bloque = that.resultadosMetabuscador.find('.bloque.personas');
+        bloque.hide();
+
+        var procesoCarga = this.cargar('personas', 2);
+        procesoCarga.then(function () {
+            bloque.show();
+        });
+    },
+    linkVerEnElEcosistema: function () {
+        var that = this;
+        that.verMasEcosistema.hide();
+        setTimeout(() => {
+            that.verMasEcosistema.show()
+        }, 5000);
+    }
+};
+
 var communityMenuMovil = {
     init: function () {
         this.config();
@@ -111,7 +352,7 @@ var communityMenuMovil = {
     }
 };
 
-var accionesCurriculum = {
+var accionesPlegarDesplegarModal = {
     init: function () {
         this.cambiarSeccion();
         this.montarTabla();
@@ -637,6 +878,8 @@ $(function () {
     comportamientoVerMasVerMenos.init();
     comportamientoVerMasVerMenosTags.init();
 
+    accionesPlegarDesplegarModal.init();
+
     if (body.hasClass('fichaRecurso')) {
         mostrarFichaCabeceraFixed.init();
         clonarNombreFicha.init();
@@ -650,7 +893,6 @@ $(function () {
     }
 
     if(body.hasClass('page-cv')){
-        accionesCurriculum.init();
         iniciarComportamientoImagenUsuario.init();
         operativaFormularioAutor.init();
         operativaFormularioTesauro.init();
@@ -761,7 +1003,7 @@ $(function () {
         var addInputChangeEvent = function () {
             plugin.input.change(function () {
                 if (!isFileImage()) {
-                    displayError('El archivo no es una imágen válida. Los formatos válidos son .png y .jpg.');
+                    displayError('El archivo no es una imagen válida. Los formatos válidos son .png y .jpg.');
                     return;
                 }
 
