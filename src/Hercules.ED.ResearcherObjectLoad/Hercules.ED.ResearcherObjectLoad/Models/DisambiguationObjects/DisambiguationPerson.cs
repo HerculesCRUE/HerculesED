@@ -69,10 +69,30 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
             }
         }
 
+        private HashSet<string> mDocumentos { get; set; }
+        public HashSet<string> documentos
+        {
+            get
+            {
+                return mDocumentos;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    mDocumentos = new HashSet<string>();
+                }
+                else
+                {
+                    mDocumentos = value;
+                }
+            }
+        }
+
         private static DisambiguationDataConfig configCompleteName = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.algoritmoNombres,
-            score = 0.9f
+            score = 1f
         };
 
         private static DisambiguationDataConfig configORCID = new DisambiguationDataConfig()
@@ -83,7 +103,13 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
         private static DisambiguationDataConfig configCoautores = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsItemList,
-            score = 0.1f
+            score = 0.5f
+        };
+
+        private static DisambiguationDataConfig configDocumentos = new DisambiguationDataConfig()
+        {
+            type = DisambiguationDataConfigType.equalsItemList,
+            score = 0.5f
         };
 
         public override List<DisambiguationData> GetDisambiguationData()
@@ -109,6 +135,13 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
                 property = "coautores",
                 config = configCoautores,
                 values = coautores
+            });
+
+            data.Add(new DisambiguationData()
+            {
+                property = "documentos",
+                config = configDocumentos,
+                values = documentos
             });
 
             return data;
