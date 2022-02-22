@@ -128,7 +128,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     {
                         // Obtención de los datos cargados de BBDD.                        
                         Dictionary<string, DisambiguableEntity> documentosBBDD = ObtenerPublicacionesBBDD(fichero.Name.Split("_")[0]);
-                        Dictionary<string, DisambiguableEntity> personasBBDD = ObtenerCoAutoresBBDD(fichero.Name.Split("_")[0]);
+                        Dictionary<string, DisambiguableEntity> personasBBDD = ObtenerPersonasRelacionaBBDD(fichero.Name.Split("_")[0]);
                         listaDesambiguarBBDD.AddRange(documentosBBDD.Values.ToList());
                         listaDesambiguarBBDD.AddRange(personasBBDD.Values.ToList());
 
@@ -143,15 +143,6 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             string idPub = disambiguationPub.ID;
                             listaDesambiguar.Add(disambiguationPub);
 
-                            // --- Autor de Correspondencia
-                            if (publication.correspondingAuthor != null)
-                            {
-                                DisambiguationPerson disambiguationPerson = GetDisambiguationPerson(publication.correspondingAuthor);
-                                string idPerson = disambiguationPerson.ID;
-                                listaDesambiguar.Add(disambiguationPerson);
-                                dicIdPersona.Add(idPerson, ContruirPersona(publication.correspondingAuthor));
-                            }
-
                             // --- Autores
                             if (publication.seqOfAuthors != null && publication.seqOfAuthors.Any())
                             {
@@ -162,6 +153,11 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                     string idPerson = disambiguationPerson.ID;
                                     coautores.Add(disambiguationPerson);
                                     dicIdPersona.Add(idPerson, ContruirPersona(autor));
+                                    if(disambiguationPerson.documentos==null)
+                                    {
+                                        disambiguationPerson.documentos = new HashSet<string>();
+                                    }
+                                    disambiguationPerson.documentos.Add(publication.ID);                                    
                                 }
                                 foreach (DisambiguationPerson coautor in coautores)
                                 {
@@ -173,13 +169,8 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             dicIdDatosPub.Add(idPub, publication);
                             dicIdPublication.Add(idPub, ContruirDocument(publication, tupla.Item1, tupla.Item2));
                         }
-
-                        //foreach (Publication publicacion in listaPublicaciones)
-                        //{
-                        //    ProcesarPublicacion(publicacion, tupla.Item1, tupla.Item2);
-                        //    Console.WriteLine($@"{DateTime.Now} ------------------------------ Publicación leída.");
-                        //}
                     }
+
 
                     // Obtención de la lista de equivalencias.
                     Dictionary<string, HashSet<string>> listaEquivalencias = Disambiguation.Disambiguate(listaDesambiguar, listaDesambiguarBBDD);
@@ -480,7 +471,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     }
 
                     var xx = "";
-                                       
+
                     // ------------------------------ CARGA
                     //CargarDatos(listaPersonasCargar);
                     //CargarDatos(listaPublicacionesCargar);
@@ -498,22 +489,24 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
         }
 
         /// <summary>
-        /// Obtiene los coautores de las publicaciones del ORCID dado.
+        /// Obtiene las personas relacionadas de un ORCID dado.
         /// </summary>
         /// <param name="pOrcid">Código ORCID de la persona a obtener los datos.</param>
         /// <returns>Diccionario con el ID del recurso cargado como clave, y el objeto desambiguable como valor.</returns>
-        private static Dictionary<string, DisambiguableEntity> ObtenerCoAutoresBBDD(string pOrcid)
+        private static Dictionary<string, DisambiguableEntity> ObtenerPersonasRelacionaBBDD(string pOrcid)
         {
             Dictionary<string, DisambiguableEntity> listaPersonas = new Dictionary<string, DisambiguableEntity>();
-            int limit = 10000;
-            int offset = 0;
-            bool salirBucle = false;
-
-            // Consulta sparql.
-            do
             {
-                string select = "SELECT * WHERE { SELECT DISTINCT ?persona3 ?orcid3 ?nombreCompleto FROM <http://gnoss.com/person.owl> ";
-                string where = $@"WHERE {{
+                int limit = 10000;
+                int offset = 0;
+                bool salirBucle = false;
+
+                // Consulta sparql.
+                do
+                {
+                    //Obttenemos todas las personas hasta con 2 niveles de coautoria                
+                    string select = "SELECT * WHERE { SELECT DISTINCT ?persona3 ?orcid3 ?nombreCompleto FROM <http://gnoss.com/person.owl> ";
+                    string where = $@"WHERE {{
                                 ?documento a <http://purl.org/ontology/bibo/Document>. 
                                 ?documento <http://purl.org/ontology/bibo/authorList> ?listaAutores. 
                                 ?listaAutores <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?persona. 
@@ -530,33 +523,105 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                 ?persona3 <http://xmlns.com/foaf/0.1/name> ?nombreCompleto.
                             }} ORDER BY DESC(?persona3) }} LIMIT {limit} OFFSET {offset}";
 
-                SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "document");
-                if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
-                {
-                    offset += limit;
-                    foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                    SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "document");
+                    if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
                     {
-                        PersonaPub persona = new PersonaPub();
-                        if (fila.ContainsKey("orcid3"))
+                        offset += limit;
+                        foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
                         {
-                            persona.orcid = fila["orcid3"].value;
+                            PersonaPub persona = new PersonaPub();
+                            if (fila.ContainsKey("orcid3"))
+                            {
+                                persona.orcid = fila["orcid3"].value;
+                            }
+                            persona.name = new Name();
+                            persona.name.nombre_completo = new List<string>() { fila["nombreCompleto"].value };
+                            DisambiguationPerson person = GetDisambiguationPerson(persona);
+                            person.ID = fila["persona3"].value;
+                            listaPersonas.Add(fila["persona3"].value, person);
                         }
-                        persona.name = new Name();
-                        persona.name.nombre_completo = new List<string>() { fila["nombreCompleto"].value };
-                        DisambiguationPerson person = GetDisambiguationPerson(persona);
-                        listaPersonas.Add(fila["persona3"].value, person);
+                        if (resultadoQuery.results.bindings.Count < limit)
+                        {
+                            salirBucle = true;
+                        }
                     }
-                    if (resultadoQuery.results.bindings.Count < limit)
+                    else
                     {
                         salirBucle = true;
                     }
-                }
-                else
-                {
-                    salirBucle = true;
-                }
-            } while (!salirBucle);
+                } while (!salirBucle);
+            }
 
+            {
+                int limit = 10000;
+                int offset = 0;
+                bool salirBucle = false;
+
+                Dictionary<string, HashSet<string>> autoresDoc = new Dictionary<string, HashSet<string>>();
+                // Consulta sparql.
+                do
+                {
+                    //Obtenemos las coautorias
+                    string select = "SELECT * WHERE { SELECT DISTINCT ?documento2 ?persona3  FROM <http://gnoss.com/person.owl>  ";
+                    string where = $@"WHERE {{
+                                ?documento a <http://purl.org/ontology/bibo/Document>. 
+                                ?documento <http://purl.org/ontology/bibo/authorList> ?listaAutores. 
+                                ?listaAutores <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?persona. 
+                                ?persona <http://w3id.org/roh/ORCID> ?orcid. 
+                                FILTER(?orcid = '{pOrcid}')
+                                ?documento <http://purl.org/ontology/bibo/authorList> ?listaAutores2. 
+                                ?listaAutores2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?persona2.
+                                ?listaAutores3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?persona2. 
+                                ?listaAutores3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?persona3. 
+                                ?documento2 <http://purl.org/ontology/bibo/authorList> ?listaAutores3. 
+                            }} ORDER BY DESC(?documento2) }} LIMIT {limit} OFFSET {offset}";
+
+                    SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "document");
+                    if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+                    {
+                        offset += limit;
+                        foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                        {
+                            string persona = fila["persona3"].value;
+                            string documento = fila["documento2"].value;
+                            if (!autoresDoc.ContainsKey(documento))
+                            {
+                                autoresDoc[documento] = new HashSet<string>();
+                            }
+                            autoresDoc[documento].Add(persona);
+                        }
+                        if (resultadoQuery.results.bindings.Count < limit)
+                        {
+                            salirBucle = true;
+                        }
+                    }
+                    else
+                    {
+                        salirBucle = true;
+                    }
+                } while (!salirBucle);
+
+                foreach (string idDoc in autoresDoc.Keys)
+                {
+                    foreach (string idPersona in autoresDoc[idDoc])
+                    {
+                        DisambiguationPerson persona = (DisambiguationPerson)(listaPersonas.Where(x => x.Key == idPersona).FirstOrDefault().Value);
+                        if (persona != null)
+                        {
+                            if(persona.documentos==null)
+                            {
+                                persona.documentos = new HashSet<string>();
+                            }
+                            if (persona.coautores == null)
+                            {
+                                persona.coautores = new HashSet<string>();
+                            }
+                            persona.documentos.Add(idDoc);
+                            persona.coautores.UnionWith( new HashSet<string>(autoresDoc[idDoc].Except(new HashSet<string>() { idPersona })));
+                        }
+                    }
+                }
+            }
             return listaPersonas;
         }
 
@@ -599,6 +664,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                         }
                         publicacion.title = fila["titulo"].value;
                         DisambiguationPublication pub = GetDisambiguationPublication(publicacion);
+                        pub.ID = fila["documento"].value;
                         listaDocumentos.Add(fila["documento"].value, pub);
                     }
                     if (resultadoQuery.results.bindings.Count < limit)
