@@ -1230,3 +1230,386 @@ function AgregarFaceta(faceta,eliminarFiltroAnterior=false) {
     FiltrarPorFacetas(ObtenerHash2());
     EscribirUrlForm(filtros);
 }
+
+
+
+var metabuscador = {
+    init: function () {
+        this.config();
+        // this.loadLastSearchs();
+        // Inicializar el mostrado de búsquedas de metaBuscador
+        this.drawSearchsFromLocalStorage();
+        this.comportamiento();
+        return;
+    },
+    /* loadLastSearchs: function () {
+    	var that = this;
+    	var baseUlr = "https://localhost:44321/";
+    	var url = baseUlr + "Hercules/GetLastSearchs";
+    	$.get(url, function (data) {
+			console.log("data: ", data);
+			that.printDataIntoLastSearchs(data);
+		});
+        return;
+    },*/
+    config: function () {
+        this.body = body;
+        this.header = this.body.find('#header');
+        this.metabuscadorTrigger = this.header.find('.col-buscador');
+        this.metabuscador = this.body.find('#menuLateralMetabuscador');
+        this.input = this.metabuscadorTrigger.find('#txtBusquedaPrincipal');
+        this.resultadosMetabuscador = this.body.find('#resultadosMetabuscador');
+        this.verMasEcosistema = this.body.find('#verMasEcosistema');
+        this.numMaxSearchs = 10;
+        // Panel sin resultados por elementos no encontrados
+        this.panelSinResultados = $(`#sinResultadosMetabuscador`);
+        this.timeWaitingForUserToType = 1000; // Esperar 1 segundos a si el usuario ha dejado de escribir para iniciar búsqueda
+        this.ignoreKeysToBuscador = [37, 38, 39, 40, 46, 8, 32, 91, 17, 18, 20, 36, 18, 27];
+        // Palabra clave introducida en el metaBuscador para mostrar en el panel de resultados no encontrados
+        this.idPalabraBuscadaMetabuscador = `metabuscadorBusqueda`;
+        this.sugerenciasMetabuscadorItems = this.body.find('#sugerenciasMetabuscador ul');
+        this.typeSearch = {
+        	"persona": {
+        		"icon": "icono-persona",
+        		"section": "persons"
+        	},
+        	"group": {
+        		"icon": "icono-persona",
+        		"section": "groups"
+        	},
+        	"project": {
+        		"icon": "icono-work",
+        		"section": "projects"
+        	},
+        	"publicacion": {
+        		"icon": "icono-recurso",
+        		"section": "documents"
+        	},
+        	"researchObject": {
+        		"icon": "icono-recurso",
+        		"section": "researchObjects"
+        	},
+        };
+        this.keyInput = "";
+        return;
+    },
+    /* printDataIntoLastSearchs: function (data) {
+    	var list = $('#sugerenciasMetabuscador ul');
+    	list.html('');
+    	var items = data.map(e => {
+    		return '<li class="reciente con-icono-before icono-busqueda">\
+                <a href="javascript: void(0)" data-search="\'' + e + '\'">' + e + '</a>\
+            </li>';
+    	});
+    	list.append(items);
+    	items.on('click', function(event) {
+    		event.preventDefault();
+    		var searchTxt = $(this).data("search");
+    		that.cargarRecursos(searchTxt);
+    	});
+    }, */
+    filterData: function (item = "") {
+    	console.log("item ", item);
+    },
+    comportamiento: function () {
+        var that = this;
+
+        that.metabuscadorTrigger.on('click', function (e) {
+            that.input.focus();
+        });
+
+        // Clear the searchs
+        that.input.on('click', function (e) {
+        	that.keyInput = that.input.val();
+			if (that.keyInput.length <= 2) 
+			{
+                that.ocultarResultados();
+			}
+        });
+
+        that.input.on('keydown', function (e) {
+            that.keyInput = that.input.val();
+
+            if (that.validarKeyPulsada(e) == true) {
+
+				if (that.keyInput.length <= 2) 
+				{
+                    that.ocultarResultados();
+				} 
+				else {
+	                clearTimeout(that.timer);
+	                that.timer = setTimeout(function () {
+	                    if (that.keyInput.length > 2) {
+	                        that.ocultarResultados();
+	                        // Ocultar panel sin resultados por posible busqueda anterior sin resultados
+	                        that.mostrarPanelSinResultados(false);
+	                        that.cargarResultados();
+	                        // Guardar búsqueda en localStorage
+	                        that.saveSearchInLocalStorage(that.keyInput);
+	                    }
+	                }, that.timeWaitingForUserToType);
+				}           	
+            }
+        });
+
+        // BotÃ³n para cerrar resultados de la Home
+        /* this.btnCloseMetabuscador.on("click", function () {
+            that.mostrarOculto();
+        }); */
+
+        that.input.keydown(function (e) {
+            if (e.keyCode == 13) {
+                e.preventDefault();
+                that.saveSearchInLocalStorage(that.keyInput);
+                that.input.keyup();
+                return false;
+            }
+        });
+
+        // Click en cada item de histórico de metabuscador              
+        //this.metabuscador.on('click', this.sugerenciasMetabuscadorItems.children(), function (event) {
+        this.sugerenciasMetabuscadorItems.on('click', function (event) {
+            // Establecer como búsqueda a realizar
+            const search = event.target.text;
+            that.input.val(search);
+            that.input.trigger("keydown");
+        });
+
+
+        return;
+    },
+    ocultarResultados: function () {
+        this.metabuscador.removeClass('mostrarResultados');
+    },
+    cargarResultados: function () {
+        var that = this;
+        this.metabuscador.addClass('mostrarResultados');
+        // simular la carga de cada sección
+        that.cargarRecursos();
+    },
+    showLoader: function (loader_div, time) {
+        var loaderBar = loader_div.progressBarTimer({
+            autostart: false,
+            timeLimit: time,
+            warningThreshold: 0,
+            baseStyle: '',
+            warningStyle: '',
+            completeStyle: '',
+            smooth: true,
+            striped: false,
+            animated: false,
+            height: 12
+        });
+        return loaderBar;
+
+    },
+    cargar: function (item) {
+        var loader_container = $('#loader-recursos-wrap');
+        loader_container.find('.progress-bar').remove();
+
+        var loader_div = $('<div id="#loader-recursos" class="progress-bar"></div>');
+        loader_container.append(loader_div);
+        loader_container.show();
+
+        var loader = this.showLoader(loader_div, 1);
+        loader.start();
+
+        // var url = new URL(servicioExternoBaseUrl + '/servicioexterno/Search/DoMetaSearch');
+        var url = new URL('https://localhost:44321/Search/DoMetaSearch');
+        url.searchParams.set('stringSearch', this.keyInput);
+        url.searchParams.set('lang', currentLang);
+
+        return new Promise((resolve, reject) => {
+            
+            $.get(url.toString(), function (data) {
+            	loader.stop();
+                loader_div.remove();
+                loader_container.hide();
+                resolve(data);
+            });
+        });
+    },
+    cargarRecursos: function (searchTxt = "") {
+        var that = this;
+        var bloque = that.resultadosMetabuscador.find('.bloque');
+        bloque.hide();
+
+        if (searchTxt != "") {
+        	that.keyInput = searchTxt;
+        }
+
+        var procesoCarga = this.cargar();
+        procesoCarga.then(function (data) {
+
+        	var totalItems = 0;
+        	Object.keys(data).forEach(e => totalItems += data[e].length);
+
+        	if (totalItems > 0) {
+        		that.mostrarPanelSinResultados(false);
+        		that.pintarItems(data);
+        	} else {
+        		that.mostrarPanelSinResultados(true);
+        	}
+
+        	console.log("data-searched", data);
+
+            // bloque.show();
+        });
+    },
+
+    pintarItems: function (data) {
+
+    	var that = this;
+
+    	Object.keys(data).forEach(ndx => {
+    		console.log("data[ndx]", data[ndx]);
+    		if (that.typeSearch[ndx]) {
+    			var currenTbloque = that.resultadosMetabuscador.find('.bloque.' + that.typeSearch[ndx].section);
+    			var listCurrenTbloque = currenTbloque.find('ul');
+    			listCurrenTbloque.children().remove();
+    			if (data[ndx].length > 0) {
+    				var result = data[ndx].map(item => $('<li class="con-icono-before ' + that.typeSearch[ndx].icon + '" data-id="'+item.id+'">\
+                        	<a href="'+item.url+'">'+item.title+'</a>\
+                    	</li>')
+    				);
+    				result.forEach(item => listCurrenTbloque.append(item));
+    				currenTbloque.show();
+    			}
+    		}
+    	})
+    },
+
+    linkVerEnElEcosistema: function () {
+        var that = this;
+        that.verMasEcosistema.hide();
+        setTimeout(() => {
+            that.verMasEcosistema.show()
+        }, 5000);
+    },
+
+    /**
+     * ComprobarÃ¡ la tecla pulsada, y si no se encuentra entre las excluidas, darÃ¡ lo introducido por vÃ¡lido devolviendo true
+     * Si se pulsa una tecla de las excluidas, devolverÃ¡ false y por lo tanto el metabuscador no deberÃ­a iniciarse
+     * @param {any} event: Evento o tecla pulsada en el teclado
+     */
+    validarKeyPulsada: function (event) {
+        const keyPressed = this.ignoreKeysToBuscador.find(key => key == event.keyCode);
+        if (keyPressed) {
+            return false
+        }
+        return true;
+    },
+
+    mostrarPanelSinResultados: function(mostrarPanel){
+
+        // Vaciar posibles palabras anteriores
+        $(`#${this.idPalabraBuscadaMetabuscador}`).text('');
+        // Establecer la palabra buscada para ser mostrada en el panel
+        const cadenaBuscada = this.input.val();
+        // Panel de bÃºsqueda no encontrada
+        const panelSinResultadosContent = `
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="errorPlantilla">
+                            <h3 style="font-size:18px">Sin resultados</h3>
+                            <div class="detallesError"><p class="text-muted">Lo sentimos pero no se ha encontrado ningún resultado con <span id="metabuscadorBusqueda" class="font-weight-bold"></span></p></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        if (mostrarPanel == true) {
+            this.panelSinResultados.removeClass("d-none");
+            this.panelSinResultados.html(panelSinResultadosContent);
+            // AÃ±adir la palabra buscada al panel de no encontrado
+            $(`#${this.idPalabraBuscadaMetabuscador}`).text(cadenaBuscada);
+        } else {
+            this.panelSinResultados.addClass("d-none");            
+        }    
+    },
+
+    /**
+     * Guardar en localStorage una bÃºsqueda realizada. Eliminará el más antiguo si se ha llegado al nÃºmero de items máximo guardado.
+     * @param {string} search
+     */
+    saveSearchInLocalStorage: function (search) {
+        // Comprobar si la bÃºsqueda reciente ya existe en el histÃ³rico de bÃºsquedas
+        let searchRepeated = false;
+
+        try {
+            // Obtener las búsquedas actuales que hay en el localStorage. Si no hay devolverá un array vacío
+            const localSearchs = JSON.parse(
+                localStorage.getItem(this.KEY_LOCAL_SEARCHS) || "[]"
+            );
+
+            // Comprobar que no existe la búsqueda actual en localStorage
+            localSearchs.forEach((item) => {
+                if (item.search.indexOf(search) != -1) {
+                    searchRepeated = true;
+                }
+            });
+
+            if (searchRepeated) {
+                return;
+            }
+
+            // Si hay un máximo de X resultados en localStorage, eliminar el Último
+            if (localSearchs.length >= this.numMaxSearchs) {
+                localSearchs.shift();
+            }
+
+            // Crear el nuevo item "search" y guardarlo en localStorage
+            const searchObject = { "search": search };
+            localSearchs.push(searchObject);
+            localStorage.setItem(this.KEY_LOCAL_SEARCHS, JSON.stringify(localSearchs));
+        } catch (error) {
+            console.log("Error saving metaSearch");
+        }
+
+        this.drawSearchsFromLocalStorage();
+    },
+
+    /**
+    * Creará o dibujará las metabusquedas del localStorage en el HTML para que sean mostradas correctamente
+    */
+    drawSearchsFromLocalStorage: function () {
+        // Listas de las búsquedas en localStorage
+        let searchListItems = "";
+
+        // Obtener las búsquedas actuales que hay en el localStorage. Si no hay devolverá array vacío
+        const localSearchs = JSON.parse(localStorage.getItem(this.KEY_LOCAL_SEARCHS) || "[]");
+        // Si no hay resultados ... no hacer nada
+        if (localSearchs.length == 0) {
+            return;
+        }
+
+        var list = $('#sugerenciasMetabuscador ul');
+
+        // Eliminar posibles items
+        this.sugerenciasMetabuscadorItems.children().remove();
+
+        // Construir cada itemList con las bÃºsquedas almacenadas en localStorage
+        localSearchs.reverse().forEach((item) => {
+            searchListItems += `<li class="reciente con-icono-before icono-busqueda">
+                                    <a href="javascript: void(0);">${item.search}</a>
+                                </li>`;
+        });
+
+        // AÃ±adir los items para el metabuscador
+        this.sugerenciasMetabuscadorItems.append(searchListItems);
+    },
+
+    /**
+     * Eliminar las búsquedas históricas al cerrar sesión
+     * */
+    removeSearchsFromLocalStorage: function () {
+
+        try {
+            localStorage.removeItem(this.KEY_LOCAL_SEARCHS);
+        } catch(e) {
+            console.log("Error removing localSearchs from localStorage");
+        }        
+    }
+};

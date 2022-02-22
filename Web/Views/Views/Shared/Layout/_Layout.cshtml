@@ -265,6 +265,8 @@
         $(document).ready(function () {
             EjecutarScriptsIniciales2();
         });
+        const currentLang = "@Html.GetUtilIdiomas().LanguageCode.ToLower()";
+        const servicioExternoBaseUrl = "@Html.GetBaseUrlContent()/";
     </script>
     @RenderSection("javascript", required: false)
 
@@ -535,6 +537,113 @@
             </div>
         </div>
     </div>
+
+
+    <div class="pmd-sidebar-overlay" data-rel="menuLateralUsuario"></div>
+    <aside id="menuLateralMetabuscador" class="menuLateral metabuscador">
+        <div class="body custom-css-scroll">
+            <div class="resultados" id="resultadosMetabuscador" data-url="Search/DoMetaSearch">
+                <ul>
+                    <li class="bloque persons">
+                        <p class="title">@Html.Translate("INVESTIGADORES")</p>
+                        <ul>
+                            <li class="con-icono-before icono-persona">
+                                <a href="./ficha.php">Recurso. Departamento diseño de producto</a>
+                            </li>
+                            <li class="con-icono-before icono-persona">
+                                <a href="./ficha.php">Recurso. Extensión MVC a Comunidades del ecosistema: Detalles a tener en cuenta</a>
+                            </li>
+                            <li class="con-icono-before icono-recurso">
+                                <a href="./ficha.php">Recurso. Detalles a tener en cuenta</a>
+                            </li>
+                            <li class="con-icono-after ver-mas-icono ver-mas">
+                                <a href="./ficha.php">Ver más</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="bloque projects">
+                        <p class="title">@Html.Translate("PROYECTOS")</p>
+                        <ul>
+                            <li class="con-icono-before icono-debate">
+                                <a href="./ficha.php">Debate. Informe de diseño conceptual Previsión Previsión Previsión</a>
+                            </li>
+                            <li class="con-icono-before icono-debate">
+                                <a href="./ficha.php">Debate. Informe de cálculos de diseño</a>
+                            </li>
+                            <li class="con-icono-before icono-debate">
+                                <a href="./ficha.php">Debate. Previsión de diseño</a>
+                            </li>
+                            <li class="con-icono-before icono-debate">
+                                <a href="./ficha.php">Debate. Plan de validación del diseño</a>
+                            </li>
+                            <li class="con-icono-after ver-mas-icono ver-mas">
+                                <a href="./ficha.php">Ver más en la comunidad</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="bloque documents">
+                        <p class="title">@Html.Translate("DOCUMENTOS")</p>
+                        <ul>
+                            <li class="con-icono-before icono-pregunta">
+                                <a href="./ficha.php">Pregunta. Diseño y desarrollo de producto</a>
+                            </li>
+                            <li class="con-icono-before icono-pregunta">
+                                <a href="./ficha.php">Pregunta. ¿Cuántos servicios hay?</a>
+                            </li>
+                            <li class="con-icono-before icono-pregunta">
+                                <a href="./ficha.php">Pregunta. 201811214 Pantallas de vistas V2 - Mygnoss y CRFP</a>
+                            </li>
+                            <li class="con-icono-after ver-mas-icono ver-mas">
+                                <a href="./ficha.php">Ver más en la comunidad</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="bloque groups">
+                        <p class="title">@Html.Translate("GRUPOS")</p>
+                        <ul>
+                            <li class="con-icono-before icono-persona">
+                                <a href="./ficha.php">Ricardo Alonso Maturana</a>
+                            </li>
+                            <li class="con-icono-before icono-persona">
+                                <a href="./ficha.php">Rafael Nadal</a>
+                            </li>
+                            <li class="con-icono-before icono-persona">
+                                <a href="./ficha.php">Garbiñe Muguruza García</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="bloque researchObjects">
+                        <p class="title">@Html.Translate("RESEARCHOBJECTS")</p>
+                        <ul>
+                            <li class="con-icono-before icono-persona">
+                                <a href="./ficha.php">Ricardo Alonso Maturana</a>
+                            </li>
+                            <li class="con-icono-before icono-persona">
+                                <a href="./ficha.php">Rafael Nadal</a>
+                            </li>
+                            <li class="con-icono-before icono-persona">
+                                <a href="./ficha.php">Garbiñe Muguruza García</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li id="verMasEcosistema" class="con-icono-before icono-mundo ver-mas-ecosistema">
+                        <a class="con-icono-after ver-mas-icono" href="">Ver más en todo el ecosistema</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="sugerencias" id="sugerenciasMetabuscador">
+                <p class="title">Últimas búsquedas</p>
+                <ul class="nav pmd-sidebar-nav">
+                <ul>
+            </div>
+            <div class="cargadores">
+                <div class="progress-loader" id="loader-recursos-wrap">
+                    <p class="progress-loader-label">Buscando recursos</p>
+                </div>
+            </div>
+            <div class="sinresultadosMetabuscador d-none" id="sinResultadosMetabuscador"> </div>
+        </div>
+    </aside>
 
 </body>
 </html>

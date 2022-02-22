@@ -194,3 +194,7 @@ ul.folderStructure > li.file span {
 body.listado #navegacion-recurso-fixed {
     display: flex;
 }
+
+header .row .col.col02 .col-buscador {
+    display: block;
+}
