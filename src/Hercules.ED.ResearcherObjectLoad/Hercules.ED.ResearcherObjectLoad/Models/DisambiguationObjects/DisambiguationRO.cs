@@ -9,26 +9,6 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
 {
     public class DisambiguationRO : DisambiguableEntity
     {
-        private string mIdRo { get; set; }
-        public string idRo
-        {
-            get
-            {
-                return mIdRo;
-            }
-            set
-            {
-                if (value == null)
-                {
-                    mIdRo = string.Empty;
-                }
-                else
-                {
-                    mIdRo = value;
-                }
-            }
-        }
-
         private string mTitle { get; set; }
         public string title
         {
@@ -89,6 +69,26 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
             }
         }
 
+        private string mIdFigShare { get; set; }
+        public string idFigshare
+        {
+            get
+            {
+                return mIdFigShare;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    mIdFigShare = string.Empty;
+                }
+                else
+                {
+                    mIdFigShare = value;
+                }
+            }
+        }
+
         private static DisambiguationDataConfig configTitulo = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsTitle,
@@ -106,7 +106,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
             type = DisambiguationDataConfigType.equalsIdentifiers
         };
 
-        private static DisambiguationDataConfig configIdRo = new DisambiguationDataConfig()
+        private static DisambiguationDataConfig configIdFigshare = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsIdentifiers
         };
@@ -138,9 +138,9 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
 
             data.Add(new DisambiguationData()
             {
-                property = "idRo",
-                config = configIdRo,
-                value = idRo
+                property = "idFigshare",
+                config = configIdFigshare,
+                value = idFigshare
             });
 
             return data;

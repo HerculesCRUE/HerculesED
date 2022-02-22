@@ -182,3 +182,15 @@ ul.folderStructure > li.file span {
 .group-wrap.div4 .bloque.code-tooltip {
     max-width: calc(100% / 4);
 }
+
+/*
+ Header navegation hidden
+*/
+
+#navegacion-recurso-fixed {
+    display: none;
+}
+
+body.listado #navegacion-recurso-fixed {
+    display: flex;
+}

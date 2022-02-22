@@ -9,22 +9,22 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
 {
     public class DisambiguationRoGithub : DisambiguableEntity
     {
-        private string mIdRo { get; set; }
-        public string idRo
+        private string mIdGitHub { get; set; }
+        public string idGithub
         {
             get
             {
-                return mIdRo;
+                return mIdGitHub;
             }
             set
             {
                 if (value == null)
                 {
-                    mIdRo = string.Empty;
+                    mIdGitHub = string.Empty;
                 }
                 else
                 {
-                    mIdRo = value;
+                    mIdGitHub = value;
                 }
             }
         }
@@ -49,6 +49,25 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
             }
         }
 
+        private string mTitle { get; set; }
+        public string title
+        {
+            get
+            {
+                return mTitle;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    mTitle = string.Empty;
+                }
+                else
+                {
+                    mTitle = value;
+                }
+            }
+        }
 
         private static DisambiguationDataConfig configTipo = new DisambiguationDataConfig()
         {
@@ -56,9 +75,15 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
             score = 0.5f
         };
 
-        private static DisambiguationDataConfig configIdRo = new DisambiguationDataConfig()
+        private static DisambiguationDataConfig configIdGitHub = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsIdentifiers
+        };
+
+        private static DisambiguationDataConfig configTitulo = new DisambiguationDataConfig()
+        {
+            type = DisambiguationDataConfigType.equalsTitle,
+            score = 0.5f
         };
 
         public override List<DisambiguationData> GetDisambiguationData()
@@ -74,9 +99,16 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
 
             data.Add(new DisambiguationData()
             {
-                property = "idRo",
-                config = configIdRo,
-                value = idRo
+                property = "idGitHub",
+                config = configIdGitHub,
+                value = idGithub
+            });
+
+            data.Add(new DisambiguationData()
+            {
+                property = "titulo",
+                config = configTitulo,
+                value = title
             });
 
             return data;

@@ -4125,7 +4125,6 @@
     },
     {
       "rdftype": "http://w3id.org/roh/RelatedCommittee",
-      "TODO": "Falta por incluir la entidad RelatedCommitteeCV, que contendría los datos propios del investigador.",
       "property": "http://w3id.org/roh/committees",
       "presentation": {
         "type": "listitems",
@@ -4203,6 +4202,188 @@
                     "property": "http://w3id.org/roh/title"
                   }
                 }
+              },
+              {
+                "name": {
+                  "es": "Fecha de inicio"
+                },
+                "type": "date",
+                "showMiniBold": true,
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "committee",
+                  "child": {
+                    "property": "http://vivoweb.org/ontology/core#start"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Fecha de finalización"
+                },
+                "type": "date",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "committee",
+                  "child": {
+                    "property": "http://vivoweb.org/ontology/core#end"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Entidad de afiliación"
+                },
+                "showMini": true,
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "committee",
+                  "child": {
+                    "property": "http://vivoweb.org/ontology/core#affiliatedOrganization",
+                    "graph": "organization",
+                    "child": {
+                      "property": "http://w3id.org/roh/title"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Tipo de entidad"
+                },
+                "childOR": [
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "committee",
+                    "child": {
+                      "property": "http://w3id.org/roh/affiliatedOrganizationTypeOther"
+                    }
+                  },
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "committee",
+                    "child": {
+                      "property": "http://w3id.org/roh/affiliatedOrganizationType",
+                      "graph": "organizationtype",
+                      "child": {
+                        "property": "http://purl.org/dc/elements/1.1/title"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "name": {
+                  "es": "Ciudad entidad afiliación"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "committee",
+                  "child": {
+                    "property": "http://w3id.org/roh/affiliatedOrganizationLocality"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "País entidad afiliación"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "committee",
+                  "child": {
+                    "property": "http://w3id.org/roh/affiliatedOrganizationHasCountryName",
+                    "graph": "feature",
+                    "child": {
+                      "property": "http://www.geonames.org/ontology#name"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "C. Autón./Reg. de afiliación"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "committee",
+                  "child": {
+                    "property": "http://w3id.org/roh/affiliatedOrganizationHasRegion",
+                    "graph": "feature",
+                    "child": {
+                      "property": "http://www.geonames.org/ontology#name"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Ámbito geográfico"
+                },
+                "childOR": [
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "committee",
+                    "child": {
+                      "property": "http://w3id.org/roh/geographicFocusOther"
+                    }
+                  },
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "committee",
+                    "child": {
+                      "property": "http://vivoweb.org/ontology/core#geographicFocus",
+                      "graph": "geographicregion",
+                      "child": {
+                        "property": "http://purl.org/dc/elements/1.1/title"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "name": {
+                  "es": "Ciudad de radicación"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "committee",
+                  "child": {
+                    "property": "https://www.w3.org/2006/vcard/ns#locality"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "País de radicación"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "committee",
+                  "child": {
+                    "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+                    "graph": "feature",
+                    "child": {
+                      "property": "http://www.geonames.org/ontology#name"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "C. Autón./Reg. de radicación"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "committee",
+                  "child": {
+                    "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+                    "graph": "feature",
+                    "child": {
+                      "property": "http://www.geonames.org/ontology#name"
+                    }
+                  }
+                }
               }
             ]
           },
@@ -4237,6 +4418,50 @@
                     "properties": [
                       {
                         "title": {
+                          "es": "Primaria (Cód. Unesco)"
+                        },
+                        "property": "http://w3id.org/roh/unescoPrimary",
+                        "thesaurus": "unesco",
+                        "type": "thesaurus",
+                        "width": 3,
+                        "multiple": true
+                      }
+                    ]
+                  },
+
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Secundaria (Cód. Unesco)"
+                        },
+                        "property": "http://w3id.org/roh/unescoSecondary",
+                        "thesaurus": "unesco",
+                        "type": "thesaurus",
+                        "width": 3,
+                        "multiple": true
+                      }
+                    ]
+                  },
+
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Terciaria (Cód. Unesco)"
+                        },
+                        "property": "http://w3id.org/roh/unescoTertiary",
+                        "thesaurus": "unesco",
+                        "type": "thesaurus",
+                        "width": 3,
+                        "multiple": true
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
                           "es": "Entidad de afiliación"
                         },
                         "property": "http://vivoweb.org/ontology/core#affiliatedOrganization",
@@ -4249,6 +4474,131 @@
                         },
                         "type": "selectCombo",
                         "width": 2
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Tipo de entidad"
+                        },
+                        "property": "http://w3id.org/roh/affiliatedOrganizationType",
+                        "combo": {
+                          "rdftype": "http://w3id.org/roh/OrganizationType",
+                          "graph": "organizationtype",
+                          "property": {
+                            "property": "http://purl.org/dc/elements/1.1/title"
+                          }
+                        },
+                        "dependency": {
+                          "property": "http://w3id.org/roh/promotedByTitle",
+                          "propertyValue": "*"
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Otros"
+                        },
+                        "property": "http://w3id.org/roh/affiliatedOrganizationTypeOther",
+                        "required": true,
+                        "dependency": {
+                          "property": "http://w3id.org/roh/affiliatedOrganizationType",
+                          "propertyValue": "{GraphsUrl}items/organizationtype_OTHERS"
+                        },
+                        "type": "text",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Ciudad entidad afiliación"
+                        },
+                        "placeholder": {
+                          "es": "Introduce la ciudad de afiliación"
+                        },
+                        "property": "http://w3id.org/roh/affiliatedOrganizationLocality",
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "País entidad afiliación"
+                        },
+                        "placeholder": {
+                          "es": "Introduce el país de afiliación"
+                        },
+                        "property": "http://w3id.org/roh/affiliatedOrganizationHasCountryName",
+                        "combo": {
+                          "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "filter": {
+                            "property": "http://www.geonames.org/ontology#featureCode",
+                            "value": "PCLD"
+                          },
+                          "graph": "feature",
+                          "property": {
+                            "property": "http://www.geonames.org/ontology#name"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "C. Autón./Reg. de afiliación"
+                        },
+                        "placeholder": {
+                          "es": "Introduce la región de afiliación"
+                        },
+                        "property": "http://w3id.org/roh/affiliatedOrganizationHasRegion",
+                        "combo": {
+                          "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "filter": {
+                            "property": "http://www.geonames.org/ontology#featureCode",
+                            "value": "ADM1"
+                          },
+                          "dependency": {
+                            "property": "http://www.geonames.org/ontology#parentFeature",
+                            "propertyValue": "http://w3id.org/roh/affiliatedOrganizationHasCountryName"
+                          },
+                          "graph": "feature",
+                          "property": {
+                            "property": "http://www.geonames.org/ontology#name"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Fecha de inicio"
+                        },
+                        "placeholder": {
+                          "es": "Introduce la fecha de inicio"
+                        },
+                        "property": "http://vivoweb.org/ontology/core#start",
+                        "type": "date",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Fecha de finalización"
+                        },
+                        "placeholder": {
+                          "es": "Introduce la fecha de finalización"
+                        },
+                        "property": "http://vivoweb.org/ontology/core#end",
+                        "type": "date",
+                        "width": 1
                       }
                     ]
                   }
@@ -4362,7 +4712,6 @@
     },
     {
       "rdftype": "http://w3id.org/roh/RelatedActivityOrganization",
-      "TODO": "Falta por incluir la entidad RelatedActivityOrganizationCV, que contendría los datos propios del investigador.",
       "property": "http://w3id.org/roh/activitiesOrganization",
       "presentation": {
         "type": "listitems",

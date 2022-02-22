@@ -860,21 +860,6 @@ namespace CurriculumvitaeOntology
 				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/RelatedCommittee_{ResourceID}_{item18.ArticleID}", "http://www.w3.org/2000/01/rdf-schema#label", $"\"http://w3id.org/roh/RelatedCommittee\"", list, " . ");
 				AgregarTripleALista($"{resourceAPI.GraphsUrl}{ResourceID}", "http://gnoss/hasEntidad", $"<{resourceAPI.GraphsUrl}items/RelatedCommittee_{ResourceID}_{item18.ArticleID}>", list, " . ");
 				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ScientificActivity_{ResourceID}_{this.Roh_scientificActivity.ArticleID}", "http://w3id.org/roh/committees", $"<{resourceAPI.GraphsUrl}items/RelatedCommittee_{ResourceID}_{item18.ArticleID}>", list, " . ");
-			if(item18.Roh_relatedCommitteeCV != null)
-			{
-				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/RelatedCommitteeCV_{ResourceID}_{item18.Roh_relatedCommitteeCV.ArticleID}", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", $"<http://w3id.org/roh/RelatedCommitteeCV>", list, " . ");
-				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/RelatedCommitteeCV_{ResourceID}_{item18.Roh_relatedCommitteeCV.ArticleID}", "http://www.w3.org/2000/01/rdf-schema#label", $"\"http://w3id.org/roh/RelatedCommitteeCV\"", list, " . ");
-				AgregarTripleALista($"{resourceAPI.GraphsUrl}{ResourceID}", "http://gnoss/hasEntidad", $"<{resourceAPI.GraphsUrl}items/RelatedCommitteeCV_{ResourceID}_{item18.Roh_relatedCommitteeCV.ArticleID}>", list, " . ");
-				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/RelatedCommittee_{ResourceID}_{item18.ArticleID}", "http://w3id.org/roh/relatedCommitteeCV", $"<{resourceAPI.GraphsUrl}items/RelatedCommitteeCV_{ResourceID}_{item18.Roh_relatedCommitteeCV.ArticleID}>", list, " . ");
-				if(item18.Roh_relatedCommitteeCV.Vivo_start != null)
-				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/RelatedCommitteeCV_{ResourceID}_{item18.Roh_relatedCommitteeCV.ArticleID}",  "http://vivoweb.org/ontology/core#start", $"\"{item18.Roh_relatedCommitteeCV.Vivo_start.Value.ToString("yyyyMMddHHmmss")}\"", list, " . ");
-				}
-				if(item18.Roh_relatedCommitteeCV.Vivo_end != null)
-				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/RelatedCommitteeCV_{ResourceID}_{item18.Roh_relatedCommitteeCV.ArticleID}",  "http://vivoweb.org/ontology/core#end", $"\"{item18.Roh_relatedCommitteeCV.Vivo_end.Value.ToString("yyyyMMddHHmmss")}\"", list, " . ");
-				}
-			}
 				if(item18.IdVivo_relatedBy != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/RelatedCommittee_{ResourceID}_{item18.ArticleID}",  "http://vivoweb.org/ontology/core#relatedBy", $"<{item18.IdVivo_relatedBy}>", list, " . ");
@@ -2140,18 +2125,6 @@ namespace CurriculumvitaeOntology
 			foreach(var item18 in this.Roh_scientificActivity.Roh_committees)
 			{
 				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/scientificactivity_{ResourceID}_{this.Roh_scientificActivity.ArticleID}", "http://w3id.org/roh/committees", $"<{resourceAPI.GraphsUrl}items/relatedcommittee_{ResourceID}_{item18.ArticleID}>", list, " . ");
-			if(item18.Roh_relatedCommitteeCV != null)
-			{
-				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/relatedcommittee_{ResourceID}_{item18.ArticleID}", "http://w3id.org/roh/relatedCommitteeCV", $"<{resourceAPI.GraphsUrl}items/relatedcommitteecv_{ResourceID}_{item18.Roh_relatedCommitteeCV.ArticleID}>", list, " . ");
-				if(item18.Roh_relatedCommitteeCV.Vivo_start != null)
-				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/relatedcommitteecv_{ResourceID}_{item18.Roh_relatedCommitteeCV.ArticleID}",  "http://vivoweb.org/ontology/core#start", $"{item18.Roh_relatedCommitteeCV.Vivo_start.Value.ToString("yyyyMMddHHmmss")}", list, " . ");
-				}
-				if(item18.Roh_relatedCommitteeCV.Vivo_end != null)
-				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/relatedcommitteecv_{ResourceID}_{item18.Roh_relatedCommitteeCV.ArticleID}",  "http://vivoweb.org/ontology/core#end", $"{item18.Roh_relatedCommitteeCV.Vivo_end.Value.ToString("yyyyMMddHHmmss")}", list, " . ");
-				}
-			}
 				if(item18.IdVivo_relatedBy != null)
 				{
 					Regex regex = new Regex(@"\/items\/.+_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}");

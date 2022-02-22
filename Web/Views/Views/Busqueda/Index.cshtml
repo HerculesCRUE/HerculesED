@@ -74,6 +74,26 @@
 
 <div class="col col-12 col-xl-9 col-contenido derecha">
     <div class="wrapCol">
+        <div class="col-buscador">
+            <form method="post" id="formCajaBusqueda" action="javascript:void(0)">
+                <fieldset style="display: block">
+                    <legend class="nota">facetas</legend>
+                    <div class="finderUtils" id="divCajaBusqueda">
+                        <div class="group finderSection">
+                            <label for="finderSection" class="">Encontrar</label>
+                            <input type="text" id="finderSection" class="not-outline finderSectionText autocompletar ac_input" autocomplete="off" placeholder="Buscar en sección">
+                            <input title="Encontrar" type="button" class="findAction" id="inputLupa">
+                            <input type="hidden" value="" class="inpt_urlPaginaActual">
+                            <input type="hidden" value="sioc_t:Tag|foaf:firstName" class="inpt_facetasBusqPag">
+                            <input type="hidden" class="inpt_parametros">
+                            <a href="javascript: void(0);" class="btn-filtrar-movil">
+                                <span class="material-icons">filter_list</span>
+                            </a>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
         <div class="header-contenido">
             <!-- Número de resultados -->
             <div class="h1-container">
