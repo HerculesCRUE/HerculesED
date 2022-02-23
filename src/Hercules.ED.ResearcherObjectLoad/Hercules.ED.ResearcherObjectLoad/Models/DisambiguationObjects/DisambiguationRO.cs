@@ -49,25 +49,6 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
             }
         }
 
-        private string mTipo { get; set; }
-        public string tipo
-        {
-            get
-            {
-                return mTipo;
-            }
-            set
-            {
-                if (value == null)
-                {
-                    mTipo = string.Empty;
-                }
-                else
-                {
-                    mTipo = value;
-                }
-            }
-        }
 
         private string mIdFigShare { get; set; }
         public string idFigshare
@@ -89,15 +70,50 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
             }
         }
 
+        private string mIdGitHub { get; set; }
+        public string idGithub
+        {
+            get
+            {
+                return mIdGitHub;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    mIdGitHub = string.Empty;
+                }
+                else
+                {
+                    mIdGitHub = value;
+                }
+            }
+        }
+
+
+        private HashSet<string> mAutores { get; set; }
+        public HashSet<string> autores
+        {
+            get
+            {
+                return mAutores;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    mAutores = new HashSet<string>();
+                }
+                else
+                {
+                    mAutores = value;
+                }
+            }
+        }
+
         private static DisambiguationDataConfig configTitulo = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsTitle,
-            score = 0.5f
-        };
-
-        private static DisambiguationDataConfig configTipo = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsItem,
             score = 0.5f
         };
 
@@ -109,6 +125,19 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
         private static DisambiguationDataConfig configIdFigshare = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsIdentifiers
+        };
+
+
+        private static DisambiguationDataConfig configIdGitHub = new DisambiguationDataConfig()
+        {
+            type = DisambiguationDataConfigType.equalsIdentifiers
+        };
+
+
+        private static DisambiguationDataConfig configAutores = new DisambiguationDataConfig()
+        {
+            type = DisambiguationDataConfigType.equalsItemList,
+            score = 0.5f
         };
 
         public override List<DisambiguationData> GetDisambiguationData()
@@ -131,16 +160,24 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
 
             data.Add(new DisambiguationData()
             {
-                property = "tipo",
-                config = configTipo,
-                value = tipo
+                property = "idFigshare",
+                config = configIdFigshare,
+                value = idFigshare
             });
 
             data.Add(new DisambiguationData()
             {
-                property = "idFigshare",
-                config = configIdFigshare,
-                value = idFigshare
+                property = "idGitHub",
+                config = configIdGitHub,
+                value = idGithub
+            });
+
+
+            data.Add(new DisambiguationData()
+            {
+                property = "autores",
+                config = configAutores,
+                values = autores
             });
 
             return data;
