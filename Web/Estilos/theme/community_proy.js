@@ -1281,23 +1281,28 @@ var metabuscador = {
         this.typeSearch = {
         	"persona": {
         		"icon": "icono-persona",
-        		"section": "persons"
+        		"section": "persons",
+        		"searchParm": "searcherPersons"
         	},
         	"group": {
         		"icon": "icono-group",
-        		"section": "groups"
+        		"section": "groups",
+        		"searchParm": "searcherGroups"
         	},
         	"project": {
         		"icon": "icono-work",
-        		"section": "projects"
+        		"section": "projects",
+        		"searchParm": "searcherProjects"
         	},
         	"publicacion": {
         		"icon": "icono-recurso",
-        		"section": "documents"
+        		"section": "documents",
+        		"searchParm": "searcherPublications"
         	},
         	"researchObject": {
         		"icon": "icono-recurso",
-        		"section": "researchObjects"
+        		"section": "researchObjects",
+        		"searchParm": "searcherPublications"
         	},
         };
         this.keyInput = "";
@@ -1519,6 +1524,9 @@ var metabuscador = {
     			var currenTbloque = that.resultadosMetabuscador.find('.bloque.' + that.typeSearch[ndx].section);
     			// Selecciona la lista del bloque correspondiente
     			var listCurrenTbloque = currenTbloque.find('ul');
+    			var urlComunidad = currenTbloque.data('urlcomunidad');
+    			var textoBloque = currenTbloque.find('p.title');
+
     			// Elimina los items
     			listCurrenTbloque.children().remove();
 
@@ -1531,6 +1539,12 @@ var metabuscador = {
                     	</li>')
     				);
     				result.forEach(item => listCurrenTbloque.append(item));
+
+    				if (data[ndx].length > 2) {
+    					listCurrenTbloque.append($('<li class="con-icono-after ver-mas-icono ver-mas">\
+                            <a href="'+urlComunidad+'?' + that.typeSearch[ndx].searchParm + '='+that.keyInput+'">Ver ' + that.keyInput + ' en ' + textoBloque.text().toLowerCase() + '</a>\
+                        </li>'));
+    				}
 
     				// Muestra el bloque
     				currenTbloque.show();

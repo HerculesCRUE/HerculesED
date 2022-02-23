@@ -53,7 +53,7 @@ namespace WoSConnect.ROs.WoS.Controllers
             {
                 using (var request = new HttpRequestMessage(new HttpMethod(method), url))
                 {
-                    request.Headers.TryAddWithoutValidation("X-ApiKey", bareer);
+                    //request.Headers.TryAddWithoutValidation("X-ApiKey", bareer);
                     //request.Headers.TryAddWithoutValidation("Connection", "keep-alive");
                     request.Headers.TryAddWithoutValidation("Accept", "application/json");
 
@@ -94,11 +94,12 @@ namespace WoSConnect.ROs.WoS.Controllers
         /// </summary>
         /// <param name="ID"></param>
         /// <returns></returns>
-        public List<Publication> getPublications(string name, string uri = "api/wos/?databaseId=WOK&usrQuery=AI=({0})&count=100&firstRecord=1")
+        public List<Publication> getPublications(string name, string uri = "publications?orcid=0000-0001-8055-6823")
         {
             Uri url = new Uri(baseUri + string.Format(uri, name));
             string info_publication = httpCall(url.ToString(), "GET", headers).Result;
             // MODELO DEVUELTO 
+            Console.Write(info_publication);
             Root objInicial = JsonConvert.DeserializeObject<Root>(info_publication);
             // CAMBIO DE MODELO -- PAra ello llamamos al controlador de cambio de modelo! 
             ROWoSControllerJSON info = new ROWoSControllerJSON(this);

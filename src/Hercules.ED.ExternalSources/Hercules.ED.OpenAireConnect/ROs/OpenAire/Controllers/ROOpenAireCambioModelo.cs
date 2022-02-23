@@ -1,0 +1,469 @@
+using System.Collections.Generic;
+using OpenAireConnect.ROs.OpenAire.Models;
+using OpenAireConnect.ROs.OpenAire.Models.Inicial;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Threading;
+using System.Data;
+using Newtonsoft.Json;
+using System.IO;
+using System.Linq;
+
+namespace OpenAireConnect.ROs.OpenAire.Controllers
+{
+    public class ROOpenAireControllerJSON
+    {
+        public ROOpenAireLogic OpenAireLogic;
+
+        public ROOpenAireControllerJSON(ROOpenAireLogic OpenAireLogic)
+        {
+            this.OpenAireLogic = OpenAireLogic;
+        }
+
+        // TODO: Sacarlo a clase Enum.
+        // CONSTANTES
+        public const string ARTICLE = "Article";
+        public const string JOURNAL_ARTICLE = "Journal Article";
+        public const string BOOK = "Book";
+        public const string BOOK_CHAPTER = "Book Chapter";
+        public const string CHAPTER = "Chapter";
+        public const string PROCEEDINGS_PAPER = "Proceedings Paper";
+        public const string CONFERENCE_PAPER = "Conference Paper";
+        public const string JOURNAL = "Journal";
+
+        /// <summary>
+        /// Contruye el objeto de la publicación con los datos obtenidos.
+        /// </summary>
+        /// <param name="pPublicacionIn">Publicación de entrada.</param>
+        /// <returns></returns>
+        public Publication getPublicacionCita(Result2 pPublicacionIn)
+        {
+            Publication publicacionFinal = new Publication();
+            //publicacionFinal.typeOfPublication = getType(pPublicacionIn);
+            //publicacionFinal.IDs = getOpenAireID(pPublicacionIn);
+            publicacionFinal.title = getTitle(pPublicacionIn);
+            publicacionFinal.Abstract = getAbstract(pPublicacionIn);
+            publicacionFinal.doi = getDoi(pPublicacionIn);
+            publicacionFinal.dataIssued = getDate(pPublicacionIn);
+            //publicacionFinal.hasKnowledgeAreas = getKnowledgeAreas(pPublicacionIn);
+            publicacionFinal.freetextKeywords = getFreetextKeyword(pPublicacionIn);
+            publicacionFinal.seqOfAuthors = getAuthors(pPublicacionIn);
+            publicacionFinal.correspondingAuthor = publicacionFinal.seqOfAuthors[0];
+            publicacionFinal.hasPublicationVenue = getJournal(pPublicacionIn);
+            //publicacionFinal.hasMetric = getPublicationMetric(pPublicacionIn);
+
+            return publicacionFinal;
+        }
+
+
+        public List<Publication> getListPublicatio(Root objInicial)
+        {
+            List<Publication> sol = new List<Publication>();
+            if (objInicial != null)
+            {
+                if (objInicial.response != null)
+                {
+                    if (objInicial.response.results != null)
+                    {
+                        if (objInicial.response.results.result != null)
+                        {
+                            foreach (Result2 rec in objInicial.response.results.result)
+                            {
+                                try
+                                {
+
+                                    Publication publicacion = cambioDeModeloPublicacion(rec, true);
+
+                                    if (publicacion != null)
+                                    {
+
+                                        sol.Add(publicacion);
+                                    }
+                                }
+                                catch (Exception e)
+                                {
+
+                                }
+                            }
+
+                        }
+                    }
+                }
+            }
+
+            return sol;
+        }
+
+        public Publication cambioDeModeloPublicacion(Result2 objInicial, Boolean publicacion_principal)
+        {
+            Publication publicacion = new Publication();
+            //publicacion.typeOfPublication = getType(objInicial);
+            //publicacion.IDs = getOpenAireID(objInicial);
+            publicacion.title = getTitle(objInicial);
+            publicacion.Abstract = getAbstract(objInicial);
+            publicacion.language = getLanguage(objInicial);
+            publicacion.doi = getDoi(objInicial);
+            publicacion.dataIssued = getDate(objInicial);
+            publicacion.pageStart = getPageStart(objInicial);
+            publicacion.pageEnd = getPageEnd(objInicial);
+            //publicacion.hasKnowledgeAreas = getKnowledgeAreas(objInicial);
+            publicacion.freetextKeywords = getFreetextKeyword(objInicial);
+            publicacion.seqOfAuthors = getAuthors(objInicial);
+            publicacion.correspondingAuthor = getAuthorPrincipal(objInicial);
+            publicacion.hasPublicationVenue = getJournal(objInicial);
+            //publicacion.hasMetric = getPublicationMetric(objInicial);
+            //if (publicacion.typeOfPublication == CHAPTER)
+            //{
+            //    publicacion.doi = null;
+            //}
+            return publicacion;
+        }
+
+        /// <summary>
+        /// Obtiene el tipo de la publicación.
+        /// </summary>
+        /// <param name="pPublicacionIn">Publicación a obtener el tipo.</param>
+        /// <returns>Tipo de la publicación.</returns>
+        // public string getType(Result2 pPublicacionIn)
+        // {
+        //     if (pPublicacionIn.static_data != null && pPublicacionIn.static_data.summary != null && pPublicacionIn.static_data.summary.doctypes != null && pPublicacionIn.static_data.summary.doctypes.doctype != null)
+        //     {
+        //         if (pPublicacionIn.static_data.summary.doctypes.doctype.Contains(BOOK_CHAPTER))
+        //         {
+        //             return CHAPTER;
+        //         }
+        //         else if (pPublicacionIn.static_data.summary.doctypes.doctype.Contains(BOOK))
+        //         {
+        //             return BOOK;
+        //         }
+        //         else if (pPublicacionIn.static_data.summary.doctypes.doctype.Contains(PROCEEDINGS_PAPER))
+        //         {
+        //             return CONFERENCE_PAPER;
+        //         }
+        //         else if (pPublicacionIn.static_data.summary.doctypes.doctype.Contains(ARTICLE))
+        //         {
+        //             return JOURNAL_ARTICLE;
+        //         }
+        //         else
+        //         {
+        //             return JOURNAL_ARTICLE;
+        //         }
+        //     }
+
+        //     return null;
+        // }
+
+        // <summary>
+        /// Obtiene la infromación del autor princpipal
+        /// </summary>
+        /// <param name="pPublicacionIn">Publicación a obtener el autor princiapl.</param>
+        /// <returns>Autor Principal.</returns>
+        public Person getAuthorPrincipal(Result2 pPublicacionIn)
+        {
+
+            if (pPublicacionIn.metadata != null && pPublicacionIn.metadata.OafEntity != null && pPublicacionIn.metadata.OafEntity.OafResult != null && pPublicacionIn.metadata.OafEntity.OafResult.creator != null)
+            {
+
+                foreach (Creator author_fOriginal in pPublicacionIn.metadata.OafEntity.OafResult.creator)
+                {
+
+                    if (author_fOriginal.Rank == "1")
+                    {
+                        Person author = new Person();
+                        author.fuente = "OpenAire";
+                        if (author_fOriginal.Orcid != null)
+                        {
+                            author.ORCID = author_fOriginal.Orcid;
+                        }
+                        Name nombre = new Name();
+                        if (author_fOriginal.Text != null)
+                        {
+                            List<string> nombre_completo = new List<string>();
+                            nombre_completo.Add(author_fOriginal.Text);
+                            nombre.nombre_completo = nombre_completo;
+                            author.name = nombre;
+
+                        }
+                        return author;
+
+                    }
+                }
+
+            }
+
+            return null;
+        }
+
+
+
+
+
+
+
+        /// <summary>
+        /// Obtiene el título de la publicación.
+        /// </summary>
+        /// <param name="pPublicacionIn">Publicación a obtener el título.</param>
+        /// <returns>Título de la publicación.</returns>
+        public string getTitle(Result2 pPublicacionIn)
+        {
+            if (pPublicacionIn.metadata != null && pPublicacionIn.metadata.OafEntity != null && pPublicacionIn.metadata.OafEntity.OafResult != null && pPublicacionIn.metadata.OafEntity.OafResult.title != null)
+            {
+
+
+
+                foreach (Title item in pPublicacionIn.metadata.OafEntity.OafResult.title)
+                {
+                    if (item.Classid == "main title")
+                    {
+                        return item.Text;
+                    }
+                }
+
+            }
+            return null;
+        }
+
+
+        /// <summary>
+        /// Obtiene la descripción de la publicación.
+        /// </summary>
+        /// <param name="pPublicacionIn">Publicación a obtener la descripción.</param>
+        /// <returns>Descripción.</returns>
+        public string getAbstract(Result2 pPublicacionIn)
+        {
+            if (pPublicacionIn.metadata != null && pPublicacionIn.metadata.OafEntity != null && pPublicacionIn.metadata.OafEntity.OafResult != null && pPublicacionIn.metadata.OafEntity.OafResult.description != null)
+            {
+
+                string descripcion = string.Empty;
+                foreach (Descripton item in pPublicacionIn.metadata.OafEntity.OafResult.description)
+                {
+                    descripcion += item.descripton.Trim() + " ";
+                }
+                return descripcion.Trim();
+            }
+            return null;
+        }
+
+
+        /// <summary>
+        /// Obtiene el idioma de la publicación.
+        /// </summary>
+        /// <param name="objInicial">Publicación a obtener el idioma.</param>
+        /// <returns>Idioma.</returns>
+        public string getLanguage(Result2 pPublicacionIn)
+        {
+
+            if (pPublicacionIn.metadata != null && pPublicacionIn.metadata.OafEntity != null && pPublicacionIn.metadata.OafEntity.OafResult != null && pPublicacionIn.metadata.OafEntity.OafResult.language != null)
+            {
+                if (pPublicacionIn.metadata.OafEntity.OafResult.language.Classname == "Undetermined") { return null; }
+                else
+                {
+
+                    return pPublicacionIn.metadata.OafEntity.OafResult.language.Classname;
+                }
+            }
+            else { return null; }
+        }
+
+
+        /// <summary>
+        /// Obtiene el identificador DOI de la publicación.
+        /// </summary>
+        /// <param name="pPublicacionIn">Publicación a obtener el DOI.</param>
+        /// <returns>DOI.</returns>
+        public string getDoi(Result2 pPublicacionIn)
+        {
+            if (pPublicacionIn.metadata != null && pPublicacionIn.metadata.OafEntity != null && pPublicacionIn.metadata.OafEntity.OafResult != null && pPublicacionIn.metadata.OafEntity.OafResult.pid != null)
+            {
+                foreach (Title item in pPublicacionIn.metadata.OafEntity.OafResult.pid)
+                {
+
+                    if (item.Classid == "doi")
+                    {
+                        return item.Text;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Obtiene la fecha de la publicación.
+        /// </summary>
+        /// <param name="pPublicacionIn">Publicación a obtener la fecha.</param>
+        /// <returns>Fecha de la publiación.</returns>
+        public DateTimeValue getDate(Result2 pPublicacionIn)
+        {
+
+            if (pPublicacionIn.metadata != null && pPublicacionIn.metadata.OafEntity != null && pPublicacionIn.metadata.OafEntity.OafResult != null && pPublicacionIn.metadata.OafEntity.OafResult.relevantdate != null)
+            {
+                foreach (Title item in pPublicacionIn.metadata.OafEntity.OafResult.relevantdate)
+                {
+                    if (item.Classname == "created")
+                    {
+                        DateTimeValue date = new DateTimeValue();
+                        date.datimeTime = item.Text;
+                        return date;
+                    }
+                }
+
+            }
+            return null;
+        }
+
+
+        /// <summary>
+        /// Obtiene el número de la página de inicio.
+        /// </summary>
+        /// <param name="pPublicacionIn">Publicación a obtener el número de la página.</param>
+        /// <returns>Número de la página.</returns>
+        public string getPageStart(Result2 pPublicacionIn)
+        {
+            if (pPublicacionIn.metadata != null && pPublicacionIn.metadata.OafEntity != null && pPublicacionIn.metadata.OafEntity.OafResult != null && pPublicacionIn.metadata.OafEntity.OafResult.journal != null)
+            {
+                if (pPublicacionIn.metadata.OafEntity.OafResult.journal.Sp != null)
+                {
+                    return pPublicacionIn.metadata.OafEntity.OafResult.journal.Sp;
+                }
+                else { return null; }
+
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Obtiene el número de la página de fin.
+        /// </summary>
+        /// <param name="pPublicacionIn">Publicación a obtener el número de la página.</param>
+        /// <returns>Número de la página.</returns>
+        public string getPageEnd(Result2 pPublicacionIn)
+        {
+
+            if (pPublicacionIn.metadata != null && pPublicacionIn.metadata.OafEntity != null && pPublicacionIn.metadata.OafEntity.OafResult != null && pPublicacionIn.metadata.OafEntity.OafResult.journal != null)
+            {
+
+                if (pPublicacionIn.metadata.OafEntity.OafResult.journal.Ep != null)
+                {
+                    return pPublicacionIn.metadata.OafEntity.OafResult.journal.Ep;
+                }
+                else { return null; }
+            }
+            return null;
+
+        }
+
+        /// <summary>
+        /// Obtiene las etiquetas de la publicación.
+        /// </summary>
+        /// <param name="pPublicacionIn">Publicación a obtener las etiquetas.</param>
+        /// <returns>Listado de etiquetas.</returns>
+        public List<FreetextKeywords> getFreetextKeyword(Result2 pPublicacionIn)
+        {
+            FreetextKeywords result = new FreetextKeywords();
+            result.source = "OpenAire";
+            if (pPublicacionIn.metadata != null && pPublicacionIn.metadata.OafEntity != null && pPublicacionIn.metadata.OafEntity.OafResult != null && pPublicacionIn.metadata.OafEntity.OafResult.subject != null)
+            {
+
+                List<string> lista_keyword = new List<string>();
+                foreach (Subject sub in pPublicacionIn.metadata.OafEntity.OafResult.subject)
+                {
+                    if (sub.Classid == "keyword")
+                    {
+                        lista_keyword.Add(sub.Text);
+                    }
+
+                }
+                if (lista_keyword.Count > 0)
+                {
+                    result.freetextKeyword = lista_keyword;
+                    List<FreetextKeywords> sol = new List<FreetextKeywords>();
+                    sol.Add(result);
+                    return sol;
+                }
+                else { return null; }
+            }
+
+            return null;
+
+        }
+
+
+        /// <summary>
+        /// Obtiene los autores de la publicación.
+        /// </summary>
+        /// <param name="pPublicacionIn">Publicación a obtener autores.</param>
+        /// <returns>Lista de personas.</returns>
+        public List<Person> getAuthors(Result2 pPublicacionIn)
+        {
+            List<Person> list_author = new List<Person>();
+
+            if (pPublicacionIn.metadata != null && pPublicacionIn.metadata.OafEntity != null && pPublicacionIn.metadata.OafEntity.OafResult != null && pPublicacionIn.metadata.OafEntity.OafResult.creator != null)
+            {
+
+                foreach (Creator author_fOriginal in pPublicacionIn.metadata.OafEntity.OafResult.creator)
+                {
+                    Person author = new Person();
+                    author.fuente = "OpenAire";
+                    if (author_fOriginal.Orcid != null)
+                    {
+                        author.ORCID = author_fOriginal.Orcid;
+                    }
+                    Name nombre = new Name();
+                    if (author_fOriginal.Text != null)
+                    {
+                        List<string> nombre_completo = new List<string>();
+                        nombre_completo.Add(author_fOriginal.Text);
+                        nombre.nombre_completo = nombre_completo;
+                        author.name = nombre;
+                        list_author.Add(author);
+
+                    }
+                    return list_author;
+
+
+                }
+            }
+
+            return null;
+        }
+
+
+        /// <summary>
+        /// Obtiene los datos de la revista.
+        /// </summary>
+        /// <param name="pPublicacionIn">Publicación a obtener los datos de la revista.</param>
+        /// <returns>Revista.</returns>
+        public Source getJournal(Result2 pPublicacionIn)
+        {
+
+            if (pPublicacionIn.metadata != null && pPublicacionIn.metadata.OafEntity != null && pPublicacionIn.metadata.OafEntity.OafResult != null && pPublicacionIn.metadata.OafEntity.OafResult.journal != null)
+            {
+                Source source = new Source();
+                source.type = "Journal";
+                // siempre son journal no dan imformacion de los libros. 
+                if (pPublicacionIn.metadata.OafEntity.OafResult.journal.Eissn != null)
+                {
+                    source.eissn = pPublicacionIn.metadata.OafEntity.OafResult.journal.Eissn;
+                }
+                if (pPublicacionIn.metadata.OafEntity.OafResult.journal.Iss != null)
+                {
+                    List<string> issns = new List<string>();
+                    issns.Add(pPublicacionIn.metadata.OafEntity.OafResult.journal.Iss);
+                    source.issn = issns;
+                }
+                if (pPublicacionIn.metadata.OafEntity.OafResult.journal.Text != null)
+                {
+                    source.name = pPublicacionIn.metadata.OafEntity.OafResult.journal.Text;
+                }
+                return source;
+            }
+
+
+            return null;
+        }
+
+
+    }
+}
