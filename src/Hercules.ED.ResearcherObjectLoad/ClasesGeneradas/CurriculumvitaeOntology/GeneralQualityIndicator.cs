@@ -19,66 +19,42 @@ using System.Diagnostics.CodeAnalysis;
 namespace CurriculumvitaeOntology
 {
 	[ExcludeFromCodeCoverage]
-	public class RelatedOtherAchievementCV : GnossOCBase
+	public class GeneralQualityIndicator : GnossOCBase
 	{
 
-		public RelatedOtherAchievementCV() : base() { } 
+		public GeneralQualityIndicator() : base() { } 
 
-		public RelatedOtherAchievementCV(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
+		public GeneralQualityIndicator(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
 		{
 			this.mGNOSSID = pSemCmsModel.Entity.Uri;
 			this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
-			this.Vivo_start = new List<DateTime>();
-			SemanticPropertyModel propVivo_start = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#start");
-			if (propVivo_start != null && propVivo_start.PropertyValues.Count > 0)
+			SemanticPropertyModel propRoh_generalQualityIndicatorCV = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/generalQualityIndicatorCV");
+			if(propRoh_generalQualityIndicatorCV != null && propRoh_generalQualityIndicatorCV.PropertyValues.Count > 0)
 			{
-				foreach (SemanticPropertyModel.PropertyValue propValue in propVivo_start.PropertyValues)
-				{
-					DateTime fecha = new DateTime();
-					DateTime.TryParse(propValue.Value,out fecha);
-					this.Vivo_start.Add(fecha);
-				}
-			}
-			this.Vivo_end = new List<DateTime>();
-			SemanticPropertyModel propVivo_end = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#end");
-			if (propVivo_end != null && propVivo_end.PropertyValues.Count > 0)
-			{
-				foreach (SemanticPropertyModel.PropertyValue propValue in propVivo_end.PropertyValues)
-				{
-					DateTime fecha = new DateTime();
-					DateTime.TryParse(propValue.Value,out fecha);
-					this.Vivo_end.Add(fecha);
-				}
+				this.Roh_generalQualityIndicatorCV = new GeneralQualityIndicatorCV(propRoh_generalQualityIndicatorCV.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
 		}
 
-		public virtual string RdfType { get { return "http://w3id.org/roh/RelatedOtherAchievementCV"; } }
-		public virtual string RdfsLabel { get { return "http://w3id.org/roh/RelatedOtherAchievementCV"; } }
+		public virtual string RdfType { get { return "http://w3id.org/roh/GeneralQualityIndicator"; } }
+		public virtual string RdfsLabel { get { return "http://w3id.org/roh/GeneralQualityIndicator"; } }
 		public OntologyEntity Entity { get; set; }
 
-		[LABEL(LanguageEnum.es,"http://vivoweb.org/ontology/core#start")]
-		[RDFProperty("http://vivoweb.org/ontology/core#start")]
-		public  List<DateTime> Vivo_start { get; set;}
-
-		[LABEL(LanguageEnum.es,"http://vivoweb.org/ontology/core#end")]
-		[RDFProperty("http://vivoweb.org/ontology/core#end")]
-		public  List<DateTime> Vivo_end { get; set;}
+		[RDFProperty("http://w3id.org/roh/generalQualityIndicatorCV")]
+		public  GeneralQualityIndicatorCV Roh_generalQualityIndicatorCV { get; set;}
 
 
 		internal override void GetProperties()
 		{
 			base.GetProperties();
-			foreach (DateTime fecha in this.Vivo_start){
-				propList.Add(new DateOntologyProperty("vivo:start", fecha));
-			}
-			foreach (DateTime fecha in this.Vivo_end){
-				propList.Add(new DateOntologyProperty("vivo:end", fecha));
-			}
 		}
 
 		internal override void GetEntities()
 		{
 			base.GetEntities();
+			Roh_generalQualityIndicatorCV.GetProperties();
+			Roh_generalQualityIndicatorCV.GetEntities();
+			OntologyEntity entityRoh_generalQualityIndicatorCV = new OntologyEntity("http://w3id.org/roh/GeneralQualityIndicatorCV", "http://w3id.org/roh/GeneralQualityIndicatorCV", "roh:generalQualityIndicatorCV", Roh_generalQualityIndicatorCV.propList, Roh_generalQualityIndicatorCV.entList);
+			entList.Add(entityRoh_generalQualityIndicatorCV);
 		} 
 
 

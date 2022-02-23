@@ -644,6 +644,65 @@
                             <div class="col col-12 col-chart">
                                 <div class="wrapCol">
                                     <div class="chart-wrap">
+                                        
+                                    <div class="acciones-grafico">
+                                            <div class="periodo dropdown dropdown-select">
+                                            </div>
+
+                                            <div class="vista-red dropdown dropdown-select show">
+                                                <a href="#" class="dropdown-toggle btn btn-outline-grey" role="button" id="dropdownVistaRed" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                                    @Html.Translate("RELACIONES"):
+                                                    <span class="texto">@Html.Translate("TODOS")</span>
+                                                </a>
+                                                <div class="dropdown-menu basic-dropdown dropdown-menu-right" aria-labelledby="dropdownVistaRed" x-placement="bottom-end">
+                                                    <ul class="no-list-style">
+                                                        <li>
+                                                            <a href="javascript: actualizarTypesOcultar('relation_todas')" rel="nofollow" class="item-dropdown activeView">
+                                                                <span class="textoAlternativo">@Html.Translate("RELACIONES"):</span>
+                                                                <span class="texto">@Html.Translate("TODOS")</span>
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="javascript: actualizarTypesOcultar('relation_project')" rel="nofollow" class="item-dropdown activeView">
+                                                                <span class="textoAlternativo">@Html.Translate("RELACIONES"):</span>
+                                                                <span class="texto">@Html.Translate("PROYECTOS")</span>
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="javascript: actualizarTypesOcultar('relation_document')" rel="nofollow" class="item-dropdown">
+                                                                <span class="textoAlternativo">@Html.Translate("RELACIONES"):</span>
+                                                                <span class="texto">@Html.Translate("DOCUMENTOS")</span>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+
+                                            
+                                            <div class="vista-red dropdown dropdown-select show">
+                                                <a href="#" class="dropdown-toggle btn btn-outline-grey" role="button" id="dropdownVistaRed" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                                    @Html.Translate("RELACIONES_MIEMBROS"):
+                                                    <span class="texto">@Html.Translate("SI")</span>
+                                                </a>
+                                                <div class="dropdown-menu basic-dropdown dropdown-menu-right" aria-labelledby="dropdownVistaRed" x-placement="bottom-end">
+                                                    <ul class="no-list-style">
+                                                        <li>
+                                                            <a href="javascript: newGrafProj.showRelation = true; newGrafProj.actualizarGraficaColaboradores();" rel="nofollow" class="item-dropdown activeView">
+                                                                <span class="textoAlternativo">@Html.Translate("RELACIONES_MIEMBROS"):</span>
+                                                                <span class="texto">@Html.Translate("SI")</span>
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="javascript: newGrafProj.showRelation = false; newGrafProj.actualizarGraficaColaboradores();" rel="nofollow" class="item-dropdown activeView">
+                                                                <span class="textoAlternativo">@Html.Translate("RELACIONES_MIEMBROS"):</span>
+                                                                <span class="texto">@Html.Translate("NO")</span>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                         <div class="contenido-grafico container">
                                             <div class="row">
                                                 <div class="col col-12 col-md-12">
@@ -689,7 +748,7 @@
     var depuracion = false; // TODO:
 
     const localUrlBase = "https://localhost:44321/";
-    const edmaUrlBase = "@Html.GetBaseUrlContent()/";
+    const servicioExtermpBaseUrl = "@Html.GetBaseUrlContent()/";
 
     const urlBase = "@Html.GetBaseUrl()";
     if (urlBase.includes("localhost") || urlBase.includes("depuracion")) {
@@ -699,7 +758,7 @@
 
     // Datos gráfica publicaciones.
     function CargarGraficaPublicaciones(parametros, idContenedor) {
-        var url = "http://serviciosedma.gnoss.com/servicioexterno/Hercules/DatosGraficaPublicaciones"
+        var url = servicioExtermpBaseUrl + "servicioexterno/Hercules/DatosGraficaPublicaciones"
         if (depuracion) {
             url = localUrlBase + "Hercules/DatosGraficaPublicaciones"
         }
@@ -713,7 +772,7 @@
 
     // Datos gráfica proyectos.
     function CargarGraficaProyectos(parametros, idContenedorAnios, idContenedorMiembros, idContenedorAmbito) {
-        var url = "http://serviciosedma.gnoss.com/servicioexterno/Hercules/DatosGraficaProyectos"
+        var url = servicioExtermpBaseUrl + "servicioexterno/Hercules/DatosGraficaProyectos"
         if (depuracion) {
             url = localUrlBase + "Hercules/DatosGraficaProyectos"
         }
@@ -729,10 +788,71 @@
         });
     }
 
+    // Clase para las trabajar en las gráficas de los colaboradores
+    class CargarGraficaProjectoObj {
+        dataCB = {};
+        idContenedorCB = "";
+        typesOcultar = [];
+        showRelation = true;
+
+        actualizarGraficaColaboradores = () => {
+            AjustarGraficaArania(this.dataCB, this.idContenedorCB, this.typesOcultar, this.showRelation);
+        };
+
+        CargarGraficaColaboradores = (pIdGrupo, parametros, idContenedor, mostrarCargando = false) => {
+            var url = servicioExtermpBaseUrl + "servicioexterno/Hercules/DatosGraficaColaboradoresGrupo";
+            if (depuracion) {
+                url = localUrlBase + "Hercules/DatosGraficaColaboradoresGrupo";
+            }
+            var self = this;
+            var arg = {};
+            arg.pIdGrupo = pIdGrupo;
+            arg.pParametros = parametros;
+            arg.pMax = $('#numColaboradores').val();
+            $('#' + idContenedor).empty();
+            if (mostrarCargando) {
+                MostrarUpdateProgress();
+            }
+
+            let optionsRelations = ["relation_project", "relation_document"];
+
+            $.get(url, arg, function (data) {
+                // Establecer los valores en la variable externa
+                self.dataCB = data;
+                self.idContenedorCB = idContenedor;
+
+                self.actualizarGraficaColaboradores();
+                if (mostrarCargando) {
+                    OcultarUpdateProgress();
+                }
+            });
+
+        };
+
+    };
+
+    // Creamos un nuevo objeto
+    var newGrafProj = new CargarGraficaProjectoObj();
+
+    // Función a la que se llama para seleccionar qué elementos de las relaciones mostrar
+    function actualizarTypesOcultar(type) {
+        if (type == "relation_todas") {
+            newGrafProj.typesOcultar = [];
+        } else {
+            newGrafProj.typesOcultar = [type];
+        }
+        newGrafProj.actualizarGraficaColaboradores();
+    }
+
+    // función para actualizar la gráfica de colaboradores
+    function ActualizarGraficaColaboradores(typesOcultar = [], showRelation = true) {
+        AjustarGraficaArania(dataCB, idContenedorCB, typesOcultar, showRelation);
+    }
+
 
     // Datos gráfica miembros.
     function CargarGraficaMiembros(pIdGrupo, parametros, idContenedor) {
-        var url = "http://serviciosedma.gnoss.com/servicioexterno/Hercules/DatosGraficaMiembrosGrupo"
+        var url = servicioExtermpBaseUrl + "servicioexterno/Hercules/DatosGraficaMiembrosGrupo"
         if (depuracion) {
             url = localUrlBase + "Hercules/DatosGraficaMiembrosGrupo"
         }
@@ -747,7 +867,7 @@
 
     // Datos gráfica áreas temáticas
     function CargarGraficaAreasTematicas(pIdGrupo, idContenedor) {
-        var url = "http://serviciosedma.gnoss.com/servicioexterno/Hercules/DatosGraficaAreasTematicas"
+        var url = servicioExtermpBaseUrl + "servicioexterno/Hercules/DatosGraficaAreasTematicas"
         if (depuracion) {
             url = localUrlBase + "Hercules/DatosGraficaAreasTematicas"
         }
@@ -763,7 +883,7 @@
 
     // Datos gráfica áreas temáticas
     function CargarGraficaAreasTematicasArania(pIdGrupo, idContenedor) {
-        var url = "http://serviciosedma.gnoss.com/servicioexterno/Hercules/DatosGraficaAreasTematicasArania"
+        var url = servicioExtermpBaseUrl + "servicioexterno/Hercules/DatosGraficaAreasTematicasArania"
         if (depuracion) {
             url = localUrlBase + "Hercules/DatosGraficaAreasTematicasArania"
         }
@@ -783,7 +903,7 @@
 
     // Datos gráfica colaboradores externos.
     function CargarGraficaColaboradores(pIdGrupo, parametros, idContenedor, mostrarCargando = false) {
-        var url = "http://serviciosedma.gnoss.com/servicioexterno/Hercules/DatosGraficaColaboradoresGrupo"
+        var url = servicioExtermpBaseUrl + "servicioexterno/Hercules/DatosGraficaColaboradoresGrupo"
         if (depuracion) {
             url = localUrlBase + "Hercules/DatosGraficaColaboradoresGrupo"
         }
@@ -898,7 +1018,8 @@
                 }
                 $('#numNodosCollaborators').html($('#numColaboradores').val());
                 var parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro;
-                CargarGraficaColaboradores("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros,'colaboratorsgraph',true);
+                // CargarGraficaColaboradores("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros,'colaboratorsgraph',true);
+                newGrafProj.CargarGraficaColaboradores("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros, 'colaboratorsgraph', true);
             });
 
             $('#addNodesCollaborators').unbind().click(function (e) {
@@ -908,6 +1029,7 @@
                 $('#numNodosCollaborators').html($('#numColaboradores').val());
                 var parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro;
                  CargarGraficaColaboradores("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros,'colaboratorsgraph',true);
+                 newGrafProj.CargarGraficaColaboradores("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros, 'colaboratorsgraph', true);
             });
             //Fin métodos colaboradores
 
@@ -963,7 +1085,8 @@
         }
         else if (comportamientoPaginaGrupo.tabActive == "colaboradores")
         {
-            CargarGraficaColaboradores("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros,'colaboratorsgraph');
+            // CargarGraficaColaboradores("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros,'colaboratorsgraph');
+            newGrafProj.CargarGraficaColaboradores("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros, 'colaboratorsgraph');
         }
     }
 

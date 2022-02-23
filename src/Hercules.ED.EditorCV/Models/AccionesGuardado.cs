@@ -874,17 +874,20 @@ namespace GuardadoCV.Models
                 }
                 else if (remove)
                 {
-                    List<Entity.Property> propertiesLoadedEntityRemove = pLoadedEntity.properties.Where(x => x.prop.StartsWith(property.prop)).ToList();
-                    foreach (Entity.Property propertyToRemove in propertiesLoadedEntityRemove)
+                    if (pLoadedEntity != null)
                     {
-                        foreach (string valor in propertyToRemove.values)
+                        List<Entity.Property> propertiesLoadedEntityRemove = pLoadedEntity.properties.Where(x => x.prop.StartsWith(property.prop)).ToList();
+                        foreach (Entity.Property propertyToRemove in propertiesLoadedEntityRemove)
                         {
-                            triplesRemove[pIdMainEntity].Add(new RemoveTriples()
+                            foreach (string valor in propertyToRemove.values)
                             {
+                                triplesRemove[pIdMainEntity].Add(new RemoveTriples()
+                                {
 
-                                Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(property.prop),
-                                Value = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(pIdMainEntity, valor, property.prop)
-                            });
+                                    Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(property.prop),
+                                    Value = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(pIdMainEntity, valor, property.prop)
+                                });
+                            }
                         }
                     }
                 }

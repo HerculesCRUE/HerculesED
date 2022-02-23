@@ -13,6 +13,7 @@ using PublicationAPI.Controllers;
 using Serilog;
 using PublicationAPI.ROs.Publication.Models;
 using System.Threading;
+using Person = PublicationConnect.ROs.Publications.Models.Person;
 
 namespace PublicationConnect.ROs.Publications.Controllers
 {
@@ -100,9 +101,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
         public List<Publication> getPublications(string name, string date = "1500-01-01", string pDoi = null)
         {
             // Diccionario con las peticiones.
-            Dictionary<string, Publication> dicSemanticScholar = new Dictionary<string, Publication>();
-            Dictionary<string, Publication> dicOpenCitations = new Dictionary<string, Publication>();
-            Dictionary<string, List<PubReferencias>> dicCrossRef = new Dictionary<string, List<PubReferencias>>();
+            Tuple<string, Dictionary<Publication, List<PubReferencias>>> dicSemanticScholar;
             Dictionary<string, string> dicZenodo = new Dictionary<string, string>();
 
             // Lista para almacenar las publicaciones resultantes.
@@ -138,13 +137,14 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
                     // SemanticScholar
                     Log.Information("[WoS] Haciendo petición a SemanticScholar...");
-                    Publication objInicial_semanticScholar = llamadaSemanticScholar(pub.doi, dicSemanticScholar);
+                    Tuple<Publication, List<PubReferencias>> dataSemanticScholar = ObtenerPubSemanticScholar(pub);
                     Log.Information("[WoS] Comparación (SemanticScholar)...");
-                    Publication pub_completa = compatacion(pub, objInicial_semanticScholar);
-
-                    // SemanticScholar - Obtención de las referencias.
-                    Log.Information("[WoS] Completando bibliografía...");
-                    pub_completa.bibliografia = ObtenerPubReferencias(pub, dicCrossRef);
+                    Publication pub_completa = pub;
+                    if (dataSemanticScholar != null)
+                    {
+                        pub_completa = compatacion(pub, dataSemanticScholar.Item1);
+                        pub_completa.bibliografia = dataSemanticScholar.Item2;
+                    }
                     Thread.Sleep(1000); // TODO: Revisar tema de los tiempos de las peticiones.
 
                     // Zenodo - Archivos pdf...
@@ -183,9 +183,22 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     // Unificar Autores
                     pub_completa = CompararAutores(pub_completa);
 
-                    if (pub_completa != null && !string.IsNullOrEmpty(pub_completa.title) && pub_completa.title != "One or more validation errors occurred.") // TODO
+                    if (pub_completa != null && !string.IsNullOrEmpty(pub_completa.title) && pub_completa.seqOfAuthors != null && pub_completa.seqOfAuthors.Any() && pub_completa.title != "One or more validation errors occurred.") // TODO
                     {
-                        resultado.Add(pub_completa);
+                        bool encontrado = false;
+                        foreach (Person persona in pub_completa.seqOfAuthors)
+                        {
+                            if (persona.ORCID == name)
+                            {
+                                encontrado = true;
+                                break;
+                            }
+                        }
+
+                        if (encontrado)
+                        {
+                            resultado.Add(pub_completa);
+                        }
                     }
 
                     contadorPubWos++;
@@ -208,14 +221,14 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
                         // SemanticScholar
                         Log.Information("[Scopus] Haciendo petición a SemanticScholar...");
-                        Publication objInicial_semanticScholar = llamadaSemanticScholar(pub_scopus.doi, dicSemanticScholar);
+                        Tuple<Publication, List<PubReferencias>> dataSemanticScholar = ObtenerPubSemanticScholar(pubScopus);
                         Log.Information("[Scopus] Comparación (SemanticScholar)...");
-                        Publication pub_completa = compatacion(pubScopus, objInicial_semanticScholar);
-
-                        // SemanticScholar - Obtención de las referencias.
-                        Log.Information("[Scopus] Completando bibliografia...");
-                        pub_completa.bibliografia = ObtenerPubReferencias(pubScopus, dicCrossRef);
-                        Thread.Sleep(1000); // TODO: Revisar tema de los tiempos de las peticiones.
+                        Publication pub_completa = pubScopus;
+                        if (dataSemanticScholar != null)
+                        {
+                            pub_completa = compatacion(pubScopus, dataSemanticScholar.Item1);
+                            pub_completa.bibliografia = dataSemanticScholar.Item2;
+                        }
 
                         // Zenodo - Archivos pdf...
                         Log.Information("[Scopus] Haciendo petición a Zenodo...");
@@ -233,9 +246,22 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
                         // Unificar Autores
                         pub_completa = CompararAutoresCitasReferencias(pub_completa);
-                        if (pub_completa != null && !string.IsNullOrEmpty(pub_completa.title))
+                        if (pub_completa != null && !string.IsNullOrEmpty(pub_completa.title) && pub_completa.seqOfAuthors != null && pub_completa.seqOfAuthors.Any())
                         {
-                            resultado.Add(pub_completa);
+                            bool encontrado = false;
+                            foreach (Person persona in pub_completa.seqOfAuthors)
+                            {
+                                if (persona.ORCID == name)
+                                {
+                                    encontrado = true;
+                                    break;
+                                }
+                            }
+
+                            if (encontrado)
+                            {
+                                resultado.Add(pub_completa);
+                            }
                         }
                     }
                     contadoPubScopus++;
@@ -245,7 +271,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             //string info = JsonConvert.SerializeObject(resultado);
             //string path = _Configuracion.GetRutaJsonSalida();
             //Log.Information("Escribiendo datos en fichero...");
-            //File.WriteAllText($@"Files/ORCID_FECHA.json", info);
+            //File.WriteAllText($@"Files/{name}_2022-02-15.json", info);
             return resultado;
 
         }
@@ -575,9 +601,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
         //}
 
 
-        public List<PubReferencias> ObtenerPubReferencias(Publication pub, Dictionary<string, List<PubReferencias>> pDicCrossRef)
+        public Tuple<Publication, List<PubReferencias>> ObtenerPubSemanticScholar(Publication pub)
         {
-            return llamadaRefSemanticScholar(pub.doi, pDicCrossRef);
+            return llamadaRefSemanticScholar(pub.doi);
         }
 
         //public Publication completar_bib(Publication pub, Dictionary<string, Publication> pDicOpenCitations, Dictionary<string, Publication> pDicSemanticScholar, Dictionary<string, Publication> pDicCrossRef, Dictionary<string, string> pDicZenodo)
@@ -965,397 +991,6 @@ namespace PublicationConnect.ROs.Publications.Controllers
             }
         }
 
-
-        public List<Models.Person> unir_autores(List<Models.Person> conjunto_1, List<Models.Person> conjunto_2)
-        {
-            //Console.Write("Iniciando unir autores--------------------------------------");
-            List<Models.Person> lista_autores_no_iguales = new List<Models.Person>();
-            List<Models.Person> conjunto = new List<Models.Person>();
-
-            //Console.Write(conjunto.Count() + "\n");
-
-            foreach (Models.Person person_2 in conjunto_2)
-            {
-                Boolean unificado = false;
-                string orcid_unificado = "";
-                if (person_2.ORCID != null) { orcid_unificado = person_2.ORCID; }
-                string name = "";
-                string familia = "";
-                string completo = "";
-                string links = "";
-                string ids = "";
-                if (person_2.name != null)
-                {
-                    if (person_2.name.given != null && person_2.name.given.Count > 0)
-                    {
-                        name = person_2.name.given[0];
-                    }
-                    if (person_2.name.familia != null && person_2.name.familia.Count > 0)
-                    {
-                        familia = person_2.name.familia[0];
-                    }
-                    if (person_2.name.nombre_completo != null && person_2.name.nombre_completo.Count > 0)
-                    {
-                        completo = person_2.name.nombre_completo[0];
-                    }
-                }
-                if (person_2.IDs != null && person_2.IDs.Count > 0)
-                {
-                    ids = person_2.IDs[0];
-                }
-                if (person_2.links != null && person_2.links.Count > 0)
-                {
-
-                    links = person_2.links[0];
-                }
-                for (int i = 0; i < conjunto_1.Count(); i++)
-                {
-                    Models.Person person = conjunto_1[i];
-                    string orcid = "";
-                    if (person.ORCID != null)
-                    {
-                        orcid = person.ORCID;
-                    }
-                    List<string> list_name = new List<string>();
-                    List<string> list_familia = new List<string>();
-                    List<string> list_nombre_completo = new List<string>();
-                    if (person.name != null)
-                    {
-                        if (person.name.given != null && person.name.given.Count > 0)
-                        {
-                            list_name = person.name.given;
-                        }
-                        if (person.name.familia != null && person.name.familia.Count > 0)
-                        {
-
-                            list_familia = person.name.familia;
-                        }
-                        if (person.name.nombre_completo != null && person.name.nombre_completo.Count > 0)
-                        {
-                            list_nombre_completo = person.name.nombre_completo;
-
-                        }
-                    }
-
-                    List<string> list_ids = new List<string>();
-                    if (person.IDs != null)
-                    {
-                        list_ids = person.IDs;
-                    }
-                    List<string> list_links = new List<string>();
-                    if (person.links != null)
-                    {
-                        list_links = person.links;
-                    }
-
-                    if (orcid != "" & orcid_unificado != "" & orcid_unificado == orcid)
-                    {
-                        if (unificado != true)
-                        {
-                            Console.Write("numero -1");
-                            conjunto_1[i] = unir_dos_identidades_unicas(person, person_2);
-                            unificado = true;
-                            break;
-                        }
-                    }
-                    else if (ids != "" & list_ids.Count > 0)
-                    {
-                        if (list_ids.Contains(ids))
-                        {
-
-                            Console.Write("numero 0");
-                            conjunto_1[i] = unir_dos_identidades_unicas(person, person_2);
-                            unificado = true;
-                            break;
-
-                        }
-
-                    }
-                    else
-                    {
-                        if (list_nombre_completo.Count > 0)
-                        {
-                            // cuando en los datos de la persona unificada tenemos el nombre completo 
-                            for (int k = 0; k < list_nombre_completo.Count; k++)
-                            {
-                                string nombre_completo = list_nombre_completo[k];
-                                if (name != "" & familia != "")
-                                {
-                                    if (GetNameSimilarity(name + " " + familia, nombre_completo) > 0.9 ||
-                                        (GetNameSimilarity(name.Substring(0, 1) + "." + " " + familia, nombre_completo) > 0.9 & name.Substring(0, 1) == nombre_completo.Substring(0, 1)) ||
-                                        (GetNameSimilarity(familia + ", " + name.Substring(0, 1) + ".", nombre_completo) > 0.9 & nombre_completo.Substring(nombre_completo.Count() - 2, 2) == name.Substring(0, 1) + ".") ||
-                                        GetNameSimilarity(familia + " " + name.Substring(0, 1) + ".", nombre_completo) > 0.9)
-                                    {
-                                        if (ids != "" & list_ids.Count > 0 & !list_ids.Contains(ids))
-                                        {
-                                            continue;
-                                        }
-                                        else
-                                        {
-                                            Console.Write("numero 1");
-
-                                            // Console.Write(nombre_completo);
-                                            conjunto_1[i] = unir_dos_identidades_unicas(person, person_2);
-                                            unificado = true;
-                                            break;
-                                        }
-                                    }
-                                }
-                                else if (completo != "")
-                                {
-                                    if (GetNameSimilarity(completo, nombre_completo) > 0.9)
-                                    {
-                                        if (ids != "" & list_ids.Count > 0 & !list_ids.Contains(ids))
-                                        {
-                                            continue;
-                                        }
-                                        else
-                                        {
-                                            Console.Write("numero 2");
-                                            conjunto_1[i] = unir_dos_identidades_unicas(person, person_2);
-                                            unificado = true;
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        // cuando en los datos de la persona unificada tenemos el nombre completo 
-                        else if (list_name.Count > 0 & list_familia.Count > 0)
-                        {
-                            for (int j = 0; j < list_name.Count; j++)
-                            {
-                                string name_unificado = list_name[j];
-                                for (int k = 0; k < list_familia.Count; k++)
-                                {
-                                    if (name != "" & familia != "")
-                                    {
-                                        if (GetNameSimilarity(name + " " + familia, name_unificado + " " + list_familia[k]) > 0.9)
-                                        {
-                                            if (ids != "" & list_ids.Count > 0 & !list_ids.Contains(ids))
-                                            {
-                                                continue;
-                                            }
-                                            else
-                                            {
-                                                Console.Write("numero 3");
-                                                conjunto_1[i] = unir_dos_identidades_unicas(person, person_2);
-                                                unificado = true;
-                                                break;
-                                            }
-                                            //}
-
-
-                                        }
-                                    }
-                                    if (completo != "")
-                                    {
-
-                                        if (GetNameSimilarity(name_unificado + " " + list_familia[k], completo) > 0.9 ||
-                                            (GetNameSimilarity(name_unificado.Substring(0, 1) + ". " + familia, completo) > 0.9 & name_unificado.Substring(0, 1) == completo.Substring(0, 1)) ||
-                                            (GetNameSimilarity(list_familia[k] + ", " + name_unificado.Substring(0, 1) + ".", completo) > 0.9 & completo.Substring(completo.Count() - 2, 2) == name_unificado.Substring(0, 1) + ".") ||
-                                            GetNameSimilarity(list_familia[k] + " " + name_unificado.Substring(0, 1) + ".", completo) > 0.9)
-                                        {
-                                            if (ids != "" & list_ids.Count > 0 & !list_ids.Contains(ids))
-                                            {
-                                                continue;
-                                            }
-                                            else
-                                            {
-                                                if (unificado != true)
-                                                {
-                                                    Console.Write("numero 4");
-                                                    conjunto_1[i] = unir_dos_identidades_unicas(person, person_2);
-                                                    unificado = true;
-                                                    break;
-                                                }
-                                            }
-                                        }
-
-                                    }
-                                }
-
-                            }
-                        }
-
-
-                        //conjunto.Add(conjunto_1[i]);
-                    }
-
-                }
-                if (unificado == false)
-                {
-                    lista_autores_no_iguales.Add(person_2);
-                }
-            }
-
-            conjunto_1.AddRange(lista_autores_no_iguales);
-            return conjunto_1;
-        }
-
-
-
-        public Models.Person unir_dos_identidades_unicas(Models.Person person, Models.Person person_2)
-        {
-            Console.Write("------------------------\n");
-            //string orcid_unificado = person.ORCID;
-            //List<string> list_name = person.name.given;
-            //List<string> list_familia = person.name.familia;
-            //List<string> list_nombre_completo = person.name.nombre_completo;
-            //List<string> list_ids = person.IDs;
-            //List<string> list_links = person.links;
-
-            // string orcid = person_2.ORCID;
-            // List<string> list_name_id2 = person_2.name.given;
-            // List<string> list_familia_id2 = person_2.name.familia;
-            // List<string> list_nombre_completo_id2 = person_2.name.nombre_completo;
-            // List<string> list_ids_id_2 = person_2.IDs;
-            // List<string> list_links_id_2 = person_2.links;
-            string orcid = "";
-            if (person_2.ORCID != null)
-            {
-                orcid = person_2.ORCID;
-            }
-            List<string> list_name_id2 = new List<string>();
-            List<string> list_familia_id2 = new List<string>();
-            List<string> list_nombre_completo_id2 = new List<string>();
-            if (person_2.name != null)
-            {
-                if (person_2.name.given != null)
-                {
-
-                    list_name_id2 = person_2.name.given;
-                }
-                if (person_2.name.familia != null)
-                {
-
-                    list_familia_id2 = person_2.name.familia;
-                }
-                if (person_2.name.nombre_completo != null)
-                {
-
-                    list_nombre_completo_id2 = person_2.name.nombre_completo;
-                }
-            }
-
-            List<string> list_ids_id2 = new List<string>();
-            if (person_2.IDs != null)
-            {
-                list_ids_id2 = person_2.IDs;
-            }
-            List<string> list_link_id2 = new List<string>();
-            if (person_2.links != null)
-            {
-                list_link_id2 = person_2.links;
-            }
-
-            string orcid_unificado = "";
-            if (person.ORCID != null)
-            {
-                orcid_unificado = person.ORCID;
-            }
-            List<string> list_name = new List<string>();
-            List<string> list_familia = new List<string>();
-            List<string> list_nombre_completo = new List<string>();
-            if (person.name != null)
-            {
-                if (person.name.given != null)
-                {
-
-                    list_name = person.name.given;
-                }
-                if (person.name.familia != null)
-                {
-
-                    list_familia = person.name.familia;
-                }
-                if (person.name.nombre_completo != null)
-                {
-
-                    list_nombre_completo = person.name.nombre_completo;
-                }
-            }
-
-            List<string> list_ids = new List<string>();
-            if (person.IDs != null)
-            {
-                list_ids = person.IDs;
-            }
-            List<string> list_links = new List<string>();
-            if (person.links != null)
-            {
-                list_links = person.links;
-            }
-
-
-            if (list_name_id2.Count > 0)
-            {
-                foreach (string name_ids2 in list_name_id2)
-                {
-                    if (!list_name_id2.Contains(name_ids2))
-                    {
-                        list_name.Add(name_ids2);
-                    }
-                }
-            }
-            if (list_familia_id2.Count > 0)
-            {
-                foreach (string familia_ids2 in list_familia_id2)
-                {
-                    if (!list_familia.Contains(familia_ids2))
-                    {
-                        list_familia.Add(familia_ids2);
-                    }
-                }
-            }
-            if (list_nombre_completo_id2.Count > 0)
-            {
-                foreach (string ai in list_nombre_completo) { Console.Write(ai); Console.Write("\n"); }
-                foreach (string completo_ids2 in list_nombre_completo_id2)
-                {
-                    if (!list_nombre_completo.Contains(completo_ids2))
-                    {
-                        //Console.Write(completo_ids2);
-                        //Console.Write("\n");
-                        list_nombre_completo.Add(completo_ids2);
-                    }
-                }
-            }
-            if (list_ids_id2.Count > 0)
-            {
-                foreach (string ids2 in list_ids_id2)
-                {
-                    if (!list_ids.Contains(ids2))
-                    {
-                        list_ids.Add(ids2);
-                    }
-                }
-            }
-            if (list_link_id2.Count > 0)
-            {
-                foreach (string links2 in list_link_id2)
-                {
-                    if (!list_links.Contains(links2))
-                    {
-                        list_links.Add(links2);
-                    }
-                }
-
-            }
-            Models.Person unificada = new Models.Person();
-            unificada.IDs = list_ids;
-            unificada.links = list_links;
-            unificada.ORCID = orcid_unificado;
-            Name nombre = new Name();
-            nombre.given = list_name;
-            nombre.familia = list_familia;
-            nombre.nombre_completo = list_nombre_completo;
-            unificada.name = nombre;
-            return unificada;
-        }
-
-
         public Models.Source metrica_journal(Models.Source journal_inicial, string fecha, List<Knowledge_enriquecidos> areas_Tematicas)
         {
             string año = fecha.Substring(0, 4);
@@ -1735,9 +1370,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
         /// </summary>
         /// <param name="pDoi">DOI de la publicación a consultar.</param>
         /// <returns>Objeto Publication con los datos obtenidos.</returns>
-        public List<PubReferencias> llamadaRefSemanticScholar(string pDoi, Dictionary<string, List<PubReferencias>> pDic)
+        public Tuple<Publication, List<PubReferencias>> llamadaRefSemanticScholar(string pDoi)
         {
-            List<PubReferencias> objInicial_SemanticScholar = null;
+            Tuple<Publication, List<PubReferencias>> objInicial_SemanticScholar = null;
 
             try
             {
@@ -1746,18 +1381,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     // URL a la petición.
                     Uri url = new Uri(string.Format(_Configuracion.GetUrlSemanticScholar() + "SemanticScholar/GetReferences?pDoi={0}", pDoi));
 
-                    // Comprobación de la petición.
-                    if (!pDic.ContainsKey(pDoi))
-                    {
-                        string info_publication = httpCall(url.ToString(), "GET", headers).Result;
-                        //Log.Information("Respuesta CrossRef --> " + info_publication);
-                        objInicial_SemanticScholar = JsonConvert.DeserializeObject<List<PubReferencias>>(info_publication);
-                        pDic[pDoi] = objInicial_SemanticScholar;
-                    }
-                    else
-                    {
-                        objInicial_SemanticScholar = pDic[pDoi];
-                    }
+                    string info_publication = httpCall(url.ToString(), "GET", headers).Result;
+                    //Log.Information("Respuesta CrossRef --> " + info_publication);
+                    objInicial_SemanticScholar = JsonConvert.DeserializeObject<Tuple<Publication, List<PubReferencias>>>(info_publication);
                 }
             }
             catch (Exception e)
@@ -2293,6 +1919,8 @@ namespace PublicationConnect.ROs.Publications.Controllers
                             break;
                         }
                     }
+
+                    personaFinal.name.nombre_completo[0] = $@"{personaFinal.name.given[0]} {personaFinal.name.familia[0]}";
                 }
 
                 foreach (Models.Person personaCrossRef in dicPersonas["CrossRef"])
@@ -2343,6 +1971,11 @@ namespace PublicationConnect.ROs.Publications.Controllers
                             personaFinal = UnirPersonas(personaFinal, personaCrossRef);
                             break;
                         }
+                    }
+
+                    if (personaFinal.name.given != null && personaFinal.name.given.Any() && !string.IsNullOrEmpty(personaFinal.name.given[0]) && personaFinal.name.familia != null && personaFinal.name.familia.Any() && !string.IsNullOrEmpty(personaFinal.name.familia[0]))
+                    {
+                        personaFinal.name.nombre_completo[0] = $@"{personaFinal.name.given[0]} {personaFinal.name.familia[0]}";
                     }
                 }
 
@@ -2409,6 +2042,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         pPublicacion.correspondingAuthor = UnirPersonas(personaFinal, pPublicacion.correspondingAuthor);
                         break;
                     }
+                }
+                if (personaFinal.name.given != null && personaFinal.name.given.Any() && !string.IsNullOrEmpty(personaFinal.name.given[0]) && personaFinal.name.familia != null && personaFinal.name.familia.Any() && !string.IsNullOrEmpty(personaFinal.name.familia[0]))
+                {
+                    personaFinal.name.nombre_completo[0] = $@"{personaFinal.name.given[0]} {personaFinal.name.familia[0]}";
                 }
             }
 
@@ -2494,6 +2131,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
                                 break;
                             }
                         }
+                        if (personaFinal.name.given != null && personaFinal.name.given.Any() && !string.IsNullOrEmpty(personaFinal.name.given[0]) && personaFinal.name.familia != null && personaFinal.name.familia.Any() && !string.IsNullOrEmpty(personaFinal.name.familia[0]))
+                        {
+                            personaFinal.name.nombre_completo[0] = $@"{personaFinal.name.given[0]} {personaFinal.name.familia[0]}";
+                        }
                     }
 
                     listaPersonasDefinitivas.Add(personaFinal);
@@ -2550,6 +2191,11 @@ namespace PublicationConnect.ROs.Publications.Controllers
                             pPublicacion.correspondingAuthor = UnirPersonas(personaFinal, pPublicacion.correspondingAuthor);
                             break;
                         }
+                    }
+
+                    if (personaFinal.name.given != null && personaFinal.name.given.Any() && !string.IsNullOrEmpty(personaFinal.name.given[0]) && personaFinal.name.familia != null && personaFinal.name.familia.Any() && !string.IsNullOrEmpty(personaFinal.name.familia[0]))
+                    {
+                        personaFinal.name.nombre_completo[0] = $@"{personaFinal.name.given[0]} {personaFinal.name.familia[0]}";
                     }
                 }
 
@@ -2646,6 +2292,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 {
                     pPersonaFinal.name.familia = new List<string>() { pPersonaAUnir.name.nombre_completo[0].Split(" ")[1] };
                 }
+            }
+            if (pPersonaFinal.name.given != null && pPersonaFinal.name.given.Any() && !string.IsNullOrEmpty(pPersonaFinal.name.given[0]) && pPersonaFinal.name.familia != null && pPersonaFinal.name.familia.Any() && !string.IsNullOrEmpty(pPersonaFinal.name.familia[0]))
+            {
+                pPersonaFinal.name.nombre_completo[0] = $@"{pPersonaFinal.name.given[0]} {pPersonaFinal.name.familia[0]}";
             }
 
             // Nick

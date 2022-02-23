@@ -327,7 +327,7 @@ namespace CurriculumvitaeOntology
 		{
 			base.AddImages(pResource);
 			List<ImageAction> actionListimg = new List<ImageAction>();
-			actionListimg.Add(new ImageAction(0,234, ImageTransformationType.Crop, 100));
+			actionListimg.Add(new ImageAction(0,200, ImageTransformationType.Crop, 100));
 			pResource.AttachImage(this.Foaf_img, actionListimg,"foaf:img", true, this.GetExtension(this.Foaf_img), this.Entity);
 			this.Roh_hasFax.AddImages(pResource);
 			this.Roh_birthplace.AddImages(pResource);

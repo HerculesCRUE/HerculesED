@@ -171,6 +171,21 @@
 									{
 										"properties": [
 											{
+												"title": {
+													"es": "desc"
+												},
+												"placeholder": {
+													"es": "desc"
+												},
+												"property": "http://vivoweb.org/ontology/core#description",
+												"type": "textarea",
+												"width": 3
+											}
+										]
+									},
+									{
+										"properties": [
+											{
 												"property": "http://vivoweb.org/ontology/core#relates",
 												"type": "auxEntityAuthorList",
 												"title": {
@@ -1134,6 +1149,21 @@
 												"property": "http://w3id.org/roh/title",
 												"required": true,
 												"type": "text",
+												"width": 3
+											}
+										]
+									},
+									{
+										"properties": [
+											{
+												"title": {
+													"es": "desc"
+												},
+												"placeholder": {
+													"es": "desc"
+												},
+												"property": "http://vivoweb.org/ontology/core#description",
+												"type": "textarea",
 												"width": 3
 											}
 										]

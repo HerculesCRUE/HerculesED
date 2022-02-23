@@ -156,6 +156,25 @@
                     <Propiedad ID="http://xmlns.com/foaf/0.1/name" EntidadID="http://xmlns.com/foaf/0.1/Person">
                         <AtrNombreLectura></AtrNombreLectura>
                     </Propiedad>
+					<Propiedad ID="http://w3id.org/roh/gnossUser" EntidadID="http://xmlns.com/foaf/0.1/Person">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+					<Propiedad ID="http://w3id.org/roh/cvOf" EntidadID="http://xmlns.com/foaf/0.1/Person">
+                        <AtrNombreLectura></AtrNombreLectura>
+						<SeleccionEntidad>
+							<TipoSeleccion>Autocompletar</TipoSeleccion>
+							<NuevaPestanya>false</NuevaPestanya>
+							<LinkARecurso IrAComunidad="true"></LinkARecurso>
+							<Grafo>curriculumvitae.owl</Grafo>
+							<UrlTipoEntSolicitada>http://w3id.org/roh/CV</UrlTipoEntSolicitada>
+							<PropsEntLectura>
+								<Propiedad ID="http://xmlns.com/foaf/0.1/name" EntidadID="http://w3id.org/roh/CV">
+								<AtrNombreLectura></AtrNombreLectura>
+							</Propiedad>		
+							</PropsEntLectura>
+							<Reciproca></Reciproca>
+						</SeleccionEntidad>	
+                    </Propiedad>
 					<Propiedad  ID="http://w3id.org/roh/hasRole" EntidadID="http://xmlns.com/foaf/0.1/Person">
 						<AtrNombre xml:lang="es">Organización:</AtrNombre>
 						<AtrNombreLectura xml:lang="es"></AtrNombreLectura>

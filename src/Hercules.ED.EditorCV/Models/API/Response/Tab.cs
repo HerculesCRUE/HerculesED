@@ -85,6 +85,10 @@ namespace GuardadoCV.Models.API.Response
         /// </summary>
         public string title { get; set; }
         /// <summary>
+        /// Identificador de la entidad
+        /// </summary>
+        public string identifier { get; set; }
+        /// <summary>
         /// Indica si es público o no 
         /// </summary>
         public bool ispublic { get; set; }

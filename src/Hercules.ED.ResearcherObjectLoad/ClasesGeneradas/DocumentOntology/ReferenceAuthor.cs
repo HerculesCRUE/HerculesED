@@ -16,64 +16,38 @@ using System.Collections;
 using Gnoss.ApiWrapper.Exceptions;
 using System.Diagnostics.CodeAnalysis;
 
-namespace CurriculumvitaeOntology
+namespace DocumentOntology
 {
 	[ExcludeFromCodeCoverage]
-	public class RelatedResearchActivityPeriodCV : GnossOCBase
+	public class ReferenceAuthor : GnossOCBase
 	{
 
-		public RelatedResearchActivityPeriodCV() : base() { } 
+		public ReferenceAuthor() : base() { } 
 
-		public RelatedResearchActivityPeriodCV(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
+		public ReferenceAuthor(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
 		{
 			this.mGNOSSID = pSemCmsModel.Entity.Uri;
 			this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
-			this.Vivo_start = new List<DateTime>();
-			SemanticPropertyModel propVivo_start = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#start");
-			if (propVivo_start != null && propVivo_start.PropertyValues.Count > 0)
-			{
-				foreach (SemanticPropertyModel.PropertyValue propValue in propVivo_start.PropertyValues)
-				{
-					DateTime fecha = new DateTime();
-					DateTime.TryParse(propValue.Value,out fecha);
-					this.Vivo_start.Add(fecha);
-				}
-			}
-			this.Vivo_end = new List<DateTime>();
-			SemanticPropertyModel propVivo_end = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#end");
-			if (propVivo_end != null && propVivo_end.PropertyValues.Count > 0)
-			{
-				foreach (SemanticPropertyModel.PropertyValue propValue in propVivo_end.PropertyValues)
-				{
-					DateTime fecha = new DateTime();
-					DateTime.TryParse(propValue.Value,out fecha);
-					this.Vivo_end.Add(fecha);
-				}
-			}
+			this.Roh_semanticScholarId = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/semanticScholarId"));
+			this.Foaf_name = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/name"));
 		}
 
-		public virtual string RdfType { get { return "http://w3id.org/roh/RelatedResearchActivityPeriodCV"; } }
-		public virtual string RdfsLabel { get { return "http://w3id.org/roh/RelatedResearchActivityPeriodCV"; } }
+		public virtual string RdfType { get { return "http://w3id.org/roh/ReferenceAuthor"; } }
+		public virtual string RdfsLabel { get { return "http://w3id.org/roh/ReferenceAuthor"; } }
 		public OntologyEntity Entity { get; set; }
 
-		[LABEL(LanguageEnum.es,"http://vivoweb.org/ontology/core#start")]
-		[RDFProperty("http://vivoweb.org/ontology/core#start")]
-		public  List<DateTime> Vivo_start { get; set;}
+		[RDFProperty("http://w3id.org/roh/semanticScholarId")]
+		public  string Roh_semanticScholarId { get; set;}
 
-		[LABEL(LanguageEnum.es,"http://vivoweb.org/ontology/core#end")]
-		[RDFProperty("http://vivoweb.org/ontology/core#end")]
-		public  List<DateTime> Vivo_end { get; set;}
+		[RDFProperty("http://xmlns.com/foaf/0.1/name")]
+		public  string Foaf_name { get; set;}
 
 
 		internal override void GetProperties()
 		{
 			base.GetProperties();
-			foreach (DateTime fecha in this.Vivo_start){
-				propList.Add(new DateOntologyProperty("vivo:start", fecha));
-			}
-			foreach (DateTime fecha in this.Vivo_end){
-				propList.Add(new DateOntologyProperty("vivo:end", fecha));
-			}
+			propList.Add(new StringOntologyProperty("roh:semanticScholarId", this.Roh_semanticScholarId));
+			propList.Add(new StringOntologyProperty("foaf:name", this.Foaf_name));
 		}
 
 		internal override void GetEntities()

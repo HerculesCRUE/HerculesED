@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using SemanticScholarAPI.ROs.SemanticScholar.Models;
-using SemanticScholarConnect.ROs.SemanticScholar.Models;
-using SemanticScholarConnect.ROs.SemanticScholar.Models.Inicial;
+using SemanticScholarAPI.ROs.SemanticScholar.Models;
+using SemanticScholarAPI.ROs.SemanticScholar.Models.Inicial;
 
-namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
+namespace SemanticScholarAPI.ROs.SemanticScholar.Controllers
 {
     public class ROSemanticScholarControllerJSON
     {
@@ -249,7 +249,7 @@ namespace SemanticScholarConnect.ROs.SemanticScholar.Controllers
             if (objInicial.authors != null)
             {
                 List<Person> autores = new List<Person>();
-                foreach (SemanticScholarConnect.ROs.SemanticScholar.Models.Inicial.Author author in objInicial.authors)
+                foreach (SemanticScholarAPI.ROs.SemanticScholar.Models.Inicial.Author author in objInicial.authors)
                 {
                     Person persona = new Person();
                     persona.fuente = "SemanticScholar";

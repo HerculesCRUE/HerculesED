@@ -245,6 +245,7 @@ namespace WoSConnect.ROs.WoS.Controllers
                     // Obtención de datos.
                     if (!result.Contains("Server.invalidInput") && (!string.IsNullOrEmpty(result) && !result.Contains("\"RecordsFound\":0")))
                     {
+                        //result = result.Replace("")
                         numIncremental++;
                         Root objInicial = new Root();
 
