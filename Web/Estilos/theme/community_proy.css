@@ -191,7 +191,7 @@ ul.folderStructure > li.file span {
     display: none;
 }
 
-body.listado #navegacion-recurso-fixed {
+body.listado #navegacion-recurso-fixed, body.homeComunidad #navegacion-recurso-fixed {
     display: flex;
 }
 

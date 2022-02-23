@@ -100,9 +100,14 @@
                                 {
                                     activo = "class=\"active\"";
                                 }
-                                <li @Html.Raw(activo)>
-                                    <a href="@pPestanya.Url">@pPestanya.Name</a>
-                                </li>
+                                string searchSword = "/buscador-";
+                                string url = pPestanya.Url;
+                                if (url.Contains(searchSword))
+                                {
+                                    <li @Html.Raw(activo)>
+                                        <a href="@url">@pPestanya.Name</a>
+                                    </li>
+                                }
                             }
                         </ul>
                     </div>

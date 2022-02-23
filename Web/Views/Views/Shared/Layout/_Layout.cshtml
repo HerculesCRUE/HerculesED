@@ -544,91 +544,34 @@
         <div class="body custom-css-scroll">
             <div class="resultados" id="resultadosMetabuscador" data-url="Search/DoMetaSearch">
                 <ul>
-                    <li class="bloque persons">
+                    <li class="bloque documents" data-urlcomunidad="@Comunidad.Tabs.Where(item => item.Key == new Guid("6073a387-5e95-47b3-a4d1-09a95bb7c6e5")).Select(e => e.Url).First()">
+                        <p class="title">@Html.Translate("PUBLICACIONES")</p>
+                        <ul>
+                        </ul>
+                    </li>
+                    <li class="bloque persons" data-urlcomunidad="@Comunidad.Tabs.Where(item => item.Key == new Guid("f0ba215c-1629-456a-a7ac-69b63f4e986f")).Select(e => e.Url).First()">
                         <p class="title">@Html.Translate("INVESTIGADORES")</p>
                         <ul>
-                            <li class="con-icono-before icono-persona">
-                                <a href="./ficha.php">Recurso. Departamento diseño de producto</a>
-                            </li>
-                            <li class="con-icono-before icono-persona">
-                                <a href="./ficha.php">Recurso. Extensión MVC a Comunidades del ecosistema: Detalles a tener en cuenta</a>
-                            </li>
-                            <li class="con-icono-before icono-recurso">
-                                <a href="./ficha.php">Recurso. Detalles a tener en cuenta</a>
-                            </li>
-                            <li class="con-icono-after ver-mas-icono ver-mas">
-                                <a href="./ficha.php">Ver más</a>
-                            </li>
                         </ul>
                     </li>
-                    <li class="bloque projects">
-                        <p class="title">@Html.Translate("PROYECTOS")</p>
-                        <ul>
-                            <li class="con-icono-before icono-debate">
-                                <a href="./ficha.php">Debate. Informe de diseño conceptual Previsión Previsión Previsión</a>
-                            </li>
-                            <li class="con-icono-before icono-debate">
-                                <a href="./ficha.php">Debate. Informe de cálculos de diseño</a>
-                            </li>
-                            <li class="con-icono-before icono-debate">
-                                <a href="./ficha.php">Debate. Previsión de diseño</a>
-                            </li>
-                            <li class="con-icono-before icono-debate">
-                                <a href="./ficha.php">Debate. Plan de validación del diseño</a>
-                            </li>
-                            <li class="con-icono-after ver-mas-icono ver-mas">
-                                <a href="./ficha.php">Ver más en la comunidad</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="bloque documents">
-                        <p class="title">@Html.Translate("DOCUMENTOS")</p>
-                        <ul>
-                            <li class="con-icono-before icono-pregunta">
-                                <a href="./ficha.php">Pregunta. Diseño y desarrollo de producto</a>
-                            </li>
-                            <li class="con-icono-before icono-pregunta">
-                                <a href="./ficha.php">Pregunta. ¿Cuántos servicios hay?</a>
-                            </li>
-                            <li class="con-icono-before icono-pregunta">
-                                <a href="./ficha.php">Pregunta. 201811214 Pantallas de vistas V2 - Mygnoss y CRFP</a>
-                            </li>
-                            <li class="con-icono-after ver-mas-icono ver-mas">
-                                <a href="./ficha.php">Ver más en la comunidad</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="bloque groups">
+                    <li class="bloque groups" data-urlcomunidad="@Comunidad.Tabs.Where(item => item.Key == new Guid("167b0af9-2299-4dd4-a889-8c36d6d2e43b")).Select(e => e.Url).First()">
                         <p class="title">@Html.Translate("GRUPOS")</p>
                         <ul>
-                            <li class="con-icono-before icono-persona">
-                                <a href="./ficha.php">Ricardo Alonso Maturana</a>
-                            </li>
-                            <li class="con-icono-before icono-persona">
-                                <a href="./ficha.php">Rafael Nadal</a>
-                            </li>
-                            <li class="con-icono-before icono-persona">
-                                <a href="./ficha.php">Garbiñe Muguruza García</a>
-                            </li>
                         </ul>
                     </li>
-                    <li class="bloque researchObjects">
+                    <li class="bloque projects" data-urlcomunidad="@Comunidad.Tabs.Where(item => item.Key == new Guid("51182dfb-d5b2-4d13-8595-a3949028837b")).Select(e => e.Url).First()">
+                        <p class="title">@Html.Translate("PROYECTOS")</p>
+                        <ul>
+                        </ul>
+                    </li>
+                    <li class="bloque researchObjects" data-urlcomunidad="@Comunidad.Tabs.Where(item => item.Key == new Guid("fbf49f72-46a4-46f4-ba4f-00088599f717")).Select(e => e.Url).First()">
                         <p class="title">@Html.Translate("RESEARCHOBJECTS")</p>
                         <ul>
-                            <li class="con-icono-before icono-persona">
-                                <a href="./ficha.php">Ricardo Alonso Maturana</a>
-                            </li>
-                            <li class="con-icono-before icono-persona">
-                                <a href="./ficha.php">Rafael Nadal</a>
-                            </li>
-                            <li class="con-icono-before icono-persona">
-                                <a href="./ficha.php">Garbiñe Muguruza García</a>
-                            </li>
                         </ul>
                     </li>
-                    <li id="verMasEcosistema" class="con-icono-before icono-mundo ver-mas-ecosistema">
+                    <!-- <li id="verMasEcosistema" class="con-icono-before icono-mundo ver-mas-ecosistema">
                         <a class="con-icono-after ver-mas-icono" href="">Ver más en todo el ecosistema</a>
-                    </li>
+                    </li> -->
                 </ul>
             </div>
             <div class="sugerencias" id="sugerenciasMetabuscador">
