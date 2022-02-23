@@ -1232,8 +1232,13 @@ function AgregarFaceta(faceta,eliminarFiltroAnterior=false) {
 }
 
 
-
+/**
+ * Clase metabuscador para dar funcionalidad al mismo 
+*/
 var metabuscador = {
+    /**
+     * Función que inicializa el metaBuscador 
+    */
     init: function () {
         this.config();
         // this.loadLastSearchs();
@@ -1252,6 +1257,10 @@ var metabuscador = {
 		});
         return;
     },*/
+
+    /**
+     * Función que determina los elementos en la clase 
+    */
     config: function () {
         this.body = body;
         this.header = this.body.find('#header');
@@ -1263,18 +1272,19 @@ var metabuscador = {
         this.numMaxSearchs = 10;
         // Panel sin resultados por elementos no encontrados
         this.panelSinResultados = $(`#sinResultadosMetabuscador`);
-        this.timeWaitingForUserToType = 1000; // Esperar 1 segundos a si el usuario ha dejado de escribir para iniciar búsqueda
+        this.timeWaitingForUserToType = 750; // Esperar 0.75 segundos a si el usuario ha dejado de escribir para iniciar búsqueda
         this.ignoreKeysToBuscador = [37, 38, 39, 40, 46, 8, 32, 91, 17, 18, 20, 36, 18, 27];
         // Palabra clave introducida en el metaBuscador para mostrar en el panel de resultados no encontrados
         this.idPalabraBuscadaMetabuscador = `metabuscadorBusqueda`;
         this.sugerenciasMetabuscadorItems = this.body.find('#sugerenciasMetabuscador ul');
+        // Listado de los tipos de resultados existentes
         this.typeSearch = {
         	"persona": {
         		"icon": "icono-persona",
         		"section": "persons"
         	},
         	"group": {
-        		"icon": "icono-persona",
+        		"icon": "icono-group",
         		"section": "groups"
         	},
         	"project": {
@@ -1308,9 +1318,10 @@ var metabuscador = {
     		that.cargarRecursos(searchTxt);
     	});
     }, */
-    filterData: function (item = "") {
-    	console.log("item ", item);
-    },
+
+    /**
+     * Función principal que determina como funcionará el input y que lanzará los diferentes procesos del objeto 
+    */
     comportamiento: function () {
         var that = this;
 
@@ -1321,38 +1332,37 @@ var metabuscador = {
         // Clear the searchs
         that.input.on('click', function (e) {
         	that.keyInput = that.input.val();
-			if (that.keyInput.length <= 2) 
+			if (that.keyInput.length <= 1) 
 			{
                 that.ocultarResultados();
 			}
         });
 
-        that.input.on('keydown', function (e) {
+        that.input.on('keyup', function (e) {
             that.keyInput = that.input.val();
 
-            if (that.validarKeyPulsada(e) == true) {
+			if (that.keyInput.length <= 1) 
+			{
+                that.ocultarResultados();
+			}
+			else {
 
-				if (that.keyInput.length <= 2) 
-				{
-                    that.ocultarResultados();
-				} 
-				else {
+        		if (that.validarKeyPulsada(e) == true) {
+
 	                clearTimeout(that.timer);
 	                that.timer = setTimeout(function () {
-	                    if (that.keyInput.length > 2) {
-	                        that.ocultarResultados();
-	                        // Ocultar panel sin resultados por posible busqueda anterior sin resultados
-	                        that.mostrarPanelSinResultados(false);
-	                        that.cargarResultados();
-	                        // Guardar búsqueda en localStorage
-	                        that.saveSearchInLocalStorage(that.keyInput);
-	                    }
+                        that.ocultarResultados();
+                        // Ocultar panel sin resultados por posible busqueda anterior sin resultados
+                        that.mostrarPanelSinResultados(false);
+                        that.cargarResultados();
+                        // Guardar búsqueda en localStorage
+                        that.saveSearchInLocalStorage(that.keyInput);
 	                }, that.timeWaitingForUserToType);
 				}           	
             }
         });
 
-        // BotÃ³n para cerrar resultados de la Home
+        // Botón para cerrar resultados de la Home
         /* this.btnCloseMetabuscador.on("click", function () {
             that.mostrarOculto();
         }); */
@@ -1372,21 +1382,35 @@ var metabuscador = {
             // Establecer como búsqueda a realizar
             const search = event.target.text;
             that.input.val(search);
-            that.input.trigger("keydown");
+            that.input.trigger("keyup");
         });
 
 
         return;
     },
+
+    /**
+     * Ocultar los resultados 
+    */
     ocultarResultados: function () {
         this.metabuscador.removeClass('mostrarResultados');
     },
+
+    /**
+     * Inicia el proceso de cargar los resultados y pintarlos 
+    */
     cargarResultados: function () {
         var that = this;
         this.metabuscador.addClass('mostrarResultados');
         // simular la carga de cada sección
         that.cargarRecursos();
     },
+
+    /**
+     * Muestra la barra de cargando 
+     * @param {any} loader_div: Objeto jquery con el div sobre el que pintar la progressBar
+     * @param {int} time: Tiempo límite que debe durar la progressBar
+    */
     showLoader: function (loader_div, time) {
         var loaderBar = loader_div.progressBarTimer({
             autostart: false,
@@ -1403,7 +1427,13 @@ var metabuscador = {
         return loaderBar;
 
     },
-    cargar: function (item) {
+    /**
+     * Inicia la carga de datos 
+    */
+    cargar: function () {
+        var that = this;
+
+        // Inicia la progressBar
         var loader_container = $('#loader-recursos-wrap');
         loader_container.find('.progress-bar').remove();
 
@@ -1414,13 +1444,21 @@ var metabuscador = {
         var loader = this.showLoader(loader_div, 1);
         loader.start();
 
-        // var url = new URL(servicioExternoBaseUrl + '/servicioexterno/Search/DoMetaSearch');
-        var url = new URL('https://localhost:44321/Search/DoMetaSearch');
+
+        // Get the url
+        var uri = that.resultadosMetabuscador.data('url');
+
+        // Compone la url para la llamada
+        var url = new URL(servicioExternoBaseUrl + 'servicioexterno/' + uri);
+
+        if (window.location.hostname == 'depuracion.net') {
+        	url = new URL('https://localhost:44321/' + uri);
+        }
         url.searchParams.set('stringSearch', this.keyInput);
         url.searchParams.set('lang', currentLang);
 
+        // Llama al servicio y devuelve una promesa
         return new Promise((resolve, reject) => {
-            
             $.get(url.toString(), function (data) {
             	loader.stop();
                 loader_div.remove();
@@ -1429,56 +1467,81 @@ var metabuscador = {
             });
         });
     },
+
+    /**
+     * Método que inicia la carga de los recursos, se llama a 'cargar' y luego llama al método pintarItems para pintar el resultado 
+     * @param {string} searchTxt: Texto alternativo de búsqueda
+    */
     cargarRecursos: function (searchTxt = "") {
         var that = this;
+
+        // Oculta la sección de resultados
         var bloque = that.resultadosMetabuscador.find('.bloque');
         bloque.hide();
 
+        // Rellena los datos por si se les pasara por parámetro
         if (searchTxt != "") {
         	that.keyInput = searchTxt;
         }
 
+        // Carga los datos
         var procesoCarga = this.cargar();
         procesoCarga.then(function (data) {
 
+        	// Comprueba que hay resultados
         	var totalItems = 0;
         	Object.keys(data).forEach(e => totalItems += data[e].length);
 
+        	// Si hay resultados, pinta los items
         	if (totalItems > 0) {
         		that.mostrarPanelSinResultados(false);
         		that.pintarItems(data);
         	} else {
         		that.mostrarPanelSinResultados(true);
         	}
-
-        	console.log("data-searched", data);
-
-            // bloque.show();
         });
     },
 
+	/**
+     * Método que pintar el resultado de la búsqueda
+     * @param {Object} data: Objeto con los datosobtenidos de la llamada ajax
+    */
     pintarItems: function (data) {
 
     	var that = this;
 
     	Object.keys(data).forEach(ndx => {
-    		console.log("data[ndx]", data[ndx]);
+
+    		// Comprueba que hay un bloque de cada tipo devuelto en el objeto
     		if (that.typeSearch[ndx]) {
+
+    			// Busca en el dom la sección
     			var currenTbloque = that.resultadosMetabuscador.find('.bloque.' + that.typeSearch[ndx].section);
+    			// Selecciona la lista del bloque correspondiente
     			var listCurrenTbloque = currenTbloque.find('ul');
+    			// Elimina los items
     			listCurrenTbloque.children().remove();
+
+    			// Comprueba que tiene resultados los datos para este elemento
     			if (data[ndx].length > 0) {
+
+    				// Pinta los elementos dentro de la lista
     				var result = data[ndx].map(item => $('<li class="con-icono-before ' + that.typeSearch[ndx].icon + '" data-id="'+item.id+'">\
                         	<a href="'+item.url+'">'+item.title+'</a>\
                     	</li>')
     				);
     				result.forEach(item => listCurrenTbloque.append(item));
+
+    				// Muestra el bloque
     				currenTbloque.show();
     			}
     		}
     	})
     },
 
+	/**
+     * Método que pintar el resultado de la búsqueda
+    */
     linkVerEnElEcosistema: function () {
         var that = this;
         that.verMasEcosistema.hide();
@@ -1488,8 +1551,8 @@ var metabuscador = {
     },
 
     /**
-     * ComprobarÃ¡ la tecla pulsada, y si no se encuentra entre las excluidas, darÃ¡ lo introducido por vÃ¡lido devolviendo true
-     * Si se pulsa una tecla de las excluidas, devolverÃ¡ false y por lo tanto el metabuscador no deberÃ­a iniciarse
+     * Comprobará la tecla pulsada, y si no se encuentra entre las excluidas, dará lo introducido por válido devolviendo true
+     * Si se pulsa una tecla de las excluidas, devolverá false y por lo tanto el metabuscador no debería iniciarse
      * @param {any} event: Evento o tecla pulsada en el teclado
      */
     validarKeyPulsada: function (event) {
@@ -1500,13 +1563,17 @@ var metabuscador = {
         return true;
     },
 
+	/**
+     * Método que muestra el panel (o no) 'sin resultados' para cuando no haya resultados en la llamada
+     * @param {bool} mostrarPanel: Determina si mostrarlo o no
+     */
     mostrarPanelSinResultados: function(mostrarPanel){
 
         // Vaciar posibles palabras anteriores
         $(`#${this.idPalabraBuscadaMetabuscador}`).text('');
         // Establecer la palabra buscada para ser mostrada en el panel
         const cadenaBuscada = this.input.val();
-        // Panel de bÃºsqueda no encontrada
+        // Panel de búsqueda no encontrada
         const panelSinResultadosContent = `
             <div class="container">
                 <div class="row">
@@ -1523,7 +1590,7 @@ var metabuscador = {
         if (mostrarPanel == true) {
             this.panelSinResultados.removeClass("d-none");
             this.panelSinResultados.html(panelSinResultadosContent);
-            // AÃ±adir la palabra buscada al panel de no encontrado
+            // Añadir la palabra buscada al panel de no encontrado
             $(`#${this.idPalabraBuscadaMetabuscador}`).text(cadenaBuscada);
         } else {
             this.panelSinResultados.addClass("d-none");            
@@ -1531,11 +1598,11 @@ var metabuscador = {
     },
 
     /**
-     * Guardar en localStorage una bÃºsqueda realizada. Eliminará el más antiguo si se ha llegado al nÃºmero de items máximo guardado.
+     * Guardar en localStorage una búsqueda realizada. Eliminará el más antiguo si se ha llegado al número de items máximo guardado.
      * @param {string} search
      */
     saveSearchInLocalStorage: function (search) {
-        // Comprobar si la bÃºsqueda reciente ya existe en el histÃ³rico de bÃºsquedas
+        // Comprobar si la búsqueda reciente ya existe en el histórico de búsquedas
         let searchRepeated = false;
 
         try {
@@ -1590,14 +1657,14 @@ var metabuscador = {
         // Eliminar posibles items
         this.sugerenciasMetabuscadorItems.children().remove();
 
-        // Construir cada itemList con las bÃºsquedas almacenadas en localStorage
+        // Construir cada itemList con las búsquedas almacenadas en localStorage
         localSearchs.reverse().forEach((item) => {
             searchListItems += `<li class="reciente con-icono-before icono-busqueda">
                                     <a href="javascript: void(0);">${item.search}</a>
                                 </li>`;
         });
 
-        // AÃ±adir los items para el metabuscador
+        // Añadir los items para el metabuscador
         this.sugerenciasMetabuscadorItems.append(searchListItems);
     },
 

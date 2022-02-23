@@ -198,3 +198,6 @@ body.listado #navegacion-recurso-fixed {
 header .row .col.col02 .col-buscador {
     display: block;
 }
+
+.icono-work.con-icono-after:after { content: 'work'; }
+.icono-group.con-icono-after:after { content: 'groups'; }
