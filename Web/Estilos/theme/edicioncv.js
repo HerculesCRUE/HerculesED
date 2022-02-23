@@ -312,7 +312,7 @@ var edicionCV = {
 				}
 			}
 		}
-		accionesCurriculum.init();
+		accionesPlegarDesplegarModal.init();
 		this.engancharComportamientosCV();
 	},
     printSectionItem: function(contenedor,item,identifier,rdftype,entityID) {
@@ -954,7 +954,7 @@ var edicionCV = {
         }
         $('div[section="' + id + '"] .numResultados').text('(' + $('div[section="' + id + '"] article').length + ')');
         this.engancharComportamientosCV();
-        accionesCurriculum.init();
+        accionesPlegarDesplegarModal.init();
     },
     paginarListado: function(sectionID, pagina) {
         $('.panel-group[section="' + sectionID + '"] .panNavegador .pagination.numbers .actual').removeClass('actual');
@@ -1856,7 +1856,6 @@ var edicionCV = {
         listadosTesauros.find('a.faceta.selected').removeClass('selected');
 
         $(".entityauxcontainer.thesaurus").each(function() {
-
             if ($(this).attr('idtemp') == null) {
                 $(this).attr('idtemp', RandomGuid());
             }
@@ -1904,8 +1903,22 @@ var edicionCV = {
 
         });
 
-        var listadosTesauros = $(".entityauxcontainer.thesaurus .simple-collapse-content .resource-list ul")
-        listadosTesauros.last().append(listadosTesauros.find("li"));
+        var listadosTesauros = $(".entityauxcontainer.thesaurus");
+		
+		$(listadosTesauros).each(function() {
+			var tesauroUser=$(".entityauxcontainer.thesaurus div.item.aux[propertyrdf='http://w3id.org/roh/userKnowledgeArea']").closest('.entityauxcontainer.thesaurus');
+			if(tesauroUser.length==1)
+			{
+				//Si existe el tesauro del usuario y el tesauro actual es http://w3id.org/roh/externalKnowledgeArea o
+				//http://w3id.org/roh/enrichedKnowledgeArea o http://w3id.org/roh/userKnowledgeArea, lo añadimos al del usuario
+				var propActual=$(this).find('div.item.aux').attr('propertyrdf');
+				if(propActual=="http://w3id.org/roh/externalKnowledgeArea"||propActual=="http://w3id.org/roh/enrichedKnowledgeArea"||propActual=="http://w3id.org/roh/userKnowledgeArea")
+				{
+					tesauroUser.find('.simple-collapse-content .resource-list ul').append($(this).find('.simple-collapse-content .resource-list ul li'));
+				}
+			}
+			
+		});
 
         this.engancharComportamientosCV();
     },
@@ -1932,22 +1945,24 @@ var edicionCV = {
         var background = '';
         var deleteButton = `<span class="material-icons cerrar">close</span>`;
         var lockCheck = false;
+		var propRdfTesauro=item.attr('propertyrdf');
         switch (item.attr('propertyrdf')) {
             case 'http://w3id.org/roh/externalKnowledgeArea':
                 background = 'background-oscuro';
                 deleteButton = '';
                 lockCheck = true;
+				propRdfTesauro='http://w3id.org/roh/userKnowledgeArea';
                 break;
             case 'http://w3id.org/roh/enrichedKnowledgeArea':
                 background = 'background-amarillo';
                 lockCheck = true;
+				propRdfTesauro='http://w3id.org/roh/userKnowledgeArea';
                 break;
             case 'http://w3id.org/roh/userKnowledgeArea':
                 break;
         }
 
-        var listadosTesauros = $(".entityauxcontainer.thesaurus .item.aux.entityaux ul.listadoTesauro")
-        var listado = listadosTesauros.last();
+		var listado=$(".entityauxcontainer.thesaurus div.item.aux[propertyrdf='"+propRdfTesauro+"']").closest('.entityauxcontainer.thesaurus');
         $.each(IdItems, function(key, value) {
             var check = listado.find('a.faceta[name="' + value + '"]');
             check.addClass('selected');
@@ -1955,6 +1970,30 @@ var edicionCV = {
                 check.addClass('lock');
             }
         });
+		
+		
+		
+		
+		var listadosTesauros = $(".entityauxcontainer.thesaurus");
+		
+		$(listadosTesauros).each(function() {
+			var tesauroUser=$(".entityauxcontainer.thesaurus div.item.aux[propertyrdf='http://w3id.org/roh/userKnowledgeArea']").closest('.entityauxcontainer.thesaurus');
+			if(tesauroUser.length==1)
+			{
+				//Si existe el tesauro del usuario y el tesauro actual es http://w3id.org/roh/externalKnowledgeArea o
+				//http://w3id.org/roh/enrichedKnowledgeArea o http://w3id.org/roh/userKnowledgeArea, lo añadimos al del usuario
+				var propActual=$(this).find('div.item.aux').attr('propertyrdf');
+				if(propActual=="http://w3id.org/roh/externalKnowledgeArea"||propActual=="http://w3id.org/roh/enrichedKnowledgeArea"||propActual=="http://w3id.org/roh/userKnowledgeArea")
+				{
+					tesauroUser.find('.simple-collapse-content .resource-list ul').append($(this).find('.simple-collapse-content .resource-list ul li'));
+				}
+			}
+			
+		});
+
+		
+		
+		
 
 
         return `<li class="${background}" about="${item.attr('about')}" parent-idtemp="${idTemp}" order="${num}">
