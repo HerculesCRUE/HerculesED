@@ -447,6 +447,11 @@ namespace OpenAireConnect.ROs.OpenAire.Controllers
                             nombre = nombreOriginal.Split(". ")[0].Trim() + ".";
                             apellidos = nombreOriginal.Substring(nombreOriginal.IndexOf(". ") + 1).Trim();
                         }
+                        else if (nombreOriginal.Contains(", "))
+                        {
+                            nombre = nombreOriginal.Split(", ")[1].Trim();
+                            apellidos = nombreOriginal.Substring(0, nombreOriginal.IndexOf(", ")).Trim();
+                        }
                         else if (nombreOriginal.Contains(" "))
                         {
                             nombre = nombreOriginal.Split(" ")[0].Trim();
