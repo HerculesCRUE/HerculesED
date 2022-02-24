@@ -62,7 +62,7 @@
                     <div class="nombre-usuario-wrap">
                         @{ if (!string.IsNullOrEmpty(pPerson.Foaf_name) && !string.IsNullOrEmpty(pPerson.GNOSSID))
                             {
-                                <p about="@pPerson.GNOSSID" property="@pPerson.GetPropertyURI(nameof(pPerson.Foaf_name))" class="nombre">@pPerson.Foaf_name,</p>
+                                <p about="@pPerson.GNOSSID" property="@pPerson.GetPropertyURI(nameof(pPerson.Foaf_name))" class="nombre">@pPerson.Foaf_name</p>
                             }
                             else
                             {

@@ -529,10 +529,17 @@
                                             {
                                                 string fecha = reference.Dct_issued.ToString().Split('/')[2].Split(' ')[0];
                                                 string url = reference.Bibo_doi != "" ? "//doi.org/" + reference.Bibo_doi : "";
+                                                string urlInternalDoc = "";
                                                 string cssArticle = "";
-                                                if (reference.Roh_i_doc!=null)
+
+                                                if (pDocument.Roh_i_doc_references != null)
                                                 {
-                                                    cssArticle = " success ";
+                                                    Document doc = pDocument.Roh_i_doc_references.FirstOrDefault(x => x.Bibo_doi == reference.Bibo_doi);
+                                                    if(doc!=null)
+                                                    {
+                                                        cssArticle = " success ";
+                                                        urlInternalDoc = doc.URL;
+                                                    }
                                                 }
 
                                                 <article class="resource @cssArticle publicacion">
@@ -540,7 +547,10 @@
                                                         <div class="middle-wrap">
                                                             <div class="title-wrap">
                                                                 <h2 class="resource-title">
-                                                                    @if (string.IsNullOrEmpty(url))
+                                                                    @if (!string.IsNullOrEmpty(urlInternalDoc))
+                                                                    {
+                                                                        <a href="@urlInternalDoc" about="@reference.GNOSSID" property="@reference.GetPropertyURI(nameof(reference.Roh_title))">@reference.Roh_title</a>
+                                                                    }else if (string.IsNullOrEmpty(url))
                                                                     {
                                                                         <span about="@reference.GNOSSID" property="@reference.GetPropertyURI(nameof(reference.Roh_title))">@reference.Roh_title</span> 
                                                                     }
@@ -1724,6 +1734,19 @@
             this.Roh_isValidated = GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isValidated"));
             this.Roh_citationCount = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/citationCount")).Value;
             this.Roh_isPublic = GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isPublic"));
+            this.Roh_i_doc_references = new List<Document>();
+            SemanticPropertyModel propRoh_i_doc_references = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/i_doc_references");
+            if (propRoh_i_doc_references != null && propRoh_i_doc_references.PropertyValues.Count > 0)
+            {
+                foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_i_doc_references.PropertyValues)
+                {
+                    if (propValue.RelatedEntity != null)
+                    {
+                        Document roh_document = new Document(propValue.RelatedEntity, idiomaUsuario);
+                        Roh_i_doc_references.Add(roh_document);
+                    }
+                }
+            }
         }
 
         public Document(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
@@ -2029,7 +2052,26 @@
             this.Roh_isValidated = GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isValidated"));
             this.Roh_citationCount = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/citationCount")).Value;
             this.Roh_isPublic = GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isPublic"));
+            this.Roh_i_doc_references = new List<Document>();
+            SemanticPropertyModel propRoh_i_doc_references = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/i_doc_references");
+            if (propRoh_i_doc_references != null && propRoh_i_doc_references.PropertyValues.Count > 0)
+            {
+                foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_i_doc_references.PropertyValues)
+                {
+                    if (propValue.RelatedEntity != null)
+                    {
+                        Document roh_document = new Document(propValue.RelatedEntity, idiomaUsuario);
+                        Roh_i_doc_references.Add(roh_document);
+                    }
+                }
+            }
         }
+
+
+
+
+        [RDFProperty("http://w3id.org/roh/i_doc_references")]
+        public List<Document> Roh_i_doc_references { get; set; }
 
         public virtual string RdfType { get { return "http://purl.org/ontology/bibo/Document"; } }
         public virtual string RdfsLabel { get { return "http://purl.org/ontology/bibo/Document"; } }
@@ -2303,22 +2345,7 @@
             this.Bibo_doi = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/doi"));
             this.Dct_issued = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/dc/terms/issued"));
             this.Vcard_url = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#url"));
-            this.Roh_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/title"));
-
-
-            SemanticPropertyModel propRoh_i_doc = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/i_doc");
-            if (propRoh_i_doc != null && propRoh_i_doc.PropertyValues.Count > 0)
-            {
-                foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_authorList.PropertyValues)
-                {
-                    if (propValue.RelatedEntity != null)
-                    {
-                        Document roh_document = new Document(propValue.RelatedEntity, idiomaUsuario);
-                        this.Roh_i_doc = roh_document;
-                    }
-                }
-            }
-
+            this.Roh_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/title
         }
 
         public virtual string RdfType { get { return "http://w3id.org/roh/Reference"; } }
