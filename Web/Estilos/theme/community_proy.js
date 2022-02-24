@@ -1277,6 +1277,7 @@ var metabuscador = {
         // Palabra clave introducida en el metaBuscador para mostrar en el panel de resultados no encontrados
         this.idPalabraBuscadaMetabuscador = `metabuscadorBusqueda`;
         this.sugerenciasMetabuscadorItems = this.body.find('#sugerenciasMetabuscador ul');
+        this.KEY_LOCAL_SEARCHS = "metasearchs";
         // Listado de los tipos de resultados existentes
         this.typeSearch = {
         	"persona": {
