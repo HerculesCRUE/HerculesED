@@ -14,6 +14,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using OpenAireAPI.Middlewares;
+using OpenAireAPI.Controllers;
 
 namespace OpenAireConnect
 {
@@ -24,7 +25,6 @@ namespace OpenAireConnect
             Configuration = configuration;
         }
 
-        
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -46,6 +46,8 @@ namespace OpenAireConnect
                 });
             });
 
+            // Configuración.
+            services.AddSingleton(typeof(ConfigService));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -62,22 +64,22 @@ namespace OpenAireConnect
 
             app.UseAuthorization();
 
-           app.UseMiddleware(typeof(ErrorHandlingMiddleware));
+            app.UseMiddleware(typeof(ErrorHandlingMiddleware));
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
 
-         app.UseSwagger(c =>
-            {
-                c.PreSerializeFilters.Add((swaggerDoc, httpReq) => swaggerDoc.Servers = new List<OpenApiServer>
-                      {
-                        new OpenApiServer { Url = $"/wosapi"},
+            app.UseSwagger(c =>
+               {
+                   c.PreSerializeFilters.Add((swaggerDoc, httpReq) => swaggerDoc.Servers = new List<OpenApiServer>
+                         {
+                        new OpenApiServer { Url = $"/openaireapi"},
                         new OpenApiServer { Url = $"/" }
-                      });
-            });
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("v1/swagger.json", "WoSAPI v1"));
+                         });
+               });
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("v1/swagger.json", "OpenAireAPI v1"));
         }
     }
 }

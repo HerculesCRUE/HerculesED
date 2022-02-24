@@ -121,17 +121,13 @@ namespace OpenAireConnect.ROs.OpenAire.Controllers
             //Uri url = new Uri($@"{baseUri}api/OpenAire?databaseId=WOK&uniqueId=OpenAire:000270372400005"); //&publishTimeSpan={date}%2B3000-12-31
 
             string info_publication = httpCall(url.ToString(), "GET", headers).Result;
-            Console.Write("hey");
+
             try
             {
                 Root objInicial = JsonConvert.DeserializeObject<Root>(info_publication);
-                   Console.Write("hey");
                 int total = Int32.Parse(objInicial.response.header.total.Text);
-                Console.Write(total);
-
                 List<Publication> nuevas = info.getListPublicatio(objInicial);
                 sol.AddRange(nuevas);
-
             }
             catch (Exception error)
             {
@@ -175,9 +171,7 @@ namespace OpenAireConnect.ROs.OpenAire.Controllers
             }
 
             return publicacionFinal;
-        }
-
-      
+        }      
     }
 
 

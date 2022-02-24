@@ -11,8 +11,7 @@ using System.Data;
 using System.IO;
 using System.Text;
 using ExcelDataReader;
-
-
+using OpenAireAPI.Controllers;
 
 namespace OpenAireConnect.Controllers
 {
@@ -22,12 +21,13 @@ namespace OpenAireConnect.Controllers
     public class APIController : ControllerBase
     {
         private readonly ILogger<APIController> _logger;
+        readonly ConfigService _Configuracion;
 
-        public APIController(ILogger<APIController> logger)
+        public APIController(ILogger<APIController> logger, ConfigService pConfig)
         {
             _logger = logger;
+            _Configuracion = pConfig;
         }
-
 
         /// <summary>
         /// Get all repositories from a specified user account and RO
@@ -50,14 +50,14 @@ namespace OpenAireConnect.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public List<Publication> GetROs([FromQuery][Required] string orcid, string date = "1500-01-01")
         {
-            ROOpenAireController OpenAireObject = new ROOpenAireController("https://api.openaire.eu");//, @"C:\Users\mpuer\Documents\GitHub\HerculesED\src\Hercules.ED.ExternalSources\Hércules-ED_Taxonomías_v1.2.xlsx");//"adf94bebeeba8c3042ad5193455740e2");
+            ROOpenAireController OpenAireObject = new ROOpenAireController(_Configuracion.GetUrlOpenAire());
             List<Publication> publication = OpenAireObject.getPublications(orcid, date);
             return publication;
         }
 
 
         /// <summary>
-        /// Permite obtener la información de una publicación mediante el identificador de OpenAire (Web Of Science).
+        /// Permite obtener la información de una publicación mediante el identificador de OpenAire.
         /// </summary>
         /// <param name="pDoi">DOI de la publicación.</param>
         /// <returns>Objeto con los datos recuperados.</returns>
@@ -67,12 +67,10 @@ namespace OpenAireConnect.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public Publication GetRoByDoi([FromQuery][Required] string pDoi)
         {
-            ROOpenAireController OpenAireObject = new ROOpenAireController("https://api.openaire.eu");//, @"C:\Users\mpuer\Documents\GitHub\HerculesED\src\Hercules.ED.ExternalSources\Hércules-ED_Taxonomías_v1.2.xlsx");//"adf94bebeeba8c3042ad5193455740e2");
+            ROOpenAireController OpenAireObject = new ROOpenAireController(_Configuracion.GetUrlOpenAire());
             Publication publication = OpenAireObject.getPublicationDoi(pDoi);
             return publication;
         }
-
-       
     }
 }
 
