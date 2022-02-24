@@ -194,7 +194,7 @@ namespace OpenAireConnect.ROs.OpenAire.Controllers
                             nom.nombre_completo = new List<string>() { nombreOriginal };
                             nom.given = new List<string>() { nombre };
                             nom.familia = new List<string>() { apellidos };
-                            author.name = nom;                            
+                            author.name = nom;
                         }
 
                         return author;
@@ -442,15 +442,15 @@ namespace OpenAireConnect.ROs.OpenAire.Controllers
                         string nombre = string.Empty;
                         string apellidos = string.Empty;
 
-                        if(nombreOriginal.Contains(". "))
-                        {
-                            nombre = nombreOriginal.Split(". ")[0].Trim() + ".";
-                            apellidos = nombreOriginal.Substring(nombreOriginal.IndexOf(". ") + 1).Trim();
-                        }
-                        else if (nombreOriginal.Contains(", "))
+                        if (nombreOriginal.Contains(", "))
                         {
                             nombre = nombreOriginal.Split(", ")[1].Trim();
                             apellidos = nombreOriginal.Substring(0, nombreOriginal.IndexOf(", ")).Trim();
+                        }
+                        else if (nombreOriginal.Contains(". "))
+                        {
+                            nombre = nombreOriginal.Split(". ")[0].Trim() + ".";
+                            apellidos = nombreOriginal.Substring(nombreOriginal.IndexOf(". ") + 1).Trim();
                         }
                         else if (nombreOriginal.Contains(" "))
                         {
@@ -464,7 +464,7 @@ namespace OpenAireConnect.ROs.OpenAire.Controllers
                         author.name = nom;
 
                         list_author.Add(author);
-                    }                    
+                    }
                 }
             }
 
