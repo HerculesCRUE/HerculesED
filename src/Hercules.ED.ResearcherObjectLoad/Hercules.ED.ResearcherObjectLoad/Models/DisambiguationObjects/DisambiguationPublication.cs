@@ -69,6 +69,26 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
             }
         }
 
+        private HashSet<string> mAutores { get; set; }
+        public HashSet<string> autores
+        {
+            get
+            {
+                return mAutores;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    mAutores = new HashSet<string>();
+                }
+                else
+                {
+                    mAutores = value;
+                }
+            }
+        }
+
         private static DisambiguationDataConfig configTitulo = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsTitle,
@@ -85,6 +105,12 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
         private static DisambiguationDataConfig configDOI = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsIdentifiers
+        };
+
+        private static DisambiguationDataConfig configAutores = new DisambiguationDataConfig()
+        {
+            type = DisambiguationDataConfigType.equalsItemList,
+            score = 0.5f
         };
 
         public override List<DisambiguationData> GetDisambiguationData()
@@ -110,6 +136,13 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
                 property = "fecha",
                 config = configFecha,
                 value = fecha
+            });
+
+            data.Add(new DisambiguationData()
+            {
+                property = "autores",
+                config = configAutores,
+                values = autores
             });
 
             return data;

@@ -12,6 +12,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Models\CargaAlvaro.cs" />
+    <Compile Remove="Models\CargaAlvaro2.cs" />
+    <Compile Remove="Models\CargaAlvaro3.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="GnossApiWrapper.NetCore" Version="1.0.8" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
   </ItemGroup>
