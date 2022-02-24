@@ -15,10 +15,11 @@ namespace PublicationAPI.Controllers
         // URLs
         private string urlWos { get; set; }
         private string urlScopus { get; set; }
+        private string urlOpenAire { get; set; }
         private string urlCrossRef { get; set; }
         private string urlOpenCitations { get; set; }
         private string urlSemanticScholar { get; set; }
-        private string urlZenodo { get; set; }
+        private string urlZenodo { get; set; }        
         private string rutaJsonSalida { get; set; }
 
         /// <summary>
@@ -77,6 +78,31 @@ namespace PublicationAPI.Controllers
             }
 
             return urlScopus;
+        }
+
+        /// <summary>
+        /// Obtiene la URL del API de OpenAire que ha sido configurada.
+        /// </summary>
+        /// <returns>URI del API de OpenAire.</returns>
+        public string GetUrlOpenAire()
+        {
+            if (string.IsNullOrEmpty(urlOpenAire))
+            {
+                string connectionString = string.Empty;
+                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                if (environmentVariables.Contains("UrlOpenAire"))
+                {
+                    connectionString = environmentVariables["UrlOpenAire"] as string;
+                }
+                else
+                {
+                    connectionString = configuracion["UrlOpenAire"];
+                }
+
+                urlOpenAire = connectionString;
+            }
+
+            return urlOpenAire;
         }
 
         /// <summary>

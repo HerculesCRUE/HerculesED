@@ -14,6 +14,7 @@ using Serilog;
 using PublicationAPI.ROs.Publication.Models;
 using System.Threading;
 using Person = PublicationConnect.ROs.Publications.Models.Person;
+using System.Text.RegularExpressions;
 
 namespace PublicationConnect.ROs.Publications.Controllers
 {
@@ -109,6 +110,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
             List<PublicacionScopus> objInicial_Scopus = null;
             List<Publication> objInicial_woS = null;
+            List<Publication> objInicial_openAire = null;
 
             if (pDoi != null) // Recuperar una publicación por DOI.
             {
@@ -116,6 +118,8 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 objInicial_Scopus = llamada_Scopus_Doi(pDoi);
                 Log.Information("Haciendo petición a Wos...");
                 objInicial_woS = llamada_WoS_Doi(pDoi);
+                Log.Information("Haciendo petición a OpenAire...");
+                objInicial_openAire = llamada_OpenAire_Doi(pDoi);
             }
             else // Recuperar las publicaciones de un autor desde 'X' fecha.
             {
@@ -123,6 +127,8 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 objInicial_Scopus = llamada_Scopus(name, date);
                 Log.Information("Haciendo petición a Wos...");
                 objInicial_woS = llamada_WoS(name, date);
+                Log.Information("Haciendo petición a OpenAire...");
+                objInicial_openAire = llamada_OpenAire(name, date);
             }
 
             int contadorPubWos = 1;
@@ -133,7 +139,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     Log.Information($@"[WoS] Publicación {contadorPubWos}/{objInicial_woS.Count}");
 
                     this.dois_bibliografia = new List<string>();
-                    this.dois_principales.Add(pub.doi);
+                    if (pub.doi != null && !string.IsNullOrEmpty(pub.doi))
+                    {
+                        this.dois_principales.Add(pub.doi);
+                    }
 
                     // SemanticScholar
                     Log.Information("[WoS] Haciendo petición a SemanticScholar...");
@@ -156,10 +165,15 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     }
 
                     // Enriquecimiento
+                    pub_completa.title = Regex.Replace(pub_completa.title, "<.*?>", String.Empty);
+                    if (pub_completa.Abstract != null)
+                    {
+                        pub_completa.Abstract = Regex.Replace(pub_completa.Abstract, "<.*?>", String.Empty);
+                    }
                     Log.Information("[WoS] Obteniendo topics enriquecidos...");
-                    pub_completa.topics_enriquecidos = enriquedicmiento(pub);
+                    pub_completa.topics_enriquecidos = enriquedicmiento(pub_completa);
                     Log.Information("[WoS] Obteniendo freeTextKeywords enriquecidos...");
-                    pub_completa.freetextKeyword_enriquecidas = enriquedicmiento_pal(pub);
+                    pub_completa.freetextKeyword_enriquecidas = enriquedicmiento_pal(pub_completa);
 
                     // Completar información faltante con las publicaciones de Scopus.
                     if (objInicial_Scopus != null && objInicial_Scopus.Any())
@@ -217,8 +231,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         Publication pubScopus = ObtenerPublicacionDeScopus(pub_scopus);
 
                         this.dois_bibliografia = new List<string>();
-                        this.dois_principales.Add(pub_scopus.doi);
-
+                        if (pub_scopus.doi != null && !string.IsNullOrEmpty(pub_scopus.doi))
+                        {
+                            this.dois_principales.Add(pub_scopus.doi);
+                        }
                         // SemanticScholar
                         Log.Information("[Scopus] Haciendo petición a SemanticScholar...");
                         Tuple<Publication, List<PubReferencias>> dataSemanticScholar = ObtenerPubSemanticScholar(pubScopus);
@@ -239,6 +255,11 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         }
 
                         // Enriquecimiento
+                        pub_completa.title = Regex.Replace(pub_completa.title, "<.*?>", String.Empty);
+                        if (pub_completa.Abstract != null)
+                        {
+                            pub_completa.Abstract = Regex.Replace(pub_completa.Abstract, "<.*?>", String.Empty);
+                        }
                         Log.Information("[Scopus] Obteniendo topics enriquecidos...");
                         pub_completa.topics_enriquecidos = enriquedicmiento(pub_completa);
                         Log.Information("[Scopus] Obteniendo freeTextKeywords enriquecidos...");
@@ -265,6 +286,74 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         }
                     }
                     contadoPubScopus++;
+                }
+            }
+
+            int contadorPubOpenAire = 1;
+            if (objInicial_openAire != null && objInicial_openAire.Any()) 
+            {
+                // Llamada OpenAire para completar publicaciones que no se hayan obtenido de WoS/Scopus.
+                foreach (Publication pub in objInicial_openAire)
+                {
+                    Log.Information($@"[OpenAire] Publicación {contadorPubOpenAire}/{objInicial_openAire.Count}");
+                    if (!dois_principales.Contains(pub.doi))
+                    {
+                        this.dois_bibliografia = new List<string>();
+                        if (pub.doi != null && !string.IsNullOrEmpty(pub.doi))
+                        {
+                            this.dois_principales.Add(pub.doi);
+                        }
+                        // SemanticScholar
+                        Log.Information("[OpenAire] Haciendo petición a SemanticScholar...");
+                        Tuple<Publication, List<PubReferencias>> dataSemanticScholar = ObtenerPubSemanticScholar(pub);
+                        Log.Information("[OpenAire] Comparación (SemanticScholar)...");
+                        Publication pub_completa = pub;
+                        if (dataSemanticScholar != null)
+                        {
+                            pub_completa = compatacion(pub, dataSemanticScholar.Item1);
+                            pub_completa.bibliografia = dataSemanticScholar.Item2;
+                        }
+
+                        // Zenodo - Archivos pdf...
+                        Log.Information("[OpenAire] Haciendo petición a Zenodo...");
+                        pub_completa.pdf = llamadaZenodo(pub_completa.doi, dicZenodo);
+                        if (pub_completa.pdf == "")
+                        {
+                            pub_completa.pdf = null;
+                        }
+
+                        // Enriquecimiento
+                        pub_completa.title = Regex.Replace(pub_completa.title, "<.*?>", String.Empty);
+                        if (pub_completa.Abstract != null)
+                        {
+                            pub_completa.Abstract = Regex.Replace(pub_completa.Abstract, "<.*?>", String.Empty);
+                        }
+                        Log.Information("[OpenAire] Obteniendo topics enriquecidos...");
+                        pub_completa.topics_enriquecidos = enriquedicmiento(pub_completa);
+                        Log.Information("[OpenAire] Obteniendo freeTextKeywords enriquecidos...");
+                        pub_completa.freetextKeyword_enriquecidas = enriquedicmiento_pal(pub_completa);
+
+                        // Unificar Autores
+                        pub_completa = CompararAutoresCitasReferencias(pub_completa);
+                        if (pub_completa != null && !string.IsNullOrEmpty(pub_completa.title) && pub_completa.seqOfAuthors != null && pub_completa.seqOfAuthors.Any())
+                        {
+                            bool encontrado = false;
+                            foreach (Person persona in pub_completa.seqOfAuthors)
+                            {
+                                if (persona.ORCID == name)
+                                {
+                                    encontrado = true;
+                                    break;
+                                }
+                            }
+
+                            if (encontrado)
+                            {
+                                resultado.Add(pub_completa);
+                            }
+                        }
+                    }
+                    contadorPubOpenAire++;
                 }
             }
 
@@ -429,7 +518,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             var contentData = new StringContent(info, System.Text.Encoding.UTF8, "application/json");
             client.Timeout = TimeSpan.FromDays(1);
 
-            int intentos = 3;
+            int intentos = 10;
             while (true)
             {
                 try
@@ -446,7 +535,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     }
                     else
                     {
-                        Thread.Sleep(1000);
+                        Thread.Sleep(5000);
                     }
                 }
             }
@@ -878,7 +967,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     pub.hasPublicationVenue = new Models.Source();
                     HashSet<string> listaIssn = new HashSet<string>();
 
-                    if (!string.IsNullOrEmpty(pub_1.hasPublicationVenue.type))
+                    if (pub_1.hasPublicationVenue != null && !string.IsNullOrEmpty(pub_1.hasPublicationVenue.type))
                     {
                         pub.hasPublicationVenue.type = pub_1.hasPublicationVenue.type;
                     }
@@ -887,7 +976,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         pub.hasPublicationVenue.type = pub_2.hasPublicationVenue.type;
                     }
 
-                    if (!string.IsNullOrEmpty(pub_1.hasPublicationVenue.eissn))
+                    if (pub_1.hasPublicationVenue != null && !string.IsNullOrEmpty(pub_1.hasPublicationVenue.eissn))
                     {
                         pub.hasPublicationVenue.eissn = pub_1.hasPublicationVenue.eissn;
                     }
@@ -896,7 +985,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         pub.hasPublicationVenue.eissn = pub_2.hasPublicationVenue.eissn;
                     }
 
-                    if (!string.IsNullOrEmpty(pub_1.hasPublicationVenue.name))
+                    if (pub_1.hasPublicationVenue != null && !string.IsNullOrEmpty(pub_1.hasPublicationVenue.name))
                     {
                         pub.hasPublicationVenue.name = pub_1.hasPublicationVenue.name;
                     }
@@ -905,7 +994,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         pub.hasPublicationVenue.name = pub_2.hasPublicationVenue.name;
                     }
 
-                    if (pub_1.hasPublicationVenue.issn != null && pub_1.hasPublicationVenue.issn.Count > 0)
+                    if (pub_1.hasPublicationVenue != null && pub_1.hasPublicationVenue.issn != null && pub_1.hasPublicationVenue.issn.Count > 0)
                     {
                         foreach (string item in pub_1.hasPublicationVenue.issn)
                         {
@@ -1532,6 +1621,56 @@ namespace PublicationConnect.ROs.Publications.Controllers
         }
 
         /// <summary>
+        /// Llamada al API de OpenAire mediante un código de autor.
+        /// </summary>
+        /// <param name="pOrcid">ORCID del autor.</param>
+        /// <returns>Publicación(es) con los datos obtenidos.</returns>
+        public List<Publication> llamada_OpenAire(string pOrcid, string date)
+        {
+            Uri url = new Uri(string.Format(_Configuracion.GetUrlOpenAire() + "OpenAire/GetROs?orcid={0}&date={1}", pOrcid, date));
+            string info_publication = httpCall(url.ToString(), "GET", headers).Result;
+            //Log.Information("Respuesta OpenAire --> " + info_publication);
+            List<Publication> objInicial_openAire = null;
+            try
+            {
+                objInicial_openAire = JsonConvert.DeserializeObject<List<Publication>>(info_publication);
+            }
+            catch (Exception e)
+            {
+                Log.Error("Petición OpenAire --> " + e);
+                return objInicial_openAire;
+            }
+            return objInicial_openAire;
+        }
+
+        /// <summary>
+        /// Llamada al API de OpenAire mediante un código DOI.
+        /// </summary>
+        /// <param name="pDoi">ID de la publicación.</param>
+        /// <returns>Publicación(es) con los datos obtenidos.</returns>
+        public List<Publication> llamada_OpenAire_Doi(string pDoi)
+        {
+            Uri url = new Uri(string.Format(_Configuracion.GetUrlOpenAire() + "OpenAire/GetRoByDoi?pDoi={0}", pDoi));
+            string info_publication = httpCall(url.ToString(), "GET", headers).Result;
+            //Log.Information("Respuesta OpenAire --> " + info_publication);
+            List<Publication> objInicial_openAire = null;
+            try
+            {
+                Publication publicacion = JsonConvert.DeserializeObject<Publication>(info_publication);
+                if (publicacion != null)
+                {
+                    objInicial_openAire = new List<Publication>() { publicacion };
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error("Petición OpenAire --> " + e);
+                return objInicial_openAire;
+            }
+            return objInicial_openAire;
+        }
+
+        /// <summary>
         /// Hace la llamada al API de Zenodo.
         /// </summary>
         /// <param name="pDoi">DOI de la publicación a consultar.</param>
@@ -2065,6 +2204,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             dicPersonas.Add("WoS", new List<Models.Person>());
             dicPersonas.Add("SemanticScholar", new List<Models.Person>());
             dicPersonas.Add("CrossRef", new List<Models.Person>());
+            dicPersonas.Add("OpenAire", new List<Models.Person>());
 
             double umbral = 0.7;
 
@@ -2083,6 +2223,61 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     Models.Person personaFinal = persona;
 
                     foreach (Models.Person personaCrossRef in dicPersonas["CrossRef"])
+                    {
+                        // Comprobación por ORCID
+                        if (!string.IsNullOrEmpty(personaFinal.ORCID))
+                        {
+                            if (personaFinal.ORCID == personaCrossRef.ORCID)
+                            {
+                                personaFinal = UnirPersonas(personaFinal, personaCrossRef);
+                                break;
+                            }
+                        }
+
+                        // Comprobración por nombre completo
+                        string nombreCompleto1 = string.Empty;
+                        if (personaFinal.name.given != null && personaFinal.name.given.Any())
+                        {
+                            nombreCompleto1 += personaFinal.name.given[0] + " ";
+                        }
+                        if (personaFinal.name.familia != null && personaFinal.name.familia.Any())
+                        {
+                            nombreCompleto1 += personaFinal.name.familia[0];
+                        }
+                        if (!string.IsNullOrEmpty(nombreCompleto1))
+                        {
+                            personaFinal.name.nombre_completo = new List<string>() { nombreCompleto1.Trim() };
+                        }
+
+                        string nombreCompleto2 = string.Empty;
+                        if (personaCrossRef.name.given != null && personaCrossRef.name.given.Any())
+                        {
+                            nombreCompleto2 += personaCrossRef.name.given[0] + " ";
+                        }
+                        if (personaCrossRef.name.familia != null && personaCrossRef.name.familia.Any())
+                        {
+                            nombreCompleto2 += personaCrossRef.name.familia[0];
+                        }
+                        if (!string.IsNullOrEmpty(nombreCompleto2))
+                        {
+                            personaCrossRef.name.nombre_completo = new List<string>() { nombreCompleto2.Trim() };
+                        }
+
+                        if (personaFinal.name.nombre_completo != null && personaFinal.name.nombre_completo.Any() && personaCrossRef.name.nombre_completo != null && personaCrossRef.name.nombre_completo.Any())
+                        {
+                            if (GetNameSimilarity(personaFinal.name.nombre_completo[0], personaCrossRef.name.nombre_completo[0]) >= umbral)
+                            {
+                                personaFinal = UnirPersonas(personaFinal, personaCrossRef);
+                                break;
+                            }
+                        }
+                        if (personaFinal.name.given != null && personaFinal.name.given.Any() && !string.IsNullOrEmpty(personaFinal.name.given[0]) && personaFinal.name.familia != null && personaFinal.name.familia.Any() && !string.IsNullOrEmpty(personaFinal.name.familia[0]))
+                        {
+                            personaFinal.name.nombre_completo[0] = $@"{personaFinal.name.given[0]} {personaFinal.name.familia[0]}";
+                        }
+                    }
+
+                    foreach (Models.Person personaCrossRef in dicPersonas["OpenAire"])
                     {
                         // Comprobación por ORCID
                         if (!string.IsNullOrEmpty(personaFinal.ORCID))
