@@ -5,7 +5,7 @@ El funcionamiento de los servicios de extracción está documentado en [Fuentes 
 
 # Microservicios de fuentes externas
 
-Los microservicios de Scopus, WoS, CrossRef, OpenCitations, Semantic Scholar y Zenodo tienen un funcionamiento similar:  
+Los microservicios de Scopus, WoS, CrossRef, OpenAire, OpenCitations, Semantic Scholar y Zenodo tienen un funcionamiento similar:  
 - Desde la interfaz swagger de cada microservidor, se ejecuta el archivo APIcontroller del microservicio asociado. Dependiendo de la petición que realicemos en ese programa se ejecutara una función u otra de este programa. En la última fila de la Tabla -- podemos observar la petición http que ejecuta cada posible petición de cada microservicio.  
 - Esta función (petición) llamara al programa RO**servidor_name**Logic, que realizara la petición al microservicio. En la tabla se puede observar exactamente que petición http se realiza el microservidor en función de que petición (última columna) estemos realizando. Esta función, cuyo nombre se facilita en la tercera columna ejecutara esta petición y obtendrá un string del microservidor. 
 - El texto devuelto será convertido a un objeto de C#, para ello el modelo devuelto por cada fuente externa se almacenará en el archivo  ROs/**servicor_name**/Models/ModeloInicial
