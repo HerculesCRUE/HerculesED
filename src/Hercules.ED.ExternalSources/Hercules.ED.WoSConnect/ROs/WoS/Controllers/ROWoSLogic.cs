@@ -143,7 +143,15 @@ namespace WoSConnect.ROs.WoS.Controllers
                     throw error;
                 }
             }
-            return sol;
+
+            if (sol.Any())
+            {
+                return sol;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -250,7 +258,7 @@ namespace WoSConnect.ROs.WoS.Controllers
                         Root objInicial = new Root();
 
                         try
-                        {                            
+                        {
                             objInicial = JsonConvert.DeserializeObject<Root>(result);
                         }
                         catch (Exception error)

@@ -193,7 +193,7 @@ namespace PublicationConnect.ROs.Publications.Models
 
         [JsonProperty("abstract")]
         public string abstract_ { get; set; }
-        public string author_name { get; set; }
+        //public string author_name { get; set; }
         public string journal { get; set; }
 
     }
@@ -207,7 +207,7 @@ namespace PublicationConnect.ROs.Publications.Models
 
         [JsonProperty("abstract")]
         public string abstract_ { get; set; }
-        public string author_name { get; set; }
+        //public string author_name { get; set; }
         public string journal { get; set; }
 
     }

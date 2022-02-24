@@ -194,6 +194,24 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         }
                     }
 
+                    // Completar información faltante con las publicaciones de OpenAire.
+                    if (objInicial_openAire != null && objInicial_openAire.Any())
+                    {
+                        foreach (Publication pub_openAire in objInicial_openAire)
+                        {
+                            if (pub_openAire != null)
+                            {
+                                if (pub_openAire.doi != null)
+                                {
+                                    if (pub_openAire.doi == pub_completa.doi)
+                                    {
+                                        pub_completa = compatacion(pub_completa, pub_openAire);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
                     // Unificar Autores
                     pub_completa = CompararAutores(pub_completa);
 
@@ -264,6 +282,24 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         pub_completa.topics_enriquecidos = enriquedicmiento(pub_completa);
                         Log.Information("[Scopus] Obteniendo freeTextKeywords enriquecidos...");
                         pub_completa.freetextKeyword_enriquecidas = enriquedicmiento_pal(pub_completa);
+
+                        // Completar información faltante con las publicaciones de OpenAire.
+                        if (objInicial_openAire != null && objInicial_openAire.Any())
+                        {
+                            foreach (Publication pub_openAire in objInicial_openAire)
+                            {
+                                if (pub_openAire != null)
+                                {
+                                    if (pub_openAire.doi != null)
+                                    {
+                                        if (pub_openAire.doi == pub_completa.doi)
+                                        {
+                                            pub_completa = compatacion(pub_completa, pub_openAire);
+                                        }
+                                    }
+                                }
+                            }
+                        }
 
                         // Unificar Autores
                         pub_completa = CompararAutoresCitasReferencias(pub_completa);
@@ -410,34 +446,36 @@ namespace PublicationConnect.ROs.Publications.Controllers
                                 a.title = pub.title;
                                 a.abstract_ = pub.Abstract;
                                 a.journal = pub.hasPublicationVenue.name;
-                                string names = "";
-                                foreach (Models.Person persona in pub.seqOfAuthors)
-                                {
-                                    if (persona.name != null && persona.name.nombre_completo != null)
-                                    {
-                                        if (persona.name.nombre_completo.Count > 0)
-                                        {
-                                            string name = persona.name.nombre_completo[0];
-                                            if (name != null)
-                                            {
-                                                if (names == "")
-                                                {
-                                                    names = names + name;
-                                                }
-                                                else
-                                                {
-                                                    names = names + " & " + name;
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                if (names != "")
-                                {
-                                    a.author_name = names;
-                                    info = JsonConvert.SerializeObject(a);
-                                }
-                                else { info = null; }
+                                //string names = "";
+                                //foreach (Models.Person persona in pub.seqOfAuthors)
+                                //{
+                                //    if (persona.name != null && persona.name.nombre_completo != null)
+                                //    {
+                                //        if (persona.name.nombre_completo.Count > 0)
+                                //        {
+                                //            string name = persona.name.nombre_completo[0];
+                                //            if (name != null)
+                                //            {
+                                //                if (names == "")
+                                //                {
+                                //                    names = names + name;
+                                //                }
+                                //                else
+                                //                {
+                                //                    names = names + " & " + name;
+                                //                }
+                                //            }
+                                //        }
+                                //    }
+                                //}
+                                //if (names != "")
+                                //{
+                                //    a.author_name = names;
+                                //    info = JsonConvert.SerializeObject(a);
+                                //}
+                                //else { info = null; }
+
+                                info = JsonConvert.SerializeObject(a);
                             }
                             else
                             {
@@ -447,38 +485,39 @@ namespace PublicationConnect.ROs.Publications.Controllers
                                 a.abstract_ = pub.Abstract;
                                 a.journal = pub.hasPublicationVenue.name;
 
-                                string names = "";
-                                foreach (Models.Person persona in pub.seqOfAuthors)
-                                {
-                                    if (persona.name != null)
-                                    {
-                                        if (persona.name.nombre_completo != null)
-                                        {
-                                            if (persona.name.nombre_completo.Count > 0)
-                                            {
-                                                string name = persona.name.nombre_completo[0];
-                                                if (name != null)
-                                                {
-                                                    if (names == "")
-                                                    {
-                                                        names = names + name;
-                                                    }
-                                                    else
-                                                    {
-                                                        names = names + " & " + name;
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                if (names != "")
-                                {
-                                    a.author_name = names;
-                                    info = JsonConvert.SerializeObject(a);
-                                }
-                                else { info = null; }
+                                //string names = "";
+                                //foreach (Models.Person persona in pub.seqOfAuthors)
+                                //{
+                                //    if (persona.name != null)
+                                //    {
+                                //        if (persona.name.nombre_completo != null)
+                                //        {
+                                //            if (persona.name.nombre_completo.Count > 0)
+                                //            {
+                                //                string name = persona.name.nombre_completo[0];
+                                //                if (name != null)
+                                //                {
+                                //                    if (names == "")
+                                //                    {
+                                //                        names = names + name;
+                                //                    }
+                                //                    else
+                                //                    {
+                                //                        names = names + " & " + name;
+                                //                    }
+                                //                }
+                                //            }
+                                //        }
+                                //    }
+                                //}
+                                //if (names != "")
+                                //{
+                                //    a.author_name = names;
+                                //    info = JsonConvert.SerializeObject(a);
+                                //}
+                                //else { info = null; }
 
+                                info = JsonConvert.SerializeObject(a);
                             }
                         }
                         if (info != null)
@@ -1578,7 +1617,20 @@ namespace PublicationConnect.ROs.Publications.Controllers
         public List<Publication> llamada_WoS(string pOrcid, string date)
         {
             Uri url = new Uri(string.Format(_Configuracion.GetUrlWos() + "WoS/GetROs?orcid={0}&date={1}", pOrcid, date));
-            string info_publication = httpCall(url.ToString(), "GET", headers).Result;
+            
+            int contadorVeces = 0;
+            string info_publication = String.Empty;
+            while (true)
+            {
+                info_publication = httpCall(url.ToString(), "GET", headers).Result;
+                if(contadorVeces == 5 || !string.IsNullOrEmpty(info_publication))
+                {
+                    break;
+                }
+                contadorVeces++;
+                Thread.Sleep(3000);
+            }
+
             //Log.Information("Respuesta WoS --> " + info_publication);
             List<Publication> objInicial_woS = null;
             try
@@ -1985,11 +2037,13 @@ namespace PublicationConnect.ROs.Publications.Controllers
         /// <returns>Publicación con los autores fusionados.</returns>
         public Publication CompararAutores(Publication pPublicacion)
         {
-            // Prioridad --> WOS > SemanticScholar > CrossRef
+            // Prioridad --> WOS > OpenAire > SemanticScholar > CrossRef
             Dictionary<string, List<Models.Person>> dicPersonas = new Dictionary<string, List<Models.Person>>();
             dicPersonas.Add("WoS", new List<Models.Person>());
+            dicPersonas.Add("OpenAire", new List<Models.Person>());
             dicPersonas.Add("SemanticScholar", new List<Models.Person>());
             dicPersonas.Add("CrossRef", new List<Models.Person>());
+            
 
             // Peso.
             double umbral = 0.7;
@@ -2008,6 +2062,62 @@ namespace PublicationConnect.ROs.Publications.Controllers
             foreach (Models.Person persona in dicPersonas["WoS"])
             {
                 Models.Person personaFinal = persona;
+                
+                foreach (Models.Person personaCrossRef in dicPersonas["OpenAire"])
+                {
+                    // Comprobación por ORCID
+                    if (!string.IsNullOrEmpty(personaFinal.ORCID))
+                    {
+                        if (personaFinal.ORCID == personaCrossRef.ORCID)
+                        {
+                            personaFinal = UnirPersonas(personaFinal, personaCrossRef);
+                            break;
+                        }
+                    }
+
+                    // Comprobración por nombre completo
+                    string nombreCompleto1 = string.Empty;
+                    if (personaFinal.name.given != null && personaFinal.name.given.Any())
+                    {
+                        nombreCompleto1 += personaFinal.name.given[0] + " ";
+                    }
+                    if (personaFinal.name.familia != null && personaFinal.name.familia.Any())
+                    {
+                        nombreCompleto1 += personaFinal.name.familia[0];
+                    }
+                    if (!string.IsNullOrEmpty(nombreCompleto1))
+                    {
+                        personaFinal.name.nombre_completo = new List<string>() { nombreCompleto1.Trim() };
+                    }
+
+                    string nombreCompleto2 = string.Empty;
+                    if (personaCrossRef.name.given != null && personaCrossRef.name.given.Any())
+                    {
+                        nombreCompleto2 += personaCrossRef.name.given[0] + " ";
+                    }
+                    if (personaCrossRef.name.familia != null && personaCrossRef.name.familia.Any())
+                    {
+                        nombreCompleto2 += personaCrossRef.name.familia[0];
+                    }
+                    if (!string.IsNullOrEmpty(nombreCompleto2))
+                    {
+                        personaCrossRef.name.nombre_completo = new List<string>() { nombreCompleto2.Trim() };
+                    }
+
+                    if (personaFinal.name.nombre_completo != null && personaFinal.name.nombre_completo.Any() && personaCrossRef.name.nombre_completo != null && personaCrossRef.name.nombre_completo.Any())
+                    {
+                        if (GetNameSimilarity(personaFinal.name.nombre_completo[0], personaCrossRef.name.nombre_completo[0]) >= umbral)
+                        {
+                            personaFinal = UnirPersonas(personaFinal, personaCrossRef);
+                            break;
+                        }
+                    }
+
+                    if (personaFinal.name.given != null && personaFinal.name.given.Any() && !string.IsNullOrEmpty(personaFinal.name.given[0]) && personaFinal.name.familia != null && personaFinal.name.familia.Any() && !string.IsNullOrEmpty(personaFinal.name.familia[0]))
+                    {
+                        personaFinal.name.nombre_completo[0] = $@"{personaFinal.name.given[0]} {personaFinal.name.familia[0]}";
+                    }
+                }
 
                 foreach (Models.Person personaSemantic in dicPersonas["SemanticScholar"])
                 {
@@ -2199,12 +2309,12 @@ namespace PublicationConnect.ROs.Publications.Controllers
         /// <returns>Publicación con los autores fusionados.</returns>
         public Publication CompararAutoresCitasReferencias(Publication pPublicacion)
         {
-            // Prioridad --> SemanticScholar > CrossRef
+            // Prioridad --> SemanticScholar > OpenAire > CrossRef
             Dictionary<string, List<Models.Person>> dicPersonas = new Dictionary<string, List<Models.Person>>();
             dicPersonas.Add("WoS", new List<Models.Person>());
+            dicPersonas.Add("OpenAire", new List<Models.Person>());
             dicPersonas.Add("SemanticScholar", new List<Models.Person>());
             dicPersonas.Add("CrossRef", new List<Models.Person>());
-            dicPersonas.Add("OpenAire", new List<Models.Person>());
 
             double umbral = 0.7;
 
@@ -2222,7 +2332,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 {
                     Models.Person personaFinal = persona;
 
-                    foreach (Models.Person personaCrossRef in dicPersonas["CrossRef"])
+                    foreach (Models.Person personaCrossRef in dicPersonas["OpenAire"])
                     {
                         // Comprobación por ORCID
                         if (!string.IsNullOrEmpty(personaFinal.ORCID))
@@ -2271,13 +2381,14 @@ namespace PublicationConnect.ROs.Publications.Controllers
                                 break;
                             }
                         }
+
                         if (personaFinal.name.given != null && personaFinal.name.given.Any() && !string.IsNullOrEmpty(personaFinal.name.given[0]) && personaFinal.name.familia != null && personaFinal.name.familia.Any() && !string.IsNullOrEmpty(personaFinal.name.familia[0]))
                         {
                             personaFinal.name.nombre_completo[0] = $@"{personaFinal.name.given[0]} {personaFinal.name.familia[0]}";
                         }
                     }
 
-                    foreach (Models.Person personaCrossRef in dicPersonas["OpenAire"])
+                    foreach (Models.Person personaCrossRef in dicPersonas["CrossRef"])
                     {
                         // Comprobación por ORCID
                         if (!string.IsNullOrEmpty(personaFinal.ORCID))
