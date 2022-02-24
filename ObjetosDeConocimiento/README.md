@@ -1,13 +1,13 @@
 ![](../Docs/media/CabeceraDocumentosMD.png)
 
-| Fecha         | 02/12/2021                                                   |
+| Fecha         | 11/02/2021                                                   |
 | ------------- | ------------------------------------------------------------ |
 |Título|Objetos de Conocimiento| 
-|Descripción|Relación de objetos de conocimiento empleados en el modelo semántico de Hércules ED|
-|Versión|1.0|
+|Descripción|Relación de objetos de conocimiento empleados en el modelo semántico de Hércules ED y MA|
+|Versión|1.1|
 |Módulo|Documentación|
 |Tipo|Especificación|
-|Cambios de la Versión|Versión inicial|
+|Cambios de la Versión|Enlace con ROH|
 
 # Hércules ED. Objetos de conocimiento
 
@@ -18,9 +18,12 @@
 Introducción
 ============
 
-El desarrollo de la Red de Ontologías Hércules (ROH) en el proyecto Hércules EDMA debe contemplar la inclusión de todos aquellos objetos de conocimiento que responden a las necesidades de correspondencia con el Curriculum Vitae Normalizado (CVN), así como de integración con el desarrollo y la gestión de datos en las diferentes interfaces de la plataforma Hércules EDMA.
+La [Red de Ontologías Hércules (ROH)](https://github.com/HerculesCRUE/ROH) es el modelo ontológico de referencia para la definición de los objetos de conocimiento que se utilizan en el desarrollo de los proyectos ED y MA.
 
-El presente documento describe todos aquellos objetos de conocimiento que aplicaremos en el desarrollo y posterior uso de la infraestructura ontológica, es decir, en la Red de Ontologías Hércules y en su documentación.
+El presente documento enumera los objetos de conocimiento que aplicaremos en el desarrollo de ED y MA, enlazando cada uno de ellos con su definición y documentación.
+
+Como resultado de la definición de los objetos de conocimiento, que responden a las necesidades del editor del Curriculum Vitae Normalizado (CVN) en Hércules ED y a la expresión de la información de investigación en los interfaces de MA, podrían detectarse cambios en el modelo de referencia, lo que se reflejaría en ROH en una nuueva versión.
+
 
 Inventario de objetos de conocimiento
 =====================================

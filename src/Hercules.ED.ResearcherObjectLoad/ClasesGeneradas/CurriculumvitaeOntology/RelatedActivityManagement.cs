@@ -29,11 +29,6 @@ namespace CurriculumvitaeOntology
 		{
 			this.mGNOSSID = pSemCmsModel.Entity.Uri;
 			this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
-			SemanticPropertyModel propRoh_relatedActivityManagementCV = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/relatedActivityManagementCV");
-			if(propRoh_relatedActivityManagementCV != null && propRoh_relatedActivityManagementCV.PropertyValues.Count > 0)
-			{
-				this.Roh_relatedActivityManagementCV = new RelatedActivityManagementCV(propRoh_relatedActivityManagementCV.PropertyValues[0].RelatedEntity,idiomaUsuario);
-			}
 			SemanticPropertyModel propVivo_relatedBy = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#relatedBy");
 			if(propVivo_relatedBy != null && propVivo_relatedBy.PropertyValues.Count > 0)
 			{
@@ -45,10 +40,6 @@ namespace CurriculumvitaeOntology
 		public virtual string RdfType { get { return "http://w3id.org/roh/RelatedActivityManagement"; } }
 		public virtual string RdfsLabel { get { return "http://w3id.org/roh/RelatedActivityManagement"; } }
 		public OntologyEntity Entity { get; set; }
-
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/relatedActivityManagementCV")]
-		[RDFProperty("http://w3id.org/roh/relatedActivityManagementCV")]
-		public  RelatedActivityManagementCV Roh_relatedActivityManagementCV { get; set;}
 
 		[LABEL(LanguageEnum.es,"http://vivoweb.org/ontology/core#relatedBy")]
 		[RDFProperty("http://vivoweb.org/ontology/core#relatedBy")]
@@ -71,12 +62,6 @@ namespace CurriculumvitaeOntology
 		internal override void GetEntities()
 		{
 			base.GetEntities();
-			if(Roh_relatedActivityManagementCV!=null){
-				Roh_relatedActivityManagementCV.GetProperties();
-				Roh_relatedActivityManagementCV.GetEntities();
-				OntologyEntity entityRoh_relatedActivityManagementCV = new OntologyEntity("http://w3id.org/roh/RelatedActivityManagementCV", "http://w3id.org/roh/RelatedActivityManagementCV", "roh:relatedActivityManagementCV", Roh_relatedActivityManagementCV.propList, Roh_relatedActivityManagementCV.entList);
-				entList.Add(entityRoh_relatedActivityManagementCV);
-			}
 		} 
 
 

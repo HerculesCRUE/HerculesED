@@ -125,6 +125,21 @@
                 "width": 1
               }
             ]
+          },
+          {
+            "properties": [
+              {
+                "title": {
+                  "es": "Foto de perfil"
+                },
+                "property": "http://xmlns.com/foaf/0.1/img",
+                "placeholder": {
+                  "es": "Arrastra y suelta en la zona punteada una foto para tu perfil"
+                },
+                "type": "image",
+                "width": 3
+              }
+            ]
           }
         ]
       },

@@ -7,19 +7,54 @@ using System.Threading;
 using System.Data;
 using Newtonsoft.Json;
 using System.IO;
-//using Excel = Microsoft.Office.Interop.Excel;
-
+using System.Linq;
+using System.Text;
 
 namespace WoSConnect.ROs.WoS.Controllers
 {
-    public class ROWoSControllerJSON //: //ROScopusLogic
+    public class ROWoSControllerJSON
     {
         public List<string> advertencia = null;
         public ROWoSLogic WoSLogic;
+
         public ROWoSControllerJSON(ROWoSLogic WoSLogic)
         {
             this.WoSLogic = WoSLogic;
+        }
 
+        // TODO: Sacarlo a clase Enum.
+        // CONSTANTES
+        public const string ARTICLE = "Article";
+        public const string JOURNAL_ARTICLE = "Journal Article";
+        public const string BOOK = "Book";
+        public const string BOOK_CHAPTER = "Book Chapter";
+        public const string CHAPTER = "Chapter";
+        public const string PROCEEDINGS_PAPER = "Proceedings Paper";
+        public const string CONFERENCE_PAPER = "Conference Paper";
+        public const string JOURNAL = "Journal";
+
+        /// <summary>
+        /// Contruye el objeto de la publicación con los datos obtenidos.
+        /// </summary>
+        /// <param name="pPublicacionIn">Publicación de entrada.</param>
+        /// <returns></returns>
+        public Publication getPublicacionCita(PublicacionInicial pPublicacionIn)
+        {
+            Publication publicacionFinal = new Publication();
+            publicacionFinal.typeOfPublication = getType(pPublicacionIn);
+            publicacionFinal.IDs = getWosID(pPublicacionIn);
+            publicacionFinal.title = getTitle(pPublicacionIn);
+            publicacionFinal.Abstract = getAbstract(pPublicacionIn);
+            publicacionFinal.doi = getDoi(pPublicacionIn);
+            publicacionFinal.dataIssued = getDate(pPublicacionIn);
+            publicacionFinal.hasKnowledgeAreas = getKnowledgeAreas(pPublicacionIn);
+            publicacionFinal.freetextKeywords = getFreetextKeyword(pPublicacionIn);
+            publicacionFinal.seqOfAuthors = getAuthors(pPublicacionIn);
+            publicacionFinal.correspondingAuthor = publicacionFinal.seqOfAuthors[0];
+            publicacionFinal.hasPublicationVenue = getJournal(pPublicacionIn);
+            publicacionFinal.hasMetric = getPublicationMetric(pPublicacionIn);
+
+            return publicacionFinal;
         }
 
 
@@ -39,547 +74,273 @@ namespace WoSConnect.ROs.WoS.Controllers
 
                                 foreach (PublicacionInicial rec in objInicial.Data.Records.records.REC)
                                 {
-
-                                    Publication publicacion = cambioDeModeloPublicacion(rec, true);
-                                    if (publicacion != null)
+                                    try
                                     {
-                                        if (this.advertencia != null)
+                                        if (rec.UID == "WOS:000224385500052")
                                         {
-                                            publicacion.problema = this.advertencia;
-                                            this.advertencia = null;
+
                                         }
-                                        sol.Add(publicacion);
+                                        Publication publicacion = cambioDeModeloPublicacion(rec, true);
+
+                                        if (publicacion != null)
+                                        {
+                                            if (this.advertencia != null)
+                                            {
+                                                publicacion.problema = this.advertencia;
+                                                this.advertencia = null;
+                                            }
+                                            sol.Add(publicacion);
+                                        }
                                     }
+                                    catch (Exception e)
+                                    {
 
-
+                                    }
                                 }
                             }
                         }
                     }
                 }
             }
-            
+
             return sol;
         }
-    
+
         public Publication cambioDeModeloPublicacion(PublicacionInicial objInicial, Boolean publicacion_principal)
         {
             Publication publicacion = new Publication();
-
-            if (objInicial != null)
+            publicacion.typeOfPublication = getType(objInicial);
+            publicacion.IDs = getWosID(objInicial);
+            publicacion.title = getTitle(objInicial);
+            publicacion.Abstract = getAbstract(objInicial);
+            publicacion.language = getLanguage(objInicial);
+            publicacion.doi = getDoi(objInicial);
+            publicacion.dataIssued = getDate(objInicial);
+            publicacion.pageStart = getPageStart(objInicial);
+            publicacion.pageEnd = getPageEnd(objInicial);
+            publicacion.hasKnowledgeAreas = getKnowledgeAreas(objInicial);
+            publicacion.freetextKeywords = getFreetextKeyword(objInicial);
+            publicacion.seqOfAuthors = getAuthors(objInicial);
+            publicacion.correspondingAuthor = publicacion.seqOfAuthors[0];
+            publicacion.hasPublicationVenue = getJournal(objInicial);
+            publicacion.hasMetric = getPublicationMetric(objInicial);
+            if (publicacion.typeOfPublication == CHAPTER)
             {
-                publicacion.typeOfPublication = getType(objInicial);
-                if (publicacion.typeOfPublication != null)
-                {
-                    publicacion.IDs = getIDs(objInicial);
-                    publicacion.title = getTitle(objInicial);
-                    publicacion.Abstract = getAbstract(objInicial);
-                    publicacion.language = getLanguage(objInicial);
-                    publicacion.doi = getDoi(objInicial);
-                    if (publicacion.typeOfPublication == "Journal Article" & publicacion.doi == null)
-                    {
-                        //edventencia! 
-                        string ad_text = "No hay doi, sin embargo es un Journal Article.";
-                        if (this.advertencia == null)
-                        {
-                            List<string> ad_list = new List<string>();
-                            ad_list.Add(ad_text);
-                            this.advertencia = ad_list;
-                        }
-                        else
-                        {
-                            this.advertencia.Add(ad_text);
-                        }
-                    }
-                    //publicacion.url = getLinks(objInicial);
-                    publicacion.dataIssued = getDate(objInicial);
-                    if (publicacion.dataIssued == null)
-                    {
-                        //edventencia! 
-                        string ad_text = "No hay fecha de publicacion.";
-                        if (this.advertencia == null)
-                        {
-                            List<string> ad_list = new List<string>();
-                            ad_list.Add(ad_text);
-                            this.advertencia = ad_list;
-                        }
-                        else
-                        {
-                            this.advertencia.Add(ad_text);
-                        }
-                    }
-                    publicacion.pageStart = getPageStart(objInicial);
-                    publicacion.pageEnd = getPageEnd(objInicial);
-                    //todo! falta el siitio de la conferencia! 
-                    publicacion.hasKnowledgeAreas = getKnowledgeAreas(objInicial);
-                    publicacion.freetextKeywords = getFreetextKeyword(objInicial);
-                    //publicacion.correspondingAuthor = getAuthorPrincipal(objInicial);
-                    publicacion.seqOfAuthors = getAuthors(objInicial);
-                    if (publicacion.seqOfAuthors == null)
-                    {
-                        //edventencia! 
-                        string ad_text = "No hay conjunto de autores.";
-                        if (this.advertencia == null)
-                        {
-                            List<string> ad_list = new List<string>();
-                            ad_list.Add(ad_text);
-                            this.advertencia = ad_list;
-                        }
-                        else
-                        {
-                            this.advertencia.Add(ad_text);
-                        }
-                    }
-                    publicacion.correspondingAuthor = publicacion.seqOfAuthors[0];
-                    if (publicacion.correspondingAuthor == null)
-                    {
-                        //edventencia! 
-                        string ad_text = "No hay autor principal.";
-                        if (this.advertencia == null)
-                        {
-                            List<string> ad_list = new List<string>();
-                            ad_list.Add(ad_text);
-                            this.advertencia = ad_list;
-                        }
-                        else
-                        {
-                            this.advertencia.Add(ad_text);
-                        }
-                    }
-                    publicacion.hasPublicationVenue = getJournal(objInicial);
-                    publicacion.hasMetric = getPublicationMetric(objInicial);
-
-                    return publicacion;
-                }
-                else { return null; }
+                publicacion.doi = null;
             }
-            else
-            {
-                return null;
-            }
-
+            return publicacion;
         }
 
-        public string getType(PublicacionInicial objInicial)
+        /// <summary>
+        /// Obtiene el tipo de la publicación.
+        /// </summary>
+        /// <param name="pPublicacionIn">Publicación a obtener el tipo.</param>
+        /// <returns>Tipo de la publicación.</returns>
+        public string getType(PublicacionInicial pPublicacionIn)
         {
-
-            if (objInicial.static_data != null)
+            if (pPublicacionIn.static_data != null && pPublicacionIn.static_data.summary != null && pPublicacionIn.static_data.summary.doctypes != null && pPublicacionIn.static_data.summary.doctypes.doctype != null)
             {
-                if (objInicial.static_data.summary != null)
+                if (pPublicacionIn.static_data.summary.doctypes.doctype.Contains(BOOK_CHAPTER))
                 {
-                    if (objInicial.static_data.summary.doctypes != null)
-                    {
-                        if (objInicial.static_data.summary.doctypes.doctype != null)
-                        {
-                            bool esLista = false;
-                            try
-                            {
-                                if (objInicial.static_data.summary.doctypes.doctype.ToString().Trim().StartsWith("[") && objInicial.static_data.summary.doctypes.doctype.ToString().Trim().EndsWith("]"))
-                                {
-                                    JArray hey = JsonConvert.DeserializeObject<JArray>(objInicial.static_data.summary.doctypes.doctype.ToString());
-                                    esLista = true;
-                                    List<string> types = new List<string>();
-                                    for (int i = 0; i < hey.Count; i++)
-                                    {
-                                        //return "problema_a_solucionar";
-                                        string typeWoS = hey[i].ToString();
-                                        if (typeWoS == "Article")
-                                        {
-                                            types.Add("Journal Article");
-                                        }
-                                        if (typeWoS == "Book")
-                                        {
-                                            types.Add("Book");
-                                        }
-                                        if (typeWoS == "Book Chapter")
-                                        {
-                                            types.Add("Chapter");
-                                        }
-                                        if (typeWoS == "Proceedings Paper")
-                                        {
-                                            types.Add("Conference Paper");
-                                        }
-                                    }
-                                    if (types.Count > 1)
-                                    {
-                                        //obtener las etiquetas juntas para definirlas
-                                        string types_merge = "";
-                                        foreach (string type in types)
-                                        {
-                                            types_merge = types_merge + type + ";";
-                                        }
-                                        //definir el problema! 
-                                        if (this.advertencia == null)
-                                        {
-                                            List<string> ad = new List<string>();
-                                            ad.Add("Problema con el tipo de articulo. Los diferentes tipos obtenidos son los siguientes: " + types_merge);
-                                            this.advertencia = ad;
-                                        }
-                                        else
-                                        {
-                                            this.advertencia.Add("Problema con el tipo de articulo. Los diferentes tipos obtenidos son los siguientes: " + types_merge);
-                                        }
-                                        return types_merge;
-
-                                    }
-                                    else if (types.Count == 0)
-                                    {
-                                        return null;
-                                    }
-                                    else { return types[0]; }
-                                }
-                            }
-                            catch
-                            {
-
-
-                            }
-                            if (!esLista)
-                            {
-                                string typeWoS = objInicial.static_data.summary.doctypes.doctype.ToString();
-                                if (typeWoS == "Article")
-                                {
-                                    return "Journal Article";
-                                }
-                                else if (typeWoS == "Book")
-                                {
-                                    return "Book";
-                                }
-                                else if (typeWoS == "Book Chapter")
-                                {
-                                    return "Chapter";
-                                }
-                                else if (typeWoS == "Proceedings Paper")
-                                {
-                                    return "Conference Paper";
-                                }
-                                else { return null; }
-                            }
-
-                        }
-                    }
+                    return CHAPTER;
+                }
+                else if (pPublicacionIn.static_data.summary.doctypes.doctype.Contains(BOOK))
+                {
+                    return BOOK;
+                }
+                else if (pPublicacionIn.static_data.summary.doctypes.doctype.Contains(PROCEEDINGS_PAPER))
+                {
+                    return CONFERENCE_PAPER;
+                }
+                else if (pPublicacionIn.static_data.summary.doctypes.doctype.Contains(ARTICLE))
+                {
+                    return JOURNAL_ARTICLE;
+                }
+                else
+                {
+                    return JOURNAL_ARTICLE;
                 }
             }
-            return null;
 
-        }
-        public List<string> getIDs(PublicacionInicial objInicial)
-        {
-            if (objInicial.UID != null)
-            {
-                List<string> ids = new List<string>();
-                ids.Add(objInicial.UID);
-                return ids;
-            }
             return null;
         }
 
-        public string getTitle(PublicacionInicial objInicial)
+        /// <summary>
+        /// Obtiene el identificador de la publicación.
+        /// </summary>
+        /// <param name="pPublicacionIn">Publicación a obtener el WoS ID.</param>
+        /// <returns></returns>
+        public List<string> getWosID(PublicacionInicial pPublicacionIn)
         {
-            if (objInicial.static_data != null)
+            if (!string.IsNullOrEmpty(pPublicacionIn.UID))
             {
-                if (objInicial.static_data.summary != null)
-                {
-                    if (objInicial.static_data.summary.titles != null)
-                    {
-                        if (objInicial.static_data.summary.titles.title != null)
-                        {
-                            foreach (Title title in objInicial.static_data.summary.titles.title)
-                            {
-                                if (title.type == "item")
-                                {
-                                    return title.content;
-                                }
-                            }
-                        }
-                    }
-                }
+                return new List<string>() { pPublicacionIn.UID };
             }
+
             return null;
         }
 
-        public string getAbstract(PublicacionInicial objInicial)
+        /// <summary>
+        /// Obtiene el título de la publicación.
+        /// </summary>
+        /// <param name="pPublicacionIn">Publicación a obtener el título.</param>
+        /// <returns>Título de la publicación.</returns>
+        public string getTitle(PublicacionInicial pPublicacionIn)
         {
-            if (objInicial.static_data != null)
+            if (pPublicacionIn.static_data != null && pPublicacionIn.static_data.summary != null && pPublicacionIn.static_data.summary.titles != null && pPublicacionIn.static_data.summary.titles.title != null && pPublicacionIn.static_data.summary.titles.title.Any())
             {
-                if (objInicial.static_data.fullrecord_metadata != null)
-                {
-                    if (objInicial.static_data.fullrecord_metadata.abstracts != null)
-                    {
-                        if (objInicial.static_data.fullrecord_metadata.abstracts.@abstract != null)
-                        {
-                            if (objInicial.static_data.fullrecord_metadata.abstracts.@abstract.abstract_text != null)
-                            {
-                                bool esLista = false;
-                                try
-                                {
-                                    if (objInicial.static_data.fullrecord_metadata.abstracts.@abstract.abstract_text.ToString().Trim().StartsWith("[") && objInicial.static_data.fullrecord_metadata.abstracts.@abstract.abstract_text.ToString().Trim().EndsWith("]"))
-                                    {
-                                        AbstractText hey = JsonConvert.DeserializeObject<AbstractText>(objInicial.static_data.fullrecord_metadata.abstracts.@abstract.abstract_text.ToString());
-                                        esLista = true;
-                                    }
-                                }
-                                catch
-                                {
-
-                                }
-
-                                if (!esLista)
-                                {
-                                    try
-                                    {
-                                        AbstractText_list hey = JsonConvert.DeserializeObject<AbstractText_list>(objInicial.static_data.fullrecord_metadata.abstracts.@abstract.abstract_text.ToString());
-
-                                        string abstract_2 = "";
-                                        string advertencia = "Hay un problema con el abstract: se han encontrado varios, son los siguientes:\n ";
-                                        for (int i = 0; i < hey.p.Count; i++)
-                                        {
-                                            if (i == 0)
-                                            {
-                                                abstract_2 = hey.p[i];
-                                            }
-                                            advertencia = advertencia + " Abstract: " + hey.p[i] + " \n.";
-                                        }
-                                        if (this.advertencia == null)
-                                        {
-                                            List<string> ad = new List<string>();
-                                            ad.Add(advertencia);
-                                            this.advertencia = ad;
-                                        }
-                                        else
-                                        {
-                                            this.advertencia.Add(advertencia);
-                                        }
-                                        return abstract_2;
-                                    }
-                                    catch (Exception)
-                                    {
-                                        return "";
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                return pPublicacionIn.static_data.summary.titles.title.FirstOrDefault(x => x.type == "item").content;
             }
+
             return null;
         }
 
-        public string getLanguage(PublicacionInicial objInicial)
+        /// <summary>
+        /// Obtiene la descripción de la publicación.
+        /// </summary>
+        /// <param name="pPublicacionIn">Publicación a obtener la descripción.</param>
+        /// <returns>Descripción.</returns>
+        public string getAbstract(PublicacionInicial pPublicacionIn)
         {
-            if (objInicial.static_data != null)
+            if (pPublicacionIn.static_data != null && pPublicacionIn.static_data.fullrecord_metadata != null && pPublicacionIn.static_data.fullrecord_metadata.abstracts != null && pPublicacionIn.static_data.fullrecord_metadata.abstracts.@abstract != null && pPublicacionIn.static_data.fullrecord_metadata.abstracts.@abstract.abstract_text != null && pPublicacionIn.static_data.fullrecord_metadata.abstracts.@abstract.abstract_text.p != null && pPublicacionIn.static_data.fullrecord_metadata.abstracts.@abstract.abstract_text.p.Any())
             {
-                if (objInicial.static_data.fullrecord_metadata != null)
+                string descripcion = string.Empty;
+
+                foreach (string item in pPublicacionIn.static_data.fullrecord_metadata.abstracts.@abstract.abstract_text.p)
                 {
-                    if (objInicial.static_data.fullrecord_metadata.languages != null)
-                    {
-                        if (objInicial.static_data.fullrecord_metadata.languages.language != null)
-                        {
-                            if (objInicial.static_data.fullrecord_metadata.languages.language.content != null)
-                            {
-                                return objInicial.static_data.fullrecord_metadata.languages.language.content;
-                            }
-                        }
-                    }
+                    descripcion += item.Trim() + " ";
                 }
+
+                return descripcion.Trim();
             }
-            return null;
-        }
-        public string getDoi(PublicacionInicial objInicial)
-        {
-            if (objInicial.dynamic_data != null)
-            {
-                if (objInicial.dynamic_data.cluster_related != null)
-                {
-                    if (objInicial.dynamic_data.cluster_related.identifiers != null)
-                    {
-                        if (objInicial.dynamic_data.cluster_related.identifiers.identifier != null)
-                        {
-                            bool esLista = false;
-                            try
-                            {
-                                if (objInicial.dynamic_data.cluster_related.identifiers.identifier.ToString().Trim().StartsWith("[") && objInicial.dynamic_data.cluster_related.identifiers.identifier.ToString().Trim().EndsWith("]"))
-                                {
-                                    JArray hey = JsonConvert.DeserializeObject<JArray>(objInicial.dynamic_data.cluster_related.identifiers.identifier.ToString());
-                                    esLista = true;
-                                    foreach (JContainer var in hey)
-                                    {
-                                        Identifier identifier = JsonConvert.DeserializeObject<Identifier>(var.ToString());
 
-                                        if (identifier.type == "doi")
-                                        {
-                                            if (identifier.value.Contains("https://doi.org/"))
-                                            {
-                                                int indice = identifier.value.IndexOf("org/");
-                                                return identifier.value.Substring(indice + 4);
-
-                                            }
-                                            else
-                                            {
-                                                return identifier.value;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            catch
-                            {
-
-                            }
-                            if (!esLista)
-                            {
-                                Identifier identifier = JsonConvert.DeserializeObject<Identifier>(objInicial.dynamic_data.cluster_related.identifiers.identifier.ToString());
-                                if (identifier.type == "doi")
-                                {
-                                    return identifier.value;
-                                }
-                            }
-                        }
-
-
-                    }
-                }
-            }
-            return null;
-        }
-       
-
-        public DateTimeValue getDate(PublicacionInicial objInicial)
-        {
-            DateTimeValue date = new DateTimeValue();
-            if (objInicial.static_data != null)
-            {
-                if (objInicial.static_data.summary != null)
-                {
-                    if (objInicial.static_data.summary.pub_info != null)
-                    {
-                        if (objInicial.static_data.summary.pub_info.sortdate != null)
-                        {
-                            date.datimeTime = objInicial.static_data.summary.pub_info.sortdate;
-                            return date;
-                        }
-                    }
-                }
-            }
             return null;
         }
 
-        public string getPageStart(PublicacionInicial objInicial)
+        /// <summary>
+        /// Obtiene el idioma de la publicación.
+        /// </summary>
+        /// <param name="objInicial">Publicación a obtener el idioma.</param>
+        /// <returns>Idioma.</returns>
+        public string getLanguage(PublicacionInicial pPublicacionIn)
         {
-            if (objInicial.static_data != null)
+            if (pPublicacionIn.static_data != null && pPublicacionIn.static_data.fullrecord_metadata != null && pPublicacionIn.static_data.fullrecord_metadata.languages != null && pPublicacionIn.static_data.fullrecord_metadata.languages.language != null && !string.IsNullOrEmpty(pPublicacionIn.static_data.fullrecord_metadata.languages.language.content))
             {
-                if (objInicial.static_data.summary != null)
-                {
-                    if (objInicial.static_data.summary.pub_info != null)
-                    {
-                        if (objInicial.static_data.summary.pub_info.page != null)
-                        {
-                            if (objInicial.static_data.summary.pub_info.page.begin != null)
-                            {
-                                return objInicial.static_data.summary.pub_info.page.begin.ToString();
-                            }
-                        }
-                    }
-                }
+                return pPublicacionIn.static_data.fullrecord_metadata.languages.language.content.Trim();
             }
+
             return null;
         }
 
-        public string getPageEnd(PublicacionInicial objInicial)
+        /// <summary>
+        /// Obtiene el identificador DOI de la publicación.
+        /// </summary>
+        /// <param name="pPublicacionIn">Publicación a obtener el DOI.</param>
+        /// <returns>DOI.</returns>
+        public string getDoi(PublicacionInicial pPublicacionIn)
         {
-            if (objInicial.static_data != null)
+            if (pPublicacionIn.dynamic_data != null && pPublicacionIn.dynamic_data.cluster_related != null && pPublicacionIn.dynamic_data.cluster_related.identifiers != null && pPublicacionIn.dynamic_data.cluster_related.identifiers.identifier != null && pPublicacionIn.dynamic_data.cluster_related.identifiers.identifier.Any())
             {
-                if (objInicial.static_data.summary != null)
+                foreach (Identificadores item in pPublicacionIn.dynamic_data.cluster_related.identifiers.identifier)
                 {
-                    if (objInicial.static_data.summary.pub_info != null)
+                    if (item.type.Contains("doi"))
                     {
-                        if (objInicial.static_data.summary.pub_info.page != null)
-                        {
-                            if (objInicial.static_data.summary.pub_info.page.end != null)
-                            {
-                                return objInicial.static_data.summary.pub_info.page.end.ToString();
-                            }
-                        }
+                        return item.value;
                     }
                 }
             }
+
             return null;
         }
 
-        public List<KnowledgeAreas> getKnowledgeAreas(PublicacionInicial objInicial)
+        /// <summary>
+        /// Obtiene la fecha de la publicación.
+        /// </summary>
+        /// <param name="pPublicacionIn">Publicación a obtener la fecha.</param>
+        /// <returns>Fecha de la publiación.</returns>
+        public DateTimeValue getDate(PublicacionInicial pPublicacionIn)
         {
-
-            if (objInicial.static_data != null)
+            if (pPublicacionIn.static_data != null && pPublicacionIn.static_data.summary != null && pPublicacionIn.static_data != null && !string.IsNullOrEmpty(pPublicacionIn.static_data.summary.pub_info.sortdate))
             {
-                if (objInicial.static_data.fullrecord_metadata != null)
+                DateTimeValue fecha = new DateTimeValue();
+                fecha.datimeTime = pPublicacionIn.static_data.summary.pub_info.sortdate;
+                return fecha;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Obtiene el número de la página de inicio.
+        /// </summary>
+        /// <param name="pPublicacionIn">Publicación a obtener el número de la página.</param>
+        /// <returns>Número de la página.</returns>
+        public string getPageStart(PublicacionInicial pPublicacionIn)
+        {
+            if (pPublicacionIn.static_data != null && pPublicacionIn.static_data.summary != null && pPublicacionIn.static_data.summary.pub_info != null && pPublicacionIn.static_data.summary.pub_info.page != null && pPublicacionIn.static_data.summary.pub_info.page.begin != null)
+            {
+                return pPublicacionIn.static_data.summary.pub_info.page.begin.ToString();
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Obtiene el número de la página de fin.
+        /// </summary>
+        /// <param name="pPublicacionIn">Publicación a obtener el número de la página.</param>
+        /// <returns>Número de la página.</returns>
+        public string getPageEnd(PublicacionInicial pPublicacionIn)
+        {
+            if (pPublicacionIn.static_data != null && pPublicacionIn.static_data.summary != null && pPublicacionIn.static_data.summary.pub_info != null && pPublicacionIn.static_data.summary.pub_info.page != null && pPublicacionIn.static_data.summary.pub_info.page.end != null)
+            {
+                return pPublicacionIn.static_data.summary.pub_info.page.end.ToString();
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Obtiene las areas de conocimiento de la taxonomía unificada.
+        /// </summary>
+        /// <param name="pPublicacionIn">Publicación a obtener las areas.</param>
+        /// <returns>Areas.</returns>
+        public List<KnowledgeAreas> getKnowledgeAreas(PublicacionInicial pPublicacionIn)
+        {
+            if (pPublicacionIn.static_data != null && pPublicacionIn.static_data.fullrecord_metadata != null && pPublicacionIn.static_data.fullrecord_metadata.category_info != null && pPublicacionIn.static_data.fullrecord_metadata.category_info.subjects != null && pPublicacionIn.static_data.fullrecord_metadata.category_info.subjects.subject != null && pPublicacionIn.static_data.fullrecord_metadata.category_info.subjects.subject.Any())
+            {
+                List<KnowledgeAreas> listaAreas = new List<KnowledgeAreas>();
+                KnowledgeAreas area = new KnowledgeAreas();
+                area.resource = "WoS";
+                area.knowledgeArea = new List<KnowledgeArea>();
+                foreach (Subject item in pPublicacionIn.static_data.fullrecord_metadata.category_info.subjects.subject)
                 {
-                    if (objInicial.static_data.fullrecord_metadata.category_info != null)
+                    if (item.ascatype == "traditional")
                     {
-                        if (objInicial.static_data.fullrecord_metadata.category_info.subjects != null)
+                        KnowledgeArea areaCompleta = new KnowledgeArea();
+                        areaCompleta.name = item.content;
+                        if (!string.IsNullOrEmpty(item.code))
                         {
-                            if (objInicial.static_data.fullrecord_metadata.category_info.subjects.subject != null)
-                            {
-                                List<KnowledgeArea> list = new List<KnowledgeArea>();
-                                List<KnowledgeAreas> result = new List<KnowledgeAreas>();
-                                KnowledgeAreas info_woS = new KnowledgeAreas();
-                                List<string> names_areas = new List<string>();
-                                List<bool> booleans_code_areas = new List<bool>();
-                                foreach (Subject sub in objInicial.static_data.fullrecord_metadata.category_info.subjects.subject)
-                                {
-
-                                    if (sub.content != null & sub.ascatype == "traditional")
-                                    {
-                                        KnowledgeArea area = new KnowledgeArea();
-                                        if (names_areas.Count == 0 || !names_areas.Contains(sub.content))
-                                        {
-                                            area.name = sub.content;
-                                            names_areas.Add(sub.content);
-                                            if (sub.code != null)
-                                            {
-
-                                                area.hasCode = sub.code;
-                                                booleans_code_areas.Add(true);
-                                            }
-                                            else { booleans_code_areas.Add(false); }
-                                            if (area != null)
-                                            {
-                                                list.Add(area);
-                                            }
-                                        }
-                                        else if (sub.code != null)
-                                        {
-                                            for (int i = 0; i < list.Count; i++)
-                                            {
-                                                if (list[i].name == sub.content)
-                                                {
-                                                    list[i].hasCode = sub.code;
-                                                }
-                                            }
-                                        }
-
-
-                                    }
-
-                                }
-                                if (list != null)
-                                {
-                                    info_woS.resource = "WoS";
-                                    info_woS.knowledgeArea = list;
-                                    result.Add(info_woS);
-                                    KnowledgeAreas taxonomia = recuperar_taxonomia(info_woS);
-                                    if (taxonomia != null)
-                                    {
-                                        result.Add(taxonomia);
-                                    }
-                                    return result;
-                                }
-                            }
+                            areaCompleta.hasCode = item.code;
                         }
+                        area.knowledgeArea.Add(areaCompleta);
                     }
                 }
+                listaAreas.Add(area);
+
+                // TODO: Comprobar funcionamiento correcto.
+                KnowledgeAreas taxonomia = recuperar_taxonomia(area);
+                if (taxonomia != null)
+                {
+                    listaAreas.Add(taxonomia);
+                }
+
+                return listaAreas;
             }
-            return new List<KnowledgeAreas>();
+
+            return null;
         }
+
         public KnowledgeAreas recuperar_taxonomia(KnowledgeAreas areas_wos)
         {
             KnowledgeAreas taxonomia_hercules = new KnowledgeAreas();
@@ -599,7 +360,7 @@ namespace WoSConnect.ROs.WoS.Controllers
                         listado.Add(area_taxonomia);
                         KnowledgeArea area_taxonomia_2 = new KnowledgeArea();
                         area_taxonomia_2.name = "Plasma Physics";
-                                                listado.Add(area_taxonomia_2);
+                        listado.Add(area_taxonomia_2);
                     }
                     else
                     {
@@ -610,7 +371,7 @@ namespace WoSConnect.ROs.WoS.Controllers
                 }
                 catch
                 {
-                    Console.Write("No se encuentra enla taxonomia el siguiente area: "+ area_wos_obtenida.name);
+                    Console.Write("No se encuentra enla taxonomia el siguiente area: " + area_wos_obtenida.name);
                     Console.Write("\n");
                 }
             }
@@ -622,509 +383,422 @@ namespace WoSConnect.ROs.WoS.Controllers
             else { return null; }
         }
 
-        public List<FreetextKeywords> getFreetextKeyword(PublicacionInicial objInicial)
+        /// <summary>
+        /// Obtiene las etiquetas de la publicación.
+        /// </summary>
+        /// <param name="pPublicacionIn">Publicación a obtener las etiquetas.</param>
+        /// <returns>Listado de etiquetas.</returns>
+        public List<FreetextKeywords> getFreetextKeyword(PublicacionInicial pPublicacionIn)
         {
-            if (objInicial.static_data != null)
+            if (pPublicacionIn.static_data != null && pPublicacionIn.static_data.fullrecord_metadata != null && pPublicacionIn.static_data.fullrecord_metadata.keywords != null && pPublicacionIn.static_data.fullrecord_metadata.keywords.keyword != null && pPublicacionIn.static_data.fullrecord_metadata.keywords.keyword.Any())
             {
-                if (objInicial.static_data.fullrecord_metadata != null)
+                List<FreetextKeywords> listaEtiquetas = new List<FreetextKeywords>();
+                FreetextKeywords etiquetas = new FreetextKeywords();
+                etiquetas.source = "WoS";
+                etiquetas.freetextKeyword = new List<string>();
+                foreach (string item in pPublicacionIn.static_data.fullrecord_metadata.keywords.keyword)
                 {
-                    if (objInicial.static_data.fullrecord_metadata.keywords != null)
+                    if (!etiquetas.freetextKeyword.Contains(item))
                     {
-                        try
-                        {
-                            FreetextKeywords list = new FreetextKeywords();
-                            list.freetextKeyword = new List<string>();
-                            foreach (string keyword in objInicial.static_data.fullrecord_metadata.keywords.keyword)
-                            {
-                                list.freetextKeyword.Add(keyword);
-                            }                            
-                            list.source = "WoS";
-                            List<FreetextKeywords> sol_list = new List<FreetextKeywords>();
-                            sol_list.Add(list);
-                            return sol_list;
-                        }
-                        catch
-                        {
-                            //en este caso solo hay un palabra y hay que meterlo en una lista para eso! 
-                            List<string> sol = new List<string>();
-                            Keywords_2 hey = JsonConvert.DeserializeObject<Keywords_2>(objInicial.static_data.fullrecord_metadata.keywords.ToString());
-                            sol.Add(hey.keyword);
-                            FreetextKeywords list = new FreetextKeywords();
-                            list.freetextKeyword = sol;
-                            list.source = "WoS";
-                            List<FreetextKeywords> sol_list = new List<FreetextKeywords>();
-                            sol_list.Add(list);
-                            return sol_list;
-
-                        }
+                        etiquetas.freetextKeyword.Add(item);
                     }
                 }
+                listaEtiquetas.Add(etiquetas);
+
+                return listaEtiquetas;
             }
+
             return null;
         }
 
-        
-        public List<Person> getAuthors(PublicacionInicial objInicial)
+        /// <summary>
+        /// Obtiene los autores de la publicación.
+        /// </summary>
+        /// <param name="pPublicacionIn">Publicación a obtener autores.</param>
+        /// <returns>Lista de personas.</returns>
+        public List<Person> getAuthors(PublicacionInicial pPublicacionIn)
         {
-            List<Person> result = new List<Person>();
-            if (objInicial.static_data != null)
+            if (pPublicacionIn.static_data != null && pPublicacionIn.static_data.summary != null && pPublicacionIn.static_data.summary.names != null && pPublicacionIn.static_data.summary.names.name != null && pPublicacionIn.static_data.summary.names.name.Any())
             {
-                if (objInicial.static_data.summary != null)
+                List<Person> listaPersonas = new List<Person>();
+                foreach (Models.Inicial.Name item in pPublicacionIn.static_data.summary.names.name)
                 {
-                    if (objInicial.static_data.summary.names != null)
+                    if (!item.display_name.Contains(" ") || !item.full_name.Contains(" ") || item.display_name.ToLower().Contains("ieee") || item.full_name.ToLower().Contains("ieee") || (string.IsNullOrEmpty(item.first_name) && string.IsNullOrEmpty(item.last_name) && string.IsNullOrEmpty(item.full_name) && string.IsNullOrEmpty(item.orcid_id)))
                     {
-                        if (objInicial.static_data.summary.names.name != null)
+                        continue;
+                    }
+
+                    if(item.role != "author")
+                    {
+                        continue;
+                    }
+
+                    Person person = new Person();
+                    person.fuente = "WoS";
+                    person.name = new Models.Name();
+                    person.name.given = new List<string>() { item.first_name };
+                    person.name.familia = new List<string>() { item.last_name };
+                    string nombreCompleto = $@"{item.first_name} {item.last_name}".Trim();
+                    if (!string.IsNullOrEmpty(nombreCompleto))
+                    {
+                        person.name.nombre_completo = new List<string>() { nombreCompleto };
+                    }
+                    else
+                    {
+                        person.name.given = new List<string>() { item.full_name.Split(", ")[1] };
+                        person.name.familia = new List<string>() { item.full_name.Split(", ")[0] };
+                        person.name.nombre_completo = new List<string>() { $@"{item.full_name.Split(", ")[1]} {item.full_name.Split(", ")[0]}".Trim() };
+                    }
+
+                    // RESEARCHER ID
+                    if (!string.IsNullOrEmpty(item.r_id))
+                    {
+                        person.researcherID = item.r_id;
+                    }
+
+                    // ORCID
+                    try
+                    {
+                        if (!string.IsNullOrEmpty(item.orcid_id))
                         {
-                            try
+                            person.ORCID = item.orcid_id;
+                        }
+                        else if (string.IsNullOrEmpty(item.orcid_id) && !string.IsNullOrEmpty(item.r_id) && pPublicacionIn.static_data.contributors != null && pPublicacionIn.static_data.contributors.contributor != null && pPublicacionIn.static_data.contributors.contributor.Any())
+                        {
+                            foreach (Contributor itemContributor in pPublicacionIn.static_data.contributors.contributor)
                             {
-                                //JArray hey = JsonConvert.DeserializeObject<JArray>(objInicial.static_data.summary.names.name.ToString());
-
-                                foreach(Models.Inicial.Name nombre in objInicial.static_data.summary.names.name)
+                                if (itemContributor.name.r_id == item.r_id)
                                 {
-                                    Person persona = new Person();
-                                    string orcid = null;
-                                    string name = null;
-                                    string familia = null;
-                                    string completo = null;
-                                    string ids = null; ;
-                                    string links = null;
-
-                                    try
+                                    if (string.IsNullOrEmpty(person.researcherID))
                                     {
-                                        if (nombre.orcid_id != null)
-                                        {
-                                            if (nombre.orcid_id.Contains("https://orcid.org/") || nombre.orcid_id.Contains("http://orcid.org/"))
-                                            {
-                                                int indice = nombre.orcid_id.IndexOf("org/");
-                                                persona.ORCID = nombre.orcid_id.Substring(indice + 4);
-                                                orcid = nombre.orcid_id.Substring(indice + 4);
-                                            }
-                                            else
-                                            {
-                                                persona.ORCID = nombre.orcid_id;
-                                                orcid = nombre.orcid_id;
-                                            }
-                                        }
-                                        List<string> nombres = new List<string>();
-                                        List<string> apellidos = new List<string>();
-                                        List<string> nombres_completo = new List<string>();
-
-                                        if (nombre.display_name != null)
-                                        {
-                                            if (!nombres_completo.Contains(nombre.display_name) && !nombre.full_name.Contains("IEEE"))
-                                            {
-                                                nombres_completo.Add(nombre.display_name);
-                                                completo = nombre.display_name;
-                                            }
-                                        }
-                                        if (nombre.first_name != null)
-                                        {
-                                            if (!nombres.Contains(nombre.first_name))
-                                            {
-                                                nombres.Add(nombre.first_name);
-                                                name = nombre.first_name;
-                                            }
-                                        }
-                                        if (nombre.full_name != null)
-                                        {
-                                            if (!nombres_completo.Contains(nombre.full_name) && !nombre.full_name.Contains("IEEE"))
-                                            {
-                                                nombres_completo.Add(nombre.full_name);
-                                                if (completo != null)
-                                                {
-                                                    completo = completo + "*" + nombre.first_name;
-                                                }
-                                            }
-                                        }
-                                        if (nombre.last_name != null)
-                                        {
-                                            if (!apellidos.Contains(nombre.last_name))
-                                            {
-                                                apellidos.Add(nombre.last_name);
-                                                familia = nombre.last_name;
-                                            }
-                                        }
-                                        if (nombres.Count > 0 || apellidos.Count > 0 || nombres_completo.Count > 0)
-                                        {
-                                            Models.Name nombreName = new Models.Name();
-                                            if (apellidos.Count > 0)
-                                            {
-                                                nombreName.familia = apellidos;
-                                            }
-                                            if (nombres.Count > 0)
-                                            {
-                                                nombreName.given = nombres;
-                                            }
-                                            if (nombres_completo.Count > 0)
-                                            {
-                                                nombreName.nombre_completo = nombres_completo;
-                                            }
-                                            persona.name = nombreName;
-
-                                        }
-                                        result.Add(persona);
+                                        person.researcherID = itemContributor.name.r_id;
                                     }
-                                    catch
-                                    {
-                                        List<string> nombres = new List<string>();
-                                        List<string> apellidos = new List<string>();
-                                        List<string> nombres_completo = new List<string>();
-
-                                        if (nombre.display_name != null)
-                                        {
-                                            if (!nombres_completo.Contains(nombre.display_name) && !nombre.full_name.Contains("IEEE"))
-                                            {
-                                                nombres_completo.Add(nombre.display_name);
-                                                completo = nombre.display_name;
-                                            }
-                                        }
-                                        if (nombre.first_name != null)
-                                        {
-                                            if (!nombres.Contains(nombre.first_name))
-                                            {
-                                                nombres.Add(nombre.first_name);
-                                                name = nombre.first_name;
-                                            }
-                                        }
-                                        if (nombre.full_name != null)
-                                        {
-                                            if (!nombres_completo.Contains(nombre.full_name) && !nombre.full_name.Contains("IEEE"))
-                                            {
-
-                                                nombres_completo.Add(nombre.full_name);
-                                                if (completo != null)
-                                                {
-                                                    completo = completo + "*" + nombre.first_name;
-                                                }
-                                            }
-                                        }
-                                        if (nombre.last_name != null)
-                                        {
-                                            if (!apellidos.Contains(nombre.last_name))
-                                            {
-                                                apellidos.Add(nombre.last_name);
-                                                familia = nombre.last_name;
-                                            }
-                                        }
-                                        if (nombres.Count > 0 || apellidos.Count > 0 || nombres_completo.Count > 0)
-                                        {
-                                            Models.Name nameNombre = new Models.Name();
-                                            if (apellidos.Count > 0)
-                                            {
-                                                nameNombre.familia = apellidos;
-                                            }
-                                            if (nombres.Count > 0)
-                                            {
-                                                nameNombre.given = nombres;
-                                            }
-                                            if (nombres_completo.Count > 0)
-                                            {
-                                                nameNombre.nombre_completo = nombres_completo;
-                                            }
-                                            persona.name = nameNombre;
-
-                                        }
-                                        result.Add(persona);
-                                    }
-
-
+                                    person.ORCID = itemContributor.name.orcid_id;
                                 }
-                                return result;
                             }
-                            catch
+                        }
+                        else if (string.IsNullOrEmpty(item.orcid_id) && item.data_item_ids != null && item.data_item_ids.DataItemId != null && item.data_item_ids.DataItemId.Any())
+                        {
+                            foreach(DataItemId contentId in item.data_item_ids.DataItemId)
                             {
-                                try
+                                if(contentId.IdType.ToLower() == "preferredrid")
                                 {
-                                    Name_2 ee = JsonConvert.DeserializeObject<Name_2>(objInicial.static_data.summary.names.name.ToString());
-                                    Person persona = new Person();
-                                    if (ee.orcid_id != null)
+                                    if (pPublicacionIn.static_data.contributors != null && pPublicacionIn.static_data.contributors.contributor != null && pPublicacionIn.static_data.contributors.contributor.Any())
                                     {
-                                        persona.ORCID = ee.orcid_id;
-                                    }
-
-                                    List<string> nombres = new List<string>();
-                                    List<string> apellidos = new List<string>();
-                                    List<string> nombres_completo = new List<string>();
-
-                                    if (ee.display_name != null)
-                                    {
-                                        if (!nombres_completo.Contains(ee.display_name))
+                                        foreach (Contributor itemContributor in pPublicacionIn.static_data.contributors.contributor)
                                         {
-                                            nombres_completo.Add(ee.display_name);
+                                            if (itemContributor.name.r_id == contentId.content)
+                                            {
+                                                if (string.IsNullOrEmpty(person.researcherID))
+                                                {
+                                                    person.researcherID = itemContributor.name.r_id;
+                                                }
+                                                person.ORCID = itemContributor.name.orcid_id;
+                                            }
                                         }
                                     }
-                                    if (ee.first_name != null)
-                                    {
-                                        if (!nombres.Contains(ee.first_name))
-                                        {
-                                            nombres.Add(ee.first_name);
-                                        }
-                                    }
-                                    if (ee.full_name != null)
-                                    {
-                                        if (!nombres_completo.Contains(ee.full_name))
-                                        {
-                                            nombres_completo.Add(ee.full_name);
-                                        }
-                                    }
-                                    if (ee.last_name != null)
-                                    {
-                                        if (!apellidos.Contains(ee.last_name))
-                                        {
-                                            apellidos.Add(ee.last_name);
-                                        }
-                                    }
-                                    if (nombres.Count > 0 || apellidos.Count > 0 || nombres_completo.Count > 0)
-                                    {
-                                        Models.Name nombre = new Models.Name();
-                                        if (apellidos.Count > 0)
-                                        {
-                                            nombre.familia = apellidos;
-                                        }
-                                        if (nombres.Count > 0)
-                                        {
-                                            nombre.given = nombres;
-                                        }
-                                        if (nombres_completo.Count > 0)
-                                        {
-                                            nombre.nombre_completo = nombres_completo;
-                                        }
-                                        persona.name = nombre;
-
-                                    }
-                                    result.Add(persona);
-
-                                    return result;
-                                }
-                                catch
-                                {
-                                    Name_1 ee = JsonConvert.DeserializeObject<Name_1>(objInicial.static_data.summary.names.name.ToString());
-                                    Person persona = new Person();
-
-
-                                    List<string> nombres = new List<string>();
-                                    List<string> apellidos = new List<string>();
-                                    List<string> nombres_completo = new List<string>();
-
-                                    if (ee.display_name != null)
-                                    {
-                                        if (!nombres_completo.Contains(ee.display_name))
-                                        {
-                                            nombres_completo.Add(ee.display_name);
-                                        }
-                                    }
-                                    if (ee.first_name != null)
-                                    {
-                                        if (!nombres.Contains(ee.first_name))
-                                        {
-                                            nombres.Add(ee.first_name);
-                                        }
-                                    }
-                                    if (ee.full_name != null)
-                                    {
-                                        if (!nombres_completo.Contains(ee.full_name))
-                                        {
-                                            nombres_completo.Add(ee.full_name);
-                                        }
-                                    }
-                                    if (ee.last_name != null)
-                                    {
-                                        if (!apellidos.Contains(ee.last_name))
-                                        {
-                                            apellidos.Add(ee.last_name);
-                                        }
-                                    }
-                                    if (nombres.Count > 0 || apellidos.Count > 0 || nombres_completo.Count > 0)
-                                    {
-                                        Models.Name nombre = new Models.Name();
-                                        if (apellidos.Count > 0)
-                                        {
-                                            nombre.familia = apellidos;
-                                        }
-                                        if (nombres.Count > 0)
-                                        {
-                                            nombre.given = nombres;
-                                        }
-                                        if (nombres_completo.Count > 0)
-                                        {
-                                            nombre.nombre_completo = nombres_completo;
-                                        }
-                                        persona.name = nombre;
-
-                                    }
-                                    result.Add(persona);
-                                    return result;
                                 }
                             }
                         }
                     }
+                    catch (Exception e)
+                    {
+
+                    }
+
+                    // RELLENAR ORCID QUE NO HEMOS CONSEGUIDO OBTENER POR ID.
+                    if(string.IsNullOrEmpty(person.ORCID) && !string.IsNullOrEmpty(person.name.nombre_completo[0]))
+                    {
+                        string nombreA = person.name.nombre_completo[0];
+
+                        if (pPublicacionIn.static_data.contributors != null && pPublicacionIn.static_data.contributors.contributor != null && pPublicacionIn.static_data.contributors.contributor.Any())
+                        {
+                            foreach (Contributor itemContributor in pPublicacionIn.static_data.contributors.contributor)
+                            {
+                                string nombreB = itemContributor.name.full_name;
+
+                                if(!string.IsNullOrEmpty(nombreB))
+                                {
+                                    if (GetNameSimilarity(nombreA, nombreB) >= 0.7)
+                                    {
+                                        if (string.IsNullOrEmpty(person.researcherID) && !string.IsNullOrEmpty(itemContributor.name.r_id))
+                                        {
+                                            person.researcherID = itemContributor.name.r_id;
+                                        }
+                                        person.ORCID = itemContributor.name.orcid_id;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (person.name.nombre_completo != null || !string.IsNullOrEmpty(person.ORCID))
+                    {
+                        string orcid = person.ORCID;
+                        string researcherId = person.researcherID;
+                        bool encontrado = false;
+
+                        foreach(Person persona in listaPersonas)
+                        {
+                            if(!string.IsNullOrEmpty(orcid) && orcid == persona.ORCID)
+                            {
+                                encontrado = true;
+                                break;
+                            }
+                        }
+
+                        if (!encontrado)
+                        {
+                            listaPersonas.Add(person);
+                        }
+                    }
                 }
+
+                return listaPersonas;
             }
+
             return null;
         }
 
-        public Source getJournal(PublicacionInicial objInicial)
+        public float GetNameSimilarity(string pFirma, string pTarget)
+        {
+            pFirma = ObtenerTextosFirmasNormalizadas(pFirma);
+            pTarget = ObtenerTextosFirmasNormalizadas(pTarget);
+
+            //Almacenamos los scores de cada una de las palabras
+            List<float> scores = new List<float>();
+
+            string[] pFirmaNormalizadoSplit = pFirma.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+            string[] pTargetNormalizadoSplit = pTarget.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+
+            string[] source = pFirmaNormalizadoSplit;
+            string[] target = pTargetNormalizadoSplit;
+
+            int indexTarget = 0;
+            for (int i = 0; i < source.Length; i++)
+            {
+                //Similitud real
+                float score = 0;
+                string wordSource = source[i];
+                bool wordSourceInicial = wordSource.Length == 1;
+                //int desplazamiento = 0;
+                for (int j = indexTarget; j < target.Length; j++)
+                {
+                    string wordTarget = target[j];
+                    bool wordTargetInicial = wordTarget.Length == 1;
+                    //Alguna de las dos es inicial
+                    if (wordSourceInicial || wordTargetInicial)
+                    {
+                        if (wordSourceInicial != wordTargetInicial)
+                        {
+                            //No son las dos iniciales
+                            if (wordSource[0] == wordTarget[0])
+                            {
+                                score = 0.5f;
+                                indexTarget = j + 1;
+                                //desplazamiento = Math.Abs(j - i);
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            //Son las dos iniciales
+                            score = 0.75f;
+                            indexTarget = j + 1;
+                            //desplazamiento = Math.Abs(j - i);
+                            break;
+                        }
+                    }
+                    float scoreSingleName = CompareSingleName(wordSource, wordTarget);
+                    if (scoreSingleName > 0)
+                    {
+                        score = scoreSingleName;
+                        indexTarget = j + 1;
+                        break;
+                    }
+                }
+                scores.Add(score);
+            }
+            if (scores.Count > 0)
+            {
+                return scores.Sum() / source.Length;
+            }
+            return 0;
+        }
+
+        private string ObtenerTextosFirmasNormalizadas(string pText)
+        {
+            pText = pText.ToLower();
+            pText = pText.Trim();
+            if (pText.Contains(","))
+            {
+                pText = (pText.Substring(pText.IndexOf(",") + 1)).Trim() + " " + (pText.Substring(0, pText.IndexOf(","))).Trim();
+            }
+            pText = pText.Replace("-", " ");
+            string textoNormalizado = pText.Normalize(NormalizationForm.FormD);
+            System.Text.RegularExpressions.Regex reg = new System.Text.RegularExpressions.Regex("[^a-zA-Z ]");
+            string textoSinAcentos = reg.Replace(textoNormalizado, "");
+            while (textoSinAcentos.Contains(" del "))
+            {
+                textoSinAcentos = textoSinAcentos.Replace(" del ", " ");
+            }
+            while (textoSinAcentos.Contains(" de "))
+            {
+                textoSinAcentos = textoSinAcentos.Replace(" de ", " ");
+            }
+            while (textoSinAcentos.Contains(" la "))
+            {
+                textoSinAcentos = textoSinAcentos.Replace(" la ", " ");
+            }
+            while (textoSinAcentos.Contains("  "))
+            {
+                textoSinAcentos = textoSinAcentos.Replace("  ", " ");
+            }
+
+            return textoSinAcentos.Trim();
+        }
+
+        private float CompareSingleName(string pNameA, string pNameB)
+        {
+            HashSet<string> ngramsNameA = GetNGramas(pNameA, 2);
+            HashSet<string> ngramsNameB = GetNGramas(pNameB, 2);
+            float tokens_comunes = ngramsNameA.Intersect(ngramsNameB).Count();
+            float union_tokens = ngramsNameA.Union(ngramsNameB).Count();
+            float coeficiente_jackard = tokens_comunes / union_tokens;
+            return coeficiente_jackard;
+        }
+
+        private HashSet<string> GetNGramas(string pText, int pNgramSize)
+        {
+            HashSet<string> ngramas = new HashSet<string>();
+            int textLength = pText.Length;
+            if (pNgramSize == 1)
+            {
+                for (int i = 0; i < textLength; i++)
+                {
+                    ngramas.Add(pText[i].ToString());
+                }
+                return ngramas;
+            }
+
+            HashSet<string> ngramasaux = new HashSet<string>();
+            for (int i = 0; i < textLength; i++)
+            {
+                foreach (string ngram in ngramasaux.ToList())
+                {
+                    string ngamaux = ngram + pText[i];
+                    if (ngamaux.Length == pNgramSize)
+                    {
+                        ngramas.Add(ngamaux);
+                    }
+                    else
+                    {
+                        ngramasaux.Add(ngamaux);
+                    }
+                    ngramasaux.Remove(ngram);
+                }
+                ngramasaux.Add(pText[i].ToString());
+                if (i < pNgramSize)
+                {
+                    foreach (string ngrama in ngramasaux)
+                    {
+                        if (ngrama.Length == i + 1)
+                        {
+                            ngramas.Add(ngrama);
+                        }
+                    }
+                }
+            }
+            for (int i = (textLength - pNgramSize) + 1; i < textLength; i++)
+            {
+                if (i >= pNgramSize)
+                {
+                    ngramas.Add(pText.Substring(i));
+                }
+            }
+            return ngramas;
+        }
+
+        /// <summary>
+        /// Obtiene los datos de la revista.
+        /// </summary>
+        /// <param name="pPublicacionIn">Publicación a obtener los datos de la revista.</param>
+        /// <returns>Revista.</returns>
+        public Source getJournal(PublicacionInicial pPublicacionIn)
         {
             Source revista = new Source();
-            if (objInicial.static_data != null)
+
+            if (pPublicacionIn.static_data != null && pPublicacionIn.static_data.summary != null && pPublicacionIn.static_data.summary.titles != null && pPublicacionIn.static_data.summary.titles.title != null)
             {
-                if (objInicial.static_data.summary != null)
+                foreach (Title title in pPublicacionIn.static_data.summary.titles.title)
                 {
-                    if (objInicial.static_data.summary.titles != null)
+                    if (title.type == "source")
                     {
-                        if (objInicial.static_data.summary.titles.title != null)
-                        {
-                            foreach (Title title in objInicial.static_data.summary.titles.title)
-                            {
-                                if (title.type == "source")
-                                {
-                                    revista.name = title.content;
-                                }
-                            }
-                        }
+                        revista.name = title.content;
                     }
                 }
             }
-            if (objInicial.static_data != null)
+
+            if (pPublicacionIn.static_data != null && pPublicacionIn.static_data.summary != null && pPublicacionIn.static_data.summary.pub_info != null && !string.IsNullOrEmpty(pPublicacionIn.static_data.summary.pub_info.pubtype))
             {
-                if (objInicial.static_data.summary != null)
+                switch (pPublicacionIn.static_data.summary.pub_info.pubtype)
                 {
-                    if (objInicial.static_data.summary.pub_info != null)
+                    case JOURNAL:
+                        revista.type = JOURNAL;
+                        break;
+                    case BOOK:
+                        revista.type = BOOK;
+                        break;
+                    default: // TODO: ¿Por defecto son todas Journal?
+                        revista.type = JOURNAL;
+                        break;
+                }
+            }
+
+            if (pPublicacionIn.dynamic_data != null && pPublicacionIn.dynamic_data.cluster_related != null && pPublicacionIn.dynamic_data.cluster_related.identifiers != null && pPublicacionIn.dynamic_data.cluster_related.identifiers.identifier != null && pPublicacionIn.dynamic_data.cluster_related.identifiers.identifier.Any())
+            {
+                foreach (Identificadores item in pPublicacionIn.dynamic_data.cluster_related.identifiers.identifier)
+                {
+                    if (item.type == "issn")
                     {
-                        if (objInicial.static_data.summary.pub_info.pubtype != null)
-                        {
-                            if (objInicial.static_data.summary.pub_info.pubtype == "Journal")
-                            {
-                                revista.type = "Journal";
-                            }
-                            else if (objInicial.static_data.summary.pub_info.pubtype == "Book")
-                            {
-                                revista.type = "Book";
-                            }
-                            else
-                            {
-                                //recogida de errores! 
-                                string ad = "No se ha identidicado el tipo de recurso en el que esta publicado";
-                                if (this.advertencia != null)
-                                {
-                                    this.advertencia.Add(ad);
-                                }
-                                else
-                                {
-                                    List<string> advertencias = new List<string>();
-                                    advertencias.Add(ad);
-                                    this.advertencia = advertencias;
-                                }
-                            }
-                        }
+                        revista.issn = new List<string>() { item.value };
+                    }
+
+                    if (item.type == "eissn")
+                    {
+                        revista.eissn = item.value;
                     }
                 }
             }
-            if (objInicial.dynamic_data != null)
-            {
-                if (objInicial.dynamic_data.cluster_related != null)
-                {
-                    if (objInicial.dynamic_data.cluster_related.identifiers != null)
-                    {
-                        if (objInicial.dynamic_data.cluster_related.identifiers.identifier != null)
-                        {
-                            bool esLista = false;
-                            try
-                            {
-                                if (objInicial.dynamic_data.cluster_related.identifiers.identifier.ToString().Trim().StartsWith("[") && objInicial.dynamic_data.cluster_related.identifiers.identifier.ToString().EndsWith("]"))
-                                {
-                                    JArray hey = JsonConvert.DeserializeObject<JArray>(objInicial.dynamic_data.cluster_related.identifiers.identifier.ToString());
-                                    esLista = true;
-                                    foreach (JContainer var in hey)
-                                    {
-                                        Identifier identifier = JsonConvert.DeserializeObject<Identifier>(var.ToString());
 
-                                        if (identifier.type == "issn")
-                                        {
-                                            List<string> issn = new List<string>();
-                                            issn.Add(identifier.value);
-                                            revista.issn = issn;
-                                        }
-                                        if (identifier.type == "eissn")
-                                        {
-                                            revista.eissn = identifier.value;
-                                        }
-                                        if (identifier.type == "isbn")
-                                        {
-                                            List<string> isbn = new List<string>();
-                                            isbn.Add(identifier.value);
-                                            revista.issn = isbn;
-                                            revista.isbn = isbn;
-                                        }
-                                    }
-                                }
-                            }
-                            catch
-                            {
-
-                            }
-
-                            if (!esLista)
-                            {
-                                Identifier identifier = JsonConvert.DeserializeObject<Identifier>(objInicial.dynamic_data.cluster_related.identifiers.identifier.ToString());
-                                if (identifier.type == "issn")
-                                {
-                                    List<string> issn = new List<string>();
-                                    issn.Add(identifier.value);
-                                    revista.issn = issn;
-                                }
-                                if (identifier.type == "eissn")
-                                {
-                                    revista.eissn = identifier.value;
-                                }
-
-                                if (identifier.type == "isbn")
-                                {
-                                    List<string> isbn = new List<string>();
-                                    isbn.Add(identifier.value);
-                                    revista.issn = isbn;
-                                    revista.isbn = isbn;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            if (revista != new Source())
+            if (!string.IsNullOrEmpty(revista.name) || (revista.issn != null && revista.issn.Any()) || !string.IsNullOrEmpty(revista.eissn))
             {
                 return revista;
             }
-            else { return null; }
-        }
-
-        public List<PublicationMetric> getPublicationMetric(PublicacionInicial objInicial)
-        {
-            List<PublicationMetric> metricList = new List<PublicationMetric>();
-            PublicationMetric metricPublicacion = new PublicationMetric();
-            metricPublicacion.metricName = "WoS";
-            if (objInicial.dynamic_data != null)
-            {
-                if (objInicial.dynamic_data.citation_related != null)
-                {
-                    if (objInicial.dynamic_data.citation_related.tc_list != null)
-                    {
-                        if (objInicial.dynamic_data.citation_related.tc_list.silo_tc != null)
-                        {
-                            if (objInicial.dynamic_data.citation_related.tc_list.silo_tc.local_count != null)
-                            {
-                                metricPublicacion.citationCount = objInicial.dynamic_data.citation_related.tc_list.silo_tc.local_count.ToString();
-                                metricList.Add(metricPublicacion);
-                                return metricList;
-
-                            }
-                        }
-                    }
-                }
-            }
 
             return null;
         }
 
+        /// <summary>
+        /// Obtiene la lista de las métricas.
+        /// </summary>
+        /// <param name="pPublicacionIn">Publicación a obtener la métrica.</param>
+        /// <returns>Métrica.</returns>
+        public List<PublicationMetric> getPublicationMetric(PublicacionInicial pPublicacionIn)
+        {
+            if (pPublicacionIn.dynamic_data != null && pPublicacionIn.dynamic_data.citation_related != null & pPublicacionIn.dynamic_data.citation_related.tc_list != null && pPublicacionIn.dynamic_data.citation_related.tc_list.silo_tc != null && pPublicacionIn.dynamic_data.citation_related.tc_list.silo_tc.coll_id == "WOS")
+            {
+                List<PublicationMetric> listaMetricas = new List<PublicationMetric>();
+                PublicationMetric metrica = new PublicationMetric();
+                metrica.metricName = "WoS";
+                metrica.citationCount = pPublicacionIn.dynamic_data.citation_related.tc_list.silo_tc.local_count.ToString();
+                listaMetricas.Add(metrica);
 
+                return listaMetricas;
+            }
+
+            return null;
+        }
     }
 }

@@ -9,6 +9,7 @@ using GitHubAPI.ROs.Codes.Models;
 using GitHubAPI.ROs.Codes.Models.Inicial;
 
 using Newtonsoft.Json;
+using GitHubAPI.Models.Data;
 
 namespace GitHubAPI.Controllers
 {
@@ -17,62 +18,49 @@ namespace GitHubAPI.Controllers
     [Route("github/[action]")]
     public class APIController : ControllerBase
     {
-
-
         private readonly ILogger<APIController> _logger;
+        readonly ConfigService _Configuracion;
 
-        public APIController(ILogger<APIController> logger)
+        public APIController(ILogger<APIController> logger, ConfigService pConfig)
         {
             _logger = logger;
+            _Configuracion = pConfig;
         }
 
+        //[HttpGet]
+        //[ProducesResponseType(StatusCodes.Status200OK)]
+        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
+        //[ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        //public List<repositorio_roh> GetROs([FromQuery][Required] string user, [FromQuery][Required] string userToken, [FromQuery][Required] string appToken, [FromQuery] string consumerKey = null, [FromQuery] string consumerSecret = null)
+        //{
 
-        /// <summary>
-        /// Get all repositories from a specified user account and RO
-        /// </summary>
-        /// <remarks>
-        /// Sample request:
-        ///
-        ///     GET /github/GetROs?user=danijmj&amp;userToken=djtrdfjhdfg_dhretuhefhdfgjeru56jd5jemndskqqhgd&amp;appToken=djtrdfjhdfg_dhretuhefhdfgjeru56jd5jemndskqqhgd
-        ///     GET /github/GetROs?user=githubuser&amp;userToken=djhrdfjhdfg_dhretuefhdfgdjeru56jd5jemndskqqhgd&amp;appToken=djhrdfjhdfg_dhretuefhdfgdjeru56jd5jemndskqqhgd
-        ///
-        /// </remarks>
-        /// <param name="user">The user id in the application</param>
-        /// <param name="userToken">Token for the user.</param>
-        /// <param name="appToken">app token to connect.</param>
-        /// <param name="consumerKey">Consumer key.</param>
-        /// <param name="consumerSecret">Consumer secret.</param>
-        /// <returns></returns>
-        /// <response code="200">Ok</response>
-        /// <response code="400">Invalid app</response> 
-        /// <response code="500">Oops! Something went wrong</response> 
+
+        //    if (string.IsNullOrEmpty(user))
+        //    {
+        //        return null;
+        //    } 
+        //    else if (string.IsNullOrEmpty(userToken))
+        //    {
+        //        return null;
+        //    }  
+        //    // Get all repositoriess from a user
+        //    ROGitHubController gitHubObject = new ROGitHubController("https://api.github.com", "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");
+        //    //ROGitHubController gitHubObject = new ROGitHubController("https://api.github.com", userToken);
+        //    List<repositorio_roh> repositories = gitHubObject.getAllRepositories(user);
+        //    var respositories = JsonConvert.SerializeObject(repositories);
+        //    // Return the repository
+        //    return repositories;
+            
+        //}
+        
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public List<repositorio_roh> GetROs([FromQuery][Required] string user, [FromQuery][Required] string userToken, [FromQuery][Required] string appToken, [FromQuery] string consumerKey = null, [FromQuery] string consumerSecret = null)
+        public List<DataGitHub> GetData([FromQuery][Required] string pUser, [FromQuery][Required] string pToken)
         {
-
-
-            if (string.IsNullOrEmpty(user))
-            {
-                return null;
-            } 
-            else if (string.IsNullOrEmpty(userToken))
-            {
-                return null;
-            }  
-            // Get all repositoriess from a user
-            ROGitHubController gitHubObject = new ROGitHubController("https://api.github.com", "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");
-            //ROGitHubController gitHubObject = new ROGitHubController("https://api.github.com", userToken);
-            List<repositorio_roh> repositories = gitHubObject.getAllRepositories(user);
-            var respositories = JsonConvert.SerializeObject(repositories);
-            // Return the repository
-            return repositories;
-            
+            GitHub github = new GitHub(_Configuracion);
+            return github.getData(pUser, pToken);
         }
-
-
     }
-
 }

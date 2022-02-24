@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using System.Net.Http;
 using ScopusConnect.ROs.Scopus.Models;
 using ScopusConnect.ROs.Scopus.Models.Inicial;
+using System.Threading;
 
 namespace ScopusConnect.ROs.Scopus.Controllers
 {
@@ -54,13 +55,27 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                             request.Headers.Add(item.Key, item.Value);
                         }
                     }
-                    try
+
+                    int intentos = 3;
+                    while (true)
                     {
-                        response = await httpClient.SendAsync(request);
-                    }
-                    catch (System.Exception)
-                    {
-                        throw new Exception("Error in the http call");
+                        try
+                        {
+                            response = await httpClient.SendAsync(request);
+                            break;
+                        }
+                        catch
+                        {
+                            intentos--;
+                            if (intentos == 0)
+                            {
+                                throw;
+                            }
+                            else
+                            {
+                                Thread.Sleep(1000);
+                            }
+                        }
                     }
                 }
             }

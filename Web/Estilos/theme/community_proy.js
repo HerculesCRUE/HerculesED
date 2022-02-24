@@ -12,6 +12,7 @@ $(document).ready(function () {
 		 enlazarFacetasBusqueda();
         }
 	}
+	montarTooltipCode.init();
 });
 
 function comportamientoCargaFacetasComunidad() {	
@@ -736,6 +737,62 @@ montarTooltip.montarTooltips= function () {
 	});
 }
 
+
+var montarTooltipCode = {
+	// Init the function
+    init: function () {
+        this.config();
+        this.comportamiento();
+    },
+    // Get the items to set the tooltip
+    config: function () {
+        this.body = body;
+        this.codeTooltip = this.body.find('.code-tooltip');
+    },
+    // Create & initialize the tooltip
+    comportamiento: function () {
+        var that = this;
+
+        // Create the tooltip
+        if (this.codeTooltip.length > 0) {
+			this.codeTooltip.tooltip({
+	            html: true,
+	            placement: 'bottom',
+	            template: '<div class="tooltip background-blanco code-lang-tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
+	            title: that.getTooltipCode()
+	        });
+        }
+        
+    },
+    // Get the code into the tooltip
+    getTooltipCode: function () {
+        	var that = this;
+
+        	// Get all data from the element
+			var dataLang = this.codeTooltip.data();
+			var htmlResData = "";
+
+			// Fill the data into the tooltip
+			Object.keys(dataLang).forEach(e => {
+				if(typeof dataLang[e] !== "undefined" && dataLang[e] != "" && dataLang[e] != "0"){
+					htmlResData += `
+					<li>					
+						<span class="texto">${e}</span>
+						<span class="num-resultado">${dataLang[e]}</span>					
+					</li>`;
+				}
+			});
+			
+			// Set the final html
+			var html=`<p class="tooltip-title">Lenguajes de programación</p>
+                <ul class="no-list-style">
+				${htmlResData}
+                </ul>`;
+
+            return html;
+    }
+};
+
 function MontarResultados(pFiltros, pPrimeraCarga, pNumeroResultados, pPanelID, pTokenAfinidad) {
     contResultados = contResultados + 1;
     if (document.getElementById('ctl00_ctl00_CPH1_CPHContenido_txtRecursosSeleccionados') != null) {
@@ -1173,3 +1230,468 @@ function AgregarFaceta(faceta,eliminarFiltroAnterior=false) {
     FiltrarPorFacetas(ObtenerHash2());
     EscribirUrlForm(filtros);
 }
+
+
+/**
+ * Clase metabuscador para dar funcionalidad al mismo 
+*/
+var metabuscador = {
+    /**
+     * Función que inicializa el metaBuscador 
+    */
+    init: function () {
+        this.config();
+        // this.loadLastSearchs();
+        // Inicializar el mostrado de búsquedas de metaBuscador
+        this.drawSearchsFromLocalStorage();
+        this.comportamiento();
+        return;
+    },
+    /* loadLastSearchs: function () {
+    	var that = this;
+    	var baseUlr = "https://localhost:44321/";
+    	var url = baseUlr + "Hercules/GetLastSearchs";
+    	$.get(url, function (data) {
+			console.log("data: ", data);
+			that.printDataIntoLastSearchs(data);
+		});
+        return;
+    },*/
+
+    /**
+     * Función que determina los elementos en la clase 
+    */
+    config: function () {
+        this.body = body;
+        this.header = this.body.find('#header');
+        this.metabuscadorTrigger = this.header.find('.col-buscador');
+        this.metabuscador = this.body.find('#menuLateralMetabuscador');
+        this.input = this.metabuscadorTrigger.find('#txtBusquedaPrincipal');
+        this.resultadosMetabuscador = this.body.find('#resultadosMetabuscador');
+        this.verMasEcosistema = this.body.find('#verMasEcosistema');
+        this.numMaxSearchs = 10;
+        // Panel sin resultados por elementos no encontrados
+        this.panelSinResultados = $(`#sinResultadosMetabuscador`);
+        this.timeWaitingForUserToType = 750; // Esperar 0.75 segundos a si el usuario ha dejado de escribir para iniciar búsqueda
+        this.ignoreKeysToBuscador = [37, 38, 39, 40, 46, 8, 32, 91, 17, 18, 20, 36, 18, 27];
+        // Palabra clave introducida en el metaBuscador para mostrar en el panel de resultados no encontrados
+        this.idPalabraBuscadaMetabuscador = `metabuscadorBusqueda`;
+        this.sugerenciasMetabuscadorItems = this.body.find('#sugerenciasMetabuscador ul');
+        this.KEY_LOCAL_SEARCHS = "metasearchs";
+        // Listado de los tipos de resultados existentes
+        this.typeSearch = {
+        	"persona": {
+        		"icon": "icono-persona",
+        		"section": "persons",
+        		"searchParm": "searcherPersons"
+        	},
+        	"group": {
+        		"icon": "icono-group",
+        		"section": "groups",
+        		"searchParm": "searcherGroups"
+        	},
+        	"project": {
+        		"icon": "icono-work",
+        		"section": "projects",
+        		"searchParm": "searcherProjects"
+        	},
+        	"publicacion": {
+        		"icon": "icono-recurso",
+        		"section": "documents",
+        		"searchParm": "searcherPublications"
+        	},
+        	"researchObject": {
+        		"icon": "icono-recurso",
+        		"section": "researchObjects",
+        		"searchParm": "searcherPublications"
+        	},
+        };
+        this.keyInput = "";
+        return;
+    },
+    /* printDataIntoLastSearchs: function (data) {
+    	var list = $('#sugerenciasMetabuscador ul');
+    	list.html('');
+    	var items = data.map(e => {
+    		return '<li class="reciente con-icono-before icono-busqueda">\
+                <a href="javascript: void(0)" data-search="\'' + e + '\'">' + e + '</a>\
+            </li>';
+    	});
+    	list.append(items);
+    	items.on('click', function(event) {
+    		event.preventDefault();
+    		var searchTxt = $(this).data("search");
+    		that.cargarRecursos(searchTxt);
+    	});
+    }, */
+
+    /**
+     * Función principal que determina como funcionará el input y que lanzará los diferentes procesos del objeto 
+    */
+    comportamiento: function () {
+        var that = this;
+
+        that.metabuscadorTrigger.on('click', function (e) {
+            that.input.focus();
+        });
+
+        // Clear the searchs
+        that.input.on('click', function (e) {
+        	that.keyInput = that.input.val();
+			if (that.keyInput.length <= 1) 
+			{
+                that.ocultarResultados();
+			}
+        });
+
+        that.input.on('keyup', function (e) {
+            that.keyInput = that.input.val();
+
+			if (that.keyInput.length <= 1) 
+			{
+                that.ocultarResultados();
+			}
+			else {
+
+        		if (that.validarKeyPulsada(e) == true) {
+
+	                clearTimeout(that.timer);
+	                that.timer = setTimeout(function () {
+                        that.ocultarResultados();
+                        // Ocultar panel sin resultados por posible busqueda anterior sin resultados
+                        that.mostrarPanelSinResultados(false);
+                        that.cargarResultados();
+                        // Guardar búsqueda en localStorage
+                        that.saveSearchInLocalStorage(that.keyInput);
+	                }, that.timeWaitingForUserToType);
+				}           	
+            }
+        });
+
+        // Botón para cerrar resultados de la Home
+        /* this.btnCloseMetabuscador.on("click", function () {
+            that.mostrarOculto();
+        }); */
+
+        that.input.keydown(function (e) {
+            if (e.keyCode == 13) {
+                e.preventDefault();
+                that.saveSearchInLocalStorage(that.keyInput);
+                that.input.keyup();
+                return false;
+            }
+        });
+
+        // Click en cada item de histórico de metabuscador              
+        //this.metabuscador.on('click', this.sugerenciasMetabuscadorItems.children(), function (event) {
+        this.sugerenciasMetabuscadorItems.on('click', function (event) {
+            // Establecer como búsqueda a realizar
+            const search = event.target.text;
+            that.input.val(search);
+            that.input.trigger("keyup");
+        });
+
+
+        return;
+    },
+
+    /**
+     * Ocultar los resultados 
+    */
+    ocultarResultados: function () {
+        this.metabuscador.removeClass('mostrarResultados');
+    },
+
+    /**
+     * Inicia el proceso de cargar los resultados y pintarlos 
+    */
+    cargarResultados: function () {
+        var that = this;
+        this.metabuscador.addClass('mostrarResultados');
+        // simular la carga de cada sección
+        that.cargarRecursos();
+    },
+
+    /**
+     * Muestra la barra de cargando 
+     * @param {any} loader_div: Objeto jquery con el div sobre el que pintar la progressBar
+     * @param {int} time: Tiempo límite que debe durar la progressBar
+    */
+    showLoader: function (loader_div, time) {
+        var loaderBar = loader_div.progressBarTimer({
+            autostart: false,
+            timeLimit: time,
+            warningThreshold: 0,
+            baseStyle: '',
+            warningStyle: '',
+            completeStyle: '',
+            smooth: true,
+            striped: false,
+            animated: false,
+            height: 12
+        });
+        return loaderBar;
+
+    },
+    /**
+     * Inicia la carga de datos 
+    */
+    cargar: function () {
+        var that = this;
+
+        // Inicia la progressBar
+        var loader_container = $('#loader-recursos-wrap');
+        loader_container.find('.progress-bar').remove();
+
+        var loader_div = $('<div id="#loader-recursos" class="progress-bar"></div>');
+        loader_container.append(loader_div);
+        loader_container.show();
+
+        var loader = this.showLoader(loader_div, 1);
+        loader.start();
+
+
+        // Get the url
+        var uri = that.resultadosMetabuscador.data('url');
+
+        // Compone la url para la llamada
+        var url = new URL(servicioExternoBaseUrl + 'servicioexterno/' + uri);
+
+        if (window.location.hostname == 'depuracion.net') {
+        	url = new URL('https://localhost:44321/' + uri);
+        }
+        url.searchParams.set('stringSearch', this.keyInput);
+        url.searchParams.set('lang', currentLang);
+
+        // Llama al servicio y devuelve una promesa
+        return new Promise((resolve, reject) => {
+            $.get(url.toString(), function (data) {
+            	loader.stop();
+                loader_div.remove();
+                loader_container.hide();
+                resolve(data);
+            });
+        });
+    },
+
+    /**
+     * Método que inicia la carga de los recursos, se llama a 'cargar' y luego llama al método pintarItems para pintar el resultado 
+     * @param {string} searchTxt: Texto alternativo de búsqueda
+    */
+    cargarRecursos: function (searchTxt = "") {
+        var that = this;
+
+        // Oculta la sección de resultados
+        var bloque = that.resultadosMetabuscador.find('.bloque');
+        bloque.hide();
+
+        // Rellena los datos por si se les pasara por parámetro
+        if (searchTxt != "") {
+        	that.keyInput = searchTxt;
+        }
+
+        // Carga los datos
+        var procesoCarga = this.cargar();
+        procesoCarga.then(function (data) {
+
+        	// Comprueba que hay resultados
+        	var totalItems = 0;
+        	Object.keys(data).forEach(e => totalItems += data[e].length);
+
+        	// Si hay resultados, pinta los items
+        	if (totalItems > 0) {
+        		that.mostrarPanelSinResultados(false);
+        		that.pintarItems(data);
+        	} else {
+        		that.mostrarPanelSinResultados(true);
+        	}
+        });
+    },
+
+	/**
+     * Método que pintar el resultado de la búsqueda
+     * @param {Object} data: Objeto con los datosobtenidos de la llamada ajax
+    */
+    pintarItems: function (data) {
+
+    	var that = this;
+
+    	Object.keys(data).forEach(ndx => {
+
+    		// Comprueba que hay un bloque de cada tipo devuelto en el objeto
+    		if (that.typeSearch[ndx]) {
+
+    			// Busca en el dom la sección
+    			var currenTbloque = that.resultadosMetabuscador.find('.bloque.' + that.typeSearch[ndx].section);
+    			// Selecciona la lista del bloque correspondiente
+    			var listCurrenTbloque = currenTbloque.find('ul');
+    			var urlComunidad = currenTbloque.data('urlcomunidad');
+    			var textoBloque = currenTbloque.find('p.title');
+
+    			// Elimina los items
+    			listCurrenTbloque.children().remove();
+
+    			// Comprueba que tiene resultados los datos para este elemento
+    			if (data[ndx].length > 0) {
+
+    				// Pinta los elementos dentro de la lista
+    				var result = data[ndx].map(item => $('<li class="con-icono-before ' + that.typeSearch[ndx].icon + '" data-id="'+item.id+'">\
+                        	<a href="'+item.url+'">'+item.title+'</a>\
+                    	</li>')
+    				);
+    				result.forEach(item => listCurrenTbloque.append(item));
+
+    				if (data[ndx].length > 2) {
+    					listCurrenTbloque.append($('<li class="con-icono-after ver-mas-icono ver-mas">\
+                            <a href="'+urlComunidad+'?' + that.typeSearch[ndx].searchParm + '='+that.keyInput+'">Ver ' + that.keyInput + ' en ' + textoBloque.text().toLowerCase() + '</a>\
+                        </li>'));
+    				}
+
+    				// Muestra el bloque
+    				currenTbloque.show();
+    			}
+    		}
+    	})
+    },
+
+	/**
+     * Método que pintar el resultado de la búsqueda
+    */
+    linkVerEnElEcosistema: function () {
+        var that = this;
+        that.verMasEcosistema.hide();
+        setTimeout(() => {
+            that.verMasEcosistema.show()
+        }, 5000);
+    },
+
+    /**
+     * Comprobará la tecla pulsada, y si no se encuentra entre las excluidas, dará lo introducido por válido devolviendo true
+     * Si se pulsa una tecla de las excluidas, devolverá false y por lo tanto el metabuscador no debería iniciarse
+     * @param {any} event: Evento o tecla pulsada en el teclado
+     */
+    validarKeyPulsada: function (event) {
+        const keyPressed = this.ignoreKeysToBuscador.find(key => key == event.keyCode);
+        if (keyPressed) {
+            return false
+        }
+        return true;
+    },
+
+	/**
+     * Método que muestra el panel (o no) 'sin resultados' para cuando no haya resultados en la llamada
+     * @param {bool} mostrarPanel: Determina si mostrarlo o no
+     */
+    mostrarPanelSinResultados: function(mostrarPanel){
+
+        // Vaciar posibles palabras anteriores
+        $(`#${this.idPalabraBuscadaMetabuscador}`).text('');
+        // Establecer la palabra buscada para ser mostrada en el panel
+        const cadenaBuscada = this.input.val();
+        // Panel de búsqueda no encontrada
+        const panelSinResultadosContent = `
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="errorPlantilla">
+                            <h3 style="font-size:18px">Sin resultados</h3>
+                            <div class="detallesError"><p class="text-muted">Lo sentimos pero no se ha encontrado ningún resultado con <span id="metabuscadorBusqueda" class="font-weight-bold"></span></p></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        if (mostrarPanel == true) {
+            this.panelSinResultados.removeClass("d-none");
+            this.panelSinResultados.html(panelSinResultadosContent);
+            // Añadir la palabra buscada al panel de no encontrado
+            $(`#${this.idPalabraBuscadaMetabuscador}`).text(cadenaBuscada);
+        } else {
+            this.panelSinResultados.addClass("d-none");            
+        }    
+    },
+
+    /**
+     * Guardar en localStorage una búsqueda realizada. Eliminará el más antiguo si se ha llegado al número de items máximo guardado.
+     * @param {string} search
+     */
+    saveSearchInLocalStorage: function (search) {
+        // Comprobar si la búsqueda reciente ya existe en el histórico de búsquedas
+        let searchRepeated = false;
+
+        try {
+            // Obtener las búsquedas actuales que hay en el localStorage. Si no hay devolverá un array vacío
+            const localSearchs = JSON.parse(
+                localStorage.getItem(this.KEY_LOCAL_SEARCHS) || "[]"
+            );
+
+            // Comprobar que no existe la búsqueda actual en localStorage
+            localSearchs.forEach((item) => {
+                if (item.search.indexOf(search) != -1) {
+                    searchRepeated = true;
+                }
+            });
+
+            if (searchRepeated) {
+                return;
+            }
+
+            // Si hay un máximo de X resultados en localStorage, eliminar el Último
+            if (localSearchs.length >= this.numMaxSearchs) {
+                localSearchs.shift();
+            }
+
+            // Crear el nuevo item "search" y guardarlo en localStorage
+            const searchObject = { "search": search };
+            localSearchs.push(searchObject);
+            localStorage.setItem(this.KEY_LOCAL_SEARCHS, JSON.stringify(localSearchs));
+        } catch (error) {
+            console.log("Error saving metaSearch");
+        }
+
+        this.drawSearchsFromLocalStorage();
+    },
+
+    /**
+    * Creará o dibujará las metabusquedas del localStorage en el HTML para que sean mostradas correctamente
+    */
+    drawSearchsFromLocalStorage: function () {
+        // Listas de las búsquedas en localStorage
+        let searchListItems = "";
+
+        // Obtener las búsquedas actuales que hay en el localStorage. Si no hay devolverá array vacío
+        const localSearchs = JSON.parse(localStorage.getItem(this.KEY_LOCAL_SEARCHS) || "[]");
+        // Si no hay resultados ... no hacer nada
+        if (localSearchs.length == 0) {
+            return;
+        }
+
+        var list = $('#sugerenciasMetabuscador ul');
+
+        // Eliminar posibles items
+        this.sugerenciasMetabuscadorItems.children().remove();
+
+        // Construir cada itemList con las búsquedas almacenadas en localStorage
+        localSearchs.reverse().forEach((item) => {
+            searchListItems += `<li class="reciente con-icono-before icono-busqueda">
+                                    <a href="javascript: void(0);">${item.search}</a>
+                                </li>`;
+        });
+
+        // Añadir los items para el metabuscador
+        this.sugerenciasMetabuscadorItems.append(searchListItems);
+    },
+
+    /**
+     * Eliminar las búsquedas históricas al cerrar sesión
+     * */
+    removeSearchsFromLocalStorage: function () {
+
+        try {
+            localStorage.removeItem(this.KEY_LOCAL_SEARCHS);
+        } catch(e) {
+            console.log("Error removing localSearchs from localStorage");
+        }        
+    }
+};

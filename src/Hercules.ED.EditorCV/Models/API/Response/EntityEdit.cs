@@ -129,6 +129,39 @@ namespace GuardadoCV.Models.API.Response
         /// Datos de una entidad principal dentro de una entidad
         /// </summary>
         public EntityEditEntity entityData { get; set; }
+        /// <summary>
+        /// Lista de valores disponibles para el combo
+        /// </summary>
+        public Dependency dependency { get; set; }
+        /// <summary>
+        /// Configuracion del autocompletar
+        /// </summary>
+        public AutocompleteConfig autocompleteConfig { get; set; }
+        /// <summary>
+        /// Indica si la propiedad pertenece al CV y no a la entidad
+        /// </summary>
+        public bool entity_cv { get; set; }
+    }
+
+    //TODO comentarios
+    public class AutocompleteConfig
+    {
+        public string property { get; set; }
+        public string rdftype { get; set; }
+        public string graph { get; set; }
+        public bool getEntityId { get; set; }
+        /// <summary>
+        /// Indica si sólo se pueden seleccionar opciones del autocompletar
+        /// </summary>
+        public bool mandatory;
+    }
+
+
+    public class Dependency
+    {
+        public string parent { get; set; }
+        public string parentDependencyValue { get; set; }
+        public string parentDependencyValueDistinct { get; set; }
     }
 
     public class ComboDependency

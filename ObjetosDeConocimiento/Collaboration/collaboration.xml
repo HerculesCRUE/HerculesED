@@ -7,7 +7,8 @@
         <ocultarTituloDescpImgDoc></ocultarTituloDescpImgDoc>
         <TituloDoc EntidadID="http://w3id.org/roh/Collaboration">http://w3id.org/roh/title</TituloDoc>
         <DescripcionDoc EntidadID="http://w3id.org/roh/Collaboration">http://w3id.org/roh/title</DescripcionDoc>
-        <HtmlNuevo>true</HtmlNuevo>
+        <HtmlNuevo>true</HtmlNuevo>		
+		<CategorizacionTesauroGnossObligatoria>false</CategorizacionTesauroGnossObligatoria>
     </ConfiguracionGeneral>
     <EspefPropiedad>
         <Propiedad  ID="http://xmlns.com/foaf/0.1/nick" EntidadID="http://purl.obolibrary.org/obo/BFO_0000023">
@@ -69,23 +70,6 @@
             <AtrNombre>researchers</AtrNombre>
             <AtrNombreLectura>researchers</AtrNombreLectura>
         </Propiedad>
-        <Propiedad  ID="http://w3id.org/roh/participates" EntidadID="http://w3id.org/roh/Collaboration">
-            <AtrNombre>participates</AtrNombre>
-            <AtrNombreLectura>participates</AtrNombreLectura>
-			<SeleccionEntidad>
-                <TipoSeleccion>Combo</TipoSeleccion>
-                <Grafo>organization.owl</Grafo>
-                <UrlTipoEntSolicitada>http://xmlns.com/foaf/0.1/Organization</UrlTipoEntSolicitada>              
-                <PropsEntEdicion>
-                    <NameProp>http://w3id.org/roh/title</NameProp>
-                </PropsEntEdicion>
-                <PropsEntLectura>
-                    <Propiedad ID="http://w3id.org/roh/title" EntidadID="http://xmlns.com/foaf/0.1/Organization">
-                        <AtrNombreLectura></AtrNombreLectura>
-                    </Propiedad>
-                </PropsEntLectura>
-            </SeleccionEntidad>
-        </Propiedad>
         <Propiedad  ID="https://www.w3.org/2006/vcard/ns#hasCountryName" EntidadID="http://w3id.org/roh/Collaboration">
             <AtrNombre>hasCountryName</AtrNombre>
             <AtrNombreLectura>hasCountryName</AtrNombreLectura>
@@ -143,7 +127,79 @@
         <Propiedad  ID="http://w3id.org/roh/title" EntidadID="http://w3id.org/roh/Collaboration">
             <AtrNombre>title</AtrNombre>
             <AtrNombreLectura>title</AtrNombreLectura>
+        </Propiedad>		
+		<Propiedad  ID="https://www.w3.org/2006/vcard/ns#hasRegion" EntidadID="http://w3id.org/roh/Organization">
+            <AtrNombre>hasRegion</AtrNombre>
+            <AtrNombreLectura>hasRegion</AtrNombreLectura>
+			<SeleccionEntidad>
+                <TipoSeleccion>Combo</TipoSeleccion>
+                <Grafo>feature.owl</Grafo>
+                <UrlTipoEntSolicitada>http://www.geonames.org/ontology#Feature</UrlTipoEntSolicitada>              
+                <PropsEntEdicion>
+                    <NameProp>http://www.geonames.org/ontology#name</NameProp>
+                </PropsEntEdicion>
+                <PropsEntLectura>
+                    <Propiedad ID="http://www.geonames.org/ontology#name" EntidadID="http://www.geonames.org/ontology#Feature">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+                </PropsEntLectura>
+            </SeleccionEntidad>
         </Propiedad>
+        <Propiedad  ID="https://www.w3.org/2006/vcard/ns#hasCountryName" EntidadID="http://w3id.org/roh/Organization">
+            <AtrNombre>hasCountryName</AtrNombre>
+            <AtrNombreLectura>hasCountryName</AtrNombreLectura>
+			<SeleccionEntidad>
+                <TipoSeleccion>Combo</TipoSeleccion>
+                <Grafo>feature.owl</Grafo>
+                <UrlTipoEntSolicitada>http://www.geonames.org/ontology#Feature</UrlTipoEntSolicitada>              
+                <PropsEntEdicion>
+                    <NameProp>http://www.geonames.org/ontology#name</NameProp>
+                </PropsEntEdicion>
+                <PropsEntLectura>
+                    <Propiedad ID="http://www.geonames.org/ontology#name" EntidadID="http://www.geonames.org/ontology#Feature">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+                </PropsEntLectura>
+            </SeleccionEntidad>
+        </Propiedad>
+		
+		<Propiedad  ID="http://w3id.org/roh/organizationType" EntidadID="http://w3id.org/roh/Organization">
+            <AtrNombre>http://w3id.org/roh/organizationType</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/organizationType</AtrNombreLectura>
+			<SeleccionEntidad>
+                <TipoSeleccion>Autocompletar</TipoSeleccion>
+                <Grafo>organizationtype.owl</Grafo>
+                <UrlTipoEntSolicitada>http://w3id.org/roh/OrganizationType</UrlTipoEntSolicitada>              
+                <PropsEntEdicion>
+                    <NameProp>http://purl.org/dc/elements/1.1/title</NameProp>
+                </PropsEntEdicion>
+                <PropsEntLectura>
+                    <Propiedad ID="http://purl.org/dc/elements/1.1/title" EntidadID="http://w3id.org/roh/OrganizationType">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+                </PropsEntLectura>
+            </SeleccionEntidad>
+        </Propiedad>
+		
+		<Propiedad  ID="http://w3id.org/roh/organization" EntidadID="http://w3id.org/roh/Organization">
+            <AtrNombre>organization</AtrNombre>
+            <AtrNombreLectura>organization</AtrNombreLectura>
+			<SeleccionEntidad>
+                <TipoSeleccion>Combo</TipoSeleccion>
+                <Grafo>organization.owl</Grafo>
+                <UrlTipoEntSolicitada>http://xmlns.com/foaf/0.1/Organization</UrlTipoEntSolicitada>              
+                <PropsEntEdicion>
+                    <NameProp>http://w3id.org/roh/title</NameProp>
+                </PropsEntEdicion>
+                <PropsEntLectura>
+                    <Propiedad ID="http://w3id.org/roh/title" EntidadID="http://xmlns.com/foaf/0.1/Organization">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+                </PropsEntLectura>
+            </SeleccionEntidad>
+        </Propiedad>
+		
+		
     </EspefPropiedad>
     <EspefEntidad>
         <Entidad  ID="http://purl.obolibrary.org/obo/BFO_0000023">

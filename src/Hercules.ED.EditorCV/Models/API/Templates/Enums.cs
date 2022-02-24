@@ -25,6 +25,8 @@ namespace GuardadoCV.Models.API.Templates
     {
         //Texto
         text,
+        //Número
+        number,
         //Fecha
         date
     }
@@ -51,7 +53,13 @@ namespace GuardadoCV.Models.API.Templates
         //Listado de autores
         auxEntityAuthorList,
         //Tesauro
-        thesaurus
+        thesaurus,
+        //Imagen
+        image,
+        //Entidad con autocompletar
+        entityautocomplete,
+        //Booleano
+        boolean
     }
 
 }

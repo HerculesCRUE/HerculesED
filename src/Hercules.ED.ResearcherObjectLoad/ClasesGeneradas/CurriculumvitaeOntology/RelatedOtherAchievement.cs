@@ -29,11 +29,6 @@ namespace CurriculumvitaeOntology
 		{
 			this.mGNOSSID = pSemCmsModel.Entity.Uri;
 			this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
-			SemanticPropertyModel propRoh_relatedOtherAchievementCV = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/relatedOtherAchievementCV");
-			if(propRoh_relatedOtherAchievementCV != null && propRoh_relatedOtherAchievementCV.PropertyValues.Count > 0)
-			{
-				this.Roh_relatedOtherAchievementCV = new RelatedOtherAchievementCV(propRoh_relatedOtherAchievementCV.PropertyValues[0].RelatedEntity,idiomaUsuario);
-			}
 			SemanticPropertyModel propVivo_relatedBy = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#relatedBy");
 			if(propVivo_relatedBy != null && propVivo_relatedBy.PropertyValues.Count > 0)
 			{
@@ -45,10 +40,6 @@ namespace CurriculumvitaeOntology
 		public virtual string RdfType { get { return "http://w3id.org/roh/RelatedOtherAchievement"; } }
 		public virtual string RdfsLabel { get { return "http://w3id.org/roh/RelatedOtherAchievement"; } }
 		public OntologyEntity Entity { get; set; }
-
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/relatedOtherAchievementCV")]
-		[RDFProperty("http://w3id.org/roh/relatedOtherAchievementCV")]
-		public  RelatedOtherAchievementCV Roh_relatedOtherAchievementCV { get; set;}
 
 		[LABEL(LanguageEnum.es,"http://vivoweb.org/ontology/core#relatedBy")]
 		[RDFProperty("http://vivoweb.org/ontology/core#relatedBy")]
@@ -71,12 +62,6 @@ namespace CurriculumvitaeOntology
 		internal override void GetEntities()
 		{
 			base.GetEntities();
-			if(Roh_relatedOtherAchievementCV!=null){
-				Roh_relatedOtherAchievementCV.GetProperties();
-				Roh_relatedOtherAchievementCV.GetEntities();
-				OntologyEntity entityRoh_relatedOtherAchievementCV = new OntologyEntity("http://w3id.org/roh/RelatedOtherAchievementCV", "http://w3id.org/roh/RelatedOtherAchievementCV", "roh:relatedOtherAchievementCV", Roh_relatedOtherAchievementCV.propList, Roh_relatedOtherAchievementCV.entList);
-				entList.Add(entityRoh_relatedOtherAchievementCV);
-			}
 		} 
 
 

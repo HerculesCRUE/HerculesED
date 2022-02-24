@@ -54,7 +54,7 @@ namespace WoSConnect.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public List<Publication> GetROs([FromQuery][Required] string ID)
         {
-            ROWoSController WoSObject = new ROWoSController("https://wos-api.clarivate.com/", "10e8a3a2417b7ae1d864b5558136c56b78ed3eb8");//"adf94bebeeba8c3042ad5193455740e2");
+            ROWoSController WoSObject = new ROWoSController("https://api.openaire.eu/search/", "10e8a3a2417b7ae1d864b5558136c56b78ed3eb8");//"adf94bebeeba8c3042ad5193455740e2");
             List<Publication> publication = WoSObject.getPublications(ID);
             return publication;
         }

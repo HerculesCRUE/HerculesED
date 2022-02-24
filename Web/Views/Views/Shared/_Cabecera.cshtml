@@ -19,14 +19,18 @@
             CommunityModel.PermissionsModel permisosComunidad = Comunidad.Permissions;
         }
         <div class="container-fluid">
+
             <div class="row upper-row">
+
                 <div class="col col01">
                     <div class="menu-logo-wrapper">
+
                         <div class="menu-toggle">
                             <a href="javascript: void(0);" data-target="menuLateral" id="menuLateralTrigger" class="texto-blanco">
                                 <span class="material-icons">apps</span>
                             </a>
                         </div>
+                        
                         <div class="logo-wrapper">
                             <a href="@Comunidad.Url" class="texto-blanco">
                                 Hércules
@@ -34,37 +38,32 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="col col02">
                     <div class="col-buscador">
-                        <!--<form method="post" id="formCajaBusqueda">
-                            <fieldset style="display: block">
-                                <legend class="nota">facetas</legend>
-                                <div class="finderUtils" id="divCajaBusqueda">
-                                    <div class="group finderSection">
-                                        <label for="finderSection" class="">Encontrar</label>
-                                        <input type="text" id="finderSection" class="not-outline finderSectionText ac_input" autocomplete="off" placeholder="@Html.Translate("SEARCH")">
-                                        <input title="Encontrar" type="button" class="findAction" id="inputLupa">
-                                        <input type="hidden" value="http://google.com" class="inpt_urlPaginaActual">-->
-                        <!-- TODO -->
-                        <!--<input type="hidden" value="sioc_t:Tag|foaf:firstName" class="inpt_facetasBusqPag">
-                                        <input type="hidden" class="inpt_parametros">
-                                        <a href="javascript: void(0);" class="btn-filtrar-movil">
-                                            <span class="material-icons">filter_list</span>
-                                        </a>
-                                        <div class="ac_results" style="position: absolute; width: 190px; top: 109px; left: 318.5px; display: none;">
-                                            <ul>
-                                                <li class="ac_even">Comité de Coordinación de Cotec</li>
-                                                <li class="ac_odd">Comité de Coordinación de Cotec</li>
-                                                <li class="ac_even">Comité de Coordinación de Cotec</li>
-                                                <li class="ac_odd">Comité de Coordinación de Cotec</li>
-                                                <li class="ac_even">Comité de Coordinación de Cotec</li>
-                                                <li class="ac_odd">Comité de Coordinación de Cotec</li>
-                                            </ul>
-                                        </div>
-                                    </div>
+                        <form method="post" id="formBuscador" action="http://devsare.gnoss.com/es/recursos?search=">
+                            <div class="fieldsetGroup">
+                                <input type="hidden" value="ub_MyGNOSSMeta@http://devsare.gnoss.com/es/busqueda?search=" class="inpt_tipo_busqueda">
+                                <input type="hidden" value="ub_824509ea-0e22-4aa3-b6a0-65a69cdd571c@http://devsare.gnoss.com/es/recursos?search=" class="inpt_tipo_busqueda">
+                                <input type="hidden" value="ub_02a9baf9-2991-4128-a479-aa8492858e95@http://devsare.gnoss.com/es/foro?search=" class="inpt_tipo_busqueda">
+                                <input type="hidden" value="ub_68760789-604d-4e8b-8acf-149c80fa1c8a@http://devsare.gnoss.com/es/personas-y-organizaciones?search=" class="inpt_tipo_busqueda">
+                                <input type="hidden" value="ub_f016bc87-668c-4c3d-9b10-5c1fe650f104@http://devsare.gnoss.com/es/FAQ?search=" class="inpt_tipo_busqueda">
+                                <input type="hidden" value="oa_824509ea-0e22-4aa3-b6a0-65a69cdd571c@baliabideak@eu|||recursos@es|||resources@en|||recursos@pt|||recursos@ca|||recursos@gl|||ressources@fr|||ressourcen@de|||risorse@it|||" class="inpt_OrigenAutocompletar">
+                                <input type="hidden" value="oa_02a9baf9-2991-4128-a479-aa8492858e95@foroa@eu|||foro@es|||forum@en|||forum@pt|||forum@ca|||foro@gl|||forum@fr|||forum@de|||forum@it|||" class="inpt_OrigenAutocompletar">
+                                <input type="hidden" value="oa_68760789-604d-4e8b-8acf-149c80fa1c8a@PerYOrg" class="inpt_OrigenAutocompletar">
+                                <input type="hidden" value="oa_f016bc87-668c-4c3d-9b10-5c1fe650f104@FAQ@eu|||FAQ@es|||FAQ@en|||FAQ@pt|||FAQ@ca|||FAQ@gl|||FAQ@fr|||FAQ@de|||FAQ@it|||" class="inpt_OrigenAutocompletar">
+                            </div>
+                            <div class="fieldsetGroup searchGroup">
+                                <div class="textoBusquedaPrincipalInput">
+                                    <input type="text" id="txtBusquedaPrincipal" class="not-outline text txtBusqueda autocompletar personalizado ac_input" placeholder="@Html.Translate("PLACEHOLDER_METABUSCADOR")" autocomplete="off">
+                                    <span class="botonSearch">
+                                        <span class="material-icons">search</span>
+                                    </span>
                                 </div>
-                            </fieldset>
-                        </form>-->
+                                <span class="material-icons cerrar">close</span>
+                            </div>
+                            <input type="submit" style="display: none;" id="enviarFormBuscador" value="enviar" title="enviar">
+                        </form>
                     </div>
                 </div>
                 <div class="col col03">
@@ -77,10 +76,41 @@
                             }
                             else
                             {
-                                // TODO: Cuando el usuario está conectado...
+                                <a href="@Html.GetUrlLogout()" class="texto-blanco">@Html.GetText("MENU", "SALIR")</a>
                             }
                         </li>
                     </ul>
+                </div>
+            </div>
+
+            <div class="row community-row" id="navegacion-recurso-fixed">
+                <div class="container community-menu-wrapper">
+                    <a href="javascript: void(0);" data-target="menuLateralComunidad" id="menuLateralComunidadTrigger" class=" texto-blanco">
+                        <span class="material-icons">menu</span>
+                    </a>
+                    <div class="page-name-wrapper">
+                        <span class='page-name'>Hercules</span>
+                    </div>
+                    <div id="community-menu" class="">
+                        <ul class="">
+                            @foreach (CommunityModel.TabModel pPestanya in Comunidad.Tabs)
+                            {
+                                string activo = "";
+                                if (pPestanya.Active)
+                                {
+                                    activo = "class=\"active\"";
+                                }
+                                string searchSword = "/buscador-";
+                                string url = pPestanya.Url;
+                                if (url.Contains(searchSword))
+                                {
+                                    <li @Html.Raw(activo)>
+                                        <a href="@url">@pPestanya.Name</a>
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>

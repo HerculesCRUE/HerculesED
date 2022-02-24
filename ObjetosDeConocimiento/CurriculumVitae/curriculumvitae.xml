@@ -452,8 +452,8 @@
             <AtrNombreLectura>Imagen</AtrNombreLectura>
 			<ImgMiniVP>
 				<Size Tipo="RecorteCuadrado">
-					<Alto>234</Alto>
-					<Ancho>234</Ancho>
+					<Alto>200</Alto>
+					<Ancho>200</Ancho>
 				</Size>
 			</ImgMiniVP>	
         </Propiedad>
@@ -536,23 +536,7 @@
 				<UrlPropiedad>um</UrlPropiedad>                
 			</SeleccionEntidad>
         </Propiedad>
-        <Propiedad  ID="http://w3id.org/roh/participationType" EntidadID="http://w3id.org/roh/RelatedActivityOrganizationCV">
-            <AtrNombre>http://w3id.org/roh/participationType</AtrNombre>
-            <AtrNombreLectura>http://w3id.org/roh/participationType</AtrNombreLectura>
-			<SeleccionEntidad>
-                <TipoSeleccion>Combo</TipoSeleccion>
-                <Grafo>participationtypeactivity.owl</Grafo>
-                <UrlTipoEntSolicitada>http://w3id.org/roh/ParticipationTypeActivity</UrlTipoEntSolicitada>              
-                <PropsEntEdicion>
-                    <NameProp>http://purl.org/dc/elements/1.1/title</NameProp>
-                </PropsEntEdicion>
-                <PropsEntLectura>
-                    <Propiedad ID="http://purl.org/dc/elements/1.1/title" EntidadID="http://w3id.org/roh/ParticipationTypeActivity">
-                        <AtrNombreLectura></AtrNombreLectura>
-                    </Propiedad>
-                </PropsEntLectura>
-            </SeleccionEntidad>
-        </Propiedad>
+        
         <Propiedad  ID="http://w3id.org/roh/durationDays" EntidadID="http://w3id.org/roh/RelatedActivityOrganizationCV">
             <AtrNombre>http://w3id.org/roh/durationDays</AtrNombre>
             <AtrNombreLectura>http://w3id.org/roh/durationDays</AtrNombreLectura>
@@ -890,6 +874,23 @@
                 </PropsEntEdicion>
                 <PropsEntLectura>
                     <Propiedad ID="http://w3id.org/roh/title" EntidadID="http://xmlns.com/foaf/0.1/Group">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+                </PropsEntLectura>
+            </SeleccionEntidad>
+        </Propiedad>
+		<Propiedad  ID="http://vivoweb.org/ontology/core#relatedBy" EntidadID="http://w3id.org/roh/RelatedResearchObject">
+            <AtrNombre>http://vivoweb.org/ontology/core#relatedBy</AtrNombre>
+            <AtrNombreLectura>http://vivoweb.org/ontology/core#relatedBy</AtrNombreLectura>
+			<SeleccionEntidad>
+                <TipoSeleccion>Autocompletar</TipoSeleccion>
+                <Grafo>researchobject.owl</Grafo>
+                <UrlTipoEntSolicitada>http://w3id.org/roh/ResearchObject</UrlTipoEntSolicitada>              
+                <PropsEntEdicion>
+                    <NameProp>http://w3id.org/roh/title</NameProp>
+                </PropsEntEdicion>
+                <PropsEntLectura>
+                    <Propiedad ID="http://w3id.org/roh/title" EntidadID="http://w3id.org/roh/ResearchObject">
                         <AtrNombreLectura></AtrNombreLectura>
                     </Propiedad>
                 </PropsEntLectura>
@@ -1405,14 +1406,7 @@
         <Propiedad  ID="http://w3id.org/roh/applicantContribution" EntidadID="http://w3id.org/roh/RelatedCompetitiveProjectCV">
             <AtrNombre>http://w3id.org/roh/applicantContribution</AtrNombre>
             <AtrNombreLectura>http://w3id.org/roh/applicantContribution</AtrNombreLectura>
-        </Propiedad>
-        <Propiedad  ID="http://w3id.org/roh/gnossUser" EntidadID="http://w3id.org/roh/CV">
-			<AtrNombre>Usuario Gnoss</AtrNombre>
-			<AtrNombreLectura>Usuario Gnoss</AtrNombreLectura>
-			<SeleccionEntidad>
-				<TipoSeleccion MultiIdioma="false">PersonaGnoss</TipoSeleccion>
-			</SeleccionEntidad>
-        </Propiedad>
+        </Propiedad>        
         <Propiedad  ID="http://w3id.org/roh/personalData" EntidadID="http://w3id.org/roh/CV">
             <AtrNombre>http://w3id.org/roh/personalData</AtrNombre>
             <AtrNombreLectura>http://w3id.org/roh/personalData</AtrNombreLectura>
@@ -1429,6 +1423,9 @@
                 </PropsEntEdicion>
                 <PropsEntLectura>
                     <Propiedad ID="http://xmlns.com/foaf/0.1/name" EntidadID="http://xmlns.com/foaf/0.1/Person">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+					<Propiedad ID="http://w3id.org/roh/gnossUser" EntidadID="http://xmlns.com/foaf/0.1/Person">
                         <AtrNombreLectura></AtrNombreLectura>
                     </Propiedad>
                 </PropsEntLectura>
@@ -2912,7 +2909,6 @@
                 <Grupo class="formtheme02">
                     <Grupo class="fieldset">
                         <Grupo Tipo="fieldset" class="mediumLabels">
-                            <NameProp>http://w3id.org/roh/gnossUser</NameProp> 
                             <NameProp>http://w3id.org/roh/personalData</NameProp> 
                             <NameProp>http://w3id.org/roh/cvOf</NameProp> 
                             <NameProp>http://w3id.org/roh/scientificExperience</NameProp> 
@@ -2927,7 +2923,6 @@
                     <Grupo classLectura="group group_info">
                         <AtrNombreGrupo>Propiedades</AtrNombreGrupo>
                         <Grupo classLectura="contentGroup">
-                            <NameProp>http://w3id.org/roh/gnossUser</NameProp> 
                             <NameProp>http://w3id.org/roh/personalData</NameProp> 
                             <NameProp>http://w3id.org/roh/cvOf</NameProp> 
                             <NameProp>http://w3id.org/roh/scientificExperience</NameProp> 

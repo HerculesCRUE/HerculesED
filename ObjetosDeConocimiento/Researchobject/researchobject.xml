@@ -129,20 +129,18 @@
             <AtrNombreLectura>http://purl.org/dc/elements/1.1/type</AtrNombreLectura>
 			<SeleccionEntidad>
                 <TipoSeleccion>Autocompletar</TipoSeleccion>
-                <Grafo>publicationtype.owl</Grafo>
-                <UrlTipoEntSolicitada>http://w3id.org/roh/PublicationType</UrlTipoEntSolicitada>              
+                <Grafo>researchobjecttype.owl</Grafo>
+                <UrlTipoEntSolicitada>http://w3id.org/roh/ResearchObjectType</UrlTipoEntSolicitada>              
                 <PropsEntEdicion>
                     <NameProp>http://purl.org/dc/elements/1.1/title</NameProp>
                 </PropsEntEdicion>
                 <PropsEntLectura>
-                    <Propiedad ID="http://purl.org/dc/elements/1.1/title" EntidadID="http://w3id.org/roh/PublicationType">
+                    <Propiedad ID="http://purl.org/dc/elements/1.1/title" EntidadID="http://w3id.org/roh/ResearchObjectType">
                         <AtrNombreLectura></AtrNombreLectura>
                     </Propiedad>
                 </PropsEntLectura>
             </SeleccionEntidad>
-        </Propiedad>
-		
-		
+        </Propiedad>		
         <Propiedad  ID="http://www.w3.org/1999/02/22-rdf-syntax-ns#member" EntidadID="http://purl.obolibrary.org/obo/BFO_0000023">
             <AtrNombre>http://www.w3.org/1999/02/22-rdf-syntax-ns#member</AtrNombre>
             <AtrNombreLectura>http://www.w3.org/1999/02/22-rdf-syntax-ns#member</AtrNombreLectura>
@@ -158,6 +156,44 @@
                     <Propiedad ID="http://xmlns.com/foaf/0.1/name" EntidadID="http://xmlns.com/foaf/0.1/Person">
                         <AtrNombreLectura></AtrNombreLectura>
                     </Propiedad>
+					<Propiedad ID="http://w3id.org/roh/gnossUser" EntidadID="http://xmlns.com/foaf/0.1/Person">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+					<Propiedad ID="http://w3id.org/roh/cvOf" EntidadID="http://xmlns.com/foaf/0.1/Person">
+                        <AtrNombreLectura></AtrNombreLectura>
+						<SeleccionEntidad>
+							<TipoSeleccion>Autocompletar</TipoSeleccion>
+							<NuevaPestanya>false</NuevaPestanya>
+							<LinkARecurso IrAComunidad="true"></LinkARecurso>
+							<Grafo>curriculumvitae.owl</Grafo>
+							<UrlTipoEntSolicitada>http://w3id.org/roh/CV</UrlTipoEntSolicitada>
+							<PropsEntLectura>
+								<Propiedad ID="http://xmlns.com/foaf/0.1/name" EntidadID="http://w3id.org/roh/CV">
+								<AtrNombreLectura></AtrNombreLectura>
+							</Propiedad>		
+							</PropsEntLectura>
+							<Reciproca></Reciproca>
+						</SeleccionEntidad>	
+                    </Propiedad>
+					<Propiedad  ID="http://w3id.org/roh/hasRole" EntidadID="http://xmlns.com/foaf/0.1/Person">
+						<AtrNombre xml:lang="es">Organización:</AtrNombre>
+						<AtrNombreLectura xml:lang="es"></AtrNombreLectura>
+						<SeleccionEntidad>
+							<TipoSeleccion>Autocompletar</TipoSeleccion>
+							<NuevaPestanya>false</NuevaPestanya>
+							<LinkARecurso IrAComunidad="true"></LinkARecurso>
+							<Grafo>organization.owl</Grafo>
+							<UrlTipoEntSolicitada>http://xmlns.com/foaf/0.1/Organization</UrlTipoEntSolicitada>
+							<PropsEntEdicion>
+								<NameProp>http://w3id.org/roh/title</NameProp>
+							</PropsEntEdicion>
+							<PropsEntLectura>
+								<Propiedad ID="http://w3id.org/roh/title" EntidadID="http://xmlns.com/foaf/0.1/Organization">
+								<AtrNombreLectura></AtrNombreLectura>
+							</Propiedad>		
+							</PropsEntLectura>
+						</SeleccionEntidad>	
+					</Propiedad>
                 </PropsEntLectura>
             </SeleccionEntidad>
         </Propiedad>

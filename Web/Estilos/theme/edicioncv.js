@@ -209,10 +209,19 @@ var edicionCV = {
 		.list-wrap ul li.background-oscuro a { color: var(--c-gris-oscuro); }
 		.list-wrap ul li.background-oscuro .material-icons { color: var(--c-gris-oscuro); }
 
+
+		.ac_results{
+			top: 80px!important;
+			left: 0px!important;
+		}
+		
+		
 		.topic .item.aux .ac_results{
 			top: 40px!important;
 			left: calc(50% - 94px)!important;
 		}
+		
+		
 
 		</style>`);
 
@@ -226,7 +235,18 @@ var edicionCV = {
             var rdfType = $($(this).attr('href')).find('.cvTab').attr('rdftype');
             that.loadTab(entityID, rdfType);
         });
-        $('#identificacion-tab').click();
+		
+		if(getParam('tab')!=null)
+		{
+			$('#'+getParam('tab')).click();
+			
+		}else
+		{		
+			$('#identificacion-tab').click();
+		}
+		
+		
+		
         return;
     },
     //Métodos de pestañas
@@ -238,6 +258,23 @@ var edicionCV = {
         $.get(urlEdicionCV + 'GetTab?pId=' + entityID + "&pRdfType=" + rdfType + "&pLang=" + lang, null, function(data) {
             that.printTab(entityID, data);
             OcultarUpdateProgress();
+			
+			if(getParam('tab')!=null)
+			{
+				if(getParam('id')!=null)
+				{
+					//Abrimos edición
+					$('a[internal-id="'+getParam('id')+'"]').click();
+				}
+				if(getParam('section')!=null)
+				{
+					//Abrimos creacion
+					$('div[section="'+getParam('section')+'"] a.aniadirEntidad').click();
+				}
+				
+				//reseteamos la url
+				history.pushState(null, '', document.location.origin+document.location.pathname);
+			}		
         });
         return;
     },
@@ -275,7 +312,7 @@ var edicionCV = {
 				}
 			}
 		}
-		accionesCurriculum.init();
+		accionesPlegarDesplegarModal.init();
 		this.engancharComportamientosCV();
 	},
     printSectionItem: function(contenedor,item,identifier,rdftype,entityID) {
@@ -342,18 +379,39 @@ var edicionCV = {
                 }
                 if (value != '' && property.type == 'date') {
                     value = value.substring(6, 8) + "/" + value.substring(4, 6) + "/" + value.substring(0, 4);
-                }
+                }				
                 if (value != '') {
-                    html += `		<div class="item ">
-										<div class="item-content">
-											<div class="item-title">
-												${title}
+					if(property.type=="image")
+					{
+						html += `		<div class="item ">
+											<div class="item-content">
+												<div class="item-title">
+													${title}
+												</div>
+												<div class="item-data">
+												&nbsp;
+												</div>
+												<div class="user-miniatura">
+													<div class="imagen-usuario-wrap">
+														<div class="imagen">
+															<span style="background-image: url('${value}')"></span>
+														</div>
+													</div>
+												</div>
 											</div>
-											<div class="item-data">
-												${value}
+										</div>`;
+					}else{
+						html += `		<div class="item ">
+											<div class="item-content">
+												<div class="item-title">
+													${title}
+												</div>
+												<div class="item-data">
+													${value}
+												</div>
 											</div>
-										</div>
-									</div>`;
+										</div>`;
+					}
                 }
             } else {
                 if (property.entityAuxData.rdftype == 'http://xmlns.com/foaf/0.1/Document') {
@@ -590,7 +648,7 @@ var edicionCV = {
 											</div>
 											<div class="title-wrap">
 												<h2 class="resource-title">
-													<a href="#" data-id="${id}">${data.title}</a>
+													<a href="#" data-id="${id}" internal-id="${data.identifier}">${data.title}</a>
 													${this.printHtmlListItemVisibilidad(data)}
 													${this.printHtmlListItemEditable(data)}
 												</h2>
@@ -896,7 +954,7 @@ var edicionCV = {
         }
         $('div[section="' + id + '"] .numResultados').text('(' + $('div[section="' + id + '"] article').length + ')');
         this.engancharComportamientosCV();
-        accionesCurriculum.init();
+        accionesPlegarDesplegarModal.init();
     },
     paginarListado: function(sectionID, pagina) {
         $('.panel-group[section="' + sectionID + '"] .panNavegador .pagination.numbers .actual').removeClass('actual');
@@ -1024,7 +1082,7 @@ var edicionCV = {
     printRowEdit: function(iseditable, row) {
         var rowHtml = `<div class="custom-form-row">`
         for (var k = 0; k < row.properties.length; k++) {
-            rowHtml += this.printPropertyEdit(iseditable, row.properties[k]);
+            rowHtml += this.printPropertyEdit(iseditable, row.properties[k]);			
         }
         rowHtml += `</div>`;
 
@@ -1078,20 +1136,29 @@ var edicionCV = {
             var htmlInput = '';
 
             switch (property.type) {
-                case 'text':
-                    htmlInput = this.printPropertyEditTextInput(property.property, property.placeholder, value, property.required, !iseditable, property.autocomplete);
+				case 'boolean':
+                    htmlInput = this.printSelectCombo(property.property, value, property.comboValues, property.comboDependency, property.required, !iseditable,property.entity_cv,property.dependency);
+                    break;
+				case 'image':
+                    htmlInput = this.printPropertyEditImage(property.property, property.placeholder, value);
+                    break;
+                case "entityautocomplete":
+                    htmlInput = this.printPropertyEditEntityAutocomplete(property.property, property.placeholder, property.propertyEntityValue, property.required, !iseditable, property.autocomplete, property.dependency,property.autocompleteConfig);
+                    break;
+				case 'text':
+                    htmlInput = this.printPropertyEditTextInput(property.property, property.placeholder, value, property.required, !iseditable, property.autocomplete, property.dependency,property.autocompleteConfig,property.entity_cv);
                     break;
                 case 'number':
-                    htmlInput = this.printPropertyEditNumberInput(property.property, property.placeholder, value, property.required, !iseditable);
+                    htmlInput = this.printPropertyEditNumberInput(property.property, property.placeholder, value, property.required, !iseditable, property.dependency);
                     break;
                 case 'selectCombo':
-                    htmlInput = this.printSelectCombo(property.property, value, property.comboValues, property.comboDependency, property.required, !iseditable);
+                    htmlInput = this.printSelectCombo(property.property, value, property.comboValues, property.comboDependency, property.required, !iseditable,property.entity_cv,property.dependency);
                     break;
                 case 'textarea':
-                    htmlInput = this.printPropertyEditTextArea(property.property, property.placeholder, value, property.required, !iseditable);
+                    htmlInput = this.printPropertyEditTextArea(property.property, property.placeholder, value, property.required, !iseditable,property.entity_cv);
                     break;
                 case 'date':
-                    htmlInput = this.printPropertyEditDate(property.property, property.placeholder, value, property.required, !iseditable);
+                    htmlInput = this.printPropertyEditDate(property.property, property.placeholder, value, property.required, !iseditable, property.dependency);
                     break;
                 case 'auxEntity':
                 case 'auxEntityAuthorList':
@@ -1148,6 +1215,33 @@ var edicionCV = {
 
                     break;
             }
+			if(property.propertyEntity!=null)
+			{
+				var propertyEntityValue='';
+				if(property.propertyEntityValue!=null)
+				{
+					propertyEntityValue=property.propertyEntityValue;
+				}
+				htmlInput+=`<input propertyorigin="${property.property}" propertyrdf="${property.propertyEntity}" value="${propertyEntityValue}" type="hidden" class="form-control not-outline ">`;
+			}
+			if(property.type=="entityautocomplete")
+			{
+				var htmlDependency = '';
+				var cssDependency=''
+				if(property.dependency!=null)
+				{
+					cssDependency+=' hasdependency';
+					if(property.dependency.parentDependencyValue!=null)
+					{
+						htmlDependency=` dependencyproperty="${property.dependency.parent}" dependencypropertyvalue="${property.dependency.parentDependencyValue}"` ;			
+					}else if(property.dependency.parentDependencyValueDistinct!=null)
+					{
+						htmlDependency=` dependencyproperty="${property.dependency.parent}" dependencypropertyvaluedistinct="${property.dependency.parentDependencyValueDistinct}"` ;			
+					}
+				}
+				
+				htmlInput+=`<input propertyorigin="${property.property}_aux" propertyrdf="${property.property}" value="${value}" type="hidden" class="form-control not-outline ${cssDependency} " ${htmlDependency} >`;
+			}
             return `<div class="form-group ${css}" ${rdftype}>
 					<label class="control-label d-block">${property.title}${required}</label>
 					${htmlInput}
@@ -1155,7 +1249,7 @@ var edicionCV = {
         } else {
             if (property.multiple) {
                 css += ' multiple';
-            }
+            }			
             var htmlMultiple = `<div class='item aux'>`;
             if (property.type == 'auxEntity' || property.type == 'auxEntityAuthorList' || property.type == 'thesaurus') {
                 htmlMultiple = `<div class='item aux entityaux' propertyrdf='${property.property}' rdftype='${property.entityAuxData.rdftype}' about=''>`;
@@ -1164,13 +1258,13 @@ var edicionCV = {
             }
             switch (property.type) {
                 case 'text':
-                    htmlMultiple += this.printPropertyEditTextInput(property.property, property.placeholder, '', property.required, !iseditable, property.autocomplete);
+                    htmlMultiple += this.printPropertyEditTextInput(property.property, property.placeholder, '', property.required, !iseditable, property.autocomplete, property.dependency,property.autocompleteConfig,property.entity_cv);
                     break;
                 case 'number':
-                    htmlMultiple = this.printPropertyEditNumberInput(property.property, property.placeholder, value, property.required, !iseditable);
+                    htmlMultiple = this.printPropertyEditNumberInput(property.property, property.placeholder, value, property.required, !iseditable, property.dependency);
                     break;
                 case 'selectCombo':
-                    htmlMultiple += this.printSelectCombo(property.property, '', property.comboValues, property.comboDependency, property.required, !iseditable);
+                    htmlMultiple += this.printSelectCombo(property.property, '', property.comboValues, property.comboDependency, property.required, !iseditable,property.entity_cv,property.dependency);
                     break;
                 case 'thesaurus':
                     var valuesThesaurus = $.map(property.entityAuxData.entities, function(entity) {
@@ -1181,10 +1275,10 @@ var edicionCV = {
                     htmlMultiple += this.printRowsEdit(iseditable, property.entityAuxData.rows);
                     break;
                 case 'textarea':
-                    htmlMultiple += this.printPropertyEditTextArea(property.property, property.placeholder, '', property.required, !iseditable);
+                    htmlMultiple += this.printPropertyEditTextArea(property.property, property.placeholder, '', property.required, !iseditable,property.entity_cv);
                     break;
                 case 'date':
-                    htmlMultiple += this.printPropertyEditDate(property.property, property.placeholder, '', property.required, !iseditable);
+                    htmlMultiple += this.printPropertyEditDate(property.property, property.placeholder, '', property.required, !iseditable, property.dependency);
                     break;
                 case 'auxEntity':
                 case 'auxEntityAuthorList':
@@ -1264,10 +1358,10 @@ var edicionCV = {
                         htmlMultiple += this.printPropertyEditNumberInput(property.property, property.placeholder, property.values[valor], property.required, true);
                         break;
                     case 'selectCombo':
-                        htmlMultiple += this.printSelectCombo(property.property, property.values[valor], property.comboValues, property.comboDependency, property.required, true);
+                        htmlMultiple += this.printSelectCombo(property.property, property.values[valor], property.comboValues, property.comboDependency, property.required, true,property.entity_cv,property.dependency);
                         break;
                     case 'textarea':
-                        htmlMultiple += this.printPropertyEditTextArea(property.property, property.placeholder, property.values[valor], property.required, true);
+                        htmlMultiple += this.printPropertyEditTextArea(property.property, property.placeholder, property.values[valor], property.required, true,property.entity_cv);
                         break;
                     case 'date':
                         htmlMultiple += this.printPropertyEditDate(property.property, property.placeholder, property.values[valor], property.required, true);
@@ -1328,13 +1422,112 @@ var edicionCV = {
                 }
                 htmlMultiple += '</div>';
             }
-            return `<div class="form-group ${css}" ${order} ${rdftype}>
+			var htmlDependency = '';
+			if(property.dependency!=null)
+			{
+				css+=' hasdependency';
+
+				if(property.dependency.parentDependencyValue!=null)
+				{
+					htmlDependency=` dependencyproperty="${property.dependency.parent}" dependencypropertyvalue="${property.dependency.parentDependencyValue}"` ;		
+		
+				}else if(property.dependency.parentDependencyValueDistinct!=null)
+				{
+					htmlDependency=` dependencyproperty="${property.dependency.parent}" dependencypropertyvaluedistinct="${property.dependency.parentDependencyValueDistinct}"` ;			
+				}
+				
+			}
+            return `<div ${htmlDependency} class="form-group ${css}" ${order} ${rdftype}>
 					<label class="control-label d-block">${property.title}${required}</label>
 					${htmlMultiple}
 				</div>`;
         }
     },
-    printPropertyEditTextInput: function(property, placeholder, value, required, pDisabled, autocomplete) {
+    printPropertyEditImage: function(property, placeholder, value) {    
+		var imagen="";
+		if(value!=null)
+		{
+			imagen=`<img class="image-uploader__img" src="${value}">`;
+		}
+        return `<div class="image-uploader js-image-uploader" id="foto-perfil-cv">
+					<div class="image-uploader__preview">
+						${imagen}				
+					</div>
+					<div class="image-uploader__drop-area">
+						<div class="image-uploader__icon">
+							<span class="material-icons">backup</span>
+						</div>
+						<div class="image-uploader__info">
+							<p><strong>${placeholder}</strong></p>
+							<p>${GetText('CV_FORMATOIMAGENES')}</p>
+							<p>${GetText('CV_PESOMAXIMOIMAGENES')}</p>
+						</div>
+					</div>
+					<div class="image-uploader__error">
+						<p class="ko"></p>
+					</div>
+					<input type="file" class="image-uploader__input">
+					<input propertyrdf="${property}" type="hidden">
+				</div>`;
+    },
+    printPropertyEditTextInput: function(property, placeholder, value, required, pDisabled, autocomplete, dependency,autocompleteConfig,pEntity_cv) {
+        var css = "";
+        if (required) {
+            css = "obligatorio";
+        }
+		if(pEntity_cv)
+		{
+			css+=" entity_cv";
+		}
+        var prop_property = 'propertyrdf';
+        var disabled = '';
+        if (pDisabled && !pEntity_cv) {
+            disabled = 'disabled';
+        }
+
+        var action = '';
+		var atributesAutocomplete='';
+        if (autocomplete) {
+            action = 'addAutocompletar(this)';
+			if(autocompleteConfig!=null)
+			{
+				if(autocompleteConfig.property!=null)
+				{
+					atributesAutocomplete+=' propertyautocomplete="'+autocompleteConfig.property+'" ';
+				}
+				if(autocompleteConfig.rdftype!=null)
+				{
+					atributesAutocomplete+=' rdftypeautocomplete="'+autocompleteConfig.rdftype+'" ';
+				}
+				if(autocompleteConfig.graph!=null)
+				{
+					atributesAutocomplete+=' graphautocomplete="'+autocompleteConfig.graph+'" ';
+				}
+				if(autocompleteConfig.getEntityId)
+				{
+					atributesAutocomplete+=' entityidautocomplete="true" ';
+				}
+			}
+        }
+		
+		var htmlDependency = '';
+		if(dependency!=null)
+		{
+			css+=' hasdependency';
+			if(dependency.parentDependencyValue!=null)
+			{
+				htmlDependency=` dependencyproperty="${dependency.parent}" dependencypropertyvalue="${dependency.parentDependencyValue}"` ;		
+	
+			}else if(dependency.parentDependencyValueDistinct!=null)
+			{
+				htmlDependency=` dependencyproperty="${dependency.parent}" dependencypropertyvaluedistinct="${dependency.parentDependencyValueDistinct}"` ;			
+			}
+			
+		}
+
+        return `<input ${disabled} ${atributesAutocomplete} propertyrdf="${property}" placeholder="${placeholder}" value="${value}" value="${value}" onclick="${action}" type="text" class="form-control not-outline ${css}" ${htmlDependency}>`;
+    },
+    printPropertyEditEntityAutocomplete: function(property, placeholder, value, required, pDisabled, autocomplete, dependency,autocompleteConfig) {
         var css = "";
         if (required) {
             css = "obligatorio";
@@ -1346,13 +1539,44 @@ var edicionCV = {
         }
 
         var action = '';
+		var atributesAutocomplete='';
         if (autocomplete) {
             action = 'addAutocompletar(this)';
+			if(autocompleteConfig!=null)
+			{
+				if(autocompleteConfig.property!=null)
+				{
+					atributesAutocomplete+=' propertyautocomplete="'+autocompleteConfig.property+'" ';
+				}
+				if(autocompleteConfig.rdftype!=null)
+				{
+					atributesAutocomplete+=' rdftypeautocomplete="'+autocompleteConfig.rdftype+'" ';
+				}
+				if(autocompleteConfig.graph!=null)
+				{
+					atributesAutocomplete+=' graphautocomplete="'+autocompleteConfig.graph+'" ';
+				}				
+				atributesAutocomplete+=' entityidautocomplete="true" ';
+			}
         }
+		
+		var htmlDependency = '';
+		if(dependency!=null)
+		{
+			css+=' hasdependency';
+			if(dependency.parentDependencyValue!=null)
+			{
+				htmlDependency=` dependencyproperty="${dependency.parent}" dependencypropertyvalue="${dependency.parentDependencyValue}"` ;		
+	
+			}else if(dependency.parentDependencyValueDistinct!=null)
+			{
+				htmlDependency=` dependencyproperty="${dependency.parent}" dependencypropertyvaluedistinct="${dependency.parentDependencyValueDistinct}"` ;			
+			}			
+		}
 
-        return `<input ${disabled} propertyrdf="${property}" placeholder="${placeholder}" value="${value}" value="${value}" onclick="${action}" type="text" class="form-control not-outline ${css}">`;
+        return `<input ${disabled} ${atributesAutocomplete} propertyrdf="${property}_aux" placeholder="${placeholder}" value="${value}" value="${value}" onclick="${action}" type="text" class="form-control not-outline autocompleteentity ${css}" ${htmlDependency}>`;
     },
-    printPropertyEditNumberInput: function(property, placeholder, value, required, pDisabled) {
+    printPropertyEditNumberInput: function(property, placeholder, value, required, pDisabled, dependency) {
         var css = "";
         if (required) {
             css = "obligatorio";
@@ -1362,9 +1586,23 @@ var edicionCV = {
         if (pDisabled) {
             disabled = 'disabled';
         }
-        return `<input ${disabled} propertyrdf="${property}" placeholder="${placeholder}" value="${value}" type="number" class="form-control not-outline ${css}">`;
+		var htmlDependency = '';
+		if(dependency!=null)
+		{
+			css+=' hasdependency';
+			
+			if(dependency.parentDependencyValue!=null)
+			{
+				htmlDependency=` dependencyproperty="${dependency.parent}" dependencypropertyvalue="${dependency.parentDependencyValue}"` ;		
+	
+			}else if(dependency.parentDependencyValueDistinct!=null)
+			{
+				htmlDependency=` dependencyproperty="${dependency.parent}" dependencypropertyvaluedistinct="${dependency.parentDependencyValueDistinct}"` ;			
+			}
+		}
+        return `<input ${disabled} propertyrdf="${property}" placeholder="${placeholder}" value="${value}" type="number" class="form-control not-outline ${css}" ${htmlDependency}>`;
     },
-    printPropertyEditDate: function(property, placeholder, value, required, pDisabled) {
+    printPropertyEditDate: function(property, placeholder, value, required, pDisabled, dependency) {
         var valueDate = "";
         if (value != '') {
             valueDate = value.substring(6, 8) + "/" + value.substring(4, 6) + "/" + value.substring(0, 4);
@@ -1377,72 +1615,85 @@ var edicionCV = {
         if (pDisabled) {
             disabled = 'disabled';
         }
-        return `<input propertyrdf="${property}" value="${value}" type="hidden">
+		var htmlDependency = '';
+		if(dependency!=null)
+		{
+			if(dependency.parentDependencyValue!=null)
+			{
+				htmlDependency=` dependencyproperty="${dependency.parent}" dependencypropertyvalue="${dependency.parentDependencyValue}" class="hasdependency"` ;		
+	
+			}else if(dependency.parentDependencyValueDistinct!=null)
+			{
+				htmlDependency=` dependencyproperty="${dependency.parent}" dependencypropertyvaluedistinct="${dependency.parentDependencyValueDistinct}" class="hasdependency"` ;			
+			}			
+		}
+        return `<input propertyrdf="${property}" value="${value}" type="hidden" ${htmlDependency}>
 		<input ${disabled} propertyrdf="${property}" placeholder="${placeholder}" value="${valueDate}" type="text" class="form-control aux not-outline form-group-date datepicker ${css}">
 				<span class="material-icons form-group-date">today</span>`;
     },
-    printPropertyEditTextArea: function(property, placeholder, value, required, pDisabled) {
+    printPropertyEditTextArea: function(property, placeholder, value, required, pDisabled,pEntity_cv) {
         var css = "";
         if (required) {
             css = "obligatorio";
         }
+		if(pEntity_cv)
+		{
+			css+=" entity_cv";
+		}
         var disabled = '';
-        if (pDisabled) {
+        if (pDisabled && !pEntity_cv) {
             disabled = 'disabled';
         }
         return `<textarea ${disabled} propertyrdf="${property}" placeholder="${placeholder}" type="text" class="form-control not-outline ${css}">${value}</textarea>`;
     },
-    printSelectCombo: function(property, pId, pItems, pDependency, required, pDisabled) {
+    printSelectCombo: function(property, pId, pItems, pComboDependency, required, pDisabled,pEntity_cv,pDependency) {
         var disabled = '';
-        if (pDisabled) {
+        if (pDisabled && !pEntity_cv) {
             disabled = 'disabled';
         }
         var css = "";
         if (required) {
             css = "obligatorio";
         }
+		if(pEntity_cv)
+		{
+			css+=" entity_cv";
+		}
         var dependency = "";
-        if (pDependency != null) {
+        if (pComboDependency != null) {
             css += " hasdependency";
-            dependency = pDependency.parent;
+            dependency = pComboDependency.parent;
         }
-        var selector = `<select ${disabled} propertyrdf="${property}" class="js-select2 ${css}" dependency="${dependency}" data-select-search="true">`;
+		
+		var htmlDependency = '';
+		if(pDependency!=null)
+		{
+			css+=' hasdependency';
+			if(pDependency.parentDependencyValue!=null)
+			{
+				htmlDependency=` dependencyproperty="${pDependency.parent}" dependencypropertyvalue="${pDependency.parentDependencyValue}"` ;		
+	
+			}else if(pDependency.parentDependencyValueDistinct!=null)
+			{
+				htmlDependency=` dependencyproperty="${pDependency.parent}" dependencypropertyvaluedistinct="${pDependency.parentDependencyValueDistinct}"` ;			
+			}			
+		}
+		
+		
+		
+        var selector = `<select ${disabled} ${htmlDependency} propertyrdf="${property}" class="js-select2 ${css}" dependency="${dependency}" data-select-search="true">`;
         for (var propiedad in pItems) {
             var propAux = '';
             if (propiedad == pId) {
                 propAux = ' selected ';
             }
-            if (pDependency != null && propiedad != "") {
-                propAux += ' disabled data-dependency="' + pDependency.parentDependency[propiedad] + '"';
+            if (pComboDependency != null && propiedad != "") {
+                propAux += ' disabled data-dependency="' + pComboDependency.parentDependency[propiedad] + '"';
             }
 
             selector += `<option ${propAux} value="${propiedad}">${pItems[propiedad]}</option>`;
         }
         selector += "</select>";
-        if (pDependency != null) {
-            /*
-            var script = ` $('select[propertyrdf="${pDependency.parent}"]').change(function(){
-            	var valorSeleccionado = $(this).val();
-            	var comboHijo = $('select[propertyrdf="${property}"]');
-            	comboHijo.find('option').each(function(){
-            		if($(this).attr('data-dependency') == valorSeleccionado || $(this).attr('data-dependency') == null){
-            			$(this).removeAttr('disabled');
-            		}
-            		else{
-            			$(this).attr('disabled', 'disabled');
-            		}
-            	})
-            	var opcionHijaSelecccionada = comboHijo.find('option:selected');
-            	if(opcionHijaSelecccionada.length > 0 && opcionHijaSelecccionada.attr("data-dependency") != valorSeleccionado)
-            	{
-            		comboHijo.find('option:nth-child(1)')
-            		  .prop('selected',true)
-            		  .trigger('change')
-            	}
-            });
-            $('select[propertyrdf="${pDependency.parent}"]').trigger('change')`;
-            selector += '<script>' + script + '</script>'*/
-        }
         return selector;
     },
     printThesaurus: function(property, values, pItems, required, pDisabled) {
@@ -1605,7 +1856,6 @@ var edicionCV = {
         listadosTesauros.find('a.faceta.selected').removeClass('selected');
 
         $(".entityauxcontainer.thesaurus").each(function() {
-
             if ($(this).attr('idtemp') == null) {
                 $(this).attr('idtemp', RandomGuid());
             }
@@ -1653,8 +1903,22 @@ var edicionCV = {
 
         });
 
-        var listadosTesauros = $(".entityauxcontainer.thesaurus .simple-collapse-content .resource-list ul")
-        listadosTesauros.last().append(listadosTesauros.find("li"));
+        var listadosTesauros = $(".entityauxcontainer.thesaurus");
+		
+		$(listadosTesauros).each(function() {
+			var tesauroUser=$(".entityauxcontainer.thesaurus div.item.aux[propertyrdf='http://w3id.org/roh/userKnowledgeArea']").closest('.entityauxcontainer.thesaurus');
+			if(tesauroUser.length==1)
+			{
+				//Si existe el tesauro del usuario y el tesauro actual es http://w3id.org/roh/externalKnowledgeArea o
+				//http://w3id.org/roh/enrichedKnowledgeArea o http://w3id.org/roh/userKnowledgeArea, lo añadimos al del usuario
+				var propActual=$(this).find('div.item.aux').attr('propertyrdf');
+				if(propActual=="http://w3id.org/roh/externalKnowledgeArea"||propActual=="http://w3id.org/roh/enrichedKnowledgeArea"||propActual=="http://w3id.org/roh/userKnowledgeArea")
+				{
+					tesauroUser.find('.simple-collapse-content .resource-list ul').append($(this).find('.simple-collapse-content .resource-list ul li'));
+				}
+			}
+			
+		});
 
         this.engancharComportamientosCV();
     },
@@ -1681,22 +1945,24 @@ var edicionCV = {
         var background = '';
         var deleteButton = `<span class="material-icons cerrar">close</span>`;
         var lockCheck = false;
+		var propRdfTesauro=item.attr('propertyrdf');
         switch (item.attr('propertyrdf')) {
             case 'http://w3id.org/roh/externalKnowledgeArea':
                 background = 'background-oscuro';
                 deleteButton = '';
                 lockCheck = true;
+				propRdfTesauro='http://w3id.org/roh/userKnowledgeArea';
                 break;
             case 'http://w3id.org/roh/enrichedKnowledgeArea':
                 background = 'background-amarillo';
                 lockCheck = true;
+				propRdfTesauro='http://w3id.org/roh/userKnowledgeArea';
                 break;
             case 'http://w3id.org/roh/userKnowledgeArea':
                 break;
         }
 
-        var listadosTesauros = $(".entityauxcontainer.thesaurus .item.aux.entityaux ul.listadoTesauro")
-        var listado = listadosTesauros.last();
+		var listado=$(".entityauxcontainer.thesaurus div.item.aux[propertyrdf='"+propRdfTesauro+"']").closest('.entityauxcontainer.thesaurus');
         $.each(IdItems, function(key, value) {
             var check = listado.find('a.faceta[name="' + value + '"]');
             check.addClass('selected');
@@ -1704,6 +1970,30 @@ var edicionCV = {
                 check.addClass('lock');
             }
         });
+		
+		
+		
+		
+		var listadosTesauros = $(".entityauxcontainer.thesaurus");
+		
+		$(listadosTesauros).each(function() {
+			var tesauroUser=$(".entityauxcontainer.thesaurus div.item.aux[propertyrdf='http://w3id.org/roh/userKnowledgeArea']").closest('.entityauxcontainer.thesaurus');
+			if(tesauroUser.length==1)
+			{
+				//Si existe el tesauro del usuario y el tesauro actual es http://w3id.org/roh/externalKnowledgeArea o
+				//http://w3id.org/roh/enrichedKnowledgeArea o http://w3id.org/roh/userKnowledgeArea, lo añadimos al del usuario
+				var propActual=$(this).find('div.item.aux').attr('propertyrdf');
+				if(propActual=="http://w3id.org/roh/externalKnowledgeArea"||propActual=="http://w3id.org/roh/enrichedKnowledgeArea"||propActual=="http://w3id.org/roh/userKnowledgeArea")
+				{
+					tesauroUser.find('.simple-collapse-content .resource-list ul').append($(this).find('.simple-collapse-content .resource-list ul li'));
+				}
+			}
+			
+		});
+
+		
+		
+		
 
 
         return `<li class="${background}" about="${item.attr('about')}" parent-idtemp="${idTemp}" order="${num}">
@@ -1846,12 +2136,12 @@ var edicionCV = {
                 var htmlSearch = "";
                 if (items.length > 1) {
 
-                    htmlSearch = `	<div id="buscador" class="buscador">
+                    /*htmlSearch = `	<div id="buscador" class="buscador">
 										<input type="text" id="txtBusquedaPrincipal" class="not-outline text txtBusqueda autocompletar personalizado ac_input" placeholder="${GetText('CV_ESCRIBE_ALGO')}" value="${texto}" autocomplete="off">
 										<span class="botonSearch">
 											<span class="material-icons">search</span>
 										</span>
-									</div>`;
+									</div>`;*/
                 }
                 var htmlAcciones = `
 									<div class="simple-collapse-content">
@@ -2339,11 +2629,18 @@ var edicionCV = {
     },
     //Fin de métodos de edición
     engancharComportamientosCV: function() {
+		 $('select').unbind("change.selectitem").bind("change.selectitem", function() {
+			var valor=$(this).val();
+			$(this).find('option[value="'+valor+'"]').attr('selected',''); 
+			$(this).find('option[value!="'+valor+'"]').removeAttr('selected'); 
+		});
+		
         $('.select2-container').remove();
         iniciarSelects2.init();
         iniciarDatepicker.init();
         plegarSubFacetas.init();
         operativaFormularioTesauro.init();
+		iniciarComportamientoImagenUsuario.init();
         var that = this;
 
         //Tesauros
@@ -2438,7 +2735,8 @@ var edicionCV = {
 
         //Cargar edición/creación de item
         $('.panel-group .resource-list h2.resource-title a,.panel-group .acciones-listado a.aniadirEntidad').off('click').on('click', function(e) {
-            $('#modal-editar-entidad').modal('show');
+            e.preventDefault();
+			$('#modal-editar-entidad').modal('show');
             var sectionID = $(this).closest('.panel-group').attr('section');
             var entityID = "";
             if ($(this).attr('data-id') != null) {
@@ -2497,6 +2795,8 @@ var edicionCV = {
                     $('#inputsignatures').val('');
                     $('#inputsignatures').removeAttr('disabled');
                     $('#modal-anadir-autor .validar').removeAttr('disabled');
+					$('#modal-anadir-autor .validar').text(GetText('CV_BUSCAR'));
+					$('#modal-anadir-autor .validar').removeAttr('reset');
                     $('#modal-anadir-autor').attr('propertyrdf', $(this).closest('.entityauxauthorlist').find('.item.aux.entityaux').attr('propertyrdf'));
                 } else {
                     //Edición
@@ -2719,11 +3019,18 @@ var edicionCV = {
 
         //Buscar personas por firma
         $('#modal-anadir-autor .validar').off('click').on('click', function(e) {
-            if ($(this).attr('disabled') != 'disabled') {
+            if ($(this).attr('reset') != 'true') {
                 $('#inputsignatures').attr('disabled', 'disabled');
-                $('#modal-anadir-autor .validar').attr('disabled', 'disabled');
+				$('#modal-anadir-autor .validar').text(GetText('CV_RESTABLECER'));
+				$('#modal-anadir-autor .validar').attr('reset','true');
                 that.validarFirmas();
-            }
+            }else{
+				$('#inputsignatures').removeAttr('disabled');
+				$(this).removeAttr('reset');
+				$('#modal-anadir-autor .validar').text(GetText('CV_BUSCAR'));
+				$('#inputsignatures').val('');
+				$('#modal-anadir-autor div.custom-form-row.resultados').empty();
+			}
         });
 
         //Enganchamos comportamiento check firmas		
@@ -2968,32 +3275,183 @@ var edicionCV = {
         $('select.hasdependency').each(function() {
             //Obtenemos el input del que es dependiente
             var dependency = $(this).attr('dependency');
-            //Seleccionamos el input del que es dependiente y le añadimos el input sobre el que tiene que actuar
-            $('select[propertyrdf="' + dependency + '"]').attr('dependencyact', $(this).attr('propertyrdf'));
-            $('select[propertyrdf="' + dependency + '"]').unbind("change.dependency").bind("change.dependency", function() {
-                var valorSeleccionado = $(this).val();
-                var comboHijo = $(this).closest('.custom-form-row').find('select[propertyrdf="' + $(this).attr('dependencyact') + '"]');
-                comboHijo.find('option').each(function() {
-                    if ($(this).attr('data-dependency') == valorSeleccionado || $(this).attr('data-dependency') == null) {
-                        $(this).removeAttr('disabled');
-                    } else {
-                        $(this).attr('disabled', 'disabled');
-                    }
-                })
-                var opcionHijaSelecccionada = comboHijo.find('option:selected');
-                if (opcionHijaSelecccionada.length > 0 && opcionHijaSelecccionada.attr("data-dependency") != valorSeleccionado) {
-                    comboHijo.find('option:nth-child(1)')
-                        .prop('selected', true)
-                        .trigger('change')
-                }
-            });
-            $('select[propertyrdf="' + dependency + '"]').trigger('change');
+			if(dependency!='')
+			{
+				//Seleccionamos el input del que es dependiente y le añadimos el input sobre el que tiene que actuar
+				$('select[propertyrdf="' + dependency + '"]').attr('dependencyact', $(this).attr('propertyrdf'));
+				$('select[propertyrdf="' + dependency + '"]').unbind("change.dependencycombo").bind("change.dependencycombo", function() {
+					var valorSeleccionado = $(this).val();
+					var comboHijo = $(this).closest('.custom-form-row').find('select[propertyrdf="' + $(this).attr('dependencyact') + '"]');
+					comboHijo.find('option').each(function() {
+						if ($(this).attr('data-dependency') == valorSeleccionado || $(this).attr('data-dependency') == null) {
+							$(this).removeAttr('disabled');
+						} else {
+							$(this).attr('disabled', 'disabled');
+						}
+					})
+					var opcionHijaSelecccionada = comboHijo.find('option:selected');
+					if (opcionHijaSelecccionada.length > 0 && opcionHijaSelecccionada.attr("data-dependency") != valorSeleccionado) {
+						comboHijo.find('option:nth-child(1)')
+							.prop('selected', true)
+							.trigger('change')
+					}
+				});
+				$('select[propertyrdf="' + dependency + '"]').trigger('change');
+			}else
+			{
+				//Obtenemos el input del que es dependiente
+				var dependencyproperty = $(this).attr('dependencyproperty');
+				//Seleccionamos el input del que es dependiente y le añadimos el/los input sobre el que tiene que actuar
+				var lista=[];
+				if($('select[propertyrdf="' + dependencyproperty + '"]').attr('dependencyactcombo')!=null)
+				{
+					lista=$('select[propertyrdf="' + dependencyproperty + '"]').attr('dependencyactcombo').split(',');
+				}
+				if(lista.indexOf($(this).attr('propertyrdf'))==-1)
+				{
+					lista.push($(this).attr('propertyrdf'));
+				}
+				$('select[propertyrdf="' + dependencyproperty + '"],input[propertyrdf="' + dependencyproperty + '"]').attr('dependencyactcombo',lista.join(','));
+				$('select[propertyrdf="' + dependencyproperty + '"],input[propertyrdf="' + dependencyproperty + '"]').unbind("change.dependencycombo").bind("change.dependencycombo", function() {
+					var valorSeleccionado = $(this).val();
+					var that2=this;
+					$.each($(this).attr('dependencyactcombo').split(','), function (ind, elem) { 
+						var inputDestino=$(that2).closest('.entityaux').find('input[propertyrdf="' + elem + '"],select[propertyrdf="' + elem + '"]');
+						if(inputDestino.length==0)
+						{
+							var inputDestino=$(that2).closest('form').find('input[propertyrdf="' + elem + '"],select[propertyrdf="' + elem + '"]');
+						}
+						if(inputDestino.attr('dependencypropertyvalue')!=null)
+						{						
+							var dependencyDestinoValue=inputDestino.attr('dependencypropertyvalue');
+							if((valorSeleccionado==dependencyDestinoValue) || (dependencyDestinoValue=="*" && valorSeleccionado!='') )
+							{
+								$(inputDestino).parent().show();
+							}else
+							{
+								$(inputDestino).parent().hide();
+								$(inputDestino).val('');
+								$(inputDestino).trigger('change');
+							}
+						}
+						if(inputDestino.attr('dependencypropertyvaluedistinct')!=null)
+						{						
+							var dependencyDestinoValueDistinct=inputDestino.attr('dependencypropertyvaluedistinct');
+							if(valorSeleccionado!=dependencyDestinoValueDistinct)
+							{
+								$(inputDestino).parent().show();
+							}else
+							{
+								$(inputDestino).parent().hide();
+								$(inputDestino).val('');
+								$(inputDestino).trigger('change');
+							}
+						}
+					}); 
+					
+					
+				});
+				$('select[propertyrdf="' + dependencyproperty + '"],input[propertyrdf="' + dependencyproperty + '"]').trigger('change');
+			}
         });
 
         //Petición de enriquecimiento
         $('form[rdftype="http://purl.org/ontology/bibo/Document"] textarea[propertyrdf="http://purl.org/ontology/bibo/abstract"]').off('focusout').on('focusout', function(e) {
             //TODO: Revisar tema del documento PDF. De momento, siempre se le pasa NULL.
             edicionCV.cargarAreasEtiquetasEnriquecidas($('form[rdftype="http://purl.org/ontology/bibo/Document"] input[propertyrdf="http://w3id.org/roh/title"]').val(), $('form[rdftype="http://purl.org/ontology/bibo/Document"] textarea[propertyrdf="http://purl.org/ontology/bibo/abstract"]').val(), null);
+        });
+		
+		//campos de texto dependientes
+        $('input.hasdependency[type=text],input.hasdependency[type=hidden],input.hasdependency[type=number]').each(function() {
+            //Obtenemos el input del que es dependiente
+            var dependencyproperty = $(this).attr('dependencyproperty');
+            //Seleccionamos el input del que es dependiente y le añadimos el/los input sobre el que tiene que actuar
+			var lista=[];
+			if($('select[propertyrdf="' + dependencyproperty + '"]').attr('dependencyact')!=null)
+			{
+				lista=$('select[propertyrdf="' + dependencyproperty + '"]').attr('dependencyact').split(',');
+			}
+			if(lista.indexOf($(this).attr('propertyrdf'))==-1)
+			{
+				lista.push($(this).attr('propertyrdf'));
+			}
+            $('select[propertyrdf="' + dependencyproperty + '"],input[propertyrdf="' + dependencyproperty + '"]').attr('dependencyact',lista.join(','));
+            $('select[propertyrdf="' + dependencyproperty + '"],input[propertyrdf="' + dependencyproperty + '"]').unbind("change.dependency").bind("change.dependency", function() {
+                var valorSeleccionado = $(this).val();
+				var that2=this;
+				$.each($(this).attr('dependencyact').split(','), function (ind, elem) { 
+					var inputDestino=$(that2).closest('.entityaux').find('input[propertyrdf="' + elem + '"],select[propertyrdf="' + elem + '"]');
+					if(inputDestino.length==0)
+					{
+						var inputDestino=$(that2).closest('form').find('input[propertyrdf="' + elem + '"],select[propertyrdf="' + elem + '"]');
+					}			
+					if(inputDestino.attr('dependencypropertyvalue')!=null)
+					{						
+						var dependencyDestinoValue=inputDestino.attr('dependencypropertyvalue');
+						if((valorSeleccionado==dependencyDestinoValue) || (dependencyDestinoValue=="*" && valorSeleccionado!='') )
+						{
+							$(inputDestino).parent().show();
+						}else
+						{
+							$(inputDestino).parent().hide();
+							$(inputDestino).val('');
+							$(inputDestino).trigger('change');
+						}
+					}
+					if(inputDestino.attr('dependencypropertyvaluedistinct')!=null)
+					{						
+						var dependencyDestinoValueDistinct=inputDestino.attr('dependencypropertyvaluedistinct');
+						if(valorSeleccionado!=dependencyDestinoValueDistinct)
+						{
+							$(inputDestino).parent().show();
+						}else
+						{
+							$(inputDestino).parent().hide();
+							$(inputDestino).val('');
+							$(inputDestino).trigger('change');
+						}
+					}
+				}); 
+				
+				
+            });
+			$('select[propertyrdf="' + dependencyproperty + '"],input[propertyrdf="' + dependencyproperty + '"]').trigger('change');
+        });
+		
+		//entidades auxiliares dependientes
+        $('div.entityauxcontainer.hasdependency').each(function() {
+            //Obtenemos el input del que es dependiente
+            var dependencyproperty = $(this).attr('dependencyproperty');
+            //Seleccionamos el input del que es dependiente y le añadimos la/las entidades auxiliares sobre el que tiene que actuar
+			var lista=[];
+			if($('select[propertyrdf="' + dependencyproperty + '"]').attr('dependencyactentity')!=null)
+			{
+				lista=$('select[propertyrdf="' + dependencyproperty + '"]').attr('dependencyactentity').split(',');
+			}
+			if(lista.indexOf($($(this).find('div.item.aux.entityaux')[0]).attr('propertyrdf'))==-1)
+			{
+				lista.push($($(this).find('div.item.aux.entityaux')[0]).attr('propertyrdf'));
+			}
+            $('select[propertyrdf="' + dependencyproperty + '"]').attr('dependencyactentity',lista.join(','));
+            $('select[propertyrdf="' + dependencyproperty + '"]').unbind("change.dependencyentity");
+			$('select[propertyrdf="' + dependencyproperty + '"]').bind("change.dependencyentity", function() {
+                var valorSeleccionado = $(this).val();
+				var that2=this;
+				$.each($(this).attr('dependencyactentity').split(','), function (ind, elem) { 					
+					var entidadDestino=$(that2).closest('form').find('div.item.aux.entityaux[propertyrdf="' + elem + '"]').closest('div.entityauxcontainer');
+					var dependencyDestinoValue=entidadDestino.attr('dependencypropertyvalue');
+					if(valorSeleccionado==dependencyDestinoValue)
+					{
+						$(entidadDestino).parent().show();
+					}else
+					{
+						$(entidadDestino).parent().hide();
+						$(entidadDestino).find('div.item.added.entityaux').remove();
+						$(entidadDestino).find('div.simple-collapse-content .resource-list-wrap').empty();
+					}				
+				}); 			
+            });
+            $('select[propertyrdf="' + dependencyproperty + '"]').trigger('change');
         });
 
         return;
@@ -3003,7 +3461,7 @@ var edicionCV = {
         //Validamos los campos obligatorios
         var camposObligatorios = [];
         //Validamos inputs que no pertenezcan a una entidad auxiliar (ni sean multiples)
-        $(formulario).find('input.obligatorio, select.obligatorio, textarea.obligatorio').each(function(index) {
+        $(formulario).find('input.obligatorio:visible, select.obligatorio, textarea.obligatorio').each(function(index) {
             if ($(this).closest('.entityauxcontainer,.entitycontainer,.multiple').length == 0) {
                 if ($(this).val() == null || $(this).val() == '') {
                     camposObligatorios.push($(this).closest('.form-group').find('.control-label').text());
@@ -3142,46 +3600,64 @@ var edicionCV = {
             entidad.rdfTypeTab = $(pFormulario).attr('rdftypetab');
             entidad.cvID = this.idCV;
             entidad.properties = [];
-            $(pFormulario).find('input, select, textarea').each(function(index) {
-                if ($(this).attr('propertyrdf') != null) {
-                    if ($(this).closest('.item').hasClass('aux') || $(this).hasClass('aux')) {
-                        //Si es multiple y no es una entidad auxiliar y no tiene otros valores añadidos continua pero con valor vacío
-                        if ($(this).closest('.multiple:not(.entityauxcontainer )').length > 0 && $(this).closest('.multiple:not(.entityauxcontainer )').find('.added').length == 0) {
-                            $(this).val('');
-                        } else {
-                            return;
-                        }
-                    }
-                    var property = $(this).attr('propertyrdf');
-                    //Cargar propiedades padre
-                    if ($(this).closest('.entityaux').length == 1) {
-                        //TODO mas de un nivel de auxiliar
-                        var propertyParent = $(this).closest('.entityaux').attr('propertyrdf');
-                        var rdfTypeEntity = $(this).closest('.entityaux').attr('rdftype');
-                        property = propertyParent + "@@@" + rdfTypeEntity + "|" + property;
-                    }
+			entidad.properties_cv = [];
+            $(pFormulario).find('input, select, textarea').each(function(index) {				
+				if($(this).attr('type')!='file' && !$(this).hasClass('autocompleteentity'))
+				{
+					var entityCV=$(this).hasClass('entity_cv');
+					if ($(this).attr('propertyrdf') != null) {
+						if ($(this).closest('.item').hasClass('aux') || $(this).hasClass('aux')) {
+							//Si es multiple y no es una entidad auxiliar y no tiene otros valores añadidos continua pero con valor vacío
+							if ($(this).closest('.multiple:not(.entityauxcontainer )').length > 0 && $(this).closest('.multiple:not(.entityauxcontainer )').find('.added').length == 0) {
+								$(this).val('');
+							} else {
+								return;
+							}
+						}
+						var property = $(this).attr('propertyrdf');
+						//Cargar propiedades padre
+						if ($(this).closest('.entityaux').length == 1) {
+							//TODO mas de un nivel de auxiliar
+							var propertyParent = $(this).closest('.entityaux').attr('propertyrdf');
+							var rdfTypeEntity = $(this).closest('.entityaux').attr('rdftype');
+							property = propertyParent + "@@@" + rdfTypeEntity + "|" + property;
+						}
 
-                    var prop = null;
-                    for (var indice in entidad.properties) {
-                        if (entidad.properties[indice].prop == property) {
-                            prop = entidad.properties[indice];
-                        }
-                    };
-                    if (prop == null) {
-                        prop = {};
-                        prop.prop = property;
-                        prop.values = [];
-                        entidad.properties.push(prop);
-                    }
-                    var valor = $(this).val();
-                    if ($(this).closest('.entityaux').length == 1) {
-                        //TODO mas de un nivel de auxiliar
-                        var entityParent = $(this).closest('.entityaux').attr('about');
-                        valor = entityParent + "@@@" + valor;
-                    }
-                    prop.values.push(valor);
-
-                }
+						var prop = null;
+						if(entityCV)
+						{
+							for (var indice in entidad.properties_cv) {
+								if (entidad.properties_cv[indice].prop == property) {
+									prop = entidad.properties_cv[indice];
+								}
+							};
+						}else{
+							for (var indice in entidad.properties) {
+								if (entidad.properties[indice].prop == property) {
+									prop = entidad.properties[indice];
+								}
+							};
+						}
+						if (prop == null) {
+							prop = {};
+							prop.prop = property;
+							prop.values = [];
+							if(entityCV)
+							{
+								entidad.properties_cv.push(prop);
+							}else{
+								entidad.properties.push(prop);
+							}
+						}
+						var valor = $(this).val();
+						if ($(this).closest('.entityaux').length == 1) {
+							//TODO mas de un nivel de auxiliar
+							var entityParent = $(this).closest('.entityaux').attr('about');
+							valor = entityParent + "@@@" + valor;
+						}
+						prop.values.push(valor);
+					}
+				}
             });
 
             entidad.auxEntityRemove = [];
@@ -3196,7 +3672,7 @@ var edicionCV = {
 
             MostrarUpdateProgress();
             if (entidadPrincipal) {
-                //Entidad principal		
+                //Entidad principal							
                 $.post(urlGuardadoCV + 'updateEntity', entidad, function(data) {
                     if (data.ok) {
                         $(modal).modal('hide');
@@ -3227,18 +3703,18 @@ var edicionCV = {
                         OcultarUpdateProgress();
                     }
                 });
-            } else {
+            } else {	               
                 //Modal principal (item del CV)	
                 $.post(urlGuardadoCV + 'updateEntity', entidad, function(data) {
-                    if (data.ok) {
-                        $(modal).modal('hide');
-                        var entityLoad = $(pFormulario).attr('entityload');
-                        if (entityLoad != null && entityLoad != '') {
-                            //Si son los datos personales refrescamos
-                            if (entidad.rdfTypeTab == 'http://w3id.org/roh/PersonalData') {
-                                $('#identificacion-tab').click();
-                            } else {
-                                //Si viene entityLoad actualiza el item
+					if (data.ok) {
+						$(modal).modal('hide');
+						var entityLoad = $(pFormulario).attr('entityload');
+						if (entityLoad != null && entityLoad != '') {
+							//Si son los datos personales refrescamos
+							if (entidad.rdfTypeTab == 'http://w3id.org/roh/PersonalData') {
+								$('#identificacion-tab').click();
+							} else {
+								//Si viene entityLoad actualiza el item
 								if($(modal).length)
 								{
 									//Item NO CV
@@ -3257,22 +3733,21 @@ var edicionCV = {
 									});
 								}
 								
-                            }
-                        } else {
-                            //Si no viene entityLoad carga el item
-                            $.get(urlEdicionCV + 'GetItemMini?pIdSection=' + entidad.sectionID + "&pRdfTypeTab=" + entidad.rdfTypeTab + "&pEntityID=" + data.id + "&pLang=" + lang, null, function(data2) {
-                                $('div[section="' + entidad.sectionID + '"] .resource-list-wrap').append(that.printHtmlListItem(data.id, data2));
-                                that.repintarListadoTab(entidad.sectionID);
-                                OcultarUpdateProgress();
-                            });
-                        }
+							}
+						} else {
+							//Si no viene entityLoad carga el item
+							$.get(urlEdicionCV + 'GetItemMini?pIdSection=' + entidad.sectionID + "&pRdfTypeTab=" + entidad.rdfTypeTab + "&pEntityID=" + data.id + "&pLang=" + lang, null, function(data2) {
+								$('div[section="' + entidad.sectionID + '"] .resource-list-wrap').append(that.printHtmlListItem(data.id, data2));
+								that.repintarListadoTab(entidad.sectionID);
+								OcultarUpdateProgress();
+							});
+						}
 
-                    } else {
-                        alert("Error: " + data.error);
-                        OcultarUpdateProgress();
-                    }
-
-                });
+					} else {
+						alert("Error: " + data.error);
+						OcultarUpdateProgress();
+					}					
+				});
             }
         }
     },
@@ -3283,27 +3758,16 @@ var edicionCV = {
         $('#modal-anadir-autor .formulario-edicion .form-actions .ko').html("");
         var error = "";
         //Comprobamos que en el texto introducido no haya firmas duplicadas
-        var signatures = $('#inputsignatures').val().toLowerCase().split(',');
+        var signatures = $('#inputsignatures').val().toLowerCase().split(';');
 
         var signaturesArray = [];
-        var firmaActual = "";
         signatures.forEach(function(signature) {
             var actual = signature.toLowerCase().trim();
-            if (firmaActual != '' && actual.replaceAll(".", "").trim().length < 4) {
-                firmaActual += ", " + actual;
-                firmaActual = firmaActual.trim();
-                signaturesArray.push(firmaActual);
-                firmaActual = '';
-            } else {
-                if (firmaActual != '') {
-                    signaturesArray.push(firmaActual);
-                }
-                firmaActual = actual.trim();
-            }
+			if(actual!='')
+			{
+				signaturesArray.push(actual);
+			}
         });
-        if (firmaActual != '') {
-            signaturesArray.push(firmaActual);
-        }
 
         var signaturesProcessed = [];
         signaturesArray.forEach(function(signature) {
@@ -3538,16 +4002,61 @@ function EliminarAcentos(texto) {
 }
 
 function addAutocompletar(control) {
+	$(control).on("keyup", e => {
+		if($(e.target).val()!= $(e.target).data('previousValue'))
+		{
+			$(control).parent().find('input[propertyorigin="'+$(control).attr('propertyrdf')+'"]').val('');
+		}
+	});
+	
+	$(control).on('keydown', e => {
+		$(e.target).data('previousValue', $(e.target).val());
+	})
+	
+	if($(control).hasClass('autocompleteentity'))
+	{
+		$(control).on("change", e => {
+			//Si no está la entidad se elimina el valor
+			if($(control).parent().find('input[propertyorigin="'+$(control).attr('propertyrdf')+'"]').val()=='')
+			{
+				$(control).val('');
+			}
+		});
+	}
+	
+	var urlAutocomplete=null
+	var pGetEntityID=false;
+	//Por defecto busca en los valores introducidos en esa propiedad en otras entidades iguales
+	urlAutocomplete=urlEdicionCV + "GetAutocomplete";
     var pProperty = $(control).attr('propertyrdf')
     var pRdfType = $('#modal-editar-entidad form').attr('rdftype');
     var pGraph = $('#modal-editar-entidad form').attr('ontology');
+	
+	//Si hay alguna configuración lo coge de la configuración
+	if($(control).attr('propertyautocomplete')!=null)
+	{
+		pProperty=$(control).attr('propertyautocomplete');
+	}
+	if($(control).attr('rdftypeautocomplete')!=null)
+	{
+		pRdfType=$(control).attr('rdftypeautocomplete');
+	}
+	if($(control).attr('graphautocomplete')!=null)
+	{
+		pGraph=$(control).attr('graphautocomplete');
+	}
+	if($(control).attr('entityidautocomplete')=='true')
+	{
+		pGetEntityID=true;
+	}
+		
 
     var btnID = 'add_' + pProperty;
     $(control).parent().find('.acciones-listado-edicion .add').attr('id', btnID);
 
     $(control).autocomplete(
         null, {
-            url: urlEdicionCV + "GetAutocomplete",
+            url: urlAutocomplete,
             type: 'post',
             delay: 0,
             multiple: false,
@@ -3559,15 +4068,30 @@ function addAutocompletar(control) {
             parse: function(data) {
                 var parsed = [];
                 try {
-                    for (var i = 0; i < data.length; i++) {
-                        var row = data[i];
+					if(data.length==null)
+					{
+						for (var i = 0; i < Object.keys(data).length; i++) {
+							var id=Object.keys(data)[i];
+							var txt = data[id];
 
-                        parsed[parsed.length] = {
-                            data: row,
-                            value: row,
-                            result: row
-                        };
-                    }
+							parsed[parsed.length] = {
+								data: txt,
+								value: id,
+								result: txt
+							};
+						}
+					}else
+					{					
+						for (var i = 0; i < data.length; i++) {
+							var row = data[i];
+
+							parsed[parsed.length] = {
+								data: row,
+								value: row,
+								result: row
+							};
+						}
+					}
                 } catch (ex) {}
                 return parsed;
             },
@@ -3591,6 +4115,7 @@ function addAutocompletar(control) {
                 pProperty: pProperty,
                 pRdfType: pRdfType,
                 pGraph: pGraph,
+				pGetEntityID:pGetEntityID,
                 botonBuscar: btnID
             }
         }
@@ -3621,4 +4146,1706 @@ function RandomGuid() {
         return v.toString(16);
     });
 }
+
+var iniciarComportamientoImagenUsuario = {
+    init: function () {
+        this.config();
+        this.montarPlugin();
+    },
+    config: function () {
+        this.droparea = $('#foto-perfil-cv');
+    },
+    montarPlugin: function () {
+        options = {
+            sizeLimit: 100,
+        };
+        this.droparea.imageDropArea2(options);
+    },
+};
+
+function objectToFormData(obj, form, namespace) {
+    
+	var fd = form || new FormData();
+	var formKey;
+
+	for(var property in obj) {
+		if(obj.hasOwnProperty(property)) {
+			if(namespace) {
+				formKey = namespace + '[' + property + ']';
+			} else {
+				formKey = property;
+			}
+
+			if(Array.isArray(obj[property])){
+				for(var itemArray in obj[property]) {
+					if(typeof obj[property][itemArray] === 'object')
+					{						
+						objectToFormData(obj[property][itemArray], fd, formKey+'['+itemArray+']');
+					}else
+					{
+						fd.append(formKey+'['+itemArray+']', obj[property]);
+					}
+				}
+			}else if(typeof obj[property] === 'object' && !(obj[property] instanceof File)) {
+				objectToFormData(obj[property], fd, property);
+			} else {
+				if(obj[property]!=null)
+				{
+					// if it's a string or a File object
+					fd.append(formKey, obj[property]);
+				}
+			}
+
+		}
+	}
+
+	return fd;
+    
+};
+
 //Fin de métodos auxiliares
+
+//Imágenes
+$.imageDropArea2 = function (element, options) {
+	var defaults = {
+		sizeLimit: false,
+		ajax: false,
+		inputSelector: "#foto-perfil-cv .image-uploader__input",
+		dropAreaSelector: ".image-uploader__drop-area",
+		preview: ".image-uploader__preview",
+		previewImg: ".image-uploader__img",
+		errorDisplay: ".image-uploader__error",
+		// funcionPrueba: function() {}
+	};
+	var plugin = this;
+
+	plugin.settings = {};
+
+	var $element = $(element);
+	var element = element;
+
+	plugin.init = function () {
+		plugin.settings = $.extend({}, defaults, options);
+		plugin["input"] = $(plugin.settings.inputSelector);
+		plugin["dropAreaSelector"] = $(plugin.settings.dropAreaSelector);
+		plugin["preview"] = $(plugin.settings.preview);
+		plugin["previewImg"] = $(plugin.settings.previewImg);
+		plugin["errorDisplay"] = $(plugin.settings.errorDisplay);
+		addInputChangeEvent();
+		addDragAndDropEvents();
+		initialImageCheck();
+	};
+
+	/**
+	 * Comprueba si en el inicio del plugin ya hay una imagen
+	 * para añadirla al input file
+	 */
+	var initialImageCheck = async function () {
+		const image_url = plugin.previewImg.attr("src");
+		if (image_url && image_url !== "") {
+			const dT = new ClipboardEvent('').clipboardData || new DataTransfer();
+			const response = await fetch(image_url);
+			const data = await response.blob();
+			const metadata = {
+				type: 'image/jpeg'
+			};
+			const file = new File([data], image_url, metadata);
+			dT.items.add(file);
+			plugin.input.get(0).files = dT.files;
+			plugin.input.trigger('change');
+		};
+	};
+
+	var addInputChangeEvent = function () {
+		plugin.input.unbind('change').change(function () {
+			$(this).parent().find('input[type="hidden"]').val('');
+			if (!isFileImage()) {
+				return;
+			}
+
+			if (!imageSizeAllowed()) {
+				displayError(GetText('CV_IMAGENPESADEMASIADO',plugin.settings.sizeLimit));
+				return;
+			}
+			
+			const reader = new FileReader();
+			var that=this;
+			reader.addEventListener("load", function () {
+				// convert image file to base64 string
+				$(that).parent().find('input[type="hidden"]').val(reader.result);
+			}, false);
+			reader.readAsDataURL(plugin.input.get(0).files[0]);
+
+			if (plugin.settings.ajax) {
+				uploadImageWithAjax();
+			} else {
+				showImageTemporalPreview();
+			}
+		});
+	};
+
+	/**
+	 * Muestra la imagen que se ha añadido al input file
+	 */
+	var showImageTemporalPreview = function () {
+
+		const [file] = plugin.input.get(0).files
+		if (file) {
+			showImagePreview(URL.createObjectURL(file))
+		}
+	};
+
+	/**
+	 * Incia lógica para llamada ajax
+	 */
+	var uploadImageWithAjax = function () {
+
+		if (checkAjaxSettings()) {
+			return;
+		};
+
+		var data = new FormData();
+		var files = plugin.input.get(0).files;
+		if (files.length > 0) {
+			data.append("ImagenRegistroUsuario", files[0]);
+		}
+		upload(data);
+	};
+
+	/**
+	 * Llamada ajax
+	 */
+	var upload = function () {
+		$.ajax({
+			url: document.location.href,
+			type: "POST",
+			processData: false,
+			contentType: false,
+			data: data,
+			success: function (response) {
+				onSuccesResponse(response);
+			},
+			error: function (er) {
+				displayError(er.statusText);
+			},
+		});
+	}
+
+	/**
+	 * @return {boolean}
+	 * true: Las opciones de ajax se han configurado
+	 * false: Las opciones de ajax se no han configurado
+	 */
+	var checkAjaxSettings = function () {
+		if (plugin.settings.ajax.hasProperty('param_name')) {
+			console.log('La opción "ajax.param_name" no está configurada')
+			return false;
+		}
+		if (plugin.settings.ajax.hasProperty('url')) {
+			console.log('La opción de "ajax.url" no está configurada')
+			return false;
+		}
+		return true;
+	};
+
+	/**
+	 * @return {string} error
+	 * Shows error message
+	 */
+	var displayError = function (error) {
+		plugin.errorDisplay.find(".ko").text(error);
+		plugin.errorDisplay.find(".ko").show();
+		plugin.preview.removeClass("show-preview");
+	};
+
+	/**
+	 * Hides error message
+	 */
+	var hideError = function () {
+		plugin.errorDisplay.find(".ko").hide();
+	};
+
+	/**
+	 * @param {string} response
+	 */
+	var onSuccesResponse = function (response) {
+		if (response.indexOf("imagenes/") === 0) {
+			// Es una url de imagen
+			showImagePreview(response);
+			showLoadingImagePreview(false);
+		} else {
+			// No es una url de imagen
+			displayError(response);
+			showLoadingImagePreview(false);
+		}
+	};
+
+	/**
+	 * @param {boolean} showLoading: Indicar si ha iniciado la carga y por lo tanto, es necesario mostrar un "loading".
+	 * true: Mostrará el "loading"
+	 * false: Quitar ese "loading" -> Fin carga de imagen
+	 */
+	var showLoadingImagePreview = function (showLoading) {
+		// Mostrar loading
+		if (showLoading) {
+			// Quitar la imagen actual del preview
+			plugin.preview.attr("src", "");
+		} else {
+			// Quitar loading
+			$(".spinner-border").remove();
+		}
+	};
+
+	/**
+	 * @param {string} : url de la imagen
+	 */
+	var showImagePreview = function (url) {
+		let image_url = url;
+		if (plugin.settings.ajax) {
+			image_url = "http://serviciospruebas.gnoss.net" + "/" + url;
+		}
+		hideError();
+		plugin.previewImg.attr("src", image_url);
+		plugin.preview.addClass("show-preview");
+	};
+
+	var addDragAndDropEvents = function () {
+		plugin.dropAreaSelector
+			.off("dragenter dragover")
+			.on("dragenter dragover", function (e) {
+				e.preventDefault();
+				e.stopPropagation();
+			});
+
+		plugin.dropAreaSelector.off("click").on("click", function (e) {
+			e.preventDefault();
+			e.stopPropagation();
+			plugin.input.trigger("click");
+		});
+		
+		plugin.dropAreaSelector.off("dragleave").on("dragleave", function (e) {
+			e.preventDefault();
+			e.stopPropagation();
+		});
+
+		plugin.dropAreaSelector.off("drop").on("drop", function (e) {
+			e.preventDefault();
+			e.stopPropagation();
+			let dt = e.originalEvent.dataTransfer;
+			let files = dt.files;
+			plugin.input.get(0).files = files;
+			plugin.input.trigger("change");
+		});
+	};
+
+	/**
+	 * @return {boolean} return if file is a valid image
+	 */
+	var isFileImage = function () {
+		const acceptedImageTypes = ['image/jpeg', 'image/png'];
+		const file = plugin.input.get(0).files[0];
+		return file && acceptedImageTypes.includes(file['type'])
+	}
+
+	/**
+	 * @return {boolean} return if file is valid size
+	 */
+	var imageSizeAllowed = function () {
+		if (plugin.settings.sizeLimit) {
+			const file = plugin.input.get(0).files[0];
+			return (file.size / 1024) < plugin.settings.sizeLimit;
+		} else {
+			return true;
+		}
+	}
+
+	plugin.init();
+};
+
+// add the plugin to the jQuery.fn object
+$.fn.imageDropArea2 = function (options) {
+	return this.each(function () {
+		if (undefined == $(this).data("imageDropArea2")) {
+			var plugin = new $.imageDropArea2(this, options);
+			$(this).data("imageDropArea2", plugin);
+		}
+	});
+};
+
+/*
+ * jQuery Autocomplete plugin 1.1
+ *
+ * Copyright (c) 2009 JÃ¶rn Zaefferer
+ *
+ * Dual licensed under the MIT and GPL licenses:
+ *   http://www.opensource.org/licenses/mit-license.php
+ *   http://www.gnu.org/licenses/gpl.html
+ *
+ * Revision: $Id: jquery.autocomplete.js 15 2009-08-22 10:30:27Z joern.zaefferer $
+ */
+
+; (function($) {
+	
+$.fn.extend({
+	autocomplete: function(urlOrData, options) {
+		var isUrl = typeof urlOrData == "string";
+		options = $.extend({}, $.Autocompleter.defaults, {
+			url: isUrl ? urlOrData : null,
+			data: isUrl ? null : urlOrData,
+			delay: isUrl ? $.Autocompleter.defaults.delay : 10,
+			max: options && !options.scroll ? 10 : 150,
+            urlmultiple: null,
+            urlActual: 0,
+            urlParteAsmx: null,
+            urlServicio: function() {
+					if (this.urlmultiple != null)
+                    {
+                        var urlServ = this.urlmultiple[this.urlActual] + this.urlParteAsmx;
+                        this.urlActual++;
+                        if (this.urlActual == this.urlmultiple.length){this.urlActual = 0}
+                        return urlServ;
+                    }
+					if (this.servicio != null) {
+					    return this.servicio.service;
+					}
+					else {
+					    return this.url;
+					}
+				}
+		}, options);
+		
+		// if highlight is set to false, replace it with a do-nothing function
+		options.highlight = options.highlight || function(value) { return value; };
+		
+		// if the formatMatch option is not specified, then use formatItem for backwards compatibility
+		options.formatMatch = options.formatMatch || options.formatItem;
+
+        //Cargo las urls multiples en caso de haberlas:
+        ObtenerUrlMultiple(options);
+		
+		return this.each(function() {
+			new $.Autocompleter(this, options);
+		});
+	},
+	result: function(handler) {
+		return this.bind("result", handler);
+	},
+	search: function(handler) {
+		return this.trigger("search", [handler]);
+	},
+	flushCache: function() {
+		return this.trigger("flushCache");
+	},
+	setOptions: function(options){
+		return this.trigger("setOptions", [options]);
+	},
+	unautocomplete: function() {
+		return this.trigger("unautocomplete");
+	}
+});
+
+$.Autocompleter = function(input, options) {
+
+	var KEY = {
+        LEFT: 37,
+		UP: 38,
+        RIGHT: 39,
+		DOWN: 40,
+		DEL: 46,
+		TAB: 9,
+		RETURN: 13,
+		ESC: 27,
+		COMMA: 188,
+		PAGEUP: 33,
+		PAGEDOWN: 34,
+		BACKSPACE: 8
+	};
+
+	// Create $ object for input element
+	var $input = $(input).attr("autocomplete", "off").addClass(options.inputClass);
+
+    var cont = 0;
+	var timeout;
+	var previousValue = "";
+	var cache = $.Autocompleter.Cache(options);
+	var hasFocus = 0;
+	var lastKeyPressCode;
+	var config = {
+		mouseDownOnSelect: false
+	};
+	var select = $.Autocompleter.Select(options, input, selectCurrent, pintarSeleccionado, config);
+	
+	var blockSubmit;
+	
+	// prevent form submit in opera when selecting with return key
+//	$.browser.opera && $(input.form).bind("submit.autocomplete", function() {
+//		if (blockSubmit) {
+//			blockSubmit = false;
+//			return false;
+//		}
+//	});
+	
+	 // only opera doesn't trigger keydown multiple times while pressed, others don't work with keypress at all
+	$input.bind((/*$.browser.opera ? "keypress" : */"keyup") + ".autocomplete", function(event) {
+		// a keypress means the input has focus
+		// avoids issue where input had focus before the autocomplete was applied
+		hasFocus = 1;
+		// track last key pressed
+		lastKeyPressCode = event.keyCode;
+		switch(event.keyCode) {
+		
+			case KEY.UP:
+				event.preventDefault();
+				if ( select.visible() ) {
+					select.prev();
+				} else {
+					onChange(0, true);
+				}
+				break;
+				
+			case KEY.DOWN:
+				event.preventDefault();
+				if ( select.visible() ) {
+					select.next();
+				} else {
+					onChange(0, true);
+				}
+				break;
+				
+			case KEY.PAGEUP:
+				event.preventDefault();
+				if ( select.visible() ) {
+					select.pageUp();
+				} else {
+					onChange(0, true);
+				}
+				break;
+				
+			case KEY.PAGEDOWN:
+				event.preventDefault();
+				if ( select.visible() ) {
+					select.pageDown();
+				} else {
+					onChange(0, true);
+				}
+				break;
+			// matches also semicolon
+			case options.multiple && $.trim(options.multipleSeparator) == "," && KEY.COMMA:
+				select.hide();
+				PintarTags($input);
+				break;
+			case KEY.TAB:
+			case KEY.RETURN:
+			    cancelEvent(event);
+				if( selectCurrent() ) {
+					// stop default to prevent a form submit, Opera needs special handling
+					event.preventDefault();
+					blockSubmit = true;
+					return false;
+				}
+				select.hide();
+				PintarTags($input);
+				break;
+			case KEY.LEFT:
+			case KEY.RIGHT:
+			case KEY.ESC:
+				select.hide();
+				break;
+			default:
+				clearTimeout(timeout);
+				timeout = setTimeout(onChange, options.delay);
+				break;
+		}
+	}).focus(function(){
+		// track whether the field has focus, we shouldn't process any
+		// results if the field no longer has focus
+		hasFocus++;
+	}).blur(function() {
+		hasFocus = 0;
+		if (!config.mouseDownOnSelect) {
+			hideResults();
+		}
+	}).click(function() {
+		// show select when clicking in a focused field
+		if ( hasFocus++ > 1 && !select.visible() ) {
+			onChange(0, true);
+		}
+	}).bind("search", function() {
+		// TODO why not just specifying both arguments?
+		var fn = (arguments.length > 1) ? arguments[1] : null;
+		function findValueCallback(q, data) {
+			var result;
+			if( data && data.length ) {
+				for (var i=0; i < data.length; i++) {
+					if( data[i].result.toLowerCase() == q.toLowerCase() ) {
+						result = data[i];
+						break;
+					}
+				}
+			}
+			if( typeof fn == "function" ) fn(result);
+			else $input.trigger("result", result && [result.data, result.value]);
+		}
+		$.each(trimWords($input.val()), function(i, value) {
+			request(value, findValueCallback, findValueCallback);
+		});
+	}).bind("flushCache", function() {
+		cache.flush();
+	}).bind("setOptions", function() {
+		$.extend(options, arguments[1]);
+		// if we've updated the data, repopulate
+		if ( "data" in arguments[1] )
+			cache.populate();
+	}).bind("unautocomplete", function() {
+		select.unbind();
+		$input.unbind();
+		$(input.form).unbind(".autocomplete");
+	});
+	
+	
+	function selectCurrent() {
+		var selected = select.selected();
+        pintarSeleccionado($input, selected.result);
+		$input.parent().find('input[propertyorigin="'+$input.attr('propertyrdf')+'"]').val(selected.value)		;
+		hideResultsNow();
+		return true;
+	}
+	
+    function pintarSeleccionado(textbox, resultado)
+    {
+        if (!options.pintarConcatenadores)
+        {
+            resultado = QuitarContadores(resultado);
+        }
+
+        if (textbox.attr('id') == 'finderSection' || textbox.attr('id') == 'txtBusquedaPrincipal')
+        {
+            /*Si es el buscador de una pÃ¡gina de busqueda o el metabuscador superior, autocompleta con "" */
+            resultado='"'+resultado+'"';
+        }   
+
+
+        var v = resultado;
+        previousValue = v;
+		var cursorAt = textbox.selection().start;
+		if(cursorAt < 0)
+		{
+		    cursorAt = textbox.val().indexOf(v) + resultado.length;
+		}
+        
+	    if ( options.multiple ) {
+		    var words = trimWords(textbox.val());
+		    if ( words.length > 1 ) 
+		    {
+			    var seperator = options.multipleSeparator.length;
+			    var wordAt, progress = 0;
+			    $.each(words, function(i, word) {
+				    progress += word.length;
+				    if (cursorAt <= progress) {
+					    wordAt = i;
+					    return false;
+				    }
+				    progress += seperator;
+			    });
+			    words[wordAt] = v;
+			    v = words.join( options.multipleSeparator );
+		    }
+	    }
+	    
+	    if (options.NoPintarSeleccionado == null || !options.NoPintarSeleccionado)
+	    {
+	        textbox.val(v);
+	        PintarTags(textbox);
+	    }
+    }
+	
+	function forzarClickBoton(pFaceta, result)
+	{		
+	    //envia los datos al seleccionar una fila del autocompletar
+        var objecte = document.getElementById(options.extraParams.botonBuscar);
+		if(objecte != null)
+		{
+		    if (pFaceta != '') {
+		        if (objecte.attributes['onclick'].value.indexOf('= url + parametros') != -1) {
+		            eval(objecte.attributes['onclick'].value.replace('= url + parametros', '= url.replace("search=","' + pFaceta + '=") + parametros'));
+		        }
+		        else {
+		            eval(objecte.attributes['onclick'].value.replace('search=', pFaceta + '=').replace('return false;', ''));
+		        }
+		    }
+		        /*else if(document.createEvent)
+                {
+                    var evObj = document.createEvent('MouseEvents');
+                    evObj.initEvent( 'click', true, false );
+                    objecte.dispatchEvent(evObj);
+                }*/
+		    else {
+		        if ($input.val().indexOf("\"") != 0 && $input.val().lastIndexOf("\"") != $input.val().length - 1 && typeof (result) != 'undefined' && result == '' && typeof ($input[0]) != 'undefined' && typeof ($input[0].className) != 'undefined' && $input[0].className.indexOf("filtroFaceta") >= 0) {
+		            pintarSeleccionado($input, '>>' + $input.val())
+		        }
+		        objecte.click();
+		    }
+        }
+	}
+	
+	function onChange(crap, skipPrevCheck) {
+		if( lastKeyPressCode == KEY.DEL ) {
+			select.hide();
+			return;
+		}
+		
+		var currentValue = $input.val();
+		
+		if ( !skipPrevCheck && currentValue == previousValue )
+			return;
+		
+		previousValue = currentValue;
+		
+		currentValue = lastWord(currentValue);
+		if ( currentValue.length >= options.minChars) {
+			$input.addClass(options.loadingClass);
+			if (!options.matchCase)
+				currentValue = currentValue.toLowerCase();
+			request(currentValue, receiveData, hideResultsNow);
+		} else {
+			stopLoading();
+			select.hide();
+		}
+	};
+	
+	function trimWords(value) {
+		if (!value)
+			return [""];
+		if (!options.multiple)
+			return [$.trim(value)];
+		return $.map(value.split(options.multipleSeparator), function(word) {
+			return $.trim(value).length ? $.trim(word) : null;
+		});
+	}
+	
+	function lastWord(value) {
+		if ( !options.multiple )
+			return value;
+		var words = trimWords(value);
+		if (words.length == 1) 
+			return words[0];
+		var cursorAt = $(input).selection().start;
+		if (cursorAt == value.length) {
+			words = trimWords(value)
+		} else {
+			words = trimWords(value.replace(value.substring(cursorAt), ""));
+		}
+		return words[words.length - 1];
+	}
+	
+	// fills in the input box w/the first match (assumed to be the best match)
+	// q: the term entered
+	// sValue: the first matching result
+	function autoFill(q, sValue){
+		// autofill in the complete box w/the first match as long as the user hasn't entered in more data
+		// if the last user key pressed was backspace, don't autofill
+		if( options.autoFill && (lastWord($input.val()).toLowerCase() == q.toLowerCase()) && lastKeyPressCode != KEY.BACKSPACE ) {
+			// fill in the value (keep the case the user has typed)
+			$input.val($input.val() + sValue.substring(lastWord(previousValue).length));
+			// select the portion of the value not typed by the user (so the next character will erase)
+			$(input).selection(previousValue.length, previousValue.length + sValue.length);
+		}
+	};
+
+	function hideResults() {
+		clearTimeout(timeout);
+		timeout = setTimeout(hideResultsNow, 200);
+	};
+
+	function hideResultsNow() {
+		var wasVisible = select.visible();
+		select.hide();
+		clearTimeout(timeout);
+		stopLoading();
+		if (options.mustMatch) {
+			// call search and run callback
+			$input.search(
+				function (result){
+					// if no value found, clear the input box
+					if( !result ) {
+						if (options.multiple) {
+							var words = trimWords($input.val()).slice(0, -1);
+							$input.val( words.join(options.multipleSeparator) + (words.length ? options.multipleSeparator : "") );
+						}
+						else {
+							$input.val( "" );
+							$input.trigger("result", null);
+						}
+					}
+				}
+			);
+		}
+	};
+
+	function receiveData(q, data) {
+		if ( data && data.length && hasFocus ) {
+			stopLoading();
+			select.display(data, q);
+			autoFill(q, data[0].value);
+
+			if (typeof (completadaCargaAutocompletar) != "undefined") {
+			    completadaCargaAutocompletar();
+			}
+
+			select.show();
+		} else {
+			hideResultsNow();
+		}
+	};
+
+	function request(term, success, failure) {
+		if (typeof(requestAutocompletarPersonalizado) != 'undefined'){
+			return requestAutocompletarPersonalizado(term, success, failure, options, cache, cont, lastWord, parse, normalize);
+		}
+	
+	    term = replaceAll(replaceAll(replaceAll(term, '%', '%25'), '#', '%23'), '+', "%2B");
+		if (!options.matchCase)
+			term = term.toLowerCase();
+		var data = null;
+		
+		if (options.data == null){
+			data = cache.load(term);
+		}
+
+		cont = cont + 1;
+		var extraParams = {
+		    q: lastWord(term),
+		    limit: options.max,
+		    cont: cont,
+		    lista: '',
+		    callback: 'autocomplete'
+		};
+		if (options.multiple) {
+		    if (options.classTxtValoresSelecc != null) {
+		        var valorLista = '';
+
+		        $('.' + options.classTxtValoresSelecc).each(function () {
+		            valorLista += $(this).val().replace(/&/g, ',');
+		        });
+
+		        extraParams["lista"] = valorLista;
+		    }
+		    else if (options.txtValoresSeleccID == null) {
+		        extraParams["lista"] = $('#' + input.id + '_Hack').val().trim() + $input.val().trim();
+		        //extraParams["lista"] = previousValue.trim();
+		    }
+		    else {
+		        if (options.txtValoresSeleccID.indexOf('|') != -1) {
+		            var idtxthacks = options.txtValoresSeleccID.split('|');
+		            var valorLista = '';
+		            for (var i = 0; i < idtxthacks.length; i++) {
+		                valorLista += document.getElementById(idtxthacks[i]).value.replace(/&/g, ',');
+		            }
+		            extraParams["lista"] = valorLista;
+		        }
+		        else {
+		            extraParams["lista"] = document.getElementById(options.txtValoresSeleccID).value.replace(/&/g, ',');
+		        }
+		    }
+		}
+		$.each(options.extraParams, function (key, param) {
+		    extraParams[key] = typeof param == "function" ? param() : param;
+		});
+
+		// recieve the cached data
+		if (data && data.length) {
+			success(term, data);
+		// if an AJAX url has been supplied, try loading the data now
+		} else if ((typeof options.url == "string") && (options.url.length > 0)) {
+		    var urlPost = options.urlServicio(options);
+
+			$.ajax({
+			    type: "POST",
+			    url: urlPost,
+			    data: extraParams,
+			    cache: false
+			}).done(function (response) {
+			    var data = response;
+			    if (response.d != null) {
+			        data = response.d;
+			    }
+
+                var parsed = options.parse && options.parse(data) || parse(data);
+                cache.add(term, parsed);
+                success(term, parsed);
+            }).fail(function (data) {
+
+		    });
+		    //$.post(options.url, extraParams, function (response) {
+		    //    var parsed = options.parse && options.parse(response) || parse(response);
+		    //    cache.add(term, parsed);
+		    //    success(term, parsed);
+		    //}, "json");
+		}
+		else if (options.servicio != null) {
+		    
+
+            options.servicio.service = options.urlServicio(options);
+
+		    options.servicio.call(options.metodo, extraParams, function(data) {
+	            if(extraParams.cont == cont && $('#' + extraParams.botonBuscar).prev().parent().css('display') != 'none')
+	            {
+				    var parsed = options.parse && options.parse(data) || parse(data);
+				    cache.add(term, parsed);
+				    success(term, parsed);
+				}
+			});	
+		}
+		else if (options.data != null && options.data.length > 0){
+			var parsed = [];
+			var termNorm = normalize(term.toLowerCase());
+			
+			for (var i=0;i<options.data.length;i++){
+				var nombreBuscar = normalize(options.data[i][0].toLowerCase());
+				if (nombreBuscar.indexOf(termNorm) == 0 || nombreBuscar.indexOf(' ' + termNorm) != -1){
+					parsed.push({'data':options.data[i], 'value':options.data[i][0], 'result':options.data[i][0]});
+				}
+			}
+		
+			success(term, parsed);
+		}
+		else {
+			// if we have a failure, we need to empty the list -- this prevents the the [TAB] key from selecting the last successful match
+			select.emptyList();
+			failure(term);
+		}
+	};
+	
+	
+	var normalize = (function() {
+	  var from = "ÃƒÃ€ÃÃ„Ã‚ÃˆÃ‰Ã‹ÃŠÃŒÃÃÃŽÃ’Ã“Ã–Ã”Ã™ÃšÃœÃ›Ã£Ã Ã¡Ã¤Ã¢Ã¨Ã©Ã«ÃªÃ¬Ã­Ã¯Ã®Ã²Ã³Ã¶Ã´Ã¹ÃºÃ¼Ã»Ã‘Ã±Ã‡Ã§", 
+		  to   = "AAAAAEEEEIIIIOOOOUUUUaaaaaeeeeiiiioooouuuunncc",
+		  mapping = {};
+	 
+	  for(var i = 0, j = from.length; i < j; i++ )
+		  mapping[ from.charAt( i ) ] = to.charAt( i );
+	 
+	  return function( str ) {
+		  var ret = [];
+		  for( var i = 0, j = str.length; i < j; i++ ) {
+			  var c = str.charAt( i );
+			  if( mapping.hasOwnProperty( str.charAt( i ) ) )
+				  ret.push( mapping[ c ] );
+			  else
+				  ret.push( c );
+		  }      
+		  return ret.join( '' );
+	  }
+	 
+	})();
+	
+	function parse(data) {
+		var parsed = [];
+		try
+		{
+			var rows = data.split("\n");
+			for (var i=0; i < rows.length; i++) {
+				var row = $.trim(rows[i]);
+				if (row) {
+				    if (row.indexOf('|||') != -1)
+					{
+					    row = row.split("|||");
+					}
+					else if (row.indexOf('|') != -1)
+					{
+					    var valor = row.substring(0, row.lastIndexOf('|'));
+					    var attControl = row.substring(row.lastIndexOf('|') + 1);
+					    row = [valor, attControl];
+					}
+					else
+					{
+					    row = row.split("|");//Para que cree un array de un elemento.
+					}
+					
+					parsed[parsed.length] = {
+						data: row,
+						value: row[0],
+						result: options.formatResult && options.formatResult(row, row[0]) || row[0]
+					};
+				}
+			}
+		}
+		catch(ex)
+		{}
+		return parsed;
+	};
+
+	function stopLoading() {
+		$input.removeClass(options.loadingClass);
+	};
+};
+
+function QuitarContadores(cadena)
+{
+    var resultado = cadena;
+
+    // Obtener la cadena entre parÃ©ntesis
+    var contenidoParentesis = resultado.substring(resultado.lastIndexOf('(') + 1);
+    contenidoParentesis = contenidoParentesis.substring(0, contenidoParentesis.lastIndexOf(')'));
+
+    // Si es un entero, quitamos los parÃ©ntesis
+    if (contenidoParentesis == parseInt(contenidoParentesis)) {
+        if (cadena.lastIndexOf('(') > -1) {
+            if (cadena.lastIndexOf(')') > -1 && cadena.lastIndexOf(')') > cadena.lastIndexOf('(')) {
+                resultado = cadena.substring(0, cadena.lastIndexOf('(') - 1);
+            }
+        }
+    }
+
+    return resultado;
+}
+
+$.Autocompleter.defaults = {
+	inputClass: "ac_input",
+	resultsClass: "ac_results",
+	loadingClass: "ac_loading",
+	minChars: 1,
+	delay: 400,
+	matchCase: false,
+	matchSubset: true,
+	matchContains: false,
+	cacheLength: 10,
+	max: 100,
+	mustMatch: false,
+	extraParams: {},
+	selectFirst: true,
+	formatItem: function(row) { return row[0]; },
+	formatMatch: null,
+	autoFill: false,
+	width: 0,
+	multiple: false,
+	multipleSeparator: ", ",
+	/*highlight: function(value, term) {
+		return value.replace(new RegExp("(?![^&;]+;)(?!<[^<>]*)(" + term.replace(/([\^\$\(\)\[\]\{\}\*\.\+\?\|\\])/gi, "\\$1") + ")(?![^<>]*>)(?![^&;]+;)", "gi"), "<strong>$1</strong>");
+	},*/
+    scroll: true,
+    scrollHeight: 180
+};
+
+$.Autocompleter.Cache = function(options) {
+
+	var data = {};
+	var length = 0;
+	
+	function matchSubset(s, sub) {
+		if (!options.matchCase) 
+			s = s.toLowerCase();
+		var i = s.indexOf(sub);
+		if (options.matchContains == "word"){
+			i = s.toLowerCase().search("\\b" + sub.toLowerCase());
+		}
+		if (i == -1) return false;
+		return i == 0 || options.matchContains;
+	};
+	
+	function add(q, value) {
+		if (length > options.cacheLength){
+			flush();
+		}
+		if (!data[q]){ 
+			length++;
+		}
+		data[q] = value;
+	}
+	
+	function populate(){
+		if( !options.data ) return false;
+		// track the matches
+		var stMatchSets = {},
+			nullData = 0;
+
+		// no url was specified, we need to adjust the cache length to make sure it fits the local data store
+		if( !options.url ) options.cacheLength = 1;
+		
+		// track all options for minChars = 0
+		stMatchSets[""] = [];
+		
+		// loop through the array and create a lookup structure
+		for ( var i = 0, ol = options.data.length; i < ol; i++ ) {
+			var rawValue = options.data[i];
+			// if rawValue is a string, make an array otherwise just reference the array
+			rawValue = (typeof rawValue == "string") ? [rawValue] : rawValue;
+			
+			var value = options.formatMatch(rawValue, i+1, options.data.length);
+			if ( value === false )
+				continue;
+				
+			var firstChar = value.charAt(0).toLowerCase();
+			// if no lookup array for this character exists, look it up now
+			if( !stMatchSets[firstChar] ) 
+				stMatchSets[firstChar] = [];
+
+			// if the match is a string
+			var row = {
+				value: value,
+				data: rawValue,
+				result: options.formatResult && options.formatResult(rawValue) || value
+			};
+			
+			// push the current match into the set list
+			stMatchSets[firstChar].push(row);
+
+			// keep track of minChars zero items
+			if ( nullData++ < options.max ) {
+				stMatchSets[""].push(row);
+			}
+		};
+
+		// add the data items to the cache
+		$.each(stMatchSets, function(i, value) {
+			// increase the cache size
+			options.cacheLength++;
+			// add to the cache
+			add(i, value);
+		});
+	}
+	
+	// populate any existing data
+	setTimeout(populate, 25);
+	
+	function flush(){
+		data = {};
+		length = 0;
+	}
+	
+	return {
+		flush: flush,
+		add: add,
+		populate: populate,
+		load: function(q) {
+			if (!options.cacheLength || !length)
+				return null;
+			/* 
+			 * if dealing w/local data and matchContains than we must make sure
+			 * to loop through all the data collections looking for matches
+			 */
+			if( !options.url && options.matchContains ){
+				// track all matches
+				var csub = [];
+				// loop through all the data grids for matches
+				for( var k in data ){
+					// don't search through the stMatchSets[""] (minChars: 0) cache
+					// this prevents duplicates
+					if( k.length > 0 ){
+						var c = data[k];
+						$.each(c, function(i, x) {
+							// if we've got a match, add it to the array
+							if (matchSubset(x.value, q)) {
+								csub.push(x);
+							}
+						});
+					}
+				}				
+				return csub;
+			} else 
+			// if the exact item exists, use it
+			if (data[q]){
+				return data[q];
+			} else
+			if (options.matchSubset) {
+				for (var i = q.length - 1; i >= options.minChars; i--) {
+					var c = data[q.substr(0, i)];
+					if (c) {
+						var csub = [];
+						$.each(c, function(i, x) {
+							if (matchSubset(x.value, q)) {
+								csub[csub.length] = x;
+							}
+						});
+						return csub;
+					}
+				}
+			}
+			return null;
+		}
+	};
+};
+
+$.Autocompleter.Select = function (options, input, select, pintar, config) {
+	var CLASSES = {
+		ACTIVE: "ac_over"
+	};
+	
+	var listItems,
+		active = -1,
+		data,
+		term = "",
+		needsInit = true,
+		element,
+		list;
+	
+	// Create results
+	function init() {
+		if (!needsInit)
+			return;
+		element = $("<div/>")
+		.hide()
+		.addClass(options.resultsClass)
+		.css("position", "absolute")
+		//.appendTo(document.body);
+
+        if (typeof panelContAutoComplet != 'undefined') {
+            element.appendTo($("#" + panelContAutoComplet));
+        }
+        else
+        {
+        	element.appendTo($(input).parent());
+            //element.appendTo(document.body);
+        }
+	
+		list = $("<ul/>").appendTo(element).mouseover( function(event) {
+			if(target(event).nodeName && target(event).nodeName.toUpperCase() == 'LI') {
+	            active = $("li", list).removeClass(CLASSES.ACTIVE).index(target(event));
+			    $(target(event)).addClass(CLASSES.ACTIVE);
+	        }
+		}).click(function(event) {
+			$(target(event)).addClass(CLASSES.ACTIVE);
+			select();
+			// TODO provide option to avoid setting focus again after selection? useful for cleanup-on-focus
+			input.focus();
+			return false;
+		}).mousedown(function(event) {
+            cancelEvent(event);
+			config.mouseDownOnSelect = true;
+		}).mouseup(function() {
+			config.mouseDownOnSelect = false;
+		});
+		
+		if( options.width > 0 )
+			element.css("width", options.width);
+			
+		if (options.extraParams.maxwidth)
+		    element.css("max-width", options.extraParams.maxwidth);
+			
+		needsInit = false;
+	} 
+	
+	function target(event) {
+		var element = event.target;
+		while(element && element.tagName != "LI")
+			element = element.parentNode;
+		// more fun with IE, sometimes event.target is empty, just ignore it then
+		if(!element)
+			return [];
+		return element;
+	}
+
+	function moveSelect(step) {
+		listItems.slice(active, active + 1).removeClass(CLASSES.ACTIVE);
+		movePosition(step);
+        var activeItem = listItems.slice(active, active + 1).addClass(CLASSES.ACTIVE);
+        if(options.scroll) {
+            var offset = 0;
+            listItems.slice(0, active).each(function() {
+				offset += this.offsetHeight;
+			});
+            if((offset + activeItem[0].offsetHeight - list.scrollTop()) > list[0].clientHeight) {
+                list.scrollTop(offset + activeItem[0].offsetHeight - list.innerHeight());
+            } else if(offset < list.scrollTop()) {
+                list.scrollTop(offset);
+            }
+        } 
+
+//	    try
+//	    {
+//            pintar($(input), activeItem.html());
+//        }
+//        catch(ex)
+//        {}
+		//$(input).val($(input).val().replace(lastWord($(input).val()), QuitarContadores(activeItem.html())));
+		//$(input).val(QuitarContadores(activeItem.html()));     
+	};
+	
+	function movePosition(step) {
+		active += step;
+		if (active < 0) {
+			active = listItems.size() - 1;
+		} else if (active >= listItems.size()) {
+			active = 0;
+		}
+	}
+	
+	function limitNumberOfItems(available) {
+		return options.max && options.max < available
+			? options.max
+			: available;
+	}
+	
+	function fillList() {
+		list.empty();
+		var max = limitNumberOfItems(data.length);
+		for (var i=0; i < max; i++) {
+			if (!data[i])
+				continue;
+			var formatted = options.formatItem(data[i].data, i+1, max, data[i].value, term);
+			if ( formatted === false )
+				continue;
+			var li = $("<li/>").html( options.highlight(formatted, term) ).addClass(i%2 == 0 ? "ac_even" : "ac_odd").appendTo(list)[0];
+			$.data(li, "ac_data", data[i]);
+		}
+		listItems = list.find("li");
+		if ( options.selectFirst ) {
+			listItems.slice(0, 1).addClass(CLASSES.ACTIVE);
+			active = 0;
+		}
+		// apply bgiframe if available
+		if ( $.fn.bgiframe )
+			list.bgiframe();
+	}
+	
+	return {
+		display: function(d, q) {
+			init();
+			data = d;
+			term = q;
+			fillList();
+		},
+		next: function() {
+			moveSelect(1);
+		},
+		prev: function() {
+			moveSelect(-1);
+		},
+		pageUp: function() {
+			if (active != 0 && active - 8 < 0) {
+				moveSelect( -active );
+			} else {
+				moveSelect(-8);
+			}
+		},
+		pageDown: function() {
+			if (active != listItems.size() - 1 && active + 8 > listItems.size()) {
+				moveSelect( listItems.size() - 1 - active );
+			} else {
+				moveSelect(8);
+			}
+		},
+		hide: function() {
+			$('body').removeClass('autocompletandoPrincipal');
+			element && element.hide();
+			listItems && listItems.removeClass(CLASSES.ACTIVE);
+			active = -1;
+		},
+		visible : function() {
+			return element && element.is(":visible");
+		},
+		current: function() {
+			return this.visible() && (listItems.filter("." + CLASSES.ACTIVE)[0] || options.selectFirst && listItems[0]);
+		},
+		show: function() {
+			if (input.id == "txtBusquedaPrincipal") $('body').addClass('autocompletandoPrincipal');
+            if (typeof panelContAutoComplet != 'undefined') {
+                element.css('display','block');
+            }
+            else
+            {
+			    var offset = $(input).offset();
+			    element.css({
+				    width: typeof options.width == "string" || options.width > 0 ? options.width : $(input).width(),
+				    top: offset.top + input.offsetHeight,
+				    left: offset.left
+			    }).show();
+            }
+            if(options.scroll) {
+                list.scrollTop(0);
+                list.css({
+					maxHeight: options.scrollHeight,
+					overflow: 'auto'
+				});
+				
+//                if($.browser.msie && typeof document.body.style.maxHeight === "undefined") {
+//					var listHeight = 0;
+//					listItems.each(function() {
+//						listHeight += this.offsetHeight;
+//					});
+//					var scrollbarsVisible = listHeight > options.scrollHeight;
+//                    list.css('height', scrollbarsVisible ? options.scrollHeight : listHeight );
+//					if (!scrollbarsVisible) {
+//						// IE doesn't recalculate width when scrollbar disappears
+//						listItems.width( list.width() - parseInt(listItems.css("padding-left")) - parseInt(listItems.css("padding-right")) );
+//					}
+//                }
+                
+            }
+		},
+		selected: function() {
+			var selected = listItems && listItems.filter("." + CLASSES.ACTIVE).removeClass(CLASSES.ACTIVE);
+			return selected && selected.length && $.data(selected[0], "ac_data");
+		},
+		emptyList: function (){
+			list && list.empty();
+		},
+		unbind: function() {
+			element && element.remove();
+		}
+	};
+};
+
+$.fn.selection = function(start, end) {
+	if (start !== undefined) {
+		return this.each(function() {
+			if( this.createTextRange ){
+				var selRange = this.createTextRange();
+				if (end === undefined || start == end) {
+					selRange.move("character", start);
+					selRange.select();
+				} else {
+					selRange.collapse(true);
+					selRange.moveStart("character", start);
+					selRange.moveEnd("character", end);
+					selRange.select();
+				}
+			} else if( this.setSelectionRange ){
+				this.setSelectionRange(start, end);
+			} else if( this.selectionStart ){
+				this.selectionStart = start;
+				this.selectionEnd = end;
+			}
+		});
+	}
+	var field = this[0];
+	if ( field.createTextRange && document.selection && document.selection.createRange ) {
+		var range = document.selection.createRange(),
+			orig = field.value,
+			teststring = "<->",
+			textLength = range.text.length;
+		range.text = teststring;
+		var caretAt = field.value.indexOf(teststring);
+		field.value = orig;
+		this.selection(caretAt, caretAt + textLength);
+		return {
+			start: caretAt,
+			end: caretAt + textLength
+		}
+	} else if( field.selectionStart !== undefined ){
+		return {
+			start: field.selectionStart,
+			end: field.selectionEnd
+		}
+	}
+};
+})(jQuery);
+
+
+function PintarTags(textBox)
+{
+    if(textBox.val().trim() != "")
+    {
+        var tags = textBox.val().replace(';', ',').split(',');
+        
+        var contenedor = textBox.parents('.autocompletar').find('.contenedor');
+        var textBoxHack = textBox.parents('.autocompletar').find('input').last();
+        
+        if(textBoxHack.length > 0)
+        {
+            for(var i=0; i<tags.length; i++)
+            {
+                var tagNombre = tags[i].trim();
+                var tagNombreEncode = Encoder.htmlEncode(tagNombre);
+                
+                var estaYaAgregada = textBoxHack.val().trim().indexOf(',' + tagNombre + ',') != -1;
+                estaYaAgregada = estaYaAgregada || textBoxHack.val().trim().substring(0, tagNombre.length + 1) == tagNombre + ',';
+                
+                if(tagNombre != '' && (!estaYaAgregada || textBox.parents('.tag').length > 0))
+                {
+                    var html = "<div class=\"tag\" title=\"" + tagNombreEncode + "\"><div>" + tagNombre + "<a class=\"remove\" ></a></div><input type=\"text\" value=\"" + tagNombreEncode + "\"></div>";
+                    if(textBox.parents('.tag').length > 0)
+                    {
+                        textBox.parents('.tag').before(html);
+                    }
+                    else
+                    {
+	                    contenedor.append(html);  
+                    }
+                    
+                    textBoxHack.val(textBoxHack.val() + tagNombre.toLowerCase() + ',')
+                }
+            }
+            
+            textBox.val('');
+            
+            if(textBox.parents('.tag').length == 0)
+            {
+                PosicionarTextBox(textBoxHack.prev());
+            }
+            
+            if(!textBoxHack.prev().hasClass("no-edit"))
+            {
+                textBox.parents('.autocompletar').find('.tag').each(function(){
+                    $(this).bind('click', function(evento){
+                        cancelEvent(evento);
+                         
+                        var divTag = $(this).children('div');
+                        var textBox = divTag.parent().find('input');
+                        if(textBox.css('display') == 'none')
+                        {
+                            textBox.width(textBox.parent().width());
+                            divTag.css('display', 'none');
+                            textBox.css('display', 'block');
+                            textBox.focus();
+                            posicionarCursor(textBox,textBox.val().length);
+                            textBox.blur(function(){ActualizarTag(textBox, divTag, textBoxHack)});
+                            textBox.keydown(function(evento){
+                                $(this).attr('size',$(this).val().length + 5);
+                                if(evento.which || evento.keyCode){
+                                    if ((evento.which == 13) || (evento.keyCode == 13)) {
+                                        ActualizarTag(textBox, divTag, textBoxHack);
+                                        return false;
+                                    }
+                                }
+                            });
+                            textBox.keyup(function(evento){
+                                if(evento.which || evento.keyCode){
+                                    if ((evento.which == 188) || (evento.keyCode == 188)) {
+                                        ActualizarTag(textBox, divTag, textBoxHack);
+                                    }
+                                }
+                            });
+                        }
+                    });
+                });  
+            }
+            
+             textBox.parents('.autocompletar').find('.tag .remove').each(function(){
+                if($(this).data("events") == null)
+                {
+                    $(this).bind('click', function(evento){
+                        cancelEvent(evento);
+                        EliminarTag($(this).parents('.tag'), evento)
+                    });
+                }
+            });
+        }
+    }
+    tagYaPintado = true;
+}
+
+function PosicionarTextBox(textBox)
+{
+    textBox.width(150);
+    textBox.css('top', '0px');
+    textBox.css('left', '0px');
+
+    if (textBox.parent().find('.tag').length == 0 || textBox.position().top > textBox.parent().find('.tag').last().position().top)
+    {
+        textBox.css('width', '100%');
+    }
+    else
+    {
+        var tbLeft = textBox.parent().find('.tag').last().position().left + textBox.parent().find('.tag').last().width() + 5;
+        textBox.width(textBox.parent().width() - (tbLeft - textBox.parent().position().left));
+    }
+}
+
+function LimpiarTags(textBox)
+{
+    $('#' + txtTagsID + '_Hack').val('');
+    $('#' + txtTagsID).parent().find('.tag').remove();
+}
+
+function ActualizarTag(textBox, divTag, textBoxHack)
+{
+    var ultimoElemento = textBoxHack.parent();
+    if(ultimoElemento.next().hasClass('propuestos'))
+    {
+        ultimoElemento = ultimoElemento.next();
+    }
+    descartarTag(textBox.parents('.tag'), ultimoElemento);
+    
+    textBox.css('display', '');
+    PintarTags(textBox);
+    
+    var valorAnterior = textBox.parents('.tag').attr('title').toLowerCase();
+    var hack = textBoxHack.val().trim();
+    
+    if(hack.indexOf(',' + valorAnterior + ',') != -1)
+    {
+        hack = hack.replace(',' + valorAnterior + ',', ',');
+    }
+    else if(hack.substring(0, valorAnterior.length + 1) == valorAnterior + ',')
+    {
+        hack = hack.replace(valorAnterior + ',', '');
+    }
+                
+    textBoxHack.val(hack.trim());
+    textBox.parent().remove();
+    PosicionarTextBox(textBoxHack.prev());
+}
+
+function EliminarTag(elemento, evento)
+{
+    var divAutocompletar = elemento.parents('.autocompletar');
+    if(divAutocompletar.find('input').length > 0)
+    {
+        var valorAnterior = elemento.attr('title');
+        var textBoxHack = divAutocompletar.find('input').last();
+        textBoxHack.val(textBoxHack.val().replace(valorAnterior.toLowerCase() + ',', ''));
+        var ultimoElemento = divAutocompletar;
+        if(divAutocompletar.next().hasClass('propuestos'))
+        {
+            var listaPropuestos = divAutocompletar.next().find('.tag');
+
+            for(var i=0;i<listaPropuestos.length;i++)
+            {
+                if($(listaPropuestos[i]).attr('title') == valorAnterior)
+                {
+                    $(listaPropuestos[i]).css('display', '');
+                }
+            }
+            ultimoElemento = divAutocompletar.next();
+        }
+        
+        descartarTag(elemento, ultimoElemento);
+        
+        elemento.remove();
+        PosicionarTextBox(textBoxHack.prev());
+    }
+}
+
+function descartarTag(elemento, ultimoElemento)
+{
+    if(!ultimoElemento.next().hasClass('descartados'))
+    {
+        ultimoElemento.after("<div class='descartados' style='display:none;'><input id='txtHackDescartados' type='text'/></div>");
+        ultimoElemento.next().find('#txtHackDescartados').val(elemento.attr('title').toLowerCase() + ',');
+    }
+    else
+    {
+        var descartados = ultimoElemento.next().find('#txtHackDescartados').val();
+        
+        var estaYaAgregada = descartados.indexOf(',' + elemento.attr('title') + ',') != -1;
+        estaYaAgregada = estaYaAgregada || descartados.substring(0, elemento.attr('title').length + 1) == elemento.attr('title') + ',';
+        
+        if(!estaYaAgregada)
+        {
+            descartados += elemento.attr('title').toLowerCase() + ','
+            ultimoElemento.next().find('#txtHackDescartados').val(descartados);
+        }
+    }
+}
+
+function posicionarCursor(textbox, pos) {
+    if (textbox.get(0).setSelectionRange) {
+        textbox.get(0).setSelectionRange(pos, pos);
+    } else if (textbox.get(0).createTextRange) {
+        var range = textbox.get(0).createTextRange();
+        range.collapse(true);
+        range.moveEnd('character', pos);
+        range.moveStart('character', pos);
+        range.select();
+    }
+}
+
+$(document).ready(function() {
+    pintarTagsInicio();
+});
+
+function pintarTagsInicio()
+{
+    $('.autocompletar').each(function(){
+        $(this).bind('click', function(evento){
+            cancelEvent(evento);
+            $(this).find('input.txtAutocomplete').focus();
+        });
+    });
+    
+    $('.autocompletar input.txtAutocomplete').each(function(){
+        PosicionarTextBox($(this));
+        $(this).bind('keydown', function(evento){
+            if ((evento.which == 8) || (evento.keyCode == 8)) {
+                if($(this).val() == "")
+                {
+                    if($(this).parent().find('.tag').last().hasClass("selected"))
+                    {
+                        EliminarTag($(this).parent().find('.tag').last(), evento);
+                    }
+                    else
+                    {
+                        $(this).parent().find('.tag').last().addClass("selected");
+                    }
+                    return false;
+                }
+            }
+            else if ((evento.which == 9) || (evento.keyCode == 9) || (evento.which == 13) || (evento.keyCode == 13)) {
+                //Tabulador o Intro
+                return false;
+            }
+            else
+            {
+                if($(this).parent().find('.tag').last().hasClass("selected"))
+                {
+                    $(this).parent().find('.tag').last().removeClass("selected");
+                }
+            }
+        });
+        $(this).bind('blur', function(evento){            
+            PintarTags($(this));
+        });
+        $(this).bind('click', function(evento){
+            cancelEvent(evento);
+        });
+        PintarTags($(this));
+    });
+}
+
+
+function cancelEvent(e) {
+    if (!e) e = window.event;
+    if (e.preventDefault) {
+        e.preventDefault();
+    } else {
+        e.returnValue = false;
+    }
+        
+    if (!e) e = window.event;
+    if (e.stopPropagation) {
+        e.stopPropagation();
+    } else {
+        e.cancelBubble = true;
+    }
+}
+
+function ObtenerUrlMultiple(pOptions){
+    if (pOptions.servicio != null && pOptions.servicio.service.indexOf(',') != -1)
+    {
+        pOptions.urlParteAsmx = pOptions.servicio.service.substring(pOptions.servicio.service.lastIndexOf(',') + 1);
+        pOptions.urlmultiple = pOptions.servicio.service.substring(0, pOptions.servicio.service.lastIndexOf(',')).split(',');
+        pOptions.urlActual = aleatorio(0, pOptions.urlmultiple.length - 1);
+    }
+    else if (pOptions.url != null && pOptions.url.indexOf(',') != -1) {
+        pOptions.urlParteAsmx = pOptions.url.substring(pOptions.url.lastIndexOf(',') + 1);
+        pOptions.urlmultiple = pOptions.url.substring(0, pOptions.url.lastIndexOf(',')).split(',');
+        pOptions.urlActual = aleatorio(0, pOptions.urlmultiple.length - 1);
+    }
+}
+
+function aleatorio(inferior,superior){ 
+    numPosibilidades = superior - inferior;
+    aleat = Math.random() * numPosibilidades;
+    aleat = Math.round(aleat);
+    return parseInt(inferior) + aleat;
+}
+
+
+function getParam(param)
+{
+	var url=window.location.href;
+	url = String(url.match(/\?+.+/));
+	url = url.replace("?", "");
+	url = url.split("&");	
+	x = 0;
+	while (x < url.length)
+	{
+		p = url[x].split("=");
+		if (p[0] == param)
+		{
+			return decodeURIComponent(p[1]);
+		}
+		x++;
+	}
+}

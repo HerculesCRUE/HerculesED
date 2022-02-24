@@ -45,6 +45,13 @@
                 </PropsEntLectura>
             </SeleccionEntidad>
         </Propiedad>
+		<Propiedad  ID="http://w3id.org/roh/gnossUser" EntidadID="http://xmlns.com/foaf/0.1/Person">
+			<AtrNombre>Usuario Gnoss</AtrNombre>
+			<AtrNombreLectura>Usuario Gnoss</AtrNombreLectura>
+			<SeleccionEntidad>
+				<TipoSeleccion MultiIdioma="false">PersonaGnoss</TipoSeleccion>
+			</SeleccionEntidad>
+        </Propiedad>
 		<Propiedad  ID="http://w3id.org/roh/collaboratorsNumber" EntidadID="http://xmlns.com/foaf/0.1/Person">
             <AtrNombre>http://w3id.org/roh/collaboratorsNumber</AtrNombre>
             <AtrNombreLectura>http://w3id.org/roh/collaboratorsNumber</AtrNombreLectura>

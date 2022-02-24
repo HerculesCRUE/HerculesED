@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace SemanticScholarConnect.ROs.SemanticScholar.Models
+namespace SemanticScholarAPI.ROs.SemanticScholar.Models
 {
 
 public class Publication 
@@ -39,8 +39,7 @@ public class Publication
     public Source hasPublicationVenue { get; set; }
     public List<PublicationMetric> hasMetric { get; set; }
     public List<Publication> bibliografia { get; set; }
-    public List<Publication> citas {get;set;}
-    
+    public List<Publication> citas {get;set;}    
 
 }
 public class FreetextKeywords {
@@ -105,6 +104,7 @@ public class Person
     public List<string> IDs { get; set; }
     public List<string> links { get; set; }
     //public string nick { get; set; }
+    public string fuente { get; set; }
 
 }
 

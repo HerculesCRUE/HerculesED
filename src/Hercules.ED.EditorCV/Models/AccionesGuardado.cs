@@ -84,6 +84,9 @@ namespace GuardadoCV.Models
         /// <returns></returns>
         public JsonResult RemoveItem(string pEntity)
         {
+            //Obtenemos la entidad para luego borrarla si es necesario
+            string entityDestino = mResourceApi.VirtuosoQuery("select ?id", "where{<" + pEntity + "> <http://vivoweb.org/ontology/core#relatedBy> ?id}", "curriculumvitae").results.bindings.First()["id"].value;
+
             mResourceApi.ChangeOntoly("curriculumvitae");
             KeyValuePair<List<string>, List<string>> subjectAndProperties = GetSubjectsAndPropertiesFromAuxCV(pEntity, "");
             List<string> properties = subjectAndProperties.Value;
@@ -95,6 +98,13 @@ namespace GuardadoCV.Models
             lista.Add(rt);
             dicEliminar.Add(mResourceApi.GetShortGuid(pEntity), lista);
             Dictionary<Guid, bool> dicCorrecto = mResourceApi.DeletePropertiesLoadedResources(dicEliminar);
+
+
+            //Si la entidaad no está referenciada desde ningún CV se elimina también la entidad
+            if (mResourceApi.VirtuosoQuery("select ?s", "where{?s ?p <" + entityDestino + ">}", "curriculumvitae").results.bindings.Count == 0)
+            {
+                mResourceApi.PersistentDelete(mResourceApi.GetShortGuid(entityDestino), true);
+            }
             return new JsonResult() { ok = dicCorrecto[mResourceApi.GetShortGuid(pEntity)] };
         }
 
@@ -107,7 +117,7 @@ namespace GuardadoCV.Models
         /// <param name="pRdfTypeTab">rdf:type de la pestaña (para la edición de un item de un listado)</param>
         /// <returns></returns>
         public JsonResult ActualizarEntidad(Entity pEntity, string pCvID, string pSectionID, string pRdfTypeTab)
-        {   
+        {
             if (pRdfTypeTab == "http://w3id.org/roh/PersonalData")
             {
                 GuardadoCV.Models.API.Templates.Tab template = UtilityCV.TabTemplates.First(x => x.rdftype == pRdfTypeTab);
@@ -147,10 +157,12 @@ namespace GuardadoCV.Models
                 }
                 else
                 {
-                    throw new Exception("Código no implementadp");
+                    throw new Exception("Código no implementado");
                 }
 
-
+                string entityID = "";
+                string entityIDResponse = "";
+                //Entidad externa CV
                 if (string.IsNullOrEmpty(pEntity.id) || Guid.TryParse(pEntity.id, out Guid x))
                 {
                     //Creamos
@@ -163,7 +175,10 @@ namespace GuardadoCV.Models
                         //Creamos el recurso que no pertenece al CV
                         ComplexOntologyResource resource = ToGnossApiResource(pEntity);
                         string result = mResourceApi.LoadComplexSemanticResource(resource, false, true);
-
+                        if (!resource.Uploaded)
+                        {
+                            return new JsonResult() { ok = false };
+                        }
                         //En el caso de añadir en un listado añadir la entidad al listado
                         if (resource.Uploaded && !string.IsNullOrEmpty(templateSection.property))
                         {
@@ -194,9 +209,13 @@ namespace GuardadoCV.Models
                                 }
                             };
                             Dictionary<Guid, bool> respuesta = mResourceApi.InsertPropertiesLoadedResources(triplesToInclude);
-                            return new JsonResult() { ok = respuesta[mResourceApi.GetShortGuid(pCvID)], id = idNewAux };
+                            if (!respuesta[mResourceApi.GetShortGuid(pCvID)])
+                            {
+                                return new JsonResult() { ok = false, id = idNewAux };
+                            }
+                            entityID = result;
+                            entityIDResponse = idNewAux;
                         }
-                        return new JsonResult() { ok = resource.Uploaded, id = result };
                     }
                     else
                     {
@@ -229,14 +248,12 @@ namespace GuardadoCV.Models
 
                         bool updated = UpdateEntityAux(mResourceApi.GetShortGuid(pCvID), new List<string>() { template.property, templateSection.property, templateSection.presentation.itemPresentation.property }, new List<string>() { id1, id2, id3 }, null, pEntity);
 
-                        if (updated)
-                        {
-                            return new JsonResult() { ok = true, id = id3 };
-                        }
-                        else
+                        if (!updated)
                         {
                             return new JsonResult() { ok = false };
                         }
+                        entityID = pEntity.id;
+                        entityIDResponse = id3;
                     }
                 }
                 else
@@ -255,12 +272,12 @@ namespace GuardadoCV.Models
                         {
                             ComplexOntologyResource resource = ToGnossApiResource(loadedEntity);
                             mResourceApi.ModifyComplexOntologyResource(resource, false, true);
-                            return new JsonResult() { ok = resource.Modified, id = pEntity.id };
+                            if (!resource.Modified)
+                            {
+                                return new JsonResult() { ok = resource.Modified, id = pEntity.id };
+                            }
                         }
-                        else
-                        {
-                            return new JsonResult() { ok = true, id = pEntity.id };
-                        }
+                        entityID = pEntity.id;
                     }
                     else
                     {
@@ -268,7 +285,7 @@ namespace GuardadoCV.Models
                         string select1 = "   select ?id1";
                         string where1 = $@"  where{{
                                                 <{pCvID}> <{template.property}> ?id1.
-                                            }}";                        
+                                            }}";
                         string id1 = mResourceApi.VirtuosoQuery(select1, where1, "curriculumvitae").results.bindings.First()["id1"].value;
 
                         string select2 = "   select ?id2";
@@ -283,18 +300,68 @@ namespace GuardadoCV.Models
                                             }}";
                         string id3 = mResourceApi.VirtuosoQuery(select3, where3, "curriculumvitae").results.bindings.First()["id3"].value;
 
-                        bool updated = UpdateEntityAux(mResourceApi.GetShortGuid(pCvID), new List<string>() { template.property, templateSection.property, templateSection.presentation.itemPresentation.property }, new List<string>() { id1,id2,id3 }, loadedEntity, pEntity);
+                        bool updated = UpdateEntityAux(mResourceApi.GetShortGuid(pCvID), new List<string>() { template.property, templateSection.property, templateSection.presentation.itemPresentation.property }, new List<string>() { id1, id2, id3 }, loadedEntity, pEntity);
 
-                        if (updated)
-                        {
-                            return new JsonResult() { ok = true, id = pEntity.id };
-                        }
-                        else
+                        if (!updated)
                         {
                             return new JsonResult() { ok = false };
                         }
+                        entityID = pEntity.id;
+                    }
+                    entityIDResponse = entityID;
+                }
+
+                //Entidad CV
+                if (templateSection.presentation.listItemsPresentation != null
+                    && !string.IsNullOrEmpty(templateSection.presentation.listItemsPresentation.property_cv)
+                    && !string.IsNullOrEmpty(templateSection.presentation.listItemsPresentation.rdftype_cv))
+                {
+                    //Obtenemos la auxiliar en la que cargar la entidad
+                    SparqlObject tab = mResourceApi.VirtuosoQuery("select *", "where{<" + pCvID + "> ?s ?o. ?o a <" + pRdfTypeTab + "> }", "curriculumvitae");
+                    string idTab = tab.results.bindings[0]["o"].value;
+
+                    string idEntity = mResourceApi.VirtuosoQuery("select *", "where{?s a <" + templateSection.rdftype + ">. ?s <" + templateSection.presentation.listItemsPresentation.property + "> <" + entityID + "> }", "curriculumvitae").results.bindings[0]["s"].value;
+
+                    SparqlObject entityCV = mResourceApi.VirtuosoQuery("select *", "where{<" + idEntity + "> <" + templateSection.presentation.listItemsPresentation.property_cv + "> ?o. ?o a <" + templateSection.presentation.listItemsPresentation.rdftype_cv + "> }", "curriculumvitae");
+                    string entityCVID = "";
+                    if (entityCV.results.bindings.Count > 0)
+                    {
+                        //existe
+                        entityCVID = entityCV.results.bindings[0]["o"].value;
+                    }
+                    else
+                    {
+                        //no existe
+                        string rdfTypePrefix = UtilityCV.AniadirPrefijo(templateSection.presentation.listItemsPresentation.rdftype_cv);
+                        rdfTypePrefix = rdfTypePrefix.Substring(rdfTypePrefix.IndexOf(":") + 1);
+                        entityCVID = $"{mResourceApi.GraphsUrl}items/" + rdfTypePrefix + "_" + mResourceApi.GetShortGuid(pCvID) + "_" + Guid.NewGuid();
+                    }
+
+                    List<string> propertyIDs = new List<string>()
+                    {
+                        template.property,
+                        templateSection.property,
+                        templateSection.presentation.listItemsPresentation.property_cv
+                    };
+                    List<string> entityIDs = new List<string>()
+                    {
+                        idTab,
+                        idEntity,
+                        entityCVID
+                    };
+
+                    Entity entityToLoad = new Entity();
+                    entityToLoad.id = entityCVID;
+                    entityToLoad.ontology = "curriculumvitae";
+                    entityToLoad.properties = pEntity.properties_cv;
+                    entityToLoad.rdfType = templateSection.presentation.listItemsPresentation.rdftype_cv;
+                    Entity entityBBDD = GetLoadedEntity(entityCVID, "curriculumvitae");
+                    if (!UpdateEntityAux(mResourceApi.GetShortGuid(pCvID), propertyIDs, entityIDs, entityBBDD, entityToLoad))
+                    {
+                        return new JsonResult() { ok = false, id = entityID };
                     }
                 }
+                return new JsonResult() { ok = true, id = entityIDResponse };
             }
             else
             {
@@ -363,28 +430,28 @@ namespace GuardadoCV.Models
                         entity.rdfType = "http://xmlns.com/foaf/0.1/Person";
                         entity.propTitle = "http://xmlns.com/foaf/0.1/name";
                         entity.properties = new List<Entity.Property>()
-                    {
-                        new Entity.Property()
                         {
-                            prop = "http://xmlns.com/foaf/0.1/name",
-                            values = new List<string>() { person.name.given_names.value.Trim() + " "+ person.name.family_name.value.Trim() }
-                        },
-                        new Entity.Property()
-                        {
-                            prop = "http://xmlns.com/foaf/0.1/firstName",
-                            values = new List<string>() { person.name.given_names.value.Trim() }
-                        },
-                        new Entity.Property()
-                        {
-                            prop = "http://xmlns.com/foaf/0.1/lastName",
-                            values = new List<string>() { person.name.family_name.value.Trim() }
-                        },
-                        new Entity.Property()
-                        {
-                            prop = "http://w3id.org/roh/ORCID",
-                            values = new List<string>() {pORCID }
-                        }
-                    };
+                            new Entity.Property()
+                            {
+                                prop = "http://xmlns.com/foaf/0.1/name",
+                                values = new List<string>() { person.name.given_names.value.Trim() + " "+ person.name.family_name.value.Trim() }
+                            },
+                            new Entity.Property()
+                            {
+                                prop = "http://xmlns.com/foaf/0.1/firstName",
+                                values = new List<string>() { person.name.given_names.value.Trim() }
+                            },
+                            new Entity.Property()
+                            {
+                                prop = "http://xmlns.com/foaf/0.1/lastName",
+                                values = new List<string>() { person.name.family_name.value.Trim() }
+                            },
+                            new Entity.Property()
+                            {
+                                prop = "http://w3id.org/roh/ORCID",
+                                values = new List<string>() {pORCID }
+                            }
+                        };
                         //TODO privacidad
                         mResourceApi.ChangeOntoly("person");
                         ComplexOntologyResource resource = ToGnossApiResource(entity);
@@ -511,7 +578,7 @@ namespace GuardadoCV.Models
                     Entity.Property prop = new Entity.Property()
                     {
                         prop = propertyValue.property,
-                        values = propertyValue.values.Select(x=>x.Replace("{GraphsUrl}",mResourceApi.GraphsUrl)).ToList()
+                        values = propertyValue.values.Select(x => x.Replace("{GraphsUrl}", mResourceApi.GraphsUrl)).ToList()
                     };
                     Entity.Property propLoad = pLoadedEntity.properties.FirstOrDefault(x => x.prop == prop.prop);
                     if (propLoad == null)
@@ -621,6 +688,11 @@ namespace GuardadoCV.Models
 
             foreach (Entity.Property property in pUpdatedEntity.properties)
             {
+                if (property.values != null)
+                {
+                    property.values.RemoveAll(x => x != null && x == "@@@");
+                }
+
                 bool remove = property.values == null || property.values.Count == 0 || !property.values.Exists(x => !string.IsNullOrEmpty(x));
                 //Recorremos las propiedades de la entidad a actualizar y modificamos la entidad recuperada de BBDD               
                 Entity.Property propertyLoadedEntity = pLoadedEntity.properties.FirstOrDefault(x => x.prop == property.prop);
@@ -651,7 +723,7 @@ namespace GuardadoCV.Models
                 }
                 else if (remove)
                 {
-                    List<Entity.Property> propertiesLoadedEntityRemove = pLoadedEntity.properties.Where(x => x.prop.StartsWith(property.prop)).ToList();
+                    List<Entity.Property> propertiesLoadedEntityRemove = pLoadedEntity.properties.Where(x => x.prop == property.prop || x.prop.StartsWith(property.prop + "|") || x.prop.StartsWith(property.prop + "@@@")).ToList();
                     foreach (Entity.Property propertyToRemove in propertiesLoadedEntityRemove)
                     {
                         pLoadedEntity.properties.Remove(propertyToRemove);
@@ -802,17 +874,20 @@ namespace GuardadoCV.Models
                 }
                 else if (remove)
                 {
-                    List<Entity.Property> propertiesLoadedEntityRemove = pLoadedEntity.properties.Where(x => x.prop.StartsWith(property.prop)).ToList();
-                    foreach (Entity.Property propertyToRemove in propertiesLoadedEntityRemove)
+                    if (pLoadedEntity != null)
                     {
-                        foreach (string valor in propertyToRemove.values)
+                        List<Entity.Property> propertiesLoadedEntityRemove = pLoadedEntity.properties.Where(x => x.prop.StartsWith(property.prop)).ToList();
+                        foreach (Entity.Property propertyToRemove in propertiesLoadedEntityRemove)
                         {
-                            triplesRemove[pIdMainEntity].Add(new RemoveTriples()
+                            foreach (string valor in propertyToRemove.values)
                             {
+                                triplesRemove[pIdMainEntity].Add(new RemoveTriples()
+                                {
 
-                                Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(property.prop),
-                                Value = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(pIdMainEntity, valor, property.prop)
-                            });
+                                    Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(property.prop),
+                                    Value = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(pIdMainEntity, valor, property.prop)
+                                });
+                            }
                         }
                     }
                 }

@@ -37,6 +37,40 @@
                 </PropsEntLectura>
             </SeleccionEntidad>
         </Propiedad>
+		<Propiedad  ID="http://w3id.org/roh/promotedByType" EntidadID="http://w3id.org/roh/Activity">
+            <AtrNombre>http://w3id.org/roh/promotedByType</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/promotedByType</AtrNombreLectura>
+			<SeleccionEntidad>
+                <TipoSeleccion>Autocompletar</TipoSeleccion>
+                <Grafo>organizationtype.owl</Grafo>
+                <UrlTipoEntSolicitada>http://w3id.org/roh/OrganizationType</UrlTipoEntSolicitada>
+				<PropsEntEdicion>
+                    <NameProp>http://purl.org/dc/elements/1.1/title</NameProp>
+                </PropsEntEdicion>
+                <PropsEntLectura>
+                    <Propiedad ID="http://purl.org/dc/elements/1.1/title" EntidadID="http://w3id.org/roh/OrganizationType">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+                </PropsEntLectura>
+            </SeleccionEntidad>
+        </Propiedad>
+		<Propiedad  ID="http://w3id.org/roh/participationType" EntidadID="http://w3id.org/roh/Activity">
+            <AtrNombre>http://w3id.org/roh/participationType</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/participationType</AtrNombreLectura>
+			<SeleccionEntidad>
+                <TipoSeleccion>Combo</TipoSeleccion>
+                <Grafo>participationtypeactivity.owl</Grafo>
+                <UrlTipoEntSolicitada>http://w3id.org/roh/ParticipationTypeActivity</UrlTipoEntSolicitada>              
+                <PropsEntEdicion>
+                    <NameProp>http://purl.org/dc/elements/1.1/title</NameProp>
+                </PropsEntEdicion>
+                <PropsEntLectura>
+                    <Propiedad ID="http://purl.org/dc/elements/1.1/title" EntidadID="http://w3id.org/roh/ParticipationTypeActivity">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+                </PropsEntLectura>
+            </SeleccionEntidad>
+        </Propiedad>
         <Propiedad  ID="https://www.w3.org/2006/vcard/ns#hasRegion" EntidadID="http://w3id.org/roh/Activity">
             <AtrNombre>https://www.w3.org/2006/vcard/ns#hasRegion</AtrNombre>
             <AtrNombreLectura>https://www.w3.org/2006/vcard/ns#hasRegion</AtrNombreLectura>
@@ -54,6 +88,44 @@
                 </PropsEntLectura>
             </SeleccionEntidad>
         </Propiedad>
+		
+		
+		<Propiedad  ID="http://w3id.org/roh/promotedByHasRegion" EntidadID="http://w3id.org/roh/Activity">
+            <AtrNombre>http://w3id.org/roh/promotedByHasRegion</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/promotedByHasRegion</AtrNombreLectura>
+			<SeleccionEntidad>
+                <TipoSeleccion>Combo</TipoSeleccion>
+                <Grafo>feature.owl</Grafo>
+                <UrlTipoEntSolicitada>http://www.geonames.org/ontology#Feature</UrlTipoEntSolicitada>              
+                <PropsEntEdicion>
+                    <NameProp>http://www.geonames.org/ontology#name</NameProp>
+                </PropsEntEdicion>
+                <PropsEntLectura>
+                    <Propiedad ID="http://www.geonames.org/ontology#name" EntidadID="http://www.geonames.org/ontology#Feature">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+                </PropsEntLectura>
+            </SeleccionEntidad>
+        </Propiedad>
+		<Propiedad  ID="http://w3id.org/roh/promotedByHasCountryName" EntidadID="http://w3id.org/roh/Activity">
+            <AtrNombre>http://w3id.org/roh/promotedByHasCountryName</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/promotedByHasCountryName</AtrNombreLectura>
+			<SeleccionEntidad>
+                <TipoSeleccion>Combo</TipoSeleccion>
+                <Grafo>feature.owl</Grafo>
+                <UrlTipoEntSolicitada>http://www.geonames.org/ontology#Feature</UrlTipoEntSolicitada>              
+                <PropsEntEdicion>
+                    <NameProp>http://www.geonames.org/ontology#name</NameProp>
+                </PropsEntEdicion>
+                <PropsEntLectura>
+                    <Propiedad ID="http://www.geonames.org/ontology#name" EntidadID="http://www.geonames.org/ontology#Feature">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+                </PropsEntLectura>
+            </SeleccionEntidad>
+        </Propiedad>
+		
+		
         <Propiedad  ID="http://w3id.org/roh/conductedBy" EntidadID="http://w3id.org/roh/Activity">
             <AtrNombre>http://w3id.org/roh/conductedBy</AtrNombre>
             <AtrNombreLectura>http://w3id.org/roh/conductedBy</AtrNombreLectura>
@@ -160,6 +232,57 @@
                 </PropsEntLectura>
             </SeleccionEntidad>
         </Propiedad>
+		<Propiedad  ID="http://w3id.org/roh/accessSystemActivity" EntidadID="http://w3id.org/roh/Activity">
+            <AtrNombre>http://w3id.org/roh/accessSystemActivity</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/accessSystemActivity</AtrNombreLectura>
+			<SeleccionEntidad>
+                <TipoSeleccion>Autocompletar</TipoSeleccion>
+                <Grafo>accesssystemactivity.owl</Grafo>
+                <UrlTipoEntSolicitada>http://w3id.org/roh/AccessSystemActivity</UrlTipoEntSolicitada>              
+                <PropsEntEdicion>
+                    <NameProp>http://purl.org/dc/elements/1.1/title</NameProp>
+                </PropsEntEdicion>
+                <PropsEntLectura>
+                    <Propiedad ID="http://purl.org/dc/elements/1.1/title" EntidadID="http://w3id.org/roh/AccessSystemActivity">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+                </PropsEntLectura>
+            </SeleccionEntidad>
+        </Propiedad>
+		<Propiedad  ID="http://w3id.org/roh/conductedByType" EntidadID="http://w3id.org/roh/Activity">
+            <AtrNombre>http://w3id.org/roh/conductedByType</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/conductedByType</AtrNombreLectura>
+			<SeleccionEntidad>
+                <TipoSeleccion>Autocompletar</TipoSeleccion>
+                <Grafo>organizationtype.owl</Grafo>
+                <UrlTipoEntSolicitada>http://w3id.org/roh/OrganizationType</UrlTipoEntSolicitada>              
+                <PropsEntEdicion>
+                    <NameProp>http://purl.org/dc/elements/1.1/title</NameProp>
+                </PropsEntEdicion>
+                <PropsEntLectura>
+                    <Propiedad ID="http://purl.org/dc/elements/1.1/title" EntidadID="http://w3id.org/roh/OrganizationType">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+                </PropsEntLectura>
+            </SeleccionEntidad>
+        </Propiedad>
+		<Propiedad  ID="http://w3id.org/roh/prmotedByType" EntidadID="http://w3id.org/roh/Activity">
+            <AtrNombre>http://w3id.org/roh/prmotedByType</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/prmotedByType</AtrNombreLectura>
+			<SeleccionEntidad>
+                <TipoSeleccion>Autocompletar</TipoSeleccion>
+                <Grafo>organizationtype.owl</Grafo>
+                <UrlTipoEntSolicitada>http://w3id.org/roh/OrganizationType</UrlTipoEntSolicitada>              
+                <PropsEntEdicion>
+                    <NameProp>http://purl.org/dc/elements/1.1/title</NameProp>
+                </PropsEntEdicion>
+                <PropsEntLectura>
+                    <Propiedad ID="http://purl.org/dc/elements/1.1/title" EntidadID="http://w3id.org/roh/OrganizationType">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+                </PropsEntLectura>
+            </SeleccionEntidad>
+        </Propiedad>
 		<Propiedad  ID="http://w3id.org/roh/activityModalityOther" EntidadID="http://w3id.org/roh/Activity">
             <AtrNombre>http://w3id.org/roh/activityModalityOther</AtrNombre>
             <AtrNombreLectura>http://w3id.org/roh/activityModalityOther</AtrNombreLectura>
@@ -196,6 +319,78 @@
             <AtrNombre>http://w3id.org/roh/title</AtrNombre>
             <AtrNombreLectura>http://w3id.org/roh/title</AtrNombreLectura>
         </Propiedad>
+		
+		
+		
+		<Propiedad  ID="http://w3id.org/roh/representedEntityHasRegion" EntidadID="http://w3id.org/roh/Activity">
+            <AtrNombre>http://w3id.org/roh/representedEntityHasRegion</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/representedEntityHasRegion</AtrNombreLectura>
+			<SeleccionEntidad>
+                <TipoSeleccion>Combo</TipoSeleccion>
+                <Grafo>feature.owl</Grafo>
+                <UrlTipoEntSolicitada>http://www.geonames.org/ontology#Feature</UrlTipoEntSolicitada>              
+                <PropsEntEdicion>
+                    <NameProp>http://www.geonames.org/ontology#name</NameProp>
+                </PropsEntEdicion>
+                <PropsEntLectura>
+                    <Propiedad ID="http://www.geonames.org/ontology#name" EntidadID="http://www.geonames.org/ontology#Feature">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+                </PropsEntLectura>
+            </SeleccionEntidad>
+        </Propiedad>
+		<Propiedad  ID="http://w3id.org/roh/representedEntityHasCountryName" EntidadID="http://w3id.org/roh/Activity">
+            <AtrNombre>http://w3id.org/roh/representedEntityHasCountryName</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/representedEntityHasCountryName</AtrNombreLectura>
+			<SeleccionEntidad>
+                <TipoSeleccion>Combo</TipoSeleccion>
+                <Grafo>feature.owl</Grafo>
+                <UrlTipoEntSolicitada>http://www.geonames.org/ontology#Feature</UrlTipoEntSolicitada>              
+                <PropsEntEdicion>
+                    <NameProp>http://www.geonames.org/ontology#name</NameProp>
+                </PropsEntEdicion>
+                <PropsEntLectura>
+                    <Propiedad ID="http://www.geonames.org/ontology#name" EntidadID="http://www.geonames.org/ontology#Feature">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+                </PropsEntLectura>
+            </SeleccionEntidad>
+        </Propiedad>		
+        <Propiedad  ID="http://w3id.org/roh/representedEntity" EntidadID="http://w3id.org/roh/Activity">
+            <AtrNombre>http://w3id.org/roh/representedEntity</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/representedEntity</AtrNombreLectura>
+			<SeleccionEntidad>
+                <TipoSeleccion>Autocompletar</TipoSeleccion>
+                <Grafo>organization.owl</Grafo>
+                <UrlTipoEntSolicitada>http://xmlns.com/foaf/0.1/Organization</UrlTipoEntSolicitada>              
+                <PropsEntEdicion>
+                    <NameProp>http://w3id.org/roh/title</NameProp>
+                </PropsEntEdicion>
+                <PropsEntLectura>
+                    <Propiedad ID="http://w3id.org/roh/title" EntidadID="http://xmlns.com/foaf/0.1/Organization">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+                </PropsEntLectura>
+            </SeleccionEntidad>
+        </Propiedad>
+		<Propiedad  ID="http://w3id.org/roh/representedEntityType" EntidadID="http://w3id.org/roh/Activity">
+            <AtrNombre>http://w3id.org/roh/representedEntityType</AtrNombre>
+            <AtrNombreLectura>http://w3id.org/roh/representedEntityType</AtrNombreLectura>
+			<SeleccionEntidad>
+                <TipoSeleccion>Autocompletar</TipoSeleccion>
+                <Grafo>organizationtype.owl</Grafo>
+                <UrlTipoEntSolicitada>http://w3id.org/roh/OrganizationType</UrlTipoEntSolicitada>              
+                <PropsEntEdicion>
+                    <NameProp>http://purl.org/dc/elements/1.1/title</NameProp>
+                </PropsEntEdicion>
+                <PropsEntLectura>
+                    <Propiedad ID="http://purl.org/dc/elements/1.1/title" EntidadID="http://w3id.org/roh/OrganizationType">
+                        <AtrNombreLectura></AtrNombreLectura>
+                    </Propiedad>
+                </PropsEntLectura>
+            </SeleccionEntidad>
+        </Propiedad>
+		
     </EspefPropiedad>
     <EspefEntidad>
         <Entidad  ID="http://w3id.org/roh/CategoryPath">

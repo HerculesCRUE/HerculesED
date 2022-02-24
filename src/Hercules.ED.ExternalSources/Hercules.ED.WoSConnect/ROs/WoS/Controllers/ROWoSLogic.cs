@@ -21,6 +21,7 @@ using System.IO;
 using System.Text;
 using ExcelDataReader;
 using System.IO;
+using System.Threading;
 
 namespace WoSConnect.ROs.WoS.Controllers
 {
@@ -70,13 +71,27 @@ namespace WoSConnect.ROs.WoS.Controllers
                             request.Headers.TryAddWithoutValidation(item.Key, item.Value);
                         }
                     }
-                    try
+
+                    int intentos = 3;
+                    while (true)
                     {
-                        response = await httpClient.SendAsync(request);
-                    }
-                    catch (System.Exception)
-                    {
-                        throw new Exception("Error in the http call");
+                        try
+                        {
+                            response = await httpClient.SendAsync(request);
+                            break;
+                        }
+                        catch
+                        {
+                            intentos--;
+                            if (intentos == 0)
+                            {
+                                throw;
+                            }
+                            else
+                            {
+                                Thread.Sleep(1000);
+                            }
+                        }
                     }
                 }
             }
@@ -123,11 +138,10 @@ namespace WoSConnect.ROs.WoS.Controllers
                         continuar = false;
                     }
                 }
-                catch(Exception error)
+                catch (Exception error)
                 {
-                    // TODO: Revisar parseo JSON.
-                    string msg = error.Message;
-                }                
+                    throw error;
+                }
             }
             return sol;
         }
@@ -159,7 +173,7 @@ namespace WoSConnect.ROs.WoS.Controllers
                     publicacionFinal = info.cambioDeModeloPublicacion(publicacionInicial, true);
                 }
             }
-            catch(Exception error)
+            catch (Exception error)
             {
                 return publicacionFinal;
             }
@@ -183,7 +197,7 @@ namespace WoSConnect.ROs.WoS.Controllers
                 ROWoSControllerJSON info = new ROWoSControllerJSON(this);
 
                 // Petición.
-                Uri url = new Uri($@"{baseUri}api/wos/?databaseId=WOK&usrQuery=DO=({pDoi})&count=1&firstRecord=1");                
+                Uri url = new Uri($@"{baseUri}api/wos/?databaseId=WOK&usrQuery=DO=({pDoi})&count=1&firstRecord=1");
                 string result = httpCall(url.ToString(), "GET", headers).Result;
 
                 // Obtención de datos.
@@ -200,6 +214,96 @@ namespace WoSConnect.ROs.WoS.Controllers
             }
 
             return publicacionFinal;
+        }
+
+        /// <summary>
+        /// Obtiene las publicaciones que son citadas mediante el ID de WOS.
+        /// </summary>
+        /// <param name="pIdWos">ID de WoS.</param>
+        /// <param name="pFecha">Fecha de obtención.</param>
+        /// <returns></returns>
+        public List<Publication> getCitingByWosId(string pIdWos, string pFecha = "1500-01-01")
+        {
+            // Objeto publicación.
+            List<Publication> listaPublicaciones = new List<Publication>();
+            int numIncremental = 0;
+            int numCitas = 100;
+
+            try
+            {
+                while (true)
+                {
+                    // Clase.
+                    ROWoSControllerJSON info = new ROWoSControllerJSON(this);
+
+                    // Petición.
+                    string result = string.Empty;
+                    Uri url = new Uri($@"{baseUri}api/wos/citing?databaseId=WOK&uniqueId=WOS:{pIdWos}&count={numCitas}&firstRecord={(numCitas * numIncremental) + 1}&publishTimeSpan={pFecha}%2B3000-12-31");
+                    result = httpCall(url.ToString(), "GET", headers).Result;
+                    Thread.Sleep(500); // Restricción de peticiones del API de WOS (2 peticiones por segundo)
+
+                    // Obtención de datos.
+                    if (!result.Contains("Server.invalidInput") && (!string.IsNullOrEmpty(result) && !result.Contains("\"RecordsFound\":0")))
+                    {
+                        //result = result.Replace("")
+                        numIncremental++;
+                        Root objInicial = new Root();
+
+                        try
+                        {                            
+                            objInicial = JsonConvert.DeserializeObject<Root>(result);
+                        }
+                        catch (Exception error)
+                        {
+                            continue; // Si no puede parsear el objeto, que pase al siguiente.
+                        }
+
+                        foreach (PublicacionInicial item in objInicial.Data.Records.records.REC)
+                        {
+                            Publication publicacion = info.getPublicacionCita(item);
+                            listaPublicaciones.Add(publicacion);
+                        }
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                return listaPublicaciones;
+            }
+
+            return listaPublicaciones;
+        }
+    }
+
+    public class SingleOrArrayConverter<T> : JsonConverter
+    {
+        public override bool CanConvert(Type objectType)
+        {
+            return (objectType == typeof(List<T>));
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, Newtonsoft.Json.JsonSerializer serializer)
+        {
+            JToken token = JToken.Load(reader);
+            if (token.Type == JTokenType.Array)
+            {
+                return token.ToObject<List<T>>();
+            }
+            return new List<T> { token.ToObject<T>() };
+        }
+
+        public override bool CanWrite
+        {
+            get { return false; }
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, Newtonsoft.Json.JsonSerializer serializer)
+        {
+            throw new NotImplementedException();
         }
     }
 }
