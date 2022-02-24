@@ -97,8 +97,7 @@ namespace OpenAireConnect.ROs.OpenAire.Controllers
         public Publication cambioDeModeloPublicacion(Result2 objInicial, Boolean publicacion_principal)
         {
             Publication publicacion = new Publication();
-            //publicacion.typeOfPublication = getType(objInicial);
-            //publicacion.IDs = getOpenAireID(objInicial);
+            publicacion.typeOfPublication = getPublicationType(objInicial);
             publicacion.title = getTitle(objInicial);
             publicacion.Abstract = getAbstract(objInicial);
             publicacion.language = getLanguage(objInicial);
@@ -106,16 +105,14 @@ namespace OpenAireConnect.ROs.OpenAire.Controllers
             publicacion.dataIssued = getDate(objInicial);
             publicacion.pageStart = getPageStart(objInicial);
             publicacion.pageEnd = getPageEnd(objInicial);
-            //publicacion.hasKnowledgeAreas = getKnowledgeAreas(objInicial);
             publicacion.freetextKeywords = getFreetextKeyword(objInicial);
             publicacion.seqOfAuthors = getAuthors(objInicial);
             publicacion.correspondingAuthor = getAuthorPrincipal(objInicial);
             publicacion.hasPublicationVenue = getJournal(objInicial);
-            //publicacion.hasMetric = getPublicationMetric(objInicial);
-            //if (publicacion.typeOfPublication == CHAPTER)
-            //{
-            //    publicacion.doi = null;
-            //}
+            if (publicacion.typeOfPublication == CHAPTER)
+            {
+                publicacion.doi = null;
+            }
             return publicacion;
         }
 
@@ -163,32 +160,46 @@ namespace OpenAireConnect.ROs.OpenAire.Controllers
 
             if (pPublicacionIn.metadata != null && pPublicacionIn.metadata.OafEntity != null && pPublicacionIn.metadata.OafEntity.OafResult != null && pPublicacionIn.metadata.OafEntity.OafResult.creator != null)
             {
-
                 foreach (Creator author_fOriginal in pPublicacionIn.metadata.OafEntity.OafResult.creator)
                 {
-
                     if (author_fOriginal.Rank == "1")
                     {
                         Person author = new Person();
                         author.fuente = "OpenAire";
-                        if (author_fOriginal.Orcid != null)
+
+                        if (author_fOriginal.Orcid != null && !string.IsNullOrEmpty(author_fOriginal.Orcid))
                         {
                             author.ORCID = author_fOriginal.Orcid;
                         }
-                        Name nombre = new Name();
-                        if (author_fOriginal.Text != null)
+
+                        Name nom = new Name();
+                        if (author_fOriginal.Text != null && !string.IsNullOrEmpty(author_fOriginal.Text))
                         {
-                            List<string> nombre_completo = new List<string>();
-                            nombre_completo.Add(author_fOriginal.Text);
-                            nombre.nombre_completo = nombre_completo;
-                            author.name = nombre;
+                            // Separar nombre de apellidos.
+                            string nombreOriginal = author_fOriginal.Text.Trim();
+                            string nombre = string.Empty;
+                            string apellidos = string.Empty;
 
+                            if (nombreOriginal.Contains(". "))
+                            {
+                                nombre = nombreOriginal.Split(". ")[0].Trim() + ".";
+                                apellidos = nombreOriginal.Substring(nombreOriginal.IndexOf(". ") + 1).Trim();
+                            }
+                            else if (nombreOriginal.Contains(" "))
+                            {
+                                nombre = nombreOriginal.Split(" ")[0].Trim();
+                                apellidos = nombreOriginal.Substring(nombreOriginal.IndexOf(" ")).Trim();
+                            }
+
+                            nom.nombre_completo = new List<string>() { nombreOriginal };
+                            nom.given = new List<string>() { nombre };
+                            nom.familia = new List<string>() { apellidos };
+                            author.name = nom;                            
                         }
-                        return author;
 
+                        return author;
                     }
                 }
-
             }
 
             return null;
@@ -196,8 +207,31 @@ namespace OpenAireConnect.ROs.OpenAire.Controllers
 
 
 
-
-
+        /// <summary>.
+        /// Obtiene el tipo de publicación.
+        /// </summary>
+        /// <param name="pPublicacionIn"></param>
+        /// <returns></returns>
+        public string getPublicationType(Result2 pPublicacionIn)
+        {
+            if (pPublicacionIn.metadata != null && pPublicacionIn.metadata.OafEntity != null && pPublicacionIn.metadata.OafEntity.OafResult != null && pPublicacionIn.metadata.OafEntity.OafResult.resourcetype != null)
+            {
+                switch (pPublicacionIn.metadata.OafEntity.OafResult.resourcetype.Classname.ToLower().Trim())
+                {
+                    case "publication":
+                        return JOURNAL_ARTICLE;
+                    case "book":
+                        return BOOK;
+                    case "conference paper":
+                        return CONFERENCE_PAPER;
+                    case "part of book or chapter of book":
+                        return CHAPTER;
+                    default:
+                        return JOURNAL_ARTICLE;
+                }
+            }
+            return null;
+        }
 
 
         /// <summary>
@@ -209,17 +243,13 @@ namespace OpenAireConnect.ROs.OpenAire.Controllers
         {
             if (pPublicacionIn.metadata != null && pPublicacionIn.metadata.OafEntity != null && pPublicacionIn.metadata.OafEntity.OafResult != null && pPublicacionIn.metadata.OafEntity.OafResult.title != null)
             {
-
-
-
                 foreach (Title item in pPublicacionIn.metadata.OafEntity.OafResult.title)
                 {
-                    if (item.Classid == "main title")
+                    if (item.Classid == "main title" && !string.IsNullOrEmpty(item.Text))
                     {
                         return item.Text;
                     }
                 }
-
             }
             return null;
         }
@@ -234,11 +264,13 @@ namespace OpenAireConnect.ROs.OpenAire.Controllers
         {
             if (pPublicacionIn.metadata != null && pPublicacionIn.metadata.OafEntity != null && pPublicacionIn.metadata.OafEntity.OafResult != null && pPublicacionIn.metadata.OafEntity.OafResult.description != null)
             {
-
                 string descripcion = string.Empty;
                 foreach (Descripton item in pPublicacionIn.metadata.OafEntity.OafResult.description)
                 {
-                    descripcion += item.descripton.Trim() + " ";
+                    if (!string.IsNullOrEmpty(item.descripton))
+                    {
+                        descripcion += item.descripton.Trim() + " ";
+                    }
                 }
                 return descripcion.Trim();
             }
@@ -249,21 +281,21 @@ namespace OpenAireConnect.ROs.OpenAire.Controllers
         /// <summary>
         /// Obtiene el idioma de la publicación.
         /// </summary>
-        /// <param name="objInicial">Publicación a obtener el idioma.</param>
+        /// <param name="pPublicacionIn">Publicación a obtener el idioma.</param>
         /// <returns>Idioma.</returns>
         public string getLanguage(Result2 pPublicacionIn)
         {
-
             if (pPublicacionIn.metadata != null && pPublicacionIn.metadata.OafEntity != null && pPublicacionIn.metadata.OafEntity.OafResult != null && pPublicacionIn.metadata.OafEntity.OafResult.language != null)
             {
-                if (pPublicacionIn.metadata.OafEntity.OafResult.language.Classname == "Undetermined") { return null; }
-                else
-                {
+                string idioma = pPublicacionIn.metadata.OafEntity.OafResult.language.Classname;
 
-                    return pPublicacionIn.metadata.OafEntity.OafResult.language.Classname;
+                if (!string.IsNullOrEmpty(idioma) && idioma != "Undetermined")
+                {
+                    return idioma;
                 }
             }
-            else { return null; }
+
+            return null;
         }
 
 
@@ -278,8 +310,7 @@ namespace OpenAireConnect.ROs.OpenAire.Controllers
             {
                 foreach (Title item in pPublicacionIn.metadata.OafEntity.OafResult.pid)
                 {
-
-                    if (item.Classid == "doi")
+                    if (item.Classid == "doi" && !string.IsNullOrEmpty(item.Text))
                     {
                         return item.Text;
                     }
@@ -308,11 +339,10 @@ namespace OpenAireConnect.ROs.OpenAire.Controllers
                         return date;
                     }
                 }
-
             }
+
             return null;
         }
-
 
         /// <summary>
         /// Obtiene el número de la página de inicio.
@@ -327,9 +357,8 @@ namespace OpenAireConnect.ROs.OpenAire.Controllers
                 {
                     return pPublicacionIn.metadata.OafEntity.OafResult.journal.Sp;
                 }
-                else { return null; }
-
             }
+
             return null;
         }
 
@@ -340,18 +369,15 @@ namespace OpenAireConnect.ROs.OpenAire.Controllers
         /// <returns>Número de la página.</returns>
         public string getPageEnd(Result2 pPublicacionIn)
         {
-
             if (pPublicacionIn.metadata != null && pPublicacionIn.metadata.OafEntity != null && pPublicacionIn.metadata.OafEntity.OafResult != null && pPublicacionIn.metadata.OafEntity.OafResult.journal != null)
             {
-
                 if (pPublicacionIn.metadata.OafEntity.OafResult.journal.Ep != null)
                 {
                     return pPublicacionIn.metadata.OafEntity.OafResult.journal.Ep;
                 }
-                else { return null; }
             }
-            return null;
 
+            return null;
         }
 
         /// <summary>
@@ -363,30 +389,27 @@ namespace OpenAireConnect.ROs.OpenAire.Controllers
         {
             FreetextKeywords result = new FreetextKeywords();
             result.source = "OpenAire";
-            if (pPublicacionIn.metadata != null && pPublicacionIn.metadata.OafEntity != null && pPublicacionIn.metadata.OafEntity.OafResult != null && pPublicacionIn.metadata.OafEntity.OafResult.subject != null)
-            {
 
-                List<string> lista_keyword = new List<string>();
+            if (pPublicacionIn.metadata != null && pPublicacionIn.metadata.OafEntity != null && pPublicacionIn.metadata.OafEntity.OafResult != null && pPublicacionIn.metadata.OafEntity.OafResult.subject != null && pPublicacionIn.metadata.OafEntity.OafResult.subject.Any())
+            {
+                HashSet<string> lista_keyword = new HashSet<string>();
+
                 foreach (Subject sub in pPublicacionIn.metadata.OafEntity.OafResult.subject)
                 {
-                    if (sub.Classid == "keyword")
+                    if (sub.Classid == "keyword" && !string.IsNullOrEmpty(sub.Text))
                     {
                         lista_keyword.Add(sub.Text);
                     }
+                }
 
-                }
-                if (lista_keyword.Count > 0)
+                if (lista_keyword.Any())
                 {
-                    result.freetextKeyword = lista_keyword;
-                    List<FreetextKeywords> sol = new List<FreetextKeywords>();
-                    sol.Add(result);
-                    return sol;
+                    result.freetextKeyword = lista_keyword.ToList();
+                    return new List<FreetextKeywords>() { result };
                 }
-                else { return null; }
             }
 
             return null;
-
         }
 
 
@@ -401,32 +424,53 @@ namespace OpenAireConnect.ROs.OpenAire.Controllers
 
             if (pPublicacionIn.metadata != null && pPublicacionIn.metadata.OafEntity != null && pPublicacionIn.metadata.OafEntity.OafResult != null && pPublicacionIn.metadata.OafEntity.OafResult.creator != null)
             {
-
                 foreach (Creator author_fOriginal in pPublicacionIn.metadata.OafEntity.OafResult.creator)
                 {
                     Person author = new Person();
                     author.fuente = "OpenAire";
-                    if (author_fOriginal.Orcid != null)
+
+                    if (author_fOriginal.Orcid != null && !string.IsNullOrEmpty(author_fOriginal.Orcid))
                     {
                         author.ORCID = author_fOriginal.Orcid;
                     }
-                    Name nombre = new Name();
-                    if (author_fOriginal.Text != null)
+
+                    Name nom = new Name();
+                    if (author_fOriginal.Text != null && !string.IsNullOrEmpty(author_fOriginal.Text))
                     {
-                        List<string> nombre_completo = new List<string>();
-                        nombre_completo.Add(author_fOriginal.Text);
-                        nombre.nombre_completo = nombre_completo;
-                        author.name = nombre;
+                        // Separar nombre de apellidos.
+                        string nombreOriginal = author_fOriginal.Text.Trim();
+                        string nombre = string.Empty;
+                        string apellidos = string.Empty;
+
+                        if(nombreOriginal.Contains(". "))
+                        {
+                            nombre = nombreOriginal.Split(". ")[0].Trim() + ".";
+                            apellidos = nombreOriginal.Substring(nombreOriginal.IndexOf(". ") + 1).Trim();
+                        }
+                        else if (nombreOriginal.Contains(" "))
+                        {
+                            nombre = nombreOriginal.Split(" ")[0].Trim();
+                            apellidos = nombreOriginal.Substring(nombreOriginal.IndexOf(" ")).Trim();
+                        }
+
+                        nom.nombre_completo = new List<string>() { nombreOriginal };
+                        nom.given = new List<string>() { nombre };
+                        nom.familia = new List<string>() { apellidos };
+                        author.name = nom;
+
                         list_author.Add(author);
-
-                    }
-                    return list_author;
-
-
+                    }                    
                 }
             }
 
-            return null;
+            if (list_author.Any())
+            {
+                return list_author;
+            }
+            else
+            {
+                return null;
+            }
         }
 
 
@@ -442,28 +486,29 @@ namespace OpenAireConnect.ROs.OpenAire.Controllers
             {
                 Source source = new Source();
                 source.type = "Journal";
-                // siempre son journal no dan imformacion de los libros. 
+
+                // Siempre son journal no dan imformacion de los libros. 
                 if (pPublicacionIn.metadata.OafEntity.OafResult.journal.Eissn != null)
                 {
                     source.eissn = pPublicacionIn.metadata.OafEntity.OafResult.journal.Eissn;
                 }
+
                 if (pPublicacionIn.metadata.OafEntity.OafResult.journal.Iss != null)
                 {
                     List<string> issns = new List<string>();
                     issns.Add(pPublicacionIn.metadata.OafEntity.OafResult.journal.Iss);
                     source.issn = issns;
                 }
+
                 if (pPublicacionIn.metadata.OafEntity.OafResult.journal.Text != null)
                 {
                     source.name = pPublicacionIn.metadata.OafEntity.OafResult.journal.Text;
                 }
+
                 return source;
             }
 
-
             return null;
         }
-
-
     }
 }

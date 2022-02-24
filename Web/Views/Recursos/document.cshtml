@@ -33,7 +33,7 @@
             <a href="@Comunidad.Url">Home</a>
         </li>
         <li>
-            @{string urlArticulos = Comunidad.Url + "/publicaciones"; }
+            @{string urlArticulos = Comunidad.Url + "/buscador-publicaciones"; }
             <a href="@urlArticulos">Publicaciones</a>
         </li>
         @{ if (!string.IsNullOrEmpty(pDocument.Roh_title))
@@ -1734,7 +1734,6 @@
             this.Roh_isValidated = GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isValidated"));
             this.Roh_citationCount = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/citationCount")).Value;
             this.Roh_isPublic = GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isPublic"));
-
             this.Roh_i_doc_references = new List<Document>();
             SemanticPropertyModel propRoh_i_doc_references = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/i_doc_references");
             if (propRoh_i_doc_references != null && propRoh_i_doc_references.PropertyValues.Count > 0)
@@ -2053,7 +2052,6 @@
             this.Roh_isValidated = GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isValidated"));
             this.Roh_citationCount = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/citationCount")).Value;
             this.Roh_isPublic = GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isPublic"));
-
             this.Roh_i_doc_references = new List<Document>();
             SemanticPropertyModel propRoh_i_doc_references = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/i_doc_references");
             if (propRoh_i_doc_references != null && propRoh_i_doc_references.PropertyValues.Count > 0)
@@ -2067,7 +2065,6 @@
                     }
                 }
             }
-
         }
 
 
@@ -2348,10 +2345,7 @@
             this.Bibo_doi = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/doi"));
             this.Dct_issued = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/dc/terms/issued"));
             this.Vcard_url = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#url"));
-            this.Roh_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/title"));
-
-
-
+            this.Roh_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/title
         }
 
         public virtual string RdfType { get { return "http://w3id.org/roh/Reference"; } }
@@ -2374,6 +2368,9 @@
 
         [RDFProperty("http://w3id.org/roh/title")]
         public string Roh_title { get; set; }
+
+        [RDFProperty("http://w3id.org/roh/i_doc")]
+        public Document Roh_i_doc { get; set; }
 
     }
 

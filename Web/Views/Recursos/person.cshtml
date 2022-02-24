@@ -36,7 +36,7 @@
             <a href="@Comunidad.Url">Home</a>
         </li>
         <li>
-            @{string urlProyectos = Comunidad.Url + "/personal-investigador"; }
+            @{string urlProyectos = Comunidad.Url + "/buscador-personal-investigador"; }
             <a href="@urlProyectos">Personal investigador</a>
         </li>
         @{ if (!string.IsNullOrEmpty(pPerson.Foaf_name))
@@ -837,7 +837,6 @@
         });
     }
 
-    // Clase para las trabajar en las gráficas de los colaboradores
     class CargarGraficaProjectoObj {
         dataCB = {};
         idContenedorCB = "";
@@ -880,10 +879,8 @@
 
     };
 
-    // Creamos un nuevo objeto
     var newGrafProj = new CargarGraficaProjectoObj();
 
-    // Función a la que se llama para seleccionar qué elementos de las relaciones mostrar
     function actualizarTypesOcultar(type) {
         //var idx = newGrafProj.typesOcultar.indexOf(type);
         //if (idx !== -1) {
@@ -900,7 +897,6 @@
         newGrafProj.actualizarGraficaColaboradores();
     }
 
-    // función para actualizar la gráfica de colaboradores
     function ActualizarGraficaColaboradores(typesOcultar = [], showRelation = true) {
         AjustarGraficaArania(dataCB, idContenedorCB, typesOcultar, showRelation);
     }
