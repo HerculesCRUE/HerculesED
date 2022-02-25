@@ -57,7 +57,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             Tuple<Dictionary<string, string>, Dictionary<string, string>> tupla = ObtenerDatosTesauro();
 
             while (true)
-            {               
+            {
                 foreach (var fichero in directorio.GetFiles("*.json"))
                 {
                     // Diccionarios para almacenar los vinculos de los recursos a desambiguar con los IDs de los recursos a cargar
@@ -868,14 +868,14 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             {
                                 researchObject.doi = fila["doi"].value;
                             }
-                            researchObject.id = int.Parse(fila["idFigShare"].value);                            
+                            researchObject.id = int.Parse(fila["idFigShare"].value);
                             researchObject.titulo = fila["titulo"].value;
                             DisambiguationRO pub = GetDisambiguationRO(researchObject);
                             pub.ID = fila["documento"].value;
                             pub.autores = new HashSet<string>();
                             listaDocumentos.Add(fila["documento"].value, pub);
                         }
-                        else if(fila.ContainsKey("idGit"))
+                        else if (fila.ContainsKey("idGit"))
                         {
                             ResearchObjectGitHub researchObject = new ResearchObjectGitHub();
                             researchObject.id = int.Parse(fila["idGit"].value);
@@ -885,7 +885,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             pub.autores = new HashSet<string>();
                             listaDocumentos.Add(fila["documento"].value, pub);
                         }
-                            
+
                     }
                     if (resultadoQuery.results.bindings.Count < limit)
                     {
@@ -979,53 +979,32 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                 pPersonaA.Vivo_researcherId = pPersonaB.Vivo_researcherId;
             }
 
+            int nombreCompletoA = 0;
+            int nombreCompletoB = 0;
+
+            if (!string.IsNullOrEmpty(pPersonaA.Foaf_firstName) && !string.IsNullOrEmpty(pPersonaA.Foaf_lastName))
+            {
+                nombreCompletoA = $@"{pPersonaA.Foaf_firstName} {pPersonaA.Foaf_lastName}".Trim().Length;
+            }
+
+            if (!string.IsNullOrEmpty(pPersonaB.Foaf_firstName) && !string.IsNullOrEmpty(pPersonaB.Foaf_lastName))
+            {
+                nombreCompletoB = $@"{pPersonaB.Foaf_firstName} {pPersonaB.Foaf_lastName}".Trim().Length;
+            }
+
             if (!string.IsNullOrEmpty(pPersonaA.Foaf_firstName) && !string.IsNullOrEmpty(pPersonaB.Foaf_firstName))
             {
-                int nombreA = 0;
-                int nombreB = 0;
-
-                if (pPersonaA.Foaf_firstName != null)
-                {
-                    nombreA = pPersonaA.Foaf_firstName.Trim().Length;
-                }
-
-                if (pPersonaB.Foaf_firstName != null)
-                {
-                    nombreB = pPersonaB.Foaf_firstName.Trim().Length;
-                }
-
-                if ((nombreA < nombreB) || (nombreA == nombreB))
+                if ((nombreCompletoA < nombreCompletoB) || (nombreCompletoA == nombreCompletoB))
                 {
                     pPersonaA.Foaf_firstName = pPersonaB.Foaf_firstName.Trim();
-                }
-                else
-                {
-
                 }
             }
 
             if (!string.IsNullOrEmpty(pPersonaA.Foaf_lastName) && !string.IsNullOrEmpty(pPersonaB.Foaf_lastName))
             {
-                int nombreA = 0;
-                int nombreB = 0;
-
-                if (pPersonaA.Foaf_lastName != null)
-                {
-                    nombreA = pPersonaA.Foaf_lastName.Trim().Length;
-                }
-
-                if (pPersonaB.Foaf_lastName != null)
-                {
-                    nombreB = pPersonaB.Foaf_lastName.Trim().Length;
-                }
-
-                if ((nombreA < nombreB) || (nombreA == nombreB))
+                if ((nombreCompletoA < nombreCompletoB) || (nombreCompletoA == nombreCompletoB))
                 {
                     pPersonaA.Foaf_lastName = pPersonaB.Foaf_lastName.Trim();
-                }
-                else
-                {
-
                 }
             }
 

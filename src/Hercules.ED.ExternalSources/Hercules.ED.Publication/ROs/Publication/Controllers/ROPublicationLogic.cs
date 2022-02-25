@@ -162,7 +162,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     if (pub_completa.pdf == "")
                     {
                         pub_completa.pdf = null;
-                    }                    
+                    }
 
                     // Completar información faltante con las publicaciones de Scopus.
                     if (objInicial_Scopus != null && objInicial_Scopus.Any())
@@ -326,7 +326,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             }
 
             int contadorPubOpenAire = 1;
-            if (objInicial_openAire != null && objInicial_openAire.Any()) 
+            if (objInicial_openAire != null && objInicial_openAire.Any())
             {
                 // Llamada OpenAire para completar publicaciones que no se hayan obtenido de WoS/Scopus.
                 foreach (Publication pub in objInicial_openAire)
@@ -1617,13 +1617,13 @@ namespace PublicationConnect.ROs.Publications.Controllers
         public List<Publication> llamada_WoS(string pOrcid, string date)
         {
             Uri url = new Uri(string.Format(_Configuracion.GetUrlWos() + "WoS/GetROs?orcid={0}&date={1}", pOrcid, date));
-            
+
             int contadorVeces = 0;
             string info_publication = String.Empty;
             while (true)
             {
                 info_publication = httpCall(url.ToString(), "GET", headers).Result;
-                if(contadorVeces == 5 || !string.IsNullOrEmpty(info_publication))
+                if (contadorVeces == 5 || !string.IsNullOrEmpty(info_publication))
                 {
                     break;
                 }
@@ -2043,7 +2043,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             dicPersonas.Add("OpenAire", new List<Models.Person>());
             dicPersonas.Add("SemanticScholar", new List<Models.Person>());
             dicPersonas.Add("CrossRef", new List<Models.Person>());
-            
+
 
             // Peso.
             double umbral = 0.7;
@@ -2062,7 +2062,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             foreach (Models.Person persona in dicPersonas["WoS"])
             {
                 Models.Person personaFinal = persona;
-                
+
                 foreach (Models.Person personaCrossRef in dicPersonas["OpenAire"])
                 {
                     // Comprobación por ORCID
@@ -2513,6 +2513,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
         /// <summary>
         /// Permite unificar la información de dos personas que son la misma.
+        /// TODO: Revisar la unión de personas que tengan nombre y no apellido.
         /// </summary>
         /// <param name="pPersonaFinal">Persona con prioridad (WoS).</param>
         /// <param name="pPersonaAUnir">Persona a unificar.</param>
@@ -2576,7 +2577,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 pPersonaFinal.links = listaLinks.ToList();
             }
 
-            // Nombre
+            // Nombre            
             if (pPersonaFinal.name.given == null || !pPersonaFinal.name.given.Any())
             {
                 if (pPersonaAUnir.name != null && pPersonaAUnir.name.given != null && pPersonaAUnir.name.given.Any())
