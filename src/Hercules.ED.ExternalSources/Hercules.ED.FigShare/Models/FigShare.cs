@@ -98,6 +98,7 @@ namespace FigShareAPI.Models
             List<ArticleScheme> listaArticulos = JsonConvert.DeserializeObject<List<ArticleScheme>>(result);
 
             // Obtención de IDs de los ROs que son PÚBLICOS.
+            // TODO: De momento está puesto tanto para públicos como privados.
             List<int> listaIdentificadores = new List<int>();
             foreach (ArticleScheme articulo in listaArticulos)
             {

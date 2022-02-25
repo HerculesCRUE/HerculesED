@@ -162,18 +162,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     if (pub_completa.pdf == "")
                     {
                         pub_completa.pdf = null;
-                    }
-
-                    // Enriquecimiento
-                    pub_completa.title = Regex.Replace(pub_completa.title, "<.*?>", String.Empty);
-                    if (pub_completa.Abstract != null)
-                    {
-                        pub_completa.Abstract = Regex.Replace(pub_completa.Abstract, "<.*?>", String.Empty);
-                    }
-                    Log.Information("[WoS] Obteniendo topics enriquecidos...");
-                    pub_completa.topics_enriquecidos = enriquedicmiento(pub_completa);
-                    Log.Information("[WoS] Obteniendo freeTextKeywords enriquecidos...");
-                    pub_completa.freetextKeyword_enriquecidas = enriquedicmiento_pal(pub_completa);
+                    }                    
 
                     // Completar información faltante con las publicaciones de Scopus.
                     if (objInicial_Scopus != null && objInicial_Scopus.Any())
@@ -214,6 +203,17 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
                     // Unificar Autores
                     pub_completa = CompararAutores(pub_completa);
+
+                    // Enriquecimiento
+                    pub_completa.title = Regex.Replace(pub_completa.title, "<.*?>", String.Empty);
+                    if (pub_completa.Abstract != null)
+                    {
+                        pub_completa.Abstract = Regex.Replace(pub_completa.Abstract, "<.*?>", String.Empty);
+                    }
+                    Log.Information("[WoS] Obteniendo topics enriquecidos...");
+                    pub_completa.topics_enriquecidos = enriquedicmiento(pub_completa);
+                    Log.Information("[WoS] Obteniendo freeTextKeywords enriquecidos...");
+                    pub_completa.freetextKeyword_enriquecidas = enriquedicmiento_pal(pub_completa);
 
                     if (pub_completa != null && !string.IsNullOrEmpty(pub_completa.title) && pub_completa.seqOfAuthors != null && pub_completa.seqOfAuthors.Any() && pub_completa.title != "One or more validation errors occurred.") // TODO
                     {
@@ -396,7 +396,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             //string info = JsonConvert.SerializeObject(resultado);
             //string path = _Configuracion.GetRutaJsonSalida();
             //Log.Information("Escribiendo datos en fichero...");
-            //File.WriteAllText($@"Files/{name}_2022-02-15.json", info);
+            //File.WriteAllText($@"Files/{name}_2022-02-24.json", info);
             return resultado;
 
         }
@@ -409,7 +409,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 a.rotype = "papers";
                 a.title = pub.title;
                 a.abstract_ = pub.Abstract;
-
+                a.journal = null;
 
                 info = JsonConvert.SerializeObject(a);
                 string info_publication = httpCall_2("specific", info);

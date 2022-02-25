@@ -221,5 +221,6 @@ namespace PublicationConnect.ROs.Publications.Models
 
         [JsonProperty("abstract")]
         public string abstract_ { get; set; }
+        public string journal { get; set; }
     }
 }
