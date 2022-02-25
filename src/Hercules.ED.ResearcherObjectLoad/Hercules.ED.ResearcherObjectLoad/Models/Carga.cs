@@ -992,18 +992,11 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                 nombreCompletoB = $@"{pPersonaB.Foaf_firstName} {pPersonaB.Foaf_lastName}".Trim().Length;
             }
 
-            if (!string.IsNullOrEmpty(pPersonaA.Foaf_firstName) && !string.IsNullOrEmpty(pPersonaB.Foaf_firstName))
+            if (!string.IsNullOrEmpty(pPersonaA.Foaf_firstName) && !string.IsNullOrEmpty(pPersonaB.Foaf_firstName) && !string.IsNullOrEmpty(pPersonaA.Foaf_lastName) && !string.IsNullOrEmpty(pPersonaB.Foaf_lastName))
             {
                 if ((nombreCompletoA < nombreCompletoB) || (nombreCompletoA == nombreCompletoB))
                 {
                     pPersonaA.Foaf_firstName = pPersonaB.Foaf_firstName.Trim();
-                }
-            }
-
-            if (!string.IsNullOrEmpty(pPersonaA.Foaf_lastName) && !string.IsNullOrEmpty(pPersonaB.Foaf_lastName))
-            {
-                if ((nombreCompletoA < nombreCompletoB) || (nombreCompletoA == nombreCompletoB))
-                {
                     pPersonaA.Foaf_lastName = pPersonaB.Foaf_lastName.Trim();
                 }
             }
