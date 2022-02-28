@@ -35,33 +35,29 @@ import subprocess
 from nltk.tokenize import RegexpTokenizer
 import hunspell
 
-
-# for pdf to text conversion
 import requests
 import tempfile
 from arxiv_public_data.fulltext import fulltext as pdf_to_str
 
-## from here on import required for neural models
 import re
 
 from neural_multilabel_classification import set_seed,get_labels,convert_examples_to_features_multi,evaluate,load_neural_model,init_neural_resources
 from keyphrase_extraction import KeyphraseExtractor
 
-
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.ERROR)
 
-## Global variables 
+
 app = Flask(__name__)
 app.logger.setLevel(logging.ERROR)
 api = Api(app)
 app.config.update({
     'APISPEC_SPEC': APISpec(
-        title='Hercules RESTplus API for subject keywords Demo',
+        title='Hercules REST API for descriptors',
         version='1.0',
         openapi_version='3.0.0',
         info=dict(
-            description='Application to classify protocol or github code texts accoding to a defined keyword taxonomy.'
+            description='This module classifies papers, protocols or open-source code projects accoding to a predefined thematic descriptor taxonomy and free specific descriptors.'
         ),
         plugins=[MarshmallowPlugin()]
     ),
@@ -70,13 +66,12 @@ app.config.update({
 })
 docs = FlaskApiSpec(app)
 
-
-
 auth = HTTPBasicAuth()
 
-## Api documentation
 
-class HerculesRequestSchema(Schema):
+# Api documentation
+
+class ThematicRequestSchema(Schema):
     rotype = fields.String(required=True, description="Type of the input text, currently available: 'bio-protocol'=protocol descriptions | 'sourceForge'=software descriptions.")
     text = fields.String(required=False, description="Input text to classify")
     title = fields.String(required=False, description="Title of the input article to classify")
@@ -85,15 +80,14 @@ class HerculesRequestSchema(Schema):
     author_name = fields.String(required=False, description="Author(s) of the paper")
     author_affiliation = fields.String(required=False, description="Author(s)'s affilliation(s)")
     pdf_url = fields.String(required=False, description="URL of the pdf version of the paper. If pdf_url is given no other parameter is required, except for the rotype")
-    
-    
-class HerculesKeyphraseRequestSchema(Schema):
+        
+class SpecificRequestSchema(Schema):
     rotype = fields.String(required=True, description="Type of the input text, currently available: 'bio-protocol'=protocol descriptions | 'sourceForge'=software descriptions.")
     title = fields.String(required=False, description="Title of the input article to classify")
     abstract = fields.String(required=True, description="Abstract of the Input article to classify")
     body = fields.String(required=False, description="Main text of the paper. If no body is present the systems resorts to short texts keyphrase extractor")
 
-class HerculesResponseSchema(Schema):
+class ThematicResponseSchema(Schema):
     text = fields.String(required=False, description="Input text to classify")
     title = fields.String(required=False, description="Title of the input article to classify")
     abstract = fields.String(required=False, description="Description/abstract of the Input article to classify")
@@ -104,8 +98,7 @@ class HerculesResponseSchema(Schema):
     rotype = fields.String(required=True, description="Type of the input text, currently available: 'bio-protocol'=protocol descriptions | 'sourceForge'=software descriptions.")
     topics = fields.Dict(keys=fields.Str(), values=fields.Str())
 
-
-class HerculesKeyphraseResponseSchema(Schema):
+class SpecificResponseSchema(Schema):
     rotype = fields.String(required=True, description="Type of the input text, currently available: 'bio-protocol'=protocol descriptions | 'sourceForge'=software descriptions.")
     title = fields.String(required=False, description="Title of the input article to classify")
     abstract = fields.String(required=True, description="Abstract of the Input article to classify")
@@ -116,10 +109,10 @@ class HerculesKeyphraseResponseSchema(Schema):
 conf = {}
 taxonomy = {}
 topic_models = {}
-available_topic_models = ['sourceForge','bio-protocol','papers']
+available_topic_models = ['sourceForge', 'bio-protocol', 'papers']
 tokenizer = "" 
 tmp_path = "/tmp"
-keyphrase_extractors={}
+keyphrase_extractors = {}
 available_keyphrase_models = ['papers']
 
 
@@ -289,13 +282,12 @@ def make_error(code, msg):
     return response
 
 
-class ThematicKwordAPI(MethodResource, Resource):
+class ThematicDescriptorAPI(MethodResource, Resource):
     #decorators = [auth.login_required]
 
     @doc(description='Hercules thematic keyword API.', tags=['Hercules'])
-    @use_kwargs(HerculesRequestSchema, location='json') # 'json_or_form'
-    #@use_kwargs({'rotype':fields.Str(),'text':fields.Str()}, location='json') # 'json_or_form'
-    @marshal_with(HerculesResponseSchema, description="returns the request object + a new property called topics, which contains a dictionary with the tags found and theis probabilities")  # marshalling with marshmallow
+    @use_kwargs(ThematicRequestSchema, location='json')
+    @marshal_with(ThematicResponseSchema, description="returns the request object + a new property called topics, which contains a dictionary with the tags found and theis probabilities")  # marshalling with marshmallow
     def post(self, **kwargs):
         """post represent the a POST API method.
 
@@ -304,17 +296,17 @@ class ThematicKwordAPI(MethodResource, Resource):
         post:
               parameters:
         - in: path
-             schema: HerculesRequestSchema
+             schema: ThematicRequestSchema
       responses:
         200:
           content:
             application/json:
-              schema: herculesResponseSchema
+              schema: ThematicResponseSchema
         """
         #print("kwargs: {} \n \n".format(kwargs))
         json_data=request.get_json(force=True)
         response_json = json_data
-        schema = HerculesRequestSchema()
+        schema = ThematicRequestSchema()
         try:
             # Validate request body against schema data types
             result = schema.load(json_data)
@@ -400,14 +392,13 @@ class ThematicKwordAPI(MethodResource, Resource):
             
         return results
 
-## 
-class SpecificKwordAPI(MethodResource, Resource):
+    
+class SpecificDescriptorAPI(MethodResource, Resource):
+    
     #decorators = [auth.login_required]
-
     @doc(description='Hercules Specific keyword API endpoint.', tags=['Hercules, Specific keywords'])
-    @use_kwargs(HerculesKeyphraseRequestSchema, location='json') # 'json_or_form'
-    #@use_kwargs({'rotype':fields.Str(),'text':fields.Str()}, location='json') # 'json_or_form'
-    @marshal_with(HerculesKeyphraseResponseSchema, description="returns the request object + a new property called topics, which contains a dictionary with the tags found and theis probabilities")  # marshalling with marshmallow
+    @use_kwargs(SpecificRequestSchema, location='json')
+    @marshal_with(SpecificResponseSchema, description="returns the request object + a new property called topics, which contains a dictionary with the tags found and theis probabilities")
     def post(self, **kwargs):
         """post represent the a POST API method.
 
@@ -416,17 +407,17 @@ class SpecificKwordAPI(MethodResource, Resource):
         post:
               parameters:
         - in: path
-             schema: HerculesRequestSchema
+             schema: SpecificRequestSchema
       responses:
         200:
           content:
             application/json:
-              schema: herculesResponseSchema
+              schema: SpecificResponseSchema
         """
         print("kwargs: {} \n \n".format(kwargs))
         json_data=request.get_json(force=True)
         response_json = json_data
-        schema = HerculesKeyphraseRequestSchema()
+        schema = SpecificRequestSchema()
         try:
             # Validate request body against schema data types
             result = schema.load(json_data)
@@ -509,19 +500,11 @@ class SpecificKwordAPI(MethodResource, Resource):
         return jsonify(response_json)
 
         
+api.add_resource(ThematicDescriptorAPI, '/thematic')
+docs.register(ThematicDescriptorAPI)
 
-###########################################################
-
-#        End of API resource
-
-###########################################################
-    
-api.add_resource(ThematicKwordAPI, '/thematic')#, endpoint='/topics')
-docs.register(ThematicKwordAPI)
-
-api.add_resource(SpecificKwordAPI, '/specific')#, endpoint='/topics')
-docs.register(SpecificKwordAPI)
-
+api.add_resource(SpecificDescriptorAPI, '/specific')
+docs.register(SpecificDescriptorAPI)
 
 
 with open('openapi.json', 'w') as f:

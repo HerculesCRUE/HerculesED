@@ -1,22 +1,22 @@
 {
     "info": {
-        "description": "Application to classify protocol or github code texts accoding to a defined keyword taxonomy.",
-        "title": "Hercules RESTplus API for subject keywords Demo",
+        "description": "This module classifies papers, protocols or open-source code projects accoding to a predefined thematic descriptor taxonomy and free specific descriptors.",
+        "title": "Hercules REST API for descriptors",
         "version": "1.0"
     },
     "paths": {
         "/thematic": {
             "post": {
-                "description": "Hercules thematic keyword API.",
                 "tags": [
                     "Hercules"
                 ],
+                "description": "Hercules thematic keyword API.",
                 "responses": {
                     "default": {
+                        "description": "returns the request object + a new property called topics, which contains a dictionary with the tags found and theis probabilities",
                         "schema": {
-                            "$ref": "#/components/schemas/HerculesResponse"
-                        },
-                        "description": "returns the request object + a new property called topics, which contains a dictionary with the tags found and theis probabilities"
+                            "$ref": "#/components/schemas/ThematicResponse"
+                        }
                     }
                 },
                 "parameters": [
@@ -25,7 +25,7 @@
                         "required": false,
                         "name": "body",
                         "schema": {
-                            "$ref": "#/components/schemas/HerculesRequest"
+                            "$ref": "#/components/schemas/ThematicRequest"
                         }
                     }
                 ]
@@ -33,16 +33,16 @@
         },
         "/specific": {
             "post": {
-                "description": "Hercules Specific keyword API endpoint.",
                 "tags": [
                     "Hercules, Specific keywords"
                 ],
+                "description": "Hercules Specific keyword API endpoint.",
                 "responses": {
                     "default": {
+                        "description": "returns the request object + a new property called topics, which contains a dictionary with the tags found and theis probabilities",
                         "schema": {
-                            "$ref": "#/components/schemas/HerculesKeyphraseResponse"
-                        },
-                        "description": "returns the request object + a new property called topics, which contains a dictionary with the tags found and theis probabilities"
+                            "$ref": "#/components/schemas/SpecificResponse"
+                        }
                     }
                 },
                 "parameters": [
@@ -51,7 +51,7 @@
                         "required": false,
                         "name": "body",
                         "schema": {
-                            "$ref": "#/components/schemas/HerculesKeyphraseRequest"
+                            "$ref": "#/components/schemas/SpecificRequest"
                         }
                     }
                 ]
@@ -61,16 +61,16 @@
     "openapi": "3.0.0",
     "components": {
         "schemas": {
-            "HerculesRequest": {
+            "ThematicRequest": {
                 "type": "object",
                 "properties": {
-                    "journal": {
+                    "author_name": {
                         "type": "string",
-                        "description": "Journal where the paper was published"
+                        "description": "Author(s) of the paper"
                     },
-                    "text": {
+                    "pdf_url": {
                         "type": "string",
-                        "description": "Input text to classify"
+                        "description": "URL of the pdf version of the paper. If pdf_url is given no other parameter is required, except for the rotype"
                     },
                     "rotype": {
                         "type": "string",
@@ -80,30 +80,46 @@
                         "type": "string",
                         "description": "Description/abstract of the Input article to classify"
                     },
-                    "author_name": {
+                    "journal": {
                         "type": "string",
-                        "description": "Author(s) of the paper"
+                        "description": "Journal where the paper was published"
                     },
-                    "title": {
+                    "text": {
                         "type": "string",
-                        "description": "Title of the input article to classify"
-                    },
-                    "pdf_url": {
-                        "type": "string",
-                        "description": "URL of the pdf version of the paper. If pdf_url is given no other parameter is required, except for the rotype"
+                        "description": "Input text to classify"
                     },
                     "author_affiliation": {
                         "type": "string",
                         "description": "Author(s)'s affilliation(s)"
+                    },
+                    "title": {
+                        "type": "string",
+                        "description": "Title of the input article to classify"
                     }
                 },
                 "required": [
                     "rotype"
                 ]
             },
-            "HerculesResponse": {
+            "ThematicResponse": {
                 "type": "object",
                 "properties": {
+                    "author_name": {
+                        "type": "string",
+                        "description": "Author(s) of the paper"
+                    },
+                    "pdf_url": {
+                        "type": "string",
+                        "description": "URL of the pdf version of the paper. If pdf_url is given no other parameter is required, except for the rotype"
+                    },
+                    "rotype": {
+                        "type": "string",
+                        "description": "Type of the input text, currently available: 'bio-protocol'=protocol descriptions | 'sourceForge'=software descriptions."
+                    },
+                    "abstract": {
+                        "type": "string",
+                        "description": "Description/abstract of the Input article to classify"
+                    },
                     "topics": {
                         "type": "object",
                         "additionalProperties": {
@@ -118,53 +134,37 @@
                         "type": "string",
                         "description": "Input text to classify"
                     },
-                    "rotype": {
+                    "author_affiliation": {
                         "type": "string",
-                        "description": "Type of the input text, currently available: 'bio-protocol'=protocol descriptions | 'sourceForge'=software descriptions."
-                    },
-                    "abstract": {
-                        "type": "string",
-                        "description": "Description/abstract of the Input article to classify"
-                    },
-                    "author_name": {
-                        "type": "string",
-                        "description": "Author(s) of the paper"
+                        "description": "Author(s)'s affilliation(s)"
                     },
                     "title": {
                         "type": "string",
                         "description": "Title of the input article to classify"
-                    },
-                    "pdf_url": {
-                        "type": "string",
-                        "description": "URL of the pdf version of the paper. If pdf_url is given no other parameter is required, except for the rotype"
-                    },
-                    "author_affiliation": {
-                        "type": "string",
-                        "description": "Author(s)'s affilliation(s)"
                     }
                 },
                 "required": [
                     "rotype"
                 ]
             },
-            "HerculesKeyphraseRequest": {
+            "SpecificRequest": {
                 "type": "object",
                 "properties": {
+                    "title": {
+                        "type": "string",
+                        "description": "Title of the input article to classify"
+                    },
                     "rotype": {
                         "type": "string",
                         "description": "Type of the input text, currently available: 'bio-protocol'=protocol descriptions | 'sourceForge'=software descriptions."
-                    },
-                    "body": {
-                        "type": "string",
-                        "description": "Main text of the paper. If no body is present the systems resorts to short texts keyphrase extractor"
                     },
                     "abstract": {
                         "type": "string",
                         "description": "Abstract of the Input article to classify"
                     },
-                    "title": {
+                    "body": {
                         "type": "string",
-                        "description": "Title of the input article to classify"
+                        "description": "Main text of the paper. If no body is present the systems resorts to short texts keyphrase extractor"
                     }
                 },
                 "required": [
@@ -172,14 +172,12 @@
                     "rotype"
                 ]
             },
-            "HerculesKeyphraseResponse": {
+            "SpecificResponse": {
                 "type": "object",
                 "properties": {
-                    "topics": {
-                        "type": "object",
-                        "additionalProperties": {
-                            "type": "string"
-                        }
+                    "body": {
+                        "type": "string",
+                        "description": "Main text of the paper. If no body is present the systems resorts to short texts keyphrase extractor"
                     },
                     "rotype": {
                         "type": "string",
@@ -189,13 +187,15 @@
                         "type": "string",
                         "description": "Abstract of the Input article to classify"
                     },
+                    "topics": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "string"
+                        }
+                    },
                     "title": {
                         "type": "string",
                         "description": "Title of the input article to classify"
-                    },
-                    "body": {
-                        "type": "string",
-                        "description": "Main text of the paper. If no body is present the systems resorts to short texts keyphrase extractor"
                     }
                 },
                 "required": [
