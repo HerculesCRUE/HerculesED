@@ -48,7 +48,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             Tuple<string, string, string> identificadores = GetIdentificadoresItemPresentation(mCvID, propiedadesItem);
 
             Entity entityBBDD = null;
-            GetEntidadesSecundarias(entityBBDD, identificadores, rdfTypeItem, "curriculumvitae");
+            GetEntidadesSecundarias(ref entityBBDD, identificadores, rdfTypeItem, "curriculumvitae");
 
             Entity entityXML = GetIndicadoresGenerales(listadoDatos);
             UpdateEntityAux(mResourceApi.GetShortGuid(mCvID), propiedadesItem, new List<string>() { identificadores.Item1, identificadores.Item2, identificadores.Item3 }, entityBBDD, entityXML);
@@ -1015,7 +1015,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             }
         }
 
-        private void GetEntidadesSecundarias(Entity entityBBDD, Tuple<string, string, string> identificadores, List<string> rdfTypeItem, string graph)
+        private void GetEntidadesSecundarias(ref Entity entityBBDD, Tuple<string, string, string> identificadores, List<string> rdfTypeItem, string graph)
         {
             if (!string.IsNullOrEmpty(identificadores.Item3))
             {

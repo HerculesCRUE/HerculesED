@@ -15,7 +15,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
 {
     public abstract class SeccionBase
     {
-        protected static readonly ResourceApi mResourceApi = new ResourceApi($@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}../../../Config/configOAuth/OAuthV3.config");
+        protected static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config\configOAuth\OAuthV3.config");
         protected cvnRootResultBean mCvn { get; set; }
         protected string mCvID { get; set; }
         public SeccionBase(cvnRootResultBean cvn, string cvID)
@@ -513,9 +513,9 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 string whereID = $@"where{{
                                     <{pId}> <{pPropiedades[0]}> ?item1 .
                                     OPTIONAL{{
-                                        ?item1 <{ pPropiedades[1]}> ? item2.
+                                        ?item1 <{ pPropiedades[1]}> ?item2.
                                         OPTIONAL{{
-                                            ?item2 <{ pPropiedades[2]}> ? item3
+                                            ?item2 <{ pPropiedades[2]}> ?item3
                                         }}
                                     }}
                                 }}";
@@ -534,9 +534,17 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                     {
                         item2 = fila["item2"].value;
                     }
+                    else
+                    {
+                        item2 = mResourceApi.GraphsUrl+ "items/GeneralQualityIndicator_"+mResourceApi.GetShortGuid(item1).ToString().ToLower() +"_"+Guid.NewGuid().ToString().ToLower();
+                    }
                     if (fila.ContainsKey("item3"))
                     {
                         item3 = fila["item3"].value;
+                    }
+                    else
+                    {
+                        item3 = mResourceApi.GraphsUrl + "items/GeneralQualityIndicatorCV_"+mResourceApi.GetShortGuid(item1).ToString().ToLower() +"_"+Guid.NewGuid().ToString().ToLower();
                     }
                     return new Tuple<string, string, string>(item1, item2, item3);
                 }
