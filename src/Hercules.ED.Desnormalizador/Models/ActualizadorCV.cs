@@ -134,7 +134,7 @@ namespace DesnormalizadorHercules.Models
                                             ?document <http://purl.org/ontology/bibo/authorList> ?autor.
                                             ?autor <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person.
                                             ?document <http://w3id.org/roh/scientificActivityDocument> ?scientificActivityDocument.
-                                            ?document <http://w3id.org/roh/isValidated> ?isValidated.
+                                            OPTIONAL{{?document <http://w3id.org/roh/isValidated> ?isValidated.}}
                                             ?scientificActivityDocument <http://purl.org/dc/elements/1.1/identifier> ?typeDocument.
                                         }}
                                     }}
@@ -243,8 +243,173 @@ namespace DesnormalizadorHercules.Models
                         break;
                     }
                 }
+
+                while (true)
+                {
+                    //Elminamos duplicados
+                    int limit = 500;
+                    //TODO eliminar from
+                    String select = @"SELECT * WHERE{select distinct ?cv (group_concat(?item;separator="";"") as ?items) count(?item) as ?numItems  ?document from <http://gnoss.com/document.owl> from <http://gnoss.com/person.owl> ";
+                    String where = @$"where{{
+                                    {filter}                                    
+                                    {{
+                                        ?person a <http://xmlns.com/foaf/0.1/Person>.                                            
+                                        ?document a <http://purl.org/ontology/bibo/Document>.
+                                        ?cv a <http://w3id.org/roh/CV>.
+                                        ?cv <http://w3id.org/roh/cvOf> ?person.
+                                        ?cv <http://w3id.org/roh/scientificActivity> ?scientificActivity.
+                                        ?scientificActivity ?p ?item.
+                                        ?item <http://vivoweb.org/ontology/core#relatedBy> ?document.
+                                    }}
+                                }}}}GROUP BY ?cv ?document HAVING (?numItems > 1)  order by desc(?cv) limit {limit}";
+                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+                    EliminarDocumentosDuplicadosCV(resultado);
+                    if (resultado.results.bindings.Count != limit)
+                    {
+                        break;
+                    }
+                }
             }
         }
+
+        /// <summary>       
+        /// Insertamos/eliminamos en los CV los researchobjects de las que el dueño del CV es autor con la privacidad correspondiente
+        /// Depende de ActualizadorCV.CrearCVs
+        /// </summary>        
+        /// <param name="pPerson">ID de la persona</param>
+        /// <param name="pResearchObject">ID del documento</param>
+        /// <param name="pCV">ID del CV</param>
+        public void ModificarResearchObjects(string pPerson = null, string pResearchObject = null, string pCV = null)
+        {
+            string graphsUrl = mResourceApi.GraphsUrl;
+            if (!string.IsNullOrEmpty(graphsUrl))
+            {
+                string filter = "";
+                if (!string.IsNullOrEmpty(pPerson))
+                {
+                    filter = $" FILTER(?person =<{pPerson}>)";
+                }
+                if (!string.IsNullOrEmpty(pResearchObject))
+                {
+                    filter = $" FILTER(?ro =<{pResearchObject}>)";
+                }
+                if (!string.IsNullOrEmpty(pCV))
+                {
+                    filter = $" FILTER(?cv =<{pCV}>)";
+                }
+
+                while (true)
+                {
+                    //Añadimos documentos
+                    int limit = 500;
+                    //TODO eliminar from
+                    String select = @"SELECT * WHERE{select distinct ?cv ?researchObject ?ro from <http://gnoss.com/researchobject.owl> from <http://gnoss.com/person.owl>   ";
+                    String where = @$"where{{
+                                    {filter}
+                                    {{
+                                        #DESEABLES
+                                        select distinct ?person ?cv ?researchObject ?ro 
+                                        Where
+                                        {{
+                                            ?person a <http://xmlns.com/foaf/0.1/Person>.                                            
+                                            ?ro a <http://w3id.org/roh/ResearchObject>.
+                                            ?cv a <http://w3id.org/roh/CV>.
+                                            ?cv <http://w3id.org/roh/cvOf> ?person.
+                                            ?cv <http://w3id.org/roh/researchObject> ?researchObject.
+                                            ?ro <http://purl.org/ontology/bibo/authorList> ?autor.
+                                            ?autor <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person.
+                                        }}
+                                    }}
+                                    MINUS
+                                    {{
+                                        #ACTUALES
+                                        ?person a <http://xmlns.com/foaf/0.1/Person>.                                            
+                                        ?ro a <http://w3id.org/roh/ResearchObject>.
+                                        ?cv a <http://w3id.org/roh/CV>.
+                                        ?cv <http://w3id.org/roh/cvOf> ?person.
+                                        ?cv <http://w3id.org/roh/researchObject> ?researchObject.
+                                        ?researchObject <http://w3id.org/roh/researchObjects> ?item.
+                                        ?item <http://vivoweb.org/ontology/core#relatedBy> ?ro.
+                                    }}
+                                }}}}order by desc(?cv) limit {limit}";
+                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+                    InsertarResearchObjectsCV(resultado, graphsUrl);
+                    if (resultado.results.bindings.Count != limit)
+                    {
+                        break;
+                    }
+                }
+
+                while (true)
+                {
+                    //Elminamos documentos
+                    int limit = 500;
+                    //TODO eliminar from
+                    String select = @"SELECT * WHERE{select distinct ?cv ?researchObject ?item ?typeDocument from <http://gnoss.com/researchobject.owl> from <http://gnoss.com/person.owl>  ";
+                    String where = @$"where{{
+                                    {filter}                                    
+                                    {{
+                                        #ACTUALES
+                                        ?person a <http://xmlns.com/foaf/0.1/Person>.                                            
+                                        ?ro a <http://w3id.org/roh/ResearchObject>.
+                                        ?cv a <http://w3id.org/roh/CV>.
+                                        ?cv <http://w3id.org/roh/cvOf> ?person.
+                                        ?cv <http://w3id.org/roh/researchObject> ?researchObject.
+                                        ?researchObject <http://w3id.org/roh/researchObjects> ?item.
+                                        ?item <http://vivoweb.org/ontology/core#relatedBy> ?ro.
+                                    }}
+                                    MINUS
+                                    {{
+                                        #DESEABLES
+                                        select distinct ?person ?cv ?researchObject ?ro 
+                                        Where
+                                        {{
+                                            ?person a <http://xmlns.com/foaf/0.1/Person>.                                            
+                                            ?ro a <http://w3id.org/roh/ResearchObject>.
+                                            ?cv a <http://w3id.org/roh/CV>.
+                                            ?cv <http://w3id.org/roh/cvOf> ?person.
+                                            ?cv <http://w3id.org/roh/researchObject> ?researchObject.
+                                            ?ro <http://purl.org/ontology/bibo/authorList> ?autor.
+                                            ?autor <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person.
+                                        }}                                      
+                                    }}
+                                }}}}order by desc(?cv) limit {limit}";
+                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+                    EliminarResearchObjectsCV(resultado);
+                    if (resultado.results.bindings.Count != limit)
+                    {
+                        break;
+                    }
+                }
+
+                while (true)
+                {
+                    //Elminamos duplicados
+                    int limit = 500;
+                    //TODO eliminar from
+                    String select = @"SELECT * WHERE{select distinct ?cv ?researchObject (group_concat(?item;separator="";"") as ?items) count(?item) as ?numItems  ?ro from <http://gnoss.com/researchobject.owl> from <http://gnoss.com/person.owl> ";
+                    String where = @$"where{{
+                                    {filter}                                    
+                                    {{
+                                        ?person a <http://xmlns.com/foaf/0.1/Person>.                                            
+                                        ?ro a <http://w3id.org/roh/ResearchObject>.
+                                        ?cv a <http://w3id.org/roh/CV>.
+                                        ?cv <http://w3id.org/roh/cvOf> ?person.
+                                        ?cv <http://w3id.org/roh/researchObject> ?researchObject.
+                                        ?researchObject ?p ?item.
+                                        ?item <http://vivoweb.org/ontology/core#relatedBy> ?ro.
+                                    }}
+                                }}}}GROUP BY ?cv ?researchObject ?ro HAVING (?numItems > 1)  order by desc(?cv) limit {limit}";
+                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+                    EliminarResearchObjectsDuplicadosCV(resultado);
+                    if (resultado.results.bindings.Count != limit)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+
 
         /// <summary>
         /// Modifica la privacidad de las publicaciones de los CV en caso de que haya que hacerlo
@@ -507,7 +672,7 @@ namespace DesnormalizadorHercules.Models
                                     }}
                                 }}}}order by desc(?cv) limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
-                    InsertarItemsCV(resultado, graphsUrl, "http://w3id.org/roh/RelatedGroup", "http://w3id.org/roh/scientificExperience", "http://w3id.org/roh/groups", "group", "scientificExperience",true);
+                    InsertarItemsCV(resultado, graphsUrl, "http://w3id.org/roh/RelatedGroup", "http://w3id.org/roh/scientificExperience", "http://w3id.org/roh/groups", "group", "scientificExperience", true);
 
                     if (resultado.results.bindings.Count != limit)
                     {
@@ -615,8 +780,10 @@ namespace DesnormalizadorHercules.Models
                         }
                         cv.Foaf_name = name;
                         cv.IdRoh_cvOf = person;
+                        cv.Roh_professionalSituation = new ProfessionalSituation() { Roh_title = "-" };
                         cv.Roh_scientificExperience = new ScientificExperience() { Roh_title = "-" };
                         cv.Roh_scientificActivity = new ScientificActivity() { Roh_title = "-" };
+                        cv.Roh_researchObject = new ResearchObjects() { Roh_title = "-" };
                         cv.Roh_personalData = new PersonalData() { Foaf_firstName = firstName, Foaf_familyName = lastName };
                     }
                 }
@@ -801,7 +968,11 @@ namespace DesnormalizadorHercules.Models
                 string scientificActivity = fila["scientificActivity"].value;
                 string document = fila["document"].value;
                 string typeDocument = fila["typeDocument"].value;
-                string isValidated = fila["isValidated"].value;
+                string isValidated = "false";
+                if (fila.ContainsKey("isValidated"))
+                {
+                    isValidated = fila["isValidated"].value;
+                }
 
                 string rdftype = "";
                 string property = "";
@@ -914,22 +1085,193 @@ namespace DesnormalizadorHercules.Models
             });
         }
 
+        private void EliminarDocumentosDuplicadosCV(SparqlObject pDatosCargar)
+        {
+            Dictionary<Guid, List<RemoveTriples>> triplesToDelete = new();
+            foreach (Dictionary<string, SparqlObject.Data> fila in pDatosCargar.results.bindings)
+            {
+                string cv = fila["cv"].value;
+                List<string> items = fila["items"].value.Split(new string[] { ";" }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                items.RemoveAt(0);
+
+                String select = @"  select distinct ?cv ?scientificActivity ?prop ?item from <http://gnoss.com/document.owl>";
+                String where = @$"  where                                 
+                                    {{
+                                        ?cv a <http://w3id.org/roh/CV>.
+                                        ?cv <http://w3id.org/roh/scientificActivity> ?scientificActivity.
+                                        ?scientificActivity ?prop ?item.
+                                        FILTER(?item in (<{string.Join(">,<", items)}>))                                 
+                                        FILTER(?cv = <{cv}>)                                 
+                                    }}";
+                SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+                foreach (Dictionary<string, SparqlObject.Data> filaIn in resultado.results.bindings)
+                {
+                    string scientificActivity = filaIn["scientificActivity"].value;
+                    string prop = filaIn["prop"].value;
+                    string item = filaIn["item"].value;
+                    RemoveTriples removeTriple = new();
+                    removeTriple.Predicate = "http://w3id.org/roh/scientificActivity|" + prop;
+                    removeTriple.Value = scientificActivity + "|" + item;
+                    Guid idCV = mResourceApi.GetShortGuid(cv);
+                    if (triplesToDelete.ContainsKey(idCV))
+                    {
+                        triplesToDelete[idCV].Add(removeTriple);
+                    }
+                    else
+                    {
+                        triplesToDelete.Add(idCV, new() { removeTriple });
+                    }
+                }
+            }
+
+            Parallel.ForEach(triplesToDelete.Keys, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, idCV =>
+            {
+                List<List<RemoveTriples>> listasDeListas = SplitList(triplesToDelete[idCV], 50).ToList();
+                foreach (List<RemoveTriples> triples in listasDeListas)
+                {
+                    mResourceApi.DeletePropertiesLoadedResources(new() { { idCV, triples } });
+                }
+            });
+        }
+
+        private void EliminarResearchObjectsDuplicadosCV(SparqlObject pDatosCargar)
+        {
+            Dictionary<Guid, List<RemoveTriples>> triplesToDelete = new();
+            foreach (Dictionary<string, SparqlObject.Data> fila in pDatosCargar.results.bindings)
+            {
+                string cv = fila["cv"].value;
+                string ResearchObjects = fila["researchObject"].value;
+                List<string> items = fila["items"].value.Split(new string[] { ";" }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                items.RemoveAt(0);
+                foreach (string item in items)
+                {
+                    RemoveTriples removeTriple = new();
+                    removeTriple.Predicate = "http://w3id.org/roh/researchObject|http://w3id.org/roh/researchObjects";
+                    removeTriple.Value = ResearchObjects + "|" + item;
+                    Guid idCV = mResourceApi.GetShortGuid(cv);
+                    if (triplesToDelete.ContainsKey(idCV))
+                    {
+                        triplesToDelete[idCV].Add(removeTriple);
+                    }
+                    else
+                    {
+                        triplesToDelete.Add(idCV, new() { removeTriple });
+                    }
+                }
+            }
+
+            Parallel.ForEach(triplesToDelete.Keys, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, idCV =>
+            {
+                List<List<RemoveTriples>> listasDeListas = SplitList(triplesToDelete[idCV], 50).ToList();
+                foreach (List<RemoveTriples> triples in listasDeListas)
+                {
+                    mResourceApi.DeletePropertiesLoadedResources(new() { { idCV, triples } });
+                }
+            });
+        }        
+
+        //TODO eliminar
+        private void InsertarResearchObjectsCV(SparqlObject pDatosCargar, string graphsUrl)
+        {
+            Dictionary<Guid, List<TriplesToInclude>> triplesToInclude = new();
+            foreach (Dictionary<string, SparqlObject.Data> fila in pDatosCargar.results.bindings)
+            {
+                string cv = fila["cv"].value;
+                string researchObject = fila["researchObject"].value;
+                string ro = fila["ro"].value;
+
+                string rdftype = "http://w3id.org/roh/RelatedResearchObject";
+                string property = "http://w3id.org/roh/researchObjects";
+
+                //Obtenemos la auxiliar en la que cargar la entidad  
+                string rdfTypePrefix = AniadirPrefijo(rdftype);
+                rdfTypePrefix = rdfTypePrefix.Substring(rdfTypePrefix.IndexOf(":") + 1);
+                string idNewAux = graphsUrl + "items/" + rdfTypePrefix + "_" + mResourceApi.GetShortGuid(cv) + "_" + Guid.NewGuid();
+                List<TriplesToInclude> listaTriples = new();
+                string idEntityAux = researchObject + "|" + idNewAux;
+
+                //Privacidad            
+                string predicadoPrivacidad = "http://w3id.org/roh/researchObject|" + property + "|http://w3id.org/roh/isPublic";
+                TriplesToInclude tr2 = new(idEntityAux + "|true", predicadoPrivacidad);
+                listaTriples.Add(tr2);
+
+                //Entidad
+                string predicadoEntidad = "http://w3id.org/roh/researchObject|" + property + "|http://vivoweb.org/ontology/core#relatedBy";
+                TriplesToInclude tr1 = new(idEntityAux + "|" + ro, predicadoEntidad);
+                listaTriples.Add(tr1);
+
+                Guid idCV = mResourceApi.GetShortGuid(cv);
+                if (triplesToInclude.ContainsKey(idCV))
+                {
+                    triplesToInclude[idCV].AddRange(listaTriples);
+                }
+                else
+                {
+                    triplesToInclude.Add(mResourceApi.GetShortGuid(cv), listaTriples);
+                }
+            }
+
+            Parallel.ForEach(triplesToInclude.Keys, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, idCV =>
+            {
+                List<List<TriplesToInclude>> listasDeListas = SplitList(triplesToInclude[idCV], 50).ToList();
+                foreach (List<TriplesToInclude> triples in listasDeListas)
+                {
+                    mResourceApi.InsertPropertiesLoadedResources(new() { { idCV, triples } });
+                }
+            });
+        }
+
+        //TODO eliminar
+        private void EliminarResearchObjectsCV(SparqlObject pDatosCargar)
+        {
+            Dictionary<Guid, List<RemoveTriples>> triplesToDelete = new();
+            foreach (Dictionary<string, SparqlObject.Data> fila in pDatosCargar.results.bindings)
+            {
+                string cv = fila["cv"].value;
+                string researchObject = fila["researchObject"].value;
+                string item = fila["item"].value;
+
+                string property = "http://w3id.org/roh/researchObjects";
+                RemoveTriples removeTriple = new();
+                removeTriple.Predicate = "http://w3id.org/roh/researchObject|" + property;
+                removeTriple.Value = researchObject + "|" + item;
+                Guid idCV = mResourceApi.GetShortGuid(cv);
+                if (triplesToDelete.ContainsKey(idCV))
+                {
+                    triplesToDelete[idCV].Add(removeTriple);
+                }
+                else
+                {
+                    triplesToDelete.Add(idCV, new() { removeTriple });
+                }
+            }
+
+            Parallel.ForEach(triplesToDelete.Keys, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, idCV =>
+            {
+                List<List<RemoveTriples>> listasDeListas = SplitList(triplesToDelete[idCV], 50).ToList();
+                foreach (List<RemoveTriples> triples in listasDeListas)
+                {
+                    mResourceApi.DeletePropertiesLoadedResources(new() { { idCV, triples } });
+                }
+            });
+        }
+
         private void PublicarDocumentosCV(SparqlObject pDatosCargar, string graphsUrl)
         {
             Dictionary<Guid, List<TriplesToModify>> triplesToModify = new();
             foreach (Dictionary<string, SparqlObject.Data> fila in pDatosCargar.results.bindings)
             {
                 string cv = fila["cv"].value;
-                string scientificActivity = fila["scientificActivity"].value;
+                string researchObject = fila["researchObject"].value;
                 string propItem = fila["propItem"].value;
                 string item = fila["item"].value;
 
 
                 TriplesToModify triple = new()
                 {
-                    OldValue = scientificActivity + "|" + item + "|false",
-                    NewValue = scientificActivity + "|" + item + "|true",
-                    Predicate = "http://w3id.org/roh/scientificActivity|" + propItem + "|http://w3id.org/roh/isPublic"
+                    OldValue = researchObject + "|" + item + "|false",
+                    NewValue = researchObject + "|" + item + "|true",
+                    Predicate = "http://w3id.org/roh/researchObject|" + propItem + "|http://w3id.org/roh/isPublic"
                 };
 
                 Guid idCV = mResourceApi.GetShortGuid(cv);
@@ -952,6 +1294,7 @@ namespace DesnormalizadorHercules.Models
                 }
             });
         }
+
 
         private void InsertarProyectosCV(SparqlObject pDatosCargar, string graphsUrl)
         {
@@ -1053,7 +1396,7 @@ namespace DesnormalizadorHercules.Models
             });
         }
 
-        private void InsertarItemsCV(SparqlObject pDatosCargar, string graphsUrl, string pRdfType, string pSectionProperty, string pProperty, string pVarEntity, string pVarSection,bool pPublic)
+        private void InsertarItemsCV(SparqlObject pDatosCargar, string graphsUrl, string pRdfType, string pSectionProperty, string pProperty, string pVarEntity, string pVarSection, bool pPublic)
         {
             Dictionary<Guid, List<TriplesToInclude>> triplesToInclude = new();
             foreach (Dictionary<string, SparqlObject.Data> fila in pDatosCargar.results.bindings)
@@ -1071,7 +1414,7 @@ namespace DesnormalizadorHercules.Models
 
                 //Privacidad                  
                 string predicadoPrivacidad = pSectionProperty + "|" + pProperty + "|http://w3id.org/roh/isPublic";
-                TriplesToInclude tr2 = new(idEntityAux + "|"+ pPublic.ToString().ToLower(), predicadoPrivacidad);
+                TriplesToInclude tr2 = new(idEntityAux + "|" + pPublic.ToString().ToLower(), predicadoPrivacidad);
                 listaTriples.Add(tr2);
 
                 //Entidad
@@ -1095,7 +1438,7 @@ namespace DesnormalizadorHercules.Models
                 mResourceApi.InsertPropertiesLoadedResources(new Dictionary<Guid, List<TriplesToInclude>>() { { idCV, triplesToInclude[idCV] } });
             });
         }
-        
+
         private void EliminarItemsCV(SparqlObject pDatosCargar, string pSectionProperty, string pProperty, string pVarItem, string pVarSection)
         {
             Dictionary<Guid, List<RemoveTriples>> triplesToDelete = new();

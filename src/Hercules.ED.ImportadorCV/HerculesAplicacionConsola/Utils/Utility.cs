@@ -14,7 +14,7 @@ namespace Utils
 {
     public static class Utility
     {
-        private static readonly ResourceApi mResourceApi = new ResourceApi($@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}../../../Config/configOAuth/OAuthV3.config");
+        private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config\configOAuth\OAuthV3.config");
 
         /// <summary>
         /// Dada la ruta de un directorio devuelve si existe en el sistema

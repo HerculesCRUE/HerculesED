@@ -13,6 +13,9 @@ namespace DesnormalizadorHercules.Models
     {
         private readonly static string rutaOauth = $@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/OAuthV3.config";
         private static ResourceApi resourceApi = new ResourceApi(rutaOauth);
+        private static CommunityApi communityApi = new CommunityApi(rutaOauth);
+        
+        private static Guid communityID = communityApi.GetCommunityId();
 
         /// <summary>
         /// Actualiza todos los elementos desnormalizados
@@ -37,8 +40,6 @@ namespace DesnormalizadorHercules.Models
                 actualizadorProject.ActualizarProyectosPublicos();
                 actualizadorDocument.ActualizarPertenenciaGrupos();
                 actualizadorDocument.ActualizarNumeroCitasMaximas();
-                actualizadorDocument.ActualizarNumeroCitasCargadas();
-                actualizadorDocument.ActualizarNumeroReferenciasCargadas();
                 actualizadorDocument.ActualizarAreasDocumentos();
                 actualizadorDocument.ActualizarTagsDocumentos();
                 actualizadorGrupos.ActualizarPertenenciaLineas();
@@ -51,6 +52,7 @@ namespace DesnormalizadorHercules.Models
 
                 //Dependen únicamente del CV
                 actualizadorCV.ModificarDocumentos();
+                actualizadorCV.ModificarResearchObjects();
                 actualizadorCV.CambiarPrivacidadDocumentos();
                 actualizadorCV.ModificarGrupos();
                 actualizadorCV.ModificarProyectos();
@@ -76,10 +78,11 @@ namespace DesnormalizadorHercules.Models
 
 
 
-                //Reubicar
+                //TODO Reubicar
                 actualizadorDocument.ActualizarIndiceImpacto();
                 actualizadorRO.ActualizarAreasRO();
                 actualizadorRO.ActualizarTagsRO();
+                actualizadorRO.ActualizarROsPublicos();
             }
             catch (Exception)
             {
@@ -220,8 +223,6 @@ namespace DesnormalizadorHercules.Models
                 //No tienen dependencias
                 actualizadorDocument.ActualizarPertenenciaGrupos("", pDocumento);
                 actualizadorDocument.ActualizarNumeroCitasMaximas(pDocumento);
-                actualizadorDocument.ActualizarNumeroCitasCargadas(pDocumento);
-                actualizadorDocument.ActualizarNumeroReferenciasCargadas(pDocumento);
                 actualizadorDocument.ActualizarAreasDocumentos(pDocumento);
                 actualizadorDocument.ActualizarTagsDocumentos(pDocumento);
 
@@ -237,7 +238,6 @@ namespace DesnormalizadorHercules.Models
             }
         }
 
-
         /// <summary>
         /// IMPORTANTE!!! esto sólo debe usarse para pruebas, si se eliminan los datos no son recuperables
         /// Elimina los datos desnormalizados
@@ -248,8 +248,7 @@ namespace DesnormalizadorHercules.Models
             //IMPORTANTE!!!
             //No descomentar, esto sólo debe usarse para pruebas, si se eliminan los datos no son recuperables
             if (eliminarDatos)
-            {
-
+            {                
                 //Eliminamos los CV
                 while (true)
                 {
@@ -436,6 +435,157 @@ namespace DesnormalizadorHercules.Models
                 }
             }
         }
+
+        /// <summary>
+        /// TODO eliminar
+        /// </summary>
+        public static void FusionNombre(List<string> pNombre)
+        {
+            //ID persona / nombre /orcid
+            Dictionary<string, Tuple<string, string, string>> personas = new Dictionary<string, Tuple<string, string, string>>();
+
+            int limit = 10000;
+            int offset = 0;
+            while (true)
+            {
+                string select = "SELECT * WHERE { SELECT DISTINCT ?persona ?nombreCompleto ?orcid ?ci ";
+                string where = $@"WHERE {{
+                                ?persona a <http://xmlns.com/foaf/0.1/Person>. 
+                                ?persona <http://xmlns.com/foaf/0.1/name> ?nombreCompleto.
+                                OPTIONAL{{?persona <http://w3id.org/roh/ORCID> ?orcid. }}
+                                OPTIONAL{{?persona <http://w3id.org/roh/crisIdentifier> ?ci}}
+                            }} ORDER BY DESC(?persona) }} LIMIT {limit} OFFSET {offset}";
+                SparqlObject resultadoQuery = resourceApi.VirtuosoQuery(select, where, "person");
+                if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+                {
+                    offset += limit;
+                    foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                    {
+                        string id = fila["persona"].value;
+                        string nombre = fila["nombreCompleto"].value;
+                        bool cargar = true;
+                        foreach(string nom in pNombre)
+                        {
+                            if (!nombre.ToLower().Contains(nom))
+                            {
+                                cargar = false;
+                            }
+                        }
+                        if (cargar)
+                        {
+                            string orcid = "";
+                            string ci = "";
+                            if (fila.ContainsKey("orcid"))
+                            {
+                                orcid = fila["orcid"].value;
+                            }
+                            if (fila.ContainsKey("ci"))
+                            {
+                                ci = fila["ci"].value;
+                            }
+                            personas.Add(id, new Tuple<string, string, string>(nombre, orcid, ci));
+                        }
+                    }
+                    if (resultadoQuery.results.bindings.Count < limit)
+                    {
+                        break;
+                    }
+                }
+            }
+            if (personas.Where(x => !string.IsNullOrEmpty(x.Value.Item3)).Count() != 1)
+            {
+                throw new Exception("aa");
+            }
+            string idBueno = personas.First(x => !string.IsNullOrEmpty(x.Value.Item3)).Key;
+            HashSet<string> idsMalos = new HashSet<string>(personas.Where(x => string.IsNullOrEmpty(x.Value.Item3)).Select(x => x.Key));
+            foreach (string idMalo in idsMalos)
+            {
+                Fusion(idMalo, idBueno);
+            }
+
+        }
+
+        /// <summary>
+        /// Realiza la fusión de 2 entidades
+        /// <param name="pIdMalo">Identificador a eliminar</param>
+        /// <param name="pIdBueno">Identificador donde meter la fusión</param>
+        /// </summary>
+        public static void Fusion(string pIdMalo, string pIdBueno)
+        {
+            while (true)
+            {
+                string select = "SELECT DISTINCT ?id ?type ?prop ";
+                string where = $@"WHERE {{                                
+                                ?id ?prop <http://gnoss/{resourceApi.GetShortGuid(pIdMalo).ToString().ToUpper()}>.
+                                OPTIONAL{{?id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?type.}}
+                                
+                            }} ";
+                SparqlObject resultadoQuery = resourceApi.VirtuosoQuery(select, where, communityID);
+                if(resultadoQuery.results.bindings.Count==0)
+                {
+                    break;
+                }
+                if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+                {
+                    foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                    {
+                        string id = fila["id"].value;
+                        string prop = fila["prop"].value;
+                        //Si el ID es un GUID modificamos directamente
+                        if (Guid.TryParse(id.Replace("http://gnoss/", ""), out Guid x))
+                        {
+                            TriplesToModify t = new();
+                            t.NewValue = pIdBueno;
+                            t.OldValue = pIdMalo;
+                            t.Predicate = prop;
+                            resourceApi.ModifyPropertiesLoadedResources(new Dictionary<Guid, List<Gnoss.ApiWrapper.Model.TriplesToModify>>() { { resourceApi.GetShortGuid(id), new List<Gnoss.ApiWrapper.Model.TriplesToModify>() { t } } });
+                        }
+                        else
+                        {
+                            Guid main = resourceApi.GetShortGuid(id);
+                            string rdftype = resourceApi.VirtuosoQuery("select ?type", "where{<http://gnoss/" + main.ToString().ToUpper() + "> a ?type}", new Guid("b836078b-78a0-4939-b809-3f2ccf4e5c01")).results.bindings[0]["type"].value;
+                            List<string> props = new List<string>() { prop };
+                            List<string> entities = new List<string>() { id };
+
+                            string oAux = id;
+                            while (true)
+                            {
+                                SparqlObject respuesta = resourceApi.VirtuosoQuery("select ?s ?p", "where{?s ?p <" + oAux + ">. FILTER(?p!=<http://gnoss/hasEntidad> )}", rdftype);
+                                if (respuesta.results.bindings.Count == 0)
+                                {
+                                    entities.Remove(entities.Last());
+                                    break;
+                                }
+                                else
+                                {
+                                    Dictionary<string, SparqlObject.Data> fila2 = respuesta.results.bindings[0];
+                                    if (resourceApi.GetShortGuid(id) != resourceApi.GetShortGuid(fila2["s"].value))
+                                    {
+                                        entities.Remove(entities.Last());
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        entities.Add(fila2["s"].value);
+                                        props.Add(fila2["p"].value);
+                                        oAux = fila2["s"].value;
+                                    }
+                                }
+                            }
+                            props.Reverse();
+                            entities.Reverse();
+                            TriplesToModify t = new();
+                            t.NewValue = string.Join("|", entities) + "|" + pIdBueno;
+                            t.OldValue = string.Join("|", entities) + "|" + pIdMalo;
+                            t.Predicate = string.Join("|", props);
+                            resourceApi.ModifyPropertiesLoadedResources(new Dictionary<Guid, List<Gnoss.ApiWrapper.Model.TriplesToModify>>() { { resourceApi.GetShortGuid(id), new List<Gnoss.ApiWrapper.Model.TriplesToModify>() { t } } });
+                        }
+                    }
+                }
+            }
+            resourceApi.PersistentDelete(resourceApi.GetShortGuid(pIdMalo));
+        }
+
 
     }
 }

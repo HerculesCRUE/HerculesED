@@ -27,7 +27,7 @@ namespace DesnormalizadorHercules.Models
         /// Actualizamos en la propiedad http://w3id.org/roh/isPublic de los http://purl.org/ontology/bibo/Document
         /// los documentos públicos (son los documentos oficiales, es decir, los que tienen http://w3id.org/roh/crisIdentifier o los documentos que son públicos en algún CV)
         /// Esta propiedad se utilizará como filtro en el bucador general de publicaciones
-        /// Depende de ActualizadorCV.InsertarDocumentos y ActualizadorCV.CambiarPrivacidadDocumentos
+        /// Depende de ActualizadorCV.ModificarDocumentos y ActualizadorCV.CambiarPrivacidadDocumentos
         /// </summary>
         /// <param name="pDocument">ID del documento</param>
         public void ActualizarDocumentosPublicos(string pDocument = null)
@@ -398,129 +398,7 @@ namespace DesnormalizadorHercules.Models
                 }
             }
         }
-
-        /// <summary>
-        /// Insertamos en la propiedad http://w3id.org/roh/citationLoadedCount de los http://purl.org/ontology/bibo/Document públicos
-        /// el nº de citas cargadas en el sistema
-        /// No tiene dependencias
-        /// </summary>
-        /// <param name="pDocument">ID del documento</param>
-        public void ActualizarNumeroCitasCargadas(string pDocument = null)
-        {
-            string filter = "";
-            if (!string.IsNullOrEmpty(pDocument))
-            {
-                filter = $" FILTER(?document =<{pDocument}>)";
-            }
-            //Eliminamos los duplicados
-            EliminarDuplicados("document", "http://purl.org/ontology/bibo/Document", "http://w3id.org/roh/citationLoadedCount");
-
-            //Actualizamos los datos
-            while (true)
-            {
-                int limit = 500;
-                String select = @"select * where{select ?document ?numCitasCargadas IF (BOUND (?numCitasACargar), ?numCitasACargar, 0 ) as ?numCitasACargar";
-                String where = @$"where{{
-                            ?document a <http://purl.org/ontology/bibo/Document>.
-                            {filter}
-                            OPTIONAL
-                            {{
-                              ?document <http://w3id.org/roh/citationLoadedCount> ?numCitasCargadasAux. 
-                              BIND(xsd:int( ?numCitasCargadasAux) as  ?numCitasCargadas)
-                            }}
-                            {{
-                              select ?document count(distinct ?documentX) as ?numCitasACargar
-                              Where{{
-                                ?document a <http://purl.org/ontology/bibo/Document>.
-                                OPTIONAL{{
-                                    ?documentX <http://purl.org/ontology/bibo/cites> ?document.
-                                }}
-                              }}
-                            }}
-                            FILTER(?numCitasCargadas!= ?numCitasACargar OR !BOUND(?numCitasCargadas) )
-                            }}}} limit {limit}";
-                SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
-
-                foreach (Dictionary<string, SparqlObject.Data> fila in resultado.results.bindings)
-                {
-                    string document = fila["document"].value;
-                    string numCitasACargar = fila["numCitasACargar"].value;
-                    string numCitasCargadas = "";
-                    if (fila.ContainsKey("numCitasCargadas"))
-                    {
-                        numCitasCargadas = fila["numCitasCargadas"].value;
-                    }
-                    ActualizadorTriple(document, "http://w3id.org/roh/citationLoadedCount", numCitasCargadas, numCitasACargar);
-                }
-
-                if (resultado.results.bindings.Count != limit)
-                {
-                    break;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Insertamos en la propiedad http://w3id.org/roh/referencesLoadedCount de los http://purl.org/ontology/bibo/Document públicos
-        /// el nº de referencias cargadas en el sistema
-        /// No tiene dependencias
-        /// </summary>
-        /// <param name="pDocument">ID del documento</param>
-        public void ActualizarNumeroReferenciasCargadas(string pDocument = null)
-        {
-            string filter = "";
-            if (!string.IsNullOrEmpty(pDocument))
-            {
-                filter = $" FILTER(?document =<{pDocument}>)";
-            }
-            //Eliminamos los duplicados
-            EliminarDuplicados("document", "http://purl.org/ontology/bibo/Document", "http://w3id.org/roh/referencesLoadedCount");
-
-            //Actualizamos los datos
-            while (true)
-            {
-                int limit = 500;
-                String select = @"select * where{select ?document ?numReferenciasCargadas IF (BOUND (?numReferenciasACargar), ?numReferenciasACargar, 0 ) as ?numReferenciasACargar";
-                String where = @$"where{{
-                            ?document a <http://purl.org/ontology/bibo/Document>.
-                            {filter}
-                            OPTIONAL
-                            {{
-                              ?document <http://w3id.org/roh/referencesLoadedCount> ?numReferenciasCargadasAux. 
-                              BIND(xsd:int( ?numReferenciasCargadasAux) as  ?numReferenciasCargadas)
-                            }}
-                            {{
-                              select ?document count(distinct ?documentX) as ?numReferenciasACargar
-                              Where{{
-                                ?document a <http://purl.org/ontology/bibo/Document>.
-                                OPTIONAL{{
-                                    ?document <http://purl.org/ontology/bibo/cites> ?documentX.
-                                    ?documentX a <http://purl.org/ontology/bibo/Document>.
-                                }}
-                              }}
-                            }}
-                            FILTER(?numReferenciasCargadas!= ?numReferenciasACargar OR !BOUND(?numReferenciasCargadas) )
-                            }}}} limit {limit}";
-                SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
-
-                Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
-                {
-                    string document = fila["document"].value;
-                    string numReferenciasACargar = fila["numReferenciasACargar"].value;
-                    string numReferenciasCargadas = "";
-                    if (fila.ContainsKey("numReferenciasCargadas"))
-                    {
-                        numReferenciasCargadas = fila["numReferenciasCargadas"].value;
-                    }
-                    ActualizadorTriple(document, "http://w3id.org/roh/referencesLoadedCount", numReferenciasCargadas, numReferenciasACargar);
-                });
-
-                if (resultado.results.bindings.Count != limit)
-                {
-                    break;
-                }
-            }
-        }
+                
 
         /// <summary>
         /// Insertamos en la propiedad http://w3id.org/roh/hasKnowledgeArea de los http://purl.org/ontology/bibo/Document públicos 

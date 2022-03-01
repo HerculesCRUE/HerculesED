@@ -308,5 +308,74 @@ namespace DesnormalizadorHercules.Models
             }
         }
 
+        /// <summary>
+        /// Actualizamos en la propiedad http://w3id.org/roh/isPublic de los http://w3id.org/roh/ResearchObject
+        /// los ros públicos (Los ros que son públicos en algún CV)
+        /// Esta propiedad se utilizará como filtro en el bucador general de ros
+        /// Depende de ActualizadorCV.ModificarResearchObjects
+        /// </summary>
+        /// <param name="pDocument">ID del documento</param>
+        public void ActualizarROsPublicos(string pRO = null)
+        {
+            string filter = "";
+            if (!string.IsNullOrEmpty(pRO))
+            {
+                filter = $" FILTER(?ro =<{pRO}>)";
+            }
+            //Eliminamos los duplicados
+            EliminarDuplicados("document", "http://w3id.org/roh/ResearchObject", "http://w3id.org/roh/isPublic");
+
+            while (true)
+            {
+                int limit = 500;
+                //TODO eliminar from
+                String select = @"select * where{ select ?ro ?isPublicCargado ?isPublicACargar  from <http://gnoss.com/curriculumvitae.owl>  from <http://gnoss.com/person.owl>";
+                String where = @$"where{{
+                            ?ro a <http://w3id.org/roh/ResearchObject>.
+                            {filter}
+                            OPTIONAL
+                            {{
+                                ?ro <http://w3id.org/roh/isPublic> ?isPublicCargado.
+                            }}
+                            {{
+                                select distinct ?ro IF(BOUND(?isPublicACargar),?isPublicACargar,'false')  as ?isPublicACargar
+                                Where
+                                {{
+                                    ?ro a <http://w3id.org/roh/ResearchObject>.
+                                    OPTIONAL
+                                    {{  
+                                        ?cv a <http://w3id.org/roh/CV>.
+                                        ?cv ?lvl1 ?cvlvl2.
+                                        ?cvlvl2 ?lvl2 ?cvlvl3.
+                                        ?cvlvl3 <http://vivoweb.org/ontology/core#relatedBy> ?ro.
+                                        ?cvlvl3  <http://w3id.org/roh/isPublic> 'true'.
+                                        BIND('true' as ?isPublicACargar)
+                                    }}      
+                                }}
+                            }}
+                            FILTER(?isPublicCargado!= ?isPublicACargar OR !BOUND(?isPublicCargado) )
+                            }}}} limit {limit}";
+                SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "researchobject");
+
+                Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
+                {
+                    string ro = fila["ro"].value;
+                    string isPublicACargar = fila["isPublicACargar"].value;
+                    string isPublicCargado = "";
+                    if (fila.ContainsKey("isPublicCargado"))
+                    {
+                        isPublicCargado = fila["isPublicCargado"].value;
+                    }
+                    ActualizadorTriple(ro, "http://w3id.org/roh/isPublic", isPublicCargado, isPublicACargar);
+                });
+
+                if (resultado.results.bindings.Count != limit)
+                {
+                    break;
+                }
+            }
+
+        }
+
     }
 }

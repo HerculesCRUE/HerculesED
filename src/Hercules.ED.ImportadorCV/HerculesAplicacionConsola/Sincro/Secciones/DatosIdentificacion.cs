@@ -54,7 +54,6 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
 
             //4º Actualizamos la entidad.
             UpdateEntityAux(mResourceApi.GetShortGuid(mCvID), new List<string>() { "http://w3id.org/roh/personalData" }, new List<string>() { entityBBDD.id }, entityBBDD, entityXML);
-
         }
 
         /// <summary>
