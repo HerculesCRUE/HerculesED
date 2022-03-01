@@ -977,6 +977,38 @@ namespace GuardadoCV.Models
                     {
                         itemProperty.values = itemProperty.values.Select(x => UtilityCV.GetTextNumber(x)).ToList();
                     }
+                    else if (property.type == DataTypeListItem.boolean)
+                    {
+                        List<string> valuesAux = new List<string>(itemProperty.values);
+                        itemProperty.values = new List<string>();
+                        string si = "";
+                        string no = "";
+                        switch (pLang)
+                        {
+                            case "es":
+                                si = "Sí";
+                                no = "No";
+                                break;
+                            case "en":
+                                si = "Yes";
+                                no = "No";
+                                break;
+                            default:
+                                si = "Sí";
+                                no = "No";
+                                break;
+                        }
+                        foreach (string value in valuesAux)
+                        {
+                            if (value.ToLower() == "true")
+                            {
+                                itemProperty.values.Add(si);
+                            }else if (value.ToLower() == "false")
+                            {
+                                itemProperty.values.Add(no);
+                            }
+                        }
+                    }
                     item.properties.Add(itemProperty);
                 }
             }
