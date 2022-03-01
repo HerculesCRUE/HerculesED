@@ -1,0 +1,629 @@
+{
+  "rdftype": "http://w3id.org/roh/ProfessionalSituation",
+  "property": "http://w3id.org/roh/professionalSituation",
+  "sections": [
+    {
+      "rdftype": "http://w3id.org/roh/RelatedCurrentProfessionalSituation",
+      "property": "http://w3id.org/roh/currentProfessionalSituation",
+      "presentation": {
+        "type": "listitems",
+        "title": {
+          "es": "Situación profesional actual"
+        },
+        "listItemsPresentation": {
+          "property": "http://vivoweb.org/ontology/core#relatedBy",
+          "listItem": {
+            "propertyTitle": {
+              "property": "http://vivoweb.org/ontology/core#relatedBy",
+              "graph": "position",
+              "child": {
+                "property": "http://w3id.org/roh/employerOrganizationTitle"
+              }
+            },
+            "orders": [
+              {
+                "name": {
+                  "es": "Ordenar por fecha más reciente"
+                },
+                "properties": [
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "position",
+                    "child": {
+                      "property": "http://vivoweb.org/ontology/core#start"
+                    },
+                    "asc": false
+                  },
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "position",
+                    "child": {
+                      "property": "http://w3id.org/roh/employerOrganizationTitle"
+                    },
+                    "asc": true
+                  }
+                ]
+              },
+              {
+                "name": {
+                  "es": "Ordenar por fecha más antigua"
+                },
+                "properties": [
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "position",
+                    "child": {
+                      "property": "http://vivoweb.org/ontology/core#start"
+                    },
+                    "asc": true
+                  },
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "position",
+                    "child": {
+                      "property": "http://w3id.org/roh/employerOrganizationTitle"
+                    },
+                    "asc": true
+                  }
+                ]
+              }
+            ]
+          },
+          "listItemEdit": {
+            "graph": "position",
+            "proptitle": "http://w3id.org/roh/employerOrganizationTitle",
+            "propdescription": "http://purl.org/ontology/bibo/abstract",
+            "rdftype": "http://vivoweb.org/ontology/core#Position",
+            "sections": [
+              {
+                "title": {
+                  "es": "Información general"
+                },
+                "rows": [
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Entidad empleadora"
+                        },
+                        "autocomplete": true,
+                        "required": true,
+                        "placeholder": {
+                          "es": "Introduce la entidad empleadora"
+                        },
+                        "property": "http://w3id.org/roh/employerOrganizationTitle",
+                        "autocompleteConfig": {
+                          "rdftype": "http://xmlns.com/foaf/0.1/Organization",
+                          "graph": "organization",
+                          "propertyEntity": "http://w3id.org/roh/organization",
+                          "property": {
+                            "property": "http://w3id.org/roh/title"
+                          }
+                        },
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Tipo de entidad"
+                        },
+                        "property": "http://w3id.org/roh/employerOrganizationType",
+                        "combo": {
+                          "rdftype": "http://w3id.org/roh/OrganizationType",
+                          "graph": "organizationtype",
+                          "property": {
+                            "property": "http://purl.org/dc/elements/1.1/title"
+                          }
+                        },
+                        "dependency": {
+                          "property": "http://w3id.org/roh/employerOrganizationTitle",
+                          "propertyValue": "*"
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Otros"
+                        },
+                        "property": "http://w3id.org/roh/employerOrganizationTypeOther",
+                        "required": true,
+                        "dependency": {
+                          "property": "http://w3id.org/roh/employerOrganizationType",
+                          "propertyValue": "{GraphsUrl}items/organizationtype_OTHERS"
+                        },
+                        "type": "text",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Facultad, instituto, centro"
+                        },
+                        "placeholder": {
+                          "es": "Introduce facultad, instituto, centro"
+                        },
+                        "property": "http://w3id.org/roh/center",
+                        "dependency": {
+                          "property": "http://w3id.org/roh/employerOrganizationTitle",
+                          "propertyValue": "*"
+                        },
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Departamento"
+                        },
+                        "type": "text",
+                        "placeholder": {
+                          "es": "Introduce el departamento"
+                        },
+                        "property": "http://w3id.org/roh/department",
+                        "dependency": {
+                          "property": "http://w3id.org/roh/employerOrganizationTitle",
+                          "propertyValue": "*"
+                        },
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Categoría peofesional"
+                        },
+                        "placeholder": {
+                          "es": "Introduce la categoría profesional"
+                        },
+                        "property": "http://w3id.org/roh/professionalCategory",
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Fecha de inicio"
+                        },
+                        "property": "http://vivoweb.org/ontology/core#start",
+                        "type": "date",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Modalidad de contrato"
+                        },
+                        "property": "http://w3id.org/roh/contractModality",
+                        "combo": {
+                          "rdftype": "http://w3id.org/roh/ContractModality",
+                          "graph": "contractmodality",
+                          "property": {
+                            "property": "http://purl.org/dc/elements/1.1/title"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Otros"
+                        },
+                        "property": "http://w3id.org/roh/contractModalityOther",
+                        "required": true,
+                        "dependency": {
+                          "property": "http://w3id.org/roh/contractModality",
+                          "propertyValue": "{GraphsUrl}items/contractmodality_OTHERS"
+                        },
+                        "type": "text",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Primaria (Cód. Unesco)"
+                        },
+                        "property": "http://w3id.org/roh/unescoPrimary",
+                        "thesaurus": "unesco",
+                        "type": "thesaurus",
+                        "width": 3,
+                        "multiple": true
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Secundaria (Cód. Unesco)"
+                        },
+                        "property": "http://w3id.org/roh/unescoSecondary",
+                        "thesaurus": "unesco",
+                        "type": "thesaurus",
+                        "width": 3,
+                        "multiple": true
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Terciaria (Cód. Unesco)"
+                        },
+                        "property": "http://w3id.org/roh/unescoTertiary",
+                        "thesaurus": "unesco",
+                        "type": "thesaurus",
+                        "width": 3,
+                        "multiple": true
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Régimen de dedicación"
+                        },
+                        "property": "http://w3id.org/roh/dedicationRegime",
+                        "combo": {
+                          "rdftype": "http://w3id.org/roh/ContractModality",
+                          "graph": "dedicationregime",
+                          "property": {
+                            "property": "http://purl.org/dc/elements/1.1/title"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Funciones desempeñadas"
+                        },
+                        "property": "http://w3id.org/roh/concreteFunctions",
+                        "type": "textarea",
+                        "width": 3
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "title": {
+                  "es": "Más campos"
+                },
+                "rows": [
+                  //TODO ¿autor de correspondencia?
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "ISBN"
+                        },
+                        "type": "text",
+                        "placeholder": {
+                          "es": "Introduce el ISBN"
+                        },
+                        "required": false,
+                        "property": "http://w3id.org/roh/isbn",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Identificador DOI"
+                        },
+                        "placeholder": {
+                          "es": "Introduce el identificador DOI"
+                        },
+                        "property": "http://purl.org/ontology/bibo/doi",
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Identificador Handle"
+                        },
+                        "placeholder": {
+                          "es": "Introduce el identificador Handle"
+                        },
+                        "property": "http://purl.org/ontology/bibo/handle",
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Identificador PMID"
+                        },
+                        "placeholder": {
+                          "es": "Introduce el identificador PMID"
+                        },
+                        "property": "http://purl.org/ontology/bibo/pmid",
+                        "type": "text",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "property": "http://purl.org/ontology/bibo/identifier",
+                        "type": "auxEntity",
+                        "title": {
+                          "es": "Otros identificadores"
+                        },
+                        "multiple": true,
+                        "width": 3,
+                        "auxEntityData": {
+                          "rdftype": "http://xmlns.com/foaf/0.1/Document",
+                          "propertyTitle": {
+                            "property": "http://xmlns.com/foaf/0.1/topic"
+                          },
+                          "properties": [
+                            {
+                              "name": {
+                                "es": "Nombre del identificador"
+                              },
+                              "child": {
+                                "property": "http://xmlns.com/foaf/0.1/topic"
+                              }
+                            },
+                            {
+                              "name": {
+                                "es": "Identificador"
+                              },
+                              "child": {
+                                "property": "http://purl.org/dc/elements/1.1/title"
+                              }
+                            }
+                          ],
+                          "rows": [
+                            {
+                              "properties": [
+
+                                {
+                                  "title": {
+                                    "es": "Nombre del identificador"
+                                  },
+                                  "placeholder": {
+                                    "es": "Introduce el nombre del identificador"
+                                  },
+                                  "type": "text",
+                                  "required": true,
+                                  "property": "http://xmlns.com/foaf/0.1/topic",
+                                  "width": 1
+                                },
+                                {
+                                  "title": {
+                                    "es": "Identificador"
+                                  },
+                                  "placeholder": {
+                                    "es": "Introduce el identificador"
+                                  },
+                                  "type": "text",
+                                  "required": true,
+                                  "property": "http://purl.org/dc/elements/1.1/title",
+                                  "width": 1
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Depósito legal"
+                        },
+                        "placeholder": {
+                          "es": "Introduce el depósito legal"
+                        },
+                        "property": "http://w3id.org/roh/legalDeposit",
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Colección"
+                        },
+                        "placeholder": {
+                          "es": "Introduce la colección"
+                        },
+                        "property": "http://w3id.org/roh/collection",
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "URL"
+                        },
+                        "placeholder": {
+                          "es": "Introduce la URL"
+                        },
+                        "property": "https://www.w3.org/2006/vcard/ns#url",
+                        "type": "text",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Ciudad de publicación"
+                        },
+                        "placeholder": {
+                          "es": "Introduce la ciudad de publicación"
+                        },
+                        "property": "https://www.w3.org/2006/vcard/ns#locality",
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "País de publicación"
+                        },
+                        "placeholder": {
+                          "es": "Introduce el país de publicación"
+                        },
+                        "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+                        "combo": {
+                          "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "filter": {
+                            "property": "http://www.geonames.org/ontology#featureCode",
+                            "value": "PCLD"
+                          },
+                          "graph": "feature",
+                          "property": {
+                            "property": "http://www.geonames.org/ontology#name"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "C. Autón./Reg. de publicación"
+                        },
+                        "placeholder": {
+                          "es": "Introduce la región de publicación"
+                        },
+                        "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+                        "combo": {
+                          "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "filter": {
+                            "property": "http://www.geonames.org/ontology#featureCode",
+                            "value": "ADM1"
+                          },
+                          "dependency": {
+                            "property": "http://www.geonames.org/ontology#parentFeature",
+                            "propertyValue": "https://www.w3.org/2006/vcard/ns#hasCountryName"
+                          },
+                          "graph": "feature",
+                          "property": {
+                            "property": "http://www.geonames.org/ontology#name"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Reseñas en revistas"
+                        },
+                        "placeholder": {
+                          "es": "Introduce el número de reseñas en revistas"
+                        },
+                        "property": "http://w3id.org/roh/reviewsNumber",
+                        "type": "number",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Traducciones"
+                        },
+                        "placeholder": {
+                          "es": "Introduce la traducción"
+                        },
+                        "property": "https://www.w3.org/2006/vcard/ns#hasLanguage",
+                        "combo": {
+                          "rdftype": "http://w3id.org/roh/Language",
+                          "graph": "language",
+                          "property": {
+                            "property": "http://purl.org/dc/elements/1.1/title"
+                          }
+                        },
+                        "multiple": true,
+                        "type": "selectCombo",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Grado de contribución"
+                        },
+                        "placeholder": {
+                          "es": "Introduce el grado de contribución"
+                        },
+                        "property": "http://w3id.org/roh/contributionGrade",
+                        "combo": {
+                          "rdftype": "http://w3id.org/roh/ContributionGradeDocument",
+                          "graph": "contributiongradedocument",
+                          "property": {
+                            "property": "http://purl.org/dc/elements/1.1/title"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "entity_cv": true,
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Resultados relevantes"
+                        },
+                        "placeholder": {
+                          "es": "Introduce los resultados relevantes"
+                        },
+                        "property": "http://w3id.org/roh/relevantResults",
+                        "type": "textarea",
+                        "entity_cv": true,
+                        "width": 3
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Publicación relevante"
+                        },
+                        "property": "http://w3id.org/roh/relevantPublication",
+                        "type": "boolean",
+                        "entity_cv": true,
+                        "width": 1
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}
