@@ -28,7 +28,10 @@ namespace GuardadoCV.Models.API.Templates
         //Número
         number,
         //Fecha
-        date
+        date,
+        //Booleano
+        boolean,
+
     }
 
     /// <summary>
