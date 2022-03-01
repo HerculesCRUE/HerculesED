@@ -3,26 +3,19 @@ using Gnoss.ApiWrapper.ApiModel;
 using GuardadoCV.Models.API.Input;
 using GuardadoCV.Models.API.Response;
 using GuardadoCV.Models.API.Templates;
-using GuardadoCV.Models.API.Response;
 using GuardadoCV.Models.Utils;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 using System.Text;
-using System.Text.RegularExpressions;
 using EditorCV.Models.API.Response;
 using System.Threading.Tasks;
-using System.Net;
-using System.Threading;
 using System.Net.Http;
 using EditorCV.Models.Enrichment;
 using EditorCV.Controllers;
-using Gnoss.ApiWrapper.Model;
 using static EditorCV.Models.Enrichment.EnrichmentResponse;
-using System.Globalization;
 using Hercules.ED.DisambiguationEngine.Models;
 
 namespace GuardadoCV.Models
