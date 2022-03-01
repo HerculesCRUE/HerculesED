@@ -23,7 +23,7 @@ No requiere ninguún parámetro adicional de uso.
 # ListIdentifiers
 Devuelve una lista de identificadores de los datos solicitados (setSpec_ID) junto a la hora de actualización y el setSpec del dato solicitado.
 Para la utilización de este método, es necesario los siguientes parámetros:
-- metadataPrefix: Especifica que los encabezados deben devolverse solo si el formato de metadatos que coincide con el metadataPrefix proporcionado está disponible o, según el soporte del repositorio para las eliminaciones, se ha eliminado. Los formatos de metadatos admitidos por un repositorio y para un elemento en particular se pueden recuperar mediante la solicitud ListMetadataFormats. Ejemplo: EDMA
+- metadataPrefix: Especifica que los encabezados deben devolverse solo si el formato de metadatos que coincide con el metadataPrefix proporcionado está disponible. Los formatos de metadatos admitidos por un repositorio y para un elemento en particular se pueden recuperar mediante la solicitud ListMetadataFormats. Ejemplo: EDMA
 - from: Fecha de inicio desde la que se desean recuperar las cabeceras de las entidades (Codificado con ISO8601 y expresado en UTC, YYYY-MM-DD o YYYY-MM-DDThh:mm:ssZ). Ejemplo: 2022-01-01
 - until: Fecha de fin hasta la que se desean recuperar las cabeceras de las entidades (Codificado con ISO8601 y expresado en UTC, YYYY-MM-DD o YYYY-MM-DDThh:mm:ssZ). Ejemplo: 2023-01-01
 - set: Argumento con un valor setSpec, que especifica los criterios establecidos para la recolección selectiva. Los formatos de sets admitidos por un repositorio y para un elemento en particular se pueden recuperar mediante la solicitud ListSets. Ejemplo: Persona
@@ -32,4 +32,4 @@ Para la utilización de este método, es necesario los siguientes parámetros:
 Devuelve los datos con el ID obtenido por el método ListIdentifiers.
 Para la utilización de este método, es necesario los siguientes parámetros:
 - identifier: Identificador de la entidad a recuperar (los identificadores se obtienen con el metodo ListIdentifiers). Ejemplo: Persona_ID-PERSONA
-- metadataPrefix: Especifica que los encabezados deben devolverse solo si el formato de metadatos que coincide con el metadataPrefix proporcionado está disponible o, según el soporte del repositorio para las eliminaciones, se ha eliminado. Los formatos de metadatos admitidos por un repositorio y para un elemento en particular se pueden recuperar mediante la solicitud ListMetadataFormats. Ejemplo: EDMA
+- metadataPrefix: Especifica que los encabezados deben devolverse solo si el formato de metadatos que coincide con el metadataPrefix proporcionado está disponible. Los formatos de metadatos admitidos por un repositorio y para un elemento en particular se pueden recuperar mediante la solicitud ListMetadataFormats. Ejemplo: EDMA
