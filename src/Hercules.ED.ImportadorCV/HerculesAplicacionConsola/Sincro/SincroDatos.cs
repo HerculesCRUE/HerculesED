@@ -140,19 +140,19 @@ namespace HerculesAplicacionConsola.Sincro
             //actividadCientificaTecnologica.SincroComitesCTA();
             //actividadCientificaTecnologica.SincroOrganizacionIDI();
             //actividadCientificaTecnologica.SincroGestionIDI();
-            //actividadCientificaTecnologica.SincroForosComites(); //TODO - check - Categoría profesional genera null
+            actividadCientificaTecnologica.SincroForosComites();
             //actividadCientificaTecnologica.SincroEvalRevIDI();
             //actividadCientificaTecnologica.SincroEstanciasIDI();
             //actividadCientificaTecnologica.SincroAyudasBecas();
             //actividadCientificaTecnologica.SincroOtrosModosColaboracion();//TODO - falta añadir participantes, palabras clave //TODO - eliminar entidades secundarias (entidad participante)
             //actividadCientificaTecnologica.SincroSociedadesAsociaciones();
-            //actividadCientificaTecnologica.SincroConsejos();
-            ////actividadCientificaTecnologica.SincroRedesCooperacion();
-            ////actividadCientificaTecnologica.SincroPremiosMenciones();
-            ////actividadCientificaTecnologica.SincroOtrasDistinciones();
+            actividadCientificaTecnologica.SincroConsejos();
+            actividadCientificaTecnologica.SincroRedesCooperacion();
+            actividadCientificaTecnologica.SincroPremiosMenciones();
+            actividadCientificaTecnologica.SincroOtrasDistinciones();
             //actividadCientificaTecnologica.SincroPeriodosActividad();
-            ////actividadCientificaTecnologica.SincroAcreditacionesObtenidas();
-            ////actividadCientificaTecnologica.SincroResumenOtrosMeritos();
+            actividadCientificaTecnologica.SincroAcreditacionesObtenidas();
+            actividadCientificaTecnologica.SincroResumenOtrosMeritos();
         }
     }
 }
