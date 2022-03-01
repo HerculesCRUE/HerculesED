@@ -32,8 +32,6 @@ namespace HerculesAplicacionConsola.Sincro
                 }
             }
             this.cvID = cvID;
-
-
         }
 
         /// <summary>
@@ -44,7 +42,7 @@ namespace HerculesAplicacionConsola.Sincro
         public void SincroDatosIdentificacion()
         {       
             DatosIdentificacion datosIdentificacion = new DatosIdentificacion(cvn, cvID);
-            datosIdentificacion.SincroDatosIdentificacion();
+            //datosIdentificacion.SincroDatosIdentificacion();
         }
 
 
@@ -112,7 +110,7 @@ namespace HerculesAplicacionConsola.Sincro
         /// </summary>
         public void SincroExperienciaCientificaTecnologica()
         {
-            ExperienciaCientificaTecnologica experienciaCientificaTecnologica = new ExperienciaCientificaTecnologica(cvn,cvID);
+            //ExperienciaCientificaTecnologica experienciaCientificaTecnologica = new ExperienciaCientificaTecnologica(cvn,cvID);
 
             //experienciaCientificaTecnologica.SincroProyectosIDI();//TODO - Entidad financiadora, Autores, Entidades Participantes, regimen dedicacion, aportacion solicitante, palabras clave, entidad financiacion, grado contribucion,palabras clave, tipo participacion
             //experienciaCientificaTecnologica.SincroContratos();//TODO - Autores, Entidades participantes, ¿entidad realizacion tipo?, grado contribucion, palabras clave, nombre programa, entidad financiadora
@@ -132,27 +130,29 @@ namespace HerculesAplicacionConsola.Sincro
         {
             ActividadCientificaTecnologica actividadCientificaTecnologica = new ActividadCientificaTecnologica(cvn, cvID);
 
-            //actividadCientificaTecnologica.SincroIndicadoresGenerales();
-            //actividadCientificaTecnologica.SincroPublicacionesDocumentos();//TODO - ISBN, Autores, autor correspondencia, coleccion, publicacion ciudad, publicacion editorial, gradocontribucion, posicion, numautores
-            //actividadCientificaTecnologica.SincroTrabajosCongresos();//TODO - ISBN, Autores, publicacion editorial
-            //actividadCientificaTecnologica.SincroTrabajosJornadasSeminarios();//TODO - Autores, ISBN, TiposEntidadOrganizadora, 
-            //actividadCientificaTecnologica.SincroOtrasActividadesDivulgacion();//TODO - Autor, ISBN, TipoEntidad?,+++
-            actividadCientificaTecnologica.SincroComitesCTA();
+            // -------------------           TODO - comprobar si las entidades exiten en BBDD en los apartados de las mismas
+
+            actividadCientificaTecnologica.SincroIndicadoresGenerales();
+            //actividadCientificaTecnologica.SincroPublicacionesDocumentos();//TODO - Autores, categoria, autor correspondencia, publicacion ciudad, publicacion editorial¿?, posicion, numautores
+            //actividadCientificaTecnologica.SincroTrabajosCongresos();//TODO - Autores, publicacion editorial¿?
+            //actividadCientificaTecnologica.SincroTrabajosJornadasSeminarios();//TODO - Autores, TiposEntidadOrganizadora?
+            //actividadCientificaTecnologica.SincroOtrasActividadesDivulgacion();//TODO - Autor, TipoEntidad?, +++
+            //actividadCientificaTecnologica.SincroComitesCTA();
             //actividadCientificaTecnologica.SincroOrganizacionIDI();
             //actividadCientificaTecnologica.SincroGestionIDI();
             //actividadCientificaTecnologica.SincroForosComites(); //TODO - check - Categoría profesional genera null
             //actividadCientificaTecnologica.SincroEvalRevIDI();
             //actividadCientificaTecnologica.SincroEstanciasIDI();
             //actividadCientificaTecnologica.SincroAyudasBecas();
-            //actividadCientificaTecnologica.SincroOtrosModosColaboracion();//TODO - falta añadir participantes
+            //actividadCientificaTecnologica.SincroOtrosModosColaboracion();//TODO - falta añadir participantes, palabras clave //TODO - eliminar entidades secundarias (entidad participante)
             //actividadCientificaTecnologica.SincroSociedadesAsociaciones();
             //actividadCientificaTecnologica.SincroConsejos();
-            //actividadCientificaTecnologica.SincroRedesCooperacion();
-            //actividadCientificaTecnologica.SincroPremiosMenciones();
-            //actividadCientificaTecnologica.SincroOtrasDistinciones();
+            ////actividadCientificaTecnologica.SincroRedesCooperacion();
+            ////actividadCientificaTecnologica.SincroPremiosMenciones();
+            ////actividadCientificaTecnologica.SincroOtrasDistinciones();
             //actividadCientificaTecnologica.SincroPeriodosActividad();
-            //actividadCientificaTecnologica.SincroAcreditacionesObtenidas();
-            //actividadCientificaTecnologica.SincroResumenOtrosMeritos();
+            ////actividadCientificaTecnologica.SincroAcreditacionesObtenidas();
+            ////actividadCientificaTecnologica.SincroResumenOtrosMeritos();
         }
     }
 }
