@@ -12,7 +12,7 @@ namespace OAI_PMH.Services
 {
     public class Project
     {
-        private static readonly string url = "http://sgi.ic.corp.treelogic.com/api/sgicsp/";
+        private static readonly string url = "https://sgi.demo.treelogic.com/api/sgicsp/";
 
         public static Dictionary<string, DateTime> GetModifiedProjects(string from)
         {

@@ -12,7 +12,7 @@ namespace OAI_PMH.Services
 {
     public class PersonalData
     {
-        private static readonly string url = "http://sgi.ic.corp.treelogic.com/api/sgp/";
+        private static readonly string url = "https://sgi.demo.treelogic.com/api/sgp/";
 
         public static Dictionary<string, DateTime> GetModifiedPeople(string from)
         {
@@ -29,7 +29,11 @@ namespace OAI_PMH.Services
                 idList = response.Content[1..^1].Split(',').ToList();
                 foreach (string id in idList)
                 {
-                    idDictionary.Add("Persona_" + id.Substring(1, 8), DateTime.UtcNow);
+                    string idPersona = "Persona_" + id.Replace("\"", "").Substring(0, id.Replace("\"", "").Length - 1);
+                    if (!idDictionary.ContainsKey(idPersona))
+                    {
+                        idDictionary.Add(idPersona, DateTime.UtcNow);
+                    }
                 }
             }
             return idDictionary;
@@ -106,7 +110,7 @@ namespace OAI_PMH.Services
         {
             string accessToken = Token.CheckToken();
             Fotografia fotografia = new();
-            RestClient client = new(url + "personas/" + id + "fotografia");
+            RestClient client = new(url + "personas/" + id + "/fotografia");
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);

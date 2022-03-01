@@ -8,15 +8,12 @@ namespace OAI_PMH.Models.SGI.PersonalData
 {
     public class Vinculacion : SGI_Base
     {
-        public CategoriaProfesional CategoriaProfesionalPDI { get; set; }
-        public CategoriaProfesional CategoriaProfesionalPAS { get; set; }
-        public DateTime FechaObtencionCategoriaPDI { get; set; }
-        public DateTime FechaObtencionCategoriaPAS { get; set; }
-        public DateTime FechaFinCategoriaPDI { get; set; }
-        public DateTime FechaFinCategoriaPAS { get; set; }
-        public Departamento DepartamentoPDI { get; set; }
-        public Departamento DepartamentoPAS { get; set; }
+        public List<VinculacionCategoriaProfesional> VinculacionesCategoriaProfesionales { get; set; }
+        public List<VinculacionDepartamentos> VinculacionesDepartamentos { get; set; }
+        public Centro centro { get; set; }
         public AreaConocimiento AreaConocimiento { get; set; }
         public string EmpresaRef { get; set; }
+        public bool? PersonalPropio { get; set; }
+        public string EntidadPropiaRef { get; set; }
     }
 }
