@@ -14,7 +14,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
     class Consejos : DisambiguableEntity
     {
         public string descripcion { get; set; }
-        public string fecha { get; set; }
+        public string EntAfi { get; set; }
 
         private static DisambiguationDataConfig configDescripcion = new DisambiguationDataConfig()
         {
@@ -22,7 +22,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
             score = 0.8f
         };
 
-        private static DisambiguationDataConfig configFecha = new DisambiguationDataConfig()
+        private static DisambiguationDataConfig configEA = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsItem,
             score = 0.5f,
@@ -42,9 +42,9 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
 
             data.Add(new DisambiguationData()
             {
-                property = "fecha",
-                config = configFecha,
-                value = fecha
+                property = "EntAfi",
+                config = configEA,
+                value = EntAfi
             });
             return data;
         }
@@ -61,10 +61,10 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
 
             foreach (List<string> lista in listaListas)
             {
-                string select = $@"SELECT distinct ?item ?itemTitle ?itemDate ";
+                string select = $@"SELECT distinct ?item ?itemTitle ?itemEA ";
                 string where = $@"where {{
                                         ?item <{Variables.ActividadCientificaTecnologica.consejosNombre}> ?itemTitle . 
-                                        OPTIONAL{{?item <{Variables.ActividadCientificaTecnologica.consejosFechaInicio}> ?itemDate }}.
+                                        OPTIONAL{{?item <{Variables.ActividadCientificaTecnologica.consejosEntidadAfiliacionNombre}> ?itemEA }}.
                                         FILTER(?item in (<{string.Join(">,<", lista)}>))
                                     }}";
 
@@ -74,10 +74,10 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
                     Consejos consejos = new Consejos();
                     consejos.ID = fila["item"].value;
                     consejos.descripcion = fila["itemTitle"].value;
-                    consejos.fecha = "";
-                    if (fila.ContainsKey("itemDate"))
+                    consejos.EntAfi = "";
+                    if (fila.ContainsKey("itemEA"))
                     {
-                        consejos.fecha = fila["itemDate"].value;
+                        consejos.EntAfi = fila["itemEA"].value;
                     }
                     resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), consejos);
                 }

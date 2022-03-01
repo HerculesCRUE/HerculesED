@@ -14,7 +14,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
     class ForosComites : DisambiguableEntity
     {
         public string descripcion { get; set; }
-        public string fecha { get; set; }
+        public string categoriaProfesional { get; set; }
 
         private static DisambiguationDataConfig configDescripcion = new DisambiguationDataConfig()
         {
@@ -22,7 +22,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
             score = 0.8f
         };
 
-        private static DisambiguationDataConfig configFecha = new DisambiguationDataConfig()
+        private static DisambiguationDataConfig configCatProf = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsItem,
             score = 0.5f,
@@ -42,9 +42,9 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
 
             data.Add(new DisambiguationData()
             {
-                property = "fecha",
-                config = configFecha,
-                value = fecha
+                property = "categoriaProfesional",
+                config = configCatProf,
+                value = categoriaProfesional
             });
             return data;
         }
@@ -61,10 +61,10 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
 
             foreach (List<string> lista in listaListas)
             {
-                string select = $@"SELECT distinct ?item ?itemTitle ?itemDate ";
+                string select = $@"SELECT distinct ?item ?itemTitle ?itemCat ";
                 string where = $@"where {{
                                         ?item <{Variables.ActividadCientificaTecnologica.forosComitesNombre}> ?itemTitle . 
-                                        OPTIONAL{{ ?item <{Variables.ActividadCientificaTecnologica.forosComitesFechaInicio}> ?itemDate }} .
+                                        OPTIONAL{{ ?item <{Variables.ActividadCientificaTecnologica.forosComitesCategoriaProfesional}> ?itemCat }} .
                                         FILTER(?item in (<{string.Join(">,<", lista)}>))
                                     }}";
 
@@ -74,10 +74,10 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
                     ForosComites forosComites = new ForosComites();
                     forosComites.ID = fila["item"].value;
                     forosComites.descripcion = fila["itemTitle"].value;
-                    forosComites.fecha = "";
-                    if (fila.ContainsKey("itemDate"))
+                    forosComites.categoriaProfesional = "";
+                    if (fila.ContainsKey("itemCat"))
                     {
-                        forosComites.fecha = fila["itemDate"].value;
+                        forosComites.categoriaProfesional = fila["itemCat"].value;
                     }
                     resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), forosComites);
                 }

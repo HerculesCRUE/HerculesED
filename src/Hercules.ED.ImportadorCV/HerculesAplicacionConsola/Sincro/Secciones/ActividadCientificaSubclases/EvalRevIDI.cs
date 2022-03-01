@@ -14,7 +14,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
     class EvalRevIDI : DisambiguableEntity
     {
         public string descripcion { get; set; }
-        public string fecha { get; set; }
+        public string nombreActividad { get; set; }
 
         private static DisambiguationDataConfig configDescripcion = new DisambiguationDataConfig()
         {
@@ -22,7 +22,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
             score = 0.8f
         };
 
-        private static DisambiguationDataConfig configFecha = new DisambiguationDataConfig()
+        private static DisambiguationDataConfig configNomAct = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsItem,
             score = 0.5f,
@@ -42,9 +42,9 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
 
             data.Add(new DisambiguationData()
             {
-                property = "fecha",
-                config = configFecha,
-                value = fecha
+                property = "nombreActividad",
+                config = configNomAct,
+                value = nombreActividad
             });
             return data;
         }
@@ -61,10 +61,10 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
 
             foreach (List<string> lista in listaListas)
             {
-                string select = $@"SELECT distinct ?item ?itemTitle ?itemDate ";
+                string select = $@"SELECT distinct ?item ?itemTitle ?itemNombre ";
                 string where = $@"where {{
                                         ?item <{Variables.ActividadCientificaTecnologica.evalRevIDIFunciones}> ?itemTitle . 
-                                        OPTIONAL{{ ?item <{Variables.ActividadCientificaTecnologica.evalRevIDIFechaInicio}> ?itemDate }} .
+                                        OPTIONAL{{ ?item <{Variables.ActividadCientificaTecnologica.evalRevIDINombre}> ?itemNombre }} .
                                         FILTER(?item in (<{string.Join(">,<", lista)}>))
                                     }}";
 
@@ -74,10 +74,10 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
                     EvalRevIDI evalRevIDI = new EvalRevIDI();
                     evalRevIDI.ID = fila["item"].value;
                     evalRevIDI.descripcion = fila["itemTitle"].value;
-                    evalRevIDI.fecha = "";
-                    if (fila.ContainsKey("itemDate"))
+                    evalRevIDI.nombreActividad = "";
+                    if (fila.ContainsKey("itemNombre"))
                     {
-                        evalRevIDI.fecha = fila["itemDate"].value;
+                        evalRevIDI.nombreActividad = fila["itemNombre"].value;
                     }
                     resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), evalRevIDI);
                 }
