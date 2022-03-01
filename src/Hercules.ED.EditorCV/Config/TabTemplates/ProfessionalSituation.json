@@ -924,6 +924,1007 @@
           }
         }
       }
+    },
+    {
+      "rdftype": "http://w3id.org/roh/RelatedPreviousPositions",
+      "property": "http://w3id.org/roh/previousPositions",
+      "presentation": {
+        "type": "listitems",
+        "title": {
+          "es": "Cargos y actividades desempeñados con anterioridad"
+        },
+        "listItemsPresentation": {
+          "property": "http://vivoweb.org/ontology/core#relatedBy",
+          "listItem": {
+            "propertyTitle": {
+              "property": "http://vivoweb.org/ontology/core#relatedBy",
+              "graph": "position",
+              "child": {
+                "property": "http://w3id.org/roh/employerOrganizationTitle"
+              }
+            },
+            "properties": [
+              {
+                "name": {
+                  "es": "Categoría professional"
+                },
+                "showMini": true,
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "position",
+                  "child": {
+                    "property": "http://w3id.org/roh/professionalCategory"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Fecha de inicio"
+                },
+                "type": "date",
+                "showMiniBold": true,
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "position",
+                  "child": {
+                    "property": "http://vivoweb.org/ontology/core#start"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Fecha de fin"
+                },
+                "type": "date",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "position",
+                  "child": {
+                    "property": "http://vivoweb.org/ontology/core#end"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Duración años"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "activity",
+                  "child": {
+                    "property": "http://w3id.org/roh/durationYears"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Duración meses"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "activity",
+                  "child": {
+                    "property": "http://w3id.org/roh/durationMonths"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Duración días"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "activity",
+                  "child": {
+                    "property": "http://w3id.org/roh/durationDays"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Modalidad de contrato"
+                },
+                "childOR": [
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "position",
+                    "child": {
+                      "property": "http://w3id.org/roh/contractModalityOther"
+                    }
+                  },
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "position",
+                    "child": {
+                      "property": "http://w3id.org/roh/contractModality",
+                      "graph": "contractmodality",
+                      "child": {
+                        "property": "http://purl.org/dc/elements/1.1/title"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "name": {
+                  "es": "Gestión docente"
+                },
+                "type": "boolean",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "position",
+                  "child": {
+                    "property": "http://w3id.org/roh/teachingManagement"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Ámbito de actividad de gestión"
+                },
+                "childOR": [
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "position",
+                    "child": {
+                      "property": "http://w3id.org/roh/scopeManagementActivityOther"
+                    }
+                  },
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "position",
+                    "child": {
+                      "property": "http://w3id.org/roh/scopeManagementActivity",
+                      "graph": "scopemanagementactivity",
+                      "child": {
+                        "property": "http://purl.org/dc/elements/1.1/title"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "name": {
+                  "es": "Facultad, instituto, centro"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "position",
+                  "child": {
+                    "property": "http://w3id.org/roh/center"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Departamento"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "position",
+                  "child": {
+                    "property": "http://w3id.org/roh/department"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Ciudad entidad empleadora"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "position",
+                  "child": {
+                    "property": "https://www.w3.org/2006/vcard/ns#locality"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "C. Autón./Reg. entidad empleadora"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "position",
+                  "child": {
+                    "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+                    "graph": "feature",
+                    "child": {
+                      "property": "http://www.geonames.org/ontology#name"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "País entidad empleadora"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "position",
+                  "child": {
+                    "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+                    "graph": "feature",
+                    "child": {
+                      "property": "http://www.geonames.org/ontology#name"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Teléfono/Código internacional"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "position",
+                  "child": {
+                    "property": "https://www.w3.org/2006/vcard/ns#hasTelephone",
+                    "graph": "position",
+                    "child": {
+                      "property": "http://w3id.org/roh/hasInternationalCode"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Teléfono/Número"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "position",
+                  "child": {
+                    "property": "https://www.w3.org/2006/vcard/ns#hasTelephone",
+                    "graph": "position",
+                    "child": {
+                      "property": "https://www.w3.org/2006/vcard/ns#hasValue"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Teléfono/Extensión"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "position",
+                  "child": {
+                    "property": "https://www.w3.org/2006/vcard/ns#hasTelephone",
+                    "graph": "position",
+                    "child": {
+                      "property": "http://w3id.org/roh/hasExtension"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Fax/Código internacional"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "position",
+                  "child": {
+                    "property": "http://w3id.org/roh/hasFax",
+                    "graph": "position",
+                    "child": {
+                      "property": "http://w3id.org/roh/hasInternationalCode"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Fax/Número"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "position",
+                  "child": {
+                    "property": "http://w3id.org/roh/hasFax",
+                    "graph": "position",
+                    "child": {
+                      "property": "https://www.w3.org/2006/vcard/ns#hasValue"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Fax/Extensión"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "position",
+                  "child": {
+                    "property": "http://w3id.org/roh/hasFax",
+                    "graph": "position",
+                    "child": {
+                      "property": "http://w3id.org/roh/hasExtension"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Correo electrónico"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "position",
+                  "child": {
+                    "property": "https://www.w3.org/2006/vcard/ns#email"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Régimen de dedicación"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "position",
+                  "child": {
+                    "property": "http://w3id.org/roh/dedication",
+                    "graph": "dedicationregime",
+                    "child": {
+                      "property": "http://purl.org/dc/elements/1.1/title"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Funciones desempeñadas"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "position",
+                  "child": {
+                    "property": "http://w3id.org/roh/concreteFunctions"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Interés para docencia y/o inv."
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "position",
+                  "child": {
+                    "property": "http://purl.org/ontology/bibo/abstract"
+                  }
+                }
+              }
+            ],
+            "orders": [
+              {
+                "name": {
+                  "es": "Ordenar por fecha más reciente"
+                },
+                "properties": [
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "position",
+                    "child": {
+                      "property": "http://vivoweb.org/ontology/core#start"
+                    },
+                    "asc": false
+                  },
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "position",
+                    "child": {
+                      "property": "http://w3id.org/roh/employerOrganizationTitle"
+                    },
+                    "asc": true
+                  }
+                ]
+              },
+              {
+                "name": {
+                  "es": "Ordenar por fecha más antigua"
+                },
+                "properties": [
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "position",
+                    "child": {
+                      "property": "http://vivoweb.org/ontology/core#start"
+                    },
+                    "asc": true
+                  },
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "position",
+                    "child": {
+                      "property": "http://w3id.org/roh/employerOrganizationTitle"
+                    },
+                    "asc": true
+                  }
+                ]
+              }
+            ]
+          },
+          "listItemEdit": {
+            "graph": "position",
+            "proptitle": "http://w3id.org/roh/employerOrganizationTitle",
+            "propdescription": "http://purl.org/ontology/bibo/abstract",
+            "rdftype": "http://vivoweb.org/ontology/core#Position",
+            "sections": [
+              {
+                "title": {
+                  "es": "Información general"
+                },
+                "rows": [
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Entidad empleadora"
+                        },
+                        "autocomplete": true,
+                        "required": true,
+                        "placeholder": {
+                          "es": "Introduce la entidad empleadora"
+                        },
+                        "property": "http://w3id.org/roh/employerOrganizationTitle",
+                        "autocompleteConfig": {
+                          "rdftype": "http://xmlns.com/foaf/0.1/Organization",
+                          "graph": "organization",
+                          "propertyEntity": "http://w3id.org/roh/organization",
+                          "property": {
+                            "property": "http://w3id.org/roh/title"
+                          }
+                        },
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Tipo de entidad"
+                        },
+                        "property": "http://w3id.org/roh/employerOrganizationType",
+                        "combo": {
+                          "rdftype": "http://w3id.org/roh/OrganizationType",
+                          "graph": "organizationtype",
+                          "property": {
+                            "property": "http://purl.org/dc/elements/1.1/title"
+                          }
+                        },
+                        "dependency": {
+                          "property": "http://w3id.org/roh/employerOrganizationTitle",
+                          "propertyValue": "*"
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Otros"
+                        },
+                        "property": "http://w3id.org/roh/employerOrganizationTypeOther",
+                        "required": true,
+                        "dependency": {
+                          "property": "http://w3id.org/roh/employerOrganizationType",
+                          "propertyValue": "{GraphsUrl}items/organizationtype_OTHERS"
+                        },
+                        "type": "text",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Categoría peofesional"
+                        },
+                        "placeholder": {
+                          "es": "Introduce la categoría profesional"
+                        },
+                        "property": "http://w3id.org/roh/professionalCategory",
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Fecha de inicio"
+                        },
+                        "property": "http://vivoweb.org/ontology/core#start",
+                        "type": "date",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Fecha de fin"
+                        },
+                        "property": "http://vivoweb.org/ontology/core#end",
+                        "type": "date",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Duración años"
+                        },
+                        "property": "http://w3id.org/roh/durationYears",
+                        "type": "number",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Duración meses"
+                        },
+                        "property": "http://w3id.org/roh/durationMonths",
+                        "type": "number",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Duración días"
+                        },
+                        "property": "http://w3id.org/roh/durationDays",
+                        "type": "number",
+                        "width": 1
+                      }
+                    ]
+                  }                  
+                ]
+              },
+              {
+                "title": {
+                  "es": "Más campos"
+                },
+                "rows": [
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Modalidad de contrato"
+                        },
+                        "property": "http://w3id.org/roh/contractModality",
+                        "combo": {
+                          "rdftype": "http://w3id.org/roh/ContractModality",
+                          "graph": "contractmodality",
+                          "property": {
+                            "property": "http://purl.org/dc/elements/1.1/title"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Otros"
+                        },
+                        "property": "http://w3id.org/roh/contractModalityOther",
+                        "required": true,
+                        "dependency": {
+                          "property": "http://w3id.org/roh/contractModality",
+                          "propertyValue": "{GraphsUrl}items/contractmodality_OTHERS"
+                        },
+                        "type": "text",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Gestión docente (Sí/No)"
+                        },
+                        "type": "boolean",
+                        "required": false,
+                        "property": "http://w3id.org/roh/teachingManagement",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Ámbito de actividad de gestión"
+                        },
+                        "property": "http://w3id.org/roh/scopeManagementActivity",
+                        "combo": {
+                          "rdftype": "http://w3id.org/roh/ScopeManagementActivity",
+                          "graph": "scopemanagementactivity",
+                          "property": {
+                            "property": "http://purl.org/dc/elements/1.1/title"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Otros"
+                        },
+                        "property": "http://w3id.org/roh/scopeManagementActivityOther",
+                        "required": true,
+                        "dependency": {
+                          "property": "http://w3id.org/roh/scopeManagementActivity",
+                          "propertyValue": "{GraphsUrl}items/scopemanagementactivity_OTHERS"
+                        },
+                        "type": "text",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Facultad, instituto, centro"
+                        },
+                        "placeholder": {
+                          "es": "Introduce facultad, instituto, centro"
+                        },
+                        "property": "http://w3id.org/roh/center",
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Departamento"
+                        },
+                        "type": "text",
+                        "placeholder": {
+                          "es": "Introduce el departamento"
+                        },
+                        "property": "http://w3id.org/roh/department",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Ciudad entidad empleadora"
+                        },
+                        "type": "text",
+                        "placeholder": {
+                          "es": "Introduce la ciudad de la entidad empleadora"
+                        },
+                        "required": false,
+                        "property": "https://www.w3.org/2006/vcard/ns#locality",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "País entidad empleadora"
+                        },
+                        "placeholder": {
+                          "es": "Introduce la región de la entidad empleadora"
+                        },
+                        "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+                        "combo": {
+                          "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "filter": {
+                            "property": "http://www.geonames.org/ontology#featureCode",
+                            "value": "PCLD"
+                          },
+                          "graph": "feature",
+                          "property": {
+                            "property": "http://www.geonames.org/ontology#name"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "C. Autón./Reg. entidad empleadora"
+                        },
+                        "placeholder": {
+                          "es": "Introduce el país de la entidad empleadora"
+                        },
+                        "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+                        "combo": {
+                          "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "filter": {
+                            "property": "http://www.geonames.org/ontology#featureCode",
+                            "value": "ADM1"
+                          },
+                          "dependency": {
+                            "property": "http://www.geonames.org/ontology#parentFeature",
+                            "propertyValue": "https://www.w3.org/2006/vcard/ns#hasCountryName"
+                          },
+                          "graph": "feature",
+                          "property": {
+                            "property": "http://www.geonames.org/ontology#name"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "property": "https://www.w3.org/2006/vcard/ns#hasTelephone",
+                        "type": "auxEntity",
+                        "title": {
+                          "es": "Teléfono"
+                        },
+                        "width": 3,
+                        "auxEntityData": {
+                          "rdftype": "https://www.w3.org/2006/vcard/ns#TelephoneType",
+                          "properties": [
+                            {
+                              "name": {
+                                "es": "Código internacional"
+                              },
+                              "child": {
+                                "property": "http://w3id.org/roh/hasInternationalCode"
+                              }
+                            },
+                            {
+                              "name": {
+                                "es": "Número"
+                              },
+                              "child": {
+                                "property": "https://www.w3.org/2006/vcard/ns#hasValue"
+                              }
+                            },
+                            {
+                              "name": {
+                                "es": "Extensión"
+                              },
+                              "child": {
+                                "property": "http://w3id.org/roh/hasExtension"
+                              }
+                            }
+                          ],
+                          "rows": [
+                            {
+                              "properties": [
+
+                                {
+                                  "title": {
+                                    "es": "Código internacional"
+                                  },
+                                  "placeholder": {
+                                    "es": "Introduce el código internacional"
+                                  },
+                                  "type": "text",
+                                  "required": false,
+                                  "property": "http://w3id.org/roh/hasInternationalCode",
+                                  "width": 1
+                                },
+                                {
+                                  "title": {
+                                    "es": "Número"
+                                  },
+                                  "placeholder": {
+                                    "es": "Introduce el número"
+                                  },
+                                  "type": "text",
+                                  "required": true,
+                                  "property": "https://www.w3.org/2006/vcard/ns#hasValue",
+                                  "width": 1
+                                },
+                                {
+                                  "title": {
+                                    "es": "Extensión"
+                                  },
+                                  "placeholder": {
+                                    "es": "Introduce la extensión"
+                                  },
+                                  "type": "text",
+                                  "required": false,
+                                  "property": "http://w3id.org/roh/hasExtension",
+                                  "width": 1
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "property": "http://w3id.org/roh/hasFax",
+                        "type": "auxEntity",
+                        "title": {
+                          "es": "Fax"
+                        },
+                        "width": 3,
+                        "auxEntityData": {
+                          "rdftype": "https://www.w3.org/2006/vcard/ns#TelephoneType",
+                          "properties": [
+                            {
+                              "name": {
+                                "es": "Código internacional"
+                              },
+                              "child": {
+                                "property": "http://w3id.org/roh/hasInternationalCode"
+                              }
+                            },
+                            {
+                              "name": {
+                                "es": "Número"
+                              },
+                              "child": {
+                                "property": "https://www.w3.org/2006/vcard/ns#hasValue"
+                              }
+                            },
+                            {
+                              "name": {
+                                "es": "Extensión"
+                              },
+                              "child": {
+                                "property": "http://w3id.org/roh/hasExtension"
+                              }
+                            }
+                          ],
+                          "rows": [
+                            {
+                              "properties": [
+
+                                {
+                                  "title": {
+                                    "es": "Código internacional"
+                                  },
+                                  "placeholder": {
+                                    "es": "Introduce el código internacional"
+                                  },
+                                  "type": "text",
+                                  "required": false,
+                                  "property": "http://w3id.org/roh/hasInternationalCode",
+                                  "width": 1
+                                },
+                                {
+                                  "title": {
+                                    "es": "Número"
+                                  },
+                                  "placeholder": {
+                                    "es": "Introduce el número"
+                                  },
+                                  "type": "text",
+                                  "required": true,
+                                  "property": "https://www.w3.org/2006/vcard/ns#hasValue",
+                                  "width": 1
+                                },
+                                {
+                                  "title": {
+                                    "es": "Extensión"
+                                  },
+                                  "placeholder": {
+                                    "es": "Introduce la extensión"
+                                  },
+                                  "type": "text",
+                                  "required": false,
+                                  "property": "http://w3id.org/roh/hasExtension",
+                                  "width": 1
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "property": "https://www.w3.org/2006/vcard/ns#email",
+                        "type": "text",
+                        "multiple": true,
+                        "title": {
+                          "es": "Correo electrónico"
+                        },
+                        "placeholder": {
+                          "es": "Introduce el correo electrónico"
+                        },
+                        "width": 2
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Primaria (Cód. Unesco)"
+                        },
+                        "property": "http://w3id.org/roh/unescoPrimary",
+                        "thesaurus": "unesco",
+                        "type": "thesaurus",
+                        "width": 3,
+                        "multiple": true
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Secundaria (Cód. Unesco)"
+                        },
+                        "property": "http://w3id.org/roh/unescoSecondary",
+                        "thesaurus": "unesco",
+                        "type": "thesaurus",
+                        "width": 3,
+                        "multiple": true
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Terciaria (Cód. Unesco)"
+                        },
+                        "property": "http://w3id.org/roh/unescoTertiary",
+                        "thesaurus": "unesco",
+                        "type": "thesaurus",
+                        "width": 3,
+                        "multiple": true
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Régimen de dedicación"
+                        },
+                        "property": "http://w3id.org/roh/dedication",
+                        "combo": {
+                          "rdftype": "http://w3id.org/roh/DedicationRegime",
+                          "graph": "dedicationregime",
+                          "property": {
+                            "property": "http://purl.org/dc/elements/1.1/title"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Funciones desempeñadas"
+                        },
+                        "property": "http://w3id.org/roh/concreteFunctions",
+                        "type": "textarea",
+                        "width": 3
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "property": "http://purl.org/ontology/bibo/abstract",
+                        "type": "textarea",
+                        "title": {
+                          "es": "Interés para docencia y/o inv."
+                        },
+                        "placeholder": {
+                          "es": "Introduce el interés para docencia y/o inv."
+                        },
+                        "width": 3
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
     }
+ 
   ]
 }
