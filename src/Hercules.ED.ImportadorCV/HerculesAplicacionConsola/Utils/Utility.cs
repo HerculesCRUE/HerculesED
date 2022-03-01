@@ -1210,6 +1210,12 @@ namespace Utils
             }
         }
 
+        /// <summary>
+        /// Devuelve el Volume del CvnItemBeanCvnVolumeBean con codigo igual a <paramref name="codigo"/>
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="codigo"></param>
+        /// <returns></returns>
         public static string GetVolumenPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -1226,6 +1232,12 @@ namespace Utils
             return null;
         }
 
+        /// <summary>
+        /// Devuelve el Number del CvnItemBeanCvnVolumeBean con codigo igual a <paramref name="codigo"/>
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="codigo"></param>
+        /// <returns></returns>
         public static string GetNumeroVolumenPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -1242,6 +1254,12 @@ namespace Utils
             return null;
         }
 
+        /// <summary>
+        /// Devuelve la página inicial del CvnItemBeanCvnPageBean
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="codigo"></param>
+        /// <returns></returns>
         public static string GetPaginaInicialPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -1258,6 +1276,12 @@ namespace Utils
             return null;
         }
 
+        /// <summary>
+        /// Devuelve la página final del CvnItemBeanCvnPageBean
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="codigo"></param>
+        /// <returns></returns>
         public static string GetPaginaFinalPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -1323,6 +1347,12 @@ namespace Utils
             return fechaString;
         }
 
+        /// <summary>
+        /// Devuelve el valor del CvnString con codigo igual a <paramref name="codigo"/>
+        /// </summary>
+        /// <param name="codeGroup"></param>
+        /// <param name="codigo"></param>
+        /// <returns></returns>
         public static string GetStringCvnCodeGroup(this CvnItemBeanCvnCodeGroup codeGroup, string codigo)
         {
             try
@@ -1346,6 +1376,12 @@ namespace Utils
             }
         }
 
+        /// <summary>
+        /// feature_PCLD_
+        /// </summary>
+        /// <param name="codeGroup"></param>
+        /// <param name="codigo"></param>
+        /// <returns></returns>
         public static string GetPaisPorIDCampo(this CvnItemBeanCvnCodeGroup codeGroup, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -1361,6 +1397,12 @@ namespace Utils
             return null;
         }
 
+        /// <summary>
+        /// feature_ADM1_
+        /// </summary>
+        /// <param name="codeGroup"></param>
+        /// <param name="codigo"></param>
+        /// <returns></returns>
         public static string GetRegionPorIDCampo(this CvnItemBeanCvnCodeGroup codeGroup, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -1376,6 +1418,12 @@ namespace Utils
             return null;
         }
 
+        /// <summary>
+        /// Devuelve el Name perteneciente al CvnEntityBean con codigo igual a <paramref name="codigo"/>
+        /// </summary>
+        /// <param name="codeGroup"></param>
+        /// <param name="codigo"></param>
+        /// <returns></returns>
         public static string GetNameEntityBeanCvnCodeGroup(this CvnItemBeanCvnCodeGroup codeGroup, string codigo)
         {
             try
@@ -1398,6 +1446,12 @@ namespace Utils
             }
         }
 
+        /// <summary>
+        /// organizationtype_
+        /// </summary>
+        /// <param name="codeGroup"></param>
+        /// <param name="codigo"></param>
+        /// <returns></returns>
         public static string GetOrganizationCvnCodeGroup(this CvnItemBeanCvnCodeGroup codeGroup, string codigo)
         {
             try
@@ -1421,16 +1475,36 @@ namespace Utils
             }
         }
 
+        /// <summary>
+        /// Devuelve el valor CvnBoolean del CvnItemBeanCvnCodeGroup 
+        /// con codigo igual a <paramref name="codigo"/> como string
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="codigo"></param>
+        /// <returns></returns>
         public static string GetCvnBooleanCvnCodeGroup(this CvnItemBeanCvnCodeGroup item, string codigo)
         {
             return item.CvnBoolean?.Value.ToString();
         }
 
+        /// <summary>
+        /// Devuelve el valor CvnDouble del CvnItemBeanCvnCodeGroup 
+        /// con codigo igual a <paramref name="codigo"/> como string
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="codigo"></param>
+        /// <returns></returns>
         public static string GetCvnDoubleCvnCodeGroup(this CvnItemBeanCvnCodeGroup item, string codigo)
         {
             return item.CvnDouble?.Where(x => x.Code.Equals(codigo))?.Select(x => x.Value)?.FirstOrDefault().ToString();
         }
 
+        /// <summary>
+        /// Devuelve el Type del CvnItemBeanCvnExternalPKBean con codigo igual a <paramref name="codigo"/>
+        /// </summary>
+        /// <param name="cvnItemBean"></param>
+        /// <param name="codigo"></param>
+        /// <returns></returns>
         public static string GetTypeCvnExternalPKBean(this CvnItemBean cvnItemBean, string codigo)
         {
             try
@@ -1689,6 +1763,12 @@ namespace Utils
         {
             return mResourceApi.GraphsUrl + "items/unesco_" + item.Value;
         }
+
+        /// <summary>
+        /// Devuelve un listado con los valores de los codigos UNESCO.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <returns>List<string></returns>
         public static List<string> GetPadresCodUnesco(this CvnItemBeanCvnString item)
         {
             if (item.Value.Length != 6) { return null; }
