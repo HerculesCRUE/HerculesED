@@ -7,7 +7,7 @@ El servicio de OAI-PMH consta de varios métodos para obtener la información. D
 - GetRecords
 
 Dichos métodos, por detrás hacen peticiones un API encargada de obtener y ofrecer los datos pedidos.
-Los diversas peticiones a las que se hacen referencia están documentadas en [Análisis de ítems de la norma CVN. Servicios de conexión.](https://confluence.um.es/confluence/display/HERCULES/Tratamiento+de+datos)
+Los diversas peticiones a las que se hacen referencia están documentadas en ["Tratamiento de datos"](https://confluence.um.es/confluence/display/HERCULES/Tratamiento+de+datos)
 
 # Obtención del Token Bearer
 Antes de hacer las peticiones a los servicios correspondientes, es necesario el acceso por token. Dicho token se pedirá automaticamente, teniendo un tiempo de expiración de cinco minutos. Tras estos cinco minutos se volververá a hacer la petición de obtención de token para refrescarlo.
@@ -17,7 +17,7 @@ Permite obtener el metadataPrefix utilizado para especificar los encabezados que
 No requiere ningún parámetro adicional de uso.
 
 # ListSets
-Obtiene el dato que especifica los criterios establecidos para la recolección selectiva.\n
+Obtiene el dato que especifica los criterios establecidos para la recolección selectiva.
 No requiere ningún parámetro adicional de uso.
 
 # ListIdentifiers
