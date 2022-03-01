@@ -63,7 +63,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
             {
                 string select = $@"SELECT distinct ?item ?itemTitle ?itemDate ";
                 string where = $@"where {{
-                                        ?item <{Variables.ActividadCientificaTecnologica.evalRevIDINombre}> ?itemTitle . 
+                                        ?item <{Variables.ActividadCientificaTecnologica.evalRevIDIFunciones}> ?itemTitle . 
                                         OPTIONAL{{ ?item <{Variables.ActividadCientificaTecnologica.evalRevIDIFechaInicio}> ?itemDate }} .
                                         FILTER(?item in (<{string.Join(">,<", lista)}>))
                                     }}";
