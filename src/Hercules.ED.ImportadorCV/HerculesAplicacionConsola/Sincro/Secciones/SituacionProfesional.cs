@@ -103,6 +103,11 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             }
         }
 
+        /// <summary>
+        /// 010.010.000.000
+        /// </summary>
+        /// <param name="listadoDatos"></param>
+        /// <returns></returns>
         private List<Entity> GetSituacionProfesionalActual(List<CvnItemBean> listadoDatos)
         {
             List<Entity> listado = new List<Entity>();
@@ -151,6 +156,11 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             return listado;
         } 
         
+        /// <summary>
+        /// 010.020.000.000
+        /// </summary>
+        /// <param name="listadoDatos"></param>
+        /// <returns></returns>
         private List<Entity> GetCargosActividades(List<CvnItemBean> listadoDatos)
         {
             List<Entity> listado = new List<Entity>();

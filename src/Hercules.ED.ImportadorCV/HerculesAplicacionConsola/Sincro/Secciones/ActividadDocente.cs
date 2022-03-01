@@ -55,7 +55,9 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
         }
 
         /// <summary>
-        /// 030.010.000.000
+        /// Metodo para sincronizar los datos pertenecientes al subapartado 
+        /// "Formación académica impartida".
+        /// Con el codigo identificativo 030.010.000.000
         /// </summary>
         public void SincroFormacionAcademica()
         {
@@ -78,7 +80,9 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
         }
 
         /// <summary>
-        /// 030.020.000.000
+        /// Metodo para sincronizar los datos pertenecientes al subapartado 
+        /// "Formación sanitaria especializada impartida".
+        /// Con el codigo identificativo 030.020.000.000
         /// </summary>
         public void SincroFormacionSanitariaEspecializada()
         {
@@ -101,7 +105,9 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
         }
 
         /// <summary>
-        /// 030.030.000.000
+        /// Metodo para sincronizar los datos pertenecientes al subapartado 
+        /// "Formación sanitaria en I+D, y/o posformación sanitaria especializada en I+D impartida".
+        /// Con el codigo identificativo 030.030.000.000
         /// </summary>
         public void SincroFormacionSanitariaIMasD()
         {
@@ -124,7 +130,9 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
         }
 
         /// <summary>
-        /// 030.040.000.000
+        /// Metodo para sincronizar los datos pertenecientes al subapartado 
+        /// "Dirección de tesis doctorales y/o proyectos fin de carrera".
+        /// Con el codigo identificativo 030.040.000.000
         /// </summary>
         public void SincroDireccionTesis()
         {
@@ -147,7 +155,9 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
         }
 
         /// <summary>
-        /// 030.050.000.000
+        /// Metodo para sincronizar los datos pertenecientes al subapartado 
+        /// "Tutorías académicas de estudiantes".
+        /// Con el codigo identificativo 030.050.000.000
         /// </summary>
         public void SincroTutoriasAcademicas()
         {
@@ -170,7 +180,9 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
         }
 
         /// <summary>
-        /// 030.060.000.000
+        /// Metodo para sincronizar los datos pertenecientes al subapartado 
+        /// "Cursos y seminarios impartidos orientados a la formación docente universitaria".
+        /// Con el codigo identificativo 030.060.000.000
         /// </summary>
         public void SincroCursosSeminarios()
         {
@@ -193,7 +205,9 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
         }
 
         /// <summary>
-        /// 030.070.000.000
+        /// Metodo para sincronizar los datos pertenecientes al subapartado 
+        /// "Publicaciones docentes o de carácter pedagógico, libros, artículos, etc.".
+        /// Con el codigo identificativo 030.070.000.000
         /// </summary>
         public void SincroPublicacionDocentes()
         {
@@ -216,7 +230,9 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
         }
 
         /// <summary>
-        /// 030.080.000.000
+        /// Metodo para sincronizar los datos pertenecientes al subapartado 
+        /// "Participación en proyectos de innovación docente".
+        /// Con el codigo identificativo 030.080.000.000
         /// </summary>
         public void SincroParticipacionProyectosInnovacionDocente()
         {
@@ -239,7 +255,9 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
         }
 
         /// <summary>
-        /// 030.090.000.000
+        /// Metodo para sincronizar los datos pertenecientes al subapartado 
+        /// "Participación en congresos con ponencias orientadas a la formación docente".
+        /// Con el codigo identificativo 030.090.000.000
         /// </summary>
         public void SincroParticipacionCongresosFormacionDocente()
         {
@@ -262,7 +280,9 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
         }
 
         /// <summary>
-        /// 060.030.080.000
+        /// Metodo para sincronizar los datos pertenecientes al bloque 
+        /// "Premios de innovación docente recibidos".
+        /// Con el codigo identificativo 060.030.080.000
         /// </summary>
         public void SincroPremiosInovacionDocente()
         {
@@ -285,7 +305,9 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
         }
 
         /// <summary>
-        /// 030.100.000.000
+        /// Metodo para sincronizar los datos pertenecientes al subapartado 
+        /// "Otras actividades/méritos no incluidos en la relación anterior".
+        /// Con el codigo identificativo 030.100.000.000
         /// </summary>
         public void SincroOtrasActividades()
         {
@@ -308,7 +330,9 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
         }
 
         /// <summary>
-        /// 030.110.000.000
+        /// Metodo para sincronizar los datos pertenecientes al subapartado 
+        /// "Aportaciones más relevantes de su CV de docencia".
+        /// Con el codigo identificativo 030.110.000.000
         /// </summary>
         public void SincroAportacionesRelevantes()
         {
@@ -330,6 +354,9 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             }
         }
 
+        /// <summary>
+        /// 030.040.000.000
+        /// </summary>
         private List<Entity> GetDireccionTesis(List<CvnItemBean> listadoDatos)
         {
             List<Entity> listado = new List<Entity>();
@@ -370,7 +397,10 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             }
             return listado;
         }
-        
+
+        /// <summary>
+        /// 030.010.000.000
+        /// </summary>
         private List<Entity> GetFormacionAcademica(List<CvnItemBean> listadoDatos)
         {
             List<Entity> listado = new List<Entity>();
@@ -440,7 +470,10 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             }
             return listado;
         }
-        
+
+        /// <summary>
+        /// 030.020.000.000
+        /// </summary>
         private List<Entity> GetFormacionSanitariaEspecializada(List<CvnItemBean> listadoDatos)
         {
             List<Entity> listado = new List<Entity>();
@@ -489,7 +522,10 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             }
             return listado;
         }
-        
+
+        /// <summary>
+        /// 030.030.000.000
+        /// </summary>
         private List<Entity> GetFormacionSanitariaIMasD(List<CvnItemBean> listadoDatos)
         {
             List<Entity> listado = new List<Entity>();
@@ -536,6 +572,9 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             return listado;
         }
 
+        /// <summary>
+        /// 030.050.000.000
+        /// </summary>
         private List<Entity> GetTutoriasAcademicas(List<CvnItemBean> listadoDatos)
         {
             List<Entity> listado = new List<Entity>();
@@ -569,7 +608,10 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             }
             return listado;
         }
-        
+
+        /// <summary>
+        /// 030.060.000.000
+        /// </summary>
         private List<Entity> GetCursosSeminarios(List<CvnItemBean> listadoDatos)
         {
             List<Entity> listado = new List<Entity>();
@@ -613,7 +655,10 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             }
             return listado;
         }
-        
+
+        /// <summary>
+        /// 030.070.000.000
+        /// </summary>
         private List<Entity> GetPublicacionDocentes(List<CvnItemBean> listadoDatos)
         {
             List<Entity> listado = new List<Entity>();
@@ -661,7 +706,10 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             }
             return listado;
         }
-        
+
+        /// <summary>
+        /// 030.080.000.000
+        /// </summary>
         private List<Entity> GetParticipacionProyectosInnovacionDocente(List<CvnItemBean> listadoDatos)
         {
             List<Entity> listado = new List<Entity>();
@@ -711,7 +759,10 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             }
             return listado;
         }
-        
+
+        /// <summary>
+        /// 030.090.000.000
+        /// </summary>
         private List<Entity> GetParticipacionCongresosFormacionDocente(List<CvnItemBean> listadoDatos)
         {
             List<Entity> listado = new List<Entity>();
@@ -772,7 +823,10 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             }
             return listado;
         }
-        
+
+        /// <summary>
+        /// 060.030.080.000
+        /// </summary>
         private List<Entity> GetPremiosInovacionDocente(List<CvnItemBean> listadoDatos)
         {
             List<Entity> listado = new List<Entity>();
@@ -804,7 +858,10 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             }
             return listado;
         }
-        
+
+        /// <summary>
+        /// 030.100.000.000
+        /// </summary>
         private List<Entity> GetOtrasActividades(List<CvnItemBean> listadoDatos)
         {
             List<Entity> listado = new List<Entity>();
@@ -836,7 +893,10 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             }
             return listado;
         }
-        
+
+        /// <summary>
+        /// 030.110.000.000
+        /// </summary>
         private List<Entity> GetAportacionesRelevantes(List<CvnItemBean> listadoDatos)
         {
             List<Entity> listado = new List<Entity>();

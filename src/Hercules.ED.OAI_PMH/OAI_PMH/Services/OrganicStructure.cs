@@ -8,7 +8,7 @@ namespace OAI_PMH.Services
 {
     public class OrganicStructure
     {
-        private static readonly string url = "http://sgi.ic.corp.treelogic.com/api/sgo/";
+        private static readonly string url = "https://sgi.demo.treelogic.com/api/sgo/";
 
         public static Dictionary<string, DateTime> GetAreasConocimiento(string parentId)
         {

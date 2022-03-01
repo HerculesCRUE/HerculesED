@@ -1,5 +1,6 @@
 ﻿using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.ApiModel;
+using Hercules.ED.DisambiguationEngine.Models;
 using Models;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,13 @@ namespace HerculesAplicacionConsola.Utils
 {
     public class UtilitySecciones
     {
+        /// <summary>
+        /// Devuelve los identificadores devueltos en la consulta.
+        /// </summary>
+        /// <param name="pResourceApi">pResourceApi</param>
+        /// <param name="pCVID">pCVID</param>
+        /// <param name="propiedadesItem">propiedadesItem</param>
+        /// <returns>HashSet<string></returns>
         public static HashSet<string> GetIDS(ResourceApi pResourceApi, string pCVID, List<string> propiedadesItem)
         {
             HashSet<string> ids = new HashSet<string>();
@@ -36,22 +44,15 @@ namespace HerculesAplicacionConsola.Utils
                     where += $@" ?prop{i} <{propiedadesItem[i]}> ?prop{i + 1} . ";
                 }
                 where += $@" ?prop{propiedadesItem.Count - 1} <{propiedadesItem[propiedadesItem.Count - 1]}> ?item ";
-            }
 
+            }
+            where += $@" FILTER(?s = <{pCVID}>)
+                            }} ORDER BY ?item
+                        }}LIMIT {limit} OFFSET {offsetInt} ";
 
             //Si tengo más de 10.000 resultados repito la consulta, sino salgo del bucle
             while (true)
             {
-                //where += $@"where {{?s <{propiedadesItem[0]}> ?activity .
-                //                        ?activity <{propiedadesItem[1]}> ?rom .
-                //                        ?rom <{propiedadesItem[2]}> ?item .
-                //                        FILTER(?s = <{pCVID}>)
-                //                    }} ORDER BY ?item
-                //                }} LIMIT {limit} OFFSET {offsetInt}";
-                where += $@" FILTER(?s = <{pCVID}>)
-                            }} ORDER BY ?item
-                        }}LIMIT {limit} OFFSET {offsetInt} ";
-
                 SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
                 ids.UnionWith(resultData.results.bindings.Select(x => x["item"].value));
                 if (resultData.results.bindings.Count < limit)
@@ -66,10 +67,21 @@ namespace HerculesAplicacionConsola.Utils
 
             return ids;
         }
+
+        /// <summary>
+        /// Devuelve el identificador a <paramref name="nombreRevista"/>
+        /// en caso de que se encuentre en la consulta, nulo en caso contrario.
+        /// </summary>
+        /// <param name="pResourceApi">pResourceApi</param>
+        /// <param name="nombreRevista">nombreRevista</param>
+        /// <returns>string</returns>
         public static string GetNombreRevista(ResourceApi pResourceApi, string nombreRevista)
         {
             string select = $@"SELECT distinct ?identificador";
-            string where = "where {?identificador <http://w3id.org/roh/title> \"" + nombreRevista + "\"}";
+            string where = $@"where {{
+                                ?identificador <http://w3id.org/roh/title> ?nombreRevista .
+                                FILTER (lcase(?nombreRevista) = ""{nombreRevista.ToLower()}"")
+                            }} LIMIT 1";
 
             SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, "maindocument");
             if (resultData.results.bindings.Count == 0)
@@ -82,12 +94,7 @@ namespace HerculesAplicacionConsola.Utils
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="pResourceApi"></param>
-        /// <param name="busqueda"></param>
-        /// <returns></returns>
+        //TODO
         public static List<string> GetBusquedaAutor(ResourceApi pResourceApi, string busqueda)
         {
             string select = $@"select distinct ?busqueda";
@@ -95,7 +102,7 @@ namespace HerculesAplicacionConsola.Utils
                                graph ?g{{
                                     ?s <http://w3id.org/roh/publicAuthorList> ?listaAuthor . 
                                     ?listaAuthor <http://gnoss/search> ?busqueda . 
-                                    filter contains(?busqueda, ""{busqueda}"")
+                                    filter contains(?busqueda, ""{busqueda.ToLower()}"")
                                 }} 
                              }}";
 
@@ -105,8 +112,8 @@ namespace HerculesAplicacionConsola.Utils
                     ?s<http://w3id.org/roh/publicAuthorList> ?listaAuthor . 
                     ?listaAuthor <http://xmlns.com/foaf/0.1/firstName> ?nombre .
                     ?listaAuthor <http://xmlns.com/foaf/0.1/lastName> ?apellidos .
-                    filter contains(lcase(?nombre), ""antonio"") .
-                    filter contains(lcase(?apellidos), ""fernando skarmeta gomez"") .
+                    filter contains(lcase(?nombre), ""nombre"") .
+                    filter contains(lcase(?apellidos), ""apellidos"") .
                              }}
                    }}
              */
@@ -131,13 +138,20 @@ namespace HerculesAplicacionConsola.Utils
             }
         }
 
+        /// <summary>
+        /// Devuelve la referencia a <paramref name="nombreOrganizacion"/>
+        /// en caso de que se encuentre en la consulta, nulo en caso contrario.
+        /// </summary>
+        /// <param name="pResourceApi">pResourceApi</param>
+        /// <param name="nombreOrganizacion">nombreOrganizacion</param>
+        /// <returns>string</returns>
         public static string GetOrganizacionPorNombre(ResourceApi pResourceApi, string nombreOrganizacion)
         {
             string select = $@"select distinct ?nombre ?organizacion";
             string where = $@"where {{ 
                                 ?organizacion <http://w3id.org/roh/title> ?nombre  
-                                FILTER CONTAINS (?nombre, ""{nombreOrganizacion}"")
-                            }}";
+                                FILTER(ucase(?nombre)=""{nombreOrganizacion.ToUpper()}"")
+                            }}  LIMIT 1";
 
             SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, "organization");
             if (resultData.results.bindings.Count == 0)
@@ -182,6 +196,48 @@ namespace HerculesAplicacionConsola.Utils
             return listado;
         }
 
+        /// <summary>
+        /// Añade la referencia a la entidad <paramref name="propiedadNombreEntidad"/> si esta se encuentra en BBDD.
+        /// </summary>
+        /// <param name="mResourceApi"></param>
+        /// <param name="nombreEntidad"></param>
+        /// <param name="propiedadNombreEntidad"></param>
+        /// <param name="propiedadEntidad"></param>
+        /// <param name="entidadAux"></param>
+        public static void AniadirEntidad(ResourceApi mResourceApi, string nombreEntidad, string propiedadNombreEntidad, string propiedadEntidad, Entity entidadAux)
+        {
+            if(mResourceApi == null || string.IsNullOrEmpty(nombreEntidad) ||
+                string.IsNullOrEmpty(propiedadEntidad) || string.IsNullOrEmpty(propiedadEntidad))
+            {
+                return;
+            }
+
+            string entidadN = UtilitySecciones.GetOrganizacionPorNombre(mResourceApi, nombreEntidad);
+            if (!string.IsNullOrEmpty(entidadN))
+            {
+                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                    new Property(propiedadNombreEntidad, nombreEntidad),
+                    new Property(propiedadEntidad, entidadN)
+                ));
+            }
+            else
+            {
+                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                       new Property(propiedadNombreEntidad, nombreEntidad)
+                ));
+                entidadAux.properties.Add(new Property(propiedadEntidad, ""));
+            }
+        }
+
+        /// <summary>
+        /// Añade en <paramref name="entidadAux"/> el <paramref name="valorXML"/> en caso de que no sea nulo.
+        /// Si <paramref name="property"/> no es valor nulo, se añade el <paramref name="valorXML"/> en la propiedad,
+        /// sino se crea una <paramref name="propiedadXML"/> en <paramref name="entidadAux"/>
+        /// </summary>
+        /// <param name="property">property</param>
+        /// <param name="entidadAux">entidadAux</param>
+        /// <param name="valorXML">valorXML</param>
+        /// <param name="propiedadXML">propiedadXML</param>
         public static void CheckProperty(Property property, Entity entidadAux, string valorXML, string propiedadXML)
         {
             if (valorXML == null) { return; }

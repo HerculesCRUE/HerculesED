@@ -304,7 +304,14 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             return update;
         }
 
-
+        /// <summary>
+        /// Edita las propiedades si la entidad en BBDD no esta validada ni bloqueada.
+        /// </summary>
+        /// <param name="equivalencias"></param>
+        /// <param name="idXML"></param>
+        /// <param name="graph"></param>
+        /// <param name="propTitle"></param>
+        /// <param name="entityXML"></param>
         protected void ModificarExistentes(Dictionary<string, string> equivalencias, string idXML, string graph, string propTitle, Entity entityXML)
         {
             //Entidad a modificar
@@ -323,7 +330,17 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 }
             }
         }
-        protected bool CreateListEntityAux(string pCvID, string pRdfTypeTab, string rdfTypePrefix, List<string> pPropertyIDs, Entity pUpdatedEntity)
+
+        /// <summary>
+        /// Inserta triples en <paramref name="pCvID"/> 
+        /// </summary>
+        /// <param name="pCvID">pCvID</param>
+        /// <param name="pRdfTypeTab">pRdfTypeTab</param>
+        /// <param name="rdfTypePrefix">rdfTypePrefix</param>
+        /// <param name="pPropertyIDs">pPropertyIDs</param>
+        /// <param name="pUpdatedEntity">pUpdatedEntity</param>
+        /// <returns></returns>
+        public string CreateListEntityAux(string pCvID, string pRdfTypeTab, string rdfTypePrefix, List<string> pPropertyIDs, Entity pUpdatedEntity)
         {
             if (!string.IsNullOrEmpty(pUpdatedEntity.ontology))
             {
@@ -337,7 +354,6 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             SparqlObject tab = mResourceApi.VirtuosoQuery("select *", "where{<" + pCvID + "> ?s ?o. ?o a <" + pRdfTypeTab + "> }", "curriculumvitae");
             string idTab = tab.results.bindings[0]["o"].value;
 
-            //string rdfTypePrefix = UtilityCV.AniadirPrefijo(templateSection.rdftype);
             rdfTypePrefix = rdfTypePrefix.Substring(rdfTypePrefix.IndexOf(":") + 1);
             string idNewAux = $"{mResourceApi.GraphsUrl}items/" + rdfTypePrefix + "_" + mResourceApi.GetShortGuid(pCvID) + "_" + Guid.NewGuid();
 
@@ -346,9 +362,8 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             string valorEntityAux = pPropertyIDs[0] + "|" + pPropertyIDs[1];
 
             //Privacidad, por defecto falso
-            //TODO - Cambiar http://w3id.org/roh/isPublic a una variable?
             string valorPrivacidad = idEntityAux + "|false";
-            string predicadoPrivacidad = valorEntityAux + "|" + "http://w3id.org/roh/isPublic";
+            string predicadoPrivacidad = valorEntityAux + "|http://w3id.org/roh/isPublic";
             TriplesToInclude tr2 = new TriplesToInclude(valorPrivacidad, predicadoPrivacidad);
             listaTriples.Add(tr2);
 
@@ -358,7 +373,6 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             TriplesToInclude tr1 = new TriplesToInclude(valorEntidad, predicadoEntidad);
             listaTriples.Add(tr1);
 
-
             Dictionary<Guid, List<TriplesToInclude>> triplesToInclude = new Dictionary<Guid, List<TriplesToInclude>>()
             {
                 {
@@ -367,7 +381,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             };
 
             Dictionary<Guid, bool> respuesta = mResourceApi.InsertPropertiesLoadedResources(triplesToInclude);
-            return respuesta.Values.ElementAt(0);
+            return idNewAux;
         }
 
 
@@ -507,15 +521,16 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
 
         public static Tuple<string, string, string> GetIdentificadoresItemPresentation(string pId, List<string> pPropiedades)
         {
+            if (pPropiedades.Count != 3) { return null; }
             try
             {
                 string selectID = "select ?item1 ?item2 ?item3";
                 string whereID = $@"where{{
                                     <{pId}> <{pPropiedades[0]}> ?item1 .
                                     OPTIONAL{{
-                                        ?item1 <{ pPropiedades[1]}> ?item2.
+                                        ?item1 <{pPropiedades[1]}> ?item2.
                                         OPTIONAL{{
-                                            ?item2 <{ pPropiedades[2]}> ?item3
+                                            ?item2 <{pPropiedades[2]}> ?item3
                                         }}
                                     }}
                                 }}";

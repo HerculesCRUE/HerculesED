@@ -12,7 +12,7 @@ namespace OAI_PMH.Services
 {
     class Organization
     {
-        private static readonly string url = "http://sgi.ic.corp.treelogic.com/api/sgemp/";
+        private static readonly string url = "https://sgi.demo.treelogic.com/api/sgemp/";
 
         public static Dictionary<string, DateTime> GetModifiedOrganizations(string from)
         {

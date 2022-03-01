@@ -1245,7 +1245,13 @@ namespace GuardadoCV.Models
                 while (cargar)
                 {
                     string selectID = "select * where{ select distinct ?s ?p ?o";
-                    string whereID = $"where{{?x <http://gnoss/hasEntidad> <{pId}>.?x <http://gnoss/hasEntidad> ?s. ?s ?p ?o }}order by desc(?s) desc(?p) desc(?o)}} limit {numLimit} offset {offset}";
+                    string whereID = $@"where{{
+                                            ?x <http://gnoss/hasEntidad> <{pId}>.
+                                            ?x <http://gnoss/hasEntidad> ?s. 
+                                            ?s ?p ?o 
+                                        }}
+                                        order by desc(?s) desc(?p) desc(?o)
+                                }} limit {numLimit} offset {offset}";
                     SparqlObject resultData = mResourceApi.VirtuosoQuery(selectID, whereID, pGraph);
                     foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                     {

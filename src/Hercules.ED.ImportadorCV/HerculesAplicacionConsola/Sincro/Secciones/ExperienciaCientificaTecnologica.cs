@@ -56,6 +56,45 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             return null;
         }
 
+        /// <summary>
+        /// Añade o modifica las propiedades de las entidades en BBDD comparandolas con las leidas del XML.
+        /// </summary>
+        /// <param name="listadoAux"></param>
+        /// <param name="entidadesXML"></param>
+        /// <param name="equivalencias"></param>
+        /// <param name="propTitle"></param>
+        /// <param name="graph"></param>
+        /// <param name="rdfType"></param>
+        /// <param name="rdfTypePrefix"></param>
+        /// <param name="propiedadesItem"></param>
+        private void AniadirModificarExperienciaCientifica(List<Entity> listadoAux, Dictionary<string, DisambiguableEntity> entidadesXML,
+            Dictionary<string, string> equivalencias, string propTitle, string graph, string rdfType, string rdfTypePrefix, List<string> propiedadesItem)
+        {
+            for (int i = 0; i < listadoAux.Count; i++)
+            {
+                Entity entityXML = listadoAux[i];
+                string idXML = entidadesXML.Keys.ToList()[i];
+                if (string.IsNullOrEmpty(equivalencias[idXML]))
+                {
+                    //Añadir
+                    entityXML.propTitle = propTitle;
+                    entityXML.ontology = graph;
+                    entityXML.rdfType = rdfType;
+                    CreateListEntityAux(mCvID, "http://w3id.org/roh/ScientificExperience", rdfTypePrefix, propiedadesItem, entityXML);
+                }
+                else
+                {
+                    //Modificar
+                    ModificarExistentes(equivalencias, idXML, graph, propTitle, entityXML);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Metodo para sincronizar los datos pertenecientes al bloque 
+        /// "Proyectos de I+D+i financiados en convocatorias competitivas de Administraciones o entidades públicas y privadas".
+        /// Con el codigo identificativo 050.020.010.000
+        /// </summary>
         public void SincroProyectosIDI()
         {
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience", "http://w3id.org/roh/competitiveProjects", "http://vivoweb.org/ontology/core#relatedBy" };
@@ -84,27 +123,14 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
 
             //4º Añadimos o modificamos las entidades
-            for (int i = 0; i < listadoAux.Count; i++)
-            {
-                Entity entityXML = listadoAux[i];
-                string idXML = entidadesXML.Keys.ToList()[i];
-                if (string.IsNullOrEmpty(equivalencias[idXML]))
-                {
-                    //Añadir
-                    entityXML.propTitle = propTitle;
-                    entityXML.ontology = graph;
-                    entityXML.rdfType = rdfType;
-                    CreateListEntityAux(mCvID, "http://w3id.org/roh/ScientificExperience", rdfTypePrefix, propiedadesItem, entityXML);
-                }
-                else
-                {
-                    //Modificar
-                    ModificarExistentes(equivalencias, idXML, graph, propTitle, entityXML);
-                }
-            }
+            AniadirModificarExperienciaCientifica(listadoAux,entidadesXML,equivalencias,propTitle,graph,rdfType,rdfTypePrefix,propiedadesItem);            
         }
 
-
+        /// <summary>
+        /// Metodo para sincronizar los datos pertenecientes al bloque 
+        /// "Contratos, convenios o proyectos de I+D+i no competitivos con Administraciones o entidades públicas o privadas".
+        /// Con el codigo identificativo 050.020.020.000
+        /// </summary>
         public void SincroContratos()
         {
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience", "http://w3id.org/roh/nonCompetitiveProjects", "http://vivoweb.org/ontology/core#relatedBy" };
@@ -133,26 +159,15 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
 
             //4º Añadimos o modificamos las entidades
-            for (int i = 0; i < listadoAux.Count; i++)
-            {
-                Entity entityXML = listadoAux[i];
-                string idXML = entidadesXML.Keys.ToList()[i];
-                if (string.IsNullOrEmpty(equivalencias[idXML]))
-                {
-                    //Añadir
-                    entityXML.propTitle = propTitle;
-                    entityXML.ontology = graph;
-                    entityXML.rdfType = rdfType;
-                    CreateListEntityAux(mCvID, "http://w3id.org/roh/ScientificExperience", rdfTypePrefix, propiedadesItem, entityXML);
-                }
-                else
-                {
-                    //Modificar
-                    ModificarExistentes(equivalencias, idXML, graph, propTitle, entityXML);
-                }
-            }
+            AniadirModificarExperienciaCientifica(listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem);
+
         }
 
+        /// <summary>
+        /// Metodo para sincronizar los datos pertenecientes al bloque 
+        /// "Propiedad industrial e intelectual".
+        /// Con el codigo identificativo 050.030.010.000
+        /// </summary>
         public void SincroPropiedadIndustrialIntelectual()
         {
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience", "http://w3id.org/roh/patents", "http://vivoweb.org/ontology/core#relatedBy" };
@@ -181,26 +196,15 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
 
             //4º Añadimos o modificamos las entidades
-            for (int i = 0; i < listadoAux.Count; i++)
-            {
-                Entity entityXML = listadoAux[i];
-                string idXML = entidadesXML.Keys.ToList()[i];
-                if (string.IsNullOrEmpty(equivalencias[idXML]))
-                {
-                    //Añadir
-                    entityXML.propTitle = propTitle;
-                    entityXML.ontology = graph;
-                    entityXML.rdfType = rdfType;
-                    CreateListEntityAux(mCvID, "http://w3id.org/roh/ScientificExperience", rdfTypePrefix, propiedadesItem, entityXML);
-                }
-                else
-                {
-                    //Modificar
-                    ModificarExistentes(equivalencias, idXML, graph, propTitle, entityXML);
-                }
-            }
+            AniadirModificarExperienciaCientifica(listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem);
+
         }
 
+        /// <summary>
+        /// Metodo para sincronizar los datos pertenecientes al subapartado 
+        /// "Grupos/equipos de investigación, desarrollo o innovación".
+        /// Con el codigo identificativo 050.010.000.000
+        /// </summary>
         public void SincroGrupoIDI()
         {
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience", "http://w3id.org/roh/groups", "http://vivoweb.org/ontology/core#relatedBy" };
@@ -229,26 +233,15 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
 
             //4º Añadimos o modificamos las entidades
-            for (int i = 0; i < listadoAux.Count; i++)
-            {
-                Entity entityXML = listadoAux[i];
-                string idXML = entidadesXML.Keys.ToList()[i];
-                if (string.IsNullOrEmpty(equivalencias[idXML]))
-                {
-                    //Añadir
-                    entityXML.propTitle = propTitle;
-                    entityXML.ontology = graph;
-                    entityXML.rdfType = rdfType;
-                    CreateListEntityAux(mCvID, "http://w3id.org/roh/ScientificExperience", rdfTypePrefix, propiedadesItem, entityXML);
-                }
-                else
-                {
-                    //Modificar
-                    ModificarExistentes(equivalencias, idXML, graph, propTitle, entityXML);
-                }
-            }
+            AniadirModificarExperienciaCientifica(listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem);
+
         }
 
+        /// <summary>
+        /// Metodo para sincronizar los datos pertenecientes al bloque 
+        /// "Obras artísticas dirigidas".
+        /// Con el codigo identificativo 050.020.030.000
+        /// </summary>
         public void SincroObrasArtisticas()
         {
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience", "http://w3id.org/roh/supervisedArtisticProjects", "http://vivoweb.org/ontology/core#relatedBy" };
@@ -276,26 +269,15 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
 
             //4º Añadimos o modificamos las entidades
-            for (int i = 0; i < listadoAux.Count; i++)
-            {
-                Entity entityXML = listadoAux[i];
-                string idXML = entidadesXML.Keys.ToList()[i];
-                if (string.IsNullOrEmpty(equivalencias[idXML]))
-                {
-                    //Añadir
-                    entityXML.propTitle = propTitle;
-                    entityXML.ontology = graph;
-                    entityXML.rdfType = rdfType;
-                    CreateListEntityAux(mCvID, "http://w3id.org/roh/ScientificExperience", rdfTypePrefix, propiedadesItem, entityXML);
-                }
-                else
-                {
-                    //Modificar
-                    ModificarExistentes(equivalencias, idXML, graph, propTitle, entityXML);
-                }
-            }
+            AniadirModificarExperienciaCientifica(listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem);
+
         }
 
+        /// <summary>
+        /// Metodo para sincronizar los datos pertenecientes al bloque 
+        /// "Resultados tecnológicos derivados de actividades especializadas y de transferencia no incluidos en apartados anteriores".
+        /// Con el codigo identificativo 050.030.020.000
+        /// </summary>
         public void SincroResultadosTecnologicos()
         {
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience", "http://w3id.org/roh/technologicalResults", "http://vivoweb.org/ontology/core#relatedBy" };
@@ -323,27 +305,15 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
 
             //4º Añadimos o modificamos las entidades
-            for (int i = 0; i < listadoAux.Count; i++)
-            {
-                Entity entityXML = listadoAux[i];
-                string idXML = entidadesXML.Keys.ToList()[i];
-                if (string.IsNullOrEmpty(equivalencias[idXML]))
-                {
-                    //Añadir
-                    entityXML.propTitle = propTitle;
-                    entityXML.ontology = graph;
-                    entityXML.rdfType = rdfType;
-                    CreateListEntityAux(mCvID, "http://w3id.org/roh/ScientificExperience", rdfTypePrefix, propiedadesItem, entityXML);
-                }
-                else
-                {
-                    //Modificar
-                    ModificarExistentes(equivalencias, idXML, graph, propTitle, entityXML);
-                }
-            }
+            AniadirModificarExperienciaCientifica(listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem);
+
         }
 
-
+        /// <summary>
+        /// 050.020.010.000
+        /// </summary>
+        /// <param name="listadoDatos"></param>
+        /// <returns></returns>
         private List<Entity> GetProyectosIDI(List<CvnItemBean> listadoDatos)
         {
             List<Entity> listado = new List<Entity>();
@@ -395,6 +365,14 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             }
             return listado;
         }
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes a la Financiación del proyecto (cuantía del subproyecto,
+        /// porcentaje en subvencion, porcentaje en crédito y porcentaje mixto).
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
         private void ProyectosIDIFinanciacion(CvnItemBean item, Entity entidadAux) {
             /*
             new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDICuantiaSubproyecto, item.GetStringDoublePorIDCampo("050.020.010.300")),
@@ -411,6 +389,13 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDIPorcentajeMixto, StringGNOSSID(entityPartAux, item.GetStringDoublePorIDCampo("050.020.010.330")))
             ));
         }
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes a la Entidad de Realización
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
         private void ProyectosIDIEntidadRealizacion(CvnItemBean item, Entity entidadAux) {
             //new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDIEntidadRealizacion, item.GetNameEntityBeanPorIDCampo("050.020.010.100"))
 
@@ -428,6 +413,13 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 ));
             }
         }
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes a las Entidades Participantes.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
         private void ProyectosIDIEntidadesParticipantes(CvnItemBean item, Entity entidadAux)
         {
             //Añado el listado de entidades participantes
@@ -441,6 +433,13 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 ));
             }
         }
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes a los Autores/as.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
         private void ProyectosIDIAutores(CvnItemBean item, Entity entidadAux)
         {
             //Añado el listado de autores principales
@@ -455,6 +454,13 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 ));
             }
         }
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes a la Entidad Financiadora.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
         private void ProyectosIDIEntidadFinanciadora(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnCodeGroup> listadoEntidadFinanciadora = item.GetListaElementosPorIDCampo<CvnItemBeanCvnCodeGroup>("050.020.010.190");//TODO -revisar codigo y tipo de dato
@@ -474,23 +480,21 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                     ));
 
                     //Añado otros, o el ID de una preseleccion
-                    if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("050.030.020.240")))
-                    {
-                        entidadAux.properties.AddRange(AddProperty(
-                            new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDITipoEntidadFinancidora, "http://gnoss.com/items/organizationtype_OTHERS"),//TODO revisar
-                            new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDITipoEntidadFinancidoraOtros, entidadFinanciadora.GetStringCvnCodeGroup("050.020.010.220"))
-                        ));
-                    }
-                    else
-                    {
-                        entidadAux.properties.AddRange(AddProperty(
-                            new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDITipoEntidadFinancidora, entidadFinanciadora.GetOrganizationCvnCodeGroup("050.020.010.210"))
-                        ));
-                    }
+                    string valorTipo = !string.IsNullOrEmpty(item.GetStringCvnCodeGroup("050.020.010.220")) ? "http://gnoss.com/items/organizationtype_OTHERS" : item.GetOrganizationCvnCodeGroup("050.020.010.210");
+
+                    entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                        new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDITipoEntidadFinancidora, valorTipo),
+                        new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDITipoEntidadFinancidoraOtros, item.GetStringCvnCodeGroup("050.020.010.220"))
+                    ));
                 }
             }
         }
 
+        /// <summary>
+        /// 050.020.020.000
+        /// </summary>
+        /// <param name="listadoDatos"></param>
+        /// <returns></returns>
         private List<Entity> GetContratos(List<CvnItemBean> listadoDatos)
         {
             List<Entity> listado = new List<Entity>();
@@ -543,6 +547,14 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             }
             return listado;
         }
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes a la Financiación del proyecto (cuantía del subproyecto,
+        /// porcentaje en subvencion, porcentaje en crédito y porcentaje mixto).
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
         private void ContratosFinanciacion(CvnItemBean item, Entity entidadAux)
         {
             string entityPartAux = Guid.NewGuid().ToString() + "@@@";
@@ -553,6 +565,13 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 new Property(Variables.ExperienciaCientificaTecnologica.contratosPorcentajeMixto, StringGNOSSID(entityPartAux, item.GetStringDoublePorIDCampo("050.020.020.240")))
             ));
         }
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes a la Entidad de Realización.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
         private void ContratosEntidadRealizacion(CvnItemBean item, Entity entidadAux) {
             if (!string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("050.020.020.370")))
             {
@@ -562,6 +581,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 ));
             }
         }
+
         //private void ContratosTipoEntidadRealizacion(CvnItemBean item, Entity entidadAux)
         //{
 
@@ -580,6 +600,13 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
         //        ));
         //    }
         //}
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes a las Entidades Participantes.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
         private void ContratosEntidadesParticipantes(CvnItemBean item, Entity entidadAux)
         {
             //Añado el listado de autores principales
@@ -591,6 +618,13 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 ));
             }
         }
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes a los Autores/as.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
         private void ContratosAutores(CvnItemBean item, Entity entidadAux)
         {
             //Añado el listado de autores principales
@@ -605,6 +639,13 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 ));
             }
         }
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes a la Entidad Financiadora.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
         private void ContratosEntidadFinanciadora(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnCodeGroup> listadoEntidadFinanciadora = item.GetListaElementosPorIDCampo<CvnItemBeanCvnCodeGroup>("050.020.020.120");//TODO -revisar codigo y tipo de dato
@@ -647,6 +688,11 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             }
         }
 
+        /// <summary>
+        /// 050.030.010.000
+        /// </summary>
+        /// <param name="listadoDatos"></param>
+        /// <returns></returns>
         private List<Entity> GetPropiedadIndustrialIntelectual(List<CvnItemBean> listadoDatos)
         {
             List<Entity> listado = new List<Entity>();
@@ -699,6 +745,13 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             }
             return listado;
         }
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes a la Entidad titular de derechos.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
         private void PropiedadIndustrialIntelectualEntidadTitularDerechos(CvnItemBean item, Entity entidadAux)
         {
             if (!string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("050.030.010.300")))
@@ -709,6 +762,13 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 ));
             }
         }
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes a las Empresas.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
         private void PropiedadIndustrialIntelectualEmpresas(CvnItemBean item, Entity entidadAux)
         {
             //Añado el listado de productos
@@ -722,6 +782,13 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 UtilitySecciones.CheckProperty(nombrePropII, entidadAux, valor, propiedad);
             }
         }
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes a los Productos.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
         private void PropiedadIndustrialIntelectualProductos(CvnItemBean item, Entity entidadAux)
         {
             //Añado el listado de productos
@@ -735,6 +802,13 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 UtilitySecciones.CheckProperty(nombrePropII, entidadAux, valor, propiedad);
             }
         }
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes a los Autores/as.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
         private void PropiedadIndustrialIntelectualAutores(CvnItemBean item, Entity entidadAux)
         {
             //Añado el listado de autores principales
@@ -749,6 +823,13 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 ));
             }
         }
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes al Pais y CCAA/Región de explotación.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
         private void PropiedadIndustrialIntelectualPaisExplotacion(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnCodeGroup> listadoPais = item.GetListaElementosPorIDCampo<CvnItemBeanCvnCodeGroup>("050.030.010.220");//TODO -revisar codigo y tipo de dato
@@ -762,6 +843,11 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             }
         }
 
+        /// <summary>
+        /// 050.010.000.000
+        /// </summary>
+        /// <param name="listadoDatos"></param>
+        /// <returns></returns>
         private List<Entity> GetGrupoIDI(List<CvnItemBean> listadoDatos)
         {
             List<Entity> listado = new List<Entity>();
@@ -804,6 +890,13 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             }
             return listado;
         }
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes a la Entidad de Afiliación.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
         private void GrupoIDIEntidadAfiliacion(CvnItemBean item, Entity entidadAux) {
             //new Property(Variables.ExperienciaCientificaTecnologica.grupoIDIEntidadAfiliacion, item.GetNameEntityBeanPorIDCampo("050.010.000.090")),
             //new Property(Variables.ExperienciaCientificaTecnologica.grupoIDITipoEntidadAfiliacion, item.GetStringPorIDCampo("050.010.000.110")),//TODO - funcion others
@@ -816,6 +909,13 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 ));
             }        
         }
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes a los Autores/as.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
         private void GrupoIDIAutores(CvnItemBean item, Entity entidadAux)
         {
             //Añado el listado de autores principales
@@ -831,6 +931,11 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             }
         }
 
+        /// <summary>
+        /// 050.020.030.000
+        /// </summary>
+        /// <param name="listadoDatos"></param>
+        /// <returns></returns>
         private List<Entity> GetObrasArtisticas(List<CvnItemBean> listadoDatos)
         {
             List<Entity> listado = new List<Entity>();
@@ -869,6 +974,13 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             }
             return listado;
         }
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes a los Autores/as.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
         private void ObrasArtisticasAutores(CvnItemBean item, Entity entidadAux)
         {
             //Añado el listado de autores principales
@@ -884,6 +996,11 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             }
         }
 
+        /// <summary>
+        /// 050.030.020.000
+        /// </summary>
+        /// <param name="listadoDatos"></param>
+        /// <returns></returns>
         private List<Entity> GetResultadosTecnologicos(List<CvnItemBean> listadoDatos)
         {
             List<Entity> listado = new List<Entity>();
@@ -930,6 +1047,13 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             }
             return listado;
         }
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes a los Autores/as y Corresponsables.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
         private void ResultadosTecnologicosAutoresYCorresponsables(CvnItemBean item, Entity entidadAux)
         {
             //Añado el listado de autores principales
@@ -956,6 +1080,13 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 ));
             }
         }
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes a las Entidades Colaboradoras.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
         private void ResultadosTecnologicosEntidadColaboradora(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnCodeGroup> listadoEntidadColaboradora = item.GetListaElementosPorIDCampo<CvnItemBeanCvnCodeGroup>("050.030.020.170");//TODO -revisar codigo y tipo de dato
@@ -966,40 +1097,14 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 string propiedad = Variables.ExperienciaCientificaTecnologica.resultadosTecnologicosEntidadColaboradora;
                 UtilitySecciones.CheckProperty(entidad, entidadAux, valor, propiedad);
             }
-
-            //List<CvnItemBeanCvnCodeGroup> listadoEntidadColaboradora = item.GetListaElementosPorIDCampo<CvnItemBeanCvnCodeGroup>("050.030.020.170");//TODO -revisar codigo y tipo de dato
-            //foreach (CvnItemBeanCvnCodeGroup entidadColaboradora in listadoEntidadColaboradora)
-            //{
-            //    //Añado pais, CCAA y ciudad
-            //    entidadAux.properties.AddRange(AddProperty(
-            //        new Property(Variables.ExperienciaCientificaTecnologica.resultadosTecnologicosPaisEntidadColaboradora, entidadColaboradora.GetPaisPorIDCampo("050.030.020.320")),
-            //        new Property(Variables.ExperienciaCientificaTecnologica.resultadosTecnologicosCCAAEntidadColaboradora, entidadColaboradora.GetRegionPorIDCampo("050.030.020.330")),
-            //        new Property(Variables.ExperienciaCientificaTecnologica.resultadosTecnologicosCiudadEntidadColaboradora, entidadColaboradora.GetStringCvnCodeGroup("050.030.020.340"))
-            //    ));
-            //    //Añado los datos asociados a la entidad
-            //    if (!string.IsNullOrEmpty(entidadColaboradora.GetNameEntityBeanCvnCodeGroup("050.030.020.170")))
-            //    {
-            //        entidadAux.properties.AddRange(AddProperty(
-            //            new Property(Variables.ExperienciaCientificaTecnologica.resultadosTecnologicosEntidadColaboradora, entidadColaboradora.GetNameEntityBeanCvnCodeGroup("050.030.020.170"))
-            //        ));
-
-            //        //Añado otros, o el ID de una preseleccion
-            //        if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("050.030.020.240")))
-            //        {
-            //            entidadAux.properties.AddRange(AddProperty(
-            //                new Property(Variables.ExperienciaCientificaTecnologica.resultadosTecnologicosTipoEntidadColaboradora, "http://gnoss.com/items/organizationtype_OTHERS"),//TODO revisar
-            //                new Property(Variables.ExperienciaCientificaTecnologica.resultadosTecnologicosTipoEntidadColaboradoraOtros, entidadColaboradora.GetStringCvnCodeGroup("050.030.020.200"))
-            //            ));
-            //        }
-            //        else
-            //        {
-            //            entidadAux.properties.AddRange(AddProperty(
-            //                new Property(Variables.ExperienciaCientificaTecnologica.resultadosTecnologicosTipoEntidadColaboradora, entidadColaboradora.GetOrganizationCvnCodeGroup("050.030.020.190"))
-            //            ));
-            //        }
-            //    }
-            //}
         }
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes a las Entidades Destinatarias.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
         private void ResultadosTecnologicosEntidadDestinataria(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnCodeGroup> listadoEntidadDestinataria = item.GetListaElementosPorIDCampo<CvnItemBeanCvnCodeGroup>("050.030.020.210");//TODO -revisar codigo y tipo de dato
@@ -1010,39 +1115,6 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 string propiedad = Variables.ExperienciaCientificaTecnologica.resultadosTecnologicosEntidadDestinataria;
                 UtilitySecciones.CheckProperty(entidad, entidadAux, valor, propiedad);
             }
-
-            //List<CvnItemBeanCvnCodeGroup> listadoEntidadDestinataria = item.GetListaElementosPorIDCampo<CvnItemBeanCvnCodeGroup>("050.030.020.210");//TODO -revisar codigo y tipo de dato
-            //foreach (CvnItemBeanCvnCodeGroup entidadDestinataria in listadoEntidadDestinataria)
-            //{
-            //    //Añado pais, CCAA y ciudad
-            //    entidadAux.properties.AddRange(AddProperty(
-            //        new Property(Variables.ExperienciaCientificaTecnologica.resultadosTecnologicosPaisEntidadDestinataria, entidadDestinataria.GetPaisPorIDCampo("050.030.020.290")),
-            //        new Property(Variables.ExperienciaCientificaTecnologica.resultadosTecnologicosCCAAEntidadDestinataria, entidadDestinataria.GetRegionPorIDCampo("050.030.020.300")),
-            //        new Property(Variables.ExperienciaCientificaTecnologica.resultadosTecnologicosCiudadEntidadDestinataria, entidadDestinataria.GetStringCvnCodeGroup("050.030.020.310"))
-            //    ));
-            //    //Añado los datos asociados a la entidad
-            //    if (!string.IsNullOrEmpty(entidadDestinataria.GetNameEntityBeanCvnCodeGroup("050.030.020.210")))
-            //    {
-            //        entidadAux.properties.AddRange(AddProperty(
-            //            new Property(Variables.ExperienciaCientificaTecnologica.resultadosTecnologicosEntidadDestinataria, entidadDestinataria.GetNameEntityBeanCvnCodeGroup("050.030.020.210"))
-            //        ));
-
-            //        //Añado otros, o el ID de una preseleccion
-            //        if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("050.030.020.240")))
-            //        {
-            //            entidadAux.properties.AddRange(AddProperty(
-            //                new Property(Variables.ExperienciaCientificaTecnologica.resultadosTecnologicosTipoEntidadDestinataria, "http://gnoss.com/items/organizationtype_OTHERS"),//TODO revisar
-            //                new Property(Variables.ExperienciaCientificaTecnologica.resultadosTecnologicosTipoEntidadDestinatariaOtros, entidadDestinataria.GetStringCvnCodeGroup("050.030.020.240"))
-            //            ));
-            //        }
-            //        else
-            //        {
-            //            entidadAux.properties.AddRange(AddProperty(
-            //                new Property(Variables.ExperienciaCientificaTecnologica.resultadosTecnologicosTipoEntidadDestinataria, entidadDestinataria.GetOrganizationCvnCodeGroup("050.030.020.230"))
-            //            ));
-            //        }
-            //    }
-            //}
         }
     }
 }

@@ -85,7 +85,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
         }
 
         /// <summary>
-        /// Crea y puebla un Entity con los datos del apartado 000.010.000.000
+        /// Crea y puebla un Entity con los datos del subapartado 000.010.000.000
         /// que formen parte del listado.
         /// </summary>
         /// <param name="entityBBDD">Entity del objeto de BBDD</param>
@@ -128,7 +128,6 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 Console.Error.WriteLine(e);
                 return null;
             }
-
         }
 
         /// <summary>
@@ -176,7 +175,6 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                     entity.auxEntityRemove.AddRange(entityBBDD.properties.Where(x => x.prop.Contains("http://w3id.org/roh/otherIds")).SelectMany(x => x.values).Select(x => x.Substring(0, x.IndexOf("@@@"))));
                 }
             }
-
         }
 
         /// <summary>
@@ -205,7 +203,6 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 new Property(Variables.DatosIdentificacion.direccionContactoProvincia, StringGNOSSID(entityAux, listadoDatosIdentificacion.GetProvinciaPorIDCampo("000.010.000.200")))
             ));
             entity.auxEntityRemove.AddRange(entityBBDD.properties.Where(x => x.prop.Contains("https://www.w3.org/2006/vcard/ns#address")).SelectMany(x => x.values).Select(x => x.Substring(0, x.IndexOf("@@@"))));
-
         }
 
         /// <summary>
@@ -229,7 +226,6 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 new Property(Variables.DatosIdentificacion.direccionNacimientoRegion, StringGNOSSID(entityAux, listadoDatosIdentificacion.GetRegionPorIDCampo("000.010.000.070")))
             ));            
             entity.auxEntityRemove.AddRange(entityBBDD.properties.Where(x => x.prop.Contains("http://w3id.org/roh/birthplace")).SelectMany(x => x.values).Select(x => x.Substring(0, x.IndexOf("@@@"))));
-
         }
 
         /// <summary>
@@ -253,7 +249,6 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 new Property(Variables.DatosIdentificacion.telefonoExtension, StringGNOSSID(entityAux, listadoDatosIdentificacion.GetElementoPorIDCampo<CvnItemBeanCvnPhoneBean>("000.010.000.210").Extension?.ToString()))
             ));
             entity.auxEntityRemove.AddRange(entityBBDD.properties.Where(x => x.prop.Contains("https://www.w3.org/2006/vcard/ns#hasTelephone")).SelectMany(x => x.values).Select(x => x.Substring(0, x.IndexOf("@@@"))));
-
         }
 
         /// <summary>
@@ -277,7 +272,6 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 new Property(Variables.DatosIdentificacion.faxExtension, StringGNOSSID(entityAux, listadoDatosIdentificacion.GetElementoPorIDCampo<CvnItemBeanCvnPhoneBean>("000.010.000.220").Extension?.ToString()))
             ));
             entity.auxEntityRemove.AddRange(entityBBDD.properties.Where(x => x.prop.Contains("http://w3id.org/roh/hasFax")).SelectMany(x => x.values).Select(x => x.Substring(0, x.IndexOf("@@@"))));
-
         }
 
         /// <summary>
@@ -301,9 +295,6 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 new Property(Variables.DatosIdentificacion.movilExtension, StringGNOSSID(entityAux, listadoDatosIdentificacion.GetElementoPorIDCampo<CvnItemBeanCvnPhoneBean>("000.010.000.240").Extension?.ToString()))
             ));
             entity.auxEntityRemove.AddRange(entityBBDD.properties.Where(x => x.prop.Contains("http://w3id.org/roh/hasMobilePhone")).SelectMany(x => x.values).Select(x => x.Substring(0, x.IndexOf("@@@"))));
-
         }
-
-
     }
 }
