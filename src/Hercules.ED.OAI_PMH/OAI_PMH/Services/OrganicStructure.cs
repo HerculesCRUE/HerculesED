@@ -1,4 +1,5 @@
-﻿using RestSharp;
+﻿using OAI_PMH.Controllers;
+using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,14 +9,12 @@ namespace OAI_PMH.Services
 {
     public class OrganicStructure
     {
-        private static readonly string url = "https://sgi.demo.treelogic.com/api/sgo/";
-
-        public static Dictionary<string, DateTime> GetAreasConocimiento(string parentId)
+        public static Dictionary<string, DateTime> GetAreasConocimiento(string parentId, ConfigService pConfig)
         {
-            string accessToken = Token.CheckToken();
+            string accessToken = Token.CheckToken(pConfig);
             Dictionary<string, DateTime> idDictionary = new();
             List<string> idList = new();
-            RestClient client = new(url + "empresas/modificadas-ids?q=padreId=na=\"" + parentId + "\"");
+            RestClient client = new(pConfig.GetUrlBaseEstructuraOrganica() + "empresas/modificadas-ids?q=padreId=na=\"" + parentId + "\"");
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);

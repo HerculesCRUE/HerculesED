@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using OAI_PMH.Controllers;
 using OAI_PMH.Models.SGI.Organization;
 using RestSharp;
 using System;
@@ -12,14 +13,12 @@ namespace OAI_PMH.Services
 {
     class Organization
     {
-        private static readonly string url = "https://sgi.demo.treelogic.com/api/sgemp/";
-
-        public static Dictionary<string, DateTime> GetModifiedOrganizations(string from)
+        public static Dictionary<string, DateTime> GetModifiedOrganizations(string from, ConfigService pConfig)
         {
-            string accessToken = Token.CheckToken();
+            string accessToken = Token.CheckToken(pConfig);
             Dictionary<string, DateTime> idDictionary = new();
             List<string> idList = new();
-            RestClient client = new(url + "empresas/modificadas-ids?q=fechaModificacion=ge=" + from);
+            RestClient client = new(pConfig.GetUrlBaseOrganizacion() + "empresas/modificadas-ids?q=fechaModificacion=ge=" + from);
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);
@@ -36,27 +35,27 @@ namespace OAI_PMH.Services
             return idDictionary;
         }
 
-        public static Empresa GetEmpresa(string id)
+        public static Empresa GetEmpresa(string id, ConfigService pConfig)
         {
-            string accessToken = Token.CheckToken();
+            string accessToken = Token.CheckToken(pConfig);
             string identifier = id.Split('_')[1];
             Empresa empresa = new();
-            RestClient client = new(url + "empresas/" + identifier);
+            RestClient client = new(pConfig.GetUrlBaseOrganizacion() + "empresas/" + identifier);
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);
             var json = JObject.Parse(response.Content);
             empresa = JsonConvert.DeserializeObject<Empresa>(json.ToString());
-            empresa.DatosContacto = GetDatosContacto(identifier);
-            empresa.DatosTipoEmpresa = GetDatosTipoEmpresa(identifier);
+            empresa.DatosContacto = GetDatosContacto(identifier, pConfig);
+            empresa.DatosTipoEmpresa = GetDatosTipoEmpresa(identifier, pConfig);
             return empresa;
         }
 
-        private static DatosContacto GetDatosContacto(string id)
+        private static DatosContacto GetDatosContacto(string id, ConfigService pConfig)
         {
-            string accessToken = Token.CheckToken();
+            string accessToken = Token.CheckToken(pConfig);
             DatosContacto datosContacto = new();
-            RestClient client = new(url + "datos-contacto/empresa/" + id);
+            RestClient client = new(pConfig.GetUrlBaseOrganizacion() + "datos-contacto/empresa/" + id);
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);
@@ -64,11 +63,11 @@ namespace OAI_PMH.Services
             return datosContacto;
         }
 
-        private static DatosTipoEmpresa GetDatosTipoEmpresa(string id)
+        private static DatosTipoEmpresa GetDatosTipoEmpresa(string id, ConfigService pConfig)
         {
-            string accessToken = Token.CheckToken();
+            string accessToken = Token.CheckToken(pConfig);
             DatosTipoEmpresa datosTipoEmpresa = new();
-            RestClient client = new(url + "datos-tipo-empresa/empresa/" + id);
+            RestClient client = new(pConfig.GetUrlBaseOrganizacion() + "datos-tipo-empresa/empresa/" + id);
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);
