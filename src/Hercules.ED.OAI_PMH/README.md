@@ -14,11 +14,11 @@ Antes de hacer las peticiones a los servicios correspondientes, es necesario el 
 
 # ListMetadataFormats
 Permite obtener el metadataPrefix utilizado para especificar los encabezados que deben devolverse.
-No requiere ninguún parámetro adicional de uso.
+No requiere ningún parámetro adicional de uso.
 
 # ListSets
-Obtiene el dato que especifica los criterios establecidos para la recolección selectiva.
-No requiere ninguún parámetro adicional de uso.
+Obtiene el dato que especifica los criterios establecidos para la recolección selectiva.\n
+No requiere ningún parámetro adicional de uso.
 
 # ListIdentifiers
 Devuelve una lista de identificadores de los datos solicitados (setSpec_ID) junto a la hora de actualización y el setSpec del dato solicitado.
