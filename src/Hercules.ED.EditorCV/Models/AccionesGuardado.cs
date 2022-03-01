@@ -258,6 +258,44 @@ namespace GuardadoCV.Models
                 }
                 else
                 {
+                    //Si está bloqueado sólo hay que editar los campos editables                   
+                    List<PropertyData> propertyDatas = new List<PropertyData>();
+                    foreach (string propEditabilidad in Utils.UtilityCV.PropertyNotEditable.Keys)
+                    {
+                        propertyDatas.Add(
+                            //Editabilidad
+                            new Utils.PropertyData()
+                            {
+                                property = propEditabilidad,
+                                childs = new List<Utils.PropertyData>()
+                            }
+                        );
+                    }
+
+                    var dataBlock = UtilityCV.GetProperties(new HashSet<string>() { pEntity.id }, pEntity.ontology, propertyDatas, "", new Dictionary<string, SparqlObject>());
+
+                    bool editable = true;
+                    foreach (string propEditabilidad in Utils.UtilityCV.PropertyNotEditable.Keys)
+                    {
+                        string valorPropiedad = AccionesEdicion.GetPropValues(pEntity.id, propEditabilidad, dataBlock).FirstOrDefault();
+                        if ((Utils.UtilityCV.PropertyNotEditable[propEditabilidad] == null || Utils.UtilityCV.PropertyNotEditable[propEditabilidad].Count == 0) && !string.IsNullOrEmpty(valorPropiedad))
+                        {
+                            editable = false;
+                        }
+                        else if (Utils.UtilityCV.PropertyNotEditable[propEditabilidad].Contains(valorPropiedad))
+                        {
+                            editable = false;
+                        }
+                    }
+
+                    if(!editable)
+                    {
+                        //TODO excepciones de campos editables incluso bloqueado
+                        pEntity.properties = new List<Entity.Property>();
+                    }
+
+
+
                     //Modificamos
                     Entity loadedEntity = GetLoadedEntity(pEntity.id, pEntity.ontology);
                     loadedEntity.propTitle = itemEditConfig.proptitle;
