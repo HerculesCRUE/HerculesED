@@ -3367,9 +3367,9 @@ var edicionCV = {
             var dependencyproperty = $(this).attr('dependencyproperty');
             //Seleccionamos el input del que es dependiente y le añadimos el/los input sobre el que tiene que actuar
 			var lista=[];
-			if($('select[propertyrdf="' + dependencyproperty + '"]').attr('dependencyact')!=null)
+			if($('select[propertyrdf="' + dependencyproperty + '"],input[propertyrdf="' + dependencyproperty + '"]').attr('dependencyact')!=null)
 			{
-				lista=$('select[propertyrdf="' + dependencyproperty + '"]').attr('dependencyact').split(',');
+				lista=$('select[propertyrdf="' + dependencyproperty + '"],input[propertyrdf="' + dependencyproperty + '"]').attr('dependencyact').split(',');
 			}
 			if(lista.indexOf($(this).attr('propertyrdf'))==-1)
 			{
