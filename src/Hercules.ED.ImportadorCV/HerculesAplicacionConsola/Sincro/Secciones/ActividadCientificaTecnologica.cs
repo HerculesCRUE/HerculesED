@@ -444,7 +444,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             {
                 ForosComites forosComites = new ForosComites();
                 forosComites.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.forosComitesNombre)?.values.FirstOrDefault();
-                forosComites.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.forosComitesFechaInicio)?.values.FirstOrDefault();
+                forosComites.categoriaProfesional = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.forosComitesCategoriaProfesional)?.values.FirstOrDefault();
                 forosComites.ID = Guid.NewGuid().ToString();
                 entidadesXML.Add(forosComites.ID, forosComites);
             }
@@ -660,7 +660,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             {
                 Consejos consejos = new Consejos();
                 consejos.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.consejosNombre)?.values.FirstOrDefault();
-                consejos.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.consejosFechaInicio)?.values.FirstOrDefault();
+                consejos.EntAfi = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.consejosEntidadAfiliacionNombre)?.values.FirstOrDefault();
                 consejos.ID = Guid.NewGuid().ToString();
                 entidadesXML.Add(consejos.ID, consejos);
             }
@@ -2056,7 +2056,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                             new Property(Variables.ActividadCientificaTecnologica.forosComitesPaisEntidadOrganizadora, item.GetPaisPorIDCampo("060.020.050.170")),
                             new Property(Variables.ActividadCientificaTecnologica.forosComitesCCAAEntidadOrganizadora, item.GetRegionPorIDCampo("060.020.050.180")),
                             new Property(Variables.ActividadCientificaTecnologica.forosComitesCiudadEntidadOrganizadora, item.GetStringPorIDCampo("060.020.050.190")),
-                            //new Property(Variables.ActividadCientificaTecnologica.forosComitesCategoriaProfesional, item.GetStringPorIDCampo("060.020.050.100")),//TODO - Genera errores
+                            new Property(Variables.ActividadCientificaTecnologica.forosComitesCategoriaProfesional, item.GetStringPorIDCampo("060.020.050.100")),
                             new Property(Variables.ActividadCientificaTecnologica.forosComitesPaisEntidadRepresentada, item.GetPaisPorIDCampo("060.020.050.200")),
                             new Property(Variables.ActividadCientificaTecnologica.forosComitesCCAAEntidadRepresentada, item.GetRegionPorIDCampo("060.020.050.210")),
                             new Property(Variables.ActividadCientificaTecnologica.forosComitesCiudadEntidadRepresentada, item.GetStringPorIDCampo("060.020.050.220")),
@@ -2887,7 +2887,6 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
         {
             //Si no esta Entidad no añado datos
             if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.030.070.050"))) { return; }
-
 
             //Añado la referencia si existe
             UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.030.070.050"),
