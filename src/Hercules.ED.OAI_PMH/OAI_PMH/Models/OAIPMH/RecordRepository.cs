@@ -1,4 +1,6 @@
 ﻿using OAI_PMH.Models.SGI;
+using OAI_PMH.Models.SGI.ActividadDocente;
+using OAI_PMH.Models.SGI.FormacionAcademica;
 using OAI_PMH.Models.SGI.Organization;
 using OAI_PMH.Models.SGI.PersonalData;
 using OAI_PMH.Models.SGI.Project;
@@ -48,6 +50,38 @@ namespace OAI_PMH.Models.OAIPMH
                 case "Organizacion":               
                     Empresa organizacion = Organization.GetEmpresa(identifier);
                     record = ToRecord(organizacion, set, identifier, date, metadataPrefix);
+                    break;
+                case "FormacionAcademica-Ciclos":
+                    Ciclos ciclo = AcademicFormation.GetFormacionAcademicaCiclos(identifier);
+                    record = ToRecord(ciclo, set, identifier, date, metadataPrefix);
+                    break;
+                case "FormacionAcademica-Doctorados":
+                    Doctorados doctorado = AcademicFormation.GetFormacionAcademicaDoctorados(identifier);
+                    record = ToRecord(doctorado, set, identifier, date, metadataPrefix);
+                    break;
+                case "FormacionAcademica-Posgrado":
+                    Posgrado posgrado = AcademicFormation.GetFormacionAcademicaPosgrado(identifier);
+                    record = ToRecord(posgrado, set, identifier, date, metadataPrefix);
+                    break;
+                case "FormacionAcademica-Especializada":
+                    FormacionEspecializada especializada = AcademicFormation.GetFormacionAcademicaEspecializada(identifier);
+                    record = ToRecord(especializada, set, identifier, date, metadataPrefix);
+                    break;
+                case "FormacionAcademica-Idiomas":
+                    ConocimientoIdiomas idiomas = AcademicFormation.GetFormacionAcademicaIdiomas(identifier);
+                    record = ToRecord(idiomas, set, identifier, date, metadataPrefix);
+                    break;
+                case "Tesis":
+                    Tesis tesis = DocentActivity.GetTesis(identifier);
+                    record = ToRecord(tesis, set, identifier, date, metadataPrefix);
+                    break;
+                case "FormacionImpartida":
+                    FormacionAcademicaImpartida formacionImpartida = DocentActivity.GetAcademicFormationProvided(identifier);
+                    record = ToRecord(formacionImpartida, set, identifier, date, metadataPrefix);
+                    break;
+                case "Seminarios":
+                    SeminariosCursos seminario = DocentActivity.GetSeminars(identifier);
+                    record = ToRecord(seminario, set, identifier, date, metadataPrefix);
                     break;
                 default:
                     break;
@@ -121,6 +155,78 @@ namespace OAI_PMH.Models.OAIPMH
                         }
                         container.Records = projectRecordList;
                         break;
+                    case "FormacionAcademica-Ciclos":
+                        Dictionary<string, DateTime> modifiedCiclosIds = AcademicFormation.GetModifiedCiclos(arguments.From);
+                        List<Record> ciclosRecordList = new();
+                        foreach (string id in modifiedCiclosIds.Keys)
+                        {
+                            ciclosRecordList.Add(ToIdentifiersRecord("FormacionAcademica-Ciclos", id, modifiedCiclosIds[id]));
+                        }
+                        container.Records = ciclosRecordList;
+                        break;
+                    case "FormacionAcademica-Doctorados":
+                        Dictionary<string, DateTime> modifiedDoctoradosIds = AcademicFormation.GetModifiedDoctorados(arguments.From);
+                        List<Record> doctoradosRecordList = new();
+                        foreach (string id in modifiedDoctoradosIds.Keys)
+                        {
+                            doctoradosRecordList.Add(ToIdentifiersRecord("FormacionAcademica-Doctorados", id, modifiedDoctoradosIds[id]));
+                        }
+                        container.Records = doctoradosRecordList;
+                        break;
+                    case "FormacionAcademica-Posgrado":
+                        Dictionary<string, DateTime> modifiedPosgradoIds = AcademicFormation.GetModifiedPosgrado(arguments.From);
+                        List<Record> posgradoRecordList = new();
+                        foreach (string id in modifiedPosgradoIds.Keys)
+                        {
+                            posgradoRecordList.Add(ToIdentifiersRecord("FormacionAcademica-Posgrado", id, modifiedPosgradoIds[id]));
+                        }
+                        container.Records = posgradoRecordList;
+                        break;
+                    case "FormacionAcademica-Especializada":
+                        Dictionary<string, DateTime> modifiedEspecializadaIds = AcademicFormation.GetModifiedEspecializada(arguments.From);
+                        List<Record> especializadaRecordList = new();
+                        foreach (string id in modifiedEspecializadaIds.Keys)
+                        {
+                            especializadaRecordList.Add(ToIdentifiersRecord("FormacionAcademica-Especializada", id, modifiedEspecializadaIds[id]));
+                        }
+                        container.Records = especializadaRecordList;
+                        break;
+                    case "FormacionAcademica-Idiomas":
+                        Dictionary<string, DateTime> modifiedIdiomasIds = AcademicFormation.GetModifiedIdiomas(arguments.From);
+                        List<Record> idiomasRecordList = new();
+                        foreach (string id in modifiedIdiomasIds.Keys)
+                        {
+                            idiomasRecordList.Add(ToIdentifiersRecord("FormacionAcademica-Idiomas", id, modifiedIdiomasIds[id]));
+                        }
+                        container.Records = idiomasRecordList;
+                        break;
+                    case "Tesis":
+                        Dictionary<string, DateTime> modifiedTesisIds = DocentActivity.GetModifiedTesis(arguments.From);
+                        List<Record> tesisRecordList = new();
+                        foreach (string id in modifiedTesisIds.Keys)
+                        {
+                            tesisRecordList.Add(ToIdentifiersRecord("Tesis", id, modifiedTesisIds[id]));
+                        }
+                        container.Records = tesisRecordList;
+                        break;
+                    case "FormacionImpartida":
+                        Dictionary<string, DateTime> modifiedFormacionImpartidaIds = DocentActivity.GetModifiedAcademicFormationProvided(arguments.From);
+                        List<Record> formacionImpartidaRecordList = new();
+                        foreach (string id in modifiedFormacionImpartidaIds.Keys)
+                        {
+                            formacionImpartidaRecordList.Add(ToIdentifiersRecord("FormacionImpartida", id, modifiedFormacionImpartidaIds[id]));
+                        }
+                        container.Records = formacionImpartidaRecordList;
+                        break;
+                    case "Seminarios":
+                        Dictionary<string, DateTime> modifiedSeminariosIds = DocentActivity.GetModifiedSeminars(arguments.From);
+                        List<Record> seminariosRecordList = new();
+                        foreach (string id in modifiedSeminariosIds.Keys)
+                        {
+                            seminariosRecordList.Add(ToIdentifiersRecord("Seminarios", id, modifiedSeminariosIds[id]));
+                        }
+                        container.Records = seminariosRecordList;
+                        break;
                 }
             }
             else
@@ -149,6 +255,70 @@ namespace OAI_PMH.Models.OAIPMH
                         foreach (string projectId in modifiedProjectsIds.Keys)
                         {
                             projectsList.Add(Project.GetProyecto(projectId));
+                        }
+                        break;
+                    case "FormacionAcademica-Ciclos":
+                        Dictionary<string, DateTime> modifiedCiclosIds = AcademicFormation.GetModifiedCiclos(arguments.From);
+                        List<Ciclos> ciclosList = new();
+                        foreach (string id in modifiedCiclosIds.Keys)
+                        {
+                            ciclosList.Add(AcademicFormation.GetFormacionAcademicaCiclos(id));
+                        }
+                        break;
+                    case "FormacionAcademica-Doctorados":
+                        Dictionary<string, DateTime> modifiedDoctoradosIds = AcademicFormation.GetModifiedDoctorados(arguments.From);
+                        List<Doctorados> doctoradosList = new();
+                        foreach (string id in modifiedDoctoradosIds.Keys)
+                        {
+                            doctoradosList.Add(AcademicFormation.GetFormacionAcademicaDoctorados(id));
+                        }
+                        break;
+                    case "FormacionAcademica-Posgrado":
+                        Dictionary<string, DateTime> modifiedPosgradoIds = AcademicFormation.GetModifiedPosgrado(arguments.From);
+                        List<Posgrado> posgradoList = new();
+                        foreach (string id in modifiedPosgradoIds.Keys)
+                        {
+                            posgradoList.Add(AcademicFormation.GetFormacionAcademicaPosgrado(id));
+                        }
+                        break;
+                    case "FormacionAcademica-Especializada":
+                        Dictionary<string, DateTime> modifiedEspecializadaIds = AcademicFormation.GetModifiedEspecializada(arguments.From);
+                        List<FormacionEspecializada> especializadaList = new();
+                        foreach (string id in modifiedEspecializadaIds.Keys)
+                        {
+                            especializadaList.Add(AcademicFormation.GetFormacionAcademicaEspecializada(id));
+                        }
+                        break;
+                    case "FormacionAcademica-Idiomas":
+                        Dictionary<string, DateTime> modifiedIdiomasIds = AcademicFormation.GetModifiedIdiomas(arguments.From);
+                        List<ConocimientoIdiomas> idiomaList = new();
+                        foreach (string id in modifiedIdiomasIds.Keys)
+                        {
+                            idiomaList.Add(AcademicFormation.GetFormacionAcademicaIdiomas(id));
+                        }
+                        break;
+                    case "Tesis":
+                        Dictionary<string, DateTime> modifiedTesisIds = DocentActivity.GetModifiedTesis(arguments.From);
+                        List<Tesis> tesisList = new();
+                        foreach (string id in modifiedTesisIds.Keys)
+                        {
+                            tesisList.Add(DocentActivity.GetTesis(id));
+                        }
+                        break;
+                    case "FormacionImpartida":
+                        Dictionary<string, DateTime> modifiedFormacionImpartidaIds = DocentActivity.GetModifiedAcademicFormationProvided(arguments.From);
+                        List<FormacionAcademicaImpartida> formacionImpartidaList = new();
+                        foreach (string id in modifiedFormacionImpartidaIds.Keys)
+                        {
+                            formacionImpartidaList.Add(DocentActivity.GetAcademicFormationProvided(id));
+                        }
+                        break;
+                    case "Seminarios":
+                        Dictionary<string, DateTime> modifiedSeminariosIds = DocentActivity.GetModifiedSeminars(arguments.From);
+                        List<SeminariosCursos> seminariosList = new();
+                        foreach (string id in modifiedSeminariosIds.Keys)
+                        {
+                            seminariosList.Add(DocentActivity.GetSeminars(id));
                         }
                         break;
                 }
