@@ -27,7 +27,11 @@ namespace CurriculumvitaeOntology
 		[LABEL(LanguageEnum.es,"Usuario Gnoss")]
 		[RDFProperty("http://w3id.org/roh/gnossUser")]
 		public  object Roh_gnossUser  { get; set;} 
-		public string IdRoh_gnossUser  { get; set;} 
+		public string IdRoh_gnossUser  { get; set;}
+
+		[LABEL(LanguageEnum.es, "http://w3id.org/roh/professionalSituation")]
+		[RDFProperty("http://w3id.org/roh/professionalSituation")]
+		public ProfessionalSituation Roh_professionalSituation { get; set; }
 
 		[LABEL(LanguageEnum.es,"http://w3id.org/roh/scientificExperience")]
 		[RDFProperty("http://w3id.org/roh/scientificExperience")]
@@ -61,6 +65,14 @@ namespace CurriculumvitaeOntology
 		internal override void GetEntities()
 		{
 			base.GetEntities();
+			Roh_personalData.GetProperties();
+			Roh_personalData.GetEntities();
+			OntologyEntity entityRoh_personalData = new("http://w3id.org/roh/PersonalData", "http://w3id.org/roh/PersonalData", "roh:personalData", Roh_personalData.propList, Roh_personalData.entList);
+			entList.Add(entityRoh_personalData);
+			Roh_professionalSituation.GetProperties();
+			Roh_professionalSituation.GetEntities();
+			OntologyEntity entityRoh_professionalSituation = new("http://w3id.org/roh/ProfessionalSituation", "http://w3id.org/roh/ProfessionalSituation", "roh:professionalSituation", Roh_professionalSituation.propList, Roh_professionalSituation.entList);
+			entList.Add(entityRoh_professionalSituation);
 			Roh_scientificExperience.GetProperties();
 			Roh_scientificExperience.GetEntities();
 			OntologyEntity entityRoh_scientificExperience = new ("http://w3id.org/roh/ScientificExperience", "http://w3id.org/roh/ScientificExperience", "roh:scientificExperience", Roh_scientificExperience.propList, Roh_scientificExperience.entList);
@@ -69,10 +81,7 @@ namespace CurriculumvitaeOntology
 			Roh_scientificActivity.GetEntities();
 			OntologyEntity entityRoh_scientificActivity = new ("http://w3id.org/roh/ScientificActivity", "http://w3id.org/roh/ScientificActivity", "roh:scientificActivity", Roh_scientificActivity.propList, Roh_scientificActivity.entList);
 			entList.Add(entityRoh_scientificActivity);
-			Roh_personalData.GetProperties();
-			Roh_personalData.GetEntities();
-			OntologyEntity entityRoh_personalData = new ("http://w3id.org/roh/PersonalData", "http://w3id.org/roh/PersonalData", "roh:personalData", Roh_personalData.propList, Roh_personalData.entList);
-			entList.Add(entityRoh_personalData);
+			
 			Roh_researchObject.GetProperties();
 			Roh_researchObject.GetEntities();
 			OntologyEntity entityRoh_researchObject = new("http://w3id.org/roh/ResearchObjects", "http://w3id.org/roh/ResearchObjects", "roh:researchObject", Roh_researchObject.propList, Roh_researchObject.entList);
