@@ -81,7 +81,6 @@ namespace GuardadoCV.Models.Utils
             }
         }
 
-
         /// <summary>
         /// Método para dividir listas
         /// </summary>
