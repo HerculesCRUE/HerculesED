@@ -480,7 +480,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             {
                 EvalRevIDI evalRevIDI = new EvalRevIDI();
                 evalRevIDI.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.evalRevIDIFunciones)?.values.FirstOrDefault();
-                evalRevIDI.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.evalRevIDIFechaInicio)?.values.FirstOrDefault();
+                evalRevIDI.nombreActividad = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.evalRevIDINombre)?.values.FirstOrDefault();
                 evalRevIDI.ID = Guid.NewGuid().ToString();
                 entidadesXML.Add(evalRevIDI.ID, evalRevIDI);
             }
