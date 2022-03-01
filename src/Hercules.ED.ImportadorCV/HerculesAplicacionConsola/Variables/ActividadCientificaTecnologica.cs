@@ -33,17 +33,16 @@ namespace HerculesAplicacionConsola.Variables
         public const string pubDocumentosPubNumero = "http://purl.org/ontology/bibo/issue";
         public const string pubDocumentosPubPagIni = "http://purl.org/ontology/bibo/pageStart";
         public const string pubDocumentosPubPagFin = "http://purl.org/ontology/bibo/pageEnd";
-        //public const string pubDocumentosPubEditorial = "";
+        //public const string pubDocumentosPubEditorial = ""; //TODO ¿?
         public const string pubDocumentosPubPais = "https://www.w3.org/2006/vcard/ns#hasCountryName";
         public const string pubDocumentosPubCCAA = "https://www.w3.org/2006/vcard/ns#hasRegion";
         public const string pubDocumentosPubFecha = "http://purl.org/dc/terms/issued";
         public const string pubDocumentosPubURL = "https://www.w3.org/2006/vcard/ns#url";
         public const string pubDocumentosPubISBN = "http://w3id.org/roh/isbn";
-        public const string pubDocumentosPubISBNType = "";
         public const string pubDocumentosPubDepositoLegal = "http://w3id.org/roh/legalDeposit";        
         public const string pubDocumentosPubCiudad = "https://www.w3.org/2006/vcard/ns#locality";
         //public const string pubDocumentosCategoria = "";
-        public const string pubDocumentosColeccion = "";
+        public const string pubDocumentosColeccion = "http://w3id.org/roh/collection";
         public const string pubDocumentosResultadosDestacados = "http://w3id.org/roh/relevantResults";
         public const string pubDocumentosPubRelevante = "http://w3id.org/roh/relevantPublication";
         public const string pubDocumentosReseniaRevista = "http://w3id.org/roh/reviewsNumber";
@@ -58,8 +57,8 @@ namespace HerculesAplicacionConsola.Variables
         /// <summary>
         /// Trabajos presentados en congresos nacionales o internacionales - 060.010.020.000
         /// <summary>
-        public const string trabajosCongresosTipoEvento = "";//TODO
-        public const string trabajosCongresosTipoEventoOtros = "";
+        public const string trabajosCongresosTipoEvento = "http://purl.org/ontology/bibo/presentedAt@@@http://purl.org/ontology/bibo/Event|http://purl.org/dc/elements/1.1/type";
+        public const string trabajosCongresosTipoEventoOtros = "";//TODO
         public const string trabajosCongresosTitulo = "http://w3id.org/roh/title";
         //public const string trabajosCongresosAutores = "http://purl.org/ontology/bibo/authorList@@@http://purl.obolibrary.org/obo/BFO_0000023|http://xmlns.com/foaf/0.1/nick";
         //public const string trabajosCongresosAutorNombre = "";
@@ -82,8 +81,8 @@ namespace HerculesAplicacionConsola.Variables
         public const string trabajosCongresosCCAACelebracion = "http://purl.org/ontology/bibo/presentedAt@@@http://purl.org/ontology/bibo/Event|https://www.w3.org/2006/vcard/ns#hasRegion";
         public const string trabajosCongresosCiudadCelebracion = "http://purl.org/ontology/bibo/presentedAt@@@http://purl.org/ontology/bibo/Event|https://www.w3.org/2006/vcard/ns#locality";
         public const string trabajosCongresosFechaCelebracion = "http://purl.org/ontology/bibo/presentedAt@@@http://purl.org/ontology/bibo/Event|http://vivoweb.org/ontology/core#start";
-        public const string trabajosCongresosPubActa = "http://purl.org/ontology/bibo/presentedAt@@@http://purl.org/ontology/bibo/Event|http://w3id.org/roh/withExternalAdmissionsCommittee";
-        public const string trabajosCongresosPubActaExterno = "";
+        public const string trabajosCongresosPubActa = "http://w3id.org/roh/congressProceedingsPublication";
+        public const string trabajosCongresosComiteExterno = "http://purl.org/ontology/bibo/presentedAt@@@http://purl.org/ontology/bibo/Event|http://w3id.org/roh/withExternalAdmissionsCommittee";
         public const string trabajosCongresosFormaContribucion = "";
         public const string trabajosCongresosPubTitulo = "http://w3id.org/roh/publicationTitle";
         public const string trabajosCongresosPubNombre = "http://w3id.org/roh/hasPublicationVenueText";
@@ -91,15 +90,14 @@ namespace HerculesAplicacionConsola.Variables
         public const string trabajosCongresosPubNumero = "http://purl.org/ontology/bibo/issue";
         public const string trabajosCongresosPubPagIni = "http://purl.org/ontology/bibo/pageStart";
         public const string trabajosCongresosPubPagFin = "http://purl.org/ontology/bibo/pageEnd";
-        //public const string trabajosCongresosPubEditorial = "";
+        //public const string trabajosCongresosPubEditorial = ""; //TODO ¿?
         public const string trabajosCongresosPubPais = "https://www.w3.org/2006/vcard/ns#hasCountryName";
         public const string trabajosCongresosPubCCAA = "https://www.w3.org/2006/vcard/ns#hasRegion";
         public const string trabajosCongresosPubFecha = "http://purl.org/dc/terms/issued";
         public const string trabajosCongresosPubURL = "https://www.w3.org/2006/vcard/ns#url";
         public const string trabajosCongresosPubISBN = "http://w3id.org/roh/isbn";
-        public const string trabajosCongresosPubISBNType = "";//TODO - ISSN ?
-        public const string trabajosCongresosPubDepositoLegal = "";
-        public const string trabajosCongresosFechaFin = "";
+        public const string trabajosCongresosPubDepositoLegal = "http://w3id.org/roh/legalDeposit";
+        public const string trabajosCongresosFechaFin = "http://purl.org/ontology/bibo/presentedAt@@@http://purl.org/ontology/bibo/Event|http://vivoweb.org/ontology/core#end";
         public const string trabajosCongresosAutoCorrespondencia = "";
         public const string trabajosCongresosIDPubDigitalDOI = "http://purl.org/ontology/bibo/doi";
         public const string trabajosCongresosIDPubDigitalHandle = "http://purl.org/ontology/bibo/handle";
@@ -141,13 +139,12 @@ namespace HerculesAplicacionConsola.Variables
         public const string trabajosJornSemPubNumero = "http://purl.org/ontology/bibo/issue";
         public const string trabajosJornSemPubPagIni = "http://purl.org/ontology/bibo/pageStart";
         public const string trabajosJornSemPubPagFin = "http://purl.org/ontology/bibo/pageEnd";
-        public const string trabajosJornSemPubEditorial = "";
+        //public const string trabajosJornSemPubEditorial = ""; //TODO ¿?
         public const string trabajosJornSemPubPais = "https://www.w3.org/2006/vcard/ns#hasCountryName";
         public const string trabajosJornSemPubCCAA = "https://www.w3.org/2006/vcard/ns#hasRegion";
         public const string trabajosJornSemPubFecha = "http://purl.org/dc/terms/issued";
         public const string trabajosJornSemPubURL = "https://www.w3.org/2006/vcard/ns#url";
         public const string trabajosJornSemPubISBN = "";
-        public const string trabajosJornSemPubISBNType = "";
         public const string trabajosJornSemPubDepositoLegal = "http://w3id.org/roh/legalDeposit";
         public const string trabajosJornSemPubFechaFinCelebracion = "http://purl.org/ontology/bibo/presentedAt@@@http://purl.org/ontology/bibo/Event|http://vivoweb.org/ontology/core#end";
         public const string trabajosJornSemAutorCorrespondencia = "";
@@ -175,13 +172,13 @@ namespace HerculesAplicacionConsola.Variables
         public const string otrasActDivulPaisEntidadOrg = "";
         public const string otrasActDivulCCAAEntidadOrg = "";
         public const string otrasActDivulCiudadEntidadOrg = "";
-        public const string otrasActDivulEntidadOrg = "";
+        public const string otrasActDivulEntidadOrg = "http://purl.org/ontology/bibo/presentedAt@@@http://purl.org/ontology/bibo/Event|http://purl.org/ontology/bibo/organizer";
         public const string otrasActDivulTipoEntidadOrg = "";
         public const string otrasActDivulTipoEntidadOrgOtros = "";
         public const string otrasActDivulPaisCelebracion = "http://purl.org/ontology/bibo/presentedAt@@@http://purl.org/ontology/bibo/Event|https://www.w3.org/2006/vcard/ns#hasCountryName";
         public const string otrasActDivulCCAACelebracion = "http://purl.org/ontology/bibo/presentedAt@@@http://purl.org/ontology/bibo/Event|https://www.w3.org/2006/vcard/ns#hasRegion";
         public const string otrasActDivulCiudadCelebracion = "http://purl.org/ontology/bibo/presentedAt@@@http://purl.org/ontology/bibo/Event|https://www.w3.org/2006/vcard/ns#locality";
-        public const string otrasActDivulFechaCelebracion = "";
+        public const string otrasActDivulFechaCelebracion = "http://purl.org/ontology/bibo/presentedAt@@@http://purl.org/ontology/bibo/Event|http://vivoweb.org/ontology/core#start";
         public const string otrasActDivulPubActaCongreso = "http://w3id.org/roh/congressProceedingsPublication";
         public const string otrasActDivulPubActaAdmisionExt = "http://w3id.org/roh/withExternalAdmissionsCommittee";
         public const string otrasActDivulPubTipo = "";
@@ -191,13 +188,12 @@ namespace HerculesAplicacionConsola.Variables
         public const string otrasActDivulPubNumero = "http://purl.org/ontology/bibo/issue";
         public const string otrasActDivulPubPagIni = "http://purl.org/ontology/bibo/pageStart";
         public const string otrasActDivulPubPagFin = "http://purl.org/ontology/bibo/pageEnd";
-        public const string otrasActDivulPubEditorial = "";
+        //public const string otrasActDivulPubEditorial = "";//TODO ¿?
         public const string otrasActDivulPubPais = "https://www.w3.org/2006/vcard/ns#hasCountryName";
         public const string otrasActDivulPubCCAA = "https://www.w3.org/2006/vcard/ns#hasRegion";
         public const string otrasActDivulPubFecha = "http://purl.org/dc/terms/issued";
         public const string otrasActDivulPubURL = "https://www.w3.org/2006/vcard/ns#url";
         public const string otrasActDivulPubISBN = "";
-        public const string otrasActDivulPubISBNType = "";
         public const string otrasActDivulPubDepositoLegal = "http://w3id.org/roh/legalDeposit";
         public const string otrasActDivulAutorCorrespondencia = "";
         public const string otrasActDivulIDPubDigitalDOI = "http://purl.org/ontology/bibo/doi";
@@ -216,7 +212,8 @@ namespace HerculesAplicacionConsola.Variables
         public const string comitesCTAPaisEntidadAfiliacion = "http://w3id.org/roh/affiliatedOrganizationHasCountryName";
         public const string comitesCTACCAAEntidadAfiliacion = "http://w3id.org/roh/affiliatedOrganizationHasRegion";
         public const string comitesCTACiudadEntidadAfiliacion = "http://w3id.org/roh/affiliatedOrganizationLocality";
-        public const string comitesCTAEntidadAfiliacion = "http://vivoweb.org/ontology/core#affiliatedOrganization";
+        public const string comitesCTAEntidadAfiliacion = "";
+        public const string comitesCTAEntidadAfiliacionNombre = "";
         public const string comitesCTATipoEntidadAfiliacion = "http://w3id.org/roh/affiliatedOrganizationType";
         public const string comitesCTATipoEntidadAfiliacionOtros = "http://w3id.org/roh/affiliatedOrganizationTypeOther";
         public const string comitesCTAAmbitoActividad = "http://vivoweb.org/ontology/core#geographicFocus";
@@ -238,7 +235,8 @@ namespace HerculesAplicacionConsola.Variables
         public const string orgIDIPaisEntidadConvocante = "http://w3id.org/roh/promotedByHasCountryName";
         public const string orgIDICCAAEntidadConvocante = "http://w3id.org/roh/promotedByHasRegion";
         public const string orgIDICiudadEntidadConvocante = "http://w3id.org/roh/promotedByLocality";
-        public const string orgIDIEntidadConvocante = "http://w3id.org/roh/promotedByTitle";
+        public const string orgIDIEntidadConvocante = "http://w3id.org/roh/promotedBy";
+        public const string orgIDIEntidadConvocanteNombre = "http://w3id.org/roh/promotedByTitle";
         public const string orgIDITipoEntidadConvocante = "http://w3id.org/roh/promotedByType";
         public const string orgIDITipoEntidadConvocanteOtros = "http://w3id.org/roh/promotedByTypeOther";
         public const string orgIDIModoParticipacion = "http://w3id.org/roh/participationType";
@@ -262,7 +260,8 @@ namespace HerculesAplicacionConsola.Variables
         public const string gestionIDINombreActividad = "http://w3id.org/roh/title";
         public const string gestionIDITipologiaGestion = "http://w3id.org/roh/managementType";
         public const string gestionIDITipologiaGestionOtros = "http://w3id.org/roh/managementTypeOther";
-        public const string gestionIDIEntornoEntidadRealizacion = "http://w3id.org/roh/promotedByTitle";
+        public const string gestionIDIEntornoEntidadRealizacion = "http://w3id.org/roh/promotedBy";
+        public const string gestionIDIEntornoEntidadRealizacionNombre = "http://w3id.org/roh/promotedByTitle";
         public const string gestionIDIEntornoTipoEntidadRealizacion = "http://w3id.org/roh/promotedByType";
         public const string gestionIDIEntornoTipoEntidadRealizacionOtros = "http://w3id.org/roh/promotedByTypeOther";
         public const string gestionIDIEntornoFechaInicio = "http://vivoweb.org/ontology/core#start";
@@ -290,14 +289,16 @@ namespace HerculesAplicacionConsola.Variables
         public const string forosComitesPaisEntidadOrganizadora = "http://w3id.org/roh/promotedByHasCountryName";
         public const string forosComitesCCAAEntidadOrganizadora = "http://w3id.org/roh/promotedByHasRegion";
         public const string forosComitesCiudadEntidadOrganizadora = "http://w3id.org/roh/promotedByLocality";
-        public const string forosComitesEntidadOrganizadora = "http://w3id.org/roh/promotedByTitle";
+        public const string forosComitesEntidadOrganizadora = "http://w3id.org/roh/promotedBy";
+        public const string forosComitesEntidadOrganizadoraNombre = "http://w3id.org/roh/promotedByTitle";
         public const string forosComitesTipoEntidadOrganizadora = "http://w3id.org/roh/promotedByType";
         public const string forosComitesTipoEntidadOrganizadoraOtros = "http://w3id.org/roh/promotedByTypeOther";
         public const string forosComitesCategoriaProfesional = "http://w3id.org/roh/professionalCategory";
         public const string forosComitesPaisEntidadRepresentada = "http://w3id.org/roh/representedEntityHasCountryName";
         public const string forosComitesCCAAEntidadRepresentada = "http://w3id.org/roh/representedEntityHasRegion";
         public const string forosComitesCiudadEntidadRepresentada = "http://w3id.org/roh/representedEntityLocality";
-        public const string forosComitesOrganismoRepresentado = "http://w3id.org/roh/representedEntityTitle";
+        public const string forosComitesOrganismoRepresentado = "http://w3id.org/roh/representedEntity";
+        public const string forosComitesOrganismoRepresentadoNombre = "http://w3id.org/roh/representedEntityTitle";
         public const string forosComitesTipoOrganismoRepresentado = "http://w3id.org/roh/representedEntityType";
         public const string forosComitesTipoOrganismoRepresentadoOtros = "http://w3id.org/roh/representedEntityTypeOther";
         public const string forosComitesFechaInicio = "http://vivoweb.org/ontology/core#start";
@@ -309,7 +310,8 @@ namespace HerculesAplicacionConsola.Variables
         /// <summary>
         public const string evalRevIDIFunciones = "http://w3id.org/roh/functions";
         public const string evalRevIDINombre = "http://w3id.org/roh/title";
-        public const string evalRevIDIEntidad = "http://w3id.org/roh/conductedByTitle";
+        public const string evalRevIDIEntidad = "http://w3id.org/roh/conductedBy";
+        public const string evalRevIDIEntidadNombre = "http://w3id.org/roh/conductedByTitle";
         public const string evalRevIDIPaisEntidadRealizacion = "https://www.w3.org/2006/vcard/ns#hasCountryName";
         public const string evalRevIDICCAAEntidadRealizacion = "https://www.w3.org/2006/vcard/ns#hasRegion";
         public const string evalRevIDICiudadEntidadRealizacion = "https://www.w3.org/2006/vcard/ns#locality";
@@ -328,7 +330,8 @@ namespace HerculesAplicacionConsola.Variables
         /// <summary>
         /// Estancias en centros de I+D+i públicos o privados - 060.010.050.000
         /// </summary>
-        public const string estanciasIDIEntidadRealizacion = "http://w3id.org/roh/entityTitle";
+        public const string estanciasIDIEntidadRealizacion = "http://w3id.org/roh/entity";
+        public const string estanciasIDIEntidadRealizacionNombre = "http://w3id.org/roh/entityTitle";
         public const string estanciasIDITipoEntidadRealizacion = "http://w3id.org/roh/entityType";
         public const string estanciasIDITipoEntidadRealizacionOtros = "http://w3id.org/roh/entityTypeOther";
         public const string estanciasIDIPaisEntidadRealizacion = "https://www.w3.org/2006/vcard/ns#hasCountryName";
@@ -343,7 +346,8 @@ namespace HerculesAplicacionConsola.Variables
         public const string estanciasIDICodUnescoPrimaria = ""; // TODO
         public const string estanciasIDICodUnescoSecundaria = ""; // TODO
         public const string estanciasIDICodUnescoTerciaria = ""; // TODO
-        public const string estanciasIDIEntidadFinanciadora = "http://w3id.org/roh/fundedByTitle";
+        public const string estanciasIDIEntidadFinanciadora = "http://w3id.org/roh/fundedBy";
+        public const string estanciasIDIEntidadFinanciadoraNombre = "http://w3id.org/roh/fundedByTitle";
         public const string estanciasIDIPaisEntidadFinanciadora = "http://w3id.org/roh/fundedByHasCountryName";
         public const string estanciasIDICCAAEntidadFinanciadora = "http://w3id.org/roh/fundedByHasRegion";
         public const string estanciasIDICiudadEntidadFinanciadora = "http://w3id.org/roh/fundedByLocality";
@@ -367,7 +371,8 @@ namespace HerculesAplicacionConsola.Variables
         public const string ayudasBecasPalabrasClave = "";// --- TODO --- 
         public const string ayudasBecasFinalidad = "http://w3id.org/roh/aims";
         public const string ayudasBecasFinalidadOtros = "http://w3id.org/roh/aimsOther";
-        public const string ayudasBecasEntidadConcede = "http://w3id.org/roh/awardingEntityTitle";
+        public const string ayudasBecasEntidadConcede = "http://w3id.org/roh/awardingEntity";
+        public const string ayudasBecasEntidadConcedeNombre = "http://w3id.org/roh/awardingEntityTitle";
         public const string ayudasBecasTipoEntidadConcede = "http://w3id.org/roh/awardingEntityType";
         public const string ayudasBecasTipoEntidadConcedeOtros = "http://w3id.org/roh/awardingEntityTypeOther";
         public const string ayudasBecasImporte = "http://w3id.org/roh/monetaryAmount";
@@ -394,7 +399,8 @@ namespace HerculesAplicacionConsola.Variables
         public const string otrasColabPaisEntidadParticipante = "http://w3id.org/roh/participates@@@http://w3id.org/roh/Organization|https://www.w3.org/2006/vcard/ns#hasCountryName";
         public const string otrasColabCCAAEntidadParticipante = "http://w3id.org/roh/participates@@@http://w3id.org/roh/Organization|https://www.w3.org/2006/vcard/ns#hasRegion";
         public const string otrasColabCiudadEntidadParticipante = "http://w3id.org/roh/participates@@@http://w3id.org/roh/Organization|https://www.w3.org/2006/vcard/ns#locality";
-        public const string otrasColabEntidadesParticipantes = "http://w3id.org/roh/participates@@@http://w3id.org/roh/Organization|http://w3id.org/roh/organizationTitle";
+        public const string otrasColabEntidadesParticipantesNombre = "http://w3id.org/roh/participates@@@http://w3id.org/roh/Organization|http://w3id.org/roh/organizationTitle";
+        public const string otrasColabEntidadesParticipantes = "http://w3id.org/roh/participates@@@http://w3id.org/roh/Organization|http://w3id.org/roh/organization";
         public const string otrasColabTipoEntidad = "http://w3id.org/roh/participates@@@http://w3id.org/roh/Organization|http://w3id.org/roh/organizationType";
         public const string otrasColabTipoEntidadOtros = "http://w3id.org/roh/participates@@@http://w3id.org/roh/Organization|http://w3id.org/roh/organizationTypeOther";
         public const string otrasColabFechaInicio = "http://vivoweb.org/ontology/core#start";
@@ -415,7 +421,8 @@ namespace HerculesAplicacionConsola.Variables
         public const string sociedadesPaisEntidadAfiliacion = "http://w3id.org/roh/affiliatedOrganizationHasCountryName";
         public const string sociedadesCCAAEntidadAfiliacion = "http://w3id.org/roh/affiliatedOrganizationHasRegion";
         public const string sociedadesCiudadEntidadAfiliacion = "http://w3id.org/roh/affiliatedOrganizationLocality";
-        public const string sociedadesEntidadAfiliacion = "http://w3id.org/roh/affiliatedOrganizationTitle";
+        public const string sociedadesEntidadAfiliacion = "http://vivoweb.org/ontology/core#affiliatedOrganization";
+        public const string sociedadesEntidadAfiliacionNombre = "http://w3id.org/roh/affiliatedOrganizationTitle";
         public const string sociedadesTipoEntidadAfiliacion = "http://w3id.org/roh/affiliatedOrganizationType";
         public const string sociedadesTipoEntidadAfiliacionOtros = "http://w3id.org/roh/affiliatedOrganizationTypeOther";
         public const string sociedadesPalabrasClave = "";// --- TODO --- 
@@ -432,7 +439,8 @@ namespace HerculesAplicacionConsola.Variables
         public const string consejosCCAARadicacion = "https://www.w3.org/2006/vcard/ns#hasRegion";
         public const string consejosCiudadRadicacion = "https://www.w3.org/2006/vcard/ns#locality";
         public const string consejosPaisEntidadAfiliacion = "http://w3id.org/roh/affiliatedOrganizationHasCountryName";
-        public const string consejosEntidadAfiliacion = "http://w3id.org/roh/affiliatedOrganizationTitle";
+        public const string consejosEntidadAfiliacion = "http://vivoweb.org/ontology/core#affiliatedOrganization";
+        public const string consejosEntidadAfiliacionNombre = "http://w3id.org/roh/affiliatedOrganizationTitle";
         public const string consejosCCAAEntidadAfiliacion = "http://w3id.org/roh/affiliatedOrganizationHasRegion";
         public const string consejosCiudadEntidadAfiliacion = "http://w3id.org/roh/affiliatedOrganizationLocality";
         public const string consejosTipoEntidadAfiliacion = "http://w3id.org/roh/affiliatedOrganizationType";
@@ -456,13 +464,15 @@ namespace HerculesAplicacionConsola.Variables
         public const string redesCoopPaisRadicacion = "https://www.w3.org/2006/vcard/ns#hasCountryName";
         public const string redesCoopCCAARadicacion = "https://www.w3.org/2006/vcard/ns#hasRegion";
         public const string redesCoopCiudadRadicacion = "https://www.w3.org/2006/vcard/ns#locality";
-        public const string redesCoopEntidadSeleccion = "http://w3id.org/roh/selectionEntityTitle";
+        public const string redesCoopEntidadSeleccionNombre = "http://w3id.org/roh/selectionEntityTitle";
+        public const string redesCoopEntidadSeleccion = "http://w3id.org/roh/selectionEntity";
         public const string redesCoopTipoEntidadSeleccion = "http://w3id.org/roh/selectionEntityType";
         public const string redesCoopTipoEntidadSeleccionOtros = "http://w3id.org/roh/selectionEntityTypeOther";
         public const string redesCoopPaisEntidadSeleccion = "http://w3id.org/roh/selectionEntityHasCountryName";
         public const string redesCoopCCAAEntidadSeleccion = "http://w3id.org/roh/selectionEntityHasRegion";
         public const string redesCoopCiudadEntidadSeleccion = "http://w3id.org/roh/selectionEntityLocality";
-        public const string redesCoopEntidadParticipante = "http://w3id.org/roh/participates@@@http://w3id.org/roh/Organization|http://w3id.org/roh/organizationTitle";
+        public const string redesCoopEntidadParticipante = "http://w3id.org/roh/participates@@@http://w3id.org/roh/Organization|http://w3id.org/roh/organization";
+        public const string redesCoopEntidadParticipanteNombre = "http://w3id.org/roh/participates@@@http://w3id.org/roh/Organization|http://w3id.org/roh/organizationTitle";
         public const string redesCoopTipoEntidadParticipante = "http://w3id.org/roh/participates@@@http://w3id.org/roh/Organization|http://w3id.org/roh/organizationType";
         public const string redesCoopTipoEntidadParticipanteOtros = "http://w3id.org/roh/participates@@@http://w3id.org/roh/Organization|http://w3id.org/roh/organizationTypeOther";
         public const string redesCoopTareas = "http://w3id.org/roh/performedTasks";
@@ -478,7 +488,8 @@ namespace HerculesAplicacionConsola.Variables
         public const string premiosMencionesPais = "https://www.w3.org/2006/vcard/ns#hasCountryName";
         public const string premiosMencionesCCAA = "https://www.w3.org/2006/vcard/ns#hasRegion";
         public const string premiosMencionesCiudad = "https://www.w3.org/2006/vcard/ns#locality";
-        public const string premiosMencionesEntidad = "http://w3id.org/roh/accreditationIssuedByTitle";
+        public const string premiosMencionesEntidadNombre = "http://w3id.org/roh/accreditationIssuedByTitle";
+        public const string premiosMencionesEntidad = "http://w3id.org/roh/accreditationIssuedBy";
         public const string premiosMencionesTipoEntidad = "http://w3id.org/roh/organizationType";
         public const string premiosMencionesTipoEntidadOtros = "http://w3id.org/roh/organizationTypeOther";
         public const string premiosMencionesReconocimientosLigados = "http://w3id.org/roh/recognitionLinked";
@@ -491,7 +502,8 @@ namespace HerculesAplicacionConsola.Variables
         public const string otrasDistincionesPais = "https://www.w3.org/2006/vcard/ns#hasCountryName";
         public const string otrasDistincionesCCAA = "https://www.w3.org/2006/vcard/ns#hasRegion";
         public const string otrasDistincionesCiudad = "https://www.w3.org/2006/vcard/ns#locality";
-        public const string otrasDistincionesEntidad = "http://w3id.org/roh/accreditationIssuedByTitle";
+        public const string otrasDistincionesEntidadNombre = "http://w3id.org/roh/accreditationIssuedByTitle";
+        public const string otrasDistincionesEntidad = "http://w3id.org/roh/accreditationIssuedBy";
         public const string otrasDistincionesTipoEntidad = "http://w3id.org/roh/organizationType";
         public const string otrasDistincionesTipoEntidadOtros = "http://w3id.org/roh/organizationTypeOther";
         public const string otrasDistincionesAmbito = "http://vivoweb.org/ontology/core#geographicFocus";
@@ -505,7 +517,8 @@ namespace HerculesAplicacionConsola.Variables
         public const string actividadInvestigadoraPaisEntidad = "https://www.w3.org/2006/vcard/ns#hasCountryName";
         public const string actividadInvestigadoraCCAAEntidad = "https://www.w3.org/2006/vcard/ns#hasRegion";
         public const string actividadInvestigadoraCiudadEntidad = "https://www.w3.org/2006/vcard/ns#locality";
-        public const string actividadInvestigadoraEntidad = "http://w3id.org/roh/accreditationIssuedByTitle";
+        public const string actividadInvestigadoraEntidadNombre = "http://w3id.org/roh/accreditationIssuedByTitle";
+        public const string actividadInvestigadoraEntidad = "http://w3id.org/roh/accreditationIssuedBy";
         public const string actividadInvestigadoraTipoEntidad = "http://w3id.org/roh/organizationType";
         public const string actividadInvestigadoraTipoEntidadOtros = "http://w3id.org/roh/organizationTypeOther";
         public const string actividadInvestigadoraAmbito = "http://vivoweb.org/ontology/core#geographicFocus";
@@ -515,12 +528,13 @@ namespace HerculesAplicacionConsola.Variables
         /// <summary>
         /// Acreditaciones/reconocimientos obtenidos - 060.030.090.000
         /// </summary>
-        public const string acreditacionesNombre = "http://w3id.org/roh/title";
+        public const string acreditacionesDescripcion = "http://w3id.org/roh/title";
         public const string acreditacionesPaisEntidad = "https://www.w3.org/2006/vcard/ns#hasCountryName";
         public const string acreditacionesCCAAEntidad = "https://www.w3.org/2006/vcard/ns#hasRegion";
         public const string acreditacionesCiudadEntidad = "https://www.w3.org/2006/vcard/ns#locality";
         public const string acreditacionesFechaObtencion = "http://w3id.org/roh/dateIssued";
-        public const string acreditacionesEntidad = "http://w3id.org/roh/accreditationIssuedByTitle";
+        public const string acreditacionesEntidadNombre = "http://w3id.org/roh/accreditationIssuedByTitle";
+        public const string acreditacionesEntidad = "http://w3id.org/roh/accreditationIssuedBy";
         public const string acreditacionesTipoEntidad = "http://w3id.org/roh/organizationType";
         public const string acreditacionesTipoEntidadOtros = "http://w3id.org/roh/organizationTypeOther";
         public const string acreditacionesNumeroTramos = "http://w3id.org/roh/recognizedPeriods";
@@ -533,7 +547,8 @@ namespace HerculesAplicacionConsola.Variables
         public const string otrosMeritosPaisEntidad = "https://www.w3.org/2006/vcard/ns#hasCountryName";
         public const string otrosMeritosCCAAEntidad = "https://www.w3.org/2006/vcard/ns#hasRegion";
         public const string otrosMeritosCiudadEntidad = "https://www.w3.org/2006/vcard/ns#locality";
-        public const string otrosMeritosEntidad = "http://w3id.org/roh/accreditationIssuedByTitle";
+        public const string otrosMeritosEntidadNombre = "http://w3id.org/roh/accreditationIssuedByTitle";
+        public const string otrosMeritosEntidad = "http://w3id.org/roh/accreditationIssuedBy";
         public const string otrosMeritosTipoEntidad = "http://w3id.org/roh/organizationType";
         public const string otrosMeritosTipoEntidadOtros = "http://w3id.org/roh/organizationTypeOther";
         public const string otrosMeritosFechaConcesion = "http://w3id.org/roh/dateIssued";
