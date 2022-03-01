@@ -403,7 +403,7 @@
                         "autocompleteConfig": {
                           "rdftype": "http://xmlns.com/foaf/0.1/Organization",
                           "graph": "organization",
-                          "propertyEntity": "http://w3id.org/roh/organization",
+                          "propertyEntity": "http://w3id.org/roh/employerOrganization",
                           "property": {
                             "property": "http://w3id.org/roh/title"
                           }
@@ -1375,7 +1375,7 @@
                         "autocompleteConfig": {
                           "rdftype": "http://xmlns.com/foaf/0.1/Organization",
                           "graph": "organization",
-                          "propertyEntity": "http://w3id.org/roh/organization",
+                          "propertyEntity": "http://w3id.org/roh/employerOrganization",
                           "property": {
                             "property": "http://w3id.org/roh/title"
                           }
