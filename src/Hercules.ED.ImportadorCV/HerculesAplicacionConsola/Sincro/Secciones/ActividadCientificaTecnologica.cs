@@ -7,6 +7,7 @@ using Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Utils;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 using static Models.Entity;
@@ -15,9 +16,10 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
 {
     class ActividadCientificaTecnologica : SeccionBase
     {
-        
+
 
         private List<CvnItemBean> listadoDatos = new List<CvnItemBean>();
+        private string RdfTypeTab = "http://w3id.org/roh/ScientificActivity";
         public ActividadCientificaTecnologica(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
             listadoDatos = mCvn.GetListadoBloque("060");
@@ -39,6 +41,121 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             return null;
         }
 
+        /// <summary>
+        /// Añade o modifica las propiedades de las entidades en BBDD comparandolas con las leidas del XML.
+        /// </summary>
+        private void AniadirModificarActividadCientifica(List<Entity> listadoAux, Dictionary<string, DisambiguableEntity> entidadesXML,
+            Dictionary<string, string> equivalencias, string propTitle, string graph, string rdfType, string rdfTypePrefix,
+            List<string> propiedadesItem, [Optional] string pPropertyCV, [Optional] string pRdfTypeCV)
+        {
+            for (int i = 0; i < listadoAux.Count; i++)
+            {
+                Entity entityXML = listadoAux[i];
+                string idXML = entidadesXML.Keys.ToList()[i];
+                string idNewEntity = "";
+
+                if (string.IsNullOrEmpty(equivalencias[idXML]))
+                {
+                    //Añadir
+                    entityXML.propTitle = propTitle;
+                    entityXML.ontology = graph;
+                    entityXML.rdfType = rdfType;
+                    idNewEntity = CreateListEntityAux(mCvID, RdfTypeTab, rdfTypePrefix, propiedadesItem, entityXML);
+                }
+                else
+                {
+                    //Modificar
+                    ModificarExistentes(equivalencias, idXML, graph, propTitle, entityXML);
+                }
+
+                if (string.IsNullOrEmpty(idNewEntity))
+                {
+                    idNewEntity = "";
+                }
+
+                //Nuevo metodo
+                if (!string.IsNullOrEmpty(pPropertyCV) && !string.IsNullOrEmpty(pRdfTypeCV))
+                {
+                    valoresPropertiesCV(entityXML, equivalencias, propiedadesItem, pPropertyCV, pRdfTypeCV, idXML, idNewEntity);
+                }
+                //Fin nuevo metodos
+            }
+        }
+
+        private void valoresPropertiesCV(Entity entityXML, Dictionary<string, string> equivalencias, List<string> propiedadesItem,
+            string pPropertyCV, string pRdfTypeCV, string pIdXML, string idNewEntity)
+        {
+            string rdfTypePrefix = "";
+            string entityCVID = "";
+            //Si es nueva tendra valor sino traera una cadena vacia
+            string idEntity = idNewEntity;
+
+            if (entityXML.properties_cv != null && entityXML.properties_cv.Count() > 0 &&
+                propiedadesItem.Count > 2 && equivalencias.ContainsKey(pIdXML))
+            {
+
+                //Obtenemos la auxiliar en la que cargar la entidad
+                SparqlObject tab = mResourceApi.VirtuosoQuery("select *", "where{<" + mCvID + "> ?s ?o. ?o a <" + RdfTypeTab + "> }", "curriculumvitae");
+                string idTab = tab.results.bindings[0]["o"].value;
+
+                //Query para obtener entityID
+                string select = "select distinct ?related ?relatedCV ";
+                string where = $@"where {{
+                                        ?s <{propiedadesItem[0]}> ?category . 
+                                        ?category <{propiedadesItem[propiedadesItem.Count - 2] }> ?related . 
+                                        ?related <{pPropertyCV}> ?relatedCV.
+                                        ?related <http://vivoweb.org/ontology/core#relatedBy> ?item
+                                        FILTER(?s=<{mCvID}>)
+                                        FILTER(?item=<{equivalencias[pIdXML]}>)
+                                    }}";
+                SparqlObject entityIDCV = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+
+
+                //Si no es una nueva entidad añado la referencia de la clase intermedia y de claseCV
+                string idEntityCV = "";
+                if (entityIDCV.results.bindings.Count > 0)
+                {
+                    idEntity = entityIDCV.results.bindings[0]["related"].value;
+                    idEntityCV = entityIDCV.results.bindings[0]["relatedCV"].value;
+                }
+
+                //Si es nulo, genero una nueva referencia de claseCV
+                if (string.IsNullOrEmpty(idEntityCV))
+                {
+                    rdfTypePrefix = GuardadoCV.Models.Utils.UtilityCV.AniadirPrefijo(pRdfTypeCV);
+                    rdfTypePrefix = rdfTypePrefix.Substring(rdfTypePrefix.IndexOf(":") + 1);
+                    entityCVID = $"{mResourceApi.GraphsUrl}items/" + rdfTypePrefix + "_" + mResourceApi.GetShortGuid(mCvID) + "_" + Guid.NewGuid();
+                }
+                else
+                {
+                    entityCVID = idEntityCV;
+                }
+
+                List<string> propertyIDs = new List<string>(propiedadesItem);
+                propertyIDs.RemoveAt(propertyIDs.Count - 1);
+                propertyIDs.Add(pPropertyCV);
+                List<string> entityIDs = new List<string>()
+                    {
+                        idTab,
+                        idEntity,
+                        entityCVID
+                    };
+
+                Entity entityToLoad = new Entity();
+                entityToLoad.id = entityCVID;
+                entityToLoad.ontology = "curriculumvitae";
+                entityToLoad.properties = entityXML.properties_cv;
+                entityToLoad.rdfType = pRdfTypeCV;
+                Entity entityBBDD = GetLoadedEntity(entityCVID, "curriculumvitae");
+                UpdateEntityAux(mResourceApi.GetShortGuid(mCvID), propertyIDs, entityIDs, entityBBDD, entityToLoad);
+            }
+        }
+
+        /// <summary>
+        /// Metodo para sincronizar los datos pertenecientes al código de campo
+        /// "Indicadores generales de calidad de la producción científica".
+        /// Con el codigo identificativo 060.010.060.010
+        /// </summary>
         public void SincroIndicadoresGenerales()
         {
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/generalQualityIndicators", "http://w3id.org/roh/generalQualityIndicatorCV" };
@@ -48,12 +165,17 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             Tuple<string, string, string> identificadores = GetIdentificadoresItemPresentation(mCvID, propiedadesItem);
 
             Entity entityBBDD = null;
-            GetEntidadesSecundarias(entityBBDD, identificadores, rdfTypeItem, "curriculumvitae");
+            GetEntidadesSecundarias(ref entityBBDD, identificadores, rdfTypeItem, "curriculumvitae");
 
             Entity entityXML = GetIndicadoresGenerales(listadoDatos);
             UpdateEntityAux(mResourceApi.GetShortGuid(mCvID), propiedadesItem, new List<string>() { identificadores.Item1, identificadores.Item2, identificadores.Item3 }, entityBBDD, entityXML);
         }
 
+        /// <summary>
+        /// Metodo para sincronizar los datos pertenecientes al 
+        /// bloque "Publicaciones, documentos científicos y técnicos".
+        /// Con el codigo identificativo 060.010.010.000
+        /// </summary>
         public void SincroPublicacionesDocumentos()
         {
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/scientificPublications", "http://vivoweb.org/ontology/core#relatedBy" };
@@ -82,26 +204,15 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
 
             //4º Añadimos o modificamos las entidades
-            for (int i = 0; i < listadoAux.Count; i++)
-            {
-                Entity entityXML = listadoAux[i];
-                string idXML = entidadesXML.Keys.ToList()[i];
-                if (string.IsNullOrEmpty(equivalencias[idXML]))
-                {
-                    //Añadir
-                    entityXML.propTitle = propTitle;
-                    entityXML.ontology = graph;
-                    entityXML.rdfType = rdfType;
-                    CreateListEntityAux(mCvID, "http://w3id.org/roh/ScientificActivity", rdfTypePrefix, propiedadesItem, entityXML);
-                }
-                else
-                {
-                    //Modificar
-                    ModificarExistentes(equivalencias, idXML, graph, propTitle, entityXML);
-                }
-            }
+            AniadirModificarActividadCientifica(listadoAux, entidadesXML, equivalencias, propTitle,
+                graph, rdfType, rdfTypePrefix, propiedadesItem, "http://w3id.org/roh/relatedScientificPublicationCV", "http://w3id.org/roh/RelatedScientificPublicationCV");
         }
 
+        /// <summary>
+        /// Metodo para sincronizar los datos pertenecientes al 
+        /// bloque "Trabajos presentados en congresos nacionales o internacionales".
+        /// Con el codigo identificativo 060.010.020.000
+        /// </summary>
         public void SincroTrabajosCongresos()
         {
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/worksSubmittedConferences", "http://vivoweb.org/ontology/core#relatedBy" };
@@ -118,7 +229,6 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             {
                 TrabajosCongresos trabajosCongresos = new TrabajosCongresos();
                 trabajosCongresos.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.trabajosCongresosTitulo)?.values.FirstOrDefault();
-                trabajosCongresos.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.trabajosCongresosFechaCelebracion)?.values.FirstOrDefault();
                 trabajosCongresos.ID = Guid.NewGuid().ToString();
                 entidadesXML.Add(trabajosCongresos.ID, trabajosCongresos);
             }
@@ -130,26 +240,15 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
 
             //4º Añadimos o modificamos las entidades
-            for (int i = 0; i < listadoAux.Count; i++)
-            {
-                Entity entityXML = listadoAux[i];
-                string idXML = entidadesXML.Keys.ToList()[i];
-                if (string.IsNullOrEmpty(equivalencias[idXML]))
-                {
-                    //Añadir
-                    entityXML.propTitle = propTitle;
-                    entityXML.ontology = graph;
-                    entityXML.rdfType = rdfType;
-                    CreateListEntityAux(mCvID, "http://w3id.org/roh/ScientificActivity", rdfTypePrefix, propiedadesItem, entityXML);
-                }
-                else
-                {
-                    //Modificar
-                    ModificarExistentes(equivalencias, idXML, graph, propTitle, entityXML);
-                }
-            }
+            AniadirModificarActividadCientifica(listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem);
         }
 
+        /// <summary>
+        /// Metodo para sincronizar los datos pertenecientes al 
+        /// bloque "Trabajos presentados en jornadas, seminarios,
+        /// talleres de trabajo y/o cursos nacionales o internacionales".
+        /// Con el codigo identificativo 060.010.030.000
+        /// </summary>
         public void SincroTrabajosJornadasSeminarios()
         {
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/worksSubmittedSeminars", "http://vivoweb.org/ontology/core#relatedBy" };
@@ -166,7 +265,6 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             {
                 TrabajosJornadasSeminarios trabajosJornadas = new TrabajosJornadasSeminarios();
                 trabajosJornadas.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.trabajosJornSemTituloTrabajo)?.values.FirstOrDefault();
-                trabajosJornadas.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.trabajosJornSemFechaCelebracion)?.values.FirstOrDefault();
                 trabajosJornadas.ID = Guid.NewGuid().ToString();
                 entidadesXML.Add(trabajosJornadas.ID, trabajosJornadas);
             }
@@ -178,26 +276,14 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
 
             //4º Añadimos o modificamos las entidades
-            for (int i = 0; i < listadoAux.Count; i++)
-            {
-                Entity entityXML = listadoAux[i];
-                string idXML = entidadesXML.Keys.ToList()[i];
-                if (string.IsNullOrEmpty(equivalencias[idXML]))
-                {
-                    //Añadir
-                    entityXML.propTitle = propTitle;
-                    entityXML.ontology = graph;
-                    entityXML.rdfType = rdfType;
-                    CreateListEntityAux(mCvID, "http://w3id.org/roh/ScientificActivity", rdfTypePrefix, propiedadesItem, entityXML);
-                }
-                else
-                {
-                    //Modificar
-                    ModificarExistentes(equivalencias, idXML, graph, propTitle, entityXML);
-                }
-            }
+            AniadirModificarActividadCientifica(listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem);
         }
 
+        /// <summary>
+        /// Metodo para sincronizar los datos pertenecientes al 
+        /// bloque "Otras actividades de divulgación".
+        /// Con el codigo identificativo 060.010.040.000
+        /// </summary>
         public void SincroOtrasActividadesDivulgacion()
         {
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/otherDisseminationActivities", "http://vivoweb.org/ontology/core#relatedBy" };
@@ -226,26 +312,14 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
 
             //4º Añadimos o modificamos las entidades
-            for (int i = 0; i < listadoAux.Count; i++)
-            {
-                Entity entityXML = listadoAux[i];
-                string idXML = entidadesXML.Keys.ToList()[i];
-                if (string.IsNullOrEmpty(equivalencias[idXML]))
-                {
-                    //Añadir
-                    entityXML.propTitle = propTitle;
-                    entityXML.ontology = graph;
-                    entityXML.rdfType = rdfType;
-                    CreateListEntityAux(mCvID, "http://w3id.org/roh/ScientificActivity", rdfTypePrefix, propiedadesItem, entityXML);
-                }
-                else
-                {
-                    //Modificar
-                    ModificarExistentes(equivalencias, idXML, graph, propTitle, entityXML);
-                }
-            }
+            AniadirModificarActividadCientifica(listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem);
         }
 
+        /// <summary>
+        /// Metodo para sincronizar los datos pertenecientes al 
+        /// bloque "Comités científicos, técnicos y/o asesores".
+        /// Con el codigo identificativo 060.020.010.000
+        /// </summary>
         public void SincroComitesCTA()
         {
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/committees", "http://vivoweb.org/ontology/core#relatedBy" };
@@ -274,26 +348,14 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
 
             //4º Añadimos o modificamos las entidades
-            for (int i = 0; i < listadoAux.Count; i++)
-            {
-                Entity entityXML = listadoAux[i];
-                string idXML = entidadesXML.Keys.ToList()[i];
-                if (string.IsNullOrEmpty(equivalencias[idXML]))
-                {
-                    //Añadir
-                    entityXML.propTitle = propTitle;
-                    entityXML.ontology = graph;
-                    entityXML.rdfType = rdfType;
-                    CreateListEntityAux(mCvID, "http://w3id.org/roh/ScientificActivity", rdfTypePrefix, propiedadesItem, entityXML);
-                }
-                else
-                {
-                    //Modificar
-                    ModificarExistentes(equivalencias, idXML, graph, propTitle, entityXML);
-                }
-            }
+            AniadirModificarActividadCientifica(listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem);
         }
 
+        /// <summary>
+        /// Metodo para sincronizar los datos pertenecientes al 
+        /// bloque "Organización de actividades de I+D+i".
+        /// Con el codigo identificativo 060.020.030.000
+        /// </summary>
         public void SincroOrganizacionIDI()
         {
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/activitiesOrganization", "http://vivoweb.org/ontology/core#relatedBy" };
@@ -322,26 +384,14 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
 
             //4º Añadimos o modificamos las entidades
-            for (int i = 0; i < listadoAux.Count; i++)
-            {
-                Entity entityXML = listadoAux[i];
-                string idXML = entidadesXML.Keys.ToList()[i];
-                if (string.IsNullOrEmpty(equivalencias[idXML]))
-                {
-                    //Añadir
-                    entityXML.propTitle = propTitle;
-                    entityXML.ontology = graph;
-                    entityXML.rdfType = rdfType;
-                    CreateListEntityAux(mCvID, "http://w3id.org/roh/ScientificActivity", rdfTypePrefix, propiedadesItem, entityXML);
-                }
-                else
-                {
-                    //Modificar
-                    ModificarExistentes(equivalencias, idXML, graph, propTitle, entityXML);
-                }
-            }
+            AniadirModificarActividadCientifica(listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem);
         }
 
+        /// <summary>
+        /// Metodo para sincronizar los datos pertenecientes al 
+        /// bloque "Gestión de I+D+i".
+        /// Con el codigo identificativo 060.020.040.000
+        /// </summary>
         public void SincroGestionIDI()
         {
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/activitiesManagement", "http://vivoweb.org/ontology/core#relatedBy" };
@@ -370,26 +420,14 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
 
             //4º Añadimos o modificamos las entidades
-            for (int i = 0; i < listadoAux.Count; i++)
-            {
-                Entity entityXML = listadoAux[i];
-                string idXML = entidadesXML.Keys.ToList()[i];
-                if (string.IsNullOrEmpty(equivalencias[idXML]))
-                {
-                    //Añadir
-                    entityXML.propTitle = propTitle;
-                    entityXML.ontology = graph;
-                    entityXML.rdfType = rdfType;
-                    CreateListEntityAux(mCvID, "http://w3id.org/roh/ScientificActivity", rdfTypePrefix, propiedadesItem, entityXML);
-                }
-                else
-                {
-                    //Modificar
-                    ModificarExistentes(equivalencias, idXML, graph, propTitle, entityXML);
-                }
-            }
+            AniadirModificarActividadCientifica(listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem);
         }
 
+        /// <summary>
+        /// Metodo para sincronizar los datos pertenecientes al 
+        /// bloque "Foros y comités nacionales e internacionales".
+        /// Con el codigo identificativo 060.020.050.000
+        /// </summary>
         public void SincroForosComites()
         {
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/forums", "http://vivoweb.org/ontology/core#relatedBy" };
@@ -418,26 +456,14 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
 
             //4º Añadimos o modificamos las entidades
-            for (int i = 0; i < listadoAux.Count; i++)
-            {
-                Entity entityXML = listadoAux[i];
-                string idXML = entidadesXML.Keys.ToList()[i];
-                if (string.IsNullOrEmpty(equivalencias[idXML]))
-                {
-                    //Añadir
-                    entityXML.propTitle = propTitle;
-                    entityXML.ontology = graph;
-                    entityXML.rdfType = rdfType;
-                    CreateListEntityAux(mCvID, "http://w3id.org/roh/ScientificActivity", rdfTypePrefix, propiedadesItem, entityXML);
-                }
-                else
-                {
-                    //Modificar
-                    ModificarExistentes(equivalencias, idXML, graph, propTitle, entityXML);
-                }
-            }
+            AniadirModificarActividadCientifica(listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem);
         }
 
+        /// <summary>
+        /// Metodo para sincronizar los datos pertenecientes al 
+        /// bloque "Evaluación y revisión de proyectos y artículos de I+D+i".
+        /// Con el codigo identificativo 060.020.060.000
+        /// </summary>
         public void SincroEvalRevIDI()
         {
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/researchEvaluations", "http://vivoweb.org/ontology/core#relatedBy" };
@@ -453,7 +479,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             foreach (Entity entityXML in listadoAux)
             {
                 EvalRevIDI evalRevIDI = new EvalRevIDI();
-                evalRevIDI.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.evalRevIDINombre)?.values.FirstOrDefault();
+                evalRevIDI.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.evalRevIDIFunciones)?.values.FirstOrDefault();
                 evalRevIDI.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.evalRevIDIFechaInicio)?.values.FirstOrDefault();
                 evalRevIDI.ID = Guid.NewGuid().ToString();
                 entidadesXML.Add(evalRevIDI.ID, evalRevIDI);
@@ -466,26 +492,14 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
 
             //4º Añadimos o modificamos las entidades
-            for (int i = 0; i < listadoAux.Count; i++)
-            {
-                Entity entityXML = listadoAux[i];
-                string idXML = entidadesXML.Keys.ToList()[i];
-                if (string.IsNullOrEmpty(equivalencias[idXML]))
-                {
-                    //Añadir
-                    entityXML.propTitle = propTitle;
-                    entityXML.ontology = graph;
-                    entityXML.rdfType = rdfType;
-                    CreateListEntityAux(mCvID, "http://w3id.org/roh/ScientificActivity", rdfTypePrefix, propiedadesItem, entityXML);
-                }
-                else
-                {
-                    //Modificar
-                    ModificarExistentes(equivalencias, idXML, graph, propTitle, entityXML);
-                }
-            }
+            AniadirModificarActividadCientifica(listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem);
         }
 
+        /// <summary>
+        /// Metodo para sincronizar los datos pertenecientes al 
+        /// bloque "Estancias en centros de I+D+i públicos o privados".
+        /// Con el codigo identificativo 060.010.050.000
+        /// </summary>
         public void SincroEstanciasIDI()
         {
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/stays", "http://vivoweb.org/ontology/core#relatedBy" };
@@ -514,26 +528,14 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
 
             //4º Añadimos o modificamos las entidades
-            for (int i = 0; i < listadoAux.Count; i++)
-            {
-                Entity entityXML = listadoAux[i];
-                string idXML = entidadesXML.Keys.ToList()[i];
-                if (string.IsNullOrEmpty(equivalencias[idXML]))
-                {
-                    //Añadir
-                    entityXML.propTitle = propTitle;
-                    entityXML.ontology = graph;
-                    entityXML.rdfType = rdfType;
-                    CreateListEntityAux(mCvID, "http://w3id.org/roh/ScientificActivity", rdfTypePrefix, propiedadesItem, entityXML);
-                }
-                else
-                {
-                    //Modificar
-                    ModificarExistentes(equivalencias, idXML, graph, propTitle, entityXML);
-                }
-            }
+            AniadirModificarActividadCientifica(listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem);
         }
 
+        /// <summary>
+        /// Metodo para sincronizar los datos pertenecientes al 
+        /// bloque "Ayudas y becas obtenidas".
+        /// Con el codigo identificativo 060.030.010.000
+        /// </summary>
         public void SincroAyudasBecas()
         {
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/grants", "http://vivoweb.org/ontology/core#relatedBy" };
@@ -562,26 +564,14 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
 
             //4º Añadimos o modificamos las entidades
-            for (int i = 0; i < listadoAux.Count; i++)
-            {
-                Entity entityXML = listadoAux[i];
-                string idXML = entidadesXML.Keys.ToList()[i];
-                if (string.IsNullOrEmpty(equivalencias[idXML]))
-                {
-                    //Añadir
-                    entityXML.propTitle = propTitle;
-                    entityXML.ontology = graph;
-                    entityXML.rdfType = rdfType;
-                    CreateListEntityAux(mCvID, "http://w3id.org/roh/ScientificActivity", rdfTypePrefix, propiedadesItem, entityXML);
-                }
-                else
-                {
-                    //Modificar
-                    ModificarExistentes(equivalencias, idXML, graph, propTitle, entityXML);
-                }
-            }
+            AniadirModificarActividadCientifica(listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem);
         }
 
+        /// <summary>
+        /// Metodo para sincronizar los datos pertenecientes al 
+        /// bloque "Otros modos de colaboración con investigadores/as o tecnólogos/as".
+        /// Con el codigo identificativo 060.020.020.000
+        /// </summary>
         public void SincroOtrosModosColaboracion()
         {
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/otherCollaborations", "http://vivoweb.org/ontology/core#relatedBy" };
@@ -610,26 +600,14 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
 
             //4º Añadimos o modificamos las entidades
-            for (int i = 0; i < listadoAux.Count; i++)
-            {
-                Entity entityXML = listadoAux[i];
-                string idXML = entidadesXML.Keys.ToList()[i];
-                if (string.IsNullOrEmpty(equivalencias[idXML]))
-                {
-                    //Añadir
-                    entityXML.propTitle = propTitle;
-                    entityXML.ontology = graph;
-                    entityXML.rdfType = rdfType;
-                    CreateListEntityAux(mCvID, "http://w3id.org/roh/ScientificActivity", rdfTypePrefix, propiedadesItem, entityXML);
-                }
-                else
-                {
-                    //Modificar
-                    ModificarExistentes(equivalencias, idXML, graph, propTitle, entityXML);
-                }
-            }
+            AniadirModificarActividadCientifica(listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem);
         }
 
+        /// <summary>
+        /// Metodo para sincronizar los datos pertenecientes al 
+        /// bloque "Sociedades científicas y asociaciones profesionales".
+        /// Con el codigo identificativo 060.030.020.000
+        /// </summary>
         public void SincroSociedadesAsociaciones()
         {
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/societies", "http://vivoweb.org/ontology/core#relatedBy" };
@@ -658,26 +636,14 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
 
             //4º Añadimos o modificamos las entidades
-            for (int i = 0; i < listadoAux.Count; i++)
-            {
-                Entity entityXML = listadoAux[i];
-                string idXML = entidadesXML.Keys.ToList()[i];
-                if (string.IsNullOrEmpty(equivalencias[idXML]))
-                {
-                    //Añadir
-                    entityXML.propTitle = propTitle;
-                    entityXML.ontology = graph;
-                    entityXML.rdfType = rdfType;
-                    CreateListEntityAux(mCvID, "http://w3id.org/roh/ScientificActivity", rdfTypePrefix, propiedadesItem, entityXML);
-                }
-                else
-                {
-                    //Modificar
-                    ModificarExistentes(equivalencias, idXML, graph, propTitle, entityXML);
-                }
-            }
+            AniadirModificarActividadCientifica(listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem);
         }
 
+        /// <summary>
+        /// Metodo para sincronizar los datos pertenecientes al 
+        /// bloque "Consejos editoriales".
+        /// Con el codigo identificativo 060.030.030.000
+        /// </summary>
         public void SincroConsejos()
         {
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/councils", "http://vivoweb.org/ontology/core#relatedBy" };
@@ -706,26 +672,14 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
 
             //4º Añadimos o modificamos las entidades
-            for (int i = 0; i < listadoAux.Count; i++)
-            {
-                Entity entityXML = listadoAux[i];
-                string idXML = entidadesXML.Keys.ToList()[i];
-                if (string.IsNullOrEmpty(equivalencias[idXML]))
-                {
-                    //Añadir
-                    entityXML.propTitle = propTitle;
-                    entityXML.ontology = graph;
-                    entityXML.rdfType = rdfType;
-                    CreateListEntityAux(mCvID, "http://w3id.org/roh/ScientificActivity", rdfTypePrefix, propiedadesItem, entityXML);
-                }
-                else
-                {
-                    //Modificar
-                    ModificarExistentes(equivalencias, idXML, graph, propTitle, entityXML);
-                }
-            }
+            AniadirModificarActividadCientifica(listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem);
         }
 
+        /// <summary>
+        /// Metodo para sincronizar los datos pertenecientes al 
+        /// bloque "Redes de cooperación".
+        /// Con el codigo identificativo 060.030.040.000
+        /// </summary>
         public void SincroRedesCooperacion()
         {
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/networks", "http://vivoweb.org/ontology/core#relatedBy" };
@@ -742,7 +696,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             {
                 RedesCooperacion redesCooperacion = new RedesCooperacion();
                 redesCooperacion.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.redesCoopNombre)?.values.FirstOrDefault();
-                redesCooperacion.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.redesCoopFechaInicio)?.values.FirstOrDefault();
+                redesCooperacion.IdRed = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.redesCoopIdentificacion)?.values.FirstOrDefault();
                 redesCooperacion.ID = Guid.NewGuid().ToString();
                 entidadesXML.Add(redesCooperacion.ID, redesCooperacion);
             }
@@ -754,26 +708,14 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
 
             //4º Añadimos o modificamos las entidades
-            for (int i = 0; i < listadoAux.Count; i++)
-            {
-                Entity entityXML = listadoAux[i];
-                string idXML = entidadesXML.Keys.ToList()[i];
-                if (string.IsNullOrEmpty(equivalencias[idXML]))
-                {
-                    //Añadir
-                    entityXML.propTitle = propTitle;
-                    entityXML.ontology = graph;
-                    entityXML.rdfType = rdfType;
-                    CreateListEntityAux(mCvID, "http://w3id.org/roh/ScientificActivity", rdfTypePrefix, propiedadesItem, entityXML);
-                }
-                else
-                {
-                    //Modificar
-                    ModificarExistentes(equivalencias, idXML, graph, propTitle, entityXML);
-                }
-            }
+            AniadirModificarActividadCientifica(listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem);
         }
 
+        /// <summary>
+        /// Metodo para sincronizar los datos pertenecientes al 
+        /// bloque "Premios, menciones y distinciones".
+        /// Con el codigo identificativo 060.030.050.000
+        /// </summary>
         public void SincroPremiosMenciones()
         {
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/prizes", "http://vivoweb.org/ontology/core#relatedBy" };
@@ -802,26 +744,14 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
 
             //4º Añadimos o modificamos las entidades
-            for (int i = 0; i < listadoAux.Count; i++)
-            {
-                Entity entityXML = listadoAux[i];
-                string idXML = entidadesXML.Keys.ToList()[i];
-                if (string.IsNullOrEmpty(equivalencias[idXML]))
-                {
-                    //Añadir
-                    entityXML.propTitle = propTitle;
-                    entityXML.ontology = graph;
-                    entityXML.rdfType = rdfType;
-                    CreateListEntityAux(mCvID, "http://w3id.org/roh/ScientificActivity", rdfTypePrefix, propiedadesItem, entityXML);
-                }
-                else
-                {
-                    //Modificar
-                    ModificarExistentes(equivalencias, idXML, graph, propTitle, entityXML);
-                }
-            }
+            AniadirModificarActividadCientifica(listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem);
         }
 
+        /// <summary>
+        /// Metodo para sincronizar los datos pertenecientes al 
+        /// bloque "Otras distinciones (carrera profesional y/o empresarial)".
+        /// Con codigo identificativo 060.030.060.000
+        /// </summary>
         public void SincroOtrasDistinciones()
         {
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/otherDistinctions", "http://vivoweb.org/ontology/core#relatedBy" };
@@ -850,26 +780,14 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
 
             //4º Añadimos o modificamos las entidades
-            for (int i = 0; i < listadoAux.Count; i++)
-            {
-                Entity entityXML = listadoAux[i];
-                string idXML = entidadesXML.Keys.ToList()[i];
-                if (string.IsNullOrEmpty(equivalencias[idXML]))
-                {
-                    //Añadir
-                    entityXML.propTitle = propTitle;
-                    entityXML.ontology = graph;
-                    entityXML.rdfType = rdfType;
-                    CreateListEntityAux(mCvID, "http://w3id.org/roh/ScientificActivity", rdfTypePrefix, propiedadesItem, entityXML);
-                }
-                else
-                {
-                    //Modificar
-                    ModificarExistentes(equivalencias, idXML, graph, propTitle, entityXML);
-                }
-            }
+            AniadirModificarActividadCientifica(listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem);
         }
 
+        /// <summary>
+        /// Metodo para sincronizar los datos pertenecientes al 
+        /// bloque "Períodos de actividad investigadora".
+        /// Con codigo identificativo 060.030.070.000
+        /// </summary>
         public void SincroPeriodosActividad()
         {
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/researchActivityPeriods", "http://vivoweb.org/ontology/core#relatedBy" };
@@ -899,26 +817,14 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
 
             //4º Añadimos o modificamos las entidades
-            for (int i = 0; i < listadoAux.Count; i++)
-            {
-                Entity entityXML = listadoAux[i];
-                string idXML = entidadesXML.Keys.ToList()[i];
-                if (string.IsNullOrEmpty(equivalencias[idXML]))
-                {
-                    //Añadir
-                    entityXML.propTitle = propTitle;
-                    entityXML.ontology = graph;
-                    entityXML.rdfType = rdfType;
-                    CreateListEntityAux(mCvID, "http://w3id.org/roh/ScientificActivity", rdfTypePrefix, propiedadesItem, entityXML);
-                }
-                else
-                {
-                    //Modificar
-                    ModificarExistentes(equivalencias, idXML, graph, propTitle, entityXML);
-                }
-            }
+            AniadirModificarActividadCientifica(listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem);
         }
 
+        /// <summary>
+        /// Metodo para sincronizar los datos pertenecientes al 
+        /// bloque "Acreditaciones/reconocimientos obtenidos".
+        /// Con codigo identificativo 060.030.090.000
+        /// </summary>
         public void SincroAcreditacionesObtenidas()
         {
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/obtainedRecognitions", "http://vivoweb.org/ontology/core#relatedBy" };
@@ -934,7 +840,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             foreach (Entity entityXML in listadoAux)
             {
                 AcreditacionesReconocimientos acreditacionesReconocimientos = new AcreditacionesReconocimientos();
-                acreditacionesReconocimientos.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.acreditacionesNombre)?.values.FirstOrDefault();
+                acreditacionesReconocimientos.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.acreditacionesDescripcion)?.values.FirstOrDefault();
                 acreditacionesReconocimientos.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.acreditacionesFechaObtencion)?.values.FirstOrDefault();
                 acreditacionesReconocimientos.ID = Guid.NewGuid().ToString();
                 entidadesXML.Add(acreditacionesReconocimientos.ID, acreditacionesReconocimientos);
@@ -947,26 +853,14 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
 
             //4º Añadimos o modificamos las entidades
-            for (int i = 0; i < listadoAux.Count; i++)
-            {
-                Entity entityXML = listadoAux[i];
-                string idXML = entidadesXML.Keys.ToList()[i];
-                if (string.IsNullOrEmpty(equivalencias[idXML]))
-                {
-                    //Añadir
-                    entityXML.propTitle = propTitle;
-                    entityXML.ontology = graph;
-                    entityXML.rdfType = rdfType;
-                    CreateListEntityAux(mCvID, "http://w3id.org/roh/ScientificActivity", rdfTypePrefix, propiedadesItem, entityXML);
-                }
-                else
-                {
-                    //Modificar
-                    ModificarExistentes(equivalencias, idXML, graph, propTitle, entityXML);
-                }
-            }
+            AniadirModificarActividadCientifica(listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem);
         }
 
+        /// <summary>
+        /// Metodo para sincronizar los datos pertenecientes al 
+        /// bloque "Resumen de otros méritos".
+        /// Con codigo identificativo 060.030.100.000
+        /// </summary>
         public void SincroResumenOtrosMeritos()
         {
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/otherAchievements", "http://vivoweb.org/ontology/core#relatedBy" };
@@ -995,27 +889,10 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
 
             //4º Añadimos o modificamos las entidades
-            for (int i = 0; i < listadoAux.Count; i++)
-            {
-                Entity entityXML = listadoAux[i];
-                string idXML = entidadesXML.Keys.ToList()[i];
-                if (string.IsNullOrEmpty(equivalencias[idXML]))
-                {
-                    //Añadir
-                    entityXML.propTitle = propTitle;
-                    entityXML.ontology = graph;
-                    entityXML.rdfType = rdfType;
-                    CreateListEntityAux(mCvID, "http://w3id.org/roh/ScientificActivity", rdfTypePrefix, propiedadesItem, entityXML);
-                }
-                else
-                {
-                    //Modificar
-                    ModificarExistentes(equivalencias, idXML, graph, propTitle, entityXML);
-                }
-            }
+            AniadirModificarActividadCientifica(listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem);
         }
 
-        private void GetEntidadesSecundarias(Entity entityBBDD, Tuple<string, string, string> identificadores, List<string> rdfTypeItem, string graph)
+        private void GetEntidadesSecundarias(ref Entity entityBBDD, Tuple<string, string, string> identificadores, List<string> rdfTypeItem, string graph)
         {
             if (!string.IsNullOrEmpty(identificadores.Item3))
             {
@@ -1056,7 +933,6 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             }
         }
 
-        
 
         /// <summary>
         /// 060.010.060.010
@@ -1099,6 +975,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 {
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
+                    entidadAux.properties_cv = new List<Property>();
                     //TODO
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.010.010.010")))
                     {
@@ -1107,31 +984,33 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                             new Property(Variables.ActividadCientificaTecnologica.pubDocumentosTipoProdOtros, item.GetStringPorIDCampo("060.010.010.020")),
                             //new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPosicion, item.GetStringPorIDCampo("060.010.010.050")),
                             //new Property(Variables.ActividadCientificaTecnologica.pubDocumentosNumAutores, item.GetStringPorIDCampo("060.010.010.380")),
-                            //new Property(Variables.ActividadCientificaTecnologica.pubDocumentosGradoContribucion, item.GetGradoContribucionPorIDCampo("060.010.010.060")),
                             new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubTitulo, item.GetStringPorIDCampo("060.010.010.030")),
-                            new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubVolumen, item.GetVolumenPorIDCampo("060.010.010.080")),//TODO-check
-                            new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubNumero, item.GetNumeroVolumenPorIDCampo("060.010.010.080")),//TODO-check
-                            new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubPagIni, item.GetPaginaInicialPorIDCampo("060.010.010.090")),//TODO-check
-                            new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubPagFin, item.GetPaginaFinalPorIDCampo("060.010.010.090")),//TODO-check
-                            //new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubEditorial, item.GetStringPorIDCampo("060.010.010.100")),                            
+                            new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubVolumen, item.GetVolumenPorIDCampo("060.010.010.080")),
+                            new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubNumero, item.GetNumeroVolumenPorIDCampo("060.010.010.080")),
+                            new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubPagIni, item.GetPaginaInicialPorIDCampo("060.010.010.090")),
+                            new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubPagFin, item.GetPaginaFinalPorIDCampo("060.010.010.090")),
+                            //new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubEditorial, item.GetStringPorIDCampo("060.010.010.100")),//TODO - ¿?
                             new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubPais, item.GetPaisPorIDCampo("060.010.010.110")),
                             new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubCCAA, item.GetRegionPorIDCampo("060.010.010.120")),
                             new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubFecha, item.GetStringDatetimePorIDCampo("060.010.010.140")),
                             new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubURL, item.GetStringPorIDCampo("060.010.010.150")),
                             new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubDepositoLegal, item.GetElementoPorIDCampo<CvnItemBeanCvnExternalPKBean>("060.010.010.170")?.Value),
-                            //new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubCiudad, item.GetStringPorIDCampo("060.010.010.220")),
-                            //new Property(Variables.ActividadCientificaTecnologica.pubDocumentosColeccion, item.GetStringPorIDCampo("060.010.010.270")),
-                            new Property(Variables.ActividadCientificaTecnologica.pubDocumentosResultadosDestacados, item.GetStringPorIDCampo("060.010.010.290")),
-                            new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubRelevante, item.GetStringBooleanPorIDCampo("060.010.010.300")),
+                            new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubCiudad, item.GetStringPorIDCampo("060.010.010.220")),
+                            new Property(Variables.ActividadCientificaTecnologica.pubDocumentosColeccion, item.GetStringPorIDCampo("060.010.010.270")),
                             new Property(Variables.ActividadCientificaTecnologica.pubDocumentosReseniaRevista, item.GetStringDoublePorIDCampo("060.010.010.340"))
-                            //,
-                            //new Property(Variables.ActividadCientificaTecnologica.pubDocumentosAutorCorrespondencia, item.GetStringBooleanPorIDCampo("060.010.010.390"))
+                        //,
+                        //new Property(Variables.ActividadCientificaTecnologica.pubDocumentosAutorCorrespondencia, item.GetStringBooleanPorIDCampo("060.010.010.390"))
+                        ));
+                        entidadAux.properties_cv.AddRange(UtilitySecciones.AddProperty(
+                            new Property(Variables.ActividadCientificaTecnologica.pubDocumentosGradoContribucion, item.GetGradoContribucionPorIDCampo("060.010.010.060")),//properties_cv
+                            new Property(Variables.ActividadCientificaTecnologica.pubDocumentosResultadosDestacados, item.GetStringPorIDCampo("060.010.010.290")),//properties_cv
+                            new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubRelevante, item.GetStringBooleanPorIDCampo("060.010.010.300"))//properties_cv
                         ));
                         PublicacionesDocumentosSoporte(item, entidadAux);
                         //PublicacionesDocumentosAutores(item, entidadAux);
                         PublicacionesDocumentosTraducciones(item, entidadAux);
                         PublicacionesDocumentosIDPublicacion(item, entidadAux);
-                        //PublicacionesDocumentosISBN(item, entidadAux);
+                        PublicacionesDocumentosISBN(item, entidadAux);
 
                         listado.Add(entidadAux);
                     }
@@ -1139,8 +1018,18 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             }
             return listado;
         }
-        private void PublicacionesDocumentosSoporte(CvnItemBean item, Entity entidadAux)//TODO - Buscar ne minuscula?
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes al Soporte.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
+        private void PublicacionesDocumentosSoporte(CvnItemBean item, Entity entidadAux)
         {
+            //Si es nulo no hago nada
+            if (string.IsNullOrEmpty(item.GetStringPorIDCampo("060.010.010.070"))) { return; }
+
             //Si es revista(057)
             if (item.GetStringPorIDCampo("060.010.010.070").Equals("057"))
             {
@@ -1154,6 +1043,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                     ));
                 }
             }
+
             //Si es Libro(032), Documento o informe cientifico-tecnico(018) o catalogo de obra artistica(006)
             else
             {
@@ -1163,6 +1053,13 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 ));
             }
         }
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes a los Autores/as.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
         private void PublicacionesDocumentosAutores(CvnItemBean item, Entity entidadAux)//TODO
         {
             List<CvnItemBeanCvnAuthorBean> listadoAutores = item.GetListaElementosPorIDCampo<CvnItemBeanCvnAuthorBean>("060.010.010.040");
@@ -1176,13 +1073,20 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             foreach (CvnItemBeanCvnAuthorBean autor in listadoAutores)
             {
                 entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    //new Property(Variables.ActividadCientificaTecnologica.pubDocumentosAutorNombre, autor.GivenName),
-                    //new Property(Variables.ActividadCientificaTecnologica.pubDocumentosAutorPrimerApellido, autor.CvnFamilyNameBean?.FirstFamilyName),
-                    //new Property(Variables.ActividadCientificaTecnologica.pubDocumentosAutorSegundoApellido, autor.CvnFamilyNameBean?.SecondFamilyName),
-                    //new Property(Variables.ActividadCientificaTecnologica.pubDocumentosAutorFirma, autor.Signature.ToString())
+                //new Property(Variables.ActividadCientificaTecnologica.pubDocumentosAutorNombre, autor.GivenName),
+                //new Property(Variables.ActividadCientificaTecnologica.pubDocumentosAutorPrimerApellido, autor.CvnFamilyNameBean?.FirstFamilyName),
+                //new Property(Variables.ActividadCientificaTecnologica.pubDocumentosAutorSegundoApellido, autor.CvnFamilyNameBean?.SecondFamilyName),
+                //new Property(Variables.ActividadCientificaTecnologica.pubDocumentosAutorFirma, autor.Signature.ToString())
                 ));
             }
         }
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes a las Traducciones.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
         private void PublicacionesDocumentosTraducciones(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnTitleBean> listadoTraducciones = item.GetListaElementosPorIDCampo<CvnItemBeanCvnTitleBean>("060.010.010.350");
@@ -1194,6 +1098,13 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 UtilitySecciones.CheckProperty(IDOtro, entidadAux, valor, propiedad);
             }
         }
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes a los Identificadores de publicación digital.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
         private void PublicacionesDocumentosIDPublicacion(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnExternalPKBean> listadoIDs = item.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("060.010.010.400");
@@ -1232,15 +1143,28 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 }
             }
         }
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes al ISBN/ISSN.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
         private void PublicacionesDocumentosISBN(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnExternalPKBean> listadoISBN = item.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("060.010.010.160");
             foreach (CvnItemBeanCvnExternalPKBean isbn in listadoISBN)
             {
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubISBN, isbn.Value),
-                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubISBNType, isbn.Type)
-                ));
+                //Si no hay type, ignoro el valor
+                if (string.IsNullOrEmpty(isbn.Type)) { continue; }
+
+                //Si es ISBN (020)
+                if (isbn.Type.Equals("020"))
+                {
+                    entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                        new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubISBN, isbn.Value)
+                    ));
+                }
             }
         }
 
@@ -1264,46 +1188,31 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                     {
                         //TODO
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosTipoEvento, item.GetStringPorIDCampo("060.010.020.010")),
-                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosTipoEventoOtros, item.GetStringPorIDCampo("060.010.020.020")),
                             new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosTitulo, item.GetStringPorIDCampo("060.010.020.030")),
-                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosTipoParticipacion, item.GetStringPorIDCampo("060.010.020.050")),
-                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosIntervencion, item.GetStringPorIDCampo("060.010.020.060")),
-                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosIntervencionOtros, item.GetStringPorIDCampo("060.010.020.070")),
-                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosAmbitoGeo, item.GetStringPorIDCampo("060.010.020.080")),
-                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosAmbitoGeoOtros, item.GetStringPorIDCampo("060.010.020.090")),
-                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosNombreCongreso, item.GetStringPorIDCampo("060.010.020.100")),
-                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPaisCongreso, item.GetPaisPorIDCampo("060.010.020.340")),
-                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosCCAACongreso, item.GetRegionPorIDCampo("060.010.020.350")),
-                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosCiudadCongreso, item.GetStringPorIDCampo("060.010.020.360")),
-                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosEntidadOrganizadora, item.GetStringPorIDCampo("060.010.020.110")),
-                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPaisCelebracion, item.GetPaisPorIDCampo("060.010.020.150")),
-                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosCCAACelebracion, item.GetRegionPorIDCampo("060.010.020.160")),
-                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosCiudadCelebracion, item.GetStringPorIDCampo("060.010.020.180")),
-                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosFechaCelebracion, item.GetStringPorIDCampo("060.010.020.190")),
+                            //new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosTipoParticipacion, item.GetStringPorIDCampo("060.010.020.050")),
+                            //new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosIntervencion, item.GetStringPorIDCampo("060.010.020.060")),
+                            //new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosIntervencionOtros, item.GetStringPorIDCampo("060.010.020.070")),                          
                             new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubActa, item.GetStringPorIDCampo("060.010.020.200")),
-                            //new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubActaExterno, item.GetStringPorIDCampo("060.010.020.210")),
                             //new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosFormaContribucion, item.GetStringPorIDCampo("060.010.020.220")),
                             new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubTitulo, item.GetStringPorIDCampo("060.010.020.230")),
-                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubNombre, item.GetStringPorIDCampo("060.010.020.370")),
-                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubVolumen, item.GetVolumenPorIDCampo("060.010.020.240")),//TODO -check
-                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubNumero, item.GetNumeroVolumenPorIDCampo("060.010.020.240")),//TODO -check
-                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubPagIni, item.GetPaginaInicialPorIDCampo("060.010.020.250")),//TODO -check
-                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubPagFin, item.GetPaginaFinalPorIDCampo("060.010.020.250")),//TODO -check
-                            //new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubEditorial, item.GetStringPorIDCampo("060.010.020.260")),
+                            //new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubNombre, item.GetStringPorIDCampo("060.010.020.370")),
+                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubVolumen, item.GetVolumenPorIDCampo("060.010.020.240")),
+                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubNumero, item.GetNumeroVolumenPorIDCampo("060.010.020.240")),
+                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubPagIni, item.GetPaginaInicialPorIDCampo("060.010.020.250")),
+                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubPagFin, item.GetPaginaFinalPorIDCampo("060.010.020.250")),
                             new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubPais, item.GetPaisPorIDCampo("060.010.020.270")),
+                            //new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubEditorial, item.GetStringPorIDCampo("060.010.020.260")),
                             new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubCCAA, item.GetRegionPorIDCampo("060.010.020.280")),
-                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubFecha, item.GetStringDatetimePorIDCampo("060.010.020.300")),
-                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubURL, item.GetStringPorIDCampo("060.010.020.310"))
-                            //,
-                            //new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubDepositoLegal, item.GetStringPorIDCampo("060.010.020.330")),
-                            //new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosFechaFin, item.GetStringDatetimePorIDCampo("060.010.020.380")),
-                            //new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosAutoCorrespondencia, item.GetStringPorIDCampo("060.010.020.390"))
+                            //new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubFecha, item.GetStringDatetimePorIDCampo("060.010.020.300")),
+                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubURL, item.GetStringPorIDCampo("060.010.020.310")),
+                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubDepositoLegal, item.GetStringPorIDCampo("060.010.020.330"))
+                        //,
+                        //new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosAutoCorrespondencia, item.GetStringPorIDCampo("060.010.020.390"))
                         ));
+                        TrabajosCongresosEvento(item, entidadAux);
                         //TrabajosCongresosAutores(item, entidadAux);
                         TrabajosCongresosIDPublicacion(item, entidadAux);
                         //TrabajosCongresosISBN(item, entidadAux);
-                        TrabajosCongresosTipoEntidad(item, entidadAux);
 
                         listado.Add(entidadAux);
                     }
@@ -1311,6 +1220,42 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             }
             return listado;
         }
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>
+        /// pertenecientes a los Eventos
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
+        private void TrabajosCongresosEvento(CvnItemBean item, Entity entidadAux)
+        {
+            //new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPaisCongreso, item.GetPaisPorIDCampo("060.010.020.340")),
+            //new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosCCAACongreso, item.GetRegionPorIDCampo("060.010.020.350")),
+            //new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosCiudadCongreso, item.GetStringPorIDCampo("060.010.020.360"))
+
+            string entityPartAux = Guid.NewGuid().ToString() + "@@@";
+            entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosNombreCongreso, StringGNOSSID(entityPartAux, item.GetStringPorIDCampo("060.010.020.100"))),
+                new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosFechaCelebracion, StringGNOSSID(entityPartAux, item.GetStringPorIDCampo("060.010.020.190"))),
+                new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosFechaFin, StringGNOSSID(entityPartAux, item.GetStringDatetimePorIDCampo("060.010.020.380"))),
+                new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosCiudadCelebracion, StringGNOSSID(entityPartAux, item.GetStringPorIDCampo("060.010.020.180"))),
+                new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPaisCelebracion, StringGNOSSID(entityPartAux, item.GetPaisPorIDCampo("060.010.020.150"))),
+                new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosCCAACelebracion, StringGNOSSID(entityPartAux, item.GetRegionPorIDCampo("060.010.020.160"))),
+                //new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosEntidadOrganizadora, StringGNOSSID(entityPartAux, item.GetStringPorIDCampo("060.010.020.110"))),
+                new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosTipoEvento, StringGNOSSID(entityPartAux, item.GetTipoEventoPorIDCampo("060.010.020.010"))),
+                //new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosTipoEventoOtros, StringGNOSSID(entityPartAux, item.GetStringPorIDCampo("060.010.020.020"))),
+                new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosComiteExterno, StringGNOSSID(entityPartAux, item.GetStringPorIDCampo("060.010.020.210"))),
+                new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosAmbitoGeo, StringGNOSSID(entityPartAux, item.GetGeographicRegionPorIDCampo("060.010.020.080"))),
+                new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosAmbitoGeoOtros, StringGNOSSID(entityPartAux, item.GetStringPorIDCampo("060.010.020.090")))
+            ));
+        }
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes a los Autores/as.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
         private void TrabajosCongresosAutores(CvnItemBean item, Entity entidadAux)//TODO
         {
             List<CvnItemBeanCvnAuthorBean> listadoAutores = item.GetListaElementosPorIDCampo<CvnItemBeanCvnAuthorBean>("060.010.020.040");
@@ -1322,13 +1267,20 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 //Property autorFirma = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.trabajosCongresosAutorFirma);
 
                 entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    //new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosAutorNombre, autor.GivenName),
-                    //new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosAutorPrimerApellido, autor.CvnFamilyNameBean?.FirstFamilyName),
-                    //new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosAutorSegundoApellido, autor.CvnFamilyNameBean?.SecondFamilyName),
-                    //new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosAutorFirma, autor.Signature.ToString())
+                //new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosAutorNombre, autor.GivenName),
+                //new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosAutorPrimerApellido, autor.CvnFamilyNameBean?.FirstFamilyName),
+                //new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosAutorSegundoApellido, autor.CvnFamilyNameBean?.SecondFamilyName),
+                //new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosAutorFirma, autor.Signature.ToString())
                 ));
             }
         }
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes a los Identificadores de publicación digital.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
         private void TrabajosCongresosIDPublicacion(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnExternalPKBean> listadoIDs = item.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("060.010.020.400");
@@ -1351,7 +1303,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                             new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosIDPubDigitalPMID, identificador.Value)
                         ));
                         break;
-                    case "OTHERS"://TODO-check
+                    case "OTHERS":
                         Property IDOtro = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.trabajosCongresosIDOtroPubDigital);
                         Property NombreOtro = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.trabajosCongresosNombreOtroPubDigital);
 
@@ -1367,6 +1319,13 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 }
             }
         }
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes al ISBN/ISSN.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
         private void TrabajosCongresosISBN(CvnItemBean item, Entity entidadAux)//TODO - check
         {
             List<CvnItemBeanCvnExternalPKBean> listadoISBN = item.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("060.010.020.320");
@@ -1375,28 +1334,35 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
 
             foreach (CvnItemBeanCvnExternalPKBean isbn in listadoISBN)
             {
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubISBN, isbn.Value),
-                    new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubISBNType, isbn.Type)
-                ));
+                //Si no hay type, ignoro el valor
+                if (string.IsNullOrEmpty(isbn.Type)) { continue; }
+
+                //Si es ISBN (020)
+                if (isbn.Type.Equals("020"))
+                {
+                    entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                        new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubISBN, isbn.Value)
+                    ));
+                }
+
             }
         }
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes al tipo de Entidad Organizadora.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
         private void TrabajosCongresosTipoEntidad(CvnItemBean item, Entity entidadAux)
         {
             //Añado otros, o el ID de una preseleccion
-            if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.010.020.140")))
-            {
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosTipoEntidadOrganizadora, "http://gnoss.com/items/organizationtype_OTHERS"),
-                    new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosTipoEntidadOrganizadoraOtros, item.GetStringPorIDCampo("060.010.020.140"))
-                ));
-            }
-            else
-            {
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosTipoEntidadOrganizadora, item.GetOrganizacionPorIDCampo("060.010.020.130"))
-                ));
-            }
+            string valorTipo = !string.IsNullOrEmpty(item.GetStringPorIDCampo("060.010.020.140")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetOrganizacionPorIDCampo("060.010.020.130");
+
+            entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosTipoEntidadOrganizadora, valorTipo),
+                new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosTipoEntidadOrganizadoraOtros, item.GetStringPorIDCampo("060.010.020.140"))
+            ));
         }
 
         /// <summary>
@@ -1420,43 +1386,29 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                         //TODO
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                             new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemTituloTrabajo, item.GetStringPorIDCampo("060.010.030.010")),
-                            new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemTipoEvento, item.GetTipoEventoPorIDCampo("060.010.030.020")),
-                            //new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemTipoEventoOtros, item.GetStringPorIDCampo("060.010.030.030")),
                             //new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemIntervencion, item.GetStringPorIDCampo("060.010.030.040")),
-                            new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemAmbitoGeo, item.GetGeographicRegionPorIDCampo("060.010.030.050")),
-                            new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemAmbitoGeoOtros, item.GetStringPorIDCampo("060.010.030.060")),
-                            new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemNombreEvento, item.GetStringPorIDCampo("060.010.030.070")),
-                            //new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemPaisEntidadOrganizadora, item.GetPaisPorIDCampo("060.010.030.320")),
-                            //new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemCCAAEntidadOrganizadora, item.GetRegionPorIDCampo("060.010.030.330")),
-                            //new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemCiudadEntidadOrganizadora, item.GetStringPorIDCampo("060.010.030.340")),
-                            new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemEntidadOrganizadora, item.GetNameEntityBeanPorIDCampo("060.010.030.080")),
-                            new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemPaisCelebracion, item.GetPaisPorIDCampo("060.010.030.120")),
-                            new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemCCAACelebracion, item.GetRegionPorIDCampo("060.010.030.130")),
-                            new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemCiudadCelebracion, item.GetStringPorIDCampo("060.010.030.150")),
-                            new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemFechaCelebracion, item.GetStringDatetimePorIDCampo("060.010.030.160")),
                             new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemPubActaCongreso, item.GetStringBooleanPorIDCampo("060.010.030.170")),
-                            new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemPubActaCongresoExterno, item.GetStringBooleanPorIDCampo("060.010.030.180")),
                             //new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemPubTipo, item.GetStringPorIDCampo("060.010.030.190")),//TODO - value others
                             new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemPubTitulo, item.GetStringPorIDCampo("060.010.030.200")),
                             //new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemPubNombre, item.GetStringPorIDCampo("060.010.030.350")),
-                            new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemPubVolumen, item.GetVolumenPorIDCampo("060.010.030.210")),//TODO-check
-                            new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemPubNumero, item.GetNumeroVolumenPorIDCampo("060.010.030.210")),//TODO-check
-                            new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemPubPagIni, item.GetPaginaInicialPorIDCampo("060.010.030.220")),//TODO-check
-                            new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemPubPagFin, item.GetPaginaFinalPorIDCampo("060.010.030.220")),//TODO-check
-                            //new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemPubEditorial, item.GetStringPorIDCampo("060.010.030.230")),
+                            new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemPubVolumen, item.GetVolumenPorIDCampo("060.010.030.210")),
+                            new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemPubNumero, item.GetNumeroVolumenPorIDCampo("060.010.030.210")),
+                            new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemPubPagIni, item.GetPaginaInicialPorIDCampo("060.010.030.220")),
+                            new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemPubPagFin, item.GetPaginaFinalPorIDCampo("060.010.030.220")),
                             new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemPubPais, item.GetPaisPorIDCampo("060.010.030.240")),
+                            //new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemPubEditorial, item.GetStringPorIDCampo("060.010.030.230")),
                             new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemPubCCAA, item.GetRegionPorIDCampo("060.010.030.250")),
                             new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemPubFecha, item.GetStringDatetimePorIDCampo("060.010.030.270")),
                             new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemPubURL, item.GetStringPorIDCampo("060.010.030.280")),
-                            new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemPubDepositoLegal, item.GetStringPorIDCampo("060.010.030.300")),
-                            new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemPubFechaFinCelebracion, item.GetStringDatetimePorIDCampo("060.010.030.370"))
-                            //,
-                            //new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemAutorCorrespondencia, item.GetStringPorIDCampo("060.010.030.390"))
+                            new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemPubDepositoLegal, item.GetStringPorIDCampo("060.010.030.300"))
+                        //,
+                        //new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemAutorCorrespondencia, item.GetStringPorIDCampo("060.010.030.390"))
                         ));
-                        TrabajosJornadasSeminariosAutores(item, entidadAux);
+                        TrabajosJornadasSeminariosEvento(item, entidadAux);
+                        //TrabajosJornadasSeminariosAutores(item, entidadAux);
                         TrabajosJornadasSeminariosIDPublicacion(item, entidadAux);
-                        TrabajosJornadasSeminariosISBN(item, entidadAux);
-                        TrabajosJornadasSeminariosTipoEntidad(item, entidadAux);
+                        //TrabajosJornadasSeminariosISBN(item, entidadAux);
+                        ////TrabajosJornadasSeminariosTipoEntidad(item, entidadAux);
 
                         listado.Add(entidadAux);
                     }
@@ -1464,19 +1416,63 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             }
             return listado;
         }
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes a los Eventos.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
+        private void TrabajosJornadasSeminariosEvento(CvnItemBean item, Entity entidadAux)
+        {
+            //new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemPaisEntidadOrganizadora, item.GetPaisPorIDCampo("060.010.030.320")),
+            //new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemCCAAEntidadOrganizadora, item.GetRegionPorIDCampo("060.010.030.330")),
+            //new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemCiudadEntidadOrganizadora, item.GetStringPorIDCampo("060.010.030.340"))
+
+            string entityPartAux = Guid.NewGuid().ToString() + "@@@";
+            entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemNombreEvento, StringGNOSSID(entityPartAux, item.GetStringPorIDCampo("060.010.030.070"))),
+                new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemFechaCelebracion, StringGNOSSID(entityPartAux, item.GetStringDatetimePorIDCampo("060.010.030.160"))),
+                new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemPubFechaFinCelebracion, StringGNOSSID(entityPartAux, item.GetStringDatetimePorIDCampo("060.010.030.370"))),
+                new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemCiudadCelebracion, StringGNOSSID(entityPartAux, item.GetStringPorIDCampo("060.010.030.150"))),
+                new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemPaisCelebracion, StringGNOSSID(entityPartAux, item.GetPaisPorIDCampo("060.010.030.120"))),
+                new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemCCAACelebracion, StringGNOSSID(entityPartAux, item.GetRegionPorIDCampo("060.010.030.130"))),
+                ////new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemEntidadOrganizadora, StringGNOSSID(entityPartAux, item.GetNameEntityBeanPorIDCampo("060.010.030.080"))),
+                new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemTipoEvento, StringGNOSSID(entityPartAux, item.GetTipoEventoPorIDCampo("060.010.030.020"))),
+                //new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemTipoEventoOtros, StringGNOSSID(entityPartAux, item.GetStringPorIDCampo("060.010.030.030")),
+                new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemPubActaCongresoExterno, StringGNOSSID(entityPartAux, item.GetStringBooleanPorIDCampo("060.010.030.180"))),
+                new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemAmbitoGeo, StringGNOSSID(entityPartAux, item.GetGeographicRegionPorIDCampo("060.010.030.050"))),
+                new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemAmbitoGeoOtros, StringGNOSSID(entityPartAux, item.GetStringPorIDCampo("060.010.030.060")))
+            ));
+        }
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes a los Autores/as.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
         private void TrabajosJornadasSeminariosAutores(CvnItemBean item, Entity entidadAux)//TODO
         {
             List<CvnItemBeanCvnAuthorBean> listadoAutores = item.GetListaElementosPorIDCampo<CvnItemBeanCvnAuthorBean>("060.010.030.310");
             foreach (CvnItemBeanCvnAuthorBean autor in listadoAutores)
             {
                 entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    //new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemAutorNombre, autor.GivenName),
-                    //new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemAutorPrimerApellido, autor.CvnFamilyNameBean?.FirstFamilyName),
-                    //new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemAutorSegundoApellido, autor.CvnFamilyNameBean?.SecondFamilyName),
-                    //new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemAutorFirma, autor.Signature.ToString())
+                //new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemAutorNombre, autor.GivenName),
+                //new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemAutorPrimerApellido, autor.CvnFamilyNameBean?.FirstFamilyName),
+                //new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemAutorSegundoApellido, autor.CvnFamilyNameBean?.SecondFamilyName),
+                //new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemAutorFirma, autor.Signature.ToString())
                 ));
             }
         }
+
+        /// <summary>
+        /// /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes a los Identificadores de publicación digital.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
         private void TrabajosJornadasSeminariosIDPublicacion(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnExternalPKBean> listadoIDs = item.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("060.010.030.400");
@@ -1516,33 +1512,46 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 }
             }
         }
-        private void TrabajosJornadasSeminariosISBN(CvnItemBean item, Entity entidadAux)//TODO - check
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes al ISBN/ISSN.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
+        private void TrabajosJornadasSeminariosISBN(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnExternalPKBean> listadoISBN = item.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("060.010.030.290");
             foreach (CvnItemBeanCvnExternalPKBean isbn in listadoISBN)
             {
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemPubISBN, isbn.Value),
-                    new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemPubISBNType, isbn.Type)
-                ));
+                //Si no hay type, ignoro el valor
+                if (string.IsNullOrEmpty(isbn.Type)) { continue; }
+
+                //Si es ISBN (020)
+                if (isbn.Type.Equals("020"))
+                {
+                    entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                        new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemPubISBN, isbn.Value)//TODO - añadir valor propiedad
+                    ));
+                }
             }
         }
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes al tipo de Entidad Organizadora.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
         private void TrabajosJornadasSeminariosTipoEntidad(CvnItemBean item, Entity entidadAux)
         {
             //Añado otros, o el ID de una preseleccion
-            if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.010.040.110")))
-            {
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemTipoEntidadOrganizadora, "http://gnoss.com/items/organizationtype_OTHERS"),
-                    new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemTipoEntidadOrganizadoraOtros, item.GetStringPorIDCampo("060.010.030.110"))
-                ));
-            }
-            else
-            {
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemTipoEntidadOrganizadora, item.GetOrganizacionPorIDCampo("060.010.030.100"))
-                ));
-            }
+            string valorTipo = !string.IsNullOrEmpty(item.GetStringPorIDCampo("060.010.030.110")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetOrganizacionPorIDCampo("060.010.030.100");
+
+            entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemTipoEntidadOrganizadora, valorTipo),
+                new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemTipoEntidadOrganizadoraOtros, item.GetStringPorIDCampo("060.010.030.110"))
+            ));
         }
 
         /// <summary>
@@ -1563,26 +1572,14 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.010.040.010")))
                     {
-                        //TODO
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                             new Property(Variables.ActividadCientificaTecnologica.otrasActDivulTitulo, item.GetStringPorIDCampo("060.010.040.010")),
-                            new Property(Variables.ActividadCientificaTecnologica.otrasActDivulTipoEvento, item.GetStringPorIDCampo("060.010.040.020")),//TODO
-                            //new Property(Variables.ActividadCientificaTecnologica.otrasActDivulTipoEventoOtros, item.GetStringPorIDCampo("060.010.040.030")),
                             //new Property(Variables.ActividadCientificaTecnologica.otrasActDivulIntervencion, item.GetStringPorIDCampo("060.010.040.040")),//TODO
                             //new Property(Variables.ActividadCientificaTecnologica.otrasActDivulIntervencionIndicar, item.GetStringPorIDCampo("060.010.040.050")),
-                            new Property(Variables.ActividadCientificaTecnologica.otrasActDivulAmbitoEvento, item.GetStringPorIDCampo("060.010.040.060")),//TODO
-                            new Property(Variables.ActividadCientificaTecnologica.otrasActDivulAmbitoEventoOtros, item.GetStringPorIDCampo("060.010.040.070")),
-                            new Property(Variables.ActividadCientificaTecnologica.otrasActDivulNombreEvento, item.GetStringPorIDCampo("060.010.040.080")),
                             //new Property(Variables.ActividadCientificaTecnologica.otrasActDivulPaisEntidadOrg, item.GetPaisPorIDCampo("060.010.040.320")),
                             //new Property(Variables.ActividadCientificaTecnologica.otrasActDivulCCAAEntidadOrg, item.GetRegionPorIDCampo("060.010.040.330")),
                             //new Property(Variables.ActividadCientificaTecnologica.otrasActDivulCiudadEntidadOrg, item.GetStringPorIDCampo("060.010.040.340")),
-                            //new Property(Variables.ActividadCientificaTecnologica.otrasActDivulEntidadOrg, item.GetNameEntityBeanPorIDCampo("060.010.040.090")),
-                            new Property(Variables.ActividadCientificaTecnologica.otrasActDivulPaisCelebracion, item.GetPaisPorIDCampo("060.010.040.130")),
-                            new Property(Variables.ActividadCientificaTecnologica.otrasActDivulCCAACelebracion, item.GetRegionPorIDCampo("060.010.040.140")),
-                            new Property(Variables.ActividadCientificaTecnologica.otrasActDivulCiudadCelebracion, item.GetStringPorIDCampo("060.010.040.160")),
-                            //new Property(Variables.ActividadCientificaTecnologica.otrasActDivulFechaCelebracion, item.GetStringDatetimePorIDCampo("060.010.040.170")),
                             new Property(Variables.ActividadCientificaTecnologica.otrasActDivulPubActaCongreso, item.GetStringBooleanPorIDCampo("060.010.040.180")),
-                            new Property(Variables.ActividadCientificaTecnologica.otrasActDivulPubActaAdmisionExt, item.GetStringPorIDCampo("060.010.040.190")),
                             //new Property(Variables.ActividadCientificaTecnologica.otrasActDivulPubTipo, item.GetStringPorIDCampo("060.010.040.200")),
                             new Property(Variables.ActividadCientificaTecnologica.otrasActDivulPubTitulo, item.GetStringPorIDCampo("060.010.040.210")),
                             //new Property(Variables.ActividadCientificaTecnologica.otrasActDivulPubNombre, item.GetStringPorIDCampo("060.010.040.360")),
@@ -1596,9 +1593,10 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                             new Property(Variables.ActividadCientificaTecnologica.otrasActDivulPubFecha, item.GetStringPorIDCampo("060.010.040.280")),
                             new Property(Variables.ActividadCientificaTecnologica.otrasActDivulPubURL, item.GetStringPorIDCampo("060.010.040.290")),
                             new Property(Variables.ActividadCientificaTecnologica.otrasActDivulPubDepositoLegal, item.GetStringPorIDCampo("060.010.040.310"))
-                            //,
-                            //new Property(Variables.ActividadCientificaTecnologica.otrasActDivulAutorCorrespondencia, item.GetStringPorIDCampo("060.010.040.390"))
+                        //,
+                        //new Property(Variables.ActividadCientificaTecnologica.otrasActDivulAutorCorrespondencia, item.GetStringPorIDCampo("060.010.040.390"))
                         ));
+                        OtrasActividadesDivulgacionEvento(item, entidadAux);
                         //OtrasActividadesDivulgacionAutores(item,entidadAux);
                         OtrasActividadesDivulgacionIDPublicacion(item, entidadAux);
                         //OtrasActividadesDivulgacionISBN(item, entidadAux);
@@ -1610,19 +1608,58 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             }
             return listado;
         }
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>
+        /// pertenecientes a los Eventos
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
+        private void OtrasActividadesDivulgacionEvento(CvnItemBean item, Entity entidadAux)
+        {
+            string entityPartAux = Guid.NewGuid().ToString() + "@@@";
+            entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                new Property(Variables.ActividadCientificaTecnologica.otrasActDivulNombreEvento, StringGNOSSID(entityPartAux, item.GetStringPorIDCampo("060.010.040.080"))),
+                new Property(Variables.ActividadCientificaTecnologica.otrasActDivulFechaCelebracion, StringGNOSSID(entityPartAux, item.GetStringDatetimePorIDCampo("060.010.040.170"))),
+                new Property(Variables.ActividadCientificaTecnologica.otrasActDivulCiudadCelebracion, StringGNOSSID(entityPartAux, item.GetStringPorIDCampo("060.010.040.160"))),
+                new Property(Variables.ActividadCientificaTecnologica.otrasActDivulPaisCelebracion, StringGNOSSID(entityPartAux, item.GetPaisPorIDCampo("060.010.040.130"))),
+                new Property(Variables.ActividadCientificaTecnologica.otrasActDivulCCAACelebracion, StringGNOSSID(entityPartAux, item.GetRegionPorIDCampo("060.010.040.140"))),
+                //new Property(Variables.ActividadCientificaTecnologica.otrasActDivulEntidadOrg,StringGNOSSID(entityPartAux,  item.GetNameEntityBeanPorIDCampo("060.010.040.090"))),
+                new Property(Variables.ActividadCientificaTecnologica.otrasActDivulTipoEvento, StringGNOSSID(entityPartAux, item.GetTipoEventoPorIDCampo("060.010.040.020"))),
+                //new Property(Variables.ActividadCientificaTecnologica.otrasActDivulTipoEventoOtros, StringGNOSSID(entityPartAux, item.GetStringPorIDCampo("060.010.040.030"))),
+                new Property(Variables.ActividadCientificaTecnologica.otrasActDivulPubActaAdmisionExt, StringGNOSSID(entityPartAux, item.GetStringBooleanPorIDCampo("060.010.040.190"))),
+                new Property(Variables.ActividadCientificaTecnologica.otrasActDivulAmbitoEvento, StringGNOSSID(entityPartAux, item.GetGeographicRegionPorIDCampo("060.010.040.060"))),
+                new Property(Variables.ActividadCientificaTecnologica.otrasActDivulAmbitoEventoOtros, StringGNOSSID(entityPartAux, item.GetStringPorIDCampo("060.010.040.070")))
+            ));
+
+        }
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes a los Autores/as.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
         private void OtrasActividadesDivulgacionAutores(CvnItemBean item, Entity entidadAux)//TODO
         {
             List<CvnItemBeanCvnAuthorBean> listadoAutores = item.GetListaElementosPorIDCampo<CvnItemBeanCvnAuthorBean>("060.010.040.350");
             foreach (CvnItemBeanCvnAuthorBean autor in listadoAutores)
             {
                 entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    //new Property(Variables.ActividadCientificaTecnologica.otrasActDivulAutorNombre, autor.GivenName),
-                    //new Property(Variables.ActividadCientificaTecnologica.otrasActDivulAutorPrimerApellido, autor.CvnFamilyNameBean?.FirstFamilyName),
-                    //new Property(Variables.ActividadCientificaTecnologica.otrasActDivulAutorSegundoApellido, autor.CvnFamilyNameBean?.SecondFamilyName),
-                    //new Property(Variables.ActividadCientificaTecnologica.otrasActDivulAutorFirma, autor.Signature.ToString())
+                //new Property(Variables.ActividadCientificaTecnologica.otrasActDivulAutorNombre, autor.GivenName),
+                //new Property(Variables.ActividadCientificaTecnologica.otrasActDivulAutorPrimerApellido, autor.CvnFamilyNameBean?.FirstFamilyName),
+                //new Property(Variables.ActividadCientificaTecnologica.otrasActDivulAutorSegundoApellido, autor.CvnFamilyNameBean?.SecondFamilyName),
+                //new Property(Variables.ActividadCientificaTecnologica.otrasActDivulAutorFirma, autor.Signature.ToString())
                 ));
             }
         }
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes a los Identificadores de publicación digital.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
         private void OtrasActividadesDivulgacionIDPublicacion(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnExternalPKBean> listadoIDs = item.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("060.010.040.400");
@@ -1661,33 +1698,46 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 }
             }
         }
-        private void OtrasActividadesDivulgacionISBN(CvnItemBean item, Entity entidadAux)//TODO -check 
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes al ISBN/ISSN.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
+        private void OtrasActividadesDivulgacionISBN(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnExternalPKBean> listadoISBN = item.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("060.010.040.300");
             foreach (CvnItemBeanCvnExternalPKBean isbn in listadoISBN)
             {
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    new Property(Variables.ActividadCientificaTecnologica.otrasActDivulPubISBN, isbn.Value),
-                    new Property(Variables.ActividadCientificaTecnologica.otrasActDivulPubISBNType, isbn.Type)
-                ));
+                //Si no hay type, ignoro el valor
+                if (string.IsNullOrEmpty(isbn.Type)) { continue; }
+
+                //Si es ISBN (020)
+                if (isbn.Type.Equals("020"))
+                {
+                    entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                        new Property(Variables.ActividadCientificaTecnologica.otrasActDivulPubISBN, isbn.Value)//TODO - añadir valor de la propiedad
+                    ));
+                }
             }
         }
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes al tipo de Entidad Organizadora.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
         private void OtrasActividadesDivulgacionTipoEntidad(CvnItemBean item, Entity entidadAux)
         {
             //Añado otros, o el ID de una preseleccion
-            if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.010.040.120")))
-            {
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    new Property(Variables.ActividadCientificaTecnologica.otrasActDivulTipoEntidadOrg, "http://gnoss.com/items/organizationtype_OTHERS"),
-                    new Property(Variables.ActividadCientificaTecnologica.otrasActDivulTipoEntidadOrgOtros, item.GetStringPorIDCampo("060.010.040.120"))
-                ));
-            }
-            else
-            {
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    new Property(Variables.ActividadCientificaTecnologica.otrasActDivulTipoEntidadOrg, item.GetOrganizacionPorIDCampo("060.010.040.110"))
-                ));
-            }
+            string valorTipo = !string.IsNullOrEmpty(item.GetStringPorIDCampo("060.010.040.120")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetOrganizacionPorIDCampo("060.010.040.110");
+
+            entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                new Property(Variables.ActividadCientificaTecnologica.otrasActDivulTipoEntidadOrg, valorTipo),
+                new Property(Variables.ActividadCientificaTecnologica.otrasActDivulTipoEntidadOrgOtros, item.GetStringPorIDCampo("060.010.040.120"))
+            ));
         }
 
         /// <summary>
@@ -1723,7 +1773,6 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                         ));
                         ComitesCTAEntidadAfiliacion(item, entidadAux);
                         ComitesCTACodigosUnesco(item, entidadAux);
-                        ComitesCTATipoEntidad(item, entidadAux);
 
                         listado.Add(entidadAux);
                     }
@@ -1731,16 +1780,36 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             }
             return listado;
         }
-        private void ComitesCTAEntidadAfiliacion(CvnItemBean item, Entity entidadAux) {
-            //new Property(Variables.ActividadCientificaTecnologica.comitesCTAEntidadAfiliacion, item.GetNameEntityBeanPorIDCampo("060.020.010.060")),
-            if (!string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.020.010.060")))
-            {
-                string organizacion = UtilitySecciones.GetOrganizacionPorNombre(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.020.010.060"));
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    new Property(Variables.ActividadCientificaTecnologica.comitesCTAEntidadAfiliacion, organizacion)
-                ));
-            }
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes a la Entidad de Afiliación.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
+        private void ComitesCTAEntidadAfiliacion(CvnItemBean item, Entity entidadAux)
+        {
+            //Añado la referencia si existe Entidad Realizacion
+            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.020.010.060"),
+                Variables.ActividadCientificaTecnologica.comitesCTAEntidadAfiliacionNombre,
+                Variables.ActividadCientificaTecnologica.comitesCTAEntidadAfiliacion, entidadAux);
+
+            //Añado otros, o el ID de una preseleccion
+            string valorTipo = !string.IsNullOrEmpty(item.GetStringPorIDCampo("060.020.010.090")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetOrganizacionPorIDCampo("060.020.010.080");
+
+            entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                new Property(Variables.ActividadCientificaTecnologica.comitesCTATipoEntidadAfiliacion, valorTipo),
+                new Property(Variables.ActividadCientificaTecnologica.comitesCTATipoEntidadAfiliacionOtros, item.GetStringPorIDCampo("060.020.010.090"))
+            ));
         }
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes a los Códigos UNESCO de especialización primaria,
+        /// secundaria y terciaria.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
         private void ComitesCTACodigosUnesco(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnString> listadoCodUnescoPrimaria = item.GetListaElementosPorIDCampo<CvnItemBeanCvnString>("060.020.010.120");
@@ -1792,26 +1861,32 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 }
             }
         }
+
+        /// <summary>
+        /// unesco_
+        /// </summary>
+        /// <param name="codigolista">codigolista</param>
+        /// <returns></returns>
         private string GetCodUnescoIDCampo(string codigolista)
         {
             return mResourceApi.GraphsUrl + "items/unesco_" + codigolista;
         }
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes al tipo de Entidad de Afiliación.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
         private void ComitesCTATipoEntidad(CvnItemBean item, Entity entidadAux)
         {
             //Añado otros, o el ID de una preseleccion
-            if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.020.010.090")))
-            {
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    new Property(Variables.ActividadCientificaTecnologica.comitesCTATipoEntidadAfiliacion, "http://gnoss.com/items/organizationtype_OTHERS"),
-                    new Property(Variables.ActividadCientificaTecnologica.comitesCTATipoEntidadAfiliacionOtros, item.GetStringPorIDCampo("060.020.010.090"))
-                ));
-            }
-            else
-            {
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    new Property(Variables.ActividadCientificaTecnologica.comitesCTATipoEntidadAfiliacion, item.GetOrganizacionPorIDCampo("060.020.010.080"))
-                ));
-            }
+            string valorTipo = !string.IsNullOrEmpty(item.GetStringPorIDCampo("060.020.010.090")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetOrganizacionPorIDCampo("060.020.010.080");
+
+            entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                new Property(Variables.ActividadCientificaTecnologica.comitesCTATipoEntidadAfiliacion, valorTipo),
+                new Property(Variables.ActividadCientificaTecnologica.comitesCTATipoEntidadAfiliacionOtros, item.GetStringPorIDCampo("060.020.010.090"))
+            ));
         }
 
         /// <summary>
@@ -1841,7 +1916,6 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                             new Property(Variables.ActividadCientificaTecnologica.orgIDIPaisEntidadConvocante, item.GetPaisPorIDCampo("060.020.030.180")),
                             new Property(Variables.ActividadCientificaTecnologica.orgIDICCAAEntidadConvocante, item.GetRegionPorIDCampo("060.020.030.190")),
                             new Property(Variables.ActividadCientificaTecnologica.orgIDICiudadEntidadConvocante, item.GetStringPorIDCampo("060.020.030.200")),
-                            new Property(Variables.ActividadCientificaTecnologica.orgIDIEntidadConvocante, item.GetNameEntityBeanPorIDCampo("060.020.030.070")),
                             new Property(Variables.ActividadCientificaTecnologica.orgIDIModoParticipacion, item.GetTipoParticipacionActividadPorIDCampo("060.020.030.110")),
                             new Property(Variables.ActividadCientificaTecnologica.orgIDIModoParticipacionOtros, item.GetStringPorIDCampo("060.020.030.120")),
                             new Property(Variables.ActividadCientificaTecnologica.orgIDIAmbitoReunion, item.GetGeographicRegionPorIDCampo("060.020.030.130")),
@@ -1860,22 +1934,27 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             }
             return listado;
         }
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes al tipo de Entidad Convocante.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
         private void OrganizacionIDITipoEntidad(CvnItemBean item, Entity entidadAux)
         {
+            //Añado la referencia si existe Entidad Realizacion
+            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.020.030.070"),
+                Variables.ActividadCientificaTecnologica.orgIDIEntidadConvocanteNombre,
+                Variables.ActividadCientificaTecnologica.orgIDIEntidadConvocante, entidadAux);
+
             //Añado otros, o el ID de una preseleccion
-            if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.020.030.100")))
-            {
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    new Property(Variables.ActividadCientificaTecnologica.orgIDITipoEntidadConvocante, "http://gnoss.com/items/organizationtype_OTHERS"),
-                    new Property(Variables.ActividadCientificaTecnologica.orgIDITipoEntidadConvocanteOtros, item.GetStringPorIDCampo("060.020.030.100"))
-                ));
-            }
-            else
-            {
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    new Property(Variables.ActividadCientificaTecnologica.orgIDITipoEntidadConvocante, item.GetOrganizacionPorIDCampo("060.020.030.090"))
-                ));
-            }
+            string valorTipo = !string.IsNullOrEmpty(item.GetStringPorIDCampo("060.020.030.100")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetOrganizacionPorIDCampo("060.020.030.090");
+
+            entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                new Property(Variables.ActividadCientificaTecnologica.orgIDITipoEntidadConvocante, valorTipo),
+                new Property(Variables.ActividadCientificaTecnologica.orgIDITipoEntidadConvocanteOtros, item.GetStringPorIDCampo("060.020.030.100"))
+            ));
         }
 
         /// <summary>
@@ -1904,7 +1983,6 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                             new Property(Variables.ActividadCientificaTecnologica.gestionIDINombreActividad, item.GetStringPorIDCampo("060.020.040.060")),
                             new Property(Variables.ActividadCientificaTecnologica.gestionIDITipologiaGestion, item.GetTipoTipologiaGestionPorIDCampo("060.020.040.070")),
                             new Property(Variables.ActividadCientificaTecnologica.gestionIDITipologiaGestionOtros, item.GetStringPorIDCampo("060.020.040.080")),
-                            new Property(Variables.ActividadCientificaTecnologica.gestionIDIEntornoEntidadRealizacion, item.GetNameEntityBeanPorIDCampo("060.020.040.090")),
                             new Property(Variables.ActividadCientificaTecnologica.gestionIDIEntornoFechaInicio, item.GetStringDatetimePorIDCampo("060.020.040.130")),
                             new Property(Variables.ActividadCientificaTecnologica.gestionIDIEntornoDuracionAnio, item.GetDurationAnioPorIDCampo("060.020.040.140")),
                             new Property(Variables.ActividadCientificaTecnologica.gestionIDIEntornoDuracionMes, item.GetDurationMesPorIDCampo("060.020.040.140")),
@@ -1928,22 +2006,27 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             }
             return listado;
         }
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes al tipo de Entidad de Realización.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
         private void GestionIDITipoEntidad(CvnItemBean item, Entity entidadAux)
         {
+            //Añado la referencia si existe Entidad Realizacion
+            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.020.040.090"),
+                Variables.ActividadCientificaTecnologica.gestionIDIEntornoEntidadRealizacionNombre,
+                Variables.ActividadCientificaTecnologica.gestionIDIEntornoEntidadRealizacion, entidadAux);
+
             //Añado otros, o el ID de una preseleccion
-            if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.020.040.120")))
-            {
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    new Property(Variables.ActividadCientificaTecnologica.gestionIDIEntornoTipoEntidadRealizacion, "http://gnoss.com/items/organizationtype_OTHERS"),
-                    new Property(Variables.ActividadCientificaTecnologica.gestionIDIEntornoTipoEntidadRealizacionOtros, item.GetStringPorIDCampo("060.020.040.120"))
-                ));
-            }
-            else
-            {
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    new Property(Variables.ActividadCientificaTecnologica.gestionIDIEntornoTipoEntidadRealizacion, item.GetOrganizacionPorIDCampo("060.020.040.110"))
-                ));
-            }
+            string valorTipo = !string.IsNullOrEmpty(item.GetStringPorIDCampo("060.020.040.120")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetOrganizacionPorIDCampo("060.020.040.110");
+
+            entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                new Property(Variables.ActividadCientificaTecnologica.gestionIDIEntornoTipoEntidadRealizacion, valorTipo),
+                new Property(Variables.ActividadCientificaTecnologica.gestionIDIEntornoTipoEntidadRealizacionOtros, item.GetStringPorIDCampo("060.020.040.120"))
+            ));
         }
 
 
@@ -1973,12 +2056,10 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                             new Property(Variables.ActividadCientificaTecnologica.forosComitesPaisEntidadOrganizadora, item.GetPaisPorIDCampo("060.020.050.170")),
                             new Property(Variables.ActividadCientificaTecnologica.forosComitesCCAAEntidadOrganizadora, item.GetRegionPorIDCampo("060.020.050.180")),
                             new Property(Variables.ActividadCientificaTecnologica.forosComitesCiudadEntidadOrganizadora, item.GetStringPorIDCampo("060.020.050.190")),
-                            new Property(Variables.ActividadCientificaTecnologica.forosComitesEntidadOrganizadora, item.GetNameEntityBeanPorIDCampo("060.020.050.060")),
                             //new Property(Variables.ActividadCientificaTecnologica.forosComitesCategoriaProfesional, item.GetStringPorIDCampo("060.020.050.100")),//TODO - Genera errores
                             new Property(Variables.ActividadCientificaTecnologica.forosComitesPaisEntidadRepresentada, item.GetPaisPorIDCampo("060.020.050.200")),
                             new Property(Variables.ActividadCientificaTecnologica.forosComitesCCAAEntidadRepresentada, item.GetRegionPorIDCampo("060.020.050.210")),
                             new Property(Variables.ActividadCientificaTecnologica.forosComitesCiudadEntidadRepresentada, item.GetStringPorIDCampo("060.020.050.220")),
-                            new Property(Variables.ActividadCientificaTecnologica.forosComitesOrganismoRepresentado, item.GetNameEntityBeanPorIDCampo("060.020.050.110")),
                             new Property(Variables.ActividadCientificaTecnologica.forosComitesFechaInicio, item.GetStringDatetimePorIDCampo("060.020.050.150")),
                             new Property(Variables.ActividadCientificaTecnologica.forosComitesFechaFinalizacion, item.GetStringDatetimePorIDCampo("060.020.050.160"))
                         ));
@@ -1990,37 +2071,41 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             }
             return listado;
         }
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes al tipo de Entidad Organizadora.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
         private void ForosComitesTipoEntidad(CvnItemBean item, Entity entidadAux)
         {
-            //Añado otros entidad organizadora, o el ID de una preseleccion
-            if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.020.050.090")))
-            {
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    new Property(Variables.ActividadCientificaTecnologica.forosComitesTipoEntidadOrganizadora, "http://gnoss.com/items/organizationtype_OTHERS"),
-                    new Property(Variables.ActividadCientificaTecnologica.forosComitesTipoEntidadOrganizadoraOtros, item.GetStringPorIDCampo("060.020.050.090"))
-                ));
-            }
-            else
-            {
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    new Property(Variables.ActividadCientificaTecnologica.forosComitesTipoEntidadOrganizadora, item.GetOrganizacionPorIDCampo("060.020.050.080"))
-                ));
-            }
+            //Añado la referencia si existe Entidad Organizadora
+            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.020.050.060"),
+                Variables.ActividadCientificaTecnologica.forosComitesEntidadOrganizadoraNombre,
+                Variables.ActividadCientificaTecnologica.forosComitesEntidadOrganizadora, entidadAux);
 
-            //Añado otros entidad representada, o el ID de una preseleccion
-            if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.020.050.140")))
-            {
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    new Property(Variables.ActividadCientificaTecnologica.forosComitesTipoOrganismoRepresentado, "http://gnoss.com/items/organizationtype_OTHERS"),
-                    new Property(Variables.ActividadCientificaTecnologica.forosComitesTipoOrganismoRepresentadoOtros, item.GetStringPorIDCampo("060.020.050.140"))
-                ));
-            }
-            else
-            {
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    new Property(Variables.ActividadCientificaTecnologica.forosComitesTipoOrganismoRepresentado, item.GetOrganizacionPorIDCampo("060.020.050.130"))
-                ));
-            }
+            //Añado otros Entidad Organizadora, o el ID de una preseleccion
+            string valorTipoEO = !string.IsNullOrEmpty(item.GetStringPorIDCampo("060.020.050.090")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetOrganizacionPorIDCampo("060.020.050.080");
+
+            entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                new Property(Variables.ActividadCientificaTecnologica.forosComitesTipoEntidadOrganizadora, valorTipoEO),
+                new Property(Variables.ActividadCientificaTecnologica.forosComitesTipoEntidadOrganizadoraOtros, item.GetStringPorIDCampo("060.020.050.090"))
+            ));
+
+
+            //Añado la referencia si existe Entidad Representada
+            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.020.050.110"),
+                Variables.ActividadCientificaTecnologica.forosComitesOrganismoRepresentadoNombre,
+                Variables.ActividadCientificaTecnologica.forosComitesOrganismoRepresentado, entidadAux);
+
+            //Añado otros Entidad Representada, o el ID de una preseleccion
+            string valorTipoER = !string.IsNullOrEmpty(item.GetStringPorIDCampo("060.020.050.140")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetOrganizacionPorIDCampo("060.020.050.130");
+
+            entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                new Property(Variables.ActividadCientificaTecnologica.forosComitesTipoOrganismoRepresentado, valorTipoER),
+                new Property(Variables.ActividadCientificaTecnologica.forosComitesTipoOrganismoRepresentadoOtros, item.GetStringPorIDCampo("060.020.050.140"))
+            ));
         }
 
         /// <summary>
@@ -2044,7 +2129,6 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                             new Property(Variables.ActividadCientificaTecnologica.evalRevIDIFunciones, item.GetStringPorIDCampo("060.020.060.010")),
                             new Property(Variables.ActividadCientificaTecnologica.evalRevIDINombre, item.GetStringPorIDCampo("060.020.060.020")),
-                            new Property(Variables.ActividadCientificaTecnologica.evalRevIDIEntidad, item.GetNameEntityBeanPorIDCampo("060.020.060.080")),
                             new Property(Variables.ActividadCientificaTecnologica.evalRevIDIPaisEntidadRealizacion, item.GetPaisPorIDCampo("060.020.060.030")),
                             new Property(Variables.ActividadCientificaTecnologica.evalRevIDICCAAEntidadRealizacion, item.GetRegionPorIDCampo("060.020.060.040")),
                             new Property(Variables.ActividadCientificaTecnologica.evalRevIDICiudadEntidadRealizacion, item.GetStringPorIDCampo("060.020.060.190")),
@@ -2066,22 +2150,28 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             }
             return listado;
         }
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes al tipo de Entidad de Realización.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
         private void EvalRevIDITipoEntidad(CvnItemBean item, Entity entidadAux)
         {
+            
+            //Añado la referencia si existe
+            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.020.060.080"),
+                Variables.ActividadCientificaTecnologica.evalRevIDIEntidadNombre,
+                Variables.ActividadCientificaTecnologica.evalRevIDIEntidad, entidadAux);
+
             //Añado otros, o el ID de una preseleccion
-            if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.020.060.110")))
-            {
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    new Property(Variables.ActividadCientificaTecnologica.evalRevIDITipoEntidad, "http://gnoss.com/items/organizationtype_OTHERS"),
-                    new Property(Variables.ActividadCientificaTecnologica.evalRevIDITipoEntidadOtros, item.GetStringPorIDCampo("060.020.060.110"))
-                ));
-            }
-            else
-            {
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    new Property(Variables.ActividadCientificaTecnologica.evalRevIDITipoEntidad, item.GetOrganizacionPorIDCampo("060.020.060.100"))
-                ));
-            }
+            string valorTipoER = !string.IsNullOrEmpty(item.GetStringPorIDCampo("060.020.060.110")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetOrganizacionPorIDCampo("060.020.060.100");
+
+            entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                new Property(Variables.ActividadCientificaTecnologica.evalRevIDITipoEntidad, valorTipoER),
+                new Property(Variables.ActividadCientificaTecnologica.evalRevIDITipoEntidadOtros, item.GetStringPorIDCampo("060.020.060.110"))
+            ));
         }
 
         /// <summary>
@@ -2103,7 +2193,6 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.010.050.210")))
                     {
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                            new Property(Variables.ActividadCientificaTecnologica.estanciasIDIEntidadRealizacion, item.GetNameEntityBeanPorIDCampo("060.010.050.010")),
                             new Property(Variables.ActividadCientificaTecnologica.estanciasIDIPaisEntidadRealizacion, item.GetPaisPorIDCampo("060.010.050.050")),
                             new Property(Variables.ActividadCientificaTecnologica.estanciasIDICCAAEntidadRealizacion, item.GetRegionPorIDCampo("060.010.050.060")),
                             new Property(Variables.ActividadCientificaTecnologica.estanciasIDICiudadEntidadRealizacion, item.GetStringPorIDCampo("060.010.050.080")),
@@ -2116,7 +2205,6 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                             //new Property(Variables.ActividadCientificaTecnologica.estanciasIDICodUnescoPrimaria, item.GetStringPorIDCampo("060.010.050.130")),//rep
                             //new Property(Variables.ActividadCientificaTecnologica.estanciasIDICodUnescoSecundaria, item.GetStringPorIDCampo("060.010.050.140")),//rep
                             //new Property(Variables.ActividadCientificaTecnologica.estanciasIDICodUnescoTerciaria, item.GetStringPorIDCampo("060.010.050.150")),//rep
-                            new Property(Variables.ActividadCientificaTecnologica.estanciasIDIEntidadFinanciadora, item.GetNameEntityBeanPorIDCampo("060.010.050.160")),
                             new Property(Variables.ActividadCientificaTecnologica.estanciasIDIPaisEntidadFinanciadora, item.GetPaisPorIDCampo("060.010.050.250")),
                             new Property(Variables.ActividadCientificaTecnologica.estanciasIDICCAAEntidadFinanciadora, item.GetRegionPorIDCampo("060.010.050.260")),
                             new Property(Variables.ActividadCientificaTecnologica.estanciasIDICiudadEntidadFinanciadora, item.GetStringPorIDCampo("060.010.050.270")),
@@ -2136,37 +2224,41 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             }
             return listado;
         }
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes al tipo de Entidad de Realización.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
         private void EstanciasIDITipoEntidad(CvnItemBean item, Entity entidadAux)
         {
-            //Añado otros EntidadRealizacion, o el ID de una preseleccion
-            if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.010.050.040")))
-            {
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    new Property(Variables.ActividadCientificaTecnologica.estanciasIDITipoEntidadRealizacion, "http://gnoss.com/items/organizationtype_OTHERS"),
-                    new Property(Variables.ActividadCientificaTecnologica.estanciasIDITipoEntidadRealizacionOtros, item.GetStringPorIDCampo("060.010.050.040"))
-                ));
-            }
-            else
-            {
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    new Property(Variables.ActividadCientificaTecnologica.estanciasIDITipoEntidadRealizacion, item.GetOrganizacionPorIDCampo("060.010.050.030"))
-                ));
-            }
+            //Añado la referencia si existe
+            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.010.050.010"),
+                Variables.ActividadCientificaTecnologica.estanciasIDIEntidadRealizacionNombre,
+                Variables.ActividadCientificaTecnologica.estanciasIDIEntidadRealizacion, entidadAux);
 
-            //Añado otros EntidadFinanciacion, o el ID de una preseleccion
-            if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.010.050.190")))
-            {
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    new Property(Variables.ActividadCientificaTecnologica.estanciasIDITipoEntidadFinanciadora, "http://gnoss.com/items/organizationtype_OTHERS"),
-                    new Property(Variables.ActividadCientificaTecnologica.estanciasIDITipoEntidadFinanciadoraOtros, item.GetStringPorIDCampo("060.010.050.190"))
-                ));
-            }
-            else
-            {
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    new Property(Variables.ActividadCientificaTecnologica.estanciasIDITipoEntidadFinanciadora, item.GetOrganizacionPorIDCampo("060.010.050.180"))
-                ));
-            }
+            //Añado otros Entidad Realizacion, o el ID de una preseleccion
+            string valorTipoER = !string.IsNullOrEmpty(item.GetStringPorIDCampo("060.010.050.040")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetOrganizacionPorIDCampo("060.010.050.030");
+
+            entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                new Property(Variables.ActividadCientificaTecnologica.estanciasIDITipoEntidadRealizacion, valorTipoER),
+                new Property(Variables.ActividadCientificaTecnologica.estanciasIDITipoEntidadRealizacionOtros, item.GetStringPorIDCampo("060.010.050.040"))
+            ));
+
+            //Añado otros Entidad Financiacion, o el ID de una preseleccion
+            string valorTipoEF = !string.IsNullOrEmpty(item.GetStringPorIDCampo("060.010.050.190")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetOrganizacionPorIDCampo("060.010.050.180");
+
+            //Añado la referencia si existe
+            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.010.050.160"),
+                Variables.ActividadCientificaTecnologica.estanciasIDIEntidadFinanciadoraNombre,
+                Variables.ActividadCientificaTecnologica.estanciasIDIEntidadFinanciadora, entidadAux);
+
+            //Añado tipo entidad
+            entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                new Property(Variables.ActividadCientificaTecnologica.estanciasIDITipoEntidadFinanciadora, valorTipoEF),
+                new Property(Variables.ActividadCientificaTecnologica.estanciasIDITipoEntidadFinanciadoraOtros, item.GetStringPorIDCampo("060.010.050.190"))
+            ));
         }
 
         /// <summary>
@@ -2195,9 +2287,6 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                             //new Property(Variables.ActividadCientificaTecnologica.ayudasBecasPalabrasClave, item.GetStringPorIDCampo("060.030.010.050")),
                             new Property(Variables.ActividadCientificaTecnologica.ayudasBecasFinalidad, item.GetFinalidadPorIDCampo("060.030.010.060")),
                             new Property(Variables.ActividadCientificaTecnologica.ayudasBecasFinalidadOtros, item.GetStringPorIDCampo("060.030.010.070")),
-                            new Property(Variables.ActividadCientificaTecnologica.ayudasBecasEntidadConcede, item.GetNameEntityBeanPorIDCampo("060.030.010.080")),
-                            new Property(Variables.ActividadCientificaTecnologica.ayudasBecasTipoEntidadConcede, item.GetOrganizacionPorIDCampo("060.030.010.100")),
-                            new Property(Variables.ActividadCientificaTecnologica.ayudasBecasTipoEntidadConcedeOtros, item.GetStringPorIDCampo("060.030.010.110")),
                             new Property(Variables.ActividadCientificaTecnologica.ayudasBecasImporte, item.GetStringDoublePorIDCampo("060.030.010.120")),
                             new Property(Variables.ActividadCientificaTecnologica.ayudasBecasFecha, item.GetStringDatetimePorIDCampo("060.030.010.130")),
                             new Property(Variables.ActividadCientificaTecnologica.ayudasBecasDuracionAnio, item.GetDurationAnioPorIDCampo("060.030.010.140")),
@@ -2207,7 +2296,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                             new Property(Variables.ActividadCientificaTecnologica.ayudasBecasFacultadEscuela, item.GetNameEntityBeanPorIDCampo("060.030.010.170")),
                             new Property(Variables.ActividadCientificaTecnologica.ayudasBecasEntidadRealizacion, item.GetNameEntityBeanPorIDCampo("060.030.010.180"))
                          ));
-                        AyudasBecasTipoEntidad(item, entidadAux);
+                        AyudasBecasEntidadConcede(item, entidadAux);
 
                         listado.Add(entidadAux);
                     }
@@ -2215,22 +2304,30 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             }
             return listado;
         }
-        private void AyudasBecasTipoEntidad(CvnItemBean item, Entity entidadAux)
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes al tipo de Entidad concesionaria.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
+        private void AyudasBecasEntidadConcede(CvnItemBean item, Entity entidadAux)
         {
+            //Si no esta Entidad no añado datos
+            if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.030.010.080"))) { return; }
+
+            //Añado la referencia si existe
+            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.030.010.080"),
+                Variables.ActividadCientificaTecnologica.ayudasBecasEntidadConcedeNombre,
+                Variables.ActividadCientificaTecnologica.ayudasBecasEntidadConcede, entidadAux);
+
             //Añado otros, o el ID de una preseleccion
-            if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.030.010.110")))
-            {
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    new Property(Variables.ActividadCientificaTecnologica.ayudasBecasTipoEntidadConcede, "http://gnoss.com/items/organizationtype_OTHERS"),
-                    new Property(Variables.ActividadCientificaTecnologica.ayudasBecasTipoEntidadConcedeOtros, item.GetStringPorIDCampo("060.030.010.110"))
-                ));
-            }
-            else
-            {
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    new Property(Variables.ActividadCientificaTecnologica.ayudasBecasTipoEntidadConcede, item.GetOrganizacionPorIDCampo("060.030.010.100"))
-                ));
-            }
+            string valorTipoEntidad = !string.IsNullOrEmpty(item.GetStringPorIDCampo("060.030.010.110")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetOrganizacionPorIDCampo("060.030.010.100");
+
+            entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                new Property(Variables.ActividadCientificaTecnologica.ayudasBecasTipoEntidadConcede, valorTipoEntidad),
+                new Property(Variables.ActividadCientificaTecnologica.ayudasBecasTipoEntidadConcedeOtros, item.GetStringPorIDCampo("060.030.010.110"))
+            ));
         }
 
         /// <summary>
@@ -2300,6 +2397,13 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 }
             }
         }
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de las Entidades Participantes,
+        /// pertenecientes al listado <paramref name="listadoEntidadParticipante"/>.
+        /// </summary>
+        /// <param name="listadoEntidadParticipante">listadoEntidadParticipante</param>
+        /// <param name="entidadAux">entidadAux</param>
         private void OtrosModosColaboracionEntidadesParticipantes(List<CvnItemBeanCvnCodeGroup> listadoEntidadParticipante, Entity entidadAux)
         {
             foreach (CvnItemBeanCvnCodeGroup entidadParticipante in listadoEntidadParticipante)
@@ -2308,14 +2412,25 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 {
                     string entityPartAux = Guid.NewGuid().ToString() + "@@@";
                     Property propertyEntidadParticipante = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.otrasColabEntidadesParticipantes);
+                    Property propertyEntidadParticipanteNombre = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.otrasColabEntidadesParticipantesNombre);
                     Property propertyPaisEntidadParticipante = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.otrasColabPaisEntidadParticipante);
                     Property propertyRegionEntidadParticipante = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.otrasColabCCAAEntidadParticipante);
                     Property propertyCiudadEntidadParticipante = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.otrasColabCiudadEntidadParticipante);
 
                     //Añado titulo entidad participante
                     string valorTituloEP = StringGNOSSID(entityPartAux, entidadParticipante.GetNameEntityBeanCvnCodeGroup("060.020.020.080"));
-                    string propiedadTituloEP = Variables.ActividadCientificaTecnologica.otrasColabEntidadesParticipantes;
-                    UtilitySecciones.CheckProperty(propertyEntidadParticipante, entidadAux, valorTituloEP, propiedadTituloEP);
+                    string propiedadTituloEP = Variables.ActividadCientificaTecnologica.otrasColabEntidadesParticipantesNombre;
+                    UtilitySecciones.CheckProperty(propertyEntidadParticipanteNombre, entidadAux, valorTituloEP, propiedadTituloEP);
+
+                    //Añado referencia entidad participante
+                    string nombreEP = entidadParticipante.GetNameEntityBeanCvnCodeGroup("060.020.020.080");
+                    if (string.IsNullOrEmpty(nombreEP))
+                    {
+                        string referenciaEP = UtilitySecciones.GetOrganizacionPorNombre(mResourceApi, nombreEP);
+                        string valorEP = StringGNOSSID(entityPartAux, referenciaEP);
+                        string propiedadEP = Variables.ActividadCientificaTecnologica.otrasColabEntidadesParticipantes;
+                        UtilitySecciones.CheckProperty(propertyEntidadParticipante, entidadAux, valorEP, propiedadEP);
+                    }
 
                     //Añado pais entidad participante
                     string valorPaisEP = StringGNOSSID(entityPartAux, entidadParticipante.GetPaisPorIDCampo("060.020.020.170"));
@@ -2340,7 +2455,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                     string valorOtroTipoEP = StringGNOSSID(entityPartAux, entidadParticipante.GetStringCvnCodeGroup("060.020.020.110"));
                     string propiedadOtroTipoEP = Variables.ActividadCientificaTecnologica.otrasColabTipoEntidadOtros;
 
-                    string valorTipoEP = !string.IsNullOrEmpty(valorOtroTipoEP) ? StringGNOSSID(entityPartAux, "http://gnoss.com/items/organizationtype_OTHERS") : StringGNOSSID(entityPartAux, entidadParticipante.GetOrganizationCvnCodeGroup("060.020.020.100"));
+                    string valorTipoEP = !string.IsNullOrEmpty(valorOtroTipoEP) ? StringGNOSSID(entityPartAux, mResourceApi.GraphsUrl + "items/organizationtype_OTHERS") : StringGNOSSID(entityPartAux, entidadParticipante.GetOrganizationCvnCodeGroup("060.020.020.100"));
                     string propiedadTipoEP = Variables.ActividadCientificaTecnologica.otrasColabTipoEntidad;
 
                     UtilitySecciones.CheckProperty(propertyTipoEntidadParticipante, entidadAux, valorTipoEP, propiedadTipoEP);
@@ -2354,8 +2469,6 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
         /// 060.030.020.000
         /// </summary>
         /// <param name="listadoDatos"></param>
-        /// <param name="entity"></param>
-        /// <param name="entityBBDD"></param>
         private List<Entity> GetSociedadesAsociaciones(List<CvnItemBean> listadoDatos)
         {
             List<Entity> listado = new List<Entity>();
@@ -2377,14 +2490,13 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                             new Property(Variables.ActividadCientificaTecnologica.sociedadesPaisEntidadAfiliacion, item.GetPaisPorIDCampo("060.030.020.150")),
                             new Property(Variables.ActividadCientificaTecnologica.sociedadesCCAAEntidadAfiliacion, item.GetRegionPorIDCampo("060.030.020.160")),
                             new Property(Variables.ActividadCientificaTecnologica.sociedadesCiudadEntidadAfiliacion, item.GetStringPorIDCampo("060.030.020.170")),
-                            new Property(Variables.ActividadCientificaTecnologica.sociedadesEntidadAfiliacion, item.GetNameEntityBeanPorIDCampo("060.030.020.050")),
                             //Palabras Clave - Tiene REPETIDOS - new Property(Variables.ActividadCientificaTecnologica., item.GetStringPorIDCampo("060.030.020.")),
                             new Property(Variables.ActividadCientificaTecnologica.sociedadesCategoriaProfesional, item.GetStringPorIDCampo("060.030.020.100")),
                             new Property(Variables.ActividadCientificaTecnologica.sociedadesTamanio, item.GetStringDoublePorIDCampo("060.030.020.110")),
                             new Property(Variables.ActividadCientificaTecnologica.sociedadesFechaInicio, item.GetStringDatetimePorIDCampo("060.030.020.120")),
                             new Property(Variables.ActividadCientificaTecnologica.sociedadesFechaFinalizacion, item.GetStringDatetimePorIDCampo("060.030.020.130"))
                          ));
-                        SociedadesAsociacionesTipoEntidad(item, entidadAux);
+                        SociedadesAsociacionesEntidadAfiliacion(item, entidadAux);
 
                         listado.Add(entidadAux);
                     }
@@ -2392,22 +2504,30 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             }
             return listado;
         }
-        private void SociedadesAsociacionesTipoEntidad(CvnItemBean item, Entity entidadAux)
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes al tipo de Entidad de Afiliación.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
+        private void SociedadesAsociacionesEntidadAfiliacion(CvnItemBean item, Entity entidadAux)
         {
+            //Si no esta Entidad de Afiliacion no añado datos
+            if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.030.020.050"))) { return; }
+
+            //Añado la referencia si existe
+            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.030.020.050"),
+                Variables.ActividadCientificaTecnologica.sociedadesEntidadAfiliacionNombre,
+                Variables.ActividadCientificaTecnologica.sociedadesEntidadAfiliacion, entidadAux);
+
             //Añado otros, o el ID de una preseleccion
-            if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.030.020.080")))
-            {
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    new Property(Variables.ActividadCientificaTecnologica.sociedadesTipoEntidadAfiliacion, "http://gnoss.com/items/organizationtype_OTHERS"),
-                    new Property(Variables.ActividadCientificaTecnologica.sociedadesTipoEntidadAfiliacionOtros, item.GetStringPorIDCampo("060.030.020.080"))
-                ));
-            }
-            else
-            {
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    new Property(Variables.ActividadCientificaTecnologica.sociedadesTipoEntidadAfiliacion, item.GetOrganizacionPorIDCampo("060.030.020.070"))
-                ));
-            }
+            string valorTipoEntidad = !string.IsNullOrEmpty(item.GetStringPorIDCampo("060.030.020.080")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetOrganizacionPorIDCampo("060.030.020.070");
+
+            entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                new Property(Variables.ActividadCientificaTecnologica.sociedadesTipoEntidadAfiliacion, valorTipoEntidad),
+                new Property(Variables.ActividadCientificaTecnologica.sociedadesTipoEntidadAfiliacionOtros, item.GetStringPorIDCampo("060.030.020.080"))
+            ));
         }
 
         /// <summary>
@@ -2433,7 +2553,6 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                             new Property(Variables.ActividadCientificaTecnologica.consejosCCAARadicacion, item.GetRegionPorIDCampo("060.030.030.030")),
                             new Property(Variables.ActividadCientificaTecnologica.consejosCiudadRadicacion, item.GetStringPorIDCampo("060.030.030.160")),
                             new Property(Variables.ActividadCientificaTecnologica.consejosPaisEntidadAfiliacion, item.GetPaisPorIDCampo("060.030.030.170")),
-                            new Property(Variables.ActividadCientificaTecnologica.consejosEntidadAfiliacion, item.GetNameEntityBeanPorIDCampo("060.030.030.050")),
                             new Property(Variables.ActividadCientificaTecnologica.consejosCCAAEntidadAfiliacion, item.GetRegionPorIDCampo("060.030.030.180")),
                             new Property(Variables.ActividadCientificaTecnologica.consejosCiudadEntidadAfiliacion, item.GetStringPorIDCampo("060.030.030.190")),
                             new Property(Variables.ActividadCientificaTecnologica.consejosTareasDesarrolladas, item.GetStringPorIDCampo("060.030.030.090")),
@@ -2442,13 +2561,11 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                             new Property(Variables.ActividadCientificaTecnologica.consejosAmbito, item.GetGeographicRegionPorIDCampo("060.030.030.120")),
                             new Property(Variables.ActividadCientificaTecnologica.consejosAmbitoOtros, item.GetStringPorIDCampo("060.030.030.130")),
                             new Property(Variables.ActividadCientificaTecnologica.consejosFechaInicio, item.GetStringDatetimePorIDCampo("060.030.030.140")),
-
-                            //Duracion
                             new Property(Variables.ActividadCientificaTecnologica.redesCoopDuracionAnio, item.GetDurationAnioPorIDCampo("060.030.030.150")),
                             new Property(Variables.ActividadCientificaTecnologica.redesCoopDuracionMes, item.GetDurationMesPorIDCampo("060.030.030.150")),
                             new Property(Variables.ActividadCientificaTecnologica.redesCoopDuracionDias, item.GetDurationDiaPorIDCampo("060.030.030.150"))
                         ));
-                        ConsejosTipoEntidad(item, entidadAux);
+                        ConsejosEntidadAfiliacion(item, entidadAux);
 
                         listado.Add(entidadAux);
                     }
@@ -2456,22 +2573,30 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             }
             return listado;
         }
-        private void ConsejosTipoEntidad(CvnItemBean item, Entity entidadAux)
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes al tipo de Entidad de Afiliación.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
+        private void ConsejosEntidadAfiliacion(CvnItemBean item, Entity entidadAux)
         {
+            //Si no esta Entidad no añado datos
+            if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.030.030.050"))) { return; }
+
+            //Añado la referencia si existe
+            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.030.030.050"),
+                Variables.ActividadCientificaTecnologica.consejosEntidadAfiliacionNombre,
+                Variables.ActividadCientificaTecnologica.consejosEntidadAfiliacion, entidadAux);
+
             //Añado otros, o el ID de una preseleccion
-            if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.030.030.080")))
-            {
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    new Property(Variables.ActividadCientificaTecnologica.consejosTipoEntidadAfiliacion, "http://gnoss.com/items/organizationtype_OTHERS"),
-                    new Property(Variables.ActividadCientificaTecnologica.consejosTipoEntidadAfiliacionOtros, item.GetStringPorIDCampo("060.030.030.080"))
-                ));
-            }
-            else
-            {
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    new Property(Variables.ActividadCientificaTecnologica.consejosTipoEntidadAfiliacion, item.GetOrganizacionPorIDCampo("060.030.030.070"))
-                ));
-            }
+            string valorTipoEntidad = !string.IsNullOrEmpty(item.GetStringPorIDCampo("060.030.030.080")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetOrganizacionPorIDCampo("060.030.030.070");
+
+            entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                new Property(Variables.ActividadCientificaTecnologica.consejosTipoEntidadAfiliacion, valorTipoEntidad),
+                new Property(Variables.ActividadCientificaTecnologica.consejosTipoEntidadAfiliacionOtros, item.GetStringPorIDCampo("060.030.030.080"))
+            ));
         }
 
         /// <summary>
@@ -2501,7 +2626,6 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                             new Property(Variables.ActividadCientificaTecnologica.redesCoopPaisEntidadSeleccion, item.GetPaisPorIDCampo("060.030.040.190")),
                             new Property(Variables.ActividadCientificaTecnologica.redesCoopCCAAEntidadSeleccion, item.GetRegionPorIDCampo("060.030.040.200")),
                             new Property(Variables.ActividadCientificaTecnologica.redesCoopCiudadEntidadSeleccion, item.GetStringPorIDCampo("060.030.040.210")),
-                            new Property(Variables.ActividadCientificaTecnologica.redesCoopEntidadSeleccion, item.GetNameEntityBeanPorIDCampo("060.030.040.110")),
                             new Property(Variables.ActividadCientificaTecnologica.redesCoopTareas, item.GetStringPorIDCampo("060.030.040.150")),
                             new Property(Variables.ActividadCientificaTecnologica.redesCoopFechaInicio, item.GetStringDatetimePorIDCampo("060.030.040.160")),
                             new Property(Variables.ActividadCientificaTecnologica.redesCoopDuracionAnio, item.GetDurationAnioPorIDCampo("060.030.040.170")),
@@ -2510,7 +2634,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                         ));
 
                         //Añado el tipo de red
-                        RedesCooperacionTipoEntidad(item, entidadAux);
+                        RedesCooperacionEntidadSeleccion(item, entidadAux);
 
                         List<CvnItemBeanCvnCodeGroup> listadoEntidadParticipante = item.GetListaElementosPorIDCampo<CvnItemBeanCvnCodeGroup>("060.030.040.070");
                         //Añado las entidades participantes
@@ -2522,23 +2646,38 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             }
             return listado;
         }
-        private void RedesCooperacionTipoEntidad(CvnItemBean item, Entity entidadAux)
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes al tipo de Entidad de Selección.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>        
+        private void RedesCooperacionEntidadSeleccion(CvnItemBean item, Entity entidadAux)
         {
+            //Si no esta Entidad no añado datos
+            if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.030.040.110"))) { return; }
+
+            //Añado la referencia si existe
+            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.030.040.110"),
+                Variables.ActividadCientificaTecnologica.redesCoopEntidadSeleccionNombre,
+                Variables.ActividadCientificaTecnologica.redesCoopEntidadSeleccion, entidadAux);
+
             //Añado otros, o el ID de una preseleccion
-            if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.030.040.140")))
-            {
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    new Property(Variables.ActividadCientificaTecnologica.redesCoopTipoEntidadSeleccion, "http://gnoss.com/items/organizationtype_OTHERS"),
-                    new Property(Variables.ActividadCientificaTecnologica.redesCoopTipoEntidadSeleccionOtros, item.GetStringPorIDCampo("060.030.040.140"))
-                ));
-            }
-            else
-            {
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    new Property(Variables.ActividadCientificaTecnologica.redesCoopTipoEntidadSeleccion, item.GetOrganizacionPorIDCampo("060.030.040.130"))
-                ));
-            }
+            string valorTipoEntidad = !string.IsNullOrEmpty(item.GetStringPorIDCampo("060.030.040.140")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetOrganizacionPorIDCampo("060.030.040.130");
+
+            entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                new Property(Variables.ActividadCientificaTecnologica.redesCoopTipoEntidadSeleccion, valorTipoEntidad),
+                new Property(Variables.ActividadCientificaTecnologica.redesCoopTipoEntidadSeleccionOtros, item.GetStringPorIDCampo("060.030.040.140"))
+            ));
         }
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de las Entidades Participantes,
+        /// pertenecientes al listado <paramref name="listadoEntidadParticipante"/>.
+        /// </summary>
+        /// <param name="listadoEntidadParticipante">listadoEntidadParticipante</param>
+        /// <param name="entidadAux">entidadAux</param>
         private void RedesCooperacionEntidadesParticipantes(List<CvnItemBeanCvnCodeGroup> listadoEntidadParticipante, Entity entidadAux)
         {
             foreach (CvnItemBeanCvnCodeGroup entidadParticipante in listadoEntidadParticipante)
@@ -2546,22 +2685,35 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 if (!string.IsNullOrEmpty(entidadParticipante.GetNameEntityBeanCvnCodeGroup("060.030.040.070")))
                 {
                     string entityPartAux = Guid.NewGuid().ToString() + "@@@";
-                    //Añado Nombre entidad Participante
-                    Property propertyEntidadParticipante = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.redesCoopEntidadParticipante);
+
+                    //Añado Nombre Entidad Participante
+                    Property propertyEntidadParticipanteNombre = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.redesCoopEntidadParticipanteNombre);
 
                     string valorNombreEP = StringGNOSSID(entityPartAux, entidadParticipante.GetNameEntityBeanCvnCodeGroup("060.030.040.070"));
-                    string propiedadNombreEP = Variables.ActividadCientificaTecnologica.redesCoopEntidadParticipante;
+                    string propiedadNombreEP = Variables.ActividadCientificaTecnologica.redesCoopEntidadParticipanteNombre;
 
-                    UtilitySecciones.CheckProperty(propertyEntidadParticipante, entidadAux, valorNombreEP, propiedadNombreEP);
+                    UtilitySecciones.CheckProperty(propertyEntidadParticipanteNombre, entidadAux, valorNombreEP, propiedadNombreEP);
 
+                    //Añado referencia Entidad Participante
+                    Property propertyEntidadParticipante = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.redesCoopEntidadParticipante);
+                    string nombre = entidadParticipante.CvnEntityBean.Name;
+                    if (!string.IsNullOrEmpty(nombre))
+                    {
+                        string referenciaEP = UtilitySecciones.GetOrganizacionPorNombre(mResourceApi, nombre);
+                        string valorEP = (referenciaEP != null) ? StringGNOSSID(entityPartAux, referenciaEP) : entityPartAux + "";
+                        string propiedadEP = Variables.ActividadCientificaTecnologica.redesCoopEntidadParticipante;
+
+                        UtilitySecciones.CheckProperty(propertyEntidadParticipanteNombre, entidadAux, valorEP, propiedadEP);
+                    }
+
+                    //Añado Tipo Entidad Participante
                     Property propertyTipoEntidadParticipante = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.redesCoopTipoEntidadParticipante);
                     Property propertyTipoEntidadParticipanteOtros = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.redesCoopTipoEntidadParticipanteOtros);
 
-                    //Añado tipo entidad participante
                     string valorOtroTipoEP = StringGNOSSID(entityPartAux, entidadParticipante.GetStringCvnCodeGroup("060.030.040.100"));
                     string propiedadOtroTipoEP = Variables.ActividadCientificaTecnologica.otrasColabTipoEntidadOtros;
 
-                    string valorTipoEP = !string.IsNullOrEmpty(valorOtroTipoEP) ? StringGNOSSID(entityPartAux, "http://gnoss.com/items/organizationtype_OTHERS") : StringGNOSSID(entityPartAux, entidadParticipante.GetOrganizationCvnCodeGroup("060.030.040.090"));
+                    string valorTipoEP = !string.IsNullOrEmpty(valorOtroTipoEP) ? StringGNOSSID(entityPartAux, mResourceApi.GraphsUrl + "items/organizationtype_OTHERS") : StringGNOSSID(entityPartAux, entidadParticipante.GetOrganizationCvnCodeGroup("060.030.040.090"));
                     string propiedadTipoEP = Variables.ActividadCientificaTecnologica.otrasColabTipoEntidad;
 
                     UtilitySecciones.CheckProperty(propertyTipoEntidadParticipante, entidadAux, valorTipoEP, propiedadTipoEP);
@@ -2593,11 +2745,10 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                             new Property(Variables.ActividadCientificaTecnologica.premiosMencionesPais, item.GetPaisPorIDCampo("060.030.050.020")),
                             new Property(Variables.ActividadCientificaTecnologica.premiosMencionesCCAA, item.GetRegionPorIDCampo("060.030.050.030")),
                             new Property(Variables.ActividadCientificaTecnologica.premiosMencionesCiudad, item.GetStringPorIDCampo("060.030.050.110")),
-                            new Property(Variables.ActividadCientificaTecnologica.premiosMencionesEntidad, item.GetNameEntityBeanPorIDCampo("060.030.050.050")),
                             new Property(Variables.ActividadCientificaTecnologica.premiosMencionesReconocimientosLigados, item.GetStringPorIDCampo("060.030.050.090")),
                             new Property(Variables.ActividadCientificaTecnologica.premiosMencionesFechaConcesion, item.GetStringDatetimePorIDCampo("060.030.050.100"))
                         ));
-                        PremiosMencionesTipoEntidad(item, entidadAux);
+                        PremiosMencionesEntidad(item, entidadAux);
 
                         listado.Add(entidadAux);
                     }
@@ -2605,22 +2756,30 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             }
             return listado;
         }
-        private void PremiosMencionesTipoEntidad(CvnItemBean item, Entity entidadAux)
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes al tipo de Entidad Concesionaria.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
+        private void PremiosMencionesEntidad(CvnItemBean item, Entity entidadAux)
         {
+            //Si no esta Entidad no añado datos
+            if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.030.050.050"))) { return; }
+
+            //Añado la referencia si existe
+            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.030.050.050"),
+                Variables.ActividadCientificaTecnologica.premiosMencionesEntidadNombre,
+                Variables.ActividadCientificaTecnologica.premiosMencionesEntidad, entidadAux);
+
             //Añado otros, o el ID de una preseleccion
-            if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.030.050.080")))
-            {
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    new Property(Variables.ActividadCientificaTecnologica.premiosMencionesTipoEntidad, "http://gnoss.com/items/organizationtype_OTHERS"),
-                    new Property(Variables.ActividadCientificaTecnologica.premiosMencionesTipoEntidadOtros, item.GetStringPorIDCampo("060.030.050.080"))
-                ));
-            }
-            else
-            {
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    new Property(Variables.ActividadCientificaTecnologica.premiosMencionesTipoEntidad, item.GetOrganizacionPorIDCampo("060.030.050.070"))
-                ));
-            }
+            string valorTipoEntidad = !string.IsNullOrEmpty(item.GetStringPorIDCampo("060.030.050.080")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetOrganizacionPorIDCampo("060.030.050.070");
+
+            entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                new Property(Variables.ActividadCientificaTecnologica.premiosMencionesTipoEntidad, valorTipoEntidad),
+                new Property(Variables.ActividadCientificaTecnologica.premiosMencionesTipoEntidadOtros, item.GetStringPorIDCampo("060.030.050.080"))
+            ));
         }
 
         /// <summary>
@@ -2645,7 +2804,6 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                             new Property(Variables.ActividadCientificaTecnologica.otrasDistincionesPais, item.GetPaisPorIDCampo("060.030.060.020")),
                             new Property(Variables.ActividadCientificaTecnologica.otrasDistincionesCCAA, item.GetRegionPorIDCampo("060.030.060.030")),
                             new Property(Variables.ActividadCientificaTecnologica.otrasDistincionesCiudad, item.GetStringPorIDCampo("060.030.060.120")),
-                            new Property(Variables.ActividadCientificaTecnologica.otrasDistincionesEntidad, item.GetNameEntityBeanPorIDCampo("060.030.060.050")),
                             new Property(Variables.ActividadCientificaTecnologica.otrasDistincionesAmbito, item.GetGeographicRegionPorIDCampo("060.030.060.090")),
                             new Property(Variables.ActividadCientificaTecnologica.otrasDistincionesAmbitoOtros, item.GetStringPorIDCampo("060.030.060.100")),
                             new Property(Variables.ActividadCientificaTecnologica.otrasDistincionesFechaConcesion, item.GetStringDatetimePorIDCampo("060.030.060.110"))
@@ -2658,22 +2816,30 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             }
             return listado;
         }
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes al tipo de Entidad Concesionaria.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
         private void OtrasDistincionesTipoEntidad(CvnItemBean item, Entity entidadAux)
         {
+            //Si no esta Entidad no añado datos
+            if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.030.060.050"))) { return; }
+
+            //Añado la referencia si existe
+            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.030.060.050"),
+                Variables.ActividadCientificaTecnologica.otrasDistincionesEntidadNombre,
+                Variables.ActividadCientificaTecnologica.otrasDistincionesEntidad, entidadAux);
+
             //Añado otros, o el ID de una preseleccion
-            if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.030.060.080")))
-            {
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    new Property(Variables.ActividadCientificaTecnologica.otrasDistincionesTipoEntidad, "http://gnoss.com/items/organizationtype_OTHERS"),
-                    new Property(Variables.ActividadCientificaTecnologica.otrasDistincionesTipoEntidadOtros, item.GetStringPorIDCampo("060.030.060.080"))
-                ));
-            }
-            else
-            {
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    new Property(Variables.ActividadCientificaTecnologica.otrasDistincionesTipoEntidad, item.GetOrganizacionPorIDCampo("060.030.060.070"))
-                ));
-            }
+            string valorTipoEntidad = !string.IsNullOrEmpty(item.GetStringPorIDCampo("060.030.060.080")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetOrganizacionPorIDCampo("060.030.060.070");
+
+            entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                new Property(Variables.ActividadCientificaTecnologica.otrasDistincionesTipoEntidad, valorTipoEntidad),
+                new Property(Variables.ActividadCientificaTecnologica.otrasDistincionesTipoEntidadOtros, item.GetStringPorIDCampo("060.030.060.080"))
+            ));
         }
 
         /// <summary>
@@ -2698,7 +2864,6 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                             new Property(Variables.ActividadCientificaTecnologica.actividadInvestigadoraPaisEntidad, item.GetPaisPorIDCampo("060.030.070.020")),
                             new Property(Variables.ActividadCientificaTecnologica.actividadInvestigadoraCCAAEntidad, item.GetRegionPorIDCampo("060.030.070.030")),
                             new Property(Variables.ActividadCientificaTecnologica.actividadInvestigadoraCiudadEntidad, item.GetStringPorIDCampo("060.030.070.120")),
-                            new Property(Variables.ActividadCientificaTecnologica.actividadInvestigadoraEntidad, item.GetNameEntityBeanPorIDCampo("060.030.070.050")),
                             new Property(Variables.ActividadCientificaTecnologica.actividadInvestigadoraAmbito, item.GetGeographicRegionPorIDCampo("060.030.070.090")),
                             new Property(Variables.ActividadCientificaTecnologica.actividadInvestigadoraAmbitoOtros, item.GetStringPorIDCampo("060.030.070.100")),
                             new Property(Variables.ActividadCientificaTecnologica.actividadInvestigadoraFechaObtencion, item.GetStringDatetimePorIDCampo("060.030.070.110"))
@@ -2711,22 +2876,31 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             }
             return listado;
         }
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes al tipo de Entidad Acreditante.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
         private void PeriodosActividadInvestigadoraTipoEntidad(CvnItemBean item, Entity entidadAux)
         {
+            //Si no esta Entidad no añado datos
+            if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.030.070.050"))) { return; }
+
+
+            //Añado la referencia si existe
+            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.030.070.050"),
+                Variables.ActividadCientificaTecnologica.actividadInvestigadoraEntidadNombre,
+                Variables.ActividadCientificaTecnologica.actividadInvestigadoraEntidad, entidadAux);
+
             //Añado otros, o el ID de una preseleccion
-            if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.030.070.080")))
-            {
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    new Property(Variables.ActividadCientificaTecnologica.actividadInvestigadoraTipoEntidad, "http://gnoss.com/items/organizationtype_OTHERS"),
-                    new Property(Variables.ActividadCientificaTecnologica.actividadInvestigadoraTipoEntidadOtros, item.GetStringPorIDCampo("060.030.070.080"))
-                ));
-            }
-            else
-            {
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    new Property(Variables.ActividadCientificaTecnologica.actividadInvestigadoraTipoEntidad, item.GetOrganizacionPorIDCampo("060.030.070.070"))
-                ));
-            }
+            string valorTipoEntidad = !string.IsNullOrEmpty(item.GetStringPorIDCampo("060.030.070.080")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetOrganizacionPorIDCampo("060.030.070.070");
+
+            entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                new Property(Variables.ActividadCientificaTecnologica.actividadInvestigadoraTipoEntidad, valorTipoEntidad),
+                new Property(Variables.ActividadCientificaTecnologica.actividadInvestigadoraTipoEntidadOtros, item.GetStringPorIDCampo("060.030.070.080"))
+            ));
         }
 
         /// <summary>
@@ -2747,16 +2921,15 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.030.090.010")))
                     {
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                            new Property(Variables.ActividadCientificaTecnologica.acreditacionesNombre, item.GetStringPorIDCampo("060.030.090.010")),
+                            new Property(Variables.ActividadCientificaTecnologica.acreditacionesDescripcion, item.GetStringPorIDCampo("060.030.090.010")),
                             new Property(Variables.ActividadCientificaTecnologica.acreditacionesPaisEntidad, item.GetPaisPorIDCampo("060.030.090.020")),
                             new Property(Variables.ActividadCientificaTecnologica.acreditacionesCCAAEntidad, item.GetRegionPorIDCampo("060.030.090.030")),
                             new Property(Variables.ActividadCientificaTecnologica.acreditacionesCiudadEntidad, item.GetStringPorIDCampo("060.030.090.120")),
                             new Property(Variables.ActividadCientificaTecnologica.acreditacionesFechaObtencion, item.GetStringDatetimePorIDCampo("060.030.090.050")),
-                            new Property(Variables.ActividadCientificaTecnologica.acreditacionesEntidad, item.GetNameEntityBeanPorIDCampo("060.030.090.060")),
                             new Property(Variables.ActividadCientificaTecnologica.acreditacionesNumeroTramos, item.GetStringDoublePorIDCampo("060.030.090.100")),
                             new Property(Variables.ActividadCientificaTecnologica.acreditacionesFechaReconocimiento, item.GetStringDatetimePorIDCampo("060.030.090.110"))
                         ));
-                        AcreditacionesObtenidasTipoEntidad(item, entidadAux);
+                        AcreditacionesObtenidasEntidad(item, entidadAux);
 
                         listado.Add(entidadAux);
                     }
@@ -2764,23 +2937,31 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             }
             return listado;
         }
-        private void AcreditacionesObtenidasTipoEntidad(CvnItemBean item, Entity entidadAux)
+
+        /// <summary>
+        /// Compruebo si existe la entidad en BBDD y en caso de que exista añado la referencia a la misma
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="entidadAux"></param>
+        private void AcreditacionesObtenidasEntidad(CvnItemBean item, Entity entidadAux)
         {
+            //Si no esta Entidad no añado datos
+            if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.030.090.060"))) { return; }
+
+            //Añado la referencia si existe
+            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.030.090.060"),
+                Variables.ActividadCientificaTecnologica.acreditacionesEntidadNombre,
+                Variables.ActividadCientificaTecnologica.acreditacionesEntidad, entidadAux);
+
             //Añado otros, o el ID de una preseleccion
-            if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.030.090.090")))
-            {
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    new Property(Variables.ActividadCientificaTecnologica.acreditacionesTipoEntidad, "http://gnoss.com/items/organizationtype_OTHERS"),
-                    new Property(Variables.ActividadCientificaTecnologica.acreditacionesTipoEntidadOtros, item.GetStringPorIDCampo("060.030.090.090"))
-                ));
-            }
-            else
-            {
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    new Property(Variables.ActividadCientificaTecnologica.acreditacionesTipoEntidad, item.GetOrganizacionPorIDCampo("060.030.090.080"))
-                ));
-            }
+            string valorTipoEntidad = !string.IsNullOrEmpty(item.GetStringPorIDCampo("060.030.090.090")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetOrganizacionPorIDCampo("060.030.090.080");
+
+            entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                new Property(Variables.ActividadCientificaTecnologica.acreditacionesTipoEntidad, valorTipoEntidad),
+                new Property(Variables.ActividadCientificaTecnologica.acreditacionesTipoEntidadOtros, item.GetStringPorIDCampo("060.030.090.090"))
+            ));
         }
+
 
         /// <summary>
         /// 060.030.100.000
@@ -2805,10 +2986,9 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                             new Property(Variables.ActividadCientificaTecnologica.otrosMeritosPaisEntidad, item.GetPaisPorIDCampo("060.030.100.070")),
                             new Property(Variables.ActividadCientificaTecnologica.otrosMeritosCCAAEntidad, item.GetRegionPorIDCampo("060.030.100.090")),
                             new Property(Variables.ActividadCientificaTecnologica.otrosMeritosCiudadEntidad, item.GetStringPorIDCampo("060.030.100.080")),
-                            new Property(Variables.ActividadCientificaTecnologica.otrosMeritosEntidad, item.GetNameEntityBeanPorIDCampo("060.030.100.020")),
                             new Property(Variables.ActividadCientificaTecnologica.otrosMeritosFechaConcesion, item.GetStringDatetimePorIDCampo("060.030.100.040"))
                         ));
-                        OtrosMeritosTipoEntidad(item, entidadAux);
+                        OtrosMeritosEntidad(item, entidadAux);
 
                         listado.Add(entidadAux);
                     }
@@ -2816,22 +2996,29 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             }
             return listado;
         }
-        private void OtrosMeritosTipoEntidad(CvnItemBean item, Entity entidadAux)
+
+        /// <summary>
+        /// Compruebo si existe la entidad en BBDD y en caso de que exista añado la referencia a la misma
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="entidadAux"></param>
+        private void OtrosMeritosEntidad(CvnItemBean item, Entity entidadAux)
         {
+            //Si no esta Entidad no añado datos
+            if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.030.100.020"))) { return; }
+
+            //Añado la referencia si existe
+            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.030.100.020"),
+                Variables.ActividadCientificaTecnologica.otrosMeritosEntidadNombre,
+                Variables.ActividadCientificaTecnologica.otrosMeritosEntidad, entidadAux);
+
             //Añado otros, o el ID de una preseleccion
-            if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.030.100.050")))
-            {
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    new Property(Variables.ActividadCientificaTecnologica.otrosMeritosTipoEntidad, "http://gnoss.com/items/organizationtype_OTHERS"),
-                    new Property(Variables.ActividadCientificaTecnologica.otrosMeritosTipoEntidadOtros, item.GetStringPorIDCampo("060.030.100.050"))
-                ));
-            }
-            else
-            {
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    new Property(Variables.ActividadCientificaTecnologica.otrosMeritosTipoEntidad, item.GetOrganizacionPorIDCampo("060.030.100.060"))
-                ));
-            }
+            string valorTipoEntidad = !string.IsNullOrEmpty(item.GetStringPorIDCampo("060.030.100.050")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetOrganizacionPorIDCampo("060.030.100.060");
+
+            entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                new Property(Variables.ActividadCientificaTecnologica.otrosMeritosTipoEntidad, valorTipoEntidad),
+                new Property(Variables.ActividadCientificaTecnologica.otrosMeritosTipoEntidadOtros, item.GetStringPorIDCampo("060.030.100.050"))
+            ));
         }
     }
 }

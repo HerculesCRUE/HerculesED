@@ -14,19 +14,11 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
     class TrabajosJornadasSeminarios : DisambiguableEntity
     {
         public string descripcion { get; set; }
-        public string fecha { get; set; }
 
         private static DisambiguationDataConfig configDescripcion = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsTitle,
             score = 0.8f
-        };
-
-        private static DisambiguationDataConfig configFecha = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsItem,
-            score = 0.5f,
-            scoreMinus = 0.5f
         };
 
         public override List<DisambiguationData> GetDisambiguationData()
@@ -40,12 +32,6 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
                 value = descripcion
             });
 
-            data.Add(new DisambiguationData()
-            {
-                property = "fecha",
-                config = configFecha,
-                value = fecha
-            });
             return data;
         }
 
@@ -64,7 +50,6 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
                 string select = $@"SELECT distinct ?item ?itemTitle ?itemDate ";
                 string where = $@"where {{
                                         ?item <{Variables.ActividadCientificaTecnologica.trabajosJornSemTituloTrabajo}> ?itemTitle . 
-                                        OPTIONAL{{ ?item <{Variables.ActividadCientificaTecnologica.trabajosJornSemFechaCelebracion}> ?itemDate }} .
                                         FILTER(?item in (<{string.Join(">,<", lista)}>))
                                     }}";
 
@@ -74,11 +59,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
                     TrabajosJornadasSeminarios trabajosJornadas = new TrabajosJornadasSeminarios();
                     trabajosJornadas.ID = fila["item"].value;
                     trabajosJornadas.descripcion = fila["itemTitle"].value;
-                    trabajosJornadas.fecha = "";
-                    if (fila.ContainsKey("itemDate"))
-                    {
-                        trabajosJornadas.fecha = fila["itemDate"].value;
-                    }
+
                     resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), trabajosJornadas);
                 }
             }

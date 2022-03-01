@@ -14,7 +14,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
     class RedesCooperacion : DisambiguableEntity
     {
         public string descripcion { get; set; }
-        public string fecha { get; set; }
+        public string IdRed { get; set; }
 
         private static DisambiguationDataConfig configDescripcion = new DisambiguationDataConfig()
         {
@@ -22,7 +22,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
             score = 0.8f
         };
 
-        private static DisambiguationDataConfig configFecha = new DisambiguationDataConfig()
+        private static DisambiguationDataConfig configIdRed = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsItem,
             score = 0.5f,
@@ -42,9 +42,9 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
 
             data.Add(new DisambiguationData()
             {
-                property = "fecha",
-                config = configFecha,
-                value = fecha
+                property = "idRed",
+                config = configIdRed,
+                value = IdRed
             });
             return data;
         }
@@ -61,10 +61,10 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
 
             foreach (List<string> lista in listaListas)
             {
-                string select = $@"SELECT distinct ?item ?itemTitle ?itemDate ";
+                string select = $@"SELECT distinct ?item ?itemTitle ?itemID ";
                 string where = $@"where {{
                                         ?item <{Variables.ActividadCientificaTecnologica.redesCoopNombre}> ?itemTitle . 
-                                        OPTIONAL{{?item <{Variables.ActividadCientificaTecnologica.redesCoopFechaInicio}> ?itemDate }}.
+                                        OPTIONAL{{?item <{Variables.ActividadCientificaTecnologica.redesCoopIdentificacion}> ?itemID }}.
                                         FILTER(?item in (<{string.Join(">,<", lista)}>))
                                     }}";
 
@@ -74,10 +74,10 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
                     RedesCooperacion redesCooperacion = new RedesCooperacion();
                     redesCooperacion.ID = fila["item"].value;
                     redesCooperacion.descripcion = fila["itemTitle"].value;
-                    redesCooperacion.fecha = "";
-                    if (fila.ContainsKey("itemDate"))
+                    redesCooperacion.IdRed = "";
+                    if (fila.ContainsKey("itemID"))
                     {
-                        redesCooperacion.fecha = fila["itemDate"].value;
+                        redesCooperacion.IdRed = fila["itemID"].value;
                     }
                     resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), redesCooperacion);
                 }

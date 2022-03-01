@@ -54,8 +54,9 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
 
         /// <summary>
         /// Función para sincronizar los datos pertenecientes al bloque 
-        /// "Estudios de 1º y 2º ciclo, y antiguos ciclos(licenciados, Diplomados, Ingenieros Superiores, Ingenieros Técnicos, Arquitectos)",
-        /// con codigo identificativo "020.010.010.000".
+        /// "Estudios de 1º y 2º ciclo, y antiguos ciclos
+        /// (licenciados, Diplomados, Ingenieros Superiores, Ingenieros Técnicos, Arquitectos)".
+        /// Con codigo identificativo "020.010.010.000".
         /// </summary>
         public void SincroEstudiosCiclos()
         {
@@ -78,8 +79,8 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
         }
 
         /// <summary>
-        /// Función para sincronizar los datos pertenecientes al bloque "Doctorados",
-        /// con codigo identificativo "020.010.020.000".
+        /// Función para sincronizar los datos pertenecientes al bloque "Doctorados".
+        /// Con codigo identificativo "020.010.020.000".
         /// </summary>
         public void SincroDoctorados()
         {
@@ -103,8 +104,8 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
 
         /// <summary>
         /// Función para sincronizar los datos pertenecientes al bloque 
-        /// "Otra formación universitaria de posgrado Formación especializada",
-        /// con codigo identificativo "020.010.030.000".
+        /// "Otra formación universitaria de posgrado Formación especializada".
+        /// Con codigo identificativo "020.010.030.000".
         /// </summary>
         public void SincroOtraFormacionPosgrado()
         {
@@ -128,8 +129,8 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
 
         /// <summary>
         /// Función para sincronizar los datos pertenecientes al subapartado 
-        /// "Formación especializada, continuada, técnica, profesionalizada, de reciclaje y actualización",
-        /// con codigo identificativo "020.020.000.000".
+        /// "Formación especializada, continuada, técnica, profesionalizada, de reciclaje y actualización".
+        /// Con codigo identificativo "020.020.000.000".
         /// </summary>
         public void SincroFormacionEspecializada()
         {
@@ -153,8 +154,8 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
 
         /// <summary>
         /// Función para sincronizar los datos pertenecientes al subapartado 
-        /// "Formación sanitaria especializada",
-        /// con codigo identificativo "020.030.000.000".
+        /// "Formación sanitaria especializada".
+        /// Con codigo identificativo "020.030.000.000".
         /// </summary>
         public void SincroFormacionSanitaria()
         {
@@ -178,8 +179,8 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
 
         /// <summary>
         /// Función para sincronizar los datos pertenecientes al subapartado 
-        /// "Formación sanitaria en I+D",
-        /// con codigo identificativo "020.040.000.000".
+        /// "Formación sanitaria en I+D".
+        /// Con codigo identificativo "020.040.000.000".
         /// </summary>
         public void SincroFormacionSanitariaIMasD()
         {
@@ -203,8 +204,8 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
 
         /// <summary>
         /// Función para sincronizar los datos pertenecientes al subapartado 
-        /// "Cursos y semin. mejora docente",
-        /// con codigo identificativo "020.050.000.000".
+        /// "Cursos y semin. mejora docente".
+        /// Con codigo identificativo "020.050.000.000".
         /// </summary>
         public void SincroCursosMejoraDocente()
         {
@@ -228,8 +229,8 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
 
         /// <summary>
         /// Función para sincronizar los datos pertenecientes al subapartado 
-        /// "Conocimiento de idiomas",
-        /// con codigo identificativo "020.060.000.000".
+        /// "Conocimiento de idiomas".
+        /// Con codigo identificativo "020.060.000.000".
         /// </summary>
         public void SincroConocimientoIdiomas()
         {
@@ -251,7 +252,11 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             }
         }
 
-
+        /// <summary>
+        /// 020.010.010.000
+        /// </summary>
+        /// <param name="listadoDatos"></param>
+        /// <returns></returns>
         private List<Entity> GetEstudiosCiclos(List<CvnItemBean> listadoDatos)
         {
             List<Entity> listado = new List<Entity>();
@@ -291,6 +296,11 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             return listado;
         }
         
+        /// <summary>
+        /// 020.010.020.000
+        /// </summary>
+        /// <param name="listadoDatos"></param>
+        /// <returns></returns>
         private List<Entity> GetDoctorados(List<CvnItemBean> listadoDatos)
         {
             List<Entity> listado = new List<Entity>();
@@ -335,6 +345,11 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             return listado;
         }
         
+        /// <summary>
+        /// 020.010.030.000
+        /// </summary>
+        /// <param name="listadoDatos"></param>
+        /// <returns></returns>
         private List<Entity> GetOtraFormacionPosgrado(List<CvnItemBean> listadoDatos)
         {
             List<Entity> listado = new List<Entity>();
@@ -371,6 +386,11 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             return listado;
         }
         
+        /// <summary>
+        /// 020.020.000.000
+        /// </summary>
+        /// <param name="listadoDatos"></param>
+        /// <returns></returns>
         private List<Entity> GetFormacionEspecializada(List<CvnItemBean> listadoDatos)
         {
             List<Entity> listado = new List<Entity>();
@@ -407,6 +427,11 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             return listado;
         }
         
+        /// <summary>
+        /// 020.030.000.000
+        /// </summary>
+        /// <param name="listadoDatos"></param>
+        /// <returns></returns>
         private List<Entity> GetFormacionSanitaria(List<CvnItemBean> listadoDatos)
         {
             List<Entity> listado = new List<Entity>();
@@ -450,6 +475,11 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             return listado;
         }
         
+        /// <summary>
+        /// 020.040.000.000
+        /// </summary>
+        /// <param name="listadoDatos"></param>
+        /// <returns></returns>
         private List<Entity> GetFormacionSanitariaIMasD(List<CvnItemBean> listadoDatos)
         {
             List<Entity> listado = new List<Entity>();
@@ -498,6 +528,11 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             return listado;
         }
         
+        /// <summary>
+        /// 020.050.000.000
+        /// </summary>
+        /// <param name="listadoDatos"></param>
+        /// <returns></returns>
         private List<Entity> GetCursosMejoraDocente(List<CvnItemBean> listadoDatos)
         {
             List<Entity> listado = new List<Entity>();
@@ -540,7 +575,12 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             }
             return listado;
         }
-                
+       
+        /// <summary>
+        /// 020.060.000.000
+        /// </summary>
+        /// <param name="listadoDatos"></param>
+        /// <returns></returns>
         private List<Entity> GetConocimientoIdiomas(List<CvnItemBean> listadoDatos)
         {
             List<Entity> listado = new List<Entity>();

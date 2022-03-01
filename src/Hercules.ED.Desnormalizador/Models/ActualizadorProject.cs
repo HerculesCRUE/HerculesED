@@ -99,6 +99,9 @@ namespace DesnormalizadorHercules.Models
             //TODO hablar con Esteban, bajas... fecha actual... fecha fin... ¿los actuales o los hitoricos, en este caso a diferncia de grupos creo que deberían ser los históricos, no sería necesaria la fecha actual? IMPORTANTE actua
             string fechaActual = DateTime.UtcNow.ToString("yyyyMMdd000000");
 
+            //Esteban: Si el proyecto a terminado, han de aparecer todos los participantes que haya tenido,
+            //pero si sigue activo solamente los participantes actuales, como está ahora
+
             string filter = "";
             if (!string.IsNullOrEmpty(pPerson))
             {
@@ -143,11 +146,18 @@ namespace DesnormalizadorHercules.Models
                                             ?project ?propRol ?rol.
                                             FILTER(?propRol in (<http://vivoweb.org/ontology/core#relates>,<http://w3id.org/roh/mainResearchers>))                                    
                                             ?rol <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person.  
-                                            OPTIONAL{{?rol <http://vivoweb.org/ontology/core#start> ?fechaPersonaInit.}}
-                                            OPTIONAL{{?rol <http://vivoweb.org/ontology/core#end> ?fechaPersonaEnd.}}
-	                                        BIND(IF(bound(?fechaPersonaEnd), xsd:integer(?fechaPersonaEnd), 30000000000000) as ?end)
-                                            BIND(IF(bound(?fechaPersonaInit), xsd:integer(?fechaPersonaInit), 10000000000000) as ?start)
-                                            FILTER(?start<={fechaActual} AND ?end>={fechaActual} )
+                                            OPTIONAL{{?project <http://vivoweb.org/ontology/core#end> ?fechaProyectoEnd.}}
+                                            BIND(IF(bound(?fechaProyectoEnd), ?fechaProyectoEnd, '30000000000000') as ?projectEnd)
+                                            {{
+                                                #Si el proyecto a terminado, han de aparecer todos los participantes que haya tenido
+                                                FILTER(?projectEnd<'{fechaActual}') 
+                                            }}UNION
+                                            {{
+                                                #Si sigue activo solamente los participantes actuales, como está ahora       
+                                                OPTIONAL{{?rol <http://vivoweb.org/ontology/core#end> ?fechaPersonaEnd.}}                                                
+	                                            BIND(IF(bound(?fechaPersonaEnd), ?fechaPersonaEnd, '30000000000000') as ?end)
+                                                FILTER(?end>='{fechaActual}' AND ?projectEnd>='{fechaActual}'  )
+                                            }}
                                         }}
                                     }}
                                     MINUS
@@ -205,11 +215,19 @@ namespace DesnormalizadorHercules.Models
                                             ?project ?propRol ?rol.
                                             FILTER(?propRol in (<http://vivoweb.org/ontology/core#relates>,<http://w3id.org/roh/mainResearchers>))                                    
                                             ?rol <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person.  
-                                            OPTIONAL{{?rol <http://vivoweb.org/ontology/core#start> ?fechaPersonaInit.}}
-                                            OPTIONAL{{?rol <http://vivoweb.org/ontology/core#end> ?fechaPersonaEnd.}}
-	                                        BIND(IF(bound(?fechaPersonaEnd), xsd:integer(?fechaPersonaEnd), 30000000000000) as ?end)
-                                            BIND(IF(bound(?fechaPersonaInit), xsd:integer(?fechaPersonaInit), 10000000000000) as ?start)
-                                            FILTER(?start<={fechaActual} AND ?end>={fechaActual} )
+                                            #TODO nuevo
+                                            OPTIONAL{{?project <http://vivoweb.org/ontology/core#end> ?fechaProyectoEnd.}}
+                                            BIND(IF(bound(?fechaProyectoEnd), ?fechaProyectoEnd, '30000000000000') as ?projectEnd)
+                                            {{
+                                                #Si el proyecto a terminado, han de aparecer todos los participantes que haya tenido
+                                                FILTER(?projectEnd<'{fechaActual}') 
+                                            }}UNION
+                                            {{
+                                                #Si sigue activo solamente los participantes actuales, como está ahora       
+                                                OPTIONAL{{?rol <http://vivoweb.org/ontology/core#end> ?fechaPersonaEnd.}}                                                
+	                                            BIND(IF(bound(?fechaPersonaEnd), ?fechaPersonaEnd, '30000000000000') as ?end)
+                                                FILTER(?end>='{fechaActual}' AND ?projectEnd>='{fechaActual}'  )
+                                            }}
                                         }}
                                     }}                                    
                                 }}}}order by desc(?project) limit {limit}";

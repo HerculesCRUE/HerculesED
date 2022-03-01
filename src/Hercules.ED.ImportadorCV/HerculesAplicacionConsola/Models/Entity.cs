@@ -76,5 +76,9 @@ namespace Models
         /// Lista de entidades auxiliares a eliminar
         /// </summary>
         public List<string> auxEntityRemove { get; set; }
+        /// <summary>
+        /// Lista de propiedades pra guardar dentro del CV
+        /// </summary>
+        public List<Property> properties_cv { get; set; }
     }
 }

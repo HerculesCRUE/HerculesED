@@ -22,6 +22,9 @@
     <Content Update="Config\TabTemplates\ResearchObjects.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Update="Config\TabTemplates\ProfessionalSituation.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Update="Config\TabTemplates\ScientificActivity.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

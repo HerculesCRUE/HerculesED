@@ -23,8 +23,8 @@ namespace Hercules.ED.DisambiguationEngine.Models
         /// Score de los nombres 
         /// </summary>
         private static Dictionary<string, float> mScoreNombresCalculado = null;
-        //Valores entre 0.01 y 0.6
-        private static float minimoScoreNombres = 0.01f;
+        //Valores entre 0.1 y 0.6
+        private static float minimoScoreNombres = 0.1f;
         private static float maximoScoreNombres = 0.6f;
 
         private static Dictionary<string, int> FrecuenciaNombres
@@ -253,6 +253,10 @@ namespace Hercules.ED.DisambiguationEngine.Models
         /// <returns>Lista de datos desambiguables.</returns>
         public static Dictionary<string, HashSet<string>> Disambiguate(List<DisambiguableEntity> pItems, List<DisambiguableEntity> pItemBBDD, bool pDisambiguateItems = true, float pUmbral = 0.8f, float pToleranciaNombres = 0f)
         {
+            //Marin lopez
+            //Marin perez
+
+
             //TODO confiuracion personas
             //TODO tener en cuenta las probabilidades cuando se apunta a entidades (autores de docs) (test 2 docs con 2 autores)
             //TODO block
@@ -266,14 +270,12 @@ namespace Hercules.ED.DisambiguationEngine.Models
             #endregion
 
             //En esta variable se almacenarán todas las entidades que nunca podrán ser equivalentes
-            //TODO que pasa sin en plistadistinntos hay cosas con el mismo ORCID
             //Ver que pasa cuando hay multiples
             Dictionary<string, HashSet<string>> listaDistintos = new Dictionary<string, HashSet<string>>();
             foreach (DisambiguableEntity item in pItems)
             {
                 if (item.distincts != null)
                 {
-                    //TODO mover a funcion
                     foreach (string distinct in item.distincts)
                     {
                         if (!listaDistintos.ContainsKey(item.ID))
@@ -346,8 +348,11 @@ namespace Hercules.ED.DisambiguationEngine.Models
                     throw new Exception("Error, no puede un item apuntar a más de un ítem de BBDD");
                 }
             }
-            //Añadimos los de BBDD
-            Dictionary<string, Tuple<string, float>> itemsToBBDD = new Dictionary<string, Tuple<string, float>>();
+
+            //Lista para comprobar que no se carguen duplicados
+            HashSet<string> cargados = new HashSet<string>();
+
+            //Añadimos los que están vinculados con BBDD
             foreach (string id in listaEquivalencias.Keys)
             {
                 bool idBBDD = !Guid.TryParse(id.Split('|')[1], out Guid auxA);
@@ -359,122 +364,241 @@ namespace Hercules.ED.DisambiguationEngine.Models
                         throw new Exception("Error, no puede un item apuntar a más de un ítem de BBDD");
                     }
                     float similitud = listaEquivalencias[id][id2];
-                    string idLoad = null;
-                    string idDataBase = null;
-                    if (idBBDD && !id2BBDD)
+                    if (similitud > pUmbral)
                     {
-                        idLoad = id2;
-                        idDataBase = id;
-                    }
-                    else if (!idBBDD && id2BBDD)
-                    {
-                        idLoad = id;
-                        idDataBase = id2;
-                    }
-                    else
-                    {
-                        continue;
-                    }
-                    if (!itemsToBBDD.ContainsKey(idLoad))
-                    {
-                        itemsToBBDD[idLoad] = new Tuple<string, float>(idDataBase, similitud);
-                    }
-                    else if (itemsToBBDD[idLoad].Item2 < similitud)
-                    {
-                        itemsToBBDD[idLoad] = new Tuple<string, float>(idDataBase, similitud);
+                        if (idBBDD && !id2BBDD)
+                        {
+                            if (!listadoEquivalencias.ContainsKey(id.Split('|')[1]))
+                            {
+                                listadoEquivalencias[id.Split('|')[1]] = new HashSet<string>();
+                            }
+                            if (listadoEquivalencias[id.Split('|')[1]].Add(id2))
+                            {
+                                if (!cargados.Add(id2))
+                                {
+                                    throw new Exception("No puede haber 2 cargados iguales");
+                                }
+                            }
+                        }
+                        if (!idBBDD && id2BBDD)
+                        {
+                            if (!listadoEquivalencias.ContainsKey(id2.Split('|')[1]))
+                            {
+                                listadoEquivalencias[id2.Split('|')[1]] = new HashSet<string>();
+                            }
+                            if (listadoEquivalencias[id2.Split('|')[1]].Add(id))
+                            {
+                                if (!cargados.Add(id))
+                                {
+                                    throw new Exception("No puede haber 2 cargados iguales");
+                                }
+                            }
+                        }
                     }
                 }
-            }
-            foreach (string itemLoad in itemsToBBDD.Keys)
-            {
-                string itemBBDD = itemsToBBDD[itemLoad].Item1;
-                if (!listadoEquivalencias.ContainsKey(itemBBDD))
-                {
-                    listadoEquivalencias.Add(itemBBDD, new HashSet<string>());
-                }
-                listadoEquivalencias[itemBBDD].Add(itemLoad);
             }
 
-            Dictionary<string, HashSet<string>> itemsToLoad = new Dictionary<string, HashSet<string>>();
-            //Añadimos los que no son de BBDD
+            //Recorremos los que no están vinculados con BBDD y buscamos si tienen alguna vinculación con las que están vinculadas con las de BBDD, si tienen más de uno nos quedamos con el mayor
+            Dictionary<string, string> aniadidos = new Dictionary<string, string>();
+            foreach (string id in listadoEquivalencias.Keys)
+            {
+                foreach (string id2 in listadoEquivalencias[id])
+                {
+                    aniadidos[id2] = id;
+                }
+            }
             foreach (string id in listaEquivalencias.Keys)
             {
-                HashSet<string> ids = new HashSet<string>();
                 bool idBBDD = !Guid.TryParse(id.Split('|')[1], out Guid auxA);
-                if (!idBBDD)
+                //Si no es de BBDD y no está cargado buscamos el más similar de los de BBDD
+                if (!idBBDD && !cargados.Contains(id))
                 {
-                    ids.Add(id);
+                    string idEquivalenteBBDD = "";
+                    float maxEquivalencia = 0;
+                    int num = 0;
+                    foreach (string id2 in listaEquivalencias[id].Keys)
+                    {
+                        bool id2BBDD = !Guid.TryParse(id2.Split('|')[1], out Guid auxB);
+                        if (!id2BBDD && cargados.Contains(id2))
+                        {
+                            float similitud = listaEquivalencias[id][id2];
+                            if (similitud > pUmbral)
+                            {
+                                num++;
+                                if (similitud > maxEquivalencia)
+                                {
+                                    idEquivalenteBBDD = aniadidos[id2];
+                                    maxEquivalencia = similitud;
+                                }
+                            }
+                        }
+                    }
+                    if (!string.IsNullOrEmpty(idEquivalenteBBDD))
+                    {
+                        //Añadimos si no se incumple 'listaDistintos'
+                        bool incumple = false;
+                        if (listaDistintos.ContainsKey(id.Split('|')[1]))
+                        {
+                            foreach (string cargadoActual in listadoEquivalencias[idEquivalenteBBDD])
+                            {
+                                if (listaDistintos[id.Split('|')[1]].Contains(cargadoActual.Split('|')[1]))
+                                {
+                                    incumple = true;
+                                }
+                            }
+                        }
+                        if (!incumple)
+                        {
+                            listadoEquivalencias[idEquivalenteBBDD].Add(id);
+                            aniadidos[id] = idEquivalenteBBDD;
+                            cargados.Add(id);
+                        }
+                    }
                 }
+            }
+
+            //Añadimos los que no son de BBDD
+            aniadidos = new Dictionary<string, string>();
+            foreach (string id in listadoEquivalencias.Keys)
+            {
+                foreach (string id2 in listadoEquivalencias[id])
+                {
+                    aniadidos[id2] = id;
+                }
+            }
+            foreach (string id in listaEquivalencias.Keys)
+            {
+                bool idBBDD = !Guid.TryParse(id.Split('|')[1], out Guid auxA);
                 foreach (string id2 in listaEquivalencias[id].Keys)
                 {
                     bool id2BBDD = !Guid.TryParse(id2.Split('|')[1], out Guid auxB);
-                    if (!id2BBDD)
+                    if (idBBDD && id2BBDD)
                     {
-                        ids.Add(id2);
+                        throw new Exception("Error, no puede un item apuntar a más de un ítem de BBDD");
                     }
-                }
-                List<KeyValuePair<string, HashSet<string>>> x = itemsToLoad.Where(x => x.Value.Intersect(ids).Count() > 0).ToList();
-                if (x.Count == 0)
-                {
-                    itemsToLoad[Guid.NewGuid().ToString()] = ids;
-                }
-                else if (x.Count == 1)
-                {
-                    x[0].Value.UnionWith(ids);
-                }
-                else if (x.Count > 1)
-                {
-                    //Si en alguno hay mas de uno eliminamos los que nos dan conflicto de lo que vamos a cargar
-                    List<string> idsX = x.SelectMany(x => x.Value).ToList();
-                    ids.ExceptWith(idsX);
-                    itemsToLoad[Guid.NewGuid().ToString()] = ids;
-                }
-            }
-            foreach (string itemLoad in itemsToLoad.Keys)
-            {
-                List<KeyValuePair<string, HashSet<string>>> x = listadoEquivalencias.Where(x => x.Value.Intersect(itemsToLoad[itemLoad]).Count() > 0).ToList();
-                if (x.Count == 0)
-                {
-                    listadoEquivalencias.Add(Guid.NewGuid().ToString(), itemsToLoad[itemLoad]);
-                }
-                else if (x.Count == 1)
-                {
-                    x[0].Value.UnionWith(itemsToLoad[itemLoad]);
-                }
-                else if (x.Count > 1)
-                {
-                    //Si en alguno hay mas de uno eliminamos los que nos dan conflicto de lo que vamos a cargar
-                    List<string> idsX = x.SelectMany(x => x.Value).ToList();
-                    itemsToLoad[itemLoad].ExceptWith(idsX);
-                    listadoEquivalencias[Guid.NewGuid().ToString()] = itemsToLoad[itemLoad];
+                    float similitud = listaEquivalencias[id][id2];
+                    if (similitud > pUmbral)
+                    {
+                        if (!idBBDD && !id2BBDD)
+                        {
+                            //Buscamos si está ya añadido                            
+                            string aniadir = "";
+                            if (aniadidos.ContainsKey(id))
+                            {
+                                aniadir = aniadidos[id];
+                            }
+                            if (aniadidos.ContainsKey(id2))
+                            {
+                                if (aniadir == "" || aniadir == aniadidos[id2])
+                                {
+                                    aniadir = aniadidos[id2];
+                                }
+                                else
+                                {
+                                    continue;
+                                }
+                            }
+
+
+                            //Si los dos están añadidos no hacemos nada
+                            if (aniadidos.ContainsKey(id) && aniadidos.ContainsKey(id2))
+                            {
+                                continue;
+                            }
+                            else
+                            {
+                                //Si no los añadimos
+                                if (string.IsNullOrEmpty(aniadir))
+                                {
+                                    aniadir = Guid.NewGuid().ToString();
+                                    listadoEquivalencias[aniadir] = new HashSet<string>();
+                                }
+                                //Añadimos si no se incumple 'listaDistintos'
+                                bool incumple1 = false;
+                                if (listaDistintos.ContainsKey(id.Split('|')[1]))
+                                {
+                                    foreach (string cargadoActual in listadoEquivalencias[aniadir])
+                                    {
+                                        if (listaDistintos[id.Split('|')[1]].Contains(cargadoActual.Split('|')[1]))
+                                        {
+                                            incumple1 = true;
+                                        }
+                                    }
+                                }
+
+                                bool incumple2 = false;
+                                if (listaDistintos.ContainsKey(id2.Split('|')[1]))
+                                {
+                                    foreach (string cargadoActual in listadoEquivalencias[aniadir])
+                                    {
+                                        if (listaDistintos[id2.Split('|')[1]].Contains(cargadoActual.Split('|')[1]))
+                                        {
+                                            incumple2 = true;
+                                        }
+                                    }
+                                }
+                                if (!incumple1)
+                                {
+                                    listadoEquivalencias[aniadir].Add(id);
+                                    aniadidos[id] = aniadir;
+                                    cargados.Add(id);
+                                }
+                                if (!incumple2)
+                                {
+                                    listadoEquivalencias[aniadir].Add(id2);
+                                    aniadidos[id2] = aniadir;
+                                    cargados.Add(id2);
+                                }
+                            }
+                        }
+                    }
                 }
             }
 
-            HashSet<string> itemsDevolver = new HashSet<string>(listadoEquivalencias.Values.SelectMany(x => x));
+            //Añadimos las que falten            
             foreach (DisambiguableEntity item in pItems)
             {
-                if (!itemsDevolver.Contains(item.GetType().Name + "|" + item.ID))
+                if (cargados.Add(item.GetType().Name + "|" + item.ID))
                 {
                     listadoEquivalencias.Add(Guid.NewGuid().ToString(), new HashSet<string>() { item.GetType().Name + "|" + item.ID });
                 }
             }
-
-            //Verificar que estan todos y no estan repetidos
-            HashSet<string> idsResultantes = new HashSet<string>();
-            foreach (string id in listadoEquivalencias.Keys)
             {
-                foreach (string iditem in listadoEquivalencias[id])
+                //Verificar que estan todos y no estan repetidos
+                HashSet<string> idsResultantes = new HashSet<string>();
+                foreach (string id in listadoEquivalencias.Keys)
                 {
-                    if (!idsResultantes.Add(iditem))
+                    foreach (string iditem in listadoEquivalencias[id])
                     {
-                        throw new Exception("Item repetido");
+                        if (!idsResultantes.Add(iditem))
+                        {
+                            throw new Exception("Item repetido");
+                        }
                     }
                 }
+
+                if (idsResultantes.Count != pItems.Count)
+                {
+                    throw new Exception("Error");
+                }
             }
-            if (idsResultantes.Count != pItems.Count)
+
+            //TODO ver co adrián, en el JSON nos llegan cosas que no pueden ser
+            List<DisambiguableEntity> perez = null;
+            List<DisambiguableEntity> lopez = null;
+            if (listadoEquivalencias.ContainsKey("http://gnoss.com/items/Person_32e0430e-ceca-46ad-87d2-e9e3ba9e1484_ab4849cb-ea56-4791-9b47-a70716dae5da"))
             {
-                throw new Exception("Error");
+                //Rafael Marin Pérez
+                var x = listadoEquivalencias["http://gnoss.com/items/Person_32e0430e-ceca-46ad-87d2-e9e3ba9e1484_ab4849cb-ea56-4791-9b47-a70716dae5da"];
+                perez = pItems.Where(y => x.Contains(y.ID)).ToList();
             }
+            if (listadoEquivalencias.ContainsKey("http://gnoss.com/items/Person_9d8d3ec5-20fb-4cec-8bf3-c52ad27ce35e_d0d06f13-7aac-45f9-bed4-e4294088ee59"))
+            {
+                //Rafael Marin López
+                var x = listadoEquivalencias["http://gnoss.com/items/Person_9d8d3ec5-20fb-4cec-8bf3-c52ad27ce35e_d0d06f13-7aac-45f9-bed4-e4294088ee59"];
+                lopez = pItems.Where(y => x.Contains(y.ID)).ToList();
+            }
+
             return listadoEquivalencias;
         }
 
@@ -530,191 +654,7 @@ namespace Hercules.ED.DisambiguationEngine.Models
                         //Obtenemos ItemB
                         DisambiguableEntity itemB = dicItems[idBtype + "|" + idBidentifier];
 
-                        //TODO eliminar
-                        if (itemA.GetType().Name == "DisambiguationPerson")
-                        {
-                            List<DisambiguationData> A = itemA.GetDisambiguationData();
-                            List<DisambiguationData> B = itemB.GetDisambiguationData();
-                            if (!string.IsNullOrEmpty(A.FirstOrDefault(x => x.property == "orcid").value) && !string.IsNullOrEmpty(B.FirstOrDefault(x => x.property == "orcid").value) && A.FirstOrDefault(x => x.property == "orcid").value != B.FirstOrDefault(x => x.property == "orcid").value)
-                            {
-
-                            }
-                            if (
-                                (!A.FirstOrDefault(x => x.property == "completeName").value.ToLower().Contains("skarmeta") || !B.FirstOrDefault(x => x.property == "completeName").value.ToLower().Contains("skarmeta"))
-                                && A.FirstOrDefault(x => x.property == "completeName").value.ToLower().Replace("-", " ") != B.FirstOrDefault(x => x.property == "completeName").value.ToLower().Replace("-", " ")
-                                && (string.IsNullOrEmpty(A.FirstOrDefault(x => x.property == "orcid").value) || string.IsNullOrEmpty(A.FirstOrDefault(x => x.property == "orcid").value))
-                                )
-                            {
-
-                            }
-                        }
-
-                        bool itemABBDD = !Guid.TryParse(idAidentifier, out Guid aux);
-                        bool itemBBBDD = !Guid.TryParse(idBidentifier, out Guid aux2);
-
-                        //Si los dos son items de BBDD no hay que hacer nada
-                        if (itemABBDD && itemBBBDD)
-                        {
-                            continue;
-                        }
-
-                        //Nos quedamos con el 'mejor'
-                        DisambiguableEntity itemEliminar = null;
-                        DisambiguableEntity itemBueno = null;
-                        string idMalo = null;
-                        string idBueno = null;
-                        if (itemABBDD || itemBBBDD)
-                        {
-                            List<DisambiguationData> dataA = null;
-                            List<DisambiguationData> dataB = null;
-                            if (itemABBDD && pDisambiguationDataItemsACargar.ContainsKey(itemB))
-                            {
-                                dataA = pDisambiguationDataItemsACargarBBDD[itemA];
-                                dataB = pDisambiguationDataItemsACargar[itemB];
-                                itemEliminar = itemB;
-                                itemBueno = itemA;
-                                idMalo = idBidentifier;
-                                idBueno = idAidentifier;
-                            }
-                            else if (itemBBBDD && pDisambiguationDataItemsACargar.ContainsKey(itemA))
-                            {
-                                dataB = pDisambiguationDataItemsACargarBBDD[itemB];
-                                dataA = pDisambiguationDataItemsACargar[itemA];
-                                itemEliminar = itemA;
-                                itemBueno = itemB;
-                                idMalo = idAidentifier;
-                                idBueno = idBidentifier;
-                            }
-                            else
-                            {
-                                continue;
-                            }
-                        }
-                        else if (pDisambiguationDataItemsACargar.ContainsKey(itemA) && pDisambiguationDataItemsACargar.ContainsKey(itemB))
-                        {
-                            List<DisambiguationData> dataA = pDisambiguationDataItemsACargar[itemA];
-                            List<DisambiguationData> dataB = pDisambiguationDataItemsACargar[itemB];
-
-                            int identifiersA = dataA.Where(x => x.config.type == DisambiguationDataConfigType.equalsIdentifiers).Count();
-                            int identifiersB = dataB.Where(x => x.config.type == DisambiguationDataConfigType.equalsIdentifiers).Count();
-
-                            int? nombreA = dataA.Where(x => x.config.type == DisambiguationDataConfigType.algoritmoNombres).FirstOrDefault()?.value.Length;
-                            int? nombreB = dataB.Where(x => x.config.type == DisambiguationDataConfigType.algoritmoNombres).FirstOrDefault()?.value.Length;
-
-                            int itemsA = dataA.Where(x => x.config.type == DisambiguationDataConfigType.equalsItem).Count();
-                            int itemsB = dataB.Where(x => x.config.type == DisambiguationDataConfigType.equalsItem).Count();
-
-                            if (identifiersA > identifiersB)
-                            {
-                                itemEliminar = itemB;
-                                itemBueno = itemA;
-                                idMalo = idBidentifier;
-                                idBueno = idAidentifier;
-                            }
-                            else if (identifiersB > identifiersA)
-                            {
-                                itemEliminar = itemA;
-                                itemBueno = itemB;
-                                idMalo = idAidentifier;
-                                idBueno = idBidentifier;
-                            }
-                            else if (nombreA > nombreB)
-                            {
-                                itemEliminar = itemB;
-                                itemBueno = itemA;
-                                idMalo = idBidentifier;
-                                idBueno = idAidentifier;
-                            }
-                            else if (nombreB > nombreA)
-                            {
-                                itemEliminar = itemA;
-                                itemBueno = itemB;
-                                idMalo = idAidentifier;
-                                idBueno = idBidentifier;
-                            }
-                            else if (itemsA > itemsB)
-                            {
-                                itemEliminar = itemB;
-                                itemBueno = itemA;
-                                idMalo = idBidentifier;
-                                idBueno = idAidentifier;
-                            }
-                            else if (itemsB > itemsA)
-                            {
-                                itemEliminar = itemA;
-                                itemBueno = itemB;
-                                idMalo = idAidentifier;
-                                idBueno = idBidentifier;
-                            }
-                            else
-                            {
-                                itemEliminar = itemB;
-                                itemBueno = itemA;
-                                idMalo = idBidentifier;
-                                idBueno = idAidentifier;
-                            }
-                        }
-                        else if (pDisambiguationDataItemsACargar.ContainsKey(itemA))
-                        {
-                            itemEliminar = itemB;
-                            itemBueno = itemA;
-                            idMalo = idBidentifier;
-                            idBueno = idAidentifier;
-                        }
-                        else if (pDisambiguationDataItemsACargar.ContainsKey(itemB))
-                        {
-                            itemEliminar = itemA;
-                            itemBueno = itemB;
-                            idMalo = idAidentifier;
-                            idBueno = idBidentifier;
-                        }
-                        else
-                        {
-                            continue;
-                        }
-
-                        if (!pListaEquivalencias.ContainsKey(idA))
-                        {
-                            pListaEquivalencias.Add(idA, new Dictionary<string, float>());
-                        }
-                        if (!pListaEquivalencias.ContainsKey(idB))
-                        {
-                            pListaEquivalencias.Add(idB, new Dictionary<string, float>());
-                        }
-                        pListaEquivalencias[idA][idB] = pListaEquivalenciasItemsACargar[idA][idB];
-                        pListaEquivalencias[idB][idA] = pListaEquivalenciasItemsACargar[idB][idA];
-                        //Agregamos el listado del eliminado en el bueno
-                        List<DisambiguationData> datosBueno = null;
-                        if (pDisambiguationDataItemsACargar.ContainsKey(itemBueno))
-                        {
-                            datosBueno = pDisambiguationDataItemsACargar[itemBueno];
-                        }
-                        else if (pDisambiguationDataItemsACargarBBDD.ContainsKey(itemBueno))
-                        {
-                            datosBueno = pDisambiguationDataItemsACargarBBDD[itemBueno];
-                        }
-                        foreach (DisambiguationData dataBueno in datosBueno)
-                        {
-                            if (pDisambiguationDataItemsACargar.ContainsKey(itemEliminar))
-                            {
-                                foreach (DisambiguationData dataMalo in pDisambiguationDataItemsACargar[itemEliminar])
-                                {
-                                    if (dataBueno.property == dataMalo.property && dataBueno.config.type == DisambiguationDataConfigType.equalsItemList)
-                                    {
-                                        dataBueno.values.UnionWith(dataMalo.values);
-                                    }
-                                    if (dataBueno.property == dataMalo.property && dataBueno.config.type == DisambiguationDataConfigType.equalsIdentifiers && !string.IsNullOrEmpty(dataMalo.value))
-                                    {
-                                        dataBueno.value = dataMalo.value;
-                                    }
-                                }
-                            }
-                        }
-                        //Cambiamos referencias
-                        cambiosReferencias[idMalo] = idBueno;
-
-                        //Eliminamos de la lista de items el duplicado
-                        pDisambiguationDataItemsACargar.Remove(itemEliminar);
+                        FusionarEntidades(idA, idB, itemA, itemB, pDisambiguationDataItemsACargar, pDisambiguationDataItemsACargarBBDD, pListaEquivalenciasItemsACargar, pListaEquivalencias, cambiosReferencias);
                     }
                 }
             }
@@ -738,6 +678,174 @@ namespace Hercules.ED.DisambiguationEngine.Models
                 }
             }
             return cambios;
+        }
+
+
+        private static void FusionarEntidades(string pIDA, string pIDb, DisambiguableEntity pItemA, DisambiguableEntity pItemB, Dictionary<DisambiguableEntity, List<DisambiguationData>> pDisambiguationDataItemsACargar, Dictionary<DisambiguableEntity, List<DisambiguationData>> pDisambiguationDataItemsACargarBBDD, Dictionary<string, Dictionary<string, float>> pListaEquivalenciasItemsACargar, Dictionary<string, Dictionary<string, float>> pListaEquivalencias, Dictionary<string, string> pCambiosReferencias)
+        {
+            //TODO eliiar
+            foreach (var x in pItemA.GetDisambiguationData())
+            {
+                if (x.value != null && x.value.ToLower().Contains("aurora") && !x.value.ToLower().Contains("vidal"))
+                {
+                }
+            }
+            foreach (var x in pItemB.GetDisambiguationData())
+            {
+                if (x.value != null && x.value.ToLower().Contains("aurora") && !x.value.ToLower().Contains("vidal"))
+                {
+                }
+            }
+
+
+            bool itemABBDD = !Guid.TryParse(pItemA.ID, out Guid aux);
+            bool itemBBBDD = !Guid.TryParse(pItemB.ID, out Guid aux2);
+            if (itemABBDD && itemBBBDD)
+            {
+                //Si los dos son items de BBDD no hay que hacer nada (no se van a fusionar)
+                return;
+            }
+
+            //Nos quedamos con el 'mejor'
+            DisambiguableEntity itemEliminar = null;    //Item a sustituir por el itemBueno
+            DisambiguableEntity itemBueno = null;       //Item para reemplazar a itemEliminar
+            if (itemABBDD || itemBBBDD)
+            {
+                //Si uno de los dos es de BBDD nos quedamos con él
+                if (itemABBDD && pDisambiguationDataItemsACargar.ContainsKey(pItemB))
+                {
+                    itemEliminar = pItemB;
+                    itemBueno = pItemA;
+                }
+                else if (itemBBBDD && pDisambiguationDataItemsACargar.ContainsKey(pItemA))
+                {
+                    itemEliminar = pItemA;
+                    itemBueno = pItemB;
+                }
+                else
+                {
+                    return;
+                }
+            }
+            else if (pDisambiguationDataItemsACargar.ContainsKey(pItemA) && pDisambiguationDataItemsACargar.ContainsKey(pItemB))
+            {
+                //Si ningunp de los dos es de BBDD
+                List<DisambiguationData> dataA = pDisambiguationDataItemsACargar[pItemA];
+                List<DisambiguationData> dataB = pDisambiguationDataItemsACargar[pItemB];
+
+                int identifiersA = dataA.Where(x => x.config.type == DisambiguationDataConfigType.equalsIdentifiers).Count();
+                int identifiersB = dataB.Where(x => x.config.type == DisambiguationDataConfigType.equalsIdentifiers).Count();
+
+                int? nombreA = dataA.Where(x => x.config.type == DisambiguationDataConfigType.algoritmoNombres).FirstOrDefault()?.value.Length;
+                int? nombreB = dataB.Where(x => x.config.type == DisambiguationDataConfigType.algoritmoNombres).FirstOrDefault()?.value.Length;
+
+                int itemsA = dataA.Where(x => x.config.type == DisambiguationDataConfigType.equalsItem).Count();
+                int itemsB = dataB.Where(x => x.config.type == DisambiguationDataConfigType.equalsItem).Count();
+
+                if (identifiersA > identifiersB)
+                {
+                    //Nos quedamos con el que tenga más identificadores
+                    itemEliminar = pItemB;
+                    itemBueno = pItemA;
+                }
+                else if (identifiersB > identifiersA)
+                {
+                    itemEliminar = pItemA;
+                    itemBueno = pItemB;
+                }
+                else if (nombreA > nombreB)
+                {
+                    itemEliminar = pItemB;
+                    itemBueno = pItemA;
+                }
+                else if (nombreB > nombreA)
+                {
+                    itemEliminar = pItemA;
+                    itemBueno = pItemB;
+                }
+                else if (itemsA > itemsB)
+                {
+                    itemEliminar = pItemB;
+                    itemBueno = pItemA;
+                }
+                else if (itemsB > itemsA)
+                {
+                    itemEliminar = pItemA;
+                    itemBueno = pItemB;
+                }
+                else
+                {
+                    itemEliminar = pItemB;
+                    itemBueno = pItemA;
+                }
+            }
+            else if (pDisambiguationDataItemsACargar.ContainsKey(pItemA))
+            {
+                itemEliminar = pItemB;
+                itemBueno = pItemA;
+            }
+            else if (pDisambiguationDataItemsACargar.ContainsKey(pItemB))
+            {
+                itemEliminar = pItemA;
+                itemBueno = pItemB;
+            }
+            else
+            {
+                return;
+            }
+
+            if (!pListaEquivalencias.ContainsKey(pIDA))
+            {
+                pListaEquivalencias.Add(pIDA, new Dictionary<string, float>());
+            }
+            if (!pListaEquivalencias.ContainsKey(pIDb))
+            {
+                pListaEquivalencias.Add(pIDb, new Dictionary<string, float>());
+            }
+            pListaEquivalencias[pIDA][pIDb] = pListaEquivalenciasItemsACargar[pIDA][pIDb];
+            //TODO eliminar
+            if (!pListaEquivalenciasItemsACargar[pIDb].ContainsKey(pIDA))
+            {
+
+            }
+            pListaEquivalencias[pIDb][pIDA] = pListaEquivalenciasItemsACargar[pIDb][pIDA];
+
+            //Agregamos el listado del eliminado en el bueno
+            List<DisambiguationData> datosBueno = null;
+            if (pDisambiguationDataItemsACargar.ContainsKey(itemBueno))
+            {
+                datosBueno = pDisambiguationDataItemsACargar[itemBueno];
+            }
+            else if (pDisambiguationDataItemsACargarBBDD.ContainsKey(itemBueno))
+            {
+                datosBueno = pDisambiguationDataItemsACargarBBDD[itemBueno];
+            }
+            foreach (DisambiguationData dataBueno in datosBueno)
+            {
+                if (pDisambiguationDataItemsACargar.ContainsKey(itemEliminar))
+                {
+                    foreach (DisambiguationData dataMalo in pDisambiguationDataItemsACargar[itemEliminar])
+                    {
+                        if (dataBueno.property == dataMalo.property && dataBueno.config.type == DisambiguationDataConfigType.equalsItemList)
+                        {
+                            dataBueno.values.UnionWith(dataMalo.values);
+                        }
+                        if (dataBueno.property == dataMalo.property && dataBueno.config.type == DisambiguationDataConfigType.equalsIdentifiers && !string.IsNullOrEmpty(dataMalo.value))
+                        {
+                            dataBueno.value = dataMalo.value;
+                        }
+                        if (dataBueno.property == dataMalo.property && dataBueno.config.type == DisambiguationDataConfigType.equalsItem && !string.IsNullOrEmpty(dataMalo.value))
+                        {
+                            dataBueno.value = dataMalo.value;
+                        }
+                    }
+                }
+            }
+            //Cambiamos referencias
+            pCambiosReferencias[itemEliminar.ID] = itemBueno.ID;
+
+            //Eliminamos de la lista de items el duplicado
+            pDisambiguationDataItemsACargar.Remove(itemEliminar);
         }
 
         /// <summary>
@@ -795,7 +903,6 @@ namespace Hercules.ED.DisambiguationEngine.Models
                             itemsBBDD = itemsPorTipoBBDD[tipo];
                         }
                     }
-                    //TODO mover para que lo usen todos los tipos
                     Dictionary<string, Dictionary<string, float>> equivalencesAyuda = null;
                     if (i == 1)
                     {
@@ -809,10 +916,30 @@ namespace Hercules.ED.DisambiguationEngine.Models
                             }
                         }
                     }
-                    Dictionary<string, Dictionary<string, float>> equivalencesAux = ProcesadoNormal(itemsPorTipoToLoad[tipo], itemsBBDD, tipo, equivalencesAyuda, pListaDistintos, pDicNomPersonasDesnormalizadas, pDicTitulosDesnormalizados, pToleranciaNombres);
+                    Dictionary<string, Dictionary<string, float>> equivalencesAux = BuscarEquivalencias(itemsPorTipoToLoad[tipo], itemsBBDD, tipo, equivalencesAyuda, pListaDistintos, pDicNomPersonasDesnormalizadas, pDicTitulosDesnormalizados, pToleranciaNombres);
+
                     foreach (string key in equivalencesAux.Keys)
                     {
-                        equivalences[key] = equivalencesAux[key];
+                        if (!equivalences.ContainsKey(key))
+                        {
+                            equivalences[key] = new Dictionary<string, float>();
+                        }
+                        foreach (string key2 in equivalencesAux[key].Keys)
+                        {
+                            if (equivalences[key].ContainsKey(key2))
+                            {
+                                if (equivalences[key][key2] < equivalencesAux[key][key2])
+                                {
+                                    equivalences[key][key2] = equivalencesAux[key][key2];
+                                }
+                            }
+                            else
+                            {
+                                equivalences[key][key2] = equivalencesAux[key][key2];
+                            }
+
+                        }
+
                     }
                 }
             }
@@ -820,7 +947,7 @@ namespace Hercules.ED.DisambiguationEngine.Models
         }
 
         /// <summary>
-        /// Procesado especial de desambiguación (propiedades limitadas)
+        /// Búsqeuda de equivalencias
         /// </summary>
         /// <param name="pItemsToLoad">Items para desambiguar</param>
         /// <param name="pItemsBBDD">Items para desambiguar de la BBDD</param>
@@ -828,7 +955,7 @@ namespace Hercules.ED.DisambiguationEngine.Models
         /// <param name="pListaDistintos">Diccionario con la lista de los IDs que no puden ser iguales</param>
         /// <param name="pToleranciaNombres">Tolerancia para los nombres de las personas (porcentaje máximo de nombres no coincidentes admitidos)</param>
         /// <returns></returns>
-        private static Dictionary<string, Dictionary<string, float>> ProcesadoNormal(Dictionary<DisambiguableEntity, List<DisambiguationData>> pItemsToLoad, Dictionary<DisambiguableEntity, List<DisambiguationData>> pItemsBBDD, string pTipo, Dictionary<string, Dictionary<string, float>> pEquivalencesAux, Dictionary<string, HashSet<string>> pListaDistintos, Dictionary<string, string> pDicNomPersonasDesnormalizadas, Dictionary<string, string> pDicTitulosDesnormalizados, float pToleranciaNombres)
+        private static Dictionary<string, Dictionary<string, float>> BuscarEquivalencias(Dictionary<DisambiguableEntity, List<DisambiguationData>> pItemsToLoad, Dictionary<DisambiguableEntity, List<DisambiguationData>> pItemsBBDD, string pTipo, Dictionary<string, Dictionary<string, float>> pEquivalencesAux, Dictionary<string, HashSet<string>> pListaDistintos, Dictionary<string, string> pDicNomPersonasDesnormalizadas, Dictionary<string, string> pDicTitulosDesnormalizados, float pToleranciaNombres)
         {
             //Respuesta
             Dictionary<string, Dictionary<string, float>> equivalences = new Dictionary<string, Dictionary<string, float>>();
@@ -848,9 +975,9 @@ namespace Hercules.ED.DisambiguationEngine.Models
                 foreach (var itemA in pItemsToLoad)
                 {
                     indice++;
+                    string idA = itemA.Key.ID;
                     for (int i = indice; i < listaItemsCompare.Count; i++)
                     {
-                        string idA = itemA.Key.ID;
                         string idB = listaItemsCompare[i].Key.ID;
                         if (pListaDistintos.ContainsKey(idA) && pListaDistintos[idA].Contains(idB))
                         {
@@ -878,9 +1005,13 @@ namespace Hercules.ED.DisambiguationEngine.Models
                     float similarityMax = 0;
                     string idA = itemA.Key.ID;
                     string idB = null;
-                    //TODO pListaDistintos
                     for (int i = 0; i < listaItemsCompare.Count; i++)
                     {
+                        if (pListaDistintos.ContainsKey(idA) && pListaDistintos[idA].Contains(listaItemsCompare[i].Key.ID))
+                        {
+                            continue;
+                        }
+
                         // Algoritmo de similaridad.
                         float similarity = GetSimilarity(itemA, listaItemsCompare[i], pDicNomPersonasDesnormalizadas, pDicTitulosDesnormalizados, pEquivalencesAux, pListaDistintos, pToleranciaNombres);
                         if (similarity > similarityMax)
@@ -1088,104 +1219,107 @@ namespace Hercules.ED.DisambiguationEngine.Models
                             }
                             if (!block && pItemsDataBBDD != null && pItemsDataBBDD.Count > 1)
                             {
-                                foreach (KeyValuePair<DisambiguableEntity, List<DisambiguationData>> item in pItemsDataBBDD[tipo])
+                                if (pItemsDataBBDD.ContainsKey(tipo))
                                 {
-                                    if (data.Count != item.Value.Count)
+                                    foreach (KeyValuePair<DisambiguableEntity, List<DisambiguationData>> item in pItemsDataBBDD[tipo])
                                     {
-                                        throw new Exception("Todas las entiades del mismo tipo deben tener las mismas propiedades");
-                                    }
-                                    for (int i = 0; i < data.Count; i++)
-                                    {
-                                        if (data[i].property != item.Value[i].property)
+                                        if (data.Count != item.Value.Count)
                                         {
-                                            throw new Exception("En los items " + tipo + " hay propiedades diferentes");
+                                            throw new Exception("Todas las entiades del mismo tipo deben tener las mismas propiedades");
                                         }
-                                        if (data[i].config.score != item.Value[i].config.score)
+                                        for (int i = 0; i < data.Count; i++)
                                         {
-                                            throw new Exception("Todas las entiades del mismo tipo deben tener el mismo score");
-                                        }
-                                        if (data[i].config.scoreMinus != item.Value[i].config.scoreMinus)
-                                        {
-                                            throw new Exception("Todas las entiades del mismo tipo deben tener el mismo scoreMinus");
-                                        }
-                                        if (data[i].config.type != item.Value[i].config.type)
-                                        {
-                                            throw new Exception("Todas las entiades del mismo tipo deben tener el mismo type");
-                                        }
-                                        switch (item.Value[i].config.type)
-                                        {
-                                            case DisambiguationDataConfigType.algoritmoNombres:
-                                                if (item.Value[i].value == null)
-                                                {
-                                                    item.Value[i].value = "";
-                                                }
-                                                if (item.Value[i].config.score <= 0 && item.Value[i].config.score > 1)
-                                                {
-                                                    throw new Exception("La propiedad score en 'algoritmoNombres' debe ser > 0 y <=1");
-                                                }
-                                                if (item.Value[i].config.scoreMinus != 0)
-                                                {
-                                                    throw new Exception("La propiedad scoreMinus en 'algoritmoNombres' no hay que configurarla");
-                                                }
-                                                break;
-                                            case DisambiguationDataConfigType.equalsIdentifiers:
-                                                if (item.Value[i].value == null)
-                                                {
-                                                    item.Value[i].value = "";
-                                                }
-                                                if (item.Value[i].config.score != 0)
-                                                {
-                                                    throw new Exception("La propiedad score en 'equalsIdentifiers' no hay que configurarla");
-                                                }
-                                                if (item.Value[i].config.scoreMinus != 0)
-                                                {
-                                                    throw new Exception("La propiedad scoreMinus en 'equalsIdentifiers' no hay que configurarla");
-                                                }
-                                                break;
-                                            case DisambiguationDataConfigType.equalsItem:
-                                                if (item.Value[i].value == null)
-                                                {
-                                                    item.Value[i].value = "";
-                                                }
-                                                if (item.Value[i].config.score < 0 && item.Value[i].config.score > 1)
-                                                {
-                                                    throw new Exception("La propiedad score en 'equalsItem' debe ser >= 0 y <=1");
-                                                }
-                                                if (item.Value[i].config.scoreMinus < 0 && item.Value[i].config.scoreMinus > 1)
-                                                {
-                                                    throw new Exception("La propiedad scoreMinus en 'equalsItem' debe ser >= 0 y <=1");
-                                                }
-                                                break;
-                                            case DisambiguationDataConfigType.equalsTitle:
-                                                if (item.Value[i].value == null)
-                                                {
-                                                    item.Value[i].value = "";
-                                                }
-                                                if (item.Value[i].config.score <= 0 && item.Value[i].config.score > 1)
-                                                {
-                                                    throw new Exception("La propiedad score en 'equalsTitle' debe ser > 0 y <=1");
-                                                }
-                                                if (item.Value[i].config.scoreMinus != 0)
-                                                {
-                                                    throw new Exception("La propiedad scoreMinus en 'equalsTitle' no hay que configurarla");
-                                                }
-                                                break;
-                                            case DisambiguationDataConfigType.equalsItemList:
-                                                if (item.Value[i].values == null)
-                                                {
-                                                    item.Value[i].values = new HashSet<string>();
-                                                }
-                                                if (item.Value[i].config.score < 0 && item.Value[i].config.score > 1)
-                                                {
-                                                    throw new Exception("La propiedad score en 'equalsItemList' debe ser >= 0 y <=1");
-                                                }
-                                                if (item.Value[i].config.scoreMinus != 0)
-                                                {
-                                                    throw new Exception("La propiedad scoreMinus en 'equalsIdentifiers' no hay que configurarla");
-                                                }
-                                                break;
-                                            default:
-                                                throw new Exception("No implementado");
+                                            if (data[i].property != item.Value[i].property)
+                                            {
+                                                throw new Exception("En los items " + tipo + " hay propiedades diferentes");
+                                            }
+                                            if (data[i].config.score != item.Value[i].config.score)
+                                            {
+                                                throw new Exception("Todas las entiades del mismo tipo deben tener el mismo score");
+                                            }
+                                            if (data[i].config.scoreMinus != item.Value[i].config.scoreMinus)
+                                            {
+                                                throw new Exception("Todas las entiades del mismo tipo deben tener el mismo scoreMinus");
+                                            }
+                                            if (data[i].config.type != item.Value[i].config.type)
+                                            {
+                                                throw new Exception("Todas las entiades del mismo tipo deben tener el mismo type");
+                                            }
+                                            switch (item.Value[i].config.type)
+                                            {
+                                                case DisambiguationDataConfigType.algoritmoNombres:
+                                                    if (item.Value[i].value == null)
+                                                    {
+                                                        item.Value[i].value = "";
+                                                    }
+                                                    if (item.Value[i].config.score <= 0 && item.Value[i].config.score > 1)
+                                                    {
+                                                        throw new Exception("La propiedad score en 'algoritmoNombres' debe ser > 0 y <=1");
+                                                    }
+                                                    if (item.Value[i].config.scoreMinus != 0)
+                                                    {
+                                                        throw new Exception("La propiedad scoreMinus en 'algoritmoNombres' no hay que configurarla");
+                                                    }
+                                                    break;
+                                                case DisambiguationDataConfigType.equalsIdentifiers:
+                                                    if (item.Value[i].value == null)
+                                                    {
+                                                        item.Value[i].value = "";
+                                                    }
+                                                    if (item.Value[i].config.score != 0)
+                                                    {
+                                                        throw new Exception("La propiedad score en 'equalsIdentifiers' no hay que configurarla");
+                                                    }
+                                                    if (item.Value[i].config.scoreMinus != 0)
+                                                    {
+                                                        throw new Exception("La propiedad scoreMinus en 'equalsIdentifiers' no hay que configurarla");
+                                                    }
+                                                    break;
+                                                case DisambiguationDataConfigType.equalsItem:
+                                                    if (item.Value[i].value == null)
+                                                    {
+                                                        item.Value[i].value = "";
+                                                    }
+                                                    if (item.Value[i].config.score < 0 && item.Value[i].config.score > 1)
+                                                    {
+                                                        throw new Exception("La propiedad score en 'equalsItem' debe ser >= 0 y <=1");
+                                                    }
+                                                    if (item.Value[i].config.scoreMinus < 0 && item.Value[i].config.scoreMinus > 1)
+                                                    {
+                                                        throw new Exception("La propiedad scoreMinus en 'equalsItem' debe ser >= 0 y <=1");
+                                                    }
+                                                    break;
+                                                case DisambiguationDataConfigType.equalsTitle:
+                                                    if (item.Value[i].value == null)
+                                                    {
+                                                        item.Value[i].value = "";
+                                                    }
+                                                    if (item.Value[i].config.score <= 0 && item.Value[i].config.score > 1)
+                                                    {
+                                                        throw new Exception("La propiedad score en 'equalsTitle' debe ser > 0 y <=1");
+                                                    }
+                                                    if (item.Value[i].config.scoreMinus != 0)
+                                                    {
+                                                        throw new Exception("La propiedad scoreMinus en 'equalsTitle' no hay que configurarla");
+                                                    }
+                                                    break;
+                                                case DisambiguationDataConfigType.equalsItemList:
+                                                    if (item.Value[i].values == null)
+                                                    {
+                                                        item.Value[i].values = new HashSet<string>();
+                                                    }
+                                                    if (item.Value[i].config.score < 0 && item.Value[i].config.score > 1)
+                                                    {
+                                                        throw new Exception("La propiedad score en 'equalsItemList' debe ser >= 0 y <=1");
+                                                    }
+                                                    if (item.Value[i].config.scoreMinus != 0)
+                                                    {
+                                                        throw new Exception("La propiedad scoreMinus en 'equalsIdentifiers' no hay que configurarla");
+                                                    }
+                                                    break;
+                                                default:
+                                                    throw new Exception("No implementado");
+                                            }
                                         }
                                     }
                                 }
