@@ -33,3 +33,19 @@ Devuelve los datos con el ID obtenido por el método ListIdentifiers.
 Para la utilización de este método, es necesario los siguientes parámetros:
 - identifier: Identificador de la entidad a recuperar (los identificadores se obtienen con el metodo ListIdentifiers). Ejemplo: Persona_ID-PERSONA
 - metadataPrefix: Especifica que los encabezados deben devolverse solo si el formato de metadatos que coincide con el metadataPrefix proporcionado está disponible. Los formatos de metadatos admitidos por un repositorio y para un elemento en particular se pueden recuperar mediante la solicitud ListMetadataFormats. Ejemplo: EDMA
+
+# Dependencias
+- IdentityServer4: v4.1.2
+- IdentityServer4.AccessTokenValidation: v3.0.1
+- Microsoft.AspNetCore.HttpOverrides: v2.2.0
+- Microsoft.AspNetCore.Mvc.Core: v2.2.5
+- Microsoft.AspNetCore.Mvc.Formatters.Json: v2.2.0
+- Microsoft.AspNetCore.Mvc.NewtonsoftJson: v5.0.10
+- OaiPmhNet: v0.4.1
+- RestSharp: v106.12.0
+- Swashbuckle.AspNetCore: v6.2.2
+- Swashbuckle.AspNetCore.Annotations: v6.2.2
+- System.ServiceModel.Duplex: v4.8.1
+- System.ServiceModel.Http: v4.8.1
+- System.ServiceModel.NetTcp: v4.8.1
+- System.ServiceModel.Security: v4.8.1
