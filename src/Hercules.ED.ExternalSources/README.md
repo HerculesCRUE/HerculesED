@@ -58,52 +58,41 @@ Este microservicio también debe devolver la informacion en el formato final des
 
 A continuación, se describen los pasos que se llevarán a cabo durante el proceso de reclamación de publicaciones de un determinado autor. 
 
-## Función principal.
-
-- Primeramente, el investigador ofrece su ORCID y una fecha a partir de la cual quiere obtener sus ROs, es decir, ejecuta el micro servido de publi
-- Se llamará a los servicios de WoS y Scopus para obtener la información de las publicaciones principales de este autor. 
-- Se recorre cada una de las publicaciones obtenidas en WoS. Por cada una de ellas: 
-    - Se almacena el DOI en una lista para saber qué artículos ya hemos completado del investigador en cuestión. 
-    - Se llama al servicio de Semantic Scholar y se fusiona la información obtenida por este microservicio y la publicación que estamos examinando. (Función **compactacion** que se encarga de combinar dos publicaciones). El resultado de esta unificación será la publicación que estamos observando. 
-    - A continuación, se llama a CrossRef y se fusiona la información obtenida por este microservicio y la publicación que estamos examinando. (Función **compactacion** que se encarga de combinar dos publicaciones). El resultado de esta unificación será la publicación que estamos observando.
-    - Se llama a la fuente externa Zenodo y en caso de encontrarse un fichero PDF con la publicación se añadirá como metadato.
-    - Se llama al enriquecimiento de áreas temáticas y de palabras clave para completar la publicación. 
-    - Se completa la bibliografía de este documento, ya que la fuente externa de CrossRef devuelve bibliografía (función de completar bibliografía **completar_bib**).
-    - Se obtiene la bibliografía restante y las citas de la publicación que estamos observando (función para obtener bibliografía y citas **obtener_bib_citas**).
-    - Se recorren todos los documentos obtenidos por Scopus y para cada uno de ellos:
-        - Si el DOI de esta publicación coincide con la publicación que estamos examinando entonces se combina la información (función de combinar dos publicaciones_ **compactacion**).
-        - En caso contrario no se hace nada.
-    - Llegados a este punto la publicación central está completa.
-
 ## Función de combinar dos publicaciones **compactacion**
 
 Con esta función se combinan todos los metadatos de las publicaciones recibidas. Cada metadato se combina de forma independiente. En el caso de los autores se hace de modo que no permita duplicidad de usuarios en el mismo conjunto de colaboradores de la publicación. También se obtiene la informacion de las métricas de la revista. 
 
-## Función completar bibliografía **completar_bib**
 
-- Por cada artículo de la bibliografía que hay en una publicación se realiza lo siguiente: 
-    - Se llama al servicio de Semantic Scholar y se fusiona la información obtenida por este microservicio y la publicación que estamos examinando (función de combinar dos publicaciones). El resultado de esta unificación será la publicación que estamos observando. 
-    - Se llama a CrossRef y se fusiona la información obtenida por este microservicio y la publicación que estamos examinando (función de combinar dos publicaciones). El resultado de esta unificación será la publicación que estamos observando. En este caso no nos quedamos con la bibliografía devuelta por CrossRef.
-    - Se llama a la fuente externa Zenodo y en caso de encontrarse un fichero PDF con la publicación se añadirá como metadato. 
+
+## Función principal.
+
+- Primeramente, el investigador ofrece su ORCID y una fecha a partir de la cual quiere obtener sus ROs.  
+- Se llamará a los servicios de WoS, Scopus y OpenAire  para obtener la información de las publicaciones principales de este autor. 
+- Se recorre cada una de las publicaciones obtenidas en WoS. Por cada una de ellas: 
+    - Se almacena el DOI en una lista para saber qué artículos ya hemos completado del investigador en cuestión. 
+    - Se llama al servicio de Semantic Scholar y se fusiona la información obtenida por este microservicio y la publicación que estamos examinando (función de combinar dos publicaciones). El resultado de esta unificación será la publicación que estamos observando. Esta fuente externa nos devuelve la información de los documentos referenciados. Estas publicaciones tendrán únicamente unos pocos metadatos básicos que no serán completados con ninguna red externa adicional. 
+    - Se llama a la fuente externa Zenodo y en caso de encontrarse un fichero PDF con la publicación se añadirá como metadato.
     - Se llama al enriquecimiento de áreas temáticas y de palabras clave para completar la publicación. 
-    - Llegado a este punto la información de las publicaciones de bibliografía ya estaría completa. 
-
-## Función para obtener bibliografía y citas **obtener_bib_citas**
-
-- Se llama al servicio externo de Open Citations con el que obtendremos dada una publicación, un listado de artículos bibliográficos (que solo tendrán como metadato el DOI) y una lista de artículos citados que también solo obtendrán el DOI.
-- Para cada elemento de la lista de bibliografía: 
-    - Se verifica que este elemento no está en la bibliografía que la publicación central que estamos analizando. En caso de que no esté almacenada se realizará lo siguiente: 
-        - Se llama al servicio de Semantic Scholar y se fusiona la información obtenida por este microservicio y la publicación que estamos examinando (función de combinar dos publicaciones). El resultado de esta unificación será la publicación que estamos observando. 
-        - Se llama a CrossRef y se fusiona la información obtenida por este microservicio y la publicación que estamos examinando (función de combinar dos publicaciones). El resultado de esta unificación será la publicación que estamos observando. En este caso no nos quedamos con la bibliografía devuelta por CrossRef. 
+    - Se añaden las métricas de las revistas.
+    - Se recorren todos los documentos obtenidos por Scopus y para cada uno de ellos:
+        - Si el DOI de esta publicación coincide con la publicación que estamos examinando entonces se combina la información (función de combinar dos publicaciones).
+        - En caso contrario no se hace nada.
+    - Se recorren todos los documentos obtenidos en OpenAire y para cada uno de ellos:
+        - Si el DOI de esta publicación coincide con la publicación que estamos examinando entonces se combina la información (función de combinar dos publicaciones).
+        - En caso contrario no se hace nada.
+    -Llegados a este punto la publicación central está completa, así como todas las bibliográficas y citas que la componen. Se guarda para devolverse. 
+- Recorremos la lista de publicaciones de Scopus con el fin de completar aquellas que no se han obtenido de WoS. Por tanto, por cada una de las publicaciones:
+    - Si ya ha sido completada y almacenada antes, no hace nada con ella. 
+    - En caso contrario: 
+        - Se llama al servicio de Semantic Scholar y se fusiona la información obtenida por este microservicio y la publicación que estamos examinando (función de combinar dos publicaciones). El resultado de esta unificación será la publicación que estamos observando. Esta fuente externa nos devuelve la información de los documentos referenciados. Estas publicaciones tendrán únicamente unos pocos metadatos básicos que no serán completados con ninguna red externa adicional. 
         - Se llama a la fuente externa Zenodo y en caso de encontrarse un fichero PDF con la publicación se añadirá como metadato. 
         - Se llama al enriquecimiento de áreas temáticas y de palabras clave para completar la publicación. 
         - Se añaden las métricas de las revistas. 
-- Llegado a este punto la información de la bibliografía ya estaría completa.
-- Para cada elemento de la lista de citas: 
-    - Se llama al servicio de Semantic Scholar y se fusiona la información obtenida por este microservicio y la publicación que estamos examinando (función de combinar dos publicaciones). El resultado de esta unificación será la publicación que estamos observando.
-    - Se llama CrossRef y se fusiona la información obtenida por este microservicio y la publicación que estamos examinando (función de combinar dos publicaciones). El resultado de esta unificación será la publicación que estamos observando. En este caso no nos quedamos con la bibliografía devuelta por CrossRef. 
-    - Se llama a la fuente externa Zenodo y en caso de encontrarse un fichero PDF con la publicación se añadirá como metadato.
-    - Se llama al enriquecimiento de áreas temáticas y de palabras clave para completar la publicación. 
-    - Se añaden las métricas de las revistas. 
-- Llegado a este punto la información de las publicaciones de bibliografía ya estaría completa. 
-
+- Recorrimos la lista de publicaciones de OpenAire con el fin de completar aquellas que no se han obtenido de WoS y Scopus. Por tanto, por cada una de las publicaciones:
+    - Si ya ha sido completada y almacenada antes, no hace nada con ella. 
+    - En caso contrario: 
+        - Se llama al servicio de Semantic Scholar y se fusiona la información obtenida por este microservicio y la publicación que estamos examinando (función de combinar dos publicaciones). El resultado de esta unificación será la publicación que estamos observando. Esta fuente externa nos devuelve la información de los documentos referenciados. Estas publicaciones tendrán únicamente unos pocos metadatos básicos que no serán completados con ninguna red externa adicional. 
+        - Se llama a la fuente externa Zenodo y en caso de encontrarse un fichero PDF con la publicación se añadirá como metadato. 
+        -Se llama al enriquecimiento de áreas temáticas y de palabras clave para completar la publicación. 
+        -Se añaden las métricas de las revistas. 
+- Llegados a este punto ya tenemos completas todas las publicaciones de este autor. 
