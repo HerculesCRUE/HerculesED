@@ -23,6 +23,7 @@ using EditorCV.Controllers;
 using Gnoss.ApiWrapper.Model;
 using static EditorCV.Models.Enrichment.EnrichmentResponse;
 using System.Globalization;
+using Hercules.ED.DisambiguationEngine.Models;
 
 namespace GuardadoCV.Models
 {
@@ -300,8 +301,12 @@ namespace GuardadoCV.Models
 
             if (!string.IsNullOrEmpty(pSignatures))
             {
+                float scoreDocument = 0.1f;
+                float scoreProject = 0.1f;
+                float scoreDepartment = 0.2f;
                 Dictionary<string, int> colaboradoresDocumentos = ObtenerColaboradoresPublicaciones(pPersonID);
                 Dictionary<string, int> colaboradoresProyectos = ObtenerColaboradoresProyectos(pPersonID);
+                HashSet<string> colaboradoresDepartament = ObtenerColaboradoresDepartamento(pPersonID);
 
                 List<string> signaturesList = pSignatures.Split(new string[] { ";" }, StringSplitOptions.RemoveEmptyEntries).Distinct().Select(x => x.Trim()).ToList();
 
@@ -310,10 +315,62 @@ namespace GuardadoCV.Models
                 {
                     if (firma.Trim() != "")
                     {
-                        List<Person> personas = ObtenerPersonasFirma(firma.Trim());
-                        ObtenerScores(firma.Trim(), ref personas, colaboradoresDocumentos, colaboradoresProyectos);
-                        personas = personas.Where(x => x.score > 0.4f).OrderByDescending(x => x.score).ToList();
-                        listaPersonasAux[firma.Trim()] = personas;
+                        List<Person> personasBBDD = ObtenerPersonasFirma(firma.Trim());
+
+                        Person personaActual = new Person();
+                        personaActual.name = firma.Trim();
+                        personaActual.ID = Guid.NewGuid().ToString();
+                        List<DisambiguableEntity> entidadesActuales = new List<DisambiguableEntity>();
+                        entidadesActuales.Add(personaActual);
+                        List<DisambiguableEntity> entidadesBBDD = new List<DisambiguableEntity>();
+                        foreach (Person personBBDD in personasBBDD)
+                        {
+                            personBBDD.ID = personBBDD.personid;
+                            entidadesBBDD.Add(personBBDD);
+                        }
+                        Dictionary<string, Dictionary<string, float>> resultadoSimilaridad = Disambiguation.SimilarityBBDDScores(entidadesActuales, entidadesBBDD, 0, 5);
+                        foreach (string idBBDD in resultadoSimilaridad[personaActual.ID].Keys)
+                        {
+                            personasBBDD.First(x => x.ID == idBBDD).score = resultadoSimilaridad[personaActual.ID][idBBDD];
+                        }
+                        //Ordenamos y nos quedamos sólo con asl que tengan algo de score
+                        personasBBDD = personasBBDD.Where(x => x.score > 0f).OrderByDescending(x => x.score).ToList();
+
+                        foreach (Person person in personasBBDD)
+                        {
+                            float max = person.score + (1 - person.score) * person.score;
+                            if (colaboradoresDocumentos.ContainsKey(person.ID))
+                            {
+                                for (int i = 0; i < colaboradoresDocumentos[person.ID]; i++)
+                                {
+
+                                    person.score += (1 - person.score) * scoreDocument;
+                                }
+                            }
+                            if (colaboradoresProyectos.ContainsKey(person.ID))
+                            {
+                                for (int i = 0; i < colaboradoresProyectos[person.ID]; i++)
+                                {
+
+                                    person.score += (1 - person.score) * scoreProject;
+                                }
+                            }
+                            if (colaboradoresDepartament.Contains(person.ID))
+                            {
+                                person.score += (1 - person.score) * scoreDepartment;
+                            }
+                            if (person.score > max)
+                            {
+                                person.score = max;
+                            }
+                        }
+                        personasBBDD = personasBBDD.OrderByDescending(x => x.score).ToList();
+                        if(personasBBDD.Count>20)
+                        {
+                            personasBBDD = personasBBDD.GetRange(0, 20);
+                        }
+
+                        listaPersonasAux[firma.Trim()] = personasBBDD;
                     }
                 });
                 foreach (string firma in signaturesList)
@@ -340,117 +397,100 @@ namespace GuardadoCV.Models
         public Dictionary<string, int> ObtenerColaboradoresPublicaciones(string pPersonID)
         {
             Dictionary<string, int> colaboradoresPublicaciones = new Dictionary<string, int>();
-            string select = $@"select ?personOtherID count(distinct ?s) as ?num ";
-            string where = $@"where
+            int limit = 10000;
+            int offset = 0;
+            while (true)
+            {
+                string select = $@"SELECT * WHERE {{select ?personOtherID count(distinct ?s) as ?num ";
+                string where = $@"where
                             {{ 
                                 ?s a <http://purl.org/ontology/bibo/Document>.
                                 ?s <http://purl.org/ontology/bibo/authorList> ?author.     
                                 ?author <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> <{pPersonID}>.
                                 ?s <http://purl.org/ontology/bibo/authorList> ?authorOther.     
                                 ?authorOther <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?personOtherID.                                
-                            }}order by desc(?num)";
-            SparqlObject sparqlObject = mResourceApi.VirtuosoQuery(select, where, "document");
-            foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings)
-            {
-                colaboradoresPublicaciones[fila["personOtherID"].value] = int.Parse(fila["num"].value);
+                            }}order by desc(?num) desc (?personOtherID) }} LIMIT {limit} OFFSET {offset}";
+                SparqlObject sparqlObject = mResourceApi.VirtuosoQuery(select, where, "document");
+                offset += limit;
+                foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings)
+                {
+                    colaboradoresPublicaciones[fila["personOtherID"].value] = int.Parse(fila["num"].value);
+                }
+                if (sparqlObject.results.bindings.Count < limit)
+                {
+                    break;
+                }
             }
-
             return colaboradoresPublicaciones;
         }
 
         public Dictionary<string, int> ObtenerColaboradoresProyectos(string pPersonID)
         {
             Dictionary<string, int> colaboradoresProyectos = new Dictionary<string, int>();
-
-            //Obtenemos los colaboradores
-            string select = $@"select ?personOtherID count(distinct ?s) as ?num ";
-            string where = $@"where
+            int limit = 10000;
+            int offset = 0;
+            while (true)
+            {
+                string select = $@"SELECT * WHERE {{select ?personOtherID count(distinct ?s) as ?num ";
+                string where = $@"where
                             {{ 
                                 ?s a <http://vivoweb.org/ontology/core#Project>.
                                 ?s <http://vivoweb.org/ontology/core#relates> ?miembro.     
                                 ?miembro <http://w3id.org/roh/roleOf> <{pPersonID}>.
                                 ?s <http://vivoweb.org/ontology/core#relates> ?miembroOther.     
                                 ?miembroOther  <http://w3id.org/roh/roleOf> ?personOtherID.                                
-                            }}order by desc(?num)";
-            SparqlObject sparqlObject = mResourceApi.VirtuosoQuery(select, where, "project");
-            foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings)
-            {
-                colaboradoresProyectos[fila["personOtherID"].value] = int.Parse(fila["num"].value);
+                            }}order by desc(?num) desc (?personOtherID) }} LIMIT {limit} OFFSET {offset}";
+                SparqlObject sparqlObject = mResourceApi.VirtuosoQuery(select, where, "project");
+                offset += limit;
+                foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings)
+                {
+                    colaboradoresProyectos[fila["personOtherID"].value] = int.Parse(fila["num"].value);
+                }
+                if (sparqlObject.results.bindings.Count < limit)
+                {
+                    break;
+                }
             }
 
             return colaboradoresProyectos;
+        }
+
+        public HashSet<string> ObtenerColaboradoresDepartamento(string pPersonID)
+        {
+            HashSet<string> colaboradoresDepartamento = new HashSet<string>();
+            int limit = 10000;
+            int offset = 0;
+            while (true)
+            {
+                string select = $@"SELECT * WHERE {{select distinct ?personOtherID from <{mResourceApi.GraphsUrl}department.owl>";
+                string where = $@"where
+                            {{ 
+                                <{pPersonID}> <http://vivoweb.org/ontology/core#departmentOrSchool> ?depID.
+                                ?personOtherID <http://vivoweb.org/ontology/core#departmentOrSchool> ?depID.            
+                            }}order by desc (?personOtherID) }} LIMIT {limit} OFFSET {offset}";
+                SparqlObject sparqlObject = mResourceApi.VirtuosoQuery(select, where, "person");
+                offset += limit;
+                foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings)
+                {
+                    colaboradoresDepartamento.Add(fila["personOtherID"].value);
+                }
+                if (sparqlObject.results.bindings.Count < limit)
+                {
+                    break;
+                }
+            }
+            return colaboradoresDepartamento;
         }
 
         public List<Person> ObtenerPersonasFirma(string firma)
         {
             List<Person> listaPersonas = new List<Person>();
 
-            string texto = ObtenerTextosFirmasNormalizadas(firma.Trim().ToLower());
+            string texto = Disambiguation.ObtenerTextosNombresNormalizados(firma);
             string[] wordsTexto = texto.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
 
             if (wordsTexto.Length > 0)
             {
-                #region Buscamos en firmas
-                {
-                    List<string> unions = new List<string>();
-                    foreach (string word in wordsTexto)
-                    {
-                        StringBuilder sbUnion = new StringBuilder();
-                        sbUnion.AppendLine("   ?author <http://xmlns.com/foaf/0.1/nick> ?signature.");
-                        sbUnion.AppendLine($@" ?signature bif:contains ""'{word}'"" BIND({word.Length} as ?num)");
-                        unions.Add(sbUnion.ToString());
-                    }
-                    //TODO froms
-                    string select = $@"select distinct ?signature ?personID ?ORCID ?name ?num ?departamento from <{mResourceApi.GraphsUrl}person.owl> from <{mResourceApi.GraphsUrl}department.owl>";
-                    string where = $@"where
-                            {{
-                                {{
-                                    select ?author ?personID ?signature sum(?num) as ?num
-                                    where
-                                    {{
-                                        ?s a <http://purl.org/ontology/bibo/Document>.
-                                        ?s <http://purl.org/ontology/bibo/authorList> ?author.     
-                                        ?author <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?personID.                                        
-                                        {{{string.Join("}UNION{", unions)}}}
-                                    }}
-                                }}
-                                ?personID <http://xmlns.com/foaf/0.1/name> ?name.
-                                OPTIONAL{{
-                                    ?personID <http://w3id.org/roh/ORCID> ?ORCID
-                                }}
-                                OPTIONAL{{
-                                    ?personID <http://vivoweb.org/ontology/core#departmentOrSchool> ?depID.
-                                    ?depID <http://purl.org/dc/elements/1.1/title> ?departamento.
-                                }}
-                            }}order by desc (?num)limit 1000";
-                    SparqlObject sparqlObject = mResourceApi.VirtuosoQuery(select, where, "document");
-                    foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings)
-                    {
-                        string signature = fila["signature"].value;
-                        string personID = fila["personID"].value;
-                        string name = fila["name"].value;
-                        Person persona = listaPersonas.FirstOrDefault(x => x.personid == personID);
-                        if (persona == null)
-                        {
-                            persona = new Person();
-                            persona.name = name;
-                            persona.personid = personID;
-                            persona.signatures = new HashSet<string>();
-                            listaPersonas.Add(persona);
-                        }
-                        if (fila.ContainsKey("ORCID"))
-                        {
-                            persona.orcid = fila["ORCID"].value;
-                        }
-                        if (fila.ContainsKey("departamento"))
-                        {
-                            persona.department = fila["departamento"].value;
-                        }
-                        persona.signatures.Add(signature);
-                    }
-                }
-                #endregion
-
                 #region Buscamos en nombres
                 {
                     List<string> unions = new List<string>();
@@ -520,230 +560,6 @@ namespace GuardadoCV.Models
             }
             return listaPersonas;
         }
-
-        public void ObtenerScores(string pFirma, ref List<Person> pListaPersonas, Dictionary<string, int> pColaboradoresDocumentos, Dictionary<string, int> pColaboradoresProyectos)
-        {
-            string firmaLimpia = ObtenerTextosFirmasNormalizadas(pFirma.ToLower());
-            //1º Coincidencia por texto TODO ajustar
-            foreach (Person persona in pListaPersonas)
-            {
-                KeyValuePair<float, float> similarityName = GetNameSimilarity(firmaLimpia, ObtenerTextosFirmasNormalizadas(persona.name).ToLower());
-                if (similarityName.Key > persona.scoreMin)
-                {
-                    persona.scoreMin = similarityName.Key;
-                    persona.scoreMax = similarityName.Value;
-                }
-                foreach (string signature in persona.signatures)
-                {
-                    KeyValuePair<float, float> similaritySignature = GetNameSimilarity(firmaLimpia, ObtenerTextosFirmasNormalizadas(signature).ToLower());
-                    if (similaritySignature.Key > persona.scoreMin)
-                    {
-                        persona.scoreMin = similaritySignature.Key;
-                        persona.scoreMax = similaritySignature.Value;
-                    }
-                }
-            }
-
-            //2º Calculamos el score en función de 'scoreMin' y 'scoreMax' y las colaboraciones
-            foreach (Person persona in pListaPersonas)
-            {
-                persona.score = persona.scoreMin;
-                if (persona.score > 0.1f)
-                {
-                    if (pColaboradoresDocumentos.ContainsKey(persona.personid))
-                    {
-                        for (int i = 0; i < pColaboradoresDocumentos[persona.personid]; i++)
-                        {
-                            persona.score += (persona.scoreMax - persona.score) / 5;
-                        }
-                    }
-                    if (pColaboradoresProyectos.ContainsKey(persona.personid))
-                    {
-                        for (int i = 0; i < pColaboradoresProyectos[persona.personid]; i++)
-                        {
-                            persona.score += (persona.scoreMax - persona.score) / 5;
-                        }
-                    }
-                }
-            }
-            //3º Eliminamos las personas con un score<=0
-            pListaPersonas.RemoveAll(x => x.score <= 0);
-        }
-
-        /// <summary>
-        /// Obtiene la similitud de dos nombres (la clave es el valor de similitud y el valor es el valor máximo de similitud)
-        /// </summary>
-        /// <param name="pFirma">Firma normalizada</param>
-        /// <param name="pTarget">Texto objetivo normalizado</param>
-        /// <returns></returns>
-        private KeyValuePair<float, float> GetNameSimilarity(string pFirma, string pTarget)
-        {
-            //Almacenamos los scores de cada una de las palabras
-            List<float> scores = new List<float>();
-            //Almacenamos los scores máximos de cada una de las palabras
-            List<float> scoresMax = new List<float>();
-
-            //float scoreMin = 0.5f;
-
-            //float indice_desplazamiento = 5;
-            ////score min por similitud de palabra
-            //float scoreMin = 0.5f;
-
-            string[] pFirmaNormalizadoSplit = pFirma.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
-            string[] pTargetNormalizadoSplit = pTarget.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
-
-            string[] source = pFirmaNormalizadoSplit;
-            string[] target = pTargetNormalizadoSplit;
-
-            int indexTarget = 0;
-            for (int i = 0; i < source.Length; i++)
-            {
-                //Similitud real
-                float score = -1;
-                //Máxima similitud
-                float scoreMax = 0;
-
-                string wordSource = source[i];
-                bool wordSourceInicial = wordSource.Length == 1;
-                //int desplazamiento = 0;
-                for (int j = indexTarget; j < target.Length; j++)
-                {
-                    string wordTarget = target[j];
-                    bool wordTargetInicial = wordTarget.Length == 1;
-                    //Alguna de las dos es inicial
-                    if (wordSourceInicial || wordTargetInicial)
-                    {
-                        if (wordSourceInicial != wordTargetInicial)
-                        {
-                            //No son las dos iniciales
-                            if (wordSource[0] == wordTarget[0])
-                            {
-                                score = 0.5f;
-                                scoreMax = 1;
-                                indexTarget = j + 1;
-                                //desplazamiento = Math.Abs(j - i);
-                                break;
-                            }
-                        }
-                        else
-                        {
-                            //Son las dos iniciales
-                            score = 0.75f;
-                            scoreMax = 1;
-                            indexTarget = j + 1;
-                            //desplazamiento = Math.Abs(j - i);
-                            break;
-                        }
-                    }
-                    float scoreSingleName = CompareSingleName(wordSource, wordTarget);
-                    if (scoreSingleName > 0)
-                    {
-                        score = scoreSingleName * 0.9f;
-                        scoreMax = scoreSingleName + (1 - scoreSingleName) / 5;
-                        indexTarget = j + 1;
-                        break;
-                    }
-                }
-                scores.Add(score);
-                scoresMax.Add(scoreMax);
-            }
-            if (scores.Count > 0)
-            {
-                float similarity = scores.Sum() / source.Length;
-                float similarityMax = scoresMax.Sum() / source.Length;
-                return new KeyValuePair<float, float>(similarity, similarityMax);
-            }
-            return new KeyValuePair<float, float>(0, 0);
-        }
-
-        private float CompareSingleName(string pNameA, string pNameB)
-        {
-            //TODO return 0
-            HashSet<string> ngramsNameA = GetNGramas(pNameA, 2);
-            HashSet<string> ngramsNameB = GetNGramas(pNameB, 2);
-            float tokens_comunes = ngramsNameA.Intersect(ngramsNameB).Count();
-            float union_tokens = ngramsNameA.Union(ngramsNameB).Count();
-            float coeficiente_jackard = tokens_comunes / union_tokens;
-            return coeficiente_jackard;
-        }
-
-        private HashSet<string> GetNGramas(string pText, int pNgramSize)
-        {
-            HashSet<string> ngramas = new HashSet<string>();
-            int textLength = pText.Length;
-            if (pNgramSize == 1)
-            {
-                for (int i = 0; i < textLength; i++)
-                {
-                    ngramas.Add(pText[i].ToString());
-                }
-                return ngramas;
-            }
-
-            HashSet<string> ngramasaux = new HashSet<string>();
-            for (int i = 0; i < textLength; i++)
-            {
-                foreach (string ngram in ngramasaux.ToList())
-                {
-                    string ngamaux = ngram + pText[i];
-                    if (ngamaux.Length == pNgramSize)
-                    {
-                        ngramas.Add(ngamaux);
-                    }
-                    else
-                    {
-                        ngramasaux.Add(ngamaux);
-                    }
-                    ngramasaux.Remove(ngram);
-                }
-                ngramasaux.Add(pText[i].ToString());
-                if (i < pNgramSize)
-                {
-                    foreach (string ngrama in ngramasaux)
-                    {
-                        if (ngrama.Length == i + 1)
-                        {
-                            ngramas.Add(ngrama);
-                        }
-                    }
-                }
-            }
-            for (int i = (textLength - pNgramSize) + 1; i < textLength; i++)
-            {
-                if (i >= pNgramSize)
-                {
-                    ngramas.Add(pText.Substring(i));
-                }
-            }
-            return ngramas;
-        }
-
-        public string ObtenerTextosFirmasNormalizadas(string pText)
-        {
-            pText = pText.Replace("-", " ");
-            string textoNormalizado = pText.Normalize(NormalizationForm.FormD);
-            Regex reg = new Regex("[^a-zA-Z ]");
-            string textoSinAcentos = reg.Replace(textoNormalizado, "");
-            while (textoSinAcentos.Contains(" del "))
-            {
-                textoSinAcentos = textoSinAcentos.Replace(" del ", " ");
-            }
-            while (textoSinAcentos.Contains(" de "))
-            {
-                textoSinAcentos = textoSinAcentos.Replace(" de ", " ");
-            }
-            while (textoSinAcentos.Contains(" la "))
-            {
-                textoSinAcentos = textoSinAcentos.Replace(" la ", " ");
-            }
-            while (textoSinAcentos.Contains("  "))
-            {
-                textoSinAcentos = textoSinAcentos.Replace("  ", " ");
-            }
-
-            return textoSinAcentos.Trim();
-        }
-
 
 
 
@@ -1003,7 +819,8 @@ namespace GuardadoCV.Models
                             if (value.ToLower() == "true")
                             {
                                 itemProperty.values.Add(si);
-                            }else if (value.ToLower() == "false")
+                            }
+                            else if (value.ToLower() == "false")
                             {
                                 itemProperty.values.Add(no);
                             }
