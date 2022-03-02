@@ -145,7 +145,7 @@
                     </div>
                 </div>
             </div>
-            <div class="contenido-cv" about="@pCV.GNOSSID" personid="@pCV.Roh_cvOf">
+            <div class="contenido-cv" about="@pCV.GNOSSID" personid="@pCV.Roh_cvOf.GNOSSID">
                 <div class="tab-paneles-cv">
                     <ul class="nav nav-tabs" id="navegacion-cv" role="tablist">
                         <li class="nav-item" role="presentation">
@@ -181,16 +181,18 @@
                             </div>
                         </div>
                         <div class="tab-pane fade" id="situacion-panel" role="tabpanel" aria-labelledby="situacion-tab">
-                            <div class="row">
-                                <div class="col col-12 col-section-title">
-                                    <div class="wrapCol">
-                                        <p>2 - @Html.Translate("CV_SITUACIONPROFESIONAL")</p>
-                                    </div>
-                                </div>
-                                <div class="col col-12 col-contenido">
-
-                                </div>
-                            </div>
+							@if (pCV.Roh_professionalSituation != null)
+							{
+								<div class="row cvTab" about="@pCV.Roh_professionalSituation.GNOSSID" rdftype="http://w3id.org/roh/ProfessionalSituation" property="http://w3id.org/roh/professionalSituation">
+									<div class="col col-12 col-section-title">
+										<div class="wrapCol">
+											<p>2 - @Html.Translate("CV_SITUACIONPROFESIONAL")</p>
+										</div>
+									</div>
+									<div class="col col-12 col-contenido">
+									</div>
+								</div>
+							}
                         </div>
                         <div class="tab-pane fade" id="formacion-panel" role="tabpanel" aria-labelledby="formacion-tab">
                             <div class="row">
@@ -683,6 +685,11 @@
                     {
                         this.Roh_personalData = new PersonalData(propRoh_personalData.PropertyValues[0].RelatedEntity, idiomaUsuario);
                     }
+					SemanticPropertyModel propRoh_professionalSituation = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/professionalSituation");
+                    if (propRoh_professionalSituation != null && propRoh_professionalSituation.PropertyValues.Count > 0)
+                    {
+                        this.Roh_professionalSituation = new ProfessionalSituation(propRoh_professionalSituation.PropertyValues[0].RelatedEntity, idiomaUsuario);
+                    }
                     SemanticPropertyModel propRoh_scientificExperience = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/scientificExperience");
                     if (propRoh_scientificExperience != null && propRoh_scientificExperience.PropertyValues.Count > 0)
                     {
@@ -714,6 +721,10 @@
                 [LABEL(LanguageEnum.es, "http://w3id.org/roh/personalData")]
                 [RDFProperty("http://w3id.org/roh/personalData")]
                 public PersonalData Roh_personalData { get; set; }
+				
+				[LABEL(LanguageEnum.es, "http://w3id.org/roh/professionalSituation")]
+                [RDFProperty("http://w3id.org/roh/professionalSituation")]
+                public ProfessionalSituation Roh_professionalSituation { get; set; }
 
                 [LABEL(LanguageEnum.es, "http://w3id.org/roh/scientificExperience")]
                 [RDFProperty("http://w3id.org/roh/scientificExperience")]
@@ -757,6 +768,18 @@
                     this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
                 }
             } 
+
+			public class ProfessionalSituation : GnossOCBase
+            {
+
+                public ProfessionalSituation() : base() { }
+
+                public ProfessionalSituation(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
+                {
+                    this.mGNOSSID = pSemCmsModel.Entity.Uri;
+                    this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
+                }
+            }
 
 
             public class ScientificExperience : GnossOCBase

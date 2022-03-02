@@ -14,12 +14,28 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
     class GestionIDI : DisambiguableEntity
     {
         public string descripcion { get; set; }
+        public string funciones { get; set; }
+        public string entidadRealizacion { get; set; }
         public string fecha { get; set; }
 
         private static DisambiguationDataConfig configDescripcion = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsTitle,
             score = 0.8f
+        };
+
+        private static DisambiguationDataConfig configER = new DisambiguationDataConfig()
+        {
+            type = DisambiguationDataConfigType.equalsItem,
+            score = 0.5f,
+            scoreMinus = 0.5f
+        };
+
+        private static DisambiguationDataConfig configFunciones = new DisambiguationDataConfig()
+        {
+            type = DisambiguationDataConfigType.equalsItem,
+            score = 0.5f,
+            scoreMinus = 0.5f
         };
 
         private static DisambiguationDataConfig configFecha = new DisambiguationDataConfig()
@@ -42,6 +58,20 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
 
             data.Add(new DisambiguationData()
             {
+                property = "entidadRealizacion",
+                config = configER,
+                value = entidadRealizacion
+            });
+            
+            data.Add(new DisambiguationData()
+            {
+                property = "funciones",
+                config = configFunciones,
+                value = funciones
+            });
+
+            data.Add(new DisambiguationData()
+            {
                 property = "fecha",
                 config = configFecha,
                 value = fecha
@@ -49,6 +79,14 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
             return data;
         }
 
+        /// <summary>
+        /// Devuelve las entidades de BBDD del <paramref name="pCVID"/> de con las propiedades de <paramref name="propiedadesItem"/>
+        /// </summary>
+        /// <param name="pResourceApi">pResourceApi</param>
+        /// <param name="pCVID">pCVID</param>
+        /// <param name="graph">graph</param>
+        /// <param name="propiedadesItem">propiedadesItem</param>
+        /// <returns></returns>
         public static Dictionary<string, DisambiguableEntity> GetBBDD(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
         {
             //Obtenemos IDS
@@ -61,9 +99,11 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
 
             foreach (List<string> lista in listaListas)
             {
-                string select = $@"SELECT distinct ?item ?itemTitle ?itemDate ";
+                string select = $@"SELECT distinct ?item ?itemTitle ?itemFunciones ?itemER ?itemDate ";
                 string where = $@"where {{
                                         ?item <{Variables.ActividadCientificaTecnologica.gestionIDINombreActividad}> ?itemTitle . 
+                                        OPTIONAL{{ ?item <{Variables.ActividadCientificaTecnologica.gestionIDIFunciones}> ?itemFunciones }} .
+                                        OPTIONAL{{ ?item <{Variables.ActividadCientificaTecnologica.gestionIDIEntornoEntidadRealizacionNombre}> ?itemER}} .
                                         OPTIONAL{{ ?item <{Variables.ActividadCientificaTecnologica.gestionIDIEntornoFechaInicio}> ?itemDate }} .
                                         FILTER(?item in (<{string.Join(">,<", lista)}>))
                                     }}";
@@ -74,6 +114,16 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
                     GestionIDI gestionIDI = new GestionIDI();
                     gestionIDI.ID = fila["item"].value;
                     gestionIDI.descripcion = fila["itemTitle"].value;
+                    gestionIDI.funciones = "";
+                    if (fila.ContainsKey("itemFunciones"))
+                    {
+                        gestionIDI.funciones = fila["itemFunciones"].value;
+                    }
+                    gestionIDI.entidadRealizacion = "";
+                    if (fila.ContainsKey("itemER"))
+                    {
+                        gestionIDI.entidadRealizacion = fila["itemER"].value;
+                    }
                     gestionIDI.fecha = "";
                     if (fila.ContainsKey("itemDate"))
                     {

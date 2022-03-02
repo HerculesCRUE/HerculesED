@@ -15,6 +15,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
     {
         public string descripcion { get; set; }
         public string fecha { get; set; }
+        public string entidadAfiliacion { get; set; }
 
         private static DisambiguationDataConfig configDescripcion = new DisambiguationDataConfig()
         {
@@ -23,6 +24,13 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
         };
 
         private static DisambiguationDataConfig configFecha = new DisambiguationDataConfig()
+        {
+            type = DisambiguationDataConfigType.equalsItem,
+            score = 0.5f,
+            scoreMinus = 0.5f
+        };
+
+        private static DisambiguationDataConfig configEA = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsItem,
             score = 0.5f,
@@ -46,9 +54,24 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
                 config = configFecha,
                 value = fecha
             });
+
+            data.Add(new DisambiguationData()
+            {
+                property = "entidadAfiliacion",
+                config = configEA,
+                value = entidadAfiliacion
+            });
             return data;
         }
 
+        /// <summary>
+        /// Devuelve las entidades de BBDD del <paramref name="pCVID"/> de con las propiedades de <paramref name="propiedadesItem"/>
+        /// </summary>
+        /// <param name="pResourceApi">pResourceApi</param>
+        /// <param name="pCVID">pCVID</param>
+        /// <param name="graph">graph</param>
+        /// <param name="propiedadesItem">propiedadesItem</param>
+        /// <returns></returns>
         public static Dictionary<string, DisambiguableEntity> GetBBDD(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
         {
             //Obtenemos IDS
@@ -61,10 +84,11 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
 
             foreach (List<string> lista in listaListas)
             {
-                string select = $@"SELECT distinct ?item ?itemTitle ?itemDate ";
+                string select = $@"SELECT distinct ?item ?itemTitle ?itemDate ?itemEA";
                 string where = $@"where {{
                                         ?item <{Variables.ActividadCientificaTecnologica.sociedadesNombre}> ?itemTitle . 
                                         OPTIONAL{{?item <{Variables.ActividadCientificaTecnologica.sociedadesFechaInicio}> ?itemDate }}.
+                                        OPTIONAL{{?item <{Variables.ActividadCientificaTecnologica.sociedadesEntidadAfiliacionNombre}> ?itemEA }}.
                                         FILTER(?item in (<{string.Join(">,<", lista)}>))
                                     }}";
 
@@ -78,6 +102,11 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
                     if (fila.ContainsKey("itemDate"))
                     {
                         sociedadesAsociaciones.fecha = fila["itemDate"].value;
+                    }
+                    sociedadesAsociaciones.entidadAfiliacion = "";
+                    if (fila.ContainsKey("itemNombre"))
+                    {
+                        sociedadesAsociaciones.entidadAfiliacion = fila["itemEA"].value;
                     }
                     resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), sociedadesAsociaciones);
                 }

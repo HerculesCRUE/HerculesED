@@ -14,10 +14,11 @@ using System.Text.RegularExpressions;
 using System.Globalization;
 using System.Collections;
 using Gnoss.ApiWrapper.Exceptions;
-using ReferenceSource = ReferencesourceOntology.ReferenceSource;
+using System.Diagnostics.CodeAnalysis;
 
 namespace DocumentOntology
 {
+	[ExcludeFromCodeCoverage]
 	public class PublicationMetric : GnossOCBase
 	{
 
@@ -27,12 +28,7 @@ namespace DocumentOntology
 		{
 			this.mGNOSSID = pSemCmsModel.Entity.Uri;
 			this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
-			this.Roh_metricNameOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/metricNameOther"));
-			SemanticPropertyModel propRoh_metricName = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/metricName");
-			if(propRoh_metricName != null && propRoh_metricName.PropertyValues.Count > 0)
-			{
-				this.Roh_metricName = new ReferenceSource(propRoh_metricName.PropertyValues[0].RelatedEntity,idiomaUsuario);
-			}
+			this.Roh_metricName = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/metricName"));
 			this.Roh_citationCount = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/citationCount")).Value;
 		}
 
@@ -40,15 +36,9 @@ namespace DocumentOntology
 		public virtual string RdfsLabel { get { return "http://w3id.org/roh/PublicationMetric"; } }
 		public OntologyEntity Entity { get; set; }
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/metricNameOther")]
-		[RDFProperty("http://w3id.org/roh/metricNameOther")]
-		public  string Roh_metricNameOther { get; set;}
-
 		[LABEL(LanguageEnum.es,"http://w3id.org/roh/metricName")]
 		[RDFProperty("http://w3id.org/roh/metricName")]
-		[Required]
-		public  ReferenceSource Roh_metricName  { get; set;} 
-		public string IdRoh_metricName  { get; set;} 
+		public  string Roh_metricName { get; set;}
 
 		[LABEL(LanguageEnum.es,"http://w3id.org/roh/citationCount")]
 		[RDFProperty("http://w3id.org/roh/citationCount")]
@@ -58,8 +48,7 @@ namespace DocumentOntology
 		internal override void GetProperties()
 		{
 			base.GetProperties();
-			propList.Add(new StringOntologyProperty("roh:metricNameOther", this.Roh_metricNameOther));
-			propList.Add(new StringOntologyProperty("roh:metricName", this.IdRoh_metricName));
+			propList.Add(new StringOntologyProperty("roh:metricName", this.Roh_metricName));
 			propList.Add(new StringOntologyProperty("roh:citationCount", this.Roh_citationCount.ToString()));
 		}
 

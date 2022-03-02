@@ -14,11 +14,12 @@ using System.Text.RegularExpressions;
 using System.Globalization;
 using System.Collections;
 using Gnoss.ApiWrapper.Exceptions;
-using ImpactIndexCategory = ImpactindexcategoryOntology.ImpactIndexCategory;
+using System.Diagnostics.CodeAnalysis;
 using ReferenceSource = ReferencesourceOntology.ReferenceSource;
 
 namespace MaindocumentOntology
 {
+	[ExcludeFromCodeCoverage]
 	public class ImpactIndex : GnossOCBase
 	{
 
@@ -28,17 +29,21 @@ namespace MaindocumentOntology
 		{
 			this.mGNOSSID = pSemCmsModel.Entity.Uri;
 			this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
+			this.Roh_impactCategory = new List<ImpactCategory>();
 			SemanticPropertyModel propRoh_impactCategory = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/impactCategory");
 			if(propRoh_impactCategory != null && propRoh_impactCategory.PropertyValues.Count > 0)
 			{
-				this.Roh_impactCategory = new ImpactIndexCategory(propRoh_impactCategory.PropertyValues[0].RelatedEntity,idiomaUsuario);
+				foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_impactCategory.PropertyValues)
+				{
+					if(propValue.RelatedEntity!=null){
+						ImpactCategory roh_impactCategory = new ImpactCategory(propValue.RelatedEntity,idiomaUsuario);
+						this.Roh_impactCategory.Add(roh_impactCategory);
+					}
+				}
 			}
-			this.Roh_impactIndexInYear = GetNumberFloatPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/impactIndexInYear"));
 			this.Roh_impactSourceOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/impactSourceOther"));
-			this.Roh_year= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/year"));
-			this.Roh_journalNumberInCat = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/journalNumberInCat"));
-			this.Roh_publicationPosition = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/publicationPosition"));
-			this.Roh_journalTop25= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/journalTop25"));
+			this.Roh_impactIndexInYear = GetNumberFloatPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/impactIndexInYear")).Value;
+			this.Roh_year = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/year")).Value;
 			SemanticPropertyModel propRoh_impactSource = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/impactSource");
 			if(propRoh_impactSource != null && propRoh_impactSource.PropertyValues.Count > 0)
 			{
@@ -50,34 +55,20 @@ namespace MaindocumentOntology
 		public virtual string RdfsLabel { get { return "http://w3id.org/roh/ImpactIndex"; } }
 		public OntologyEntity Entity { get; set; }
 
-		[LABEL(LanguageEnum.es,"Categoría del índice de impacto")]
 		[RDFProperty("http://w3id.org/roh/impactCategory")]
-		public  ImpactIndexCategory Roh_impactCategory  { get; set;} 
-		public string IdRoh_impactCategory  { get; set;} 
-
-		[LABEL(LanguageEnum.es,"Índice de impacto en año de publicación")]
-		[RDFProperty("http://w3id.org/roh/impactIndexInYear")]
-		public  float? Roh_impactIndexInYear { get; set;}
+		public  List<ImpactCategory> Roh_impactCategory { get; set;}
 
 		[LABEL(LanguageEnum.es,"Fuente de impacto, otros")]
 		[RDFProperty("http://w3id.org/roh/impactSourceOther")]
 		public  string Roh_impactSourceOther { get; set;}
 
+		[LABEL(LanguageEnum.es,"Índice de impacto en año de publicación")]
+		[RDFProperty("http://w3id.org/roh/impactIndexInYear")]
+		public  float Roh_impactIndexInYear { get; set;}
+
 		[LABEL(LanguageEnum.es,"Año del índice de impacto")]
 		[RDFProperty("http://w3id.org/roh/year")]
-		public  DateTime? Roh_year { get; set;}
-
-		[LABEL(LanguageEnum.es,"Número de revistas en la categoría")]
-		[RDFProperty("http://w3id.org/roh/journalNumberInCat")]
-		public  int? Roh_journalNumberInCat { get; set;}
-
-		[LABEL(LanguageEnum.es,"Posición de publicación")]
-		[RDFProperty("http://w3id.org/roh/publicationPosition")]
-		public  int? Roh_publicationPosition { get; set;}
-
-		[LABEL(LanguageEnum.es,"Revista dentro del 25%")]
-		[RDFProperty("http://w3id.org/roh/journalTop25")]
-		public  bool Roh_journalTop25 { get; set;}
+		public  int Roh_year { get; set;}
 
 		[LABEL(LanguageEnum.es,"Fuente de impacto")]
 		[RDFProperty("http://w3id.org/roh/impactSource")]
@@ -89,21 +80,24 @@ namespace MaindocumentOntology
 		internal override void GetProperties()
 		{
 			base.GetProperties();
-			propList.Add(new StringOntologyProperty("roh:impactCategory", this.IdRoh_impactCategory));
-			propList.Add(new StringOntologyProperty("roh:impactIndexInYear", this.Roh_impactIndexInYear.ToString()));
 			propList.Add(new StringOntologyProperty("roh:impactSourceOther", this.Roh_impactSourceOther));
-			if (this.Roh_year.HasValue){
-				propList.Add(new DateOntologyProperty("roh:year", this.Roh_year.Value));
-				}
-			propList.Add(new StringOntologyProperty("roh:journalNumberInCat", this.Roh_journalNumberInCat.ToString()));
-			propList.Add(new StringOntologyProperty("roh:publicationPosition", this.Roh_publicationPosition.ToString()));
-			propList.Add(new BoolOntologyProperty("roh:journalTop25", this.Roh_journalTop25));
+			propList.Add(new StringOntologyProperty("roh:impactIndexInYear", this.Roh_impactIndexInYear.ToString()));
+			propList.Add(new StringOntologyProperty("roh:year", this.Roh_year.ToString()));
 			propList.Add(new StringOntologyProperty("roh:impactSource", this.IdRoh_impactSource));
 		}
 
 		internal override void GetEntities()
 		{
 			base.GetEntities();
+			if(Roh_impactCategory!=null){
+				foreach(ImpactCategory prop in Roh_impactCategory){
+					prop.GetProperties();
+					prop.GetEntities();
+					OntologyEntity entityImpactCategory = new OntologyEntity("http://w3id.org/roh/ImpactCategory", "http://w3id.org/roh/ImpactCategory", "roh:impactCategory", prop.propList, prop.entList);
+				entList.Add(entityImpactCategory);
+				prop.Entity= entityImpactCategory;
+				}
+			}
 		} 
 
 

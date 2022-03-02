@@ -16,11 +16,11 @@ namespace OAI_PMH.Controllers
     public class OAI_PMHController : ControllerBase
     {
         private IOaiConfiguration _configOAI;
-        readonly OAI_PMHConfig _OAI_PMHConfig;
+        readonly ConfigService _Config;
 
-        public OAI_PMHController(OAI_PMHConfig OAI_PMHConfig)
+        public OAI_PMHController(ConfigService OAI_PMHConfig)
         {
-            _OAI_PMHConfig = OAI_PMHConfig;
+            _Config = OAI_PMHConfig;
             _configOAI = OaiConfiguration.Instance;
             _configOAI.SupportSets = true;
             _configOAI.RepositoryName = "OAI_PMH";
@@ -34,7 +34,7 @@ namespace OAI_PMH.Controllers
         {
             _configOAI.BaseUrl = () =>
             {
-                Uri baseUri = new(_OAI_PMHConfig.GetConfigUrl());
+                Uri baseUri = new(_Config.GetConfigUrl());
                 return baseUri.AbsoluteUri;
             };
             identifier = identifier.Replace(" ", "+");
@@ -46,7 +46,7 @@ namespace OAI_PMH.Controllers
 
             ArgumentContainer arguments = new(verb.ToString(), metadataPrefix, resumptionToken, identifier, from, until, set);
             MetadataFormatRepository metadataFormatRepository = new();
-            RecordRepository recordRepository = new();
+            RecordRepository recordRepository = new(_Config);
             SetRepository setRepository = new(_configOAI);
             DataProvider provider = new(_configOAI, metadataFormatRepository, recordRepository, setRepository);
 

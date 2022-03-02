@@ -14,10 +14,12 @@ using System.Text.RegularExpressions;
 using System.Globalization;
 using System.Collections;
 using Gnoss.ApiWrapper.Exceptions;
+using System.Diagnostics.CodeAnalysis;
 using DocumentFormat = DocumentformatOntology.DocumentFormat;
 
 namespace MaindocumentOntology
 {
+	[ExcludeFromCodeCoverage]
 	public class MainDocument : GnossOCBase
 	{
 
@@ -43,11 +45,11 @@ namespace MaindocumentOntology
 			{
 				this.Roh_format = new DocumentFormat(propRoh_format.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
+			this.Bibo_eissn = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/eissn"));
 			this.Roh_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/title"));
 			this.Bibo_isbn = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/isbn"));
 			this.Bibo_editor = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/editor"));
 			this.Bibo_issn = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/issn"));
-			this.Roh_crisIdentifier = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/crisIdentifier"));
 		}
 
 		public MainDocument(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
@@ -71,11 +73,11 @@ namespace MaindocumentOntology
 			{
 				this.Roh_format = new DocumentFormat(propRoh_format.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
+			this.Bibo_eissn = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/eissn"));
 			this.Roh_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/title"));
 			this.Bibo_isbn = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/isbn"));
 			this.Bibo_editor = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/editor"));
 			this.Bibo_issn = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/issn"));
-			this.Roh_crisIdentifier = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/crisIdentifier"));
 		}
 
 		public virtual string RdfType { get { return "http://w3id.org/roh/MainDocument"; } }
@@ -87,6 +89,10 @@ namespace MaindocumentOntology
 		[RDFProperty("http://w3id.org/roh/format")]
 		public  DocumentFormat Roh_format  { get; set;} 
 		public string IdRoh_format  { get; set;} 
+
+		[LABEL(LanguageEnum.es,"e-ISSN")]
+		[RDFProperty("http://purl.org/ontology/bibo/eissn")]
+		public  string Bibo_eissn { get; set;}
 
 		[LABEL(LanguageEnum.es,"Título de la publicación principal")]
 		[RDFProperty("http://w3id.org/roh/title")]
@@ -104,20 +110,16 @@ namespace MaindocumentOntology
 		[RDFProperty("http://purl.org/ontology/bibo/issn")]
 		public  string Bibo_issn { get; set;}
 
-		[LABEL(LanguageEnum.es,"Identificador de la publicación principal")]
-		[RDFProperty("http://w3id.org/roh/crisIdentifier")]
-		public  string Roh_crisIdentifier { get; set;}
-
 
 		internal override void GetProperties()
 		{
 			base.GetProperties();
 			propList.Add(new StringOntologyProperty("roh:format", this.IdRoh_format));
+			propList.Add(new StringOntologyProperty("bibo:eissn", this.Bibo_eissn));
 			propList.Add(new StringOntologyProperty("roh:title", this.Roh_title));
 			propList.Add(new StringOntologyProperty("bibo:isbn", this.Bibo_isbn));
 			propList.Add(new StringOntologyProperty("bibo:editor", this.Bibo_editor));
 			propList.Add(new StringOntologyProperty("bibo:issn", this.Bibo_issn));
-			propList.Add(new StringOntologyProperty("roh:crisIdentifier", this.Roh_crisIdentifier));
 		}
 
 		internal override void GetEntities()
@@ -175,33 +177,43 @@ namespace MaindocumentOntology
 				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ImpactIndex_{ResourceID}_{item0.ArticleID}", "http://www.w3.org/2000/01/rdf-schema#label", $"\"http://w3id.org/roh/ImpactIndex\"", list, " . ");
 				AgregarTripleALista($"{resourceAPI.GraphsUrl}{ResourceID}", "http://gnoss/hasEntidad", $"<{resourceAPI.GraphsUrl}items/ImpactIndex_{ResourceID}_{item0.ArticleID}>", list, " . ");
 				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/MainDocument_{ResourceID}_{ArticleID}", "http://w3id.org/roh/impactIndex", $"<{resourceAPI.GraphsUrl}items/ImpactIndex_{ResourceID}_{item0.ArticleID}>", list, " . ");
-				if(item0.IdRoh_impactCategory != null)
+			if(item0.Roh_impactCategory != null)
+			{
+			foreach(var item1 in item0.Roh_impactCategory)
+			{
+				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ImpactCategory_{ResourceID}_{item1.ArticleID}", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", $"<http://w3id.org/roh/ImpactCategory>", list, " . ");
+				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ImpactCategory_{ResourceID}_{item1.ArticleID}", "http://www.w3.org/2000/01/rdf-schema#label", $"\"http://w3id.org/roh/ImpactCategory\"", list, " . ");
+				AgregarTripleALista($"{resourceAPI.GraphsUrl}{ResourceID}", "http://gnoss/hasEntidad", $"<{resourceAPI.GraphsUrl}items/ImpactCategory_{ResourceID}_{item1.ArticleID}>", list, " . ");
+				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ImpactIndex_{ResourceID}_{item0.ArticleID}", "http://w3id.org/roh/impactCategory", $"<{resourceAPI.GraphsUrl}items/ImpactCategory_{ResourceID}_{item1.ArticleID}>", list, " . ");
+				if(item1.Roh_journalNumberInCat != null)
 				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ImpactIndex_{ResourceID}_{item0.ArticleID}",  "http://w3id.org/roh/impactCategory", $"<{item0.IdRoh_impactCategory}>", list, " . ");
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ImpactCategory_{ResourceID}_{item1.ArticleID}",  "http://w3id.org/roh/journalNumberInCat", $"{item1.Roh_journalNumberInCat.Value.ToString()}", list, " . ");
 				}
-				if(item0.Roh_impactIndexInYear != null)
+				if(item1.Roh_publicationPosition != null)
 				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ImpactIndex_{ResourceID}_{item0.ArticleID}",  "http://w3id.org/roh/impactIndexInYear", $"{item0.Roh_impactIndexInYear.Value.ToString(new CultureInfo("en-US"))}", list, " . ");
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ImpactCategory_{ResourceID}_{item1.ArticleID}",  "http://w3id.org/roh/publicationPosition", $"{item1.Roh_publicationPosition.Value.ToString()}", list, " . ");
 				}
+				if(item1.Roh_quartile != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ImpactCategory_{ResourceID}_{item1.ArticleID}",  "http://w3id.org/roh/quartile", $"{item1.Roh_quartile.ToString()}", list, " . ");
+				}
+				if(item1.IdRoh_impactIndexCategory != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ImpactCategory_{ResourceID}_{item1.ArticleID}",  "http://w3id.org/roh/impactIndexCategory", $"<{item1.IdRoh_impactIndexCategory}>", list, " . ");
+				}
+			}
+			}
 				if(item0.Roh_impactSourceOther != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ImpactIndex_{ResourceID}_{item0.ArticleID}",  "http://w3id.org/roh/impactSourceOther", $"\"{GenerarTextoSinSaltoDeLinea(item0.Roh_impactSourceOther)}\"", list, " . ");
 				}
+				if(item0.Roh_impactIndexInYear != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ImpactIndex_{ResourceID}_{item0.ArticleID}",  "http://w3id.org/roh/impactIndexInYear", $"{item0.Roh_impactIndexInYear.ToString(new CultureInfo("en-US"))}", list, " . ");
+				}
 				if(item0.Roh_year != null)
 				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ImpactIndex_{ResourceID}_{item0.ArticleID}",  "http://w3id.org/roh/year", $"\"{item0.Roh_year.Value.ToString("yyyyMMddHHmmss")}\"", list, " . ");
-				}
-				if(item0.Roh_journalNumberInCat != null)
-				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ImpactIndex_{ResourceID}_{item0.ArticleID}",  "http://w3id.org/roh/journalNumberInCat", $"{item0.Roh_journalNumberInCat.Value.ToString()}", list, " . ");
-				}
-				if(item0.Roh_publicationPosition != null)
-				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ImpactIndex_{ResourceID}_{item0.ArticleID}",  "http://w3id.org/roh/publicationPosition", $"{item0.Roh_publicationPosition.Value.ToString()}", list, " . ");
-				}
-				if(item0.Roh_journalTop25 != null)
-				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ImpactIndex_{ResourceID}_{item0.ArticleID}",  "http://w3id.org/roh/journalTop25", $"\"{item0.Roh_journalTop25.ToString()}\"", list, " . ");
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ImpactIndex_{ResourceID}_{item0.ArticleID}",  "http://w3id.org/roh/year", $"{item0.Roh_year.ToString()}", list, " . ");
 				}
 				if(item0.IdRoh_impactSource != null)
 				{
@@ -212,6 +224,10 @@ namespace MaindocumentOntology
 				if(this.IdRoh_format != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/MainDocument_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/format", $"<{this.IdRoh_format}>", list, " . ");
+				}
+				if(this.Bibo_eissn != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/MainDocument_{ResourceID}_{ArticleID}",  "http://purl.org/ontology/bibo/eissn", $"\"{GenerarTextoSinSaltoDeLinea(this.Bibo_eissn)}\"", list, " . ");
 				}
 				if(this.Roh_title != null)
 				{
@@ -228,10 +244,6 @@ namespace MaindocumentOntology
 				if(this.Bibo_issn != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/MainDocument_{ResourceID}_{ArticleID}",  "http://purl.org/ontology/bibo/issn", $"\"{GenerarTextoSinSaltoDeLinea(this.Bibo_issn)}\"", list, " . ");
-				}
-				if(this.Roh_crisIdentifier != null)
-				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/MainDocument_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/crisIdentifier", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_crisIdentifier)}\"", list, " . ");
 				}
 			return list;
 		}
@@ -256,10 +268,27 @@ namespace MaindocumentOntology
 			foreach(var item0 in this.Roh_impactIndex)
 			{
 				AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://w3id.org/roh/impactIndex", $"<{resourceAPI.GraphsUrl}items/impactindex_{ResourceID}_{item0.ArticleID}>", list, " . ");
-				if(item0.IdRoh_impactCategory != null)
+			if(item0.Roh_impactCategory != null)
+			{
+			foreach(var item1 in item0.Roh_impactCategory)
+			{
+				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/impactindex_{ResourceID}_{item0.ArticleID}", "http://w3id.org/roh/impactCategory", $"<{resourceAPI.GraphsUrl}items/impactcategory_{ResourceID}_{item1.ArticleID}>", list, " . ");
+				if(item1.Roh_journalNumberInCat != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/impactcategory_{ResourceID}_{item1.ArticleID}",  "http://w3id.org/roh/journalNumberInCat", $"{item1.Roh_journalNumberInCat.Value.ToString()}", list, " . ");
+				}
+				if(item1.Roh_publicationPosition != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/impactcategory_{ResourceID}_{item1.ArticleID}",  "http://w3id.org/roh/publicationPosition", $"{item1.Roh_publicationPosition.Value.ToString()}", list, " . ");
+				}
+				if(item1.Roh_quartile != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/impactcategory_{ResourceID}_{item1.ArticleID}",  "http://w3id.org/roh/quartile", $"{item1.Roh_quartile.ToString()}", list, " . ");
+				}
+				if(item1.IdRoh_impactIndexCategory != null)
 				{
 					Regex regex = new Regex(@"\/items\/.+_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}");
-					string itemRegex = item0.IdRoh_impactCategory;
+					string itemRegex = item1.IdRoh_impactIndexCategory;
 					if (regex.IsMatch(itemRegex))
 					{
 						itemRegex = $"http://gnoss/{resourceAPI.GetShortGuid(itemRegex).ToString().ToUpper()}";
@@ -268,31 +297,21 @@ namespace MaindocumentOntology
 					{
 						itemRegex = itemRegex.ToLower();
 					}
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/impactindex_{ResourceID}_{item0.ArticleID}",  "http://w3id.org/roh/impactCategory", $"<{itemRegex}>", list, " . ");
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/impactcategory_{ResourceID}_{item1.ArticleID}",  "http://w3id.org/roh/impactIndexCategory", $"<{itemRegex}>", list, " . ");
 				}
-				if(item0.Roh_impactIndexInYear != null)
-				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/impactindex_{ResourceID}_{item0.ArticleID}",  "http://w3id.org/roh/impactIndexInYear", $"{item0.Roh_impactIndexInYear.Value.ToString(new CultureInfo("en-US"))}", list, " . ");
-				}
+			}
+			}
 				if(item0.Roh_impactSourceOther != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/impactindex_{ResourceID}_{item0.ArticleID}",  "http://w3id.org/roh/impactSourceOther", $"\"{GenerarTextoSinSaltoDeLinea(item0.Roh_impactSourceOther).ToLower()}\"", list, " . ");
 				}
+				if(item0.Roh_impactIndexInYear != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/impactindex_{ResourceID}_{item0.ArticleID}",  "http://w3id.org/roh/impactIndexInYear", $"{item0.Roh_impactIndexInYear.ToString(new CultureInfo("en-US"))}", list, " . ");
+				}
 				if(item0.Roh_year != null)
 				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/impactindex_{ResourceID}_{item0.ArticleID}",  "http://w3id.org/roh/year", $"{item0.Roh_year.Value.ToString("yyyyMMddHHmmss")}", list, " . ");
-				}
-				if(item0.Roh_journalNumberInCat != null)
-				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/impactindex_{ResourceID}_{item0.ArticleID}",  "http://w3id.org/roh/journalNumberInCat", $"{item0.Roh_journalNumberInCat.Value.ToString()}", list, " . ");
-				}
-				if(item0.Roh_publicationPosition != null)
-				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/impactindex_{ResourceID}_{item0.ArticleID}",  "http://w3id.org/roh/publicationPosition", $"{item0.Roh_publicationPosition.Value.ToString()}", list, " . ");
-				}
-				if(item0.Roh_journalTop25 != null)
-				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/impactindex_{ResourceID}_{item0.ArticleID}",  "http://w3id.org/roh/journalTop25", $"\"{item0.Roh_journalTop25.ToString().ToLower()}\"", list, " . ");
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/impactindex_{ResourceID}_{item0.ArticleID}",  "http://w3id.org/roh/year", $"{item0.Roh_year.ToString()}", list, " . ");
 				}
 				if(item0.IdRoh_impactSource != null)
 				{
@@ -324,6 +343,10 @@ namespace MaindocumentOntology
 					}
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/format", $"<{itemRegex}>", list, " . ");
 				}
+				if(this.Bibo_eissn != null)
+				{
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://purl.org/ontology/bibo/eissn", $"\"{GenerarTextoSinSaltoDeLinea(this.Bibo_eissn).ToLower()}\"", list, " . ");
+				}
 				if(this.Roh_title != null)
 				{
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/title", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_title).ToLower()}\"", list, " . ");
@@ -340,10 +363,6 @@ namespace MaindocumentOntology
 				{
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://purl.org/ontology/bibo/issn", $"\"{GenerarTextoSinSaltoDeLinea(this.Bibo_issn).ToLower()}\"", list, " . ");
 				}
-				if(this.Roh_crisIdentifier != null)
-				{
-					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/crisIdentifier", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_crisIdentifier).ToLower()}\"", list, " . ");
-				}
 			if (listaSearch != null && listaSearch.Count > 0)
 			{
 				foreach(string valorSearch in listaSearch)
@@ -353,7 +372,7 @@ namespace MaindocumentOntology
 			}
 			if(!string.IsNullOrEmpty(search))
 			{
-				AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://gnoss/search", $"\"{search.ToLower()}\"", list, " . ");
+				AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://gnoss/search", $"\"{GenerarTextoSinSaltoDeLinea(search.ToLower())}\"", list, " . ");
 			}
 			return list;
 		}
@@ -362,9 +381,18 @@ namespace MaindocumentOntology
 		{
 
 			//Insert en la tabla Documento
+			string tags = "";
+			foreach(string tag in tagList)
+			{
+				tags += $"{tag}, ";
+			}
+			if (!string.IsNullOrEmpty(tags))
+			{
+				tags = tags.Substring(0, tags.LastIndexOf(','));
+			}
 			string titulo = $"{this.Roh_title.Replace("\r\n", "").Replace("\n", "").Replace("\r", "").Replace("\"", "\"\"").Replace("'", "''").Replace("|", "#PIPE#")}";
 			string descripcion = $"{this.Roh_title.Replace("\r\n", "").Replace("\n", "").Replace("\r", "").Replace("\"", "\"\"").Replace("'", "''").Replace("|", "#PIPE#")}";
-			string tablaDoc = $"'{titulo}', '{descripcion}', '{resourceAPI.GraphsUrl}'";
+			string tablaDoc = $"'{titulo}', '{descripcion}', '{resourceAPI.GraphsUrl}', '{tags}'";
 			KeyValuePair<Guid, string> valor = new KeyValuePair<Guid, string>(ResourceID, tablaDoc);
 
 			return valor;

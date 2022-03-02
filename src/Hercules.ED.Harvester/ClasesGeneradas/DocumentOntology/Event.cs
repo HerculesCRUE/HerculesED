@@ -14,6 +14,7 @@ using System.Text.RegularExpressions;
 using System.Globalization;
 using System.Collections;
 using Gnoss.ApiWrapper.Exceptions;
+using System.Diagnostics.CodeAnalysis;
 using Organization = OrganizationOntology.Organization;
 using Feature = FeatureOntology.Feature;
 using GeographicRegion = GeographicregionOntology.GeographicRegion;
@@ -21,6 +22,7 @@ using EventType = EventtypeOntology.EventType;
 
 namespace DocumentOntology
 {
+	[ExcludeFromCodeCoverage]
 	public class Event : GnossOCBase
 	{
 
@@ -40,11 +42,6 @@ namespace DocumentOntology
 			{
 				this.Vcard_hasCountryName = new Feature(propVcard_hasCountryName.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
-			SemanticPropertyModel propVcard_hasRegion = pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#hasRegion");
-			if(propVcard_hasRegion != null && propVcard_hasRegion.PropertyValues.Count > 0)
-			{
-				this.Vcard_hasRegion = new Feature(propVcard_hasRegion.PropertyValues[0].RelatedEntity,idiomaUsuario);
-			}
 			SemanticPropertyModel propVivo_geographicFocus = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#geographicFocus");
 			if(propVivo_geographicFocus != null && propVivo_geographicFocus.PropertyValues.Count > 0)
 			{
@@ -61,6 +58,11 @@ namespace DocumentOntology
 						this.Dc_type.Add(dc_type);
 					}
 				}
+			}
+			SemanticPropertyModel propVcard_hasRegion = pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#hasRegion");
+			if(propVcard_hasRegion != null && propVcard_hasRegion.PropertyValues.Count > 0)
+			{
+				this.Vcard_hasRegion = new Feature(propVcard_hasRegion.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
 			this.Roh_geographicFocusOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/geographicFocusOther"));
 			this.Vivo_start= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#start"));
@@ -84,11 +86,6 @@ namespace DocumentOntology
 		public  Feature Vcard_hasCountryName  { get; set;} 
 		public string IdVcard_hasCountryName  { get; set;} 
 
-		[LABEL(LanguageEnum.es,"https://www.w3.org/2006/vcard/ns#hasRegion")]
-		[RDFProperty("https://www.w3.org/2006/vcard/ns#hasRegion")]
-		public  Feature Vcard_hasRegion  { get; set;} 
-		public string IdVcard_hasRegion  { get; set;} 
-
 		[LABEL(LanguageEnum.es,"http://vivoweb.org/ontology/core#geographicFocus")]
 		[RDFProperty("http://vivoweb.org/ontology/core#geographicFocus")]
 		public  GeographicRegion Vivo_geographicFocus  { get; set;} 
@@ -98,6 +95,11 @@ namespace DocumentOntology
 		[RDFProperty("http://purl.org/dc/elements/1.1/type")]
 		public  List<EventType> Dc_type { get; set;}
 		public List<string> IdsDc_type { get; set;}
+
+		[LABEL(LanguageEnum.es,"https://www.w3.org/2006/vcard/ns#hasRegion")]
+		[RDFProperty("https://www.w3.org/2006/vcard/ns#hasRegion")]
+		public  Feature Vcard_hasRegion  { get; set;} 
+		public string IdVcard_hasRegion  { get; set;} 
 
 		[LABEL(LanguageEnum.es,"http://w3id.org/roh/geographicFocusOther")]
 		[RDFProperty("http://w3id.org/roh/geographicFocusOther")]
@@ -129,9 +131,9 @@ namespace DocumentOntology
 			base.GetProperties();
 			propList.Add(new StringOntologyProperty("bibo:organizer", this.IdBibo_organizer));
 			propList.Add(new StringOntologyProperty("vcard:hasCountryName", this.IdVcard_hasCountryName));
-			propList.Add(new StringOntologyProperty("vcard:hasRegion", this.IdVcard_hasRegion));
 			propList.Add(new StringOntologyProperty("vivo:geographicFocus", this.IdVivo_geographicFocus));
 			propList.Add(new ListStringOntologyProperty("dc:type", this.IdsDc_type));
+			propList.Add(new StringOntologyProperty("vcard:hasRegion", this.IdVcard_hasRegion));
 			propList.Add(new StringOntologyProperty("roh:geographicFocusOther", this.Roh_geographicFocusOther));
 			if (this.Vivo_start.HasValue){
 				propList.Add(new DateOntologyProperty("vivo:start", this.Vivo_start.Value));

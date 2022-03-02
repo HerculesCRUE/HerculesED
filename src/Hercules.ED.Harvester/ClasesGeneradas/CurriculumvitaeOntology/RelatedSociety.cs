@@ -14,10 +14,12 @@ using System.Text.RegularExpressions;
 using System.Globalization;
 using System.Collections;
 using Gnoss.ApiWrapper.Exceptions;
+using System.Diagnostics.CodeAnalysis;
 using Society = SocietyOntology.Society;
 
 namespace CurriculumvitaeOntology
 {
+	[ExcludeFromCodeCoverage]
 	public class RelatedSociety : GnossOCBase
 	{
 

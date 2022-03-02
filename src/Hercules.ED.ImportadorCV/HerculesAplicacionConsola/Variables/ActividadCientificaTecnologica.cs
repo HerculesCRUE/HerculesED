@@ -343,9 +343,9 @@ namespace HerculesAplicacionConsola.Variables
         public const string estanciasIDIDuracionDiaEntidadRealizacion = "http://w3id.org/roh/durationDays";
         public const string estanciasIDIObjetivoEstancia = "http://w3id.org/roh/goals";
         public const string estanciasIDIObjetivoEstanciaOtros = "http://w3id.org/roh/goalsOther";
-        public const string estanciasIDICodUnescoPrimaria = ""; // TODO
-        public const string estanciasIDICodUnescoSecundaria = ""; // TODO
-        public const string estanciasIDICodUnescoTerciaria = ""; // TODO
+        public const string estanciasIDICodUnescoPrimaria = "http://w3id.org/roh/unescoPrimary@@@http://w3id.org/roh/CategoryPath|http://w3id.org/roh/categoryNode";
+        public const string estanciasIDICodUnescoSecundaria = "http://w3id.org/roh/unescoSecondary@@@http://w3id.org/roh/CategoryPath|http://w3id.org/roh/categoryNode";
+        public const string estanciasIDICodUnescoTerciaria = "http://w3id.org/roh/unescoTertiary@@@http://w3id.org/roh/CategoryPath|http://w3id.org/roh/categoryNode";
         public const string estanciasIDIEntidadFinanciadora = "http://w3id.org/roh/fundedBy";
         public const string estanciasIDIEntidadFinanciadoraNombre = "http://w3id.org/roh/fundedByTitle";
         public const string estanciasIDIPaisEntidadFinanciadora = "http://w3id.org/roh/fundedByHasCountryName";
@@ -376,13 +376,14 @@ namespace HerculesAplicacionConsola.Variables
         public const string ayudasBecasTipoEntidadConcede = "http://w3id.org/roh/awardingEntityType";
         public const string ayudasBecasTipoEntidadConcedeOtros = "http://w3id.org/roh/awardingEntityTypeOther";
         public const string ayudasBecasImporte = "http://w3id.org/roh/monetaryAmount";
-        public const string ayudasBecasFecha = "http://vivoweb.org/ontology/core#start";
+        public const string ayudasBecasFechaConcesion = "http://vivoweb.org/ontology/core#start";
         public const string ayudasBecasDuracionAnio = "http://w3id.org/roh/durationYears";
         public const string ayudasBecasDuracionMes = "http://w3id.org/roh/durationMonths";
         public const string ayudasBecasDuracionDia = "http://w3id.org/roh/durationDays";
         public const string ayudasBecasFechaFinalizacion = "http://vivoweb.org/ontology/core#end";
         public const string ayudasBecasFacultadEscuela = "http://w3id.org/roh/center";
-        public const string ayudasBecasEntidadRealizacion = "http://w3id.org/roh/entityTitle";
+        public const string ayudasBecasEntidadRealizacionNombre = "http://w3id.org/roh/entityTitle";
+        public const string ayudasBecasEntidadRealizacion = "http://w3id.org/roh/entity";
 
         /// <summary>
         /// Otros modos de colaboración con investigadores/as o tecnólogos/as - 060.020.020.000

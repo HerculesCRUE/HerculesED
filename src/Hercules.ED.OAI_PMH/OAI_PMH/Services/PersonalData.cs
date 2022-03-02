@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using OAI_PMH.Controllers;
 using OAI_PMH.Models.SGI.PersonalData;
 using RestSharp;
 using System;
@@ -12,14 +13,12 @@ namespace OAI_PMH.Services
 {
     public class PersonalData
     {
-        private static readonly string url = "https://sgi.demo.treelogic.com/api/sgp/";
-
-        public static Dictionary<string, DateTime> GetModifiedPeople(string from)
+        public static Dictionary<string, DateTime> GetModifiedPeople(string from, ConfigService pConfig)
         {
-            string accessToken = Token.CheckToken();
+            string accessToken = Token.CheckToken(pConfig);
             Dictionary<string, DateTime> idDictionary = new();
             List<string> idList = new();
-            RestClient client = new(url + "personas/modificadas-ids?q=fechaModificacion=ge=\"" + from + "\"");
+            RestClient client = new(pConfig.GetUrlBasePersona() + "personas/modificadas-ids?q=fechaModificacion=ge=\"" + from + "\"");
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);
@@ -39,31 +38,31 @@ namespace OAI_PMH.Services
             return idDictionary;
         }
 
-        public static Persona GetPersona(string id)
+        public static Persona GetPersona(string id, ConfigService pConfig)
         {
-            string accessToken = Token.CheckToken();
+            string accessToken = Token.CheckToken(pConfig);
             string identifier = id.Split('_')[1];
             Persona persona = new();
-            RestClient client = new(url + "personas/" + identifier);
+            RestClient client = new(pConfig.GetUrlBasePersona() + "personas/" + identifier);
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);
             var json = JObject.Parse(response.Content);
             persona = JsonConvert.DeserializeObject<Persona>(json.ToString());
-            persona.DatosPersonales = GetDatosPersonales(identifier);
-            persona.DatosContacto = GetDatosContacto(identifier);
-            persona.Vinculacion = GetVinculacion(identifier);
-            persona.DatosAcademicos = GetDatosAcademicos(identifier);
-            persona.Fotografia = GetFotografia(identifier);
-            persona.Sexenios = GetSexenios(identifier);
+            persona.DatosPersonales = GetDatosPersonales(identifier, pConfig);
+            persona.DatosContacto = GetDatosContacto(identifier, pConfig);
+            persona.Vinculacion = GetVinculacion(identifier, pConfig);
+            persona.DatosAcademicos = GetDatosAcademicos(identifier, pConfig);
+            persona.Fotografia = GetFotografia(identifier, pConfig);
+            persona.Sexenios = GetSexenios(identifier, pConfig);
             return persona;
         }
 
-        private static DatosPersonales GetDatosPersonales(string id)
+        private static DatosPersonales GetDatosPersonales(string id, ConfigService pConfig)
         {
-            string accessToken = Token.CheckToken();
+            string accessToken = Token.CheckToken(pConfig);
             DatosPersonales datosPersonales = new();
-            RestClient client = new(url + "datos-personales/persona/" + id);
+            RestClient client = new(pConfig.GetUrlBasePersona() + "datos-personales/persona/" + id);
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);
@@ -71,11 +70,11 @@ namespace OAI_PMH.Services
             return datosPersonales;
         }
 
-        private static DatosContacto GetDatosContacto(string id)
+        private static DatosContacto GetDatosContacto(string id, ConfigService pConfig)
         {
-            string accessToken = Token.CheckToken();
+            string accessToken = Token.CheckToken(pConfig);
             DatosContacto datosContacto = new();
-            RestClient client = new(url + "datos-contacto/persona/" + id);
+            RestClient client = new(pConfig.GetUrlBasePersona() + "datos-contacto/persona/" + id);
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);
@@ -83,11 +82,11 @@ namespace OAI_PMH.Services
             return datosContacto;
         }
 
-        private static Vinculacion GetVinculacion(string id)
+        private static Vinculacion GetVinculacion(string id, ConfigService pConfig)
         {
-            string accessToken = Token.CheckToken();
+            string accessToken = Token.CheckToken(pConfig);
             Vinculacion vinculacion = new();
-            RestClient client = new(url + "vinculaciones/persona/" + id);
+            RestClient client = new(pConfig.GetUrlBasePersona() + "vinculaciones/persona/" + id);
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);
@@ -95,22 +94,22 @@ namespace OAI_PMH.Services
             return vinculacion;
         }
 
-        private static DatosAcademicos GetDatosAcademicos(string id)
+        private static DatosAcademicos GetDatosAcademicos(string id, ConfigService pConfig)
         {
-            string accessToken = Token.CheckToken();
+            string accessToken = Token.CheckToken(pConfig);
             DatosAcademicos datosAcademicos = new();
-            RestClient client = new(url + "datos-academicos/persona/" + id);
+            RestClient client = new(pConfig.GetUrlBasePersona() + "datos-academicos/persona/" + id);
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);
             datosAcademicos = JsonConvert.DeserializeObject<DatosAcademicos>(response.Content);
             return datosAcademicos;
         }
-        private static Fotografia GetFotografia(string id)
+        private static Fotografia GetFotografia(string id, ConfigService pConfig)
         {
-            string accessToken = Token.CheckToken();
+            string accessToken = Token.CheckToken(pConfig);
             Fotografia fotografia = new();
-            RestClient client = new(url + "personas/" + id + "/fotografia");
+            RestClient client = new(pConfig.GetUrlBasePersona() + "personas/" + id + "/fotografia");
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);
@@ -118,11 +117,11 @@ namespace OAI_PMH.Services
             return fotografia;
         }
 
-        private static Sexenio GetSexenios(string id)
+        private static Sexenio GetSexenios(string id, ConfigService pConfig)
         {
-            string accessToken = Token.CheckToken();
+            string accessToken = Token.CheckToken(pConfig);
             Sexenio sexenios = new();
-            RestClient client = new(url + "sexenios/persona/" + id);
+            RestClient client = new(pConfig.GetUrlBasePersona() + "sexenios/persona/" + id);
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);

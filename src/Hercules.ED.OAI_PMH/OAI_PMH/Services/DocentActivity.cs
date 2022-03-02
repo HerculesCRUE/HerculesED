@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using OAI_PMH.Controllers;
 using OAI_PMH.Models.SGI.ActividadDocente;
 using RestSharp;
 using System;
@@ -10,15 +11,12 @@ namespace OAI_PMH.Services
 {
     public class DocentActivity
     {
-        // TODO: Revisar URL de petición junto a parametros.
-        private static readonly string url = "https://sgi.demo.treelogic.com/api/sgicsp/";
-
-        public static Dictionary<string, DateTime> GetModifiedTesis(string from)
+        public static Dictionary<string, DateTime> GetModifiedTesis(string from, ConfigService pConfig)
         {
-            string accessToken = Token.CheckToken();
+            string accessToken = Token.CheckToken(pConfig);
             Dictionary<string, DateTime> idDictionary = new();
             List<string> idList = new();
-            RestClient client = new(url + "actividad-docente/modificados-ids?q=fechaModificacion=ge=\"" + from + "\"" + "&q=tipoFormacion=\"030.040.000.000\"");
+            RestClient client = new(pConfig.GetUrlBaseActividadDocente() + "actividad-docente/modificados-ids?q=fechaModificacion=ge=\"" + from + "\"" + "&q=tipoFormacion=\"030.040.000.000\"");
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);
@@ -33,23 +31,23 @@ namespace OAI_PMH.Services
             }
             return idDictionary;
         }
-        public static Tesis GetTesis(string id)
+        public static Tesis GetTesis(string id, ConfigService pConfig)
         {
-            string accessToken = Token.CheckToken();
+            string accessToken = Token.CheckToken(pConfig);
             string identifier = id.Split('_')[1];
-            RestClient client = new(url + "actividad-docente/" + identifier);
+            RestClient client = new(pConfig.GetUrlBaseActividadDocente() + "actividad-docente/" + identifier);
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);
             var json = JObject.Parse(response.Content);
             return JsonConvert.DeserializeObject<Tesis>(json.ToString());
         }
-        public static Dictionary<string, DateTime> GetModifiedAcademicFormationProvided(string from)
+        public static Dictionary<string, DateTime> GetModifiedAcademicFormationProvided(string from, ConfigService pConfig)
         {
-            string accessToken = Token.CheckToken();
+            string accessToken = Token.CheckToken(pConfig);
             Dictionary<string, DateTime> idDictionary = new();
             List<string> idList = new();
-            RestClient client = new(url + "actividad-docente/modificados-ids?q=fechaModificacion=ge=\"" + from + "\"" + "&q=tipoFormacion=\"030.010.000.000\"");
+            RestClient client = new(pConfig.GetUrlBaseActividadDocente() + "actividad-docente/modificados-ids?q=fechaModificacion=ge=\"" + from + "\"" + "&q=tipoFormacion=\"030.010.000.000\"");
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);
@@ -64,23 +62,23 @@ namespace OAI_PMH.Services
             }
             return idDictionary;
         }
-        public static FormacionAcademicaImpartida GetAcademicFormationProvided(string id)
+        public static FormacionAcademicaImpartida GetAcademicFormationProvided(string id, ConfigService pConfig)
         {
-            string accessToken = Token.CheckToken();
+            string accessToken = Token.CheckToken(pConfig);
             string identifier = id.Split('_')[1];
-            RestClient client = new(url + "actividad-docente/" + identifier);
+            RestClient client = new(pConfig.GetUrlBaseActividadDocente() + "actividad-docente/" + identifier);
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);
             var json = JObject.Parse(response.Content);
             return JsonConvert.DeserializeObject<FormacionAcademicaImpartida>(json.ToString());
         }
-        public static Dictionary<string, DateTime> GetModifiedSeminars(string from)
+        public static Dictionary<string, DateTime> GetModifiedSeminars(string from, ConfigService pConfig)
         {
-            string accessToken = Token.CheckToken();
+            string accessToken = Token.CheckToken(pConfig);
             Dictionary<string, DateTime> idDictionary = new();
             List<string> idList = new();
-            RestClient client = new(url + "actividad-docente/modificados-ids?q=fechaModificacion=ge=\"" + from + "\"" + "&q=tipoFormacion=\"030.060.000.000\"");
+            RestClient client = new(pConfig.GetUrlBaseActividadDocente() + "actividad-docente/modificados-ids?q=fechaModificacion=ge=\"" + from + "\"" + "&q=tipoFormacion=\"030.060.000.000\"");
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);
@@ -95,11 +93,11 @@ namespace OAI_PMH.Services
             }
             return idDictionary;
         }
-        public static SeminariosCursos GetSeminars(string id)
+        public static SeminariosCursos GetSeminars(string id, ConfigService pConfig)
         {
-            string accessToken = Token.CheckToken();
+            string accessToken = Token.CheckToken(pConfig);
             string identifier = id.Split('_')[1];
-            RestClient client = new(url + "actividad-docente/" + identifier);
+            RestClient client = new(pConfig.GetUrlBaseActividadDocente() + "actividad-docente/" + identifier);
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);

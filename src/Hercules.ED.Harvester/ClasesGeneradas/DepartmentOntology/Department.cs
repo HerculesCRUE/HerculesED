@@ -14,9 +14,11 @@ using System.Text.RegularExpressions;
 using System.Globalization;
 using System.Collections;
 using Gnoss.ApiWrapper.Exceptions;
+using System.Diagnostics.CodeAnalysis;
 
 namespace DepartmentOntology
 {
+	[ExcludeFromCodeCoverage]
 	public class Department : GnossOCBase
 	{
 
@@ -26,9 +28,7 @@ namespace DepartmentOntology
 		{
 			this.mGNOSSID = pSemCmsModel.Entity.Uri;
 			this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
-			this.Dc_title = new Dictionary<LanguageEnum,string>();
-			this.Dc_title.Add(idiomaUsuario , GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/dc/elements/1.1/title")));
-			
+			this.Dc_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/dc/elements/1.1/title"));
 			this.Dc_identifier = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/dc/elements/1.1/identifier"));
 		}
 
@@ -36,7 +36,7 @@ namespace DepartmentOntology
 		public virtual string RdfsLabel { get { return "http://vivoweb.org/ontology/core#Department"; } }
 		[LABEL(LanguageEnum.es,"http://purl.org/dc/elements/1.1/title")]
 		[RDFProperty("http://purl.org/dc/elements/1.1/title")]
-		public  Dictionary<LanguageEnum,string> Dc_title { get; set;}
+		public  string Dc_title { get; set;}
 
 		[LABEL(LanguageEnum.es,"http://purl.org/dc/elements/1.1/identifier")]
 		[RDFProperty("http://purl.org/dc/elements/1.1/identifier")]
@@ -46,17 +46,7 @@ namespace DepartmentOntology
 		internal override void GetProperties()
 		{
 			base.GetProperties();
-			if(this.Dc_title != null)
-			{
-				foreach (LanguageEnum idioma in this.Dc_title.Keys)
-				{
-					propList.Add(new StringOntologyProperty("dc:title", this.Dc_title[idioma], idioma.ToString()));
-				}
-			}
-			else
-			{
-				throw new GnossAPIException($"La propiedad dc:title debe tener al menos un valor en el recurso: {resourceID}");
-			}
+			propList.Add(new StringOntologyProperty("dc:title", this.Dc_title));
 			propList.Add(new StringOntologyProperty("dc:identifier", this.Dc_identifier));
 		}
 
@@ -84,10 +74,7 @@ namespace DepartmentOntology
 			AgregarTripleALista($"{resourceAPI.GraphsUrl}{ResourceID}", "http://gnoss/hasEntidad", $"<{resourceAPI.GraphsUrl}items/Department_{ResourceID}_{ArticleID}>", list, " . ");
 				if(this.Dc_title != null)
 				{
-							foreach (LanguageEnum idioma in this.Dc_title.Keys)
-							{
-								AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Department_{ResourceID}_{ArticleID}", "http://purl.org/dc/elements/1.1/title",  $"\"{GenerarTextoSinSaltoDeLinea(this.Dc_title[idioma])}\"", list,  $"{idioma} . ");
-							}
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Department_{ResourceID}_{ArticleID}",  "http://purl.org/dc/elements/1.1/title", $"\"{GenerarTextoSinSaltoDeLinea(this.Dc_title)}\"", list, " . ");
 				}
 				if(this.Dc_identifier != null)
 				{
@@ -103,10 +90,7 @@ namespace DepartmentOntology
 			string search = string.Empty;
 				if(this.Dc_title != null)
 				{
-							foreach (LanguageEnum idioma in this.Dc_title.Keys)
-							{
-								AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://purl.org/dc/elements/1.1/title",  $"\"{GenerarTextoSinSaltoDeLinea(this.Dc_title[idioma]).ToLower()}\"", list,  $"{idioma} . ");
-							}
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://purl.org/dc/elements/1.1/title", $"\"{GenerarTextoSinSaltoDeLinea(this.Dc_title).ToLower()}\"", list, " . ");
 				}
 				if(this.Dc_identifier != null)
 				{
@@ -121,7 +105,7 @@ namespace DepartmentOntology
 			}
 			if(!string.IsNullOrEmpty(search))
 			{
-				AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://gnoss/search", $"\"{search.ToLower()}\"", list, " . ");
+				AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://gnoss/search", $"\"{GenerarTextoSinSaltoDeLinea(search.ToLower())}\"", list, " . ");
 			}
 			return list;
 		}

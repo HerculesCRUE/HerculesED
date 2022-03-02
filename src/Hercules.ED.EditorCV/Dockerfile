@@ -10,14 +10,18 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
-COPY ["EditorCV.csproj", ""]
-RUN dotnet restore "./EditorCV.csproj"
+#COPY ["EditorCV.csproj", ""]
+#RUN dotnet restore "./EditorCV.csproj"
+COPY ["Hercules.ED.DisambiguationEngine/Hercules.ED.DisambiguationEngine.csproj", "./Hercules.ED.DisambiguationEngine/"]
+COPY ["EditorCV/EditorCV.csproj", "./EditorCV/"]
+RUN dotnet restore "./EditorCV/EditorCV.csproj"
+
 COPY . .
 WORKDIR "/src/."
-RUN dotnet build "EditorCV.csproj" -c Release -o /app/build
+RUN dotnet build "EditorCV/EditorCV.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "EditorCV.csproj" -c Release -o /app/publish
+RUN dotnet publish "EditorCV/EditorCV.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app

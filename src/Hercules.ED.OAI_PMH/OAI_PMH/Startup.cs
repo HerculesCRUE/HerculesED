@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using OAI_PMH.Controllers;
 using OAI_PMH.Services;
 using System;
 using System.Collections;
@@ -39,6 +40,9 @@ namespace OAI_PMH
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "OAI-PMH", Version = "v1", Description = "Open Archives Initiative Protocol for Metadata Harvesting" });
                 c.IncludeXmlComments(string.Format(@"{0}comments.xml", AppDomain.CurrentDomain.BaseDirectory));
             });
+
+            // Configuración.
+            services.AddSingleton(typeof(ConfigService));
 
             services.Configure<ForwardedHeadersOptions>(options =>
             {

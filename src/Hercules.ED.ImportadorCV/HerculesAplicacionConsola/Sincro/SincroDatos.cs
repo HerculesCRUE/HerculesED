@@ -40,9 +40,9 @@ namespace HerculesAplicacionConsola.Sincro
         /// Con el codigo identificativo 000.000.000.000
         /// </summary>
         public void SincroDatosIdentificacion()
-        {       
+        {
             DatosIdentificacion datosIdentificacion = new DatosIdentificacion(cvn, cvID);
-            //datosIdentificacion.SincroDatosIdentificacion();
+            datosIdentificacion.SincroDatosIdentificacion();
         }
 
 
@@ -53,12 +53,12 @@ namespace HerculesAplicacionConsola.Sincro
         /// </summary>
         public void SincroDatosSituacionProfesional()
         {
-            //SituacionProfesional situacionProfesional = new SituacionProfesional(cvn, cvID);
+            SituacionProfesional situacionProfesional = new SituacionProfesional(cvn, cvID);
 
-            //situacionProfesional.SincroSituacionProfesionalActual();
-            //situacionProfesional.SincroCargosActividades();
+            situacionProfesional.SincroSituacionProfesionalActual();
+            situacionProfesional.SincroCargosActividades();
         }
-        
+
         /// <summary>
         /// Metodo para sincronizar los datos pertenecientes al 
         /// apartado de Formación académica recibida.
@@ -130,29 +130,27 @@ namespace HerculesAplicacionConsola.Sincro
         {
             ActividadCientificaTecnologica actividadCientificaTecnologica = new ActividadCientificaTecnologica(cvn, cvID);
 
-            // -------------------           TODO - comprobar si las entidades exiten en BBDD en los apartados de las mismas
-
-            actividadCientificaTecnologica.SincroIndicadoresGenerales();
+            ////actividadCientificaTecnologica.SincroIndicadoresGenerales();
             //actividadCientificaTecnologica.SincroPublicacionesDocumentos();//TODO - Autores, categoria, autor correspondencia, publicacion ciudad, publicacion editorial¿?, posicion, numautores
             //actividadCientificaTecnologica.SincroTrabajosCongresos();//TODO - Autores, publicacion editorial¿?
             //actividadCientificaTecnologica.SincroTrabajosJornadasSeminarios();//TODO - Autores, TiposEntidadOrganizadora?
             //actividadCientificaTecnologica.SincroOtrasActividadesDivulgacion();//TODO - Autor, TipoEntidad?, +++
-            //actividadCientificaTecnologica.SincroComitesCTA();
-            //actividadCientificaTecnologica.SincroOrganizacionIDI();
+            //actividadCientificaTecnologica.SincroComitesCTA();//Entidad afiliacion cambio desplegable
+            actividadCientificaTecnologica.SincroOrganizacionIDI();
             //actividadCientificaTecnologica.SincroGestionIDI();
-            actividadCientificaTecnologica.SincroForosComites();
-            //actividadCientificaTecnologica.SincroEvalRevIDI();
-            //actividadCientificaTecnologica.SincroEstanciasIDI();
-            //actividadCientificaTecnologica.SincroAyudasBecas();
-            //actividadCientificaTecnologica.SincroOtrosModosColaboracion();//TODO - falta añadir participantes, palabras clave //TODO - eliminar entidades secundarias (entidad participante)
-            //actividadCientificaTecnologica.SincroSociedadesAsociaciones();
-            actividadCientificaTecnologica.SincroConsejos();
-            actividadCientificaTecnologica.SincroRedesCooperacion();
-            actividadCientificaTecnologica.SincroPremiosMenciones();
-            actividadCientificaTecnologica.SincroOtrasDistinciones();
-            //actividadCientificaTecnologica.SincroPeriodosActividad();
-            actividadCientificaTecnologica.SincroAcreditacionesObtenidas();
-            actividadCientificaTecnologica.SincroResumenOtrosMeritos();
+            ////actividadCientificaTecnologica.SincroForosComites();
+            ////actividadCientificaTecnologica.SincroEvalRevIDI();
+            //actividadCientificaTecnologica.SincroEstanciasIDI();//Codigos unesco, Palabras clave
+            //actividadCientificaTecnologica.SincroAyudasBecas();//TODO - Palabras clave
+            //actividadCientificaTecnologica.SincroOtrosModosColaboracion();//TODO - falta añadir participantes, palabras clave 
+            //actividadCientificaTecnologica.SincroSociedadesAsociaciones();//TODO - Palabras clave
+            ////actividadCientificaTecnologica.SincroConsejos();
+            ////actividadCientificaTecnologica.SincroRedesCooperacion();
+            ////actividadCientificaTecnologica.SincroPremiosMenciones();
+            ////actividadCientificaTecnologica.SincroOtrasDistinciones();
+            ////actividadCientificaTecnologica.SincroPeriodosActividad();
+            ////actividadCientificaTecnologica.SincroAcreditacionesObtenidas();
+            ////actividadCientificaTecnologica.SincroResumenOtrosMeritos();
         }
     }
 }

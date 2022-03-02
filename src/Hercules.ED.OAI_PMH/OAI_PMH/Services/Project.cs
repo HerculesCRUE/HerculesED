@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using OAI_PMH.Controllers;
 using OAI_PMH.Models.SGI.Project;
 using RestSharp;
 using System;
@@ -12,14 +13,12 @@ namespace OAI_PMH.Services
 {
     public class Project
     {
-        private static readonly string url = "https://sgi.demo.treelogic.com/api/sgicsp/";
-
-        public static Dictionary<string, DateTime> GetModifiedProjects(string from)
+        public static Dictionary<string, DateTime> GetModifiedProjects(string from, ConfigService pConfig)
         {
-            string accessToken = Token.CheckToken();
+            string accessToken = Token.CheckToken(pConfig);
             Dictionary<string, DateTime> idDictionary = new();
             List<string> idList = new();
-            RestClient client = new(url + "proyectos/modificados-ids?q=fechaModificacion=ge=\"" + from + "\"");
+            RestClient client = new(pConfig.GetUrlBaseProyecto() + "proyectos/modificados-ids?q=fechaModificacion=ge=\"" + from + "\"");
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);
@@ -35,31 +34,31 @@ namespace OAI_PMH.Services
             return idDictionary;
         }
 
-        public static Proyecto GetProyecto(string id)
+        public static Proyecto GetProyecto(string id, ConfigService pConfig)
         {
-            string accessToken = Token.CheckToken();
+            string accessToken = Token.CheckToken(pConfig);
             string identifier = id.Split('_')[1];
             Proyecto proyecto = new();
-            RestClient client = new(url + "proyectos/" + identifier);
+            RestClient client = new(pConfig.GetUrlBaseProyecto() + "proyectos/" + identifier);
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);
             var json = JObject.Parse(response.Content);
             proyecto = JsonConvert.DeserializeObject<Proyecto>(json.ToString());
-            proyecto.Contexto = GetContexto(identifier);
-            proyecto.Equipo = GetEquipo(identifier);
-            proyecto.EntidadesGestoras = GetEntidadesGestoras(identifier);
-            proyecto.EntidadesConvocantes = GetEntidadesConvocantes(identifier);
-            proyecto.EntidadesFinanciadoras = GetEntidadesFinanciadoras(identifier);
-            proyecto.ResumenAnualidades = GetAnualidades(identifier);
+            proyecto.Contexto = GetContexto(identifier, pConfig);
+            proyecto.Equipo = GetEquipo(identifier, pConfig);
+            proyecto.EntidadesGestoras = GetEntidadesGestoras(identifier, pConfig);
+            proyecto.EntidadesConvocantes = GetEntidadesConvocantes(identifier, pConfig);
+            proyecto.EntidadesFinanciadoras = GetEntidadesFinanciadoras(identifier, pConfig);
+            proyecto.ResumenAnualidades = GetAnualidades(identifier, pConfig);
             return proyecto;
         }
 
-        public static ContextoProyecto GetContexto(string id)
+        public static ContextoProyecto GetContexto(string id, ConfigService pConfig)
         {
-            string accessToken = Token.CheckToken();
+            string accessToken = Token.CheckToken(pConfig);
             ContextoProyecto contexto = new();
-            RestClient client = new(url + "proyectos/" + id + "/contexto");
+            RestClient client = new(pConfig.GetUrlBaseProyecto() + "proyectos/" + id + "/contexto");
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);
@@ -67,11 +66,11 @@ namespace OAI_PMH.Services
             return contexto;
         }
 
-        public static List<ProyectoEquipo> GetEquipo(string id)
+        public static List<ProyectoEquipo> GetEquipo(string id, ConfigService pConfig)
         {
-            string accessToken = Token.CheckToken();
+            string accessToken = Token.CheckToken(pConfig);
             List<ProyectoEquipo> equipo = new();
-            RestClient client = new(url + "proyectos/" + id + "/equipos");
+            RestClient client = new(pConfig.GetUrlBaseProyecto() + "proyectos/" + id + "/equipos");
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);
@@ -79,11 +78,11 @@ namespace OAI_PMH.Services
             return equipo;
         }
 
-        public static List<ProyectoEntidadGestora> GetEntidadesGestoras(string id)
+        public static List<ProyectoEntidadGestora> GetEntidadesGestoras(string id, ConfigService pConfig)
         {
-            string accessToken = Token.CheckToken();
+            string accessToken = Token.CheckToken(pConfig);
             List<ProyectoEntidadGestora> entidadesGestoras = new();
-            RestClient client = new(url + "proyectos/" + id + "/entidadgestoras");
+            RestClient client = new(pConfig.GetUrlBaseProyecto() + "proyectos/" + id + "/entidadgestoras");
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);
@@ -91,11 +90,11 @@ namespace OAI_PMH.Services
             return entidadesGestoras;
         }
 
-        public static List<ProyectoEntidadConvocante> GetEntidadesConvocantes(string id)
+        public static List<ProyectoEntidadConvocante> GetEntidadesConvocantes(string id, ConfigService pConfig)
         {
-            string accessToken = Token.CheckToken();
+            string accessToken = Token.CheckToken(pConfig);
             List<ProyectoEntidadConvocante> entidadesConvocantes = new();
-            RestClient client = new(url + "proyectos/" + id + "/entidadconvocantes");
+            RestClient client = new(pConfig.GetUrlBaseProyecto() + "proyectos/" + id + "/entidadconvocantes");
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);
@@ -103,11 +102,11 @@ namespace OAI_PMH.Services
             return entidadesConvocantes;
         }
 
-        public static List<ProyectoEntidadFinanciadora> GetEntidadesFinanciadoras(string id)
+        public static List<ProyectoEntidadFinanciadora> GetEntidadesFinanciadoras(string id, ConfigService pConfig)
         {
-            string accessToken = Token.CheckToken();
+            string accessToken = Token.CheckToken(pConfig);
             List<ProyectoEntidadFinanciadora> entidadesFinanciadoras = new();
-            RestClient client = new(url + "proyectos/" + id + "/entidadfinanciadoras");
+            RestClient client = new(pConfig.GetUrlBaseProyecto() + "proyectos/" + id + "/entidadfinanciadoras");
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);
@@ -115,11 +114,11 @@ namespace OAI_PMH.Services
             return entidadesFinanciadoras;
         }
 
-        public static List<ProyectoAnualidadResumen> GetAnualidades(string id)
+        public static List<ProyectoAnualidadResumen> GetAnualidades(string id, ConfigService pConfig)
         {
-            string accessToken = Token.CheckToken();
+            string accessToken = Token.CheckToken(pConfig);
             List<ProyectoAnualidadResumen> anualidades = new();
-            RestClient client = new(url + "proyectos/" + id + "/anualidades");
+            RestClient client = new(pConfig.GetUrlBaseProyecto() + "proyectos/" + id + "/anualidades");
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);

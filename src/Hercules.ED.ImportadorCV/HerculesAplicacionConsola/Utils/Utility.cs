@@ -705,8 +705,8 @@ namespace Utils
                 List<CVNObject> listadoCamposAux = cvnItemBean.Items?.ToList();
                 CvnItemBeanCvnBoolean campo = listadoCamposAux.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnBoolean).Cast<CvnItemBeanCvnBoolean>().FirstOrDefault();
                 if (campo != null)
-                {
-                    return campo.Value.ToString();
+                {                    
+                    return campo.Value.ToString()?.ToLower();
                 }
                 return null;
             }
@@ -1572,6 +1572,79 @@ namespace Utils
         }
 
         /// <summary>
+        /// contractmodality_
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="codigo"></param>
+        /// <returns></returns>
+        public static string GetModalidadContrato(this CvnItemBean item, string codigo)
+        {
+            if (!CodigoCampoCorrecto(codigo))
+            {
+                throw new ArgumentException("Codigo de campo incorrecto" + codigo);
+            }
+
+            CvnItemBeanCvnString campo = item.Items.Where(x => x.Code.Equals(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
+            if (campo != null)
+            {
+                return mResourceApi.GraphsUrl + "items/contractmodality_" + campo.Value;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// dedicationregime_
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="codigo"></param>
+        /// <returns></returns>
+        public static string GetRegimenDedicacion(this CvnItemBean item, string codigo) 
+        {
+            if (!CodigoCampoCorrecto(codigo))
+            {
+                throw new ArgumentException("Codigo de campo incorrecto" + codigo);
+            }
+
+            CvnItemBeanCvnString campo = item.Items.Where(x => x.Code.Equals(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
+            if (campo != null)
+            {
+                return mResourceApi.GraphsUrl + "items/dedicationregime_" + campo.Value;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// unesco_
+        /// </summary>
+        /// <param name="codigolista">codigolista</param>
+        /// <returns></returns>
+        public static string GetCodUnescoIDCampo(string codigolista)
+        {
+            return mResourceApi.GraphsUrl + "items/unesco_" + codigolista;
+        }
+
+        /// <summary>
+        /// scopemanagementactivity_
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="codigo"></param>
+        /// <returns></returns>
+        public static string GetAmbitoGestion(this CvnItemBean item, string codigo)
+        {
+            if (!CodigoCampoCorrecto(codigo))
+            {
+                throw new ArgumentException("Codigo de campo incorrecto" + codigo);
+            }
+
+            CvnItemBeanCvnString campo = item.Items.Where(x => x.Code.Equals(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
+            if (campo != null)
+            {
+                return mResourceApi.GraphsUrl + "items/scopemanagementactivity_" + campo.Value;
+            }
+            return null;
+        }
+
+        /// <summary>
         /// contributiongradedocument_
         /// </summary>
         /// <param name="item"></param>
@@ -1763,6 +1836,51 @@ namespace Utils
         {
             return mResourceApi.GraphsUrl + "items/unesco_" + item.Value;
         }
+
+        public static string GetCodInternacional(this CvnItemBean item, string codigo)
+        {
+            if (!CodigoCampoCorrecto(codigo))
+            {
+                throw new ArgumentException("Codigo de campo incorrecto" + codigo);
+            }
+
+            CvnItemBeanCvnPhoneBean campo = item.Items.Where(x => x.Code.Equals(codigo) && x is CvnItemBeanCvnPhoneBean).Cast<CvnItemBeanCvnPhoneBean>().FirstOrDefault();
+            if (campo != null)
+            {
+                return campo.InternationalCode;
+            }
+            return null;
+        }
+
+        public static string GetNumeroTelefono(this CvnItemBean item, string codigo)
+        {
+            if (!CodigoCampoCorrecto(codigo))
+            {
+                throw new ArgumentException("Codigo de campo incorrecto" + codigo);
+            }
+
+            CvnItemBeanCvnPhoneBean campo = item.Items.Where(x => x.Code.Equals(codigo) && x is CvnItemBeanCvnPhoneBean).Cast<CvnItemBeanCvnPhoneBean>().FirstOrDefault();
+            if (campo != null)
+            {
+                return campo.Number;
+            }
+            return null;
+        }
+
+        public static string GetExtensionTelefono(this CvnItemBean item, string codigo) {
+            if (!CodigoCampoCorrecto(codigo))
+            {
+                throw new ArgumentException("Codigo de campo incorrecto" + codigo);
+            }
+
+            CvnItemBeanCvnPhoneBean campo = item.Items.Where(x => x.Code.Equals(codigo) && x is CvnItemBeanCvnPhoneBean).Cast<CvnItemBeanCvnPhoneBean>().FirstOrDefault();
+            if (campo != null)
+            {
+                return campo.Extension;
+            }
+            return null;
+        }
+
 
         /// <summary>
         /// Devuelve un listado con los valores de los codigos UNESCO.

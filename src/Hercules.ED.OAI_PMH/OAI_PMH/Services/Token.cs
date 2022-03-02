@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
+using OAI_PMH.Controllers;
 using RestSharp;
 using System;
 using System.Collections.Generic;
@@ -12,24 +13,23 @@ namespace OAI_PMH.Services
 {
     class Token
     {
-        private static readonly string tokenUrl = "https://sgi.demo.treelogic.com/auth/realms/sgi/protocol/openid-connect/token";
         private static string accessToken;
         private static string refreshToken;
         private static DateTime lastUpdate;
 
-        public static string CheckToken()
+        public static string CheckToken(ConfigService pConfig)
         {
             if (lastUpdate != default)
             {
                 TimeSpan diff = DateTime.UtcNow.Subtract(lastUpdate);
                 if (diff.TotalSeconds > 300 && diff.TotalSeconds < 1800)
                 {
-                    accessToken = RefreshToken();
+                    accessToken = RefreshToken(pConfig);
                 }
             }
             else
             {
-                accessToken = GetToken();
+                accessToken = GetToken(pConfig);
             }
             return accessToken;
         }
@@ -77,9 +77,9 @@ namespace OAI_PMH.Services
             }
         }
 
-        private static string GetToken()
+        private static string GetToken(ConfigService pConfig)
         {
-            Uri url = new Uri(tokenUrl);
+            Uri url = new Uri(pConfig.GetUrlBaseToken());
             var content = new FormUrlEncodedContent(new[]
             {
                 new KeyValuePair<string, string>("client_id", "front"),
@@ -98,9 +98,9 @@ namespace OAI_PMH.Services
             return accessToken;
         }
 
-        private static string RefreshToken()
+        private static string RefreshToken(ConfigService pConfig)
         {
-            Uri url = new Uri(tokenUrl);
+            Uri url = new Uri(pConfig.GetUrlBaseToken());
             var content = new FormUrlEncodedContent(new[]
             {
                 new KeyValuePair<string, string>("client_id", "front"),

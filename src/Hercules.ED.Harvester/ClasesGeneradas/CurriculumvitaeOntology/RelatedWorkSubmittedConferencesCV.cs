@@ -14,11 +14,13 @@ using System.Text.RegularExpressions;
 using System.Globalization;
 using System.Collections;
 using Gnoss.ApiWrapper.Exceptions;
+using System.Diagnostics.CodeAnalysis;
 using ParticipationTypeDocument = ParticipationtypedocumentOntology.ParticipationTypeDocument;
 using EventInscriptionType = EventinscriptiontypeOntology.EventInscriptionType;
 
 namespace CurriculumvitaeOntology
 {
+	[ExcludeFromCodeCoverage]
 	public class RelatedWorkSubmittedConferencesCV : GnossOCBase
 	{
 
