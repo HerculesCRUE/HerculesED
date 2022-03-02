@@ -13,7 +13,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Hercules.ED.DisambiguationEngine\Hercules.ED.DisambiguationEngine\Hercules.ED.DisambiguationEngine.csproj" />
+    <Reference Include="Hercules.ED.DisambiguationEngine">
+      <HintPath>Librerias\Hercules.ED.DisambiguationEngine.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>
