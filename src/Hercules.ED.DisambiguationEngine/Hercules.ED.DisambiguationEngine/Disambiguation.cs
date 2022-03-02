@@ -139,7 +139,7 @@ namespace Hercules.ED.DisambiguationEngine.Models
                                     Thread.Sleep(3600000);
                                 }
                             }
-                            catch (Exception ex)
+                            catch (Exception)
                             {
 
                             }
@@ -1521,7 +1521,6 @@ namespace Hercules.ED.DisambiguationEngine.Models
                                     break;
                                 case DisambiguationDataConfigType.algoritmoNombres:
                                     throw new Exception("Si tiene título no debería tener nombres");
-                                    break;
                                 case DisambiguationDataConfigType.equalsItem:
                                     if (PesoEqualsItem(ref result, dataAAux.config.score, dataAAux.value, dataBAux.value, pEquivalencesAux))
                                     {
@@ -1562,7 +1561,6 @@ namespace Hercules.ED.DisambiguationEngine.Models
                                         break;
                                     case DisambiguationDataConfigType.algoritmoNombres:
                                         throw new Exception("Si tiene título no debería tener nombres");
-                                        break;
                                     case DisambiguationDataConfigType.equalsItem:
                                         if (!string.IsNullOrEmpty(dataAAux.value) && !string.IsNullOrEmpty(dataBAux.value))
                                         {
@@ -1576,7 +1574,6 @@ namespace Hercules.ED.DisambiguationEngine.Models
                                         break;
                                     case DisambiguationDataConfigType.equalsItemList:
                                         throw new Exception("No hay negativo para equalsItemList");
-                                        break;
                                     default:
                                         throw new Exception("No está implementado.");
                                 }
@@ -1622,7 +1619,6 @@ namespace Hercules.ED.DisambiguationEngine.Models
                                     break;
                                 case DisambiguationDataConfigType.equalsTitle:
                                     throw new Exception("Si tiene nombre no debería tener titulo");
-                                    break;
                                 case DisambiguationDataConfigType.equalsItem:
                                     if (PesoEqualsItem(ref result, dataAAux.config.score, dataAAux.value, dataBAux.value, pEquivalencesAux))
                                     {
@@ -1663,7 +1659,6 @@ namespace Hercules.ED.DisambiguationEngine.Models
                                         break;
                                     case DisambiguationDataConfigType.equalsTitle:
                                         throw new Exception("Si tiene nombre no debería tener titulo");
-                                        break;
                                     case DisambiguationDataConfigType.equalsItem:
                                         if (!string.IsNullOrEmpty(dataAAux.value) && !string.IsNullOrEmpty(dataBAux.value))
                                         {
@@ -1677,7 +1672,6 @@ namespace Hercules.ED.DisambiguationEngine.Models
                                         break;
                                     case DisambiguationDataConfigType.equalsItemList:
                                         throw new Exception("No hay negativo para equalsItemList");
-                                        break;
                                     default:
                                         throw new Exception("No está implementado.");
                                 }
