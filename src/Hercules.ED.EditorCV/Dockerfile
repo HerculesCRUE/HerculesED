@@ -13,8 +13,7 @@ WORKDIR /src
 #COPY ["Hercules.ED.DisambiguationEngine/Hercules.ED.DisambiguationEngine.csproj", "./EditorCV/Hercules.ED.DisambiguationEngine/"]
 #COPY ["EditorCV.csproj", "./EditorCV/"]
 COPY ["EditorCV.csproj", "./"]
-#RUN dotnet restore "./EditorCV/EditorCV.csproj"
-RUN dotnet restore 
+RUN dotnet restore "./EditorCV/EditorCV.csproj"
 
 #COPY . .
 COPY . ./
