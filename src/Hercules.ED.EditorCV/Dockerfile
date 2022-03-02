@@ -11,6 +11,7 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
 COPY ["EditorCV.csproj", ""]
+COPY ["Hercules.ED.DisambiguationEngine/Hercules.ED.DisambiguationEngine.csproj", ""]
 RUN dotnet restore "./EditorCV.csproj"
 COPY . .
 WORKDIR "/src/."
