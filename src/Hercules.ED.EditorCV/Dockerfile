@@ -16,7 +16,7 @@ RUN dotnet restore "./EditorCV/EditorCV.csproj"
 
 COPY . .
 
-WORKDIR "/src/EditorCV/."
+WORKDIR "/src/."
 RUN dotnet build "EditorCV.csproj" -c Release -o /app/build
 
 FROM build AS publish
