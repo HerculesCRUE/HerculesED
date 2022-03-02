@@ -178,7 +178,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 {
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
-                    if (!string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("010.010.000.020")))//TODO -check
+                    if (!string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("010.010.000.020")))
                     {
                         entidadAux.properties.AddRange(AddProperty(
                             new Property(Variables.SituacionProfesional.situacionProfesionalGestionDocente, item.GetStringBooleanPorIDCampo("010.010.000.010")),
