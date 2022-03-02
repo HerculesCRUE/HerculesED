@@ -302,11 +302,9 @@ namespace GuardadoCV.Models
                 HashSet<string> colaboradoresDepartament = ObtenerColaboradoresDepartamento(pPersonID);
 
                 List<string> signaturesList = pSignatures.Split(new string[] { ";" }, StringSplitOptions.RemoveEmptyEntries).Distinct().Select(x => x.Trim()).ToList();
-                mResourceApi.Log.Error("A");
                 Dictionary<string, List<Person>> listaPersonasAux = new Dictionary<string, List<Person>>();
                 Parallel.ForEach(signaturesList, new ParallelOptions { MaxDegreeOfParallelism = 5 }, firma =>
                 {
-                    mResourceApi.Log.Error("B");
                     if (firma.Trim() != "")
                     {
                         List<Person> personasBBDD = ObtenerPersonasFirma(firma.Trim());
@@ -322,9 +320,7 @@ namespace GuardadoCV.Models
                             personBBDD.ID = personBBDD.personid;
                             entidadesBBDD.Add(personBBDD);
                         }
-                        mResourceApi.Log.Error("D");
                         Dictionary<string, Dictionary<string, float>> resultadoSimilaridad = Disambiguation.SimilarityBBDDScores(entidadesActuales, entidadesBBDD, 0, 5);
-                        mResourceApi.Log.Error("E");
                         foreach (string idBBDD in resultadoSimilaridad[personaActual.ID].Keys)
                         {
                             personasBBDD.First(x => x.ID == idBBDD).score = resultadoSimilaridad[personaActual.ID][idBBDD];
