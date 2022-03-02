@@ -4409,8 +4409,7 @@
                         "property": "http://w3id.org/roh/title",
                         "required": true,
                         "type": "text",
-                        "width": 3,
-                        "TODO": "Siguiente propiedad: Tesauro. Añadir las clasificaciones (primaria, secundaria y terciaria) según Cód. Unesco."
+                        "width": 3
                       }
                     ]
                   },
@@ -7990,6 +7989,50 @@
                   "es": "Más campos"
                 },
                 "rows": [
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Primaria (Cód. Unesco)"
+                        },
+                        "property": "http://w3id.org/roh/unescoPrimary",
+                        "thesaurus": "unesco",
+                        "type": "thesaurus",
+                        "width": 3,
+                        "multiple": true
+                      }
+                    ]
+                  },
+
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Secundaria (Cód. Unesco)"
+                        },
+                        "property": "http://w3id.org/roh/unescoSecondary",
+                        "thesaurus": "unesco",
+                        "type": "thesaurus",
+                        "width": 3,
+                        "multiple": true
+                      }
+                    ]
+                  },
+
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Terciaria (Cód. Unesco)"
+                        },
+                        "property": "http://w3id.org/roh/unescoTertiary",
+                        "thesaurus": "unesco",
+                        "type": "thesaurus",
+                        "width": 3,
+                        "multiple": true
+                      }
+                    ]
+                  },
                   {
                     "properties": [
                       {
