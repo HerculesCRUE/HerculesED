@@ -5400,13 +5400,12 @@
                 "name": {
                   "es": "Ordenar por fecha más reciente"
                 },
-                "TODO": "El orden va por título de la actividad y por fecha de inicio del investigador en la actividad (datos propios)",
                 "properties": [
                   {
                     "property": "http://vivoweb.org/ontology/core#relatedBy",
                     "graph": "activity",
                     "child": {
-                      "property": "http://purl.org/dc/terms/issued"
+                      "property": "http://vivoweb.org/ontology/core#start"
                     },
                     "asc": false
                   },
@@ -5429,7 +5428,7 @@
                     "property": "http://vivoweb.org/ontology/core#relatedBy",
                     "graph": "activity",
                     "child": {
-                      "property": "http://purl.org/dc/terms/issued"
+                      "property": "http://vivoweb.org/ontology/core#start"
                     },
                     "asc": true
                   },
@@ -5447,43 +5446,6 @@
             "properties": [
               {
                 "name": {
-                  "es": "Título de la actividad"
-                },
-                "child": {
-                  "property": "http://vivoweb.org/ontology/core#relatedBy",
-                  "graph": "activity",
-                  "child": {
-                    "property": "http://w3id.org/roh/title"
-                  }
-                }
-              },
-              {
-                "name": {
-                  "es": "Ámbito geográfico"
-                },
-                "childOR": [
-                  {
-                    "property": "http://vivoweb.org/ontology/core#relatedBy",
-                    "graph": "activity",
-                    "child": {
-                      "property": "http://w3id.org/roh/geographicFocusOther"
-                    }
-                  },
-                  {
-                    "property": "http://vivoweb.org/ontology/core#relatedBy",
-                    "graph": "activity",
-                    "child": {
-                      "property": "http://vivoweb.org/ontology/core#geographicFocus",
-                      "graph": "geographicregion",
-                      "child": {
-                        "property": "http://purl.org/dc/elements/1.1/title"
-                      }
-                    }
-                  }
-                ]
-              },
-              {
-                "name": {
                   "es": "Fecha de inicio"
                 },
                 "type": "date",
@@ -5493,38 +5455,6 @@
                   "graph": "activity",
                   "child": {
                     "property": "http://vivoweb.org/ontology/core#start"
-                  }
-                }
-              },
-              {
-                "name": {
-                  "es": "Perfil grupo receptor"
-                },
-                "child": {
-                  "property": "http://vivoweb.org/ontology/core#relatedBy",
-                  "graph": "activity",
-                  "child": {
-                    "property": "http://w3id.org/roh/targetGroupProfile",
-                    "graph": "targetgroupprofile",
-                    "child": {
-                      "property": "http://purl.org/dc/elements/1.1/title"
-                    }
-                  }
-                }
-              },
-              {
-                "name": {
-                  "es": "País entidad realización"
-                },
-                "child": {
-                  "property": "http://vivoweb.org/ontology/core#relatedBy",
-                  "graph": "activity",
-                  "child": {
-                    "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
-                    "graph": "feature",
-                    "child": {
-                      "property": "http://www.geonames.org/ontology#name"
-                    }
                   }
                 }
               },
@@ -5581,50 +5511,6 @@
               },
               {
                 "name": {
-                  "es": "Ciudad entidad realización"
-                },
-                "child": {
-                  "property": "http://vivoweb.org/ontology/core#relatedBy",
-                  "graph": "activity",
-                  "child": {
-                    "property": "https://www.w3.org/2006/vcard/ns#locality"
-                  }
-                }
-              },
-              {
-                "name": {
-                  "es": "C. Autón./Reg. entidad realización"
-                },
-                "child": {
-                  "property": "http://vivoweb.org/ontology/core#relatedBy",
-                  "graph": "activity",
-                  "child": {
-                    "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
-                    "graph": "feature",
-                    "child": {
-                      "property": "http://www.geonames.org/ontology#name"
-                    }
-                  }
-                }
-              },
-              {
-                "name": {
-                  "es": "Sistema de acceso"
-                },
-                "child": {
-                  "property": "http://vivoweb.org/ontology/core#relatedBy",
-                  "graph": "activity",
-                  "child": {
-                    "property": "http://w3id.org/roh/accessSystemActivity",
-                    "graph": "accesssystemactivity",
-                    "child": {
-                      "property": "http://purl.org/dc/elements/1.1/title"
-                    }
-                  }
-                }
-              },
-              {
-                "name": {
                   "es": "Duración años"
                 },
                 "child": {
@@ -5661,22 +5547,66 @@
               },
               {
                 "name": {
-                  "es": "Tipo de entidad"
+                  "es": "Ciudad entidad realización"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "activity",
+                  "child": {
+                    "property": "https://www.w3.org/2006/vcard/ns#locality"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "C. Autón./Reg. entidad realización"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "activity",
+                  "child": {
+                    "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+                    "graph": "feature",
+                    "child": {
+                      "property": "http://www.geonames.org/ontology#name"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "País entidad realización"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "activity",
+                  "child": {
+                    "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+                    "graph": "feature",
+                    "child": {
+                      "property": "http://www.geonames.org/ontology#name"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Sistema de acceso"
                 },
                 "childOR": [
                   {
                     "property": "http://vivoweb.org/ontology/core#relatedBy",
                     "graph": "activity",
                     "child": {
-                      "property": "http://w3id.org/roh/promotedByTypeOther"
+                      "property": "http://w3id.org/roh/accessSystemActivityOther"
                     }
                   },
                   {
                     "property": "http://vivoweb.org/ontology/core#relatedBy",
                     "graph": "activity",
                     "child": {
-                      "property": "http://w3id.org/roh/promotedByType",
-                      "graph": "organizationtype",
+                      "property": "http://w3id.org/roh/accessSystemActivity",
+                      "graph": "accesssystemactivity",
                       "child": {
                         "property": "http://purl.org/dc/elements/1.1/title"
                       }
@@ -5710,6 +5640,47 @@
               },
               {
                 "name": {
+                  "es": "Perfil grupo receptor"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "activity",
+                  "child": {
+                    "property": "http://w3id.org/roh/targetGroupProfile",
+                    "graph": "targetgroupprofile",
+                    "child": {
+                      "property": "http://purl.org/dc/elements/1.1/title"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Ámbito geográfico"
+                },
+                "childOR": [
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "activity",
+                    "child": {
+                      "property": "http://w3id.org/roh/geographicFocusOther"
+                    }
+                  },
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "activity",
+                    "child": {
+                      "property": "http://vivoweb.org/ontology/core#geographicFocus",
+                      "graph": "geographicregion",
+                      "child": {
+                        "property": "http://purl.org/dc/elements/1.1/title"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "name": {
                   "es": "Tareas concretas"
                 },
                 "child": {
@@ -5729,26 +5700,6 @@
                   "graph": "activity",
                   "child": {
                     "property": "http://w3id.org/roh/goals"
-                  }
-                }
-              },
-              {
-                "name": {
-                  "es": "Áreas temáticas"
-                },
-                "child": {
-                  "property": "http://vivoweb.org/ontology/core#relatedBy",
-                  "graph": "activity",
-                  "child": {
-                    "property": "http://w3id.org/roh/hasKnowledgeArea",
-                    "graph": "activity",
-                    "child": {
-                      "property": "http://w3id.org/roh/categoryNode",
-                      "graph": "taxonomy",
-                      "child": {
-                        "property": "http://www.w3.org/2008/05/skos#prefLabel"
-                      }
-                    }
                   }
                 }
               }

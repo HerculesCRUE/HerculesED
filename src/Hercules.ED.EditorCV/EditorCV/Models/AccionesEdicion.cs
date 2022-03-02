@@ -290,6 +290,7 @@ namespace GuardadoCV.Models
 
         public Dictionary<string, List<Person>> ValidateSignatures(string pSignatures, string pCVID, string pPersonID, string pLang)
         {
+            Disambiguation.mResourceApi = mResourceApi;
             Dictionary<string, List<Person>> listaPersonas = new Dictionary<string, List<Person>>();
 
             if (!string.IsNullOrEmpty(pSignatures))

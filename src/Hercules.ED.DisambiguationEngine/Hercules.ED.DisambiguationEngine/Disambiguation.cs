@@ -21,7 +21,7 @@ namespace Hercules.ED.DisambiguationEngine.Models
 
     public static class Disambiguation
     {
-        private static ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config\configOAuth\OAuthV3.config");
+        public static ResourceApi mResourceApi = null;
 
         //TODO comentarios
         /// <summary>
@@ -267,6 +267,8 @@ namespace Hercules.ED.DisambiguationEngine.Models
 
         public static Dictionary<string, Dictionary<string, float>> SimilarityBBDDScores(List<DisambiguableEntity> pItems, List<DisambiguableEntity> pItemBBDD, float pUmbral = 0.8f, float pToleranciaNombres = 0f)
         {
+            mResourceApi.Log.Error("D0");
+
             Dictionary<string, Dictionary<string, float>> listaEquivalencias = new Dictionary<string, Dictionary<string, float>>();
             if (pItemBBDD != null && pItemBBDD.Count > 0)
             {
