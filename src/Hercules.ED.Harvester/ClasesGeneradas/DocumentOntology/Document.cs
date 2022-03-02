@@ -158,14 +158,14 @@ namespace DocumentOntology
 			{
 				this.Dc_type = new PublicationType(propDc_type.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
-			this.Bibo_identifier = new List<Document>();
+			this.Bibo_identifier = new List<fDocument>();
 			SemanticPropertyModel propBibo_identifier = pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/identifier");
 			if(propBibo_identifier != null && propBibo_identifier.PropertyValues.Count > 0)
 			{
 				foreach (SemanticPropertyModel.PropertyValue propValue in propBibo_identifier.PropertyValues)
 				{
 					if(propValue.RelatedEntity!=null){
-						Document bibo_identifier = new Document(propValue.RelatedEntity,idiomaUsuario);
+						fDocument bibo_identifier = new fDocument(propValue.RelatedEntity,idiomaUsuario);
 						this.Bibo_identifier.Add(bibo_identifier);
 					}
 				}
@@ -449,14 +449,14 @@ namespace DocumentOntology
 			{
 				this.Dc_type = new PublicationType(propDc_type.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
-			this.Bibo_identifier = new List<Document>();
+			this.Bibo_identifier = new List<fDocument>();
 			SemanticPropertyModel propBibo_identifier = pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/identifier");
 			if(propBibo_identifier != null && propBibo_identifier.PropertyValues.Count > 0)
 			{
 				foreach (SemanticPropertyModel.PropertyValue propValue in propBibo_identifier.PropertyValues)
 				{
 					if(propValue.RelatedEntity!=null){
-						Document bibo_identifier = new Document(propValue.RelatedEntity,idiomaUsuario);
+						fDocument bibo_identifier = new fDocument(propValue.RelatedEntity,idiomaUsuario);
 						this.Bibo_identifier.Add(bibo_identifier);
 					}
 				}
@@ -677,7 +677,7 @@ namespace DocumentOntology
 
 		[LABEL(LanguageEnum.es,"http://purl.org/ontology/bibo/identifier")]
 		[RDFProperty("http://purl.org/ontology/bibo/identifier")]
-		public  List<Document> Bibo_identifier { get; set;}
+		public  List<fDocument> Bibo_identifier { get; set;}
 
 		[LABEL(LanguageEnum.es,"http://w3id.org/roh/publicAuthorList")]
 		[RDFProperty("http://w3id.org/roh/publicAuthorList")]
@@ -972,7 +972,7 @@ namespace DocumentOntology
 				}
 			}
 			if(Bibo_identifier!=null){
-				foreach(Document prop in Bibo_identifier){
+				foreach(fDocument prop in Bibo_identifier){
 					prop.GetProperties();
 					prop.GetEntities();
 					OntologyEntity entityDocument = new OntologyEntity("http://xmlns.com/foaf/0.1/Document", "http://xmlns.com/foaf/0.1/Document", "bibo:identifier", prop.propList, prop.entList);

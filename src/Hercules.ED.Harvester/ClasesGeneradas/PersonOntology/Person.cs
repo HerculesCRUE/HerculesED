@@ -393,7 +393,7 @@ namespace PersonOntology
 			base.GetProperties();
 			propList.Add(new StringOntologyProperty("roh:hasRole", this.IdRoh_hasRole));
 			propList.Add(new StringOntologyProperty("vivo:departmentOrSchool", this.IdVivo_departmentOrSchool));
-			propList.Add(new StringOntologyProperty("roh:gnossUser", this.Roh_gnossUser));
+			//propList.Add(new StringOntologyProperty("roh:gnossUser", this.Roh_gnossUser));
 			propList.Add(new ListStringOntologyProperty("vivo:relates", this.IdsVivo_relates));
 			propList.Add(new StringOntologyProperty("roh:usuarioGitHub", this.Roh_usuarioGitHub));
 			propList.Add(new StringOntologyProperty("roh:themedAreasNumber", this.Roh_themedAreasNumber.ToString()));
