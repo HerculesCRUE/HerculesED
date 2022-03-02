@@ -14,14 +14,16 @@ using System.Text.RegularExpressions;
 using System.Globalization;
 using System.Collections;
 using Gnoss.ApiWrapper.Exceptions;
+using System.Diagnostics.CodeAnalysis;
 using Person = PersonOntology.Person;
 
 namespace CollaborationOntology
 {
+	[ExcludeFromCodeCoverage]
 	public class BFO_0000023 : GnossOCBase
 	{
 
-		public BFO_0000023() : base() { }
+		public BFO_0000023() : base() { } 
 
 		public BFO_0000023(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
 		{
@@ -29,9 +31,9 @@ namespace CollaborationOntology
 			this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
 			this.Foaf_nick = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/nick"));
 			SemanticPropertyModel propRdf_member = pSemCmsModel.GetPropertyByPath("http://www.w3.org/1999/02/22-rdf-syntax-ns#member");
-			if (propRdf_member != null && propRdf_member.PropertyValues.Count > 0)
+			if(propRdf_member != null && propRdf_member.PropertyValues.Count > 0)
 			{
-				this.Rdf_member = new Person(propRdf_member.PropertyValues[0].RelatedEntity, idiomaUsuario);
+				this.Rdf_member = new Person(propRdf_member.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
 			this.Rdf_comment = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://www.w3.org/1999/02/22-rdf-syntax-ns#comment")).Value;
 		}
@@ -40,19 +42,19 @@ namespace CollaborationOntology
 		public virtual string RdfsLabel { get { return "http://purl.obolibrary.org/obo/BFO_0000023"; } }
 		public OntologyEntity Entity { get; set; }
 
-		[LABEL(LanguageEnum.es, "nick")]
+		[LABEL(LanguageEnum.es,"nick")]
 		[RDFProperty("http://xmlns.com/foaf/0.1/nick")]
-		public string Foaf_nick { get; set; }
+		public  string Foaf_nick { get; set;}
 
-		[LABEL(LanguageEnum.es, "member")]
+		[LABEL(LanguageEnum.es,"member")]
 		[RDFProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#member")]
 		[Required]
-		public Person Rdf_member { get; set; }
-		public string IdRdf_member { get; set; }
+		public  Person Rdf_member  { get; set;} 
+		public string IdRdf_member  { get; set;} 
 
-		[LABEL(LanguageEnum.es, "comment")]
+		[LABEL(LanguageEnum.es,"comment")]
 		[RDFProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#comment")]
-		public int Rdf_comment { get; set; }
+		public  int Rdf_comment { get; set;}
 
 
 		internal override void GetProperties()
@@ -66,7 +68,7 @@ namespace CollaborationOntology
 		internal override void GetEntities()
 		{
 			base.GetEntities();
-		}
+		} 
 
 
 
@@ -74,7 +76,7 @@ namespace CollaborationOntology
 		protected List<object> ObtenerObjetosDePropiedad(object propiedad)
 		{
 			List<object> lista = new List<object>();
-			if (propiedad is IList)
+			if(propiedad is IList)
 			{
 				foreach (object item in (IList)propiedad)
 				{
@@ -104,14 +106,14 @@ namespace CollaborationOntology
 					if (((IDictionary)propiedad)[key] is IList)
 					{
 						List<string> listaValores = (List<string>)((IDictionary)propiedad)[key];
-						foreach (string valor in listaValores)
+						foreach(string valor in listaValores)
 						{
 							lista.Add(valor);
 						}
 					}
 					else
 					{
-						lista.Add((string)((IDictionary)propiedad)[key]);
+					lista.Add((string)((IDictionary)propiedad)[key]);
 					}
 				}
 			}
@@ -131,15 +133,15 @@ namespace CollaborationOntology
 
 		private void AgregarTripleALista(string pSujeto, string pPredicado, string pObjeto, List<string> pLista, string pDatosExtra)
 		{
-			if (!string.IsNullOrEmpty(pObjeto) && !pObjeto.Equals("\"\"") && !pObjeto.Equals("<>"))
+			if(!string.IsNullOrEmpty(pObjeto) && !pObjeto.Equals("\"\"") && !pObjeto.Equals("<>"))
 			{
 				pLista.Add($"<{pSujeto}> <{pPredicado}> {pObjeto}{pDatosExtra}");
-			}
-		}
+			} 
+		} 
 
 		private void AgregarTags(List<string> pListaTriples)
 		{
-			foreach (string tag in tagList)
+			foreach(string tag in tagList)
 			{
 				AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://rdfs.org/sioc/types#Tag", tag.ToLower(), pListaTriples, " . ");
 			}

@@ -14,12 +14,14 @@ using System.Text.RegularExpressions;
 using System.Globalization;
 using System.Collections;
 using Gnoss.ApiWrapper.Exceptions;
+using System.Diagnostics.CodeAnalysis;
 using DedicationRegime = DedicationregimeOntology.DedicationRegime;
 using ParticipationTypeProject = ParticipationtypeprojectOntology.ParticipationTypeProject;
 using ContributionGradeProject = ContributiongradeprojectOntology.ContributionGradeProject;
 
 namespace CurriculumvitaeOntology
 {
+	[ExcludeFromCodeCoverage]
 	public class RelatedNonCompetitiveProjectCV : GnossOCBase
 	{
 

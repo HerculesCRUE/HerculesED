@@ -14,57 +14,49 @@ using System.Text.RegularExpressions;
 using System.Globalization;
 using System.Collections;
 using Gnoss.ApiWrapper.Exceptions;
-using Feature = FeatureOntology.Feature;
+using System.Diagnostics.CodeAnalysis;
 
-namespace DocumentOntology
+namespace ProjectOntology
 {
-	public class Address : GnossOCBase
+	[ExcludeFromCodeCoverage]
+	public class ResearchArea : GnossOCBase
 	{
 
-		public Address() : base() { } 
+		public ResearchArea() : base() { } 
 
-		public Address(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
+		public ResearchArea(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
 		{
 			this.mGNOSSID = pSemCmsModel.Entity.Uri;
 			this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
-			SemanticPropertyModel propVcard_hasCountryName = pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#hasCountryName");
-			if(propVcard_hasCountryName != null && propVcard_hasCountryName.PropertyValues.Count > 0)
-			{
-				this.Vcard_hasCountryName = new Feature(propVcard_hasCountryName.PropertyValues[0].RelatedEntity,idiomaUsuario);
-			}
-			SemanticPropertyModel propVcard_hasRegion = pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#hasRegion");
-			if(propVcard_hasRegion != null && propVcard_hasRegion.PropertyValues.Count > 0)
-			{
-				this.Vcard_hasRegion = new Feature(propVcard_hasRegion.PropertyValues[0].RelatedEntity,idiomaUsuario);
-			}
-			this.Vcard_locality = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#locality"));
+			this.Vivo_start= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#start"));
+			this.Vivo_end= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#end"));
+			this.Roh_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/title"));
 		}
 
-		public virtual string RdfType { get { return "https://www.w3.org/2006/vcard/ns#Address"; } }
-		public virtual string RdfsLabel { get { return "https://www.w3.org/2006/vcard/ns#Address"; } }
+		public virtual string RdfType { get { return "http://w3id.org/roh/ResearchArea"; } }
+		public virtual string RdfsLabel { get { return "http://w3id.org/roh/ResearchArea"; } }
 		public OntologyEntity Entity { get; set; }
 
-		[LABEL(LanguageEnum.es,"País")]
-		[RDFProperty("https://www.w3.org/2006/vcard/ns#hasCountryName")]
-		public  Feature Vcard_hasCountryName  { get; set;} 
-		public string IdVcard_hasCountryName  { get; set;} 
+		[RDFProperty("http://vivoweb.org/ontology/core#start")]
+		public  DateTime? Vivo_start { get; set;}
 
-		[LABEL(LanguageEnum.es,"C. Autón./Reg.")]
-		[RDFProperty("https://www.w3.org/2006/vcard/ns#hasRegion")]
-		public  Feature Vcard_hasRegion  { get; set;} 
-		public string IdVcard_hasRegion  { get; set;} 
+		[RDFProperty("http://vivoweb.org/ontology/core#end")]
+		public  DateTime? Vivo_end { get; set;}
 
-		[LABEL(LanguageEnum.es,"Ciudad")]
-		[RDFProperty("https://www.w3.org/2006/vcard/ns#locality")]
-		public  string Vcard_locality { get; set;}
+		[RDFProperty("http://w3id.org/roh/title")]
+		public  string Roh_title { get; set;}
 
 
 		internal override void GetProperties()
 		{
 			base.GetProperties();
-			propList.Add(new StringOntologyProperty("vcard:hasCountryName", this.IdVcard_hasCountryName));
-			propList.Add(new StringOntologyProperty("vcard:hasRegion", this.IdVcard_hasRegion));
-			propList.Add(new StringOntologyProperty("vcard:locality", this.Vcard_locality));
+			if (this.Vivo_start.HasValue){
+				propList.Add(new DateOntologyProperty("vivo:start", this.Vivo_start.Value));
+				}
+			if (this.Vivo_end.HasValue){
+				propList.Add(new DateOntologyProperty("vivo:end", this.Vivo_end.Value));
+				}
+			propList.Add(new StringOntologyProperty("roh:title", this.Roh_title));
 		}
 
 		internal override void GetEntities()

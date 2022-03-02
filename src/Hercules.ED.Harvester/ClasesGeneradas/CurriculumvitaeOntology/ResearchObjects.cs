@@ -14,49 +14,64 @@ using System.Text.RegularExpressions;
 using System.Globalization;
 using System.Collections;
 using Gnoss.ApiWrapper.Exceptions;
+using System.Diagnostics.CodeAnalysis;
 
 namespace CurriculumvitaeOntology
 {
-	public class RelatedCommitteeCV : GnossOCBase
+	[ExcludeFromCodeCoverage]
+	public class ResearchObjects : GnossOCBase
 	{
 
-		public RelatedCommitteeCV() : base() { } 
+		public ResearchObjects() : base() { } 
 
-		public RelatedCommitteeCV(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
+		public ResearchObjects(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
 		{
 			this.mGNOSSID = pSemCmsModel.Entity.Uri;
 			this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
-			this.Vivo_start= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#start"));
-			this.Vivo_end= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#end"));
+			this.Roh_researchObjects = new List<RelatedResearchObject>();
+			SemanticPropertyModel propRoh_researchObjects = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/researchObjects");
+			if(propRoh_researchObjects != null && propRoh_researchObjects.PropertyValues.Count > 0)
+			{
+				foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_researchObjects.PropertyValues)
+				{
+					if(propValue.RelatedEntity!=null){
+						RelatedResearchObject roh_researchObjects = new RelatedResearchObject(propValue.RelatedEntity,idiomaUsuario);
+						this.Roh_researchObjects.Add(roh_researchObjects);
+					}
+				}
+			}
+			this.Roh_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/title"));
 		}
 
-		public virtual string RdfType { get { return "http://w3id.org/roh/RelatedCommitteeCV"; } }
-		public virtual string RdfsLabel { get { return "http://w3id.org/roh/RelatedCommitteeCV"; } }
+		public virtual string RdfType { get { return "http://w3id.org/roh/ResearchObjects"; } }
+		public virtual string RdfsLabel { get { return "http://w3id.org/roh/ResearchObjects"; } }
 		public OntologyEntity Entity { get; set; }
 
-		[LABEL(LanguageEnum.es,"http://vivoweb.org/ontology/core#start")]
-		[RDFProperty("http://vivoweb.org/ontology/core#start")]
-		public  DateTime? Vivo_start { get; set;}
+		[RDFProperty("http://w3id.org/roh/researchObjects")]
+		public  List<RelatedResearchObject> Roh_researchObjects { get; set;}
 
-		[LABEL(LanguageEnum.es,"http://vivoweb.org/ontology/core#end")]
-		[RDFProperty("http://vivoweb.org/ontology/core#end")]
-		public  DateTime? Vivo_end { get; set;}
+		[RDFProperty("http://w3id.org/roh/title")]
+		public  string Roh_title { get; set;}
 
 
 		internal override void GetProperties()
 		{
 			base.GetProperties();
-			if (this.Vivo_start.HasValue){
-				propList.Add(new DateOntologyProperty("vivo:start", this.Vivo_start.Value));
-				}
-			if (this.Vivo_end.HasValue){
-				propList.Add(new DateOntologyProperty("vivo:end", this.Vivo_end.Value));
-				}
+			propList.Add(new StringOntologyProperty("roh:title", this.Roh_title));
 		}
 
 		internal override void GetEntities()
 		{
 			base.GetEntities();
+			if(Roh_researchObjects!=null){
+				foreach(RelatedResearchObject prop in Roh_researchObjects){
+					prop.GetProperties();
+					prop.GetEntities();
+					OntologyEntity entityRelatedResearchObject = new OntologyEntity("http://w3id.org/roh/RelatedResearchObject", "http://w3id.org/roh/RelatedResearchObject", "roh:researchObjects", prop.propList, prop.entList);
+				entList.Add(entityRelatedResearchObject);
+				prop.Entity= entityRelatedResearchObject;
+				}
+			}
 		} 
 
 

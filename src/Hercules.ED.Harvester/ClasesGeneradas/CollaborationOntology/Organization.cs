@@ -14,16 +14,20 @@ using System.Text.RegularExpressions;
 using System.Globalization;
 using System.Collections;
 using Gnoss.ApiWrapper.Exceptions;
+using System.Diagnostics.CodeAnalysis;
 using Feature = FeatureOntology.Feature;
+using Organization = OrganizationOntology.Organization;
+using OrganizationType = OrganizationtypeOntology.OrganizationType;
 
-namespace SupervisedartisticprojectOntology
+namespace CollaborationOntology
 {
-	public class Address : GnossOCBase
+	[ExcludeFromCodeCoverage]
+	public class Organization : GnossOCBase
 	{
 
-		public Address() : base() { } 
+		public Organization() : base() { } 
 
-		public Address(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
+		public Organization(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
 		{
 			this.mGNOSSID = pSemCmsModel.Entity.Uri;
 			this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
@@ -37,26 +41,53 @@ namespace SupervisedartisticprojectOntology
 			{
 				this.Vcard_hasCountryName = new Feature(propVcard_hasCountryName.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
+			SemanticPropertyModel propRoh_organization = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/organization");
+			if(propRoh_organization != null && propRoh_organization.PropertyValues.Count > 0)
+			{
+				this.Roh_organization = new Organization(propRoh_organization.PropertyValues[0].RelatedEntity,idiomaUsuario);
+			}
+			SemanticPropertyModel propRoh_organizationType = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/organizationType");
+			if(propRoh_organizationType != null && propRoh_organizationType.PropertyValues.Count > 0)
+			{
+				this.Roh_organizationType = new OrganizationType(propRoh_organizationType.PropertyValues[0].RelatedEntity,idiomaUsuario);
+			}
 			this.Vcard_locality = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#locality"));
+			this.Roh_organizationTypeOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/organizationTypeOther"));
+			this.Roh_organizationTitle = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/organizationTitle"));
 		}
 
-		public virtual string RdfType { get { return "https://www.w3.org/2006/vcard/ns#Address"; } }
-		public virtual string RdfsLabel { get { return "https://www.w3.org/2006/vcard/ns#Address"; } }
+		public virtual string RdfType { get { return "http://w3id.org/roh/Organization"; } }
+		public virtual string RdfsLabel { get { return "http://w3id.org/roh/Organization"; } }
 		public OntologyEntity Entity { get; set; }
 
-		[LABEL(LanguageEnum.es,"https://www.w3.org/2006/vcard/ns#hasRegion")]
+		[LABEL(LanguageEnum.es,"hasRegion")]
 		[RDFProperty("https://www.w3.org/2006/vcard/ns#hasRegion")]
 		public  Feature Vcard_hasRegion  { get; set;} 
 		public string IdVcard_hasRegion  { get; set;} 
 
-		[LABEL(LanguageEnum.es,"https://www.w3.org/2006/vcard/ns#hasCountryName")]
+		[LABEL(LanguageEnum.es,"hasCountryName")]
 		[RDFProperty("https://www.w3.org/2006/vcard/ns#hasCountryName")]
 		public  Feature Vcard_hasCountryName  { get; set;} 
 		public string IdVcard_hasCountryName  { get; set;} 
 
-		[LABEL(LanguageEnum.es,"https://www.w3.org/2006/vcard/ns#locality")]
+		[LABEL(LanguageEnum.es,"organization")]
+		[RDFProperty("http://w3id.org/roh/organization")]
+		public  Organization Roh_organization  { get; set;} 
+		public string IdRoh_organization  { get; set;} 
+
+		[LABEL(LanguageEnum.es,"http://w3id.org/roh/organizationType")]
+		[RDFProperty("http://w3id.org/roh/organizationType")]
+		public  OrganizationType Roh_organizationType  { get; set;} 
+		public string IdRoh_organizationType  { get; set;} 
+
 		[RDFProperty("https://www.w3.org/2006/vcard/ns#locality")]
 		public  string Vcard_locality { get; set;}
+
+		[RDFProperty("http://w3id.org/roh/organizationTypeOther")]
+		public  string Roh_organizationTypeOther { get; set;}
+
+		[RDFProperty("http://w3id.org/roh/organizationTitle")]
+		public  string Roh_organizationTitle { get; set;}
 
 
 		internal override void GetProperties()
@@ -64,7 +95,11 @@ namespace SupervisedartisticprojectOntology
 			base.GetProperties();
 			propList.Add(new StringOntologyProperty("vcard:hasRegion", this.IdVcard_hasRegion));
 			propList.Add(new StringOntologyProperty("vcard:hasCountryName", this.IdVcard_hasCountryName));
+			propList.Add(new StringOntologyProperty("roh:organization", this.IdRoh_organization));
+			propList.Add(new StringOntologyProperty("roh:organizationType", this.IdRoh_organizationType));
 			propList.Add(new StringOntologyProperty("vcard:locality", this.Vcard_locality));
+			propList.Add(new StringOntologyProperty("roh:organizationTypeOther", this.Roh_organizationTypeOther));
+			propList.Add(new StringOntologyProperty("roh:organizationTitle", this.Roh_organizationTitle));
 		}
 
 		internal override void GetEntities()
