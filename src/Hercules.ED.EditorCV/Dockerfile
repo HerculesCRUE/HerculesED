@@ -14,13 +14,8 @@ COPY ["Hercules.ED.DisambiguationEngine/Hercules.ED.DisambiguationEngine.csproj"
 COPY ["EditorCV.csproj", "./EditorCV/"]
 RUN dotnet restore "./EditorCV/EditorCV.csproj"
 COPY . .
-#WORKDIR "/src/."
-#RUN dotnet build "EditorCV.csproj" -c Release -o /app/build
-WORKDIR "/src/EditorCV/Hercules.ED.DisambiguationEngine"
-RUN dotnet build -c Release -o /app/build
-
-WORKDIR "/src/EditorCV"
-RUN dotnet build -c Release -o /app/build
+WORKDIR "/src/."
+RUN dotnet build "EditorCV.csproj" -c Release -o /app/build
 
 FROM build AS publish
 RUN dotnet publish "EditorCV.csproj" -c Release -o /app/publish
