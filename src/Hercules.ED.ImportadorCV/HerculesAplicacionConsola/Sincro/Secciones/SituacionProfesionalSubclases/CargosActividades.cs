@@ -8,29 +8,28 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
-
-namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
+namespace HerculesAplicacionConsola.Sincro.Secciones.SituacionProfesionalSubclases
 {
-    class PeriodosActividad : DisambiguableEntity
+    class CargosActividades : DisambiguableEntity
     {
-        public string numTramos { get; set; }
-        public string fecha { get; set; }
-        public string entidadAcreditante { get; set; }
+        public string nombre { get; set; }
+        public string categoria { get; set; }
+        public string fechaIni { get; set; }
 
-        private static DisambiguationDataConfig configDescripcion = new DisambiguationDataConfig()
+        private static DisambiguationDataConfig configNombre = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsTitle,
             score = 0.8f
         };
 
-        private static DisambiguationDataConfig configFecha = new DisambiguationDataConfig()
+        private static DisambiguationDataConfig configCategoria = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsItem,
             score = 0.5f,
             scoreMinus = 0.5f
         };
-        
-        private static DisambiguationDataConfig configEA = new DisambiguationDataConfig()
+
+        private static DisambiguationDataConfig configFechaIni= new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsItem,
             score = 0.5f,
@@ -43,23 +42,23 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
 
             data.Add(new DisambiguationData()
             {
-                property = "numTramos",
-                config = configDescripcion,
-                value = numTramos
+                property = "nombre",
+                config = configNombre,
+                value = nombre
             });
 
             data.Add(new DisambiguationData()
             {
-                property = "fecha",
-                config = configFecha,
-                value = fecha
+                property = "categoria",
+                config = configCategoria,
+                value = categoria
             });
-
+            
             data.Add(new DisambiguationData()
             {
-                property = "entidadAcreditacion",
-                config = configEA,
-                value = entidadAcreditante
+                property = "fechaIni",
+                config = configFechaIni,
+                value = fechaIni
             });
 
             return data;
@@ -77,31 +76,31 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
 
             foreach (List<string> lista in listaListas)
             {
-                string select = $@"SELECT distinct ?item ?itemTitle ?itemDate ?itemEA ";
+                string select = $@"SELECT distinct ?item ?itemTitle ?itemCategoria ?itemFechaIni";
                 string where = $@"where {{
-                                        ?item <{Variables.ActividadCientificaTecnologica.actividadInvestigadoraNumeroTramos}> ?itemTitle . 
-                                        OPTIONAL{{?item <{Variables.ActividadCientificaTecnologica.actividadInvestigadoraFechaObtencion}> ?itemDate }} .
-                                        OPTIONAL{{?item <{Variables.ActividadCientificaTecnologica.actividadInvestigadoraEntidadNombre}> ?itemEA }} .
+                                        ?item <{Variables.SituacionProfesional.cargosActividadesEntidadEmpleadoraNombre}> ?itemTitle . 
+                                        OPTIONAL{{?item <{Variables.SituacionProfesional.cargosActividadesCategoriaProfesional}> ?itemCategoria }}.
+                                        OPTIONAL{{?item <{Variables.SituacionProfesional.cargosActividadesFechaInicio}> ?itemFechaIni }}.
                                         FILTER(?item in (<{string.Join(">,<", lista)}>))
                                     }}";
 
                 SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, graph);
                 foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                 {
-                    PeriodosActividad periodosActividad = new PeriodosActividad();
-                    periodosActividad.ID = fila["item"].value;
-                    periodosActividad.numTramos = fila["itemTitle"].value;
-                    periodosActividad.fecha = "";
-                    if (fila.ContainsKey("itemDate"))
+                    CargosActividades cargosActividades = new CargosActividades();
+                    cargosActividades.ID = fila["item"].value;
+                    cargosActividades.nombre = fila["itemTitle"].value;
+                    cargosActividades.categoria = "";
+                    if (fila.ContainsKey("itemCategoria"))
                     {
-                        periodosActividad.fecha = fila["itemDate"].value;
+                        cargosActividades.categoria = fila["itemCategoria"].value;
                     }
-                    periodosActividad.entidadAcreditante = "";
-                    if (fila.ContainsKey("itemEA"))
+                    cargosActividades.fechaIni = "";
+                    if (fila.ContainsKey("itemCategoria"))
                     {
-                        periodosActividad.entidadAcreditante = fila["itemEA"].value;
+                        cargosActividades.fechaIni = fila["itemFechaIni"].value;
                     }
-                    resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), periodosActividad);
+                    resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), cargosActividades);
                 }
             }
 

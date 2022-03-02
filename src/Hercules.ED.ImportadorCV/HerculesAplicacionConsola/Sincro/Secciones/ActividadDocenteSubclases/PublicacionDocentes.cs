@@ -9,13 +9,12 @@ using System.Text;
 using System.Threading.Tasks;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
-namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
+namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadDocenteSubclases
 {
-    class PeriodosActividad : DisambiguableEntity
+    class PublicacionDocentes : DisambiguableEntity
     {
-        public string numTramos { get; set; }
+        public string descripcion { get; set; }
         public string fecha { get; set; }
-        public string entidadAcreditante { get; set; }
 
         private static DisambiguationDataConfig configDescripcion = new DisambiguationDataConfig()
         {
@@ -29,13 +28,6 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
             score = 0.5f,
             scoreMinus = 0.5f
         };
-        
-        private static DisambiguationDataConfig configEA = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsItem,
-            score = 0.5f,
-            scoreMinus = 0.5f
-        };
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
@@ -43,9 +35,9 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
 
             data.Add(new DisambiguationData()
             {
-                property = "numTramos",
+                property = "descripcion",
                 config = configDescripcion,
-                value = numTramos
+                value = descripcion
             });
 
             data.Add(new DisambiguationData()
@@ -54,14 +46,6 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
                 config = configFecha,
                 value = fecha
             });
-
-            data.Add(new DisambiguationData()
-            {
-                property = "entidadAcreditacion",
-                config = configEA,
-                value = entidadAcreditante
-            });
-
             return data;
         }
 
@@ -77,31 +61,25 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
 
             foreach (List<string> lista in listaListas)
             {
-                string select = $@"SELECT distinct ?item ?itemTitle ?itemDate ?itemEA ";
+                string select = $@"SELECT distinct ?item ?itemTitle ?itemDate ";
                 string where = $@"where {{
-                                        ?item <{Variables.ActividadCientificaTecnologica.actividadInvestigadoraNumeroTramos}> ?itemTitle . 
-                                        OPTIONAL{{?item <{Variables.ActividadCientificaTecnologica.actividadInvestigadoraFechaObtencion}> ?itemDate }} .
-                                        OPTIONAL{{?item <{Variables.ActividadCientificaTecnologica.actividadInvestigadoraEntidadNombre}> ?itemEA }} .
+                                        ?item <{Variables.ActividadDocente.publicacionDocenteNombre}> ?itemTitle . 
+                                        OPTIONAL{{?item <{Variables.ActividadDocente.publicacionDocenteFechaPublicacion}> ?itemDate }}.
                                         FILTER(?item in (<{string.Join(">,<", lista)}>))
                                     }}";
-
+                //TODO check where valores
                 SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, graph);
                 foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                 {
-                    PeriodosActividad periodosActividad = new PeriodosActividad();
-                    periodosActividad.ID = fila["item"].value;
-                    periodosActividad.numTramos = fila["itemTitle"].value;
-                    periodosActividad.fecha = "";
+                    PublicacionDocentes publicacionDocentes = new PublicacionDocentes();
+                    publicacionDocentes.ID = fila["item"].value;
+                    publicacionDocentes.descripcion = fila["itemTitle"].value;
+                    publicacionDocentes.fecha = "";
                     if (fila.ContainsKey("itemDate"))
                     {
-                        periodosActividad.fecha = fila["itemDate"].value;
+                        publicacionDocentes.fecha = fila["itemDate"].value;
                     }
-                    periodosActividad.entidadAcreditante = "";
-                    if (fila.ContainsKey("itemEA"))
-                    {
-                        periodosActividad.entidadAcreditante = fila["itemEA"].value;
-                    }
-                    resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), periodosActividad);
+                    resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), publicacionDocentes);
                 }
             }
 

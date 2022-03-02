@@ -15,6 +15,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
     {
         public string descripcion { get; set; }
         public string fecha { get; set; }
+        public string entidadRealizacion { get; set; }
 
         private static DisambiguationDataConfig configDescripcion = new DisambiguationDataConfig()
         {
@@ -23,6 +24,13 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
         };
 
         private static DisambiguationDataConfig configFecha = new DisambiguationDataConfig()
+        {
+            type = DisambiguationDataConfigType.equalsItem,
+            score = 0.5f,
+            scoreMinus = 0.5f
+        };
+        
+        private static DisambiguationDataConfig configER = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsItem,
             score = 0.5f,
@@ -46,6 +54,13 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
                 config = configFecha,
                 value = fecha
             });
+
+            data.Add(new DisambiguationData()
+            {
+                property = "entidadRealizacion",
+                config = configER,
+                value = entidadRealizacion
+            });
             return data;
         }
 
@@ -61,10 +76,11 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
 
             foreach (List<string> lista in listaListas)
             {
-                string select = $@"SELECT distinct ?item ?itemTitle ?itemDate ";
+                string select = $@"SELECT distinct ?item ?itemTitle ?itemDate ?itemER ";
                 string where = $@"where {{
                                         ?item <{Variables.ActividadCientificaTecnologica.estanciasIDITareasContrastables}> ?itemTitle . 
                                         OPTIONAL{{ ?item <{Variables.ActividadCientificaTecnologica.estanciasIDIFechaInicioEntidadRealizacion}> ?itemDate }} .
+                                        OPTIONAL{{ ?item <{Variables.ActividadCientificaTecnologica.estanciasIDIEntidadRealizacionNombre}> ?itemER }} .
                                         FILTER(?item in (<{string.Join(">,<", lista)}>))
                                     }}";
 
@@ -78,6 +94,11 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
                     if (fila.ContainsKey("itemDate"))
                     {
                         estanciasIDI.fecha = fila["itemDate"].value;
+                    }
+                    estanciasIDI.entidadRealizacion = "";
+                    if (fila.ContainsKey("itemER"))
+                    {
+                        estanciasIDI.entidadRealizacion = fila["itemER"].value;
                     }
                     resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), estanciasIDI);
                 }
