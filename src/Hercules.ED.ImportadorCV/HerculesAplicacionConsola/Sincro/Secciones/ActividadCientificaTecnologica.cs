@@ -1135,7 +1135,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                             new Property(Variables.ActividadCientificaTecnologica.pubDocumentosIDPubDigitalPMID, identificador.Value)
                         ));
                         break;
-                    case "OTHERS"://TODO - check
+                    case "OTHERS":
                         Property IDOtro = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.pubDocumentosIDOtroPubDigital);
                         Property NombreOtro = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.pubDocumentosNombreOtroPubDigital);
 
@@ -1504,7 +1504,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                             new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemIDPubDigitalPMID, identificador.Value)
                         ));
                         break;
-                    case "OTHERS"://TODO - check
+                    case "OTHERS":
                         Property IDOtro = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.trabajosJornSemIDOtroPubDigital);
                         Property NombreOtro = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.trabajosJornSemNombreOtroPubDigital);
 
