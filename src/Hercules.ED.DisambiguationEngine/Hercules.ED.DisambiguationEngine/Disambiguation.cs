@@ -43,21 +43,16 @@ namespace Hercules.ED.DisambiguationEngine.Models
         {
             get
             {
-                mResourceApi.Log.Error("D1");
                 if (mFrecuenciaNombres == null)
                 {
-                    mResourceApi.Log.Error("D2");
                     if (_loading.CheckAndSetFirstCall)
                     {
-                        mResourceApi.Log.Error("D3");
                         new Thread(delegate ()
                         {
-                            mResourceApi.Log.Error("D4");
                             try
                             {
                                 while (true)
                                 {
-                                    mResourceApi.Log.Error("D5");
                                     Dictionary<string, int> frecuenciaNombresAux = new Dictionary<string, int>();
                                     Dictionary<string, float> scoreNombresCalculadoAux = new Dictionary<string, float>();
                                     int limit = 10000;
@@ -149,15 +144,12 @@ namespace Hercules.ED.DisambiguationEngine.Models
 
                             }
                         }).Start();
-                        mResourceApi.Log.Error("D6");
                     }
                     while (mFrecuenciaNombres == null)
                     {
-                        mResourceApi.Log.Error("D7");
                         Thread.Sleep(1000);
                     }
                 }
-                mResourceApi.Log.Error("D8");
                 return mFrecuenciaNombres;
             }
         }
