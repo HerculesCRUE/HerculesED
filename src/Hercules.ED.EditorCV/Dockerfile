@@ -15,10 +15,10 @@ COPY ["Hercules.ED.DisambiguationEngine/Hercules.ED.DisambiguationEngine.csproj"
 RUN dotnet restore "./EditorCV/EditorCV.csproj"
 COPY . .
 WORKDIR "/src/."
-RUN dotnet build "EditorCV.csproj" -c Release -o /app/build
+RUN dotnet build "./EditorCV/EditorCV.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "EditorCV.csproj" -c Release -o /app/publish
+RUN dotnet publish "./EditorCV/EditorCV.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
