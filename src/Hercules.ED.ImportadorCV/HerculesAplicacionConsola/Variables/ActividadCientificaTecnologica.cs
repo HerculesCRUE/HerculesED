@@ -382,7 +382,8 @@ namespace HerculesAplicacionConsola.Variables
         public const string ayudasBecasDuracionDia = "http://w3id.org/roh/durationDays";
         public const string ayudasBecasFechaFinalizacion = "http://vivoweb.org/ontology/core#end";
         public const string ayudasBecasFacultadEscuela = "http://w3id.org/roh/center";
-        public const string ayudasBecasEntidadRealizacion = "http://w3id.org/roh/entityTitle";
+        public const string ayudasBecasEntidadRealizacionNombre = "http://w3id.org/roh/entityTitle";
+        public const string ayudasBecasEntidadRealizacion = "http://w3id.org/roh/entity";
 
         /// <summary>
         /// Otros modos de colaboración con investigadores/as o tecnólogos/as - 060.020.020.000
