@@ -12,7 +12,7 @@ FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
 COPY ["EditorCV.csproj", "./EditorCV/"]
 COPY ["Hercules.ED.DisambiguationEngine/Hercules.ED.DisambiguationEngine.csproj", "./EditorCV/DisambiguationEngine/"]
-RUN dotnet restore "./EditorCV.csproj"
+RUN dotnet restore "./EditorCV/EditorCV.csproj"
 COPY . .
 WORKDIR "/src/."
 RUN dotnet build "EditorCV.csproj" -c Release -o /app/build
