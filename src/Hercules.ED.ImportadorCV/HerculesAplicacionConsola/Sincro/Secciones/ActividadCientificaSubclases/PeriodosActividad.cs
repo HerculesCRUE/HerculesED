@@ -15,6 +15,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
     {
         public string numTramos { get; set; }
         public string fecha { get; set; }
+        public string entidadAcreditante { get; set; }
 
         private static DisambiguationDataConfig configDescripcion = new DisambiguationDataConfig()
         {
@@ -23,6 +24,13 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
         };
 
         private static DisambiguationDataConfig configFecha = new DisambiguationDataConfig()
+        {
+            type = DisambiguationDataConfigType.equalsItem,
+            score = 0.5f,
+            scoreMinus = 0.5f
+        };
+        
+        private static DisambiguationDataConfig configEA = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsItem,
             score = 0.5f,
@@ -46,6 +54,14 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
                 config = configFecha,
                 value = fecha
             });
+
+            data.Add(new DisambiguationData()
+            {
+                property = "entidadAcreditacion",
+                config = configEA,
+                value = entidadAcreditante
+            });
+
             return data;
         }
 
@@ -61,10 +77,11 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
 
             foreach (List<string> lista in listaListas)
             {
-                string select = $@"SELECT distinct ?item ?itemTitle ?itemDate ";
+                string select = $@"SELECT distinct ?item ?itemTitle ?itemDate ?itemEA ";
                 string where = $@"where {{
                                         ?item <{Variables.ActividadCientificaTecnologica.actividadInvestigadoraNumeroTramos}> ?itemTitle . 
-                                        OPTIONAL{{?item <{Variables.ActividadCientificaTecnologica.actividadInvestigadoraFechaObtencion}> ?itemDate }}.
+                                        OPTIONAL{{?item <{Variables.ActividadCientificaTecnologica.actividadInvestigadoraFechaObtencion}> ?itemDate }} .
+                                        OPTIONAL{{?item <{Variables.ActividadCientificaTecnologica.actividadInvestigadoraEntidadNombre}> ?itemEA }} .
                                         FILTER(?item in (<{string.Join(">,<", lista)}>))
                                     }}";
 
@@ -78,6 +95,11 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
                     if (fila.ContainsKey("itemDate"))
                     {
                         periodosActividad.fecha = fila["itemDate"].value;
+                    }
+                    periodosActividad.entidadAcreditante = "";
+                    if (fila.ContainsKey("itemEA"))
+                    {
+                        periodosActividad.entidadAcreditante = fila["itemEA"].value;
                     }
                     resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), periodosActividad);
                 }
