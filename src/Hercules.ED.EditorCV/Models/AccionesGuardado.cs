@@ -500,9 +500,9 @@ namespace GuardadoCV.Models
                         }
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    //TODO texto                
+
                 }
             }
             if (!string.IsNullOrEmpty(idPerson))
