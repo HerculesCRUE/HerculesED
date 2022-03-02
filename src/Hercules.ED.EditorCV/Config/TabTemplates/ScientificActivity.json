@@ -6034,7 +6034,7 @@
                           "es": "Introduce el presupuesto (en euros) de la actividad"
                         },
                         "property": "http://w3id.org/roh/averageAnnualBudget",
-                        "type": "text",
+                        "type": "number",
                         "width": 1
                       },
                       {
@@ -6130,48 +6130,6 @@
                         "property": "http://w3id.org/roh/goals",
                         "type": "text",
                         "width": 1
-                      }
-                    ]
-                  },
-                  {
-                    "properties": [
-                      {
-                        "title": {
-                          "es": "Áreas temáticas externas"
-                        },
-                        "property": "http://w3id.org/roh/externalKnowledgeArea",
-                        "thesaurus": "researcharea",
-                        "type": "thesaurus",
-                        "width": 0,
-                        "multiple": true
-                      }
-                    ]
-                  },
-                  {
-                    "properties": [
-                      {
-                        "title": {
-                          "es": "Áreas temáticas enriquecidas"
-                        },
-                        "property": "http://w3id.org/roh/enrichedKnowledgeArea",
-                        "thesaurus": "researcharea",
-                        "type": "thesaurus",
-                        "width": 0,
-                        "multiple": true
-                      }
-                    ]
-                  },
-                  {
-                    "properties": [
-                      {
-                        "title": {
-                          "es": "Identificar palabras clave"
-                        },
-                        "property": "http://w3id.org/roh/hasKnowledgeArea",
-                        "thesaurus": "researcharea",
-                        "type": "thesaurus",
-                        "width": 3,
-                        "multiple": true
                       }
                     ]
                   }
