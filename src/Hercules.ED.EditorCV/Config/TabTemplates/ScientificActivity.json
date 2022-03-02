@@ -4732,13 +4732,12 @@
                 "name": {
                   "es": "Ordenar por fecha más reciente"
                 },
-                "TODO": "El orden va por título de la actividad y por fecha de inicio del investigador en la actividad (datos propios)",
                 "properties": [
                   {
                     "property": "http://vivoweb.org/ontology/core#relatedBy",
                     "graph": "activity",
                     "child": {
-                      "property": "http://purl.org/dc/terms/issued"
+                      "property": "http://vivoweb.org/ontology/core#start"
                     },
                     "asc": false
                   },
@@ -4761,7 +4760,7 @@
                     "property": "http://vivoweb.org/ontology/core#relatedBy",
                     "graph": "activity",
                     "child": {
-                      "property": "http://purl.org/dc/terms/issued"
+                      "property": "http://vivoweb.org/ontology/core#start"
                     },
                     "asc": true
                   },
@@ -4779,43 +4778,6 @@
             "properties": [
               {
                 "name": {
-                  "es": "Título de la actividad"
-                },
-                "child": {
-                  "property": "http://vivoweb.org/ontology/core#relatedBy",
-                  "graph": "activity",
-                  "child": {
-                    "property": "http://w3id.org/roh/title"
-                  }
-                }
-              },
-              {
-                "name": {
-                  "es": "Ámbito geográfico"
-                },
-                "childOR": [
-                  {
-                    "property": "http://vivoweb.org/ontology/core#relatedBy",
-                    "graph": "activity",
-                    "child": {
-                      "property": "http://w3id.org/roh/geographicFocusOther"
-                    }
-                  },
-                  {
-                    "property": "http://vivoweb.org/ontology/core#relatedBy",
-                    "graph": "activity",
-                    "child": {
-                      "property": "http://vivoweb.org/ontology/core#geographicFocus",
-                      "graph": "geographicregion",
-                      "child": {
-                        "property": "http://purl.org/dc/elements/1.1/title"
-                      }
-                    }
-                  }
-                ]
-              },
-              {
-                "name": {
                   "es": "Fecha de inicio"
                 },
                 "type": "date",
@@ -4830,17 +4792,14 @@
               },
               {
                 "name": {
-                  "es": "Perfil grupo receptor"
+                  "es": "Fecha de fin"
                 },
+                "type": "date",
                 "child": {
                   "property": "http://vivoweb.org/ontology/core#relatedBy",
                   "graph": "activity",
                   "child": {
-                    "property": "http://w3id.org/roh/targetGroupProfile",
-                    "graph": "targetgroupprofile",
-                    "child": {
-                      "property": "http://purl.org/dc/elements/1.1/title"
-                    }
+                    "property": "http://vivoweb.org/ontology/core#end"
                   }
                 }
               },
@@ -4859,28 +4818,16 @@
               },
               {
                 "name": {
-                  "es": "Tipo de entidad"
+                  "es": "Tipo de actividad"
                 },
-                "childOR": [
-                  {
-                    "property": "http://vivoweb.org/ontology/core#relatedBy",
-                    "graph": "activity",
-                    "child": {
-                      "property": "http://w3id.org/roh/promotedByTypeOther"
-                    }
-                  },
-                  {
-                    "property": "http://vivoweb.org/ontology/core#relatedBy",
-                    "graph": "activity",
-                    "child": {
-                      "property": "http://w3id.org/roh/promotedByType",
-                      "graph": "organizationtype",
-                      "child": {
-                        "property": "http://purl.org/dc/elements/1.1/title"
-                      }
-                    }
+                "showMini": true,
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "activity",
+                  "child": {
+                    "property": "http://w3id.org/roh/concreteFunctions"
                   }
-                ]
+                }
               },
               {
                 "name": {
@@ -4928,41 +4875,64 @@
               },
               {
                 "name": {
-                  "es": "Funciones desempeñadas"
-                },
-                "showMini": true,
-                "child": {
-                  "property": "http://vivoweb.org/ontology/core#relatedBy",
-                  "graph": "activity",
-                  "child": {
-                    "property": "http://w3id.org/roh/concreteFunctions"
-                  }
-                }
-              },
-              {
-                "name": {
-                  "es": "Tipología de la gestión"
+                  "es": "Ámbito geográfico"
                 },
                 "childOR": [
                   {
                     "property": "http://vivoweb.org/ontology/core#relatedBy",
                     "graph": "activity",
                     "child": {
-                      "property": "http://w3id.org/roh/managementTypeOther"
+                      "property": "http://w3id.org/roh/geographicFocusOther"
                     }
                   },
                   {
                     "property": "http://vivoweb.org/ontology/core#relatedBy",
                     "graph": "activity",
                     "child": {
-                      "property": "http://w3id.org/roh/managementType",
-                      "graph": "managementtypeactivity",
+                      "property": "http://vivoweb.org/ontology/core#geographicFocus",
+                      "graph": "geographicregion",
                       "child": {
                         "property": "http://purl.org/dc/elements/1.1/title"
                       }
                     }
                   }
                 ]
+              },
+              {
+                "name": {
+                  "es": "Duración años"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "activity",
+                  "child": {
+                    "property": "http://w3id.org/roh/durationYears"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Duración meses"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "activity",
+                  "child": {
+                    "property": "http://w3id.org/roh/durationMonths"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Duración días"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "activity",
+                  "child": {
+                    "property": "http://w3id.org/roh/durationDays"
+                  }
+                }
               },
               {
                 "name": {
@@ -5010,50 +4980,38 @@
               },
               {
                 "name": {
-                  "es": "Duración años"
+                  "es": "Modo de participación"
                 },
-                "child": {
-                  "property": "http://vivoweb.org/ontology/core#relatedBy",
-                  "graph": "activity",
-                  "child": {
-                    "property": "http://w3id.org/roh/durationYears"
+                "childOR": [
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "activity",
+                    "child": {
+                      "property": "http://w3id.org/roh/participationTypeOther"
+                    }
+                  },
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "activity",
+                    "child": {
+                      "property": "http://w3id.org/roh/participationType",
+                      "graph": "participationtypeactivity",
+                      "child": {
+                        "property": "http://purl.org/dc/elements/1.1/title"
+                      }
+                    }
                   }
-                }
+                ]
               },
               {
                 "name": {
-                  "es": "Duración meses"
+                  "es": "Nº de asistentes"
                 },
                 "child": {
                   "property": "http://vivoweb.org/ontology/core#relatedBy",
                   "graph": "activity",
                   "child": {
-                    "property": "http://w3id.org/roh/durationMonths"
-                  }
-                }
-              },
-              {
-                "name": {
-                  "es": "Duración días"
-                },
-                "child": {
-                  "property": "http://vivoweb.org/ontology/core#relatedBy",
-                  "graph": "activity",
-                  "child": {
-                    "property": "http://w3id.org/roh/durationDays"
-                  }
-                }
-              },
-              {
-                "name": {
-                  "es": "Fecha de finalización"
-                },
-                "type": "date",
-                "child": {
-                  "property": "http://vivoweb.org/ontology/core#relatedBy",
-                  "graph": "activity",
-                  "child": {
-                    "property": "http://vivoweb.org/ontology/core#end"
+                    "property": "http://w3id.org/roh/attendants"
                   }
                 }
               }
@@ -5312,10 +5270,10 @@
                     "properties": [
                       {
                         "title": {
-                          "es": "Ciudad entidad realización"
+                          "es": "Ciudad de celebración"
                         },
                         "placeholder": {
-                          "es": "Introduce la ciudad de realización"
+                          "es": "Introduce la ciudad de celebración"
                         },
                         "property": "https://www.w3.org/2006/vcard/ns#locality",
                         "type": "text",
@@ -5323,10 +5281,10 @@
                       },
                       {
                         "title": {
-                          "es": "País entidad realización"
+                          "es": "País de celebración"
                         },
                         "placeholder": {
-                          "es": "Introduce el país de realización"
+                          "es": "Introduce el país de celebración"
                         },
                         "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                         "combo": {
@@ -5345,10 +5303,10 @@
                       },
                       {
                         "title": {
-                          "es": "C. Autón./Reg. entidad realización"
+                          "es": "C. Autón./Reg. de celebración"
                         },
                         "placeholder": {
-                          "es": "Introduce la C. Autón./Reg. de realización"
+                          "es": "Introduce la C. Autón./Reg. de celebración"
                         },
                         "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                         "combo": {
