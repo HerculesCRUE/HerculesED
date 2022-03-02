@@ -10,23 +10,19 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
-#COPY ["Hercules.ED.DisambiguationEngine/Hercules.ED.DisambiguationEngine.csproj", "./EditorCV/Hercules.ED.DisambiguationEngine/"]
-#COPY ["EditorCV.csproj", "./EditorCV/"]
-COPY ["EditorCV.csproj", "./"]
+COPY ["Hercules.ED.DisambiguationEngine/Hercules.ED.DisambiguationEngine.csproj", "./EditorCV/Hercules.ED.DisambiguationEngine/"]
+COPY ["EditorCV.csproj", "./EditorCV/"]
 RUN dotnet restore "./EditorCV/EditorCV.csproj"
 
-#COPY . .
-COPY . ./
+COPY . .
 
-RUN dotnet publish EditorCV.csproj -c Release -o out
+WORKDIR "/src/."
+RUN dotnet build "EditorCV.csproj" -c Release -o /app/build
 
-#WORKDIR "/src/."
-#RUN dotnet build "EditorCV.csproj" -c Release -o /app/build
+FROM build AS publish
+RUN dotnet publish -c Release -o /app/publish
 
-#FROM build AS publish
-#RUN dotnet publish -c Release -o /app/publish
-
-#FROM base AS final
+FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "EditorCV.dll"]
