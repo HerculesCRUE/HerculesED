@@ -15,6 +15,8 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
     {
         public string descripcion { get; set; }
         public string nombreActividad { get; set; }
+        public string entidadRealizacion { get; set; }
+        public string fechaInicio { get; set; }
 
         private static DisambiguationDataConfig configDescripcion = new DisambiguationDataConfig()
         {
@@ -23,6 +25,19 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
         };
 
         private static DisambiguationDataConfig configNomAct = new DisambiguationDataConfig()
+        {
+            type = DisambiguationDataConfigType.equalsItem,
+            score = 0.5f,
+            scoreMinus = 0.5f
+        };
+
+        private static DisambiguationDataConfig configFechaIni = new DisambiguationDataConfig()
+        {
+            type = DisambiguationDataConfigType.equalsItem,
+            score = 0.5f,
+            scoreMinus = 0.5f
+        };
+        private static DisambiguationDataConfig configEntidadRealizacion = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsItem,
             score = 0.5f,
@@ -46,6 +61,20 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
                 config = configNomAct,
                 value = nombreActividad
             });
+
+            data.Add(new DisambiguationData()
+            {
+                property = "fechaInicio",
+                config = configFechaIni,
+                value = fechaInicio
+            });
+
+            data.Add(new DisambiguationData()
+            {
+                property = "entidadRealizacion",
+                config = configEntidadRealizacion,
+                value = entidadRealizacion
+            });
             return data;
         }
 
@@ -61,10 +90,12 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
 
             foreach (List<string> lista in listaListas)
             {
-                string select = $@"SELECT distinct ?item ?itemTitle ?itemNombre ";
+                string select = $@"SELECT distinct ?item ?itemTitle ?itemNombre ?itemFecha ?itemER ";
                 string where = $@"where {{
                                         ?item <{Variables.ActividadCientificaTecnologica.evalRevIDIFunciones}> ?itemTitle . 
                                         OPTIONAL{{ ?item <{Variables.ActividadCientificaTecnologica.evalRevIDINombre}> ?itemNombre }} .
+                                        OPTIONAL{{ ?item <{Variables.ActividadCientificaTecnologica.evalRevIDIFechaInicio}> ?itemFecha }} .
+                                        OPTIONAL{{ ?item <{Variables.ActividadCientificaTecnologica.evalRevIDIEntidadNombre}> ?itemER }} .
                                         FILTER(?item in (<{string.Join(">,<", lista)}>))
                                     }}";
 
@@ -78,6 +109,16 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
                     if (fila.ContainsKey("itemNombre"))
                     {
                         evalRevIDI.nombreActividad = fila["itemNombre"].value;
+                    }
+                    evalRevIDI.fechaInicio = "";
+                    if (fila.ContainsKey("itemFecha"))
+                    {
+                        evalRevIDI.fechaInicio = fila["itemFecha"].value;
+                    }
+                    evalRevIDI.entidadRealizacion = "";
+                    if (fila.ContainsKey("itemER"))
+                    {
+                        evalRevIDI.entidadRealizacion = fila["itemER"].value;
                     }
                     resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), evalRevIDI);
                 }
