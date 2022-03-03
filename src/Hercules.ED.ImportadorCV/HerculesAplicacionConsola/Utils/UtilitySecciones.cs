@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Utils;
 using static Models.Entity;
 
 namespace HerculesAplicacionConsola.Utils
@@ -254,6 +255,140 @@ namespace HerculesAplicacionConsola.Utils
             }
         }
 
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de códigos UNESCO de <paramref name="listaCodUnesco"/>,
+        /// en <paramref name="propiedadCodUnesco"/>.
+        /// </summary>
+        /// <param name="listaCodUnesco">listaCodigosUnesco</param>
+        /// <param name="entidadAux">entidadAux</param>
+        /// <param name="propiedadCodUnesco">propiedadCodigoUnesco</param>
+        public static void CodigosUnesco(List<CvnItemBeanCvnString> listaCodUnesco, Entity entidadAux, string propiedadCodUnesco)
+        {
+            //No hago nada si no se pasa la propiedad.
+            if (string.IsNullOrEmpty(propiedadCodUnesco)) { return; }
+
+            foreach (CvnItemBeanCvnString codigo in listaCodUnesco)
+            {
+                string entityPartAux = Guid.NewGuid().ToString() + "@@@";
+                List<string> listadoCodigos = Utility.GetPadresCodUnesco(codigo);
+                //Añado Codigo UNESCO
+                foreach (string codigolista in listadoCodigos)
+                {
+                    Property propertyCodUnesco = entidadAux.properties.FirstOrDefault(x => x.prop == propiedadCodUnesco);
+
+                    string valorCodigo = StringGNOSSID(entityPartAux, Utility.GetCodUnescoIDCampo(codigolista));
+                    CheckProperty(propertyCodUnesco, entidadAux, valorCodigo, propiedadCodUnesco);
+                }
+            }
+        }
+
+
+        public static void InsertaTiposIDPublicacion(List<CvnItemBeanCvnExternalPKBean> listadoIDs, Entity entidadAux,
+            string idHanlde, string idDOI, string idPMID, string idOtroPub, string nombreOtroPub)
+        {
+            foreach (CvnItemBeanCvnExternalPKBean identificador in listadoIDs)
+            {
+                switch (identificador.Type)
+                {
+                    case "120":
+                        entidadAux.properties.AddRange(AddProperty(
+                            new Property(idHanlde, identificador.Value)
+                        ));
+                        break;
+                    case "040":
+                        entidadAux.properties.AddRange(AddProperty(
+                            new Property(idDOI, identificador.Value)
+                        ));
+                        break;
+                    case "130":
+                        entidadAux.properties.AddRange(AddProperty(
+                            new Property(idPMID, identificador.Value)
+                        ));
+                        break;
+                    case "OTHERS":
+                        Property IDOtro = entidadAux.properties.FirstOrDefault(x => x.prop == idOtroPub);
+                        Property NombreOtro = entidadAux.properties.FirstOrDefault(x => x.prop == nombreOtroPub);
+
+                        string entityPartAux = Guid.NewGuid().ToString() + "@@@";
+                        string valorID = StringGNOSSID(entityPartAux, identificador.Value);;
+                        CheckProperty(IDOtro, entidadAux, valorID, idOtroPub);
+
+                        string valorNombre = StringGNOSSID(entityPartAux, identificador.Others);
+                        CheckProperty(IDOtro, entidadAux, valorNombre, nombreOtroPub);
+                        break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de los ISBN.
+        /// </summary>
+        /// <param name="listadoISBN">listadoISBN</param>
+        /// <param name="entidadAux">entidadAux</param>
+        /// <param name="propiedadISBN">propiedadISBN</param>
+        public static void InsertaISBN(List<CvnItemBeanCvnExternalPKBean> listadoISBN, Entity entidadAux, string propiedadISBN) 
+        {
+            //No hago nada si no se pasa la propiedad.
+            if (string.IsNullOrEmpty(propiedadISBN)) { return; }
+
+            foreach (CvnItemBeanCvnExternalPKBean isbn in listadoISBN)
+            {
+                //Si no hay type, ignoro el valor
+                if (string.IsNullOrEmpty(isbn.Type)) { continue; }
+
+                //Si es ISBN (020)
+                if (isbn.Type.Equals("020"))
+                {
+                    entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                        new Property(propiedadISBN, isbn.Value)
+                    ));
+                }
+
+            }
+        }
+
+        /// <summary>
+        /// Añade los PhoneBean de <paramref name="listado"/> en <paramref name="entidadAux"/>.
+        /// </summary>
+        /// <param name="listado">listado de numeros telefonicos</param>
+        /// <param name="entidadAux">entidadAux</param>
+        /// <param name="propiedadNumero">propiedadNumero</param>
+        /// <param name="propiedadCodInternacional">propiedadCodInternacional</param>
+        /// <param name="propiedadExtension">propiedadExtension</param>
+        public static void InsertarListadoTelefonos(List<CvnItemBeanCvnPhoneBean> listado, Entity entidadAux, string propiedadNumero, string propiedadCodInternacional, string propiedadExtension)
+        {
+            //No hago nada si no se pasan las propiedades de cada parametro.
+            if (string.IsNullOrEmpty(propiedadNumero) && string.IsNullOrEmpty(propiedadExtension) && string.IsNullOrEmpty(propiedadCodInternacional)) { return; }
+
+            foreach (CvnItemBeanCvnPhoneBean telefono in listado)
+            {
+                //No añado si no hay numero de telefono.
+                if (string.IsNullOrEmpty(telefono.Number)) { continue; }
+
+                string entityPartAux = Guid.NewGuid().ToString() + "@@@";
+                
+                //Añado Numero
+                Property propertyNumero = entidadAux.properties.FirstOrDefault(x => x.prop == propiedadNumero);
+
+                string valorNumero = StringGNOSSID(entityPartAux, telefono.Number);
+
+                CheckProperty(propertyNumero, entidadAux, valorNumero, propiedadNumero);
+
+                //Añado Codigo Internacional
+                Property propertyCodInternacional = entidadAux.properties.FirstOrDefault(x => x.prop == propiedadCodInternacional);
+
+                string valorCodInternacional = StringGNOSSID(entityPartAux, telefono.InternationalCode);
+
+                CheckProperty(propertyCodInternacional, entidadAux, valorCodInternacional, propiedadCodInternacional);
+
+                //Añado Extension
+                Property propertyExtension = entidadAux.properties.FirstOrDefault(x => x.prop == propiedadExtension);
+
+                string valorExtension = StringGNOSSID(entityPartAux, telefono.Extension);
+
+                CheckProperty(propertyExtension, entidadAux, valorExtension, propiedadExtension);
+            }
+        }
 
         /// <summary>
         /// Dada una cadena de GUID concatenados y finalizando en "|" y un string en caso de que 
