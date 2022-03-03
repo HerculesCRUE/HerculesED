@@ -53,6 +53,16 @@ namespace GuardadoCV.Models.Utils
         private static List<ItemEdit> mEntityTemplates;
 
         /// <summary>
+        /// Obtiene la persona propietaria de un CV
+        /// </summary>
+        /// <param name="pCvID">Identificador del CV</param>
+        /// <returns>ID de la persona</returns>
+        public static string GetPersonFromCV(string pCvID)
+        {
+            return mResourceApi.VirtuosoQuery("select *", "where{<" + pCvID + "> <http://w3id.org/roh/cvOf> ?person. }", "curriculumvitae").results.bindings.First()["person"].value;
+        }
+
+        /// <summary>
         /// Obtiene las propiedades de las entidades pasadas por parámetro
         /// </summary>
         /// <param name="pIds">Identificadores de las entidades de las que recuperar sus propiedades</param>
