@@ -181,7 +181,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             List<string> rdfTypeItem = new List<string>() { "http://w3id.org/roh/GeneralQualityIndicator", "http://w3id.org/roh/GeneralQualityIndicatorCV" };
 
             //1º Obtenemos la entidad de BBDD.
-            Tuple<string, string, string> identificadores = GetIdentificadoresItemPresentation(mCvID, propiedadesItem);
+            Tuple<string, string, string> identificadores = GetIdentificadoresItemPresentation(mCvID, propiedadesItem, rdfTypeItem);
 
             Entity entityBBDD = null;
             GetEntidadesSecundarias(ref entityBBDD, identificadores, rdfTypeItem, "curriculumvitae");
