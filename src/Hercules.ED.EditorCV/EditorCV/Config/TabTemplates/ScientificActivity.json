@@ -3,6 +3,187 @@
   "property": "http://w3id.org/roh/scientificActivity",
   "sections": [
     {
+      "rdftype": "http://w3id.org/roh/RelatedScientificProduction",
+      "property": "http://w3id.org/roh/scientificProduction",
+      "presentation": {
+        "type": "listitems",
+        "title": {
+          "es": "Producción científica"
+        },
+        "listItemsPresentation": {
+          "property": "http://vivoweb.org/ontology/core#relatedBy",
+          "listItem": {
+            "propertyTitle": {
+              "property": "http://vivoweb.org/ontology/core#relatedBy",
+              "graph": "scientificproduction",
+              "child": {
+                "property": "http://w3id.org/roh/h-index"
+              }
+            },
+            "orders": [
+              {
+                "name": {
+                  "es": "Ordenar por fecha de aplicación mas reciente"
+                },
+                "properties": [
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "scientificproduction",
+                    "child": {
+                      "property": "http://purl.org/dc/terms/issued"
+                    },
+                    "asc": false
+                  },
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "scientificproduction",
+                    "child": {
+                      "property": "http://w3id.org/roh/h-index"
+                    },
+                    "asc": true
+                  }
+                ]
+              },
+              {
+                "name": {
+                  "es": "Ordenar por fecha de aplicación mas antigua"
+                },
+                "properties": [
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "scientificproduction",
+                    "child": {
+                      "property": "http://purl.org/dc/terms/issued"
+                    },
+                    "asc": true
+                  },
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "scientificproduction",
+                    "child": {
+                      "property": "http://w3id.org/roh/h-index"
+                    },
+                    "asc": true
+                  }
+                ]
+              }
+            ],
+            "properties": [
+              {
+                "name": {
+                  "es": "Fecha de aplicación"
+                },
+                "showMiniBold": true,
+                "type": "date",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "scientificproduction",
+                  "child": {
+                    "property": "http://purl.org/dc/terms/issued"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Fuente de Indice H"
+                },
+                "showMini": true,
+                "childOR": [
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "scientificproduction",
+                    "child": {
+                      "property": "http://w3id.org/roh/h-indexSourceOther"
+                    }
+                  },
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "scientificproduction",
+                    "child": {
+                      "property": "http://w3id.org/roh/h-indexSource",
+                      "graph": "hindexsource",
+                      "child": {
+                        "property": "http://purl.org/dc/elements/1.1/title"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "listItemEdit": {
+            "graph": "scientificproduction",
+            "proptitle": "http://w3id.org/roh/h-index",
+            "rdftype": "http://w3id.org/roh/ScientificProduction",
+            "sections": [
+              {
+                "title": {
+                  "es": "Información general"
+                },
+                "rows": [
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Índice H"
+                        },
+                        "placeholder": {
+                          "es": "Introduce el índice H"
+                        },
+                        "property": "http://w3id.org/roh/h-index",
+                        "required": true,
+                        "type": "number",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Fuente de Índice H"
+                        },
+                        "property": "http://w3id.org/roh/h-indexSource",
+                        "combo": {
+                          "rdftype": "http://w3id.org/roh/HIndexSource",
+                          "graph": "hindexsource",
+                          "property": {
+                            "property": "http://purl.org/dc/elements/1.1/title"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Fuente de Indice H, otros"
+                        },
+                        "property": "http://w3id.org/roh/h-indexSourceOther",
+                        "required": true,
+                        "dependency": {
+                          "property": "http://w3id.org/roh/h-indexSource",
+                          "propertyValue": "{GraphsUrl}items/hindexsource_OTHERS"
+                        },
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Fecha de aplicación"
+                        },
+                        "placeholder": {
+                          "es": "Introduce la fecha de aplicación"
+                        },
+                        "property": "http://purl.org/dc/terms/issued",
+                        "type": "date",
+                        "width": 1
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
       "rdftype": "http://w3id.org/roh/GeneralQualityIndicator",
       "property": "http://w3id.org/roh/generalQualityIndicators",
       "presentation": {
@@ -4083,7 +4264,7 @@
         "title": {
           "es": "Comités científicos, técnicos y/o asesores"
         },
-        "listItemsPresentation": { 
+        "listItemsPresentation": {
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "listItem": {
             "propertyTitle": {
@@ -4096,15 +4277,14 @@
             "orders": [
               {
                 "name": {
-                  "es": "Ordenar por fecha más reciente"
+                  "es": "Ordenar por fecha de finalización más reciente"
                 },
-                "TODO": "El orden va por nombre del comité y por fecha de finalización del investigador en el comité (datos propios)",
                 "properties": [
                   {
                     "property": "http://vivoweb.org/ontology/core#relatedBy",
                     "graph": "committee",
                     "child": {
-                      "property": "http://purl.org/dc/terms/issued"
+                      "property": "http://vivoweb.org/ontology/core#end"
                     },
                     "asc": false
                   },
@@ -4120,14 +4300,14 @@
               },
               {
                 "name": {
-                  "es": "Ordenar por fecha más antigua"
+                  "es": "Ordenar por fecha de finalización más antigua"
                 },
                 "properties": [
                   {
                     "property": "http://vivoweb.org/ontology/core#relatedBy",
                     "graph": "committee",
                     "child": {
-                      "property": "http://purl.org/dc/terms/issued"
+                      "property": "http://vivoweb.org/ontology/core#end"
                     },
                     "asc": true
                   },
@@ -4145,22 +4325,9 @@
             "properties": [
               {
                 "name": {
-                  "es": "Nombre del comité"
-                },
-                "child": {
-                  "property": "http://vivoweb.org/ontology/core#relatedBy",
-                  "graph": "committee",
-                  "child": {
-                    "property": "http://w3id.org/roh/title"
-                  }
-                }
-              },
-              {
-                "name": {
                   "es": "Fecha de inicio"
                 },
                 "type": "date",
-                "showMiniBold": true,
                 "child": {
                   "property": "http://vivoweb.org/ontology/core#relatedBy",
                   "graph": "committee",
@@ -4174,6 +4341,7 @@
                   "es": "Fecha de finalización"
                 },
                 "type": "date",
+                "showMiniBold": true,
                 "child": {
                   "property": "http://vivoweb.org/ontology/core#relatedBy",
                   "graph": "committee",
@@ -4191,38 +4359,9 @@
                   "property": "http://vivoweb.org/ontology/core#relatedBy",
                   "graph": "committee",
                   "child": {
-                    "property": "http://vivoweb.org/ontology/core#affiliatedOrganization",
-                    "graph": "organization",
-                    "child": {
-                      "property": "http://w3id.org/roh/title"
-                    }
+                    "property": "http://w3id.org/roh/affiliatedOrganizationTitle"
                   }
                 }
-              },
-              {
-                "name": {
-                  "es": "Tipo de entidad"
-                },
-                "childOR": [
-                  {
-                    "property": "http://vivoweb.org/ontology/core#relatedBy",
-                    "graph": "committee",
-                    "child": {
-                      "property": "http://w3id.org/roh/affiliatedOrganizationTypeOther"
-                    }
-                  },
-                  {
-                    "property": "http://vivoweb.org/ontology/core#relatedBy",
-                    "graph": "committee",
-                    "child": {
-                      "property": "http://w3id.org/roh/affiliatedOrganizationType",
-                      "graph": "organizationtype",
-                      "child": {
-                        "property": "http://purl.org/dc/elements/1.1/title"
-                      }
-                    }
-                  }
-                ]
               },
               {
                 "name": {
@@ -4270,31 +4409,6 @@
               },
               {
                 "name": {
-                  "es": "Ámbito geográfico"
-                },
-                "childOR": [
-                  {
-                    "property": "http://vivoweb.org/ontology/core#relatedBy",
-                    "graph": "committee",
-                    "child": {
-                      "property": "http://w3id.org/roh/geographicFocusOther"
-                    }
-                  },
-                  {
-                    "property": "http://vivoweb.org/ontology/core#relatedBy",
-                    "graph": "committee",
-                    "child": {
-                      "property": "http://vivoweb.org/ontology/core#geographicFocus",
-                      "graph": "geographicregion",
-                      "child": {
-                        "property": "http://purl.org/dc/elements/1.1/title"
-                      }
-                    }
-                  }
-                ]
-              },
-              {
-                "name": {
                   "es": "Ciudad de radicación"
                 },
                 "child": {
@@ -4336,7 +4450,33 @@
                     }
                   }
                 }
+              },
+              {
+                "name": {
+                  "es": "Ámbito geográfico"
+                },
+                "childOR": [
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "committee",
+                    "child": {
+                      "property": "http://w3id.org/roh/geographicFocusOther"
+                    }
+                  },
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "committee",
+                    "child": {
+                      "property": "http://vivoweb.org/ontology/core#geographicFocus",
+                      "graph": "geographicregion",
+                      "child": {
+                        "property": "http://purl.org/dc/elements/1.1/title"
+                      }
+                    }
+                  }
+                ]
               }
+
             ]
           },
           "listItemEdit": {
@@ -4621,7 +4761,6 @@
                           "es": "Ámbito geográfico"
                         },
                         "property": "http://vivoweb.org/ontology/core#geographicFocus",
-                        "TODO": "No se despliega el combo de valores.",
                         "combo": {
                           "rdftype": "http://vivoweb.org/ontology/core#GeographicRegion",
                           "graph": "geographicregion",
@@ -4637,8 +4776,12 @@
                           "es": "Otros"
                         },
                         "property": "http://w3id.org/roh/geographicFocusOther",
+                        "required": true,
+                        "dependency": {
+                          "property": "http://vivoweb.org/ontology/core#geographicFocus",
+                          "propertyValue": "{GraphsUrl}items/geographicregion_OTHERS"
+                        },
                         "type": "text",
-                        "required": false,
                         "width": 1
                       }
                     ]
@@ -8762,7 +8905,7 @@
                     "properties": [
                       {
                         "property": "http://w3id.org/roh/researchers",
-                        "type": "auxEntity",                        
+                        "type": "auxEntity",
                         "title": {
                           "es": "Nombres investigadores principales (IP, Co-IP,...)"
                         },
