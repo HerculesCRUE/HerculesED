@@ -254,5 +254,22 @@ namespace HerculesAplicacionConsola.Utils
             }
         }
 
+
+        /// <summary>
+        /// Dada una cadena de GUID concatenados y finalizando en "|" y un string en caso de que 
+        /// el string no sea nulo los concatena, sino devuelve null.
+        /// </summary>
+        /// <param name="entityAux">GUID concatenado con "|"</param>
+        /// <param name="valor">Valor del parametro</param>
+        /// <returns>String de concatenar los parametros, o nulo si el valor es vacio</returns>
+        public static string StringGNOSSID(string entityAux, string valor)
+        {
+            if (!string.IsNullOrEmpty(valor))
+            {
+                return entityAux + valor;
+            }
+            return null;
+        }
+
     }
 }
