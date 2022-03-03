@@ -78,6 +78,9 @@ namespace HerculesAplicacionConsola.Utils
         /// <returns>string</returns>
         public static string GetNombreRevista(ResourceApi pResourceApi, string nombreRevista)
         {
+            //Si el nombre de la revista es nulo o vacio
+            if (string.IsNullOrEmpty(nombreRevista)) { return null; }
+
             string select = $@"SELECT distinct ?identificador";
             string where = $@"where {{
                                 ?identificador <http://w3id.org/roh/title> ?nombreRevista .
@@ -207,11 +210,9 @@ namespace HerculesAplicacionConsola.Utils
         /// <param name="entidadAux"></param>
         public static void AniadirEntidad(ResourceApi mResourceApi, string nombreEntidad, string propiedadNombreEntidad, string propiedadEntidad, Entity entidadAux)
         {
-            if(mResourceApi == null || string.IsNullOrEmpty(nombreEntidad) ||
+            if (mResourceApi == null || string.IsNullOrEmpty(nombreEntidad) ||
                 string.IsNullOrEmpty(propiedadEntidad) || string.IsNullOrEmpty(propiedadEntidad))
-            {
-                return;
-            }
+            { return; }
 
             string entidadN = UtilitySecciones.GetOrganizacionPorNombre(mResourceApi, nombreEntidad);
             if (!string.IsNullOrEmpty(entidadN))
@@ -265,7 +266,8 @@ namespace HerculesAplicacionConsola.Utils
         public static void CodigosUnesco(List<CvnItemBeanCvnString> listaCodUnesco, Entity entidadAux, string propiedadCodUnesco)
         {
             //No hago nada si no se pasa la propiedad.
-            if (string.IsNullOrEmpty(propiedadCodUnesco)) { return; }
+            if (string.IsNullOrEmpty(propiedadCodUnesco))
+            { return; }
 
             foreach (CvnItemBeanCvnString codigo in listaCodUnesco)
             {
@@ -282,17 +284,33 @@ namespace HerculesAplicacionConsola.Utils
             }
         }
 
-
+        /// <summary>
+        /// Inserta los Identificadores de publicación dependiendo del tipo
+        /// 120-Handle, 040-DOI, 130-PMID, OTHERS-otros identificadores.
+        /// </summary>
+        /// <param name="listadoIDs">listadoIDs</param>
+        /// <param name="entidadAux">entidadAux</param>
+        /// <param name="idHandle">idHandle</param>
+        /// <param name="idDOI">idDOI</param>
+        /// <param name="idPMID">idPMID</param>
+        /// <param name="idOtroPub">idOtroPub</param>
+        /// <param name="nombreOtroPub">nombreOtroPub</param>
         public static void InsertaTiposIDPublicacion(List<CvnItemBeanCvnExternalPKBean> listadoIDs, Entity entidadAux,
-            string idHanlde, string idDOI, string idPMID, string idOtroPub, string nombreOtroPub)
+            string idHandle, string idDOI, string idPMID, string idOtroPub, string nombreOtroPub)
         {
+            //Si alguna propiedad es nula no hago nada
+            if (string.IsNullOrEmpty(idHandle) && string.IsNullOrEmpty(idHandle)
+                && string.IsNullOrEmpty(idPMID) && string.IsNullOrEmpty(idOtroPub)
+                && string.IsNullOrEmpty(nombreOtroPub))
+            { return; }
+
             foreach (CvnItemBeanCvnExternalPKBean identificador in listadoIDs)
             {
                 switch (identificador.Type)
                 {
                     case "120":
                         entidadAux.properties.AddRange(AddProperty(
-                            new Property(idHanlde, identificador.Value)
+                            new Property(idHandle, identificador.Value)
                         ));
                         break;
                     case "040":
@@ -310,7 +328,7 @@ namespace HerculesAplicacionConsola.Utils
                         Property NombreOtro = entidadAux.properties.FirstOrDefault(x => x.prop == nombreOtroPub);
 
                         string entityPartAux = Guid.NewGuid().ToString() + "@@@";
-                        string valorID = StringGNOSSID(entityPartAux, identificador.Value);;
+                        string valorID = StringGNOSSID(entityPartAux, identificador.Value); ;
                         CheckProperty(IDOtro, entidadAux, valorID, idOtroPub);
 
                         string valorNombre = StringGNOSSID(entityPartAux, identificador.Others);
@@ -326,10 +344,11 @@ namespace HerculesAplicacionConsola.Utils
         /// <param name="listadoISBN">listadoISBN</param>
         /// <param name="entidadAux">entidadAux</param>
         /// <param name="propiedadISBN">propiedadISBN</param>
-        public static void InsertaISBN(List<CvnItemBeanCvnExternalPKBean> listadoISBN, Entity entidadAux, string propiedadISBN) 
+        public static void InsertaISBN(List<CvnItemBeanCvnExternalPKBean> listadoISBN, Entity entidadAux, string propiedadISBN)
         {
             //No hago nada si no se pasa la propiedad.
-            if (string.IsNullOrEmpty(propiedadISBN)) { return; }
+            if (string.IsNullOrEmpty(propiedadISBN))
+            { return; }
 
             foreach (CvnItemBeanCvnExternalPKBean isbn in listadoISBN)
             {
@@ -358,7 +377,9 @@ namespace HerculesAplicacionConsola.Utils
         public static void InsertarListadoTelefonos(List<CvnItemBeanCvnPhoneBean> listado, Entity entidadAux, string propiedadNumero, string propiedadCodInternacional, string propiedadExtension)
         {
             //No hago nada si no se pasan las propiedades de cada parametro.
-            if (string.IsNullOrEmpty(propiedadNumero) && string.IsNullOrEmpty(propiedadExtension) && string.IsNullOrEmpty(propiedadCodInternacional)) { return; }
+            if (string.IsNullOrEmpty(propiedadNumero) && string.IsNullOrEmpty(propiedadExtension)
+                && string.IsNullOrEmpty(propiedadCodInternacional))
+            { return; }
 
             foreach (CvnItemBeanCvnPhoneBean telefono in listado)
             {
@@ -366,7 +387,7 @@ namespace HerculesAplicacionConsola.Utils
                 if (string.IsNullOrEmpty(telefono.Number)) { continue; }
 
                 string entityPartAux = Guid.NewGuid().ToString() + "@@@";
-                
+
                 //Añado Numero
                 Property propertyNumero = entidadAux.properties.FirstOrDefault(x => x.prop == propiedadNumero);
 
