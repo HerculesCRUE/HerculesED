@@ -1,45 +1,22 @@
 from flask import Flask, request, jsonify
 from flask_restful import Api, Resource #, reqparse
 from flask_httpauth import HTTPBasicAuth
-
 from flask_apispec import marshal_with, doc, use_kwargs
 from flask_apispec.views import MethodResource
-from marshmallow import Schema, fields, ValidationError
+from flask_apispec.extension import FlaskApiSpec
 
 from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
-from flask_apispec.extension import FlaskApiSpec
+from marshmallow import Schema, fields, ValidationError
 
-from webargs import fields, validate
-from webargs.flaskparser import use_args, parser, abort
-
+from arxiv_public_data.fulltext import fulltext as pdf_to_str
 from passlib.apps import custom_app_context as pwd_context
-import datetime
-import socket
-from socket import error as socket_error
-import json
-import sys
-import os
-import shutil
-import logging
-from logging.handlers import RotatingFileHandler
-import translitcodec
-import codecs
-
-import joblib
-import numpy as np
-from sklearn.feature_extraction.text import TfidfVectorizer
-from cmath import polar
-import subprocess
-
-from nltk.tokenize import RegexpTokenizer
-import hunspell
 
 import requests
 import tempfile
-from arxiv_public_data.fulltext import fulltext as pdf_to_str
-
-import re
+import logging
+import json
+import os
 import pdb
 
 import text_classification as texcls
@@ -47,7 +24,6 @@ from keyphrase_extraction import KeyphraseExtractor
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.ERROR)
-
 
 app = Flask(__name__)
 app.logger.setLevel(logging.ERROR)
@@ -122,7 +98,6 @@ available_keyphrase_models = ['papers']
 
 ################################################################
 
-
 """
 Raises ValueError if URL is not valid or it can't be accessed
 Returns empty string if an error occurs while extracting text from the PDF
@@ -151,13 +126,11 @@ def pdf_to_text(url):
     return text
 
 
-
 ################################################################
 
 #  API related functions
 
 ################################################################
-
  
 def init():
     global conf
@@ -174,20 +147,17 @@ def init():
 
     if not 'topics' in conf: 
         return make_error(500, "topic taxonomy not present in config. This is a server side problem contact with the API maintainers")
-    
-        
+            
     #load models in memory for topic classification
     for dimension in conf['topics']:
         logging.info("dimension: {}".format(dimension))
         model_name=dimension["name"]
-        model_path=dimension["path"]
-            
+        model_path=dimension["path"]        
         topic_models[model_name] = texcls.TrTextClassifier(model_path)
         logging.info("model {} loaded".format(model_name))
     
     logging.info("{} topic models loaded".format(len(topic_models)))
 
-    
     #load models for keyphrase extraction
     if not 'keyphrases' in conf: 
         return make_error(500, "keyphrases model information not present in config. This is a server side problem contact with the API maintainers")
@@ -219,12 +189,7 @@ def init():
 
             keyphrase_extractors[model_name][i]=model
 
-
     logging.info("{} Keyphrase extraction models loaded".format(len(keyphrase_extractors)))
-    ## init logs
-    #loglvl = conf['loglvl'] if 'loglvl' in conf else logging.WARNING
-    #logging.basicConfig(format='%(asctime)s [%(levelname)s]: %(message)s', level=loglvl)
-
 
 
 if not app.debug or os.environ.get("WERKZEUG_RUN_MAIN") == "true":
@@ -254,7 +219,6 @@ def make_error(code, msg):
 
 class ThematicDescriptorAPI(MethodResource, Resource):
     #decorators = [auth.login_required]
-
     @doc(description='Hercules thematic keyword API.', tags=['Hercules'])
     @use_kwargs(ThematicRequestSchema, location='json')
     @marshal_with(ThematicResponseSchema, description="returns the request object + a new property called topics, which contains a dictionary with the tags found and theis probabilities")  # marshalling with marshmallow
@@ -273,7 +237,7 @@ class ThematicDescriptorAPI(MethodResource, Resource):
             application/json:
               schema: ThematicResponseSchema
         """
-        #print("kwargs: {} \n \n".format(kwargs))
+        logging.debug("kwargs: {} \n \n".format(kwargs))
         json_data=request.get_json(force=True)
         response_json = json_data
         schema = ThematicRequestSchema()
@@ -283,10 +247,8 @@ class ThematicDescriptorAPI(MethodResource, Resource):
             if 'pdf_url' not in json_data and 'title' not in json_data and 'abstract' not in json_data:
                 return jsonify("error: either 'pdf_url', or 'title' and 'abstract' fields are required"), 400
         except ValidationError as err:
-            # Return a nice message if validation fails
             logging.error(err.messages, err,json_data)
             return jsonify(err.messages), 400
-        
         
         logging.info(json.dumps(json_data, indent=4, sort_keys=True))        
         
@@ -297,12 +259,8 @@ class ThematicDescriptorAPI(MethodResource, Resource):
                 text=pdf_to_text(pdf_url_path)
             except Exception as e:
                 return make_error(501, "'pdf_url' specified, but no text could be extracted from the given url - " + str(e))
-                #return jsonify("error: 'pdf_url' specified, but no text could be extracted from the given url - {}".format(str(e))), 400
-            
-            logging.error('Warn: text element found in request - Text to process: _{}_  \n'.format(text))
             
         if text == "":
-            logging.error('Warn {}: Could not extract the text from the pdf, trying to use other fields: \n _{}_'.format(601, text))
             if 'journal' in json_data:
                 text=json_data['journal']
             if 'author_name' in json_data:
@@ -318,7 +276,6 @@ class ThematicDescriptorAPI(MethodResource, Resource):
             response_json["topics"]={'error':'specified ro type is not available {}'.format(available_topic_models)}
             return response_json
         
-        logging.error('Warn {}: Text to process: \n _{}_'.format(601, text))
         text=text.replace("<br />","\n")
 
         if text == "": ## text is empty, no classification will be done.
@@ -327,19 +284,17 @@ class ThematicDescriptorAPI(MethodResource, Resource):
             ## topic classification
             topics = []
             try:                
-                topics = self.classify_subject_keywords(text.replace("\n","").replace("  "," "),json_data['rotype'])
+                topics = self.classify_thematic_descriptors(text.replace("\n","").replace("  "," "),json_data['rotype'])
                 response_json["topics"]=topics
-
-                #logging.info("************* Final Resul formattedt: {} \n".format(topic_list))
-                
             except Exception as e:
                 return make_error(501, "Error when computing topic classification: " + str(e))
 
         return jsonify(response_json)
 
-    def classify_subject_keywords(self,text,topic_model=None):
+    def classify_thematic_descriptors(self,text,topic_model=None):
         results={}
-        logging.info(topic_model, topic_models.keys())
+        logging.info(f"Topic model: {topic_model}")
+        logging.info(f"All loaded topic models: {list(topic_models.keys())}")
         if topic_model != None and topic_model in topic_models:
             logging.info("************ Tagging with {} model ************* \n".format(topic_model))
             model = topic_models[topic_model]
@@ -349,10 +304,9 @@ class ThematicDescriptorAPI(MethodResource, Resource):
             
             logging.info("************* Prediction ready: \n Predictions: {} \n probabilities: {}".format(one_pred, one_prob))
             
-            results=[ {"word":one_pred[i], "porcentaje": str(f"{float(np.round(one_prob[i], 2)):.2f}")} for i in range(len(one_pred)) if (one_prob[i] > 0.5)]
-
+            results=[ {"word":one_pred[i], "porcentaje": str(f"{one_prob[i]:.2f}")} for i in range(len(one_pred)) if (one_prob[i] > 0.5)]
             logging.info("************* Final Result: {} \n".format(results))
-                                
+            
         return results
 
     
@@ -377,7 +331,7 @@ class SpecificDescriptorAPI(MethodResource, Resource):
             application/json:
               schema: SpecificResponseSchema
         """
-        logging.info("kwargs: {} \n \n".format(kwargs))
+        logging.debug("kwargs: {} \n \n".format(kwargs))
         json_data=request.get_json(force=True)
         response_json = json_data
         schema = SpecificRequestSchema()
@@ -385,10 +339,8 @@ class SpecificDescriptorAPI(MethodResource, Resource):
             # Validate request body against schema data types
             result = schema.load(json_data)
         except ValidationError as err:
-            # Return a nice message if validation fails
             logging.error(err.messages, err,json_data)
             return jsonify(err.messages), 400
-        
         
         logging.info(json.dumps(json_data, indent=4, sort_keys=True))
 
@@ -413,7 +365,6 @@ class SpecificDescriptorAPI(MethodResource, Resource):
             body=json_data['body']
             text=text+" \n "+body
 
-
         #if text == "" and 'pdf_url' in json_data:
         #    pdf_url_path=json_data['pdf_url']
         #    try:
@@ -428,16 +379,14 @@ class SpecificDescriptorAPI(MethodResource, Resource):
             response_json["topics"]={'error':'specified ro type is not available {}'.format(available_keyphrase_models)}
             return response_json
         
-        logging.error('WARN {}: Text to process: \n TITLE:_{}_ \n ABSTRACT:_{}_ \n TEXT:_{}_'.format(601, title, abstract, text))
+        logging.info('Text to process: \n TITLE:_{}_ \n ABSTRACT:_{}_ \n TEXT:_{}_'.format(title, abstract, text))
         text=text.replace("<br />","\n")
         title=title.replace("<br />","\n")
         abstract=abstract.replace("<br />","\n")
         body=body.replace("<br />","\n")
         
-
-
-        
         if text == "" or (title == "" and abstract == "" and body == ""): ## text is empty, no classification will be done.
+            logging.error("Text is empty, no classification will be done")
             return make_error(400, "'text', or ('title', 'abstract' and 'body') elements are null or missing, there is nothing to tag.")
        
         else: ## start keyphrase extraction
@@ -446,15 +395,14 @@ class SpecificDescriptorAPI(MethodResource, Resource):
                 if rotype not in keyphrase_extractors:
                     return make_error(501, "No extractor found for the give ro type: {}".format(rotype))
                 text_length="fulltext"
-                
                 if body == "": #body is empty, go for short text extractor
                     text_length="short"
 
                 keyphrases = keyphrase_extractors[rotype][text_length].extract_keyphrases(title, abstract, body)
-                logging.error('WARN keyphrases:  {}'.format(keyphrases))
+                logging.info('keyphrases: {}'.format(keyphrases))
                 term_list=[]
                 for i,k in enumerate(keyphrases):
-                    term_list.append({"word":k,"porcentaje":str(f"{float(np.round(keyphrases[k], 4)):.4f}")})
+                    term_list.append({"word":k,"porcentaje":str(f"{keyphrases[k]:.4f}")})
                 response_json["topics"]=term_list
                 
             except Exception as e:
@@ -468,7 +416,6 @@ docs.register(ThematicDescriptorAPI)
 
 api.add_resource(SpecificDescriptorAPI, '/specific')
 docs.register(SpecificDescriptorAPI)
-
 
 with open('openapi.json', 'w') as f:
     json.dump(docs.spec.to_dict(), f,indent=4)
@@ -484,10 +431,6 @@ def handle_request_parsing_error(err, req, schema, *, error_status_code, error_h
     print("****** Request: {} \n schema {} \n ******\n".format(req,schema))
     abort(error_status_code, err.messages)
 '''
-
-# We're good to go! Save this to a file for now.
-#with open('openapi.json', 'w') as f:
-#    json.dump(spec.to_dict(), f)
 
 if __name__ == "__main__":
     app.run()

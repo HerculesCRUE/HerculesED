@@ -64,37 +64,37 @@
             "ThematicRequest": {
                 "type": "object",
                 "properties": {
-                    "author_name": {
+                    "journal": {
                         "type": "string",
-                        "description": "Author(s) of the paper"
-                    },
-                    "text": {
-                        "type": "string",
-                        "description": "Input text to classify"
+                        "description": "Journal where the paper was published"
                     },
                     "rotype": {
                         "type": "string",
                         "description": "Type of the input text, currently available: 'bio-protocol'=protocol descriptions | 'sourceForge'=software descriptions | 'papers'=scientific papers."
                     },
-                    "title": {
-                        "type": "string",
-                        "description": "Title of the input article to classify"
-                    },
-                    "journal": {
-                        "type": "string",
-                        "description": "Journal where the paper was published"
-                    },
                     "abstract": {
                         "type": "string",
                         "description": "Description/abstract of the Input article to classify"
                     },
-                    "pdf_url": {
+                    "text": {
                         "type": "string",
-                        "description": "URL of the pdf version of the paper. If pdf_url is given no other parameter is required, except for the rotype"
+                        "description": "Input text to classify"
                     },
                     "author_affiliation": {
                         "type": "string",
                         "description": "Author(s)'s affilliation(s)"
+                    },
+                    "author_name": {
+                        "type": "string",
+                        "description": "Author(s) of the paper"
+                    },
+                    "title": {
+                        "type": "string",
+                        "description": "Title of the input article to classify"
+                    },
+                    "pdf_url": {
+                        "type": "string",
+                        "description": "URL of the pdf version of the paper. If pdf_url is given no other parameter is required, except for the rotype"
                     }
                 },
                 "required": [
@@ -104,13 +104,9 @@
             "ThematicResponse": {
                 "type": "object",
                 "properties": {
-                    "author_name": {
+                    "journal": {
                         "type": "string",
-                        "description": "Author(s) of the paper"
-                    },
-                    "text": {
-                        "type": "string",
-                        "description": "Input text to classify"
+                        "description": "Journal where the paper was published"
                     },
                     "topics": {
                         "type": "object",
@@ -122,25 +118,29 @@
                         "type": "string",
                         "description": "Type of the input text, currently available: 'bio-protocol'=protocol descriptions | 'sourceForge'=software descriptions."
                     },
-                    "title": {
-                        "type": "string",
-                        "description": "Title of the input article to classify"
-                    },
-                    "journal": {
-                        "type": "string",
-                        "description": "Journal where the paper was published"
-                    },
                     "abstract": {
                         "type": "string",
                         "description": "Description/abstract of the Input article to classify"
                     },
-                    "pdf_url": {
+                    "text": {
                         "type": "string",
-                        "description": "URL of the pdf version of the paper. If pdf_url is given no other parameter is required, except for the rotype"
+                        "description": "Input text to classify"
                     },
                     "author_affiliation": {
                         "type": "string",
                         "description": "Author(s)'s affilliation(s)"
+                    },
+                    "author_name": {
+                        "type": "string",
+                        "description": "Author(s) of the paper"
+                    },
+                    "title": {
+                        "type": "string",
+                        "description": "Title of the input article to classify"
+                    },
+                    "pdf_url": {
+                        "type": "string",
+                        "description": "URL of the pdf version of the paper. If pdf_url is given no other parameter is required, except for the rotype"
                     }
                 },
                 "required": [
@@ -150,21 +150,21 @@
             "SpecificRequest": {
                 "type": "object",
                 "properties": {
-                    "abstract": {
-                        "type": "string",
-                        "description": "Abstract of the Input article to classify"
-                    },
                     "body": {
                         "type": "string",
                         "description": "Main text of the paper. If no body is present the systems resorts to short texts keyphrase extractor"
+                    },
+                    "title": {
+                        "type": "string",
+                        "description": "Title of the input article to classify"
                     },
                     "rotype": {
                         "type": "string",
                         "description": "Type of the input text, currently available: 'bio-protocol'=protocol descriptions | 'sourceForge'=software descriptions."
                     },
-                    "title": {
+                    "abstract": {
                         "type": "string",
-                        "description": "Title of the input article to classify"
+                        "description": "Abstract of the Input article to classify"
                     }
                 },
                 "required": [
@@ -185,10 +185,6 @@
                         "type": "string",
                         "description": "Type of the input text, currently available: 'bio-protocol'=protocol descriptions | 'sourceForge'=software descriptions."
                     },
-                    "title": {
-                        "type": "string",
-                        "description": "Title of the input article to classify"
-                    },
                     "abstract": {
                         "type": "string",
                         "description": "Abstract of the Input article to classify"
@@ -196,6 +192,10 @@
                     "body": {
                         "type": "string",
                         "description": "Main text of the paper. If no body is present the systems resorts to short texts keyphrase extractor"
+                    },
+                    "title": {
+                        "type": "string",
+                        "description": "Title of the input article to classify"
                     }
                 },
                 "required": [
