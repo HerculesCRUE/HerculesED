@@ -29,7 +29,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             List<string> rdfTypeItem = new List<string>() { "http://w3id.org/roh/FreeTextSummaryValues", "http://w3id.org/roh/FreeTextSummaryValuesCV" };
 
             //1º Obtenemos la entidad de BBDD.
-            Tuple<string, string, string> identificadores = GetIdentificadoresItemPresentation(mCvID, propiedadesItem);
+            Tuple<string, string, string> identificadores = GetIdentificadoresItemPresentation(mCvID, propiedadesItem, rdfTypeItem);
 
             Entity entityBBDD = null;
             GetEntidadesSecundarias(ref entityBBDD, identificadores, rdfTypeItem, "curriculumvitae");
@@ -45,7 +45,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 Entity entity = new Entity();
                 entity.properties = new List<Property>();
                 List<(string, string)> resumen = GetResumen(listadoDatosIdentificacion.GetElementoPorIDCampo<CvnItemBeanCvnRichText>("070.010.000.010"));
-                if(resumen == null) { return entity; }
+                if (resumen == null) { return entity; }
 
                 if (resumen.Count == 3)
                 {
@@ -102,7 +102,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 resumenLibre = resumen;
             }
 
-            List<(string, string)> listadoResumen = new List<(string, string)>{ ( "resumenLibre", resumenLibre ), ( "TFG", TFG ), ( "TFM", TFM )};
+            List<(string, string)> listadoResumen = new List<(string, string)> { ("resumenLibre", resumenLibre), ("TFG", TFG), ("TFM", TFM) };
 
             return listadoResumen;
         }
