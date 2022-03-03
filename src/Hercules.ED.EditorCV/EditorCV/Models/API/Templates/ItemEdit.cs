@@ -30,6 +30,10 @@ namespace GuardadoCV.Models.API.Templates
         /// </summary>
         public string propdescription;
         /// <summary>
+        /// Propiedad utilizada para explicar la obligatori
+        /// </summary>
+        public PropMember propMember;
+        /// <summary>
         /// rdf:type de la entidad
         /// </summary>
         public string rdftype;
@@ -67,6 +71,21 @@ namespace GuardadoCV.Models.API.Templates
             }
             return propertyDatas;
         }
+    }
+
+    /// <summary>
+    /// Propiedad para indicar la obligatoriedad de añadirse a sí mismo
+    /// </summary>
+    public class PropMember
+    {
+        /// <summary>
+        /// Propiedad
+        /// </summary>
+        public string property { get; set; }
+        /// <summary>
+        /// Mensaje de error
+        /// </summary>
+        public Dictionary<string, string> message { get; set; }
     }
 
     /// <summary>
