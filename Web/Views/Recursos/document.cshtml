@@ -33,7 +33,7 @@
             <a href="@Comunidad.Url">Home</a>
         </li>
         <li>
-            @{string urlArticulos = Comunidad.Url + "/buscador-publicaciones"; }
+            @{string urlArticulos = Comunidad.Url + "/" + Html.Translate("PUBLICACIONES_URL"); }
             <a href="@urlArticulos">Publicaciones</a>
         </li>
         @{ if (!string.IsNullOrEmpty(pDocument.Roh_title))
@@ -346,7 +346,7 @@
                                 {
                                     contadorCategorias++;
                                     <li>
-                                        <a href="http://edma.gnoss.com/comunidad/hercules/publicaciones?vivo:freeTextKeyword=@etiquetas">
+                                        <a href="@Comunidad.Url/@Html.Translate("PUBLICACIONES_URL")?vivo:freeTextKeyword=@etiquetas">
                                             <span about="@pDocument.GNOSSID" property="@pDocument.GetPropertyURI(nameof(pDocument.Vivo_freeTextKeyword))" class="texto">@etiquetas</span>
                                         </a>
                                     </li>
@@ -355,7 +355,7 @@
                                 {
                                     contadorCategorias++;
                                     <li class="ocultar" style="display: none;">
-                                        <a href="http://edma.gnoss.com/comunidad/hercules/publicaciones?vivo:freeTextKeyword=@etiquetas">
+                                        <a href="@Comunidad.Url/@Html.Translate("PUBLICACIONES_URL")?vivo:freeTextKeyword=@etiquetas">
                                             <span about="@pDocument.GNOSSID" property="@pDocument.GetPropertyURI(nameof(pDocument.Vivo_freeTextKeyword))" class="texto">@etiquetas</span>
                                         </a>
                                     </li>
