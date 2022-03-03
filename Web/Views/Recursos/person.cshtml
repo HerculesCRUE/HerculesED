@@ -36,7 +36,7 @@
             <a href="@Comunidad.Url">Home</a>
         </li>
         <li>
-            @{string urlProyectos = Comunidad.Url + "/buscador-personal-investigador"; }
+            @{string urlProyectos = Comunidad.Url + "/" + Html.Translate("INVESTIGADORES_URL"); }
             <a href="@urlProyectos">Personal investigador</a>
         </li>
         @{ if (!string.IsNullOrEmpty(pPerson.Foaf_name))
@@ -179,39 +179,34 @@
                     }
                 </ul>
             </div> -->
-            <div class="group-wrap">
-                <div class="bloque">
-                    <div class="label">@Html.Translate("GRUPOS_INVESTIGACION")</div>
-                    <div class="descripcion">
-                        @{ if (pPerson.Vivo_relates != null && pPerson.Vivo_relates.Count > 0)
+
+            @if (pPerson.Vivo_relates != null && pPerson.Vivo_relates.Count > 0)
+            {
+                <div class="group-wrap">
+                    <div class="bloque">
+                        <div class="label">@Html.Translate("GRUPOS_INVESTIGACION")</div>
+                        <div class="descripcion">
+                            @foreach (Group grupo in pPerson.Vivo_relates)
                             {
-                                foreach (Group grupo in pPerson.Vivo_relates)
+                                if (!string.IsNullOrEmpty(grupo.Roh_title) && !string.IsNullOrEmpty(grupo.GNOSSID))
                                 {
-                                    if (!string.IsNullOrEmpty(grupo.Roh_title) && !string.IsNullOrEmpty(grupo.GNOSSID))
-                                    {
-                                        <p about="@pPerson.GNOSSID" property="@pPerson.GetPropertyURI(nameof(grupo.Roh_title))" class="nombre"><a href="@grupo.URL">@grupo.Roh_title</a></p>
-                                    }
-                                    else
-                                    {
-                                        <p>---</p>
-                                    }
+                                    <p about="@pPerson.GNOSSID" property="@pPerson.GetPropertyURI(nameof(grupo.Roh_title))" class="nombre"><a href="@grupo.URL">@grupo.Roh_title</a></p>
+                                }
+                                else
+                                {
+                                    <p>---</p>
                                 }
                             }
-                            else
-                            {
-                                <p id="idGrupoInvestigacion">---</p>
-                            }
-                        }
+                        </div>
                     </div>
                 </div>
-            </div>
+            }
 
             <div class="description-wrap">
                 <div class="desc" style="display: -webkit-box;">
-                    @{ if (!string.IsNullOrEmpty(pPerson.Vivo_description) && !string.IsNullOrEmpty(pPerson.GNOSSID))
-                        {
-                            <p about="@pPerson.GNOSSID" property="@pPerson.GetPropertyURI(nameof(pPerson.Vivo_description))" class="nombre">@pPerson.Vivo_description</p>
-                        }
+                    @if (!string.IsNullOrEmpty(pPerson.Vivo_description) && !string.IsNullOrEmpty(pPerson.GNOSSID))
+                    {
+                        <p about="@pPerson.GNOSSID" property="@pPerson.GetPropertyURI(nameof(pPerson.Vivo_description))" class="nombre">@pPerson.Vivo_description</p>
                     }
                 </div>
                 <p class="moreResults showMore">
@@ -220,15 +215,15 @@
                 </p>
             </div>
 
-            <div class="list-wrap tags" id="divTags">
-                <div class="label">@Html.Translate("AREAS_TEMATICAS")</div>
-                <ul id="idListaCategorias"></ul>
-                <ul>
-                    @{
-                        int contadorAreaConocimiento = 0;
+            @if (pPerson.Vivo_hasResearchArea != null && pPerson.Vivo_hasResearchArea.Count > 0)
+            {
+                <div class="list-wrap tags" id="divTags">
+                    <div class="label">@Html.Translate("AREAS_TEMATICAS")</div>
+                    <ul id="idListaCategorias"></ul>
+                    <ul>
+                        @{
+                            int contadorAreaConocimiento = 0;
 
-                        if (pPerson.Vivo_hasResearchArea != null && pPerson.Vivo_hasResearchArea.Count > 0)
-                        {
                             foreach (CategoryPath area in pPerson.Vivo_hasResearchArea)
                             {
                                 if (area != null && area.Roh_categoryNode != null && area.Roh_categoryNode.Count > 0)
@@ -241,7 +236,7 @@
                                     {
                                         contadorAreaConocimiento++;
                                         <li>
-                                            <a href="@Comunidad.Url/@Html.Translate("GRUPOS_URL")?roh:hasKnowledgeArea@("@@@")roh:categoryNode=@concept.GNOSSID">
+                                            <a href="@Comunidad.Url/@Html.Translate("INVESTIGADORES_URL")?vivo:hasResearchArea@("@@@")roh:categoryNode=@concept.GNOSSID">
                                                 <span about="@concept.GNOSSID" property="@concept.GetPropertyURI(nameof(concept.Skos_prefLabel))" class="texto">@concept.Skos_prefLabel</span>
                                             </a>
                                         </li>
@@ -250,7 +245,7 @@
                                     {
                                         contadorAreaConocimiento++;
                                         <li class="ocultar" style="display: none;">
-                                            <a href="@Comunidad.Url/@Html.Translate("GRUPOS_URL")?roh:hasKnowledgeArea@("@@@")roh:categoryNode=@concept.GNOSSID">
+                                            <a href="@Comunidad.Url/@Html.Translate("INVESTIGADORES_URL")?vivo:hasResearchArea@("@@@")roh:categoryNode=@concept.GNOSSID">
                                                 <span about="@concept.GNOSSID" property="@concept.GetPropertyURI(nameof(concept.Skos_prefLabel))" class="texto">@concept.Skos_prefLabel</span>
                                             </a>
                                         </li>
@@ -259,113 +254,104 @@
                                 }
                             }
                         }
-                    }
-                </ul>
-                @{
-                    if (contadorAreaConocimiento > 3)
-                    {
-                        <p class="moreResults">
-                            <a href="javascript: void(0);" class="ver-mas" style="display: flex;">@Html.Translate("VER_MAS")</a>
-                            <a href="javascript: void(0);" class="ver-menos" style="display: none;">@Html.Translate("VER_MENOS")</a>
-                        </p>
-                    }
-                }
-            </div>
-            <div class="list-wrap tags">
-                <div class="bloque">
-                    <div class="label">ORCID</div>
-                    @{ if (!string.IsNullOrEmpty(pPerson.Roh_ORCID) && !string.IsNullOrEmpty(pPerson.GNOSSID))
-                        {
-                            <a href="https://orcid.org/@pPerson.Roh_ORCID" target="_blank" about="@pPerson.GNOSSID" property="@pPerson.GetPropertyURI(nameof(pPerson.Roh_ORCID))" class="nombre">@pPerson.Roh_ORCID</a>
-                        }
-                        else
-                        {
-                            <a>---</a>
-                        }
-                    }
-                </div>
-            </div>
-            <div class="tags">
-                <div class="list-wrap bloque">
-                    <div class="label">@Html.Translate("PAGINA_WEB")</div>
-
-                    <ul>
-                        @{ if (!string.IsNullOrEmpty(pPerson.GNOSSID) && pPerson.Foaf_homepage != null && pPerson.Foaf_homepage.Count > 0)
-                            {
-                                foreach (var item in pPerson.Foaf_homepage)
-                                {
-                                    <li>
-                                        <a href="@item" about="@item" target="_blank" property="@pPerson.GetPropertyURI(nameof(pPerson.Foaf_homepage))" class="nombre">@item</a>
-                                    </li>
-                                }
-                            }
-                        }
                     </ul>
+                    @{
+                        if (contadorAreaConocimiento > 3)
+                        {
+                            <p class="moreResults">
+                                <a href="javascript: void(0);" class="ver-mas" style="display: flex;">@Html.Translate("VER_MAS")</a>
+                                <a href="javascript: void(0);" class="ver-menos" style="display: none;">@Html.Translate("VER_MENOS")</a>
+                            </p>
+                        }
+                    }
                 </div>
-            </div>
-            <hr />
-            <div class="group-wrap">
-                <div class="bloque">
-                    <div class="info-proyecto">
-                        <div class="bloque">
-                            <div class="descripcion">
-                                <p>@Html.Translate("CONTACTO")</p>
+            }
+
+            @if (!string.IsNullOrEmpty(pPerson.Roh_ORCID) && !string.IsNullOrEmpty(pPerson.GNOSSID)) 
+            {
+                <div class="list-wrap tags">
+                    <div class="bloque">
+                        <div class="label">ORCID</div>
+                        
+                        <a href="https://orcid.org/@pPerson.Roh_ORCID" target="_blank" about="@pPerson.GNOSSID" property="@pPerson.GetPropertyURI(nameof(pPerson.Roh_ORCID))" class="nombre">@pPerson.Roh_ORCID</a>
+                            
+                    </div>
+                </div>
+            }
+
+            @if (!string.IsNullOrEmpty(pPerson.GNOSSID) && pPerson.Foaf_homepage != null && pPerson.Foaf_homepage.Count > 0)
+            {
+                <div class="tags">
+                    <div class="list-wrap bloque">
+                        <div class="label">@Html.Translate("PAGINA_WEB")</div>
+
+                        <ul>
+                            
+                            @foreach (var item in pPerson.Foaf_homepage)
+                            {
+                                <li>
+                                    <a href="@item" about="@item" target="_blank" property="@pPerson.GetPropertyURI(nameof(pPerson.Foaf_homepage))" class="nombre">@item</a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            }
+            
+            @if ((pPerson.Vcard_email != null && pPerson.Vcard_email.Count > 0 && !string.IsNullOrEmpty(pPerson.GNOSSID)) || (pPerson.Vcard_hasTelephone != null && pPerson.Vcard_hasTelephone.Count > 0 && !string.IsNullOrEmpty(pPerson.GNOSSID)) || (!string.IsNullOrEmpty(pPerson.Vcard_address) && !string.IsNullOrEmpty(pPerson.GNOSSID)))
+            {
+                <hr />
+                <div class="group-wrap">
+                    <div class="bloque">
+                        <div class="info-proyecto">
+                            <div class="bloque">
+                                <div class="descripcion">
+                                    <p>@Html.Translate("CONTACTO")</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="info-investigador d-flex flex-wrap">
-                        <div class="list-wrap bloque">
-                            <div class="label">@Html.Translate("CORREO_ELECTRONICO")</div>
-                            <ul>
-                                @{ if (pPerson.Vcard_email != null && pPerson.Vcard_email.Count > 0 && !string.IsNullOrEmpty(pPerson.GNOSSID))
-                                    {
-
-                                        foreach (var item in pPerson.Vcard_email)
+                        <div class="info-investigador d-flex flex-wrap">
+                            @if (pPerson.Vcard_email != null && pPerson.Vcard_email.Count > 0 && !string.IsNullOrEmpty(pPerson.GNOSSID))
+                            {
+                                <div class="list-wrap bloque">
+                                    <div class="label">@Html.Translate("CORREO_ELECTRONICO")</div>
+                                    <ul>
+                                        @foreach (var item in pPerson.Vcard_email)
                                         {
                                             <li>
                                                 <div class="value" about="@item" property="@pPerson.GetPropertyURI(nameof(pPerson.Vcard_email))"><a href="mailto:@item">@item</a></div>
                                             </li>
                                         }
+                                    </ul>
+                                </div>
+                            }
 
-                                    }
-                                }
-                            </ul>
-                        </div>
-                        <div class="list-wrap bloque">
-                            <div class="label">@Html.Translate("TELEFONO")</div>
-                            <ul>
-                                @{ if (pPerson.Vcard_hasTelephone != null && pPerson.Vcard_hasTelephone.Count > 0 && !string.IsNullOrEmpty(pPerson.GNOSSID))
-                                    {
-                                        foreach (var item in pPerson.Vcard_hasTelephone)
+                            @if (pPerson.Vcard_hasTelephone != null && pPerson.Vcard_hasTelephone.Count > 0 && !string.IsNullOrEmpty(pPerson.GNOSSID))
+                            {
+                                <div class="list-wrap bloque">
+                                    <div class="label">@Html.Translate("TELEFONO")</div>
+                                    <ul>
+                                        
+                                        @foreach (var item in pPerson.Vcard_hasTelephone)
                                         {
                                             <li>
                                                 <div class="value" about="@item" property="@pPerson.GetPropertyURI(nameof(pPerson.Vcard_hasTelephone))"><a href="tel:@item">@item</a></div>
                                             </li>
                                         }
-
-                                    }
-                                    else
-                                    {
-                                        <div class="value">---</div>
-                                    }
-                                }
-                            </ul>
-                        </div>
-                        <div class="bloque">
-                            <div class="label">@Html.Translate("DIRECCION_CONTACTO")</div>
-                            @{ if (!string.IsNullOrEmpty(pPerson.Vcard_address) && !string.IsNullOrEmpty(pPerson.GNOSSID))
-                                {
+                                    </ul>
+                                </div>
+                            }
+                            @if (!string.IsNullOrEmpty(pPerson.Vcard_address) && !string.IsNullOrEmpty(pPerson.GNOSSID))
+                            {
+                                <div class="bloque">
+                                    <div class="label">@Html.Translate("DIRECCION_CONTACTO")</div>
                                     <div class="value" about="@pPerson.Vcard_address" property="@pPerson.GetPropertyURI(nameof(pPerson.Vcard_address))">@pPerson.Vcard_address</div>
-                                }
-                                else
-                                {
-                                    <div class="value">---</div>
-                                }
+                                </div>
                             }
                         </div>
                     </div>
                 </div>
-            </div>
+            }
         </div>
 
         <div class="contenido-ficha contenido-proyecto">

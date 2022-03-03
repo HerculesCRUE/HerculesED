@@ -41,6 +41,10 @@ namespace CurriculumvitaeOntology
 		[RDFProperty("http://w3id.org/roh/scientificActivity")]
 		public  ScientificActivity Roh_scientificActivity { get; set;}
 
+		[LABEL(LanguageEnum.es, "http://w3id.org/roh/freeTextSummary")]
+		[RDFProperty("http://w3id.org/roh/freeTextSummary")]
+		public FreeTextSummary Roh_freeTextSummary { get; set; }
+
 		[LABEL(LanguageEnum.es, "http://w3id.org/roh/researchObject")]
 		[RDFProperty("http://w3id.org/roh/researchObject")]
 		public ResearchObjects Roh_researchObject { get; set; }
@@ -65,23 +69,32 @@ namespace CurriculumvitaeOntology
 		internal override void GetEntities()
 		{
 			base.GetEntities();
+
 			Roh_personalData.GetProperties();
 			Roh_personalData.GetEntities();
 			OntologyEntity entityRoh_personalData = new("http://w3id.org/roh/PersonalData", "http://w3id.org/roh/PersonalData", "roh:personalData", Roh_personalData.propList, Roh_personalData.entList);
 			entList.Add(entityRoh_personalData);
+
 			Roh_professionalSituation.GetProperties();
 			Roh_professionalSituation.GetEntities();
 			OntologyEntity entityRoh_professionalSituation = new("http://w3id.org/roh/ProfessionalSituation", "http://w3id.org/roh/ProfessionalSituation", "roh:professionalSituation", Roh_professionalSituation.propList, Roh_professionalSituation.entList);
 			entList.Add(entityRoh_professionalSituation);
+
 			Roh_scientificExperience.GetProperties();
 			Roh_scientificExperience.GetEntities();
 			OntologyEntity entityRoh_scientificExperience = new ("http://w3id.org/roh/ScientificExperience", "http://w3id.org/roh/ScientificExperience", "roh:scientificExperience", Roh_scientificExperience.propList, Roh_scientificExperience.entList);
 			entList.Add(entityRoh_scientificExperience);
+
 			Roh_scientificActivity.GetProperties();
 			Roh_scientificActivity.GetEntities();
 			OntologyEntity entityRoh_scientificActivity = new ("http://w3id.org/roh/ScientificActivity", "http://w3id.org/roh/ScientificActivity", "roh:scientificActivity", Roh_scientificActivity.propList, Roh_scientificActivity.entList);
 			entList.Add(entityRoh_scientificActivity);
-			
+
+			Roh_freeTextSummary.GetProperties();
+			Roh_freeTextSummary.GetEntities();
+			OntologyEntity entityRoh_freeTextSummary = new("http://w3id.org/roh/FreeTextSummary", "http://w3id.org/roh/FreeTextSummary", "roh:freeTextSummary", Roh_freeTextSummary.propList, Roh_freeTextSummary.entList);
+			entList.Add(entityRoh_freeTextSummary);
+
 			Roh_researchObject.GetProperties();
 			Roh_researchObject.GetEntities();
 			OntologyEntity entityRoh_researchObject = new("http://w3id.org/roh/ResearchObjects", "http://w3id.org/roh/ResearchObjects", "roh:researchObject", Roh_researchObject.propList, Roh_researchObject.entList);

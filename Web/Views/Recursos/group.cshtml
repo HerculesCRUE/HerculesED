@@ -38,7 +38,7 @@
             <a href="@Comunidad.Url">Home</a>
         </li>
         <li>
-            @{string urlProyectos = Comunidad.Url + "/buscador-grupos-de-investigacion"; }
+            @{string urlProyectos = Comunidad.Url + "/" + Html.Translate("GRUPOS_URL"); }
             <a href="@urlProyectos">Grupos de investigación</a>
         </li>
         @{ if (!string.IsNullOrEmpty(pGroup.Roh_title))

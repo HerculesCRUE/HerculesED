@@ -38,7 +38,7 @@
             <a href="@Comunidad.Url">Home</a>
         </li>
         <li>
-            @{string urlProyectos = Comunidad.Url + "/buscador-proyectos"; }
+            @{string urlProyectos = Comunidad.Url + "/" + Html.Translate("PROJECTS_URL"); }
             <a href="@urlProyectos">Proyectos</a>
         </li>
         @{ if (!string.IsNullOrEmpty(pProject.Roh_title))
@@ -309,37 +309,39 @@
                     }
                 </div>
             </div>
-            <div class="list-wrap tags">
-                <div class="label">@Html.Translate("AREAS_TEMATICAS")</div>
-                <ul>
-                    @{
-                        int contadorCategorias = 0;
-                    }
-                    @if (pProject.Vivo_hasResearchArea != null && pProject.Vivo_hasResearchArea.Count > 0)
-                    {
-                        foreach (ResearchArea areatematica in pProject.Vivo_hasResearchArea)
-                        {
-                            if (areatematica != null && !string.IsNullOrEmpty(areatematica.Roh_title))
+            @if (pProject.Vivo_hasResearchArea != null && pProject.Vivo_hasResearchArea.Count > 0)
+            {
+                <div class="list-wrap tags">
+                    <div class="label">@Html.Translate("AREAS_TEMATICAS")</div>
+                    <ul>
+                        @{
+                            int contadorCategorias = 0;
+
+                            foreach (ResearchArea areatematica in pProject.Vivo_hasResearchArea)
                             {
-                                
-                                <li>
-                                    <a>
-                                        <span about="@areatematica.GNOSSID" property="@areatematica.GetPropertyURI(nameof(areatematica.RdfsLabel))" class="texto">@areatematica.Roh_title</span>
-                                    </a>
-                                </li>
+                                if (areatematica != null && !string.IsNullOrEmpty(areatematica.Roh_title))
+                                {
+                                    
+                                    <li>
+                                        <a>
+                                            <span about="@areatematica.GNOSSID" property="@areatematica.GetPropertyURI(nameof(areatematica.RdfsLabel))" class="texto">@areatematica.Roh_title</span>
+                                        </a>
+                                    </li>
+                                }
                             }
                         }
-                    }
-                </ul>
-                @{ if (contadorCategorias > 3)
+                    </ul>
+                    @if (contadorCategorias > 3)
                     {
                         <p class="moreResults">
                             <a href="javascript: void(0);" class="ver-mas" style="display: flex;">@Html.Translate("VER_MAS")</a>
                             <a href="javascript: void(0);" class="ver-menos" style="display: none;">@Html.Translate("VER_MENOS")</a>
                         </p>
                     }
-                }
-            </div>
+                    
+                </div>
+
+            }
         </div>
 
         <div class="contenido-ficha contenido-proyecto">

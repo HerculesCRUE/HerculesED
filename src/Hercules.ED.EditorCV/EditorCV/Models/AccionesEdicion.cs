@@ -335,8 +335,7 @@ namespace GuardadoCV.Models
                             {
                                 for (int i = 0; i < colaboradoresDocumentos[person.ID]; i++)
                                 {
-
-                                    person.score += (1 - person.score) * scoreDocument;
+                                    person.score += (max - person.score) * scoreDocument;
                                 }
                             }
                             if (colaboradoresProyectos.ContainsKey(person.ID))
@@ -344,12 +343,12 @@ namespace GuardadoCV.Models
                                 for (int i = 0; i < colaboradoresProyectos[person.ID]; i++)
                                 {
 
-                                    person.score += (1 - person.score) * scoreProject;
+                                    person.score += (max - person.score) * scoreProject;
                                 }
                             }
                             if (colaboradoresDepartament.Contains(person.ID))
                             {
-                                person.score += (1 - person.score) * scoreDepartment;
+                                person.score += (max - person.score) * scoreDepartment;
                             }
                             if (person.score > max)
                             {
