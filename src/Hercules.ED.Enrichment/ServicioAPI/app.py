@@ -84,11 +84,9 @@ class SpecificResponseSchema(Schema):
 
     
 conf = {}
-taxonomy = {}
 topic_models = {}
-available_topic_models = ['sourceForge', 'bio-protocol', 'papers']
-tokenizer = "" 
 keyphrase_extractors = {}
+available_topic_models = ['sourceForge', 'bio-protocol', 'papers']
 available_keyphrase_models = ['papers']
 
 
@@ -134,11 +132,8 @@ def pdf_to_text(url):
  
 def init():
     global conf
-    global available_topic_models
     global topic_models
-    global tokenizer
     global keyphrase_extractors
-    global available_keyphrase_models
     
     # load configuration
     CONFDIR = os.path.dirname(os.path.realpath(__file__))
