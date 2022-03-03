@@ -242,7 +242,7 @@
                             </div>
                         </div>
                         <div class="tab-pane fade" id="resumen-panel" role="tabpanel" aria-labelledby="resumen-tab">
-                            <div class="row">
+                            <div class="row cvTab" about="@pCV.Roh_freeTextSummary.GNOSSID" rdftype="http://w3id.org/roh/FreeTextSummary" property="http://w3id.org/roh/freeTextSummary">
                                 <div class="col col-12 col-section-title">
                                     <div class="wrapCol">
                                         <p>6 - @Html.Translate("CV_RESUMENTEXTOLIBRE")</p>
@@ -701,6 +701,11 @@
                     {
                         this.Roh_scientificActivity = new ScientificActivity(propRoh_scientificActivity.PropertyValues[0].RelatedEntity, idiomaUsuario);
                     }
+					SemanticPropertyModel propRoh_freeTextSummary = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/freeTextSummary");
+                    if (propRoh_freeTextSummary != null && propRoh_freeTextSummary.PropertyValues.Count > 0)
+                    {
+                        this.Roh_freeTextSummary = new FreeTextSummary(propRoh_freeTextSummary.PropertyValues[0].RelatedEntity, idiomaUsuario);
+                    }
 					SemanticPropertyModel propRoh_researchObject = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/researchObject");
                     if (propRoh_researchObject != null && propRoh_researchObject.PropertyValues.Count > 0)
                     {
@@ -736,6 +741,10 @@
                 [LABEL(LanguageEnum.es, "http://w3id.org/roh/scientificActivity")]
                 [RDFProperty("http://w3id.org/roh/scientificActivity")]
                 public ScientificActivity Roh_scientificActivity { get; set; }
+				
+				[LABEL(LanguageEnum.es, "http://w3id.org/roh/freeTextSummary")]
+                [RDFProperty("http://w3id.org/roh/freeTextSummary")]
+                public FreeTextSummary Roh_freeTextSummary { get; set; }
 				
 				[LABEL(LanguageEnum.es, "http://w3id.org/roh/researchObject")]
                 [RDFProperty("http://w3id.org/roh/researchObject")]
@@ -800,6 +809,18 @@
                 public ScientificActivity() : base() { }
 
                 public ScientificActivity(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
+                {
+                    this.mGNOSSID = pSemCmsModel.Entity.Uri;
+                    this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
+                }
+            }
+			
+			public class FreeTextSummary : GnossOCBase
+            {
+
+                public FreeTextSummary() : base() { }
+
+                public FreeTextSummary(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
                 {
                     this.mGNOSSID = pSemCmsModel.Entity.Uri;
                     this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
