@@ -79,7 +79,12 @@ namespace DesnormalizadorHercules.Models
 
 
                 //TODO Reubicar
+                //TODO Eliminar from
+                //TODO eliminar decha competa revista
+                //TODO agregar la fuente para el factor de impacto
                 actualizadorDocument.ActualizarIndiceImpacto();
+                //TODO hacer bien
+                actualizadorDocument.ActualizarCuartil();
                 actualizadorRO.ActualizarAreasRO();
                 actualizadorRO.ActualizarTagsRO();
                 actualizadorRO.ActualizarROsPublicos();

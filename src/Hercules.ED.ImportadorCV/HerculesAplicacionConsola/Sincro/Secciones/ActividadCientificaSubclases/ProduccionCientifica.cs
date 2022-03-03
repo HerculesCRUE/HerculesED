@@ -11,7 +11,7 @@ using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
 namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientificaSubclases
 {
-    class OtrasDistinciones : DisambiguableEntity
+    class ProduccionCientifica : DisambiguableEntity
     {
         public string descripcion { get; set; }
         public string fecha { get; set; }
@@ -46,6 +46,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientificaSubclase
                 config = configFecha,
                 value = fecha
             });
+
             return data;
         }
 
@@ -69,25 +70,25 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientificaSubclase
 
             foreach (List<string> lista in listaListas)
             {
-                string select = $@"SELECT distinct ?item ?itemTitle ?itemDate ";
+                string select = $@"SELECT distinct ?item ?itemTitle ?itemDate";
                 string where = $@"where {{
-                                        ?item <{Variables.ActividadCientificaTecnologica.otrasDistincionesDescripcion}> ?itemTitle . 
-                                        OPTIONAL{{?item <{Variables.ActividadCientificaTecnologica.otrasDistincionesFechaConcesion}> ?itemDate }}.
+                                        ?item <{Variables.ActividadCientificaTecnologica.prodCientificaFuenteIndiceH}> ?itemTitle . 
+                                        OPTIONAL{{ ?item <{Variables.ActividadCientificaTecnologica.prodCientificaFechaAplicacion}> ?itemDate }} .
                                         FILTER(?item in (<{string.Join(">,<", lista)}>))
                                     }}";
 
                 SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, graph);
                 foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                 {
-                    OtrasDistinciones otrasDistinciones = new OtrasDistinciones();
-                    otrasDistinciones.ID = fila["item"].value;
-                    otrasDistinciones.descripcion = fila["itemTitle"].value;
-                    otrasDistinciones.fecha = "";
+                    ProduccionCientifica produccionCientifica = new ProduccionCientifica();
+                    produccionCientifica.ID = fila["item"].value;
+                    produccionCientifica.descripcion = fila["itemTitle"].value;
+                    produccionCientifica.fecha = "";
                     if (fila.ContainsKey("itemDate"))
                     {
-                        otrasDistinciones.fecha = fila["itemDate"].value;
+                        produccionCientifica.fecha = fila["itemDate"].value;
                     }
-                    resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), otrasDistinciones);
+                    resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), produccionCientifica);
                 }
             }
 

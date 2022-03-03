@@ -9,12 +9,13 @@ using System.Text;
 using System.Threading.Tasks;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
-namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
+namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientificaSubclases
 {
     class ComitesCTA : DisambiguableEntity
     {
         public string descripcion { get; set; }
         public string fecha { get; set; }
+        public string entidadAfiliacion { get; set; }
 
         private static DisambiguationDataConfig configDescripcion = new DisambiguationDataConfig()
         {
@@ -23,6 +24,13 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
         };
 
         private static DisambiguationDataConfig configFecha = new DisambiguationDataConfig()
+        {
+            type = DisambiguationDataConfigType.equalsItem,
+            score = 0.5f,
+            scoreMinus = 0.5f
+        };
+
+        private static DisambiguationDataConfig configEA = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsItem,
             score = 0.5f,
@@ -45,6 +53,13 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
                 property = "fecha",
                 config = configFecha,
                 value = fecha
+            });
+
+            data.Add(new DisambiguationData()
+            {
+                property = "entidadAfiliacion",
+                config = configEA,
+                value = entidadAfiliacion
             });
             return data;
         }
@@ -69,10 +84,11 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
 
             foreach (List<string> lista in listaListas)
             {
-                string select = $@"SELECT distinct ?item ?itemTitle ?itemDate ";
+                string select = $@"SELECT distinct ?item ?itemTitle ?itemDate ?itemEA ";
                 string where = $@"where {{
                                         ?item <{Variables.ActividadCientificaTecnologica.comitesCTATitulo}> ?itemTitle . 
-                                        OPTIONAL{{ ?item <{Variables.ActividadCientificaTecnologica.forosComitesFechaInicio}> ?itemDate }} .
+                                        OPTIONAL{{ ?item <{Variables.ActividadCientificaTecnologica.comitesCTAFechaInicio}> ?itemDate }} .
+                                        OPTIONAL{{ ?item <{Variables.ActividadCientificaTecnologica.comitesCTAEntidadAfiliacionNombre}> ?itemEA }} .
                                         FILTER(?item in (<{string.Join(">,<", lista)}>))
                                     }}";
 
@@ -86,6 +102,11 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
                     if (fila.ContainsKey("itemDate"))
                     {
                         comitesCTA.fecha = fila["itemDate"].value;
+                    }
+                    comitesCTA.entidadAfiliacion = "";
+                    if (fila.ContainsKey("itemEA"))
+                    {
+                        comitesCTA.entidadAfiliacion = fila["itemEA"].value;
                     }
                     resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), comitesCTA);
                 }

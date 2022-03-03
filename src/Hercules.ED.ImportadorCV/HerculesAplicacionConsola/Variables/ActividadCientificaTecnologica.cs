@@ -9,6 +9,14 @@ namespace HerculesAplicacionConsola.Variables
     class ActividadCientificaTecnologica
     {
         /// <summary>
+        /// Producción cientifica - 060.010.000.000
+        /// </summary>
+        public const string prodCientificaIndiceH = "";
+        public const string prodCientificaFechaAplicacion = "";
+        public const string prodCientificaFuenteIndiceH = "";
+        public const string prodCientificaFuenteIndiceHOtros = "";
+
+        /// <summary>
         /// Indicadores generales de calidad de la producción científica - 060.010.060.000
         /// </summary>
         public const string indicadoresGeneralesCalidad = "http://w3id.org/roh/generalQualityIndicator";
@@ -172,7 +180,7 @@ namespace HerculesAplicacionConsola.Variables
         public const string otrasActDivulPaisEntidadOrg = "";
         public const string otrasActDivulCCAAEntidadOrg = "";
         public const string otrasActDivulCiudadEntidadOrg = "";
-        public const string otrasActDivulEntidadOrg = "http://purl.org/ontology/bibo/presentedAt@@@http://purl.org/ontology/bibo/Event|http://purl.org/ontology/bibo/organizer";
+        public const string otrasActDivulEntidadOrg = "http://purl.org/ontology/bibo/presentedAt@@@http://purl.org/ontology/bibo/Event|http://purl.org/ontology/bibo/organizer";//TODO - autocompletar?
         public const string otrasActDivulTipoEntidadOrg = "";
         public const string otrasActDivulTipoEntidadOrgOtros = "";
         public const string otrasActDivulPaisCelebracion = "http://purl.org/ontology/bibo/presentedAt@@@http://purl.org/ontology/bibo/Event|https://www.w3.org/2006/vcard/ns#hasCountryName";
@@ -212,8 +220,8 @@ namespace HerculesAplicacionConsola.Variables
         public const string comitesCTAPaisEntidadAfiliacion = "http://w3id.org/roh/affiliatedOrganizationHasCountryName";
         public const string comitesCTACCAAEntidadAfiliacion = "http://w3id.org/roh/affiliatedOrganizationHasRegion";
         public const string comitesCTACiudadEntidadAfiliacion = "http://w3id.org/roh/affiliatedOrganizationLocality";
-        public const string comitesCTAEntidadAfiliacion = "";
-        public const string comitesCTAEntidadAfiliacionNombre = "";
+        public const string comitesCTAEntidadAfiliacion = "http://vivoweb.org/ontology/core#affiliatedOrganization";
+        public const string comitesCTAEntidadAfiliacionNombre = "http://w3id.org/roh/affiliatedOrganizationTitle";
         public const string comitesCTATipoEntidadAfiliacion = "http://w3id.org/roh/affiliatedOrganizationType";
         public const string comitesCTATipoEntidadAfiliacionOtros = "http://w3id.org/roh/affiliatedOrganizationTypeOther";
         public const string comitesCTAAmbitoActividad = "http://vivoweb.org/ontology/core#geographicFocus";
@@ -393,10 +401,11 @@ namespace HerculesAplicacionConsola.Variables
         public const string otrasColabPaisRadicacion = "https://www.w3.org/2006/vcard/ns#hasCountryName";
         public const string otrasColabCCAARadicacion = "https://www.w3.org/2006/vcard/ns#hasRegion";
         public const string otrasColabCiudadRadicacion = "https://www.w3.org/2006/vcard/ns#locality";
-        public const string otrasColabNombreInvestigador = "";// --- TODO --- ?
-        public const string otrasColabPrimApellInvestigador = "";// --- TODO --- ?
-        public const string otrasColabSegApellInvestigador = "";// --- TODO --- ?
-        public const string otrasColabFirmaInvestigador = "http://w3id.org/roh/researchers@@@http://purl.obolibrary.org/obo/BFO_0000023|http://xmlns.com/foaf/0.1/nick";// --- TODO --- ?
+        public const string otrasColabNombreInvestigador = "http://w3id.org/roh/researchers@@@http://purl.obolibrary.org/obo/BFO_0000023|http://xmlns.com/foaf/0.1/firstName";
+        public const string otrasColabPrimApellInvestigador = "http://w3id.org/roh/researchers@@@http://purl.obolibrary.org/obo/BFO_0000023|http://xmlns.com/foaf/0.1/familyName";
+        public const string otrasColabSegApellInvestigador = "http://w3id.org/roh/researchers@@@http://purl.obolibrary.org/obo/BFO_0000023|http://w3id.org/roh/secondFamilyName";
+        public const string otrasColabFirmaInvestigador = "http://w3id.org/roh/researchers@@@http://purl.obolibrary.org/obo/BFO_0000023|http://xmlns.com/foaf/0.1/nick";
+        public const string otrasColabOrdenInvestigador = "http://w3id.org/roh/researchers@@@http://purl.obolibrary.org/obo/BFO_0000023|http://www.w3.org/1999/02/22-rdf-syntax-ns#comment";
         public const string otrasColabPaisEntidadParticipante = "http://w3id.org/roh/participates@@@http://w3id.org/roh/Organization|https://www.w3.org/2006/vcard/ns#hasCountryName";
         public const string otrasColabCCAAEntidadParticipante = "http://w3id.org/roh/participates@@@http://w3id.org/roh/Organization|https://www.w3.org/2006/vcard/ns#hasRegion";
         public const string otrasColabCiudadEntidadParticipante = "http://w3id.org/roh/participates@@@http://w3id.org/roh/Organization|https://www.w3.org/2006/vcard/ns#locality";
@@ -410,7 +419,7 @@ namespace HerculesAplicacionConsola.Variables
         public const string otrasColabDuracionDia = "http://w3id.org/roh/durationDays";
         public const string otrasColabDescripcionColaboracion = "http://w3id.org/roh/title";
         public const string otrasColabResultadosRelevantes = "http://w3id.org/roh/relevantResults";
-        public const string otrasColabPalabrasClave = "http://vivoweb.org/ontology/core#freeTextKeyword";// ?
+        public const string otrasColabPalabrasClave = "http://vivoweb.org/ontology/core#freeTextKeyword";// -- TODO --
 
         /// <summary>
         /// Sociedades científicas y asociaciones profesionales - 060.030.020.000

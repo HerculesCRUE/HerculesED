@@ -228,36 +228,12 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
         private void SituacionProfesionalTelefono(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnPhoneBean> listado = item.GetListaElementosPorIDCampo<CvnItemBeanCvnPhoneBean>("010.010.000.140");
-            foreach (CvnItemBeanCvnPhoneBean telefono in listado)
-            {
-                if (string.IsNullOrEmpty(telefono.Number)) { continue; }
 
-                string entityPartAux = Guid.NewGuid().ToString() + "@@@";
+            string propiedadNumero = Variables.SituacionProfesional.situacionProfesionalFijoNumero;
+            string propiedadCodInternacional = Variables.SituacionProfesional.situacionProfesionalFijoCodInternacional;
+            string propiedadExtension = Variables.SituacionProfesional.situacionProfesionalFijoExtension;
 
-                //Añado Numero
-                Property propertyNumero = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.situacionProfesionalFijoNumero);
-
-                string valorNumero = UtilitySecciones.StringGNOSSID(entityPartAux, telefono.Number);
-                string propiedadNumero = Variables.SituacionProfesional.situacionProfesionalFijoNumero;
-
-                UtilitySecciones.CheckProperty(propertyNumero, entidadAux, valorNumero, propiedadNumero);
-
-                //Añado Codigo Internacional
-                Property propertyCodInternacional = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.situacionProfesionalFijoCodInternacional);
-
-                string valorCodInternacional = UtilitySecciones.StringGNOSSID(entityPartAux, telefono.InternationalCode);
-                string propiedadCodInternacional = Variables.SituacionProfesional.situacionProfesionalFijoCodInternacional;
-
-                UtilitySecciones.CheckProperty(propertyCodInternacional, entidadAux, valorCodInternacional, propiedadCodInternacional);
-
-                //Añado Extension
-                Property propertyExtension = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.situacionProfesionalFijoExtension);
-
-                string valorExtension = UtilitySecciones.StringGNOSSID(entityPartAux, telefono.Extension);
-                string propiedadExtension = Variables.SituacionProfesional.situacionProfesionalFijoExtension;
-
-                UtilitySecciones.CheckProperty(propertyExtension, entidadAux, valorExtension, propiedadExtension);
-            }
+            UtilitySecciones.InsertarListadoTelefonos(listado, entidadAux, propiedadNumero, propiedadCodInternacional, propiedadExtension);
         }
 
         /// <summary>
@@ -268,95 +244,35 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
         /// <param name="entidadAux"></param>
         private void SituacionProfesionalFax(CvnItemBean item, Entity entidadAux)
         {
-
             List<CvnItemBeanCvnPhoneBean> listado = item.GetListaElementosPorIDCampo<CvnItemBeanCvnPhoneBean>("010.010.000.150");
-            foreach (CvnItemBeanCvnPhoneBean telefono in listado)
-            {
-                if (string.IsNullOrEmpty(telefono.Number)) { continue; }
 
-                string entityPartAux = Guid.NewGuid().ToString() + "@@@";
-                //Añado Numero
-                Property propertyNumero = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.situacionProfesionalFaxNumero);
+            string propiedadNumero = Variables.SituacionProfesional.situacionProfesionalFaxNumero;
+            string propiedadCodInternacional = Variables.SituacionProfesional.situacionProfesionalFaxCodInternacional;
+            string propiedadExtension = Variables.SituacionProfesional.situacionProfesionalFaxExtension;
 
-                string valorNumero = UtilitySecciones.StringGNOSSID(entityPartAux, telefono.Number);
-                string propiedadNumero = Variables.SituacionProfesional.situacionProfesionalFaxNumero;
-
-                UtilitySecciones.CheckProperty(propertyNumero, entidadAux, valorNumero, propiedadNumero);
-
-                //Añado Codigo Internacional
-                Property propertyCodInternacional = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.situacionProfesionalFaxCodInternacional);
-
-                string valorCodInternacional = UtilitySecciones.StringGNOSSID(entityPartAux, telefono.InternationalCode);
-                string propiedadCodInternacional = Variables.SituacionProfesional.situacionProfesionalFaxCodInternacional;
-
-                UtilitySecciones.CheckProperty(propertyCodInternacional, entidadAux, valorCodInternacional, propiedadCodInternacional);
-
-                //Añado Extension
-                Property propertyExtension = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.situacionProfesionalFaxExtension);
-
-                string valorExtension = UtilitySecciones.StringGNOSSID(entityPartAux, telefono.Extension);
-                string propiedadExtension = Variables.SituacionProfesional.situacionProfesionalFaxExtension;
-
-                UtilitySecciones.CheckProperty(propertyExtension, entidadAux, valorExtension, propiedadExtension);
-            }
+            UtilitySecciones.InsertarListadoTelefonos(listado, entidadAux, propiedadNumero, propiedadCodInternacional, propiedadExtension);
         }
 
         /// <summary>
         /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
-        /// pertenecientes a los códigos UNESCO.
+        /// pertenecientes a los Códigos UNESCO de especialización primaria, secundaria y terciaria.
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
         private void SituacionProfesionalCodUnesco(CvnItemBean item, Entity entidadAux)
-        {
+        {           
+            //Añado los códigos UNESCO de especialización primaria
             List<CvnItemBeanCvnString> listadoCodUnescoPrimaria = item.GetListaElementosPorIDCampo<CvnItemBeanCvnString>("010.010.000.220");
+            UtilitySecciones.CodigosUnesco(listadoCodUnescoPrimaria, entidadAux, Variables.SituacionProfesional.situacionProfesionalCodUnescoPrimaria);
+
+            //Añado los códigos UNESCO de especialización secundaria
             List<CvnItemBeanCvnString> listadoCodUnescoSecundaria = item.GetListaElementosPorIDCampo<CvnItemBeanCvnString>("010.010.000.230");
+            UtilitySecciones.CodigosUnesco(listadoCodUnescoSecundaria, entidadAux, Variables.SituacionProfesional.situacionProfesionalCodUnescoSecundaria);
+            
+            //Añado los códigos UNESCO de especialización terciaria
             List<CvnItemBeanCvnString> listadoCodUnescoTerciaria = item.GetListaElementosPorIDCampo<CvnItemBeanCvnString>("010.010.000.240");
+            UtilitySecciones.CodigosUnesco(listadoCodUnescoTerciaria, entidadAux, Variables.SituacionProfesional.situacionProfesionalCodUnescoTerciaria);
 
-            foreach (CvnItemBeanCvnString codigo in listadoCodUnescoPrimaria)
-            {
-                string entityPartAux = Guid.NewGuid().ToString() + "@@@";
-                List<string> listadoCodigos = Utility.GetPadresCodUnesco(codigo);
-                //Añado Codigo UNESCO
-                foreach (string codigolista in listadoCodigos)
-                {
-                    Property propertyCodUnescoPrimaria = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.situacionProfesionalCodUnescoPrimaria);
-
-                    string valorCodigo = UtilitySecciones.StringGNOSSID(entityPartAux, Utility.GetCodUnescoIDCampo(codigolista));
-                    string propiedadCodigo = Variables.SituacionProfesional.situacionProfesionalCodUnescoPrimaria;
-                    UtilitySecciones.CheckProperty(propertyCodUnescoPrimaria, entidadAux, valorCodigo, propiedadCodigo);
-                }
-            }
-
-            foreach (CvnItemBeanCvnString codigo in listadoCodUnescoSecundaria)
-            {
-                string entityPartAux = Guid.NewGuid().ToString() + "@@@";
-                List<string> listadoCodigos = Utility.GetPadresCodUnesco(codigo);
-                //Añado Codigo UNESCO
-                foreach (string codigolista in listadoCodigos)
-                {
-                    Property propertyCodUnescoSecundaria = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.situacionProfesionalCodUnescoSecundaria);
-
-                    string valorCodigo = UtilitySecciones.StringGNOSSID(entityPartAux, Utility.GetCodUnescoIDCampo(codigolista));
-                    string propiedadCodigo = Variables.SituacionProfesional.situacionProfesionalCodUnescoSecundaria;
-                    UtilitySecciones.CheckProperty(propertyCodUnescoSecundaria, entidadAux, valorCodigo, propiedadCodigo);
-                }
-            }
-
-            foreach (CvnItemBeanCvnString codigo in listadoCodUnescoTerciaria)
-            {
-                string entityPartAux = Guid.NewGuid().ToString() + "@@@";
-                List<string> listadoCodigos = Utility.GetPadresCodUnesco(codigo);
-                //Añado Codigo UNESCO
-                foreach (string codigolista in listadoCodigos)
-                {
-                    Property propertyCodUnescoTerciaria = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.situacionProfesionalCodUnescoTerciaria);
-
-                    string valorCodigo = UtilitySecciones.StringGNOSSID(entityPartAux, Utility.GetCodUnescoIDCampo(codigolista));
-                    string propiedadCodigo = Variables.SituacionProfesional.situacionProfesionalCodUnescoTerciaria;
-                    UtilitySecciones.CheckProperty(propertyCodUnescoTerciaria, entidadAux, valorCodigo, propiedadCodigo);
-                }
-            }
         }
 
         /// <summary>
@@ -465,36 +381,12 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
         private void CargosActividadesTelefono(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnPhoneBean> listado = item.GetListaElementosPorIDCampo<CvnItemBeanCvnPhoneBean>("010.020.000.140");
-            foreach (CvnItemBeanCvnPhoneBean telefono in listado)
-            {
-                if (string.IsNullOrEmpty(telefono.Number)) { continue; }
 
-                string entityPartAux = Guid.NewGuid().ToString() + "@@@";
+            string propiedadNumero = Variables.SituacionProfesional.cargosActividadesFijoNumero;
+            string propiedadCodInternacional = Variables.SituacionProfesional.cargosActividadesFijoCodInternacional;
+            string propiedadExtension = Variables.SituacionProfesional.cargosActividadesFijoExtension;
 
-                //Añado Numero
-                Property propertyNumero = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.cargosActividadesFijoNumero);
-
-                string valorNumero = UtilitySecciones.StringGNOSSID(entityPartAux, telefono.Number);
-                string propiedadNumero = Variables.SituacionProfesional.cargosActividadesFijoNumero;
-
-                UtilitySecciones.CheckProperty(propertyNumero, entidadAux, valorNumero, propiedadNumero);
-
-                //Añado Codigo Internacional
-                Property propertyCodInternacional = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.cargosActividadesFijoCodInternacional);
-
-                string valorCodInternacional = UtilitySecciones.StringGNOSSID(entityPartAux, telefono.InternationalCode);
-                string propiedadCodInternacional = Variables.SituacionProfesional.cargosActividadesFijoCodInternacional;
-
-                UtilitySecciones.CheckProperty(propertyCodInternacional, entidadAux, valorCodInternacional, propiedadCodInternacional);
-
-                //Añado Extension
-                Property propertyExtension = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.cargosActividadesFijoExtension);
-
-                string valorExtension = UtilitySecciones.StringGNOSSID(entityPartAux, telefono.Extension);
-                string propiedadExtension = Variables.SituacionProfesional.cargosActividadesFijoExtension;
-
-                UtilitySecciones.CheckProperty(propertyExtension, entidadAux, valorExtension, propiedadExtension);
-            }
+            UtilitySecciones.InsertarListadoTelefonos(listado, entidadAux, propiedadNumero, propiedadCodInternacional, propiedadExtension);
         }
 
         /// <summary>
@@ -506,95 +398,33 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
         private void CargosActividadesFax(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnPhoneBean> listado = item.GetListaElementosPorIDCampo<CvnItemBeanCvnPhoneBean>("010.020.000.150");
-            foreach (CvnItemBeanCvnPhoneBean telefono in listado)
-            {
-                if (string.IsNullOrEmpty(telefono.Number)) { continue; }
 
-                string entityPartAux = Guid.NewGuid().ToString() + "@@@";
-                //Añado Numero
-                Property propertyNumero = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.cargosActividadesFaxNumero);
+            string propiedadNumero = Variables.SituacionProfesional.cargosActividadesFaxNumero;
+            string propiedadCodInternacional = Variables.SituacionProfesional.cargosActividadesFaxCodInternacional;
+            string propiedadExtension = Variables.SituacionProfesional.cargosActividadesFaxExtension;
 
-                string valorNumero = UtilitySecciones.StringGNOSSID(entityPartAux, telefono.Number);
-                string propiedadNumero = Variables.SituacionProfesional.cargosActividadesFaxNumero;
-
-                UtilitySecciones.CheckProperty(propertyNumero, entidadAux, valorNumero, propiedadNumero);
-
-                //Añado Codigo Internacional
-                Property propertyCodInternacional = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.cargosActividadesFaxCodInternacional);
-
-                string valorCodInternacional = UtilitySecciones.StringGNOSSID(entityPartAux, telefono.InternationalCode);
-                string propiedadCodInternacional = Variables.SituacionProfesional.cargosActividadesFaxCodInternacional;
-
-                UtilitySecciones.CheckProperty(propertyCodInternacional, entidadAux, valorCodInternacional, propiedadCodInternacional);
-
-                //Añado Extension
-                Property propertyExtension = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.cargosActividadesFaxExtension);
-
-                string valorExtension = UtilitySecciones.StringGNOSSID(entityPartAux, telefono.Extension);
-                string propiedadExtension = Variables.SituacionProfesional.cargosActividadesFaxExtension;
-
-                UtilitySecciones.CheckProperty(propertyExtension, entidadAux, valorExtension, propiedadExtension);
-            }
+            UtilitySecciones.InsertarListadoTelefonos(listado, entidadAux, propiedadNumero, propiedadCodInternacional,propiedadExtension);            
         }
 
         /// <summary>
         /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
-        /// pertenecientes a los códigos UNESCO.
+        /// pertenecientes a los Códigos UNESCO de especialización primaria, secundaria y terciaria.
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
         private void CargosActividadesCodUnesco(CvnItemBean item, Entity entidadAux)
         {
+            //Añado los códigos UNESCO de especialización primaria
             List<CvnItemBeanCvnString> listadoCodUnescoPrimaria = item.GetListaElementosPorIDCampo<CvnItemBeanCvnString>("010.020.000.230");
+            UtilitySecciones.CodigosUnesco(listadoCodUnescoPrimaria, entidadAux, Variables.SituacionProfesional.cargosActividadesCodUnescoPrimaria);
+
+            //Añado los códigos UNESCO de especialización secundaria
             List<CvnItemBeanCvnString> listadoCodUnescoSecundaria = item.GetListaElementosPorIDCampo<CvnItemBeanCvnString>("010.020.000.240");
+            UtilitySecciones.CodigosUnesco(listadoCodUnescoSecundaria, entidadAux, Variables.SituacionProfesional.cargosActividadesCodUnescoSecundaria);
+            
+            //Añado los códigos UNESCO de especialización terciaria
             List<CvnItemBeanCvnString> listadoCodUnescoTerciaria = item.GetListaElementosPorIDCampo<CvnItemBeanCvnString>("010.020.000.250");
-
-            foreach (CvnItemBeanCvnString codigo in listadoCodUnescoPrimaria)
-            {
-                string entityPartAux = Guid.NewGuid().ToString() + "@@@";
-                List<string> listadoCodigos = Utility.GetPadresCodUnesco(codigo);
-                //Añado Codigo UNESCO
-                foreach (string codigolista in listadoCodigos)
-                {
-                    Property propertyCodUnescoPrimaria = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.cargosActividadesCodUnescoPrimaria);
-
-                    string valorCodigo = UtilitySecciones.StringGNOSSID(entityPartAux, Utility.GetCodUnescoIDCampo(codigolista));
-                    string propiedadCodigo = Variables.SituacionProfesional.cargosActividadesCodUnescoPrimaria;
-                    UtilitySecciones.CheckProperty(propertyCodUnescoPrimaria, entidadAux, valorCodigo, propiedadCodigo);
-                }
-            }
-
-            foreach (CvnItemBeanCvnString codigo in listadoCodUnescoSecundaria)
-            {
-                string entityPartAux = Guid.NewGuid().ToString() + "@@@";
-                List<string> listadoCodigos = Utility.GetPadresCodUnesco(codigo);
-                //Añado Codigo UNESCO
-                foreach (string codigolista in listadoCodigos)
-                {
-                    Property propertyCodUnescoSecundaria = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.cargosActividadesCodUnescoSecundaria);
-
-                    string valorCodigo = UtilitySecciones.StringGNOSSID(entityPartAux, Utility.GetCodUnescoIDCampo(codigolista));
-                    string propiedadCodigo = Variables.SituacionProfesional.cargosActividadesCodUnescoSecundaria;
-                    UtilitySecciones.CheckProperty(propertyCodUnescoSecundaria, entidadAux, valorCodigo, propiedadCodigo);
-                }
-            }
-
-            foreach (CvnItemBeanCvnString codigo in listadoCodUnescoTerciaria)
-            {
-                string entityPartAux = Guid.NewGuid().ToString() + "@@@";
-                List<string> listadoCodigos = Utility.GetPadresCodUnesco(codigo);
-                //Añado Codigo UNESCO
-                foreach (string codigolista in listadoCodigos)
-                {
-                    Property propertyCodUnescoTerciaria = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.cargosActividadesCodUnescoTerciaria);
-
-                    string valorCodigo = UtilitySecciones.StringGNOSSID(entityPartAux, Utility.GetCodUnescoIDCampo(codigolista));
-                    string propiedadCodigo = Variables.SituacionProfesional.cargosActividadesCodUnescoTerciaria;
-                    UtilitySecciones.CheckProperty(propertyCodUnescoTerciaria, entidadAux, valorCodigo, propiedadCodigo);
-                }
-            }
+            UtilitySecciones.CodigosUnesco(listadoCodUnescoTerciaria, entidadAux, Variables.SituacionProfesional.cargosActividadesCodUnescoTerciaria);                       
         }
-
-
     }
 }

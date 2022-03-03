@@ -3,6 +3,187 @@
   "property": "http://w3id.org/roh/scientificActivity",
   "sections": [
     {
+      "rdftype": "http://w3id.org/roh/RelatedScientificProduction",
+      "property": "http://w3id.org/roh/scientificProduction",
+      "presentation": {
+        "type": "listitems",
+        "title": {
+          "es": "Producción científica"
+        },
+        "listItemsPresentation": {
+          "property": "http://vivoweb.org/ontology/core#relatedBy",
+          "listItem": {
+            "propertyTitle": {
+              "property": "http://vivoweb.org/ontology/core#relatedBy",
+              "graph": "scientificproduction",
+              "child": {
+                "property": "http://w3id.org/roh/h-index"
+              }
+            },
+            "orders": [
+              {
+                "name": {
+                  "es": "Ordenar por fecha de aplicación mas reciente"
+                },
+                "properties": [
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "scientificproduction",
+                    "child": {
+                      "property": "http://purl.org/dc/terms/issued"
+                    },
+                    "asc": false
+                  },
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "scientificproduction",
+                    "child": {
+                      "property": "http://w3id.org/roh/h-index"
+                    },
+                    "asc": true
+                  }
+                ]
+              },
+              {
+                "name": {
+                  "es": "Ordenar por fecha de aplicación mas antigua"
+                },
+                "properties": [
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "scientificproduction",
+                    "child": {
+                      "property": "http://purl.org/dc/terms/issued"
+                    },
+                    "asc": true
+                  },
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "scientificproduction",
+                    "child": {
+                      "property": "http://w3id.org/roh/h-index"
+                    },
+                    "asc": true
+                  }
+                ]
+              }
+            ],
+            "properties": [
+              {
+                "name": {
+                  "es": "Fecha de aplicación"
+                },
+                "showMiniBold": true,
+                "type": "date",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "scientificproduction",
+                  "child": {
+                    "property": "http://purl.org/dc/terms/issued"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Fuente de Indice H"
+                },
+                "showMini": true,
+                "childOR": [
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "scientificproduction",
+                    "child": {
+                      "property": "http://w3id.org/roh/h-indexSourceOther"
+                    }
+                  },
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "scientificproduction",
+                    "child": {
+                      "property": "http://w3id.org/roh/h-indexSource",
+                      "graph": "hindexsource",
+                      "child": {
+                        "property": "http://purl.org/dc/elements/1.1/title"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "listItemEdit": {
+            "graph": "scientificproduction",
+            "proptitle": "http://w3id.org/roh/h-index",
+            "rdftype": "http://w3id.org/roh/ScientificProduction",
+            "sections": [
+              {
+                "title": {
+                  "es": "Información general"
+                },
+                "rows": [
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Índice H"
+                        },
+                        "placeholder": {
+                          "es": "Introduce el índice H"
+                        },
+                        "property": "http://w3id.org/roh/h-index",
+                        "required": true,
+                        "type": "number",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Fuente de Índice H"
+                        },
+                        "property": "http://w3id.org/roh/h-indexSource",
+                        "combo": {
+                          "rdftype": "http://w3id.org/roh/HIndexSource",
+                          "graph": "hindexsource",
+                          "property": {
+                            "property": "http://purl.org/dc/elements/1.1/title"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Fuente de Indice H, otros"
+                        },
+                        "property": "http://w3id.org/roh/h-indexSourceOther",
+                        "required": true,
+                        "dependency": {
+                          "property": "http://w3id.org/roh/h-indexSource",
+                          "propertyValue": "{GraphsUrl}items/hindexsource_OTHERS"
+                        },
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Fecha de aplicación"
+                        },
+                        "placeholder": {
+                          "es": "Introduce la fecha de aplicación"
+                        },
+                        "property": "http://purl.org/dc/terms/issued",
+                        "type": "date",
+                        "width": 1
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
       "rdftype": "http://w3id.org/roh/GeneralQualityIndicator",
       "property": "http://w3id.org/roh/generalQualityIndicators",
       "presentation": {
@@ -738,9 +919,6 @@
                         "title": {
                           "es": "País de publicación"
                         },
-                        "placeholder": {
-                          "es": "Introduce el país de publicación"
-                        },
                         "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
@@ -759,9 +937,6 @@
                       {
                         "title": {
                           "es": "C. Autón./Reg. de publicación"
-                        },
-                        "placeholder": {
-                          "es": "Introduce la región de publicación"
                         },
                         "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                         "combo": {
@@ -805,9 +980,6 @@
                         "title": {
                           "es": "Traducciones"
                         },
-                        "placeholder": {
-                          "es": "Introduce la traducción"
-                        },
                         "property": "https://www.w3.org/2006/vcard/ns#hasLanguage",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/Language",
@@ -827,9 +999,6 @@
                       {
                         "title": {
                           "es": "Grado de contribución"
-                        },
-                        "placeholder": {
-                          "es": "Introduce el grado de contribución"
                         },
                         "property": "http://w3id.org/roh/contributionGrade",
                         "combo": {
@@ -1392,9 +1561,6 @@
                                   "title": {
                                     "es": "País de celebración"
                                   },
-                                  "placeholder": {
-                                    "es": "Introduce la región de celebración"
-                                  },
                                   "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                                   "combo": {
                                     "rdftype": "http://www.geonames.org/ontology#Feature",
@@ -1410,9 +1576,6 @@
                                 {
                                   "title": {
                                     "es": "C. Autón./Reg. de celebración"
-                                  },
-                                  "placeholder": {
-                                    "es": "Introduce el país de celebración"
                                   },
                                   "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                                   "combo": {
@@ -1766,9 +1929,6 @@
                         "title": {
                           "es": "País de publicación"
                         },
-                        "placeholder": {
-                          "es": "Introduce el país de publicación"
-                        },
                         "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
@@ -1787,9 +1947,6 @@
                       {
                         "title": {
                           "es": "C. Autón./Reg. de publicación"
-                        },
-                        "placeholder": {
-                          "es": "Introduce la región de publicación"
                         },
                         "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                         "combo": {
@@ -2539,9 +2696,6 @@
                                   "title": {
                                     "es": "País de celebración"
                                   },
-                                  "placeholder": {
-                                    "es": "Introduce la región de celebración"
-                                  },
                                   "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                                   "combo": {
                                     "rdftype": "http://www.geonames.org/ontology#Feature",
@@ -2557,9 +2711,6 @@
                                 {
                                   "title": {
                                     "es": "C. Autón./Reg. de celebración"
-                                  },
-                                  "placeholder": {
-                                    "es": "Introduce el país de celebración"
                                   },
                                   "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                                   "combo": {
@@ -2928,9 +3079,6 @@
                         "title": {
                           "es": "País de publicación"
                         },
-                        "placeholder": {
-                          "es": "Introduce el país de publicación"
-                        },
                         "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
@@ -2949,9 +3097,6 @@
                       {
                         "title": {
                           "es": "C. Autón./Reg. de publicación"
-                        },
-                        "placeholder": {
-                          "es": "Introduce la región de publicación"
                         },
                         "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                         "combo": {
@@ -3479,9 +3624,6 @@
                                   "title": {
                                     "es": "País de celebración"
                                   },
-                                  "placeholder": {
-                                    "es": "Introduce la región de celebración"
-                                  },
                                   "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                                   "combo": {
                                     "rdftype": "http://www.geonames.org/ontology#Feature",
@@ -3497,9 +3639,6 @@
                                 {
                                   "title": {
                                     "es": "C. Autón./Reg. de celebración"
-                                  },
-                                  "placeholder": {
-                                    "es": "Introduce el país de celebración"
                                   },
                                   "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                                   "combo": {
@@ -3973,9 +4112,6 @@
                         "title": {
                           "es": "País de publicación"
                         },
-                        "placeholder": {
-                          "es": "Introduce el país de publicación"
-                        },
                         "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
@@ -3994,9 +4130,6 @@
                       {
                         "title": {
                           "es": "C. Autón./Reg. de publicación"
-                        },
-                        "placeholder": {
-                          "es": "Introduce la región de publicación"
                         },
                         "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                         "combo": {
@@ -4144,15 +4277,14 @@
             "orders": [
               {
                 "name": {
-                  "es": "Ordenar por fecha más reciente"
+                  "es": "Ordenar por fecha de finalización más reciente"
                 },
-                "TODO": "El orden va por nombre del comité y por fecha de finalización del investigador en el comité (datos propios)",
                 "properties": [
                   {
                     "property": "http://vivoweb.org/ontology/core#relatedBy",
                     "graph": "committee",
                     "child": {
-                      "property": "http://purl.org/dc/terms/issued"
+                      "property": "http://vivoweb.org/ontology/core#end"
                     },
                     "asc": false
                   },
@@ -4168,14 +4300,14 @@
               },
               {
                 "name": {
-                  "es": "Ordenar por fecha más antigua"
+                  "es": "Ordenar por fecha de finalización más antigua"
                 },
                 "properties": [
                   {
                     "property": "http://vivoweb.org/ontology/core#relatedBy",
                     "graph": "committee",
                     "child": {
-                      "property": "http://purl.org/dc/terms/issued"
+                      "property": "http://vivoweb.org/ontology/core#end"
                     },
                     "asc": true
                   },
@@ -4193,22 +4325,9 @@
             "properties": [
               {
                 "name": {
-                  "es": "Nombre del comité"
-                },
-                "child": {
-                  "property": "http://vivoweb.org/ontology/core#relatedBy",
-                  "graph": "committee",
-                  "child": {
-                    "property": "http://w3id.org/roh/title"
-                  }
-                }
-              },
-              {
-                "name": {
                   "es": "Fecha de inicio"
                 },
                 "type": "date",
-                "showMiniBold": true,
                 "child": {
                   "property": "http://vivoweb.org/ontology/core#relatedBy",
                   "graph": "committee",
@@ -4222,6 +4341,7 @@
                   "es": "Fecha de finalización"
                 },
                 "type": "date",
+                "showMiniBold": true,
                 "child": {
                   "property": "http://vivoweb.org/ontology/core#relatedBy",
                   "graph": "committee",
@@ -4239,38 +4359,9 @@
                   "property": "http://vivoweb.org/ontology/core#relatedBy",
                   "graph": "committee",
                   "child": {
-                    "property": "http://vivoweb.org/ontology/core#affiliatedOrganization",
-                    "graph": "organization",
-                    "child": {
-                      "property": "http://w3id.org/roh/title"
-                    }
+                    "property": "http://w3id.org/roh/affiliatedOrganizationTitle"
                   }
                 }
-              },
-              {
-                "name": {
-                  "es": "Tipo de entidad"
-                },
-                "childOR": [
-                  {
-                    "property": "http://vivoweb.org/ontology/core#relatedBy",
-                    "graph": "committee",
-                    "child": {
-                      "property": "http://w3id.org/roh/affiliatedOrganizationTypeOther"
-                    }
-                  },
-                  {
-                    "property": "http://vivoweb.org/ontology/core#relatedBy",
-                    "graph": "committee",
-                    "child": {
-                      "property": "http://w3id.org/roh/affiliatedOrganizationType",
-                      "graph": "organizationtype",
-                      "child": {
-                        "property": "http://purl.org/dc/elements/1.1/title"
-                      }
-                    }
-                  }
-                ]
               },
               {
                 "name": {
@@ -4318,31 +4409,6 @@
               },
               {
                 "name": {
-                  "es": "Ámbito geográfico"
-                },
-                "childOR": [
-                  {
-                    "property": "http://vivoweb.org/ontology/core#relatedBy",
-                    "graph": "committee",
-                    "child": {
-                      "property": "http://w3id.org/roh/geographicFocusOther"
-                    }
-                  },
-                  {
-                    "property": "http://vivoweb.org/ontology/core#relatedBy",
-                    "graph": "committee",
-                    "child": {
-                      "property": "http://vivoweb.org/ontology/core#geographicFocus",
-                      "graph": "geographicregion",
-                      "child": {
-                        "property": "http://purl.org/dc/elements/1.1/title"
-                      }
-                    }
-                  }
-                ]
-              },
-              {
-                "name": {
                   "es": "Ciudad de radicación"
                 },
                 "child": {
@@ -4384,7 +4450,33 @@
                     }
                   }
                 }
+              },
+              {
+                "name": {
+                  "es": "Ámbito geográfico"
+                },
+                "childOR": [
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "committee",
+                    "child": {
+                      "property": "http://w3id.org/roh/geographicFocusOther"
+                    }
+                  },
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "committee",
+                    "child": {
+                      "property": "http://vivoweb.org/ontology/core#geographicFocus",
+                      "graph": "geographicregion",
+                      "child": {
+                        "property": "http://purl.org/dc/elements/1.1/title"
+                      }
+                    }
+                  }
+                ]
               }
+
             ]
           },
           "listItemEdit": {
@@ -4442,7 +4534,6 @@
                       }
                     ]
                   },
-
                   {
                     "properties": [
                       {
@@ -4463,21 +4554,22 @@
                         "title": {
                           "es": "Entidad de afiliación"
                         },
-                        "property": "http://vivoweb.org/ontology/core#affiliatedOrganization",
-                        "combo": {
+                        "autocomplete": true,
+                        "placeholder": {
+                          "es": "Introduce la entidad de afiliación"
+                        },
+                        "property": "http://w3id.org/roh/affiliatedOrganizationTitle",
+                        "autocompleteConfig": {
                           "rdftype": "http://xmlns.com/foaf/0.1/Organization",
                           "graph": "organization",
+                          "propertyEntity": "http://vivoweb.org/ontology/core#affiliatedOrganization",
                           "property": {
                             "property": "http://w3id.org/roh/title"
                           }
                         },
-                        "type": "selectCombo",
-                        "width": 2
-                      }
-                    ]
-                  },
-                  {
-                    "properties": [
+                        "type": "text",
+                        "width": 1
+                      },
                       {
                         "title": {
                           "es": "Tipo de entidad"
@@ -4491,7 +4583,7 @@
                           }
                         },
                         "dependency": {
-                          "property": "http://w3id.org/roh/promotedByTitle",
+                          "property": "http://w3id.org/roh/affiliatedOrganizationTitle",
                           "propertyValue": "*"
                         },
                         "type": "selectCombo",
@@ -4512,6 +4604,7 @@
                       }
                     ]
                   },
+
                   {
                     "properties": [
                       {
@@ -4528,9 +4621,6 @@
                       {
                         "title": {
                           "es": "País entidad afiliación"
-                        },
-                        "placeholder": {
-                          "es": "Introduce el país de afiliación"
                         },
                         "property": "http://w3id.org/roh/affiliatedOrganizationHasCountryName",
                         "combo": {
@@ -4550,9 +4640,6 @@
                       {
                         "title": {
                           "es": "C. Autón./Reg. de afiliación"
-                        },
-                        "placeholder": {
-                          "es": "Introduce la región de afiliación"
                         },
                         "property": "http://w3id.org/roh/affiliatedOrganizationHasRegion",
                         "combo": {
@@ -4625,9 +4712,6 @@
                         "title": {
                           "es": "País de radicación"
                         },
-                        "placeholder": {
-                          "es": "Introduce el país de radicación"
-                        },
                         "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
@@ -4647,9 +4731,6 @@
                       {
                         "title": {
                           "es": "C. Autón./Reg. de radicación"
-                        },
-                        "placeholder": {
-                          "es": "Introduce la región de radicación"
                         },
                         "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                         "combo": {
@@ -4680,7 +4761,6 @@
                           "es": "Ámbito geográfico"
                         },
                         "property": "http://vivoweb.org/ontology/core#geographicFocus",
-                        "TODO": "No se despliega el combo de valores.",
                         "combo": {
                           "rdftype": "http://vivoweb.org/ontology/core#GeographicRegion",
                           "graph": "geographicregion",
@@ -4696,8 +4776,12 @@
                           "es": "Otros"
                         },
                         "property": "http://w3id.org/roh/geographicFocusOther",
+                        "required": true,
+                        "dependency": {
+                          "property": "http://vivoweb.org/ontology/core#geographicFocus",
+                          "propertyValue": "{GraphsUrl}items/geographicregion_OTHERS"
+                        },
                         "type": "text",
-                        "required": false,
                         "width": 1
                       }
                     ]
@@ -5127,9 +5211,6 @@
                         "title": {
                           "es": "País entidad convocante"
                         },
-                        "placeholder": {
-                          "es": "Introduce el país de la entidad convocante"
-                        },
                         "property": "http://w3id.org/roh/promotedByHasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
@@ -5148,9 +5229,6 @@
                       {
                         "title": {
                           "es": "C. Autón./Reg. entidad convocante"
-                        },
-                        "placeholder": {
-                          "es": "Introduce la región de la entidad convocante"
                         },
                         "property": "http://w3id.org/roh/promotedByHasRegion",
                         "combo": {
@@ -5283,9 +5361,6 @@
                         "title": {
                           "es": "País de celebración"
                         },
-                        "placeholder": {
-                          "es": "Introduce el país de celebración"
-                        },
                         "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
@@ -5304,9 +5379,6 @@
                       {
                         "title": {
                           "es": "C. Autón./Reg. de celebración"
-                        },
-                        "placeholder": {
-                          "es": "Introduce la C. Autón./Reg. de celebración"
                         },
                         "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                         "combo": {
@@ -5897,9 +5969,6 @@
                         "title": {
                           "es": "País entidad realización"
                         },
-                        "placeholder": {
-                          "es": "Introduce el país de realización"
-                        },
                         "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
@@ -5918,9 +5987,6 @@
                       {
                         "title": {
                           "es": "C. Autón./Reg. entidad realización"
-                        },
-                        "placeholder": {
-                          "es": "Introduce la C. Autón./Reg. de realización"
                         },
                         "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                         "combo": {
@@ -6007,9 +6073,6 @@
                         "title": {
                           "es": "Perfil grupo receptor"
                         },
-                        "placeholder": {
-                          "es": "Introduce el perfil del grupo receptor"
-                        },
                         "property": "http://w3id.org/roh/targetGroupProfile",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/TargetGroupProfile",
@@ -6028,9 +6091,6 @@
                       {
                         "title": {
                           "es": "Ámbito geográfico"
-                        },
-                        "placeholder": {
-                          "es": "Introduce el ámbito geográfico"
                         },
                         "property": "http://vivoweb.org/ontology/core#geographicFocus",
                         "combo": {
@@ -6467,9 +6527,6 @@
                         "title": {
                           "es": "País entidad organizadora"
                         },
-                        "placeholder": {
-                          "es": "Introduce el país de la entidad organizadora"
-                        },
                         "property": "http://w3id.org/roh/promotedByHasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
@@ -6488,9 +6545,6 @@
                       {
                         "title": {
                           "es": "C. Autón./Reg. entidad organizadora"
-                        },
-                        "placeholder": {
-                          "es": "Introduce la región de la entidad organizadora"
                         },
                         "property": "http://w3id.org/roh/promotedByHasRegion",
                         "combo": {
@@ -6563,9 +6617,6 @@
                         "title": {
                           "es": "País entidad realización"
                         },
-                        "placeholder": {
-                          "es": "Introduce el país entidad realización"
-                        },
                         "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
@@ -6584,9 +6635,6 @@
                       {
                         "title": {
                           "es": "C. Autón./Reg. entidad realización"
-                        },
-                        "placeholder": {
-                          "es": "Introduce la C. Autón./Reg. entidad realización"
                         },
                         "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                         "combo": {
@@ -6682,9 +6730,6 @@
                         "title": {
                           "es": "País entidad representada"
                         },
-                        "placeholder": {
-                          "es": "Introduce el país entidad representada"
-                        },
                         "property": "http://w3id.org/roh/representedEntityHasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
@@ -6703,9 +6748,6 @@
                       {
                         "title": {
                           "es": "C. Autón./Reg. entidad representada"
-                        },
-                        "placeholder": {
-                          "es": "Introduce la C. Autón./Reg. entidad representada"
                         },
                         "property": "http://w3id.org/roh/representedEntityHasRegion",
                         "combo": {
@@ -7098,9 +7140,6 @@
                         "title": {
                           "es": "País entidad realización"
                         },
-                        "placeholder": {
-                          "es": "Introduce el país de la entidad realización"
-                        },
                         "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
@@ -7119,9 +7158,6 @@
                       {
                         "title": {
                           "es": "C. Autón./Reg. entidad realización"
-                        },
-                        "placeholder": {
-                          "es": "Introduce la región de la entidad realización"
                         },
                         "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                         "combo": {
@@ -7755,9 +7791,6 @@
                         "title": {
                           "es": "País entidad realización"
                         },
-                        "placeholder": {
-                          "es": "Introduce el país de la entidad realización"
-                        },
                         "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
@@ -7776,9 +7809,6 @@
                       {
                         "title": {
                           "es": "C. Autón./Reg. entidad realización"
-                        },
-                        "placeholder": {
-                          "es": "Introduce la región de la entidad realización"
                         },
                         "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                         "combo": {
@@ -8015,9 +8045,6 @@
                         "title": {
                           "es": "País entidad financiadora"
                         },
-                        "placeholder": {
-                          "es": "Introduce el país de la entidad financiadora"
-                        },
                         "property": "http://w3id.org/roh/fundedByHasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
@@ -8036,9 +8063,6 @@
                       {
                         "title": {
                           "es": "C. Autón./Reg. entidad financiadora"
-                        },
-                        "placeholder": {
-                          "es": "Introduce la región de la entidad financiadora"
                         },
                         "property": "http://w3id.org/roh/fundedByHasRegion",
                         "combo": {
@@ -8540,9 +8564,6 @@
                         "title": {
                           "es": "País entidad concesionaria"
                         },
-                        "placeholder": {
-                          "es": "Introduce el país de la entidad concesionaria"
-                        },
                         "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
@@ -8561,9 +8582,6 @@
                       {
                         "title": {
                           "es": "C. Autón./Reg. entidad concesionaria"
-                        },
-                        "placeholder": {
-                          "es": "Introduce la región de la entidad concesionaria"
                         },
                         "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                         "combo": {
@@ -8887,7 +8905,7 @@
                     "properties": [
                       {
                         "property": "http://w3id.org/roh/researchers",
-                        "type": "auxEntity",                        
+                        "type": "auxEntity",
                         "title": {
                           "es": "Nombres investigadores principales (IP, Co-IP,...)"
                         },
@@ -9107,9 +9125,6 @@
                                   "title": {
                                     "es": "País entidad participante"
                                   },
-                                  "placeholder": {
-                                    "es": "Introduce el país de entidad participante"
-                                  },
                                   "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                                   "combo": {
                                     "rdftype": "http://www.geonames.org/ontology#Feature",
@@ -9128,9 +9143,6 @@
                                 {
                                   "title": {
                                     "es": "C. Autón./Reg. entidad participante"
-                                  },
-                                  "placeholder": {
-                                    "es": "Introduce la región de entidad participante"
                                   },
                                   "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                                   "combo": {
@@ -9605,9 +9617,6 @@
                         "title": {
                           "es": "País entidad afiliación"
                         },
-                        "placeholder": {
-                          "es": "Introduce el país de entidad afiliación"
-                        },
                         "property": "http://w3id.org/roh/affiliatedOrganizationHasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
@@ -9626,9 +9635,6 @@
                       {
                         "title": {
                           "es": "C. Autón./Reg. entidad afiliación"
-                        },
-                        "placeholder": {
-                          "es": "Introduce la región de entidad afiliación"
                         },
                         "property": "http://w3id.org/roh/affiliatedOrganizationHasRegion",
                         "combo": {
@@ -10150,9 +10156,6 @@
                         "title": {
                           "es": "País entidad afiliación"
                         },
-                        "placeholder": {
-                          "es": "Introduce el país de entidad afiliación"
-                        },
                         "property": "http://w3id.org/roh/affiliatedOrganizationHasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
@@ -10171,9 +10174,6 @@
                       {
                         "title": {
                           "es": "C. Autón./Reg. entidad afiliación"
-                        },
-                        "placeholder": {
-                          "es": "Introduce la región de entidad afiliación"
                         },
                         "property": "http://w3id.org/roh/affiliatedOrganizationHasRegion",
                         "combo": {
@@ -10260,9 +10260,6 @@
                         "title": {
                           "es": "País de radicación"
                         },
-                        "placeholder": {
-                          "es": "Introduce el país de radicación"
-                        },
                         "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
@@ -10281,9 +10278,6 @@
                       {
                         "title": {
                           "es": "C. Autón./Reg. de radicación"
-                        },
-                        "placeholder": {
-                          "es": "Introduce la región de radicación"
                         },
                         "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                         "combo": {
@@ -10839,9 +10833,6 @@
                         "title": {
                           "es": "País de radicación"
                         },
-                        "placeholder": {
-                          "es": "Introduce el país de radicación"
-                        },
                         "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
@@ -10860,9 +10851,6 @@
                       {
                         "title": {
                           "es": "C. Autón./Reg. de radicación"
-                        },
-                        "placeholder": {
-                          "es": "Introduce la región de radicación"
                         },
                         "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                         "combo": {
@@ -10958,9 +10946,6 @@
                         "title": {
                           "es": "País entidad selección"
                         },
-                        "placeholder": {
-                          "es": "Introduce el país entidad selección"
-                        },
                         "property": "http://w3id.org/roh/selectionEntityHasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
@@ -10979,9 +10964,6 @@
                       {
                         "title": {
                           "es": "C. Autón./Reg. entidad selección"
-                        },
-                        "placeholder": {
-                          "es": "Introduce la C. Autón./Reg. entidad selección"
                         },
                         "property": "http://w3id.org/roh/selectionEntityHasRegion",
                         "combo": {
@@ -11307,9 +11289,6 @@
                         "title": {
                           "es": "País entidad concesionaria"
                         },
-                        "placeholder": {
-                          "es": "Introduce el país de la entidad acreditante"
-                        },
                         "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
@@ -11328,9 +11307,6 @@
                       {
                         "title": {
                           "es": "C. Autón./Reg. entidad concesionaria"
-                        },
-                        "placeholder": {
-                          "es": "Introduce la región de la entidad concesionaria"
                         },
                         "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                         "combo": {
@@ -11664,9 +11640,6 @@
                         "title": {
                           "es": "País entidad concesionaria"
                         },
-                        "placeholder": {
-                          "es": "Introduce el país de la entidad acreditante"
-                        },
                         "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
@@ -11685,9 +11658,6 @@
                       {
                         "title": {
                           "es": "C. Autón./Reg. entidad concesionaria"
-                        },
-                        "placeholder": {
-                          "es": "Introduce la región de la entidad concesionaria"
                         },
                         "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                         "combo": {
@@ -12039,9 +12009,6 @@
                         "title": {
                           "es": "País entidad acreditante"
                         },
-                        "placeholder": {
-                          "es": "Introduce el país de la entidad acreditante"
-                        },
                         "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
@@ -12060,9 +12027,6 @@
                       {
                         "title": {
                           "es": "C. Autón./Reg. entidad acreditante"
-                        },
-                        "placeholder": {
-                          "es": "Introduce la región de la entidad acreditante"
                         },
                         "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                         "combo": {
@@ -12408,9 +12372,6 @@
                         "title": {
                           "es": "País entidad acreditante"
                         },
-                        "placeholder": {
-                          "es": "Introduce el país de la entidad acreditante"
-                        },
                         "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
@@ -12429,9 +12390,6 @@
                       {
                         "title": {
                           "es": "C. Autón./Reg. entidad acreditante"
-                        },
-                        "placeholder": {
-                          "es": "Introduce la región de la entidad acreditante"
                         },
                         "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                         "combo": {
@@ -12740,9 +12698,6 @@
                         "title": {
                           "es": "País entidad acreditante"
                         },
-                        "placeholder": {
-                          "es": "Introduce el país de la entidad acreditante"
-                        },
                         "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
@@ -12761,9 +12716,6 @@
                       {
                         "title": {
                           "es": "C. Autón./Reg. entidad acreditante"
-                        },
-                        "placeholder": {
-                          "es": "Introduce la región de la entidad acreditante"
                         },
                         "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                         "combo": {
