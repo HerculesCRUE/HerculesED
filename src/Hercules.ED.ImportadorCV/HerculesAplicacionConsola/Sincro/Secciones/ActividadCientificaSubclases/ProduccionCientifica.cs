@@ -13,13 +13,21 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientificaSubclase
 {
     class ProduccionCientifica : DisambiguableEntity
     {
-        public string descripcion { get; set; }
+        public string indiceH { get; set; }
+        public string fuenteH { get; set; }
         public string fecha { get; set; }
 
-        private static DisambiguationDataConfig configDescripcion = new DisambiguationDataConfig()
+        private static DisambiguationDataConfig configIndiceH = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsTitle,
             score = 0.8f
+        };
+        
+        private static DisambiguationDataConfig configFuenteH = new DisambiguationDataConfig()
+        {
+            type = DisambiguationDataConfigType.equalsItem,
+            score = 0.5f,
+            scoreMinus = 0.5f
         };
 
         private static DisambiguationDataConfig configFecha = new DisambiguationDataConfig()
@@ -35,11 +43,18 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientificaSubclase
 
             data.Add(new DisambiguationData()
             {
-                property = "descripcion",
-                config = configDescripcion,
-                value = descripcion
+                property = "indiceH",
+                config = configIndiceH,
+                value = indiceH
             });
 
+            data.Add(new DisambiguationData()
+            {
+                property = "fuenteIndiceH",
+                config = configFuenteH,
+                value = fuenteH
+            });
+            
             data.Add(new DisambiguationData()
             {
                 property = "fecha",
@@ -70,9 +85,10 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientificaSubclase
 
             foreach (List<string> lista in listaListas)
             {
-                string select = $@"SELECT distinct ?item ?itemTitle ?itemDate";
+                string select = $@"SELECT distinct ?item ?itemTitle ?itemFuenteH ?itemDate";
                 string where = $@"where {{
-                                        ?item <{Variables.ActividadCientificaTecnologica.prodCientificaFuenteIndiceH}> ?itemTitle . 
+                                        ?item <{Variables.ActividadCientificaTecnologica.prodCientificaIndiceH}> ?itemTitle . 
+                                        OPTIONAL{{?item <{Variables.ActividadCientificaTecnologica.prodCientificaFuenteIndiceH}> ?itemFuenteH }}. 
                                         OPTIONAL{{ ?item <{Variables.ActividadCientificaTecnologica.prodCientificaFechaAplicacion}> ?itemDate }} .
                                         FILTER(?item in (<{string.Join(">,<", lista)}>))
                                     }}";
@@ -82,7 +98,12 @@ namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientificaSubclase
                 {
                     ProduccionCientifica produccionCientifica = new ProduccionCientifica();
                     produccionCientifica.ID = fila["item"].value;
-                    produccionCientifica.descripcion = fila["itemTitle"].value;
+                    produccionCientifica.indiceH = fila["itemTitle"].value;
+                    produccionCientifica.fuenteH = "";
+                    if (fila.ContainsKey("itemFuenteH"))
+                    {
+                        produccionCientifica.fuenteH = fila["itemFuenteH"].value;
+                    }
                     produccionCientifica.fecha = "";
                     if (fila.ContainsKey("itemDate"))
                     {
