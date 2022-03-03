@@ -8691,8 +8691,25 @@
               },
               {
                 "name": {
+                  "es": "Entidad/es participante/s"
+                },
+                "showMini": true,
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "collaboration",
+                  "child": {
+                    "property": "http://w3id.org/roh/participates",
+                    "child": {
+                      "property": "http://w3id.org/roh/organizationTitle"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
                   "es": "Modo de relación"
                 },
+                "showMini": true,
                 "childOR": [
                   {
                     "property": "http://vivoweb.org/ontology/core#relatedBy",
@@ -8713,22 +8730,6 @@
                     }
                   }
                 ]
-              },
-              {
-                "name": {
-                  "es": "Entidad/es participante/s"
-                },
-                "showMini": true,
-                "child": {
-                  "property": "http://vivoweb.org/ontology/core#relatedBy",
-                  "graph": "collaboration",
-                  "child": {
-                    "property": "http://w3id.org/roh/participates",
-                    "child": {
-                      "property": "http://w3id.org/roh/organizationTitle"
-                    }
-                  }
-                }
               },
               {
                 "name": {
@@ -8885,6 +8886,94 @@
                   {
                     "properties": [
                       {
+                        "property": "http://w3id.org/roh/researchers",
+                        "type": "auxEntity",                        
+                        "title": {
+                          "es": "Nombres investigadores principales (IP, Co-IP,...)"
+                        },
+                        "multiple": true,
+                        "width": 3,
+                        "auxEntityData": {
+                          "propertyOrder": "http://www.w3.org/1999/02/22-rdf-syntax-ns#comment",
+                          "rdftype": "http://purl.obolibrary.org/obo/BFO_0000023",
+                          "propertyTitle": {
+                            "property": "http://xmlns.com/foaf/0.1/firstName"
+                          },
+                          "properties": [
+                            {
+                              "name": {
+                                "es": "Primer Apellido"
+                              },
+                              "child": {
+                                "property": "http://xmlns.com/foaf/0.1/familyName"
+                              }
+                            },
+                            {
+                              "name": {
+                                "es": "Segundo apellido"
+                              },
+                              "child": {
+                                "property": "http://w3id.org/roh/secondFamilyName"
+                              }
+                            },
+                            {
+                              "name": {
+                                "es": "Firma"
+                              },
+                              "child": {
+                                "property": "http://xmlns.com/foaf/0.1/nick"
+                              }
+                            }
+                          ],
+                          "rows": [
+                            {
+                              "properties": [
+                                {
+                                  "title": {
+                                    "es": "Nombre"
+                                  },
+                                  "required": true,
+                                  "property": "http://xmlns.com/foaf/0.1/firstName",
+                                  "type": "text",
+                                  "width": 1
+                                },
+                                {
+                                  "title": {
+                                    "es": "Primer Apellido"
+                                  },
+                                  "property": "http://xmlns.com/foaf/0.1/familyName",
+                                  "type": "text",
+                                  "width": 1
+                                },
+                                {
+                                  "title": {
+                                    "es": "Segundo Apellido"
+                                  },
+                                  "property": "http://w3id.org/roh/secondFamilyName",
+                                  "type": "text",
+                                  "width": 1
+                                },
+                                {
+                                  "title": {
+                                    "es": "Firma"
+                                  },
+                                  "placeholder": {
+                                    "es": "Introduce la firma"
+                                  },
+                                  "property": "http://xmlns.com/foaf/0.1/nick",
+                                  "type": "text",
+                                  "width": 1
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
                         "property": "http://w3id.org/roh/participates",
                         "type": "auxEntity",
                         "title": {
@@ -8907,6 +8996,38 @@
                                 "graph": "organizationtype",
                                 "child": {
                                   "property": "http://purl.org/dc/elements/1.1/title"
+                                }
+                              }
+                            },
+                            {
+                              "name": {
+                                "es": "Ciudad entidad participante"
+                              },
+                              "child": {
+                                "property": "https://www.w3.org/2006/vcard/ns#locality"
+                              }
+                            },
+                            {
+                              "name": {
+                                "es": "País entidad participante"
+                              },
+                              "child": {
+                                "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+                                "graph": "feature",
+                                "child": {
+                                  "property": "http://www.geonames.org/ontology#name"
+                                }
+                              }
+                            },
+                            {
+                              "name": {
+                                "es": "C. Autón./Reg. entidad participante"
+                              },
+                              "child": {
+                                "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+                                "graph": "feature",
+                                "child": {
+                                  "property": "http://www.geonames.org/ontology#name"
                                 }
                               }
                             }
