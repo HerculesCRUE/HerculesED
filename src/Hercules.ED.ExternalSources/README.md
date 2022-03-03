@@ -1,5 +1,21 @@
-Librería de conexión con repositorios externos
- 
+
+![](../../Docs/media/CabeceraDocumentosMD.png)
+
+| Fecha         | 1/3/2022                                                   |
+| ------------- | ------------------------------------------------------------ |
+|Título|Librería de conexión con repositorios externos| 
+|Descripción|Servicios de conexión con fuentes externas de información, para publicaciones y otros ROs|
+|Versión|1.1|
+|Módulo|Documentación|
+|Tipo|Especificación|
+|Cambios de la Versión|Uso de OpenAire|
+
+# Hércules ED. Librería de conexión con repositorios externos
+
+[Microservicios de fuentes externas](#introducción)
+
+[Microservicio de publicaciones](#microservicio-de-publicaciones)
+
 
 El funcionamiento de los servicios de extracción está documentado en [Fuentes externas de publicaciones científicas](https://confluence.um.es/confluence/pages/viewpage.action?pageId=397534572)
 

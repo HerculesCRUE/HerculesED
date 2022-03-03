@@ -16,48 +16,12 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
 {
     class SituacionProfesional : SeccionBase
     {
-        /// <summary>
-        /// Añade en la lista de propiedades de la entidad las propiedades en las 
-        /// que los valores no son nulos, en caso de que los valores sean nulos se omite
-        /// dicha propiedad.
-        /// </summary>
-        /// <param name="list"></param>
-        private List<Property> AddProperty(params Property[] list)
-        {
-            List<Property> listado = new List<Property>();
-            for (int i = 0; i < list.Length; i++)
-            {
-                if (!string.IsNullOrEmpty(list[i].values[0]))
-                {
-                    listado.Add(list[i]);
-                }
-            }
-            return listado;
-        }
-
         private List<CvnItemBean> listadoDatos = new List<CvnItemBean>();
         private string RdfTypeTab = "http://w3id.org/roh/ProfessionalSituation";
         public SituacionProfesional(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
             listadoDatos = mCvn.GetListadoBloque("010");
         }
-
-        /// <summary>
-        /// Dada una cadena de GUID concatenados y finalizando en "|" y un string en caso de que 
-        /// el string no sea nulo los concatena, sino devuelve null.
-        /// </summary>
-        /// <param name="entityAux">GUID concatenado con "|"</param>
-        /// <param name="valor">Valor del parametro</param>
-        /// <returns>String de concatenar los parametros, o nulo si el valor es vacio</returns>
-        private string StringGNOSSID(string entityAux, string valor)
-        {
-            if (!string.IsNullOrEmpty(valor))
-            {
-                return entityAux + valor;
-            }
-            return null;
-        }
-
 
         /// <summary>
         /// Función para sincronizar los datos pertenecientes al apartado 
@@ -178,9 +142,9 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 {
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
-                    if (!string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("010.010.000.020")))//TODO -check
+                    if (!string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("010.010.000.020")))
                     {
-                        entidadAux.properties.AddRange(AddProperty(
+                        entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                             new Property(Variables.SituacionProfesional.situacionProfesionalGestionDocente, item.GetStringBooleanPorIDCampo("010.010.000.010")),
                             new Property(Variables.SituacionProfesional.situacionProfesionalFacultadEscuela, item.GetNameEntityBeanPorIDCampo("010.010.000.060")),
                             new Property(Variables.SituacionProfesional.situacionProfesionalDepartamento, item.GetNameEntityBeanPorIDCampo("010.010.000.080")),
@@ -230,7 +194,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             //Añado otros, o el ID de una preseleccion
             string valorEE = !string.IsNullOrEmpty(item.GetStringPorIDCampo("010.010.000.050")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetOrganizacionPorIDCampo("010.010.000.040");
 
-            entidadAux.properties.AddRange(AddProperty(
+            entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                 new Property(Variables.SituacionProfesional.situacionProfesionalTipoEntidadEmpleadora, valorEE),
                 new Property(Variables.SituacionProfesional.situacionProfesionalTipoEntidadEmpleadoraOtros, item.GetStringPorIDCampo("010.010.000.050"))
             ));
@@ -249,7 +213,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             List<string> listado = item.GetStringPorIDCampo("010.010.000.160").Split(";")?.ToList();
             foreach (string correo in listado)
             {
-                entidadAux.properties.AddRange(AddProperty(
+                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                     new Property(Variables.SituacionProfesional.situacionProfesionalCorreoElectronico, correo)
                 ));
             }
@@ -273,7 +237,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 //Añado Numero
                 Property propertyNumero = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.situacionProfesionalFijoNumero);
 
-                string valorNumero = StringGNOSSID(entityPartAux, telefono.Number);
+                string valorNumero = UtilitySecciones.StringGNOSSID(entityPartAux, telefono.Number);
                 string propiedadNumero = Variables.SituacionProfesional.situacionProfesionalFijoNumero;
 
                 UtilitySecciones.CheckProperty(propertyNumero, entidadAux, valorNumero, propiedadNumero);
@@ -281,7 +245,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 //Añado Codigo Internacional
                 Property propertyCodInternacional = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.situacionProfesionalFijoCodInternacional);
 
-                string valorCodInternacional = StringGNOSSID(entityPartAux, telefono.InternationalCode);
+                string valorCodInternacional = UtilitySecciones.StringGNOSSID(entityPartAux, telefono.InternationalCode);
                 string propiedadCodInternacional = Variables.SituacionProfesional.situacionProfesionalFijoCodInternacional;
 
                 UtilitySecciones.CheckProperty(propertyCodInternacional, entidadAux, valorCodInternacional, propiedadCodInternacional);
@@ -289,7 +253,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 //Añado Extension
                 Property propertyExtension = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.situacionProfesionalFijoExtension);
 
-                string valorExtension = StringGNOSSID(entityPartAux, telefono.Extension);
+                string valorExtension = UtilitySecciones.StringGNOSSID(entityPartAux, telefono.Extension);
                 string propiedadExtension = Variables.SituacionProfesional.situacionProfesionalFijoExtension;
 
                 UtilitySecciones.CheckProperty(propertyExtension, entidadAux, valorExtension, propiedadExtension);
@@ -314,7 +278,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 //Añado Numero
                 Property propertyNumero = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.situacionProfesionalFaxNumero);
 
-                string valorNumero = StringGNOSSID(entityPartAux, telefono.Number);
+                string valorNumero = UtilitySecciones.StringGNOSSID(entityPartAux, telefono.Number);
                 string propiedadNumero = Variables.SituacionProfesional.situacionProfesionalFaxNumero;
 
                 UtilitySecciones.CheckProperty(propertyNumero, entidadAux, valorNumero, propiedadNumero);
@@ -322,7 +286,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 //Añado Codigo Internacional
                 Property propertyCodInternacional = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.situacionProfesionalFaxCodInternacional);
 
-                string valorCodInternacional = StringGNOSSID(entityPartAux, telefono.InternationalCode);
+                string valorCodInternacional = UtilitySecciones.StringGNOSSID(entityPartAux, telefono.InternationalCode);
                 string propiedadCodInternacional = Variables.SituacionProfesional.situacionProfesionalFaxCodInternacional;
 
                 UtilitySecciones.CheckProperty(propertyCodInternacional, entidadAux, valorCodInternacional, propiedadCodInternacional);
@@ -330,7 +294,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 //Añado Extension
                 Property propertyExtension = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.situacionProfesionalFaxExtension);
 
-                string valorExtension = StringGNOSSID(entityPartAux, telefono.Extension);
+                string valorExtension = UtilitySecciones.StringGNOSSID(entityPartAux, telefono.Extension);
                 string propiedadExtension = Variables.SituacionProfesional.situacionProfesionalFaxExtension;
 
                 UtilitySecciones.CheckProperty(propertyExtension, entidadAux, valorExtension, propiedadExtension);
@@ -358,7 +322,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 {
                     Property propertyCodUnescoPrimaria = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.situacionProfesionalCodUnescoPrimaria);
 
-                    string valorCodigo = StringGNOSSID(entityPartAux, Utility.GetCodUnescoIDCampo(codigolista));
+                    string valorCodigo = UtilitySecciones.StringGNOSSID(entityPartAux, Utility.GetCodUnescoIDCampo(codigolista));
                     string propiedadCodigo = Variables.SituacionProfesional.situacionProfesionalCodUnescoPrimaria;
                     UtilitySecciones.CheckProperty(propertyCodUnescoPrimaria, entidadAux, valorCodigo, propiedadCodigo);
                 }
@@ -373,7 +337,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 {
                     Property propertyCodUnescoSecundaria = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.situacionProfesionalCodUnescoSecundaria);
 
-                    string valorCodigo = StringGNOSSID(entityPartAux, Utility.GetCodUnescoIDCampo(codigolista));
+                    string valorCodigo = UtilitySecciones.StringGNOSSID(entityPartAux, Utility.GetCodUnescoIDCampo(codigolista));
                     string propiedadCodigo = Variables.SituacionProfesional.situacionProfesionalCodUnescoSecundaria;
                     UtilitySecciones.CheckProperty(propertyCodUnescoSecundaria, entidadAux, valorCodigo, propiedadCodigo);
                 }
@@ -388,7 +352,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 {
                     Property propertyCodUnescoTerciaria = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.situacionProfesionalCodUnescoTerciaria);
 
-                    string valorCodigo = StringGNOSSID(entityPartAux, Utility.GetCodUnescoIDCampo(codigolista));
+                    string valorCodigo = UtilitySecciones.StringGNOSSID(entityPartAux, Utility.GetCodUnescoIDCampo(codigolista));
                     string propiedadCodigo = Variables.SituacionProfesional.situacionProfesionalCodUnescoTerciaria;
                     UtilitySecciones.CheckProperty(propertyCodUnescoTerciaria, entidadAux, valorCodigo, propiedadCodigo);
                 }
@@ -413,7 +377,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("010.020.000.020")))
                     {
-                        entidadAux.properties.AddRange(AddProperty(
+                        entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                             new Property(Variables.SituacionProfesional.cargosActividadesGestionDocente, item.GetStringBooleanPorIDCampo("010.020.000.010")),
                             new Property(Variables.SituacionProfesional.cargosActividadesFacultadEscuela, item.GetNameEntityBeanPorIDCampo("010.020.000.060")),
                             new Property(Variables.SituacionProfesional.cargosActividadesDepartamento, item.GetNameEntityBeanPorIDCampo("010.020.000.080")),
@@ -467,7 +431,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             //Añado otros, o el ID de una preseleccion
             string valorEE = !string.IsNullOrEmpty(item.GetStringPorIDCampo("010.020.000.050")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetOrganizacionPorIDCampo("010.020.000.040");
 
-            entidadAux.properties.AddRange(AddProperty(
+            entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                 new Property(Variables.SituacionProfesional.cargosActividadesTipoEntidadEmpleadora, valorEE),
                 new Property(Variables.SituacionProfesional.cargosActividadesTipoEntidadEmpleadoraOtros, item.GetStringPorIDCampo("010.020.000.050"))
             ));
@@ -486,7 +450,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             List<string> listado = item.GetStringPorIDCampo("010.020.000.160").Split(";")?.ToList();
             foreach (string correo in listado)
             {
-                entidadAux.properties.AddRange(AddProperty(
+                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                     new Property(Variables.SituacionProfesional.cargosActividadesCorreoElectronico, correo)
                 ));
             }
@@ -510,7 +474,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 //Añado Numero
                 Property propertyNumero = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.cargosActividadesFijoNumero);
 
-                string valorNumero = StringGNOSSID(entityPartAux, telefono.Number);
+                string valorNumero = UtilitySecciones.StringGNOSSID(entityPartAux, telefono.Number);
                 string propiedadNumero = Variables.SituacionProfesional.cargosActividadesFijoNumero;
 
                 UtilitySecciones.CheckProperty(propertyNumero, entidadAux, valorNumero, propiedadNumero);
@@ -518,7 +482,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 //Añado Codigo Internacional
                 Property propertyCodInternacional = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.cargosActividadesFijoCodInternacional);
 
-                string valorCodInternacional = StringGNOSSID(entityPartAux, telefono.InternationalCode);
+                string valorCodInternacional = UtilitySecciones.StringGNOSSID(entityPartAux, telefono.InternationalCode);
                 string propiedadCodInternacional = Variables.SituacionProfesional.cargosActividadesFijoCodInternacional;
 
                 UtilitySecciones.CheckProperty(propertyCodInternacional, entidadAux, valorCodInternacional, propiedadCodInternacional);
@@ -526,7 +490,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 //Añado Extension
                 Property propertyExtension = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.cargosActividadesFijoExtension);
 
-                string valorExtension = StringGNOSSID(entityPartAux, telefono.Extension);
+                string valorExtension = UtilitySecciones.StringGNOSSID(entityPartAux, telefono.Extension);
                 string propiedadExtension = Variables.SituacionProfesional.cargosActividadesFijoExtension;
 
                 UtilitySecciones.CheckProperty(propertyExtension, entidadAux, valorExtension, propiedadExtension);
@@ -550,7 +514,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 //Añado Numero
                 Property propertyNumero = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.cargosActividadesFaxNumero);
 
-                string valorNumero = StringGNOSSID(entityPartAux, telefono.Number);
+                string valorNumero = UtilitySecciones.StringGNOSSID(entityPartAux, telefono.Number);
                 string propiedadNumero = Variables.SituacionProfesional.cargosActividadesFaxNumero;
 
                 UtilitySecciones.CheckProperty(propertyNumero, entidadAux, valorNumero, propiedadNumero);
@@ -558,7 +522,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 //Añado Codigo Internacional
                 Property propertyCodInternacional = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.cargosActividadesFaxCodInternacional);
 
-                string valorCodInternacional = StringGNOSSID(entityPartAux, telefono.InternationalCode);
+                string valorCodInternacional = UtilitySecciones.StringGNOSSID(entityPartAux, telefono.InternationalCode);
                 string propiedadCodInternacional = Variables.SituacionProfesional.cargosActividadesFaxCodInternacional;
 
                 UtilitySecciones.CheckProperty(propertyCodInternacional, entidadAux, valorCodInternacional, propiedadCodInternacional);
@@ -566,7 +530,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 //Añado Extension
                 Property propertyExtension = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.cargosActividadesFaxExtension);
 
-                string valorExtension = StringGNOSSID(entityPartAux, telefono.Extension);
+                string valorExtension = UtilitySecciones.StringGNOSSID(entityPartAux, telefono.Extension);
                 string propiedadExtension = Variables.SituacionProfesional.cargosActividadesFaxExtension;
 
                 UtilitySecciones.CheckProperty(propertyExtension, entidadAux, valorExtension, propiedadExtension);
@@ -594,7 +558,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 {
                     Property propertyCodUnescoPrimaria = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.cargosActividadesCodUnescoPrimaria);
 
-                    string valorCodigo = StringGNOSSID(entityPartAux, Utility.GetCodUnescoIDCampo(codigolista));
+                    string valorCodigo = UtilitySecciones.StringGNOSSID(entityPartAux, Utility.GetCodUnescoIDCampo(codigolista));
                     string propiedadCodigo = Variables.SituacionProfesional.cargosActividadesCodUnescoPrimaria;
                     UtilitySecciones.CheckProperty(propertyCodUnescoPrimaria, entidadAux, valorCodigo, propiedadCodigo);
                 }
@@ -609,7 +573,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 {
                     Property propertyCodUnescoSecundaria = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.cargosActividadesCodUnescoSecundaria);
 
-                    string valorCodigo = StringGNOSSID(entityPartAux, Utility.GetCodUnescoIDCampo(codigolista));
+                    string valorCodigo = UtilitySecciones.StringGNOSSID(entityPartAux, Utility.GetCodUnescoIDCampo(codigolista));
                     string propiedadCodigo = Variables.SituacionProfesional.cargosActividadesCodUnescoSecundaria;
                     UtilitySecciones.CheckProperty(propertyCodUnescoSecundaria, entidadAux, valorCodigo, propiedadCodigo);
                 }
@@ -624,7 +588,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 {
                     Property propertyCodUnescoTerciaria = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.cargosActividadesCodUnescoTerciaria);
 
-                    string valorCodigo = StringGNOSSID(entityPartAux, Utility.GetCodUnescoIDCampo(codigolista));
+                    string valorCodigo = UtilitySecciones.StringGNOSSID(entityPartAux, Utility.GetCodUnescoIDCampo(codigolista));
                     string propiedadCodigo = Variables.SituacionProfesional.cargosActividadesCodUnescoTerciaria;
                     UtilitySecciones.CheckProperty(propertyCodUnescoTerciaria, entidadAux, valorCodigo, propiedadCodigo);
                 }

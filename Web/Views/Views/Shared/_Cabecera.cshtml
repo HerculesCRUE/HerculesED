@@ -68,17 +68,57 @@
                 </div>
                 <div class="col col03">
                     <ul>
-                        <li class="iniciar-sesion">
-                            <!-- Comprueba en que sesión está el usuario -->
-                            @if (IdentidadActual.IsGuestUser)
-                            {
+                        <!-- Comprueba en que sesión está el usuario -->
+                        @if (IdentidadActual.IsGuestUser)
+                        {
+                            <li class="iniciar-sesion">
                                 <a href="@Comunidad.Url/login" class="texto-blanco">@Html.GetText("COMMON", "INICIARSESION")</a>
-                            }
-                            else
-                            {
-                                <a href="@Html.GetUrlLogout()" class="texto-blanco">@Html.GetText("MENU", "SALIR")</a>
-                            }
-                        </li>
+                            </li>
+                        }
+                        else {
+                            
+                            <li class="usuario">
+                                <div id="navegacionClonado" class="navegacion clonado">
+                                    <ul class="pmd-sidebar-nav">
+                                        <li class="liInicio active">
+                                            <a href="@Comunidad.Url">@Html.Translate("INICIO")</a>
+                                        </li>
+                                        <li class="liCluster">
+                                            <a href="javascript: void(0);">@Html.Translate("CREAR_CLUSTER")</a>
+                                        </li>
+                                        <li class="liIndicadores">
+                                            <a href="javascript: void(0);">@Html.Translate("INDICADORES")</a>
+                                        </li>
+                                        <li class="iniciar-sesion">
+                                            <a href="@Html.GetUrlLogout()" class="texto-blanco">@Html.GetText("MENU", "SALIR")</a>
+                                        </li>
+                                        <li class="liNotificaciones nuevos">
+                                            <a href="@perfil.UrlViewProfile">Alertas</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <span id="menuLateralUsuarioTrigger" class="texto-blanco">
+                                    <div class="user-miniatura">
+                                        @if(perfil.Foto != null)
+                                        {
+                                            <div class="imagen-usuario-wrap">
+                                                <a href="@perfil.UrlViewProfile">
+                                                    <div class="imagen">
+                                                        <span style="background-image: url(@perfil.Foto)"></span>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        }
+                                        <div class="nombre-usuario-wrap">
+                                            <a href="@perfil.UrlViewProfile">
+                                                <p class="nombre">@perfil.Name</p>
+                                                <p class="nombre-completo">@perfil.Name · @perfil.NameOrg</p>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </span>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
