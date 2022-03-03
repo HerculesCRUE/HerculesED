@@ -1813,6 +1813,26 @@ namespace Utils
         }
 
         /// <summary>
+        /// hindexsource_
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public static string GetIndiceH(this CvnItemBean item, string codigo)
+        {
+            if (!CodigoCampoCorrecto(codigo))
+            {
+                throw new ArgumentException("Codigo de campo incorrecto" + codigo);
+            }
+
+            CvnItemBeanCvnString campo = item.Items.Where(x => x.Code.Equals(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
+            if (campo != null)
+            {
+                return mResourceApi.GraphsUrl + "items/hindexsource_" + campo.Value;
+            }
+            return null;
+        }
+
+        /// <summary>
         /// language_
         /// </summary>
         /// <param name="item"></param>
@@ -1824,7 +1844,7 @@ namespace Utils
                 return mResourceApi.GraphsUrl + "items/language_" + item.Identification;
             }
             return null;
-        }
+        }       
 
         /// <summary>
         /// unesco_
