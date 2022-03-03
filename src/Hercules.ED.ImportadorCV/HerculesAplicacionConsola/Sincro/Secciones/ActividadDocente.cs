@@ -10,48 +10,13 @@ using Models;
 namespace HerculesAplicacionConsola.Sincro.Secciones
 {
     class ActividadDocente : SeccionBase
-    {
-        /// <summary>
-        /// Añade en la lista de propiedades de la entidad las propiedades en las 
-        /// que los valores no son nulos, en caso de que los valores sean nulos se omite
-        /// dicha propiedad.
-        /// </summary>
-        /// <param name="list"></param>
-        private List<Property> AddProperty(params Property[] list)
-        {
-            List<Property> listado = new List<Property>();
-            for (int i = 0; i < list.Length; i++)
-            {
-                if (!string.IsNullOrEmpty(list[i].values[0]))
-                {
-                    listado.Add(list[i]);
-                }
-            }
-            return listado;
-        }
-
+    {        
         private List<CvnItemBean> listadoDatos = new List<CvnItemBean>();
         private List<CvnItemBean> listadoPremios = new List<CvnItemBean>();
         public ActividadDocente(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
             listadoDatos = mCvn.GetListadoBloque("030");
             listadoPremios = mCvn.GetListadoBloque("060.030.080");
-        }
-
-        /// <summary>
-        /// Dada una cadena de GUID concatenados y finalizando en "|" y un string en caso de que 
-        /// el string no sea nulo los concatena, sino devuelve null.
-        /// </summary>
-        /// <param name="entityAux">GUID concatenado con "|"</param>
-        /// <param name="valor">Valor del parametro</param>
-        /// <returns>String de concatenar los parametros, o nulo si el valor es vacio</returns>
-        private string StringGNOSSID(string entityAux, string valor)
-        {
-            if (!string.IsNullOrEmpty(valor))
-            {
-                return entityAux + valor;
-            }
-            return null;
         }
 
         /// <summary>
