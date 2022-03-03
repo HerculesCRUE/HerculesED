@@ -115,8 +115,9 @@ namespace GuardadoCV.Models
         /// <param name="pCvID">Identificador del CV</param>
         /// <param name="pSectionID">Identifiador de la sección (para la edición de un item de un listado)</param>
         /// <param name="pRdfTypeTab">rdf:type de la pestaña (para la edición de un item de un listado)</param>
+        /// <param name="pLang">Idioma</param>
         /// <returns></returns>
-        public JsonResult ActualizarEntidad(Entity pEntity, string pCvID, string pSectionID, string pRdfTypeTab)
+        public JsonResult ActualizarEntidad(Entity pEntity, string pCvID, string pSectionID, string pRdfTypeTab, string pLang)
         {
             if (pRdfTypeTab == "http://w3id.org/roh/PersonalData")
             {
@@ -148,6 +149,15 @@ namespace GuardadoCV.Models
                     mResourceApi.ChangeOntoly(templateSection.presentation.listItemsPresentation.listItemEdit.graph);
                     pEntity.ontology = templateSection.presentation.listItemsPresentation.listItemEdit.graph;
                     itemEditConfig = templateSection.presentation.listItemsPresentation.listItemEdit;
+                    if (templateSection.presentation.listItemsPresentation.listItemEdit.propMember != null)
+                    {
+                        string personCV = UtilityCV.GetPersonFromCV(pCvID);
+                        if (!pEntity.properties.Exists(x => x.prop == templateSection.presentation.listItemsPresentation.listItemEdit.propMember.property) ||
+                            !pEntity.properties.First(x => x.prop == templateSection.presentation.listItemsPresentation.listItemEdit.propMember.property).values.Exists(x=>x.Contains(personCV)))
+                        {
+                            return new JsonResult() { ok = false, error = UtilityCV.GetTextLang(pLang, templateSection.presentation.listItemsPresentation.listItemEdit.propMember.message) };
+                        }
+                    }
                 }
                 else if (templateSection.presentation.itemPresentation != null)
                 {
@@ -288,7 +298,7 @@ namespace GuardadoCV.Models
                         }
                     }
 
-                    if(!editable)
+                    if (!editable)
                     {
                         //TODO excepciones de campos editables incluso bloqueado
                         pEntity.properties = new List<Entity.Property>();
