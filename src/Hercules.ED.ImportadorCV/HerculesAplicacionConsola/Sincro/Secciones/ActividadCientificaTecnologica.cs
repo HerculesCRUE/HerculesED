@@ -134,8 +134,8 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
         }
 
         /// <summary>
-        /// Metodo para sincronizar los datos pertenecientes a la
-        /// subseccion "Producción cientifica".
+        /// Metodo para sincronizar los datos pertenecientes al
+        /// bloque "Producción cientifica".
         /// Con el codigo identificativo 060.010.000.000
         /// </summary>
         public void SincroProduccionCientifica()
@@ -166,8 +166,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
 
             //4º Añadimos o modificamos las entidades
-            AniadirModificarActividadCientifica(listadoAux, entidadesXML, equivalencias, propTitle,
-                graph, rdfType, rdfTypePrefix, propiedadesItem, "http://w3id.org/roh/relatedScientificPublicationCV", "http://w3id.org/roh/RelatedScientificPublicationCV");
+            AniadirModificarActividadCientifica(listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem);
         }
 
         /// <summary>
@@ -963,24 +962,30 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             }
         }
 
-
+        /// <summary>
+        /// 060.010.000.000
+        /// </summary>
+        /// <param name="listadoDatos"></param>
+        /// <returns></returns>
         private List<Entity> GetProduccionCientifica(List<CvnItemBean> listadoDatos)
         {
             List<Entity> listado = new List<Entity>();
 
-            List<CvnItemBean> listadoPublicacionesDocumentos = listadoDatos.Where(x => x.Code.Equals("060.010.010.000")).ToList();
+            List<CvnItemBean> listadoPublicacionesDocumentos = listadoDatos.Where(x => x.Code.Equals("060.010.000.000")).ToList();
             if (listadoPublicacionesDocumentos.Count > 0)
             {
                 foreach (CvnItemBean item in listadoPublicacionesDocumentos)
                 {
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
-                    entidadAux.properties_cv = new List<Property>();
-                    //TODO
-                    if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.010.010.010")))
+                    
+                    if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.010.000.030")))//TODO -check valor
                     {
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                            new Property(Variables.ActividadCientificaTecnologica.pubDocumentosTipoProd, item.GetTipoPublicacionPorIDCampo("060.010.010.010"))
+                            new Property(Variables.ActividadCientificaTecnologica.prodCientificaFuenteIndiceH, item.GetStringPorIDCampo("060.010.000.030")),//TODO - funcion?
+                            new Property(Variables.ActividadCientificaTecnologica.prodCientificaFuenteIndiceHOtros, item.GetStringPorIDCampo("060.010.000.040")),
+                            new Property(Variables.ActividadCientificaTecnologica.prodCientificaIndiceH, item.GetStringDoublePorIDCampo("060.010.000.010")),
+                            new Property(Variables.ActividadCientificaTecnologica.prodCientificaFechaAplicacion, item.GetStringDatetimePorIDCampo("060.010.000.020"))
                         ));
 
                         listado.Add(entidadAux);
