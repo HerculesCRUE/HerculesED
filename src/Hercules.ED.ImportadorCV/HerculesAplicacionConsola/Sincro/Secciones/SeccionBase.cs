@@ -117,11 +117,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                         Entity.Property property = pEntity.properties.FirstOrDefault(x => x.prop == pPropAcumuladoAux);
                         if (property == null)
                         {
-                            property = new Entity.Property()
-                            {
-                                prop = pPropAcumuladoAux,
-                                values = new List<string>()
-                            };
+                            property = new Entity.Property(pPropAcumuladoAux, new List<string>());
                             pEntity.properties.Add(property);
                         }
                         property.values.Add(pObjAcumuladoAux);
