@@ -784,6 +784,7 @@ namespace DesnormalizadorHercules.Models
                         cv.Roh_scientificExperience = new ScientificExperience() { Roh_title = "-" };
                         cv.Roh_scientificActivity = new ScientificActivity() { Roh_title = "-" };
                         cv.Roh_researchObject = new ResearchObjects() { Roh_title = "-" };
+                        cv.Roh_freeTextSummary = new FreeTextSummary() { Roh_title = "-" };
                         cv.Roh_personalData = new PersonalData() { Foaf_firstName = firstName, Foaf_familyName = lastName };
                     }
                 }
