@@ -1,4 +1,5 @@
 ﻿using Gnoss.ApiWrapper.ApiModel;
+using HerculesAplicacionConsola.Utils;
 using Models;
 using System;
 using System.Collections.Generic;
@@ -13,25 +14,6 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
     {
         public DatosIdentificacion(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
-        }
-
-        /// <summary>
-        /// Añade en la lista de propiedades de la entidad las propiedades en las 
-        /// que los valores no son nulos, en caso de que los valores sean nulos se omite
-        /// dicha propiedad.
-        /// </summary>
-        /// <param name="list"></param>
-        private List<Property> AddProperty(params Property[] list)
-        {
-            List<Property> listado = new List<Property>();
-            for (int i = 0; i < list.Length; i++)
-            {
-                if (!string.IsNullOrEmpty(list[i].values[0]))
-                {
-                    listado.Add(list[i]);
-                }
-            }
-            return listado;
         }
 
         /// <summary>
@@ -97,7 +79,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             {
                 Entity entity = new Entity();
                 entity.auxEntityRemove = new List<string>();
-                entity.properties = AddProperty(
+                entity.properties = UtilitySecciones.AddProperty(
                     new Property(Variables.DatosIdentificacion.nombre, listadoDatosIdentificacion.GetStringPorIDCampo("000.010.000.020")),
                     new Property(Variables.DatosIdentificacion.primerApellido, listadoDatosIdentificacion.GetElementoPorIDCampo<CvnItemBeanCvnFamilyNameBean>("000.010.000.010")?.FirstFamilyName),
                     new Property(Variables.DatosIdentificacion.segundoApellido, listadoDatosIdentificacion.GetElementoPorIDCampo<CvnItemBeanCvnFamilyNameBean>("000.010.000.010")?.SecondFamilyName),
@@ -113,7 +95,6 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                     new Property(Variables.DatosIdentificacion.scopus, listadoDatosIdentificacion.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("000.010.000.260").GetScopus()),
                     new Property(Variables.DatosIdentificacion.researcherId, listadoDatosIdentificacion.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("000.010.000.260").GetResearcherID())
                 );
-
                 GetDireccionNacimiento(listadoDatosIdentificacion, entity, entityBBDD);
                 GetDireccionContacto(listadoDatosIdentificacion, entity, entityBBDD);
                 GetMovil(listadoDatosIdentificacion, entity, entityBBDD);
@@ -168,7 +149,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                     if (string.IsNullOrEmpty(item.Others) || string.IsNullOrEmpty(item.Value)) { return; }
 
                     string entityAux = Guid.NewGuid().ToString() + "|";
-                    entity.properties.AddRange(AddProperty(
+                    entity.properties.AddRange(UtilitySecciones.AddProperty(
                         new Property(Variables.DatosIdentificacion.otroIdentificador, StringGNOSSID(entityAux, item.Others)),
                         new Property(Variables.DatosIdentificacion.otroIdentificadorTitulo, StringGNOSSID(entityAux, item.Value))
                     ));
@@ -193,7 +174,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             }
 
             string entityAux = Guid.NewGuid().ToString() + "|";
-            entity.properties.AddRange(AddProperty(
+            entity.properties.AddRange(UtilitySecciones.AddProperty(
                 new Property(Variables.DatosIdentificacion.direccionContactoCiudad, StringGNOSSID(entityAux, listadoDatosIdentificacion.GetStringPorIDCampo("000.010.000.170"))),
                 new Property(Variables.DatosIdentificacion.direccionContacto, StringGNOSSID(entityAux, listadoDatosIdentificacion.GetStringPorIDCampo("000.010.000.140"))),
                 new Property(Variables.DatosIdentificacion.direccionContactoResto, StringGNOSSID(entityAux, listadoDatosIdentificacion.GetStringPorIDCampo("000.010.000.150"))),
@@ -220,7 +201,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 return;
             }
             string entityAux = Guid.NewGuid().ToString() + "|";
-            entity.properties.AddRange(AddProperty(
+            entity.properties.AddRange(UtilitySecciones.AddProperty(
                 new Property(Variables.DatosIdentificacion.direccionNacimientoCiudad, StringGNOSSID(entityAux, listadoDatosIdentificacion.GetStringPorIDCampo("000.010.000.090"))),
                 new Property(Variables.DatosIdentificacion.direccionNacimientoPais, StringGNOSSID(entityAux, listadoDatosIdentificacion.GetPaisPorIDCampo("000.010.000.060"))),
                 new Property(Variables.DatosIdentificacion.direccionNacimientoRegion, StringGNOSSID(entityAux, listadoDatosIdentificacion.GetRegionPorIDCampo("000.010.000.070")))
@@ -243,7 +224,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 return;
             }
             string entityAux = Guid.NewGuid().ToString() + "|";
-            entity.properties.AddRange(AddProperty(
+            entity.properties.AddRange(UtilitySecciones.AddProperty(
                 new Property(Variables.DatosIdentificacion.telefonoNumero, StringGNOSSID(entityAux, listadoDatosIdentificacion.GetElementoPorIDCampo<CvnItemBeanCvnPhoneBean>("000.010.000.210").Number.ToString())),
                 new Property(Variables.DatosIdentificacion.telefonoCodInternacional, StringGNOSSID(entityAux, listadoDatosIdentificacion.GetElementoPorIDCampo<CvnItemBeanCvnPhoneBean>("000.010.000.210").InternationalCode?.ToString())),
                 new Property(Variables.DatosIdentificacion.telefonoExtension, StringGNOSSID(entityAux, listadoDatosIdentificacion.GetElementoPorIDCampo<CvnItemBeanCvnPhoneBean>("000.010.000.210").Extension?.ToString()))
@@ -266,7 +247,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 return;
             }
             string entityAux = Guid.NewGuid().ToString() + "|";
-            entity.properties.AddRange(AddProperty(
+            entity.properties.AddRange(UtilitySecciones.AddProperty(
                 new Property(Variables.DatosIdentificacion.faxNumero, StringGNOSSID(entityAux, listadoDatosIdentificacion.GetElementoPorIDCampo<CvnItemBeanCvnPhoneBean>("000.010.000.220").Number.ToString())),
                 new Property(Variables.DatosIdentificacion.faxCodInternacional, StringGNOSSID(entityAux, listadoDatosIdentificacion.GetElementoPorIDCampo<CvnItemBeanCvnPhoneBean>("000.010.000.220").InternationalCode?.ToString())),
                 new Property(Variables.DatosIdentificacion.faxExtension, StringGNOSSID(entityAux, listadoDatosIdentificacion.GetElementoPorIDCampo<CvnItemBeanCvnPhoneBean>("000.010.000.220").Extension?.ToString()))
@@ -289,7 +270,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 return;
             }
             string entityAux = Guid.NewGuid().ToString() + "|";
-            entity.properties.AddRange(AddProperty(
+            entity.properties.AddRange(UtilitySecciones.AddProperty(
                 new Property(Variables.DatosIdentificacion.movilNumero, StringGNOSSID(entityAux, listadoDatosIdentificacion.GetElementoPorIDCampo<CvnItemBeanCvnPhoneBean>("000.010.000.240").Number.ToString())),
                 new Property(Variables.DatosIdentificacion.movilCodInternacional, StringGNOSSID(entityAux, listadoDatosIdentificacion.GetElementoPorIDCampo<CvnItemBeanCvnPhoneBean>("000.010.000.240").InternationalCode?.ToString())),
                 new Property(Variables.DatosIdentificacion.movilExtension, StringGNOSSID(entityAux, listadoDatosIdentificacion.GetElementoPorIDCampo<CvnItemBeanCvnPhoneBean>("000.010.000.240").Extension?.ToString()))
