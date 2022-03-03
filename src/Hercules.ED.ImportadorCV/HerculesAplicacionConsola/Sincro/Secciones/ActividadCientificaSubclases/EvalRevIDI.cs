@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
-namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientifica
+namespace HerculesAplicacionConsola.Sincro.Secciones.ActividadCientificaSubclases
 {
     class EvalRevIDI : DisambiguableEntity
     {
