@@ -7,18 +7,6 @@
     "paths": {
         "/thematic": {
             "post": {
-                "tags": [
-                    "Hercules"
-                ],
-                "description": "Hercules thematic keyword API.",
-                "responses": {
-                    "default": {
-                        "description": "returns the request object + a new property called topics, which contains a dictionary with the tags found and theis probabilities",
-                        "schema": {
-                            "$ref": "#/components/schemas/ThematicResponse"
-                        }
-                    }
-                },
                 "parameters": [
                     {
                         "in": "body",
@@ -28,23 +16,23 @@
                             "$ref": "#/components/schemas/ThematicRequest"
                         }
                     }
+                ],
+                "responses": {
+                    "default": {
+                        "schema": {
+                            "$ref": "#/components/schemas/ThematicResponse"
+                        },
+                        "description": "returns the request object + a new property called topics, which contains a dictionary with the tags found and theis probabilities"
+                    }
+                },
+                "description": "Hercules thematic keyword API.",
+                "tags": [
+                    "Hercules"
                 ]
             }
         },
         "/specific": {
             "post": {
-                "tags": [
-                    "Hercules, Specific keywords"
-                ],
-                "description": "Hercules Specific keyword API endpoint.",
-                "responses": {
-                    "default": {
-                        "description": "returns the request object + a new property called topics, which contains a dictionary with the tags found and theis probabilities",
-                        "schema": {
-                            "$ref": "#/components/schemas/SpecificResponse"
-                        }
-                    }
-                },
                 "parameters": [
                     {
                         "in": "body",
@@ -54,6 +42,18 @@
                             "$ref": "#/components/schemas/SpecificRequest"
                         }
                     }
+                ],
+                "responses": {
+                    "default": {
+                        "schema": {
+                            "$ref": "#/components/schemas/SpecificResponse"
+                        },
+                        "description": "returns the request object + a new property called topics, which contains a dictionary with the tags found and theis probabilities"
+                    }
+                },
+                "description": "Hercules Specific keyword API endpoint.",
+                "tags": [
+                    "Hercules, Specific keywords"
                 ]
             }
         }
@@ -68,33 +68,33 @@
                         "type": "string",
                         "description": "Author(s) of the paper"
                     },
-                    "pdf_url": {
+                    "text": {
                         "type": "string",
-                        "description": "URL of the pdf version of the paper. If pdf_url is given no other parameter is required, except for the rotype"
+                        "description": "Input text to classify"
                     },
                     "rotype": {
                         "type": "string",
-                        "description": "Type of the input text, currently available: 'bio-protocol'=protocol descriptions | 'sourceForge'=software descriptions."
+                        "description": "Type of the input text, currently available: 'bio-protocol'=protocol descriptions | 'sourceForge'=software descriptions | 'papers'=scientific papers."
                     },
-                    "abstract": {
+                    "title": {
                         "type": "string",
-                        "description": "Description/abstract of the Input article to classify"
+                        "description": "Title of the input article to classify"
                     },
                     "journal": {
                         "type": "string",
                         "description": "Journal where the paper was published"
                     },
-                    "text": {
+                    "abstract": {
                         "type": "string",
-                        "description": "Input text to classify"
+                        "description": "Description/abstract of the Input article to classify"
+                    },
+                    "pdf_url": {
+                        "type": "string",
+                        "description": "URL of the pdf version of the paper. If pdf_url is given no other parameter is required, except for the rotype"
                     },
                     "author_affiliation": {
                         "type": "string",
                         "description": "Author(s)'s affilliation(s)"
-                    },
-                    "title": {
-                        "type": "string",
-                        "description": "Title of the input article to classify"
                     }
                 },
                 "required": [
@@ -108,17 +108,9 @@
                         "type": "string",
                         "description": "Author(s) of the paper"
                     },
-                    "pdf_url": {
+                    "text": {
                         "type": "string",
-                        "description": "URL of the pdf version of the paper. If pdf_url is given no other parameter is required, except for the rotype"
-                    },
-                    "rotype": {
-                        "type": "string",
-                        "description": "Type of the input text, currently available: 'bio-protocol'=protocol descriptions | 'sourceForge'=software descriptions."
-                    },
-                    "abstract": {
-                        "type": "string",
-                        "description": "Description/abstract of the Input article to classify"
+                        "description": "Input text to classify"
                     },
                     "topics": {
                         "type": "object",
@@ -126,21 +118,29 @@
                             "type": "string"
                         }
                     },
-                    "journal": {
+                    "rotype": {
                         "type": "string",
-                        "description": "Journal where the paper was published"
-                    },
-                    "text": {
-                        "type": "string",
-                        "description": "Input text to classify"
-                    },
-                    "author_affiliation": {
-                        "type": "string",
-                        "description": "Author(s)'s affilliation(s)"
+                        "description": "Type of the input text, currently available: 'bio-protocol'=protocol descriptions | 'sourceForge'=software descriptions."
                     },
                     "title": {
                         "type": "string",
                         "description": "Title of the input article to classify"
+                    },
+                    "journal": {
+                        "type": "string",
+                        "description": "Journal where the paper was published"
+                    },
+                    "abstract": {
+                        "type": "string",
+                        "description": "Description/abstract of the Input article to classify"
+                    },
+                    "pdf_url": {
+                        "type": "string",
+                        "description": "URL of the pdf version of the paper. If pdf_url is given no other parameter is required, except for the rotype"
+                    },
+                    "author_affiliation": {
+                        "type": "string",
+                        "description": "Author(s)'s affilliation(s)"
                     }
                 },
                 "required": [
@@ -150,14 +150,6 @@
             "SpecificRequest": {
                 "type": "object",
                 "properties": {
-                    "title": {
-                        "type": "string",
-                        "description": "Title of the input article to classify"
-                    },
-                    "rotype": {
-                        "type": "string",
-                        "description": "Type of the input text, currently available: 'bio-protocol'=protocol descriptions | 'sourceForge'=software descriptions."
-                    },
                     "abstract": {
                         "type": "string",
                         "description": "Abstract of the Input article to classify"
@@ -165,6 +157,14 @@
                     "body": {
                         "type": "string",
                         "description": "Main text of the paper. If no body is present the systems resorts to short texts keyphrase extractor"
+                    },
+                    "rotype": {
+                        "type": "string",
+                        "description": "Type of the input text, currently available: 'bio-protocol'=protocol descriptions | 'sourceForge'=software descriptions."
+                    },
+                    "title": {
+                        "type": "string",
+                        "description": "Title of the input article to classify"
                     }
                 },
                 "required": [
@@ -175,27 +175,27 @@
             "SpecificResponse": {
                 "type": "object",
                 "properties": {
-                    "body": {
-                        "type": "string",
-                        "description": "Main text of the paper. If no body is present the systems resorts to short texts keyphrase extractor"
-                    },
-                    "rotype": {
-                        "type": "string",
-                        "description": "Type of the input text, currently available: 'bio-protocol'=protocol descriptions | 'sourceForge'=software descriptions."
-                    },
-                    "abstract": {
-                        "type": "string",
-                        "description": "Abstract of the Input article to classify"
-                    },
                     "topics": {
                         "type": "object",
                         "additionalProperties": {
                             "type": "string"
                         }
                     },
+                    "rotype": {
+                        "type": "string",
+                        "description": "Type of the input text, currently available: 'bio-protocol'=protocol descriptions | 'sourceForge'=software descriptions."
+                    },
                     "title": {
                         "type": "string",
                         "description": "Title of the input article to classify"
+                    },
+                    "abstract": {
+                        "type": "string",
+                        "description": "Abstract of the Input article to classify"
+                    },
+                    "body": {
+                        "type": "string",
+                        "description": "Main text of the paper. If no body is present the systems resorts to short texts keyphrase extractor"
                     }
                 },
                 "required": [

@@ -40,8 +40,9 @@ import tempfile
 from arxiv_public_data.fulltext import fulltext as pdf_to_str
 
 import re
+import pdb
 
-from neural_multilabel_classification import set_seed,get_labels,convert_examples_to_features_multi,evaluate,load_neural_model,init_neural_resources
+import text_classification as texcls
 from keyphrase_extraction import KeyphraseExtractor
 
 logger = logging.getLogger(__name__)
@@ -72,7 +73,7 @@ auth = HTTPBasicAuth()
 # Api documentation
 
 class ThematicRequestSchema(Schema):
-    rotype = fields.String(required=True, description="Type of the input text, currently available: 'bio-protocol'=protocol descriptions | 'sourceForge'=software descriptions.")
+    rotype = fields.String(required=True, description="Type of the input text, currently available: 'bio-protocol'=protocol descriptions | 'sourceForge'=software descriptions | 'papers'=scientific papers.")
     text = fields.String(required=False, description="Input text to classify")
     title = fields.String(required=False, description="Title of the input article to classify")
     abstract = fields.String(required=False, description="Description/abstract of the Input article to classify")
@@ -111,11 +112,8 @@ taxonomy = {}
 topic_models = {}
 available_topic_models = ['sourceForge', 'bio-protocol', 'papers']
 tokenizer = "" 
-tmp_path = "/tmp"
 keyphrase_extractors = {}
 available_keyphrase_models = ['papers']
-
-
 
 
 ################################################################
@@ -166,7 +164,6 @@ def init():
     global available_topic_models
     global topic_models
     global tokenizer
-    global tmp_path
     global keyphrase_extractors
     global available_keyphrase_models
     
@@ -175,47 +172,20 @@ def init():
     with open('{}/conf.json'.format(CONFDIR), 'r', encoding='utf-8') as f:
         conf = json.load(f)
 
-    if "tmp_path" in conf:        
-        tmp_path=conf["tmp_path"]
-    else:
-        print("WARN no tmp directory specified, defaulting to /tmp/gnoss-hercules-api")
-        tmp_path="/tmp/gnoss-hercules-api"
-        
-    os.makedirs(tmp_path,exist_ok=True)
-
-
     if not 'topics' in conf: 
         return make_error(500, "topic taxonomy not present in config. This is a server side problem contact with the API maintainers")
-
-    init_neural_resources(conf["device"])
     
         
     #load models in memory for topic classification
     for dimension in conf['topics']:
-        print ("dimension: {}".format(dimension))
+        logging.info("dimension: {}".format(dimension))
         model_name=dimension["name"]
         model_path=dimension["path"]
-        model_type=dimension["type"]
-        
-        (tokenizer,model,label2id,id2label,pad_token_label_id)=load_neural_model(model_name,model_path,tmp_path)
-        if model == None:
-            print ("model {} could not be loaded".format(model_name))
-            continue
             
-        if not model_name in topic_models:
-            topic_models[model_name]={}
-            
-        topic_models[model_name]["tokenizer"]=tokenizer
-        topic_models[model_name]["model"]=model
-        topic_models[model_name]["label2id"]=label2id
-        topic_models[model_name]["id2label"]=id2label
-        topic_models[model_name]["pad_token_label_id"]=pad_token_label_id
-        topic_models[model_name]["model_type"]=model_type
-        
-        print ("model {} loaded".format(model_name))
+        topic_models[model_name] = texcls.TrTextClassifier(model_path)
+        logging.info("model {} loaded".format(model_name))
     
-    
-    print ("{} topic models loaded".format(len(topic_models)))
+    logging.info("{} topic models loaded".format(len(topic_models)))
 
     
     #load models for keyphrase extraction
@@ -223,12 +193,12 @@ def init():
         return make_error(500, "keyphrases model information not present in config. This is a server side problem contact with the API maintainers")
 
     for dimension in conf['keyphrases']:
-        print ("dimension: {}".format(dimension))
+        logging.info("dimension: {}".format(dimension))
         model_name=dimension["name"]
         model_path=dimension["path"]
 
         if model_name not in available_keyphrase_models:
-             print ("model {} not available".format(model_name))
+             logging.warning("model {} not available".format(model_name))
              continue
          
         for i in ['short','fulltext']:
@@ -239,9 +209,9 @@ def init():
             kp_scopus_fpath=os.path.join(model_path,"scopus.pkl")
         
             model=KeyphraseExtractor(kp_model_s_fpath, kp_model_m_fpath, kp_clef_fpath, kp_scopus_fpath, kp_clef_idf_fpath) #kp_scopus_fpath)
-            #(tokenizer,model,label2id,id2label,pad_token_label_id)=load_neural_model(model_name,model_path,tmp_path)
+
             if model == None:
-                print ("model {} could not be loaded".format(model_name))
+                logging.warning("model {} could not be loaded".format(model_name))
                 continue
             
             if not model_name in keyphrase_extractors:
@@ -250,7 +220,7 @@ def init():
             keyphrase_extractors[model_name][i]=model
 
 
-    print ("{} Keyphrase extraction models loaded".format(len(keyphrase_extractors)))
+    logging.info("{} Keyphrase extraction models loaded".format(len(keyphrase_extractors)))
     ## init logs
     #loglvl = conf['loglvl'] if 'loglvl' in conf else logging.WARNING
     #logging.basicConfig(format='%(asctime)s [%(levelname)s]: %(message)s', level=loglvl)
@@ -268,9 +238,9 @@ def verify_password(username, password):
         if _user['username'] == username:
             user = _user
     if user and pwd_context.verify(password, user['password']):
-        print ("correct password")
+        logging.info("correct password")
         return True
-    print ("incorrect password - {} - {} -".format(username,password))
+    logging.error("incorrect password - {} - {} -".format(username,password))
     return False
 
 def make_error(code, msg):
@@ -314,11 +284,11 @@ class ThematicDescriptorAPI(MethodResource, Resource):
                 return jsonify("error: either 'pdf_url', or 'title' and 'abstract' fields are required"), 400
         except ValidationError as err:
             # Return a nice message if validation fails
-            print(err.messages, err,json_data)
+            logging.error(err.messages, err,json_data)
             return jsonify(err.messages), 400
         
         
-        print(json.dumps(json_data, indent=4, sort_keys=True))        
+        logging.info(json.dumps(json_data, indent=4, sort_keys=True))        
         
         text=""
         if 'pdf_url' in json_data:
@@ -369,27 +339,20 @@ class ThematicDescriptorAPI(MethodResource, Resource):
 
     def classify_subject_keywords(self,text,topic_model=None):
         results={}
-        print(topic_model, topic_models.keys())
+        logging.info(topic_model, topic_models.keys())
         if topic_model != None and topic_model in topic_models:
             logging.info("************ Tagging with {} model ************* \n".format(topic_model))
-            model_dict=topic_models[topic_model]
-            predictions, probs = evaluate(model_dict["model"], model_dict["tokenizer"], model_dict["label2id"], model_dict["pad_token_label_id"], mode="test", input_text=text,model_type=model_dict["model_type"])
-            logging.info("************* Prediction ready: \n Predictions: {} \n probabilities: {}".format(predictions,probs))
+            model = topic_models[topic_model]
+            result = model.classify(text)[0]
+            one_pred = [ res[0] for res in result ]
+            one_prob = [ res[1] for res in result ]
             
-            # we know a single sentence was tagged and its prediction are in the first position of the predictions array
-            id2label=model_dict["id2label"]
-            one_pred=predictions[0]
-            one_prob=probs[0]
-
-            #print(id2label,one_pred)
-            #results={ id2label[str(i)]: str(f"{float(np.round(one_prob[i], 2)):.2f}") for i, k in enumerate(one_pred) if (one_prob[i] > 0.5)}
-            results=[ {"word":id2label[str(i)], "porcentaje": str(f"{float(np.round(one_prob[i], 2)):.2f}")} for i, k in enumerate(one_pred) if (one_prob[i] > 0.5)]
+            logging.info("************* Prediction ready: \n Predictions: {} \n probabilities: {}".format(one_pred, one_prob))
+            
+            results=[ {"word":one_pred[i], "porcentaje": str(f"{float(np.round(one_prob[i], 2)):.2f}")} for i in range(len(one_pred)) if (one_prob[i] > 0.5)]
 
             logging.info("************* Final Result: {} \n".format(results))
-                    
-            shutil.rmtree(tmp_path, ignore_errors=True)   
-            os.makedirs(tmp_path)
-            
+                                
         return results
 
     
@@ -414,7 +377,7 @@ class SpecificDescriptorAPI(MethodResource, Resource):
             application/json:
               schema: SpecificResponseSchema
         """
-        print("kwargs: {} \n \n".format(kwargs))
+        logging.info("kwargs: {} \n \n".format(kwargs))
         json_data=request.get_json(force=True)
         response_json = json_data
         schema = SpecificRequestSchema()
@@ -423,11 +386,11 @@ class SpecificDescriptorAPI(MethodResource, Resource):
             result = schema.load(json_data)
         except ValidationError as err:
             # Return a nice message if validation fails
-            print(err.messages, err,json_data)
+            logging.error(err.messages, err,json_data)
             return jsonify(err.messages), 400
         
         
-        print(json.dumps(json_data, indent=4, sort_keys=True))
+        logging.info(json.dumps(json_data, indent=4, sort_keys=True))
 
         text=""
         title=""
