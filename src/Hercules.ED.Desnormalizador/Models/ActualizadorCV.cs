@@ -69,13 +69,22 @@ namespace DesnormalizadorHercules.Models
                     Parallel.ForEach(listaCVCargar, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, cv =>
                     {
                         ComplexOntologyResource resource = cv.ToGnossApiResource(mResourceApi, new());
-                        if (listaCVCargar.Last() == cv)
+                        int numIntentos = 0;
+                        while (!resource.Uploaded)
                         {
-                            mResourceApi.LoadComplexSemanticResource(resource, true, true);
-                        }
-                        else
-                        {
-                            mResourceApi.LoadComplexSemanticResource(resource);
+                            numIntentos++;
+                            if (numIntentos > MAX_INTENTOS)
+                            {
+                                break;
+                            }
+                            if (listaCVCargar.Last() == cv)
+                            {
+                                mResourceApi.LoadComplexSemanticResource(resource, true, true);
+                            }
+                            else
+                            {
+                                mResourceApi.LoadComplexSemanticResource(resource);
+                            }
                         }
                     });
 
