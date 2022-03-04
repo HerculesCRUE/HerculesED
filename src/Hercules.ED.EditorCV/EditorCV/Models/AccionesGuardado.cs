@@ -163,7 +163,7 @@ namespace GuardadoCV.Models
                 }
 
             }
-            else if (!string.IsNullOrEmpty(pSectionID) && !string.IsNullOrEmpty(pRdfTypeTab))
+            else
             {
                 //Item de CV
                 GuardadoCV.Models.API.Templates.Tab template = UtilityCV.TabTemplates.First(x => x.rdftype == pRdfTypeTab);
@@ -436,44 +436,6 @@ namespace GuardadoCV.Models
                     }
                 }
                 return new JsonResult() { ok = true, id = entityIDResponse };
-            }
-            else
-            {
-                //Entidad
-                ItemEdit itemEdit = UtilityCV.EntityTemplates.First(x => x.rdftype == pEntity.rdfType);
-                mResourceApi.ChangeOntoly(itemEdit.graph);
-                pEntity.ontology = itemEdit.graph;
-                if (string.IsNullOrEmpty(pEntity.id) || !pEntity.id.StartsWith("http"))
-                {
-                    //Creamos
-                    pEntity.id = "";
-                    pEntity.propTitle = itemEdit.proptitle;
-                    pEntity.propDescription = itemEdit.propdescription;
-                    ProcesCompossedProperties(itemEdit, pEntity);
-                    ProcesLoadPropertyValues(itemEdit, pEntity);
-                    ComplexOntologyResource resource = ToGnossApiResource(pEntity);
-                    string result = mResourceApi.LoadComplexSemanticResource(resource, false, true);
-                    return new JsonResult() { ok = resource.Uploaded, id = result };
-                }
-                else
-                {
-                    //Modificamos
-                    Entity loadedEntity = GetLoadedEntity(pEntity.id, pEntity.ontology);
-                    loadedEntity.propTitle = itemEdit.proptitle;
-                    loadedEntity.propDescription = itemEdit.propdescription;
-                    bool hasChange = MergeLoadedEntity(loadedEntity, pEntity);
-                    hasChange = ProcesCompossedProperties(itemEdit, loadedEntity) || ProcesLoadPropertyValues(itemEdit, loadedEntity) || hasChange;
-                    if (hasChange)
-                    {
-                        ComplexOntologyResource resource = ToGnossApiResource(loadedEntity);
-                        mResourceApi.ModifyComplexOntologyResource(resource, false, true);
-                        return new JsonResult() { ok = resource.Modified, id = pEntity.id };
-                    }
-                    else
-                    {
-                        return new JsonResult() { ok = true, id = pEntity.id };
-                    }
-                }
             }
         }
 

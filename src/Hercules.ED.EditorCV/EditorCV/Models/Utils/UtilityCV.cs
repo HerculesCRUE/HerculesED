@@ -50,7 +50,6 @@ namespace GuardadoCV.Models.Utils
 
         private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/configOAuth/OAuthV3.config");
         private static List<Tab> mTabTemplates;
-        private static List<ItemEdit> mEntityTemplates;
 
         /// <summary>
         /// Obtiene la persona propietaria de un CV
@@ -412,26 +411,6 @@ namespace GuardadoCV.Models.Utils
                     }
                 }
                 return mTabTemplates;
-            }
-        }
-
-        /// <summary>
-        /// Lista de EntityTemplates configurados
-        /// //TODO cambiar ListItemEdit por 'ItemEdit'
-        /// </summary>
-        public static List<ItemEdit> EntityTemplates
-        {
-            get
-            {
-                if (mEntityTemplates == null || mEntityTemplates.Count != System.IO.Directory.EnumerateFiles($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/EntityTemplates").Count())
-                {
-                    mEntityTemplates = new List<ItemEdit>();
-                    foreach (string file in System.IO.Directory.EnumerateFiles($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/EntityTemplates"))
-                    {
-                        mEntityTemplates.Add(JsonConvert.DeserializeObject<ItemEdit>(System.IO.File.ReadAllText(file)));
-                    }
-                }
-                return mEntityTemplates;
             }
         }
     }

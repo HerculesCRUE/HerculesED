@@ -264,16 +264,6 @@ namespace GuardadoCV.Models
             return listThesaurusConfig.ToList();
         }
 
-
-        public EntityEdit GetEditEntity(string pRdfType, string pEntityID, string pLang)
-        {
-            ItemEdit templateEdit = UtilityCV.EntityTemplates.First(x => x.rdftype == pRdfType);
-            string entityID = pEntityID;
-
-
-            return GetEditModel(entityID, templateEdit, pLang);
-        }
-
         public ItemsLoad LoadProps(ItemsLoad pItemsLoad, string pLang)
         {
             if (pItemsLoad.items != null && pItemsLoad.items.Count > 0)
