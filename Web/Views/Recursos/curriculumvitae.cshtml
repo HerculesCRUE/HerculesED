@@ -343,6 +343,7 @@
                         <div class="form-group full-group">
                             <label class="control-label d-block">@Html.Translate("CV_BUSCARPORFIRMA")</label>
                             <textarea autocomplete="off" placeholder="@Html.Translate("CV_INTRODUCEFIRMASSEPARADASCOMAS")" type="text" name="" id="inputsignatures" class="form-control not-outline"></textarea>
+							<input type="hidden" id="namePersonCV" value="@pCV.Roh_cvOf.Foaf_name">							
                             <a href="javascript: void(0);" class="btn btn-outline-grey validar">@Html.Translate("CV_BUSCAR")</a>
                         </div>
                     </div>
@@ -759,10 +760,12 @@
 			public class Person : GnossOCBase
 			{
 				public string IdRoh_gnossUser  { get; set;} 
+                public string Foaf_name { get; set; }
 				public Person(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
 				{
 					this.mGNOSSID = pSemCmsModel.Entity.Uri;
 					this.IdRoh_gnossUser = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/gnossUser"));
+					this.Foaf_name = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/name"));
 				}
 			}
 			
