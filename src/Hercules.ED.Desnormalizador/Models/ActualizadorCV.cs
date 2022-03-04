@@ -69,13 +69,22 @@ namespace DesnormalizadorHercules.Models
                     Parallel.ForEach(listaCVCargar, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, cv =>
                     {
                         ComplexOntologyResource resource = cv.ToGnossApiResource(mResourceApi, new());
-                        if (listaCVCargar.Last() == cv)
+                        int numIntentos = 0;
+                        while (!resource.Uploaded)
                         {
-                            mResourceApi.LoadComplexSemanticResource(resource, true, true);
-                        }
-                        else
-                        {
-                            mResourceApi.LoadComplexSemanticResource(resource);
+                            numIntentos++;
+                            if (numIntentos > MAX_INTENTOS)
+                            {
+                                break;
+                            }
+                            if (listaCVCargar.Last() == cv)
+                            {
+                                mResourceApi.LoadComplexSemanticResource(resource, true, true);
+                            }
+                            else
+                            {
+                                mResourceApi.LoadComplexSemanticResource(resource);
+                            }
                         }
                     });
 
@@ -784,6 +793,7 @@ namespace DesnormalizadorHercules.Models
                         cv.Roh_scientificExperience = new ScientificExperience() { Roh_title = "-" };
                         cv.Roh_scientificActivity = new ScientificActivity() { Roh_title = "-" };
                         cv.Roh_researchObject = new ResearchObjects() { Roh_title = "-" };
+                        cv.Roh_freeTextSummary = new FreeTextSummary() { Roh_title = "-" };
                         cv.Roh_personalData = new PersonalData() { Foaf_firstName = firstName, Foaf_familyName = lastName };
                     }
                 }

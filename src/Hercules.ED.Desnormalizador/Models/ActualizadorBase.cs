@@ -19,6 +19,7 @@ namespace DesnormalizadorHercules.Models
     {
         //TODO configurable
         public static int numParallel = 5;
+        public static int MAX_INTENTOS = 10;
 
         /// <summary>
         /// API Wrapper de GNOSS

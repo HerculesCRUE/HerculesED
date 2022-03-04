@@ -1,0 +1,77 @@
+{
+  "rdftype": "http://w3id.org/roh/FreeTextSummary",
+  "property": "http://w3id.org/roh/freeTextSummary",
+  "sections": [
+    {
+      "rdftype": "http://w3id.org/roh/FreeTextSummaryValues",
+      "property": "http://w3id.org/roh/freeTextSummaryValues",
+      "presentation": {
+        "type": "item",
+        "title": {
+          "es": "Resumen libre del currículum"
+        },
+        "itemPresentation": {
+          "property": "http://w3id.org/roh/freeTextSummaryValuesCV",
+          "itemEdit": {
+            "rdftype": "http://w3id.org/roh/FreeTextSummaryValuesCV",
+            "graph": "curriculumvitae",
+            "sections": [
+              {
+                "rows": [
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Resumen libre del currículum"
+                        },
+                        "placeholder": {
+                          "es": "Introduce el resumen libre del currículum"
+                        },
+                        "property": "http://w3id.org/roh/summary",
+                        "required": false,
+                        "type": "textarea",
+                        "width": 3
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "B.1. Breve descripción del Trabajo de Fin de Grado (TFG) y puntuación obtenida"
+                        },
+                        "placeholder": {
+                          "es": "Introduce una breve descripción del Trabajo de Fin de Grado (TFG) y puntuación obtenida"
+                        },
+                        "property": "http://w3id.org/roh/summaryTFG",
+                        "required": false,
+                        "type": "textarea",
+                        "width": 3
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "B.2. Breve descripción del Trabajo de Fin de Máster (TFM) y puntuación obtenida"
+                        },
+                        "placeholder": {
+                          "es": "Introduce una breve descripción del Trabajo de Fin de Máster (TFM) y puntuación obtenida"
+                        },
+                        "property": "http://w3id.org/roh/summaryTFM",
+                        "required": false,
+                        "type": "textarea",
+                        "width": 3
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

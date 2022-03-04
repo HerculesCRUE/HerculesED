@@ -140,11 +140,11 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
         /// </summary>
         public void SincroProduccionCientifica()
         {
-            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/XXXX", "XXXX" };
-            string graph = "XXXXX";
-            string propTitle = "XXXX";
-            string rdfType = "XXXXXX";
-            string rdfTypePrefix = "RelatedXXXXX";
+            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/scientificProduction", "http://vivoweb.org/ontology/core#relatedBy" };
+            string graph = "scientificproduction";
+            string propTitle = "http://w3id.org/roh/h-index";
+            string rdfType = "http://w3id.org/roh/ScientificProduction";
+            string rdfTypePrefix = "RelatedScientificProduction";
 
             //1º Obtenemos la entidad del XML.
             List<Entity> listadoAux = GetProduccionCientifica(listadoDatos);
@@ -152,11 +152,12 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
             foreach (Entity entityXML in listadoAux)
             {
-                PublicacionesDocumentos publicacionesDocumentos = new PublicacionesDocumentos();
-                publicacionesDocumentos.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.prodCientificaFuenteIndiceH)?.values.FirstOrDefault();
-                publicacionesDocumentos.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.prodCientificaFechaAplicacion)?.values.FirstOrDefault();
-                publicacionesDocumentos.ID = Guid.NewGuid().ToString();
-                entidadesXML.Add(publicacionesDocumentos.ID, publicacionesDocumentos);
+                ProduccionCientifica produccionCientifica = new ProduccionCientifica();
+                produccionCientifica.indiceH = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.prodCientificaIndiceH)?.values.FirstOrDefault();
+                produccionCientifica.fuenteH = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.prodCientificaFuenteIndiceH)?.values.FirstOrDefault();
+                produccionCientifica.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.prodCientificaFechaAplicacion)?.values.FirstOrDefault();
+                produccionCientifica.ID = Guid.NewGuid().ToString();
+                entidadesXML.Add(produccionCientifica.ID, produccionCientifica);
             }
 
             //2º Obtenemos las entidades de la BBDD
@@ -180,7 +181,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             List<string> rdfTypeItem = new List<string>() { "http://w3id.org/roh/GeneralQualityIndicator", "http://w3id.org/roh/GeneralQualityIndicatorCV" };
 
             //1º Obtenemos la entidad de BBDD.
-            Tuple<string, string, string> identificadores = GetIdentificadoresItemPresentation(mCvID, propiedadesItem);
+            Tuple<string, string, string> identificadores = GetIdentificadoresItemPresentation(mCvID, propiedadesItem, rdfTypeItem);
 
             Entity entityBBDD = null;
             GetEntidadesSecundarias(ref entityBBDD, identificadores, rdfTypeItem, "curriculumvitae");
@@ -979,10 +980,10 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
                     
-                    if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.010.000.030")))//TODO -check valor
+                    if (!string.IsNullOrEmpty(item.GetStringDoublePorIDCampo("060.010.000.010")))
                     {
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                            new Property(Variables.ActividadCientificaTecnologica.prodCientificaFuenteIndiceH, item.GetStringPorIDCampo("060.010.000.030")),//TODO - funcion?
+                            new Property(Variables.ActividadCientificaTecnologica.prodCientificaFuenteIndiceH, item.GetIndiceH("060.010.000.030")),
                             new Property(Variables.ActividadCientificaTecnologica.prodCientificaFuenteIndiceHOtros, item.GetStringPorIDCampo("060.010.000.040")),
                             new Property(Variables.ActividadCientificaTecnologica.prodCientificaIndiceH, item.GetStringDoublePorIDCampo("060.010.000.010")),
                             new Property(Variables.ActividadCientificaTecnologica.prodCientificaFechaAplicacion, item.GetStringDatetimePorIDCampo("060.010.000.020"))
@@ -1105,7 +1106,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                 }
             }
 
-            //Si es Libro(032), Documento o informe cientifico-tecnico(018) o catalogo de obra artistica(006)
+            //Si es Libro(032), Documento o informe cientifico-tecnico(018) o Catálogo de obra artistica(006)
             else
             {
                 entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
@@ -1169,13 +1170,13 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
         private void PublicacionesDocumentosIDPublicacion(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnExternalPKBean> listadoIDs = item.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("060.010.010.400");
-            string idHandle = Variables.ActividadCientificaTecnologica.pubDocumentosIDPubDigitalHandle;
-            string idDOI = Variables.ActividadCientificaTecnologica.pubDocumentosIDPubDigitalDOI;
-            string idPMID = Variables.ActividadCientificaTecnologica.pubDocumentosIDPubDigitalPMID;
-            string idOtroPub = Variables.ActividadCientificaTecnologica.pubDocumentosIDOtroPubDigital;
+            string propIdHandle = Variables.ActividadCientificaTecnologica.pubDocumentosIDPubDigitalHandle;
+            string propIdDOI = Variables.ActividadCientificaTecnologica.pubDocumentosIDPubDigitalDOI;
+            string propIdPMID = Variables.ActividadCientificaTecnologica.pubDocumentosIDPubDigitalPMID;
+            string propIdOtroPub = Variables.ActividadCientificaTecnologica.pubDocumentosIDOtroPubDigital;
             string nombreOtroPub = Variables.ActividadCientificaTecnologica.pubDocumentosNombreOtroPubDigital;
 
-            UtilitySecciones.InsertaTiposIDPublicacion(listadoIDs, entidadAux, idHandle, idDOI, idPMID, idOtroPub, nombreOtroPub);
+            UtilitySecciones.InsertaTiposIDPublicacion(listadoIDs, entidadAux, propIdHandle, propIdDOI, propIdPMID, propIdOtroPub, nombreOtroPub);
         }
 
         /// <summary>
@@ -1310,13 +1311,13 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
         private void TrabajosCongresosIDPublicacion(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnExternalPKBean> listadoIDs = item.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("060.010.020.400");
-            string idHandle = Variables.ActividadCientificaTecnologica.trabajosCongresosIDPubDigitalHandle;
-            string idDOI = Variables.ActividadCientificaTecnologica.trabajosCongresosIDPubDigitalDOI;
-            string idPMID = Variables.ActividadCientificaTecnologica.trabajosCongresosIDPubDigitalPMID;
-            string idOtroPub = Variables.ActividadCientificaTecnologica.trabajosCongresosIDOtroPubDigital;
+            string propIdHandle = Variables.ActividadCientificaTecnologica.trabajosCongresosIDPubDigitalHandle;
+            string propIdDOI = Variables.ActividadCientificaTecnologica.trabajosCongresosIDPubDigitalDOI;
+            string propIdPMID = Variables.ActividadCientificaTecnologica.trabajosCongresosIDPubDigitalPMID;
+            string propIdOtroPub = Variables.ActividadCientificaTecnologica.trabajosCongresosIDOtroPubDigital;
             string nombreOtroPub = Variables.ActividadCientificaTecnologica.trabajosCongresosNombreOtroPubDigital;
 
-            UtilitySecciones.InsertaTiposIDPublicacion(listadoIDs, entidadAux, idHandle, idDOI, idPMID, idOtroPub, nombreOtroPub);
+            UtilitySecciones.InsertaTiposIDPublicacion(listadoIDs, entidadAux, propIdHandle, propIdDOI, propIdPMID, propIdOtroPub, nombreOtroPub);
         }
 
         /// <summary>
@@ -1325,7 +1326,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
         /// </summary>
         /// <param name="item">item</param>
         /// <param name="entidadAux">entidadAux</param>
-        private void TrabajosCongresosISBN(CvnItemBean item, Entity entidadAux)//TODO - check
+        private void TrabajosCongresosISBN(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnExternalPKBean> listadoISBN = item.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("060.010.020.320");
             string propiedadISBN = Variables.ActividadCientificaTecnologica.trabajosCongresosPubISBN;
@@ -1461,13 +1462,13 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
         private void TrabajosJornadasSeminariosIDPublicacion(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnExternalPKBean> listadoIDs = item.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("060.010.030.400");
-            string idHandle = Variables.ActividadCientificaTecnologica.trabajosJornSemIDPubDigitalHandle;
-            string idDOI = Variables.ActividadCientificaTecnologica.trabajosJornSemIDPubDigitalDOI;
-            string idPMID = Variables.ActividadCientificaTecnologica.trabajosJornSemIDPubDigitalPMID;
-            string idOtroPub = Variables.ActividadCientificaTecnologica.trabajosJornSemIDOtroPubDigital;
+            string propIdHandle = Variables.ActividadCientificaTecnologica.trabajosJornSemIDPubDigitalHandle;
+            string propIdDOI = Variables.ActividadCientificaTecnologica.trabajosJornSemIDPubDigitalDOI;
+            string propIdPMID = Variables.ActividadCientificaTecnologica.trabajosJornSemIDPubDigitalPMID;
+            string propIdOtroPub = Variables.ActividadCientificaTecnologica.trabajosJornSemIDOtroPubDigital;
             string nombreOtroPub = Variables.ActividadCientificaTecnologica.trabajosJornSemNombreOtroPubDigital;
 
-            UtilitySecciones.InsertaTiposIDPublicacion(listadoIDs, entidadAux, idHandle, idDOI, idPMID, idOtroPub, nombreOtroPub);
+            UtilitySecciones.InsertaTiposIDPublicacion(listadoIDs, entidadAux, propIdHandle, propIdDOI, propIdPMID, propIdOtroPub, nombreOtroPub);
         }
 
         /// <summary>
@@ -1610,13 +1611,13 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
         private void OtrasActividadesDivulgacionIDPublicacion(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnExternalPKBean> listadoIDs = item.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("060.010.040.400");
-            string idHandle = Variables.ActividadCientificaTecnologica.otrasActDivulIDPubDigitalHandle;
-            string idDOI = Variables.ActividadCientificaTecnologica.otrasActDivulIDPubDigitalDOI;
-            string idPMID = Variables.ActividadCientificaTecnologica.otrasActDivulIDPubDigitalPMID;
-            string idOtroPub = Variables.ActividadCientificaTecnologica.otrasActDivulIDOtroPubDigital;
+            string propIdHandle = Variables.ActividadCientificaTecnologica.otrasActDivulIDPubDigitalHandle;
+            string propIdDOI = Variables.ActividadCientificaTecnologica.otrasActDivulIDPubDigitalDOI;
+            string propIdPMID = Variables.ActividadCientificaTecnologica.otrasActDivulIDPubDigitalPMID;
+            string propIdOtroPub = Variables.ActividadCientificaTecnologica.otrasActDivulIDOtroPubDigital;
             string nombreOtroPub = Variables.ActividadCientificaTecnologica.otrasActDivulNombreOtroIDPubDigital;
 
-            UtilitySecciones.InsertaTiposIDPublicacion(listadoIDs, entidadAux, idHandle, idDOI, idPMID, idOtroPub, nombreOtroPub);
+            UtilitySecciones.InsertaTiposIDPublicacion(listadoIDs, entidadAux, propIdHandle, propIdDOI, propIdPMID, propIdOtroPub, nombreOtroPub);
 
         }
 
@@ -1663,6 +1664,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
         private void OtrasActividadesDivulgacionEntidad(CvnItemBean item, Entity entidadAux)
         {
             //Añado la referencia si existe Entidad de Afiliación
+
             //UtilitySecciones.AniadirEntidad(mResourceApi, UtilitySecciones.StringGNOSSID(entityPartAux,item.GetNameEntityBeanPorIDCampo("060.010.040.090")),
             //    Variables.ActividadCientificaTecnologica.otrasActDivulEntidadOrgNombre,
             //    Variables.ActividadCientificaTecnologica.otrasActDivulEntidadOrg, entidadAux);

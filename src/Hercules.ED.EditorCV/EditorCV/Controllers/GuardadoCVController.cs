@@ -60,12 +60,12 @@ namespace GuardadoCV.Controllers
         /// <param name="entity"></param>
         /// <returns></returns>
         [HttpPost("UpdateEntity")]
-        public IActionResult UpdateEntity([FromForm] Entity entity, [FromForm] string cvID, [FromForm] string sectionID, [FromForm] string rdfTypeTab)
+        public IActionResult UpdateEntity([FromForm] Entity entity, [FromForm] string cvID, [FromForm] string sectionID, [FromForm] string rdfTypeTab, [FromForm] string pLang)
         {
             try
             {
                 AccionesGuardado accionesGuardado = new AccionesGuardado();
-                return Ok(accionesGuardado.ActualizarEntidad(entity, cvID, sectionID, rdfTypeTab));
+                return Ok(accionesGuardado.ActualizarEntidad(entity, cvID, sectionID, rdfTypeTab,pLang));
             }
             catch (Exception ex)
             {

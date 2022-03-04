@@ -290,17 +290,17 @@ namespace HerculesAplicacionConsola.Utils
         /// </summary>
         /// <param name="listadoIDs">listadoIDs</param>
         /// <param name="entidadAux">entidadAux</param>
-        /// <param name="idHandle">idHandle</param>
-        /// <param name="idDOI">idDOI</param>
-        /// <param name="idPMID">idPMID</param>
-        /// <param name="idOtroPub">idOtroPub</param>
+        /// <param name="propIdHandle">propIdHandle</param>
+        /// <param name="propIdDOI">propIdDOI</param>
+        /// <param name="propIdPMID">propIdPMID</param>
+        /// <param name="propIdOtroPub">propIdOtroPub</param>
         /// <param name="nombreOtroPub">nombreOtroPub</param>
         public static void InsertaTiposIDPublicacion(List<CvnItemBeanCvnExternalPKBean> listadoIDs, Entity entidadAux,
-            string idHandle, string idDOI, string idPMID, string idOtroPub, string nombreOtroPub)
+            string propIdHandle, string propIdDOI, string propIdPMID, string propIdOtroPub, string nombreOtroPub)
         {
             //Si alguna propiedad es nula no hago nada
-            if (string.IsNullOrEmpty(idHandle) && string.IsNullOrEmpty(idHandle)
-                && string.IsNullOrEmpty(idPMID) && string.IsNullOrEmpty(idOtroPub)
+            if (string.IsNullOrEmpty(propIdHandle) && string.IsNullOrEmpty(propIdHandle)
+                && string.IsNullOrEmpty(propIdPMID) && string.IsNullOrEmpty(propIdOtroPub)
                 && string.IsNullOrEmpty(nombreOtroPub))
             { return; }
 
@@ -310,26 +310,26 @@ namespace HerculesAplicacionConsola.Utils
                 {
                     case "120":
                         entidadAux.properties.AddRange(AddProperty(
-                            new Property(idHandle, identificador.Value)
+                            new Property(propIdHandle, identificador.Value)
                         ));
                         break;
                     case "040":
                         entidadAux.properties.AddRange(AddProperty(
-                            new Property(idDOI, identificador.Value)
+                            new Property(propIdDOI, identificador.Value)
                         ));
                         break;
                     case "130":
                         entidadAux.properties.AddRange(AddProperty(
-                            new Property(idPMID, identificador.Value)
+                            new Property(propIdPMID, identificador.Value)
                         ));
                         break;
                     case "OTHERS":
-                        Property IDOtro = entidadAux.properties.FirstOrDefault(x => x.prop == idOtroPub);
+                        Property IDOtro = entidadAux.properties.FirstOrDefault(x => x.prop == propIdOtroPub);
                         Property NombreOtro = entidadAux.properties.FirstOrDefault(x => x.prop == nombreOtroPub);
 
                         string entityPartAux = Guid.NewGuid().ToString() + "@@@";
                         string valorID = StringGNOSSID(entityPartAux, identificador.Value); ;
-                        CheckProperty(IDOtro, entidadAux, valorID, idOtroPub);
+                        CheckProperty(IDOtro, entidadAux, valorID, propIdOtroPub);
 
                         string valorNombre = StringGNOSSID(entityPartAux, identificador.Others);
                         CheckProperty(IDOtro, entidadAux, valorNombre, nombreOtroPub);
@@ -425,7 +425,7 @@ namespace HerculesAplicacionConsola.Utils
                 return entityAux + valor;
             }
             return null;
-        }
+        }       
 
     }
 }

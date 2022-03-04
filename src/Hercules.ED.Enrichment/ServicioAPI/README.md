@@ -4,11 +4,6 @@ API providing access to topic classification and entity polarity classification 
 
 # Installation / Deployment
 
-Clone this repository
-```  
-$ git clone http://gitlab.elhuyar.eus/text-mining/apis/gnoss_hercules_api.git
-```
-
 ## Dependencies
 install python3-dev and libhunspell-dev. in ubuntu:
 ```

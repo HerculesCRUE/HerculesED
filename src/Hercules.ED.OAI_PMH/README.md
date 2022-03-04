@@ -1,3 +1,15 @@
+![](../../Docs/media/CabeceraDocumentosMD.png)
+
+| Fecha         | 4/3/2022                                                   |
+| ------------- | ------------------------------------------------------------ |
+|Título|Servicio OAI-PMH| 
+|Descripción|Servicio OAI-PMH para recolección de datos desde los sistemas de la universidad, SGI y otros|
+|Versión|1.0|
+|Módulo|Documentación|
+|Tipo|Especificación|
+|Cambios de la Versión|Versión inicial|
+
+
 # Hercules.ED.OAI_PMH
 Servicio OAI-PMH encargado de hacer las peticiones mediante la última fecha de modificación para la obtención de datos.
 

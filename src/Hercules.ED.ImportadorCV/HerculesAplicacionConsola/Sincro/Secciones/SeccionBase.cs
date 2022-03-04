@@ -2,7 +2,6 @@
 using Gnoss.ApiWrapper.ApiModel;
 using Gnoss.ApiWrapper.Model;
 using GuardadoCV.Models.Utils;
-using HerculesAplicacionConsola.Models;
 using Models;
 using System;
 using System.Collections.Generic;
@@ -117,11 +116,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                         Entity.Property property = pEntity.properties.FirstOrDefault(x => x.prop == pPropAcumuladoAux);
                         if (property == null)
                         {
-                            property = new Entity.Property()
-                            {
-                                prop = pPropAcumuladoAux,
-                                values = new List<string>()
-                            };
+                            property = new Entity.Property(pPropAcumuladoAux, new List<string>());
                             pEntity.properties.Add(property);
                         }
                         property.values.Add(pObjAcumuladoAux);
@@ -519,7 +514,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
             return entityID;
         }
 
-        public static Tuple<string, string, string> GetIdentificadoresItemPresentation(string pId, List<string> pPropiedades)
+        public static Tuple<string, string, string> GetIdentificadoresItemPresentation(string pId, List<string> pPropiedades, List<string> rdfTypeItem)
         {
             if (pPropiedades.Count != 3) { return null; }
             try
@@ -551,7 +546,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                     }
                     else
                     {
-                        item2 = mResourceApi.GraphsUrl+ "items/GeneralQualityIndicator_"+mResourceApi.GetShortGuid(item1).ToString().ToLower() +"_"+Guid.NewGuid().ToString().ToLower();
+                        item2 = mResourceApi.GraphsUrl+ "items/"+rdfTypeItem[0].Split("/").Last()+"_"+mResourceApi.GetShortGuid(item1).ToString().ToLower() +"_"+Guid.NewGuid().ToString().ToLower();
                     }
                     if (fila.ContainsKey("item3"))
                     {
@@ -559,7 +554,7 @@ namespace HerculesAplicacionConsola.Sincro.Secciones
                     }
                     else
                     {
-                        item3 = mResourceApi.GraphsUrl + "items/GeneralQualityIndicatorCV_"+mResourceApi.GetShortGuid(item1).ToString().ToLower() +"_"+Guid.NewGuid().ToString().ToLower();
+                        item3 = mResourceApi.GraphsUrl + "items/"+rdfTypeItem[1].Split("/").Last() + "_"+mResourceApi.GetShortGuid(item1).ToString().ToLower() +"_"+Guid.NewGuid().ToString().ToLower();
                     }
                     return new Tuple<string, string, string>(item1, item2, item3);
                 }

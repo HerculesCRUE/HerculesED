@@ -28,7 +28,7 @@ namespace Models
             /// <summary>
             /// Constructor sin parametros
             /// </summary>
-            public Property() { }
+            public Property() => (prop, values) = (null, new List<string>());
             /// <summary>
             /// Constructor para que en caso de no pasarle valor, la propiedad también sea nula.
             /// </summary>

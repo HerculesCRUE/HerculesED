@@ -11,10 +11,10 @@ namespace HerculesAplicacionConsola.Variables
         /// <summary>
         /// Producción cientifica - 060.010.000.000
         /// </summary>
-        public const string prodCientificaIndiceH = "";
-        public const string prodCientificaFechaAplicacion = "";
-        public const string prodCientificaFuenteIndiceH = "";
-        public const string prodCientificaFuenteIndiceHOtros = "";
+        public const string prodCientificaIndiceH = "http://w3id.org/roh/h-index";
+        public const string prodCientificaFechaAplicacion = "http://purl.org/dc/terms/issued";
+        public const string prodCientificaFuenteIndiceH = "http://w3id.org/roh/h-indexSource";
+        public const string prodCientificaFuenteIndiceHOtros = "http://w3id.org/roh/h-indexSourceOther";
 
         /// <summary>
         /// Indicadores generales de calidad de la producción científica - 060.010.060.000
