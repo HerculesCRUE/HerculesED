@@ -32,7 +32,7 @@ namespace GuardadoCV.Models.API.Templates
         /// <summary>
         /// Propiedad utilizada para explicar la obligatori
         /// </summary>
-        public PropMember propMember;
+        public propAuthor propAuthor;
         /// <summary>
         /// rdf:type de la entidad
         /// </summary>
@@ -76,7 +76,7 @@ namespace GuardadoCV.Models.API.Templates
     /// <summary>
     /// Propiedad para indicar la obligatoriedad de añadirse a sí mismo
     /// </summary>
-    public class PropMember
+    public class propAuthor
     {
         /// <summary>
         /// Propiedad
