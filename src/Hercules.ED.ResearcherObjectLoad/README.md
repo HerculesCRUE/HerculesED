@@ -86,9 +86,11 @@ Dichos tipos pueden ser:
 Cuando detecta un JSON nuevo y detecta de que tipo es, hace dos consultas a base de datos. Estas consultas van a ayudar a la desambiguación de datos.
 - Obtienen las personas relacionadas con el ID_AUTOR.
 - Obtiene los documentos/ROs relacionados con el ID_AUTOR.
-A su vez, obtiene los mismos datos pero del JSON, teniendo como resultado cuatro listas de datos (PersonasBBDD, DocumentosBBDD/ROsBBDD, PersonasJSON, DocumentosJSON/ROsJSON).
 
-TODO: Continuar documentando...
+A su vez, obtiene los mismos datos pero del JSON, teniendo como resultado cuatro listas de datos (PersonasBBDD, DocumentosBBDD/ROsBBDD, PersonasJSON, DocumentosJSON/ROsJSON).
+En este punto, se utiliza el [motor de desambiguación](https://github.com/HerculesCRUE/HerculesED/tree/main/src/Hercules.ED.DisambiguationEngine) para obtener las equivalencias entre todos los datos.
+Finalmente, se cargan los datos nuevos y se modifican los ya existentes con los datos obtenidos.
+
 
 ## Configuración en el appsettings.json
 ```json
