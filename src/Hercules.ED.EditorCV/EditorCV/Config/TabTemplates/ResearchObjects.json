@@ -121,10 +121,10 @@
           },
           "listItemEdit": {
             "graph": "researchobject",
-            "propMember": {
+            "propAuthor": {
               "property": "http://purl.org/ontology/bibo/authorList@@@http://purl.obolibrary.org/obo/BFO_0000023|http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
               "message": {
-                "es": "Es obligatorio incluirte a tí mismo como autor de la publicación"
+                "es": "Es obligatorio incluirte a tí mismo como autor del researchobject"
               }
             },
             "proptitle": "http://w3id.org/roh/title",
