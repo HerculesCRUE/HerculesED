@@ -114,27 +114,6 @@ namespace GuardadoCV.Controllers
         }
 
         /// <summary>
-        /// Obtiene una ficha de edición de una entidad desde otra ficha de edición
-        /// </summary>
-        /// <param name="pRdfType">Rdftype de la entidad</param>
-        /// <param name="pEntityID">Identificador de la entidad</param>
-        /// <param name="pLang">Idioma</param>
-        /// <returns></returns>
-        [HttpGet("GetEditEntity")]
-        public IActionResult GetEditEntity(string pRdfType, string pEntityID, string pLang)
-        {
-            try
-            {
-                AccionesEdicion accionesEdicion = new AccionesEdicion();
-                return Ok(accionesEdicion.GetEditEntity(pRdfType, pEntityID, pLang));
-            }
-            catch (Exception ex)
-            {
-                return Ok(new Models.API.Response.JsonResult() { error = ex.Message });
-            }
-        }
-
-        /// <summary>
         /// Obtiene una serie de propiedades de una serie de entidades
         /// </summary>
         /// <param name="pItemsLoad">Elementos de los que buscar las propiedades</param>
