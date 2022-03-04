@@ -1460,7 +1460,7 @@ var edicionCV = {
 						<div class="image-uploader__info">
 							<p><strong>${placeholder}</strong></p>
 							<p>${GetText('CV_FORMATOIMAGENES')}</p>
-							<p>${GetText('CV_PESOMAXIMOIMAGENES')}</p>
+							<p>${GetText('CV_PESOMAXIMOIMAGENES','100')}</p>
 						</div>
 					</div>
 					<div class="image-uploader__error">
@@ -3599,6 +3599,7 @@ var edicionCV = {
             entidad.sectionID = $(pFormulario).attr('sectionid');
             entidad.rdfTypeTab = $(pFormulario).attr('rdftypetab');
             entidad.cvID = this.idCV;
+			entidad.pLang = lang;
             entidad.properties = [];
 			entidad.properties_cv = [];
             $(pFormulario).find('input, select, textarea').each(function(index) {				
