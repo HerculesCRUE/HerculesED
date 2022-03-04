@@ -43,9 +43,9 @@ namespace GuardadoCV.Models
             TabSectionListItem presentationMini = UtilityCV.TabTemplates.First(x => x.rdftype == pRdfTypeTab).sections.First(x => x.property == pIdSection).presentation.listItemsPresentation.listItem;
 
             mResourceApi.ChangeOntoly("curriculumvitae");
-            KeyValuePair<List<string>, List<string>> subjectAndProperties = GetSubjectsAndPropertiesFromAuxCV(pEntity, UtilityCV.PropertyIspublic);
-            List<string> properties = subjectAndProperties.Value;
-            List<string> entities = subjectAndProperties.Key;
+            Tuple<List<string>, List<string>, List<string>> subjectPropertiesAndRdfTypes = GetSubjectsPropertiesAndRdftypesFromAuxCV(pEntity, UtilityCV.PropertyIspublic);
+            List<string> properties = subjectPropertiesAndRdfTypes.Item1;
+            List<string> entities = subjectPropertiesAndRdfTypes.Item2.GetRange(1, subjectPropertiesAndRdfTypes.Item2.Count - 1);
 
             //Obtenemos el valor actual de la propiedad
             string valorActual = "";
@@ -88,17 +88,43 @@ namespace GuardadoCV.Models
             string entityDestino = mResourceApi.VirtuosoQuery("select ?id", "where{<" + pEntity + "> <http://vivoweb.org/ontology/core#relatedBy> ?id}", "curriculumvitae").results.bindings.First()["id"].value;
 
             mResourceApi.ChangeOntoly("curriculumvitae");
-            KeyValuePair<List<string>, List<string>> subjectAndProperties = GetSubjectsAndPropertiesFromAuxCV(pEntity, "");
-            List<string> properties = subjectAndProperties.Value;
-            List<string> entities = subjectAndProperties.Key;
+            Tuple<List<string>, List<string>, List<string>> subjectPropertiesAndRdfTypes = GetSubjectsPropertiesAndRdftypesFromAuxCV(pEntity, "");
+            List<string> entities = subjectPropertiesAndRdfTypes.Item1;
+            List<string> properties = subjectPropertiesAndRdfTypes.Item2;
+            List<string> rdftypes = subjectPropertiesAndRdfTypes.Item3;
+
+            GuardadoCV.Models.API.Templates.Tab template = UtilityCV.TabTemplates.First(x => x.rdftype == rdftypes[1]);
+            GuardadoCV.Models.API.Templates.TabSection templateSection = template.sections.First(x => x.property == properties[1]);
+
+            if (templateSection.presentation.listItemsPresentation.listItemEdit.propAuthor != null)
+            {
+                //Si tiene autores eliminamos la persona actual de la lista de autores de la entidad
+                string personCV = UtilityCV.GetPersonFromCV(entities.First());
+                Entity entityBBDD = GetLoadedEntity(entityDestino, templateSection.presentation.listItemsPresentation.listItemEdit.graph);
+                if (entityBBDD.properties.Exists(x => x.prop == templateSection.presentation.listItemsPresentation.listItemEdit.propAuthor.property))
+                {
+                    Entity.Property property = entityBBDD.properties.FirstOrDefault(x => x.prop == templateSection.presentation.listItemsPresentation.listItemEdit.propAuthor.property);
+                    if (property != null && property.values != null)
+                    {
+                        string autorEliminar = property.values.FirstOrDefault(x => x.Contains(personCV));
+                        if (!string.IsNullOrEmpty(autorEliminar))
+                        {
+                            string auxEntityEliminar = autorEliminar.Split(new string[] { "@@@" }, StringSplitOptions.RemoveEmptyEntries)[0];
+                            RemoveTriples t = new();
+                            t.Predicate = templateSection.presentation.listItemsPresentation.listItemEdit.propAuthor.property.Split(new string[] { "@@@" }, StringSplitOptions.RemoveEmptyEntries)[0];
+                            t.Value = auxEntityEliminar;
+                            mResourceApi.DeletePropertiesLoadedResources(new Dictionary<Guid, List<Gnoss.ApiWrapper.Model.RemoveTriples>>() { { mResourceApi.GetShortGuid(entityDestino), new List<RemoveTriples>() { t } } });
+                        }
+                    }
+                }
+            }
 
             List<RemoveTriples> lista = new List<RemoveTriples>();
             Dictionary<Guid, List<RemoveTriples>> dicEliminar = new Dictionary<Guid, List<RemoveTriples>>();
-            RemoveTriples rt = new RemoveTriples() { Predicate = string.Join("|", properties), Value = string.Join("|", entities) };
+            RemoveTriples rt = new RemoveTriples() { Predicate = string.Join("|", properties), Value = string.Join("|", entities.GetRange(1, entities.Count - 1)) };
             lista.Add(rt);
             dicEliminar.Add(mResourceApi.GetShortGuid(pEntity), lista);
             Dictionary<Guid, bool> dicCorrecto = mResourceApi.DeletePropertiesLoadedResources(dicEliminar);
-
 
             //Si la entidaad no está referenciada desde ningún CV se elimina también la entidad
             if (mResourceApi.VirtuosoQuery("select ?s", "where{?s ?p <" + entityDestino + ">}", "curriculumvitae").results.bindings.Count == 0)
@@ -149,13 +175,13 @@ namespace GuardadoCV.Models
                     mResourceApi.ChangeOntoly(templateSection.presentation.listItemsPresentation.listItemEdit.graph);
                     pEntity.ontology = templateSection.presentation.listItemsPresentation.listItemEdit.graph;
                     itemEditConfig = templateSection.presentation.listItemsPresentation.listItemEdit;
-                    if (templateSection.presentation.listItemsPresentation.listItemEdit.propMember != null)
+                    if (templateSection.presentation.listItemsPresentation.listItemEdit.propAuthor != null)
                     {
                         string personCV = UtilityCV.GetPersonFromCV(pCvID);
-                        if (!pEntity.properties.Exists(x => x.prop == templateSection.presentation.listItemsPresentation.listItemEdit.propMember.property) ||
-                            !pEntity.properties.First(x => x.prop == templateSection.presentation.listItemsPresentation.listItemEdit.propMember.property).values.Exists(x=>x.Contains(personCV)))
+                        if (!pEntity.properties.Exists(x => x.prop == templateSection.presentation.listItemsPresentation.listItemEdit.propAuthor.property) ||
+                            !pEntity.properties.First(x => x.prop == templateSection.presentation.listItemsPresentation.listItemEdit.propAuthor.property).values.Exists(x => x.Contains(personCV)))
                         {
-                            return new JsonResult() { ok = false, error = UtilityCV.GetTextLang(pLang, templateSection.presentation.listItemsPresentation.listItemEdit.propMember.message) };
+                            return new JsonResult() { ok = false, error = UtilityCV.GetTextLang(pLang, templateSection.presentation.listItemsPresentation.listItemEdit.propAuthor.message) };
                         }
                     }
                 }
@@ -694,7 +720,7 @@ namespace GuardadoCV.Models
         /// <param name="pEntity">Entidad desde la que partimos</param>
         /// <param name="pProperty">Propiedad desde la que partimos</param>
         /// <returns></returns>
-        private KeyValuePair<List<string>, List<string>> GetSubjectsAndPropertiesFromAuxCV(string pEntity, string pProperty)
+        private Tuple<List<string>, List<string>, List<string>> GetSubjectsPropertiesAndRdftypesFromAuxCV(string pEntity, string pProperty)
         {
             List<string> properties = new List<string>();
             List<string> entities = new List<string>() { pEntity };
@@ -702,11 +728,12 @@ namespace GuardadoCV.Models
             {
                 properties.Add(pProperty);
             }
+            List<string> rdftypes = new List<string>();
             bool continuar = true;
             while (continuar)
             {
                 continuar = false;
-                SparqlObject resultData = mResourceApi.VirtuosoQuery("select *", "where{?s ?p <" + pEntity + ">. }", "curriculumvitae");
+                SparqlObject resultData = mResourceApi.VirtuosoQuery("select *", "where{?s a ?rdftype. ?s ?p <" + pEntity + ">. }", "curriculumvitae");
                 foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                 {
                     if (fila["p"].value != "http://gnoss/hasEntidad")
@@ -715,13 +742,14 @@ namespace GuardadoCV.Models
                         properties.Add(fila["p"].value);
                         entities.Add(fila["s"].value);
                         pEntity = fila["s"].value;
+                        rdftypes.Add(fila["rdftype"].value);
                     }
                 }
             }
             properties.Reverse();
             entities.Reverse();
-            entities.RemoveAt(0);
-            return new KeyValuePair<List<string>, List<string>>(entities, properties);
+            rdftypes.Reverse();
+            return new Tuple<List<string>, List<string>, List<string>>(entities, properties, rdftypes);
         }
 
         /// <summary>
