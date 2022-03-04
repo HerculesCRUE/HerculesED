@@ -412,9 +412,6 @@ docs.register(ThematicDescriptorAPI)
 api.add_resource(SpecificDescriptorAPI, '/specific')
 docs.register(SpecificDescriptorAPI)
 
-with open('openapi.json', 'w') as f:
-    json.dump(docs.spec.to_dict(), f,indent=4)
-
 
 # This error handler is necessary for usage with Flask-RESTful
 '''
