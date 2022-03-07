@@ -741,6 +741,19 @@
                         "width": 3
                       }
                     ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Autor de correspondencia"
+                        },
+                        "property": "http://w3id.org/roh/correspondingAuthor",
+                        "type": "boolean",
+                        "entity_cv": true,
+                        "width": 1
+                      }
+                    ]
                   }
                 ]
               },
@@ -749,7 +762,26 @@
                   "es": "Más campos"
                 },
                 "rows": [
-                  //TODO ¿autor de correspondencia?
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Grado de contribución"
+                        },
+                        "property": "http://w3id.org/roh/contributionGrade",
+                        "combo": {
+                          "rdftype": "http://w3id.org/roh/ContributionGradeDocument",
+                          "graph": "contributiongradedocument",
+                          "property": {
+                            "property": "http://purl.org/dc/elements/1.1/title"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "entity_cv": true,
+                        "width": 1
+                      }
+                    ]
+                  },
                   {
                     "properties": [
                       {
@@ -969,6 +1001,19 @@
                     "properties": [
                       {
                         "title": {
+                          "es": "Publicación relevante"
+                        },
+                        "property": "http://w3id.org/roh/relevantPublication",
+                        "type": "boolean",
+                        "entity_cv": true,
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
                           "es": "Reseñas en revistas"
                         },
                         "placeholder": {
@@ -1004,26 +1049,6 @@
                     "properties": [
                       {
                         "title": {
-                          "es": "Grado de contribución"
-                        },
-                        "property": "http://w3id.org/roh/contributionGrade",
-                        "combo": {
-                          "rdftype": "http://w3id.org/roh/ContributionGradeDocument",
-                          "graph": "contributiongradedocument",
-                          "property": {
-                            "property": "http://purl.org/dc/elements/1.1/title"
-                          }
-                        },
-                        "type": "selectCombo",
-                        "entity_cv": true,
-                        "width": 1
-                      }
-                    ]
-                  },
-                  {
-                    "properties": [
-                      {
-                        "title": {
                           "es": "Resultados relevantes"
                         },
                         "placeholder": {
@@ -1033,19 +1058,6 @@
                         "type": "textarea",
                         "entity_cv": true,
                         "width": 3
-                      }
-                    ]
-                  },
-                  {
-                    "properties": [
-                      {
-                        "title": {
-                          "es": "Publicación relevante"
-                        },
-                        "property": "http://w3id.org/roh/relevantPublication",
-                        "type": "boolean",
-                        "entity_cv": true,
-                        "width": 1
                       }
                     ]
                   }
