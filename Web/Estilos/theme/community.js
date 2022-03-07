@@ -709,6 +709,7 @@ var mostrarFichaCabeceraFixed = {
         this.contenido = this.body.find('.contenido-ficha');
     },
     comportamiento: function () {
+        if (this.contenido.length < 1) return;
         const position = this.contenido.position().top;
         $(window).scroll(function (e) {
             var scroll = $(window).scrollTop();
@@ -889,6 +890,11 @@ $(function () {
 
     accionesPlegarDesplegarModal.init();
 
+    if (body.hasClass('fichaRecurso') || body.hasClass('edicionRecurso')) {
+        comportamientoCargaFacetasComunidad();
+        calcularFacetaDropdown.init();
+    }
+
     if (body.hasClass('fichaRecurso')) {
         mostrarFichaCabeceraFixed.init();
         clonarNombreFicha.init();
@@ -898,7 +904,6 @@ $(function () {
         filtrarMovil.init();
         buscadorSeccion.init();
         cambioVistaListado.init();
-        comportamientoCargaFacetasComunidad();
     }
 
     if(body.hasClass('page-cv')){
