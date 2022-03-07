@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
@@ -207,7 +208,7 @@ namespace GuardadoCV.Models.Utils
                 }
             }
 
-            foreach (PropertyData property in pProperties)
+            Parallel.ForEach(pProperties, new ParallelOptions { MaxDegreeOfParallelism = 5 }, property =>
             {
                 if (property.childs != null && property.childs.Count() > 0 && sparqlObject != null)
                 {
@@ -222,7 +223,7 @@ namespace GuardadoCV.Models.Utils
                         data[id].AddRange(dataAux[id]);
                     }
                 }
-            }
+            });
             return data;
         }
 
