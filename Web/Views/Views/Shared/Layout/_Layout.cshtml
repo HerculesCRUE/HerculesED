@@ -642,39 +642,6 @@
                                                 <label class="control-label d-block">@Html.Translate("DESCRIPCION")</label>
                                                 <textarea id="txtDescripcion" placeholder="Introduce una descripción" class="cke form-control recursos" cols="20" rows="2"></textarea>
                                             </div>
-                                            <!-- <div class="form-group mb-5 edit-etiquetas">
-                                                <label class="control-label d-block">@Html.Translate("TEMAS_INVESTIGACION")</label>
-                                                <div class="autocompletar autocompletar-tags form-group" id="cluster-modal-sec1-tax-wrapper">
-                                                    <div class="input-wrap form-sticky-button">
-                                                        <input type="text" placeholder="Introduce una etiqueta y pulsa AÑADIR" id="txtTags" class=" form-control" autocomplete="off">
-                                                        <a href="javascript:stepsCls.setAreasTematicas(this)" id="anadir-tag" class="btn btn-grey uppercase">@Html.Translate("ANADIR")</a>
-                                                    </div>
-                                                    <input type="hidden" id="txtTags_Hack" value="">
-                                                    <span class="tag-list mb-4">
-                                                        <div class="tag" title="Educación">
-                                                            <div class="tag-wrap">
-                                                                <span class="tag-text">Educación</span>
-                                                                <span class="tag-remove material-icons">close</span>
-                                                            </div>
-                                                            <input type="hidden" value="Educación">
-                                                        </div>
-                                                        <div class="tag" title="Deportes">
-                                                            <div class="tag-wrap">
-                                                                <span class="tag-text">Deportes</span>
-                                                                <span class="tag-remove material-icons">close</span>
-                                                            </div>
-                                                            <input type="hidden" value="Deportes">
-                                                        </div>
-                                                        <div class="tag" title="Educación especial">
-                                                            <div class="tag-wrap">
-                                                                <span class="tag-text">Educación especial</span>
-                                                                <span class="tag-remove material-icons">close</span>
-                                                            </div>
-                                                            <input type="hidden" value="Educación especial">
-                                                        </div>
-                                                    </span>
-                                                </div>
-                                            </div> -->
                                             <!-- Areas temáticas -->
                                             <div class="panel-body mb-5 edit-etiquetas pl-0">
                                                 <div class="form-group">
@@ -683,8 +650,8 @@
                                                         <span class="tag-list mb-4">
                                                         </span>
                                                     </div>
-                                                    <a class="btn btn-outline-primary" data-rel="cluster-modal-sec1-tax-wrapper" onclick="stepsCls.setAreasTematicas(this)">
-                                                        <span class="material-icons">add</span>
+                                                    <a class="btn btn-outline-primary" href="javascript: void(0)">
+                                                        <span class="material-icons" data-rel="cluster-modal-sec1-tax-wrapper" onclick="stepsCls.setAreasTematicas(this)">add</span>
                                                     </a>
                                                 </div>
                                             </div>
@@ -723,70 +690,9 @@
                                             <p>@Html.Translate("QUIERES_BUSCAR_INVESTIGADORES_EXPERIENCIA___")</p>
                                             <p>@Html.Translate("ORGANIZA_AREAS_PERFIL_TEMATICOS___")</p>
                                             <p class="section-title">@Html.Translate("PERFILES")</p>
-                                            <div class="panel-group pmd-accordion" id="accordion" role="tablist" aria-multiselectable="true" data-imguser="@Html.GetBaseUrlContent()/imagenes/proyectos/personalizacion/@Comunidad.Key.ToString()/theme/resources/iconos/person-gris.png">
+                                            <div class="panel-group pmd-accordion" id="accordion_cluster" role="tablist" aria-multiselectable="true" data-imguser="@Html.GetBaseUrlContent()/imagenes/proyectos/personalizacion/@Comunidad.Key.ToString()/theme/resources/iconos/person-gris.png">
                                                 <div class="panel">
-                                                    <div class="panel-heading" role="tab" id="experto-1-tab">
-                                                        <p class="panel-title">
-                                                            <a class="perfil" data-toggle="collapse" data-parent="#accordion" href="#experto-1" aria-expanded="true" aria-controls="experto-1" data-expandable="false">
-                                                                <span class="material-icons">keyboard_arrow_down</span>
-                                                                <img src="@Html.GetBaseUrlContent()/imagenes/proyectos/personalizacion/@Comunidad.Key.ToString()/theme/resources/iconos/person-gris.png" alt="person">
-                                                                <span class="texto">Experto en IoT</span>
-                                                            </a>
-                                                        </p>
-                                                    </div>
-                                                    <div id="experto-1" class="panel-collapse collapse show" role="tabpanel" aria-labelledby="experto-1-tab">
-                                                        <div class="panel-body">
-
-                                                            <!-- Areas temáticas -->
-                                                            <div class="form-group mb-5 edit-etiquetas">
-                                                                <label class="control-label d-block">@Html.Translate("AREAS_TEMATICAS")</label>
-                                                                <div class="autocompletar autocompletar-tags form-group">
-                                                                    <span class="tag-list mb-4">
-                                                                        <div class="tag" title="Área temática">
-                                                                            <div class="tag-wrap">
-                                                                                <span class="tag-text">Área temática</span>
-                                                                                <span class="tag-remove material-icons">close</span>
-                                                                            </div>
-                                                                            <input type="hidden" value="Área temática">
-                                                                        </div>
-                                                                        <div class="tag" title="Área temática">
-                                                                            <div class="tag-wrap">
-                                                                                <span class="tag-text">Área temática</span>
-                                                                                <span class="tag-remove material-icons">close</span>
-                                                                            </div>
-                                                                            <input type="hidden" value="Área temática">
-                                                                        </div>
-                                                                        <div class="tag" title="Área temática">
-                                                                            <div class="tag-wrap">
-                                                                                <span class="tag-text">Área temática</span>
-                                                                                <span class="tag-remove material-icons">close</span>
-                                                                            </div>
-                                                                            <input type="hidden" value="Área temática">
-                                                                        </div>
-                                                                    </span>
-                                                                </div>
-                                                                <a class="btn btn-outline-primary" data-target="#modal-seleccionar-area-tematica" data-toggle="modal">
-                                                                    <span class="material-icons">add</span>
-                                                                </a>
-                                                            </div>
-                                                            <!-- -->
-
-                                                            <!-- Tópicos -->
-                                                            <div class="form-group mb-5 edit-etiquetas">
-                                                                <label class="control-label d-block">Tópicos</label>
-                                                                <div class="autocompletar autocompletar-tags form-group">
-                                                                    <span class="tag-list mb-4">
-                                                                        <!-- Aqui van las tags -->
-                                                                    </span>
-                                                                </div>
-                                                                <a class="btn btn-outline-primary" data-toggle="modal" data-target="#modal-anadir-topicos">
-                                                                    <span class="material-icons">add</span>
-                                                                </a>
-                                                            </div>
-                                                            <!-- -->
-
-                                                        </div>
-                                                    </div>
+                                                    
                                                 </div>
                                             </div>
                                             <div class="form-group mt-4 mb-4 anadir-perfil">
@@ -2316,7 +2222,7 @@
                                 <div class="custom-form-row">
                                     <div class="form-group full-group">
                                         <label class="control-label d-block">Añadir perfil</label>
-                                        <input placeholder="Introduce o selecciona un perfil" type="text" name="" id="" class="form-control not-outline">
+                                        <input placeholder="Introduce o selecciona un perfil" type="text" name="perfilname" id="input-anadir-perfil" class="form-control not-outline">
                                         <div class="ac_results" style="position: absolute;width: 100%;display: none;">
                                             <ul>
                                                 <li class="ac_even">data</li>
@@ -2330,7 +2236,7 @@
                                     </div>
                                 </div>
                                 <div class="form-actions">
-                                    <a href="javascript: void(0);" class="btn btn-primary uppercase" data-dismiss="modal">Guardar</a>
+                                    <a href="javascript: stepsCls.addPerfilSearch()" class="btn btn-primary uppercase">Guardar</a>
                                 </div>
                             </div>
                         </div>
@@ -2361,9 +2267,14 @@
                         this.stepsCircle = this.stepProgressWrap.find(".step-progress__circle")
                         this.stepsBar = this.stepProgressWrap.find(".step-progress__bar")
                         this.stepsText = this.stepProgressWrap.find(".step-progress__text")
+                        this.clusterAccordionPerfil = this.modalCrearCluster.find("#accordion_cluster")
 
                         this.stepContentWrap = this.modalCrearCluster.find(".steps-content-wrap")
                         this.stepsContent = this.stepContentWrap.find(".section-steps")
+
+                        // Añadir perfil
+                        this.modalPerfil = this.body.find("#modal-anadir-perfil")
+                        this.inputPerfil = this.modalPerfil.find("#input-anadir-perfil")
 
                         // Areas temáticas Modal
                         this.modalAreasTematicas = this.body.find('#modal-seleccionar-area-tematica')
@@ -2451,7 +2362,8 @@
                      */
                     itemsClicked() {
 
-                        this.divTesArbol.on("click", "input.at-input", function() {
+                        // Click into the tree
+                        this.divTesArbol.off('click').on("click", "input.at-input", function() {
                             let dataVal = this.checked
                             let dataId = $(this).attr('id')
 
@@ -2462,7 +2374,8 @@
                             }
                         })
 
-                        this.divTesLista.on("click","input.at-input", function() {
+                        // Click into the list
+                        this.divTesLista.off('click').on("click","input.at-input", function() {
                             let dataVal = this.checked
                             let dataId = $(this).attr('id').substring("list__".length)
 
@@ -2490,7 +2403,7 @@
                             resultHtml += '<div class="categoria-wrap">\
                                     <div class="categoria ' + id + '">\
                                         <div class="custom-control custom-checkbox themed little primary">\
-                                            <input type="checkbox" class="custom-control-input at-input" id="' + id + '" data-id="' + e.id + '" data-name="' + e.name + '">\
+                                            <input type="checkbox" class="custom-control-input at-input" id="' + id + '" data-id="' + e.id + '" data-name="' + e.name + '" data-parentid="' + e.parentId + '">\
                                             <label class="custom-control-label" for="' + id + '">' + e.name + '</label>\
                                         </div>\
                                     </div>'
@@ -2528,7 +2441,7 @@
                             resultHtml += '<div class="categoria-wrap" data-text="' + e.name + '">\
                                     <div class="categoria list__' + id + '">\
                                         <div class="custom-control custom-checkbox themed little primary">\
-                                            <input type="checkbox" class="custom-control-input at-input" id="list__' + id + '" data-id="' + e.id + '" data-name="' + e.name + '">\
+                                            <input type="checkbox" class="custom-control-input at-input" id="list__' + id + '" data-id="' + e.id + '" data-parentid="' + e.parentId + '" data-name="' + e.name + '">\
                                             <label class="custom-control-label" for="list__' + id + '">' + e.name + '</label>\
                                         </div>\
                                     </div>\
@@ -2565,10 +2478,15 @@
                         console.log("guardado TODO")
                     }
 
+                    /**
+                     * 
+                     * 
+                     */
                     setAreasTematicas(item) {
+                        console.log("item", item)
                         // Muestra el modal de las áreas temáticas
-                        this.modalAreasTematicas.modal('show');
-                        this.btnSaveAT.on('click', (e) => {
+                        this.modalAreasTematicas.modal('show')
+                        this.btnSaveAT.off('click').on('click', (e) => {
                             e.preventDefault()
 
                             // Oculta el modal de las áreas temáticas
@@ -2576,6 +2494,11 @@
 
                             // Selecciona y establece el contenedor de las areas temáticas
                             let relItem = $('#' + $(item).data("rel"))
+
+                            console.log("Aquí va...", $(item).data("rel"))
+                            console.log("datas", $(item).data())
+                            console.log("relItem", relItem)
+
                             let htmlResWrapper = $('<div class="tag-list mb-4 d-inline"></div>')
 
                             let htmlRes = ''
@@ -2603,6 +2526,10 @@
                         })
                     }
 
+                    /**
+                     * 
+                     * 
+                     */
                     deleteAreasTematicas(relItem) {
 
                         let tagsItems = relItem.find('.tag-wrap');
@@ -2613,16 +2540,11 @@
                                 inputShortId = inputShortId.split('/').pop()
                             }
 
-                            console.log("inputShortId", inputShortId)
-
                             // Set the inputs into the areas temáticas in false
                             try {
                                 document.getElementById(inputShortId).checked = false
                                 document.getElementById('list__' + inputShortId).checked = false
-                            }catch (error) {
-
-                            }
-
+                            }catch (error) { }
 
                             // Remove the current item from array
                             let jsonItems = relItem.data('jsondata')
@@ -2637,6 +2559,70 @@
 
                         })
                     }
+
+                    /**
+                     * 
+                     * 
+                     */
+                    addPerfilSearch() {
+
+                        let name = this.inputPerfil.val()
+                        this.modalPerfil.modal('hide')
+                        this.inputPerfil.val("")
+                        let imgUser = this.clusterAccordionPerfil.data('imguser')
+                        let nameId = name.replace(/[^a-z0-9_]+/gi, '-').replace(/^-|-$/g, '').toLowerCase()
+                        let rand = Math.random() * (100000 - 10000) + 10000
+                        nameId = nameId + rand.toFixed()
+                        let panel = this.clusterAccordionPerfil.find('.panel')
+
+                        console.log("nameId", nameId)
+                        console.log("name", name)
+                        console.log("imgUser", imgUser)
+                        console.log("panel", panel)
+
+
+                        let item = `<div class="panel-heading" role="tab" id="`+ nameId +`-tab">
+                            <p class="panel-title">
+                                <a class="perfil" data-toggle="collapse" data-parent="#accordion_cluster" href="#`+ nameId +`" aria-expanded="true" aria-controls="`+ nameId +`" data-expandable="false">
+                                    <span class="material-icons">keyboard_arrow_down</span>
+                                    <img src="`+ imgUser +`" alt="person">
+                                    <span class="texto">`+ name +`</span>
+                                </a>
+                            </p>
+                        </div>
+                        <div id="`+ nameId +`" class="panel-collapse collapse show" role="tabpanel" aria-labelledby="`+ nameId +`-tab">
+                            <div class="panel-body">
+
+                                <!-- Areas temáticas -->
+                                <div class="form-group mb-5 edit-etiquetas">
+                                    <label class="control-label d-block">@Html.Translate("AREAS_TEMATICAS")</label>
+                                    <div class="autocompletar autocompletar-tags form-group" id="modal-seleccionar-area-tematica-`+ nameId +`">
+                                        <div class="tag-list mb-4 d-inline"></div> 
+                                    </div>
+                                    <a class="btn btn-outline-primary" href="javascript: void(0)">
+                                        <span class="material-icons" onclick="stepsCls.setAreasTematicas(this)" data-rel="modal-seleccionar-area-tematica-`+ nameId +`">add</span>
+                                    </a>
+                                </div>
+                                <!-- -->
+
+                                <!-- Tópicos -->
+                                <div class="form-group mb-5 edit-etiquetas">
+                                    <label class="control-label d-block">@Html.Translate("TOPICOS")</label>
+                                    <div class="autocompletar autocompletar-tags form-group">
+                                        <div class="tag-list mb-4 d-inline"></div> 
+                                    </div>
+                                    <a class="btn btn-outline-primary" data-toggle="modal" data-target="#modal-anadir-topicos">
+                                        <span class="material-icons">add</span>
+                                    </a>
+                                </div>
+                                <!-- -->
+
+                            </div>
+                        </div>`
+
+                        panel.append(item)
+                    }
+
 
                     /**
                      * Establece el "estado" del "step-progress"
