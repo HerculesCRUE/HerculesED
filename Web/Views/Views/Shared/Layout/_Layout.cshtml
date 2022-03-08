@@ -599,7 +599,7 @@
 
         @if (!IdentidadActual.IsGuestUser)
         {
-            <div id="modal-crear-cluster" class="modal modal-top modal-wide fade edicionCluster" tabindex="-1" role="dialog">
+            <div id="modal-crear-cluster" data-backdrop="static" class="modal modal-top modal-wide fade edicionCluster" tabindex="-1" role="dialog">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -611,19 +611,19 @@
                                 <div class="step-progress-wrap mb-5">
                                     <ul class="step-progress">
                                         <li class="step-progress__circle active" id="step1">
-                                            <a href="javascript:stepsCls.goStep1()">
+                                            <a href="javascript:stepsCls.goStep(1)">
                                                 <span class="step-progress__text current">@Html.Translate("DEFINIR_CLUSTER")</span>
                                             </a>
                                         </li>
                                         <li class="step-progress__bar"></li>
                                         <li class="step-progress__circle" id="step2">
-                                            <a href="javascript:stepsCls.goStep2()">
+                                            <a href="javascript:stepsCls.goStep(2)">
                                                 <span class="step-progress__text">@Html.Translate("DEFINIR_PERFILES_AREAS_INVESTIGACION")</span>
                                             </a>
                                         </li>
                                         <li class="step-progress__bar"></li>
                                         <li class="step-progress__circle" id="step3">
-                                            <a href="javascript:stepsCls.goStep3()">
+                                            <a href="javascript:stepsCls.goStep(3)">
                                                 <span class="step-progress__text">@Html.Translate("RECOMENDACIONES_SELECCION_INVESTIGADORES")</span>
                                             </a>
                                         </li>
@@ -678,7 +678,7 @@
                                                 </div>
                                             </div>
                                         </fieldset>
-                                        <a href="javascript:stepsCls.goStep2()" class="btn btn-primary uppercase">
+                                        <a href="javascript:stepsCls.goStep(2)" class="btn btn-primary uppercase">
                                             @Html.Translate("GUARDAR_SIGUIENTE")
                                             <span class="material-icons">keyboard_arrow_right</span>
                                         </a>
@@ -699,7 +699,7 @@
                                                 <a class="btn btn-outline-primary" data-toggle="modal" data-target="#modal-anadir-perfil">@Html.Translate("ANADIR_OTRO_PERFIL")</a>
                                             </div>
                                         </fieldset>
-                                        <a href="javascript:stepsCls.goStep3()" class="btn btn-primary uppercase">
+                                        <a href="javascript:stepsCls.goStep(3)" class="btn btn-primary uppercase">
                                             @Html.Translate("GUARDAR_SIGUIENTE")
                                             <span class="material-icons">keyboard_arrow_right</span>
                                         </a>
@@ -2063,7 +2063,7 @@
             </div> 
 
 
-            <div id="modal-seleccionar-area-tematica" class="modal modal-top fade modal-edicion" tabindex="-1" role="dialog">
+            <div id="modal-seleccionar-area-tematica" data-backdrop="static" class="modal modal-top fade modal-edicion" tabindex="-1" role="dialog">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -2076,15 +2076,15 @@
                                     <label class="control-label">@Html.Translate("AREAS_TEMATICAS")</label>
                                 </div>
                                 <div id="panDesplegableSelCat">
-                                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                    <ul class="nav nav-tabs d-none" id="myTab" role="tablist">
                                         <li class="nav-item">
                                             <a class="nav-link active" id="ver-arbol-tab" data-toggle="tab" href="#ver-arbol" role="tab" aria-controls="ver-arbol" aria-selected="true">@Html.Translate("ARBOL")</a>
                                         </li>
-                                        <li class="nav-item">
+                                        @*<li class="nav-item">
                                             <a class="nav-link" id="ver-lista-tab" data-toggle="tab" href="#ver-lista" role="tab" aria-controls="ver-lista" aria-selected="false">@Html.Translate("LISTA")</a>
-                                        </li>
+                                        </li>*@
                                     </ul>
-                                    <div class="tab-content">
+                                    <div class="tab-content pt-0">
 
                                         <div class="tab-pane fade show active" id="ver-arbol" role="tabpanel" aria-labelledby="ver-arbol-tab">
                                             <div class="divTesArbol divCategorias clearfix">
@@ -2096,7 +2096,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="tab-pane fade" id="ver-lista" role="tabpanel" aria-labelledby="ver-lista-tab">
+                                        @*<div class="tab-pane fade" id="ver-lista" role="tabpanel" aria-labelledby="ver-lista-tab">
                                             <div class="divTesLista divCategorias clearfix">
                                                 <div class="buscador-categorias">
                                                     <div class="form-group">
@@ -2105,7 +2105,7 @@
                                                 </div>
                                             </div>
                                             <input type="hidden" id="txtHackCatTesSel" class="hackCatTesSel" value="c5f38eb9-3d3c-4dd5-8fb7-0c771cb4a044,e9292906-a378-477f-b01e-c6c005be201e,">
-                                        </div>
+                                        </div>*@
                                     </div>
                                 </div>
                                 <div class="form-actions">
@@ -2117,7 +2117,7 @@
                 </div>
             </div>
 
-            <div id="modal-anadir-topicos" class="modal modal-top fade" tabindex="-1" role="dialog">
+            <div id="modal-anadir-topicos" data-backdrop="static" class="modal modal-top fade" tabindex="-1" role="dialog">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -2214,14 +2214,14 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <p class="modal-title"><span class="material-icons">person</span>Añadir otro perfil</p>
+                            <p class="modal-title"><span class="material-icons">person</span>@Html.Translate("ANADIR_OTRO_PERFIL")</p>
                             <span class="material-icons cerrar" data-dismiss="modal" aria-label="Close">close</span>
                         </div>
                         <div class="modal-body">
                             <div class="formulario-edicion">
                                 <div class="custom-form-row">
                                     <div class="form-group full-group">
-                                        <label class="control-label d-block">Añadir perfil</label>
+                                        <label class="control-label d-block">@Html.Translate("ANADIR_PERFIL")</label>
                                         <input placeholder="Introduce o selecciona un perfil" type="text" name="perfilname" id="input-anadir-perfil" class="form-control not-outline">
                                         <div class="ac_results" style="position: absolute;width: 100%;display: none;">
                                             <ul>
@@ -2297,19 +2297,9 @@
                         })
                     }
                     
-                    goStep1() {
-                        this.setStep(1)
-                    }
-
-                    goStep2() {
-                        if (this.step > 0) {
-                            this.setStep(2)
-                        }
-                    }
-
-                    goStep3() {
-                        if (this.step > 1) {
-                            this.setStep(3)
+                    goStep(pos) {
+                        if (this.step > (pos - 2)) {
+                            this.setStep(pos)
                         }
                     }
 
@@ -2340,9 +2330,9 @@
                         this.divTesArbol.append(resultHtml)
 
                         // Set list
-                        resultHtml = this.fillTaxonomiesList(data['researcharea'])
+                        /* resultHtml = this.fillTaxonomiesList(data['researcharea'])
                         this.divTesLista.append(resultHtml)
-                        this.divTesListaCaths = this.divTesLista.find(".categoria-wrap")
+                        this.divTesListaCaths = this.divTesLista.find(".categoria-wrap") */
 
                         // Open & close event trigger
                         let desplegables = this.modalAreasTematicas.find('.boton-desplegar')
@@ -2362,20 +2352,26 @@
                      */
                     itemsClicked() {
 
+                        var _self = this
+
                         // Click into the tree
                         this.divTesArbol.off('click').on("click", "input.at-input", function() {
                             let dataVal = this.checked
                             let dataId = $(this).attr('id')
+                            let dataParentId = $(this).data('parentid')
+                            dataParentId = (dataParentId.length > 0) ? dataParentId.split('/').pop() : dataParentId
 
-                            if (dataVal) {
+                            if (dataParentId.length > 0) {_self.selectParent(dataParentId)}
+
+                            /* if (dataVal) {
                                 document.getElementById('list__' + dataId).checked = true
                             } else  {
                                 document.getElementById('list__' + dataId).checked = false
-                            }
+                            } */
                         })
 
                         // Click into the list
-                        this.divTesLista.off('click').on("click","input.at-input", function() {
+                        /* this.divTesLista.off('click').on("click","input.at-input", function() {
                             let dataVal = this.checked
                             let dataId = $(this).attr('id').substring("list__".length)
 
@@ -2384,7 +2380,18 @@
                             } else  {
                                 document.getElementById(dataId).checked = false
                             }
-                        })
+                        }) */
+                    }
+
+                    selectParent(pId) {
+
+                        let itemP = document.getElementById(pId)
+                        let $itemP = $(itemP)
+                        $itemP.addClass('selected')
+                        let dataParentId = $itemP.data('parentid')
+                        dataParentId = (dataParentId.length > 0) ? dataParentId.split('/').pop() : dataParentId
+
+                        if (dataParentId.length > 0) {this.selectParent(dataParentId)}
                     }
 
                     /**
@@ -2400,15 +2407,19 @@
                         let resultHtml = "";
                         data.filter(e => e.parentId == idParent).forEach(e => {
                             let id = e.id.split('/').pop()
+                            
+                            let children = _self.fillTaxonomiesTree(data, e.id);
+
+                            let disabled = (children != "" && children != undefined) ? 'disabled="disabled"' : ""
+                            
                             resultHtml += '<div class="categoria-wrap">\
                                     <div class="categoria ' + id + '">\
                                         <div class="custom-control custom-checkbox themed little primary">\
-                                            <input type="checkbox" class="custom-control-input at-input" id="' + id + '" data-id="' + e.id + '" data-name="' + e.name + '" data-parentid="' + e.parentId + '">\
+                                            <input type="checkbox" class="custom-control-input at-input" id="' + id + '" data-id="' + e.id + '" data-name="' + e.name + '" data-parentid="' + e.parentId + '" ' + disabled +'>\
                                             <label class="custom-control-label" for="' + id + '">' + e.name + '</label>\
                                         </div>\
                                     </div>'
 
-                            let children = _self.fillTaxonomiesTree(data, e.id);
 
                             if (children != "" && children != undefined) {
                                 resultHtml += '<!--  pintar esto solo cuando tenga hijos -->\
@@ -2483,27 +2494,67 @@
                      * 
                      */
                     setAreasTematicas(item) {
-                        console.log("item", item)
-                        // Muestra el modal de las áreas temáticas
-                        this.modalAreasTematicas.modal('show')
+                        let _self = this
+
+                        let relItem = $('#' + $(item).data("rel"))
+
+                        if (relItem.length > 0) {
+
+                            let dataJson = relItem.data('jsondata')
+
+                            // Reestablecer las categorías
+                            this.divTesArbol.find('input.at-input').each((i, e) => {
+                                e.checked = false
+                                e.classList.remove('selected')
+                            })
+
+                            // Establece las categorías de la sección
+                            if (typeof dataJson == "object") {
+
+                                dataJson.forEach(e => {
+                                    let item = document.getElementById(e)
+                                    item.checked = true
+
+                                    // Comprueba si tiene padre para establecerlo con habilitado.
+                                    let parentId = item.getAttribute('data-parentid')
+                                    if (parentId.length > 0) {
+                                        parentId = (parentId.length > 0) ? parentId.split('/').pop() : parentId
+
+                                        _self.selectParent(parentId)
+                                    }
+                                })
+                            }
+
+
+                            // Muestra el modal de las áreas temáticas
+                            this.modalAreasTematicas.modal('show')
+
+                            this.saveAreasTematicas(relItem)
+                        }
+                    }
+
+
+                    /**
+                     * 
+                     * 
+                     */
+                    saveAreasTematicas(relItem) {
+
+                        // Evento para cuando se seleccione guardar las áreas temáticas
                         this.btnSaveAT.off('click').on('click', (e) => {
                             e.preventDefault()
 
                             // Oculta el modal de las áreas temáticas
-                            this.modalAreasTematicas.modal('hide');
+                            this.modalAreasTematicas.modal('hide')
 
                             // Selecciona y establece el contenedor de las areas temáticas
-                            let relItem = $('#' + $(item).data("rel"))
-
-                            console.log("Aquí va...", $(item).data("rel"))
-                            console.log("datas", $(item).data())
-                            console.log("relItem", relItem)
+                            // let relItem = $('#' + $(item).data("rel"))
 
                             let htmlResWrapper = $('<div class="tag-list mb-4 d-inline"></div>')
 
                             let htmlRes = ''
-                            let arrayItems = [];
-                            this.divTesLista.find('input.at-input').each((i, e) => {
+                            let arrayItems = [] // Array para guardar los items que se van a usar
+                            this.divTesArbol.find('input.at-input').each((i, e) => {
                                 if (e.checked) {
                                     htmlRes += '<div class="tag" title="' + $(e).data('name') + '" data-id="' + $(e).data('id') + '">\
                                         <div class="tag-wrap">\
@@ -2516,26 +2567,32 @@
                                 }
                             })
 
-                            htmlResWrapper.append(htmlRes);
+                            htmlResWrapper.append(htmlRes)
 
-                            relItem.html(htmlResWrapper);
-                            relItem.attr('data-jsondata', JSON.stringify(arrayItems))
+                            relItem.html(htmlResWrapper)
 
-                            this.deleteAreasTematicas(relItem);
+                            // Se añade un json para saber qué categorías se han seleccionado
+                            relItem.data('jsondata', arrayItems)
+
+                            this.deleteAreasTematicas(relItem)
 
                         })
                     }
 
+
                     /**
-                     * 
-                     * 
+                     * Método que elimina las áreas temáticas del arbol y del listado
+                     * param relItem, contenedor donde se encuentran las áreas temáticas seleccionadas
                      */
                     deleteAreasTematicas(relItem) {
 
+                        // Selecciona la áreas temáticas seleccionadas dentro de selector
                         let tagsItems = relItem.find('.tag-wrap');
                         tagsItems.on('click', '.tag-remove', function() {
+                            // Selecciona el item padre para eliminar
                             let itemToDel = $(this).parent().parent()
                             let inputShortId = itemToDel.data('id')
+
                             if (inputShortId.length > 0) {
                                 inputShortId = inputShortId.split('/').pop()
                             }
@@ -2543,14 +2600,14 @@
                             // Set the inputs into the areas temáticas in false
                             try {
                                 document.getElementById(inputShortId).checked = false
-                                document.getElementById('list__' + inputShortId).checked = false
+                                // document.getElementById('list__' + inputShortId).checked = false
                             }catch (error) { }
 
                             // Remove the current item from array
                             let jsonItems = relItem.data('jsondata')
-                            let myIndex = jsonItems.indexOf(inputShortId);
+                            let myIndex = jsonItems.indexOf(inputShortId)
                             if (myIndex !== -1) {
-                                jsonItems.splice(myIndex, 1);
+                                jsonItems.splice(myIndex, 1)
                             }
 
 
@@ -2561,26 +2618,27 @@
                     }
 
                     /**
-                     * 
-                     * 
+                     * Método que añade un perfil nuevo en el segundo paso
                      */
                     addPerfilSearch() {
 
+                        // Get the name
                         let name = this.inputPerfil.val()
                         this.modalPerfil.modal('hide')
-                        this.inputPerfil.val("")
+                        this.inputPerfil.val("") // Set the name empty
+
+                        // Get the image user url
                         let imgUser = this.clusterAccordionPerfil.data('imguser')
+
+                        // Set The item id
                         let nameId = name.replace(/[^a-z0-9_]+/gi, '-').replace(/^-|-$/g, '').toLowerCase()
                         let rand = Math.random() * (100000 - 10000) + 10000
                         nameId = nameId + rand.toFixed()
+
+                        // Get the panel item
                         let panel = this.clusterAccordionPerfil.find('.panel')
 
-                        console.log("nameId", nameId)
-                        console.log("name", name)
-                        console.log("imgUser", imgUser)
-                        console.log("panel", panel)
-
-
+                        // 
                         let item = `<div class="panel-heading" role="tab" id="`+ nameId +`-tab">
                             <p class="panel-title">
                                 <a class="perfil" data-toggle="collapse" data-parent="#accordion_cluster" href="#`+ nameId +`" aria-expanded="true" aria-controls="`+ nameId +`" data-expandable="false">
@@ -2589,36 +2647,36 @@
                                     <span class="texto">`+ name +`</span>
                                 </a>
                             </p>
-                        </div>
-                        <div id="`+ nameId +`" class="panel-collapse collapse show" role="tabpanel" aria-labelledby="`+ nameId +`-tab">
-                            <div class="panel-body">
-
-                                <!-- Areas temáticas -->
-                                <div class="form-group mb-5 edit-etiquetas">
-                                    <label class="control-label d-block">@Html.Translate("AREAS_TEMATICAS")</label>
-                                    <div class="autocompletar autocompletar-tags form-group" id="modal-seleccionar-area-tematica-`+ nameId +`">
-                                        <div class="tag-list mb-4 d-inline"></div> 
-                                    </div>
-                                    <a class="btn btn-outline-primary" href="javascript: void(0)">
-                                        <span class="material-icons" onclick="stepsCls.setAreasTematicas(this)" data-rel="modal-seleccionar-area-tematica-`+ nameId +`">add</span>
-                                    </a>
-                                </div>
-                                <!-- -->
-
-                                <!-- Tópicos -->
-                                <div class="form-group mb-5 edit-etiquetas">
-                                    <label class="control-label d-block">@Html.Translate("TOPICOS")</label>
-                                    <div class="autocompletar autocompletar-tags form-group">
-                                        <div class="tag-list mb-4 d-inline"></div> 
-                                    </div>
-                                    <a class="btn btn-outline-primary" data-toggle="modal" data-target="#modal-anadir-topicos">
-                                        <span class="material-icons">add</span>
-                                    </a>
-                                </div>
-                                <!-- -->
-
                             </div>
-                        </div>`
+                            <div id="`+ nameId +`" class="panel-collapse collapse show" role="tabpanel" aria-labelledby="`+ nameId +`-tab">
+                                <div class="panel-body">
+
+                                    <!-- Areas temáticas -->
+                                    <div class="form-group mb-5 edit-etiquetas">
+                                        <label class="control-label d-block">@Html.Translate("AREAS_TEMATICAS")</label>
+                                        <div class="autocompletar autocompletar-tags form-group" id="modal-seleccionar-area-tematica-`+ nameId +`">
+                                            <div class="tag-list mb-4 d-inline"></div> 
+                                        </div>
+                                        <a class="btn btn-outline-primary" href="javascript: void(0)">
+                                            <span class="material-icons" onclick="stepsCls.setAreasTematicas(this)" data-rel="modal-seleccionar-area-tematica-`+ nameId +`">add</span>
+                                        </a>
+                                    </div>
+                                    <!-- -->
+
+                                    <!-- Tópicos -->
+                                    <div class="form-group mb-5 edit-etiquetas">
+                                        <label class="control-label d-block">@Html.Translate("DESCRIPTORES_ESPECIFICOS")</label>
+                                        <div class="autocompletar autocompletar-tags form-group">
+                                            <div class="tag-list mb-4 d-inline"></div> 
+                                        </div>
+                                        <a class="btn btn-outline-primary" data-toggle="modal" data-target="#modal-anadir-topicos">
+                                            <span class="material-icons">add</span>
+                                        </a>
+                                    </div>
+                                    <!-- -->
+
+                                </div>
+                            </div>`
 
                         panel.append(item)
                     }
@@ -2671,7 +2729,7 @@
                 class ModalUser {
                     constructor() {
 
-                        this.init();
+                        this.init()
                     }
                 }
 
@@ -2686,6 +2744,15 @@
                 .section-steps {
                     transform: scale(0);
                     max-height: 0px;
+                }
+
+                .categoria-wrap .categoria .custom-checkbox .custom-control-input.selected ~ .custom-control-label {
+                    font-weight: 500;
+                }
+
+                .custom-checkbox.themed.primary .custom-control-input.selected ~ .custom-control-label,
+                .custom-radio.themed.primary .custom-control-input.selected ~ .custom-control-label {
+                    color: var(--c-primario);
                 }
             </style>
 
