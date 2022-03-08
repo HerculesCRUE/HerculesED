@@ -33,6 +33,14 @@ namespace CurriculumvitaeOntology
 		[RDFProperty("http://w3id.org/roh/professionalSituation")]
 		public ProfessionalSituation Roh_professionalSituation { get; set; }
 
+		[LABEL(LanguageEnum.es, "http://w3id.org/roh/qualifications")]
+		[RDFProperty("http://w3id.org/roh/qualifications")]
+		public Qualifications Roh_qualifications { get; set; }
+
+		[LABEL(LanguageEnum.es, "http://w3id.org/roh/teachingExperience")]
+		[RDFProperty("http://w3id.org/roh/teachingExperience")]
+		public TeachingExperience Roh_teachingExperience { get; set; }
+
 		[LABEL(LanguageEnum.es,"http://w3id.org/roh/scientificExperience")]
 		[RDFProperty("http://w3id.org/roh/scientificExperience")]
 		public  ScientificExperience Roh_scientificExperience { get; set;}
@@ -79,6 +87,16 @@ namespace CurriculumvitaeOntology
 			Roh_professionalSituation.GetEntities();
 			OntologyEntity entityRoh_professionalSituation = new("http://w3id.org/roh/ProfessionalSituation", "http://w3id.org/roh/ProfessionalSituation", "roh:professionalSituation", Roh_professionalSituation.propList, Roh_professionalSituation.entList);
 			entList.Add(entityRoh_professionalSituation);
+
+			Roh_qualifications.GetProperties();
+			Roh_qualifications.GetEntities();
+			OntologyEntity entityRoh_qualifications = new("http://w3id.org/roh/Qualifications", "http://w3id.org/roh/Qualifications", "roh:qualifications", Roh_qualifications.propList, Roh_qualifications.entList);
+			entList.Add(entityRoh_qualifications);
+
+			Roh_teachingExperience.GetProperties();
+			Roh_teachingExperience.GetEntities();
+			OntologyEntity entityRoh_teachingExperience = new("http://w3id.org/roh/TeachingExperience", "http://w3id.org/roh/TeachingExperience", "roh:teachingExperience", Roh_teachingExperience.propList, Roh_teachingExperience.entList);
+			entList.Add(entityRoh_teachingExperience);
 
 			Roh_scientificExperience.GetProperties();
 			Roh_scientificExperience.GetEntities();

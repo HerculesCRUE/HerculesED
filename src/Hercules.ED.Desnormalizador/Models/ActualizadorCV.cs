@@ -790,6 +790,8 @@ namespace DesnormalizadorHercules.Models
                         cv.Foaf_name = name;
                         cv.IdRoh_cvOf = person;
                         cv.Roh_professionalSituation = new ProfessionalSituation() { Roh_title = "-" };
+                        cv.Roh_qualifications = new Qualifications() { Roh_title = "-" };
+                        cv.Roh_teachingExperience = new TeachingExperience() { Roh_title = "-" };
                         cv.Roh_scientificExperience = new ScientificExperience() { Roh_title = "-" };
                         cv.Roh_scientificActivity = new ScientificActivity() { Roh_title = "-" };
                         cv.Roh_researchObject = new ResearchObjects() { Roh_title = "-" };

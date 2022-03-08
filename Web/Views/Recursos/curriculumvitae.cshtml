@@ -180,61 +180,55 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-pane fade" id="situacion-panel" role="tabpanel" aria-labelledby="situacion-tab">
-							@if (pCV.Roh_professionalSituation != null)
-							{
-								<div class="row cvTab" about="@pCV.Roh_professionalSituation.GNOSSID" rdftype="http://w3id.org/roh/ProfessionalSituation" property="http://w3id.org/roh/professionalSituation">
-									<div class="col col-12 col-section-title">
-										<div class="wrapCol">
-											<p>2 - @Html.Translate("CV_SITUACIONPROFESIONAL")</p>
-										</div>
-									</div>
-									<div class="col col-12 col-contenido">
+                        <div class="tab-pane fade" id="situacion-panel" role="tabpanel" aria-labelledby="situacion-tab">							
+							<div class="row cvTab" about="@pCV.Roh_professionalSituation.GNOSSID" rdftype="http://w3id.org/roh/ProfessionalSituation" property="http://w3id.org/roh/professionalSituation">
+								<div class="col col-12 col-section-title">
+									<div class="wrapCol">
+										<p>2 - @Html.Translate("CV_SITUACIONPROFESIONAL")</p>
 									</div>
 								</div>
-							}
+								<div class="col col-12 col-contenido">
+								</div>
+							</div>
                         </div>
                         <div class="tab-pane fade" id="formacion-panel" role="tabpanel" aria-labelledby="formacion-tab">
-                            <div class="row">
-                                <div class="col col-12 col-section-title">
-                                    <div class="wrapCol">
-                                        <p>3 - @Html.Translate("CV_FORMACIONRECIBIDA")</p>
-                                    </div>
-                                </div>
-                                <div class="col col-12 col-contenido">
-                                </div>
-                            </div>
-                        </div>
-						<div class="tab-pane fade" id="acitividad-docente-panel" role="tabpanel" aria-labelledby="acitividad-docente-tab">
-                            <div class="row">
-                                <div class="col col-12 col-section-title">
-                                    <div class="wrapCol">
-                                        <p>3 - @Html.Translate("CV_ACTIVIDADDOCENTE")</p>
-                                    </div>
-                                </div>
-                                <div class="col col-12 col-contenido">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="tab-pane fade " id="experiencia-panel" role="tabpanel" aria-labelledby="experiencia-tab">
-                            @if (pCV.Roh_scientificExperience != null)
-							{
-								<div class="row cvTab" about="@pCV.Roh_scientificExperience.GNOSSID" rdftype="http://w3id.org/roh/ScientificExperience" property="http://w3id.org/roh/scientificExperience">
-									<div class="col col-12 col-section-title">
-										<div class="wrapCol">
-											<p>4 - @Html.Translate("CV_EXPERIENCIACIENTIFICAYTECNOLOGICA")</p>
-										</div>
-									</div>
-									<div class="col col-12 col-contenido">
+							<div class="row cvTab" about="@pCV.Roh_qualifications.GNOSSID" rdftype="http://w3id.org/roh/Qualifications" property="http://w3id.org/roh/qualifications">
+								<div class="col col-12 col-section-title">
+									<div class="wrapCol">
+										<p>3 - @Html.Translate("CV_FORMACIONRECIBIDA")</p>
 									</div>
 								</div>
-							}
+								<div class="col col-12 col-contenido">
+								</div>
+							</div>
+                        </div>
+						<div class="tab-pane fade" id="actividad-docente-panel" role="tabpanel" aria-labelledby="actividad-docente-tab">							
+							<div class="row cvTab" about="@pCV.Roh_teachingExperience.GNOSSID" rdftype="http://w3id.org/roh/TeachingExperience" property="http://w3id.org/roh/teachingExperience">
+								<div class="col col-12 col-section-title">
+									<div class="wrapCol">
+										<p>4 - @Html.Translate("CV_ACTIVIDADDOCENTE")</p>
+									</div>
+								</div>
+								<div class="col col-12 col-contenido">
+								</div>
+							</div>
+                        </div>
+                        <div class="tab-pane fade " id="experiencia-panel" role="tabpanel" aria-labelledby="experiencia-tab">                            
+							<div class="row cvTab" about="@pCV.Roh_scientificExperience.GNOSSID" rdftype="http://w3id.org/roh/ScientificExperience" property="http://w3id.org/roh/scientificExperience">
+								<div class="col col-12 col-section-title">
+									<div class="wrapCol">
+										<p>5 - @Html.Translate("CV_EXPERIENCIACIENTIFICAYTECNOLOGICA")</p>
+									</div>
+								</div>
+								<div class="col col-12 col-contenido">
+								</div>
+							</div>
                         </div>
                         <div class="tab-pane fade" id="actividad-panel" role="tabpanel" aria-labelledby="actividad-tab">
                             <div class="row cvTab" about="@pCV.Roh_scientificActivity.GNOSSID" rdftype="http://w3id.org/roh/ScientificActivity" property="http://w3id.org/roh/scientificActivity">
                                 <div class="col col-12 col-section-title">
                                     <div class="wrapCol">
-                                        <p>5 - @Html.Translate("CV_ACTIVIDADCIENTIFICAYTECNOLOGICA")</p>
+                                        <p>6 - @Html.Translate("CV_ACTIVIDADCIENTIFICAYTECNOLOGICA")</p>
                                     </div>
                                 </div>
                                 <div class="col col-12 col-contenido">
@@ -245,7 +239,7 @@
                             <div class="row cvTab" about="@pCV.Roh_freeTextSummary.GNOSSID" rdftype="http://w3id.org/roh/FreeTextSummary" property="http://w3id.org/roh/freeTextSummary">
                                 <div class="col col-12 col-section-title">
                                     <div class="wrapCol">
-                                        <p>6 - @Html.Translate("CV_RESUMENTEXTOLIBRE")</p>
+                                        <p>7 - @Html.Translate("CV_RESUMENTEXTOLIBRE")</p>
                                     </div>
                                 </div>
                                 <div class="col col-12 col-contenido">
@@ -256,7 +250,7 @@
                             <div class="row cvTab" about="@pCV.Roh_researchObject.GNOSSID" rdftype="http://w3id.org/roh/ResearchObjects" property="http://w3id.org/roh/researchObject">
                                 <div class="col col-12 col-section-title">
                                     <div class="wrapCol">
-                                        <p>7 - @Html.Translate("CV_RESEARCHOBJECTS")</p>
+                                        <p>8 - @Html.Translate("CV_RESEARCHOBJECTS")</p>
                                     </div>
                                 </div>
                                 <div class="col col-12 col-contenido">
@@ -681,42 +675,62 @@
                 public CV(SemanticResourceModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
                 {
                     this.mGNOSSID = pSemCmsModel.RootEntities[0].Entity.Uri;
+					this.Foaf_name = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/name"));
+					SemanticPropertyModel propRoh_cvOf = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/cvOf");
+					if(propRoh_cvOf != null && propRoh_cvOf.PropertyValues.Count > 0)
+					{
+						this.Roh_cvOf = new Person(propRoh_cvOf.PropertyValues[0].RelatedEntity,idiomaUsuario);
+					}
+					
                     SemanticPropertyModel propRoh_personalData = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/personalData");
                     if (propRoh_personalData != null && propRoh_personalData.PropertyValues.Count > 0)
                     {
                         this.Roh_personalData = new PersonalData(propRoh_personalData.PropertyValues[0].RelatedEntity, idiomaUsuario);
                     }
+					
 					SemanticPropertyModel propRoh_professionalSituation = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/professionalSituation");
                     if (propRoh_professionalSituation != null && propRoh_professionalSituation.PropertyValues.Count > 0)
                     {
                         this.Roh_professionalSituation = new ProfessionalSituation(propRoh_professionalSituation.PropertyValues[0].RelatedEntity, idiomaUsuario);
                     }
+					
+					SemanticPropertyModel propRoh_qualifications = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/qualifications");
+                    if (propRoh_qualifications != null && propRoh_qualifications.PropertyValues.Count > 0)
+                    {
+                        this.Roh_qualifications = new Qualifications(propRoh_qualifications.PropertyValues[0].RelatedEntity, idiomaUsuario);
+                    }
+					
+					SemanticPropertyModel propRoh_teachingExperience = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/teachingExperience");
+                    if (propRoh_teachingExperience != null && propRoh_teachingExperience.PropertyValues.Count > 0)
+                    {
+                        this.Roh_teachingExperience = new TeachingExperience(propRoh_teachingExperience.PropertyValues[0].RelatedEntity, idiomaUsuario);
+                    }
+					
                     SemanticPropertyModel propRoh_scientificExperience = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/scientificExperience");
                     if (propRoh_scientificExperience != null && propRoh_scientificExperience.PropertyValues.Count > 0)
                     {
                         this.Roh_scientificExperience = new ScientificExperience(propRoh_scientificExperience.PropertyValues[0].RelatedEntity, idiomaUsuario);
-                    }
-                    this.Foaf_name = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/name"));
+                    }					
+                    
                     SemanticPropertyModel propRoh_scientificActivity = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/scientificActivity");
                     if (propRoh_scientificActivity != null && propRoh_scientificActivity.PropertyValues.Count > 0)
                     {
                         this.Roh_scientificActivity = new ScientificActivity(propRoh_scientificActivity.PropertyValues[0].RelatedEntity, idiomaUsuario);
                     }
+					
 					SemanticPropertyModel propRoh_freeTextSummary = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/freeTextSummary");
                     if (propRoh_freeTextSummary != null && propRoh_freeTextSummary.PropertyValues.Count > 0)
                     {
                         this.Roh_freeTextSummary = new FreeTextSummary(propRoh_freeTextSummary.PropertyValues[0].RelatedEntity, idiomaUsuario);
                     }
+					
 					SemanticPropertyModel propRoh_researchObject = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/researchObject");
                     if (propRoh_researchObject != null && propRoh_researchObject.PropertyValues.Count > 0)
                     {
                         this.Roh_researchObject = new ResearchObjects(propRoh_researchObject.PropertyValues[0].RelatedEntity, idiomaUsuario);
                     }
-                    SemanticPropertyModel propRoh_cvOf = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/cvOf");
-					if(propRoh_cvOf != null && propRoh_cvOf.PropertyValues.Count > 0)
-					{
-						this.Roh_cvOf = new Person(propRoh_cvOf.PropertyValues[0].RelatedEntity,idiomaUsuario);
-					}
+					
+                    
                 }
 
 
@@ -731,6 +745,14 @@
 				[LABEL(LanguageEnum.es, "http://w3id.org/roh/professionalSituation")]
                 [RDFProperty("http://w3id.org/roh/professionalSituation")]
                 public ProfessionalSituation Roh_professionalSituation { get; set; }
+				
+				[LABEL(LanguageEnum.es, "http://w3id.org/roh/qualifications")]
+                [RDFProperty("http://w3id.org/roh/qualifications")]
+                public Qualifications Roh_qualifications { get; set; }
+				
+				[LABEL(LanguageEnum.es, "http://w3id.org/roh/teachingExperience")]
+                [RDFProperty("http://w3id.org/roh/teachingExperience")]
+                public TeachingExperience Roh_teachingExperience { get; set; }
 
                 [LABEL(LanguageEnum.es, "http://w3id.org/roh/scientificExperience")]
                 [RDFProperty("http://w3id.org/roh/scientificExperience")]
@@ -787,6 +809,30 @@
                 public ProfessionalSituation() : base() { }
 
                 public ProfessionalSituation(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
+                {
+                    this.mGNOSSID = pSemCmsModel.Entity.Uri;
+                    this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
+                }
+            }
+			
+			public class Qualifications : GnossOCBase
+            {
+
+                public Qualifications() : base() { }
+
+                public Qualifications(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
+                {
+                    this.mGNOSSID = pSemCmsModel.Entity.Uri;
+                    this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
+                }
+            }
+			
+			public class TeachingExperience : GnossOCBase
+            {
+
+                public TeachingExperience() : base() { }
+
+                public TeachingExperience(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
                 {
                     this.mGNOSSID = pSemCmsModel.Entity.Uri;
                     this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
