@@ -62,9 +62,9 @@ namespace Hercules.ED.DisambiguationEngine.Models
                                     {
                                         string select = "SELECT * WHERE { SELECT DISTINCT ?persona ?nombreCompleto FROM <http://gnoss.com/person.owl> ";
                                         string where = $@"WHERE {{
-                                ?persona a <http://xmlns.com/foaf/0.1/Person>. 
-                                ?persona <http://xmlns.com/foaf/0.1/name> ?nombreCompleto.                                
-                            }} ORDER BY DESC(?persona) }} LIMIT {limit} OFFSET {offset}";
+                                                            ?persona a <http://xmlns.com/foaf/0.1/Person>. 
+                                                            ?persona <http://xmlns.com/foaf/0.1/name> ?nombreCompleto.                                
+                                                        }} ORDER BY DESC(?persona) }} LIMIT {limit} OFFSET {offset}";
                                         SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "person");
                                         if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
                                         {
@@ -723,7 +723,7 @@ namespace Hercules.ED.DisambiguationEngine.Models
                     string idBtype = idB.Split('|')[0];
                     string idBidentifier = idB.Split('|')[1];
 
-                    if (pListaEquivalenciasItemsACargar[idA][idB] > pUmbral)
+                    if (pListaEquivalenciasItemsACargar[idA][idB] >= pUmbral)
                     {
                         if (pListaDistintos.ContainsKey(idA) && pListaDistintos[idA].Contains(idB))
                         {
@@ -1030,7 +1030,7 @@ namespace Hercules.ED.DisambiguationEngine.Models
         }
 
         /// <summary>
-        /// Búsqeuda de equivalencias
+        /// Búsqueda de equivalencias
         /// </summary>
         /// <param name="pItemsToLoad">Items para desambiguar</param>
         /// <param name="pItemsBBDD">Items para desambiguar de la BBDD</param>
