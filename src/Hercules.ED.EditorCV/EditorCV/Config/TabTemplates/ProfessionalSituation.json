@@ -599,6 +599,20 @@
                     "properties": [
                       {
                         "title": {
+                          "es": "Identificar palabras clave"
+                        },
+                        "property": "http://vivoweb.org/ontology/core#freeTextKeyword",
+                        "thesaurus": "tesauro_cvn",
+                        "type": "thesaurus",
+                        "width": 3,
+                        "multiple": true
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
                           "es": "Funciones desempeñadas"
                         },
                         "property": "http://w3id.org/roh/concreteFunctions",
@@ -1888,6 +1902,20 @@
                         },
                         "type": "selectCombo",
                         "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Identificar palabras clave"
+                        },
+                        "property": "http://vivoweb.org/ontology/core#freeTextKeyword",
+                        "thesaurus": "tesauro_cvn",
+                        "type": "thesaurus",
+                        "width": 3,
+                        "multiple": true
                       }
                     ]
                   },
