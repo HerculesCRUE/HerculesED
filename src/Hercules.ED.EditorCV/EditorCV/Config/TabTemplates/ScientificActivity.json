@@ -6086,6 +6086,20 @@
                         "width": 1
                       }
                     ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Identificar palabras clave"
+                        },
+                        "property": "http://vivoweb.org/ontology/core#freeTextKeyword",
+                        "thesaurus": "tesauro_cvn",
+                        "type": "thesaurus",
+                        "width": 3,
+                        "multiple": true
+                      }
+                    ]
                   }
                 ]
               }
@@ -8027,6 +8041,20 @@
                         "width": 1
                       }
                     ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Identificar palabras clave"
+                        },
+                        "property": "http://vivoweb.org/ontology/core#freeTextKeyword",
+                        "thesaurus": "tesauro_cvn",
+                        "type": "thesaurus",
+                        "width": 3,
+                        "multiple": true
+                      }
+                    ]
                   }
                 ]
               }
@@ -8559,6 +8587,20 @@
                         "property": "http://w3id.org/roh/monetaryAmount",
                         "type": "number",
                         "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Identificar palabras clave"
+                        },
+                        "property": "http://vivoweb.org/ontology/core#freeTextKeyword",
+                        "thesaurus": "tesauro_cvn",
+                        "type": "thesaurus",
+                        "width": 3,
+                        "multiple": true
                       }
                     ]
                   }
