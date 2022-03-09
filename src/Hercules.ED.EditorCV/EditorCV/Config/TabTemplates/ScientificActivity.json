@@ -409,6 +409,7 @@
                         },
                         "property": "http://w3id.org/roh/title",
                         "required": true,
+                        "multilang": true,
                         "type": "text",
                         "width": 3
                       }
@@ -634,50 +635,8 @@
                         "type": "text",
                         "width": 1
                       }
-                      //,
-                      //{
-                      //  "title": {
-                      //    "es": "Otros"
-                      //  },
-                      //  "property": "http://w3id.org/roh/typeOthers",
-                      //  "required": true,
-                      //  "dependency": {
-                      //    "property": "http://purl.org/dc/elements/1.1/type",
-                      //    "propertyValue": "{GraphsUrl}items/publicationtype_OTHERS"
-                      //  },
-                      //  "type": "text",
-                      //  "width": 1
-                      //},
-                      //{
-                      //  "title": {
-                      //    "es": "Fecha de publicación"
-                      //  },
-                      //  "placeholder": {
-                      //    "es": "Introduce la fecha de publicación"
-                      //  },
-                      //  "property": "http://purl.org/dc/terms/issued",
-                      //  "type": "date",
-                      //  "width": 1
-                      //}
                     ]
                   },
-                  //TODO NOMBRE REVSTA O PUBLICACIÓN
-                  //{
-                  //  "properties": [
-                  //    {
-                  //      "title": {
-                  //        "es": "Editorial"
-                  //      },
-                  //      "type": "text",
-                  //      "placeholder": {
-                  //        "es": "Introduce la editorial"
-                  //      },
-                  //      "required": false,
-                  //      "property": "http://w3id.org/roh/editor",
-                  //      "width": 1
-                  //    }
-                  //  ]
-                  //},
                   {
                     "properties": [
                       {
@@ -9262,6 +9221,20 @@
                     "properties": [
                       {
                         "title": {
+                          "es": "Identificar palabras clave"
+                        },
+                        "property": "http://vivoweb.org/ontology/core#freeTextKeyword",
+                        "thesaurus": "tesauro_cvn",
+                        "type": "thesaurus",
+                        "width": 3,
+                        "multiple": true
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
                           "es": "Resultados relevantes"
                         },
                         "placeholder": {
@@ -9723,6 +9696,20 @@
                         },
                         "type": "selectCombo",
                         "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Identificar palabras clave"
+                        },
+                        "property": "http://vivoweb.org/ontology/core#freeTextKeyword",
+                        "thesaurus": "tesauro_cvn",
+                        "type": "thesaurus",
+                        "width": 3,
+                        "multiple": true
                       }
                     ]
                   },
