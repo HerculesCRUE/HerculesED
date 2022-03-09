@@ -1,4 +1,5 @@
-﻿using Gnoss.ApiWrapper;
+﻿using EditorCV.Models;
+using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.ApiModel;
 using Gnoss.ApiWrapper.Model;
 using GuardadoCV.Models.API;
@@ -225,6 +226,54 @@ namespace GuardadoCV.Models.Utils
                 }
             });
             return data;
+        }
+
+        /// <summary>
+        /// Obtiene los datos multiidioma de la entidad en el CV
+        /// </summary>
+        /// <param name="pCV">Identificador del CV</param>
+        /// <param name="pId">Identificador de la entidad</param>
+        /// <returns>Propiedades con los valores multiidioma</returns>
+        public static Dictionary<string, List<MultilangProperty>> GetMultilangPropertiesCV(string pCV, string pId)
+        {
+            //Clave propieddad
+            Dictionary<string, List<MultilangProperty>> propiedadesMultiidioma = new Dictionary<string, List<MultilangProperty>>();
+            try
+            {
+                string selectID = "select distinct ?multilangProperties ?prop ?lang ?value";
+                string whereID = $@"where{{
+                                            <{pCV}> <http://w3id.org/roh/multilangProperties> ?multilangProperties.
+                                            ?multilangProperties <http://w3id.org/roh/entity> <{pId}>. 
+                                            ?multilangProperties <http://w3id.org/roh/property> ?prop. 
+                                            ?multilangProperties <http://w3id.org/roh/lang> ?lang. 
+                                            ?multilangProperties <http://w3id.org/roh/value> ?value. 
+                                        }}";
+                SparqlObject resultData = mResourceApi.VirtuosoQuery(selectID, whereID, "curriculumvitae");
+                foreach (Dictionary<string, Data> fila in resultData.results.bindings)
+                {
+                    string multilangProperties = fila["multilangProperties"].value;
+                    string prop = fila["prop"].value;
+                    string lang = fila["lang"].value;
+                    string value = fila["value"].value;
+                    if (!propiedadesMultiidioma.ContainsKey(prop))
+                    {
+                        propiedadesMultiidioma.Add(prop, new List<MultilangProperty>());
+                    }
+
+                    propiedadesMultiidioma[prop].Add(new MultilangProperty()
+                    {
+                        auxEntityCV = multilangProperties,
+                        lang = lang,
+                        value = value
+                    }
+                    );
+                }
+            }
+            catch (System.Exception)
+            {
+                throw;
+            }
+            return propiedadesMultiidioma;
         }
 
         /// <summary>
