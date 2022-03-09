@@ -408,8 +408,7 @@
                           "es": "Introduce el título de la publicación"
                         },
                         "property": "http://w3id.org/roh/title",
-                        "required": true,
-                        "multilang": true,
+                        "required": true,                        
                         "type": "text",
                         "width": 3
                       }
