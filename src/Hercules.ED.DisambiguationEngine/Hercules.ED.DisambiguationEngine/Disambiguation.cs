@@ -447,7 +447,7 @@ namespace Hercules.ED.DisambiguationEngine.Models
                         throw new Exception("Error, no puede un item apuntar a más de un ítem de BBDD");
                     }
                     float similitud = listaEquivalencias[id][id2];
-                    if (similitud > pUmbral)
+                    if (similitud >= pUmbral)
                     {
                         if (idBBDD && !id2BBDD)
                         {
@@ -505,7 +505,7 @@ namespace Hercules.ED.DisambiguationEngine.Models
                         if (!id2BBDD && cargados.Contains(id2))
                         {
                             float similitud = listaEquivalencias[id][id2];
-                            if (similitud > pUmbral)
+                            if (similitud >= pUmbral)
                             {
                                 num++;
                                 if (similitud > maxEquivalencia)
@@ -560,7 +560,7 @@ namespace Hercules.ED.DisambiguationEngine.Models
                         throw new Exception("Error, no puede un item apuntar a más de un ítem de BBDD");
                     }
                     float similitud = listaEquivalencias[id][id2];
-                    if (similitud > pUmbral)
+                    if (similitud >= pUmbral)
                     {
                         if (!idBBDD && !id2BBDD)
                         {
