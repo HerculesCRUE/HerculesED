@@ -298,7 +298,7 @@
                 Context.Session.Set("EnvioCookie", DateTime.Now);
 
                 string urlServicioLogin = Html.GetUrlServicioLogin();
-                string query = string.Format("?usuarioID={0}&dominio={1}/", Html.GetIdentidadActual().KeyUser, Html.GetBaseUrl());
+                string query = string.Format("?usuarioID={0}&dominio={1}/", IdentidadActual.KeyUser, Html.GetBaseUrl());
 
                 if (Context.Request.Scheme.Equals("http"))
                 {
@@ -600,47 +600,47 @@
         @if (!IdentidadActual.IsGuestUser)
         {
             <div id="modal-crear-cluster" data-backdrop="static" class="modal modal-top modal-wide fade edicionCluster" tabindex="-1" role="dialog">
-                <div class="modal-dialog" role="document">
+                <div class="modal-dialog" role="document" data-cshortName="@Comunidad.ShortName">
                     <div class="modal-content">
                         <div class="modal-header">
                             <p class="modal-title"><span class="material-icons">edit</span>Editar</p>
                             <span class="material-icons cerrar" data-dismiss="modal" aria-label="Close">close</span>
                         </div>
                         <div class="modal-body">
-                            <form class="formulario-edicion background-blanco">
-                                <div class="step-progress-wrap mb-5">
-                                    <ul class="step-progress">
-                                        <li class="step-progress__circle active" id="step1">
-                                            <a href="javascript:stepsCls.goStep(1)">
-                                                <span class="step-progress__text current">@Html.Translate("DEFINIR_CLUSTER")</span>
-                                            </a>
-                                        </li>
-                                        <li class="step-progress__bar"></li>
-                                        <li class="step-progress__circle" id="step2">
-                                            <a href="javascript:stepsCls.goStep(2)">
-                                                <span class="step-progress__text">@Html.Translate("DEFINIR_PERFILES_AREAS_INVESTIGACION")</span>
-                                            </a>
-                                        </li>
-                                        <li class="step-progress__bar"></li>
-                                        <li class="step-progress__circle" id="step3">
-                                            <a href="javascript:stepsCls.goStep(3)">
-                                                <span class="step-progress__text">@Html.Translate("RECOMENDACIONES_SELECCION_INVESTIGADORES")</span>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="steps-content-wrap">
-                                    
-                                    <div id="modal-crear-cluster-step1" class="fade show section-steps">
+                            <div class="step-progress-wrap mb-5">
+                                <ul class="step-progress">
+                                    <li class="step-progress__circle active" id="step1">
+                                        <a href="javascript:stepsCls.goStep(1)">
+                                            <span class="step-progress__text current">@Html.Translate("DEFINIR_CLUSTER")</span>
+                                        </a>
+                                    </li>
+                                    <li class="step-progress__bar"></li>
+                                    <li class="step-progress__circle" id="step2">
+                                        <a href="javascript:stepsCls.goStep(2)">
+                                            <span class="step-progress__text">@Html.Translate("DEFINIR_PERFILES_AREAS_INVESTIGACION")</span>
+                                        </a>
+                                    </li>
+                                    <li class="step-progress__bar"></li>
+                                    <li class="step-progress__circle" id="step3">
+                                        <a href="javascript:stepsCls.goStep(3)">
+                                            <span class="step-progress__text">@Html.Translate("RECOMENDACIONES_SELECCION_INVESTIGADORES")</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="steps-content-wrap">
+                                
+                                <div id="modal-crear-cluster-step1" class="fade show section-steps">
+                                    <form class="formulario-edicion background-blanco" type="post" id="cluster-step1-form">
                                         <fieldset>
                                             <legend>Definir cluster</legend>
                                             <div class="form-group mb-5 edit-titulo">
                                                 <label class="control-label d-block">@Html.Translate("NOMBRE_TITULO_CLUSTER")</label>
-                                                <input placeholder="Introduce un Nombre / Título cluster" type="text" name="" id="" class="form-control not-outline">
+                                                <input placeholder="Introduce un Nombre / Título cluster" type="text" name="nombrecluster" id="nombreclusterinput" class="form-control not-outline">
                                             </div>
                                             <div class="form-group mb-5 edit-descripcion">
                                                 <label class="control-label d-block">@Html.Translate("DESCRIPCION")</label>
-                                                <textarea id="txtDescripcion" placeholder="Introduce una descripción" class="cke form-control recursos" cols="20" rows="2"></textarea>
+                                                <textarea id="txtDescripcion" placeholder="Introduce una descripción" name="txtdescripcion" class="cke form-control recursos" cols="20" rows="2"></textarea>
                                             </div>
                                             <!-- Areas temáticas -->
                                             <div class="panel-body mb-5 edit-etiquetas pl-0">
@@ -678,13 +678,15 @@
                                                 </div>
                                             </div>
                                         </fieldset>
-                                        <a href="javascript:stepsCls.goStep(2)" class="btn btn-primary uppercase">
-                                            @Html.Translate("GUARDAR_SIGUIENTE")
+                                        <a class="btn btn-primary uppercase" href="javascript:stepsCls.goStep(2)" follow="nofollow">
+                                            @Html.Translate("SIGUIENTE")
                                             <span class="material-icons">keyboard_arrow_right</span>
                                         </a>
-                                    </div>
+                                    </form>
+                                </div>
 
-                                    <div id="modal-crear-cluster-step2" class="fade section-steps">
+                                <div id="modal-crear-cluster-step2" class="fade section-steps">
+                                    <form class="formulario-edicion background-blanco">
                                         <fieldset>
                                             <legend>@Html.Translate("DEFINIR_PERFILES_AREAS_INVESTIGACION")</legend>
                                             <p>@Html.Translate("QUIERES_BUSCAR_INVESTIGADORES_EXPERIENCIA___")</p>
@@ -699,14 +701,15 @@
                                                 <a class="btn btn-outline-primary" data-toggle="modal" data-target="#modal-anadir-perfil">@Html.Translate("ANADIR_OTRO_PERFIL")</a>
                                             </div>
                                         </fieldset>
-                                        <a href="javascript:stepsCls.goStep(3)" class="btn btn-primary uppercase">
+                                        <a href="javascript:stepsCls.saveInit()" class="btn btn-primary uppercase">
                                             @Html.Translate("GUARDAR_SIGUIENTE")
                                             <span class="material-icons">keyboard_arrow_right</span>
                                         </a>
-                                    </div>
+                                    </form>
+                                </div>
 
-                                    <div id="modal-crear-cluster-step3" class="fade section-steps">
-
+                                <div id="modal-crear-cluster-step3" class="fade section-steps">
+                                    <form class="formulario-edicion background-blanco">
                                         <div class="row">
                                             <div class="col col-12 col-section-title font-weight-bold">
                                                 <div class="wrapCol">
@@ -1129,9 +1132,9 @@
                                                 </a>
                                             </div>
                                         </div>
-                                    </div>
+                                    </form>
                                 </div>
-                            </form>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -2249,11 +2252,14 @@
             <script type="text/javascript">
 
                 const uriLoadTaxonomies = "Cluster/GetThesaurus/"
+                const uriSaveCluster = "Cluster/SetSection1/"
 
                 var urlLT = new URL(servicioExternoBaseUrl + 'servicioexterno/' + uriLoadTaxonomies);
+                var urlSC1 = new URL(servicioExternoBaseUrl + 'servicioexterno/' + uriSaveCluster);
 
                 if (window.location.hostname == 'depuracion.net') {
                     urlLT = new URL('https://localhost:44321/' + uriLoadTaxonomies);
+                    urlSC1 = new URL('https://localhost:44321/' + uriSaveCluster);
                 }
 
                 class StepsCluster {
@@ -2267,6 +2273,9 @@
                         this.stepsCircle = this.stepProgressWrap.find(".step-progress__circle")
                         this.stepsBar = this.stepProgressWrap.find(".step-progress__bar")
                         this.stepsText = this.stepProgressWrap.find(".step-progress__text")
+                        this.modalCrearClusterStep1 = this.modalCrearCluster.find("#modal-crear-cluster-step1")
+                        this.modalCrearClusterStep2 = this.modalCrearCluster.find("#modal-crear-cluster-step2")
+                        this.modalCrearClusterStep3 = this.modalCrearCluster.find("#modal-crear-cluster-step3")
                         this.clusterAccordionPerfil = this.modalCrearCluster.find("#accordion_cluster")
 
                         this.stepContentWrap = this.modalCrearCluster.find(".steps-content-wrap")
@@ -2283,6 +2292,10 @@
                         this.divTesListaCaths = undefined
                         this.btnSaveAT = this.modalAreasTematicas.find('.btnsave')
 
+                        this.userId = document.getElementById('inpt_usuarioID').value
+                        this.communityShortName = this.modalCrearCluster.data('cshortName')
+                        this.clusterId = undefined
+
                         this.modalCrearCluster.on('shown.bs.modal', function () {
                             _self.init()
                         });
@@ -2298,6 +2311,7 @@
                     }
                     
                     goStep(pos) {
+
                         if (this.step > (pos - 2)) {
                             this.setStep(pos)
                         }
@@ -2383,6 +2397,10 @@
                         }) */
                     }
 
+                    /**
+                     * Select the parent in the list and add a class to active the item
+                     * param pId, the parent id
+                     */
                     selectParent(pId) {
 
                         let itemP = document.getElementById(pId)
@@ -2485,7 +2503,90 @@
 
                     }
 
-                    guardar() {
+                    saveInit() {
+
+                        var _self = this
+
+                        // Get first screen data
+                        let name = document.getElementById('nombreclusterinput').value
+                        let description = document.getElementById('txtDescripcion').value
+                        let terms = []
+                        let inputsTermsItms = this.modalCrearClusterStep1.find('#cluster-modal-sec1-tax-wrapper').find('input')
+                        inputsTermsItms.each((i, e) => {terms.push(e.value)})
+
+                        // Get the second screen
+                        let profiles = this.modalCrearClusterStep2.find('.panel-collapse')
+                        let profilesObjets = []
+
+                        profiles.each((i, e) => {
+                            let termsSec = $(e).find('.terms-items')
+                            let inputsTermsProf = termsSec.find('input')
+                            let profTerms = []
+                            inputsTermsProf.each((i, e) => {profTerms.push(e.value)})
+
+
+                            let topicsSec = $(e).find('.tags-items')
+                            let inputsTopicsProf = topicsSec.find('input')
+                            let profTags = []
+                            inputsTopicsProf.each((i, e) => {profTags.push(e.value)})
+
+                            profilesObjets.push({
+                                "name": $(e).data('name'),
+                                "terms": profTerms,
+                                "tags": profTags,
+                            })
+
+                        })
+
+                        // Set the url parameters
+                        urlSC1.searchParams.set('pIdGnossUser', this.userId)
+                        // urlSC1.searchParams.set('pIdGnossComSName', this.communityShortName)
+
+                        // Set the post data
+                        let data = {
+                            entityID: _self.clusterId,
+                            name,
+                            description,
+                            terms,
+                            profiles: profilesObjets
+                        }
+
+
+                        this.postCall(urlSC1, data).then((data) => {
+                            _self.clusterId = data
+                            _self.goStep(2)
+                        })
+
+
+                    }
+
+                    postCall(url, theParams) {
+                        let _self = this
+                        return new Promise((resolve, reject) => {
+                            /* $.post( url.toString(), theParams).done(function( data ) {
+                                console.log( "Data Loaded: " + data );
+                            }); */
+
+                            $.ajax({
+                                url: url.toString(),
+                                type: "POST",
+                                data: JSON.stringify(theParams),
+                                contentType: "app/json"
+                            }).done(function(data) {
+                                resolve(data)
+                                console.log( "Data Loaded: " + data );
+                            })
+                        })
+                    }
+
+                    save(section) {
+                        switch (section){
+                            case 1:
+                                this.guardarPrimero()
+                            break;
+                            case 2:
+                            break
+                        }
                         console.log("guardado TODO")
                     }
 
@@ -2648,11 +2749,11 @@
                                 </a>
                             </p>
                             </div>
-                            <div id="`+ nameId +`" class="panel-collapse collapse show" role="tabpanel" aria-labelledby="`+ nameId +`-tab">
+                            <div id="`+ nameId +`" data-name="`+ name +`" class="panel-collapse collapse show" role="tabpanel" aria-labelledby="`+ nameId +`-tab">
                                 <div class="panel-body">
 
                                     <!-- Areas temáticas -->
-                                    <div class="form-group mb-5 edit-etiquetas">
+                                    <div class="form-group mb-5 edit-etiquetas terms-items">
                                         <label class="control-label d-block">@Html.Translate("AREAS_TEMATICAS")</label>
                                         <div class="autocompletar autocompletar-tags form-group" id="modal-seleccionar-area-tematica-`+ nameId +`">
                                             <div class="tag-list mb-4 d-inline"></div> 
@@ -2664,7 +2765,7 @@
                                     <!-- -->
 
                                     <!-- Tópicos -->
-                                    <div class="form-group mb-5 edit-etiquetas">
+                                    <div class="form-group mb-5 edit-etiquetas tags-items">
                                         <label class="control-label d-block">@Html.Translate("DESCRIPTORES_ESPECIFICOS")</label>
                                         <div class="autocompletar autocompletar-tags form-group">
                                             <div class="tag-list mb-4 d-inline"></div> 
