@@ -32,9 +32,9 @@ namespace Hercules.ED.DisambiguationEngine.Models
         /// Score de los nombres 
         /// </summary>
         private static Dictionary<string, float> mScoreNombresCalculado = null;
-        //Valores entre 0.2 y 0.6
+        //Valores entre 0.4 y 0.6
         private static float scoreInicial = 0.1f;
-        private static float minimoScoreNombres = 0.2f;
+        private static float minimoScoreNombres = 0.4f;
         private static float maximoScoreNombres = 0.6f;
         private static ThreadSafeSingleShotGuard _loading = new ThreadSafeSingleShotGuard();
 
@@ -62,9 +62,9 @@ namespace Hercules.ED.DisambiguationEngine.Models
                                     {
                                         string select = "SELECT * WHERE { SELECT DISTINCT ?persona ?nombreCompleto FROM <http://gnoss.com/person.owl> ";
                                         string where = $@"WHERE {{
-                                ?persona a <http://xmlns.com/foaf/0.1/Person>. 
-                                ?persona <http://xmlns.com/foaf/0.1/name> ?nombreCompleto.                                
-                            }} ORDER BY DESC(?persona) }} LIMIT {limit} OFFSET {offset}";
+                                                            ?persona a <http://xmlns.com/foaf/0.1/Person>. 
+                                                            ?persona <http://xmlns.com/foaf/0.1/name> ?nombreCompleto.                                
+                                                        }} ORDER BY DESC(?persona) }} LIMIT {limit} OFFSET {offset}";
                                         SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "person");
                                         if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
                                         {
@@ -447,7 +447,7 @@ namespace Hercules.ED.DisambiguationEngine.Models
                         throw new Exception("Error, no puede un item apuntar a más de un ítem de BBDD");
                     }
                     float similitud = listaEquivalencias[id][id2];
-                    if (similitud > pUmbral)
+                    if (similitud >= pUmbral)
                     {
                         if (idBBDD && !id2BBDD)
                         {
@@ -505,7 +505,7 @@ namespace Hercules.ED.DisambiguationEngine.Models
                         if (!id2BBDD && cargados.Contains(id2))
                         {
                             float similitud = listaEquivalencias[id][id2];
-                            if (similitud > pUmbral)
+                            if (similitud >= pUmbral)
                             {
                                 num++;
                                 if (similitud > maxEquivalencia)
@@ -560,7 +560,7 @@ namespace Hercules.ED.DisambiguationEngine.Models
                         throw new Exception("Error, no puede un item apuntar a más de un ítem de BBDD");
                     }
                     float similitud = listaEquivalencias[id][id2];
-                    if (similitud > pUmbral)
+                    if (similitud >= pUmbral)
                     {
                         if (!idBBDD && !id2BBDD)
                         {
@@ -723,7 +723,7 @@ namespace Hercules.ED.DisambiguationEngine.Models
                     string idBtype = idB.Split('|')[0];
                     string idBidentifier = idB.Split('|')[1];
 
-                    if (pListaEquivalenciasItemsACargar[idA][idB] > pUmbral)
+                    if (pListaEquivalenciasItemsACargar[idA][idB] >= pUmbral)
                     {
                         if (pListaDistintos.ContainsKey(idA) && pListaDistintos[idA].Contains(idB))
                         {
@@ -1030,7 +1030,7 @@ namespace Hercules.ED.DisambiguationEngine.Models
         }
 
         /// <summary>
-        /// Búsqeuda de equivalencias
+        /// Búsqueda de equivalencias
         /// </summary>
         /// <param name="pItemsToLoad">Items para desambiguar</param>
         /// <param name="pItemsBBDD">Items para desambiguar de la BBDD</param>

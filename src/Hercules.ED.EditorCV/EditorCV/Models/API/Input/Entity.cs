@@ -25,6 +25,10 @@ namespace GuardadoCV.Models.API.Input
             /// Valores
             /// </summary>
             public List<string> values { get; set; }
+            /// <summary>
+            /// Valores multiidioma
+            /// </summary>
+            public Dictionary<string,string> valuesmultilang { get; set; }
         }
         /// <summary>
         /// Propiedad usada para el título

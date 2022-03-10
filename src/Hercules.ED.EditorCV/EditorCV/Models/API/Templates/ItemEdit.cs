@@ -305,6 +305,14 @@ namespace GuardadoCV.Models.API.Templates
         /// </summary>
         public bool required;
         /// <summary>
+        /// Indica si es editable aunque la entidad esté bloqueada
+        /// </summary>
+        public bool editable;
+        /// <summary>
+        /// Indica si es multiidioma
+        /// </summary>
+        public bool multilang; 
+        /// <summary>
         /// Datos para el combo
         /// </summary>
         public ItemEditSectionRowPropertyCombo combo;

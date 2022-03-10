@@ -17,6 +17,7 @@ using EditorCV.Models.Enrichment;
 using EditorCV.Controllers;
 using static EditorCV.Models.Enrichment.EnrichmentResponse;
 using Hercules.ED.DisambiguationEngine.Models;
+using EditorCV.Models;
 
 namespace GuardadoCV.Models
 {
@@ -346,7 +347,7 @@ namespace GuardadoCV.Models
                             }
                         }
                         personasBBDD = personasBBDD.OrderByDescending(x => x.score).ToList();
-                        if(personasBBDD.Count>20)
+                        if (personasBBDD.Count > 20)
                         {
                             personasBBDD = personasBBDD.GetRange(0, 20);
                         }
@@ -894,6 +895,29 @@ namespace GuardadoCV.Models
                     }
                 }
             }
+            //Si tiene multidioma cargamos los datos
+            if (pItemEdit.sections.Exists(x => x.rows.Exists(y => y.properties.Exists(z => z.multilang))))
+            {
+                SparqlObject idCV = mResourceApi.VirtuosoQuery("select ?s ?rdftype", "where{?s a <http://w3id.org/roh/CV>. ?s ?p ?o. ?o ?p2 <" + pEntityCV + ">}", "curriculumvitae");
+                if (idCV.results.bindings.Count > 0)
+                {
+                    string id = idCV.results.bindings[0]["s"].value;
+                    Dictionary<string, List<MultilangProperty>> multilangData = UtilityCV.GetMultilangPropertiesCV(id, pId);
+                    foreach(string prop in multilangData.Keys)
+                    {
+                        foreach (MultilangProperty multilangProperty in multilangData[prop])
+                        {
+                            Dictionary<string, SparqlObject.Data> filaAux = new Dictionary<string, Data>();
+                            filaAux.Add("s", new Data() { value = pId,type="uri" });
+                            filaAux.Add("p", new Data() { value = prop, type = "uri" });
+                            filaAux.Add("o", new Data() { value = multilangProperty.value, type = "literal" });
+                            filaAux.Add("lang", new Data() { value = multilangProperty.lang, type = "literal" });
+                            respuesta[pId].Add(filaAux);
+                        }
+                    }
+                }
+
+            }
 
             return respuesta;
         }
@@ -938,7 +962,7 @@ namespace GuardadoCV.Models
             }
 
             List<string> listaTesaurosConfig = GetEditThesaurus(pPresentationEdit.sections.SelectMany(x => x.rows).SelectMany(x => x.properties).ToList());
-            Dictionary<string, List<ThesaurusItem>> tesauros = GetTesauros(listaTesaurosConfig);
+            Dictionary<string, List<ThesaurusItem>> tesauros = GetTesauros(listaTesaurosConfig,pLang);
 
             EntityEdit entityEdit = new EntityEdit()
             {
@@ -1030,6 +1054,8 @@ namespace GuardadoCV.Models
                     property = pItemEditSectionRowProperty.property,
                     width = pItemEditSectionRowProperty.width,
                     required = pItemEditSectionRowProperty.required,
+                    editable = pItemEditSectionRowProperty.editable,
+                    multilang = pItemEditSectionRowProperty.multilang,
                     multiple = true,
                     autocomplete = pItemEditSectionRowProperty.autocomplete,
                     title = UtilityCV.GetTextLang(pLang, pItemEditSectionRowProperty.title),
@@ -1167,6 +1193,8 @@ namespace GuardadoCV.Models
                     property = pItemEditSectionRowProperty.property,
                     width = pItemEditSectionRowProperty.width,
                     required = pItemEditSectionRowProperty.required,
+                    editable = pItemEditSectionRowProperty.editable,
+                    multilang = pItemEditSectionRowProperty.multilang,
                     multiple = pItemEditSectionRowProperty.multiple,
                     autocomplete = pItemEditSectionRowProperty.autocomplete,
                     title = UtilityCV.GetTextLang(pLang, pItemEditSectionRowProperty.title),
@@ -1231,11 +1259,20 @@ namespace GuardadoCV.Models
 
                 if (pId != null && pData.ContainsKey(pId))
                 {
-                    foreach (string value in pData[pId].Where(x => x["p"].value == entityEditSectionRowProperty.property).Select(x => x["o"].value).Distinct())
+                    foreach (string value in pData[pId].Where(x => x["p"].value == entityEditSectionRowProperty.property && !x.ContainsKey("lang")).Select(x => x["o"].value).Distinct())
                     {
                         entityEditSectionRowProperty.values.Add(value);
                     }
+                    if(pItemEditSectionRowProperty.multilang)
+                    {
+                        entityEditSectionRowProperty.valuesmultilang = new Dictionary<string, string>();
+                        foreach (Dictionary<string,SparqlObject.Data> fila in pData[pId].Where(x => x["p"].value == entityEditSectionRowProperty.property && x.ContainsKey("lang")))
+                        {
+                            entityEditSectionRowProperty.valuesmultilang[fila["lang"].value] = fila["o"].value;
+                        }
+                    }
                 }
+
                 if (pItemEditSectionRowProperty.type == DataTypeEdit.boolean)
                 {
                     entityEditSectionRowProperty.comboValues = new Dictionary<string, string>();
@@ -1477,7 +1514,7 @@ namespace GuardadoCV.Models
 
         #region Métodos de recolección de datos
 
-        private Dictionary<string, List<ThesaurusItem>> GetTesauros(List<string> pListaTesauros)
+        private Dictionary<string, List<ThesaurusItem>> GetTesauros(List<string> pListaTesauros,string pLang)
         {
             Dictionary<string, List<ThesaurusItem>> elementosTesauros = new Dictionary<string, List<ThesaurusItem>>();
 
@@ -1487,6 +1524,7 @@ namespace GuardadoCV.Models
                 string where = @$"where {{
                     ?s a <http://www.w3.org/2008/05/skos#Concept>.
                     ?s <http://www.w3.org/2008/05/skos#prefLabel> ?nombre.
+                    FILTER( lang(?nombre) = '{pLang}' OR lang(?nombre) = '')  
                     ?s <http://purl.org/dc/elements/1.1/source> '{tesauro}'
                     OPTIONAL {{ ?s <http://www.w3.org/2008/05/skos#broader> ?padre }}
                 }} ORDER BY ?padre ?s ";

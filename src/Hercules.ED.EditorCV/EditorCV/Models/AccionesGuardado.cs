@@ -1,4 +1,5 @@
-﻿using EditorCV.Models.API.Response;
+﻿using EditorCV.Models;
+using EditorCV.Models.API.Response;
 using EditorCV.Models.ORCID;
 using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.ApiModel;
@@ -85,7 +86,11 @@ namespace GuardadoCV.Models
         public JsonResult RemoveItem(string pEntity)
         {
             //Obtenemos la entidad para luego borrarla si es necesario
-            string entityDestino = mResourceApi.VirtuosoQuery("select ?id", "where{<" + pEntity + "> <http://vivoweb.org/ontology/core#relatedBy> ?id}", "curriculumvitae").results.bindings.First()["id"].value;
+            string entityDestino = "";
+            string entityCV = "";
+            SparqlObject resultadoEntityCV= mResourceApi.VirtuosoQuery("select ?idCV ?idEntity", "where{?idCV ?p ?o. ?o ?p2 ?idAux. ?idAux <http://vivoweb.org/ontology/core#relatedBy> ?idEntity. FILTER(?idAux=<" + pEntity+ ">) FILTER(?p!=<http://gnoss/hasEntidad>) }", "curriculumvitae");
+            entityDestino = resultadoEntityCV.results.bindings.First()["idEntity"].value;
+            entityCV = resultadoEntityCV.results.bindings.First()["idCV"].value;
 
             mResourceApi.ChangeOntoly("curriculumvitae");
             Tuple<List<string>, List<string>, List<string>> subjectPropertiesAndRdfTypes = GetSubjectsPropertiesAndRdftypesFromAuxCV(pEntity, "");
@@ -125,6 +130,11 @@ namespace GuardadoCV.Models
             lista.Add(rt);
             dicEliminar.Add(mResourceApi.GetShortGuid(pEntity), lista);
             Dictionary<Guid, bool> dicCorrecto = mResourceApi.DeletePropertiesLoadedResources(dicEliminar);
+
+            //Elimianmos los valores multiidioma de la entidad
+            Dictionary<string, List<MultilangProperty>> propiedadesActuales = UtilityCV.GetMultilangPropertiesCV(entityCV, entityDestino);
+            Dictionary<string, List<MultilangProperty>> propiedadesNuevas = new Dictionary<string, List<MultilangProperty>>();
+            UpdateMultilangProperties(propiedadesActuales, propiedadesNuevas, entityCV, entityDestino);
 
             //Si la entidaad no está referenciada desde ningún CV se elimina también la entidad
             if (mResourceApi.VirtuosoQuery("select ?s", "where{?s ?p <" + entityDestino + ">}", "curriculumvitae").results.bindings.Count == 0)
@@ -326,8 +336,8 @@ namespace GuardadoCV.Models
 
                     if (!editable)
                     {
-                        //TODO excepciones de campos editables incluso bloqueado
-                        pEntity.properties = new List<Entity.Property>();
+                        List<string> propertiesEditables = templateSection.presentation.listItemsPresentation.listItemEdit.sections.SelectMany(x => x.rows).SelectMany(x => x.properties).Where(x => x.editable).Select(x => x.property).ToList();
+                        pEntity.properties.RemoveAll(x => !propertiesEditables.Contains(x.prop.Split(new string[] { "@@@" }, StringSplitOptions.RemoveEmptyEntries)[0]));
                     }
 
 
@@ -435,6 +445,37 @@ namespace GuardadoCV.Models
                         return new JsonResult() { ok = false, id = entityID };
                     }
                 }
+
+                //Actualizamos las propiedades multiidioma
+                {
+                    //Entidad entityID
+                    Dictionary<string, List<MultilangProperty>> propiedadesActuales = UtilityCV.GetMultilangPropertiesCV(pCvID, entityID);
+                    Dictionary<string, List<MultilangProperty>> propiedadesNuevas = new Dictionary<string, List<MultilangProperty>>();
+                    foreach (Entity.Property prop in pEntity.properties)
+                    {
+                        if (prop.valuesmultilang != null)
+                        {
+                            foreach (string idioma in prop.valuesmultilang.Keys)
+                            {
+                                if (!string.IsNullOrEmpty(prop.valuesmultilang[idioma]))
+                                {
+                                    if (!propiedadesNuevas.ContainsKey(prop.prop))
+                                    {
+                                        propiedadesNuevas.Add(prop.prop, new List<MultilangProperty>());
+                                    }
+                                    MultilangProperty multilangProperty = new MultilangProperty()
+                                    {
+                                        lang = idioma,
+                                        value = prop.valuesmultilang[idioma]
+                                    };
+                                    propiedadesNuevas[prop.prop].Add(multilangProperty);
+                                }
+                            }
+                        }
+                    }
+                    UpdateMultilangProperties(propiedadesActuales, propiedadesNuevas, pCvID, entityID);
+                }
+
                 return new JsonResult() { ok = true, id = entityIDResponse };
             }
         }
@@ -974,6 +1015,120 @@ namespace GuardadoCV.Models
         }
 
         /// <summary>
+        /// Actualiza las propiedades multiidioma de una entidad
+        /// </summary>
+        /// <param name="pValoresAntiguos">Valores antiguos multiidioma</param>
+        /// <param name="pValoresNuevos">Valores nuevos multiidioma</param>
+        /// <param name="pIdCV">Identificador del CV</param>
+        /// <param name="pIdEntity">Identificador de la entidad</param>
+        /// <returns></returns>
+        private bool UpdateMultilangProperties(Dictionary<string, List<MultilangProperty>> pValoresAntiguos, Dictionary<string, List<MultilangProperty>> pValoresNuevos, string pIdCV, string pIdEntity)
+        {
+            bool update = true;
+            Guid guidCV = mResourceApi.GetShortGuid(pIdCV);
+            Dictionary<Guid, List<Gnoss.ApiWrapper.Model.TriplesToInclude>> triplesInclude = new Dictionary<Guid, List<TriplesToInclude>>() { { guidCV, new List<TriplesToInclude>() } };
+            Dictionary<Guid, List<Gnoss.ApiWrapper.Model.RemoveTriples>> triplesRemove = new Dictionary<Guid, List<RemoveTriples>>() { { guidCV, new List<RemoveTriples>() } };
+            Dictionary<Guid, List<Gnoss.ApiWrapper.Model.TriplesToModify>> triplesModify = new Dictionary<Guid, List<TriplesToModify>>() { { guidCV, new List<TriplesToModify>() } };
+
+            //Añadimos
+            foreach (string property in pValoresNuevos.Keys)
+            {
+                foreach (MultilangProperty multilangProperty in pValoresNuevos[property])
+                {
+                    //Si no existe en las propiedades cargados esa propiedad en ese idioma la cargamos
+                    if (!pValoresAntiguos.ContainsKey(property) || !pValoresAntiguos[property].Exists(x => x.lang == multilangProperty.lang))
+                    {
+                        string idNewAux = $"{mResourceApi.GraphsUrl}items/MultilangProperties_" + guidCV + "_" + Guid.NewGuid();
+
+                        triplesInclude[guidCV].Add(new TriplesToInclude()
+                        {
+
+                            Predicate = "http://w3id.org/roh/multilangProperties|http://w3id.org/roh/entity",
+                            NewValue = idNewAux + "|" + pIdEntity
+                        });
+                        triplesInclude[guidCV].Add(new TriplesToInclude()
+                        {
+
+                            Predicate = "http://w3id.org/roh/multilangProperties|http://w3id.org/roh/property",
+                            NewValue = idNewAux + "|" + property
+                        });
+                        triplesInclude[guidCV].Add(new TriplesToInclude()
+                        {
+
+                            Predicate = "http://w3id.org/roh/multilangProperties|http://w3id.org/roh/lang",
+                            NewValue = idNewAux + "|" + multilangProperty.lang
+                        });
+                        triplesInclude[guidCV].Add(new TriplesToInclude()
+                        {
+
+                            Predicate = "http://w3id.org/roh/multilangProperties|http://w3id.org/roh/value",
+                            NewValue = idNewAux + "|" + multilangProperty.value
+                        });
+                    }
+                }
+            }
+
+            //Modificamos
+            foreach (string property in pValoresNuevos.Keys)
+            {
+                foreach (MultilangProperty multilangProperty in pValoresNuevos[property])
+                {
+                    if (!string.IsNullOrEmpty(multilangProperty.value))
+                    {
+                        //Si existe en las propiedades cargados en ese idioma y tiene valor la modificamos
+                        if (pValoresAntiguos.ContainsKey(property) && pValoresAntiguos[property].Exists(x => x.lang == multilangProperty.lang))
+                        {
+                            MultilangProperty multiAntitguo = pValoresAntiguos[property].First(x => x.lang == multilangProperty.lang);
+                            if (multiAntitguo.value != multilangProperty.value)
+                            {
+                                string idNewAux = multiAntitguo.auxEntityCV;
+                                triplesModify[guidCV].Add(new TriplesToModify()
+                                {
+
+                                    Predicate = "http://w3id.org/roh/multilangProperties|http://w3id.org/roh/value",
+                                    NewValue = idNewAux + "|" + multilangProperty.value,
+                                    OldValue = idNewAux + "|" + multiAntitguo.value
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+
+            //Eliminamos
+            foreach (string property in pValoresAntiguos.Keys)
+            {
+                foreach (MultilangProperty multilangProperty in pValoresAntiguos[property])
+                {
+                    //Si no existe en las propiedades nuevas esa propiedad en ese idioma la eliminamos
+                    if (!pValoresNuevos.ContainsKey(property) || !pValoresNuevos[property].Exists(x => x.lang == multilangProperty.lang) || pValoresNuevos[property].Exists(x => x.lang == multilangProperty.lang && string.IsNullOrEmpty( x.value)))
+                    {
+                        triplesRemove[guidCV].Add(new RemoveTriples()
+                        {
+                            Predicate = "http://w3id.org/roh/multilangProperties",
+                            Value = multilangProperty.auxEntityCV
+                        });
+                    }
+                }
+            }
+
+            if (triplesRemove[guidCV].Count > 0)
+            {
+                update = update && mResourceApi.DeletePropertiesLoadedResources(triplesRemove)[guidCV];
+            }
+            if (triplesInclude[guidCV].Count > 0)
+            {
+                update = update && mResourceApi.InsertPropertiesLoadedResources(triplesInclude)[guidCV];
+            }
+            if (triplesModify[guidCV].Count > 0)
+            {
+                update = update && mResourceApi.ModifyPropertiesLoadedResources(triplesModify)[guidCV];
+            }
+            return update;
+        }
+
+
+        /// <summary>
         /// Transforma la propiedad para su carga en una entiadad auxiliar
         /// </summary>
         /// <param name="pProp">Propiedad</param>
@@ -1286,6 +1441,7 @@ namespace GuardadoCV.Models
             }
             return null;
         }
+                
 
         /// <summary>
         /// Carga los datos en el objeto entidad con los datos obtenidos

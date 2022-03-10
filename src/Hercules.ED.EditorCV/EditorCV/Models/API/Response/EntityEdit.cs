@@ -106,9 +106,21 @@ namespace GuardadoCV.Models.API.Response
         /// </summary>
         public bool required { get; set; }
         /// <summary>
+        /// Indica si es editable aunque la entidad esté bloqueada
+        /// </summary>
+        public bool editable { get; set; }
+        /// <summary>
+        /// Indica si es multiidioma
+        /// </summary>
+        public bool multilang { get; set; }
+        /// <summary>
         /// Lista de valores
         /// </summary>
         public List<string> values { get; set; }
+        /// <summary>
+        /// Lista de valores nultiidioma
+        /// </summary>
+        public Dictionary<string, string> valuesmultilang { get; set; }
         /// <summary>
         /// Lista de valores disponibles para el combo
         /// </summary>
