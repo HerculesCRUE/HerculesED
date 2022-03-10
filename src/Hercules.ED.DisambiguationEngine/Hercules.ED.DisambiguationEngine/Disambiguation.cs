@@ -32,9 +32,9 @@ namespace Hercules.ED.DisambiguationEngine.Models
         /// Score de los nombres 
         /// </summary>
         private static Dictionary<string, float> mScoreNombresCalculado = null;
-        //Valores entre 0.2 y 0.6
+        //Valores entre 0.4 y 0.6
         private static float scoreInicial = 0.1f;
-        private static float minimoScoreNombres = 0.2f;
+        private static float minimoScoreNombres = 0.4f;
         private static float maximoScoreNombres = 0.6f;
         private static ThreadSafeSingleShotGuard _loading = new ThreadSafeSingleShotGuard();
 
