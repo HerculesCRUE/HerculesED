@@ -14,7 +14,7 @@ namespace DesnormalizadorHercules.Models
         private readonly static string rutaOauth = $@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/OAuthV3.config";
         private static ResourceApi resourceApi = new ResourceApi(rutaOauth);
         private static CommunityApi communityApi = new CommunityApi(rutaOauth);
-        
+
         private static Guid communityID = communityApi.GetCommunityId();
 
         /// <summary>
@@ -253,7 +253,7 @@ namespace DesnormalizadorHercules.Models
             //IMPORTANTE!!!
             //No descomentar, esto sólo debe usarse para pruebas, si se eliminan los datos no son recuperables
             if (eliminarDatos)
-            {                
+            {
                 //Eliminamos los CV
                 while (true)
                 {
@@ -469,7 +469,7 @@ namespace DesnormalizadorHercules.Models
                         string id = fila["persona"].value;
                         string nombre = fila["nombreCompleto"].value;
                         bool cargar = true;
-                        foreach(string nom in pNombre)
+                        foreach (string nom in pNombre)
                         {
                             if (!nombre.ToLower().Contains(nom))
                             {
@@ -526,7 +526,7 @@ namespace DesnormalizadorHercules.Models
                                 
                             }} ";
                 SparqlObject resultadoQuery = resourceApi.VirtuosoQuery(select, where, communityID);
-                if(resultadoQuery.results.bindings.Count==0)
+                if (resultadoQuery.results.bindings.Count == 0)
                 {
                     break;
                 }
