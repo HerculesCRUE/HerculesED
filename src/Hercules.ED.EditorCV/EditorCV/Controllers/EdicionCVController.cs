@@ -32,14 +32,17 @@ namespace GuardadoCV.Controllers
         /// <param name="pRdfType">Rdf:type de la entidad en la que se quiere buscar</param>
         /// <param name="pGraph">Grafo en el que se encuentra la propiedad</param>
         /// <param name="pGetEntityID">Obtiene el ID de la entidad además del valor de la propiedad</param>
+        /// <param name="lista">Lista de valores ya introducidos</param>
+        /// <param name="pLang">Idioma</param>
+        /// <param name="pCache">Indica si hay que cachear</param>
         /// <returns></returns>
         [HttpPost("GetAutocomplete")]
-        public IActionResult GetAutocomplete([FromForm] string q, [FromForm] string pProperty, [FromForm] string pRdfType, [FromForm] string pGraph, [FromForm] bool pGetEntityID, [FromForm] string lista)
+        public IActionResult GetAutocomplete([FromForm] string q, [FromForm] string pProperty, [FromForm] string pRdfType, [FromForm] string pGraph, [FromForm] bool pGetEntityID, [FromForm] string lista, [FromForm] string pLang,[FromForm] bool pCache)
         {
             try
             {
                 AccionesEdicion accionesEdicion = new AccionesEdicion();
-                return Ok(accionesEdicion.GetAutocomplete(q.ToLower(), pProperty, pRdfType, pGraph, pGetEntityID, lista?.Split(',').ToList()));
+                return Ok(accionesEdicion.GetAutocomplete(q.ToLower(), pProperty, pRdfType, pGraph, pGetEntityID, lista?.Split(',').ToList(), pLang,pCache));
             }
             catch (Exception ex)
             {
