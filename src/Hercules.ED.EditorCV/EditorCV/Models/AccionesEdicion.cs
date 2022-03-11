@@ -34,6 +34,10 @@ namespace GuardadoCV.Models
 
         private static Tuple<Dictionary<string, string>, Dictionary<string, string>> tuplaTesauro;
 
+        private static Dictionary<string,Dictionary<string,Dictionary<string,string>>> dicAutocompletar=new Dictionary<string, Dictionary<string, Dictionary<string, string>>>();
+
+
+
         #region Métodos públicos
 
         /// <summary>
@@ -44,65 +48,137 @@ namespace GuardadoCV.Models
         /// <param name="pRdfType">Rdf:type de la entidad en la que se quiere buscar</param>
         /// <param name="pGraph">Grafo en el que se encuentra la propiedad</param>
         /// <param name="pGetEntityID">Obtiene el ID de la entidad además del valor de la propiedad</param>
+        /// <param name="pLang">Idioma</param>
+        /// <param name="pCache">Indica si hay que cachear</param>
         /// <returns></returns>
-        public object GetAutocomplete(string pSearch, string pProperty, string pRdfType, string pGraph, bool pGetEntityID, List<string> pLista)
+        public object GetAutocomplete(string pSearch, string pProperty, string pRdfType, string pGraph, bool pGetEntityID, List<string> pLista,string pLang,bool pCache)
         {
             string searchText = pSearch.Trim();
-            string filter = "";
-            if (!pSearch.EndsWith(' '))
+            if(pCache)
             {
-                string[] splitSearch = searchText.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                if (splitSearch.Length > 1)
+                Dictionary<string, string> dicBuscar = new Dictionary<string, string>();
+                string claveAutocompletar = $"{pProperty}{pRdfType}{pGraph}";
+                if (dicAutocompletar.ContainsKey(claveAutocompletar) && dicAutocompletar[claveAutocompletar].ContainsKey(pLang))
                 {
-                    searchText = searchText.Substring(0, searchText.LastIndexOf(' '));
-                    if (splitSearch.Last().Length > 3)
+                    dicBuscar = dicAutocompletar[claveAutocompletar][pLang];
+                }
+                else
+                {
+                    int limit = 10000;
+                    int offset = 0;
+                    while (true)
                     {
-                        searchText += " " + splitSearch.Last() + "*";
-                    }
-                    else
-                    {
-                        filter = $" AND lcase(?o) like \"% { splitSearch.Last() }%\" ";
-                    }
-                }
-                else if (searchText.Length > 3)
-                {
-                    searchText += "*";
-                }
-                else // Si tiene menos de 4 caracteres y no termina en espacio, buscamos por like
-                {
-                    filter = $"  lcase(?o) like \"{ searchText }%\" OR lcase(?o) like \"% { searchText }%\" ";
-                    searchText = "";
-                }
-            }
-            if (searchText != "")
-            {
-                filter = $"bif:contains(?o, \"'{ searchText }'\"){filter}";
-            }
-            string select = "SELECT DISTINCT ?s ?o ";
-            string where = $"WHERE {{ ?s a <{ pRdfType }>. ?s <{ pProperty }> ?o . FILTER( {filter} ) }} ORDER BY ?o";
-            SparqlObject sparqlObjectAux = mResourceApi.VirtuosoQuery(select, where, pGraph);
-            if (!pGetEntityID)
-            {
-                var resultados = sparqlObjectAux.results.bindings.Select(x => x["o"].value).Distinct();
-                if (pLista != null)
-                {
-                    resultados = resultados.Except(pLista, StringComparer.OrdinalIgnoreCase);
-                }
-                return resultados.ToList();
-            }
-            else
-            {
-                Dictionary<string, string> respuesta = new Dictionary<string, string>();
-                foreach (Dictionary<string, Data> fila in sparqlObjectAux.results.bindings)
-                {
-                    string s = fila["s"].value;
-                    string o = fila["o"].value;
-                    if (pLista == null || respuesta.Keys.Intersect(pLista).Count() == 0)
-                    {
-                        respuesta.Add(s, o);
+                        Dictionary<string, string> dicValores = new Dictionary<string, string>();
+                        string select = "SELECT * WHERE { SELECT DISTINCT ?s ?o  ";
+                        string where = $@"WHERE {{
+                                                            ?s a <{ pRdfType }>. ?s <{ pProperty }> ?o . FILTER( lang(?o) = '{pLang}' OR lang(?o) = '')                          
+                                                        }} ORDER BY DESC(?o) DESC (?s) }} LIMIT {limit} OFFSET {offset}";
+                        SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, pGraph);
+                        if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+                        {
+                            offset += limit;
+                            foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                            {
+                                dicValores[fila["s"].value] = fila["o"].value;
+                            }
+                            if (resultadoQuery.results.bindings.Count < limit)
+                            {
+                                if (!dicAutocompletar.ContainsKey(claveAutocompletar))
+                                {
+                                    dicAutocompletar[claveAutocompletar] = new Dictionary<string, Dictionary<string, string>>();
+                                }
+                                if (!dicAutocompletar[claveAutocompletar].ContainsKey(pLang))
+                                {
+                                    dicAutocompletar[claveAutocompletar][pLang] = new Dictionary<string, string>();
+                                }
+                                dicAutocompletar[claveAutocompletar][pLang] = dicValores;
+                                dicBuscar = dicAutocompletar[claveAutocompletar][pLang];
+                                break;
+                            }
+                        }
                     }
                 }
-                return respuesta;
+                if (!pGetEntityID)
+                {
+                    var resultados = dicBuscar.Values.Where(x=> x.ToLower().Contains(searchText.ToLower())).Distinct();
+                    if (pLista != null)
+                    {
+                        resultados = resultados.Except(pLista, StringComparer.OrdinalIgnoreCase);
+                    }
+                    return resultados.ToList();
+                }
+                else
+                {
+                    Dictionary<string, string> respuesta = new Dictionary<string, string>();
+                    foreach (KeyValuePair<string, string> fila in dicBuscar.Where(x => x.Value.ToLower().Contains(searchText.ToLower())))
+                    {
+                        string s = fila.Key;
+                        string o = fila.Value;
+                        if (pLista == null || respuesta.Keys.Intersect(pLista).Count() == 0)
+                        {
+                            respuesta.Add(s, o);
+                        }
+                    }
+                    return respuesta;
+                }
+            }else
+            {                
+                string filter = "";
+                if (!pSearch.EndsWith(' '))
+                {
+                    string[] splitSearch = searchText.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                    if (splitSearch.Length > 1)
+                    {
+                        searchText = searchText.Substring(0, searchText.LastIndexOf(' '));
+                        if (splitSearch.Last().Length > 3)
+                        {
+                            searchText += " " + splitSearch.Last() + "*";
+                        }
+                        else
+                        {
+                            filter = $" AND lcase(?o) like \"% { splitSearch.Last() }%\" ";
+                        }
+                    }
+                    else if (searchText.Length > 3)
+                    {
+                        searchText += "*";
+                    }
+                    else // Si tiene menos de 4 caracteres y no termina en espacio, buscamos por like
+                    {
+                        filter = $"  lcase(?o) like \"{ searchText }%\" OR lcase(?o) like \"% { searchText }%\" ";
+                        searchText = "";
+                    }
+                }
+                if (searchText != "")
+                {
+                    filter = $"bif:contains(?o, \"'{ searchText }'\"){filter}";
+                }
+                string select = "SELECT DISTINCT ?s ?o ";
+                string where = $"WHERE {{ ?s a <{ pRdfType }>. ?s <{ pProperty }> ?o . FILTER( {filter} ) FILTER( lang(?o) = '{pLang}' OR lang(?o) = '')   }} ORDER BY ?o";
+                SparqlObject sparqlObjectAux = mResourceApi.VirtuosoQuery(select, where, pGraph);
+                if (!pGetEntityID)
+                {
+                    var resultados = sparqlObjectAux.results.bindings.Select(x => x["o"].value).Distinct();
+                    if (pLista != null)
+                    {
+                        resultados = resultados.Except(pLista, StringComparer.OrdinalIgnoreCase);
+                    }
+                    return resultados.ToList();
+                }
+                else
+                {
+                    Dictionary<string, string> respuesta = new Dictionary<string, string>();
+                    foreach (Dictionary<string, Data> fila in sparqlObjectAux.results.bindings)
+                    {
+                        string s = fila["s"].value;
+                        string o = fila["o"].value;
+                        if (pLista == null || respuesta.Keys.Intersect(pLista).Count() == 0)
+                        {
+                            respuesta.Add(s, o);
+                        }
+                    }
+                    return respuesta;
+                }
             }
         }
 
@@ -1327,6 +1403,7 @@ namespace GuardadoCV.Models
                         property = UtilityCV.GetPropComplete(pItemEditSectionRowProperty.autocompleteConfig.property),
                         rdftype = pItemEditSectionRowProperty.autocompleteConfig.rdftype,
                         graph = pItemEditSectionRowProperty.autocompleteConfig.graph,
+                        cache = pItemEditSectionRowProperty.autocompleteConfig.cache,
                         getEntityId = !string.IsNullOrEmpty(pItemEditSectionRowProperty.autocompleteConfig.propertyEntity),
                         mandatory = pItemEditSectionRowProperty.autocompleteConfig.mandatory,
                     };
