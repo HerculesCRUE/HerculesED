@@ -377,6 +377,10 @@ namespace GuardadoCV.Models.API.Templates
         /// </summary>
         public string graph;
         /// <summary>
+        /// Indica si hay que cachear
+        /// </summary>
+        public bool cache;
+        /// <summary>
         /// Propiedad en la que se carga el ID de la entidad
         /// </summary>
         public string propertyEntity;
