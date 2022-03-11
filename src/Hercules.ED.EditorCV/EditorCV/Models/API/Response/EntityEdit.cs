@@ -161,6 +161,7 @@ namespace GuardadoCV.Models.API.Response
         public string property { get; set; }
         public string rdftype { get; set; }
         public string graph { get; set; }
+        public bool cache { get; set; }
         public bool getEntityId { get; set; }
         /// <summary>
         /// Indica si sólo se pueden seleccionar opciones del autocompletar

@@ -2054,7 +2054,7 @@ namespace Hercules.ED.DisambiguationEngine.Models
                 return pDicNomAutoresDesnormalizados[textoAux];
             }
 
-            pText = pText.ToLower();
+            pText = pText.Replace(".", " ").ToLower();
             pText = pText.Trim();
             if (pText.Contains(","))
             {

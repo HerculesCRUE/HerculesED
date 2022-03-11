@@ -15,6 +15,9 @@ namespace Gnoss.Web.ReprocessData.Models.Services
         private string QueueRabbit { get; set; }
         private string urlPublicacion { get; set; }
         private string rutaDirectorioEscritura { get; set; }
+        private string urlZenodo { get; set; }
+        private string urlFigShare { get; set; }
+        private string urlGitHub { get; set; }
 
         /// <summary>
         /// Constructor.
@@ -130,6 +133,75 @@ namespace Gnoss.Web.ReprocessData.Models.Services
             }
 
             return rutaDirectorioEscritura;
+        }
+
+        /// <summary>
+        /// Obtiene la URL del API de Zenodo que ha sido configurada.
+        /// </summary>
+        /// <returns>URI del API de Zenodo.</returns>
+        public string GetUrlZenodo()
+        {
+            if (string.IsNullOrEmpty(urlZenodo))
+            {
+                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                string queue = string.Empty;
+                if (environmentVariables.Contains("UrlZenodo"))
+                {
+                    queue = environmentVariables["UrlZenodo"] as string;
+                }
+                else
+                {
+                    queue = _configuration["UrlZenodo"];
+                }
+                urlZenodo = queue;
+            }
+            return urlZenodo;
+        }
+
+        /// <summary>
+        /// Obtiene la URL del API de FigShare que ha sido configurada.
+        /// </summary>
+        /// <returns>URI del API de FigShare.</returns>
+        public string GetUrlFigShare()
+        {
+            if (string.IsNullOrEmpty(urlFigShare))
+            {
+                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                string queue = string.Empty;
+                if (environmentVariables.Contains("UrlFigShare"))
+                {
+                    queue = environmentVariables["UrlFigShare"] as string;
+                }
+                else
+                {
+                    queue = _configuration["UrlFigShare"];
+                }
+                urlFigShare = queue;
+            }
+            return urlFigShare;
+        }
+
+        /// <summary>
+        /// Obtiene la URL del API de GitHub que ha sido configurada.
+        /// </summary>
+        /// <returns>URI del API de GitHub.</returns>
+        public string GetUrlGitHub()
+        {
+            if (string.IsNullOrEmpty(urlGitHub))
+            {
+                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                string queue = string.Empty;
+                if (environmentVariables.Contains("UrlGitHub"))
+                {
+                    queue = environmentVariables["UrlGitHub"] as string;
+                }
+                else
+                {
+                    queue = _configuration["UrlGitHub"];
+                }
+                urlGitHub = queue;
+            }
+            return urlGitHub;
         }
     }
 }

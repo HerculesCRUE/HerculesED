@@ -1,6 +1,1 @@
-scikit-learn
-torchvision
-numpy
-tqdm
-transformers
-tensorboard
+https://storage.googleapis.com/elhuyar/Hercules/dependencies/text_classification-0.1.0-py2.py3-none-any.whl

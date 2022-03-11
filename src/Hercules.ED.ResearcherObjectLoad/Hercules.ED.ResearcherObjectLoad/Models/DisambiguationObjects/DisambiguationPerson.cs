@@ -89,6 +89,26 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
             }
         }
 
+        private string mZenodoId { get; set; }
+        public string zenodoId
+        {
+            get
+            {
+                return mZenodoId;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    mZenodoId = string.Empty;
+                }
+                else
+                {
+                    mZenodoId = value;
+                }
+            }
+        }
+
         private HashSet<string> mCoautores { get; set; }
         public HashSet<string> coautores
         {
@@ -150,6 +170,11 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
             type = DisambiguationDataConfigType.equalsIdentifiers
         };
 
+        private static DisambiguationDataConfig configZenodo = new DisambiguationDataConfig()
+        {
+            type = DisambiguationDataConfigType.equalsIdentifiers
+        };
+
         private static DisambiguationDataConfig configCoautores = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsItemList,
@@ -207,6 +232,13 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
                 property = "figshare",
                 config = configFigshare,
                 value = figShareId
+            });
+
+            data.Add(new DisambiguationData()
+            {
+                property = "zenodo",
+                config = configZenodo,
+                value = zenodoId
             });
 
             return data;

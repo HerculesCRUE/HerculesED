@@ -18,6 +18,7 @@ using System.Text.Json;
 using Newtonsoft.Json.Linq;
 using System.IO;
 using System.Threading;
+using ZenodoAPI.ROs.Zenodo.Models;
 //using Newtonsoft.Json.Linq.JObject;
 
 namespace ZenodoConnect.ROs.Zenodo.Controllers
@@ -53,8 +54,7 @@ namespace ZenodoConnect.ROs.Zenodo.Controllers
                 {
                     request.Headers.TryAddWithoutValidation("Accept", "application/json");
                     if (headers != null && headers.Count > 0)
-                    {
-                       
+                    {                       
                         foreach (var item in headers)
                         {
                             request.Headers.TryAddWithoutValidation(item.Key, item.Value);

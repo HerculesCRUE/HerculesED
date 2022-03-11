@@ -96,19 +96,15 @@ namespace CurriculumvitaeOntology
 		public virtual string RdfsLabel { get { return "http://w3id.org/roh/PersonalData"; } }
 		public OntologyEntity Entity { get; set; }
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/hasFax")]
 		[RDFProperty("http://w3id.org/roh/hasFax")]
 		public  TelephoneType Roh_hasFax { get; set;}
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/birthplace")]
 		[RDFProperty("http://w3id.org/roh/birthplace")]
 		public  Address Roh_birthplace { get; set;}
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/otherIds")]
 		[RDFProperty("http://w3id.org/roh/otherIds")]
 		public  List<Document> Roh_otherIds { get; set;}
 
-		[LABEL(LanguageEnum.es,"https://www.w3.org/2006/vcard/ns#address")]
 		[RDFProperty("https://www.w3.org/2006/vcard/ns#address")]
 		public  Address Vcard_address { get; set;}
 
@@ -122,23 +118,18 @@ namespace CurriculumvitaeOntology
 		public  Feature Schema_nationality  { get; set;} 
 		public string IdSchema_nationality  { get; set;} 
 
-		[LABEL(LanguageEnum.es,"https://www.w3.org/2006/vcard/ns#hasTelephone")]
 		[RDFProperty("https://www.w3.org/2006/vcard/ns#hasTelephone")]
 		public  TelephoneType Vcard_hasTelephone { get; set;}
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/hasMobilePhone")]
 		[RDFProperty("http://w3id.org/roh/hasMobilePhone")]
 		public  TelephoneType Roh_hasMobilePhone { get; set;}
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/nie")]
 		[RDFProperty("http://w3id.org/roh/nie")]
 		public  string Roh_nie { get; set;}
 
-		[LABEL(LanguageEnum.es,"http://vivoweb.org/ontology/core#researcherId")]
 		[RDFProperty("http://vivoweb.org/ontology/core#researcherId")]
 		public  string Vivo_researcherId { get; set;}
 
-		[LABEL(LanguageEnum.es,"http://vivoweb.org/ontology/core#scopusId")]
 		[RDFProperty("http://vivoweb.org/ontology/core#scopusId")]
 		public  string Vivo_scopusId { get; set;}
 
@@ -148,31 +139,24 @@ namespace CurriculumvitaeOntology
 		[RDFProperty("http://w3id.org/roh/secondFamilyName")]
 		public  string Roh_secondFamilyName { get; set;}
 
-		[LABEL(LanguageEnum.es,"https://www.w3.org/2006/vcard/ns#email")]
 		[RDFProperty("https://www.w3.org/2006/vcard/ns#email")]
 		public  string Vcard_email { get; set;}
 
-		[LABEL(LanguageEnum.es,"Imagen")]
 		[RDFProperty("http://xmlns.com/foaf/0.1/img")]
 		public  string Foaf_img { get; set;}
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/dni")]
 		[RDFProperty("http://w3id.org/roh/dni")]
 		public  string Roh_dni { get; set;}
 
-		[LABEL(LanguageEnum.es,"http://xmlns.com/foaf/0.1/homepage")]
 		[RDFProperty("http://xmlns.com/foaf/0.1/homepage")]
 		public  string Foaf_homepage { get; set;}
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/ORCID")]
 		[RDFProperty("http://w3id.org/roh/ORCID")]
 		public  string Roh_ORCID { get; set;}
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/passport")]
 		[RDFProperty("http://w3id.org/roh/passport")]
 		public  string Roh_passport { get; set;}
 
-		[LABEL(LanguageEnum.es,"https://www.w3.org/2006/vcard/ns#birth-date")]
 		[RDFProperty("https://www.w3.org/2006/vcard/ns#birth-date")]
 		public  DateTime? Vcard_birth_date { get; set;}
 
@@ -323,24 +307,6 @@ namespace CurriculumvitaeOntology
 			}
 		}
 
-		internal override void AddImages(ComplexOntologyResource pResource)
-		{
-			base.AddImages(pResource);
-			List<ImageAction> actionListimg = new List<ImageAction>();
-			actionListimg.Add(new ImageAction(0,200, ImageTransformationType.Crop, 100));
-			pResource.AttachImage(this.Foaf_img, actionListimg,"foaf:img", true, this.GetExtension(this.Foaf_img), this.Entity);
-			this.Roh_hasFax.AddImages(pResource);
-			this.Roh_birthplace.AddImages(pResource);
-			if(Roh_otherIds!=null){
-				foreach (Document prop in Roh_otherIds)
-			{
-				prop.AddImages(pResource);
-				}
-			}
-			this.Vcard_address.AddImages(pResource);
-			this.Vcard_hasTelephone.AddImages(pResource);
-			this.Roh_hasMobilePhone.AddImages(pResource);
-		}
 
 	}
 }

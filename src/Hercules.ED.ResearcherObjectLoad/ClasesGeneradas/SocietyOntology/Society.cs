@@ -31,18 +31,6 @@ namespace SocietyOntology
 		public Society(SemanticResourceModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
 		{
 			this.mGNOSSID = pSemCmsModel.RootEntities[0].Entity.Uri;
-			this.Vivo_freeTextKeywords = new List<CategoryPath>();
-			SemanticPropertyModel propVivo_freeTextKeywords = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#freeTextKeywords");
-			if(propVivo_freeTextKeywords != null && propVivo_freeTextKeywords.PropertyValues.Count > 0)
-			{
-				foreach (SemanticPropertyModel.PropertyValue propValue in propVivo_freeTextKeywords.PropertyValues)
-				{
-					if(propValue.RelatedEntity!=null){
-						CategoryPath vivo_freeTextKeywords = new CategoryPath(propValue.RelatedEntity,idiomaUsuario);
-						this.Vivo_freeTextKeywords.Add(vivo_freeTextKeywords);
-					}
-				}
-			}
 			SemanticPropertyModel propVivo_affiliatedOrganization = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#affiliatedOrganization");
 			if(propVivo_affiliatedOrganization != null && propVivo_affiliatedOrganization.PropertyValues.Count > 0)
 			{
@@ -89,6 +77,18 @@ namespace SocietyOntology
 			if(propRoh_affiliatedOrganizationHasRegion != null && propRoh_affiliatedOrganizationHasRegion.PropertyValues.Count > 0)
 			{
 				this.Roh_affiliatedOrganizationHasRegion = new Feature(propRoh_affiliatedOrganizationHasRegion.PropertyValues[0].RelatedEntity,idiomaUsuario);
+			}
+			this.Vivo_freeTextKeyword = new List<CategoryPath>();
+			SemanticPropertyModel propVivo_freeTextKeyword = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#freeTextKeyword");
+			if(propVivo_freeTextKeyword != null && propVivo_freeTextKeyword.PropertyValues.Count > 0)
+			{
+				foreach (SemanticPropertyModel.PropertyValue propValue in propVivo_freeTextKeyword.PropertyValues)
+				{
+					if(propValue.RelatedEntity!=null){
+						CategoryPath vivo_freeTextKeyword = new CategoryPath(propValue.RelatedEntity,idiomaUsuario);
+						this.Vivo_freeTextKeyword.Add(vivo_freeTextKeyword);
+					}
+				}
 			}
 			this.Roh_affiliatedOrganizationLocality = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/affiliatedOrganizationLocality"));
 			this.Roh_professionalCategory = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/professionalCategory"));
@@ -107,18 +107,6 @@ namespace SocietyOntology
 		{
 			this.mGNOSSID = pSemCmsModel.Entity.Uri;
 			this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
-			this.Vivo_freeTextKeywords = new List<CategoryPath>();
-			SemanticPropertyModel propVivo_freeTextKeywords = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#freeTextKeywords");
-			if(propVivo_freeTextKeywords != null && propVivo_freeTextKeywords.PropertyValues.Count > 0)
-			{
-				foreach (SemanticPropertyModel.PropertyValue propValue in propVivo_freeTextKeywords.PropertyValues)
-				{
-					if(propValue.RelatedEntity!=null){
-						CategoryPath vivo_freeTextKeywords = new CategoryPath(propValue.RelatedEntity,idiomaUsuario);
-						this.Vivo_freeTextKeywords.Add(vivo_freeTextKeywords);
-					}
-				}
-			}
 			SemanticPropertyModel propVivo_affiliatedOrganization = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#affiliatedOrganization");
 			if(propVivo_affiliatedOrganization != null && propVivo_affiliatedOrganization.PropertyValues.Count > 0)
 			{
@@ -166,6 +154,18 @@ namespace SocietyOntology
 			{
 				this.Roh_affiliatedOrganizationHasRegion = new Feature(propRoh_affiliatedOrganizationHasRegion.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
+			this.Vivo_freeTextKeyword = new List<CategoryPath>();
+			SemanticPropertyModel propVivo_freeTextKeyword = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#freeTextKeyword");
+			if(propVivo_freeTextKeyword != null && propVivo_freeTextKeyword.PropertyValues.Count > 0)
+			{
+				foreach (SemanticPropertyModel.PropertyValue propValue in propVivo_freeTextKeyword.PropertyValues)
+				{
+					if(propValue.RelatedEntity!=null){
+						CategoryPath vivo_freeTextKeyword = new CategoryPath(propValue.RelatedEntity,idiomaUsuario);
+						this.Vivo_freeTextKeyword.Add(vivo_freeTextKeyword);
+					}
+				}
+			}
 			this.Roh_affiliatedOrganizationLocality = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/affiliatedOrganizationLocality"));
 			this.Roh_professionalCategory = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/professionalCategory"));
 			this.Roh_crisIdentifier = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/crisIdentifier"));
@@ -181,10 +181,6 @@ namespace SocietyOntology
 
 		public virtual string RdfType { get { return "http://w3id.org/roh/Society"; } }
 		public virtual string RdfsLabel { get { return "http://w3id.org/roh/Society"; } }
-		[LABEL(LanguageEnum.es,"freeTextKeywords")]
-		[RDFProperty("http://vivoweb.org/ontology/core#freeTextKeywords")]
-		public  List<CategoryPath> Vivo_freeTextKeywords { get; set;}
-
 		[LABEL(LanguageEnum.es,"affiliatedOrganization")]
 		[RDFProperty("http://vivoweb.org/ontology/core#affiliatedOrganization")]
 		public  Organization Vivo_affiliatedOrganization  { get; set;} 
@@ -225,44 +221,39 @@ namespace SocietyOntology
 		public  Feature Roh_affiliatedOrganizationHasRegion  { get; set;} 
 		public string IdRoh_affiliatedOrganizationHasRegion  { get; set;} 
 
+		[RDFProperty("http://vivoweb.org/ontology/core#freeTextKeyword")]
+		public  List<CategoryPath> Vivo_freeTextKeyword { get; set;}
+
 		[RDFProperty("http://w3id.org/roh/affiliatedOrganizationLocality")]
 		public  string Roh_affiliatedOrganizationLocality { get; set;}
 
-		[LABEL(LanguageEnum.es,"professionalCategory")]
 		[RDFProperty("http://w3id.org/roh/professionalCategory")]
 		public  string Roh_professionalCategory { get; set;}
 
-		[LABEL(LanguageEnum.es,"crisIdentifier")]
 		[RDFProperty("http://w3id.org/roh/crisIdentifier")]
 		public  string Roh_crisIdentifier { get; set;}
 
-		[LABEL(LanguageEnum.es,"geographicFocusOther")]
 		[RDFProperty("http://w3id.org/roh/geographicFocusOther")]
 		public  string Roh_geographicFocusOther { get; set;}
 
-		[LABEL(LanguageEnum.es,"end")]
 		[RDFProperty("http://vivoweb.org/ontology/core#end")]
 		public  DateTime? Vivo_end { get; set;}
 
-		[LABEL(LanguageEnum.es,"start")]
 		[RDFProperty("http://vivoweb.org/ontology/core#start")]
 		public  DateTime? Vivo_start { get; set;}
 
 		[RDFProperty("http://w3id.org/roh/affiliatedOrganizationTypeOther")]
 		public  string Roh_affiliatedOrganizationTypeOther { get; set;}
 
-		[LABEL(LanguageEnum.es,"members")]
 		[RDFProperty("http://w3id.org/roh/members")]
 		public  int? Roh_members { get; set;}
 
 		[RDFProperty("http://w3id.org/roh/affiliatedOrganizationTitle")]
 		public  string Roh_affiliatedOrganizationTitle { get; set;}
 
-		[LABEL(LanguageEnum.es,"locality")]
 		[RDFProperty("https://www.w3.org/2006/vcard/ns#locality")]
 		public  string Vcard_locality { get; set;}
 
-		[LABEL(LanguageEnum.es,"title")]
 		[RDFProperty("http://w3id.org/roh/title")]
 		public  string Roh_title { get; set;}
 
@@ -298,11 +289,11 @@ namespace SocietyOntology
 		internal override void GetEntities()
 		{
 			base.GetEntities();
-			if(Vivo_freeTextKeywords!=null){
-				foreach(CategoryPath prop in Vivo_freeTextKeywords){
+			if(Vivo_freeTextKeyword!=null){
+				foreach(CategoryPath prop in Vivo_freeTextKeyword){
 					prop.GetProperties();
 					prop.GetEntities();
-					OntologyEntity entityCategoryPath = new OntologyEntity("http://w3id.org/roh/CategoryPath", "http://w3id.org/roh/CategoryPath", "vivo:freeTextKeywords", prop.propList, prop.entList);
+					OntologyEntity entityCategoryPath = new OntologyEntity("http://w3id.org/roh/CategoryPath", "http://w3id.org/roh/CategoryPath", "vivo:freeTextKeyword", prop.propList, prop.entList);
 				entList.Add(entityCategoryPath);
 				prop.Entity= entityCategoryPath;
 				}
@@ -342,14 +333,14 @@ namespace SocietyOntology
 			AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Society_{ResourceID}_{ArticleID}", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", $"<http://w3id.org/roh/Society>", list, " . ");
 			AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Society_{ResourceID}_{ArticleID}", "http://www.w3.org/2000/01/rdf-schema#label", $"\"http://w3id.org/roh/Society\"", list, " . ");
 			AgregarTripleALista($"{resourceAPI.GraphsUrl}{ResourceID}", "http://gnoss/hasEntidad", $"<{resourceAPI.GraphsUrl}items/Society_{ResourceID}_{ArticleID}>", list, " . ");
-			if(this.Vivo_freeTextKeywords != null)
+			if(this.Vivo_freeTextKeyword != null)
 			{
-			foreach(var item0 in this.Vivo_freeTextKeywords)
+			foreach(var item0 in this.Vivo_freeTextKeyword)
 			{
 				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/CategoryPath_{ResourceID}_{item0.ArticleID}", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", $"<http://w3id.org/roh/CategoryPath>", list, " . ");
 				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/CategoryPath_{ResourceID}_{item0.ArticleID}", "http://www.w3.org/2000/01/rdf-schema#label", $"\"http://w3id.org/roh/CategoryPath\"", list, " . ");
 				AgregarTripleALista($"{resourceAPI.GraphsUrl}{ResourceID}", "http://gnoss/hasEntidad", $"<{resourceAPI.GraphsUrl}items/CategoryPath_{ResourceID}_{item0.ArticleID}>", list, " . ");
-				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Society_{ResourceID}_{ArticleID}", "http://vivoweb.org/ontology/core#freeTextKeywords", $"<{resourceAPI.GraphsUrl}items/CategoryPath_{ResourceID}_{item0.ArticleID}>", list, " . ");
+				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Society_{ResourceID}_{ArticleID}", "http://vivoweb.org/ontology/core#freeTextKeyword", $"<{resourceAPI.GraphsUrl}items/CategoryPath_{ResourceID}_{item0.ArticleID}>", list, " . ");
 				if(item0.IdsRoh_categoryNode != null)
 				{
 					foreach(var item2 in item0.IdsRoh_categoryNode)
@@ -456,11 +447,11 @@ namespace SocietyOntology
 			AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://xmlns.com/foaf/0.1/firstName", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_title)}\"", list, " . ");
 			AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://gnoss/hasnombrecompleto", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_title)}\"", list, " . ");
 			string search = string.Empty;
-			if(this.Vivo_freeTextKeywords != null)
+			if(this.Vivo_freeTextKeyword != null)
 			{
-			foreach(var item0 in this.Vivo_freeTextKeywords)
+			foreach(var item0 in this.Vivo_freeTextKeyword)
 			{
-				AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://vivoweb.org/ontology/core#freeTextKeywords", $"<{resourceAPI.GraphsUrl}items/categorypath_{ResourceID}_{item0.ArticleID}>", list, " . ");
+				AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://vivoweb.org/ontology/core#freeTextKeyword", $"<{resourceAPI.GraphsUrl}items/categorypath_{ResourceID}_{item0.ArticleID}>", list, " . ");
 				if(item0.IdsRoh_categoryNode != null)
 				{
 					foreach(var item2 in item0.IdsRoh_categoryNode)

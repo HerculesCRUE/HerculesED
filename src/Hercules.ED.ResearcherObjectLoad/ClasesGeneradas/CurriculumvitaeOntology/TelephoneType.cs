@@ -37,15 +37,12 @@ namespace CurriculumvitaeOntology
 		public virtual string RdfsLabel { get { return "https://www.w3.org/2006/vcard/ns#TelephoneType"; } }
 		public OntologyEntity Entity { get; set; }
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/hasExtension")]
 		[RDFProperty("http://w3id.org/roh/hasExtension")]
 		public  string Roh_hasExtension { get; set;}
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/hasInternationalCode")]
 		[RDFProperty("http://w3id.org/roh/hasInternationalCode")]
 		public  string Roh_hasInternationalCode { get; set;}
 
-		[LABEL(LanguageEnum.es,"https://www.w3.org/2006/vcard/ns#hasValue")]
 		[RDFProperty("https://www.w3.org/2006/vcard/ns#hasValue")]
 		public  string Vcard_hasValue { get; set;}
 

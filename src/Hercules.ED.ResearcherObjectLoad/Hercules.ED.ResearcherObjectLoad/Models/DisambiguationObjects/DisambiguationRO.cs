@@ -90,6 +90,27 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
             }
         }
 
+        private string mIdZenodo { get; set; }
+        public string idZenodo
+        {
+            get
+            {
+                return mIdZenodo;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    mIdZenodo = string.Empty;
+                }
+                else
+                {
+                    mIdZenodo = value;
+                }
+            }
+        }
+
+
 
         private HashSet<string> mAutores { get; set; }
         public HashSet<string> autores
@@ -133,6 +154,11 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
             type = DisambiguationDataConfigType.equalsIdentifiers
         };
 
+        private static DisambiguationDataConfig configIdZenodo = new DisambiguationDataConfig()
+        {
+            type = DisambiguationDataConfigType.equalsIdentifiers
+        };
+
 
         private static DisambiguationDataConfig configAutores = new DisambiguationDataConfig()
         {
@@ -172,6 +198,12 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
                 value = idGithub
             });
 
+            data.Add(new DisambiguationData()
+            {
+                property = "idZenodo",
+                config = configIdGitHub,
+                value = idGithub
+            });
 
             data.Add(new DisambiguationData()
             {

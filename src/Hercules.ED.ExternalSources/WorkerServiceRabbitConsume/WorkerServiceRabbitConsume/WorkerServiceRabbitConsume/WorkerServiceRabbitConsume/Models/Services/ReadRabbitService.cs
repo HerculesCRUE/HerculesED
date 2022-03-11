@@ -151,8 +151,8 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                         {
                             request.Headers.TryAddWithoutValidation(item.Key, item.Value);
                         }
-                    }                    
-                    response = await httpClient.SendAsync(request);                    
+                    }
+                    response = await httpClient.SendAsync(request);
                 }
             }
 
@@ -181,7 +181,7 @@ namespace Gnoss.Web.ReprocessData.Models.Services
             List<string> message = JsonConvert.DeserializeObject<List<string>>(pMessage);
 
             if (message != null && message.Count() == 3 && message[0] == "investigador" && !string.IsNullOrEmpty(message[1]) && !string.IsNullOrEmpty(message[2]))
-            {  
+            {
                 try
                 {
                     // Creación de la URL.
@@ -228,6 +228,87 @@ namespace Gnoss.Web.ReprocessData.Models.Services
 
                     // Guardado de la información en formato JSON.
                     File.WriteAllText($@"{_configService.GetRutaDirectorioEscritura()}{message[1]}___{DateTime.Now.ToString().Replace('/', '-').Replace(':', '-')}.json", info_publication);
+                    FileLogger.Log($@"{DateTime.Now} - fichero JSON creado.");
+                }
+                catch (Exception e)
+                {
+                    FileLogger.Log($@"{DateTime.Now} - {e}");
+                }
+            }
+            else if (message.Count() == 2 & message[0] == "zenodo")
+            {
+                try
+                {
+                    // Creación de la URL.
+                    Uri url = new Uri(string.Format(_configService.GetUrlZenodo() + "Zenodo/GetOntologyData?pOrcid={0}", message[1]));
+
+                    // Obtención de datos con la petición.
+                    string info_publication = httpCall(url.ToString(), "GET", headers).Result;
+                    FileLogger.Log($@"{DateTime.Now} - RO Zenodo obtenido.");
+
+                    // Creación del directorio si no existe.
+                    if (!Directory.Exists(_configService.GetRutaDirectorioEscritura()))
+                    {
+                        Directory.CreateDirectory(_configService.GetRutaDirectorioEscritura());
+                        FileLogger.Log($@"{DateTime.Now} - Directorio creado: {_configService.GetRutaDirectorioEscritura()}");
+                    }
+
+                    // Guardado de la información en formato JSON.
+                    File.WriteAllText($@"{_configService.GetRutaDirectorioEscritura()}{message[0]}___{message[1]}___{DateTime.Now.ToString().Replace('/', '-').Replace(':', '-')}.json", info_publication);
+                    FileLogger.Log($@"{DateTime.Now} - fichero JSON creado.");
+                }
+                catch (Exception e)
+                {
+                    FileLogger.Log($@"{DateTime.Now} - {e}");
+                }
+            }
+            else if (message.Count() == 3 & message[0] == "figshare")
+            {
+                try
+                {
+                    // Creación de la URL.
+                    Uri url = new Uri(string.Format(_configService.GetUrlFigShare() + "FigShare/GetROs?pToken={0}", message[1]));
+
+                    // Obtención de datos con la petición.
+                    string info_publication = httpCall(url.ToString(), "GET", headers).Result;
+                    FileLogger.Log($@"{DateTime.Now} - RO FigShare obtenido.");
+
+                    // Creación del directorio si no existe.
+                    if (!Directory.Exists(_configService.GetRutaDirectorioEscritura()))
+                    {
+                        Directory.CreateDirectory(_configService.GetRutaDirectorioEscritura());
+                        FileLogger.Log($@"{DateTime.Now} - Directorio creado: {_configService.GetRutaDirectorioEscritura()}");
+                    }
+
+                    // Guardado de la información en formato JSON.
+                    File.WriteAllText($@"{_configService.GetRutaDirectorioEscritura()}{message[0]}___{message[2]}___{DateTime.Now.ToString().Replace('/', '-').Replace(':', '-')}.json", info_publication);
+                    FileLogger.Log($@"{DateTime.Now} - fichero JSON creado.");
+                }
+                catch (Exception e)
+                {
+                    FileLogger.Log($@"{DateTime.Now} - {e}");
+                }
+            }
+            else if (message.Count() == 3 & message[0] == "github")
+            {
+                try
+                {
+                    // Creación de la URL.
+                    Uri url = new Uri(string.Format(_configService.GetUrlFigShare() + "github/GetData?pUser={0}&pToken={1}", message[2], message[1]));
+
+                    // Obtención de datos con la petición.
+                    string info_publication = httpCall(url.ToString(), "GET", headers).Result;
+                    FileLogger.Log($@"{DateTime.Now} - RO GitHub obtenido.");
+
+                    // Creación del directorio si no existe.
+                    if (!Directory.Exists(_configService.GetRutaDirectorioEscritura()))
+                    {
+                        Directory.CreateDirectory(_configService.GetRutaDirectorioEscritura());
+                        FileLogger.Log($@"{DateTime.Now} - Directorio creado: {_configService.GetRutaDirectorioEscritura()}");
+                    }
+
+                    // Guardado de la información en formato JSON.
+                    File.WriteAllText($@"{_configService.GetRutaDirectorioEscritura()}{message[0]}___{message[2]}___{DateTime.Now.ToString().Replace('/', '-').Replace(':', '-')}.json", info_publication);
                     FileLogger.Log($@"{DateTime.Now} - fichero JSON creado.");
                 }
                 catch (Exception e)

@@ -78,6 +78,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     Dictionary<string, Publication> dicIdDatosPub = new Dictionary<string, Publication>();
                     Dictionary<string, ResearchObjectFigShare> dicIdDatosRoFigshare = new Dictionary<string, ResearchObjectFigShare>();
                     Dictionary<string, ResearchObjectGitHub> dicIdDatosRoGitHub = new Dictionary<string, ResearchObjectGitHub>();
+                    Dictionary<string, ResearchObjectZenodo> dicIdDatosRoZenodo = new Dictionary<string, ResearchObjectZenodo>();
 
                     string idPersona = null;
                     if (fichero.Name.StartsWith("figshare___"))
@@ -117,7 +118,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                 listaDesambiguar.AddRange(coautores);
                             }
 
-                            dicIdRo.Add(idRo, ConstruirRO("FigShare", researchObject, null, tupla.Item1, tupla.Item2));
+                            dicIdRo.Add(idRo, ConstruirRO("FigShare", researchObject, null, null, tupla.Item1, tupla.Item2));
                             dicIdDatosRoFigshare.Add(idRo, researchObject);
                         }
                     }
@@ -154,8 +155,45 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             disambiguationRoGitHub.autores = new HashSet<string>(coautores.Select(x => x.ID));
                             listaDesambiguar.AddRange(coautores);
 
-                            dicIdRo.Add(idRo, ConstruirRO("GitHub", null, githubObject, tupla.Item1, tupla.Item2));
+                            dicIdRo.Add(idRo, ConstruirRO("GitHub", null, githubObject, null, tupla.Item1, tupla.Item2));
                             dicIdDatosRoGitHub.Add(idRo, githubObject);
+                        }
+                    }
+                    else if (fichero.Name.StartsWith("zenodo___"))
+                    {
+                        string idAutor = fichero.Name.Split("___")[1];                      
+                        Dictionary<string, DisambiguableEntity> documentosBBDD = ObtenerPublicacionesBBDD(idAutor);
+                        Dictionary<string, DisambiguableEntity> personasBBDD = ObtenerPersonasRelacionaBBDD("http://w3id.org/roh/ORCID", idAutor);
+                        listaDesambiguarBBDD.AddRange(documentosBBDD.Values.ToList());
+                        listaDesambiguarBBDD.AddRange(personasBBDD.Values.ToList());
+                        idPersona = personasBBDD.First(x => ((DisambiguationPerson)(x.Value)).orcid == idAutor).Key;
+
+                        // Obtención de los datos del JSON.
+                        string jsonString = File.ReadAllText(fichero.FullName);
+                        List<ResearchObjectZenodo> listaZenodoData = JsonConvert.DeserializeObject<List<ResearchObjectZenodo>>(jsonString);
+                        foreach (ResearchObjectZenodo zenodoObject in listaZenodoData)
+                        {
+                            // --- ROs
+                            DisambiguationRO disambiguationRoZenodo = GetDisambiguationRoZenodo(zenodoObject);
+                            string idRo = disambiguationRoZenodo.ID;
+                            listaDesambiguar.Add(disambiguationRoZenodo);
+
+                            List<DisambiguationPerson> coautores = new List<DisambiguationPerson>();
+                            foreach (PersonZenodo personaZenodo in zenodoObject.autores)
+                            {
+                                DisambiguationPerson disambiguationPerson = GetDisambiguationPerson(pPersonaRoZenodo: personaZenodo);
+                                string idPerson = disambiguationPerson.ID;
+                                coautores.Add(disambiguationPerson);
+                            }
+                            foreach (DisambiguationPerson coautor in coautores)
+                            {
+                                coautor.coautores = new HashSet<string>(coautores.Where(x => x.ID != coautor.ID).Select(x => x.ID));
+                            }
+                            disambiguationRoZenodo.autores = new HashSet<string>(coautores.Select(x => x.ID));
+                            listaDesambiguar.AddRange(coautores);
+
+                            dicIdRo.Add(idRo, ConstruirRO("Zenodo", null, null, zenodoObject, tupla.Item1, tupla.Item2));
+                            dicIdDatosRoZenodo.Add(idRo, zenodoObject);
                         }
                     }
                     else
@@ -432,6 +470,10 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                     {
                                         CrearRoGitHubDesambiguado(idA, listaIds, dicIdDatosRoGitHub, listaROsCargarEquivalencias, tupla.Item1, tupla.Item2);
                                     }
+                                    if (dicIdDatosRoZenodo.Count > 0)
+                                    {
+                                        CrearRoZenodoDesambiguado(idA, listaIds, dicIdDatosRoZenodo, listaROsCargarEquivalencias, tupla.Item1, tupla.Item2);
+                                    }
                                 }
                             }
                             else
@@ -456,6 +498,10 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                     if (dicIdDatosRoGitHub.Count > 0)
                                     {
                                         CrearRoGitHubDesambiguado(idA, listaIds, dicIdDatosRoGitHub, listaROsCargarEquivalencias, tupla.Item1, tupla.Item2);
+                                    }
+                                    if (dicIdDatosRoZenodo.Count > 0)
+                                    {
+                                        CrearRoZenodoDesambiguado(idA, listaIds, dicIdDatosRoZenodo, listaROsCargarEquivalencias, tupla.Item1, tupla.Item2);
                                     }
                                 }
                             }
@@ -1042,7 +1088,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             foreach (string idSimilar in pListaIds)
             {
                 ResearchObjectFigShare roB = pDicIdRo[idSimilar];
-                roCreado = ConstruirRO("FigShare", roA, null, pDicAreasBroader, pDicAreasNombre, pResearchObjectB: roB);
+                roCreado = ConstruirRO("FigShare", roA, null, null, pDicAreasBroader, pDicAreasNombre, pResearchObjectB: roB);
             }
 
             HashSet<string> listaTotalIds = pListaIds;
@@ -1058,7 +1104,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             foreach (string idSimilar in pListaIds)
             {
                 ResearchObjectGitHub roB = pDicIdRo[idSimilar];
-                roCreado = ConstruirRO("GitHub", null, roA, pDicAreasBroader, pDicAreasNombre, pGitHubObjB: roB);
+                roCreado = ConstruirRO("GitHub", null, roA, null, pDicAreasBroader, pDicAreasNombre, pGitHubObjB: roB);
             }
 
             HashSet<string> listaTotalIds = pListaIds;
@@ -1066,7 +1112,23 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             pListaRosCreados.Add(roCreado, listaTotalIds);
         }
 
-        public static ResearchobjectOntology.ResearchObject ConstruirRO(string pTipo, ResearchObjectFigShare pResearchObject, ResearchObjectGitHub pGitHubObj, Dictionary<string, string> pDicAreasBroader, Dictionary<string, string> pDicAreasNombre, ResearchObjectFigShare pResearchObjectB = null, ResearchObjectGitHub pGitHubObjB = null)
+        private static void CrearRoZenodoDesambiguado(string idRo, HashSet<string> pListaIds, Dictionary<string, ResearchObjectZenodo> pDicIdRo, Dictionary<ResearchobjectOntology.ResearchObject, HashSet<string>> pListaRosCreados, Dictionary<string, string> pDicAreasBroader, Dictionary<string, string> pDicAreasNombre)
+        {
+            ResearchObjectZenodo roA = pDicIdRo[idRo];
+            ResearchobjectOntology.ResearchObject roCreado = new ResearchobjectOntology.ResearchObject();
+
+            foreach (string idSimilar in pListaIds)
+            {
+                ResearchObjectZenodo roB = pDicIdRo[idSimilar];
+                roCreado = ConstruirRO("FigShare", null, null, roA, pDicAreasBroader, pDicAreasNombre, pZenodoObjB: roB);
+            }
+
+            HashSet<string> listaTotalIds = pListaIds;
+            listaTotalIds.Add(idRo);
+            pListaRosCreados.Add(roCreado, listaTotalIds);
+        }
+
+        public static ResearchobjectOntology.ResearchObject ConstruirRO(string pTipo, ResearchObjectFigShare pResearchObject, ResearchObjectGitHub pGitHubObj, ResearchObjectZenodo pZenodoObj,Dictionary<string, string> pDicAreasBroader, Dictionary<string, string> pDicAreasNombre, ResearchObjectFigShare pResearchObjectB = null, ResearchObjectGitHub pGitHubObjB = null, ResearchObjectZenodo pZenodoObjB = null)
         {
             ResearchobjectOntology.ResearchObject ro = new ResearchobjectOntology.ResearchObject();
 
@@ -1579,7 +1641,237 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     }
                 }
             }
+            else if (pTipo == "Zenodo")
+            {
+                // ID
+                if (pZenodoObj.id.HasValue)
+                {
+                    // TODO.
+                    ro.Roh_idZenodo = pZenodoObj.id.Value.ToString();
 
+                    if (pZenodoObjB != null && pZenodoObjB.id.HasValue && string.IsNullOrEmpty(ro.Roh_idZenodo))
+                    {
+                        ro.Roh_idZenodo = pZenodoObjB.id.Value.ToString();
+                    }
+                }
+
+                // DOI
+                if (!string.IsNullOrEmpty(pZenodoObj.doi))
+                {
+                    ro.Bibo_doi = pZenodoObj.doi;
+
+                    if (pZenodoObjB != null && !string.IsNullOrEmpty(pZenodoObjB.doi) && string.IsNullOrEmpty(ro.Bibo_doi))
+                    {
+                        ro.Bibo_doi = pZenodoObjB.doi;
+                    }
+                }
+
+                // ResearchObject Type
+                if (!string.IsNullOrEmpty(pZenodoObj.tipo))
+                {
+                    switch (pZenodoObj.tipo)
+                    {
+                        case "dataset":
+                            ro.IdDc_type = "http://gnoss.com/items/researchobjecttype_1";
+                            break;
+                        case "presentation":
+                            ro.IdDc_type = "http://gnoss.com/items/researchobjecttype_2";
+                            break;
+                        case "image":
+                            ro.IdDc_type = "http://gnoss.com/items/researchobjecttype_3";
+                            break;
+                        case "video":
+                            ro.IdDc_type = "http://gnoss.com/items/researchobjecttype_6";
+                            break;
+                        case "poster":
+                            ro.IdDc_type = "http://gnoss.com/items/researchobjecttype_7";
+                            break;
+                        case "lesson":
+                            ro.IdDc_type = "http://gnoss.com/items/researchobjecttype_8";
+                            break;
+                        case "software":
+                            ro.IdDc_type = "http://gnoss.com/items/researchobjecttype_9";
+                            break;
+                    }
+
+                    if (pZenodoObjB != null && !string.IsNullOrEmpty(pZenodoObjB.tipo) && string.IsNullOrEmpty(ro.IdDc_type))
+                    {
+                        switch (pZenodoObjB.tipo)
+                        {
+                            case "dataset":
+                                ro.IdDc_type = "http://gnoss.com/items/researchobjecttype_1";
+                                break;
+                            case "presentation":
+                                ro.IdDc_type = "http://gnoss.com/items/researchobjecttype_2";
+                                break;
+                            case "image":
+                                ro.IdDc_type = "http://gnoss.com/items/researchobjecttype_3";
+                                break;
+                            case "video":
+                                ro.IdDc_type = "http://gnoss.com/items/researchobjecttype_6";
+                                break;
+                            case "poster":
+                                ro.IdDc_type = "http://gnoss.com/items/researchobjecttype_7";
+                                break;
+                            case "lesson":
+                                ro.IdDc_type = "http://gnoss.com/items/researchobjecttype_8";
+                                break;
+                            case "software":
+                                ro.IdDc_type = "http://gnoss.com/items/researchobjecttype_9";
+                                break;
+                        }
+                    }
+                }
+
+                // Título.
+                if (!string.IsNullOrEmpty(pZenodoObj.titulo))
+                {
+                    ro.Roh_title = pZenodoObj.titulo;
+
+                    if (pZenodoObjB != null && !string.IsNullOrEmpty(pZenodoObjB.titulo) && string.IsNullOrEmpty(ro.Roh_title))
+                    {
+                        ro.Roh_title = pZenodoObjB.titulo;
+                    }
+                }
+
+                // Descripción.
+                if (!string.IsNullOrEmpty(pZenodoObj.descripcion))
+                {
+                    ro.Bibo_abstract = pZenodoObj.descripcion;
+
+                    if (pZenodoObjB != null && !string.IsNullOrEmpty(pZenodoObjB.descripcion) && string.IsNullOrEmpty(ro.Bibo_abstract))
+                    {
+                        ro.Bibo_abstract = pZenodoObjB.descripcion;
+                    }
+                }
+
+                // URL
+                if (!string.IsNullOrEmpty(pZenodoObj.url))
+                {
+                    ro.Vcard_url = pZenodoObj.url;
+
+                    if (pZenodoObjB != null && !string.IsNullOrEmpty(pZenodoObjB.url) && string.IsNullOrEmpty(ro.Vcard_url))
+                    {
+                        ro.Vcard_url = pZenodoObjB.url;
+                    }
+                }
+
+                // Fecha Publicación
+                if (!string.IsNullOrEmpty(pZenodoObj.fechaPublicacion))
+                {
+                    int dia = Int32.Parse(pZenodoObj.fechaPublicacion.Split("-")[2]);
+                    int mes = Int32.Parse(pZenodoObj.fechaPublicacion.Split("-")[1]);
+                    int anyo = Int32.Parse(pZenodoObj.fechaPublicacion.Split("-")[0]);
+
+                    ro.Dct_issued = new DateTime(anyo, mes, dia);
+
+                    if (pZenodoObjB != null && !string.IsNullOrEmpty(pZenodoObjB.fechaPublicacion) && ro.Dct_issued == null)
+                    {
+                        dia = Int32.Parse(pZenodoObjB.fechaPublicacion.Split("-")[2]);
+                        mes = Int32.Parse(pZenodoObjB.fechaPublicacion.Split("-")[1]);
+                        anyo = Int32.Parse(pZenodoObjB.fechaPublicacion.Split("-")[0]);
+
+                        ro.Dct_issued = new DateTime(anyo, mes, dia);
+                    }
+                }
+
+                // Etiquetas Enriquecidas
+                if (pZenodoObj.etiquetasEnriquecidas != null && pZenodoObj.etiquetasEnriquecidas.Any())
+                {
+                    ro.Roh_enrichedKeywords = pZenodoObj.etiquetasEnriquecidas;
+
+                    if (pZenodoObjB != null && pZenodoObjB.etiquetasEnriquecidas != null && pZenodoObjB.etiquetasEnriquecidas.Any())
+                    {
+                        ro.Roh_enrichedKeywords = pZenodoObjB.etiquetasEnriquecidas;
+                    }
+                }
+
+                // Categorias Enriquecidas
+                HashSet<string> listaIDs = new HashSet<string>();
+                if (pZenodoObj.categoriasEnriquecidas != null && pZenodoObj.categoriasEnriquecidas.Count > 0)
+                {
+                    ro.Roh_enrichedKnowledgeArea = new List<ResearchobjectOntology.CategoryPath>();
+                    foreach (string area in pZenodoObj.categoriasEnriquecidas)
+                    {
+                        if (pDicAreasNombre.ContainsKey(area.ToLower()))
+                        {
+                            ResearchobjectOntology.CategoryPath categoria = new ResearchobjectOntology.CategoryPath();
+                            categoria.IdsRoh_categoryNode = new List<string>();
+                            categoria.IdsRoh_categoryNode.Add(pDicAreasNombre[area.ToLower()]);
+                            string idHijo = pDicAreasNombre[area.ToLower()];
+                            string idHijoAux = idHijo;
+                            if (!listaIDs.Contains(idHijo))
+                            {
+                                while (!idHijo.EndsWith(".0.0.0"))
+                                {
+                                    categoria.IdsRoh_categoryNode.Add(pDicAreasBroader[idHijo]);
+                                    idHijo = pDicAreasBroader[idHijo];
+                                }
+                                if (categoria.IdsRoh_categoryNode.Count > 0)
+                                {
+                                    ro.Roh_enrichedKnowledgeArea.Add(categoria);
+                                }
+                            }
+                            listaIDs.Add(idHijoAux);
+                        }
+                    }
+
+                    if (pZenodoObjB != null && pZenodoObjB.categoriasEnriquecidas != null && pZenodoObjB.categoriasEnriquecidas.Any())
+                    {
+                        ro.Roh_enrichedKnowledgeArea = new List<ResearchobjectOntology.CategoryPath>();
+                        foreach (string area in pZenodoObjB.categoriasEnriquecidas)
+                        {
+                            if (pDicAreasNombre.ContainsKey(area.ToLower()))
+                            {
+                                ResearchobjectOntology.CategoryPath categoria = new ResearchobjectOntology.CategoryPath();
+                                categoria.IdsRoh_categoryNode = new List<string>();
+                                categoria.IdsRoh_categoryNode.Add(pDicAreasNombre[area.ToLower()]);
+                                string idHijo = pDicAreasNombre[area.ToLower()];
+                                string idHijoAux = idHijo;
+                                if (!listaIDs.Contains(idHijo))
+                                {
+                                    while (!idHijo.EndsWith(".0.0.0"))
+                                    {
+                                        categoria.IdsRoh_categoryNode.Add(pDicAreasBroader[idHijo]);
+                                        idHijo = pDicAreasBroader[idHijo];
+                                    }
+                                    if (categoria.IdsRoh_categoryNode.Count > 0)
+                                    {
+                                        ro.Roh_enrichedKnowledgeArea.Add(categoria);
+                                    }
+                                }
+                                listaIDs.Add(idHijoAux);
+                            }
+                        }
+                    }
+                }
+
+                // Licencia
+                if (!string.IsNullOrEmpty(pZenodoObj.licencia))
+                {
+                    ro.Dct_license = pZenodoObj.licencia;
+
+                    if (pZenodoObjB != null && !string.IsNullOrEmpty(pZenodoObjB.licencia) && string.IsNullOrEmpty(ro.Dct_license))
+                    {
+                        ro.Dct_license = pZenodoObjB.licencia;
+                    }
+                }
+
+                // Autores
+                if (pZenodoObj.autores != null && pZenodoObj.autores.Any())
+                {
+                    ro.Bibo_authorList = new List<ResearchobjectOntology.BFO_0000023>();
+                    int orden = 1;
+                    foreach (PersonZenodo personaRO in pZenodoObj.autores)
+                    {
+                        ResearchobjectOntology.BFO_0000023 bfo_0000023 = new ResearchobjectOntology.BFO_0000023();
+                        bfo_0000023.Rdf_comment = orden;
+                        bfo_0000023.IdRdf_member = personaRO.ID;
+                        ro.Bibo_authorList.Add(bfo_0000023);
+                        orden++;
+                    }
+                }
+            }
             return ro;
         }
 
@@ -3222,6 +3514,21 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             return ro;
         }
 
+        private static DisambiguationRO GetDisambiguationRoZenodo(ResearchObjectZenodo pResearchObject)
+        {
+            pResearchObject.ID = Guid.NewGuid().ToString();
+
+            DisambiguationRO ro = new DisambiguationRO()
+            {
+                ID = pResearchObject.ID,
+                doi = pResearchObject.doi,
+                title = pResearchObject.titulo,
+                idFigshare = pResearchObject.id.ToString()
+            };
+
+            return ro;
+        }
+
         /// <summary>
         /// Obtiene el ID indicado de una persona dada.
         /// </summary>
@@ -3249,7 +3556,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
         /// </summary>
         /// <param name="pPersona">Persona a convertir.</param>
         /// <returns>Objeto para desambiguar.</returns>
-        private static DisambiguationPerson GetDisambiguationPerson(PersonaPub pPersona = null, PersonRO pPersonaRo = null, string pPersonaGit = null)
+        private static DisambiguationPerson GetDisambiguationPerson(PersonaPub pPersona = null, PersonRO pPersonaRo = null, PersonZenodo pPersonaRoZenodo = null, string pPersonaGit = null)
         {
             if (pPersona != null)
             {
@@ -3280,6 +3587,19 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     orcid = pPersonaRo.orcid,
                     figShareId = pPersonaRo.id.ToString(),
                     completeName = pPersonaRo.nombreCompleto
+                };
+
+                return persona;
+            }
+
+            if (pPersonaRoZenodo != null)
+            {
+                pPersonaRoZenodo.ID = Guid.NewGuid().ToString();
+                DisambiguationPerson persona = new DisambiguationPerson()
+                {
+                    ID = pPersonaRoZenodo.ID,
+                    orcid = pPersonaRoZenodo.orcid,
+                    completeName = pPersonaRoZenodo.nombreCompleto
                 };
 
                 return persona;
