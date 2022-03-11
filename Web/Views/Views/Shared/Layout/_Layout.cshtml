@@ -599,7 +599,7 @@
 
         @if (!IdentidadActual.IsGuestUser)
         {
-            <div id="modal-crear-cluster" data-backdrop="static" class="modal modal-top modal-wide fade edicionCluster" tabindex="-1" role="dialog">
+            <div id="modal-crear-cluster" data-backdrop="static" class="modal modal-top modal-wide fade edicionRecurso  edicionCluster" tabindex="-1" role="dialog">
                 <div class="modal-dialog" role="document" data-cshortName="@Comunidad.ShortName">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -2252,7 +2252,7 @@
             <script type="text/javascript">
 
                 const uriLoadTaxonomies = "Cluster/GetThesaurus/"
-                const uriSaveCluster = "Cluster/SetSection1/"
+                const uriSaveCluster = "Cluster/SetSection1"
 
                 var urlLT = new URL(servicioExternoBaseUrl + 'servicioexterno/' + uriLoadTaxonomies);
                 var urlSC1 = new URL(servicioExternoBaseUrl + 'servicioexterno/' + uriSaveCluster);
@@ -2375,13 +2375,20 @@
                             let dataParentId = $(this).data('parentid')
                             dataParentId = (dataParentId.length > 0) ? dataParentId.split('/').pop() : dataParentId
 
-                            if (dataParentId.length > 0) {_self.selectParent(dataParentId)}
+                            if (dataParentId.length > 0) {
+                                if (!dataVal) {
+                                    let brothers = $(this).parent().parent().parent().parent().find('input.at-input:checked')
+                                    if (brothers.length == 0) {
+                                        _self.selectParent(dataParentId, false)
+                                    } else {
+                                        _self.selectParent(dataParentId)
+                                    }
+                                } else {
+                                    _self.selectParent(dataParentId)
+                                }
+                            }
 
-                            /* if (dataVal) {
-                                document.getElementById('list__' + dataId).checked = true
-                            } else  {
-                                document.getElementById('list__' + dataId).checked = false
-                            } */
+                            
                         })
 
                         // Click into the list
@@ -2400,16 +2407,30 @@
                     /**
                      * Select the parent in the list and add a class to active the item
                      * param pId, the parent id
+                     * param addclass, check if should dishabled the item
                      */
-                    selectParent(pId) {
+                    selectParent(pId, addclass = true) {
 
                         let itemP = document.getElementById(pId)
                         let $itemP = $(itemP)
-                        $itemP.addClass('selected')
+                        // Check if add or remove class select
+                        if (addclass) {
+                            $itemP.addClass('selected')
+                        } else {
+                            // Search for childs and remove selected class if not has childs enhabled
+                            let childs = $itemP.parent().parent().parent().find('input.at-input:checked')
+                            if (childs.length == 0) {
+                                $itemP.removeClass('selected')
+                            } else {
+                                // Stop the recursive function if it's childs checked
+                                return null
+                            }
+                        }
+                        // Call to the parent to change the 'selected' class
                         let dataParentId = $itemP.data('parentid')
                         dataParentId = (dataParentId.length > 0) ? dataParentId.split('/').pop() : dataParentId
 
-                        if (dataParentId.length > 0) {this.selectParent(dataParentId)}
+                        if (dataParentId.length > 0) {this.selectParent(dataParentId, addclass)}
                     }
 
                     /**
@@ -2554,40 +2575,19 @@
 
                         this.postCall(urlSC1, data).then((data) => {
                             _self.clusterId = data
-                            _self.goStep(2)
+                            _self.goStep(3)
                         })
-
 
                     }
 
                     postCall(url, theParams) {
                         let _self = this
                         return new Promise((resolve, reject) => {
-                            /* $.post( url.toString(), theParams).done(function( data ) {
-                                console.log( "Data Loaded: " + data );
-                            }); */
-
-                            $.ajax({
-                                url: url.toString(),
-                                type: "POST",
-                                data: JSON.stringify(theParams),
-                                contentType: "app/json"
-                            }).done(function(data) {
+                            $.post(url.toString(), theParams, function(data) {
                                 resolve(data)
                                 console.log( "Data Loaded: " + data );
-                            })
+                            });
                         })
-                    }
-
-                    save(section) {
-                        switch (section){
-                            case 1:
-                                this.guardarPrimero()
-                            break;
-                            case 2:
-                            break
-                        }
-                        console.log("guardado TODO")
                     }
 
                     /**
