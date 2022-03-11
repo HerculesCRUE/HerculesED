@@ -151,8 +151,8 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                         {
                             request.Headers.TryAddWithoutValidation(item.Key, item.Value);
                         }
-                    }                    
-                    response = await httpClient.SendAsync(request);                    
+                    }
+                    response = await httpClient.SendAsync(request);
                 }
             }
 
@@ -181,7 +181,7 @@ namespace Gnoss.Web.ReprocessData.Models.Services
             List<string> message = JsonConvert.DeserializeObject<List<string>>(pMessage);
 
             if (message != null && message.Count() == 3 && message[0] == "investigador" && !string.IsNullOrEmpty(message[1]) && !string.IsNullOrEmpty(message[2]))
-            {  
+            {
                 try
                 {
                     // Creación de la URL.

@@ -46,7 +46,6 @@ namespace CurriculumvitaeOntology
 		public virtual string RdfsLabel { get { return "http://w3id.org/roh/RelatedWorkSubmittedSeminars"; } }
 		public OntologyEntity Entity { get; set; }
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/relatedWorkSubmittedSeminars")]
 		[RDFProperty("http://w3id.org/roh/relatedWorkSubmittedSeminars")]
 		public  RelatedWorkSubmittedSeminarsCV Roh_relatedWorkSubmittedSeminars { get; set;}
 
@@ -56,7 +55,6 @@ namespace CurriculumvitaeOntology
 		public  Document Vivo_relatedBy  { get; set;} 
 		public string IdVivo_relatedBy  { get; set;} 
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/isPublic")]
 		[RDFProperty("http://w3id.org/roh/isPublic")]
 		public  bool Roh_isPublic { get; set;}
 

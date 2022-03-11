@@ -47,11 +47,9 @@ namespace CurriculumvitaeOntology
 		public  ContributionGradeProject Roh_contributionGradeProject  { get; set;} 
 		public string IdRoh_contributionGradeProject  { get; set;} 
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/contributionGradeProjectOther")]
 		[RDFProperty("http://w3id.org/roh/contributionGradeProjectOther")]
 		public  string Roh_contributionGradeProjectOther { get; set;}
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/expertTechnologist")]
 		[RDFProperty("http://w3id.org/roh/expertTechnologist")]
 		public  bool Roh_expertTechnologist { get; set;}
 

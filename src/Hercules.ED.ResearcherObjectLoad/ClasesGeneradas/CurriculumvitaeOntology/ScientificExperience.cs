@@ -107,27 +107,21 @@ namespace CurriculumvitaeOntology
 		public virtual string RdfsLabel { get { return "http://w3id.org/roh/ScientificExperience"; } }
 		public OntologyEntity Entity { get; set; }
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/supervisedArtisticProjects")]
 		[RDFProperty("http://w3id.org/roh/supervisedArtisticProjects")]
 		public  List<RelatedSupervisedArtisticProject> Roh_supervisedArtisticProjects { get; set;}
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/competitiveProjects")]
 		[RDFProperty("http://w3id.org/roh/competitiveProjects")]
 		public  List<RelatedCompetitiveProject> Roh_competitiveProjects { get; set;}
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/groups")]
 		[RDFProperty("http://w3id.org/roh/groups")]
 		public  List<RelatedGroup> Roh_groups { get; set;}
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/technologicalResults")]
 		[RDFProperty("http://w3id.org/roh/technologicalResults")]
 		public  List<RelatedTechnologicalResult> Roh_technologicalResults { get; set;}
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/nonCompetitiveProjects")]
 		[RDFProperty("http://w3id.org/roh/nonCompetitiveProjects")]
 		public  List<RelatedNonCompetitiveProject> Roh_nonCompetitiveProjects { get; set;}
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/patents")]
 		[RDFProperty("http://w3id.org/roh/patents")]
 		public  List<RelatedPatent> Roh_patents { get; set;}
 

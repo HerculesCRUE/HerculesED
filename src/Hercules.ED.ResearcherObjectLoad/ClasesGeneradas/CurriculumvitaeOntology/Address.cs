@@ -69,19 +69,15 @@ namespace CurriculumvitaeOntology
 		public  Feature Vcard_hasRegion  { get; set;} 
 		public string IdVcard_hasRegion  { get; set;} 
 
-		[LABEL(LanguageEnum.es,"https://www.w3.org/2006/vcard/ns#postal-code")]
 		[RDFProperty("https://www.w3.org/2006/vcard/ns#postal-code")]
 		public  string Vcard_postal_code { get; set;}
 
-		[LABEL(LanguageEnum.es,"https://www.w3.org/2006/vcard/ns#extended-address")]
 		[RDFProperty("https://www.w3.org/2006/vcard/ns#extended-address")]
 		public  string Vcard_extended_address { get; set;}
 
-		[LABEL(LanguageEnum.es,"https://www.w3.org/2006/vcard/ns#street-address")]
 		[RDFProperty("https://www.w3.org/2006/vcard/ns#street-address")]
 		public  string Vcard_street_address { get; set;}
 
-		[LABEL(LanguageEnum.es,"https://www.w3.org/2006/vcard/ns#locality")]
 		[RDFProperty("https://www.w3.org/2006/vcard/ns#locality")]
 		public  string Vcard_locality { get; set;}
 

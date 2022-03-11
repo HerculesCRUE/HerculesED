@@ -1647,12 +1647,12 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                 if (pZenodoObj.id.HasValue)
                 {
                     // TODO.
-                    //ro.Roh_idZenodo = pZenodoObj.id.Value.ToString();
+                    ro.Roh_idZenodo = pZenodoObj.id.Value.ToString();
 
-                    //if (pZenodoObjB != null && pZenodoObjB.id.HasValue && string.IsNullOrEmpty(ro.Roh_idZenodo))
-                    //{
-                    //    ro.Roh_idZenodo = pZenodoObjB.id.Value.ToString();
-                    //}
+                    if (pZenodoObjB != null && pZenodoObjB.id.HasValue && string.IsNullOrEmpty(ro.Roh_idZenodo))
+                    {
+                        ro.Roh_idZenodo = pZenodoObjB.id.Value.ToString();
+                    }
                 }
 
                 // DOI
