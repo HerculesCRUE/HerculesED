@@ -14,6 +14,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using ZenodoAPI.Middleware;
+using ZenodoAPI.Controllers;
 
 namespace ZenodoConnect
 {
@@ -44,6 +45,9 @@ namespace ZenodoConnect
                     Description = "A ASP.NET Core Web API for Hercules project",
                 });
             });
+
+            // Configuración.
+            services.AddSingleton(typeof(ConfigService));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
