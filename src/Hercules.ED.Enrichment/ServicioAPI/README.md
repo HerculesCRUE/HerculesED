@@ -3,7 +3,7 @@
 API providing access for the extraction of thematic and specific descriptors from scientific papers, protocols and code projects.
 
 
-# Setting up the environment
+# Installation and deployment
 
 Install python3-dev and libhunspell-dev. in ubuntu:
 ```
