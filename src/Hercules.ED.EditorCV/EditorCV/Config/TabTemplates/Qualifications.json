@@ -541,8 +541,8 @@
           }
         }
       }
-    },
-    { 
+    },    
+    {
       "rdftype": "http://w3id.org/roh/RelatedLanguageSkills",
       "property": "http://w3id.org/roh/languageSkills",
       "presentation": {
@@ -644,6 +644,38 @@
                     }
                   }
                 }
+              }
+            ],
+            "orders": [
+              {
+                "name": {
+                  "es": "Ordenar por idioma (descendente)"
+                },
+                "properties": [                  
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "languagecertificate",
+                    "child": {
+                      "property": "http://w3id.org/roh/languageOfTheCertificate"
+                    },
+                    "asc": true
+                  }
+                ]
+              },
+              {
+                "name": {
+                  "es": "Ordenar por idioma (ascendente)"
+                },
+                "properties": [
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "languagecertificate",
+                    "child": {
+                      "property": "http://w3id.org/roh/languageOfTheCertificate"
+                    },
+                    "asc": false
+                  }
+                ]
               }
             ]
           },
