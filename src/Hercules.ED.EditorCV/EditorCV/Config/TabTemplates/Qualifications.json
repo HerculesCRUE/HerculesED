@@ -542,6 +542,227 @@
         }
       }
     },
+    { 
+      "rdftype": "http://w3id.org/roh/RelatedLanguageSkills",
+      "property": "http://w3id.org/roh/languageSkills",
+      "presentation": {
+        "type": "listitems",
+        "title": {
+          "es": "Conocimiento de idiomas"
+        },
+        "listItemsPresentation": {
+          "property": "http://vivoweb.org/ontology/core#relatedBy",
+          "listItem": {
+            "propertyTitle": {
+              "property": "http://vivoweb.org/ontology/core#relatedBy",
+              "graph": "languagecertificate",
+              "child": {
+                "property": "http://w3id.org/roh/languageOfTheCertificate",
+                "graph": "language",
+                "child": {
+                  "property": "http://purl.org/dc/elements/1.1/title"
+                }
+              }
+            },
+            "properties": [
+              {
+                "name": {
+                  "es": "Comprensión auditiva"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "languagecertificate",
+                  "child": {
+                    "property": "http://w3id.org/roh/listeningSkill",
+                    "graph": "languagelevel",
+                    "child": {
+                      "property": "http://purl.org/dc/elements/1.1/title"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Comprensión de lectura"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "languagecertificate",
+                  "child": {
+                    "property": "http://w3id.org/roh/readingSkill",
+                    "graph": "languagelevel",
+                    "child": {
+                      "property": "http://purl.org/dc/elements/1.1/title"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Interacción oral"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "languagecertificate",
+                  "child": {
+                    "property": "http://w3id.org/roh/spokingInteractionSkill",
+                    "graph": "languagelevel",
+                    "child": {
+                      "property": "http://purl.org/dc/elements/1.1/title"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Expresión oral"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "languagecertificate",
+                  "child": {
+                    "property": "http://w3id.org/roh/speakingSkill",
+                    "graph": "languagelevel",
+                    "child": {
+                      "property": "http://purl.org/dc/elements/1.1/title"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Expresión escrita"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "languagecertificate",
+                  "child": {
+                    "property": "http://w3id.org/roh/writingSkill",
+                    "graph": "languagelevel",
+                    "child": {
+                      "property": "http://purl.org/dc/elements/1.1/title"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "listItemEdit": {
+            "graph": "languagecertificate",
+            "proptitle": "http://w3id.org/roh/languageOfTheCertificate",
+            "rdftype": "http://w3id.org/roh/LanguageCertificate",
+            "sections": [
+              {
+                "title": {
+                  "es": "Información general"
+                },
+                "rows": [
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Idioma"
+                        },
+                        "required": true,
+                        "property": "http://w3id.org/roh/languageOfTheCertificate",
+                        "combo": {
+                          "rdftype": "http://w3id.org/roh/Language",
+                          "graph": "language",
+                          "property": {
+                            "property": "http://purl.org/dc/elements/1.1/title"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Comprensión auditiva"
+                        },
+                        "property": "http://w3id.org/roh/listeningSkill",
+                        "combo": {
+                          "rdftype": "http://w3id.org/roh/LanguageLevel",
+                          "graph": "languagelevel",
+                          "property": {
+                            "property": "http://purl.org/dc/elements/1.1/title"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Comprensión de lectura"
+                        },
+                        "property": "http://w3id.org/roh/readingSkill",
+                        "combo": {
+                          "rdftype": "http://w3id.org/roh/LanguageLevel",
+                          "graph": "languagelevel",
+                          "property": {
+                            "property": "http://purl.org/dc/elements/1.1/title"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Interacción oral"
+                        },
+                        "property": "http://w3id.org/roh/spokingInteractionSkill",
+                        "combo": {
+                          "rdftype": "http://w3id.org/roh/LanguageLevel",
+                          "graph": "languagelevel",
+                          "property": {
+                            "property": "http://purl.org/dc/elements/1.1/title"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Expresión oral"
+                        },
+                        "property": "http://w3id.org/roh/speakingSkill",
+                        "combo": {
+                          "rdftype": "http://w3id.org/roh/LanguageLevel",
+                          "graph": "languagelevel",
+                          "property": {
+                            "property": "http://purl.org/dc/elements/1.1/title"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Expresión escrita"
+                        },
+                        "property": "http://w3id.org/roh/writingSkill",
+                        "combo": {
+                          "rdftype": "http://w3id.org/roh/LanguageLevel",
+                          "graph": "languagelevel",
+                          "property": {
+                            "property": "http://purl.org/dc/elements/1.1/title"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
     {
       "rdftype": "http://w3id.org/roh/RelatedPostGraduates",
       "property": "http://w3id.org/roh/postgraduates",
@@ -2062,6 +2283,6 @@
           }
         }
       }
-    }  
+    }
   ]
 }
