@@ -1029,7 +1029,7 @@ namespace GuardadoCV.Models
                         valoresDependency.Add(id, GetPropValues(id, combo.dependency.property, dataCombo).First());
                     }
                 }
-
+                valoresCombo = valoresCombo.OrderBy(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
                 combos.Add(combo, valoresCombo);
                 if (combo.dependency != null)
                 {

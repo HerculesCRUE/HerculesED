@@ -9314,6 +9314,10 @@
                           "es": "Introduce la facultad, instituto, centro"
                         },
                         "property": "http://w3id.org/roh/center",
+                        "dependency": {
+                          "property": "http://w3id.org/roh/entityTitle",
+                          "propertyValue": "*"
+                        },
                         "type": "text",
                         "width": 1
                       }

@@ -475,7 +475,6 @@
                           "es": "Título homologado"
                         },
                         "type": "boolean",
-                        "required": false,
                         "property": "http://w3id.org/roh/approvedDegree",
                         "width": 1
                       },
@@ -542,7 +541,1780 @@
           }
         }
       }
-    }
+    },    
+    {
+      "rdftype": "http://w3id.org/roh/RelatedLanguageSkills",
+      "property": "http://w3id.org/roh/languageSkills",
+      "presentation": {
+        "type": "listitems",
+        "title": {
+          "es": "Conocimiento de idiomas"
+        },
+        "listItemsPresentation": {
+          "property": "http://vivoweb.org/ontology/core#relatedBy",
+          "listItem": {
+            "propertyTitle": {
+              "property": "http://vivoweb.org/ontology/core#relatedBy",
+              "graph": "languagecertificate",
+              "child": {
+                "property": "http://w3id.org/roh/languageOfTheCertificate",
+                "graph": "language",
+                "child": {
+                  "property": "http://purl.org/dc/elements/1.1/title"
+                }
+              }
+            },
+            "properties": [
+              {
+                "name": {
+                  "es": "Comprensión auditiva"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "languagecertificate",
+                  "child": {
+                    "property": "http://w3id.org/roh/listeningSkill",
+                    "graph": "languagelevel",
+                    "child": {
+                      "property": "http://purl.org/dc/elements/1.1/title"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Comprensión de lectura"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "languagecertificate",
+                  "child": {
+                    "property": "http://w3id.org/roh/readingSkill",
+                    "graph": "languagelevel",
+                    "child": {
+                      "property": "http://purl.org/dc/elements/1.1/title"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Interacción oral"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "languagecertificate",
+                  "child": {
+                    "property": "http://w3id.org/roh/spokingInteractionSkill",
+                    "graph": "languagelevel",
+                    "child": {
+                      "property": "http://purl.org/dc/elements/1.1/title"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Expresión oral"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "languagecertificate",
+                  "child": {
+                    "property": "http://w3id.org/roh/speakingSkill",
+                    "graph": "languagelevel",
+                    "child": {
+                      "property": "http://purl.org/dc/elements/1.1/title"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Expresión escrita"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "languagecertificate",
+                  "child": {
+                    "property": "http://w3id.org/roh/writingSkill",
+                    "graph": "languagelevel",
+                    "child": {
+                      "property": "http://purl.org/dc/elements/1.1/title"
+                    }
+                  }
+                }
+              }
+            ],
+            "orders": [
+              {
+                "name": {
+                  "es": "Ordenar por idioma (descendente)"
+                },
+                "properties": [                  
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "languagecertificate",
+                    "child": {
+                      "property": "http://w3id.org/roh/languageOfTheCertificate"
+                    },
+                    "asc": true
+                  }
+                ]
+              },
+              {
+                "name": {
+                  "es": "Ordenar por idioma (ascendente)"
+                },
+                "properties": [
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "languagecertificate",
+                    "child": {
+                      "property": "http://w3id.org/roh/languageOfTheCertificate"
+                    },
+                    "asc": false
+                  }
+                ]
+              }
+            ]
+          },
+          "listItemEdit": {
+            "graph": "languagecertificate",
+            "proptitle": "http://w3id.org/roh/languageOfTheCertificate",
+            "rdftype": "http://w3id.org/roh/LanguageCertificate",
+            "sections": [
+              {
+                "title": {
+                  "es": "Información general"
+                },
+                "rows": [
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Idioma"
+                        },
+                        "required": true,
+                        "property": "http://w3id.org/roh/languageOfTheCertificate",
+                        "combo": {
+                          "rdftype": "http://w3id.org/roh/Language",
+                          "graph": "language",
+                          "property": {
+                            "property": "http://purl.org/dc/elements/1.1/title"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Comprensión auditiva"
+                        },
+                        "property": "http://w3id.org/roh/listeningSkill",
+                        "combo": {
+                          "rdftype": "http://w3id.org/roh/LanguageLevel",
+                          "graph": "languagelevel",
+                          "property": {
+                            "property": "http://purl.org/dc/elements/1.1/title"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Comprensión de lectura"
+                        },
+                        "property": "http://w3id.org/roh/readingSkill",
+                        "combo": {
+                          "rdftype": "http://w3id.org/roh/LanguageLevel",
+                          "graph": "languagelevel",
+                          "property": {
+                            "property": "http://purl.org/dc/elements/1.1/title"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Interacción oral"
+                        },
+                        "property": "http://w3id.org/roh/spokingInteractionSkill",
+                        "combo": {
+                          "rdftype": "http://w3id.org/roh/LanguageLevel",
+                          "graph": "languagelevel",
+                          "property": {
+                            "property": "http://purl.org/dc/elements/1.1/title"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Expresión oral"
+                        },
+                        "property": "http://w3id.org/roh/speakingSkill",
+                        "combo": {
+                          "rdftype": "http://w3id.org/roh/LanguageLevel",
+                          "graph": "languagelevel",
+                          "property": {
+                            "property": "http://purl.org/dc/elements/1.1/title"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Expresión escrita"
+                        },
+                        "property": "http://w3id.org/roh/writingSkill",
+                        "combo": {
+                          "rdftype": "http://w3id.org/roh/LanguageLevel",
+                          "graph": "languagelevel",
+                          "property": {
+                            "property": "http://purl.org/dc/elements/1.1/title"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "rdftype": "http://w3id.org/roh/RelatedPostGraduates",
+      "property": "http://w3id.org/roh/postgraduates",
+      "presentation": {
+        "type": "listitems",
+        "title": {
+          "es": "Otra formación universitaria de posgrado"
+        },
+        "listItemsPresentation": {
+          "property": "http://vivoweb.org/ontology/core#relatedBy",
+          "listItem": {
+            "propertyTitle": {
+              "property": "http://vivoweb.org/ontology/core#relatedBy",
+              "graph": "academicdegree",
+              "child": {
+                "property": "http://w3id.org/roh/title"
+              }
+            },
+            "properties": [
+              {
+                "name": {
+                  "es": "Fecha de titulación"
+                },
+                "type": "date",
+                "showMiniBold": true,
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "http://purl.org/dc/terms/issued"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Entidad de titulación"
+                },
+                "showMini": true,
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "http://w3id.org/roh/conductedByTitle"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Facultad, instituto, centro"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "http://w3id.org/roh/center"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Ciudad entidad titulación"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "https://www.w3.org/2006/vcard/ns#locality"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "C. Autón./Reg. entidad titulación"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+                    "graph": "feature",
+                    "child": {
+                      "property": "http://www.geonames.org/ontology#name"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "País entidad titulación"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+                    "graph": "feature",
+                    "child": {
+                      "property": "http://www.geonames.org/ontology#name"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Tipo de formación"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "http://w3id.org/roh/formationType",
+                    "graph": "formationtype",
+                    "child": {
+                      "property": "http://purl.org/dc/elements/1.1/title"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Calificación obtenida"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "http://w3id.org/roh/qualification"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Título homologado"
+                },
+                "type": "boolean",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "http://w3id.org/roh/approvedDegree"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Fecha de homologación"
+                },
+                "type": "date",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "http://w3id.org/roh/approvedDate"
+                  }
+                }
+              }
+            ],
+            "orders": [
+              {
+                "name": {
+                  "es": "Ordenar por fecha más reciente"
+                },
+                "properties": [
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "academicdegree",
+                    "child": {
+                      "property": "http://purl.org/dc/terms/issued"
+                    },
+                    "asc": false
+                  },
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "academicdegree",
+                    "child": {
+                      "property": "http://w3id.org/roh/title"
+                    },
+                    "asc": true
+                  }
+                ]
+              },
+              {
+                "name": {
+                  "es": "Ordenar por fecha más antigua"
+                },
+                "properties": [
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "academicdegree",
+                    "child": {
+                      "property": "http://purl.org/dc/terms/issued"
+                    },
+                    "asc": true
+                  },
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "academicdegree",
+                    "child": {
+                      "property": "http://w3id.org/roh/title"
+                    },
+                    "asc": true
+                  }
+                ]
+              }
+            ]
+          },
+          "listItemEdit": {
+            "graph": "academicdegree",
+            "proptitle": "http://w3id.org/roh/title",
+            "rdftype": "http://vivoweb.org/ontology/core#AcademicDegree",
+            "sections": [
+              {
+                "title": {
+                  "es": "Información general"
+                },
+                "rows": [
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Titulación de posgrado"
+                        },
+                        "autocomplete": true,
+                        "required": true,
+                        "placeholder": {
+                          "es": "Introduce el nombre de la titulación de posgrado"
+                        },
+                        "property": "http://w3id.org/roh/title",
+                        "autocompleteConfig": {
+                          "rdftype": "http://w3id.org/roh/PostgradeDegree",
+                          "graph": "postgradedegree",
+                          "cache": true,
+                          "propertyEntity": "http://w3id.org/roh/postgradeDegree",
+                          "property": {
+                            "property": "http://purl.org/dc/elements/1.1/title"
+                          }
+                        },
+                        "type": "text",
+                        "width": 2
+                      },
+                      {
+                        "title": {
+                          "es": "Fecha de titulación"
+                        },
+                        "property": "http://purl.org/dc/terms/issued",
+                        "type": "date",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Entidad de titulación"
+                        },
+                        "autocomplete": true,
+                        "placeholder": {
+                          "es": "Introduce la entidad de titulación"
+                        },
+                        "property": "http://w3id.org/roh/conductedByTitle",
+                        "autocompleteConfig": {
+                          "rdftype": "http://xmlns.com/foaf/0.1/Organization",
+                          "graph": "organization",
+                          "propertyEntity": "http://w3id.org/roh/conductedBy",
+                          "property": {
+                            "property": "http://w3id.org/roh/title"
+                          }
+                        },
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Tipo de entidad"
+                        },
+                        "property": "http://w3id.org/roh/conductedByType",
+                        "combo": {
+                          "rdftype": "http://w3id.org/roh/OrganizationType",
+                          "graph": "organizationtype",
+                          "property": {
+                            "property": "http://purl.org/dc/elements/1.1/title"
+                          }
+                        },
+                        "dependency": {
+                          "property": "http://w3id.org/roh/conductedByTitle",
+                          "propertyValue": "*"
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Otros"
+                        },
+                        "property": "http://w3id.org/roh/conductedByTypeOther",
+                        "required": true,
+                        "dependency": {
+                          "property": "http://w3id.org/roh/conductedByType",
+                          "propertyValue": "{GraphsUrl}items/organizationtype_OTHERS"
+                        },
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Facultad, instituto, centro"
+                        },
+                        "property": "http://w3id.org/roh/center",
+                        "dependency": {
+                          "property": "http://w3id.org/roh/conductedByTitle",
+                          "propertyValue": "*"
+                        },
+                        "type": "text",
+                        "width": 1
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "title": {
+                  "es": "Más campos"
+                },
+                "rows": [
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Ciudad entidad titulación"
+                        },
+                        "placeholder": {
+                          "es": "Introduce la ciudad de la entidad titulación"
+                        },
+                        "property": "https://www.w3.org/2006/vcard/ns#locality",
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "País entidad titulación"
+                        },
+                        "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+                        "combo": {
+                          "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "filter": {
+                            "property": "http://www.geonames.org/ontology#featureCode",
+                            "value": "PCLD"
+                          },
+                          "graph": "feature",
+                          "property": {
+                            "property": "http://www.geonames.org/ontology#name"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "C. Autón./Reg. entidad titulación"
+                        },
+                        "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+                        "combo": {
+                          "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "filter": {
+                            "property": "http://www.geonames.org/ontology#featureCode",
+                            "value": "ADM1"
+                          },
+                          "dependency": {
+                            "property": "http://www.geonames.org/ontology#parentFeature",
+                            "propertyValue": "https://www.w3.org/2006/vcard/ns#hasCountryName"
+                          },
+                          "graph": "feature",
+                          "property": {
+                            "property": "http://www.geonames.org/ontology#name"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Tipo de formación"
+                        },
+                        "property": "http://w3id.org/roh/formationType",
+                        "combo": {
+                          "rdftype": "http://w3id.org/roh/FormationType",
+                          "graph": "formationtype",
+                          "property": {
+                            "property": "http://purl.org/dc/elements/1.1/title"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Calificación obtenida"
+                        },
+                        "property": "http://w3id.org/roh/qualification",
+                        "type": "text",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Título homologado"
+                        },
+                        "type": "boolean",
+                        "property": "http://w3id.org/roh/approvedDegree",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Fecha de homologación"
+                        },
+                        "property": "http://w3id.org/roh/approvedDate",
+                        "type": "date",
+                        "width": 1
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "rdftype": "http://w3id.org/roh/RelatedSpecialisedTrainings",
+      "property": "http://w3id.org/roh/specialisedTraining",
+      "presentation": {
+        "type": "listitems",
+        "title": {
+          "es": "Formación especializada, continuada, técnica, profesionalizada, de reciclaje y actualización (distinta a la formación académica reglada y a la sanitaria)"
+        },
+        "listItemsPresentation": {
+          "property": "http://vivoweb.org/ontology/core#relatedBy",
+          "listItem": {
+            "propertyTitle": {
+              "property": "http://vivoweb.org/ontology/core#relatedBy",
+              "graph": "academicdegree",
+              "child": {
+                "property": "http://w3id.org/roh/title"
+              }
+            },
+            "properties": [
+              {
+                "name": {
+                  "es": "Fecha de finalización"
+                },
+                "type": "date",
+                "showMiniBold": true,
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "http://vivoweb.org/ontology/core#end"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Duración en horas"
+                },
+                "type": "number",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "http://w3id.org/roh/durationHours"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Entidad de titulación"
+                },
+                "showMini": true,
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "http://w3id.org/roh/conductedByTitle"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Ciudad entidad titulación"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "https://www.w3.org/2006/vcard/ns#locality"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "C. Autón./Reg. entidad titulación"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+                    "graph": "feature",
+                    "child": {
+                      "property": "http://www.geonames.org/ontology#name"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "País entidad titulación"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+                    "graph": "feature",
+                    "child": {
+                      "property": "http://www.geonames.org/ontology#name"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Tipo de formación"
+                },
+                "childOR": [
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "academicdegree",
+                    "child": {
+                      "property": "http://w3id.org/roh/formationActivityTypeOther"
+                    }
+                  },
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "academicdegree",
+                    "child": {
+                      "property": "http://w3id.org/roh/formationActivityType",
+                      "graph": "formationactivitytype",
+                      "child": {
+                        "property": "http://purl.org/dc/elements/1.1/title"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "name": {
+                  "es": "Objetivos de la entidad"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "http://w3id.org/roh/goals"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Firma"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "http://w3id.org/roh/trainerNick"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Nombre"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "http://w3id.org/roh/trainerName"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Primer Apellido"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "http://w3id.org/roh/trainerFirstSurname"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Segundo Apellido"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "http://w3id.org/roh/trainerSecondSurname"
+                  }
+                }
+              }
+            ],
+            "orders": [
+              {
+                "name": {
+                  "es": "Ordenar por fecha de finalización más reciente"
+                },
+                "properties": [
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "academicdegree",
+                    "child": {
+                      "property": "http://vivoweb.org/ontology/core#end"
+                    },
+                    "asc": false
+                  },
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "academicdegree",
+                    "child": {
+                      "property": "http://w3id.org/roh/title"
+                    },
+                    "asc": true
+                  }
+                ]
+              },
+              {
+                "name": {
+                  "es": "Ordenar por fecha de finalización más antigua"
+                },
+                "properties": [
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "academicdegree",
+                    "child": {
+                      "property": "http://vivoweb.org/ontology/core#end"
+                    },
+                    "asc": true
+                  },
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "academicdegree",
+                    "child": {
+                      "property": "http://w3id.org/roh/title"
+                    },
+                    "asc": true
+                  }
+                ]
+              }
+            ]
+          },
+          "listItemEdit": {
+            "graph": "academicdegree",
+            "proptitle": "http://w3id.org/roh/title",
+            "rdftype": "http://vivoweb.org/ontology/core#AcademicDegree",
+            "sections": [
+              {
+                "title": {
+                  "es": "Información general"
+                },
+                "rows": [
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Título de la formación"
+                        },
+                        "required": true,
+                        "placeholder": {
+                          "es": "Introduce el título de la formación"
+                        },
+                        "property": "http://w3id.org/roh/title",
+                        "type": "text",
+                        "width": 3
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Entidad de titulación"
+                        },
+                        "autocomplete": true,
+                        "placeholder": {
+                          "es": "Introduce la entidad de titulación"
+                        },
+                        "property": "http://w3id.org/roh/conductedByTitle",
+                        "autocompleteConfig": {
+                          "rdftype": "http://xmlns.com/foaf/0.1/Organization",
+                          "graph": "organization",
+                          "propertyEntity": "http://w3id.org/roh/conductedBy",
+                          "property": {
+                            "property": "http://w3id.org/roh/title"
+                          }
+                        },
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Tipo de entidad"
+                        },
+                        "property": "http://w3id.org/roh/conductedByType",
+                        "combo": {
+                          "rdftype": "http://w3id.org/roh/OrganizationType",
+                          "graph": "organizationtype",
+                          "property": {
+                            "property": "http://purl.org/dc/elements/1.1/title"
+                          }
+                        },
+                        "dependency": {
+                          "property": "http://w3id.org/roh/conductedByTitle",
+                          "propertyValue": "*"
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Otros"
+                        },
+                        "property": "http://w3id.org/roh/conductedByTypeOther",
+                        "required": true,
+                        "dependency": {
+                          "property": "http://w3id.org/roh/conductedByType",
+                          "propertyValue": "{GraphsUrl}items/organizationtype_OTHERS"
+                        },
+                        "type": "text",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Fecha de finalización"
+                        },
+                        "property": "http://vivoweb.org/ontology/core#end",
+                        "type": "date",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Duración en horas"
+                        },
+                        "property": "http://w3id.org/roh/durationHours",
+                        "type": "number",
+                        "width": 1
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "title": {
+                  "es": "Más campos"
+                },
+                "rows": [
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Ciudad entidad titulación"
+                        },
+                        "placeholder": {
+                          "es": "Introduce la ciudad de la entidad titulación"
+                        },
+                        "property": "https://www.w3.org/2006/vcard/ns#locality",
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "País entidad titulación"
+                        },
+                        "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+                        "combo": {
+                          "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "filter": {
+                            "property": "http://www.geonames.org/ontology#featureCode",
+                            "value": "PCLD"
+                          },
+                          "graph": "feature",
+                          "property": {
+                            "property": "http://www.geonames.org/ontology#name"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "C. Autón./Reg. entidad titulación"
+                        },
+                        "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+                        "combo": {
+                          "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "filter": {
+                            "property": "http://www.geonames.org/ontology#featureCode",
+                            "value": "ADM1"
+                          },
+                          "dependency": {
+                            "property": "http://www.geonames.org/ontology#parentFeature",
+                            "propertyValue": "https://www.w3.org/2006/vcard/ns#hasCountryName"
+                          },
+                          "graph": "feature",
+                          "property": {
+                            "property": "http://www.geonames.org/ontology#name"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Tipo de la formación"
+                        },
+                        "property": "http://w3id.org/roh/formationActivityType",
+                        "combo": {
+                          "rdftype": "http://w3id.org/roh/FormationActivityType",
+                          "graph": "formationactivitytype",
+                          "property": {
+                            "property": "http://purl.org/dc/elements/1.1/title"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Otros"
+                        },
+                        "property": "http://w3id.org/roh/formationActivityTypeOther",
+                        "required": true,
+                        "dependency": {
+                          "property": "http://w3id.org/roh/formationActivityType",
+                          "propertyValue": "{GraphsUrl}items/formationactivitytype_OTHERS"
+                        },
+                        "type": "text",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Objetivos de la entidad"
+                        },
+                        "type": "text",
+                        "property": "http://w3id.org/roh/goals",
+                        "width": 2
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Firma"
+                        },
+                        "property": "http://w3id.org/roh/trainerNick",
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Nombre"
+                        },
+                        "property": "http://w3id.org/roh/trainerName",
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Primer Apellido"
+                        },
+                        "property": "http://w3id.org/roh/trainerFirstSurname",
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Segundo Apellido"
+                        },
+                        "property": "http://w3id.org/roh/trainerSecondSurname",
+                        "type": "text",
+                        "width": 1
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "rdftype": "http://w3id.org/roh/RelatedCoursesAndSeminars",
+      "property": "http://w3id.org/roh/coursesAndSeminars",
+      "presentation": {
+        "type": "listitems",
+        "title": {
+          "es": "Cursos y seminarios recibidos de perfeccionamiento, innovación y mejora docente, nuevas tecnologías, etc., cuyo objetivo sea la mejora de la docencia"
+        },
+        "listItemsPresentation": {
+          "property": "http://vivoweb.org/ontology/core#relatedBy",
+          "listItem": {
+            "propertyTitle": {
+              "property": "http://vivoweb.org/ontology/core#relatedBy",
+              "graph": "academicdegree",
+              "child": {
+                "property": "http://w3id.org/roh/title"
+              }
+            },
+            "properties": [
 
+              {
+                "name": {
+                  "es": "Objetivos del curso/seminario"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "http://w3id.org/roh/goals"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Entidad organizadora"
+                },
+                "showMini": true,
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "http://w3id.org/roh/conductedByTitle"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Facultad, instituto, centro"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "http://w3id.org/roh/center"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Fecha de inicio"
+                },
+                "type": "date",
+                "showMiniBold": true,
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "http://purl.org/dc/terms/issued"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Fecha de finalización"
+                },
+                "type": "date",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "http://vivoweb.org/ontology/core#end"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Duración en horas"
+                },
+                "type": "number",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "http://w3id.org/roh/durationHours"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Ciudad entidad organizadora"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "https://www.w3.org/2006/vcard/ns#locality"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "C. Autón./Reg. entidad organizadora"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+                    "graph": "feature",
+                    "child": {
+                      "property": "http://www.geonames.org/ontology#name"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "País entidad organizadora"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+                    "graph": "feature",
+                    "child": {
+                      "property": "http://www.geonames.org/ontology#name"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Duración años"
+                },
+                "type": "number",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "http://w3id.org/roh/durationYears"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Duración meses"
+                },
+                "type": "number",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "http://w3id.org/roh/durationMonths"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Duración días"
+                },
+                "type": "number",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "http://w3id.org/roh/durationDays"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Objetivo de la estacia"
+                },
+                "childOR": [
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "academicdegree",
+                    "child": {
+                      "property": "http://w3id.org/roh/stayGoalOther"
+                    }
+                  },
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "academicdegree",
+                    "child": {
+                      "property": "http://w3id.org/roh/stayGoal",
+                      "graph": "staygoal",
+                      "child": {
+                        "property": "http://purl.org/dc/elements/1.1/title"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "name": {
+                  "es": "Programa de financiación"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "http://w3id.org/roh/fundingProgram"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Perfil de destinatarios/as"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "http://w3id.org/roh/targetProfile"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Tareas contrastables"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "http://w3id.org/roh/performedTasks"
+                  }
+                }
+              }
+            ],
+            "orders": [
+              {
+                "name": {
+                  "es": "Ordenar por fecha más reciente"
+                },
+                "properties": [
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "academicdegree",
+                    "child": {
+                      "property": "http://purl.org/dc/terms/issued"
+                    },
+                    "asc": false
+                  },
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "academicdegree",
+                    "child": {
+                      "property": "http://w3id.org/roh/title"
+                    },
+                    "asc": true
+                  }
+                ]
+              },
+              {
+                "name": {
+                  "es": "Ordenar por fecha más antigua"
+                },
+                "properties": [
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "academicdegree",
+                    "child": {
+                      "property": "http://purl.org/dc/terms/issued"
+                    },
+                    "asc": true
+                  },
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "academicdegree",
+                    "child": {
+                      "property": "http://w3id.org/roh/title"
+                    },
+                    "asc": true
+                  }
+                ]
+              }
+            ]
+          },
+          "listItemEdit": {
+            "graph": "academicdegree",
+            "proptitle": "http://w3id.org/roh/title",
+            "rdftype": "http://vivoweb.org/ontology/core#AcademicDegree",
+            "sections": [
+              {
+                "title": {
+                  "es": "Información general"
+                },
+                "rows": [
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Título del curso/seminario"
+                        },
+                        "required": true,
+                        "placeholder": {
+                          "es": "Introduce el título del curso/seminario"
+                        },
+                        "property": "http://w3id.org/roh/title",
+                        "type": "text",
+                        "width": 2
+                      },
+                      {
+                        "title": {
+                          "es": "Objetivos del curso/seminario"
+                        },
+                        "placeholder": {
+                          "es": "Introduce el objetivo del curso/seminario"
+                        },
+                        "property": "http://w3id.org/roh/goals",
+                        "type": "text",
+                        "width": 2
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Entidad organizadora"
+                        },
+                        "autocomplete": true,
+                        "placeholder": {
+                          "es": "Introduce la entidad organizadora"
+                        },
+                        "property": "http://w3id.org/roh/conductedByTitle",
+                        "autocompleteConfig": {
+                          "rdftype": "http://xmlns.com/foaf/0.1/Organization",
+                          "graph": "organization",
+                          "propertyEntity": "http://w3id.org/roh/conductedBy",
+                          "property": {
+                            "property": "http://w3id.org/roh/title"
+                          }
+                        },
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Tipo de entidad"
+                        },
+                        "property": "http://w3id.org/roh/conductedByType",
+                        "combo": {
+                          "rdftype": "http://w3id.org/roh/OrganizationType",
+                          "graph": "organizationtype",
+                          "property": {
+                            "property": "http://purl.org/dc/elements/1.1/title"
+                          }
+                        },
+                        "dependency": {
+                          "property": "http://w3id.org/roh/conductedByTitle",
+                          "propertyValue": "*"
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Otros"
+                        },
+                        "property": "http://w3id.org/roh/conductedByTypeOther",
+                        "required": true,
+                        "dependency": {
+                          "property": "http://w3id.org/roh/conductedByType",
+                          "propertyValue": "{GraphsUrl}items/organizationtype_OTHERS"
+                        },
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Facultad, instituto, centro"
+                        },
+                        "property": "http://w3id.org/roh/center",
+                        "dependency": {
+                          "property": "http://w3id.org/roh/conductedByTitle",
+                          "propertyValue": "*"
+                        },
+                        "type": "text",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Fecha de inicio"
+                        },
+                        "property": "http://purl.org/dc/terms/issued",
+                        "type": "date",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Fecha de finalización"
+                        },
+                        "property": "http://vivoweb.org/ontology/core#end",
+                        "type": "date",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Duración en horas"
+                        },
+                        "property": "http://w3id.org/roh/durationHours",
+                        "type": "number",
+                        "width": 1
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "title": {
+                  "es": "Más campos"
+                },
+                "rows": [
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Ciudad entidad organizadora"
+                        },
+                        "placeholder": {
+                          "es": "Introduce la ciudad de la entidad organizadora"
+                        },
+                        "property": "https://www.w3.org/2006/vcard/ns#locality",
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "País entidad organizadora"
+                        },
+                        "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+                        "combo": {
+                          "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "filter": {
+                            "property": "http://www.geonames.org/ontology#featureCode",
+                            "value": "PCLD"
+                          },
+                          "graph": "feature",
+                          "property": {
+                            "property": "http://www.geonames.org/ontology#name"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "C. Autón./Reg. entidad organizadora"
+                        },
+                        "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+                        "combo": {
+                          "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "filter": {
+                            "property": "http://www.geonames.org/ontology#featureCode",
+                            "value": "ADM1"
+                          },
+                          "dependency": {
+                            "property": "http://www.geonames.org/ontology#parentFeature",
+                            "propertyValue": "https://www.w3.org/2006/vcard/ns#hasCountryName"
+                          },
+                          "graph": "feature",
+                          "property": {
+                            "property": "http://www.geonames.org/ontology#name"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Duración años"
+                        },
+                        "property": "http://w3id.org/roh/durationYears",
+                        "type": "number",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Duración meses"
+                        },
+                        "property": "http://w3id.org/roh/durationMonths",
+                        "type": "number",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Duración días"
+                        },
+                        "property": "http://w3id.org/roh/durationDays",
+                        "type": "number",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Objetivo de la estacia"
+                        },
+                        "property": "http://w3id.org/roh/stayGoal",
+                        "combo": {
+                          "rdftype": "http://w3id.org/roh/StayGoal",
+                          "graph": "staygoal",
+                          "property": {
+                            "property": "http://purl.org/dc/elements/1.1/title"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Otros"
+                        },
+                        "property": "http://w3id.org/roh/stayGoalOther",
+                        "required": true,
+                        "dependency": {
+                          "property": "http://w3id.org/roh/stayGoal",
+                          "propertyValue": "{GraphsUrl}items/staygoal_OTHERS"
+                        },
+                        "type": "text",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Programa de financiación"
+                        },
+                        "placeholder": {
+                          "es": "Introduce el programa de financiación"
+                        },
+                        "property": "http://w3id.org/roh/fundingProgram",
+                        "type": "text",
+                        "width": 3
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Perfil de destinatarios/as"
+                        },
+                        "property": "http://w3id.org/roh/targetProfile",
+                        "type": "textarea",
+                        "width": 3
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Tareas contrastables"
+                        },
+                        "property": "http://w3id.org/roh/performedTasks",
+                        "type": "textarea",
+                        "width": 3
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    }
   ]
 }
