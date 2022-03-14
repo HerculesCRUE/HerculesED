@@ -105,6 +105,7 @@ else
 <script type="text/javascript" src="@urlPersonalizacion/theme/theme.js"></script>
 <script type="text/javascript" src="@urlPersonalizacion/theme/community.js"></script>
 <script type="text/javascript" src="@urlPersonalizacion/theme/community_proy.js"></script>
+<script type="text/javascript" src="@urlPersonalizacion/theme/ficharecurso.js"></script>
 <!-- MomentJS -->
 <script type="text/javascript" src="@Html.GetBaseUrlStatic()/responsive/theme/libraries/momentJS/moment.js?v=@Html.GetVersion()"></script>
 
@@ -137,7 +138,6 @@ else
 @if (Comunidad != null && Comunidad.VersionJS.HasValue)
 {
     <script type="text/javascript" src="@Html.GetBaseUrlContent()/imagenes/proyectos/personalizacion/@Comunidad.Key.ToString()@Html.GetStyleVersion()/community.js?v=@Comunidad.VersionJS"></script>
-
 }
 @if (Comunidad != null && Comunidad.VersionJSAdmin.HasValue)
 {
