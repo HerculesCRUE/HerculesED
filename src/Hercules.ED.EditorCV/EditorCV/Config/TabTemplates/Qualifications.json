@@ -1503,7 +1503,7 @@
               },
               {
                 "name": {
-                  "es": "Entidad de titulación"
+                  "es": "Entidad organizadora"
                 },
                 "showMini": true,
                 "child": {
@@ -1568,7 +1568,7 @@
               },
               {
                 "name": {
-                  "es": "Ciudad entidad titulación"
+                  "es": "Ciudad entidad organizadora"
                 },
                 "child": {
                   "property": "http://vivoweb.org/ontology/core#relatedBy",
@@ -1580,7 +1580,7 @@
               },
               {
                 "name": {
-                  "es": "C. Autón./Reg. entidad titulación"
+                  "es": "C. Autón./Reg. entidad organizadora"
                 },
                 "child": {
                   "property": "http://vivoweb.org/ontology/core#relatedBy",
@@ -1596,7 +1596,7 @@
               },
               {
                 "name": {
-                  "es": "País entidad titulación"
+                  "es": "País entidad organizadora"
                 },
                 "child": {
                   "property": "http://vivoweb.org/ontology/core#relatedBy",
@@ -1612,7 +1612,7 @@
               },
               {
                 "name": {
-                  "es": "Años"
+                  "es": "Duración años"
                 },
                 "type": "number",
                 "child": {
@@ -1625,7 +1625,7 @@
               },
               {
                 "name": {
-                  "es": "Meses"
+                  "es": "Duración meses"
                 },
                 "type": "number",
                 "child": {
@@ -1638,7 +1638,7 @@
               },
               {
                 "name": {
-                  "es": "Días"
+                  "es": "Duración días"
                 },
                 "type": "number",
                 "child": {
@@ -1904,10 +1904,10 @@
                     "properties": [
                       {
                         "title": {
-                          "es": "Ciudad entidad titulación"
+                          "es": "Ciudad entidad organizadora"
                         },
                         "placeholder": {
-                          "es": "Introduce la ciudad de la entidad titulación"
+                          "es": "Introduce la ciudad de la entidad organizadora"
                         },
                         "property": "https://www.w3.org/2006/vcard/ns#locality",
                         "type": "text",
@@ -1915,7 +1915,7 @@
                       },
                       {
                         "title": {
-                          "es": "País entidad titulación"
+                          "es": "País entidad organizadora"
                         },
                         "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                         "combo": {
@@ -1934,7 +1934,7 @@
                       },
                       {
                         "title": {
-                          "es": "C. Autón./Reg. entidad titulación"
+                          "es": "C. Autón./Reg. entidad organizadora"
                         },
                         "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                         "combo": {
@@ -1961,7 +1961,7 @@
                     "properties": [
                       {
                         "title": {
-                          "es": "Años"
+                          "es": "Duración años"
                         },
                         "property": "http://w3id.org/roh/durationYears",
                         "type": "number",
@@ -1969,7 +1969,7 @@
                       },
                       {
                         "title": {
-                          "es": "Meses"
+                          "es": "Duración meses"
                         },
                         "property": "http://w3id.org/roh/durationMonths",
                         "type": "number",
@@ -1977,7 +1977,7 @@
                       },
                       {
                         "title": {
-                          "es": "Días"
+                          "es": "Duración días"
                         },
                         "property": "http://w3id.org/roh/durationDays",
                         "type": "number",
