@@ -1,4 +1,4 @@
-scikit-learn>=1.0.0
-pandas
-imblearn
-spacy
+scikit-learn==1.0.2
+pandas==1.4.1
+imbalanced-learn==0.9.0
+spacy==3.2.3
