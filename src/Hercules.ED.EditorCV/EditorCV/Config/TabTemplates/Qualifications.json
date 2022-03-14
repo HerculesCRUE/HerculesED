@@ -1801,11 +1801,11 @@
                     "properties": [
                       {
                         "title": {
-                          "es": "Entidad de titulación"
+                          "es": "Entidad organizadora"
                         },
                         "autocomplete": true,
                         "placeholder": {
-                          "es": "Introduce la entidad de titulación"
+                          "es": "Introduce la entidad organizadora"
                         },
                         "property": "http://w3id.org/roh/conductedByTitle",
                         "autocompleteConfig": {
