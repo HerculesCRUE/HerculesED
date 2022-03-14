@@ -1,20 +1,20 @@
-# GNOSS HERCULES API
+# Description
 
-API providing access to topic classification and entity polarity classification over news.
+API providing access for the extraction of thematic and specific descriptors from scientific papers, protocols and code projects.
 
-# Installation / Deployment
 
-## Dependencies
-install python3-dev and libhunspell-dev. in ubuntu:
+# Installation and deployment
+
+Install python3-dev and libhunspell-dev. in ubuntu:
 ```
-$ sudo apt install  python3-dev libhunspell-dev
+$ sudo apt install python3-dev libhunspell-dev
 ```
 
-create a vritual environment with the necessary requirements
+Create a vritual environment with the necessary requirements:
 ```
 $ python3 -m venv venv
 $ . venv/bin/activate
-$ pip install -f venv.requirements
+$ pip install -f requirements.txt
 ```
 
 Download the Spacy model:
@@ -31,9 +31,9 @@ wget https://storage.googleapis.com/elhuyar/Hercules/hercules-models.tar.gz
 tar xfz hercules-models.tar.gz
 ```
 
-Generate a ```conf.json``` from ```conf.template.json``` file:
-- Set your classifiers paths (the directory tree is already created in the previous step)
-- Set your security credentials
+Create a copy of `conf.template.json` with the name `conf.json`, and change the values as needed:
+- Set your classifiers paths (the directory created after extracting `hercules-models.tar.gz`)
+- Set your security credentials (not required for the demo)
 
 Deploy the API either within an standalone server or behind apache
 - Standalone server: Run server (on port 8976 in the example)
@@ -42,7 +42,7 @@ $ ./run.sh 8976
 ```
 
 - Behind Apache: be sure you have mod_wsgi (python3) installed
-Copy the provided apache configuration into  /etc/apache2/sites-available:
+Copy the provided apache configuration into /etc/apache2/sites-available:
 ```
 $ sudo cp gnoss_hercules_api.conf /etc/apache2/sites-available
 ```
@@ -59,13 +59,15 @@ NOTE: not tested with other servers
 
 La API tiene dos ENDPOINTs, uno para categorías temáticas y otro para la extracción de términos específicos. A continuación se detalla el funcionamiento de cada uno de ellos:
 
+
 ## ENDPOINT Categorías temáticas
 
 La API devuelve las etiquetas clasificadas para un clasificador elegido (disponibles: sourceForge=Código, bio-protocol=protocolos, papers=artículos científicos). El clasificador se especifica mediante el parámetro "rotype" en el json de entrada. 
 
-## Process requests
-URL: https://herculesapi.elhuyar.eus/thematic
 
+## Process requests
+
+URL: https://herculesapi.elhuyar.eus/thematic
 
 Método HTTP: POST
 
@@ -210,8 +212,8 @@ Respuesta para sourceForge:
 La API extrae los términos mas relevantes que aparecen en el texto proporcionado, utilizando el extractor elegido (disponibles: papers=artículos científicos). El clasificador se especifica mediante el parámetro "rotype" en el JSON de entrada. 
 
 ## Process requests
-URL: https://herculesapi.elhuyar.eus/specific
 
+URL: https://herculesapi.elhuyar.eus/specific
 
 Método HTTP: POST
 
@@ -270,9 +272,9 @@ Respuesta para 'papers':
 
 **BioProtocol**
 
-*Not implemented*
+Work in progress.
 
 
 **SourceForge**
 
-*Not implemented*
+Work in progress.

@@ -1,3 +1,8 @@
+# Description
+
+This project contains the scripts needed to train the models for extraction of specific descriptors. It also contains the instructions to download all the required data. We train models for scientific papers, protocol papers and code projects. 
+
+
 # Setting up the environment
 
 Create and load a new Python3 virtual environment:
@@ -14,7 +19,16 @@ pip install -r requirements.txt
 spacy download en_core_web_lg
 ```
 
-We will use the Krapivin dataset to train the model. Download and extract the dataset:
+# Training the models
+
+In this section we'll describe how to train the different models for papers, protocols and code projects. The training is made in two steps: first we identify and extract the keyword candidates from the dataset following several grammatical and syntactical rules, and then we train a classifier to choose the actual keywords from those candidates.
+
+
+## Scientific papers
+
+We will use the [Krapivin dataset](https://github.com/boudinfl/krapivin-2009-pre) dataset to train the model for extracting specific descriptors from scientific papers. Krapivin is a dataset of papers and their keywords.
+
+Download and extract the dataset:
 
 ```
 wget https://storage.googleapis.com/elhuyar/Hercules/specific_descriptors/krapivin-raw.tar.gz
@@ -41,9 +55,9 @@ Finally, the already pretrained models can be found in the main resource file re
 wget https://storage.googleapis.com/elhuyar/Hercules/hercules-models.tar.gz
 ```
 
-# Extracting features, training and evaluating the models
+### Extracting features, training and evaluating the models
 
-To create the dataset to train the model, we will use the raw Krapivin dataset and extract keyword candidates and their features from the papers included in the dataset:
+The first step consists in extract keyword candidates and their features from the Krapivin dataset:
 
 ```
 python3 krapivin_extract_features.py [--fulltext] krapivin-set/ clef.pkl scopus.pkl idfakCLEF.pkl krapivin.tsv
@@ -51,7 +65,7 @@ python3 krapivin_extract_features.py [--fulltext] krapivin-set/ clef.pkl scopus.
 
 _Note: You should set the optional argument `--fulltext` if you want to extract keyword candidates from the full texts, and leave it blank if you want to extract them only from the title + abstract._
 
-Then split the full dataset into three sets: train, test and dev. You must not mix candidates from each document in different sets. That means you must split the dataset by document IDs. You can use the following script for that task:
+Then split the full dataset into three sets: train, test and dev. You must not mix candidates from each document in different sets. That means you must split the dataset by document IDs. You can use the following script:
 
 ```
 python3 split_train_test.py krapivin.tsv train_docs.txt test_docs.txt
@@ -59,7 +73,7 @@ python3 split_train_test.py krapivin.tsv train_docs.txt test_docs.txt
 
 _Note: We shared the distribution of the document IDs used in our experiments. You can find them in the files [`train_docs.txt`](https://storage.googleapis.com/elhuyar/Hercules/specific_descriptors/train_docs.txt) and [`test_docs.txt`](https://storage.googleapis.com/elhuyar/Hercules/specific_descriptors/test_docs.txt)._
 
-Once we have the three sets, we are able to train the model:
+Once we have the three sets, we are ready to train the model:
 
 ```
 python3 train_eval_krapivin.py [--fulltext] krapivin.train.tsv krapivin.test.tsv
@@ -81,3 +95,13 @@ python3 dump_doc_ranks.py krapivin_single_model.sav krapivin_multi_model.sav kra
 ```
 
 Both models (fulltext and abstracts) will be used by the main API service to perform the keyword extraction from new text documents.
+
+
+## Protocols
+
+Work in progress.
+
+
+## Code projects
+
+Work in progress.

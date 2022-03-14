@@ -877,6 +877,57 @@ var contarLineasDescripcion = {
     }
 };
 
+// var comportamientoSeleccionarHijo = {
+//     init: function () {
+//         this.config();
+//         this.comportamiento();
+//     },
+//     config: function () {
+//         this.arbol = body.find('.divTesArbol');
+//     },
+//     comportamiento: function () {
+//         var categoria_padre = this.arbol.find('> .categoria-wrap');
+
+//         $.each(categoria_padre, function (i, val) {
+//             var panHijos = $(val).find('.panHijos');
+//             var categorias_hijas = panHijos.find('> .categoria-wrap');
+
+//             if (panHijos.length > 0) {
+//                 // deshabilita las categorias padres
+//                 $(val).find('> .categoria input').attr('disabled', true);
+//             }
+
+//             if (categorias_hijas.find('.panHijos').length) {
+//                 // deshabilita las categorias hijas con hijos
+//                 var categoria = categorias_hijas.find('.panHijos').closest('.categoria-wrap');
+//                 categoria.find('> .categoria input').attr('disabled', true);
+//             }
+//         });
+//     }
+// };
+
+var comportamientoAbrirArbol = {
+    init: function () {
+        this.config();
+        this.comportamiento();
+    },
+    config: function () {
+        this.arbol = body.find('.divTesArbol');
+    },
+    comportamiento: function () {
+        var categoria_padre = this.arbol.find('> .categoria-wrap');
+        var categoria_label = categoria_padre.find('.custom-control-label');
+
+        categoria_label.off('click').on('click', function () {
+            var padre = $(this).closest('.categoria-wrap');
+            var desplegar = padre.find('> .boton-desplegar');
+            if (desplegar.length > 0) {
+                desplegar.trigger('click');
+            }
+        });
+    }
+};
+
 $(function () {
     accionesBuscadorCabecera.init();
     communityMenuMovil.init();
@@ -892,7 +943,6 @@ $(function () {
 
     if (body.hasClass('fichaRecurso') || body.hasClass('edicionRecurso')) {
         comportamientoCargaFacetasComunidad();
-        calcularFacetaDropdown.init();
     }
 
     if (body.hasClass('fichaRecurso')) {
@@ -906,11 +956,15 @@ $(function () {
         cambioVistaListado.init();
     }
 
-    if(body.hasClass('page-cv')){
+    if (body.hasClass('page-cv')) {
         iniciarComportamientoImagenUsuario.init();
         operativaFormularioAutor.init();
         operativaFormularioTesauro.init();
         comportamientoTopicosCV.init();
+    }
+
+    if (body.hasClass('edicionCluster')) {
+        comportamientoAbrirArbol.init();
     }
 });
 

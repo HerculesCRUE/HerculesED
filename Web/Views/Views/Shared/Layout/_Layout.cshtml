@@ -278,8 +278,9 @@
             $(document).ready(function () {
                 EjecutarScriptsIniciales2();
             });
-            const currentLang = "@Html.GetUtilIdiomas().LanguageCode.ToLower()";
-            const servicioExternoBaseUrl = "@Html.GetBaseUrlContent()/";
+            const currentLang = "@Html.GetUtilIdiomas().LanguageCode.ToLower()"
+            const servicioExternoBaseUrl = "@Html.GetBaseUrlContent()/"
+            const localUrlBaseLayout = "https://localhost:44321/"
         </script>
         @RenderSection("javascript", required: false)
 
@@ -599,7 +600,7 @@
 
         @if (!IdentidadActual.IsGuestUser)
         {
-            <div id="modal-crear-cluster" data-backdrop="static" class="modal modal-top modal-wide fade edicionCluster" tabindex="-1" role="dialog">
+            <div id="modal-crear-cluster" data-backdrop="static" class="modal modal-top modal-wide fade edicionRecurso  edicionCluster" tabindex="-1" role="dialog">
                 <div class="modal-dialog" role="document" data-cshortName="@Comunidad.ShortName">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -974,7 +975,7 @@
                                                     </div>
                                                     <div class="resource-list listView resource-list-personas">
                                                         <div class="resource-list-wrap">
-                                                            <div class="resource">
+                                                            <div class="resource" id="clusterListUsers">
                                                                 <div class="wrap">
                                                                     <table class="display nowrap table table-sm">
                                                                         <thead>
@@ -2251,16 +2252,15 @@
 
             <script type="text/javascript">
 
-                const uriLoadTaxonomies = "Cluster/GetThesaurus/"
-                const uriSaveCluster = "Cluster/SetSection1/"
+                const uriLoadTaxonomies = "Cluster/GetThesaurus"
+                const uriSaveCluster = "Cluster/SetSection1"
 
-                var urlLT = new URL(servicioExternoBaseUrl + 'servicioexterno/' + uriLoadTaxonomies);
-                var urlSC1 = new URL(servicioExternoBaseUrl + 'servicioexterno/' + uriSaveCluster);
+                var layDepuracion = false
 
-                if (window.location.hostname == 'depuracion.net') {
-                    urlLT = new URL('https://localhost:44321/' + uriLoadTaxonomies);
-                    urlSC1 = new URL('https://localhost:44321/' + uriSaveCluster);
-                }
+
+                var urlLT = new URL(servicioExternoBaseUrl + 'servicioexterno/' + uriLoadTaxonomies)
+                var urlSC1 = new URL(servicioExternoBaseUrl + 'servicioexterno/' + uriSaveCluster)
+
 
                 class StepsCluster {
                     constructor() {
@@ -2295,6 +2295,18 @@
                         this.userId = document.getElementById('inpt_usuarioID').value
                         this.communityShortName = this.modalCrearCluster.data('cshortName')
                         this.clusterId = undefined
+
+                        const urlBase = "@Html.GetBaseUrl()";
+                        if (urlBase.includes("localhost") || urlBase.includes("depuracion")) {
+                            layDepuracion = true;
+                        }
+
+
+                        if (window.location.hostname == 'depuracion.net' || window.location.hostname.includes("localhost")) {
+                            urlLT = new URL(localUrlBaseLayout + uriLoadTaxonomies)
+                            urlSC1 = new URL(localUrlBaseLayout + uriSaveCluster)
+                            layDepuracion = true
+                        }
 
                         this.modalCrearCluster.on('shown.bs.modal', function () {
                             _self.init()
@@ -2375,13 +2387,20 @@
                             let dataParentId = $(this).data('parentid')
                             dataParentId = (dataParentId.length > 0) ? dataParentId.split('/').pop() : dataParentId
 
-                            if (dataParentId.length > 0) {_self.selectParent(dataParentId)}
+                            if (dataParentId.length > 0) {
+                                if (!dataVal) {
+                                    let brothers = $(this).parent().parent().parent().parent().find('input.at-input:checked')
+                                    if (brothers.length == 0) {
+                                        _self.selectParent(dataParentId, false)
+                                    } else {
+                                        _self.selectParent(dataParentId)
+                                    }
+                                } else {
+                                    _self.selectParent(dataParentId)
+                                }
+                            }
 
-                            /* if (dataVal) {
-                                document.getElementById('list__' + dataId).checked = true
-                            } else  {
-                                document.getElementById('list__' + dataId).checked = false
-                            } */
+                            
                         })
 
                         // Click into the list
@@ -2400,16 +2419,30 @@
                     /**
                      * Select the parent in the list and add a class to active the item
                      * param pId, the parent id
+                     * param addclass, check if should dishabled the item
                      */
-                    selectParent(pId) {
+                    selectParent(pId, addclass = true) {
 
                         let itemP = document.getElementById(pId)
                         let $itemP = $(itemP)
-                        $itemP.addClass('selected')
+                        // Check if add or remove class select
+                        if (addclass) {
+                            $itemP.addClass('selected')
+                        } else {
+                            // Search for childs and remove selected class if not has childs enhabled
+                            let childs = $itemP.parent().parent().parent().find('input.at-input:checked')
+                            if (childs.length == 0) {
+                                $itemP.removeClass('selected')
+                            } else {
+                                // Stop the recursive function if it's childs checked
+                                return null
+                            }
+                        }
+                        // Call to the parent to change the 'selected' class
                         let dataParentId = $itemP.data('parentid')
                         dataParentId = (dataParentId.length > 0) ? dataParentId.split('/').pop() : dataParentId
 
-                        if (dataParentId.length > 0) {this.selectParent(dataParentId)}
+                        if (dataParentId.length > 0) {this.selectParent(dataParentId, addclass)}
                     }
 
                     /**
@@ -2554,40 +2587,20 @@
 
                         this.postCall(urlSC1, data).then((data) => {
                             _self.clusterId = data
-                            _self.goStep(2)
+                            _self.goStep(3)
+                            _self.startStep3()
                         })
-
 
                     }
 
                     postCall(url, theParams) {
                         let _self = this
                         return new Promise((resolve, reject) => {
-                            /* $.post( url.toString(), theParams).done(function( data ) {
-                                console.log( "Data Loaded: " + data );
-                            }); */
-
-                            $.ajax({
-                                url: url.toString(),
-                                type: "POST",
-                                data: JSON.stringify(theParams),
-                                contentType: "app/json"
-                            }).done(function(data) {
+                            $.post(url.toString(), theParams, function(data) {
                                 resolve(data)
                                 console.log( "Data Loaded: " + data );
-                            })
+                            });
                         })
-                    }
-
-                    save(section) {
-                        switch (section){
-                            case 1:
-                                this.guardarPrimero()
-                            break;
-                            case 2:
-                            break
-                        }
-                        console.log("guardado TODO")
                     }
 
                     /**
@@ -2823,9 +2836,131 @@
 
                     }
 
+                    startStep3() { 
+                        comportamientoPopupCluster.init();
+                    }
+
                 }
 
                 var stepsCls = new StepsCluster();
+
+
+
+
+
+                // Clase para las trabajar en las gráficas de los colaboradores en el cluster
+                class CargarGraficaProjectoClusterObj {
+                    dataCB = {};
+                    idContenedorCB = "";
+                    typesOcultar = [];
+                    showRelation = true;
+
+                    actualizarGraficaColaboradores = () => {
+                        AjustarGraficaArania(this.dataCB, this.idContenedorCB, this.typesOcultar, this.showRelation);
+                    };
+
+                    CargarGraficaColaboradores = (pIdGrupo, parametros, idContenedor, mostrarCargando = false) => {
+                        var url = servicioExtermpBaseUrl + "servicioexterno/Hercules/DatosGraficaColaboradoresGrupo";
+                        if (layDepuracion) {
+                            url = localUrlBaseLayout + "Hercules/DatosGraficaColaboradoresGrupo";
+                        }
+                        var self = this;
+                        var arg = {};
+                        arg.pIdGrupo = pIdGrupo;
+                        arg.pParametros = parametros;
+                        arg.pMax = $('#numColaboradoresCluster').val();
+                        $('#' + idContenedor).empty();
+                        if (mostrarCargando) {
+                            MostrarUpdateProgress();
+                        }
+
+                        let optionsRelations = ["relation_project", "relation_document"];
+
+                        $.get(url, arg, function (data) {
+                            // Establecer los valores en la variable externa
+                            self.dataCB = data;
+                            self.idContenedorCB = idContenedor;
+
+                            self.actualizarGraficaColaboradores();
+                            if (mostrarCargando) {
+                                OcultarUpdateProgress();
+                            }
+                        });
+
+                    };
+
+                };
+
+                // Creamos un nuevo objeto
+                var newGrafProjClust = new CargarGraficaProjectoClusterObj();
+
+
+                // Función a la que se llama para seleccionar qué elementos de las relaciones mostrar
+                function actualizarTypesClusterOcultar(type) {
+                    if (type == "relation_todas") {
+                        newGrafProjClust.typesOcultar = [];
+                    } else {
+                        newGrafProjClust.typesOcultar = [type];
+                    }
+                    newGrafProjClust.actualizarGraficaColaboradores();
+                }
+
+
+                // función para actualizar la gráfica de colaboradores
+                function ActualizarGraficaClusterolaboradores(typesOcultar = [], showRelation = true) {
+                    AjustarGraficaArania(dataCB, idContenedorCB, typesOcultar, showRelation);
+                }
+
+                // Comportamiento página proyecto
+                var comportamientoPopupCluster = {
+                    tabActive: null,
+                    init: function () {
+                        this.config();
+                        return;
+                    },
+                    config: function () {
+                        var that = this;
+
+                        //Métodos colaboradores
+                        $('#removeNodesCollaborators').unbind().click(function (e) {
+                            e.preventDefault();
+                            var numColaboradores = parseInt($('#numColaboradores').val());
+                            if (numColaboradores > 10) {
+                                $('#numColaboradores').val((numColaboradores - 10));
+                            }
+                            $('#numNodosCollaborators').html($('#numColaboradores').val());
+                            var parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro;
+                            // CargarGraficaColaboradores("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros,'colaboratorsgraph',true);
+                            newGrafProjClust.CargarGraficaColaboradores("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros, 'colaboratorsgraph', true);
+                        });
+
+                        $('#addNodesCollaborators').unbind().click(function (e) {
+                            e.preventDefault();
+                            var numColaboradores = parseInt($('#numColaboradores').val());
+                            $('#numColaboradores').val((numColaboradores + 10));
+                            $('#numNodosCollaborators').html($('#numColaboradores').val());
+                            var parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro;
+                             CargarGraficaColaboradores("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros,'colaboratorsgraph',true);
+                             newGrafProjClust.CargarGraficaColaboradores("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros, 'colaboratorsgraph', true);
+                        });
+                        //Fin métodos colaboradores
+
+                        $('#colaboradores-tab').unbind().click(function (e) {
+                            e.preventDefault();
+                            buscadorPersonalizado.init("@Html.Translate("COLABORADORES")", "#clusterListUsers", "searchPersonasCluster", null, "rdf:type=person", "@Comunidad.Url", "@Comunidad.Key.ToString()");
+                        });
+                        return;
+                    }
+                };
+
+                // Acciones a llevar a cabo en el filtrado.
+                function accionFiltrado() {
+                    var parametros = ObtenerHash2()+"&" + buscadorPersonalizado.filtro;
+                    
+                    // newGrafProjClust.CargarGraficaColaboradores("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros, 'colaboratorsgraph');
+                    
+                }
+
 
                 class ModalUser {
                     constructor() {
