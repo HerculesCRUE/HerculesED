@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Sincro\Secciones\ExperienciaCientificaSubclases\**" />
+    <Content Remove="Sincro\Secciones\ExperienciaCientificaSubclases\**" />
+    <EmbeddedResource Remove="Sincro\Secciones\ExperienciaCientificaSubclases\**" />
+    <None Remove="Sincro\Secciones\ExperienciaCientificaSubclases\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Sincro\Secciones\ExperienciaCientificaTecnologica.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="GnossApiWrapper.NetCore" Version="1.0.8" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
+    <PackageReference Include="System.ServiceModel.Http" Version="4.9.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Hercules.ED.DisambiguationEngine\Hercules.ED.DisambiguationEngine\Hercules.ED.DisambiguationEngine.csproj" />
+  </ItemGroup>
+
+</Project>
