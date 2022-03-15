@@ -121,17 +121,12 @@ namespace ImportadorWebCV.Sincro
 
             List<Subseccion> listadoSecciones = new List<Subseccion>();
 
-            ////listadoSecciones.Add(new Subseccion("020.010.010.000", formacionAcademica.SincroEstudiosCiclos(preimportar)));
-            listadoSecciones.Add(new Subseccion("020.010.020.000",formacionAcademica.SincroDoctorados(preimportar)));
-            ////listadoSecciones.Add(new Subseccion("020.010.030.000",formacionAcademica.SincroOtraFormacionPosgrado(preimportar)));
-            ////listadoSecciones.Add(new Subseccion("020.020.010.000",formacionAcademica.SincroFormacionEspecializada(preimportar)));
-            ////listadoSecciones.Add(new Subseccion("020.050.010.000",formacionAcademica.SincroCursosMejoraDocente(preimportar)));
-            ////listadoSecciones.Add(new Subseccion("020.060.010.000",formacionAcademica.SincroConocimientoIdiomas(preimportar)));
-
-            #region Formacion Sanitaria/Sanitaria I+D
-            //listadoSecciones.Add(new Subseccion("020.030.010.000",formacionAcademica.SincroFormacionSanitaria(preimportar)));
-            //listadoSecciones.Add(new Subseccion("020.040.010.000",formacionAcademica.SincroFormacionSanitariaIMasD(preimportar)));
-            #endregion
+            listadoSecciones.Add(new Subseccion("020.010.010.000", formacionAcademica.SincroEstudiosCiclos(preimportar)));
+            listadoSecciones.Add(new Subseccion("020.010.020.000", formacionAcademica.SincroDoctorados(preimportar)));
+            listadoSecciones.Add(new Subseccion("020.010.030.000", formacionAcademica.SincroOtraFormacionPosgrado(preimportar)));
+            listadoSecciones.Add(new Subseccion("020.020.010.000", formacionAcademica.SincroFormacionEspecializada(preimportar)));
+            listadoSecciones.Add(new Subseccion("020.050.010.000", formacionAcademica.SincroCursosMejoraDocente(preimportar)));
+            listadoSecciones.Add(new Subseccion("020.060.010.000", formacionAcademica.SincroConocimientoIdiomas(preimportar)));
 
             return listadoSecciones;
         }
@@ -149,8 +144,6 @@ namespace ImportadorWebCV.Sincro
 
             //listadoSecciones.Add(new Subseccion("030.040.010.000",actividadDocente.SincroDireccionTesis(preimportar)));
             //listadoSecciones.Add(new Subseccion("030.010.000.000",actividadDocente.SincroFormacionAcademica(preimportar)));
-            //listadoSecciones.Add(new Subseccion("030.020.000.000",actividadDocente.SincroFormacionSanitariaEspecializada(preimportar)));
-            //listadoSecciones.Add(new Subseccion("030.030.000.000",actividadDocente.SincroFormacionSanitariaIMasD(preimportar)));
             //listadoSecciones.Add(new Subseccion("030.050.000.000",actividadDocente.SincroTutoriasAcademicas(preimportar)));
             //listadoSecciones.Add(new Subseccion("030.060.000.000",actividadDocente.SincroCursosSeminarios(preimportar)));
             //listadoSecciones.Add(new Subseccion("030.070.000.000",actividadDocente.SincroPublicacionDocentes(preimportar)));
@@ -195,28 +188,28 @@ namespace ImportadorWebCV.Sincro
 
             List<Subseccion> listadoSecciones = new List<Subseccion>();
 
-            ////listadoSecciones.Add(new Subseccion("060.010.000.000", actividadCientificaTecnologica.SincroProduccionCientifica(preimportar)));
-            ////listadoSecciones.Add(new Subseccion("060.010.060.010", actividadCientificaTecnologica.SincroIndicadoresGenerales(preimportar)));
+            listadoSecciones.Add(new Subseccion("060.010.000.000", actividadCientificaTecnologica.SincroProduccionCientifica(preimportar)));
+            listadoSecciones.Add(new Subseccion("060.010.060.010", actividadCientificaTecnologica.SincroIndicadoresGenerales(preimportar)));
             listadoSecciones.Add(new Subseccion("060.010.010.000", actividadCientificaTecnologica.SincroPublicacionesDocumentos(preimportar)));//TODO - ?
             //listadoSecciones.Add(new Subseccion("060.010.020.000", actividadCientificaTecnologica.SincroTrabajosCongresos(preimportar)));//TODO - Autores, Publicacion editorial¿?
             //listadoSecciones.Add(new Subseccion("060.010.030.000", actividadCientificaTecnologica.SincroTrabajosJornadasSeminarios(preimportar)));//TODO - Autores, TiposEntidadOrganizadora?
-            ////listadoSecciones.Add(new Subseccion("060.010.040.000", actividadCientificaTecnologica.SincroOtrasActividadesDivulgacion(preimportar)));
-            ////listadoSecciones.Add(new Subseccion("060.020.010.000", actividadCientificaTecnologica.SincroComitesCTA(preimportar)));
-            ////listadoSecciones.Add(new Subseccion("060.020.030.000", actividadCientificaTecnologica.SincroOrganizacionIDI(preimportar)));
-            ////listadoSecciones.Add(new Subseccion("060.020.040.000", actividadCientificaTecnologica.SincroGestionIDI(preimportar)));
-            ////listadoSecciones.Add(new Subseccion("060.020.050.000", actividadCientificaTecnologica.SincroForosComites(preimportar)));
-            ////listadoSecciones.Add(new Subseccion("060.020.060.000", actividadCientificaTecnologica.SincroEvalRevIDI(preimportar)));
-            ////listadoSecciones.Add(new Subseccion("060.010.050.000", actividadCientificaTecnologica.SincroEstanciasIDI(preimportar)));
-            ////listadoSecciones.Add(new Subseccion("060.030.010.000", actividadCientificaTecnologica.SincroAyudasBecas(preimportar)));
-            ////listadoSecciones.Add(new Subseccion("060.020.020.000", actividadCientificaTecnologica.SincroOtrosModosColaboracion(preimportar)));
-            ////listadoSecciones.Add(new Subseccion("060.030.020.000", actividadCientificaTecnologica.SincroSociedadesAsociaciones(preimportar)));
-            ////listadoSecciones.Add(new Subseccion("060.030.030.000", actividadCientificaTecnologica.SincroConsejos(preimportar)));
-            ////listadoSecciones.Add(new Subseccion("060.030.040.000", actividadCientificaTecnologica.SincroRedesCooperacion(preimportar)));
-            ////listadoSecciones.Add(new Subseccion("060.030.050.000", actividadCientificaTecnologica.SincroPremiosMenciones(preimportar)));
-            ////listadoSecciones.Add(new Subseccion("060.030.060.000", actividadCientificaTecnologica.SincroOtrasDistinciones(preimportar)));
-            ////listadoSecciones.Add(new Subseccion("060.030.070.000", actividadCientificaTecnologica.SincroPeriodosActividad(preimportar)));
-            ////listadoSecciones.Add(new Subseccion("060.030.090.000", actividadCientificaTecnologica.SincroAcreditacionesObtenidas(preimportar)));
-            ////listadoSecciones.Add(new Subseccion("060.030.100.000", actividadCientificaTecnologica.SincroResumenOtrosMeritos(preimportar)));
+            listadoSecciones.Add(new Subseccion("060.010.040.000", actividadCientificaTecnologica.SincroOtrasActividadesDivulgacion(preimportar)));
+            listadoSecciones.Add(new Subseccion("060.020.010.000", actividadCientificaTecnologica.SincroComitesCTA(preimportar)));
+            listadoSecciones.Add(new Subseccion("060.020.030.000", actividadCientificaTecnologica.SincroOrganizacionIDI(preimportar)));
+            listadoSecciones.Add(new Subseccion("060.020.040.000", actividadCientificaTecnologica.SincroGestionIDI(preimportar)));
+            listadoSecciones.Add(new Subseccion("060.020.050.000", actividadCientificaTecnologica.SincroForosComites(preimportar)));
+            listadoSecciones.Add(new Subseccion("060.020.060.000", actividadCientificaTecnologica.SincroEvalRevIDI(preimportar)));
+            listadoSecciones.Add(new Subseccion("060.010.050.000", actividadCientificaTecnologica.SincroEstanciasIDI(preimportar)));
+            listadoSecciones.Add(new Subseccion("060.030.010.000", actividadCientificaTecnologica.SincroAyudasBecas(preimportar)));
+            listadoSecciones.Add(new Subseccion("060.020.020.000", actividadCientificaTecnologica.SincroOtrosModosColaboracion(preimportar)));
+            listadoSecciones.Add(new Subseccion("060.030.020.000", actividadCientificaTecnologica.SincroSociedadesAsociaciones(preimportar)));
+            listadoSecciones.Add(new Subseccion("060.030.030.000", actividadCientificaTecnologica.SincroConsejos(preimportar)));
+            listadoSecciones.Add(new Subseccion("060.030.040.000", actividadCientificaTecnologica.SincroRedesCooperacion(preimportar)));
+            listadoSecciones.Add(new Subseccion("060.030.050.000", actividadCientificaTecnologica.SincroPremiosMenciones(preimportar)));
+            listadoSecciones.Add(new Subseccion("060.030.060.000", actividadCientificaTecnologica.SincroOtrasDistinciones(preimportar)));
+            listadoSecciones.Add(new Subseccion("060.030.070.000", actividadCientificaTecnologica.SincroPeriodosActividad(preimportar)));
+            listadoSecciones.Add(new Subseccion("060.030.090.000", actividadCientificaTecnologica.SincroAcreditacionesObtenidas(preimportar)));
+            listadoSecciones.Add(new Subseccion("060.030.100.000", actividadCientificaTecnologica.SincroResumenOtrosMeritos(preimportar)));
 
             return listadoSecciones;
         }

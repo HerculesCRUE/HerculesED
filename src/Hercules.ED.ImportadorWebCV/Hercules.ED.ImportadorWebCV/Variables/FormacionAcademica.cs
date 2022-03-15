@@ -105,67 +105,6 @@ namespace ImportadorWebCV.Variables
         public const string formacionEspeDuracionHoras = "http://w3id.org/roh/durationHours";
         public const string formacionEspeFechaFinalizacion = "http://vivoweb.org/ontology/core#end";
 
-        #region Formacion Sanitaria Especializada
-        /// <summary>
-        /// Formación sanitaria especializada - 020.030.000.000
-        /// </summary>
-        public const string formacionSanitariaEspeTituloEspe = "";
-        public const string formacionSanitariaEspeTituloSubespe = "";
-        public const string formacionSanitariaEspePaisEntidadRealizacion = "";
-        public const string formacionSanitariaEspeCCAAEntidadRealizacion = "";
-        public const string formacionSanitariaEspeCiudadEntidadRealizacion = "";
-        public const string formacionSanitariaEspeEntidadRealizacion = "";
-        public const string formacionSanitariaEspeEntidadRealizacionNombre = "";
-        public const string formacionSanitariaEspeTipoEntidadRealizacion = "";
-        public const string formacionSanitariaEspeTipoEntidadRealizacionOtros = "";
-        public const string formacionSanitariaEspeEntidadTitulacion = "";
-        public const string formacionSanitariaEspeEntidadTitulacionNombre = "";
-        public const string formacionSanitariaEspePaisEntidadTitulacion = "";
-        public const string formacionSanitariaEspeCCAAEntidadTitulacion = "";
-        public const string formacionSanitariaEspeCiudadEntidadTitulacion = "";
-        public const string formacionSanitariaEspeTipoEntidadTitulacion = "";
-        public const string formacionSanitariaEspeTipoEntidadTitulacionOtros = "";
-        public const string formacionSanitariaEspeFechaInicio = "";
-        public const string formacionSanitariaEspeFechaFinal = "";
-        public const string formacionSanitariaEspePermanenciaAnio = "";
-        public const string formacionSanitariaEspePermanenciaMes = "";
-        public const string formacionSanitariaEspePermanenciaDia = "";
-        public const string formacionSanitariaEspeFechaConvalidacion = "";
-        #endregion
-
-        #region Formacion Sanitaria I+D
-        /// <summary>
-        /// Formación sanitaria en I+D - 020.040.000.000
-        /// </summary>
-        public const string formacionSanitariaIDNombre = "";
-        public const string formacionSanitariaIDPaisEntidadTitulacion = "";
-        public const string formacionSanitariaIDCCAAEntidadTitulacion = "";
-        public const string formacionSanitariaIDCiudadEntidadTitulacion = "";
-        public const string formacionSanitariaIDEntidadRealizacion = "";
-        public const string formacionSanitariaIDEntidadRealizacionNombre = "";
-        public const string formacionSanitariaIDTipoEntidadRealizacion = "";
-        public const string formacionSanitariaIDTipoEntidadRealizacionOtros = "";
-        public const string formacionSanitariaIDPaisEntidadRealizacion = "";
-        public const string formacionSanitariaIDCCAAEntidadRealizacion = "";
-        public const string formacionSanitariaIDCiudadEntidadRealizacion = "";
-        public const string formacionSanitariaIDEntidadTitulacion = "";
-        public const string formacionSanitariaIDEntidadTitulacionNombre = "";
-        public const string formacionSanitariaIDTipoEntidadTitulacion = "";
-        public const string formacionSanitariaIDTipoEntidadTitulacionOtros = "";
-        public const string formacionSanitariaIDDepartamento = "";
-        public const string formacionSanitariaIDServicio = "";
-        public const string formacionSanitariaIDSeccion = "";
-        public const string formacionSanitariaIDUnidad = "";
-        public const string formacionSanitariaIDDuracionAnio = "";
-        public const string formacionSanitariaIDDuracionMes = "";
-        public const string formacionSanitariaIDDuracionDia = "";
-        public const string formacionSanitariaIDFechaInicio = "";
-        public const string formacionSanitariaIDFechaFinal = "";
-        public const string formacionSanitariaIDCalificacionObtenida = "";
-        public const string formacionSanitariaIDInteresDocencia = "";
-        public const string formacionSanitariaIDCategoriaProfesional = "";
-        #endregion
-
         /// <summary>
         /// Cursos y seminarios recibidos de perfeccionamiento, innovación y mejora 
         /// docente, nuevas tecnologías, etc., cuyo objetivo sea la mejora de la docencia - 020.050.000.000

@@ -83,68 +83,7 @@ namespace ImportadorWebCV.Variables
         public const string formacionAcademicaFacultadEscuela = "";
         public const string formacionAcademicaFechaInicio = "";
         public const string formacionAcademicaFechaFinalizacion_ = "";//TODO -revisar
-
-        /// <summary>
-        /// Formación sanitaria especializada impartida - 030.020.000.000
-        /// </summary>
-        public const string formacionSaniEspeTituloEspe = "";
-        public const string formacionSaniEspeTituloSubespe = "";
-        public const string formacionSaniEspeTipoParticipacion = "";
-        public const string formacionSaniEspeTipoParticipacionOtros = "";
-        public const string formacionSaniEspePaisEntidadTitulacion = "";
-        public const string formacionSaniEspeCCAAEntidadTitulacion = "";
-        public const string formacionSaniEspeCiudadEntidadTitulacion = "";
-        public const string formacionSaniEspeEntidadRealizacion = "";
-        public const string formacionSaniEspeEntidadRealizacionNombre = "";
-        public const string formacionSaniEspeTipoEntidadRealizacion = "";
-        public const string formacionSaniEspeTipoEntidadRealizacionOtros = "";
-        public const string formacionSaniEspePaisEntidadRealizacion = "";
-        public const string formacionSaniEspeCCAAEntidadRealizacion = "";
-        public const string formacionSaniEspeCiudadEntidadRealizacion = "";
-        public const string formacionSaniEspeEntidadTitulacion = "";
-        public const string formacionSaniEspeEntidadTitulacionNombre = "";
-        public const string formacionSaniEspeTipoEntidadTitulacion = "";
-        public const string formacionSaniEspeTipoEntidadTitulacionOtros = "";
-        public const string formacionSaniEspeDepartamento = "";
-        public const string formacionSaniEspeServicio = "";
-        public const string formacionSaniEspeSeccion = "";
-        public const string formacionSaniEspeUnidad = "";
-        public const string formacionSaniEspeFechaInicio = "";
-        public const string formacionSaniEspeFechaFinal = "";
-        public const string formacionSaniEspeDuracionAnio = "";
-        public const string formacionSaniEspeDuracionMes = "";
-        public const string formacionSaniEspeDuracionDia = "";
-        public const string formacionSaniEspePerfilDestinatario = "";
-
-        /// <summary>
-        /// Formación sanitaria en I+D, y/o posformación sanitaria especializada en I+D impartida - 030.030.000.000
-        /// </summary>
-        public const string formacionPosformacionTitulo = "";
-        public const string formacionPosformacionPaisEntidadTitulacion = "";
-        public const string formacionPosformacionCCAAEntidadTitulacion = "";
-        public const string formacionPosformacionCiudadEntidadTitulacion = "";
-        public const string formacionPosformacionEntidadRealizacion = "";
-        public const string formacionPosformacionEntidadRealizacionNombre = "";
-        public const string formacionPosformacionTipoEntidadRealizacion = "";
-        public const string formacionPosformacionTipoEntidadRealizacionOtros = "";
-        public const string formacionPosformacionPaisEntidadRealizacion = "";
-        public const string formacionPosformacionCCAAEntidadRealizacion = "";
-        public const string formacionPosformacionCiudadEntidadRealizacion = "";
-        public const string formacionPosformacionEntidadTitulacion = "";
-        public const string formacionPosformacionEntidadTitulacionNombre = "";
-        public const string formacionPosformacionTipoEntidadTitulacion = "";
-        public const string formacionPosformacionTipoEntidadTitulacionOtros = "";
-        public const string formacionPosformacionDepartamento = "";
-        public const string formacionPosformacionServicio = "";
-        public const string formacionPosformacionSeccion = "";
-        public const string formacionPosformacionUnidad = "";
-        public const string formacionPosformacionFechaInicio = "";
-        public const string formacionPosformacionFechaFinal = "";
-        public const string formacionPosformacionDuracionAnio = "";
-        public const string formacionPosformacionDuracionMes = "";
-        public const string formacionPosformacionDuracionDia = "";
-        public const string formacionPosformacionPerfilDestinatario = "";
-
+      
         /// <summary>
         /// Tutorias académicas de estudiantes - 030.050.000.000
         /// </summary>
