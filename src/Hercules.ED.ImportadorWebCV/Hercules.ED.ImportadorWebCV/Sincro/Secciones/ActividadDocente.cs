@@ -17,7 +17,7 @@ namespace ImportadorWebCV.Sincro.Secciones
     {
         private List<CvnItemBean> listadoDatos = new List<CvnItemBean>();
         private List<CvnItemBean> listadoPremios = new List<CvnItemBean>();
-        private readonly string RdfTypeTab = "XXXXXXXXXX";//TODO -check
+        private readonly string RdfTypeTab = "http://w3id.org/roh/TeachingExperience";
 
         public ActividadDocente(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
@@ -32,11 +32,11 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         public List<SubseccionItem> SincroFormacionAcademica([Optional] bool preimportar)
         {
-            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/XXXXXXXXXXXX", "XXXXXXXXXXXXXX", "XXXXXXXXXXXX" };
+            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/impartedAcademicTrainings", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "XXXXXXXXXXXXXXXXXX";
             string propTitle = "XXXXXXXXXXXXX";
             string rdfType = "XXXXXXXXXXXXXXX";
-            string rdfTypePrefix = "RelatedXXXXXXXXXXXX";
+            string rdfTypePrefix = "RelatedImpartedAcademicTrainings";
 
             //1º Obtenemos la entidad del XML.
             List<Entity> listadoAux = GetFormacionAcademica(listadoDatos);
@@ -68,11 +68,11 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         public List<SubseccionItem> SincroDireccionTesis([Optional] bool preimportar)
         {
-            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/XXXXXXXXXXXX", "XXXXXXXXXXXXXX", "XXXXXXXXXXXX" };
+            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/thesisDirections", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "XXXXXXXXXXXXXXXXXX";
             string propTitle = "XXXXXXXXXXXXX";
             string rdfType = "XXXXXXXXXXXXXXX";
-            string rdfTypePrefix = "RelatedXXXXXXXXXXXX";
+            string rdfTypePrefix = "RelatedThesisDirections";
 
             //1º Obtenemos la entidad del XML.
             List<Entity> listadoAux = GetDireccionTesis(listadoDatos);
@@ -104,11 +104,11 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         public List<SubseccionItem> SincroTutoriasAcademicas([Optional] bool preimportar)
         {
-            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/XXXXXXXXXXXX", "XXXXXXXXXXXXXX", "XXXXXXXXXXXX" };
+            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/academicTutorials", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "XXXXXXXXXXXXXXXXXX";
             string propTitle = "XXXXXXXXXXXXX";
             string rdfType = "XXXXXXXXXXXXXXX";
-            string rdfTypePrefix = "RelatedXXXXXXXXXXXX";
+            string rdfTypePrefix = "RelatedAcademicTutorials";
 
             //1º Obtenemos la entidad del XML.
             List<Entity> listadoAux = GetTutoriasAcademicas(listadoDatos);
@@ -140,11 +140,11 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         public List<SubseccionItem> SincroCursosSeminarios([Optional] bool preimportar)
         {
-            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/XXXXXXXXXXXX", "XXXXXXXXXXXXXX", "XXXXXXXXXXXX" };
+            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/universitaryCoursesAndSeminars", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "XXXXXXXXXXXXXXXXXX";
             string propTitle = "XXXXXXXXXXXXX";
             string rdfType = "XXXXXXXXXXXXXXX";
-            string rdfTypePrefix = "RelatedXXXXXXXXXXXX";
+            string rdfTypePrefix = "RelatedUniversitaryCoursesAndSeminars";
 
             //1º Obtenemos la entidad del XML.
             List<Entity> listadoAux = GetCursosSeminarios(listadoDatos);
@@ -176,11 +176,11 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         public List<SubseccionItem> SincroPublicacionDocentes([Optional] bool preimportar)
         {
-            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/XXXXXXXXXXXX", "XXXXXXXXXXXXXX", "XXXXXXXXXXXX" };
+            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/educationalOrPedagogicalPublications", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "XXXXXXXXXXXXXXXXXX";
             string propTitle = "XXXXXXXXXXXXX";
             string rdfType = "XXXXXXXXXXXXXXX";
-            string rdfTypePrefix = "RelatedXXXXXXXXXXXX";
+            string rdfTypePrefix = "RelatedEducationalOrPedagogicalPublications";
 
             //1º Obtenemos la entidad del XML.
             List<Entity> listadoAux = GetPublicacionDocentes(listadoDatos);
@@ -212,11 +212,11 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         public List<SubseccionItem> SincroParticipacionProyectosInnovacionDocente([Optional] bool preimportar)
         {
-            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/XXXXXXXXXXXX", "XXXXXXXXXXXXXX", "XXXXXXXXXXXX" };
+            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/participationInTeachingInnovationProjects", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "XXXXXXXXXXXXXXXXXX";
             string propTitle = "XXXXXXXXXXXXX";
             string rdfType = "XXXXXXXXXXXXXXX";
-            string rdfTypePrefix = "RelatedXXXXXXXXXXXX";
+            string rdfTypePrefix = "RelatedParticipationInTeachingInnovationProjects";
 
             //1º Obtenemos la entidad del XML.
             List<Entity> listadoAux = GetParticipacionProyectosInnovacionDocente(listadoDatos);
@@ -248,11 +248,11 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         public List<SubseccionItem> SincroParticipacionCongresosFormacionDocente([Optional] bool preimportar)
         {
-            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/XXXXXXXXXXXX", "XXXXXXXXXXXXXX", "XXXXXXXXXXXX" };
+            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/participationInCongress", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "XXXXXXXXXXXXXXXXXX";
             string propTitle = "XXXXXXXXXXXXX";
             string rdfType = "XXXXXXXXXXXXXXX";
-            string rdfTypePrefix = "RelatedXXXXXXXXXXXX";
+            string rdfTypePrefix = "RelatedParticipationInCongress";
 
             //1º Obtenemos la entidad del XML.
             List<Entity> listadoAux = GetParticipacionCongresosFormacionDocente(listadoDatos);
@@ -284,11 +284,11 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         public List<SubseccionItem> SincroPremiosInovacionDocente([Optional] bool preimportar)
         {
-            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/XXXXXXXXXXXX", "XXXXXXXXXXXXXX", "XXXXXXXXXXXX" };
+            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/teachingInnovationAwardsReceived", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "XXXXXXXXXXXXXXXXXX";
             string propTitle = "XXXXXXXXXXXXX";
             string rdfType = "XXXXXXXXXXXXXXX";
-            string rdfTypePrefix = "RelatedXXXXXXXXXXXX";
+            string rdfTypePrefix = "RelatedTeachingInnovationAwardsReceived";
 
             //1º Obtenemos la entidad del XML.
             List<Entity> listadoAux = GetPremiosInovacionDocente(listadoPremios);
@@ -320,11 +320,11 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         public List<SubseccionItem> SincroOtrasActividades([Optional] bool preimportar)
         {
-            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/XXXXXXXXXXXX", "XXXXXXXXXXXXXX", "XXXXXXXXXXXX" };
+            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/otherActivities", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "XXXXXXXXXXXXXXXXXX";
             string propTitle = "XXXXXXXXXXXXX";
             string rdfType = "XXXXXXXXXXXXXXX";
-            string rdfTypePrefix = "RelatedXXXXXXXXXXXX";
+            string rdfTypePrefix = "RelatedOtherActivities";
 
             //1º Obtenemos la entidad del XML.
             List<Entity> listadoAux = GetOtrasActividades(listadoDatos);
@@ -356,11 +356,11 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         public List<SubseccionItem> SincroAportacionesRelevantes([Optional] bool preimportar)
         {
-            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/XXXXXXXXXXXX", "XXXXXXXXXXXXXX", "XXXXXXXXXXXX" };
-            string graph = "XXXXXXXXXXXXXXXXXX";
-            string propTitle = "XXXXXXXXXXXXX";
-            string rdfType = "XXXXXXXXXXXXXXX";
-            string rdfTypePrefix = "RelatedXXXXXXXXXXXX";
+            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/mostRelevantContributions", "http://vivoweb.org/ontology/core#relatedBy" };
+            string graph = "activity";
+            string propTitle = "http://w3id.org/roh/title";
+            string rdfType = "http://w3id.org/roh/Activity";
+            string rdfTypePrefix = "RelatedMostRelevantContributions";
 
             //1º Obtenemos la entidad del XML.
             List<Entity> listadoAux = GetAportacionesRelevantes(listadoDatos);
@@ -371,6 +371,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 AportacionesRelevantes aportacionesRelevantes = new AportacionesRelevantes();
                 aportacionesRelevantes.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.aportacionesCVDescripcion)?.values.FirstOrDefault();
                 aportacionesRelevantes.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.aportacionesCVFechaFinalizacion)?.values.FirstOrDefault();
+                aportacionesRelevantes.entidadOrganizadora = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.aportacionesCVEntidadOrganizadoraNombre)?.values.FirstOrDefault();
                 aportacionesRelevantes.ID = Guid.NewGuid().ToString();
                 entidadesXML.Add(aportacionesRelevantes.ID, aportacionesRelevantes);
             }
@@ -405,11 +406,11 @@ namespace ImportadorWebCV.Sincro.Secciones
                             new Property(Variables.ActividadDocente.direccionTesisTipoProyecto, item.GetStringPorIDCampo("030.040.000.010")),//TODO
                             new Property(Variables.ActividadDocente.direccionTesisTipoProyectoOtros, item.GetStringPorIDCampo("030.040.000.020")),
                             new Property(Variables.ActividadDocente.direccionTesisTituloTrabajo, item.GetStringPorIDCampo("030.040.000.030")),
-                            new Property(Variables.ActividadDocente.direccionTesisCodirectorTesis, item.GetStringPorIDCampo("030.040.000.180")),//rep//TODO - funcion autor
+                            //new Property(Variables.ActividadDocente.direccionTesisCodirectorTesis, item.GetStringPorIDCampo("030.040.000.180")),//rep//TODO - funcion autor
                             new Property(Variables.ActividadDocente.direccionTesisPaisEntidadRealizacion, item.GetPaisPorIDCampo("030.040.000.040")),
                             new Property(Variables.ActividadDocente.direccionTesisCCAAEntidadRealizacion, item.GetRegionPorIDCampo("030.040.000.050")),
                             new Property(Variables.ActividadDocente.direccionTesisCiudadEntidadRealizacion, item.GetStringPorIDCampo("030.040.000.070")),
-                            new Property(Variables.ActividadDocente.direccionTesisAlumno, item.GetStringPorIDCampo("030.040.000.120")),//TODO - funcion authorbean
+                            //new Property(Variables.ActividadDocente.direccionTesisAlumno, item.GetStringPorIDCampo("030.040.000.120")),//TODO - funcion authorbean
                             new Property(Variables.ActividadDocente.direccionTesisFechaDefensa, item.GetStringDatetimePorIDCampo("030.040.000.140")),
                             new Property(Variables.ActividadDocente.direccionTesisCalificacionObtenida, item.GetStringPorIDCampo("030.040.000.150")),
                             new Property(Variables.ActividadDocente.direccionTesisFechaMencionDoctUE, item.GetStringDatetimePorIDCampo("030.040.000.160")),
@@ -419,12 +420,47 @@ namespace ImportadorWebCV.Sincro.Secciones
                         ));
                         DireccionTesisPalabarasClave(item, entidadAux);
                         DireccionTesisEntidadRealizacion(item, entidadAux);
+                        DireccionTesisAlumno(item, entidadAux);
+                        DireccionTesisCodirectores(item, entidadAux);
 
                         listado.Add(entidadAux);
                     }
                 }
             }
             return listado;
+        }
+
+        private void DireccionTesisAlumno(CvnItemBean item, Entity entidadAux)
+        {
+            //new Property(Variables.ActividadDocente.direccionTesisAlumno, item.GetStringPorIDCampo("030.040.000.120")),
+
+            CvnItemBeanCvnAuthorBean director = item.GetElementoPorIDCampo<CvnItemBeanCvnAuthorBean>("030.040.000.120");
+            //Compruebo que no es nulo.
+            if (director == null) { return; }
+
+            //Añado el director de la tesis.
+            entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                new Property(Variables.ActividadDocente.direccionTesisAlumnoFirma, director.GetFirmaAutor()),
+                new Property(Variables.ActividadDocente.direccionTesisAlumnoNombre, director.GetNombreAutor()),
+                new Property(Variables.ActividadDocente.direccionTesisAlumnoPrimerApellido, director.GetPrimerApellidoAutor()),
+                new Property(Variables.ActividadDocente.direccionTesisAlumnoSegundoApellido, director.GetSegundoApellidoAutor())
+            ));
+        }
+
+        private void DireccionTesisCodirectores(CvnItemBean item, Entity entidadAux)
+        {
+            //new Property(Variables.ActividadDocente.direccionTesisCodirectorTesis, item.GetStringPorIDCampo("030.040.000.180")),//rep//TODO - funcion autor
+
+            List<CvnItemBeanCvnAuthorBean> listadoCodirectores = item.GetListaElementosPorIDCampo<CvnItemBeanCvnAuthorBean>("030.040.000.180");
+
+            string propiedadFirma = Variables.ActividadDocente.direccionTesisCodirectorTesisFirma;
+            string propiedadOrden = Variables.ActividadDocente.direccionTesisCodirectorTesisOrden;
+            string propiedadNombre = Variables.ActividadDocente.direccionTesisCodirectorTesisNombre;
+            string propiedadPrimerApellido = Variables.ActividadDocente.direccionTesisCodirectorTesisPrimerApellido;
+            string propiedadSegundoApellido = Variables.ActividadDocente.direccionTesisCodirectorTesisSegundoApellido;
+
+            UtilitySecciones.InsertaAutor(listadoCodirectores, entidadAux, propiedadFirma, propiedadOrden,
+                propiedadNombre, propiedadPrimerApellido, propiedadSegundoApellido);
         }
 
         private void DireccionTesisEntidadRealizacion(CvnItemBean item, Entity entidadAux)
@@ -440,7 +476,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 Variables.ActividadDocente.direccionTesisEntidadRealizacion, entidadAux);
 
             //Añado otros, o el ID de una preseleccion
-            string valorTipo = !string.IsNullOrEmpty(item.GetStringPorIDCampo("030.040.000.110")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetStringPorIDCampo("030.040.000.100");
+            string valorTipo = !string.IsNullOrEmpty(item.GetStringPorIDCampo("030.040.000.110")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetOrganizacionPorIDCampo("030.040.000.100");
 
             entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                 new Property(Variables.ActividadDocente.direccionTesisTipoEntidadRealizacion, valorTipo),
@@ -489,14 +525,14 @@ namespace ImportadorWebCV.Sincro.Secciones
                     {
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                             new Property(Variables.ActividadDocente.formacionAcademicaTipoDocenciaOficialidad, item.GetStringPorIDCampo("030.010.000.010")),//TODO
-                            new Property(Variables.ActividadDocente.formacionAcademicaTitulacionUniversitaria, item.GetElementoPorIDCampo<CvnItemBeanCvnTitleBean>("030.010.000.020").Name),//TODO -check
+                            new Property(Variables.ActividadDocente.formacionAcademicaTitulacionUniversitaria, item.GetNameTitleBeanPorIDCampo("030.010.000.020")),//TODO -check
                             new Property(Variables.ActividadDocente.formacionAcademicaPaisEntidadRealizacion, item.GetPaisPorIDCampo("030.010.000.040")),
                             new Property(Variables.ActividadDocente.formacionAcademicaCCAAEntidadRealizacion, item.GetRegionPorIDCampo("030.010.000.050")),
                             new Property(Variables.ActividadDocente.formacionAcademicaCiudadEntidadRealizacion, item.GetStringPorIDCampo("030.010.000.070")),
                             new Property(Variables.ActividadDocente.formacionAcademicaDepartamento, item.GetStringPorIDCampo("030.010.000.130")),
                             new Property(Variables.ActividadDocente.formacionAcademicaTipoPrograma, item.GetStringPorIDCampo("030.010.000.140")),//TODO
                             new Property(Variables.ActividadDocente.formacionAcademicaTipoProgramaOtros, item.GetStringPorIDCampo("030.010.000.150")),
-                            new Property(Variables.ActividadDocente.formacionAcademicaNombreAsignatura, item.GetStringPorIDCampo("030.010.000.160")),
+                            new Property(Variables.ActividadDocente.formacionAcademicaNombreAsignatura, item.GetStringPorIDCampo("030.010.000.160")),//TODO - autocompletar?
                             new Property(Variables.ActividadDocente.formacionAcademicaTipoDocenciaModalidad, item.GetStringPorIDCampo("030.010.000.170")),//TODO
                             new Property(Variables.ActividadDocente.formacionAcademicaTipoDocenciaModalidadOtros, item.GetStringPorIDCampo("030.010.000.180")),
                             new Property(Variables.ActividadDocente.formacionAcademicaTipoAsignatura, item.GetStringPorIDCampo("030.010.000.190")),//TODO
@@ -504,7 +540,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                             new Property(Variables.ActividadDocente.formacionAcademicaCursoTitulacion, item.GetStringPorIDCampo("030.010.000.200")),
                             new Property(Variables.ActividadDocente.formacionAcademicaTipoECTS, item.GetStringPorIDCampo("030.010.000.210")),//TODO
                             new Property(Variables.ActividadDocente.formacionAcademicaNumeroECTS, item.GetStringDoublePorIDCampo("030.010.000.220")),
-                            new Property(Variables.ActividadDocente.formacionAcademicaIdiomaAsignatura, item.GetStringPorIDCampo("030.010.000.230")),//TODO
+                            new Property(Variables.ActividadDocente.formacionAcademicaIdiomaAsignatura, item.GetTraduccion("030.010.000.230")),//TODO - check
                             new Property(Variables.ActividadDocente.formacionAcademicaFrecuenciaAsignatura, item.GetStringDoublePorIDCampo("030.010.000.240")),
                             new Property(Variables.ActividadDocente.formacionAcademicaFechaFinalizacion, item.GetStringDatetimePorIDCampo("030.010.000.250")),//TODO
                             new Property(Variables.ActividadDocente.formacionAcademicaCompetenciasRelacionadas, item.GetStringPorIDCampo("030.010.000.260")),
@@ -514,9 +550,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                             new Property(Variables.ActividadDocente.formacionAcademicaPaisEntidadEvaluacion, item.GetPaisPorIDCampo("030.010.000.440")),
                             new Property(Variables.ActividadDocente.formacionAcademicaCCAAEntidadEvaluacion, item.GetRegionPorIDCampo("030.010.000.450")),
                             new Property(Variables.ActividadDocente.formacionAcademicaCiudadEntidadEvaluacion, item.GetStringPorIDCampo("030.010.000.470")),
-                            new Property(Variables.ActividadDocente.formacionAcademicaEntidadEvaluacion, item.GetNameEntityBeanPorIDCampo("030.010.000.300")),
-                            new Property(Variables.ActividadDocente.formacionAcademicaTipoEntidadEvaluacion, item.GetStringPorIDCampo("030.010.000.520")),//TODO - funcion other
-                            new Property(Variables.ActividadDocente.formacionAcademicaTipoEntidadEvaluacionOtros, item.GetStringPorIDCampo("030.010.000.530")),
                             new Property(Variables.ActividadDocente.formacionAcademicaTipoEvaluacion, item.GetStringPorIDCampo("030.010.000.320")),//TODO
                             new Property(Variables.ActividadDocente.formacionAcademicaTipoEvaluacionOtros, item.GetStringPorIDCampo("030.010.000.330")),
                             new Property(Variables.ActividadDocente.formacionAcademicaPaisEntidadFinanciadora, item.GetPaisPorIDCampo("030.010.000.480")),
@@ -532,12 +565,34 @@ namespace ImportadorWebCV.Sincro.Secciones
                         ));
                         FormacionAcademicaEntidadRealizacion(item, entidadAux);
                         FormacionAcademicaEntidadFinanciadora(item, entidadAux);
+                        FormacionAcademicaEntidadEvaluacion(item, entidadAux);
 
                         listado.Add(entidadAux);
                     }
                 }
             }
             return listado;
+        }
+
+        private void FormacionAcademicaEntidadEvaluacion(CvnItemBean item, Entity entidadAux) 
+        {
+            /*
+            new Property(Variables.ActividadDocente.formacionAcademicaEntidadEvaluacion, item.GetNameEntityBeanPorIDCampo("030.010.000.300")),
+            new Property(Variables.ActividadDocente.formacionAcademicaTipoEntidadEvaluacion, item.GetStringPorIDCampo("030.010.000.520")),
+            new Property(Variables.ActividadDocente.formacionAcademicaTipoEntidadEvaluacionOtros, item.GetStringPorIDCampo("030.010.000.530")),
+            */
+            //Añado la referencia si existe Entidad
+            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("030.010.000.300"),
+                Variables.ActividadDocente.formacionAcademicaEntidadEvaluacionNombre,
+                Variables.ActividadDocente.formacionAcademicaEntidadEvaluacion, entidadAux);
+
+            //Añado otros, o el ID de una preseleccion
+            string valorTipo = !string.IsNullOrEmpty(item.GetStringPorIDCampo("030.010.000.530")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetOrganizacionPorIDCampo("030.010.000.520");
+
+            entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                new Property(Variables.ActividadDocente.formacionAcademicaTipoEntidadEvaluacion, valorTipo),
+                new Property(Variables.ActividadDocente.formacionAcademicaTipoEntidadEvaluacionOtros, item.GetStringPorIDCampo("030.010.000.530"))
+            ));
         }
 
         private void FormacionAcademicaEntidadFinanciadora(CvnItemBean item, Entity entidadAux)
@@ -553,7 +608,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 Variables.ActividadDocente.formacionAcademicaEntidadFinanciadora, entidadAux);
 
             //Añado otros, o el ID de una preseleccion
-            string valorTipo = !string.IsNullOrEmpty(item.GetStringPorIDCampo("030.010.000.380")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetStringPorIDCampo("030.010.000.370");
+            string valorTipo = !string.IsNullOrEmpty(item.GetStringPorIDCampo("030.010.000.380")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetOrganizacionPorIDCampo("030.010.000.370");
 
             entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                 new Property(Variables.ActividadDocente.formacionAcademicaTipoEntidadFinanciadora, valorTipo),
@@ -574,7 +629,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 Variables.ActividadDocente.formacionAcademicaEntidadRealizacion, entidadAux);
 
             //Añado otros, o el ID de una preseleccion
-            string valorTipo = !string.IsNullOrEmpty(item.GetStringPorIDCampo("030.010.000.120")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetStringPorIDCampo("030.010.000.110");
+            string valorTipo = !string.IsNullOrEmpty(item.GetStringPorIDCampo("030.010.000.120")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetOrganizacionPorIDCampo("030.010.000.110");
 
             entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                 new Property(Variables.ActividadDocente.formacionAcademicaTipoEntidadRealizacion, valorTipo),
@@ -599,8 +654,8 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("030.050.000.010")))//TODO-check
                     {
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                            new Property(Variables.ActividadDocente.tutoAcademicaNombrePrograma, item.GetStringPorIDCampo("030.050.000.010")),//TODO
-                            new Property(Variables.ActividadDocente.tutoAcademicaNombreProgramaOtros, item.GetStringPorIDCampo("030.050.000.020")),
+                            //new Property(Variables.ActividadDocente.tutoAcademicaNombrePrograma, item.GetStringPorIDCampo("030.050.000.010")),
+                            //new Property(Variables.ActividadDocente.tutoAcademicaNombreProgramaOtros, item.GetStringPorIDCampo("030.050.000.020")),
                             new Property(Variables.ActividadDocente.tutoAcademicaPaisEntidadRealizacion, item.GetPaisPorIDCampo("030.050.000.030")),
                             new Property(Variables.ActividadDocente.tutoAcademicaCCAAEntidadRealizacion, item.GetRegionPorIDCampo("030.050.000.040")),
                             new Property(Variables.ActividadDocente.tutoAcademicaCiudadEntidadRealizacion, item.GetStringPorIDCampo("030.050.000.060")),
@@ -608,6 +663,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                             new Property(Variables.ActividadDocente.tutoAcademicaFrecuenciaActividad, item.GetStringDoublePorIDCampo("030.050.000.120")),
                             new Property(Variables.ActividadDocente.tutoAcademicaNumHorasECTS, item.GetStringDoublePorIDCampo("030.050.000.130"))
                         ));
+                        TutoriasAcademicasNombrePrograma(item, entidadAux);
                         TutoriasAcademicasEntidadRealizacion(item, entidadAux);
 
                         listado.Add(entidadAux);
@@ -615,6 +671,23 @@ namespace ImportadorWebCV.Sincro.Secciones
                 }
             }
             return listado;
+        }
+
+        private void TutoriasAcademicasNombrePrograma(CvnItemBean item, Entity entidadAux)
+        {
+            if (item.GetStringPorIDCampo("030.050.000.010").Equals("OTHERS"))
+            {
+                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                    new Property(Variables.ActividadDocente.tutoAcademicaNombrePrograma, item.GetStringPorIDCampo("030.050.000.010")),
+                    new Property(Variables.ActividadDocente.tutoAcademicaNombreProgramaOtros, item.GetStringPorIDCampo("030.050.000.020"))
+                ));
+            }
+            else
+            {
+                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                    new Property(Variables.ActividadDocente.tutoAcademicaNombrePrograma, item.GetStringPorIDCampo("030.050.000.010"))
+                ));
+            }
         }
 
         private void TutoriasAcademicasEntidadRealizacion(CvnItemBean item, Entity entidadAux)
@@ -630,7 +703,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 Variables.ActividadDocente.tutoAcademicaEntidadRealizacion, entidadAux);
 
             //Añado otros, o el ID de una preseleccion
-            string valorTipo = !string.IsNullOrEmpty(item.GetStringPorIDCampo("030.050.000.100")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetStringPorIDCampo("030.050.000.090");
+            string valorTipo = !string.IsNullOrEmpty(item.GetStringPorIDCampo("030.050.000.100")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetOrganizacionPorIDCampo("030.050.000.090");
 
             entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                 new Property(Variables.ActividadDocente.tutoAcademicaTipoEntidadRealizacion, valorTipo),
@@ -663,7 +736,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                             new Property(Variables.ActividadDocente.cursosSeminariosCiudadEntidadOrganizadora, item.GetStringPorIDCampo("030.060.000.070")),
                             new Property(Variables.ActividadDocente.cursosSeminariosObjetivosCurso, item.GetStringPorIDCampo("030.060.000.120")),
                             new Property(Variables.ActividadDocente.cursosSeminariosPerfilDestinatarios, item.GetStringPorIDCampo("030.060.000.130")),
-                            new Property(Variables.ActividadDocente.cursosSeminariosIdiomaImpartio, item.GetStringPorIDCampo("030.060.000.140")),//TODO
+                            new Property(Variables.ActividadDocente.cursosSeminariosIdiomaImpartio, item.GetTraduccion("030.060.000.140")),//TODO - check
                             new Property(Variables.ActividadDocente.cursosSeminariosFechaImparticion, item.GetStringDatetimePorIDCampo("030.060.000.150")),
                             new Property(Variables.ActividadDocente.cursosSeminariosHorasImpartidas, item.GetStringDoublePorIDCampo("030.060.000.160")),
                             new Property(Variables.ActividadDocente.cursosSeminariosTipoParticipacion, item.GetStringPorIDCampo("030.060.000.170")),//TODO
@@ -710,7 +783,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 Variables.ActividadDocente.cursosSeminariosEntidadOrganizadora, entidadAux);
 
             //Añado otros, o el ID de una preseleccion
-            string valorTipo = !string.IsNullOrEmpty(item.GetStringPorIDCampo("030.060.000.110")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetStringPorIDCampo("030.060.000.100");
+            string valorTipo = !string.IsNullOrEmpty(item.GetStringPorIDCampo("030.060.000.110")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetOrganizacionPorIDCampo("030.060.000.100");
 
             entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                 new Property(Variables.ActividadDocente.cursosSeminariosTipoEntidadOrganizadora, valorTipo),
@@ -748,7 +821,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                             new Property(Variables.ActividadDocente.publicacionDocenteNombre, item.GetStringPorIDCampo("030.070.000.010")),
                             new Property(Variables.ActividadDocente.publicacionDocentePerfilDestinatario, item.GetStringPorIDCampo("030.070.000.020")),
-                            new Property(Variables.ActividadDocente.publicacionDocenteAutores, item.GetStringPorIDCampo("030.070.000.030")),//rep//TODO -autores?
                             new Property(Variables.ActividadDocente.publicacionDocentePosicionFirma, item.GetStringDoublePorIDCampo("030.070.000.040")),
                             new Property(Variables.ActividadDocente.publicacionDocenteFechaElaboracion, item.GetStringDatetimePorIDCampo("030.070.000.050")),
                             new Property(Variables.ActividadDocente.publicacionDocenteTipologiaSoporte, item.GetStringPorIDCampo("030.070.000.060")),//TODO
@@ -761,7 +833,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                             new Property(Variables.ActividadDocente.publicacionDocenteEditorialPublicacion, item.GetStringPorIDCampo("030.070.000.110")),
                             new Property(Variables.ActividadDocente.publicacionDocentePaisPublicacion, item.GetPaisPorIDCampo("030.070.000.120")),
                             new Property(Variables.ActividadDocente.publicacionDocenteCCAAPublicacion, item.GetRegionPorIDCampo("030.070.000.130")),
-                            new Property(Variables.ActividadDocente.publicacionDocenteFechaPublicacion, item.GetStringDatetimePorIDCampo("030.070.000.150")),//TODO - check
+                            new Property(Variables.ActividadDocente.publicacionDocenteFechaPublicacion, item.GetStringDatetimePorIDCampo("030.070.000.150")),
                             new Property(Variables.ActividadDocente.publicacionDocenteURLPublicacion, item.GetStringPorIDCampo("030.070.000.160")),
                             new Property(Variables.ActividadDocente.publicacionDocenteDepositoLegal, item.GetElementoPorIDCampo<CvnItemBeanCvnExternalPKBean>("030.070.000.180").Value),
                             new Property(Variables.ActividadDocente.publicacionDocenteJustificacionMaterial, item.GetStringPorIDCampo("030.070.000.200")),
@@ -770,12 +842,30 @@ namespace ImportadorWebCV.Sincro.Secciones
                         ));
                         PublicacionDocentesISBN(item, entidadAux);
                         PublicacionDocentesIDPublicacion(item, entidadAux);
+                        PublicacionDocentesAutores(item, entidadAux);
 
                         listado.Add(entidadAux);
                     }
                 }
             }
             return listado;
+        }
+
+        private void PublicacionDocentesAutores(CvnItemBean item, Entity entidadAux)
+        {
+            //new Property(Variables.ActividadDocente.publicacionDocenteAutores, item.GetStringPorIDCampo("030.070.000.030")),
+
+            List<CvnItemBeanCvnAuthorBean> listadoAutores = item.GetListaElementosPorIDCampo<CvnItemBeanCvnAuthorBean>("030.070.000.030");
+
+            string propiedadAutorFirma = Variables.ActividadDocente.publicacionDocenteAutorFirma;
+            string propiedadAutorOrden = Variables.ActividadDocente.publicacionDocenteAutorOrden;
+            string propiedadAutorNombre = Variables.ActividadDocente.publicacionDocenteAutorNombre;
+            string propiedadAutorPrimerApellido = Variables.ActividadDocente.publicacionDocenteAutorPrimerApellido;
+            string propiedadAutorSegundoApellido = Variables.ActividadDocente.publicacionDocenteAutorSegundoApellido;
+
+            UtilitySecciones.InsertaAutor(listadoAutores, entidadAux, propiedadAutorFirma, propiedadAutorOrden,
+                propiedadAutorNombre, propiedadAutorPrimerApellido, propiedadAutorSegundoApellido);
+
         }
 
         private void PublicacionDocentesIDPublicacion(CvnItemBean item, Entity entidadAux)
@@ -795,7 +885,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         }
 
         private void PublicacionDocentesISBN(CvnItemBean item, Entity entidadAux)
-        {                         
+        {
             //new Property(Variables.ActividadDocente.publicacionDocenteISBNPublicacion, item.GetStringPorIDCampo("030.070.000.170"))
 
             List<CvnItemBeanCvnExternalPKBean> listadoISBN = item.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("030.070.000.170");
@@ -836,7 +926,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                             new Property(Variables.ActividadDocente.participacionInnovaDuracionParticipacionMes, item.GetDurationMesPorIDCampo("030.080.000.200")),
                             new Property(Variables.ActividadDocente.participacionInnovaDuracionParticipacionDia, item.GetDurationDiaPorIDCampo("030.080.000.200")),
                             new Property(Variables.ActividadDocente.participacionInnovaFechaFinalizacionParticipacion, item.GetStringDatetimePorIDCampo("030.080.000.210")),
-                            new Property(Variables.ActividadDocente.participacionInnovaNombreIP, item.GetStringPorIDCampo("030.080.000.220")),//TODO - funcion autor
                             new Property(Variables.ActividadDocente.participacionInnovaNumParticipantes, item.GetStringDoublePorIDCampo("030.080.000.230")),
                             new Property(Variables.ActividadDocente.participacionInnovaImporteConcedido, item.GetStringDoublePorIDCampo("030.080.000.240")),
                             new Property(Variables.ActividadDocente.participacionInnovaAmbitoProyecto, item.GetAmbitoGestion("030.080.000.260")),//TODO - check
@@ -845,6 +934,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                         ));
                         ParticipacionProyectosInnovacionDocenteEntidadFinanciadora(item, entidadAux);
                         ParticipacionProyectosInnovacionDocenteEntidadParticipante(item, entidadAux);
+                        ParticipacionProyectosInnovacionDocenteInvestigadorPrincipal(item, entidadAux);
 
                         listado.Add(entidadAux);
                     }
@@ -853,8 +943,22 @@ namespace ImportadorWebCV.Sincro.Secciones
             return listado;
         }
 
+        private void ParticipacionProyectosInnovacionDocenteInvestigadorPrincipal(CvnItemBean item, Entity entidadAux)
+        {
+            //new Property(Variables.ActividadDocente.participacionInnovaNombreIP, item.GetStringPorIDCampo("030.080.000.220")),//TODO - funcion autor
+
+            CvnItemBeanCvnAuthorBean ip = item.GetElementoPorIDCampo<CvnItemBeanCvnAuthorBean>("030.080.000.220");
+            if (string.IsNullOrEmpty(ip.GetNombreAutor())) { return; }
+            entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                new Property(Variables.ActividadDocente.participacionInnovaNombreIP, ip.GetNombreAutor()),
+                new Property(Variables.ActividadDocente.participacionInnovaFirmaIP, ip.GetFirmaAutor()),
+                new Property(Variables.ActividadDocente.participacionInnovaPrimerApellidoIP, ip.GetPrimerApellidoAutor()),
+                new Property(Variables.ActividadDocente.participacionInnovaSegundoApellidoIP, ip.GetSegundoApellidoAutor())
+            ));
+        }
+
         private void ParticipacionProyectosInnovacionDocenteEntidadFinanciadora(CvnItemBean item, Entity entidadAux)
-        {                      
+        {
             //new Property(Variables.ActividadDocente.participacionInnovaEntidadFinanciadora, item.GetNameEntityBeanPorIDCampo("030.080.000.090")),
             //new Property(Variables.ActividadDocente.participacionInnovaTipoEntidadFinanciadora, item.GetStringPorIDCampo("030.080.000.110")),
             //new Property(Variables.ActividadDocente.participacionInnovaTipoEntidadFinanciadoraOtros, item.GetStringPorIDCampo("030.080.000.120")),
@@ -865,7 +969,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 Variables.ActividadDocente.participacionInnovaEntidadFinanciadora, entidadAux);
 
             //Añado otros, o el ID de una preseleccion
-            string valorTipo = !string.IsNullOrEmpty(item.GetStringPorIDCampo("030.080.000.120")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetStringPorIDCampo("030.080.000.110");
+            string valorTipo = !string.IsNullOrEmpty(item.GetStringPorIDCampo("030.080.000.120")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetOrganizacionPorIDCampo("030.080.000.110");
 
             entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                 new Property(Variables.ActividadDocente.participacionInnovaTipoEntidadFinanciadora, valorTipo),
@@ -884,7 +988,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 Variables.ActividadDocente.participacionInnovaEntidadParticipante, entidadAux);
 
             //Añado otros, o el ID de una preseleccion
-            string valorTipo = !string.IsNullOrEmpty(item.GetStringPorIDCampo("030.080.000.180")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetStringPorIDCampo("030.080.000.170");
+            string valorTipo = !string.IsNullOrEmpty(item.GetStringPorIDCampo("030.080.000.180")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetOrganizacionPorIDCampo("030.080.000.170");
 
             entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                 new Property(Variables.ActividadDocente.participacionInnovaTipoEntidadParticipante, valorTipo),
@@ -906,10 +1010,10 @@ namespace ImportadorWebCV.Sincro.Secciones
                 {
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
-                    if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("030.090.000.030")))//TODO-check, añadir valores de URL
+                    if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("030.090.000.030")))//TODO - check
                     {
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                            new Property(Variables.ActividadDocente.participaCongresosTipoEvento, item.GetStringPorIDCampo("030.090.000.010")),
+                            new Property(Variables.ActividadDocente.participaCongresosTipoEvento, item.GetTipoEventoPorIDCampo("030.090.000.010")),//TODO - check
                             new Property(Variables.ActividadDocente.participaCongresosTipoEventoOtros, item.GetStringPorIDCampo("030.090.000.020")),
                             new Property(Variables.ActividadDocente.participaCongresosNombreEvento, item.GetStringPorIDCampo("030.090.000.030")),
                             new Property(Variables.ActividadDocente.participaCongresosPaisEvento, item.GetPaisPorIDCampo("030.090.000.040")),
@@ -920,14 +1024,15 @@ namespace ImportadorWebCV.Sincro.Secciones
                             new Property(Variables.ActividadDocente.participaCongresosCiudadEntidadOrganizadora, item.GetStringPorIDCampo("030.090.000.210")),
                             new Property(Variables.ActividadDocente.participaCongresosObjetivosEvento, item.GetStringPorIDCampo("030.090.000.120")),
                             new Property(Variables.ActividadDocente.participaCongresosPerfilDestinatarios, item.GetStringPorIDCampo("030.090.000.130")),
-                            new Property(Variables.ActividadDocente.participaCongresosIdiomaPresentacion, item.GetStringPorIDCampo("030.090.000.140")),
+                            new Property(Variables.ActividadDocente.participaCongresosIdiomaPresentacion, item.GetTraduccion("030.090.000.140")),//TODO - check
                             new Property(Variables.ActividadDocente.participaCongresosFechaPresentacion, item.GetStringDatetimePorIDCampo("030.090.000.150")),
-                            new Property(Variables.ActividadDocente.participaCongresosTipoParticipacion, item.GetStringPorIDCampo("030.090.000.160")),
+                            new Property(Variables.ActividadDocente.participaCongresosTipoParticipacion, item.GetStringPorIDCampo("030.090.000.160")),//TODO - participativo otros
                             new Property(Variables.ActividadDocente.participaCongresosTipoParticipacionOtros, item.GetStringPorIDCampo("030.090.000.170")),
-                            new Property(Variables.ActividadDocente.participaCongresosTipoPublicacion, item.GetStringPorIDCampo("030.090.000.220")),
+                            new Property(Variables.ActividadDocente.participaCongresosTipoPublicacion, item.GetStringPorIDCampo("030.090.000.220")),//TODO
                             new Property(Variables.ActividadDocente.participaCongresosTituloPublicacion, item.GetStringPorIDCampo("030.090.000.230")),
                             new Property(Variables.ActividadDocente.participaCongresosNombrePublicacion, item.GetStringPorIDCampo("030.090.000.330")),
                             new Property(Variables.ActividadDocente.participaCongresosVolumenPublicacion, item.GetVolumenPorIDCampo("030.090.000.240")),
+                            new Property(Variables.ActividadDocente.participaCongresosNumeroPublicacion, item.GetNumeroVolumenPorIDCampo("030.090.000.240")),
                             new Property(Variables.ActividadDocente.participaCongresosPagIniPublicacion, item.GetPaginaInicialPorIDCampo("030.090.000.250")),
                             new Property(Variables.ActividadDocente.participaCongresosPagFinalPublicacion, item.GetPaginaFinalPorIDCampo("030.090.000.250")),
                             new Property(Variables.ActividadDocente.participaCongresosEditorialPublicacion, item.GetStringPorIDCampo("030.090.000.260")),
@@ -990,7 +1095,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 Variables.ActividadDocente.participaCongresosEntidadOrganizadora, entidadAux);
 
             //Añado otros, o el ID de una preseleccion
-            string valorTipo = !string.IsNullOrEmpty(item.GetStringPorIDCampo("030.090.000.110")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetStringPorIDCampo("030.090.000.100");
+            string valorTipo = !string.IsNullOrEmpty(item.GetStringPorIDCampo("030.090.000.110")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetOrganizacionPorIDCampo("030.090.000.100");
 
             entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                 new Property(Variables.ActividadDocente.participaCongresosTipoEntidadOrganizadora, valorTipo),
@@ -1044,7 +1149,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 Variables.ActividadDocente.premiosInnovaEntidadConcesionaria, entidadAux);
 
             //Añado otros, o el ID de una preseleccion
-            string valorTipo = !string.IsNullOrEmpty(item.GetStringPorIDCampo("060.030.080.080")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetStringPorIDCampo("060.030.080.070");
+            string valorTipo = !string.IsNullOrEmpty(item.GetStringPorIDCampo("060.030.080.080")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetOrganizacionPorIDCampo("060.030.080.070");
 
             entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                 new Property(Variables.ActividadDocente.premiosInnovaTipoEntidadConcesionaria, valorTipo),
@@ -1066,7 +1171,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 {
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
-                    if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("030.100.000.010")))//TODO-check
+                    if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("030.100.000.010")))
                     {
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                             new Property(Variables.ActividadDocente.otrasActividadesDescripcion, item.GetStringPorIDCampo("030.100.000.010")),
@@ -1085,6 +1190,12 @@ namespace ImportadorWebCV.Sincro.Secciones
             return listado;
         }
 
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes a las Palabras clave.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="entidadAux"></param>
         private void OtrasActividadesPalabrasClave(CvnItemBean item, Entity entidadAux)
         {
             //new Property(Variables.ActividadDocente.otrasActividadesPalabrasClave, item.GetStringPorIDCampo("030.100.000.020"))
@@ -1106,6 +1217,12 @@ namespace ImportadorWebCV.Sincro.Secciones
             }
         }
 
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes al tipo de Entidad Organizadora.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="entidadAux"></param>
         private void OtrasActividadesEntidadOrganizadora(CvnItemBean item, Entity entidadAux)
         {
             /*
@@ -1119,7 +1236,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 Variables.ActividadDocente.otrasActividadesEntidadOrganizadora, entidadAux);
 
             //Añado otros, o el ID de una preseleccion
-            string valorTipo = !string.IsNullOrEmpty(item.GetStringPorIDCampo("030.100.000.100")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetStringPorIDCampo("030.100.000.090");
+            string valorTipo = !string.IsNullOrEmpty(item.GetStringPorIDCampo("030.100.000.100")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetOrganizacionPorIDCampo("030.100.000.090");
 
             entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                 new Property(Variables.ActividadDocente.otrasActividadesTipoEntidadOrganizadora, valorTipo),
@@ -1141,7 +1258,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 {
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
-                    if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("030.110.000.010")))//TODO-check
+                    if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("030.110.000.010")))
                     {
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                             new Property(Variables.ActividadDocente.aportacionesCVDescripcion, item.GetStringPorIDCampo("030.110.000.010")),
@@ -1160,20 +1277,21 @@ namespace ImportadorWebCV.Sincro.Secciones
             return listado;
         }
 
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes al tipo de Entidad Organizadora.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="entidadAux"></param>
         private void AportacionesRelevantesEntidadOrganizadora(CvnItemBean item, Entity entidadAux)
         {
-            /*
-            new Property(Variables.ActividadDocente.aportacionesCVEntidadOrganizadora, item.GetNameEntityBeanPorIDCampo("030.110.000.070")),
-            new Property(Variables.ActividadDocente.aportacionesCVTipoEntidadOrganizadora, item.GetStringPorIDCampo("030.110.000.090")),
-            new Property(Variables.ActividadDocente.aportacionesCVTipoEntidadOrganizadoraOtros, item.GetStringPorIDCampo("030.110.000.100")),
-            */
             //Añado la referencia si existe Entidad
             UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("030.110.000.070"),
                 Variables.ActividadDocente.aportacionesCVEntidadOrganizadoraNombre,
                 Variables.ActividadDocente.aportacionesCVEntidadOrganizadora, entidadAux);
 
             //Añado otros, o el ID de una preseleccion
-            string valorTipo = !string.IsNullOrEmpty(item.GetStringPorIDCampo("030.110.000.100")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetStringPorIDCampo("030.110.000.090");
+            string valorTipo = !string.IsNullOrEmpty(item.GetStringPorIDCampo("030.110.000.100")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetOrganizacionPorIDCampo("030.110.000.090");
 
             entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                 new Property(Variables.ActividadDocente.aportacionesCVTipoEntidadOrganizadora, valorTipo),
@@ -1181,9 +1299,14 @@ namespace ImportadorWebCV.Sincro.Secciones
             ));
         }
 
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes a las Palabras clave.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="entidadAux"></param>
         private void AportacionesRelevantesPalabrasClave(CvnItemBean item, Entity entidadAux)
         {
-            //new Property(Variables.ActividadDocente.aportacionesCVPalabrasClave, item.GetStringPorIDCampo("030.110.000.020"))
             List<CvnItemBeanCvnString> listadoPalabrasClave = item.GetListaElementosPorIDCampo<CvnItemBeanCvnString>("030.110.000.020");
 
             string propiedadPalabrasClave = Variables.ActividadDocente.aportacionesCVPalabrasClave;
