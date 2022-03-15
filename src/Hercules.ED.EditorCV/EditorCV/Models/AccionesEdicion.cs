@@ -53,9 +53,11 @@ namespace GuardadoCV.Models
         /// <returns></returns>
         public object GetAutocomplete(string pSearch, string pProperty, string pRdfType, string pGraph, bool pGetEntityID, List<string> pLista,string pLang,bool pCache)
         {
+            int numMax = 20;
             string searchText = pSearch.Trim();
             if(pCache)
             {
+
                 Dictionary<string, string> dicBuscar = new Dictionary<string, string>();
                 string claveAutocompletar = $"{pProperty}{pRdfType}{pGraph}";
                 if (dicAutocompletar.ContainsKey(claveAutocompletar) && dicAutocompletar[claveAutocompletar].ContainsKey(pLang))
@@ -98,20 +100,31 @@ namespace GuardadoCV.Models
                         }
                     }
                 }
+                searchText = UtilityCV.NormalizeText(searchText);
                 if (!pGetEntityID)
                 {
-                    var resultados = dicBuscar.Values.Where(x=> x.ToLower().Contains(searchText.ToLower())).Distinct();
+                    var resultados = dicBuscar.Values.Where(x=> UtilityCV.NormalizeText(x).Contains(searchText)).Distinct();
                     if (pLista != null)
                     {
                         resultados = resultados.Except(pLista, StringComparer.OrdinalIgnoreCase);
+                    }
+                    if(resultados.Count()> numMax)
+                    {
+                        resultados = resultados.ToList().GetRange(0, numMax);
                     }
                     return resultados.ToList();
                 }
                 else
                 {
                     Dictionary<string, string> respuesta = new Dictionary<string, string>();
-                    foreach (KeyValuePair<string, string> fila in dicBuscar.Where(x => x.Value.ToLower().Contains(searchText.ToLower())))
+                    int i = 0;
+                    foreach (KeyValuePair<string, string> fila in dicBuscar.Where(x => UtilityCV.NormalizeText(x.Value).Contains(searchText)))
                     {
+                        i++;
+                        if(i>numMax)
+                        {
+                            break;
+                        }
                         string s = fila.Key;
                         string o = fila.Value;
                         if (pLista == null || respuesta.Keys.Intersect(pLista).Count() == 0)
@@ -163,13 +176,23 @@ namespace GuardadoCV.Models
                     {
                         resultados = resultados.Except(pLista, StringComparer.OrdinalIgnoreCase);
                     }
+                    if (resultados.Count() > numMax)
+                    {
+                        resultados = resultados.ToList().GetRange(0, numMax);
+                    }
                     return resultados.ToList();
                 }
                 else
                 {
                     Dictionary<string, string> respuesta = new Dictionary<string, string>();
+                    int i = 0;
                     foreach (Dictionary<string, Data> fila in sparqlObjectAux.results.bindings)
                     {
+                        i++;
+                        if (i > numMax)
+                        {
+                            break;
+                        }
                         string s = fila["s"].value;
                         string o = fila["o"].value;
                         if (pLista == null || respuesta.Keys.Intersect(pLista).Count() == 0)
