@@ -2089,6 +2089,26 @@ namespace Utils
             }
             return null;
         }
+        
+        /// <summary>
+        /// language_
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public static string GetTraduccion(this CvnItemBean item, string codigo)
+        {
+            if (!CodigoCampoCorrecto(codigo))
+            {
+                throw new ArgumentException("Codigo de campo incorrecto" + codigo);
+            }
+
+            CvnItemBeanCvnString campo = item.Items.Where(x => x.Code.Equals(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
+            if (campo != null && !string.IsNullOrEmpty(campo.Value))
+            {
+                return mResourceApi.GraphsUrl + "items/language_" + campo.Value;
+            }
+            return null;
+        }
 
         /// <summary>
         /// languagelevel_
