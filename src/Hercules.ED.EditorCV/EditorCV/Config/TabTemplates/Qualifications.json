@@ -1090,7 +1090,7 @@
                     "properties": [
                       {
                         "title": {
-                          "es": "Firma"
+                          "es": "Firma (Director/a de tesis)"
                         },
                         "property": "http://w3id.org/roh/directorNick",
                         "type": "text",
@@ -1098,7 +1098,7 @@
                       },
                       {
                         "title": {
-                          "es": "Nombre"
+                          "es": "Nombre (Director/a de tesis)"
                         },
                         "property": "http://w3id.org/roh/directorName",
                         "type": "text",
@@ -1106,7 +1106,7 @@
                       },
                       {
                         "title": {
-                          "es": "Primer Apellido"
+                          "es": "Primer Apellido (Director/a de tesis)"
                         },
                         "property": "http://w3id.org/roh/directorFirstSurname",
                         "type": "text",
@@ -1114,7 +1114,7 @@
                       },
                       {
                         "title": {
-                          "es": "Segundo Apellido"
+                          "es": "Segundo Apellido (Director/a de tesis)"
                         },
                         "property": "http://w3id.org/roh/directorSecondSurname",
                         "type": "text",
