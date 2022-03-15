@@ -2351,6 +2351,12 @@ namespace ImportadorWebCV.Sincro.Secciones
             }
         }
 
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores,
+        /// pertenecientes a los Autores.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="entidadAux"></param>
         private void OtrosModosColaboracionAutores(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnAuthorBean> listadoAutores = item.GetListaElementosPorIDCampo<CvnItemBeanCvnAuthorBean>("060.020.020.070");
