@@ -673,7 +673,7 @@
                 "name": {
                   "es": "Calificación obtenida"
                 },
-                "type": "number",
+                "type": "text",
                 "child": {
                   "property": "http://vivoweb.org/ontology/core#relatedBy",
                   "graph": "academicdegree",
