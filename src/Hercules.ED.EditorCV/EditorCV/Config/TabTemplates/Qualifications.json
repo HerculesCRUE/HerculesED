@@ -684,7 +684,7 @@
               },
               {
                 "name": {
-                  "es": "Firma"
+                  "es": "Firma (Director/a de tesis)"
                 },
                 "child": {
                   "property": "http://vivoweb.org/ontology/core#relatedBy",
@@ -696,7 +696,7 @@
               },
               {
                 "name": {
-                  "es": "Nombre"
+                  "es": "Nombre (Director/a de tesis)"
                 },
                 "child": {
                   "property": "http://vivoweb.org/ontology/core#relatedBy",
@@ -708,7 +708,7 @@
               },
               {
                 "name": {
-                  "es": "Primer apellido"
+                  "es": "Primer apellido (Director/a de tesis)"
                 },
                 "child": {
                   "property": "http://vivoweb.org/ontology/core#relatedBy",
@@ -720,7 +720,7 @@
               },
               {
                 "name": {
-                  "es": "Segundo apellido"
+                  "es": "Segundo apellido (Director/a de tesis)"
                 },
                 "child": {
                   "property": "http://vivoweb.org/ontology/core#relatedBy",
@@ -759,6 +759,7 @@
                 "name": {
                   "es": "Mención de calidad"
                 },
+                "type": "boolean",
                 "child": {
                   "property": "http://vivoweb.org/ontology/core#relatedBy",
                   "graph": "academicdegree",
@@ -771,6 +772,7 @@
                 "name": {
                   "es": "Premio extraordinario doctor"
                 },
+                "type": "boolean",
                 "child": {
                   "property": "http://vivoweb.org/ontology/core#relatedBy",
                   "graph": "academicdegree",
@@ -781,7 +783,7 @@
               },
               {
                 "name": {
-                  "es": "Fecha de obtención"
+                  "es": "Fecha de obtención (Premio extraordinario doctor)"
                 },
                 "type": "date",
                 "child": {
@@ -796,6 +798,7 @@
                 "name": {
                   "es": "Título homologado"
                 },
+                "type": "boolean",
                 "child": {
                   "property": "http://vivoweb.org/ontology/core#relatedBy",
                   "graph": "academicdegree",
@@ -806,7 +809,7 @@
               },
               {
                 "name": {
-                  "es": "Fecha de homologación"
+                  "es": "Fecha de homologación (Título homologado)"
                 },
                 "type": "date",
                 "child": {
