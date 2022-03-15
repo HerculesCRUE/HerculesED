@@ -2,5 +2,324 @@
   "rdftype": "http://w3id.org/roh/TeachingExperience",
   "property": "http://w3id.org/roh/teachingExperience",
   "sections": [
+    {
+      "rdftype": "http://w3id.org/roh/RelatedMostRelevantContributions",
+      "property": "http://w3id.org/roh/mostRelevantContributions",
+      "presentation": {
+        "type": "listitems",
+        "title": {
+          "es": "Aportaciones más relevantes de su CV de docencia"
+        },
+        "listItemsPresentation": {
+          "property": "http://vivoweb.org/ontology/core#relatedBy",
+          "listItem": {
+            "propertyTitle": {
+              "property": "http://vivoweb.org/ontology/core#relatedBy",
+              "graph": "activity",
+              "child": {
+                "property": "http://w3id.org/roh/title"
+              }
+            },
+            "orders": [
+              {
+                "name": {
+                  "es": "Ordenar por fecha de finalización más reciente"
+                },
+                "properties": [
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "activity",
+                    "child": {
+                      "property": "http://vivoweb.org/ontology/core#end"
+                    },
+                    "asc": false
+                  },
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "activity",
+                    "child": {
+                      "property": "http://w3id.org/roh/title"
+                    },
+                    "asc": true
+                  }
+                ]
+              },
+              {
+                "name": {
+                  "es": "Ordenar por fecha de finalización más antigua"
+                },
+                "properties": [
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "activity",
+                    "child": {
+                      "property": "http://vivoweb.org/ontology/core#end"
+                    },
+                    "asc": true
+                  },
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "activity",
+                    "child": {
+                      "property": "http://w3id.org/roh/title"
+                    },
+                    "asc": true
+                  }
+                ]
+              }
+            ],
+            "properties": [
+              {
+                "name": {
+                  "es": "Fecha de finalización"
+                },
+                "showMiniBold": true,
+                "type": "date",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "activity",
+                  "child": {
+                    "property": "http://vivoweb.org/ontology/core#end"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Entidad organizadora"
+                },
+                "showMini": true,
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "activity",
+                  "child": {
+                    "property": "http://w3id.org/roh/promotedByTitle"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Ciudad de realización"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "activity",
+                  "child": {
+                    "property": "https://www.w3.org/2006/vcard/ns#locality"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "C. Autón./Reg. de realización"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "activity",
+                  "child": {
+                    "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+                    "graph": "feature",
+                    "child": {
+                      "property": "http://www.geonames.org/ontology#name"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "País de realización"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "activity",
+                  "child": {
+                    "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+                    "graph": "feature",
+                    "child": {
+                      "property": "http://www.geonames.org/ontology#name"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "listItemEdit": {
+            "graph": "activity",
+            "proptitle": "http://w3id.org/roh/title",
+            "rdftype": "http://w3id.org/roh/Activity",
+            "sections": [
+              {
+                "title": {
+                  "es": "Información general"
+                },
+                "rows": [
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Descripción"
+                        },
+                        "placeholder": {
+                          "es": "Introduce la descripción"
+                        },
+                        "property": "http://w3id.org/roh/title",
+                        "required": true,
+                        "type": "text",
+                        "width": 2
+                      },
+                      {
+                        "title": {
+                          "es": "Fecha de finalización"
+                        },
+                        "placeholder": {
+                          "es": "Introduce la fecha de finalización"
+                        },
+                        "property": "http://vivoweb.org/ontology/core#end",
+                        "type": "date",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Entidad organizadora"
+                        },
+                        "autocomplete": true,
+                        "placeholder": {
+                          "es": "Introduce la entidad organizadora"
+                        },
+                        "property": "http://w3id.org/roh/promotedByTitle",
+                        "autocompleteConfig": {
+                          "rdftype": "http://xmlns.com/foaf/0.1/Organization",
+                          "graph": "organization",
+                          "propertyEntity": "http://w3id.org/roh/promotedBy",
+                          "property": {
+                            "property": "http://w3id.org/roh/title"
+                          }
+                        },
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Tipo de entidad"
+                        },
+                        "property": "http://w3id.org/roh/promotedByType",
+                        "combo": {
+                          "rdftype": "http://w3id.org/roh/OrganizationType",
+                          "graph": "organizationtype",
+                          "property": {
+                            "property": "http://purl.org/dc/elements/1.1/title"
+                          }
+                        },
+                        "dependency": {
+                          "property": "http://w3id.org/roh/promotedByTitle",
+                          "propertyValue": "*"
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Otros"
+                        },
+                        "property": "http://w3id.org/roh/promotedByTypeOther",
+                        "required": true,
+                        "dependency": {
+                          "property": "http://w3id.org/roh/promotedByType",
+                          "propertyValue": "{GraphsUrl}items/organizationtype_OTHERS"
+                        },
+                        "type": "text",
+                        "width": 1
+                      }
+                    ]
+                  }                  
+                ]
+              },
+              {
+                "title": {
+                  "es": "Más campos"
+                },
+                "rows": [
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Ciudad de realización"
+                        },
+                        "type": "text",
+                        "placeholder": {
+                          "es": "Introduce la ciudad de realización"
+                        },
+                        "required": false,
+                        "property": "https://www.w3.org/2006/vcard/ns#locality",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "País de realización"
+                        },
+                        "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+                        "combo": {
+                          "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "filter": {
+                            "property": "http://www.geonames.org/ontology#featureCode",
+                            "value": "PCLD"
+                          },
+                          "graph": "feature",
+                          "property": {
+                            "property": "http://www.geonames.org/ontology#name"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "C. Autón./Reg. de realización"
+                        },
+                        "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+                        "combo": {
+                          "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "filter": {
+                            "property": "http://www.geonames.org/ontology#featureCode",
+                            "value": "ADM1"
+                          },
+                          "dependency": {
+                            "property": "http://www.geonames.org/ontology#parentFeature",
+                            "propertyValue": "https://www.w3.org/2006/vcard/ns#hasCountryName"
+                          },
+                          "graph": "feature",
+                          "property": {
+                            "property": "http://www.geonames.org/ontology#name"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Identificar palabras clave"
+                        },
+                        "property": "http://vivoweb.org/ontology/core#freeTextKeyword",
+                        "thesaurus": "tesauro_cvn",
+                        "type": "thesaurus",
+                        "width": 3,
+                        "multiple": true
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    }
   ]
 }
