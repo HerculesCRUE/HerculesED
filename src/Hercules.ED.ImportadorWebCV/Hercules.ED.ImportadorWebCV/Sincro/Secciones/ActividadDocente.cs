@@ -105,9 +105,9 @@ namespace ImportadorWebCV.Sincro.Secciones
         public List<SubseccionItem> SincroTutoriasAcademicas([Optional] bool preimportar)
         {
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/academicTutorials", "http://vivoweb.org/ontology/core#relatedBy" };
-            string graph = "XXXXXXXXXXXXXXXXXX";
-            string propTitle = "XXXXXXXXXXXXX";
-            string rdfType = "XXXXXXXXXXXXXXX";
+            string graph = "tutorship";
+            string propTitle = "http://w3id.org/roh/title";
+            string rdfType = "http://w3id.org/roh/Tutorship";
             string rdfTypePrefix = "RelatedAcademicTutorials";
 
             //1º Obtenemos la entidad del XML.
@@ -285,9 +285,9 @@ namespace ImportadorWebCV.Sincro.Secciones
         public List<SubseccionItem> SincroPremiosInovacionDocente([Optional] bool preimportar)
         {
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/teachingInnovationAwardsReceived", "http://vivoweb.org/ontology/core#relatedBy" };
-            string graph = "XXXXXXXXXXXXXXXXXX";
-            string propTitle = "XXXXXXXXXXXXX";
-            string rdfType = "XXXXXXXXXXXXXXX";
+            string graph = "accreditation";
+            string propTitle = "http://w3id.org/roh/title";
+            string rdfType = "http://w3id.org/roh/Accreditation";
             string rdfTypePrefix = "RelatedTeachingInnovationAwardsReceived";
 
             //1º Obtenemos la entidad del XML.
@@ -321,9 +321,9 @@ namespace ImportadorWebCV.Sincro.Secciones
         public List<SubseccionItem> SincroOtrasActividades([Optional] bool preimportar)
         {
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/otherActivities", "http://vivoweb.org/ontology/core#relatedBy" };
-            string graph = "XXXXXXXXXXXXXXXXXX";
-            string propTitle = "XXXXXXXXXXXXX";
-            string rdfType = "XXXXXXXXXXXXXXX";
+            string graph = "activity";
+            string propTitle = "http://w3id.org/roh/title";
+            string rdfType = "http://w3id.org/roh/Activity";
             string rdfTypePrefix = "RelatedOtherActivities";
 
             //1º Obtenemos la entidad del XML.
@@ -400,7 +400,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 {
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
-                    if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("030.040.000.010")))//TODO-check
+                    if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("030.040.000.030")))//TODO-check
                     {
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                             new Property(Variables.ActividadDocente.direccionTesisTipoProyecto, item.GetStringPorIDCampo("030.040.000.010")),//TODO
@@ -521,7 +521,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 {
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
-                    if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("030.010.000.010")))//TODO-check
+                    if (!string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("030.010.000.020")))//TODO-check
                     {
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                             new Property(Variables.ActividadDocente.formacionAcademicaTipoDocenciaOficialidad, item.GetStringPorIDCampo("030.010.000.010")),//TODO
