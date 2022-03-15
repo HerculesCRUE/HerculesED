@@ -6,6 +6,7 @@ using GuardadoCV.Models.API;
 using GuardadoCV.Models.API.Templates;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -77,7 +78,7 @@ namespace GuardadoCV.Models.Utils
         {
             int paginacion = 10000;
             int maxIn = 1000;
-            Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> data = new Dictionary<string, List<Dictionary<string, SparqlObject.Data>>>();
+            ConcurrentDictionary<string, List<Dictionary<string, SparqlObject.Data>>> data = new ConcurrentDictionary<string, List<Dictionary<string, SparqlObject.Data>>>();
 
             SparqlObject sparqlObject = null;
             //1º Hacemos las que no tienen orden
@@ -97,7 +98,7 @@ namespace GuardadoCV.Models.Utils
                                                 {{
                                                    ?s ?p ?o. 
                                                    FILTER( lang(?o) = '{pLang}' OR lang(?o) = '' OR !isLiteral(?o) )  
-                                                   FILTER(?s in(<{string.Join(">,<", list.OrderByDescending(x=>x))}>)) 
+                                                   FILTER(?s in(<{string.Join(">,<", list.OrderByDescending(x => x))}>)) 
                                                    FILTER(?p in(<{string.Join(">,<", pProperties.Where(x => string.IsNullOrEmpty(x.order)).Select(x => x.property).ToList().OrderByDescending(x => x))}>))
                                                 }} 
                                                 order by asc(?o) asc(?p) asc(?s)
@@ -119,7 +120,7 @@ namespace GuardadoCV.Models.Utils
                         {
                             if (!data.ContainsKey(fila["s"].value))
                             {
-                                data.Add(fila["s"].value, new List<Dictionary<string, SparqlObject.Data>>());
+                                data.AddOrUpdate(fila["s"].value, new List<Dictionary<string, SparqlObject.Data>>(), (s, list) => new List<Dictionary<string, SparqlObject.Data>>());
                             }
                             data[fila["s"].value].Add(fila);
                         }
@@ -193,7 +194,7 @@ namespace GuardadoCV.Models.Utils
                             {
                                 if (!data.ContainsKey(fila["s"].value))
                                 {
-                                    data.Add(fila["s"].value, new List<Dictionary<string, SparqlObject.Data>>());
+                                    data.AddOrUpdate(fila["s"].value, new List<Dictionary<string, SparqlObject.Data>>(), (s, list) => new List<Dictionary<string, SparqlObject.Data>>());
                                 }
                                 data[fila["s"].value].Add(fila);
                             }
@@ -220,13 +221,13 @@ namespace GuardadoCV.Models.Utils
                     {
                         if (!data.ContainsKey(id))
                         {
-                            data.Add(id, new List<Dictionary<string, SparqlObject.Data>>());
+                            data.AddOrUpdate(id, new List<Dictionary<string, SparqlObject.Data>>(), (s, list) => new List<Dictionary<string, SparqlObject.Data>>());
                         }
                         data[id].AddRange(dataAux[id]);
                     }
                 }
             });
-            return data;
+            return data.ToDictionary(entry => entry.Key, entry => entry.Value);
         }
 
         /// <summary>
@@ -410,17 +411,18 @@ namespace GuardadoCV.Models.Utils
             string input = pInput.Replace(",", ".");
             string entero = "";
             string decimales = "";
-            if(input.Contains("."))
+            if (input.Contains("."))
             {
                 entero = input.Substring(0, input.IndexOf("."));
-                decimales = input.Substring(input.IndexOf(".")+1);
-            }else
+                decimales = input.Substring(input.IndexOf(".") + 1);
+            }
+            else
             {
                 entero = input;
             }
 
             string textNumber = long.Parse(entero, CultureInfo.InvariantCulture).ToString("N0", new System.Globalization.CultureInfo("es-ES"));
-            if(!string.IsNullOrEmpty(decimales))
+            if (!string.IsNullOrEmpty(decimales))
             {
                 textNumber += "," + decimales;
             }

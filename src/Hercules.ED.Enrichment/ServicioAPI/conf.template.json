@@ -2,13 +2,12 @@
     "tmp_path":"/tmp/gnoss-hercules-api-2/",
     "device":"gpu:0",
     "topics": [
-    	{"name":"papers","path":"topic_models/papers","type":"bert"},
-	{"name":"sourceForge","path":"topic_models/sourceforge","type":"roberta"},
-	{"name":"bio-protocol","path":"topic_models/bio-protocol","type":"roberta"}
+    	{"name":"papers","path":"models/papers","type":"bert"},
+	{"name":"sourceForge","path":"models/sourceforge","type":"roberta"},
+	{"name":"bio-protocol","path":"models/bio-protocol","type":"roberta"}
     ],
     "keyphrases": [
-	{"name":"papers","path":"topic_models/keyphrase_extraction/papers"},
-	{"name":"sourceForge","path":"topic_models/keyphrase_extraction/sourceforge"}
+	{"name":"papers","path":"models/keyphrase_extraction/papers"}
     ],
     "users": [
 	{
