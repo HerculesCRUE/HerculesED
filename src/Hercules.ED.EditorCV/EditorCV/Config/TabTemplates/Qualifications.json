@@ -541,7 +541,766 @@
           }
         }
       }
-    },    
+    },
+    {
+      "rdftype": "http://w3id.org/roh/RelatedDoctorates",
+      "property": "http://w3id.org/roh/doctorates",
+      "presentation": {
+        "type": "listitems",
+        "title": {
+          "es": "Doctorados"
+        },
+        "listItemsPresentation": {
+          "property": "http://vivoweb.org/ontology/core#relatedBy",
+          "listItem": {
+            "propertyTitle": {
+              "property": "http://vivoweb.org/ontology/core#relatedBy",
+              "graph": "academicdegree",
+              "child": {
+                "property": "http://w3id.org/roh/title"
+              }
+            },
+            "properties": [
+              {
+                "name": {
+                  "es": "Fecha de titulación"
+                },
+                "type": "date",
+                "showMiniBold": true,
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "http://purl.org/dc/terms/issued"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Entidad de titulación"
+                },
+                "showMini": true,
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "http://w3id.org/roh/conductedByTitle"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Ciudad entidad titulación"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "https://www.w3.org/2006/vcard/ns#locality"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "C. Autón./Reg. entidad titulación"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+                    "graph": "feature",
+                    "child": {
+                      "property": "http://www.geonames.org/ontology#name"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "País entidad titulación"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+                    "graph": "feature",
+                    "child": {
+                      "property": "http://www.geonames.org/ontology#name"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Entidad de titulación DEA"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "http://w3id.org/roh/deaEntityTitle"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Fecha de titulación DEA"
+                },
+                "type": "date",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "http://w3id.org/roh/deaDate"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Título tesis"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "http://w3id.org/roh/thesisTitle"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Calificación obtenida"
+                },
+                "type": "number",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "http://w3id.org/roh/qualification"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Firma"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "http://w3id.org/roh/directorNick"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Nombre"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "http://w3id.org/roh/directorName"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Primer apellido"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "http://w3id.org/roh/directorFirstSurname"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Segundo apellido"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "http://w3id.org/roh/directorSecondSurname"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Doctorado Europeo"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "http://w3id.org/roh/europeanDoctorate"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Fecha de mención"
+                },
+                "type": "date",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "http://w3id.org/roh/europeanDoctorateDate"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Mención de calidad"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "http://w3id.org/roh/qualityMention"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Premio extraordinario doctor"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "http://w3id.org/roh/doctorExtraordinaryAward"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Fecha de obtención"
+                },
+                "type": "date",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "http://w3id.org/roh/doctorExtraordinaryAwardDate"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Título homologado"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "http://w3id.org/roh/approvedDegree"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Fecha de homologación"
+                },
+                "type": "date",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "academicdegree",
+                  "child": {
+                    "property": "http://w3id.org/roh/approvedDate"
+                  }
+                }
+              }
+            ],
+            "orders": [
+              {
+                "name": {
+                  "es": "Ordenar por fecha más reciente"
+                },
+                "properties": [
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "academicdegree",
+                    "child": {
+                      "property": "http://purl.org/dc/terms/issued"
+                    },
+                    "asc": false
+                  },
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "academicdegree",
+                    "child": {
+                      "property": "http://w3id.org/roh/title"
+                    },
+                    "asc": true
+                  }
+                ]
+              },
+              {
+                "name": {
+                  "es": "Ordenar por fecha más antigua"
+                },
+                "properties": [
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "academicdegree",
+                    "child": {
+                      "property": "http://purl.org/dc/terms/issued"
+                    },
+                    "asc": true
+                  },
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "academicdegree",
+                    "child": {
+                      "property": "http://w3id.org/roh/title"
+                    },
+                    "asc": true
+                  }
+                ]
+              }
+            ]
+          },
+          "listItemEdit": {
+            "graph": "academicdegree",
+            "proptitle": "http://w3id.org/roh/title",
+            "rdftype": "http://vivoweb.org/ontology/core#AcademicDegree",
+            "sections": [
+              {
+                "title": {
+                  "es": "Información general"
+                },
+                "rows": [
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Programa de doctorado"
+                        },
+                        "autocomplete": true,
+                        "required": true,
+                        "placeholder": {
+                          "es": "Introduce el programa de doctorado"
+                        },
+                        "property": "http://w3id.org/roh/title",
+                        "autocompleteConfig": {
+                          "rdftype": "http://w3id.org/roh/DoctoralProgramType",
+                          "graph": "doctoralprogramtype",
+                          "cache": true,
+                          "propertyEntity": "http://w3id.org/roh/doctoralProgram",
+                          "property": {
+                            "property": "http://purl.org/dc/elements/1.1/title"
+                          }
+                        },
+                        "type": "text",
+                        "width": 2
+                      },
+                      {
+                        "title": {
+                          "es": "Fecha de titulación"
+                        },
+                        "property": "http://purl.org/dc/terms/issued",
+                        "type": "date",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Entidad de titulación"
+                        },
+                        "autocomplete": true,
+                        "placeholder": {
+                          "es": "Introduce la entidad de titulación"
+                        },
+                        "property": "http://w3id.org/roh/conductedByTitle",
+                        "autocompleteConfig": {
+                          "rdftype": "http://xmlns.com/foaf/0.1/Organization",
+                          "graph": "organization",
+                          "propertyEntity": "http://w3id.org/roh/conductedBy",
+                          "property": {
+                            "property": "http://w3id.org/roh/title"
+                          }
+                        },
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Tipo de entidad"
+                        },
+                        "property": "http://w3id.org/roh/conductedByType",
+                        "combo": {
+                          "rdftype": "http://w3id.org/roh/OrganizationType",
+                          "graph": "organizationtype",
+                          "property": {
+                            "property": "http://purl.org/dc/elements/1.1/title"
+                          }
+                        },
+                        "dependency": {
+                          "property": "http://w3id.org/roh/conductedByTitle",
+                          "propertyValue": "*"
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Otros"
+                        },
+                        "property": "http://w3id.org/roh/conductedByTypeOther",
+                        "required": true,
+                        "dependency": {
+                          "property": "http://w3id.org/roh/conductedByType",
+                          "propertyValue": "{GraphsUrl}items/organizationtype_OTHERS"
+                        },
+                        "type": "text",
+                        "width": 1
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "title": {
+                  "es": "Más campos"
+                },
+                "rows": [
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Ciudad entidad titulación"
+                        },
+                        "placeholder": {
+                          "es": "Introduce la ciudad de la entidad titulación"
+                        },
+                        "property": "https://www.w3.org/2006/vcard/ns#locality",
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "País entidad titulación"
+                        },
+                        "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+                        "combo": {
+                          "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "filter": {
+                            "property": "http://www.geonames.org/ontology#featureCode",
+                            "value": "PCLD"
+                          },
+                          "graph": "feature",
+                          "property": {
+                            "property": "http://www.geonames.org/ontology#name"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "C. Autón./Reg. entidad titulación"
+                        },
+                        "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+                        "combo": {
+                          "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "filter": {
+                            "property": "http://www.geonames.org/ontology#featureCode",
+                            "value": "ADM1"
+                          },
+                          "dependency": {
+                            "property": "http://www.geonames.org/ontology#parentFeature",
+                            "propertyValue": "https://www.w3.org/2006/vcard/ns#hasCountryName"
+                          },
+                          "graph": "feature",
+                          "property": {
+                            "property": "http://www.geonames.org/ontology#name"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Entidad de titulación DEA"
+                        },
+                        "autocomplete": true,
+                        "placeholder": {
+                          "es": "Introduce la entidad de titulación"
+                        },
+                        "property": "http://w3id.org/roh/deaEntityTitle",
+                        "autocompleteConfig": {
+                          "rdftype": "http://xmlns.com/foaf/0.1/Organization",
+                          "graph": "organization",
+                          "propertyEntity": "http://w3id.org/roh/deaEntity",
+                          "property": {
+                            "property": "http://w3id.org/roh/title"
+                          }
+                        },
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Fecha de obtención DEA"
+                        },
+                        "property": "http://w3id.org/roh/deaDate",
+                        "type": "date",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Título de la tesis"
+                        },
+                        "placeholder": {
+                          "es": "Introduce el título de la tesis"
+                        },
+                        "property": "http://w3id.org/roh/thesisTitle",
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Calificación obtenida"
+                        },
+                        "property": "http://w3id.org/roh/qualification",
+                        "type": "text",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Firma"
+                        },
+                        "property": "http://w3id.org/roh/directorNick",
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Nombre"
+                        },
+                        "property": "http://w3id.org/roh/directorName",
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Primer Apellido"
+                        },
+                        "property": "http://w3id.org/roh/directorFirstSurname",
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Segundo Apellido"
+                        },
+                        "property": "http://w3id.org/roh/directorSecondSurname",
+                        "type": "text",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "property": "http://w3id.org/roh/codirector",
+                        "type": "auxEntity",
+                        "title": {
+                          "es": "Codirector/a de tesis"
+                        },
+                        "multiple": true,
+                        "width": 3,
+                        "auxEntityData": {
+                          "propertyOrder": "http://www.w3.org/1999/02/22-rdf-syntax-ns#comment",
+                          "rdftype": "http://xmlns.com/foaf/0.1/Person",
+                          "propertyTitle": {
+                            "property": "http://xmlns.com/foaf/0.1/firstName"
+                          },
+                          "properties": [
+                            {
+                              "name": {
+                                "es": "Primer Apellido"
+                              },
+                              "child": {
+                                "property": "http://xmlns.com/foaf/0.1/familyName"
+                              }
+                            },
+                            {
+                              "name": {
+                                "es": "Segundo apellido"
+                              },
+                              "child": {
+                                "property": "http://w3id.org/roh/secondFamilyName"
+                              }
+                            },
+                            {
+                              "name": {
+                                "es": "Firma"
+                              },
+                              "child": {
+                                "property": "http://xmlns.com/foaf/0.1/nick"
+                              }
+                            }
+                          ],
+                          "rows": [
+                            {
+                              "properties": [
+                                {
+                                  "title": {
+                                    "es": "Nombre"
+                                  },
+                                  "required": true,
+                                  "property": "http://xmlns.com/foaf/0.1/firstName",
+                                  "type": "text",
+                                  "width": 1
+                                },
+                                {
+                                  "title": {
+                                    "es": "Primer Apellido"
+                                  },
+                                  "property": "http://xmlns.com/foaf/0.1/familyName",
+                                  "type": "text",
+                                  "width": 1
+                                },
+                                {
+                                  "title": {
+                                    "es": "Segundo Apellido"
+                                  },
+                                  "property": "http://w3id.org/roh/secondFamilyName",
+                                  "type": "text",
+                                  "width": 1
+                                },
+                                {
+                                  "title": {
+                                    "es": "Firma"
+                                  },
+                                  "placeholder": {
+                                    "es": "Introduce la firma"
+                                  },
+                                  "property": "http://xmlns.com/foaf/0.1/nick",
+                                  "type": "text",
+                                  "width": 1
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Doctorado Europeo"
+                        },
+                        "type": "boolean",
+                        "property": "http://w3id.org/roh/europeanDoctorate",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Fecha de mención"
+                        },
+                        "property": "http://w3id.org/roh/europeanDoctorateDate",
+                        "type": "date",
+                        "dependency": {
+                          "property": "http://w3id.org/roh/europeanDoctorate",
+                          "propertyValue": "true"
+                        },
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Mención de calidad"
+                        },
+                        "type": "boolean",
+                        "property": "http://w3id.org/roh/qualityMention",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Premio extraordinario doctor"
+                        },
+                        "type": "boolean",
+                        "property": "http://w3id.org/roh/doctorExtraordinaryAward",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Fecha de obtención"
+                        },
+                        "property": "http://w3id.org/roh/doctorExtraordinaryAwardDate",
+                        "type": "date",
+                        "dependency": {
+                          "property": "http://w3id.org/roh/doctorExtraordinaryAward",
+                          "propertyValue": "true"
+                        },
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Título homologado"
+                        },
+                        "type": "boolean",
+                        "property": "http://w3id.org/roh/approvedDegree",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Fecha de homologación"
+                        },
+                        "property": "http://w3id.org/roh/approvedDate",
+                        "type": "date",
+                        "dependency": {
+                          "property": "http://w3id.org/roh/approvedDegree",
+                          "propertyValue": "true"
+                        },
+                        "width": 1
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
     {
       "rdftype": "http://w3id.org/roh/RelatedLanguageSkills",
       "property": "http://w3id.org/roh/languageSkills",
@@ -651,7 +1410,7 @@
                 "name": {
                   "es": "Ordenar por idioma (descendente)"
                 },
-                "properties": [                  
+                "properties": [
                   {
                     "property": "http://vivoweb.org/ontology/core#relatedBy",
                     "graph": "languagecertificate",
