@@ -15,6 +15,7 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
     class AportacionesRelevantes : DisambiguableEntity
     {
         public string descripcion { get; set; }
+        public string entidadOrganizadora { get; set; }
         public string fecha { get; set; }
 
         private static DisambiguationDataConfig configDescripcion = new DisambiguationDataConfig()
@@ -30,23 +31,39 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
             scoreMinus = 0.5f
         };
 
+        private static DisambiguationDataConfig configEO = new DisambiguationDataConfig()
+        {
+            type = DisambiguationDataConfigType.equalsItem,
+            score = 0.5f,
+            scoreMinus = 0.5f
+        };
+
         public override List<DisambiguationData> GetDisambiguationData()
         {
-            List<DisambiguationData> data = new List<DisambiguationData>();
-
-            data.Add(new DisambiguationData()
+            List<DisambiguationData> data = new List<DisambiguationData>
             {
-                property = "descripcion",
-                config = configDescripcion,
-                value = descripcion
-            });
+                new DisambiguationData()
+                {
+                    property = "descripcion",
+                    config = configDescripcion,
+                    value = descripcion
+                },
 
-            data.Add(new DisambiguationData()
-            {
-                property = "fecha",
-                config = configFecha,
-                value = fecha
-            });
+                new DisambiguationData()
+                {
+                    property = "fecha",
+                    config = configFecha,
+                    value = fecha
+                },
+
+                new DisambiguationData()
+                {
+                    property = "entidadOrganizadora",
+                    config = configEO,
+                    value = entidadOrganizadora
+                }
+            };
+
             return data;
         }
 
@@ -62,24 +79,25 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
 
             foreach (List<string> lista in listaListas)
             {
-                string select = $@"SELECT distinct ?item ?itemTitle ?itemDate ";
+                string select = $@"SELECT distinct ?item ?itemTitle ?itemDate  ?itemEO ";
                 string where = $@"where {{
                                         ?item <{Variables.ActividadDocente.aportacionesCVDescripcion}> ?itemTitle . 
                                         OPTIONAL{{?item <{Variables.ActividadDocente.aportacionesCVFechaFinalizacion}> ?itemDate }}.
+                                        OPTIONAL{{?item <{Variables.ActividadDocente.aportacionesCVEntidadOrganizadoraNombre}> ?itemEO }}.
                                         FILTER(?item in (<{string.Join(">,<", lista)}>))
                                     }}";
                 //TODO check where valores
                 SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, graph);
                 foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                 {
-                    AportacionesRelevantes aportacionesRelevantes = new AportacionesRelevantes();
-                    aportacionesRelevantes.ID = fila["item"].value;
-                    aportacionesRelevantes.descripcion = fila["itemTitle"].value;
-                    aportacionesRelevantes.fecha = "";
-                    if (fila.ContainsKey("itemDate"))
+                    AportacionesRelevantes aportacionesRelevantes = new AportacionesRelevantes
                     {
-                        aportacionesRelevantes.fecha = fila["itemDate"].value;
-                    }
+                        ID = fila["item"].value,
+                        descripcion = fila["itemTitle"].value,
+                        fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : "",
+                        entidadOrganizadora = fila.ContainsKey("itemEO") ? fila["itemEO"].value : ""
+                    };
+
                     resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), aportacionesRelevantes);
                 }
             }
