@@ -178,9 +178,13 @@ namespace GuardadoCV.Models.API.Templates
     {
         /// <summary>
         /// Propiedad para pintar el título del ítem
-        /// TODO cambiar
         /// </summary>
         public PropertyDataTemplate propertyTitle;
+        /// <summary>
+        /// Propiedad para pintar el título del ítem
+        /// </summary>
+        public List<PropertyDataTemplate> propertyTitleOR;
+
         /// <summary>
         /// Órdenes disponibles en el listado
         /// </summary>
@@ -210,6 +214,13 @@ namespace GuardadoCV.Models.API.Templates
             if (propertyTitle != null)
             {
                 propertyData.childs.Add(propertyTitle.GenerarPropertyData(pGraph));
+            }
+            if(propertyTitleOR!=null)
+            {
+                foreach (PropertyDataTemplate propOR in propertyTitleOR)
+                {
+                    propertyData.childs.Add(propOR.GenerarPropertyData(pGraph));
+                }
             }
 
             //Visibilidad
