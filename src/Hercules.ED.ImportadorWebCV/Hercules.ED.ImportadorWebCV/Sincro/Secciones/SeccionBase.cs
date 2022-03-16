@@ -375,7 +375,6 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// Añade o modifica las publicaciones y los autores pertenecientes a las mismas.
         /// </summary>
         /// <param name="listadoAux"></param>
-        /// <param name="entidadesXML"></param>
         /// <param name="equivalencias"></param>
         /// <param name="propTitle"></param>
         /// <param name="graph"></param>
@@ -385,8 +384,8 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <param name="RdfTypeTab"></param>
         /// <param name="pPropertyCV"></param>
         /// <param name="pRdfTypeCV"></param>
-        protected void AniadirModificarPublicaciones(List<Entity> listadoAux, Dictionary<string, DisambiguableEntity> entidadesXML,
-            Dictionary<string, HashSet<string>> equivalencias, string propTitle, string graph, string rdfType, string rdfTypePrefix,
+        protected void AniadirModificarPublicaciones(List<Entity> listadoAux, Dictionary<string, HashSet<string>> equivalencias, string propTitle,
+            string graph, string rdfType, string rdfTypePrefix,
             List<string> propiedadesItem, string RdfTypeTab, [Optional] string pPropertyCV, [Optional] string pRdfTypeCV)
         {
             //Obtengo los datos de la persona para comprobar que existe en los documentos que cargamos
