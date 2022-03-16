@@ -952,6 +952,22 @@ namespace Utils
             }
             return null;
         }
+        
+        public static string GetIdentificationTitleBeanPorIDCampo(this CvnItemBean item, string codigo)
+        {
+            if (!CodigoCampoCorrecto(codigo))
+            {
+                throw new ArgumentException("Codigo de campo incorrecto" + codigo);
+            }
+
+            if (codigo.Length != 15) { return null; }
+            CvnItemBeanCvnTitleBean campo = item.Items?.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnTitleBean).Cast<CvnItemBeanCvnTitleBean>().FirstOrDefault();
+            if (campo != null)
+            {
+                return campo.Identification;
+            }
+            return null;
+        }
 
         /// <summary>
         /// Devuelve el objetivo como respuesta,
