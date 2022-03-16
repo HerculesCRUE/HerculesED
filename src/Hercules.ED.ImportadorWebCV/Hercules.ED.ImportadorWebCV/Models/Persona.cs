@@ -1,8 +1,5 @@
 ﻿using Hercules.ED.DisambiguationEngine.Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Hercules.ED.ImportadorWebCV.Models
 {

@@ -1,14 +1,10 @@
 ﻿using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.ApiModel;
-using Hercules.ED.DisambiguationEngine.Models;
-using Hercules.ED.ImportadorWebCV.Models;
 using ImportadorWebCV;
 using Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static Models.Entity;
 
 namespace Utils

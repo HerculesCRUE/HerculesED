@@ -2,14 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static Models.Entity;
 using Utils;
 using Hercules.ED.DisambiguationEngine.Models;
 using ImportadorWebCV.Sincro.Secciones.ExperienciaCientificaSubclases;
-using Gnoss.ApiWrapper.Model;
-using ImportadorWebCV.Utils;
 using System.Runtime.InteropServices;
 using Hercules.ED.ImportadorWebCV.Models;
 
@@ -18,6 +14,7 @@ namespace ImportadorWebCV.Sincro.Secciones
     class ExperienciaCientificaTecnologica : SeccionBase
     {        
         private List<CvnItemBean> listadoDatos = new List<CvnItemBean>();
+        private readonly string RdfTypeTab = "";
         public ExperienciaCientificaTecnologica(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
             listadoDatos = mCvn.GetListadoBloque("050");
