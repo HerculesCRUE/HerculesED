@@ -274,16 +274,16 @@ namespace ImportadorWebCV.Variables
         /// <summary>
         /// Otras actividades/méritos no incluidos en la relación anterior - 030.100.000.000
         /// </summary>
-        public const string otrasActividadesDescripcion = "";
-        public const string otrasActividadesPalabrasClave = "";
-        public const string otrasActividadesPaisRealizacion = "";
-        public const string otrasActividadesCCAARealizacion = "";
-        public const string otrasActividadesCiudadRealizacion = "";
-        public const string otrasActividadesEntidadOrganizadora = "";
-        public const string otrasActividadesEntidadOrganizadoraNombre = "";
-        public const string otrasActividadesTipoEntidadOrganizadora = "";
-        public const string otrasActividadesTipoEntidadOrganizadoraOtros = "";
-        public const string otrasActividadesFechaFinalizacion = "";
+        public const string otrasActividadesDescripcion = "http://w3id.org/roh/title";
+        public const string otrasActividadesPalabrasClave = "http://vivoweb.org/ontology/core#freeTextKeyword@@@http://w3id.org/roh/CategoryPath|http://w3id.org/roh/categoryNode";
+        public const string otrasActividadesPaisRealizacion = "https://www.w3.org/2006/vcard/ns#hasCountryName";
+        public const string otrasActividadesCCAARealizacion = "https://www.w3.org/2006/vcard/ns#hasRegion";
+        public const string otrasActividadesCiudadRealizacion = "https://www.w3.org/2006/vcard/ns#locality";
+        public const string otrasActividadesEntidadOrganizadora = "http://w3id.org/roh/promotedBy";
+        public const string otrasActividadesEntidadOrganizadoraNombre = "http://w3id.org/roh/promotedByTitle";
+        public const string otrasActividadesTipoEntidadOrganizadora = "http://w3id.org/roh/promotedByType";
+        public const string otrasActividadesTipoEntidadOrganizadoraOtros = "http://w3id.org/roh/promotedByTypeOther";
+        public const string otrasActividadesFechaFinalizacion = "http://vivoweb.org/ontology/core#end";
 
 
         /// <summary>
