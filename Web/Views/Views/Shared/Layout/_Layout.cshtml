@@ -600,7 +600,8 @@
 
         @if (!IdentidadActual.IsGuestUser)
         {
-            <div id="modal-crear-cluster" data-backdrop="static" class="modal modal-top modal-wide fade edicionRecurso  edicionCluster" tabindex="-1" role="dialog">
+            <div id="modal-crear-cluster" data-backdrop="static" class="modal modal-top modal-wide fade edicionRecurso  edicionCluster" tabindex="-1" role="dialog" data-eliminartext="@Html.Translate("ELIMINAR")" data-areastematicastext="@Html.Translate("AREAS_TEMATICAS")" data-descriptoresespecificostext="@Html.Translate("DESCRIPTORES_ESPECIFICOS")" >
+
                 <div class="modal-dialog" role="document" data-cshortName="@Comunidad.ShortName">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -608,288 +609,473 @@
                             <span class="material-icons cerrar" data-dismiss="modal" aria-label="Close">close</span>
                         </div>
                         <div class="modal-body">
-                            <div class="step-progress-wrap mb-5">
-                                <ul class="step-progress">
-                                    <li class="step-progress__circle active" id="step1">
-                                        <a href="javascript:stepsCls.goStep(1)">
-                                            <span class="step-progress__text current">@Html.Translate("DEFINIR_CLUSTER")</span>
-                                        </a>
-                                    </li>
-                                    <li class="step-progress__bar"></li>
-                                    <li class="step-progress__circle" id="step2">
-                                        <a href="javascript:stepsCls.goStep(2)">
-                                            <span class="step-progress__text">@Html.Translate("DEFINIR_PERFILES_AREAS_INVESTIGACION")</span>
-                                        </a>
-                                    </li>
-                                    <li class="step-progress__bar"></li>
-                                    <li class="step-progress__circle" id="step3">
-                                        <a href="javascript:stepsCls.goStep(3)">
-                                            <span class="step-progress__text">@Html.Translate("RECOMENDACIONES_SELECCION_INVESTIGADORES")</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="steps-content-wrap">
-                                
-                                <div id="modal-crear-cluster-step1" class="fade show section-steps">
-                                    <form class="formulario-edicion background-blanco" type="post" id="cluster-step1-form">
-                                        <fieldset>
-                                            <legend>Definir cluster</legend>
-                                            <div class="form-group mb-5 edit-titulo">
-                                                <label class="control-label d-block">@Html.Translate("NOMBRE_TITULO_CLUSTER")</label>
-                                                <input placeholder="Introduce un Nombre / Título cluster" type="text" name="nombrecluster" id="nombreclusterinput" class="form-control not-outline">
-                                            </div>
-                                            <div class="form-group mb-5 edit-descripcion">
-                                                <label class="control-label d-block">@Html.Translate("DESCRIPCION")</label>
-                                                <textarea id="txtDescripcion" placeholder="Introduce una descripción" name="txtdescripcion" class="cke form-control recursos" cols="20" rows="2"></textarea>
-                                            </div>
-                                            <!-- Areas temáticas -->
-                                            <div class="panel-body mb-5 edit-etiquetas pl-0">
-                                                <div class="form-group">
-                                                    <label class="control-label d-block">@Html.Translate("TEMAS_INVESTIGACION")</label>
-                                                    <div class="autocompletar autocompletar-tags form-group" id="cluster-modal-sec1-tax-wrapper">
-                                                        <span class="tag-list mb-4">
-                                                        </span>
-                                                    </div>
-                                                    <a class="btn btn-outline-primary" href="javascript: void(0)">
-                                                        <span class="material-icons" data-rel="cluster-modal-sec1-tax-wrapper" onclick="stepsCls.setAreasTematicas(this)">add</span>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                            <!-- -->
-                                        </fieldset>
-                                        <fieldset class="d-none">
-                                            <div class="form-group mb-4 edit-areas-tematicas">
-                                                <label class="control-label d-block mb-3">@Html.Translate("CLASIFICACION_AREAS_TEMATICAS")</label>
-                                                <div class="custom-control themed little custom-radio">
-                                                    <input type="radio" id="clasificacion-area-hercules" name="clasificacion-area" class="custom-control-input at-input" checked="">
-                                                    <label class="custom-control-label" for="clasificacion-area-hercules">Hércules</label>
-                                                </div>
-                                                <div class="custom-control themed little custom-radio">
-                                                    <input type="radio" id="clasificacion-area-horizon-europa" name="clasificacion-area" class="custom-control-input at-input">
-                                                    <label class="custom-control-label" for="clasificacion-area-horizon-europa">Horizon Europa</label>
-                                                </div>
-                                                <div class="custom-control themed little custom-radio">
-                                                    <input type="radio" id="clasificacion-area-ods" name="clasificacion-area" class="custom-control-input">
-                                                    <label class="custom-control-label" for="clasificacion-area-ods">ODS</label>
-                                                </div>
-                                                <div class="custom-control themed little custom-radio">
-                                                    <input type="radio" id="clasificacion-area-plan-espana" name="clasificacion-area" class="custom-control-input">
-                                                    <label class="custom-control-label" for="clasificacion-area-plan-espana">Plan España Digital 2025</label>
-                                                </div>
-                                            </div>
-                                        </fieldset>
-                                        <a class="btn btn-primary uppercase" href="javascript:stepsCls.goStep(2)" follow="nofollow">
-                                            @Html.Translate("SIGUIENTE")
-                                            <span class="material-icons">keyboard_arrow_right</span>
-                                        </a>
-                                    </form>
+                            <div class="formulario-edicion background-blanco">
+                                <div class="d-flex flex-wrap mb-2">
+                                    <div class="step-progress-wrap mb-5">
+                                        <ul class="step-progress">
+                                            <li class="step-progress__circle active" id="step1">
+                                                <a href="javascript:stepsCls.goStep(1)">
+                                                    <span class="step-progress__text current">@Html.Translate("DEFINIR_CLUSTER")</span>
+                                                </a>
+                                            </li>
+                                            <li class="step-progress__bar"></li>
+                                            <li class="step-progress__circle" id="step2">
+                                                <a href="javascript:stepsCls.goStep(2)">
+                                                    <span class="step-progress__text">@Html.Translate("DEFINIR_PERFILES_AREAS_INVESTIGACION")</span>
+                                                </a>
+                                            </li>
+                                            <li class="step-progress__bar"></li>
+                                            <li class="step-progress__circle" id="step3">
+                                                <a href="javascript:stepsCls.goStep(3)">
+                                                    <span class="step-progress__text">@Html.Translate("RECOMENDACIONES_SELECCION_INVESTIGADORES")</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
+                                <div class="steps-content-wrap">
+                                    <div class="p-3 mb-2 bg-danger text-white" id="error-modal-cluster" style="display:none">@Html.Translate("REVISE_ERRORES_CAMPOS_RELLENADOS")</div>
+                                    <div class="p-3 mb-2 bg-danger text-white" id="error-modal-server-cluster" style="display:none">@Html.Translate("ERROR_SERVER")</div>
 
-                                <div id="modal-crear-cluster-step2" class="fade section-steps">
-                                    <form class="formulario-edicion background-blanco">
-                                        <fieldset>
-                                            <legend>@Html.Translate("DEFINIR_PERFILES_AREAS_INVESTIGACION")</legend>
-                                            <p>@Html.Translate("QUIERES_BUSCAR_INVESTIGADORES_EXPERIENCIA___")</p>
-                                            <p>@Html.Translate("ORGANIZA_AREAS_PERFIL_TEMATICOS___")</p>
-                                            <p class="section-title">@Html.Translate("PERFILES")</p>
-                                            <div class="panel-group pmd-accordion" id="accordion_cluster" role="tablist" aria-multiselectable="true" data-imguser="@Html.GetBaseUrlContent()/imagenes/proyectos/personalizacion/@Comunidad.Key.ToString()/theme/resources/iconos/person-gris.png">
-                                                <div class="panel">
-                                                    
+                                    <!-- START STEP 1 -->
+                                    <div id="modal-crear-cluster-step1" class="fade show section-steps">
+                                        <form class="formulario-edicion background-blanco" type="post" id="cluster-step1-form">
+                                            <fieldset>
+                                                <legend>Definir cluster</legend>
+                                                <div class="form-group mb-5 edit-titulo">
+                                                    <label class="control-label d-block">@Html.Translate("NOMBRE_TITULO_CLUSTER") *</label>
+                                                    <input placeholder="@Html.Translate("INTRODUCE_NOMBRE_TITULO")" type="text" name="nombrecluster" id="nombreclusterinput" class="form-control not-outline">
                                                 </div>
-                                            </div>
-                                            <div class="form-group mt-4 mb-4 anadir-perfil">
-                                                <a class="btn btn-outline-primary" data-toggle="modal" data-target="#modal-anadir-perfil">@Html.Translate("ANADIR_OTRO_PERFIL")</a>
-                                            </div>
-                                        </fieldset>
-                                        <a href="javascript:stepsCls.saveInit()" class="btn btn-primary uppercase">
-                                            @Html.Translate("GUARDAR_SIGUIENTE")
-                                            <span class="material-icons">keyboard_arrow_right</span>
-                                        </a>
-                                    </form>
-                                </div>
-
-                                <div id="modal-crear-cluster-step3" class="fade section-steps">
-                                    <div class="row">
-                                        <div class="col col-12 col-section-title font-weight-bold">
-                                            <div class="wrapCol">
-                                                <p>@Html.Translate("COLABORADORES")</p>
-                                                <div class="acciones-grafo">
-                                                    <div class="relaciones dropdown dropdown-select">
-                                                        <a href="#" class="dropdown-toggle btn btn-outline-grey" role="button" id="dropdownRelaciones" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                            @Html.Translate("RELACIONES"):
-                                                            <span class="texto">@Html.Translate("TODAS")</span>
+                                                <div class="form-group mb-5 edit-descripcion">
+                                                    <label class="control-label d-block">@Html.Translate("DESCRIPCION")</label>
+                                                    <textarea id="txtDescripcion" placeholder="Introduce una descripción" name="txtdescripcion" class="cke form-control recursos" cols="20" rows="2"></textarea>
+                                                </div>
+                                                <!-- Areas temáticas -->
+                                                <div class="panel-body mb-5 edit-etiquetas pl-0">
+                                                    <div class="form-group">
+                                                        <label class="control-label d-block">@Html.Translate("TEMAS_INVESTIGACION") *</label>
+                                                        <div class="autocompletar autocompletar-tags form-group" id="cluster-modal-sec1-tax-wrapper">
+                                                            <span class="tag-list mb-4">
+                                                            </span>
+                                                        </div>
+                                                        <a class="btn btn-outline-primary" href="javascript: void(0)">
+                                                            <span class="material-icons" data-rel="cluster-modal-sec1-tax-wrapper" onclick="stepsCls.setAreasTematicas(this)">add</span>
                                                         </a>
-                                                        <div class="dropdown-menu basic-dropdown dropdown-menu-right" aria-labelledby="dropdownRelaciones">
-                                                            <ul class="no-list-style">
-                                                                <li>
-                                                                    <a href="javascript: void(0);" rel="nofollow" class="item-dropdown activeView">
-                                                                        <span class="textoAlternativo">@Html.Translate("RELACIONES"):</span>
+                                                    </div>
+                                                </div>
+                                                <!-- -->
+                                            </fieldset>
+                                            <fieldset class="d-none">
+                                                <div class="form-group mb-4 edit-areas-tematicas">
+                                                    <label class="control-label d-block mb-3">@Html.Translate("CLASIFICACION_AREAS_TEMATICAS")</label>
+                                                    <div class="custom-control themed little custom-radio">
+                                                        <input type="radio" id="clasificacion-area-hercules" name="clasificacion-area" class="custom-control-input at-input" checked="">
+                                                        <label class="custom-control-label" for="clasificacion-area-hercules">Hércules</label>
+                                                    </div>
+                                                    <div class="custom-control themed little custom-radio">
+                                                        <input type="radio" id="clasificacion-area-horizon-europa" name="clasificacion-area" class="custom-control-input at-input">
+                                                        <label class="custom-control-label" for="clasificacion-area-horizon-europa">Horizon Europa</label>
+                                                    </div>
+                                                    <div class="custom-control themed little custom-radio">
+                                                        <input type="radio" id="clasificacion-area-ods" name="clasificacion-area" class="custom-control-input">
+                                                        <label class="custom-control-label" for="clasificacion-area-ods">ODS</label>
+                                                    </div>
+                                                    <div class="custom-control themed little custom-radio">
+                                                        <input type="radio" id="clasificacion-area-plan-espana" name="clasificacion-area" class="custom-control-input">
+                                                        <label class="custom-control-label" for="clasificacion-area-plan-espana">Plan España Digital 2025</label>
+                                                    </div>
+                                                </div>
+                                            </fieldset>
+                                            <div class="botonera">
+                                                <a class="btn btn-primary uppercase" href="javascript:stepsCls.goStep(2)" follow="nofollow">
+                                                    @Html.Translate("SIGUIENTE")
+                                                    <span class="material-icons">keyboard_arrow_right</span>
+                                                </a>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <!-- END STEP 1 -->
+
+                                    <!-- START STEP 2 -->
+                                    <div id="modal-crear-cluster-step2" class="fade section-steps">
+                                        <form class="formulario-edicion background-blanco">
+                                            <fieldset>
+                                                <legend>@Html.Translate("DEFINIR_PERFILES_AREAS_INVESTIGACION")</legend>
+                                                <p>@Html.Translate("QUIERES_BUSCAR_INVESTIGADORES_EXPERIENCIA___")</p>
+                                                <p>@Html.Translate("ORGANIZA_AREAS_PERFIL_TEMATICOS___")</p>
+                                                <p class="section-title">@Html.Translate("PERFILES")</p>
+                                                <div class="panel-group pmd-accordion" id="accordion_cluster" role="tablist" aria-multiselectable="true" data-imguser="@Html.GetBaseUrlContent()/imagenes/proyectos/personalizacion/@Comunidad.Key.ToString()/theme/resources/iconos/person-gris.png">
+                                                    <div class="panel">
+                                                        
+                                                    </div>
+                                                </div>
+                                                <div class="form-group mt-4 mb-4 anadir-perfil">
+                                                    <a class="btn btn-outline-primary" data-toggle="modal" data-target="#modal-anadir-perfil-cluster">@Html.Translate("ANADIR_OTRO_PERFIL") *</a>
+                                                </div>
+                                            </fieldset>
+                                            <div class="botonera">
+                                                <a href="javascript:stepsCls.goStep(1)" class="btn btn-outline-primary uppercase">
+                                                    <span class="material-icons">keyboard_arrow_left</span>
+                                                    Anterior
+                                                </a>
+                                                <a href="javascript:stepsCls.goStep(3)" class="btn btn-primary uppercase">
+                                                    @Html.Translate("GUARDAR_SIGUIENTE")
+                                                    <span class="material-icons">keyboard_arrow_right</span>
+                                                </a>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <!-- END STEP 2 -->
+
+                                    <!-- START STEP 3 -->
+                                    <div id="modal-crear-cluster-step3" class="fade section-steps">
+                                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                            <li class="nav-item">
+                                                <a class="nav-link active" id="sugeridos-cluster-tab" data-toggle="tab" href="#sugeridos-cluster" role="tab" aria-controls="sugeridos-cluster" aria-selected="true">Sugeridos</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" id="seleccionados-cluster-tab" data-toggle="tab" href="#seleccionados-cluster" role="tab" aria-controls="seleccionados-cluster" aria-selected="false">Seleccionados</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" id="grafo-seleccionados-cluster-tab" data-toggle="tab" href="#grafo-seleccionados-cluster" role="tab" aria-controls="grafo-seleccionados-cluster" aria-selected="false">Grafo de seleccionados</a>
+                                            </li>
+                                        </ul>
+                                        <div class="tab-content">
+                                            <div class="tab-pane fade active show" id="sugeridos-cluster" role="tabpanel" aria-labelledby="sugeridos-cluster-tab">
+                                                <div class="row">
+                                                    <div class="col col-12 col-section-title font-weight-bold">
+                                                        <div class="wrapCol">
+                                                            <p>@Html.Translate("COLABORADORES")</p>
+                                                            <div class="acciones-grafo">
+                                                                <div class="relaciones dropdown dropdown-select">
+                                                                    <a href="#" class="dropdown-toggle btn btn-outline-grey" role="button" id="dropdownRelaciones" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                        @Html.Translate("RELACIONES"):
                                                                         <span class="texto">@Html.Translate("TODAS")</span>
                                                                     </a>
-                                                                </li>
-                                                                <li>
-                                                                    <a href="javascript: void(0);" rel="nofollow" class="item-dropdown">
-                                                                        <span class="textoAlternativo">@Html.Translate("RELACIONES"):</span>
-                                                                        <span class="texto">@Html.Translate("PROYECTOS")</span>
+                                                                    <div class="dropdown-menu basic-dropdown dropdown-menu-right" aria-labelledby="dropdownRelaciones">
+                                                                        <ul class="no-list-style">
+                                                                            <li>
+                                                                                <a href="javascript: void(0);" rel="nofollow" class="item-dropdown activeView">
+                                                                                    <span class="textoAlternativo">@Html.Translate("RELACIONES"):</span>
+                                                                                    <span class="texto">@Html.Translate("TODAS")</span>
+                                                                                </a>
+                                                                            </li>
+                                                                            <li>
+                                                                                <a href="javascript: void(0);" rel="nofollow" class="item-dropdown">
+                                                                                    <span class="textoAlternativo">@Html.Translate("RELACIONES"):</span>
+                                                                                    <span class="texto">@Html.Translate("PROYECTOS")</span>
+                                                                                </a>
+                                                                            </li>
+                                                                            <li>
+                                                                                <a href="javascript: void(0);" rel="nofollow" class="item-dropdown">
+                                                                                    <span class="textoAlternativo">@Html.Translate("RELACIONES"):</span>
+                                                                                    <span class="texto">@Html.Translate("DOCUMENTOS")</span>
+                                                                                </a>
+                                                                            </li>
+                                                                        </ul>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="relaciones-miembros dropdown dropdown-select">
+                                                                    <a href="#" class="dropdown-toggle btn btn-outline-grey" role="button" id="dropdownRelacionesMiembros" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                        @Html.Translate("RELACIONES_ENTRE_MIEMBROS"):
+                                                                        <span class="texto">Sí</span>
                                                                     </a>
-                                                                </li>
-                                                                <li>
-                                                                    <a href="javascript: void(0);" rel="nofollow" class="item-dropdown">
-                                                                        <span class="textoAlternativo">@Html.Translate("RELACIONES"):</span>
-                                                                        <span class="texto">@Html.Translate("DOCUMENTOS")</span>
-                                                                    </a>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                    <div class="relaciones-miembros dropdown dropdown-select">
-                                                        <a href="#" class="dropdown-toggle btn btn-outline-grey" role="button" id="dropdownRelacionesMiembros" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                            @Html.Translate("RELACIONES_ENTRE_MIEMBROS"):
-                                                            <span class="texto">Sí</span>
-                                                        </a>
-                                                        <div class="dropdown-menu basic-dropdown dropdown-menu-right" aria-labelledby="dropdownRelacionesMiembros">
-                                                            <ul class="no-list-style">
-                                                                <li>
-                                                                    <a href="javascript: void(0);" rel="nofollow" class="item-dropdown activeView">
-                                                                        <span class="textoAlternativo">@Html.Translate("RELACIONES_ENTRE_MIEMBROS"):</span>
-                                                                        <span class="texto">@Html.Translate("SI")</span>
-                                                                    </a>
-                                                                </li>
-                                                                <li>
-                                                                    <a href="javascript: void(0);" rel="nofollow" class="item-dropdown">
-                                                                        <span class="textoAlternativo">@Html.Translate("RELACIONES_ENTRE_MIEMBROS"):</span>
-                                                                        <span class="texto">@Html.Translate("NO")</span>
-                                                                    </a>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col col-12 col-grafo-title font-weight-bold">
-                                            <div class="grafico-wrap">
-                                                <div></div>
-                                                <div class="graph-controls">
-                                                    <ul class="no-list-style d-flex align-items-center">
-                                                        <li class="control remove-control" id="removeNodesCollaboratorsCluster">
-                                                            <span class="material-icons">remove</span>
-                                                        </li>
-                                                        <li class="control text-control">
-                                                            <span id="numNodosCollaboratorsCluster">10</span> @Html.Translate("NODOS")
-                                                        </li>
-                                                        <li class="control add-control" id="addNodesCollaboratorsCluster">
-                                                            <span class="material-icons">add</span>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                                <input type="hidden" id="numColaboradoresCluster" value="10" />
-                                                <div class="wrapCol" id="colaboratorsgraphCluster" style="width: 100%; height: 400px;"></div>
-                                            </div>
-                                        </div>
-                                        <!-- <div class="col col-12 header-listado">
-                                            <div class="h1-container">
-                                                <h1>Publicaciones <span class="numResultados">90</span></h1>
-                                            </div>
-                                            <div class="acciones-listado">
-                                                <div class="wrap">
-                                                    <div class="descargar dropdown">
-                                                        <a class="dropdown-toggle" data-toggle="dropdown">
-                                                            <span class="material-icons">download</span>
-                                                            <span class="texto">Descargar</span>
-                                                        </a>
-                                                        <div class="dropdown-menu basic-dropdown dropdown-menu-right">
-                                                            <a href="javascript: void(0)" class="item-dropdown">PDF</a>
-                                                            <a href="javascript: void(0)" class="item-dropdown">Hoja de cálculo</a>
-                                                            <a href="javascript: void(0)" class="item-dropdown">Documento word</a>
-                                                            <a href="javascript: void(0)" class="item-dropdown">Imagen JPG</a>
-                                                        </div>
-                                                    </div>
-                                                    <div class="ordenar dropdown dropdown-select">
-                                                        <a class="dropdown-toggle" data-toggle="dropdown">
-                                                            <span class="material-icons">swap_vert</span>
-                                                            <span class="texto">Ordenar</span>
-                                                        </a>
-                                                        <div class="dropdown-menu basic-dropdown dropdown-menu-right">
-                                                            <a href="javascript: void(0)" class="item-dropdown">
-                                                                <span class="material-icons">swap_vert</span>
-                                                                <span class="texto">Fecha más reciente</span>
-                                                            </a>
-                                                            <a href="javascript: void(0)" class="item-dropdown">
-                                                                <span class="material-icons">swap_vert</span>
-                                                                <span class="texto">Fecha más antigua</span>
-                                                            </a>
-                                                            <a href="javascript: void(0)" class="item-dropdown">
-                                                                <span class="material-icons">swap_vert</span>
-                                                                <span class="texto">Relevancia</span>
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                    <div class="visualizacion dropdown dropdown-select">
-                                                        <a class="dropdown-toggle" data-toggle="dropdown">
-                                                            <span class="material-icons">view_agenda</span>
-                                                            <span class="texto">Visualizar</span>
-                                                        </a>
-                                                        <div class="dropdown-menu basic-dropdown .dropdown-icons dropdown-menu-right">
-                                                            <a class="item-dropdown aCompacView" data-class-resource-list="compacView">
-                                                                <span class="material-icons">reorder</span>
-                                                                <span class="texto">Compacto</span>
-                                                            </a>
-                                                            <a class="item-dropdown aListView activeView" data-class-resource-list="listView">
-                                                                <span class="material-icons">view_agenda</span>
-                                                                <span class="texto">Lista</span>
-                                                            </a>
-                                                            <a class="item-dropdown aMosaicView" data-class-resource-list="mosaicView">
-                                                                <span class="material-icons">view_comfy</span>
-                                                                <span class="texto">Mosaico</span>
-                                                            </a>
-                                                            <a class="item-dropdown aGraphView" data-class-resource-list="mapView">
-                                                                <span class="material-icons">leaderboard</span>
-                                                                <span class="texto">Gráfica</span>
-                                                            </a>
-                                                            <a class="item-dropdown aMapView" data-class-resource-list="graphView">
-                                                                <span class="material-icons">location_on</span>
-                                                                <span class="texto">Mapa</span>
-                                                            </a>
-                                                            <a class="item-dropdown aGrafoView" data-class-resource-list="grafoView">
-                                                                <span class="material-icons">share</span>
-                                                                <span class="texto">Grafo</span>
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div> -->
-                                        <div class="col-12">
-                                            <div class="wrapCol">
-                                                <div class="col-buscador">
-                                                    <form method="post" id="formCajaBusquedaCluster" action="javascript:void(0)">
-                                                        <fieldset style="display: block">
-                                                            <legend class="nota">facetas</legend>
-                                                            <div class="finderUtils" id="divCajaBusqueda">
-                                                                <div class="group finderSection">
-                                                                    <label for="finderSection" class="">Encontrar</label>
-                                                                    <input type="text" id="finderSection" class="not-outline finderSectionText autocompletar ac_input" autocomplete="off" placeholder="Buscar en sección">
-                                                                    <input title="Encontrar" type="button" class="findAction" id="inputLupa">
+                                                                    <div class="dropdown-menu basic-dropdown dropdown-menu-right" aria-labelledby="dropdownRelacionesMiembros">
+                                                                        <ul class="no-list-style">
+                                                                            <li>
+                                                                                <a href="javascript: void(0);" rel="nofollow" class="item-dropdown activeView">
+                                                                                    <span class="textoAlternativo">@Html.Translate("RELACIONES_ENTRE_MIEMBROS"):</span>
+                                                                                    <span class="texto">@Html.Translate("SI")</span>
+                                                                                </a>
+                                                                            </li>
+                                                                            <li>
+                                                                                <a href="javascript: void(0);" rel="nofollow" class="item-dropdown">
+                                                                                    <span class="textoAlternativo">@Html.Translate("RELACIONES_ENTRE_MIEMBROS"):</span>
+                                                                                    <span class="texto">@Html.Translate("NO")</span>
+                                                                                </a>
+                                                                            </li>
+                                                                        </ul>
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                        </fieldset>
-                                                    </form>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col col-12 col-grafo-title font-weight-bold">
+                                                        <div class="grafico-wrap">
+                                                            <div></div>
+                                                            <div class="graph-controls">
+                                                                <ul class="no-list-style d-flex align-items-center">
+                                                                    <li class="control remove-control" id="removeNodesCollaboratorsCluster">
+                                                                        <span class="material-icons">remove</span>
+                                                                    </li>
+                                                                    <li class="control text-control">
+                                                                        <span id="numNodosCollaboratorsCluster">10</span> @Html.Translate("NODOS")
+                                                                    </li>
+                                                                    <li class="control add-control" id="addNodesCollaboratorsCluster">
+                                                                        <span class="material-icons">add</span>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                            <input type="hidden" id="numColaboradoresCluster" value="10" />
+                                                            <div class="wrapCol" id="colaboratorsgraphCluster" style="width: 100%; height: 400px;"></div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- <div class="col col-12 header-listado">
+                                                        <div class="h1-container">
+                                                            <h1>Publicaciones <span class="numResultados">90</span></h1>
+                                                        </div>
+                                                        <div class="acciones-listado">
+                                                            <div class="wrap">
+                                                                <div class="descargar dropdown">
+                                                                    <a class="dropdown-toggle" data-toggle="dropdown">
+                                                                        <span class="material-icons">download</span>
+                                                                        <span class="texto">Descargar</span>
+                                                                    </a>
+                                                                    <div class="dropdown-menu basic-dropdown dropdown-menu-right">
+                                                                        <a href="javascript: void(0)" class="item-dropdown">PDF</a>
+                                                                        <a href="javascript: void(0)" class="item-dropdown">Hoja de cálculo</a>
+                                                                        <a href="javascript: void(0)" class="item-dropdown">Documento word</a>
+                                                                        <a href="javascript: void(0)" class="item-dropdown">Imagen JPG</a>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="ordenar dropdown dropdown-select">
+                                                                    <a class="dropdown-toggle" data-toggle="dropdown">
+                                                                        <span class="material-icons">swap_vert</span>
+                                                                        <span class="texto">Ordenar</span>
+                                                                    </a>
+                                                                    <div class="dropdown-menu basic-dropdown dropdown-menu-right">
+                                                                        <a href="javascript: void(0)" class="item-dropdown">
+                                                                            <span class="material-icons">swap_vert</span>
+                                                                            <span class="texto">Fecha más reciente</span>
+                                                                        </a>
+                                                                        <a href="javascript: void(0)" class="item-dropdown">
+                                                                            <span class="material-icons">swap_vert</span>
+                                                                            <span class="texto">Fecha más antigua</span>
+                                                                        </a>
+                                                                        <a href="javascript: void(0)" class="item-dropdown">
+                                                                            <span class="material-icons">swap_vert</span>
+                                                                            <span class="texto">Relevancia</span>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="visualizacion dropdown dropdown-select">
+                                                                    <a class="dropdown-toggle" data-toggle="dropdown">
+                                                                        <span class="material-icons">view_agenda</span>
+                                                                        <span class="texto">Visualizar</span>
+                                                                    </a>
+                                                                    <div class="dropdown-menu basic-dropdown .dropdown-icons dropdown-menu-right">
+                                                                        <a class="item-dropdown aCompacView" data-class-resource-list="compacView">
+                                                                            <span class="material-icons">reorder</span>
+                                                                            <span class="texto">Compacto</span>
+                                                                        </a>
+                                                                        <a class="item-dropdown aListView activeView" data-class-resource-list="listView">
+                                                                            <span class="material-icons">view_agenda</span>
+                                                                            <span class="texto">Lista</span>
+                                                                        </a>
+                                                                        <a class="item-dropdown aMosaicView" data-class-resource-list="mosaicView">
+                                                                            <span class="material-icons">view_comfy</span>
+                                                                            <span class="texto">Mosaico</span>
+                                                                        </a>
+                                                                        <a class="item-dropdown aGraphView" data-class-resource-list="mapView">
+                                                                            <span class="material-icons">leaderboard</span>
+                                                                            <span class="texto">Gráfica</span>
+                                                                        </a>
+                                                                        <a class="item-dropdown aMapView" data-class-resource-list="graphView">
+                                                                            <span class="material-icons">location_on</span>
+                                                                            <span class="texto">Mapa</span>
+                                                                        </a>
+                                                                        <a class="item-dropdown aGrafoView" data-class-resource-list="grafoView">
+                                                                            <span class="material-icons">share</span>
+                                                                            <span class="texto">Grafo</span>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div> -->
+                                                    <div class="col-12">
+                                                        <div class="wrapCol">
+                                                            <div class="col-buscador">
+                                                                <form method="post" id="formCajaBusquedaCluster" action="javascript:void(0)">
+                                                                    <fieldset style="display: block">
+                                                                        <legend class="nota">facetas</legend>
+                                                                        <div class="finderUtils" id="divCajaBusqueda">
+                                                                            <div class="group finderSection">
+                                                                                <label for="finderSection" class="">Encontrar</label>
+                                                                                <input type="text" id="finderSection" class="not-outline finderSectionText autocompletar ac_input" autocomplete="off" placeholder="Buscar en sección">
+                                                                                <input title="Encontrar" type="button" class="findAction" id="inputLupa">
+                                                                            </div>
+                                                                        </div>
+                                                                    </fieldset>
+                                                                </form>
+                                                            </div>
+                                                            <div class="row" id="clusterListUsers">
+                                                                
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div class="row" id="clusterListUsers">
-                                                    
+                                            </div>
+                                            <div class="tab-pane fade" id="seleccionados-cluster" role="tabpanel" aria-labelledby="seleccionados-cluster-tab">
+                                                <div class="row">
+                                                    <div class="col col-12 col-section-title font-weight-bold">
+                                                        <div class="wrapCol">
+                                                            <p>Listado de investigadores seleccionados</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col col-12 col-perfiles">
+                                                        <p class="section-title">Perfiles</p>
+                                                        <div class="panel-group pmd-accordion" id="accordion" role="tablist" aria-multiselectable="true">
+                                                            <div class="panel">
+                                                                <div class="panel-heading" role="tab" id="experto-1-tab">
+                                                                    <p class="panel-title">
+                                                                        <a class="perfil" data-toggle="collapse" data-parent="#accordion" href="#experto-1" aria-expanded="true" aria-controls="experto-1" data-expandable="false">
+                                                                            <span class="material-icons">keyboard_arrow_down</span>
+                                                                            <img src="@Html.GetBaseUrlContent()/imagenes/proyectos/personalizacion/@Comunidad.Key.ToString()/theme/resources/iconos/person-gris.png" alt="">
+                                                                            <span class="texto">Experto en IoT</span>
+                                                                        </a>
+                                                                    </p>
+                                                                </div>
+                                                                <div id="experto-1" class="panel-collapse collapse show" role="tabpanel" aria-labelledby="experto-1-tab">
+                                                                    <div class="panel-body">
+
+                                                                        <table class="display nowrap table table-sm">
+                                                                            <thead>
+                                                                                <tr>
+                                                                                    <th class="th-user">
+
+                                                                                    </th>
+                                                                                    <th class="th-publicaciones">
+                                                                                        Publicaciones
+                                                                                    </th>
+                                                                                    <th class="th-principal">
+                                                                                        Principal
+                                                                                    </th>
+                                                                                    <th class="th-acciones">
+
+                                                                                    </th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody>
+                                                                                <tr>
+                                                                                    <td class="td-user">
+                                                                                        <div class="user-miniatura">
+                                                                                            <div class="imagen-usuario-wrap d-none">
+                                                                                                <a href="./fichaPerfil.php">
+                                                                                                    <div class="imagen">
+                                                                                                        <span style="background-image: url(theme/resources/imagenes-pre/foto-usuario-2.jpg)"></span>
+                                                                                                    </div>
+                                                                                                </a>
+                                                                                            </div>
+                                                                                            <div class="nombre-usuario-wrap">
+                                                                                                <a href="./fichaPerfil.php">
+                                                                                                    <p class="nombre">Nombre Apellido Investigador</p>
+                                                                                                    <p class="nombre-completo">Categoría profesional. Departamento</p>
+                                                                                                </a>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </td>
+                                                                                    <td class="td-publicaciones">
+                                                                                        40
+                                                                                    </td>
+                                                                                    <td class="td-principal">
+                                                                                        2
+                                                                                    </td>
+                                                                                    <td class="td-acciones">
+                                                                                        <ul class="no-list-style">
+                                                                                            <li>
+                                                                                                <a href="javascript: void(0);" class="texto-gris-claro">
+                                                                                                    Eliminar
+                                                                                                    <span class="material-icons-outlined">delete</span>
+                                                                                                </a>
+                                                                                            </li>
+                                                                                        </ul>
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td class="td-user">
+                                                                                        <div class="user-miniatura">
+                                                                                            <div class="imagen-usuario-wrap d-none">
+                                                                                                <a href="./fichaPerfil.php">
+                                                                                                    <div class="imagen">
+                                                                                                        <span style="background-image: url(theme/resources/imagenes-pre/foto-usuario-2.jpg)"></span>
+                                                                                                    </div>
+                                                                                                </a>
+                                                                                            </div>
+                                                                                            <div class="nombre-usuario-wrap">
+                                                                                                <a href="./fichaPerfil.php">
+                                                                                                    <p class="nombre">Nombre Apellido Investigador</p>
+                                                                                                    <p class="nombre-completo">Categoría profesional. Departamento</p>
+                                                                                                </a>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </td>
+                                                                                    <td class="td-publicaciones">
+                                                                                        40
+                                                                                    </td>
+                                                                                    <td class="td-principal">
+                                                                                        2
+                                                                                    </td>
+                                                                                    <td class="td-acciones">
+                                                                                        <ul class="no-list-style">
+                                                                                            <li>
+                                                                                                <a href="javascript: void(0);" class="texto-gris-claro">
+                                                                                                    Eliminar
+                                                                                                    <span class="material-icons-outlined">delete</span>
+                                                                                                </a>
+                                                                                            </li>
+                                                                                        </ul>
+                                                                                    </td>
+                                                                                </tr>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="panel-group pmd-accordion" id="accordion-2" role="tablist" aria-multiselectable="true">
+                                                            <div class="panel">
+                                                                <div class="panel-heading" role="tab" id="experto-2-tab">
+                                                                    <p class="panel-title">
+                                                                        <a class="perfil" data-toggle="collapse" data-parent="#accordion-2" href="#experto-2" aria-expanded="true" aria-controls="experto-2" data-expandable="false">
+                                                                            <span class="material-icons">keyboard_arrow_down</span>
+                                                                            <img src="./theme/resources/iconos/person-gris.png" alt="">
+                                                                            <span class="texto">Experto UX</span>
+                                                                        </a>
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="tab-pane fade" id="grafo-seleccionados-cluster" role="tabpanel" aria-labelledby="grafo-seleccionados-cluster-tab">
+                                                <div class="row">
+                                                    <div class="col col-12 col-section-title font-weight-bold">
+                                                        <div class="wrapCol">
+                                                            <p>@Html.Translate("GRAFRO_RELACIONES_OTROS_INVESTIGADORES")Grafo de relaciones con otros investigadores seleccionados</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col col-12 col-grafo">
+                                                        <div class="wrapCol">
+                                                            aqui iria el grafo
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        
-                                        <div class="col-12">
-                                            <a href="javascript:stepsCls.guardar()" class="btn btn-primary uppercase">
-                                                @Html.Translate("GUARDAR")
+                                        <div class="botonera">
+                                            <a href="javascript:stepsCls.goStep(2)" class="btn btn-outline-primary uppercase">
+                                                <span class="material-icons">keyboard_arrow_left</span>
+                                                Anterior
+                                            </a>
+                                            <a href="javascript:stepsCls.goStep(3)" class="btn btn-primary uppercase">
+                                                @Html.Translate("GUARDAR_TERMINAR")
                                                 <span class="material-icons">keyboard_arrow_right</span>
                                             </a>
                                         </div>
                                     </div>
+                                    <!-- END STEP 3 -->
                                 </div>
                             </div>
                         </div>
@@ -1881,23 +2067,18 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <p class="modal-title"><span class="material-icons">label</span>@Html.Translate("ANADIR_TOPICOS_ESPECIFICOS")</p>
+                            <p class="modal-title"><span class="material-icons">label</span>@Html.Translate("ANADIR_DESCRIPTORES_ESPECIFICOS")</p>
                             <span class="material-icons cerrar" data-dismiss="modal" aria-label="Close">close</span>
                         </div>
                         <div class="modal-body">
                             <div class="formulario-edicion">
                                 <div class="custom-form-row">
                                     <div class="form-group full-group">
-                                        <label class="control-label d-block">@Html.Translate("ANADIR_TOPICOS")</label>
+                                        <label class="control-label d-block">@Html.Translate("DESCRIPTOR_ESPECIFICO")</label>
                                         <input placeholder="Introduce o selecciona un tópico" type="text" name="" id="tagsSearchModalCluster" class="form-control not-outline">
                                         <div class="ac_results" style="position: absolute;width: 100%;display: none;">
                                             <ul>
-                                                <li class="ac_even">data</li>
-                                                <li class="ac_odd">Linked data</li>
-                                                <li class="ac_even">World data</li>
-                                                <li class="ac_odd">Metadata</li>
-                                                <li class="ac_even">Linked data</li>
-                                                <li class="ac_odd">Learning object data</li>
+                                                @* <li class="ac_even">data</li> *@
                                             </ul>
                                         </div>
                                     </div>
@@ -1913,7 +2094,7 @@
                                     </ul>
                                 </div>
                                 <div class="form-actions">
-                                    <a href="javascript: void(0);" class="btn btn-primary uppercase" data-dismiss="modal">@Html.Translate("GUARDAR")</a>
+                                    <a href="javascript: void(0);" class="btn btn-primary uppercase btnclosemodal" data-dismiss="modal">@Html.Translate("GUARDAR")</a>
                                 </div>
                             </div>
                         </div>
@@ -1922,7 +2103,7 @@
             </div>
 
 
-            <div id="modal-anadir-perfil" class="modal modal-top fade modal-edicion" tabindex="-1" role="dialog">
+            <div id="modal-anadir-perfil-cluster" class="modal modal-top fade modal-edicion" tabindex="-1" role="dialog">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -1973,6 +2154,9 @@
 
 
                 class StepsCluster {
+                    /**
+                     * Constructor de la clase StepsCluster
+                     */
                     constructor() {
                         var _self = this
                         this.step = 1
@@ -1987,12 +2171,14 @@
                         this.modalCrearClusterStep2 = this.modalCrearCluster.find("#modal-crear-cluster-step2")
                         this.modalCrearClusterStep3 = this.modalCrearCluster.find("#modal-crear-cluster-step3")
                         this.clusterAccordionPerfil = this.modalCrearCluster.find("#accordion_cluster")
+                        this.errorDiv = this.modalCrearCluster.find("#error-modal-cluster")
+                        this.errorDivServer = this.modalCrearCluster.find("#error-modal-server-cluster")
 
                         this.stepContentWrap = this.modalCrearCluster.find(".steps-content-wrap")
                         this.stepsContent = this.stepContentWrap.find(".section-steps")
 
                         // Añadir perfil
-                        this.modalPerfil = this.body.find("#modal-anadir-perfil")
+                        this.modalPerfil = this.body.find("#modal-anadir-perfil-cluster")
                         this.inputPerfil = this.modalPerfil.find("#input-anadir-perfil")
 
                         // Areas temáticas Modal
@@ -2002,14 +2188,22 @@
                         this.divTesListaCaths = undefined
                         this.btnSaveAT = this.modalAreasTematicas.find('.btnsave')
 
+                        // Información para el guardado 
                         this.userId = document.getElementById('inpt_usuarioID').value
-                        this.communityShortName = this.modalCrearCluster.data('cshortName')
+                        // this.communityShortName = this.modalCrearCluster.data('cshortName')
                         this.clusterId = undefined
+
+                        // Tags
+                        this.topicsM = undefined
 
                         const urlBase = "@Html.GetBaseUrl()";
                         if (urlBase.includes("localhost") || urlBase.includes("depuracion")) {
                             layDepuracion = true;
                         }
+
+                        this.eliminarText = this.modalCrearCluster.data("eliminartext")
+                        this.areasTematicasText = this.modalCrearCluster.data("areastematicastext")
+                        this.descriptoresEspecificosText = this.modalCrearCluster.data("descriptoresespecificostext")
 
 
                         if (window.location.hostname == 'depuracion.net' || window.location.hostname.includes("localhost")) {
@@ -2024,23 +2218,139 @@
 
                     }
 
+                    /**
+                     * Método que inicia el funcionamiento funcionalidades necesarias para el creador de clusters
+                     */
                     init() {
                         var _self = this
                         // Fill taxonomies data
                         this.getDataTaxonomies().then((data) => {
                             _self.fillDataTaxonomies(data);
                         })
+
+                        this.topicsM = new ModalSearchTags()
                     }
                     
-                    goStep(pos) {
+                    /**
+                     * Método que inicia las comprobaciones para pasar a la siguiente sección
+                     * param pos: Posición a la que se quiere pasar
+                     */
+                    async goStep(pos) {
+                        if (pos > 0 && this.step > pos) {
 
-                        if (this.step > (pos - 2)) {
+                            this.errorDiv.hide()
+                            this.errorDivServer.hide()
                             this.setStep(pos)
+
+                        } else if(pos > 0) {
+
+                            let continueStep = true
+                            switch (this.step){
+                                case 1:
+                                continueStep = this.checkContinue1()
+                                break;
+                                case 2:
+                                continueStep = this.checkContinue2()
+                                if (continueStep) {
+                                    try {
+                                        continueStep = await this.saveInit()
+                                    } catch(err) {
+                                        // this.errorDiv.show()
+                                        this.errorDivServer.show()
+                                        window.location.hash = '#' + this.errorDivServer.attr('id')
+                                        continueStep = false;
+                                    }
+                                }
+                                break;
+                            }
+
+                            if (continueStep && this.step > (pos - 2)) {
+                                this.errorDiv.hide()
+                                this.errorDivServer.hide()
+                                this.setStep(pos)
+                            } else {
+                                this.errorDiv.show()
+                                window.location.hash = '#' + this.errorDiv.attr('id')
+                            }
                         }
                     }
 
                     /**
-                     * Función que genera la petición get para obtener las taxonomías
+                     * Método que borra un perfil
+                     */
+                    deletePerfil(head1, head2) {
+                        $('#' + head1).remove()
+                        $('#' + head2).remove()
+                        // $(item).parent().parent().remove()
+                    }
+
+                    /**
+                     * Método que comprueba que los campos obligatorios de la sección 1 han sido rellenados
+                     * También guarda el estado de la sección 1
+                     * return bool: Devuelve true or false dependiendo de si ha pasado la validación
+                     */
+                    checkContinue1() {
+                        var _self = this
+
+                        // Get first screen data
+                        let name = document.getElementById('nombreclusterinput').value
+                        let description = document.getElementById('txtDescripcion').value
+                        let terms = []
+                        let inputsTermsItms = this.modalCrearClusterStep1.find('#cluster-modal-sec1-tax-wrapper').find('input')
+                        inputsTermsItms.each((i, e) => {terms.push(e.value)})
+
+                        this.data = {
+                            entityID: _self.clusterId,
+                            name,
+                            description,
+                            terms
+                        }
+
+                        return (name.length > 0 && terms.length > 0)
+                    }
+
+                    /**
+                     * Método que comprueba que al menos hay un perfil con areas temáticas para la sección 2
+                     * También guarda el estado de la sección 2
+                     * return bool: Devuelve true or false dependiendo de si ha pasado la validación
+                     */
+                    checkContinue2() {
+                        var _self = this
+
+                        // Get the second screen
+                        let profiles = this.modalCrearClusterStep2.find('.panel-collapse')
+                        let profilesObjets = []
+
+                        profiles.each((i, e) => {
+                            let termsSec = $(e).find('.terms-items')
+                            let inputsTermsProf = termsSec.find('input')
+                            let profTerms = []
+                            inputsTermsProf.each((i, e) => {profTerms.push(e.value)})
+
+
+                            let topicsSec = $(e).find('.tags-items')
+                            let inputsTopicsProf = topicsSec.find('input')
+                            let profTags = []
+                            inputsTopicsProf.each((i, e) => {profTags.push(e.value)})
+
+                            profilesObjets.push({
+                                "name": $(e).data('name'),
+                                "terms": profTerms,
+                                "tags": profTags,
+                            })
+                        })
+
+                        // Set the post data
+                        this.data = {
+                            ...this.data,
+                            profiles: profilesObjets
+                        }
+
+                        return (this.data.profiles.length > 0 && this.data.profiles[0].name != undefined && this.data.profiles[0].name.length > 0 && this.data.profiles[0].terms.length > 0)
+                    }
+
+                    /**
+                     * Método que genera la petición get para obtener las taxonomías
                      */
                     getDataTaxonomies() {
                         
@@ -2246,70 +2556,44 @@
 
                     }
 
+                    /**
+                     * Método que guarda los 2 pasos iniciales
+                     */
                     saveInit() {
 
                         var _self = this
 
-                        // Get first screen data
-                        let name = document.getElementById('nombreclusterinput').value
-                        let description = document.getElementById('txtDescripcion').value
-                        let terms = []
-                        let inputsTermsItms = this.modalCrearClusterStep1.find('#cluster-modal-sec1-tax-wrapper').find('input')
-                        inputsTermsItms.each((i, e) => {terms.push(e.value)})
-
-                        // Get the second screen
-                        let profiles = this.modalCrearClusterStep2.find('.panel-collapse')
-                        let profilesObjets = []
-
-                        profiles.each((i, e) => {
-                            let termsSec = $(e).find('.terms-items')
-                            let inputsTermsProf = termsSec.find('input')
-                            let profTerms = []
-                            inputsTermsProf.each((i, e) => {profTerms.push(e.value)})
-
-
-                            let topicsSec = $(e).find('.tags-items')
-                            let inputsTopicsProf = topicsSec.find('input')
-                            let profTags = []
-                            inputsTopicsProf.each((i, e) => {profTags.push(e.value)})
-
-                            profilesObjets.push({
-                                "name": $(e).data('name'),
-                                "terms": profTerms,
-                                "tags": profTags,
-                            })
-
-                        })
-
                         // Set the url parameters
                         urlSC1.searchParams.set('pIdGnossUser', this.userId)
                         // urlSC1.searchParams.set('pIdGnossComSName', this.communityShortName)
+                        return new Promise((resolve) => {
 
-                        // Set the post data
-                        let data = {
-                            entityID: _self.clusterId,
-                            name,
-                            description,
-                            terms,
-                            profiles: profilesObjets
-                        }
-
-
-                        this.postCall(urlSC1, data).then((data) => {
-                            _self.clusterId = data
-                            _self.goStep(3)
-                            _self.startStep3()
+                            this.postCall(urlSC1, this.data).then((data) => {
+                                _self.clusterId = data
+                                console.log("_self.clusterId", _self.clusterId)
+                                // _self.goStep(3)
+                                _self.startStep3()
+                                resolve(true)
+                            }).catch(err => {
+                                resolve(false)
+                            }) 
                         })
 
                     }
 
+                    /** 
+                     * Método que realiza la llamada POST
+                     * param url, objeto URL que contiene la url de la petición POST
+                     * param theParams, parámetros para la petición POST
+                     */
                     postCall(url, theParams) {
                         let _self = this
-                        return new Promise((resolve, reject) => {
+                        return new Promise((resolve) => {
                             $.post(url.toString(), theParams, function(data) {
                                 resolve(data)
-                                console.log( "Data Loaded: " + data );
-                            });
+                            }).fail(function(err) {
+                                resolve(err);
+                            })
                         })
                     }
 
@@ -2360,9 +2644,113 @@
                     /**
                      * Método que inicia el modal de los tópicos 
                      */
-                    loadModalTopics() {
-                        let topicsM = new ModalSearchTags()
-                        topicsM.init();
+                    loadModalTopics(el) {
+
+                        let parent = $(el).parent()
+
+                        // Establecer los tags de la sección
+                        this.setTAGS(el)
+                        // Inicia el funcionamiento de los tags
+                        this.topicsM.init()
+
+                        this.topicsM.closeBtnClick().then((data) => {
+                            // parent.data('jsondata', data)
+                            let relItem = $('#' + $(el).data("rel"))
+                            console.log("///// closeBtnClick CLICKADO /////")
+                            console.log('$(el).data("rel")', $(el).data("rel"))
+                            console.log("data", data)
+                            this.saveTAGS(relItem, data)
+                        })
+                    }
+
+                    /**
+                     * Método que genera el evento para añadir los tags selecciondas en el popup
+                     * param relItem, elemento relacionado para indicar dónde deben de guardarse las areas temátcias seleccionadas
+                     */
+                    saveTAGS(relItem, data) {
+
+                        console.log("relItem", relItem)
+                        console.log("data", data)
+                        console.log("relItem.data()", relItem.data())
+
+                        let htmlResWrapper = $('<div class="tag-list mb-4 d-inline"></div>')
+
+                        let htmlRes = ''
+                        let arrayItems = [] // Array para guardar los items que se van a usar
+                        data.forEach(e => {
+                            htmlRes += `<div class="tag" title="` + e + `" data-id="` + e + `">
+                                <div class="tag-wrap">
+                                    <span class="tag-text">` + e + `</span>
+                                    <span class="tag-remove material-icons">close</span>
+                                </div>
+                                <input type="hidden" value="` + e + `">
+                            </div>`
+                        })
+
+                        htmlResWrapper.append(htmlRes)
+
+                        relItem.html(htmlResWrapper)
+
+                        // Se añade un json para saber qué categorías se han seleccionado
+                        relItem.data('jsondata', data)
+
+                        this.deleteTAGS(relItem)
+                    }
+
+
+
+                    /**
+                     * Método que elimina las etiquetas del arbol y del listado
+                     * param relItem, contenedor donde se encuentran las áreas temáticas seleccionadas
+                     */
+                    deleteTAGS(relItem) {
+
+                        // Selecciona la áreas temáticas seleccionadas dentro de selector
+                        let tagsItems = relItem.find('.tag-wrap');
+                        tagsItems.on('click', '.tag-remove', function() {
+                            // Selecciona el item padre para eliminar
+                            let itemToDel = $(this).parent().parent()
+                            let inputShortId = itemToDel.data('id')
+
+                            // Remove the current item from array
+                            let jsonItems = relItem.data('jsondata')
+                            let myIndex = jsonItems.indexOf(inputShortId)
+                            if (myIndex !== -1) {
+                                jsonItems.splice(myIndex, 1)
+                            }
+
+
+                            // Delete item
+                            itemToDel.remove()
+
+                        })
+                    }
+
+
+                    /**
+                     * Carga todas las áreas temáticas seleccionadas para ese perfil / sección 
+                     * param item, sección donde se encuentra la información para cargar las areas temáticas
+                     */
+                    setTAGS(item) {
+                        let _self = this
+
+                        let relItem = $('#' + $(item).data("rel"))
+
+                        if (relItem.length > 0) {
+
+                            let dataJson = relItem.data('jsondata')
+
+                            // Reestablecer las categorías
+                            _self.topicsM.removeTags()
+
+                            // Establece las categorías de la sección
+                            if (typeof dataJson == "object") {
+
+                                dataJson.forEach(e => {
+                                    _self.topicsM.addTag(e)
+                                })
+                            }
+                        }
                     }
 
 
@@ -2472,20 +2860,24 @@
 
                         // 
                         let item = `<div class="panel-heading" role="tab" id="`+ nameId +`-tab">
-                            <p class="panel-title">
-                                <a class="perfil" data-toggle="collapse" data-parent="#accordion_cluster" href="#`+ nameId +`" aria-expanded="true" aria-controls="`+ nameId +`" data-expandable="false">
-                                    <span class="material-icons">keyboard_arrow_down</span>
-                                    <img src="`+ imgUser +`" alt="person">
-                                    <span class="texto">`+ name +`</span>
+                                <p class="panel-title">
+                                    <a class="perfil" data-toggle="collapse" data-parent="#accordion_cluster" href="#`+ nameId +`" aria-expanded="true" aria-controls="`+ nameId +`" data-expandable="false">
+                                        <span class="material-icons">keyboard_arrow_down</span>
+                                        <img src="`+ imgUser +`" alt="person">
+                                        <span class="texto">`+ name +`</span>
+                                    </a>
+                                </p>
+                                <a href="javascript:void(0)" onclick="stepsCls.deletePerfil('`+ nameId +`-tab', '`+ nameId +`')" class="btn btn-outline-grey eliminar">
+                                    ` + this.eliminarText + `
+                                    <span class="material-icons-outlined">delete</span>
                                 </a>
-                            </p>
                             </div>
                             <div id="`+ nameId +`" data-name="`+ name +`" class="panel-collapse collapse show" role="tabpanel" aria-labelledby="`+ nameId +`-tab">
                                 <div class="panel-body">
 
                                     <!-- Areas temáticas -->
                                     <div class="form-group mb-5 edit-etiquetas terms-items">
-                                        <label class="control-label d-block">@Html.Translate("AREAS_TEMATICAS")</label>
+                                        <label class="control-label d-block">`+ this.areasTematicasText +`</label>
                                         <div class="autocompletar autocompletar-tags form-group" id="modal-seleccionar-area-tematica-`+ nameId +`">
                                             <div class="tag-list mb-4 d-inline"></div> 
                                         </div>
@@ -2497,12 +2889,12 @@
 
                                     <!-- Tópicos -->
                                     <div class="form-group mb-5 edit-etiquetas tags-items">
-                                        <label class="control-label d-block">@Html.Translate("DESCRIPTORES_ESPECIFICOS")</label>
-                                        <div class="autocompletar autocompletar-tags form-group">
+                                        <label class="control-label d-block">` + this.descriptoresEspecificosText + `</label>
+                                        <div class="autocompletar autocompletar-tags form-group" id="modal-seleccionar-tags-`+ nameId +`">
                                             <div class="tag-list mb-4 d-inline"></div> 
                                         </div>
-                                        <a class="btn btn-outline-primary" onclick="stepsCls.loadModalTopics(this)">
-                                            <span class="material-icons">add</span>
+                                        <a class="btn btn-outline-primary" href="javascript: void(0)">
+                                            <span class="material-icons" data-rel="modal-seleccionar-tags-`+ nameId +`" onclick="stepsCls.loadModalTopics(this)">add</span>
                                         </a>
                                     </div>
                                     <!-- -->
@@ -2669,7 +3061,9 @@
                     }
                 };
 
-
+                /**
+                * Clase que contiene la funcionalidad del modal de los TAGS para el Cluster
+                */
                 class ModalSearchTags {
                     constructor() {
                         this.body = $('body')
@@ -2681,16 +3075,24 @@
                         this.tagsWrappper = this.modal.find('.tags ul')
                         this.ignoreKeysToBuscador = [37, 38, 39, 40, 46, 8, 32, 91, 17, 18, 20, 36, 18, 27];
 
+                        // Inicializa la funcionalidad del buscador de TAGS
+                        this.inputSearchEnter()
+
                         /* if (window.location.hostname == 'depuracion.net' || window.location.hostname.includes("localhost")) {
                             var urlSTAGS = new URL(servicioExternoBaseUrl + 'servicioexterno/' + uriSearchTags)
                         } */
                     }
 
+                    /**
+                     * Inicia la funcionalidad del modal
+                     */
                     init() {
-                        this.modal.modal('show')
-                        this.inputSearchEnter()
+                        this.modal.modal('show') 
                     }
 
+                    /**
+                     * Funcionalidad para cuando se introduce un valor en el buscador
+                     */
                     inputSearchEnter() {
                         let _self = this
                         this.inputSearch.off('keyup').on('keyup', function(e) {
@@ -2701,19 +3103,19 @@
                                 _self.hiddenResults()
                             }
                             else {
-
+                                // Valida si el valor introducirdo en el input es 'válido'
                                 if (_self.validarKeyPulsada(e) == true) {
-
+                                    // Limpia el 'time' para reinicializar la espera para iniciar la búsqueda de TAGS
                                     clearTimeout(_self.timer)
+                                    // Espera 0.5s para realizar la búsqueda de TAGS
                                     _self.timer = setTimeout(function () {
                                         _self.hiddenResults()
-                                        // Ocultar panel sin resultados por posible busqueda anterior sin resultados
-                                        // _self.mostrarPanelSinResultados(false)
 
                                         _self.searchCall(inputVal).then((data) => {
-                                            console.log("result", data)
+                                            // Muestra el selector 
                                             _self.results.show()
                                             if (data.length > 0) {
+                                                // Pinta los resultados
                                                 let resultHTML = data.map(e => {
                                                     return '<li class="ac_even">' + e + '</li>'
                                                 })
@@ -2732,38 +3134,84 @@
                         })
                     }
 
+                    /**
+                     * Oculta y borra los resultados del API
+                     */
                     hiddenResults() {
                         this.resultsUl.html('')
                         this.results.hide()
                     }
 
+                    /**
+                     * Muestra un texto "sin resultados" cuando no hay resultados del API
+                     */
                     mostrarPanelSinResultados() {
                         this.resultsUl.html('<li>Sin resultados</li>')
                     }
 
+                    /**
+                     * Método que genera un inicia el evento de añadir el tag (al hacer 'click') cuando se 
+                     * ha seleccionado un elemento de la lista de opciones disponibles 
+                     */
                     addTagClick() {
                         let _self = this
+                        // Evento para el click
                         this.resultsUl.off('click').on('click', 'li', function(e) {
                             let texto = $(this).text()
-                            let item = $(`<li>
-                                            <a href="javascript: void(0);">
-                                                <span class="texto">` + texto + `</span>
-                                            </a>
-                                            <span class="material-icons cerrar">close</span>
-                                        </li>`)
-                            _self.tagsWrappper.append(item)
-                            _self.hiddenResults()
-                            _self.inputSearch.val('')
-                            
-                                item.on('click', '.cerrar', function(e) {
-                                console.log("this cerrar", cerrar)
-                                let li = $(this).parent().remove()
-                            })
+
+                            if (texto != "Sin resultados") {
+                                _self.addTag(texto) // Añade el texto
+                                _self.hiddenResults() // Vacía los resultados de la búsqueda
+                                _self.inputSearch.val('') // Vacía el campo de búsqueda
+                            }
 
                         })
+                        // Delete list item  
+                    }
 
-                        // Delete list item
+                    /**
+                     * Añade un tag al modal
+                     * param texto, texto del tag a añadir
+                     */
+                    addTag(texto) {
+                        let item = $(`<li>
+                                        <a href="javascript: void(0);">
+                                            <span class="texto">` + texto + `</span>
+                                        </a>
+                                        <span class="material-icons cerrar">close</span>
+                                    </li>`)
+                        this.tagsWrappper.append(item)
                         
+                        item.off('click').on('click', '.cerrar', function(e) {
+                            let li = $(this).parent().remove()
+                        })
+                    }
+
+                    /**
+                     * Remove all tags html
+                     */
+                    removeTags() {
+                        this.tagsWrappper.html('')
+                    }
+
+                    /**
+                     * Método que genera un evento para el botón "guardar" y devuelve el número de TAGS añadidas
+                     * return promise (array) con la lista de resultados 
+                     */
+                    closeBtnClick() {
+                        let _self = this
+                        return new Promise((resolve, reject) => {
+
+                            this.modal.find('.btnclosemodal').off('click').on('click', function(e) {
+                                console.log("clicked")
+                            
+                                let result = new Array()
+                                _self.tagsWrappper.find('li .texto').each((i, item) => {
+                                    result.push(item.innerText)
+                                })
+                                resolve(result)
+                            })
+                        })
                     }
 
 
@@ -2771,6 +3219,7 @@
                      * Comprobará la tecla pulsada, y si no se encuentra entre las excluidas, dará lo introducido por válido devolviendo true
                      * Si se pulsa una tecla de las excluidas, devolverá false y por lo tanto el metabuscador no debería iniciarse
                      * param {any} event: Evento o tecla pulsada en el teclado
+                     * return bool, devuelve si la tecla pulsada es válida o no
                      */
                     validarKeyPulsada (event) {
                         const keyPressed = this.ignoreKeysToBuscador.find(key => key == event.keyCode);
@@ -2780,26 +3229,20 @@
                         return true;
                     }
 
-
+                    /**
+                     * Realiza la petición ajax (GET) para buscar los tags sugeridos en el input
+                     * param {string} inputVal: Texto para la búsqueda
+                     * return promise (array) con la lista de resultados 
+                     */
                     searchCall (inputVal) {
                         // Set the url parameters
                         urlSTAGS.searchParams.set('tagInput', inputVal)
 
-                        return new Promise((resolve, reject) => {
+                        return new Promise((resolve) => {
                             $.get(urlSTAGS.toString(), function (data) {
                                 resolve(data)
                             });
                         })
-                    }
-                }
-
-                var mSarchTagsObj = new ModalSearchTags()
-
-
-                class ModalUser {
-                    constructor() {
-
-                        this.init()
                     }
                 }
 
@@ -2809,6 +3252,10 @@
                 .section-steps.show {
                     transform: scale(1);
                     max-height: initial;
+                }
+
+                .edicionCluster .step-progress__circle {
+                    position: relative
                 }
 
                 .section-steps {
