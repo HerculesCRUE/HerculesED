@@ -297,6 +297,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 PremiosInnovacionDocente premiosInnovacion = new PremiosInnovacionDocente();
                 premiosInnovacion.nombre = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.premiosInnovaNombre)?.values.FirstOrDefault();
+                premiosInnovacion.entidadConcesion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.premiosInnovaEntidadConcesionariaNombre)?.values.FirstOrDefault();
                 premiosInnovacion.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.premiosInnovaFechaConcesion)?.values.FirstOrDefault();
                 premiosInnovacion.ID = Guid.NewGuid().ToString();
                 entidadesXML.Add(premiosInnovacion.ID, premiosInnovacion);
