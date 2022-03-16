@@ -60,7 +60,7 @@ namespace Utils
         {
             if (CodigoCorrecto(codigo))
             {
-                return codigo.Count() == 15;
+                return codigo.Length == 15;
             }
 
             return false;
@@ -452,7 +452,7 @@ namespace Utils
                 throw new ArgumentException("Codigo de campo incorrecto" + codigo);
             }
 
-            if (codigo.Count() != 15) { return null; }
+            if (codigo.Length != 15) { return null; }
             if (listado == null) { return null; }
             IEnumerable<CVNObject> listadoCamposAux = listado.Where(x => x.Code.StartsWith(codigo.Substring(0, 11))).SelectMany(x => x.Items)?.ToList();
             CvnItemBeanCvnString campo = listadoCamposAux.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
@@ -540,7 +540,7 @@ namespace Utils
                 throw new ArgumentException("Codigo de campo incorrecto" + codigo);
             }
 
-            if (codigo.Count() != 15) { return null; }
+            if (codigo.Length != 15) { return null; }
             if (listado == null) { return null; }
             IEnumerable<CVNObject> listadoCamposAux = listado.Where(x => x.Code.StartsWith(codigo.Substring(0, 11))).SelectMany(x => x.Items)?.ToList();
             CvnItemBeanCvnDuration campo = listadoCamposAux.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnDuration).Cast<CvnItemBeanCvnDuration>().FirstOrDefault();
@@ -565,7 +565,7 @@ namespace Utils
                 throw new ArgumentException("Codigo de campo incorrecto" + codigo);
             }
 
-            if (codigo.Count() != 15) { return null; }
+            if (codigo.Length != 15) { return null; }
             CvnItemBeanCvnDuration campo = item.Items.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnDuration).Cast<CvnItemBeanCvnDuration>().FirstOrDefault();
             if (campo != null)
             {
@@ -595,7 +595,7 @@ namespace Utils
                 throw new ArgumentException("Codigo de campo incorrecto" + codigo);
             }
 
-            if (codigo.Count() != 15) { return null; }
+            if (codigo.Length != 15) { return null; }
             CvnItemBeanCvnDuration campo = item.Items.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnDuration).Cast<CvnItemBeanCvnDuration>().FirstOrDefault();
             if (campo != null)
             {
@@ -629,7 +629,7 @@ namespace Utils
                 throw new ArgumentException("Codigo de campo incorrecto" + codigo);
             }
 
-            if (codigo.Count() != 15) { return null; }
+            if (codigo.Length != 15) { return null; }
             CvnItemBeanCvnDuration campo = item.Items.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnDuration).Cast<CvnItemBeanCvnDuration>().FirstOrDefault();
             if (campo != null)
             {
@@ -668,7 +668,7 @@ namespace Utils
                 throw new ArgumentException("Codigo de campo incorrecto" + codigo);
             }
 
-            if (codigo.Count() != 15) { return null; }
+            if (codigo.Length != 15) { return null; }
             CvnItemBeanCvnDuration campo = item.Items.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnDuration).Cast<CvnItemBeanCvnDuration>().FirstOrDefault();
             if (campo != null)
             {
@@ -841,7 +841,7 @@ namespace Utils
                 throw new ArgumentException("Codigo de campo incorrecto" + codigo);
             }
 
-            if (codigo.Count() != 15) { return null; }
+            if (codigo.Length != 15) { return null; }
             if (listado == null) { return null; }
             IEnumerable<CVNObject> listadoCamposAux = listado.Where(x => x.Code.StartsWith(codigo.Substring(0, 11))).SelectMany(x => x.Items)?.ToList();
             CvnItemBeanCvnString campo = listadoCamposAux.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
@@ -866,7 +866,7 @@ namespace Utils
                 throw new ArgumentException("Codigo de campo incorrecto" + codigo);
             }
 
-            if (codigo.Count() != 15) { return null; }
+            if (codigo.Length != 15) { return null; }
             if (listado == null) { return null; }
             IEnumerable<CVNObject> listadoCamposAux = listado.Where(x => x.Code.StartsWith(codigo.Substring(0, 11))).SelectMany(x => x.Items)?.ToList();
             CvnItemBeanCvnString campo = listadoCamposAux?.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
@@ -890,7 +890,7 @@ namespace Utils
             {
                 throw new ArgumentException("Codigo de campo incorrecto" + codigo);
             }
-            if (codigo.Count() != 15) { return null; }
+            if (codigo.Length != 15) { return null; }
 
             CvnItemBeanCvnString campo = item.Items?.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
             if (campo != null && !string.IsNullOrEmpty(campo.Value))
@@ -914,7 +914,7 @@ namespace Utils
                 throw new ArgumentException("Codigo de campo incorrecto" + codigo);
             }
 
-            if (codigo.Count() != 15) { return null; }
+            if (codigo.Length != 15) { return null; }
             if (listado == null) { return null; }
             IEnumerable<CVNObject> listadoCamposAux = listado.Where(x => x.Code.StartsWith(codigo.Substring(0, 11))).SelectMany(x => x.Items)?.ToList();
             CvnItemBeanCvnString campo = listadoCamposAux?.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
@@ -938,7 +938,7 @@ namespace Utils
             {
                 throw new ArgumentException("Codigo de campo incorrecto" + codigo);
             }
-            if (codigo.Count() != 15) { return null; }
+            if (codigo.Length != 15) { return null; }
 
             CvnItemBeanCvnString campo = item.Items?.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
             if (campo != null && !string.IsNullOrEmpty(campo.Value))
@@ -962,7 +962,7 @@ namespace Utils
                 throw new ArgumentException("Codigo de campo incorrecto" + codigo);
             }
 
-            if (codigo.Count() != 15) { return null; }
+            if (codigo.Length != 15) { return null; }
             if (listado == null) { return null; }
             IEnumerable<CVNObject> listadoCamposAux = listado.Where(x => x.Code.StartsWith(codigo.Substring(0, 11))).SelectMany(x => x.Items)?.ToList();
             CvnItemBeanCvnString campo = listadoCamposAux?.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
@@ -987,7 +987,7 @@ namespace Utils
                 throw new ArgumentException("Codigo de campo incorrecto" + codigo);
             }
 
-            if (codigo.Count() != 15) { return null; }
+            if (codigo.Length != 15) { return null; }
             CvnItemBeanCvnString campo = item.Items?.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
             if (campo != null&& !string.IsNullOrEmpty(campo.Value))
             {
@@ -1010,7 +1010,7 @@ namespace Utils
                 throw new ArgumentException("Codigo de campo incorrecto" + codigo);
             }
 
-            if (codigo.Count() != 15) { return null; }
+            if (codigo.Length != 15) { return null; }
             CvnItemBeanCvnString campo = item.Items?.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
             if (campo != null&& !string.IsNullOrEmpty(campo.Value))
             {
@@ -1032,7 +1032,7 @@ namespace Utils
                 throw new ArgumentException("Codigo de campo incorrecto" + codigo);
             }
 
-            if (codigo.Count() != 15) { return null; }
+            if (codigo.Length != 15) { return null; }
             CvnItemBeanCvnString campo = item.Items?.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
             if (campo != null&& !string.IsNullOrEmpty(campo.Value))
             {
@@ -1120,7 +1120,7 @@ namespace Utils
                 throw new ArgumentException("Codigo de campo incorrecto" + codigo);
             }
 
-            if (codigo.Count() != 15) { return null; }
+            if (codigo.Length != 15) { return null; }
             CvnItemBeanCvnEntityBean campo = item.Items?.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnEntityBean).Cast<CvnItemBeanCvnEntityBean>().FirstOrDefault();
             if (campo != null)
             {
@@ -1142,7 +1142,7 @@ namespace Utils
                 throw new ArgumentException("Codigo de campo incorrecto" + codigo);
             }
 
-            if (codigo.Count() != 15) { return null; }
+            if (codigo.Length != 15) { return null; }
             CvnItemBeanCvnTitleBean campo = item.Items?.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnTitleBean).Cast<CvnItemBeanCvnTitleBean>().FirstOrDefault();
             if (campo != null)
             {
@@ -1165,7 +1165,7 @@ namespace Utils
                 throw new ArgumentException("Codigo de campo incorrecto" + codigo);
             }
 
-            if (codigo.Count() != 15) { return null; }
+            if (codigo.Length != 15) { return null; }
             CvnItemBeanCvnString campo = item.Items?.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
             if (campo != null&& !string.IsNullOrEmpty(campo.Value))
             {
@@ -1188,7 +1188,7 @@ namespace Utils
                 throw new ArgumentException("Codigo de campo incorrecto" + codigo);
             }
 
-            if (codigo.Count() != 15) { return null; }
+            if (codigo.Length != 15) { return null; }
             CvnItemBeanCvnString campo = item.Items?.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
             if (campo != null&& !string.IsNullOrEmpty(campo.Value))
             {
@@ -1226,7 +1226,7 @@ namespace Utils
                 throw new ArgumentException("Codigo de campo incorrecto" + codigo);
             }
 
-            if (codigo.Count() != 15) { return null; }
+            if (codigo.Length != 15) { return null; }
             CvnItemBeanCvnString campo = item.Items?.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
             if (campo != null&& !string.IsNullOrEmpty(campo.Value))
             {
@@ -1249,7 +1249,7 @@ namespace Utils
                 throw new ArgumentException("Codigo de campo incorrecto" + codigo);
             }
 
-            if (codigo.Count() != 15) { return null; }
+            if (codigo.Length != 15) { return null; }
             CvnItemBeanCvnString campo = item.Items?.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
             if (campo != null&& !string.IsNullOrEmpty(campo.Value))
             {
@@ -1272,7 +1272,7 @@ namespace Utils
                 throw new ArgumentException("Codigo de campo incorrecto" + codigo);
             }
 
-            if (codigo.Count() != 15) { return null; }
+            if (codigo.Length != 15) { return null; }
             CvnItemBeanCvnString campo = item.Items?.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
             if (campo != null&& !string.IsNullOrEmpty(campo.Value))
             {
@@ -1295,7 +1295,7 @@ namespace Utils
                 throw new ArgumentException("Codigo de campo incorrecto" + codigo);
             }
 
-            if (codigo.Count() != 15) { return null; }
+            if (codigo.Length != 15) { return null; }
             CvnItemBeanCvnString campo = item.Items?.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
             if (campo != null&& !string.IsNullOrEmpty(campo.Value))
             {
@@ -1348,7 +1348,7 @@ namespace Utils
             {
                 throw new ArgumentException("Codigo de campo incorrecto" + codigo);
             }
-            if (codigo.Count() != 15) { return null; }
+            if (codigo.Length != 15) { return null; }
 
             CvnItemBeanCvnVolumeBean campo = item.Items?.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnVolumeBean).Cast<CvnItemBeanCvnVolumeBean>().FirstOrDefault();
             if (campo != null)
@@ -1370,7 +1370,7 @@ namespace Utils
             {
                 throw new ArgumentException("Codigo de campo incorrecto" + codigo);
             }
-            if (codigo.Count() != 15) { return null; }
+            if (codigo.Length != 15) { return null; }
 
             CvnItemBeanCvnVolumeBean campo = item.Items?.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnVolumeBean).Cast<CvnItemBeanCvnVolumeBean>().FirstOrDefault();
             if (campo != null)
@@ -1392,7 +1392,7 @@ namespace Utils
             {
                 throw new ArgumentException("Codigo de campo incorrecto" + codigo);
             }
-            if (codigo.Count() != 15) { return null; }
+            if (codigo.Length != 15) { return null; }
 
             CvnItemBeanCvnPageBean campo = item.Items?.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnPageBean).Cast<CvnItemBeanCvnPageBean>().FirstOrDefault();
             if (campo != null)
@@ -1414,7 +1414,7 @@ namespace Utils
             {
                 throw new ArgumentException("Codigo de campo incorrecto" + codigo);
             }
-            if (codigo.Count() != 15) { return null; }
+            if (codigo.Length != 15) { return null; }
 
             CvnItemBeanCvnPageBean campo = item.Items?.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnPageBean).Cast<CvnItemBeanCvnPageBean>().FirstOrDefault();
             if (campo != null)
