@@ -808,10 +808,25 @@ namespace GuardadoCV.Models
         /// <returns></returns>
         private TabSectionItem GetItem(string pId, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> pData, TabSectionPresentationListItems pListItemConfig, string pLang)
         {
-            TabSectionItem item = new TabSectionItem()
+            TabSectionItem item = new TabSectionItem();
+            string propertyInTitle = "";
+            if (pListItemConfig.listItem.propertyTitleOR != null && pListItemConfig.listItem.propertyTitleOR.Count > 0)
             {
-                title = GetPropValues(pId, UtilityCV.GetPropComplete(pListItemConfig.listItem.propertyTitle), pData).FirstOrDefault()
-            };
+                propertyInTitle = "";
+                string aux = "";
+                foreach (PropertyDataTemplate propertyData in pListItemConfig.listItem.propertyTitleOR)
+                {
+                    propertyInTitle += aux + UtilityCV.GetPropComplete(propertyData);
+                    aux = "||";
+                }
+            }
+            else
+            {
+                propertyInTitle = UtilityCV.GetPropComplete(pListItemConfig.listItem.propertyTitle);
+            }
+            item.title = GetPropValues(pId, propertyInTitle, pData).FirstOrDefault();
+
+
             if (item.title == null)
             {
                 item.title = "";
