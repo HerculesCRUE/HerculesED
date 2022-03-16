@@ -2,6 +2,13 @@
 
 API providing access for the extraction of thematic and specific descriptors from scientific papers, protocols and code projects.
 
+# Requirements
+
+These are the minimum hardware and software requirements to run this service:
+```
+- 32 GB RAM memory (24 GB might be enough, but having 32 GB is recommended)
+- python3 3.7
+```
 
 # Installation and deployment
 
