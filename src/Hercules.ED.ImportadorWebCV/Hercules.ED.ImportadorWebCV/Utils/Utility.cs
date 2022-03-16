@@ -16,29 +16,7 @@ namespace Utils
     public static class Utility
     {
         private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config\configOAuth\OAuthV3.config");
-
-        /// <summary>
-        /// Dada la ruta de un directorio devuelve si existe en el sistema
-        /// </summary>
-        /// <param name="path">Ruta del directorio</param>
-        /// <returns>True si existe</returns>
-        public static bool ExistePath(string path)
-        {
-            if (string.IsNullOrEmpty(path)) { return false; }
-            return Directory.Exists(path);
-        }
-
-        /// <summary>
-        /// Dada la ruta del archivo devuelve si existe
-        /// </summary>
-        /// <param name="rutaArchivo">Ruta del archivo</param>
-        /// <returns>True si existe el archivo</returns>
-        public static bool ExisteArchivo(string rutaArchivo)
-        {
-            if (string.IsNullOrEmpty(rutaArchivo)) { return false; }
-            return (File.Exists(rutaArchivo));
-        }
-
+        
         /// <summary>
         /// Dado un codigo devuelve si el formato es valido
         /// </summary>
@@ -217,32 +195,6 @@ namespace Utils
         /// <summary>
         /// Dado el codigo del campo, devuelve un listado con todos los elementos que tengan ese codigo.
         /// </summary>
-        /// <param name="cvn">cvnRootResultBean</param>
-        /// <param name="codigo">Codigo</param>
-        /// <returns>Lista de elementos de tipo <typeparamref name="T"/> de <paramref name="cvn"/></returns>
-        public static List<T> GetListaElementosPorIDCampo<T>(this cvnRootResultBean cvn, string codigo) where T : CVNObject
-        {
-            try
-            {
-                if (!CodigoCampoCorrecto(codigo))
-                {
-                    throw new ArgumentException("Codigo de campo incorrecto" + codigo);
-                }
-
-                List<CVNObject> listadoCamposAux = cvn.cvnRootBean.SelectMany(x => x.Items).ToList();
-                List<T> listadoCampos = listadoCamposAux.Where(x => x.Code.StartsWith(codigo) && x is T).Cast<T>()?.ToList();
-                return listadoCampos;
-            }
-            catch (ArgumentException ex)
-            {
-                Console.Error.WriteLine("ArgumentException: " + ex.Message);
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Dado el codigo del campo, devuelve un listado con todos los elementos que tengan ese codigo.
-        /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="cvnItemBean">cvnItemBean</param>
         /// <param name="codigo">Codigo</param>
@@ -286,34 +238,6 @@ namespace Utils
                 List<CVNObject> listadoCamposAux = listado.Where(x => x.Code.StartsWith(codigo.Substring(0, 11))).SelectMany(x => x.Items)?.ToList();
                 List<T> listadoCampos = listadoCamposAux.Where(x => x.Code.StartsWith(codigo) && x is T).Cast<T>()?.ToList();
                 return listadoCampos;
-            }
-            catch (ArgumentException ex)
-            {
-                Console.Error.WriteLine("ArgumentException: " + ex.Message);
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Dado el codigo del campo, devuelve un elemento
-        /// de tipo CvnItemBeanCvnString que tenga ese codigo.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="cvn">cvnRootResultBean</param>
-        /// <param name="codigo">Codigo</param>
-        /// <returns> <typeparamref name="T"/> de <paramref name="cvn"/></returns>
-        public static T GetElementoPorIDCampo<T>(this cvnRootResultBean cvn, string codigo) where T : CVNObject
-        {
-            try
-            {
-                if (!CodigoCampoCorrecto(codigo))
-                {
-                    throw new ArgumentException("Codigo de campo incorrecto" + codigo);
-                }
-
-                List<CVNObject> listadoCamposAux = cvn.cvnRootBean.SelectMany(x => x.Items)?.ToList();
-                T campo = listadoCamposAux.Where(x => x.Code.StartsWith(codigo) && x is T).Cast<T>().FirstOrDefault();
-                return campo;
             }
             catch (ArgumentException ex)
             {
@@ -380,37 +304,6 @@ namespace Utils
         /// Dado el codigo del campo, devuelve un string del elemento
         /// de tipo CvnItemBeanCvnString que tenga ese codigo.
         /// </summary>
-        /// <param name="cvn"></param>
-        /// <param name="codigo">Codigo</param>
-        /// <returns>string del elemento de tipo CvnItemBeanCvnString que tenga ese codigo</returns>
-        public static string GetStringPorIDCampo(this cvnRootResultBean cvn, string codigo)
-        {
-            try
-            {
-                if (!CodigoCampoCorrecto(codigo))
-                {
-                    throw new ArgumentException("Codigo de campo incorrecto" + codigo);
-                }
-
-                List<CVNObject> listadoCamposAux = cvn.cvnRootBean.SelectMany(x => x.Items)?.ToList();
-                CvnItemBeanCvnString campo = listadoCamposAux.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
-                if (campo != null)
-                {
-                    return campo.Value;
-                }
-                return null;
-            }
-            catch (ArgumentException ex)
-            {
-                Console.Error.WriteLine("ArgumentException: " + ex.Message);
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Dado el codigo del campo, devuelve un string del elemento
-        /// de tipo CvnItemBeanCvnString que tenga ese codigo.
-        /// </summary>
         /// <param name="cvnItemBean"></param>
         /// <param name="codigo">Codigo</param>
         /// <returns>string del elemento de tipo CvnItemBeanCvnString que tenga ese codigo</returns>
@@ -462,93 +355,6 @@ namespace Utils
             }
             return null;
 
-        }
-
-        /// <summary>
-        /// Dado el codigo del campo, devuelve un string del elemento, 
-        /// de tipo CvnItemBeanCvnDuration que tenga ese codigo.
-        /// </summary>
-        /// <param name="cvn"></param>
-        /// <param name="codigo">Codigo</param>
-        /// <returns>string del elemento de tipo CvnItemBeanCvnDuration que tenga ese codigo</returns>
-        public static string GetDurationPorIDCampo(this cvnRootResultBean cvn, string codigo)
-        {
-            try
-            {
-                if (!CodigoCampoCorrecto(codigo))
-                {
-                    throw new ArgumentException("Codigo de campo incorrecto" + codigo);
-                }
-
-                List<CVNObject> listadoCamposAux = cvn.cvnRootBean.SelectMany(x => x.Items)?.ToList();
-                CvnItemBeanCvnDuration campo = listadoCamposAux.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnDuration).Cast<CvnItemBeanCvnDuration>().FirstOrDefault();
-                if (campo != null)
-                {
-                    return campo.Value;
-                }
-                return null;
-            }
-            catch (ArgumentException ex)
-            {
-                Console.Error.WriteLine("ArgumentException: " + ex.Message);
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Dado el codigo del campo, devuelve un string del elemento, 
-        /// de tipo CvnItemBeanCvnDuration que tenga ese codigo.
-        /// </summary>
-        /// <param name="cvnItemBean"></param>
-        /// <param name="codigo">Codigo</param>
-        /// <returns>string del elemento de tipo CvnItemBeanCvnDuration que tenga ese codigo</returns>
-        public static string GetDurationPorIDCampo(this CvnItemBean cvnItemBean, string codigo)
-        {
-            try
-            {
-                if (!CodigoCampoCorrecto(codigo))
-                {
-                    throw new ArgumentException("Codigo de campo incorrecto" + codigo);
-                }
-
-                List<CVNObject> listadoCamposAux = cvnItemBean.Items?.ToList();
-                CvnItemBeanCvnDuration campo = listadoCamposAux.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnDuration).Cast<CvnItemBeanCvnDuration>().FirstOrDefault();
-                if (campo != null)
-                {
-                    return campo.Value;
-                }
-                return null;
-            }
-            catch (ArgumentException ex)
-            {
-                Console.Error.WriteLine("ArgumentException: " + ex.Message);
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Dado el codigo del campo, devuelve un string del elemento, 
-        /// de tipo CvnItemBeanCvnDuration que tenga ese codigo.
-        /// </summary>
-        /// <param name="listado"></param>
-        /// <param name="codigo">Codigo</param>
-        /// <returns>string del elemento de tipo CvnItemBeanCvnDuration que tenga ese codigo</returns>
-        public static string GetDurationPorIDCampo(this List<CvnItemBean> listado, string codigo)
-        {
-            if (!CodigoCampoCorrecto(codigo))
-            {
-                throw new ArgumentException("Codigo de campo incorrecto" + codigo);
-            }
-
-            if (codigo.Length != 15) { return null; }
-            if (listado == null) { return null; }
-            IEnumerable<CVNObject> listadoCamposAux = listado.Where(x => x.Code.StartsWith(codigo.Substring(0, 11))).SelectMany(x => x.Items)?.ToList();
-            CvnItemBeanCvnDuration campo = listadoCamposAux.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnDuration).Cast<CvnItemBeanCvnDuration>().FirstOrDefault();
-            if (campo != null)
-            {
-                return campo.Value;
-            }
-            return null;
         }
 
         /// <summary>
@@ -751,37 +557,6 @@ namespace Utils
         }
 
         /// <summary>
-        /// Dado el codigo del campo, devuelve el valor DateTime del elemento, 
-        /// de tipo CvnItemBeanCvnDateDayMonthYear que tenga ese codigo.
-        /// </summary>
-        /// <param name="cvn"></param>
-        /// <param name="codigo">Codigo</param>
-        /// <returns>DateTime del elemento de tipo CvnItemBeanCvnDateDayMonthYear que tenga ese codigo</returns>
-        public static DateTime? GetDateTimePorIDCampo(this cvnRootResultBean cvn, string codigo)
-        {
-            try
-            {
-                if (!CodigoCampoCorrecto(codigo))
-                {
-                    throw new ArgumentException("Codigo de campo incorrecto" + codigo);
-                }
-
-                List<CVNObject> listadoCamposAux = cvn.cvnRootBean.SelectMany(x => x.Items)?.ToList();
-                CvnItemBeanCvnDateDayMonthYear campo = listadoCamposAux.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnDateDayMonthYear).Cast<CvnItemBeanCvnDateDayMonthYear>().FirstOrDefault();
-                if (campo != null)
-                {
-                    return campo.Value;
-                }
-                return null;
-            }
-            catch (ArgumentException ex)
-            {
-                Console.Error.WriteLine("ArgumentException: " + ex.Message);
-                return null;
-            }
-        }
-
-        /// <summary>
         /// Devuelve la fecha en formato GNOSS (YYYYMMDD000000) como un string.
         /// </summary>
         /// <param name="listado"></param>
@@ -801,12 +576,17 @@ namespace Utils
             {
                 return campo.DatetimeStringGNOSS();
             }
-            return null;
+            CvnItemBeanCvnDateMonthYear campoMesAnio = listadoCamposAux.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnDateMonthYear).Cast<CvnItemBeanCvnDateMonthYear>().FirstOrDefault();
+            if(campoMesAnio != null)
+            {
+                return campoMesAnio.DatetimeStringGNOSS();
+            }
 
+            return null;
         }
 
         /// <summary>
-        /// Devuelve la fecha en formato GNOSS (YYYYMMDD000000) como un string.
+        /// Devuelve la fecha en formato GNOSS (YYYYMM01000000) como un string.
         /// </summary>
         /// <param name="item"></param>
         /// <param name="codigo">Codigo</param>
@@ -823,13 +603,18 @@ namespace Utils
             {
                 return campo.DatetimeStringGNOSS();
             }
-            return null;
+            CvnItemBeanCvnDateMonthYear campoMesAnio = item.Items.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnDateMonthYear).Cast<CvnItemBeanCvnDateMonthYear>().FirstOrDefault();
+            if (campoMesAnio != null)
+            {
+                return campoMesAnio.DatetimeStringGNOSS();
+            }
 
+            return null;
         }
 
         /// <summary>
         /// Devuelve el genero,
-        /// con formato mResourceApi.GraphsUrl + "items/gender_000"
+        /// con formato mResourceApi.GraphsUrl + "items/gender_"
         /// </summary>
         /// <param name="listado"></param>
         /// <param name="codigo">Codigo</param>
@@ -854,7 +639,7 @@ namespace Utils
 
         /// <summary>
         /// Devuelve el pais como respuesta,
-        /// con formato mResourceApi.GraphsUrl + "items/feature_000"
+        /// con formato mResourceApi.GraphsUrl + "items/feature_"
         /// </summary>
         /// <param name="listado"></param>
         /// <param name="codigo">Codigo</param>
@@ -950,7 +735,7 @@ namespace Utils
 
         /// <summary>
         /// Devuelve la provincia como respuesta,
-        /// con formato mResourceApi.GraphsUrl + "items/feature_ADM2_000"
+        /// con formato mResourceApi.GraphsUrl + "items/feature_ADM2_"
         /// </summary>
         /// <param name="listado"></param>
         /// <param name="codigo">Codigo</param>
@@ -1175,7 +960,7 @@ namespace Utils
 
         /// <summary>
         /// Devuelve el objetivo como respuesta,
-        /// con formato mResourceApi.GraphsUrl + "items/items/staygoal_"
+        /// con formato mResourceApi.GraphsUrl + "items/staygoal_"
         /// </summary>
         /// <param name="item"></param>
         /// <param name="codigo">Codigo</param>
@@ -1198,7 +983,7 @@ namespace Utils
 
         /// <summary>
         /// Devuelve la modalidad de la actividad como respuesta,
-        /// con formato mResourceApi.GraphsUrl + "items/items/activitymodality_"
+        /// con formato mResourceApi.GraphsUrl + "items/activitymodality_"
         /// </summary>
         /// <param name="item"></param>
         /// <param name="codigo">Codigo</param>
@@ -1236,7 +1021,7 @@ namespace Utils
 
         /// <summary>
         /// Devuelve el sistema de actividad como respuesta,
-        /// con formato mResourceApi.GraphsUrl + "items/items/accesssystemactivity_"
+        /// con formato mResourceApi.GraphsUrl + "items/accesssystemactivity_"
         /// </summary>
         /// <param name="item"></param>
         /// <param name="codigo">Codigo</param>
@@ -1259,7 +1044,7 @@ namespace Utils
 
         /// <summary>
         /// Devuelve la finalidad como respuesta,
-        /// con formato mResourceApi.GraphsUrl + "items/items/grantaim_"
+        /// con formato mResourceApi.GraphsUrl + "items/grantaim_"
         /// </summary>
         /// <param name="item"></param>
         /// <param name="codigo">Codigo</param>
@@ -1282,7 +1067,7 @@ namespace Utils
 
         /// <summary>
         /// Devuelve el tipo de relacion como respuesta,
-        /// con formato mResourceApi.GraphsUrl + "items/items/organizationtype_"
+        /// con formato mResourceApi.GraphsUrl + "items/organizationtype_"
         /// </summary>
         /// <param name="item"></param>
         /// <param name="codigo">Codigo</param>
@@ -1363,7 +1148,7 @@ namespace Utils
         /// </summary>
         /// <param name="item"></param>
         /// <param name="codigo"></param>
-        /// <returns></returns>
+        /// <returns>Volumen del CvnItemBeanCvnVolumeBean</returns>
         public static string GetVolumenPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -1385,7 +1170,7 @@ namespace Utils
         /// </summary>
         /// <param name="item"></param>
         /// <param name="codigo"></param>
-        /// <returns></returns>
+        /// <returns>Number del CvnItemBeanCvnVolumeBean</returns>
         public static string GetNumeroVolumenPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -1407,7 +1192,7 @@ namespace Utils
         /// </summary>
         /// <param name="item"></param>
         /// <param name="codigo"></param>
-        /// <returns></returns>
+        /// <returns>Página inicial del CvnItemBeanCvnPageBean</returns>
         public static string GetPaginaInicialPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -1429,7 +1214,7 @@ namespace Utils
         /// </summary>
         /// <param name="item"></param>
         /// <param name="codigo"></param>
-        /// <returns></returns>
+        /// <returns>Página final del CvnItemBeanCvnPageBean</returns>
         public static string GetPaginaFinalPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -1486,6 +1271,22 @@ namespace Utils
         /// <param name="dateTime"></param>
         /// <returns>YYYYMMDD000000</returns>
         public static string DatetimeStringGNOSS(this CvnItemBeanCvnDateDayMonthYear dateTime)
+        {
+            string fechaString = dateTime.Value.ToString().Replace("-", "").Replace("T", "").Replace(":", "").Split("+")[0];
+            string[] fechaAux = fechaString.Split("/");
+            string anio = fechaAux[2].Split(" ")[0];
+
+            fechaString = anio + fechaAux[1] + fechaAux[0] + "000000";
+            return fechaString;
+        }
+
+        /// <summary>
+        /// Devuelve un string en formato de fecha de GNOSS
+        /// YYYYMMDD000000
+        /// </summary>
+        /// <param name="dateTime"></param>
+        /// <returns>YYYYMMDD000000</returns>
+        public static string DatetimeStringGNOSS(this CvnItemBeanCvnDateMonthYear dateTime)
         {
             string fechaString = dateTime.Value.ToString().Replace("-", "").Replace("T", "").Replace(":", "").Split("+")[0];
             string[] fechaAux = fechaString.Split("/");
@@ -1567,7 +1368,7 @@ namespace Utils
         }
 
         /// <summary>
-        /// items/universitydegreetype_
+        /// universitydegreetype_
         /// </summary>
         /// <param name="item"></param>
         /// <param name="codigo"></param>
@@ -1588,7 +1389,7 @@ namespace Utils
         }
 
         /// <summary>
-        /// items/qualificationtype_
+        /// qualificationtype_
         /// </summary>
         /// <param name="item"></param>
         /// <param name="codigo"></param>
@@ -1609,7 +1410,7 @@ namespace Utils
         }
 
         /// <summary>
-        /// items/prizetype_
+        /// prizetype_
         /// </summary>
         /// <param name="item"></param>
         /// <param name="codigo"></param>
@@ -1630,7 +1431,7 @@ namespace Utils
         }
 
         /// <summary>
-        /// items/tesauro_cvn_
+        /// tesauro_cvn_
         /// </summary>
         /// <param name="mResourceApi"></param>
         /// <param name="palabra"></param>
@@ -1743,10 +1544,8 @@ namespace Utils
 
         /// <summary>
         /// Devuelve el valor CvnBoolean del CvnItemBeanCvnCodeGroup 
-        /// con codigo igual a <paramref name="codigo"/> como string
         /// </summary>
         /// <param name="item"></param>
-        /// <param name="codigo"></param>
         /// <returns></returns>
         public static string GetCvnBooleanCvnCodeGroup(this CvnItemBeanCvnCodeGroup item)
         {
@@ -2082,6 +1881,7 @@ namespace Utils
         /// hindexsource_
         /// </summary>
         /// <param name="item"></param>
+        /// <param name="codigo"></param>
         /// <returns></returns>
         public static string GetIndiceH(this CvnItemBean item, string codigo)
         {
@@ -2111,11 +1911,12 @@ namespace Utils
             }
             return null;
         }
-        
+
         /// <summary>
         /// language_
         /// </summary>
         /// <param name="item"></param>
+        /// <param name="codigo"></param>
         /// <returns></returns>
         public static string GetTraduccion(this CvnItemBean item, string codigo)
         {
@@ -2150,13 +1951,18 @@ namespace Utils
         /// unesco_
         /// </summary>
         /// <param name="item"></param>
-        /// <param name="codigo"></param>
         /// <returns></returns>
         public static string GetCodUnescoIDCampo(this CvnItemBeanCvnString item)
         {
             return mResourceApi.GraphsUrl + "items/unesco_" + item.Value;
         }
 
+        /// <summary>
+        /// Devuelve el codigo internacional del PhoneBean
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="codigo"></param>
+        /// <returns></returns>
         public static string GetCodInternacional(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -2172,6 +1978,12 @@ namespace Utils
             return null;
         }
 
+        /// <summary>
+        /// Devuelve el nº de telefono del PhoneBean
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="codigo"></param>
+        /// <returns></returns>
         public static string GetNumeroTelefono(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -2187,6 +1999,12 @@ namespace Utils
             return null;
         }
 
+        /// <summary>
+        /// Devuelve la extension del PhoneBean
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="codigo"></param>
+        /// <returns></returns>
         public static string GetExtensionTelefono(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -2201,7 +2019,6 @@ namespace Utils
             }
             return null;
         }
-
 
         /// <summary>
         /// Devuelve un listado con los valores de los codigos UNESCO.
@@ -2239,7 +2056,7 @@ namespace Utils
         }
 
         /// <summary>
-        /// Devuelve un listado con los valores deltesauro de las palabras clave.
+        /// Devuelve un listado con los valores del tesauro de las palabras clave.
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
