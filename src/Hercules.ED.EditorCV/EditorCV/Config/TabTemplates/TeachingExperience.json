@@ -681,20 +681,20 @@
             "orders": [
               {
                 "name": {
-                  "es": "Ordenar por fecha de finalización más reciente"
+                  "es": "Ordenar por fecha de concesión más reciente"
                 },
                 "properties": [
                   {
                     "property": "http://vivoweb.org/ontology/core#relatedBy",
-                    "graph": "activity",
+                    "graph": "accreditation",
                     "child": {
-                      "property": "http://vivoweb.org/ontology/core#end"
+                      "property": "http://w3id.org/roh/receptionDate"
                     },
                     "asc": false
                   },
                   {
                     "property": "http://vivoweb.org/ontology/core#relatedBy",
-                    "graph": "activity",
+                    "graph": "accreditation",
                     "child": {
                       "property": "http://w3id.org/roh/title"
                     },
@@ -704,20 +704,20 @@
               },
               {
                 "name": {
-                  "es": "Ordenar por fecha de finalización más antigua"
+                  "es": "Ordenar por fecha de concesión más antigua"
                 },
                 "properties": [
                   {
                     "property": "http://vivoweb.org/ontology/core#relatedBy",
-                    "graph": "activity",
+                    "graph": "accreditation",
                     "child": {
-                      "property": "http://vivoweb.org/ontology/core#end"
+                      "property": "http://w3id.org/roh/receptionDate"
                     },
                     "asc": true
                   },
                   {
                     "property": "http://vivoweb.org/ontology/core#relatedBy",
-                    "graph": "activity",
+                    "graph": "accreditation",
                     "child": {
                       "property": "http://w3id.org/roh/title"
                     },
@@ -758,6 +758,7 @@
                 "name": {
                   "es": "Entidad concesionaria"
                 },
+                "showMini": true,
                 "type": "text",
                 "child": {
                   "property": "http://vivoweb.org/ontology/core#relatedBy",
