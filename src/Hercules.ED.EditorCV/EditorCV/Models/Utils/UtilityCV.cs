@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
@@ -442,6 +443,26 @@ namespace GuardadoCV.Models.Utils
             {
                 yield return pItems.GetRange(i, Math.Min(pSize, pItems.Count - i));
             }
+        }
+
+        /// <summary>
+        /// Método para normalizar los textos
+        /// </summary>
+        /// <param name="pText">Texto</param>
+        /// <returns></returns>
+        public static string NormalizeText(string pText)
+        {
+            string normalizedString = pText.Normalize(NormalizationForm.FormD);
+            StringBuilder sb = new StringBuilder();
+            foreach (char charin in normalizedString)
+            {
+                if (char.IsLetterOrDigit(charin))
+                {
+                    sb.Append(charin);
+                }
+            }
+            normalizedString = sb.ToString().Normalize(NormalizationForm.FormD).ToLower();
+            return normalizedString;
         }
 
 

@@ -60,7 +60,7 @@ wget https://storage.googleapis.com/elhuyar/Hercules/hercules-models.tar.gz
 The first step consists in extract keyword candidates and their features from the Krapivin dataset:
 
 ```
-python3 krapivin_extract_features.py [--fulltext] krapivin-set/ clef.pkl scopus.pkl idfakCLEF.pkl krapivin.tsv
+python3 krapivin_extract_features.py [--fulltext] krapivin-set/ tfidf_models/clef.pkl tfidf_models/scopus.pkl tfidf_models/idfakCLEF.pkl krapivin.tsv
 ```
 
 _Note: You should set the optional argument `--fulltext` if you want to extract keyword candidates from the full texts, and leave it blank if you want to extract them only from the title + abstract._
