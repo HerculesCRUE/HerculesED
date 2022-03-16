@@ -14,15 +14,23 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
     class TutoriasAcademicas : DisambiguableEntity
     {
         public string descripcion { get; set; }
-        public string fecha { get; set; }
+        public string frecuenciaActividad { get; set; }
+        public string entidadRealizacion { get; set; }
 
-        private static DisambiguationDataConfig configDescripcion = new DisambiguationDataConfig()
+        private static readonly DisambiguationDataConfig configDescripcion = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsTitle,
             score = 0.8f
         };
 
-        private static DisambiguationDataConfig configFecha = new DisambiguationDataConfig()
+        private static readonly DisambiguationDataConfig configFrecuencia = new DisambiguationDataConfig()
+        {
+            type = DisambiguationDataConfigType.equalsItem,
+            score = 0.5f,
+            scoreMinus = 0.5f
+        };
+        
+        private static readonly DisambiguationDataConfig configER = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsItem,
             score = 0.5f,
@@ -31,24 +39,40 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
-            List<DisambiguationData> data = new List<DisambiguationData>();
-
-            data.Add(new DisambiguationData()
+            List<DisambiguationData> data = new List<DisambiguationData>
             {
-                property = "descripcion",
-                config = configDescripcion,
-                value = descripcion
-            });
+                new DisambiguationData()
+                {
+                    property = "descripcion",
+                    config = configDescripcion,
+                    value = descripcion
+                },
 
-            data.Add(new DisambiguationData()
-            {
-                property = "fecha",
-                config = configFecha,
-                value = fecha
-            });
+                new DisambiguationData()
+                {
+                    property = "frecuenciaActividad",
+                    config = configFrecuencia,
+                    value = frecuenciaActividad
+                },
+
+                new DisambiguationData()
+                {
+                    property = "entidadRealizacion",
+                    config = configER,
+                    value = entidadRealizacion
+                }
+            };
             return data;
         }
 
+        /// <summary>
+        /// Devuelve las entidades de BBDD del <paramref name="pCVID"/> de con las propiedades de <paramref name="propiedadesItem"/>
+        /// </summary>
+        /// <param name="pResourceApi">pResourceApi</param>
+        /// <param name="pCVID">pCVID</param>
+        /// <param name="graph">graph</param>
+        /// <param name="propiedadesItem">propiedadesItem</param>
+        /// <returns></returns>
         public static Dictionary<string, DisambiguableEntity> GetBBDD(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
         {
             //Obtenemos IDS
@@ -61,24 +85,25 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
 
             foreach (List<string> lista in listaListas)
             {
-                string select = $@"SELECT distinct ?item ?itemTitle ?itemDate ";
+                string select = $@"SELECT distinct ?item ?itemTitle ?itemFrecuencia ?itemER ";
                 string where = $@"where {{
                                         ?item <{Variables.ActividadDocente.tutoAcademicaNombrePrograma}> ?itemTitle . 
-                                        OPTIONAL{{?item <{Variables.ActividadDocente.tutoAcademicaNumHorasECTS}> ?itemDate }}.
+                                        OPTIONAL{{?item <{Variables.ActividadDocente.tutoAcademicaNumHorasECTS}> ?itemFrecuencia }}.
+                                        OPTIONAL{{?item <{Variables.ActividadDocente.tutoAcademicaEntidadRealizacionNombre}> ?itemER }}.
                                         FILTER(?item in (<{string.Join(">,<", lista)}>))
                                     }}";
                 //TODO check where valores
                 SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, graph);
                 foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                 {
-                    TutoriasAcademicas tutoriasAcademicas = new TutoriasAcademicas();
-                    tutoriasAcademicas.ID = fila["item"].value;
-                    tutoriasAcademicas.descripcion = fila["itemTitle"].value;
-                    tutoriasAcademicas.fecha = "";
-                    if (fila.ContainsKey("itemDate"))
+                    TutoriasAcademicas tutoriasAcademicas = new TutoriasAcademicas
                     {
-                        tutoriasAcademicas.fecha = fila["itemDate"].value;
-                    }
+                        ID = fila["item"].value,
+                        descripcion = fila["itemTitle"].value,
+                        frecuenciaActividad = fila.ContainsKey("itemFrecuencia") ? fila["itemFrecuencia"].value : "",
+                        entidadRealizacion = fila.ContainsKey("itemER") ? fila["itemER"].value : "",
+                    };
+
                     resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), tutoriasAcademicas);
                 }
             }
