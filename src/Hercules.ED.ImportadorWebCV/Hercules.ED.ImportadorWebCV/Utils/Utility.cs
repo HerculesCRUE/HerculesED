@@ -997,6 +997,28 @@ namespace Utils
         }
 
         /// <summary>
+        /// tutorshipsprogramtype_
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>Organizacion</returns>
+        public static string GetTipoProgramaTutorizacionPorIDCampo(this CvnItemBean item, string codigo)
+        {
+            if (!CodigoCampoCorrecto(codigo))
+            {
+                throw new ArgumentException("Codigo de campo incorrecto" + codigo);
+            }
+
+            if (codigo.Length != 15) { return null; }
+            CvnItemBeanCvnString campo = item.Items?.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
+            if (campo != null&& !string.IsNullOrEmpty(campo.Value))
+            {
+                return mResourceApi.GraphsUrl + "items/tutorshipsprogramtype_" + campo.Value;
+            }
+            return null;
+        }
+
+        /// <summary>
         /// Devuelve el tipo de evento como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/eventtype_"
         /// </summary>
