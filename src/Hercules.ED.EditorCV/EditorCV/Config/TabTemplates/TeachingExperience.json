@@ -15,60 +15,42 @@
           "listItem": {
             "propertyTitle": {
               "property": "http://vivoweb.org/ontology/core#relatedBy",
-              "graph": "tutorship",
-              "child": {
-                "property": "http://w3id.org/roh/tutorshipProgramTypeOther"
-              }
             },
-            "orders": [
-              //{
-              //  "name": {
-              //    "es": "Ordenar por fecha de finalización más reciente"
-              //  },
-              //  "properties": [
-              //    {
-              //      "property": "http://vivoweb.org/ontology/core#relatedBy",
-              //      "graph": "tutorship",
-              //      "child": {
-              //        "property": "http://vivoweb.org/ontology/core#end"
-              //      },
-              //      "asc": false
-              //    },
-              //    {
-              //      "property": "http://vivoweb.org/ontology/core#relatedBy",
-              //      "graph": "tutorship",
-              //      "child": {
-              //        "property": "http://w3id.org/roh/title"
-              //      },
-              //      "asc": true
-              //    }
-              //  ]
-              //},
-              //{
-              //  "name": {
-              //    "es": "Ordenar por fecha de finalización más antigua"
-              //  },
-              //  "properties": [
-              //    {
-              //      "property": "http://vivoweb.org/ontology/core#relatedBy",
-              //      "graph": "tutorship",
-              //      "child": {
-              //        "property": "http://vivoweb.org/ontology/core#end"
-              //      },
-              //      "asc": true
-              //    },
-              //    {
-              //      "property": "http://vivoweb.org/ontology/core#relatedBy",
-              //      "graph": "tutorship",
-              //      "child": {
-              //        "property": "http://w3id.org/roh/title"
-              //      },
-              //      "asc": true
-              //    }
-              //  ]
-              //}
+            "propertyTitleOR": [
+              {
+                "property": "http://vivoweb.org/ontology/core#relatedBy",
+                "graph": "tutorship",
+                "child": {
+                  "property": "http://w3id.org/roh/tutorshipProgramTypeOther"
+                }
+              },
+              {
+                "property": "http://vivoweb.org/ontology/core#relatedBy",
+                "graph": "tutorship",
+                "child": {
+                  "property": "http://w3id.org/roh/tutorshipProgramType",
+                  "graph": "tutorshipsprogramtype",
+                  "child": {
+                    "property": "http://purl.org/dc/elements/1.1/title"
+                  }
+                }
+              }
             ],
+            "orders": [],
             "properties": [
+              {
+                "name": {
+                  "es": "Entidad de realización"
+                },
+                "showMini": true,
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "tutorship",
+                  "child": {
+                    "property": "http://w3id.org/roh/conductedByTitle"
+                  }
+                }
+              },
               {
                 "name": {
                   "es": "Frecuencia de la actividad"
@@ -81,18 +63,7 @@
                   }
                 }
               },
-              {
-                "name": {
-                  "es": "Entidad de realización"
-                },
-                "child": {
-                  "property": "http://vivoweb.org/ontology/core#relatedBy",
-                  "graph": "tutorship",
-                  "child": {
-                    "property": "http://w3id.org/roh/conductedByTitle"
-                  }
-                }
-              },
+
               {
                 "name": {
                   "es": "Ciudad de realización"
