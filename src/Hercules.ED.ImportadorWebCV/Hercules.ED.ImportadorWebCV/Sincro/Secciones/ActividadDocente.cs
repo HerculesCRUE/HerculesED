@@ -118,7 +118,6 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 TutoriasAcademicas tutoriasAcademicas = new TutoriasAcademicas();
                 tutoriasAcademicas.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.tutoAcademicaNombrePrograma)?.values.FirstOrDefault();
-                tutoriasAcademicas.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.tutoAcademicaNumHorasECTS)?.values.FirstOrDefault();
                 tutoriasAcademicas.ID = Guid.NewGuid().ToString();
                 entidadesXML.Add(tutoriasAcademicas.ID, tutoriasAcademicas);
             }
@@ -297,7 +296,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             foreach (Entity entityXML in listadoAux)//TODO - check
             {
                 PremiosInnovacionDocente premiosInnovacion = new PremiosInnovacionDocente();
-                premiosInnovacion.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.premiosInnovaNombre)?.values.FirstOrDefault();
+                premiosInnovacion.nombre = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.premiosInnovaNombre)?.values.FirstOrDefault();
                 premiosInnovacion.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.premiosInnovaFechaConcesion)?.values.FirstOrDefault();
                 premiosInnovacion.ID = Guid.NewGuid().ToString();
                 entidadesXML.Add(premiosInnovacion.ID, premiosInnovacion);
@@ -330,11 +329,12 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<Entity> listadoAux = GetOtrasActividades(listadoDatos);
 
             Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
-            foreach (Entity entityXML in listadoAux)//TODO - check
+            foreach (Entity entityXML in listadoAux)
             {
                 OtrasActividades otrasActividades = new OtrasActividades();
                 otrasActividades.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.otrasActividadesDescripcion)?.values.FirstOrDefault();
                 otrasActividades.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.otrasActividadesFechaFinalizacion)?.values.FirstOrDefault();
+                otrasActividades.entidadOrganizadora = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.otrasActividadesEntidadOrganizadoraNombre)?.values.FirstOrDefault();
                 otrasActividades.ID = Guid.NewGuid().ToString();
                 entidadesXML.Add(otrasActividades.ID, otrasActividades);
             }
@@ -366,7 +366,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<Entity> listadoAux = GetAportacionesRelevantes(listadoDatos);
 
             Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
-            foreach (Entity entityXML in listadoAux)//TODO - check
+            foreach (Entity entityXML in listadoAux)
             {
                 AportacionesRelevantes aportacionesRelevantes = new AportacionesRelevantes();
                 aportacionesRelevantes.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.aportacionesCVDescripcion)?.values.FirstOrDefault();
@@ -386,6 +386,10 @@ namespace ImportadorWebCV.Sincro.Secciones
             return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab);
         }
 
+        
+
+
+        
         /// <summary>
         /// 030.040.000.000
         /// </summary>
@@ -1198,7 +1202,6 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <param name="entidadAux"></param>
         private void OtrasActividadesPalabrasClave(CvnItemBean item, Entity entidadAux)
         {
-            //new Property(Variables.ActividadDocente.otrasActividadesPalabrasClave, item.GetStringPorIDCampo("030.100.000.020"))
             List<CvnItemBeanCvnString> listadoPalabrasClave = item.GetListaElementosPorIDCampo<CvnItemBeanCvnString>("030.100.000.020");
 
             string propiedadPalabrasClave = Variables.ActividadDocente.otrasActividadesPalabrasClave;
@@ -1225,11 +1228,6 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <param name="entidadAux"></param>
         private void OtrasActividadesEntidadOrganizadora(CvnItemBean item, Entity entidadAux)
         {
-            /*
-            new Property(Variables.ActividadDocente.otrasActividadesEntidadOrganizadora, item.GetNameEntityBeanPorIDCampo("030.100.000.070")),
-            new Property(Variables.ActividadDocente.otrasActividadesTipoEntidadOrganizadora, item.GetStringPorIDCampo("030.100.000.090")),
-            new Property(Variables.ActividadDocente.otrasActividadesTipoEntidadOrganizadoraOtros, item.GetStringPorIDCampo("030.100.000.100")),
-            */
             //Añado la referencia si existe Entidad
             UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("030.100.000.070"),
                 Variables.ActividadDocente.otrasActividadesEntidadOrganizadoraNombre,
