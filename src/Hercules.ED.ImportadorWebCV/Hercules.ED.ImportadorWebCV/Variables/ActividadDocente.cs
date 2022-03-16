@@ -95,18 +95,18 @@ namespace ImportadorWebCV.Variables
         /// <summary>
         /// Tutorias académicas de estudiantes - 030.050.000.000
         /// </summary>
-        public const string tutoAcademicaNombrePrograma = "";
-        public const string tutoAcademicaNombreProgramaOtros = "";
-        public const string tutoAcademicaPaisEntidadRealizacion = "";
-        public const string tutoAcademicaCCAAEntidadRealizacion = "";
-        public const string tutoAcademicaCiudadEntidadRealizacion = "";
-        public const string tutoAcademicaEntidadRealizacion = "";
-        public const string tutoAcademicaEntidadRealizacionNombre = "";
-        public const string tutoAcademicaTipoEntidadRealizacion = "";
-        public const string tutoAcademicaTipoEntidadRealizacionOtros = "";
-        public const string tutoAcademicaNumAlumnosTutelados = "";
-        public const string tutoAcademicaFrecuenciaActividad = "";
-        public const string tutoAcademicaNumHorasECTS = "";
+        public const string tutoAcademicaNombrePrograma = "http://w3id.org/roh/tutorshipProgramType";
+        public const string tutoAcademicaNombreProgramaOtros = "http://w3id.org/roh/tutorshipProgramTypeOther";
+        public const string tutoAcademicaPaisEntidadRealizacion = "https://www.w3.org/2006/vcard/ns#hasCountryName";
+        public const string tutoAcademicaCCAAEntidadRealizacion = "https://www.w3.org/2006/vcard/ns#hasRegion";
+        public const string tutoAcademicaCiudadEntidadRealizacion = "https://www.w3.org/2006/vcard/ns#locality";
+        public const string tutoAcademicaEntidadRealizacion = "http://w3id.org/roh/conductedBy";
+        public const string tutoAcademicaEntidadRealizacionNombre = "http://w3id.org/roh/conductedByTitle";
+        public const string tutoAcademicaTipoEntidadRealizacion = "http://w3id.org/roh/conductedByType";
+        public const string tutoAcademicaTipoEntidadRealizacionOtros = "http://w3id.org/roh/conductedByTypeOther";
+        public const string tutoAcademicaNumAlumnosTutelados = "http://w3id.org/roh/numberSupervisedStudents";
+        public const string tutoAcademicaFrecuenciaActividad = "http://w3id.org/roh/frequency";
+        public const string tutoAcademicaNumHorasECTS = "http://w3id.org/roh/numberECTSHoursRecognized";
 
         /// <summary>
         /// Cursos y seminarios impartidos orientados a la formación docente universitaria - 030.060.000.000

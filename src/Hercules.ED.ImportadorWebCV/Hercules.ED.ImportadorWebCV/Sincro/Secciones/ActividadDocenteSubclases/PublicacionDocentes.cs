@@ -3,8 +3,6 @@ using Gnoss.ApiWrapper.ApiModel;
 using Hercules.ED.DisambiguationEngine.Models;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Utils;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 

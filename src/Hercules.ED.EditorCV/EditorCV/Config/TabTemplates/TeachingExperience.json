@@ -14,7 +14,7 @@
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "listItem": {
             "propertyTitle": {
-              "property": "http://vivoweb.org/ontology/core#relatedBy",
+              "property": "http://vivoweb.org/ontology/core#relatedBy"
             },
             "propertyTitleOR": [
               {
@@ -341,8 +341,6 @@
         }
       }
     },
-
-
     {
       "rdftype": "http://w3id.org/roh/RelatedOtherActivities",
       "property": "http://w3id.org/roh/otherActivities",
@@ -652,6 +650,325 @@
                         "type": "thesaurus",
                         "width": 3,
                         "multiple": true
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "rdftype": "http://w3id.org/roh/RelatedTeachingInnovationAwardsReceived",
+      "property": "http://w3id.org/roh/teachingInnovationAwardsReceived",
+      "presentation": {
+        "type": "listitems",
+        "title": {
+          "es": "Premios de innovación docente recibidos"
+        },
+        "listItemsPresentation": {
+          "property": "http://vivoweb.org/ontology/core#relatedBy",
+          "listItem": {
+            "propertyTitle": {
+              "property": "http://vivoweb.org/ontology/core#relatedBy",
+              "graph": "accreditation",
+              "child": {
+                "property": "http://w3id.org/roh/title"
+              }
+            },
+            "orders": [
+              {
+                "name": {
+                  "es": "Ordenar por fecha de concesión más reciente"
+                },
+                "properties": [
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "accreditation",
+                    "child": {
+                      "property": "http://w3id.org/roh/receptionDate"
+                    },
+                    "asc": false
+                  },
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "accreditation",
+                    "child": {
+                      "property": "http://w3id.org/roh/title"
+                    },
+                    "asc": true
+                  }
+                ]
+              },
+              {
+                "name": {
+                  "es": "Ordenar por fecha de concesión más antigua"
+                },
+                "properties": [
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "accreditation",
+                    "child": {
+                      "property": "http://w3id.org/roh/receptionDate"
+                    },
+                    "asc": true
+                  },
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "accreditation",
+                    "child": {
+                      "property": "http://w3id.org/roh/title"
+                    },
+                    "asc": true
+                  }
+                ]
+              }
+            ],
+            "properties": [
+              {
+                "name": {
+                  "es": "A propuesta de"
+                },
+                "type": "text",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "accreditation",
+                  "child": {
+                    "property": "http://w3id.org/roh/proposedBy"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Fecha de concesión"
+                },
+                "showMiniBold": true,
+                "type": "date",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "accreditation",
+                  "child": {
+                    "property": "http://w3id.org/roh/receptionDate"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Entidad concesionaria"
+                },
+                "showMini": true,
+                "type": "text",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "accreditation",
+                  "child": {
+                    "property": "http://w3id.org/roh/accreditationIssuedByTitle"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Ciudad entidad concesionaria"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "accreditation",
+                  "child": {
+                    "property": "https://www.w3.org/2006/vcard/ns#locality"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "C. Autón./Reg. entidad concesionaria"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "accreditation",
+                  "child": {
+                    "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+                    "graph": "feature",
+                    "child": {
+                      "property": "http://www.geonames.org/ontology#name"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "País entidad concesionaria"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "accreditation",
+                  "child": {
+                    "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+                    "graph": "feature",
+                    "child": {
+                      "property": "http://www.geonames.org/ontology#name"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "listItemEdit": {
+            "graph": "accreditation",
+            "proptitle": "http://w3id.org/roh/title",
+            "rdftype": "http://w3id.org/roh/Accreditation",
+            "sections": [
+              {
+                "title": {
+                  "es": "Información general"
+                },
+                "rows": [
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Nombre del premio"
+                        },
+                        "placeholder": {
+                          "es": "Introduce el nombre del premio"
+                        },
+                        "property": "http://w3id.org/roh/title",
+                        "required": true,
+                        "type": "text",
+                        "width": 2
+                      },
+                      {
+                        "title": {
+                          "es": "A propuesta de"
+                        },
+                        "placeholder": {
+                          "es": "Introduce la propuesta"
+                        },
+                        "property": "http://w3id.org/roh/proposedBy",
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Fecha de concesión"
+                        },
+                        "property": "http://w3id.org/roh/receptionDate",
+                        "type": "date",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Entidad concesionaria"
+                        },
+                        "autocomplete": true,
+                        "placeholder": {
+                          "es": "Introduce la entidad concesionaria"
+                        },
+                        "property": "http://w3id.org/roh/accreditationIssuedByTitle",
+                        "autocompleteConfig": {
+                          "rdftype": "http://xmlns.com/foaf/0.1/Organization",
+                          "graph": "organization",
+                          "propertyEntity": "http://w3id.org/roh/accreditationIssuedBy",
+                          "property": {
+                            "property": "http://w3id.org/roh/title"
+                          }
+                        },
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Tipo de entidad"
+                        },
+                        "property": "http://w3id.org/roh/organizationType",
+                        "combo": {
+                          "rdftype": "http://w3id.org/roh/OrganizationType",
+                          "graph": "organizationtype",
+                          "property": {
+                            "property": "http://purl.org/dc/elements/1.1/title"
+                          }
+                        },
+                        "dependency": {
+                          "property": "http://w3id.org/roh/accreditationIssuedByTitle",
+                          "propertyValue": "*"
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Otros"
+                        },
+                        "property": "http://w3id.org/roh/organizationTypeOther",
+                        "required": true,
+                        "dependency": {
+                          "property": "http://w3id.org/roh/organizationType",
+                          "propertyValue": "{GraphsUrl}items/organizationtype_OTHERS"
+                        },
+                        "type": "text",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Ciudad entidad concesionaria"
+                        },
+                        "type": "text",
+                        "placeholder": {
+                          "es": "Introduce la ciudad concesionaria"
+                        },
+                        "property": "https://www.w3.org/2006/vcard/ns#locality",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "País entidad concesionaria"
+                        },
+                        "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+                        "combo": {
+                          "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "filter": {
+                            "property": "http://www.geonames.org/ontology#featureCode",
+                            "value": "PCLD"
+                          },
+                          "graph": "feature",
+                          "property": {
+                            "property": "http://www.geonames.org/ontology#name"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "C. Autón./Reg. entidad concesionaria"
+                        },
+                        "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+                        "combo": {
+                          "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "filter": {
+                            "property": "http://www.geonames.org/ontology#featureCode",
+                            "value": "ADM1"
+                          },
+                          "dependency": {
+                            "property": "http://www.geonames.org/ontology#parentFeature",
+                            "propertyValue": "https://www.w3.org/2006/vcard/ns#hasCountryName"
+                          },
+                          "graph": "feature",
+                          "property": {
+                            "property": "http://www.geonames.org/ontology#name"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
                       }
                     ]
                   }

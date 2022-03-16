@@ -1,11 +1,8 @@
 ﻿using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.ApiModel;
 using Hercules.ED.DisambiguationEngine.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Utils;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
@@ -61,7 +58,6 @@ namespace ImportadorWebCV.Sincro.Secciones.FormacionAcademicaSubclases
                                         ?item <{Variables.FormacionAcademica.conocimientoIdiomasIdioma}> ?itemTitle . 
                                         FILTER(?item in (<{string.Join(">,<", lista)}>))
                                     }}";
-                //TODO check where valores
                 SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, graph);
                 foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                 {

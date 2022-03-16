@@ -2,28 +2,25 @@
 using Gnoss.ApiWrapper.ApiModel;
 using Hercules.ED.DisambiguationEngine.Models;
 using Utils;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
 namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
 {
     class TutoriasAcademicas : DisambiguableEntity
     {
-        public string descripcion { get; set; }
-        public string frecuenciaActividad { get; set; }
+        public string nombre { get; set; }
+        public string nombreOtros { get; set; }
         public string entidadRealizacion { get; set; }
 
-        private static readonly DisambiguationDataConfig configDescripcion = new DisambiguationDataConfig()
+        private static readonly DisambiguationDataConfig configNombre = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsTitle,
             score = 0.8f
         };
 
-        private static readonly DisambiguationDataConfig configFrecuencia = new DisambiguationDataConfig()
+        private static readonly DisambiguationDataConfig configNombreOtros = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsItem,
             score = 0.5f,
@@ -43,16 +40,16 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
             {
                 new DisambiguationData()
                 {
-                    property = "descripcion",
-                    config = configDescripcion,
-                    value = descripcion
+                    property = "nombre",
+                    config = configNombre,
+                    value = nombre
                 },
 
                 new DisambiguationData()
                 {
-                    property = "frecuenciaActividad",
-                    config = configFrecuencia,
-                    value = frecuenciaActividad
+                    property = "nombreOtros",
+                    config = configNombreOtros,
+                    value = nombreOtros
                 },
 
                 new DisambiguationData()
@@ -85,10 +82,10 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
 
             foreach (List<string> lista in listaListas)
             {
-                string select = $@"SELECT distinct ?item ?itemTitle ?itemFrecuencia ?itemER ";
+                string select = $@"SELECT distinct ?item ?itemTitle ?itemOther ?itemER ";
                 string where = $@"where {{
                                         ?item <{Variables.ActividadDocente.tutoAcademicaNombrePrograma}> ?itemTitle . 
-                                        OPTIONAL{{?item <{Variables.ActividadDocente.tutoAcademicaNumHorasECTS}> ?itemFrecuencia }}.
+                                        OPTIONAL{{?item <{Variables.ActividadDocente.tutoAcademicaNombreProgramaOtros}> ?itemOther }}.
                                         OPTIONAL{{?item <{Variables.ActividadDocente.tutoAcademicaEntidadRealizacionNombre}> ?itemER }}.
                                         FILTER(?item in (<{string.Join(">,<", lista)}>))
                                     }}";
@@ -99,8 +96,8 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
                     TutoriasAcademicas tutoriasAcademicas = new TutoriasAcademicas
                     {
                         ID = fila["item"].value,
-                        descripcion = fila["itemTitle"].value,
-                        frecuenciaActividad = fila.ContainsKey("itemFrecuencia") ? fila["itemFrecuencia"].value : "",
+                        nombre = fila["itemTitle"].value,
+                        nombreOtros = fila.ContainsKey("itemOther") ? fila["itemOther"].value : "",
                         entidadRealizacion = fila.ContainsKey("itemER") ? fila["itemER"].value : "",
                     };
 
