@@ -18,20 +18,20 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
         public string entidadOrganizadora { get; set; }
         public string fecha { get; set; }
 
-        private static DisambiguationDataConfig configDescripcion = new DisambiguationDataConfig()
+        private static readonly DisambiguationDataConfig configDescripcion = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsTitle,
             score = 0.8f
         };
 
-        private static DisambiguationDataConfig configFecha = new DisambiguationDataConfig()
+        private static readonly DisambiguationDataConfig configFecha = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsItem,
             score = 0.5f,
             scoreMinus = 0.5f
         };
 
-        private static DisambiguationDataConfig configEO = new DisambiguationDataConfig()
+        private static readonly DisambiguationDataConfig configEO = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsItem,
             score = 0.5f,
@@ -67,6 +67,14 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
             return data;
         }
 
+        /// <summary>
+        /// Devuelve las entidades de BBDD del <paramref name="pCVID"/> de con las propiedades de <paramref name="propiedadesItem"/>
+        /// </summary>
+        /// <param name="pResourceApi">pResourceApi</param>
+        /// <param name="pCVID">pCVID</param>
+        /// <param name="graph">graph</param>
+        /// <param name="propiedadesItem">propiedadesItem</param>
+        /// <returns></returns>
         public static Dictionary<string, DisambiguableEntity> GetBBDD(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
         {
             //Obtenemos IDS

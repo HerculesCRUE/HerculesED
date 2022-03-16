@@ -241,13 +241,15 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
             //Añado los autores de BBDD para la desambiguación
             for (int i = 0; i < listaPersonasAux.Count; i++)
             {
-                Persona persona = new Persona();
-                persona.nombreCompleto = listaPersonasAux.ElementAt(i).Value.Select(x => x.nombreCompleto).FirstOrDefault();
-                persona.firma = listaPersonasAux.ElementAt(i).Value.Select(x => x.firma).FirstOrDefault();
-                persona.coautores = listaPersonasAux.ElementAt(i).Value.Select(x => x.coautores).FirstOrDefault();
-                persona.documentos = listaPersonasAux.ElementAt(i).Value.Select(x => x.documentos).FirstOrDefault();
+                Persona persona = new Persona
+                {
+                    nombreCompleto = listaPersonasAux.ElementAt(i).Value.Select(x => x.nombreCompleto).FirstOrDefault(),
+                    firma = listaPersonasAux.ElementAt(i).Value.Select(x => x.firma).FirstOrDefault(),
+                    coautores = listaPersonasAux.ElementAt(i).Value.Select(x => x.coautores).FirstOrDefault(),
+                    documentos = listaPersonasAux.ElementAt(i).Value.Select(x => x.documentos).FirstOrDefault(),
 
-                persona.ID = listaPersonasAux.ElementAt(i).Value.Select(x => x.personid).FirstOrDefault();
+                    ID = listaPersonasAux.ElementAt(i).Value.Select(x => x.personid).FirstOrDefault()
+                };
                 if (string.IsNullOrEmpty(persona.nombreCompleto) && string.IsNullOrEmpty(persona.firma)) { continue; }
 
                 resultados[persona.ID] = persona;

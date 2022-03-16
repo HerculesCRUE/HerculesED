@@ -71,14 +71,13 @@ namespace ImportadorWebCV.Sincro.Secciones.ExperienciaCientificaSubclases
                 SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, graph);
                 foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                 {
-                    ObrasArtisticas obrasArtisticas = new ObrasArtisticas();
-                    obrasArtisticas.ID = fila["item"].value;
-                    obrasArtisticas.descripcion = fila["itemTitle"].value;
-                    obrasArtisticas.fecha = "";
-                    if (fila.ContainsKey("itemDate"))
+                    ObrasArtisticas obrasArtisticas = new ObrasArtisticas
                     {
-                        obrasArtisticas.fecha = fila["itemDate"].value;
-                    }
+                        ID = fila["item"].value,
+                        descripcion = fila["itemTitle"].value,
+                        fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : ""
+                    };
+
                     resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), obrasArtisticas);
                 }
             }

@@ -16,13 +16,13 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
         public string descripcion { get; set; }
         public string fecha { get; set; }
 
-        private static DisambiguationDataConfig configDescripcion = new DisambiguationDataConfig()
+        private static readonly DisambiguationDataConfig configDescripcion = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsTitle,
             score = 0.8f
         };
 
-        private static DisambiguationDataConfig configFecha = new DisambiguationDataConfig()
+        private static readonly DisambiguationDataConfig configFecha = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsItem,
             score = 0.5f,
@@ -31,24 +31,33 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
-            List<DisambiguationData> data = new List<DisambiguationData>();
-
-            data.Add(new DisambiguationData()
+            List<DisambiguationData> data = new List<DisambiguationData>
             {
-                property = "descripcion",
-                config = configDescripcion,
-                value = descripcion
-            });
+                new DisambiguationData()
+                {
+                    property = "descripcion",
+                    config = configDescripcion,
+                    value = descripcion
+                },
 
-            data.Add(new DisambiguationData()
-            {
-                property = "fecha",
-                config = configFecha,
-                value = fecha
-            });
+                new DisambiguationData()
+                {
+                    property = "fecha",
+                    config = configFecha,
+                    value = fecha
+                }
+            };
             return data;
         }
 
+        /// <summary>
+        /// Devuelve las entidades de BBDD del <paramref name="pCVID"/> de con las propiedades de <paramref name="propiedadesItem"/>
+        /// </summary>
+        /// <param name="pResourceApi">pResourceApi</param>
+        /// <param name="pCVID">pCVID</param>
+        /// <param name="graph">graph</param>
+        /// <param name="propiedadesItem">propiedadesItem</param>
+        /// <returns></returns>
         public static Dictionary<string, DisambiguableEntity> GetBBDD(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
         {
             //Obtenemos IDS
@@ -71,14 +80,13 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
                 SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, graph);
                 foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                 {
-                    ParticipacionProyectosInnovacionDocente participacionProyectos = new ParticipacionProyectosInnovacionDocente();
-                    participacionProyectos.ID = fila["item"].value;
-                    participacionProyectos.descripcion = fila["itemTitle"].value;
-                    participacionProyectos.fecha = "";
-                    if (fila.ContainsKey("itemDate"))
+                    ParticipacionProyectosInnovacionDocente participacionProyectos = new ParticipacionProyectosInnovacionDocente
                     {
-                        participacionProyectos.fecha = fila["itemDate"].value;
-                    }
+                        ID = fila["item"].value,
+                        descripcion = fila["itemTitle"].value,
+                        fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : ""
+                    };
+
                     resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), participacionProyectos);
                 }
             }

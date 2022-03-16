@@ -177,7 +177,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             else
             {
                 //4º Añadimos o modificamos las entidades
-                AniadirModificarPublicaciones(listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix,
+                AniadirModificarPublicaciones(listadoAux, equivalencias, propTitle, graph, rdfType, rdfTypePrefix,
                     propiedadesItem, RdfTypeTab, "http://w3id.org/roh/relatedScientificPublicationCV", "http://w3id.org/roh/RelatedScientificPublicationCV");
                 return null;
             }

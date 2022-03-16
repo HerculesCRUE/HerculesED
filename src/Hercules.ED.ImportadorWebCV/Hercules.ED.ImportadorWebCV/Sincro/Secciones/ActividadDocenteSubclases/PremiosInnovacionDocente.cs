@@ -13,16 +13,24 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
 {
     class PremiosInnovacionDocente : DisambiguableEntity
     {
-        public string descripcion { get; set; }
+        public string nombre { get; set; }
         public string fecha { get; set; }
+        public string entidadConcesion { get; set; }
 
-        private static DisambiguationDataConfig configDescripcion = new DisambiguationDataConfig()
+        private static readonly DisambiguationDataConfig configNombre = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsTitle,
             score = 0.8f
         };
 
-        private static DisambiguationDataConfig configFecha = new DisambiguationDataConfig()
+        private static readonly DisambiguationDataConfig configFecha = new DisambiguationDataConfig()
+        {
+            type = DisambiguationDataConfigType.equalsItem,
+            score = 0.5f,
+            scoreMinus = 0.5f
+        };
+
+        private static readonly DisambiguationDataConfig configEC = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsItem,
             score = 0.5f,
@@ -31,24 +39,40 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
-            List<DisambiguationData> data = new List<DisambiguationData>();
-
-            data.Add(new DisambiguationData()
+            List<DisambiguationData> data = new List<DisambiguationData>
             {
-                property = "descripcion",
-                config = configDescripcion,
-                value = descripcion
-            });
+                new DisambiguationData()
+                {
+                    property = "descripcion",
+                    config = configNombre,
+                    value = nombre
+                },
 
-            data.Add(new DisambiguationData()
-            {
-                property = "fecha",
-                config = configFecha,
-                value = fecha
-            });
+                new DisambiguationData()
+                {
+                    property = "fecha",
+                    config = configFecha,
+                    value = fecha
+                },
+
+                new DisambiguationData()
+                {
+                    property = "entidadConcesion",
+                    config = configEC,
+                    value = entidadConcesion
+                }
+            };
             return data;
         }
 
+        /// <summary>
+        /// Devuelve las entidades de BBDD del <paramref name="pCVID"/> de con las propiedades de <paramref name="propiedadesItem"/>
+        /// </summary>
+        /// <param name="pResourceApi">pResourceApi</param>
+        /// <param name="pCVID">pCVID</param>
+        /// <param name="graph">graph</param>
+        /// <param name="propiedadesItem">propiedadesItem</param>
+        /// <returns></returns>
         public static Dictionary<string, DisambiguableEntity> GetBBDD(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
         {
             //Obtenemos IDS
@@ -61,24 +85,25 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
 
             foreach (List<string> lista in listaListas)
             {
-                string select = $@"SELECT distinct ?item ?itemTitle ?itemDate ";
+                string select = $@"SELECT distinct ?item ?itemTitle ?itemDate ?itemEC ";
                 string where = $@"where {{
                                         ?item <{Variables.ActividadDocente.premiosInnovaNombre}> ?itemTitle . 
                                         OPTIONAL{{?item <{Variables.ActividadDocente.premiosInnovaFechaConcesion}> ?itemDate }}.
+                                        OPTIONAL{{?item <{Variables.ActividadDocente.premiosInnovaEntidadConcesionariaNombre}> ?itemEC }}.
                                         FILTER(?item in (<{string.Join(">,<", lista)}>))
                                     }}";
                 //TODO check where valores
                 SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, graph);
                 foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                 {
-                    PremiosInnovacionDocente premiosInnovacion = new PremiosInnovacionDocente();
-                    premiosInnovacion.ID = fila["item"].value;
-                    premiosInnovacion.descripcion = fila["itemTitle"].value;
-                    premiosInnovacion.fecha = "";
-                    if (fila.ContainsKey("itemDate"))
+                    PremiosInnovacionDocente premiosInnovacion = new PremiosInnovacionDocente
                     {
-                        premiosInnovacion.fecha = fila["itemDate"].value;
-                    }
+                        ID = fila["item"].value,
+                        nombre = fila["itemTitle"].value,
+                        fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : "",
+                        entidadConcesion = fila.ContainsKey("itemEC") ? fila["itemEC"].value : ""
+                    };
+
                     resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), premiosInnovacion);
                 }
             }
