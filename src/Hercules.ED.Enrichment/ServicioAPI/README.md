@@ -7,7 +7,7 @@ API providing access for the extraction of thematic and specific descriptors fro
 
 Install Ubuntu dependencies:
 ```
-$ sudo apt install python3-dev libhunspell-dev poppler-utils
+$ sudo apt install python3-dev poppler-utils
 ```
 
 Create a vritual environment with the necessary requirements:
