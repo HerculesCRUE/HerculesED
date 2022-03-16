@@ -14,7 +14,11 @@ namespace ImportadorWebCV.Variables
         public const string direccionTesisTipoProyecto = "";
         public const string direccionTesisTipoProyectoOtros = "";
         public const string direccionTesisTituloTrabajo = "";
-        public const string direccionTesisCodirectorTesis = "";
+        public const string direccionTesisCodirectorTesisOrden = "";
+        public const string direccionTesisCodirectorTesisFirma = "";
+        public const string direccionTesisCodirectorTesisNombre = "";
+        public const string direccionTesisCodirectorTesisPrimerApellido = "";
+        public const string direccionTesisCodirectorTesisSegundoApellido = "";
         public const string direccionTesisPaisEntidadRealizacion = "";
         public const string direccionTesisCCAAEntidadRealizacion = "";
         public const string direccionTesisCiudadEntidadRealizacion = "";
@@ -22,7 +26,10 @@ namespace ImportadorWebCV.Variables
         public const string direccionTesisEntidadRealizacionNombre = "";
         public const string direccionTesisTipoEntidadRealizacion = "";
         public const string direccionTesisTipoEntidadRealizacionOtros = "";
-        public const string direccionTesisAlumno = "";
+        public const string direccionTesisAlumnoFirma = "";
+        public const string direccionTesisAlumnoNombre = "";
+        public const string direccionTesisAlumnoPrimerApellido = "";
+        public const string direccionTesisAlumnoSegundoApellido = "";
         public const string direccionTesisPalabrasClave = "";
         public const string direccionTesisFechaDefensa = "";
         public const string direccionTesisCalificacionObtenida = "";
@@ -65,6 +72,7 @@ namespace ImportadorWebCV.Variables
         public const string formacionAcademicaCCAAEntidadEvaluacion = "";
         public const string formacionAcademicaCiudadEntidadEvaluacion = "";
         public const string formacionAcademicaEntidadEvaluacion = "";
+        public const string formacionAcademicaEntidadEvaluacionNombre = "";
         public const string formacionAcademicaTipoEntidadEvaluacion = "";
         public const string formacionAcademicaTipoEntidadEvaluacionOtros = "";
         public const string formacionAcademicaTipoEvaluacion = "";
@@ -134,7 +142,11 @@ namespace ImportadorWebCV.Variables
         /// </summary>
         public const string publicacionDocenteNombre = "";
         public const string publicacionDocentePerfilDestinatario = "";
-        public const string publicacionDocenteAutores = "";
+        public const string publicacionDocenteAutorFirma = "";
+        public const string publicacionDocenteAutorNombre = "";
+        public const string publicacionDocenteAutorOrden = "";
+        public const string publicacionDocenteAutorPrimerApellido = "";
+        public const string publicacionDocenteAutorSegundoApellido = "";
         public const string publicacionDocentePosicionFirma = "";
         public const string publicacionDocenteFechaElaboracion = "";
         public const string publicacionDocenteTipologiaSoporte = "";
@@ -187,7 +199,10 @@ namespace ImportadorWebCV.Variables
         public const string participacionInnovaDuracionParticipacionMes = "";
         public const string participacionInnovaDuracionParticipacionDia = "";
         public const string participacionInnovaFechaFinalizacionParticipacion = "";
+        public const string participacionInnovaFirmaIP = "";
         public const string participacionInnovaNombreIP = "";
+        public const string participacionInnovaPrimerApellidoIP = "";
+        public const string participacionInnovaSegundoApellidoIP = "";
         public const string participacionInnovaNumParticipantes = "";
         public const string participacionInnovaImporteConcedido = "";
         public const string participacionInnovaAmbitoProyecto = "";
@@ -220,6 +235,7 @@ namespace ImportadorWebCV.Variables
         public const string participaCongresosTituloPublicacion = "";
         public const string participaCongresosNombrePublicacion = "";
         public const string participaCongresosVolumenPublicacion = "";
+        public const string participaCongresosNumeroPublicacion = "";
         public const string participaCongresosPagIniPublicacion = "";
         public const string participaCongresosPagFinalPublicacion = "";
         public const string participaCongresosEditorialPublicacion = "";
@@ -273,16 +289,16 @@ namespace ImportadorWebCV.Variables
         /// <summary>
         /// Aportaciones más relevantes de su CV de docencia - 030.110.000.000
         /// </summary>
-        public const string aportacionesCVDescripcion = "";
-        public const string aportacionesCVPalabrasClave = "";
-        public const string aportacionesCVPaisRealizacion = "";
-        public const string aportacionesCVCCAARealizacion = "";
-        public const string aportacionesCVCiudadRealizacion = "";
-        public const string aportacionesCVEntidadOrganizadora = "";
-        public const string aportacionesCVEntidadOrganizadoraNombre = "";
-        public const string aportacionesCVTipoEntidadOrganizadora = "";
-        public const string aportacionesCVTipoEntidadOrganizadoraOtros = "";
-        public const string aportacionesCVFechaFinalizacion = "";
+        public const string aportacionesCVDescripcion = "http://w3id.org/roh/title";
+        public const string aportacionesCVPalabrasClave = "http://vivoweb.org/ontology/core#freeTextKeyword@@@http://w3id.org/roh/CategoryPath|http://w3id.org/roh/categoryNode";
+        public const string aportacionesCVPaisRealizacion = "https://www.w3.org/2006/vcard/ns#hasCountryName";
+        public const string aportacionesCVCCAARealizacion = "https://www.w3.org/2006/vcard/ns#hasRegion";
+        public const string aportacionesCVCiudadRealizacion = "https://www.w3.org/2006/vcard/ns#locality";
+        public const string aportacionesCVEntidadOrganizadora = "http://w3id.org/roh/promotedBy";
+        public const string aportacionesCVEntidadOrganizadoraNombre = "http://w3id.org/roh/promotedByTitle";
+        public const string aportacionesCVTipoEntidadOrganizadora = "http://w3id.org/roh/promotedByType";
+        public const string aportacionesCVTipoEntidadOrganizadoraOtros = "http://w3id.org/roh/promotedByTypeOther";
+        public const string aportacionesCVFechaFinalizacion = "http://vivoweb.org/ontology/core#end";
 
     }
 }
