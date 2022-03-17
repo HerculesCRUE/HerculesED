@@ -5,32 +5,32 @@
         /// <summary>
         /// Dirección de tesis doctorales y/o proyectos fin de carrera - 030.040.000.000
         /// </summary>
-        public const string direccionTesisTipoProyecto = "";
-        public const string direccionTesisTipoProyectoOtros = "";
-        public const string direccionTesisTituloTrabajo = "";
-        public const string direccionTesisCodirectorTesisOrden = "";
-        public const string direccionTesisCodirectorTesisFirma = "";
-        public const string direccionTesisCodirectorTesisNombre = "";
-        public const string direccionTesisCodirectorTesisPrimerApellido = "";
-        public const string direccionTesisCodirectorTesisSegundoApellido = "";
-        public const string direccionTesisPaisEntidadRealizacion = "";
-        public const string direccionTesisCCAAEntidadRealizacion = "";
-        public const string direccionTesisCiudadEntidadRealizacion = "";
-        public const string direccionTesisEntidadRealizacion = "";
-        public const string direccionTesisEntidadRealizacionNombre = "";
-        public const string direccionTesisTipoEntidadRealizacion = "";
-        public const string direccionTesisTipoEntidadRealizacionOtros = "";
-        public const string direccionTesisAlumnoFirma = "";
-        public const string direccionTesisAlumnoNombre = "";
-        public const string direccionTesisAlumnoPrimerApellido = "";
-        public const string direccionTesisAlumnoSegundoApellido = "";
-        public const string direccionTesisPalabrasClave = "";
-        public const string direccionTesisFechaDefensa = "";
-        public const string direccionTesisCalificacionObtenida = "";
-        public const string direccionTesisFechaMencionDoctUE = "";
-        public const string direccionTesisMencionCalidad = "";
-        public const string direccionTesisDoctoradoUE = "";
-        public const string direccionTesisFechaMencionCalidad = "";
+        public const string direccionTesisTipoProyecto = "http://w3id.org/roh/projectCharacterType";
+        public const string direccionTesisTipoProyectoOtros = "http://w3id.org/roh/projectCharacterTypeOther";
+        public const string direccionTesisTituloTrabajo = "http://w3id.org/roh/title";
+        public const string direccionTesisCodirectorTesisOrden = "http://w3id.org/roh/codirector@@@http://xmlns.com/foaf/0.1/Person|http://www.w3.org/1999/02/22-rdf-syntax-ns#comment";
+        public const string direccionTesisCodirectorTesisFirma = "http://w3id.org/roh/codirector@@@http://xmlns.com/foaf/0.1/Person|http://xmlns.com/foaf/0.1/nick";
+        public const string direccionTesisCodirectorTesisNombre = "http://w3id.org/roh/codirector@@@http://xmlns.com/foaf/0.1/Person|http://xmlns.com/foaf/0.1/firstName";
+        public const string direccionTesisCodirectorTesisPrimerApellido = "http://w3id.org/roh/codirector@@@http://xmlns.com/foaf/0.1/Person|http://xmlns.com/foaf/0.1/familyName";
+        public const string direccionTesisCodirectorTesisSegundoApellido = "http://w3id.org/roh/codirector@@@http://xmlns.com/foaf/0.1/Person|http://w3id.org/roh/secondFamilyName";
+        public const string direccionTesisPaisEntidadRealizacion = "https://www.w3.org/2006/vcard/ns#hasCountryName";
+        public const string direccionTesisCCAAEntidadRealizacion = "https://www.w3.org/2006/vcard/ns#hasRegion";
+        public const string direccionTesisCiudadEntidadRealizacion = "https://www.w3.org/2006/vcard/ns#locality";
+        public const string direccionTesisEntidadRealizacion = "http://w3id.org/roh/promotedBy";
+        public const string direccionTesisEntidadRealizacionNombre = "http://w3id.org/roh/promotedByTitle";
+        public const string direccionTesisTipoEntidadRealizacion = "http://w3id.org/roh/promotedByType";
+        public const string direccionTesisTipoEntidadRealizacionOtros = "http://w3id.org/roh/promotedByTypeOther";
+        public const string direccionTesisAlumnoFirma = "http://w3id.org/roh/studentNick";
+        public const string direccionTesisAlumnoNombre = "http://w3id.org/roh/studentName";
+        public const string direccionTesisAlumnoPrimerApellido = "http://w3id.org/roh/studentFirstSurname";
+        public const string direccionTesisAlumnoSegundoApellido = "http://w3id.org/roh/studentSecondSurname";
+        public const string direccionTesisPalabrasClave = "http://vivoweb.org/ontology/core#freeTextKeyword@@@http://w3id.org/roh/CategoryPath|http://w3id.org/roh/categoryNode";
+        public const string direccionTesisFechaDefensa = "http://purl.org/dc/terms/issued";
+        public const string direccionTesisCalificacionObtenida = "http://w3id.org/roh/qualification";
+        public const string direccionTesisFechaMencionDoctUE = "http://w3id.org/roh/europeanDoctorateDate";
+        public const string direccionTesisMencionCalidad = "http://w3id.org/roh/qualityMention";
+        public const string direccionTesisDoctoradoUE = "http://w3id.org/roh/europeanDoctorate";
+        public const string direccionTesisFechaMencionCalidad = "http://w3id.org/roh/qualityMentionDate";
 
         /// <summary>
         /// Formación académica impartida - 030.010.000.000
