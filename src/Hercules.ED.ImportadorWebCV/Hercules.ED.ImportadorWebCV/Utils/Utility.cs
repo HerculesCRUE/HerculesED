@@ -1995,6 +1995,28 @@ namespace Utils
         }
 
         /// <summary>
+        /// Devuelve el tipo de participación como respuesta,
+        /// con formato mResourceApi.GraphsUrl + "items/participationtypedocument_" + valor
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="codigo"></param>
+        /// <returns></returns>
+        public static string GetTipoParticipacionDocumentoPorIDCampo(this CvnItemBean item, string codigo)
+        {
+            if (!CodigoCampoCorrecto(codigo))
+            {
+                throw new ArgumentException("Codigo de campo incorrecto" + codigo);
+            }
+
+            CvnItemBeanCvnString campo = item.Items.Where(x => x.Code.Equals(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
+            if (campo != null&& !string.IsNullOrEmpty(campo.Value))
+            {
+                return mResourceApi.GraphsUrl + "items/participationtypedocument_" + campo.Value;
+            }
+            return null;
+        }
+
+        /// <summary>
         /// Devuelve la modalidad del proyecto como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/projectmodality_" + valor
         /// </summary>
