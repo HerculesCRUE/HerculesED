@@ -2510,6 +2510,19 @@
               },
               {
                 "name": {
+                  "es": "Horas impartidas"
+                },
+                "type": "number",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "impartedcoursesseminars",
+                  "child": {
+                    "property": "http://w3id.org/roh/durationHours"
+                  }
+                }
+              },
+              {
+                "name": {
                   "es": "Entidad organizadora"
                 },
                 "showMini": true,
