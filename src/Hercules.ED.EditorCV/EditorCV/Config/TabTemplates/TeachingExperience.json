@@ -2517,7 +2517,7 @@
                   "property": "http://vivoweb.org/ontology/core#relatedBy",
                   "graph": "impartedcoursesseminars",
                   "child": {
-                    "property": "http://w3id.org/roh/durationHours"
+                    "property": "http://w3id.org/roh/durationHours" 
                   }
                 }
               },
