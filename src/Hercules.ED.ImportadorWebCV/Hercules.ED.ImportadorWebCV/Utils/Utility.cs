@@ -1,10 +1,12 @@
 ﻿using Gnoss.ApiWrapper;
 using ImportadorWebCV;
+using Models;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using static Models.Entity;
 
 namespace Utils
 {
@@ -2126,6 +2128,36 @@ namespace Utils
 
             return listadoCodigos;
         }
-    }
 
+        /// <summary>
+        /// Añade la referencia a la entidad <paramref name="propiedadNombreTitulacion"/> si esta se encuentra en BBDD.
+        /// </summary>
+        /// <param name="mResourceApi"></param>
+        /// <param name="nombreTitulacion"></param>
+        /// <param name="propiedadNombreTitulacion"></param>
+        /// <param name="propiedadTitulacion"></param>
+        /// <param name="entidadAux"></param>
+        public static void AniadirTitulacion(ResourceApi mResourceApi, CvnItemBeanCvnTitleBean titulacion, string propiedadNombreTitulacion, string propiedadTitulacion, Entity entidadAux)
+        {
+            if (mResourceApi == null || titulacion == null ||
+                   string.IsNullOrEmpty(propiedadTitulacion) || string.IsNullOrEmpty(propiedadTitulacion))
+            { return; }
+
+            if (!string.IsNullOrEmpty(titulacion.Identification))
+            {
+                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                    new Property(propiedadNombreTitulacion, titulacion.Name),
+                    new Property(propiedadTitulacion, mResourceApi.GraphsUrl + "items/degreetype_" + titulacion.Identification)
+                ));
+            }
+            else
+            {
+                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                       new Property(propiedadNombreTitulacion, titulacion.Name)
+                ));
+                entidadAux.properties.Add(new Property(propiedadTitulacion, ""));
+            }
+        }
+    
+    }
 }
