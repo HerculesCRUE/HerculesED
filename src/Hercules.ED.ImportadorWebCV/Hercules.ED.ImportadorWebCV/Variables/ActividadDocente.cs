@@ -105,30 +105,31 @@
         /// <summary>
         /// Cursos y seminarios impartidos orientados a la formación docente universitaria - 030.060.000.000
         /// </summary>
-        public const string cursosSeminariosTipoEvento = "";
-        public const string cursosSeminariosTipoEventoOtros = "";
-        public const string cursosSeminariosNombreEvento = "";
-        public const string cursosSeminariosPaisEntidadOrganizadora = "";
-        public const string cursosSeminariosCCAAEntidadOrganizadora = "";
-        public const string cursosSeminariosCiudadEntidadOrganizadora = "";
-        public const string cursosSeminariosEntidadOrganizadoraNombre = "";
-        public const string cursosSeminariosEntidadOrganizadora = "";
-        public const string cursosSeminariosTipoEntidadOrganizadora = "";
-        public const string cursosSeminariosTipoEntidadOrganizadoraOtros = "";
-        public const string cursosSeminariosObjetivosCurso = "";
-        public const string cursosSeminariosPerfilDestinatarios = "";
-        public const string cursosSeminariosIdiomaImpartio = "";
-        public const string cursosSeminariosFechaImparticion = "";
-        public const string cursosSeminariosHorasImpartidas = "";
-        public const string cursosSeminariosTipoParticipacion = "";
-        public const string cursosSeminariosTipoParticipacionOtros = "";
-        public const string cursosSeminariosISBN = "";
-        public const string cursosSeminariosAutorCorrespondencia = "";
-        public const string cursosSeminariosIDPubDigitalDOI = "";
-        public const string cursosSeminariosIDPubDigitalHandle = "";
-        public const string cursosSeminariosIDPubDigitalPMID = "";
-        public const string cursosSeminariosNombreOtroIDPubDigital = "";
-        public const string cursosSeminariosIDOtroPubDigital = "";
+        public const string cursosSeminariosTipoEvento = "http://w3id.org/roh/eventType";
+        public const string cursosSeminariosTipoEventoOtros = "http://w3id.org/roh/eventTypeOther";
+        public const string cursosSeminariosNombreEvento = "http://w3id.org/roh/title";
+        public const string cursosSeminariosPaisEntidadOrganizadora = "https://www.w3.org/2006/vcard/ns#hasCountryName";
+        public const string cursosSeminariosCCAAEntidadOrganizadora = "https://www.w3.org/2006/vcard/ns#hasRegion";
+        public const string cursosSeminariosCiudadEntidadOrganizadora = "https://www.w3.org/2006/vcard/ns#locality";
+        public const string cursosSeminariosEntidadOrganizadoraNombre = "http://w3id.org/roh/promotedByTitle";
+        public const string cursosSeminariosEntidadOrganizadora = "http://w3id.org/roh/promotedBy";
+        public const string cursosSeminariosTipoEntidadOrganizadora = "http://w3id.org/roh/promotedByType";
+        public const string cursosSeminariosTipoEntidadOrganizadoraOtros = "http://w3id.org/roh/promotedByTypeOther";
+        public const string cursosSeminariosObjetivosCurso = "http://w3id.org/roh/goals";
+        public const string cursosSeminariosPerfilDestinatarios = "http://w3id.org/roh/targetProfile";
+        public const string cursosSeminariosIdiomaImpartio = "https://www.w3.org/2006/vcard/ns#hasLanguage";
+        public const string cursosSeminariosFechaImparticion = "http://vivoweb.org/ontology/core#start";
+        public const string cursosSeminariosHorasImpartidas = "http://w3id.org/roh/durationHours";
+        public const string cursosSeminariosTipoParticipacion = "http://w3id.org/roh/participationType";
+        public const string cursosSeminariosTipoParticipacionOtros = "http://w3id.org/roh/participationTypeOther";
+        public const string cursosSeminariosISBN = "http://w3id.org/roh/isbn";
+        public const string cursosSeminariosISSN = "http://purl.org/ontology/bibo/issn";
+        public const string cursosSeminariosAutorCorrespondencia = "http://w3id.org/roh/correspondingAuthor";
+        public const string cursosSeminariosIDPubDigitalDOI = "http://purl.org/ontology/bibo/doi";
+        public const string cursosSeminariosIDPubDigitalHandle = "http://purl.org/ontology/bibo/handle";
+        public const string cursosSeminariosIDPubDigitalPMID = "http://purl.org/ontology/bibo/pmid";
+        public const string cursosSeminariosNombreOtroIDPubDigital = "http://purl.org/ontology/bibo/identifier@@@http://xmlns.com/foaf/0.1/Document|http://xmlns.com/foaf/0.1/topic";
+        public const string cursosSeminariosIDOtroPubDigital = "http://purl.org/ontology/bibo/identifier@@@http://xmlns.com/foaf/0.1/Document|http://purl.org/dc/elements/1.1/title";
 
 
         /// <summary>
@@ -157,6 +158,7 @@
         public const string publicacionDocenteFechaPublicacion = "";
         public const string publicacionDocenteURLPublicacion = "";
         public const string publicacionDocenteISBNPublicacion = "";
+        public const string publicacionDocenteISSNPublicacion = "";
         public const string publicacionDocenteDepositoLegal = "";
         public const string publicacionDocenteJustificacionMaterial = "";
         public const string publicacionDocenteGradoContribucion = "";
