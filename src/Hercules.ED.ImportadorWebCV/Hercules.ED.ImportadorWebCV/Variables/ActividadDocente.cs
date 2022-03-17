@@ -148,6 +148,7 @@
         public const string publicacionDocenteTituloPublicacion = "";
         public const string publicacionDocenteNombrePublicacion = "";
         public const string publicacionDocenteVolumenPublicacion = "";
+        public const string publicacionDocenteNumeroPublicacion = "";
         public const string publicacionDocentePagIniPublicacion = "";
         public const string publicacionDocentePagFinalPublicacion = "";
         public const string publicacionDocenteEditorialPublicacion = "";
