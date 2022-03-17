@@ -111,7 +111,7 @@
               },
               {
                 "name": {
-                  "es": "Primer Apellido (Alumno)"
+                  "es": "Primer apellido (Alumno)"
                 },
                 "type": "text",
                 "child": {
@@ -124,7 +124,7 @@
               },
               {
                 "name": {
-                  "es": "Segundo Apellido (Alumno)"
+                  "es": "Segundo apellido (Alumno)"
                 },
                 "type": "text",
                 "child": {
@@ -209,7 +209,7 @@
                     "property": "http://vivoweb.org/ontology/core#relatedBy",
                     "graph": "thesissupervision",
                     "child": {
-                      "property": "http://w3id.org/roh/ProjectCharacterType",
+                      "property": "http://w3id.org/roh/projectCharacterType",
                       "graph": "projectcharactertype",
                       "child": {
                         "property": "http://purl.org/dc/elements/1.1/title"
@@ -235,6 +235,7 @@
                 "name": {
                   "es": "Mención de calidad"
                 },
+                "type": "boolean",
                 "child": {
                   "property": "http://vivoweb.org/ontology/core#relatedBy",
                   "graph": "thesissupervision",
@@ -260,6 +261,7 @@
                 "name": {
                   "es": "Doctorado Europeo"
                 },
+                "type": "boolean",
                 "child": {
                   "property": "http://vivoweb.org/ontology/core#relatedBy",
                   "graph": "thesissupervision",
@@ -327,7 +329,6 @@
                           "es": "Introduce la firma"
                         },
                         "property": "http://w3id.org/roh/studentNick",
-                        "required": true,
                         "type": "text",
                         "width": 1
                       },
@@ -339,31 +340,28 @@
                           "es": "Introduce el nombre"
                         },
                         "property": "http://w3id.org/roh/studentName",
-                        "required": true,
                         "type": "text",
                         "width": 1
                       },
                       {
                         "title": {
-                          "es": "Primer Apellido (Alumno)"
+                          "es": "Primer apellido (Alumno)"
                         },
                         "placeholder": {
                           "es": "Introduce el primer apellido"
                         },
                         "property": "http://w3id.org/roh/studentFirstSurname",
-                        "required": true,
                         "type": "text",
                         "width": 1
                       },
                       {
                         "title": {
-                          "es": "Segundo Apellido (Alumno)"
+                          "es": "Segundo apellido (Alumno)"
                         },
                         "placeholder": {
                           "es": "Introduce el segundo apellido"
                         },
                         "property": "http://w3id.org/roh/studentSecondSurname",
-                        "required": true,
                         "type": "text",
                         "width": 1
                       }
@@ -540,7 +538,7 @@
                           "properties": [
                             {
                               "name": {
-                                "es": "Primer Apellido"
+                                "es": "Primer apellido"
                               },
                               "child": {
                                 "property": "http://xmlns.com/foaf/0.1/familyName"
@@ -570,6 +568,9 @@
                                   "title": {
                                     "es": "Nombre"
                                   },
+                                  "placeholder": {
+                                    "es": "Introduce el nombre"
+                                  },
                                   "required": true,
                                   "property": "http://xmlns.com/foaf/0.1/firstName",
                                   "type": "text",
@@ -577,7 +578,10 @@
                                 },
                                 {
                                   "title": {
-                                    "es": "Primer Apellido"
+                                    "es": "Primera apellido"
+                                  },
+                                  "placeholder": {
+                                    "es": "Introduce el primer apellido"
                                   },
                                   "property": "http://xmlns.com/foaf/0.1/familyName",
                                   "type": "text",
@@ -585,7 +589,10 @@
                                 },
                                 {
                                   "title": {
-                                    "es": "Segundo Apellido"
+                                    "es": "Segundo apellido"
+                                  },
+                                  "placeholder": {
+                                    "es": "Introduce el segundo apellido"
                                   },
                                   "property": "http://w3id.org/roh/secondFamilyName",
                                   "type": "text",
@@ -619,7 +626,6 @@
                           "es": "Introduce la calificación obtenida"
                         },
                         "property": "http://w3id.org/roh/qualification",
-                        "required": true,
                         "type": "text",
                         "width": 2
                       }
