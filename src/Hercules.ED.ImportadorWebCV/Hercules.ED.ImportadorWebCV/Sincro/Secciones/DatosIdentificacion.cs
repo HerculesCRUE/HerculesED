@@ -123,22 +123,6 @@ namespace ImportadorWebCV.Sincro.Secciones
         }
 
         /// <summary>
-        /// Dados un GUID concatenado con "|" y un string en caso de que 
-        /// el string no sea nulo los concatena, sino devuelve null.
-        /// </summary>
-        /// <param name="entityAux">GUID concatenado con "|"</param>
-        /// <param name="valor">Valor del parametro</param>
-        /// <returns>String de concatenar los parametros, o nulo si el valor es vacio</returns>
-        private string StringGNOSSID(string entityAux, string valor)
-        {
-            if (!string.IsNullOrEmpty(valor))
-            {
-                return entityAux + valor;
-            }
-            return null;
-        }
-
-        /// <summary>
         ///  Lee del listado los Otros identificadores,
         ///  en caso de existir los añade en entity, 
         ///  y los marca para eliminar de entityBBDD
@@ -161,8 +145,8 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                     string entityAux = Guid.NewGuid().ToString() + "|";
                     entity.properties.AddRange(UtilitySecciones.AddProperty(
-                        new Property(Variables.DatosIdentificacion.otroIdentificador, StringGNOSSID(entityAux, item.Others)),
-                        new Property(Variables.DatosIdentificacion.otroIdentificadorTitulo, StringGNOSSID(entityAux, item.Value))
+                        new Property(Variables.DatosIdentificacion.otroIdentificador, UtilitySecciones.StringGNOSSID(entityAux, item.Others)),
+                        new Property(Variables.DatosIdentificacion.otroIdentificadorTitulo, UtilitySecciones.StringGNOSSID(entityAux, item.Value))
                     ));
                     entity.auxEntityRemove.AddRange(entityBBDD.properties.Where(x => x.prop.Contains("http://w3id.org/roh/otherIds")).SelectMany(x => x.values).Select(x => x.Substring(0, x.IndexOf("@@@"))));
                 }
@@ -186,13 +170,13 @@ namespace ImportadorWebCV.Sincro.Secciones
 
             string entityAux = Guid.NewGuid().ToString() + "|";
             entity.properties.AddRange(UtilitySecciones.AddProperty(
-                new Property(Variables.DatosIdentificacion.direccionContactoCiudad, StringGNOSSID(entityAux, listadoDatosIdentificacion.GetStringPorIDCampo("000.010.000.170"))),
-                new Property(Variables.DatosIdentificacion.direccionContacto, StringGNOSSID(entityAux, listadoDatosIdentificacion.GetStringPorIDCampo("000.010.000.140"))),
-                new Property(Variables.DatosIdentificacion.direccionContactoResto, StringGNOSSID(entityAux, listadoDatosIdentificacion.GetStringPorIDCampo("000.010.000.150"))),
-                new Property(Variables.DatosIdentificacion.direccionContactoCodPostal, StringGNOSSID(entityAux, listadoDatosIdentificacion.GetStringPorIDCampo("000.010.000.160"))),
-                new Property(Variables.DatosIdentificacion.direccionContactoPais, StringGNOSSID(entityAux, listadoDatosIdentificacion.GetPaisPorIDCampo("000.010.000.180"))),
-                new Property(Variables.DatosIdentificacion.direccionContactoRegion, StringGNOSSID(entityAux, listadoDatosIdentificacion.GetRegionPorIDCampo("000.010.000.190"))),
-                new Property(Variables.DatosIdentificacion.direccionContactoProvincia, StringGNOSSID(entityAux, listadoDatosIdentificacion.GetProvinciaPorIDCampo("000.010.000.200")))
+                new Property(Variables.DatosIdentificacion.direccionContactoCiudad, UtilitySecciones.StringGNOSSID(entityAux, listadoDatosIdentificacion.GetStringPorIDCampo("000.010.000.170"))),
+                new Property(Variables.DatosIdentificacion.direccionContacto, UtilitySecciones.StringGNOSSID(entityAux, listadoDatosIdentificacion.GetStringPorIDCampo("000.010.000.140"))),
+                new Property(Variables.DatosIdentificacion.direccionContactoResto, UtilitySecciones.StringGNOSSID(entityAux, listadoDatosIdentificacion.GetStringPorIDCampo("000.010.000.150"))),
+                new Property(Variables.DatosIdentificacion.direccionContactoCodPostal, UtilitySecciones.StringGNOSSID(entityAux, listadoDatosIdentificacion.GetStringPorIDCampo("000.010.000.160"))),
+                new Property(Variables.DatosIdentificacion.direccionContactoPais, UtilitySecciones.StringGNOSSID(entityAux, listadoDatosIdentificacion.GetPaisPorIDCampo("000.010.000.180"))),
+                new Property(Variables.DatosIdentificacion.direccionContactoRegion, UtilitySecciones.StringGNOSSID(entityAux, listadoDatosIdentificacion.GetRegionPorIDCampo("000.010.000.190"))),
+                new Property(Variables.DatosIdentificacion.direccionContactoProvincia, UtilitySecciones.StringGNOSSID(entityAux, listadoDatosIdentificacion.GetProvinciaPorIDCampo("000.010.000.200")))
             ));
             entity.auxEntityRemove.AddRange(entityBBDD.properties.Where(x => x.prop.Contains("https://www.w3.org/2006/vcard/ns#address")).SelectMany(x => x.values).Select(x => x.Substring(0, x.IndexOf("@@@"))));
         }
@@ -213,9 +197,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             }
             string entityAux = Guid.NewGuid().ToString() + "|";
             entity.properties.AddRange(UtilitySecciones.AddProperty(
-                new Property(Variables.DatosIdentificacion.direccionNacimientoCiudad, StringGNOSSID(entityAux, listadoDatosIdentificacion.GetStringPorIDCampo("000.010.000.090"))),
-                new Property(Variables.DatosIdentificacion.direccionNacimientoPais, StringGNOSSID(entityAux, listadoDatosIdentificacion.GetPaisPorIDCampo("000.010.000.060"))),
-                new Property(Variables.DatosIdentificacion.direccionNacimientoRegion, StringGNOSSID(entityAux, listadoDatosIdentificacion.GetRegionPorIDCampo("000.010.000.070")))
+                new Property(Variables.DatosIdentificacion.direccionNacimientoCiudad, UtilitySecciones.StringGNOSSID(entityAux, listadoDatosIdentificacion.GetStringPorIDCampo("000.010.000.090"))),
+                new Property(Variables.DatosIdentificacion.direccionNacimientoPais, UtilitySecciones.StringGNOSSID(entityAux, listadoDatosIdentificacion.GetPaisPorIDCampo("000.010.000.060"))),
+                new Property(Variables.DatosIdentificacion.direccionNacimientoRegion, UtilitySecciones.StringGNOSSID(entityAux, listadoDatosIdentificacion.GetRegionPorIDCampo("000.010.000.070")))
             ));
             entity.auxEntityRemove.AddRange(entityBBDD.properties.Where(x => x.prop.Contains("http://w3id.org/roh/birthplace")).SelectMany(x => x.values).Select(x => x.Substring(0, x.IndexOf("@@@"))));
         }
@@ -236,9 +220,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             }
             string entityAux = Guid.NewGuid().ToString() + "|";
             entity.properties.AddRange(UtilitySecciones.AddProperty(
-                new Property(Variables.DatosIdentificacion.telefonoNumero, StringGNOSSID(entityAux, listadoDatosIdentificacion.GetElementoPorIDCampo<CvnItemBeanCvnPhoneBean>("000.010.000.210").Number.ToString())),
-                new Property(Variables.DatosIdentificacion.telefonoCodInternacional, StringGNOSSID(entityAux, listadoDatosIdentificacion.GetElementoPorIDCampo<CvnItemBeanCvnPhoneBean>("000.010.000.210").InternationalCode?.ToString())),
-                new Property(Variables.DatosIdentificacion.telefonoExtension, StringGNOSSID(entityAux, listadoDatosIdentificacion.GetElementoPorIDCampo<CvnItemBeanCvnPhoneBean>("000.010.000.210").Extension?.ToString()))
+                new Property(Variables.DatosIdentificacion.telefonoNumero, UtilitySecciones.StringGNOSSID(entityAux, listadoDatosIdentificacion.GetElementoPorIDCampo<CvnItemBeanCvnPhoneBean>("000.010.000.210").Number.ToString())),
+                new Property(Variables.DatosIdentificacion.telefonoCodInternacional, UtilitySecciones.StringGNOSSID(entityAux, listadoDatosIdentificacion.GetElementoPorIDCampo<CvnItemBeanCvnPhoneBean>("000.010.000.210").InternationalCode?.ToString())),
+                new Property(Variables.DatosIdentificacion.telefonoExtension, UtilitySecciones.StringGNOSSID(entityAux, listadoDatosIdentificacion.GetElementoPorIDCampo<CvnItemBeanCvnPhoneBean>("000.010.000.210").Extension?.ToString()))
             ));
             entity.auxEntityRemove.AddRange(entityBBDD.properties.Where(x => x.prop.Contains("https://www.w3.org/2006/vcard/ns#hasTelephone")).SelectMany(x => x.values).Select(x => x.Substring(0, x.IndexOf("@@@"))));
         }
@@ -259,9 +243,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             }
             string entityAux = Guid.NewGuid().ToString() + "|";
             entity.properties.AddRange(UtilitySecciones.AddProperty(
-                new Property(Variables.DatosIdentificacion.faxNumero, StringGNOSSID(entityAux, listadoDatosIdentificacion.GetElementoPorIDCampo<CvnItemBeanCvnPhoneBean>("000.010.000.220").Number.ToString())),
-                new Property(Variables.DatosIdentificacion.faxCodInternacional, StringGNOSSID(entityAux, listadoDatosIdentificacion.GetElementoPorIDCampo<CvnItemBeanCvnPhoneBean>("000.010.000.220").InternationalCode?.ToString())),
-                new Property(Variables.DatosIdentificacion.faxExtension, StringGNOSSID(entityAux, listadoDatosIdentificacion.GetElementoPorIDCampo<CvnItemBeanCvnPhoneBean>("000.010.000.220").Extension?.ToString()))
+                new Property(Variables.DatosIdentificacion.faxNumero, UtilitySecciones.StringGNOSSID(entityAux, listadoDatosIdentificacion.GetElementoPorIDCampo<CvnItemBeanCvnPhoneBean>("000.010.000.220").Number.ToString())),
+                new Property(Variables.DatosIdentificacion.faxCodInternacional, UtilitySecciones.StringGNOSSID(entityAux, listadoDatosIdentificacion.GetElementoPorIDCampo<CvnItemBeanCvnPhoneBean>("000.010.000.220").InternationalCode?.ToString())),
+                new Property(Variables.DatosIdentificacion.faxExtension, UtilitySecciones.StringGNOSSID(entityAux, listadoDatosIdentificacion.GetElementoPorIDCampo<CvnItemBeanCvnPhoneBean>("000.010.000.220").Extension?.ToString()))
             ));
             entity.auxEntityRemove.AddRange(entityBBDD.properties.Where(x => x.prop.Contains("http://w3id.org/roh/hasFax")).SelectMany(x => x.values).Select(x => x.Substring(0, x.IndexOf("@@@"))));
         }
@@ -282,9 +266,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             }
             string entityAux = Guid.NewGuid().ToString() + "|";
             entity.properties.AddRange(UtilitySecciones.AddProperty(
-                new Property(Variables.DatosIdentificacion.movilNumero, StringGNOSSID(entityAux, listadoDatosIdentificacion.GetElementoPorIDCampo<CvnItemBeanCvnPhoneBean>("000.010.000.240").Number.ToString())),
-                new Property(Variables.DatosIdentificacion.movilCodInternacional, StringGNOSSID(entityAux, listadoDatosIdentificacion.GetElementoPorIDCampo<CvnItemBeanCvnPhoneBean>("000.010.000.240").InternationalCode?.ToString())),
-                new Property(Variables.DatosIdentificacion.movilExtension, StringGNOSSID(entityAux, listadoDatosIdentificacion.GetElementoPorIDCampo<CvnItemBeanCvnPhoneBean>("000.010.000.240").Extension?.ToString()))
+                new Property(Variables.DatosIdentificacion.movilNumero, UtilitySecciones.StringGNOSSID(entityAux, listadoDatosIdentificacion.GetElementoPorIDCampo<CvnItemBeanCvnPhoneBean>("000.010.000.240").Number.ToString())),
+                new Property(Variables.DatosIdentificacion.movilCodInternacional, UtilitySecciones.StringGNOSSID(entityAux, listadoDatosIdentificacion.GetElementoPorIDCampo<CvnItemBeanCvnPhoneBean>("000.010.000.240").InternationalCode?.ToString())),
+                new Property(Variables.DatosIdentificacion.movilExtension, UtilitySecciones.StringGNOSSID(entityAux, listadoDatosIdentificacion.GetElementoPorIDCampo<CvnItemBeanCvnPhoneBean>("000.010.000.240").Extension?.ToString()))
             ));
             entity.auxEntityRemove.AddRange(entityBBDD.properties.Where(x => x.prop.Contains("http://w3id.org/roh/hasMobilePhone")).SelectMany(x => x.values).Select(x => x.Substring(0, x.IndexOf("@@@"))));
         }
