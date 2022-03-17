@@ -2517,7 +2517,7 @@
                   "property": "http://vivoweb.org/ontology/core#relatedBy",
                   "graph": "impartedcoursesseminars",
                   "child": {
-                    "property": "http://w3id.org/roh/durationHours" 
+                    "property": "http://w3id.org/roh/durationHours"
                   }
                 }
               },
@@ -3220,17 +3220,26 @@
                   "es": "Tipo de soporte"
                 },
                 "type": "text",
-                "child": {
-                  "property": "http://vivoweb.org/ontology/core#relatedBy",
-                  "graph": "teachingpublication",
-                  "child": {
-                    "property": "http://w3id.org/roh/supportType",
-                    "graph": "supporttype",
+                "childOR": [
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "thesissupervision",
                     "child": {
-                      "property": "http://purl.org/dc/elements/1.1/title"
+                      "property": "http://w3id.org/roh/supportTypeOther"
+                    }
+                  },
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "teachingpublication",
+                    "child": {
+                      "property": "http://w3id.org/roh/supportType",
+                      "graph": "supporttype",
+                      "child": {
+                        "property": "http://purl.org/dc/elements/1.1/title"
+                      }
                     }
                   }
-                }
+                ]
               },
               {
                 "name": {
@@ -3577,6 +3586,19 @@
                           }
                         },
                         "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Otros"
+                        },
+                        "property": "http://w3id.org/roh/supportTypeOther",
+                        "required": true,
+                        "dependency": {
+                          "property": "http://w3id.org/roh/supportType",
+                          "propertyValue": "{GraphsUrl}items/supporttype_OTHERS"
+                        },
+                        "type": "text",
                         "width": 1
                       }
                     ]
