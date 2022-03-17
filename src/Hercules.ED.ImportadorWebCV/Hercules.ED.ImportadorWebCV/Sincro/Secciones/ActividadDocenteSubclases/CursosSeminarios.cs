@@ -12,6 +12,7 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
     {
         public string descripcion { get; set; }
         public string fecha { get; set; }
+        public string entidadOrganizadora { get; set; }
 
         private static readonly DisambiguationDataConfig configDescripcion = new DisambiguationDataConfig()
         {
@@ -20,6 +21,13 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
         };
 
         private static readonly DisambiguationDataConfig configFecha = new DisambiguationDataConfig()
+        {
+            type = DisambiguationDataConfigType.equalsItem,
+            score = 0.5f,
+            scoreMinus = 0.5f
+        };
+        
+        private static readonly DisambiguationDataConfig configEO = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsItem,
             score = 0.5f,
@@ -42,6 +50,13 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
                     property = "fecha",
                     config = configFecha,
                     value = fecha
+                },
+
+                new DisambiguationData()
+                {
+                    property = "entidadOrganizadora",
+                    config = configEO,
+                    value = entidadOrganizadora
                 }
             };
             return data;
@@ -67,10 +82,11 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
 
             foreach (List<string> lista in listaListas)
             {
-                string select = $@"SELECT distinct ?item ?itemTitle ?itemDate ";
+                string select = $@"SELECT distinct ?item ?itemTitle ?itemDate ?itemEO ";
                 string where = $@"where {{
                                         ?item <{Variables.ActividadDocente.cursosSeminariosNombreEvento}> ?itemTitle . 
                                         OPTIONAL{{?item <{Variables.ActividadDocente.cursosSeminariosFechaImparticion}> ?itemDate }}.
+                                        OPTIONAL{{?item <{Variables.ActividadDocente.cursosSeminariosEntidadOrganizadoraNombre}> ?itemEO }}.
                                         FILTER(?item in (<{string.Join(">,<", lista)}>))
                                     }}";
                 //TODO check where valores
@@ -81,7 +97,8 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
                     {
                         ID = fila["item"].value,
                         descripcion = fila["itemTitle"].value,
-                        fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : ""
+                        fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : "",
+                        entidadOrganizadora = fila.ContainsKey("itemEO") ? fila["itemEO"].value : ""
                     };
 
                     resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), cursos);
