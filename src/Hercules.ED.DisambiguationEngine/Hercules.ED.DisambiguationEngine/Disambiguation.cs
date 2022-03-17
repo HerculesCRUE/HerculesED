@@ -1566,7 +1566,7 @@ namespace Hercules.ED.DisambiguationEngine.Models
                                                 dicEqualsItem[dataAAux.value].ContainsKey(dataBAux.value) &&
                                                dicEqualsItem[dataAAux.value][dataBAux.value].Contains(dataAAux.property)))
                                             {
-                                                result -= (1 - result) * dataAAux.config.scoreMinus;
+                                                result -= result * dataAAux.config.scoreMinus;
                                             }
                                         }
                                         break;
@@ -1664,7 +1664,7 @@ namespace Hercules.ED.DisambiguationEngine.Models
                                                 dicEqualsItem[dataAAux.value].ContainsKey(dataBAux.value) &&
                                                dicEqualsItem[dataAAux.value][dataBAux.value].Contains(dataAAux.property)))
                                             {
-                                                result -= (1 - result) * dataAAux.config.scoreMinus;
+                                                result -= result * dataAAux.config.scoreMinus;
                                             }
                                         }
                                         break;
@@ -1748,7 +1748,7 @@ namespace Hercules.ED.DisambiguationEngine.Models
                                         dicEqualsItemResto[dataAAux.value].ContainsKey(dataBAux.value) &&
                                        dicEqualsItemResto[dataAAux.value][dataBAux.value].Contains(dataAAux.property)))
                                     {
-                                        result -= (1 - result) * dataAAux.config.scoreMinus;
+                                        result -= result * dataAAux.config.scoreMinus;
                                     }
                                 }
                                 break;
