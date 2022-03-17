@@ -974,8 +974,13 @@ body.scrolling.comunidad header #community-menu { display: none; }
 /* ETIQUETAS */
 /*#panFiltros { padding-bottom: 15px; width: 100%; }*/
 #panFiltros { padding-bottom: 10px; width: 100%; margin-bottom: -3px; }
-#panFiltros ul { margin: 0; padding: 0; display: inline-flex; flex-wrap: wrap; }
+#panFiltros ul { margin: 0; padding: 0; display: inline-flex; flex-wrap: wrap; max-width: 100%; }
 #panFiltros ul li { margin-right: 3px; margin-bottom: 3px; background: #6d6d6d; list-style: none; height: 38px; line-height: 38px; padding-left: 23px; font-weight: 500; color: var(--c-blanco); font-size: 1rem; position: relative; padding-right: 54px; border: 0; }
+#panFiltros ul li { 
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 #panFiltros ul li.borrarFiltros-wrap { margin-right: 5px; margin-bottom: 2px; background: transparent; padding-left: 0px; padding-right: 0px; border: 0; }
 #panFiltros ul li a { font-size: 0; position: absolute; top: 0; right: 0; bottom: 0; }
 #panFiltros ul li a:before { font-family: 'Material Icons'; content: '\E5CD'; display: block; font-size: 1.5rem; color: var(--c-blanco); height: 38px; line-height: 38px; width: 38px; text-align: center; background: rgba(0,0,0,.2); }

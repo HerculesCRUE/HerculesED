@@ -600,9 +600,9 @@
 
         @if (!IdentidadActual.IsGuestUser)
         {
-            <div id="modal-crear-cluster" data-backdrop="static" class="modal modal-top modal-wide fade edicionRecurso  edicionCluster" tabindex="-1" role="dialog" data-eliminartext="@Html.Translate("ELIMINAR")" data-areastematicastext="@Html.Translate("AREAS_TEMATICAS")" data-descriptoresespecificostext="@Html.Translate("DESCRIPTORES_ESPECIFICOS")" >
+            <div id="modal-crear-cluster" data-backdrop="static" class="modal modal-top modal-wide fade edicionRecurso  edicionCluster" tabindex="-1" role="dialog" data-eliminartext="@Html.Translate("ELIMINAR")" data-areastematicastext="@Html.Translate("AREAS_TEMATICAS")" data-descriptoresespecificostext="@Html.Translate("DESCRIPTORES_ESPECIFICOS")" data-comUrl="@Comunidad.Url" data-comKey="@Comunidad.Key.ToString()" data-cshortName="@Comunidad.ShortName">
 
-                <div class="modal-dialog" role="document" data-cshortName="@Comunidad.ShortName">
+                <div class="modal-dialog" role="document" >
                     <div class="modal-content">
                         <div class="modal-header">
                             <p class="modal-title"><span class="material-icons">edit</span>Editar</p>
@@ -893,9 +893,9 @@
                                                             </div>
                                                         </div>
                                                     </div> -->
-                                                    <div class="col-12">
-                                                        <div class="wrapCol">
-                                                            <div class="col-buscador">
+                                                    <div class="col col-12">
+                                                        <div class="wrapCol mt-4">
+                                                            @* <div class="col-buscador">
                                                                 <form method="post" id="formCajaBusquedaCluster" action="javascript:void(0)">
                                                                     <fieldset style="display: block">
                                                                         <legend class="nota">facetas</legend>
@@ -908,7 +908,7 @@
                                                                         </div>
                                                                     </fieldset>
                                                                 </form>
-                                                            </div>
+                                                            </div> *@
                                                             <div class="row" id="clusterListUsers">
                                                                 
                                                             </div>
@@ -1053,12 +1053,12 @@
                                                 <div class="row">
                                                     <div class="col col-12 col-section-title font-weight-bold">
                                                         <div class="wrapCol">
-                                                            <p>@Html.Translate("GRAFRO_RELACIONES_OTROS_INVESTIGADORES")Grafo de relaciones con otros investigadores seleccionados</p>
+                                                            <p>@Html.Translate("GRAFRO_RELACIONES_OTROS_INVESTIGADORES")</p>
                                                         </div>
                                                     </div>
                                                     <div class="col col-12 col-grafo">
                                                         <div class="wrapCol">
-                                                            aqui iria el grafo
+                                                            aqui iria el grafos
                                                         </div>
                                                     </div>
                                                 </div>
@@ -2162,6 +2162,7 @@
                         this.step = 1
                         this.body = $('body')
 
+                        // Secciones principales
                         this.modalCrearCluster = this.body.find('#modal-crear-cluster')
                         this.stepProgressWrap = this.modalCrearCluster.find(".step-progress-wrap")
                         this.stepsCircle = this.stepProgressWrap.find(".step-progress__circle")
@@ -2190,28 +2191,27 @@
 
                         // Información para el guardado 
                         this.userId = document.getElementById('inpt_usuarioID').value
-                        // this.communityShortName = this.modalCrearCluster.data('cshortName')
                         this.clusterId = undefined
+                        this.communityShortName = this.modalCrearCluster.data('cshortName')
+                        this.communityUrl = this.modalCrearCluster.data('comUrl')
+                        this.communityKey = this.modalCrearCluster.data('comKey')
 
                         // Tags
                         this.topicsM = undefined
 
-                        const urlBase = "@Html.GetBaseUrl()";
-                        if (urlBase.includes("localhost") || urlBase.includes("depuracion")) {
-                            layDepuracion = true;
-                        }
-
+                        // Textos obtenido de los 'data-'
                         this.eliminarText = this.modalCrearCluster.data("eliminartext")
                         this.areasTematicasText = this.modalCrearCluster.data("areastematicastext")
                         this.descriptoresEspecificosText = this.modalCrearCluster.data("descriptoresespecificostext")
 
-
+                        // Comprueba si estamos en depuración
                         if (window.location.hostname == 'depuracion.net' || window.location.hostname.includes("localhost")) {
                             urlLT = new URL(localUrlBaseLayout + uriLoadTaxonomies)
                             urlSC1 = new URL(localUrlBaseLayout + uriSaveCluster)
                             layDepuracion = true
                         }
 
+                        // Incia las funcionalidades iniciales de modal si este se abre
                         this.modalCrearCluster.on('shown.bs.modal', function () {
                             _self.init()
                         });
@@ -2245,7 +2245,7 @@
                         } else if(pos > 0) {
 
                             let continueStep = true
-                            switch (this.step){
+                            switch (this.step) {
                                 case 1:
                                 continueStep = this.checkContinue1()
                                 break;
@@ -2947,7 +2947,7 @@
                     }
 
                     startStep3() { 
-                        comportamientoPopupCluster.init();
+                        comportamientoPopupCluster.init(this.data);
                     }
 
                 }
@@ -3022,8 +3022,16 @@
                 // Comportamiento página proyecto
                 var comportamientoPopupCluster = {
                     tabActive: null,
-                    init: function () {
+                    init: function (clusterObj) {
                         this.config();
+                        let paramsCl = this.workCO(clusterObj)
+
+                        // Iniciar el listado de usuarios
+                        buscadorPersonalizado.init("@Html.Translate("INVESTIGADORES")", "#clusterListUsers", "searchCluster=" + paramsCl, null, "viewmode=cluster|rdf:type=person", "@Comunidad.Url", "@Comunidad.Key.ToString()")
+
+                        var parametros = ObtenerHash2()+"&" + buscadorPersonalizado.filtro;
+                        newGrafProjClust.CargarGraficaColaboradores("", parametros, 'colaboratorsgraphCluster');
+
                         return;
                     },
                     config: function () {
@@ -3052,13 +3060,29 @@
                         });
                         //Fin métodos colaboradores
 
-                        // Iniciar el listado de usuarios
-                        buscadorPersonalizado.init("@Html.Translate("COLABORADORES")", "#clusterListUsers", "searchPersonasCluster", null, "rdf:type=person", "@Comunidad.Url", "@Comunidad.Key.ToString()")
-
-                        var parametros = ObtenerHash2()+"&" + buscadorPersonalizado.filtro;
-                        newGrafProjClust.CargarGraficaColaboradores("", parametros, 'colaboratorsgraphCluster');
                         return;
+                    },
+
+                    /*
+                    * Convierte el objeto del cluster a los parámetros de consulta 
+                    */
+                    workCO: function (clusterObj) {
+
+                        let results = null
+                        if (clusterObj && clusterObj.profiles) {
+                            results = clusterObj.profiles.map(e => {
+                                let terms = (e.terms) ? e.terms.map(itm => '<' + itm + '>').join(',') : "<>"
+                                let tags = (e.tags) ? e.tags.map(itm => "'" + itm + "'").join(',') : "''"
+                                return terms + '@@@@@@' + tags
+                            }).join('@@@@@@@@')
+                        }
+
+                        console.log("results", results)
+
+                        return results
                     }
+
+
                 };
 
                 /**
@@ -3286,6 +3310,12 @@
                     top: 24px;
                     right: 20px;
                     z-index: 200;
+                }
+
+                .edicionCluster .formulario-edicion .tab-content .row {
+                    margin-left: 0;
+                    margin-right: 0;
+                    margin-bottom: 20px;
                 }
             </style>
 
