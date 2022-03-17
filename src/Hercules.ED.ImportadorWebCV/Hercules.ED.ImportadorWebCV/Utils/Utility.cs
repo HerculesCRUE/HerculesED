@@ -1133,6 +1133,167 @@ namespace Utils
         }
 
         /// <summary>
+        /// Devuelve el tipo de convoatoria como respuesta,
+        /// con formato mResourceApi.GraphsUrl + "items/calltype_" + valor
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="codigo"></param>
+        /// <returns></returns>
+        public static string GetTipoConvocatoriaPorIDCampo(this CvnItemBean item, string codigo) 
+        {
+            if (!CodigoCampoCorrecto(codigo))
+            {
+                throw new ArgumentException("Codigo de campo incorrecto" + codigo);
+            }
+
+            if (codigo.Length != 15) { return null; }
+            CvnItemBeanCvnString campo = item.Items?.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
+            if (campo != null && !string.IsNullOrEmpty(campo.Value))
+            {
+                return mResourceApi.GraphsUrl + "items/calltype_" + campo.Value;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Devuelve el tipo de evaluación como respuesta,
+        /// con formato mResourceApi.GraphsUrl + "items/evaluationtype_" + valor
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="codigo"></param>
+        /// <returns></returns>
+        public static string GetTipoEvaluacionPorIDCampo(this CvnItemBean item, string codigo) 
+        {
+            if (!CodigoCampoCorrecto(codigo))
+            {
+                throw new ArgumentException("Codigo de campo incorrecto" + codigo);
+            }
+
+            if (codigo.Length != 15) { return null; }
+            CvnItemBeanCvnString campo = item.Items?.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
+            if (campo != null && !string.IsNullOrEmpty(campo.Value))
+            {
+                return mResourceApi.GraphsUrl + "items/evaluationtype_" + campo.Value;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Devuelve los creditos ECTS como respuesta,
+        /// con formato mResourceApi.GraphsUrl + "items/hourscreditsectstype_" + valor
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="codigo"></param>
+        /// <returns></returns>
+        public static string GetHorasCreditosECTSPorIDCampo(this CvnItemBean item, string codigo) 
+        {
+            if (!CodigoCampoCorrecto(codigo))
+            {
+                throw new ArgumentException("Codigo de campo incorrecto" + codigo);
+            }
+
+            if (codigo.Length != 15) { return null; }
+            CvnItemBeanCvnString campo = item.Items?.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
+            if (campo != null && !string.IsNullOrEmpty(campo.Value))
+            {
+                return mResourceApi.GraphsUrl + "items/hourscreditsectstype_" + campo.Value;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Devuelve el tipo de curso como respuesta,
+        /// con formato mResourceApi.GraphsUrl + "items/coursetype_" + valor
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="codigo"></param>
+        /// <returns></returns>
+        public static string GetTipoCursoPorIDCampo(this CvnItemBean item, string codigo) 
+        {
+            if (!CodigoCampoCorrecto(codigo))
+            {
+                throw new ArgumentException("Codigo de campo incorrecto" + codigo);
+            }
+
+            if (codigo.Length != 15) { return null; }
+            CvnItemBeanCvnString campo = item.Items?.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
+            if (campo != null && !string.IsNullOrEmpty(campo.Value))
+            {
+                return mResourceApi.GraphsUrl + "items/coursetype_" + campo.Value;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Devuelve el tipo de modalidad de docencia como respuesta,
+        /// con formato mResourceApi.GraphsUrl + "items/modalityteachingtype_" + valor
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="codigo"></param>
+        /// <returns></returns>
+        public static string GetTipoDocenciaModalidadPorIDCampo(this CvnItemBean item, string codigo) 
+        {
+            if (!CodigoCampoCorrecto(codigo))
+            {
+                throw new ArgumentException("Codigo de campo incorrecto" + codigo);
+            }
+
+            if (codigo.Length != 15) { return null; }
+            CvnItemBeanCvnString campo = item.Items?.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
+            if (campo != null && !string.IsNullOrEmpty(campo.Value))
+            {
+                return mResourceApi.GraphsUrl + "items/modalityteachingtype_" + campo.Value;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Devuelve el tipo de programa como respuesta,
+        /// con formato mResourceApi.GraphsUrl + "items/programtype_" + valor
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="codigo"></param>
+        /// <returns></returns>
+        public static string GetTipoProgramaPorIDCampo(this CvnItemBean item, string codigo) 
+        {
+            if (!CodigoCampoCorrecto(codigo))
+            {
+                throw new ArgumentException("Codigo de campo incorrecto" + codigo);
+            }
+
+            if (codigo.Length != 15) { return null; }
+            CvnItemBeanCvnString campo = item.Items?.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
+            if (campo != null && !string.IsNullOrEmpty(campo.Value))
+            {
+                return mResourceApi.GraphsUrl + "items/programtype_" + campo.Value;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Devuelve el tipo de oficialidad de la docencia como respuesta,
+        /// con formato mResourceApi.GraphsUrl + "items/teachingtype_" + valor
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="codigo"></param>
+        /// <returns></returns>
+        public static string GetTipoDocenciaOficialidadPorIDCampo(this CvnItemBean item, string codigo) 
+        {
+            if (!CodigoCampoCorrecto(codigo))
+            {
+                throw new ArgumentException("Codigo de campo incorrecto" + codigo);
+            }
+
+            if (codigo.Length != 15) { return null; }
+            CvnItemBeanCvnString campo = item.Items?.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
+            if (campo != null && !string.IsNullOrEmpty(campo.Value))
+            {
+                return mResourceApi.GraphsUrl + "items/teachingtype_" + campo.Value;
+            }
+            return null;
+        }
+
+        /// <summary>
         /// Devuelve el valor de la fotografía digital,
         /// en formato imagen en base64
         /// </summary>
@@ -2159,5 +2320,6 @@ namespace Utils
             }
         }
     
+
     }
 }
