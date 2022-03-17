@@ -3121,6 +3121,921 @@
       }
     },
     {
+      "rdftype": "http://w3id.org/roh/RelatedTeachingPublications",
+      "property": "http://w3id.org/roh/teachingPublications",
+      "presentation": {
+        "type": "listitems",
+        "title": {
+          "es": "Publicaciones docentes o de carácter pedagógico, libros, artículos, etc."
+        },
+        "listItemsPresentation": {
+          "property": "http://vivoweb.org/ontology/core#relatedBy",
+          "listItem": {
+            "propertyTitle": {
+              "property": "http://vivoweb.org/ontology/core#relatedBy",
+              "graph": "teachingpublication",
+              "child": {
+                "property": "http://w3id.org/roh/title"
+              }
+            },
+            "orders": [
+              {
+                "name": {
+                  "es": "Ordenar por fecha de elaboración más reciente"
+                },
+                "properties": [
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "teachingpublication",
+                    "child": {
+                      "property": "http://purl.org/dc/terms/issued"
+                    },
+                    "asc": false
+                  },
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "teachingpublication",
+                    "child": {
+                      "property": "http://w3id.org/roh/title"
+                    },
+                    "asc": true
+                  }
+                ]
+              },
+              {
+                "name": {
+                  "es": "Ordenar por fecha de elaboración más antigua"
+                },
+                "properties": [
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "teachingpublication",
+                    "child": {
+                      "property": "http://purl.org/dc/terms/issued"
+                    },
+                    "asc": true
+                  },
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "teachingpublication",
+                    "child": {
+                      "property": "http://w3id.org/roh/title"
+                    },
+                    "asc": true
+                  }
+                ]
+              }
+            ],
+            "properties": [
+              {
+                "name": {
+                  "es": "Fecha de elaboración"
+                },
+                "showMiniBold": true,
+                "type": "date",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingpublication",
+                  "child": {
+                    "property": "http://purl.org/dc/terms/issued"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Título de la publicación"
+                },
+                "type": "text",
+                "showMini": true,
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingpublication",
+                  "child": {
+                    "property": "http://w3id.org/roh/publicationTitle"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Tipo de soporte"
+                },
+                "type": "text",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingpublication",
+                  "child": {
+                    "property": "http://w3id.org/roh/supportType",
+                    "graph": "supporttype",
+                    "child": {
+                      "property": "http://purl.org/dc/elements/1.1/title"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Nombre de la publicación"
+                },
+                "type": "text",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingpublication",
+                  "child": {
+                    "property": "http://w3id.org/roh/publicationName"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Autor de correspondencia"
+                },
+                "type": "boolean",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingpublication",
+                  "child": {
+                    "property": "http://w3id.org/roh/correspondingAuthor"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Volumen"
+                },
+                "type": "text",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingpublication",
+                  "child": {
+                    "property": "http://purl.org/ontology/bibo/volume"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Número"
+                },
+                "type": "text",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingpublication",
+                  "child": {
+                    "property": "http://purl.org/ontology/bibo/issue"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Página inicial"
+                },
+                "type": "text",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingpublication",
+                  "child": {
+                    "property": "http://purl.org/ontology/bibo/pageStart"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Página final"
+                },
+                "type": "text",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingpublication",
+                  "child": {
+                    "property": "http://purl.org/ontology/bibo/pageEnd"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Editorial"
+                },
+                "type": "text",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingpublication",
+                  "child": {
+                    "property": "http://vivoweb.org/ontology/core#publisher"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Posición de firma"
+                },
+                "type": "number",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingpublication",
+                  "child": {
+                    "property": "http://w3id.org/roh/signaturePosition"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Grado de contribución"
+                },
+                "type": "text",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingpublication",
+                  "child": {
+                    "property": "http://w3id.org/roh/contributionGrade",
+                    "graph": "contributiongradedocument",
+                    "child": {
+                      "property": "http://purl.org/dc/elements/1.1/title"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "ISBN"
+                },
+                "type": "text",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingpublication",
+                  "child": {
+                    "property": "http://w3id.org/roh/isbn"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "ISSN"
+                },
+                "type": "text",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingpublication",
+                  "child": {
+                    "property": "http://purl.org/ontology/bibo/issn"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Identificador DOI"
+                },
+                "type": "text",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingpublication",
+                  "child": {
+                    "property": "http://purl.org/ontology/bibo/doi"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Identificador Handle"
+                },
+                "type": "text",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingpublication",
+                  "child": {
+                    "property": "http://purl.org/ontology/bibo/handle"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Identificador PMID"
+                },
+                "type": "text",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingpublication",
+                  "child": {
+                    "property": "http://purl.org/ontology/bibo/pmid"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Depósito legal"
+                },
+                "type": "text",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingpublication",
+                  "child": {
+                    "property": "http://w3id.org/roh/legalDeposit"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Introduce la URL"
+                },
+                "type": "text",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingpublication",
+                  "child": {
+                    "property": "https://www.w3.org/2006/vcard/ns#url"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "C. Autón./Reg. de publicación"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingpublication",
+                  "child": {
+                    "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+                    "graph": "feature",
+                    "child": {
+                      "property": "http://www.geonames.org/ontology#name"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "País de publicación"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingpublication",
+                  "child": {
+                    "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+                    "graph": "feature",
+                    "child": {
+                      "property": "http://www.geonames.org/ontology#name"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Perfil de destinatarios/as"
+                },
+                "type": "text",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingpublication",
+                  "child": {
+                    "property": "http://w3id.org/roh/targetProfile"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Fecha de la publicación"
+                },
+                "type": "date",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingpublication",
+                  "child": {
+                    "property": "http://w3id.org/roh/publishDate"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Justificación del material"
+                },
+                "type": "text",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingpublication",
+                  "child": {
+                    "property": "http://w3id.org/roh/materialJustification"
+                  }
+                }
+              }
+            ]
+          },
+          "listItemEdit": {
+            "graph": "teachingpublication",
+            "proptitle": "http://w3id.org/roh/title",
+            "rdftype": "http://w3id.org/roh/TeachingPublication",
+            "sections": [
+              {
+                "title": {
+                  "es": "Información general"
+                },
+                "rows": [
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Nombre del material"
+                        },
+                        "placeholder": {
+                          "es": "Introduce el nombre del material"
+                        },
+                        "property": "http://w3id.org/roh/title",
+                        "required": true,
+                        "type": "text",
+                        "width": 2
+                      },
+                      {
+                        "title": {
+                          "es": "Fecha de elaboración"
+                        },
+                        "property": "http://purl.org/dc/terms/issued",
+                        "type": "date",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Título de la publicación"
+                        },
+                        "placeholder": {
+                          "es": "Introduce el título de la publicación"
+                        },
+                        "property": "http://w3id.org/roh/publicationTitle",
+                        "type": "text",
+                        "width": 2
+                      },
+                      {
+                        "title": {
+                          "es": "Tipo de soporte"
+                        },
+                        "property": "http://w3id.org/roh/supportType",
+                        "combo": {
+                          "rdftype": "http://w3id.org/roh/SupportType",
+                          "graph": "supporttype",
+                          "property": {
+                            "property": "http://purl.org/dc/elements/1.1/title"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "property": "http://purl.org/ontology/bibo/authorList",
+                        "type": "auxEntity",
+                        "title": {
+                          "es": "Autores/as (p. o. de firma)"
+                        },
+                        "multiple": true,
+                        "width": 3,
+                        "auxEntityData": {
+                          "propertyOrder": "http://www.w3.org/1999/02/22-rdf-syntax-ns#comment",
+                          "rdftype": "http://xmlns.com/foaf/0.1/Person",
+                          "propertyTitle": {
+                            "property": "http://xmlns.com/foaf/0.1/firstName"
+                          },
+                          "properties": [
+                            {
+                              "name": {
+                                "es": "Primer apellido"
+                              },
+                              "child": {
+                                "property": "http://xmlns.com/foaf/0.1/familyName"
+                              }
+                            },
+                            {
+                              "name": {
+                                "es": "Segundo apellido"
+                              },
+                              "child": {
+                                "property": "http://w3id.org/roh/secondFamilyName"
+                              }
+                            },
+                            {
+                              "name": {
+                                "es": "Firma"
+                              },
+                              "child": {
+                                "property": "http://xmlns.com/foaf/0.1/nick"
+                              }
+                            }
+                          ],
+                          "rows": [
+                            {
+                              "properties": [
+                                {
+                                  "title": {
+                                    "es": "Nombre"
+                                  },
+                                  "required": true,
+                                  "property": "http://xmlns.com/foaf/0.1/firstName",
+                                  "type": "text",
+                                  "width": 1
+                                },
+                                {
+                                  "title": {
+                                    "es": "Primer apellido"
+                                  },
+                                  "property": "http://xmlns.com/foaf/0.1/familyName",
+                                  "type": "text",
+                                  "width": 1
+                                },
+                                {
+                                  "title": {
+                                    "es": "Segundo apellido"
+                                  },
+                                  "property": "http://w3id.org/roh/secondFamilyName",
+                                  "type": "text",
+                                  "width": 1
+                                },
+                                {
+                                  "title": {
+                                    "es": "Firma"
+                                  },
+                                  "placeholder": {
+                                    "es": "Introduce la firma"
+                                  },
+                                  "property": "http://xmlns.com/foaf/0.1/nick",
+                                  "type": "text",
+                                  "width": 1
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Nombre de la publicación"
+                        },
+                        "placeholder": {
+                          "es": "Introduce el nombre de la publicación"
+                        },
+                        "type": "text",
+                        "property": "http://w3id.org/roh/publicationName",
+                        "width": 2
+                      },
+                      {
+                        "title": {
+                          "es": "Autor de correspondencia"
+                        },
+                        "type": "boolean",
+                        "property": "http://w3id.org/roh/correspondingAuthor",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Volumen"
+                        },
+                        "placeholder": {
+                          "es": "Introduce el volumen"
+                        },
+                        "type": "text",
+                        "property": "http://purl.org/ontology/bibo/volume",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Número"
+                        },
+                        "placeholder": {
+                          "es": "Introduce el número"
+                        },
+                        "type": "text",
+                        "property": "http://purl.org/ontology/bibo/issue",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Página inicial"
+                        },
+                        "placeholder": {
+                          "es": "Introduce la página inicial"
+                        },
+                        "type": "text",
+                        "property": "http://purl.org/ontology/bibo/pageStart",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Página final"
+                        },
+                        "placeholder": {
+                          "es": "Introduce la página final"
+                        },
+                        "type": "text",
+                        "property": "http://purl.org/ontology/bibo/pageEnd",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Editorial"
+                        },
+                        "placeholder": {
+                          "es": "Introduce la editorial"
+                        },
+                        "type": "text",
+                        "property": "http://vivoweb.org/ontology/core#publisher",
+                        "width": 2
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "title": {
+                  "es": "Más campos"
+                },
+                "rows": [
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Posición de firma"
+                        },
+                        "property": "http://w3id.org/roh/signaturePosition",
+                        "type": "number",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Grado de contribución"
+                        },
+                        "property": "http://w3id.org/roh/contributionGrade",
+                        "combo": {
+                          "rdftype": "http://w3id.org/roh/ContributionGradeDocument",
+                          "graph": "contributiongradedocument",
+                          "property": {
+                            "property": "http://purl.org/dc/elements/1.1/title"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 2
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "ISBN"
+                        },
+                        "type": "text",
+                        "property": "http://w3id.org/roh/isbn",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "ISSN"
+                        },
+                        "type": "text",
+                        "property": "http://purl.org/ontology/bibo/issn",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Identificador DOI"
+                        },
+                        "placeholder": {
+                          "es": "Introduce el identificador DOI"
+                        },
+                        "property": "http://purl.org/ontology/bibo/doi",
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Identificador Handle"
+                        },
+                        "placeholder": {
+                          "es": "Introduce el identificador Handle"
+                        },
+                        "property": "http://purl.org/ontology/bibo/handle",
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Identificador PMID"
+                        },
+                        "placeholder": {
+                          "es": "Introduce el identificador PMID"
+                        },
+                        "property": "http://purl.org/ontology/bibo/pmid",
+                        "type": "text",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "property": "http://purl.org/ontology/bibo/identifier",
+                        "type": "auxEntity",
+                        "title": {
+                          "es": "Otros identificadores"
+                        },
+                        "multiple": true,
+                        "width": 3,
+                        "auxEntityData": {
+                          "rdftype": "http://xmlns.com/foaf/0.1/Document",
+                          "propertyTitle": {
+                            "property": "http://xmlns.com/foaf/0.1/topic"
+                          },
+                          "properties": [
+                            {
+                              "name": {
+                                "es": "Nombre del identificador"
+                              },
+                              "child": {
+                                "property": "http://xmlns.com/foaf/0.1/topic"
+                              }
+                            },
+                            {
+                              "name": {
+                                "es": "Identificador"
+                              },
+                              "child": {
+                                "property": "http://purl.org/dc/elements/1.1/title"
+                              }
+                            }
+                          ],
+                          "rows": [
+                            {
+                              "properties": [
+
+                                {
+                                  "title": {
+                                    "es": "Nombre del identificador"
+                                  },
+                                  "placeholder": {
+                                    "es": "Introduce el nombre del identificador"
+                                  },
+                                  "type": "text",
+                                  "required": true,
+                                  "property": "http://xmlns.com/foaf/0.1/topic",
+                                  "width": 1
+                                },
+                                {
+                                  "title": {
+                                    "es": "Identificador"
+                                  },
+                                  "placeholder": {
+                                    "es": "Introduce el identificador"
+                                  },
+                                  "type": "text",
+                                  "required": true,
+                                  "property": "http://purl.org/dc/elements/1.1/title",
+                                  "width": 1
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Depósito legal"
+                        },
+                        "placeholder": {
+                          "es": "Introduce el depósito legal"
+                        },
+                        "type": "text",
+                        "property": "http://w3id.org/roh/legalDeposit",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "URL"
+                        },
+                        "placeholder": {
+                          "es": "Introduce la URL"
+                        },
+                        "type": "text",
+                        "property": "https://www.w3.org/2006/vcard/ns#url",
+                        "width": 2
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "País de la publicación"
+                        },
+                        "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+                        "combo": {
+                          "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "filter": {
+                            "property": "http://www.geonames.org/ontology#featureCode",
+                            "value": "PCLD"
+                          },
+                          "graph": "feature",
+                          "property": {
+                            "property": "http://www.geonames.org/ontology#name"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "C. Autón./Reg. de la publicación"
+                        },
+                        "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+                        "combo": {
+                          "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "filter": {
+                            "property": "http://www.geonames.org/ontology#featureCode",
+                            "value": "ADM1"
+                          },
+                          "dependency": {
+                            "property": "http://www.geonames.org/ontology#parentFeature",
+                            "propertyValue": "https://www.w3.org/2006/vcard/ns#hasCountryName"
+                          },
+                          "graph": "feature",
+                          "property": {
+                            "property": "http://www.geonames.org/ontology#name"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Perfil de destinatarios/as"
+                        },
+                        "placeholder": {
+                          "es": "Introduce el perfil del destinatario/a"
+                        },
+                        "type": "text",
+                        "property": "http://w3id.org/roh/targetProfile",
+                        "width": 2
+                      },
+                      {
+                        "title": {
+                          "es": "Fecha de la publicación"
+                        },
+                        "type": "date",
+                        "property": "http://w3id.org/roh/publishDate",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Justificación del material"
+                        },
+                        "placeholder": {
+                          "es": "Introduce la justificación del material"
+                        },
+                        "type": "textarea",
+                        "property": "http://w3id.org/roh/materialJustification",
+                        "width": 3
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
       "rdftype": "http://w3id.org/roh/RelatedOtherActivities",
       "property": "http://w3id.org/roh/otherActivities",
       "presentation": {
