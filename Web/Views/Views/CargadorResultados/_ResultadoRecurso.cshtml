@@ -12,7 +12,17 @@
     string recursoImagen = "resource-imagen";
     string recursoVideo = "resource-video";
     string recursoPDF = "resource-pdf";
-    StringValues parameterCluster;
+
+    Dictionary<string, string> theAdiccionalParams = new();
+    if (Context.Request.Form.ContainsKey("pParametros_adiccionales"))
+    {
+        try
+        {
+            string pParametros_adiccionales = Context.Request.Form["pParametros_adiccionales"];
+            string[] theParamsArr = pParametros_adiccionales.Split('|');
+            theAdiccionalParams = theParamsArr.ToDictionary(keySelector: g => g.Split('=')[0], elementSelector: g => g.Split('=')[1]);
+        } catch (Exception e) {}
+    }
 
     string resoourceType = recursoDocumento;
     if (Model.TypeDocument.ToString().Equals("pdf") || Model.TypeDocument.ToString().Equals("Pdf"))
@@ -1202,8 +1212,8 @@
     }
     else if (Model.RdfTypeName == "Person") // Persona
     {
-        // Context.Request.Form.TryGetValue("pParametros_adiccionales", out parameterCluster)
-        if (Context.Request.Form["pParametros_adiccionales"] == "viewmode=cluster|rdf:type=person" )
+        // viewmode=cluster|rdf:type=person
+        if (theAdiccionalParams.ContainsKey("viewmode") && theAdiccionalParams["viewmode"] == "cluster" )
         {
             // Listado de categorías
             List<string> listadoCath = new();
@@ -1226,7 +1236,7 @@
                     }
                 }
             }
-            
+
             // Listado de Tags
             List<string> listadoTags = new();
             if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
@@ -1248,7 +1258,15 @@
                     }
                 }
             }
-            <article class="resource investigador" data-cats="@System.Web.HttpUtility.UrlEncode(Newtonsoft.Json.JsonConvert.SerializeObject(listadoCath))" data-tags="@System.Web.HttpUtility.UrlEncode(Newtonsoft.Json.JsonConvert.SerializeObject(listadoTags))">
+
+            var modelUser = new UserJsonData() {
+                name = Model.Title,
+                url = Model.CompletCardLink,
+                listadoCath = listadoCath,
+                listadoTags = listadoTags,
+            };
+
+            <article class="resource investigador" id="resource_@Model.Key">
                 <div class="wrap">
                     <div class="user-miniatura">
                         <div class="imagen-usuario-wrap">
@@ -1274,6 +1292,7 @@
                                                 {
                                                     if (row.ContainsKey(propiedad))
                                                     {
+                                                        modelUser.numDocumento = row[propiedad];
                                                         <span class="material-icons">article</span>
                                                         <span class="texto">@row[propiedad] publicaciones</span>
                                                     }
@@ -1297,6 +1316,7 @@
                                                 {
                                                     if (row.ContainsKey(propiedad))
                                                     {
+                                                        modelUser.hIndex = row[propiedad];
                                                         <span class="material-icons">tag</span>
                                                         <span class="texto">@row[propiedad] Índice H</span>
                                                     }
@@ -1323,6 +1343,7 @@
                                                     {
                                                         if (row.ContainsKey(propiedad))
                                                         {
+                                                            modelUser.hasPosition = row[propiedad];
                                                             <li class="entity">
                                                                 @row[propiedad]
                                                             </li>
@@ -1345,6 +1366,7 @@
                                                     {
                                                         if (row.ContainsKey(propiedad))
                                                         {
+                                                            modelUser.tituloOrg = row[propiedad];
                                                             <li>
                                                                 <a>@row[propiedad]</a>
                                                             </li>
@@ -1367,6 +1389,7 @@
                                                     {
                                                         if (row.ContainsKey(propiedad))
                                                         {
+                                                            modelUser.departamento = row[propiedad];
                                                             <li>
                                                                 <a>@row[propiedad]</a>
                                                             </li>
@@ -1393,6 +1416,7 @@
                                                     {
                                                         if (row.ContainsKey(propiedad))
                                                         {
+                                                            modelUser.descripcion = row[propiedad];
                                                             <p>@row[propiedad]</p>
                                                         }
                                                     }
@@ -1421,22 +1445,34 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="user-perfil">
+                            <p>@Html.Translate("PERFIL")</p>
+                            @if (theAdiccionalParams.ContainsKey("profiles"))
+                            {
+                                try
+                                {
+                                    var profiles = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(theAdiccionalParams["profiles"]);
+                                    foreach (KeyValuePair<string,string> item in profiles) {
+
+                                        <div class="perfil-wrap">
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" data-rel="resource_@Model.Key" id="input-@item.Key-@Model.Key" data-name ="@item.Value" data-key ="@item.Key" onClick="stepsCls.addUserClusterStep3(@item.Key)">
+                                                <label class="custom-control-label" for="input-@item.Key-@Model.Key">@item.Value</label>
+                                            </div>
+                                        </div>
+                                    }
+                                } catch (Exception e) {}
+                                <span> true </span>
+                            }
+                            
+                        </div>
                     </div>
                 </div>
+                <input type="hidden" value="@System.Web.HttpUtility.UrlEncode(Newtonsoft.Json.JsonConvert.SerializeObject(modelUser))" name="user-object">
             </article>
         } else {
-            <pre style="display: none">
-                @Context.Request.Query.ToList().ToString()
-            </pre>
-            <pre style="display: none">
-                @Context.Request.Form.TryGetValue("pParametros_adiccionales", out parameterCluster)
-                @String.Join(parameterCluster, ',')
-                @parameterCluster
-            </pre>
-            <pre style="display: none">
-                @Context.Request.Query["pParametros_adiccionales"] 
-            </pre>
-            <article class="resource investigador" data-none="@Context.Request.Query.ToArray().ToString()">
+
+            <article class="resource investigador">
                 <div class="wrap">
                     <div class="user-miniatura">
                         <div class="imagen-usuario-wrap">
@@ -1612,10 +1648,8 @@
                     </div>
                 </div>
             </article>
+
         }
-
-
-
 
 
     }
@@ -1915,5 +1949,22 @@
                 </div>
             </div>
         </article>
+    }
+}
+
+
+@functions{
+    class UserJsonData
+    {
+        public string name { get; set; }
+        public string descripcion { get; set; }
+        public string url { get; set; }
+        public List<string> listadoCath { get; set; }
+        public List<string> listadoTags { get; set; }
+        public string numDocumento { get; set; }
+        public string hIndex { get; set; }
+        public string hasPosition { get; set; }
+        public string tituloOrg { get; set; }
+        public string departamento { get; set; }
     }
 }
