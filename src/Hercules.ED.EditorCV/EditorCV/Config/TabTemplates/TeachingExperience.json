@@ -111,9 +111,10 @@
               },
               {
                 "name": {
-                  "es": "Tipo de entidad"
+                  "es": "Entidad de realización"
                 },
                 "type": "text",
+                "showMini": true,
                 "child": {
                   "property": "http://vivoweb.org/ontology/core#relatedBy",
                   "graph": "impartedacademictraining",
@@ -170,17 +171,26 @@
                 "name": {
                   "es": "Tipo docencia"
                 },
-                "child": {
-                  "property": "http://vivoweb.org/ontology/core#relatedBy",
-                  "graph": "impartedacademictraining",
-                  "child": {
-                    "property": "http://w3id.org/roh/modalityTeachingType",
-                    "graph": "modalityteachingtype",
+                "childOR": [
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "impartedacademictraining",
                     "child": {
-                      "property": "http://purl.org/dc/elements/1.1/title"
+                      "property": "http://w3id.org/roh/modalityTeachingTypeOther"
+                    }
+                  },
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "impartedacademictraining",
+                    "child": {
+                      "property": "http://w3id.org/roh/modalityTeachingType",
+                      "graph": "modalityteachingtype",
+                      "child": {
+                        "property": "http://purl.org/dc/elements/1.1/title"
+                      }
                     }
                   }
-                }
+                ]
               },
               {
                 "name": {
@@ -192,6 +202,19 @@
                   "graph": "impartedacademictraining",
                   "child": {
                     "property": "http://w3id.org/roh/numberECTSHours"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Frecuencia de la actividad"
+                },
+                "type": "number",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "impartedacademictraining",
+                  "child": {
+                    "property": "http://w3id.org/roh/frequency"
                   }
                 }
               },
@@ -562,8 +585,8 @@
                     "property": "http://vivoweb.org/ontology/core#relatedBy",
                     "graph": "impartedacademictraining",
                     "child": {
-                      "property": "http://w3id.org/roh/geographicFocus",
-                      "graph": "geographicfocus",
+                      "property": "http://vivoweb.org/ontology/core#geographicFocus",
+                      "graph": "eventgeographicregion",
                       "child": {
                         "property": "http://purl.org/dc/elements/1.1/title"
                       }
@@ -1310,8 +1333,8 @@
                         },
                         "property": "http://vivoweb.org/ontology/core#geographicFocus",
                         "combo": {
-                          "rdftype": "http://vivoweb.org/ontology/core#GeographicRegion",
-                          "graph": "geographicregion",
+                          "rdftype": "http://w3id.org/roh/EventGeographicRegion",
+                          "graph": "eventgeographicregion",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
                           }
@@ -1327,7 +1350,7 @@
                         "required": true,
                         "dependency": {
                           "property": "http://vivoweb.org/ontology/core#geographicFocus",
-                          "propertyValue": "{GraphsUrl}items/geographicregion_OTHERS"
+                          "propertyValue": "{GraphsUrl}items/eventgeographicregion_OTHERS"
                         },
                         "type": "text",
                         "width": 2
