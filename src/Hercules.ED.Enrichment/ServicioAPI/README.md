@@ -2,12 +2,19 @@
 
 API providing access for the extraction of thematic and specific descriptors from scientific papers, protocols and code projects.
 
+# Requirements
+
+These are the minimum hardware and software requirements to run this service:
+```
+- 32 GB RAM memory (24 GB might be enough, but having 32 GB is recommended)
+- Python 3.7
+```
 
 # Installation and deployment
 
 Install Ubuntu dependencies:
 ```
-$ sudo apt install python3-dev libhunspell-dev poppler-utils
+$ sudo apt install python3-dev poppler-utils
 ```
 
 Create a vritual environment with the necessary requirements:

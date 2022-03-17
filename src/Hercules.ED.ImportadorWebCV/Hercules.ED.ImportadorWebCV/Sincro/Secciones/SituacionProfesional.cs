@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static Models.Entity;
 using Utils;
 using Models;
 using Hercules.ED.DisambiguationEngine.Models;
 using System.Runtime.InteropServices;
 using ImportadorWebCV.Sincro.Secciones.SituacionProfesionalSubclases;
-using Gnoss.ApiWrapper.ApiModel;
 using Hercules.ED.ImportadorWebCV.Models;
 
 namespace ImportadorWebCV.Sincro.Secciones

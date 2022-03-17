@@ -1,15 +1,12 @@
 ﻿using Gnoss.ApiWrapper;
-using Gnoss.ApiWrapper.ApiModel;
 using ImportadorWebCV;
+using Models;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using static Models.Entity;
 
 namespace Utils
 {
@@ -614,7 +611,7 @@ namespace Utils
 
         /// <summary>
         /// Devuelve el genero,
-        /// con formato mResourceApi.GraphsUrl + "items/gender_"
+        /// con formato mResourceApi.GraphsUrl + "items/gender_" + valor
         /// </summary>
         /// <param name="listado"></param>
         /// <param name="codigo">Codigo</param>
@@ -639,7 +636,7 @@ namespace Utils
 
         /// <summary>
         /// Devuelve el pais como respuesta,
-        /// con formato mResourceApi.GraphsUrl + "items/feature_"
+        /// con formato mResourceApi.GraphsUrl + "items/feature_PCLD_" + valor
         /// </summary>
         /// <param name="listado"></param>
         /// <param name="codigo">Codigo</param>
@@ -664,7 +661,7 @@ namespace Utils
 
         /// <summary>
         /// Devuelve el pais como respuesta,
-        /// con formato mResourceApi.GraphsUrl + "items/feature_PCLD_"
+        /// con formato mResourceApi.GraphsUrl + "items/feature_PCLD_" + valor
         /// </summary>
         /// <param name="item"></param>
         /// <param name="codigo">Codigo</param>
@@ -687,7 +684,7 @@ namespace Utils
 
         /// <summary>
         /// Devuelve la region como respuesta,
-        /// con formato mResourceApi.GraphsUrl + "items/feature_ADM1_"
+        /// con formato mResourceApi.GraphsUrl + "items/feature_ADM1_" + valor
         /// </summary>
         /// <param name="listado"></param>
         /// <param name="codigo">Codigo</param>
@@ -712,7 +709,7 @@ namespace Utils
 
         /// <summary>
         /// Devuelve la region como respuesta,
-        /// con formato mResourceApi.GraphsUrl + "items/feature_ADM1_ES11"
+        /// con formato mResourceApi.GraphsUrl + "items/feature_ADM1_" + valor
         /// </summary>
         /// <param name="item"></param>
         /// <param name="codigo">Codigo</param>
@@ -735,7 +732,7 @@ namespace Utils
 
         /// <summary>
         /// Devuelve la provincia como respuesta,
-        /// con formato mResourceApi.GraphsUrl + "items/feature_ADM2_"
+        /// con formato mResourceApi.GraphsUrl + "items/feature_ADM2_" + valor
         /// </summary>
         /// <param name="listado"></param>
         /// <param name="codigo">Codigo</param>
@@ -760,7 +757,7 @@ namespace Utils
 
         /// <summary>
         /// Devuelve la organizacion como respuesta,
-        /// con formato mResourceApi.GraphsUrl + "items/organizationtype_"
+        /// con formato mResourceApi.GraphsUrl + "items/organizationtype_" + valor
         /// </summary>
         /// <param name="item"></param>
         /// <param name="codigo">Codigo</param>
@@ -782,7 +779,8 @@ namespace Utils
         }
 
         /// <summary>
-        /// tutorshipsprogramtype_
+        /// Devuelve el tipo de programa de tutorización como respuesta,
+        /// con formato mResourceApi.GraphsUrl + "items/tutorshipsprogramtype_" + valor
         /// </summary>
         /// <param name="item"></param>
         /// <param name="codigo">Codigo</param>
@@ -805,7 +803,7 @@ namespace Utils
 
         /// <summary>
         /// Devuelve el tipo de evento como respuesta,
-        /// con formato mResourceApi.GraphsUrl + "items/eventtype_"
+        /// con formato mResourceApi.GraphsUrl + "items/eventtype_" + valor
         /// </summary>
         /// <param name="item"></param>
         /// <param name="codigo">Codigo</param>
@@ -827,7 +825,8 @@ namespace Utils
         }
 
         /// <summary>
-        /// eventinscriptiontype_
+        /// Devuelve el tipo de intervención como respuesta,
+        /// con formato mResourceApi.GraphsUrl + "items/eventinscriptiontype_" + valor
         /// </summary>
         /// <param name="item"></param>
         /// <param name="codigo"></param>
@@ -957,10 +956,32 @@ namespace Utils
             }
             return null;
         }
+        
+        /// <summary>
+        /// Devuelve el identificador del TitleBean con código <paramref name="codigo"/>
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="codigo"></param>
+        /// <returns></returns>
+        public static string GetIdentificationTitleBeanPorIDCampo(this CvnItemBean item, string codigo)
+        {
+            if (!CodigoCampoCorrecto(codigo))
+            {
+                throw new ArgumentException("Codigo de campo incorrecto" + codigo);
+            }
+
+            if (codigo.Length != 15) { return null; }
+            CvnItemBeanCvnTitleBean campo = item.Items?.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnTitleBean).Cast<CvnItemBeanCvnTitleBean>().FirstOrDefault();
+            if (campo != null)
+            {
+                return campo.Identification;
+            }
+            return null;
+        }
 
         /// <summary>
         /// Devuelve el objetivo como respuesta,
-        /// con formato mResourceApi.GraphsUrl + "items/staygoal_"
+        /// con formato mResourceApi.GraphsUrl + "items/staygoal_" + valor
         /// </summary>
         /// <param name="item"></param>
         /// <param name="codigo">Codigo</param>
@@ -983,7 +1004,7 @@ namespace Utils
 
         /// <summary>
         /// Devuelve la modalidad de la actividad como respuesta,
-        /// con formato mResourceApi.GraphsUrl + "items/activitymodality_"
+        /// con formato mResourceApi.GraphsUrl + "items/activitymodality_" + valor
         /// </summary>
         /// <param name="item"></param>
         /// <param name="codigo">Codigo</param>
@@ -1005,10 +1026,10 @@ namespace Utils
         }
 
         /// <summary>
-        /// doctoralprogramtype_
+        /// Devuelve la referencia del programa de doctorado como respuesta,
+        /// con formato mResourceApi.GraphsUrl + "items/doctoralprogramtype_" + valor
         /// </summary>
         /// <param name="item"></param>
-        /// <param name="codigo"></param>
         /// <returns></returns>
         public static string ReferenciaProgramaDoctorado(this CvnItemBeanCvnTitleBean item) 
         {           
@@ -1021,7 +1042,7 @@ namespace Utils
 
         /// <summary>
         /// Devuelve el sistema de actividad como respuesta,
-        /// con formato mResourceApi.GraphsUrl + "items/accesssystemactivity_"
+        /// con formato mResourceApi.GraphsUrl + "items/accesssystemactivity_" + valor
         /// </summary>
         /// <param name="item"></param>
         /// <param name="codigo">Codigo</param>
@@ -1044,7 +1065,7 @@ namespace Utils
 
         /// <summary>
         /// Devuelve la finalidad como respuesta,
-        /// con formato mResourceApi.GraphsUrl + "items/grantaim_"
+        /// con formato mResourceApi.GraphsUrl + "items/grantaim_" + valor
         /// </summary>
         /// <param name="item"></param>
         /// <param name="codigo">Codigo</param>
@@ -1067,7 +1088,7 @@ namespace Utils
 
         /// <summary>
         /// Devuelve el tipo de relacion como respuesta,
-        /// con formato mResourceApi.GraphsUrl + "items/organizationtype_"
+        /// con formato mResourceApi.GraphsUrl + "items/relationshiptype_" + valor
         /// </summary>
         /// <param name="item"></param>
         /// <param name="codigo">Codigo</param>
@@ -1090,7 +1111,7 @@ namespace Utils
 
         /// <summary>
         /// Devuelve la region geografica como respuesta,
-        /// con formato mResourceApi.GraphsUrl + "items/geographicregion_000"
+        /// con formato mResourceApi.GraphsUrl + "items/geographicregion_" + valor
         /// </summary>
         /// <param name="item"></param>
         /// <param name="codigo">Codigo</param>
@@ -1326,7 +1347,8 @@ namespace Utils
         }
 
         /// <summary>
-        /// feature_PCLD_
+        /// Devuelve el pais, de un CvnItemBeanCvnCodeGroup, como respuesta,
+        /// con formato mResourceApi.GraphsUrl + "items/feature_PCLD_" + valor
         /// </summary>
         /// <param name="codeGroup"></param>
         /// <param name="codigo"></param>
@@ -1347,7 +1369,8 @@ namespace Utils
         }
 
         /// <summary>
-        /// feature_ADM1_
+        /// Devuelve la región como respuesta,
+        /// con formato mResourceApi.GraphsUrl + "items/feature_ADM1_" + valor
         /// </summary>
         /// <param name="codeGroup"></param>
         /// <param name="codigo"></param>
@@ -1368,7 +1391,8 @@ namespace Utils
         }
 
         /// <summary>
-        /// universitydegreetype_
+        /// Devuelve el tipo de grado universitario como respuesta,
+        /// con formato mResourceApi.GraphsUrl + "items/universitydegreetype_" + valor
         /// </summary>
         /// <param name="item"></param>
         /// <param name="codigo"></param>
@@ -1389,7 +1413,8 @@ namespace Utils
         }
 
         /// <summary>
-        /// qualificationtype_
+        /// Devuelve la nota media como respuesta,
+        /// con formato mResourceApi.GraphsUrl + "items/qualificationtype_" + valor
         /// </summary>
         /// <param name="item"></param>
         /// <param name="codigo"></param>
@@ -1410,7 +1435,8 @@ namespace Utils
         }
 
         /// <summary>
-        /// prizetype_
+        /// Devuelve el tipo de premio como respuesta,
+        /// con formato mResourceApi.GraphsUrl + "items/prizetype_" + valor
         /// </summary>
         /// <param name="item"></param>
         /// <param name="codigo"></param>
@@ -1431,7 +1457,8 @@ namespace Utils
         }
 
         /// <summary>
-        /// tesauro_cvn_
+        /// Devuelvel la palabra clave como respuesta,
+        /// con formato mResourceApi.GraphsUrl + "items/tesauro_cvn_" + valor
         /// </summary>
         /// <param name="mResourceApi"></param>
         /// <param name="palabra"></param>
@@ -1444,7 +1471,8 @@ namespace Utils
         }
 
         /// <summary>
-        /// formationtype_
+        /// Devuelvel el tipo de formación como respuesta,
+        /// con formato mResourceApi.GraphsUrl + "items/formationtype_" + valor
         /// </summary>
         /// <param name="item"></param>
         /// <param name="codigo"></param>
@@ -1465,7 +1493,8 @@ namespace Utils
         }
 
         /// <summary>
-        /// formationactivitytype_
+        /// Devuelvel el tipo de formación de actividad como respuesta,
+        /// con formato mResourceApi.GraphsUrl + "items/formationactivitytype_" + valor
         /// </summary>
         /// <param name="item"></param>
         /// <param name="codigo"></param>
@@ -1514,7 +1543,8 @@ namespace Utils
         }
 
         /// <summary>
-        /// organizationtype_
+        /// Devuelvel el tipo de organización, que es parte de un CvnItemBeanCvnCodeGroup, como respuesta,
+        /// con formato mResourceApi.GraphsUrl + "items/organizationtype_" + valor
         /// </summary>
         /// <param name="codeGroup"></param>
         /// <param name="codigo"></param>
@@ -1595,7 +1625,8 @@ namespace Utils
         }
 
         /// <summary>
-        /// documentformat_
+        /// Devuelve el tipo de soporte como respuesta,
+        /// con formato mResourceApi.GraphsUrl + "items/documentformat_" + valor
         /// </summary>
         /// <param name="item"></param>
         /// <param name="codigo"></param>
@@ -1616,7 +1647,8 @@ namespace Utils
         }
 
         /// <summary>
-        /// publicationtype_
+        /// Devuelve el tipo de publicación como respuesta,
+        /// con formato mResourceApi.GraphsUrl + "items/publicationtype_" + valor
         /// </summary>
         /// <param name="item"></param>
         /// <param name="codigo"></param>
@@ -1637,7 +1669,8 @@ namespace Utils
         }
 
         /// <summary>
-        /// contractmodality_
+        /// Devuelve el tipo de modalidad de contrato como respuesta,
+        /// con formato mResourceApi.GraphsUrl + "items/contractmodality_" + valor
         /// </summary>
         /// <param name="item"></param>
         /// <param name="codigo"></param>
@@ -1658,7 +1691,8 @@ namespace Utils
         }
 
         /// <summary>
-        /// dedicationregime_
+        /// Devuelve el tipo de regimen de dedicación como respuesta,
+        /// con formato mResourceApi.GraphsUrl + "items/dedicationregime_" + valor
         /// </summary>
         /// <param name="item"></param>
         /// <param name="codigo"></param>
@@ -1679,7 +1713,8 @@ namespace Utils
         }
 
         /// <summary>
-        /// unesco_
+        /// Devuelve el codigo UNESCO como respuesta,
+        /// con formato mResourceApi.GraphsUrl + "items/unesco_" + valor
         /// </summary>
         /// <param name="codigolista">codigolista</param>
         /// <returns></returns>
@@ -1689,7 +1724,8 @@ namespace Utils
         }
 
         /// <summary>
-        /// scopemanagementactivity_
+        /// Devuelve el ambito de gratión como respuesta,
+        /// con formato mResourceApi.GraphsUrl + "items/scopemanagementactivity_" + valor
         /// </summary>
         /// <param name="item"></param>
         /// <param name="codigo"></param>
@@ -1710,7 +1746,8 @@ namespace Utils
         }
 
         /// <summary>
-        /// contributiongradedocument_
+        /// Devuelve el grado de contribución del documento como respuesta,
+        /// con formato mResourceApi.GraphsUrl + "items/contributiongradedocument_" + valor
         /// </summary>
         /// <param name="item"></param>
         /// <param name="codigo"></param>
@@ -1731,7 +1768,8 @@ namespace Utils
         }
 
         /// <summary>
-        /// colaborationtypegroup_
+        /// Devuelve el tipo de colaboración en un grupo como respuesta,
+        /// con formato mResourceApi.GraphsUrl + "items/colaborationtypegroup_" + valor
         /// </summary>
         /// <param name="item"></param>
         /// <param name="codigo"></param>
@@ -1752,7 +1790,8 @@ namespace Utils
         }
 
         /// <summary>
-        /// industrialpropertytype_
+        /// Devuelve el tipo de propiedad industrial como respuesta,
+        /// con formato mResourceApi.GraphsUrl + "items/industrialpropertytype_" + valor
         /// </summary>
         /// <param name="item"></param>
         /// <param name="codigo"></param>
@@ -1773,7 +1812,8 @@ namespace Utils
         }
 
         /// <summary>
-        /// participationtypeactivity_
+        /// Devuelve el tipo de participación de actividad como respuesta,
+        /// con formato mResourceApi.GraphsUrl + "items/participationtypeactivity_" + valor
         /// </summary>
         /// <param name="item"></param>
         /// <param name="codigo"></param>
@@ -1794,7 +1834,8 @@ namespace Utils
         }
 
         /// <summary>
-        /// projectmodality_
+        /// Devuelve la modalidad del proyecto como respuesta,
+        /// con formato mResourceApi.GraphsUrl + "items/projectmodality_" + valor
         /// </summary>
         /// <param name="item"></param>
         /// <param name="codigo"></param>
@@ -1815,7 +1856,8 @@ namespace Utils
         }
 
         /// <summary>
-        /// projecttype_
+        /// Devuelve el tipo de proyecto como respuesta,
+        /// con formato mResourceApi.GraphsUrl + "items/projecttype_" + valor
         /// </summary>
         /// <param name="item"></param>
         /// <param name="codigo"></param>
@@ -1836,7 +1878,8 @@ namespace Utils
         }
 
         /// <summary>
-        /// managementtypeactivity_
+        /// Devuelve el tipo de tipología de gestión como respuesta,
+        /// con formato mResourceApi.GraphsUrl + "items/managementtypeactivity_" + valor
         /// </summary>
         /// <param name="item"></param>
         /// <param name="codigo"></param>
@@ -1857,7 +1900,8 @@ namespace Utils
         }
 
         /// <summary>
-        /// targetgroupprofile_
+        /// Devuelve el tipo de perfil de grupo como respuesta,
+        /// con formato mResourceApi.GraphsUrl + "items/targetgroupprofile_" + valor
         /// </summary>
         /// <param name="item"></param>
         /// <param name="codigo"></param>
@@ -1878,7 +1922,8 @@ namespace Utils
         }
 
         /// <summary>
-        /// hindexsource_
+        /// Devuelve el Indice H  como respuesta,
+        /// con formato mResourceApi.GraphsUrl + "items/hindexsource_" + valor
         /// </summary>
         /// <param name="item"></param>
         /// <param name="codigo"></param>
@@ -1899,7 +1944,8 @@ namespace Utils
         }
 
         /// <summary>
-        /// language_
+        /// Devuelve el idioma como respuesta, Identification de un CvnItemBeanCvnTitleBean,
+        /// con formato mResourceApi.GraphsUrl + "items/language_" + valor
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
@@ -1913,7 +1959,8 @@ namespace Utils
         }
 
         /// <summary>
-        /// language_
+        /// Devuelve la traducción como respuesta,
+        /// con formato mResourceApi.GraphsUrl + "items/language_" + valor
         /// </summary>
         /// <param name="item"></param>
         /// <param name="codigo"></param>
@@ -1934,7 +1981,8 @@ namespace Utils
         }
 
         /// <summary>
-        /// languagelevel_
+        /// Devuelve el nivel del idioma como respuesta,
+        /// con formato mResourceApi.GraphsUrl + "items/languagelevel_" + valor
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
@@ -1948,7 +1996,8 @@ namespace Utils
         }
 
         /// <summary>
-        /// unesco_
+        /// Devuelve el código unesco como respuesta,
+        /// con formato mResourceApi.GraphsUrl + "items/unesco_" + valor
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
@@ -2079,6 +2128,36 @@ namespace Utils
 
             return listadoCodigos;
         }
-    }
 
+        /// <summary>
+        /// Añade la referencia a la entidad <paramref name="propiedadNombreTitulacion"/> si esta se encuentra en BBDD.
+        /// </summary>
+        /// <param name="mResourceApi"></param>
+        /// <param name="nombreTitulacion"></param>
+        /// <param name="propiedadNombreTitulacion"></param>
+        /// <param name="propiedadTitulacion"></param>
+        /// <param name="entidadAux"></param>
+        public static void AniadirTitulacion(ResourceApi mResourceApi, CvnItemBeanCvnTitleBean titulacion, string propiedadNombreTitulacion, string propiedadTitulacion, Entity entidadAux)
+        {
+            if (mResourceApi == null || titulacion == null ||
+                   string.IsNullOrEmpty(propiedadTitulacion) || string.IsNullOrEmpty(propiedadTitulacion))
+            { return; }
+
+            if (!string.IsNullOrEmpty(titulacion.Identification))
+            {
+                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                    new Property(propiedadNombreTitulacion, titulacion.Name),
+                    new Property(propiedadTitulacion, mResourceApi.GraphsUrl + "items/degreetype_" + titulacion.Identification)
+                ));
+            }
+            else
+            {
+                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                       new Property(propiedadNombreTitulacion, titulacion.Name)
+                ));
+                entidadAux.properties.Add(new Property(propiedadTitulacion, ""));
+            }
+        }
+    
+    }
 }

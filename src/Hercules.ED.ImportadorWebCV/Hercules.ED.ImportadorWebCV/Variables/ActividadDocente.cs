@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ImportadorWebCV.Variables
+﻿namespace ImportadorWebCV.Variables
 {
     class ActividadDocente
     {
@@ -43,6 +37,7 @@ namespace ImportadorWebCV.Variables
         /// </summary>
         public const string formacionAcademicaTipoDocenciaOficialidad = "";
         public const string formacionAcademicaTitulacionUniversitaria = "";
+        public const string formacionAcademicaTitulacionUniversitariaNombre = "";
         public const string formacionAcademicaPaisEntidadRealizacion = "";
         public const string formacionAcademicaCCAAEntidadRealizacion = "";
         public const string formacionAcademicaCiudadEntidadRealizacion = "";
@@ -63,7 +58,6 @@ namespace ImportadorWebCV.Variables
         public const string formacionAcademicaNumeroECTS = "";
         public const string formacionAcademicaIdiomaAsignatura = "";
         public const string formacionAcademicaFrecuenciaAsignatura = "";
-        public const string formacionAcademicaFechaFinalizacion = "";//TODO - revisar
         public const string formacionAcademicaCompetenciasRelacionadas = "";
         public const string formacionAcademicaCategoriaProfesional = "";
         public const string formacionAcademicaCalificacionObtenida = "";
@@ -90,7 +84,7 @@ namespace ImportadorWebCV.Variables
         public const string formacionAcademicaEntFinanAmbitoGeoOtros = "";
         public const string formacionAcademicaFacultadEscuela = "";
         public const string formacionAcademicaFechaInicio = "";
-        public const string formacionAcademicaFechaFinalizacion_ = "";//TODO -revisar
+        public const string formacionAcademicaFechaFinalizacion = "";
       
         /// <summary>
         /// Tutorias académicas de estudiantes - 030.050.000.000
@@ -259,16 +253,16 @@ namespace ImportadorWebCV.Variables
         /// <summary>
         /// Premios de innovación docente recibidos - 060.030.080.000
         /// </summary>
-        public const string premiosInnovaNombre = "";
-        public const string premiosInnovaPaisEntidadConcesionaria = "";
-        public const string premiosInnovaCCAAEntidadConcesionaria = "";
-        public const string premiosInnovaCiudadEntidadConcesionaria = "";
-        public const string premiosInnovaEntidadConcesionaria = "";
-        public const string premiosInnovaEntidadConcesionariaNombre = "";
-        public const string premiosInnovaTipoEntidadConcesionaria = "";
-        public const string premiosInnovaTipoEntidadConcesionariaOtros = "";
-        public const string premiosInnovaPropuestaDe = "";
-        public const string premiosInnovaFechaConcesion = "";
+        public const string premiosInnovaNombre = "http://w3id.org/roh/title";
+        public const string premiosInnovaPaisEntidadConcesionaria = "https://www.w3.org/2006/vcard/ns#hasCountryName";
+        public const string premiosInnovaCCAAEntidadConcesionaria = "https://www.w3.org/2006/vcard/ns#hasRegion";
+        public const string premiosInnovaCiudadEntidadConcesionaria = "https://www.w3.org/2006/vcard/ns#locality";
+        public const string premiosInnovaEntidadConcesionaria = "http://w3id.org/roh/accreditationIssuedBy";
+        public const string premiosInnovaEntidadConcesionariaNombre = "http://w3id.org/roh/accreditationIssuedByTitle";
+        public const string premiosInnovaTipoEntidadConcesionaria = "http://w3id.org/roh/organizationType";
+        public const string premiosInnovaTipoEntidadConcesionariaOtros = "http://w3id.org/roh/organizationTypeOther";
+        public const string premiosInnovaPropuestaDe = "http://w3id.org/roh/proposedBy";
+        public const string premiosInnovaFechaConcesion = "http://w3id.org/roh/receptionDate";
 
 
         /// <summary>

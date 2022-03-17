@@ -1,14 +1,10 @@
 ﻿using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.ApiModel;
-using Hercules.ED.DisambiguationEngine.Models;
-using Hercules.ED.ImportadorWebCV.Models;
 using ImportadorWebCV;
 using Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static Models.Entity;
 
 namespace Utils
@@ -89,7 +85,6 @@ namespace Utils
 
             if (mListaRevistas.Count == 0)
             {
-
                 while (true)
                 {
                     //Si tengo más de 10.000 resultados repito la consulta, sino salgo del bucle
@@ -119,7 +114,6 @@ namespace Utils
                 return null;
             }
         }
-
 
         /// <summary>
         /// Devuelve la referencia a <paramref name="nombreOrganizacion"/>
@@ -208,36 +202,6 @@ namespace Utils
                        new Property(propiedadNombreEntidad, nombreEntidad)
                 ));
                 entidadAux.properties.Add(new Property(propiedadEntidad, ""));
-            }
-        }
-
-        /// <summary>
-        /// Añade la referencia a la entidad <paramref name="propiedadNombreTitulacion"/> si esta se encuentra en BBDD.
-        /// </summary>
-        /// <param name="mResourceApi"></param>
-        /// <param name="nombreTitulacion"></param>
-        /// <param name="propiedadNombreTitulacion"></param>
-        /// <param name="propiedadTitulacion"></param>
-        /// <param name="entidadAux"></param>
-        public static void AniadirTitulacion(ResourceApi mResourceApi, CvnItemBeanCvnTitleBean titulacion, string propiedadNombreTitulacion, string propiedadTitulacion, Entity entidadAux)
-        {
-            if (mResourceApi == null || titulacion == null ||
-                   string.IsNullOrEmpty(propiedadTitulacion) || string.IsNullOrEmpty(propiedadTitulacion))
-            { return; }
-
-            if (!string.IsNullOrEmpty(titulacion.Identification))
-            {
-                entidadAux.properties.AddRange(AddProperty(
-                    new Property(propiedadNombreTitulacion, titulacion.Name),
-                    new Property(propiedadTitulacion, mResourceApi.GraphsUrl + "items/degreetype_" + titulacion.Identification)
-                ));
-            }
-            else
-            {
-                entidadAux.properties.AddRange(AddProperty(
-                       new Property(propiedadNombreTitulacion, titulacion.Name)
-                ));
-                entidadAux.properties.Add(new Property(propiedadTitulacion, ""));
             }
         }
 
@@ -347,8 +311,6 @@ namespace Utils
             }
             return resultado;
         }
-
-
 
         /// <summary>
         /// Inserta los valores de los autores en cada una de sus propiedades.

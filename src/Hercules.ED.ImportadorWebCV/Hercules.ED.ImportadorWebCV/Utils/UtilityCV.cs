@@ -1,13 +1,6 @@
-﻿using Gnoss.ApiWrapper;
-using Gnoss.ApiWrapper.ApiModel;
-using Gnoss.ApiWrapper.Model;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Web;
-using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
 namespace Utils
 {

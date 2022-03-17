@@ -6,8 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using Utils;
 using static Models.Entity;
 
@@ -324,7 +322,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <param name="entidadAux"></param>
         private void EstudiosCiclosTitulacion(CvnItemBean item, Entity entidadAux)
         {
-            UtilitySecciones.AniadirTitulacion(mResourceApi, item.GetElementoPorIDCampo<CvnItemBeanCvnTitleBean>("020.010.010.030"),
+            Utility.AniadirTitulacion(mResourceApi, item.GetElementoPorIDCampo<CvnItemBeanCvnTitleBean>("020.010.010.030"),
                 Variables.FormacionAcademica.estudiosCicloNombreTitulo,
                 Variables.FormacionAcademica.estudiosCicloTitulo, entidadAux);
         }
@@ -337,7 +335,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <param name="entidadAux"></param>
         private void EstudiosCiclosTituloExtrajero(CvnItemBean item, Entity entidadAux)
         {
-            UtilitySecciones.AniadirTitulacion(mResourceApi, item.GetElementoPorIDCampo<CvnItemBeanCvnTitleBean>("020.010.010.150"),
+            Utility.AniadirTitulacion(mResourceApi, item.GetElementoPorIDCampo<CvnItemBeanCvnTitleBean>("020.010.010.150"),
                 Variables.FormacionAcademica.estudiosCicloTituloExtranjeroNombre,
                 Variables.FormacionAcademica.estudiosCicloTituloExtranjero, entidadAux);
         }

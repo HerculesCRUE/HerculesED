@@ -2,11 +2,8 @@
 using Gnoss.ApiWrapper.ApiModel;
 using Hercules.ED.DisambiguationEngine.Models;
 using Utils;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
 namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
@@ -15,6 +12,7 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
     {
         public string descripcion { get; set; }
         public string fecha { get; set; }
+        public string entidadRealizacion { get; set; }
 
         private static readonly DisambiguationDataConfig configDescripcion = new DisambiguationDataConfig()
         {
@@ -23,6 +21,13 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
         };
 
         private static readonly DisambiguationDataConfig configFecha = new DisambiguationDataConfig()
+        {
+            type = DisambiguationDataConfigType.equalsItem,
+            score = 0.5f,
+            scoreMinus = 0.5f
+        };
+        
+        private static readonly DisambiguationDataConfig configER = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsItem,
             score = 0.5f,
@@ -45,6 +50,13 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
                     property = "fecha",
                     config = configFecha,
                     value = fecha
+                },
+
+                new DisambiguationData()
+                {
+                    property = "entidadRealizacion",
+                    config = configER,
+                    value = entidadRealizacion
                 }
             };
             return data;
@@ -70,10 +82,11 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
 
             foreach (List<string> lista in listaListas)
             {
-                string select = $@"SELECT distinct ?item ?itemTitle ?itemDate ";
+                string select = $@"SELECT distinct ?item ?itemTitle ?itemDate ?itemER ";
                 string where = $@"where {{
                                         ?item <{Variables.ActividadDocente.direccionTesisTituloTrabajo}> ?itemTitle . 
                                         OPTIONAL{{?item <{Variables.ActividadDocente.direccionTesisFechaDefensa}> ?itemDate }}.
+                                        OPTIONAL{{?item <{Variables.ActividadDocente.direccionTesisEntidadRealizacionNombre}> ?itemER }}.
                                         FILTER(?item in (<{string.Join(">,<", lista)}>))
                                     }}";
                 //TODO check where valores
@@ -84,7 +97,8 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
                     {
                         ID = fila["item"].value,
                         descripcion = fila["itemTitle"].value,
-                        fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : ""
+                        fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : "",
+                        entidadRealizacion = fila.ContainsKey("itemER") ? fila["itemER"].value : ""
                     };
 
                     resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), direccionTesis);
