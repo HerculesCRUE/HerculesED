@@ -119,7 +119,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 TutoriasAcademicas tutoriasAcademicas = new TutoriasAcademicas();
                 tutoriasAcademicas.nombre = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.tutoAcademicaNombrePrograma)?.values.FirstOrDefault();
-
+                tutoriasAcademicas.nombreOtros = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.tutoAcademicaNombreProgramaOtros)?.values.FirstOrDefault();
                 tutoriasAcademicas.entidadRealizacion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.tutoAcademicaEntidadRealizacionNombre)?.values.FirstOrDefault();
                 tutoriasAcademicas.ID = Guid.NewGuid().ToString();
                 entidadesXML.Add(tutoriasAcademicas.ID, tutoriasAcademicas);
@@ -144,18 +144,18 @@ namespace ImportadorWebCV.Sincro.Secciones
         {
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/impartedCoursesSeminars", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "impartedcoursesseminars";
-            string propTitle = "XXXXXXXXXXXXX";
-            string rdfType = "XXXXXXXXXXXXXXX";
+            string propTitle = "http://w3id.org/roh/title";
+            string rdfType = "http://w3id.org/roh/ImpartedCoursesSeminars";
             string rdfTypePrefix = "RelatedImpartedCoursesSeminars";
 
             //1º Obtenemos la entidad del XML.
             List<Entity> listadoAux = GetCursosSeminarios(listadoDatos);
 
             Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
-            foreach (Entity entityXML in listadoAux)//TODO - check
+            foreach (Entity entityXML in listadoAux)
             {
                 CursosSeminarios cursosSeminarios = new CursosSeminarios();
-                cursosSeminarios.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.cursosSeminariosNombreEvento)?.values.FirstOrDefault();
+                cursosSeminarios.nombreEvento = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.cursosSeminariosNombreEvento)?.values.FirstOrDefault();
                 cursosSeminarios.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.cursosSeminariosFechaImparticion)?.values.FirstOrDefault();
                 cursosSeminarios.entidadOrganizadora = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.cursosSeminariosEntidadOrganizadoraNombre)?.values.FirstOrDefault();
                 cursosSeminarios.ID = Guid.NewGuid().ToString();
@@ -179,21 +179,22 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         public List<SubseccionItem> SincroPublicacionDocentes([Optional] bool preimportar)
         {
-            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/educationalOrPedagogicalPublications", "http://vivoweb.org/ontology/core#relatedBy" };
-            string graph = "XXXXXXXXXXXXXXXXXX";
-            string propTitle = "XXXXXXXXXXXXX";
-            string rdfType = "XXXXXXXXXXXXXXX";
-            string rdfTypePrefix = "RelatedEducationalOrPedagogicalPublications";
+            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/teachingPublications", "http://vivoweb.org/ontology/core#relatedBy" };
+            string graph = "teachingpublication";
+            string propTitle = "http://w3id.org/roh/title";
+            string rdfType = "http://w3id.org/roh/TeachingPublication";
+            string rdfTypePrefix = "RelatedTeachingPublications";
 
             //1º Obtenemos la entidad del XML.
             List<Entity> listadoAux = GetPublicacionDocentes(listadoDatos);
 
             Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
-            foreach (Entity entityXML in listadoAux)//TODO - check
+            foreach (Entity entityXML in listadoAux)
             {
                 PublicacionDocentes publicacionDocentes = new PublicacionDocentes();
                 publicacionDocentes.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.publicacionDocenteNombre)?.values.FirstOrDefault();
-                publicacionDocentes.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.publicacionDocenteFechaPublicacion)?.values.FirstOrDefault();
+                publicacionDocentes.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.publicacionDocenteFechaElaboracion)?.values.FirstOrDefault();
+                publicacionDocentes.tituloPublicacion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.publicacionDocenteTituloPublicacion)?.values.FirstOrDefault();
                 publicacionDocentes.ID = Guid.NewGuid().ToString();
                 entidadesXML.Add(publicacionDocentes.ID, publicacionDocentes);
             }
@@ -215,11 +216,11 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         public List<SubseccionItem> SincroParticipacionProyectosInnovacionDocente([Optional] bool preimportar)
         {
-            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/participationInTeachingInnovationProjects", "http://vivoweb.org/ontology/core#relatedBy" };
-            string graph = "XXXXXXXXXXXXXXXXXX";
+            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/", "http://vivoweb.org/ontology/core#relatedBy" };
+            string graph = "XXXXXXXXXXXXXXX";
             string propTitle = "XXXXXXXXXXXXX";
             string rdfType = "XXXXXXXXXXXXXXX";
-            string rdfTypePrefix = "RelatedParticipationInTeachingInnovationProjects";
+            string rdfTypePrefix = "RelatedTeachingInnovationAwardsReceived";
 
             //1º Obtenemos la entidad del XML.
             List<Entity> listadoAux = GetParticipacionProyectosInnovacionDocente(listadoDatos);
@@ -770,10 +771,10 @@ namespace ImportadorWebCV.Sincro.Secciones
                 {
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
-                    if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("030.060.000.030")))//TODO-check
+                    if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("030.060.000.030")))
                     {
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                            new Property(Variables.ActividadDocente.cursosSeminariosTipoEvento, item.GetStringPorIDCampo("030.060.000.010")),//TODO - funcion
+                            new Property(Variables.ActividadDocente.cursosSeminariosTipoEvento, item.GetTipoEventoPorIDCampo("030.060.000.010")),
                             new Property(Variables.ActividadDocente.cursosSeminariosTipoEventoOtros, item.GetStringPorIDCampo("030.060.000.020")),
                             new Property(Variables.ActividadDocente.cursosSeminariosNombreEvento, item.GetStringPorIDCampo("030.060.000.030")),
                             new Property(Variables.ActividadDocente.cursosSeminariosPaisEntidadOrganizadora, item.GetPaisPorIDCampo("030.060.000.040")),
@@ -781,15 +782,16 @@ namespace ImportadorWebCV.Sincro.Secciones
                             new Property(Variables.ActividadDocente.cursosSeminariosCiudadEntidadOrganizadora, item.GetStringPorIDCampo("030.060.000.070")),
                             new Property(Variables.ActividadDocente.cursosSeminariosObjetivosCurso, item.GetStringPorIDCampo("030.060.000.120")),
                             new Property(Variables.ActividadDocente.cursosSeminariosPerfilDestinatarios, item.GetStringPorIDCampo("030.060.000.130")),
-                            new Property(Variables.ActividadDocente.cursosSeminariosIdiomaImpartio, item.GetTraduccion("030.060.000.140")),//TODO - check
+                            new Property(Variables.ActividadDocente.cursosSeminariosIdiomaImpartio, item.GetTraduccion("030.060.000.140")),
                             new Property(Variables.ActividadDocente.cursosSeminariosFechaImparticion, item.GetStringDatetimePorIDCampo("030.060.000.150")),
                             new Property(Variables.ActividadDocente.cursosSeminariosHorasImpartidas, item.GetStringDoublePorIDCampo("030.060.000.160")),
-                            new Property(Variables.ActividadDocente.cursosSeminariosTipoParticipacion, item.GetStringPorIDCampo("030.060.000.170")),//TODO -funcion
+                            new Property(Variables.ActividadDocente.cursosSeminariosTipoParticipacion, item.GetTipoParticipacionDocumentoPorIDCampo("030.060.000.170")),
                             new Property(Variables.ActividadDocente.cursosSeminariosTipoParticipacionOtros, item.GetStringPorIDCampo("030.060.000.180")),
                             new Property(Variables.ActividadDocente.cursosSeminariosAutorCorrespondencia, item.GetStringBooleanPorIDCampo("030.060.000.200"))
                         ));
                         CursosSeminariosEntidadOrganizadora(item, entidadAux);
                         CursosSeminariosISBN(item, entidadAux);
+                        CursosSeminariosISSN(item, entidadAux);
                         CursosSeminariosIDPublicacion(item, entidadAux);
 
                         listado.Add(entidadAux);
@@ -852,6 +854,20 @@ namespace ImportadorWebCV.Sincro.Secciones
 
             UtilitySecciones.InsertaISBN(listadoISBN, entidadAux, propiedadISBN);
         }
+        
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes al ISSN.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="entidadAux"></param>
+        private void CursosSeminariosISSN(CvnItemBean item, Entity entidadAux)
+        {
+            List<CvnItemBeanCvnExternalPKBean> listadoISSN = item.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("030.060.000.190");
+            string propiedadISSN = Variables.ActividadDocente.cursosSeminariosISSN;
+
+            UtilitySecciones.InsertaISSN(listadoISSN, entidadAux, propiedadISSN);
+        }
 
         /// <summary>
         /// 030.070.000.000
@@ -867,15 +883,15 @@ namespace ImportadorWebCV.Sincro.Secciones
                 {
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
-                    if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("030.070.000.010")))//TODO-check
+                    if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("030.070.000.010")))
                     {
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                             new Property(Variables.ActividadDocente.publicacionDocenteNombre, item.GetStringPorIDCampo("030.070.000.010")),
                             new Property(Variables.ActividadDocente.publicacionDocentePerfilDestinatario, item.GetStringPorIDCampo("030.070.000.020")),
                             new Property(Variables.ActividadDocente.publicacionDocentePosicionFirma, item.GetStringDoublePorIDCampo("030.070.000.040")),
                             new Property(Variables.ActividadDocente.publicacionDocenteFechaElaboracion, item.GetStringDatetimePorIDCampo("030.070.000.050")),
-                            new Property(Variables.ActividadDocente.publicacionDocenteTipologiaSoporte, item.GetStringPorIDCampo("030.070.000.060")),//TODO
-                            new Property(Variables.ActividadDocente.publicacionDocenteTipologiaSoporteOtros, item.GetStringPorIDCampo("030.070.000.070")),//TODO
+                            new Property(Variables.ActividadDocente.publicacionDocenteTipologiaSoporte, item.GetTipoSoportePorIDCampo("030.070.000.060")),
+                            new Property(Variables.ActividadDocente.publicacionDocenteTipologiaSoporteOtros, item.GetStringPorIDCampo("030.070.000.070")),
                             new Property(Variables.ActividadDocente.publicacionDocenteTituloPublicacion, item.GetStringPorIDCampo("030.070.000.080")),
                             new Property(Variables.ActividadDocente.publicacionDocenteNombrePublicacion, item.GetStringPorIDCampo("030.070.000.190")),
                             new Property(Variables.ActividadDocente.publicacionDocenteVolumenPublicacion, item.GetVolumenPorIDCampo("030.070.000.090")),
@@ -887,12 +903,13 @@ namespace ImportadorWebCV.Sincro.Secciones
                             new Property(Variables.ActividadDocente.publicacionDocenteCCAAPublicacion, item.GetRegionPorIDCampo("030.070.000.130")),
                             new Property(Variables.ActividadDocente.publicacionDocenteFechaPublicacion, item.GetStringDatetimePorIDCampo("030.070.000.150")),
                             new Property(Variables.ActividadDocente.publicacionDocenteURLPublicacion, item.GetStringPorIDCampo("030.070.000.160")),
-                            new Property(Variables.ActividadDocente.publicacionDocenteDepositoLegal, item.GetElementoPorIDCampo<CvnItemBeanCvnExternalPKBean>("030.070.000.180").Value),
+                            new Property(Variables.ActividadDocente.publicacionDocenteDepositoLegal, item.GetValueCvnExternalPKBean("030.070.000.180")),
                             new Property(Variables.ActividadDocente.publicacionDocenteJustificacionMaterial, item.GetStringPorIDCampo("030.070.000.200")),
-                            new Property(Variables.ActividadDocente.publicacionDocenteGradoContribucion, item.GetStringPorIDCampo("030.070.000.210")),//TODO
+                            new Property(Variables.ActividadDocente.publicacionDocenteGradoContribucion, item.GetGradoContribucionPorIDCampo("030.070.000.210")),
                             new Property(Variables.ActividadDocente.publicacionDocenteAutorCorrespondencia, item.GetStringBooleanPorIDCampo("030.070.000.220"))
                         ));
                         PublicacionDocentesISBN(item, entidadAux);
+                        PublicacionDocentesISSN(item, entidadAux);
                         PublicacionDocentesIDPublicacion(item, entidadAux);
                         PublicacionDocentesAutores(item, entidadAux);
 
@@ -921,7 +938,6 @@ namespace ImportadorWebCV.Sincro.Secciones
 
             UtilitySecciones.InsertaAutorProperties(listadoAutores, entidadAux, propiedadAutorFirma, propiedadAutorOrden,
                 propiedadAutorNombre, propiedadAutorPrimerApellido, propiedadAutorSegundoApellido);
-
         }
 
         /// <summary>
@@ -957,6 +973,20 @@ namespace ImportadorWebCV.Sincro.Secciones
         }
 
         /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes al ISSN.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="entidadAux"></param>
+        private void PublicacionDocentesISSN(CvnItemBean item, Entity entidadAux)
+        {
+            List<CvnItemBeanCvnExternalPKBean> listadoISSN = item.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("030.070.000.170");
+            string propiedadISSN = Variables.ActividadDocente.publicacionDocenteISSNPublicacion;
+
+            UtilitySecciones.InsertaISSN(listadoISSN, entidadAux, propiedadISSN);
+        }
+
+        /// <summary>
         /// 030.080.000.000
         /// </summary>
         private List<Entity> GetParticipacionProyectosInnovacionDocente(List<CvnItemBean> listadoDatos)
@@ -977,13 +1007,13 @@ namespace ImportadorWebCV.Sincro.Secciones
                             new Property(Variables.ActividadDocente.participacionInnovaPaisEntidadRealizacion, item.GetPaisPorIDCampo("030.080.000.020")),
                             new Property(Variables.ActividadDocente.participacionInnovaCCAAEntidadRealizacion, item.GetRegionPorIDCampo("030.080.000.030")),
                             new Property(Variables.ActividadDocente.participacionInnovaCiudadEntidadRealizacion, item.GetStringPorIDCampo("030.080.000.250")),
-                            new Property(Variables.ActividadDocente.participacionInnovaTipoParticipacion, item.GetStringPorIDCampo("030.080.000.050")),//TODO
+                            new Property(Variables.ActividadDocente.participacionInnovaTipoParticipacion, item.GetTipoParticipacionDocumentoPorIDCampo("030.080.000.050")),//TODO - check
                             new Property(Variables.ActividadDocente.participacionInnovaTipoParticipacionOtros, item.GetStringPorIDCampo("030.080.000.060")),
                             new Property(Variables.ActividadDocente.participacionInnovaAportacionProyecto, item.GetStringPorIDCampo("030.080.000.070")),
-                            new Property(Variables.ActividadDocente.participacionInnovaRegimenDedicacion, item.GetStringPorIDCampo("030.080.000.080")),//TODO
-                            new Property(Variables.ActividadDocente.participacionInnovaTipoConvocatoria, item.GetStringPorIDCampo("030.080.000.130")),//TODO
+                            new Property(Variables.ActividadDocente.participacionInnovaRegimenDedicacion, item.GetRegimenDedicacion("030.080.000.080")),//TODO - check
+                            new Property(Variables.ActividadDocente.participacionInnovaTipoConvocatoria, item.GetTipoConvocatoriaPorIDCampo("030.080.000.130")),//TODO - check
                             new Property(Variables.ActividadDocente.participacionInnovaTipoConvocatoriaOtros, item.GetStringPorIDCampo("030.080.000.140")),
-                            new Property(Variables.ActividadDocente.participacionInnovaTipoDuracionRelacionLaboral, item.GetStringPorIDCampo("030.080.000.190")),//TODO
+                            new Property(Variables.ActividadDocente.participacionInnovaTipoDuracionRelacionLaboral, item.GetStringPorIDCampo("030.080.000.190")),//TODO - 
                             new Property(Variables.ActividadDocente.participacionInnovaDuracionParticipacionAnio, item.GetDurationAnioPorIDCampo("030.080.000.200")),
                             new Property(Variables.ActividadDocente.participacionInnovaDuracionParticipacionMes, item.GetDurationMesPorIDCampo("030.080.000.200")),
                             new Property(Variables.ActividadDocente.participacionInnovaDuracionParticipacionDia, item.GetDurationDiaPorIDCampo("030.080.000.200")),
@@ -1097,9 +1127,9 @@ namespace ImportadorWebCV.Sincro.Secciones
                             new Property(Variables.ActividadDocente.participaCongresosPerfilDestinatarios, item.GetStringPorIDCampo("030.090.000.130")),
                             new Property(Variables.ActividadDocente.participaCongresosIdiomaPresentacion, item.GetTraduccion("030.090.000.140")),//TODO - check
                             new Property(Variables.ActividadDocente.participaCongresosFechaPresentacion, item.GetStringDatetimePorIDCampo("030.090.000.150")),
-                            new Property(Variables.ActividadDocente.participaCongresosTipoParticipacion, item.GetStringPorIDCampo("030.090.000.160")),//TODO - otros
+                            new Property(Variables.ActividadDocente.participaCongresosTipoParticipacion, item.GetTipoParticipacionDocumentoPorIDCampo("030.090.000.160")),//TODO - check
                             new Property(Variables.ActividadDocente.participaCongresosTipoParticipacionOtros, item.GetStringPorIDCampo("030.090.000.170")),
-                            new Property(Variables.ActividadDocente.participaCongresosTipoPublicacion, item.GetStringPorIDCampo("030.090.000.220")),//TODO
+                            new Property(Variables.ActividadDocente.participaCongresosTipoPublicacion, item.GetTipoPublicacionPorIDCampo("030.090.000.220")),//TODO - check
                             new Property(Variables.ActividadDocente.participaCongresosTituloPublicacion, item.GetStringPorIDCampo("030.090.000.230")),
                             new Property(Variables.ActividadDocente.participaCongresosNombrePublicacion, item.GetStringPorIDCampo("030.090.000.330")),
                             new Property(Variables.ActividadDocente.participaCongresosVolumenPublicacion, item.GetVolumenPorIDCampo("030.090.000.240")),
@@ -1111,7 +1141,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                             new Property(Variables.ActividadDocente.participaCongresosCCAAPublicacion, item.GetRegionPorIDCampo("030.090.000.280")),
                             new Property(Variables.ActividadDocente.participaCongresosFechaPublicacion, item.GetStringDatetimePorIDCampo("030.090.000.300")),
                             new Property(Variables.ActividadDocente.participaCongresosURLPublicacion, item.GetStringPorIDCampo("030.090.000.310")),
-                            new Property(Variables.ActividadDocente.participaCongresosDepositoLegalPublicacion, item.GetElementoPorIDCampo<CvnItemBeanCvnExternalPKBean>("030.090.000.320").Value),
+                            new Property(Variables.ActividadDocente.participaCongresosDepositoLegalPublicacion, item.GetValueCvnExternalPKBean("030.090.000.320")),
                             new Property(Variables.ActividadDocente.participaCongresosNumHorasPublicacion, item.GetDurationHorasPorIDCampo("030.090.000.340")),
                             new Property(Variables.ActividadDocente.participaCongresosFechaInicioPublicacion, item.GetStringDatetimePorIDCampo("030.090.000.350")),
                             new Property(Variables.ActividadDocente.participaCongresosFechaFinalPublicacion, item.GetStringDatetimePorIDCampo("030.090.000.360")),
