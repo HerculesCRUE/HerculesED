@@ -2039,6 +2039,28 @@ namespace Utils
         }
 
         /// <summary>
+        /// Devuelve el tipo de proyecto como respuesta,
+        /// con formato mResourceApi.GraphsUrl + "items/projectcharactertype_" + valor
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="codigo"></param>
+        /// <returns></returns>
+        public static string GetTipoProyectoCharacterPorIDCampo(this CvnItemBean item, string codigo)
+        {
+            if (!CodigoCampoCorrecto(codigo))
+            {
+                throw new ArgumentException("Codigo de campo incorrecto" + codigo);
+            }
+
+            CvnItemBeanCvnString campo = item.Items.Where(x => x.Code.Equals(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
+            if (campo != null&& !string.IsNullOrEmpty(campo.Value))
+            {
+                return mResourceApi.GraphsUrl + "items/projectcharactertype_" + campo.Value;
+            }
+            return null;
+        }
+
+        /// <summary>
         /// Devuelve el tipo de tipología de gestión como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/managementtypeactivity_" + valor
         /// </summary>
