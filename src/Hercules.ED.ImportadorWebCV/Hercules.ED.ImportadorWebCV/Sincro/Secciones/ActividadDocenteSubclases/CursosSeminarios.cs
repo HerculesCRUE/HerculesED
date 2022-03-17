@@ -10,11 +10,11 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
 {
     class CursosSeminarios : DisambiguableEntity
     {
-        public string descripcion { get; set; }
+        public string nombreEvento { get; set; }
         public string fecha { get; set; }
         public string entidadOrganizadora { get; set; }
 
-        private static readonly DisambiguationDataConfig configDescripcion = new DisambiguationDataConfig()
+        private static readonly DisambiguationDataConfig configNombreEvento = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsTitle,
             score = 0.8f
@@ -40,9 +40,9 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
             {
                 new DisambiguationData()
                 {
-                    property = "descripcion",
-                    config = configDescripcion,
-                    value = descripcion
+                    property = "nombreEvento",
+                    config = configNombreEvento,
+                    value = nombreEvento
                 },
 
                 new DisambiguationData()
@@ -85,8 +85,8 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
                 string select = $@"SELECT distinct ?item ?itemTitle ?itemDate ?itemEO ";
                 string where = $@"where {{
                                         ?item <{Variables.ActividadDocente.cursosSeminariosNombreEvento}> ?itemTitle . 
-                                        OPTIONAL{{?item <{Variables.ActividadDocente.cursosSeminariosFechaImparticion}> ?itemDate }}.
-                                        OPTIONAL{{?item <{Variables.ActividadDocente.cursosSeminariosEntidadOrganizadoraNombre}> ?itemEO }}.
+                                        OPTIONAL{{?item <{Variables.ActividadDocente.cursosSeminariosFechaImparticion}> ?itemDate }} .
+                                        OPTIONAL{{?item <{Variables.ActividadDocente.cursosSeminariosEntidadOrganizadoraNombre}> ?itemEO }} .
                                         FILTER(?item in (<{string.Join(">,<", lista)}>))
                                     }}";
                 //TODO check where valores
@@ -96,7 +96,7 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
                     CursosSeminarios cursos = new CursosSeminarios
                     {
                         ID = fila["item"].value,
-                        descripcion = fila["itemTitle"].value,
+                        nombreEvento = fila["itemTitle"].value,
                         fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : "",
                         entidadOrganizadora = fila.ContainsKey("itemEO") ? fila["itemEO"].value : ""
                     };

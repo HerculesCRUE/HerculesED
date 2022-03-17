@@ -1786,6 +1786,66 @@ namespace Utils
         }
 
         /// <summary>
+        /// Devuelve el Others del CvnItemBeanCvnExternalPKBean con codigo igual a <paramref name="codigo"/>
+        /// </summary>
+        /// <param name="cvnItemBean"></param>
+        /// <param name="codigo"></param>
+        /// <returns></returns>
+        public static string GetOthersCvnExternalPKBean(this CvnItemBean cvnItemBean, string codigo)
+        {
+            try
+            {
+                if (!CodigoCampoCorrecto(codigo))
+                {
+                    throw new ArgumentException("Codigo de campo incorrecto" + codigo);
+                }
+
+                List<CVNObject> listadoCamposAux = cvnItemBean.Items?.ToList();
+                CvnItemBeanCvnExternalPKBean campo = listadoCamposAux.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnExternalPKBean).Cast<CvnItemBeanCvnExternalPKBean>()?.FirstOrDefault();
+                if (campo != null)
+                {
+                    return campo.Others;
+                }
+                return null;
+            }
+            catch (ArgumentException ex)
+            {
+                Console.Error.WriteLine("ArgumentException: " + ex.Message);
+                return null;
+            }
+        }
+        
+        /// <summary>
+        /// Devuelve el Value del CvnItemBeanCvnExternalPKBean con codigo igual a <paramref name="codigo"/>
+        /// </summary>
+        /// <param name="cvnItemBean"></param>
+        /// <param name="codigo"></param>
+        /// <returns></returns>
+        public static string GetValueCvnExternalPKBean(this CvnItemBean cvnItemBean, string codigo)
+        {
+            try
+            {
+                if (!CodigoCampoCorrecto(codigo))
+                {
+                    throw new ArgumentException("Codigo de campo incorrecto" + codigo);
+                }
+
+                List<CVNObject> listadoCamposAux = cvnItemBean.Items?.ToList();
+                CvnItemBeanCvnExternalPKBean campo = listadoCamposAux.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnExternalPKBean).Cast<CvnItemBeanCvnExternalPKBean>()?.FirstOrDefault();
+                if (campo != null)
+                {
+                    return campo.Value;
+                }
+                return null;
+            }
+            catch (ArgumentException ex)
+            {
+                Console.Error.WriteLine("ArgumentException: " + ex.Message);
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Devuelve el tipo de soporte como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/documentformat_" + valor
         /// </summary>
