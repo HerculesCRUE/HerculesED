@@ -1,6 +1,4 @@
-﻿using Gnoss.ApiWrapper.ApiModel;
-using Gnoss.ApiWrapper.Model;
-using Hercules.ED.DisambiguationEngine.Models;
+﻿using Hercules.ED.DisambiguationEngine.Models;
 using Hercules.ED.ImportadorWebCV.Models;
 using ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases;
 using Models;
@@ -9,7 +7,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Utils;
-using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 using static Models.Entity;
 
 namespace ImportadorWebCV.Sincro.Secciones
@@ -994,7 +991,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                             new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubCCAA, item.GetRegionPorIDCampo("060.010.010.120")),
                             new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubFecha, item.GetStringDatetimePorIDCampo("060.010.010.140")),
                             new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubURL, item.GetStringPorIDCampo("060.010.010.150")),
-                            new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubDepositoLegal, item.GetElementoPorIDCampo<CvnItemBeanCvnExternalPKBean>("060.010.010.170")?.Value),
+                            new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubDepositoLegal, item.GetValueCvnExternalPKBean("060.010.010.170")),
                             new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubCiudad, item.GetStringPorIDCampo("060.010.010.220")),
                             new Property(Variables.ActividadCientificaTecnologica.pubDocumentosColeccion, item.GetStringPorIDCampo("060.010.010.270")),
                             new Property(Variables.ActividadCientificaTecnologica.pubDocumentosReseniaRevista, item.GetStringDoublePorIDCampo("060.010.010.340"))
@@ -1037,7 +1034,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 if (!string.IsNullOrEmpty(revista))
                 {
                     entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                        new Property(Variables.ActividadCientificaTecnologica.pubDocumentosTipoSoporte, item.GetTipoSoportePorIDCampo("060.010.010.070")),
+                        new Property(Variables.ActividadCientificaTecnologica.pubDocumentosTipoSoporte, item.GetFormatoDocumentoPorIDCampo("060.010.010.070")),
                         new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubMainDoc, revista)
                     ));
                 }
@@ -1047,7 +1044,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             else
             {
                 entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosTipoSoporte, item.GetTipoSoportePorIDCampo("060.010.010.070")),
+                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosTipoSoporte, item.GetFormatoDocumentoPorIDCampo("060.010.010.070")),
                     new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubNombre, item.GetStringPorIDCampo("060.010.010.210"))
                 ));
             }
@@ -1151,7 +1148,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.010.020.010")))
                     {
-                        //TODO
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                             new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosTitulo, item.GetStringPorIDCampo("060.010.020.030")),
                             //new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosTipoParticipacion, item.GetStringPorIDCampo("060.010.020.050")),//todo - funcion
@@ -1234,7 +1230,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 if (string.IsNullOrEmpty(persona.nombreCompleto)) { continue; }
 
                 persona.ID = Guid.NewGuid().ToString();
-                entidadAux.autores.Add(persona);
+                entidadAux.autores.Add(persona);//TODO - check insert autores?
             }
 
             foreach (Persona persona in entidadAux.autores)
@@ -1316,7 +1312,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.010.030.010")))
                     {
-                        //TODO
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                             new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemTituloTrabajo, item.GetStringPorIDCampo("060.010.030.010")),
                             //new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemIntervencion, item.GetStringPorIDCampo("060.010.030.040")),//TODO -funcion
@@ -1492,7 +1487,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                             new Property(Variables.ActividadCientificaTecnologica.otrasActDivulPubCCAA, item.GetRegionPorIDCampo("060.010.040.260")),
                             new Property(Variables.ActividadCientificaTecnologica.otrasActDivulPubFecha, item.GetStringDatetimePorIDCampo("060.010.040.280")),
                             new Property(Variables.ActividadCientificaTecnologica.otrasActDivulPubURL, item.GetStringPorIDCampo("060.010.040.290")),
-                            new Property(Variables.ActividadCientificaTecnologica.otrasActDivulPubDepositoLegal, item.GetElementoPorIDCampo<CvnItemBeanCvnExternalPKBean>("060.010.040.310")?.Value),
+                            new Property(Variables.ActividadCientificaTecnologica.otrasActDivulPubDepositoLegal, item.GetValueCvnExternalPKBean("060.010.040.310")),
                             new Property(Variables.ActividadCientificaTecnologica.otrasActDivulAutorCorrespondencia, item.GetStringBooleanPorIDCampo("060.010.040.390"))
                         ));
                         OtrasActividadesDivulgacionEvento(item, entidadAux);
@@ -1546,7 +1541,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             string propiedadAutorPrimerApellido = Variables.ActividadCientificaTecnologica.otrasActDivulAutorPrimerApellido;
             string propiedadAutorSegundoApellido = Variables.ActividadCientificaTecnologica.otrasActDivulAutorSegundoApellido;
 
-            UtilitySecciones.InsertaAutor(listadoAutores, entidadAux, propiedadAutorFirma, propiedadAutorOrden,
+            UtilitySecciones.InsertaAutorProperties(listadoAutores, entidadAux, propiedadAutorFirma, propiedadAutorOrden,
                 propiedadAutorNombre, propiedadAutorPrimerApellido, propiedadAutorSegundoApellido);
 
         }
