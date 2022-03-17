@@ -12,6 +12,7 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
     {
         public string descripcion { get; set; }
         public string fecha { get; set; }
+        public string tituloPublicacion { get; set; }
 
         private static readonly DisambiguationDataConfig configDescripcion = new DisambiguationDataConfig()
         {
@@ -20,6 +21,13 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
         };
 
         private static readonly DisambiguationDataConfig configFecha = new DisambiguationDataConfig()
+        {
+            type = DisambiguationDataConfigType.equalsItem,
+            score = 0.5f,
+            scoreMinus = 0.5f
+        };        
+
+        private static readonly DisambiguationDataConfig configTitulo = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsItem,
             score = 0.5f,
@@ -42,6 +50,13 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
                     property = "fecha",
                     config = configFecha,
                     value = fecha
+                },
+
+                new DisambiguationData()
+                {
+                    property = "tituloPublicacion",
+                    config = configTitulo,
+                    value = tituloPublicacion
                 }
             };
             return data;
@@ -67,13 +82,13 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
 
             foreach (List<string> lista in listaListas)
             {
-                string select = $@"SELECT distinct ?item ?itemTitle ?itemDate ";
+                string select = $@"SELECT distinct ?item ?itemTitle ?itemDate ?itemTitulo ";
                 string where = $@"where {{
                                         ?item <{Variables.ActividadDocente.publicacionDocenteNombre}> ?itemTitle . 
-                                        OPTIONAL{{?item <{Variables.ActividadDocente.publicacionDocenteFechaPublicacion}> ?itemDate }}.
+                                        OPTIONAL{{?item <{Variables.ActividadDocente.publicacionDocenteFechaElaboracion}> ?itemDate }} . 
+                                        OPTIONAL{{?item <{Variables.ActividadDocente.publicacionDocenteTituloPublicacion}> ?itemTitulo }} .
                                         FILTER(?item in (<{string.Join(">,<", lista)}>))
                                     }}";
-                //TODO check where valores
                 SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, graph);
                 foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                 {
@@ -81,7 +96,8 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
                     {
                         ID = fila["item"].value,
                         descripcion = fila["itemTitle"].value,
-                        fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : ""
+                        fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : "",
+                        tituloPublicacion = fila.ContainsKey("itemTitulo") ? fila["itemTitulo"].value : ""
                     };                    
 
                     resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), publicacionDocentes);
