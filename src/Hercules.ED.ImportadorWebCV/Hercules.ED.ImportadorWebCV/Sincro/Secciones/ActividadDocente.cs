@@ -879,6 +879,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                             new Property(Variables.ActividadDocente.publicacionDocenteTituloPublicacion, item.GetStringPorIDCampo("030.070.000.080")),
                             new Property(Variables.ActividadDocente.publicacionDocenteNombrePublicacion, item.GetStringPorIDCampo("030.070.000.190")),
                             new Property(Variables.ActividadDocente.publicacionDocenteVolumenPublicacion, item.GetVolumenPorIDCampo("030.070.000.090")),
+                            new Property(Variables.ActividadDocente.publicacionDocenteNumeroPublicacion, item.GetNumeroVolumenPorIDCampo("030.070.000.090")),
                             new Property(Variables.ActividadDocente.publicacionDocentePagIniPublicacion, item.GetPaginaInicialPorIDCampo("030.070.000.100")),
                             new Property(Variables.ActividadDocente.publicacionDocentePagFinalPublicacion, item.GetPaginaFinalPorIDCampo("030.070.000.100")),
                             new Property(Variables.ActividadDocente.publicacionDocenteEditorialPublicacion, item.GetStringPorIDCampo("030.070.000.110")),
