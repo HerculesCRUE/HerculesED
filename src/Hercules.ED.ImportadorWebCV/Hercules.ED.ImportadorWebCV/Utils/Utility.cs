@@ -1852,7 +1852,7 @@ namespace Utils
         /// <param name="item"></param>
         /// <param name="codigo"></param>
         /// <returns></returns>
-        public static string GetTipoSoportePorIDCampo(this CvnItemBean item, string codigo)
+        public static string GetFormatoDocumentoPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
             {
@@ -1863,6 +1863,28 @@ namespace Utils
             if (campo != null&& !string.IsNullOrEmpty(campo.Value))
             {
                 return mResourceApi.GraphsUrl + "items/documentformat_" + campo.Value;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Devuelve el tipo de soporte como respuesta,
+        /// con formato mResourceApi.GraphsUrl + "items/supporttype_" + valor
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="codigo"></param>
+        /// <returns></returns>
+        public static string GetTipoSoportePorIDCampo(this CvnItemBean item, string codigo)
+        {
+            if (!CodigoCampoCorrecto(codigo))
+            {
+                throw new ArgumentException("Codigo de campo incorrecto" + codigo);
+            }
+
+            CvnItemBeanCvnString campo = item.Items.Where(x => x.Code.Equals(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
+            if (campo != null&& !string.IsNullOrEmpty(campo.Value))
+            {
+                return mResourceApi.GraphsUrl + "items/supporttype_" + campo.Value;
             }
             return null;
         }
