@@ -135,39 +135,39 @@
         /// <summary>
         /// Publicaciones docentes o de carácter pedagógico, libros, articulos, etc. - 030.070.000.000
         /// </summary>
-        public const string publicacionDocenteNombre = "";
-        public const string publicacionDocentePerfilDestinatario = "";
-        public const string publicacionDocenteAutorFirma = "";
-        public const string publicacionDocenteAutorNombre = "";
-        public const string publicacionDocenteAutorOrden = "";
-        public const string publicacionDocenteAutorPrimerApellido = "";
-        public const string publicacionDocenteAutorSegundoApellido = "";
-        public const string publicacionDocentePosicionFirma = "";
-        public const string publicacionDocenteFechaElaboracion = "";
-        public const string publicacionDocenteTipologiaSoporte = "";
-        public const string publicacionDocenteTipologiaSoporteOtros = "";
-        public const string publicacionDocenteTituloPublicacion = "";
-        public const string publicacionDocenteNombrePublicacion = "";
-        public const string publicacionDocenteVolumenPublicacion = "";
-        public const string publicacionDocenteNumeroPublicacion = "";
-        public const string publicacionDocentePagIniPublicacion = "";
-        public const string publicacionDocentePagFinalPublicacion = "";
-        public const string publicacionDocenteEditorialPublicacion = "";
-        public const string publicacionDocentePaisPublicacion = "";
-        public const string publicacionDocenteCCAAPublicacion = "";
-        public const string publicacionDocenteFechaPublicacion = "";
-        public const string publicacionDocenteURLPublicacion = "";
-        public const string publicacionDocenteISBNPublicacion = "";
-        public const string publicacionDocenteISSNPublicacion = "";
-        public const string publicacionDocenteDepositoLegal = "";
-        public const string publicacionDocenteJustificacionMaterial = "";
-        public const string publicacionDocenteGradoContribucion = "";
-        public const string publicacionDocenteAutorCorrespondencia = "";
-        public const string publicacionDocenteIDPubDigitalDOI = "";
-        public const string publicacionDocenteIDPubDigitalHandle = "";
-        public const string publicacionDocenteIDPubDigitalPMID = "";
-        public const string publicacionDocenteNombreOtroIDPubDigital = "";
-        public const string publicacionDocenteIDOtroPubDigital = "";
+        public const string publicacionDocenteNombre = "http://w3id.org/roh/title";
+        public const string publicacionDocentePerfilDestinatario = "http://w3id.org/roh/targetProfile";
+        public const string publicacionDocenteAutorFirma = "http://purl.org/ontology/bibo/authorList@@@http://xmlns.com/foaf/0.1/Person|http://xmlns.com/foaf/0.1/nick";
+        public const string publicacionDocenteAutorNombre = "http://purl.org/ontology/bibo/authorList@@@http://xmlns.com/foaf/0.1/Person|http://xmlns.com/foaf/0.1/firstName";
+        public const string publicacionDocenteAutorOrden = "http://purl.org/ontology/bibo/authorList@@@http://xmlns.com/foaf/0.1/Person|http://www.w3.org/1999/02/22-rdf-syntax-ns#comment";
+        public const string publicacionDocenteAutorPrimerApellido = "http://purl.org/ontology/bibo/authorList@@@http://xmlns.com/foaf/0.1/Person|http://xmlns.com/foaf/0.1/familyName";
+        public const string publicacionDocenteAutorSegundoApellido = "http://purl.org/ontology/bibo/authorList@@@http://xmlns.com/foaf/0.1/Person|http://w3id.org/roh/secondFamilyName";
+        public const string publicacionDocentePosicionFirma = "http://w3id.org/roh/signaturePosition";
+        public const string publicacionDocenteFechaElaboracion = "http://purl.org/dc/terms/issued";
+        public const string publicacionDocenteTipologiaSoporte = "http://w3id.org/roh/supportType";
+        public const string publicacionDocenteTipologiaSoporteOtros = "http://w3id.org/roh/supportTypeOther";
+        public const string publicacionDocenteTituloPublicacion = "http://w3id.org/roh/publicationTitle";
+        public const string publicacionDocenteNombrePublicacion = "http://w3id.org/roh/publicationName";
+        public const string publicacionDocenteVolumenPublicacion = "http://purl.org/ontology/bibo/volume";
+        public const string publicacionDocenteNumeroPublicacion = "http://purl.org/ontology/bibo/issue";
+        public const string publicacionDocentePagIniPublicacion = "http://purl.org/ontology/bibo/pageStart";
+        public const string publicacionDocentePagFinalPublicacion = "http://purl.org/ontology/bibo/pageEnd";
+        public const string publicacionDocenteEditorialPublicacion = "http://vivoweb.org/ontology/core#publisher";
+        public const string publicacionDocentePaisPublicacion = "https://www.w3.org/2006/vcard/ns#hasCountryName";
+        public const string publicacionDocenteCCAAPublicacion = "https://www.w3.org/2006/vcard/ns#hasRegion";
+        public const string publicacionDocenteFechaPublicacion = "http://w3id.org/roh/publishDate";
+        public const string publicacionDocenteURLPublicacion = "https://www.w3.org/2006/vcard/ns#url";
+        public const string publicacionDocenteISBNPublicacion = "http://w3id.org/roh/isbn";
+        public const string publicacionDocenteISSNPublicacion = "http://purl.org/ontology/bibo/issn";
+        public const string publicacionDocenteDepositoLegal = "http://w3id.org/roh/legalDeposit";
+        public const string publicacionDocenteJustificacionMaterial = "http://w3id.org/roh/materialJustification";
+        public const string publicacionDocenteGradoContribucion = "http://w3id.org/roh/contributionGrade";
+        public const string publicacionDocenteAutorCorrespondencia = "http://w3id.org/roh/correspondingAuthor";
+        public const string publicacionDocenteIDPubDigitalDOI = "http://purl.org/ontology/bibo/doi";
+        public const string publicacionDocenteIDPubDigitalHandle = "http://purl.org/ontology/bibo/handle";
+        public const string publicacionDocenteIDPubDigitalPMID = "http://purl.org/ontology/bibo/pmid";
+        public const string publicacionDocenteNombreOtroIDPubDigital = "http://purl.org/ontology/bibo/identifier@@@http://xmlns.com/foaf/0.1/Document|http://xmlns.com/foaf/0.1/topic";
+        public const string publicacionDocenteIDOtroPubDigital = "http://purl.org/ontology/bibo/identifier@@@http://xmlns.com/foaf/0.1/Document|http://purl.org/dc/elements/1.1/title";
 
 
         /// <summary>
