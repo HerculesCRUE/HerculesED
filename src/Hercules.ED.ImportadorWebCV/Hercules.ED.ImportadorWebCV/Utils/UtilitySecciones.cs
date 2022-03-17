@@ -322,7 +322,7 @@ namespace Utils
         /// <param name="propiedadAutorNombre">propiedadAutorNombre</param>
         /// <param name="propiedadAutorPrimerApellido">propiedadAutorPrimerApellido</param>
         /// <param name="propiedadAutorSegundoApellido">propiedadAutorSegundoApellido</param>
-        public static void InsertaAutor(List<CvnItemBeanCvnAuthorBean> listaAutores, Entity entidadAux, string propiedadAutorFirma, string propiedadAutorOrden,
+        public static void InsertaAutorProperties(List<CvnItemBeanCvnAuthorBean> listaAutores, Entity entidadAux, string propiedadAutorFirma, string propiedadAutorOrden,
             string propiedadAutorNombre, string propiedadAutorPrimerApellido, string propiedadAutorSegundoApellido)
         {
             //No hago nada si no se pasa la propiedad.
