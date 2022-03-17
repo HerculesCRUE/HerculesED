@@ -3243,19 +3243,6 @@
               },
               {
                 "name": {
-                  "es": "Nombre de la publicación"
-                },
-                "type": "text",
-                "child": {
-                  "property": "http://vivoweb.org/ontology/core#relatedBy",
-                  "graph": "teachingpublication",
-                  "child": {
-                    "property": "http://w3id.org/roh/publicationName"
-                  }
-                }
-              },
-              {
-                "name": {
                   "es": "Autor de correspondencia"
                 },
                 "type": "boolean",
@@ -3264,6 +3251,19 @@
                   "graph": "teachingpublication",
                   "child": {
                     "property": "http://w3id.org/roh/correspondingAuthor"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Nombre de la publicación"
+                },
+                "type": "text",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingpublication",
+                  "child": {
+                    "property": "http://w3id.org/roh/publicationName"
                   }
                 }
               },
@@ -3695,6 +3695,14 @@
                     "properties": [
                       {
                         "title": {
+                          "es": "Autor de correspondencia"
+                        },
+                        "type": "boolean",
+                        "property": "http://w3id.org/roh/correspondingAuthor",
+                        "width": 1
+                      },
+                      {
+                        "title": {
                           "es": "Nombre de la publicación"
                         },
                         "placeholder": {
@@ -3703,14 +3711,6 @@
                         "type": "text",
                         "property": "http://w3id.org/roh/publicationName",
                         "width": 2
-                      },
-                      {
-                        "title": {
-                          "es": "Autor de correspondencia"
-                        },
-                        "type": "boolean",
-                        "property": "http://w3id.org/roh/correspondingAuthor",
-                        "width": 1
                       }
                     ]
                   },
