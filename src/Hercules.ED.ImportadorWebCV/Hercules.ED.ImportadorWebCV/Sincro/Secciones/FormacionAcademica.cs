@@ -500,7 +500,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void DoctoradosCodirectoresTesis(CvnItemBean item, Entity entidadAux)//TODO - check
+        private void DoctoradosCodirectoresTesis(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnAuthorBean> listadoCodirectores = item.GetListaElementosPorIDCampo<CvnItemBeanCvnAuthorBean>("020.010.020.180");
 
