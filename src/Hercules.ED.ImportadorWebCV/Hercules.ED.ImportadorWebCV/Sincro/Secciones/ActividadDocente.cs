@@ -589,7 +589,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                         FormacionAcademicaEntidadFinanciadora(item, entidadAux);
                         FormacionAcademicaEntidadEvaluacion(item, entidadAux);
 
-                        listado.Add(entidadAux);                        
+                        listado.Add(entidadAux);
                     }
                 }
             }
@@ -856,7 +856,7 @@ namespace ImportadorWebCV.Sincro.Secciones
 
             UtilitySecciones.InsertaISBN(listadoISBN, entidadAux, propiedadISBN);
         }
-        
+
         /// <summary>
         /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
         /// pertenecientes al ISSN.
@@ -1086,18 +1086,46 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <param name="entidadAux"></param>
         private void ParticipacionProyectosInnovacionDocenteEntidadParticipante(CvnItemBean item, Entity entidadAux)
         {
-            //Añado la referencia si existe Entidad
-            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("030.080.000.150"),
-                Variables.ActividadDocente.participacionInnovaEntidadParticipanteNombre,
-                Variables.ActividadDocente.participacionInnovaEntidadParticipante, entidadAux);
+            /**/
+            List<CvnItemBeanCvnCodeGroup> listadoEntidadParticipante = item.GetListaElementosPorIDCampo<CvnItemBeanCvnCodeGroup>("030.080.000.150");
 
-            //Añado otros, o el ID de una preseleccion
-            string valorTipo = !string.IsNullOrEmpty(item.GetStringPorIDCampo("030.080.000.180")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetOrganizacionPorIDCampo("030.080.000.170");
+            string propiedadNombre = Variables.ActividadDocente.participacionInnovaEntidadParticipanteNombre;
+            string propiedadEP = Variables.ActividadDocente.participacionInnovaEntidadParticipante;
+            string propiedadTipo = Variables.ActividadDocente.participacionInnovaTipoEntidadParticipante;
+            string propiedadTipoOtros = Variables.ActividadDocente.participacionInnovaTipoEntidadParticipanteOtros;
 
-            entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                new Property(Variables.ActividadDocente.participacionInnovaTipoEntidadParticipante, valorTipo),
-                new Property(Variables.ActividadDocente.participacionInnovaTipoEntidadParticipanteOtros, item.GetStringPorIDCampo("030.080.000.180"))
-            ));
+            foreach (CvnItemBeanCvnCodeGroup entidad in listadoEntidadParticipante)
+            {
+                string entityPartAux = Guid.NewGuid().ToString() + "@@@";
+                Property propertyNombre = entidadAux.properties.FirstOrDefault(x => x.prop == propiedadNombre);
+                Property propertyEP = entidadAux.properties.FirstOrDefault(x => x.prop == propiedadEP);
+                Property propertyTipo = entidadAux.properties.FirstOrDefault(x => x.prop == propiedadTipo);
+                Property propertyTipoOtros = entidadAux.properties.FirstOrDefault(x => x.prop == propiedadTipoOtros);
+
+                //Añado la referencia si existe Entidad
+                string nombreEntidad = entidad.GetNameEntityBeanCvnCodeGroup("030.080.000.150");
+                string entidadN = UtilitySecciones.GetOrganizacionPorNombre(mResourceApi, nombreEntidad);
+
+                UtilitySecciones.CheckProperty(propertyNombre, entidadAux, UtilitySecciones.StringGNOSSID(entityPartAux, nombreEntidad), propiedadNombre);
+                UtilitySecciones.CheckProperty(propertyEP, entidadAux, UtilitySecciones.StringGNOSSID(entityPartAux, entidadN), propiedadEP);
+
+                //Añado otros, o el ID de una preseleccion
+                if (!string.IsNullOrEmpty(entidad.GetStringCvnCodeGroup("030.080.000.170")))
+                {
+                    string valorTipo = mResourceApi.GraphsUrl + "items/organizationtype_" + entidad.GetStringCvnCodeGroup("030.080.000.170");
+
+                    UtilitySecciones.CheckProperty(propertyTipo, entidadAux, UtilitySecciones.StringGNOSSID(entityPartAux, valorTipo), propiedadTipo);
+                }
+                else if (!string.IsNullOrEmpty(entidad.GetStringCvnCodeGroup("030.080.000.180")))
+                {
+                    string valorTipo = mResourceApi.GraphsUrl + "items/organizationtype_OTHERS";
+                    string valorTipoOtros = item.GetStringPorIDCampo("030.080.000.180");
+
+                    UtilitySecciones.CheckProperty(propertyTipo, entidadAux, UtilitySecciones.StringGNOSSID(entityPartAux, valorTipo), propiedadTipo);
+                    UtilitySecciones.CheckProperty(propertyTipoOtros, entidadAux, UtilitySecciones.StringGNOSSID(entityPartAux, valorTipoOtros), propiedadTipoOtros);
+                }
+
+            }
         }
 
         /// <summary>
