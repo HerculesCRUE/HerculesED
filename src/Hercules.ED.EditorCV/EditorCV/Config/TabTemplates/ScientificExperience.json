@@ -1823,8 +1823,6 @@
 				}
 			}
 		},
-
-		// Obras artísticas dirigidas
 		{
 			"rdftype": "http://w3id.org/roh/RelatedSupervisedArtisticProject",
 			"property": "http://w3id.org/roh/supervisedArtisticProjects",
@@ -1921,7 +1919,7 @@
 							},
 							{
 								"name": {
-									"es": "Título de la exposición"
+									"es": "Título de la publicación"
 								},
 								"child": {
 									"property": "http://vivoweb.org/ontology/core#relatedBy",
@@ -2165,7 +2163,7 @@
 																},
 																{
 																	"title": {
-																		"es": "Primera apellido"
+																		"es": "Primer apellido"
 																	},
 																	"placeholder": {
 																		"es": "Introduce el primer apellido"
