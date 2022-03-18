@@ -4335,7 +4335,7 @@
                     "graph": "teachingproject",
                     "child": {
                       "property": "http://vivoweb.org/ontology/core#geographicFocus",
-                      "graph": "eventgeographicregion",
+                      "graph": "geographicregion",
                       "child": {
                         "property": "http://purl.org/dc/elements/1.1/title"
                       }
