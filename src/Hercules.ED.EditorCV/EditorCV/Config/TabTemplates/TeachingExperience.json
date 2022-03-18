@@ -4129,6 +4129,31 @@
             "properties": [
               {
                 "name": {
+                  "es": "Tipo de participación"
+                },
+                "childOR": [
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "teachingproject",
+                    "child": {
+                      "property": "http://w3id.org/roh/participationTypeOther"
+                    }
+                  },
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "teachingproject",
+                    "child": {
+                      "property": "http://w3id.org/roh/participationType",
+                      "graph": "projectcharactertype",
+                      "child": {
+                        "property": "http://purl.org/dc/elements/1.1/title"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "name": {
                   "es": "Fecha de inicio"
                 },
                 "showMiniBold": true,
@@ -4143,6 +4168,20 @@
               },
               {
                 "name": {
+                  "es": "Fecha de fin"
+                },
+                "showMiniBold": true,
+                "type": "date",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingproject",
+                  "child": {
+                    "property": "http://vivoweb.org/ontology/core#end"
+                  }
+                }
+              },
+              {
+                "name": {
                   "es": "Entidad financiadora"
                 },
                 "showMini": true,
@@ -4151,6 +4190,264 @@
                   "graph": "teachingproject",
                   "child": {
                     "property": "http://w3id.org/roh/fundedByTitle"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Tipo duración relación laboral"
+                },
+                "type": "text",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingproject",
+                  "child": {
+                    "property": "http://w3id.org/roh/laboralDurationType",
+                    "graph": "laboraldurationtype",
+                    "child": {
+                      "property": "http://purl.org/dc/elements/1.1/title"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Años"
+                },
+                "type": "number",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingproject",
+                  "child": {
+                    "property": "http://w3id.org/roh/durationYears"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Meses"
+                },
+                "type": "number",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingproject",
+                  "child": {
+                    "property": "http://w3id.org/roh/durationMonths"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Days"
+                },
+                "type": "number",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingproject",
+                  "child": {
+                    "property": "http://w3id.org/roh/durationDays"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Ciudad de realización"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingproject",
+                  "child": {
+                    "property": "https://www.w3.org/2006/vcard/ns#locality"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "C. Autón./Reg. de realización"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingproject",
+                  "child": {
+                    "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+                    "graph": "feature",
+                    "child": {
+                      "property": "http://www.geonames.org/ontology#name"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "País de realización"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingproject",
+                  "child": {
+                    "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+                    "graph": "feature",
+                    "child": {
+                      "property": "http://www.geonames.org/ontology#name"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Tipo de convocatoria"
+                },
+                "childOR": [
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "teachingproject",
+                    "child": {
+                      "property": "http://w3id.org/roh/callTypeOther"
+                    }
+                  },
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "teachingproject",
+                    "child": {
+                      "property": "http://w3id.org/roh/callType",
+                      "graph": "calltype",
+                      "child": {
+                        "property": "http://purl.org/dc/elements/1.1/title"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "name": {
+                  "es": "Ámbito geográfico"
+                },
+                "childOR": [
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "teachingproject",
+                    "child": {
+                      "property": "http://w3id.org/roh/geographicFocusOther"
+                    }
+                  },
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "teachingproject",
+                    "child": {
+                      "property": "http://vivoweb.org/ontology/core#geographicFocus",
+                      "graph": "eventgeographicregion",
+                      "child": {
+                        "property": "http://purl.org/dc/elements/1.1/title"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "name": {
+                  "es": "Aportación en el proyecto"
+                },
+                "type": "text",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingproject",
+                  "child": {
+                    "property": "http://w3id.org/roh/contribution"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Régimen de dedicación"
+                },
+                "type": "text",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingproject",
+                  "child": {
+                    "property": "http://w3id.org/roh/dedication",
+                    "graph": "dedicationregime",
+                    "child": {
+                      "property": "http://purl.org/dc/elements/1.1/title"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Firma (IP)"
+                },
+                "type": "text",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingproject",
+                  "child": {
+                    "property": "http://w3id.org/roh/principalInvestigatorNick"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Nombre (IP)"
+                },
+                "type": "text",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingproject",
+                  "child": {
+                    "property": "http://w3id.org/roh/principalInvestigatorName"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Primer apellido (IP)"
+                },
+                "type": "text",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingproject",
+                  "child": {
+                    "property": "http://w3id.org/roh/principalInvestigatorFirstSurname"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Segundo apellido (IP)"
+                },
+                "type": "text",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingproject",
+                  "child": {
+                    "property": "http://w3id.org/roh/principalInvestigatorSecondSurname"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Nº de participantes"
+                },
+                "type": "number",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingproject",
+                  "child": {
+                    "property": "http://w3id.org/roh/participantsNumber"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Importe concedido"
+                },
+                "type": "number",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingproject",
+                  "child": {
+                    "property": "http://w3id.org/roh/monetaryAmount"
                   }
                 }
               }
