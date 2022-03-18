@@ -206,6 +206,37 @@ namespace Utils
         }
 
         /// <summary>
+        /// Añade la referencia a la entidad <paramref name="propiedadNombreEntidad"/> si esta se encuentra en BBDD.
+        /// </summary>
+        /// <param name="mResourceApi"></param>
+        /// <param name="nombreEntidad"></param>
+        /// <param name="propiedadNombreEntidad"></param>
+        /// <param name="propiedadEntidad"></param>
+        /// <param name="entidadAux"></param>
+        public static void AniadirEntidadAuxiliar(ResourceApi mResourceApi, string nombreEntidad, string propiedadNombreEntidad, string propiedadEntidad, Entity entidadAux, string entityPartAux)
+        {
+            if (mResourceApi == null || string.IsNullOrEmpty(nombreEntidad) ||
+                string.IsNullOrEmpty(propiedadEntidad) || string.IsNullOrEmpty(propiedadEntidad))
+            { return; }
+
+            string entidadN = GetOrganizacionPorNombre(mResourceApi, nombreEntidad);
+            if (!string.IsNullOrEmpty(entidadN))
+            {
+                entidadAux.properties.AddRange(AddProperty(
+                    new Property(propiedadNombreEntidad, StringGNOSSID(entityPartAux, nombreEntidad)),
+                    new Property(propiedadEntidad, StringGNOSSID(entityPartAux, entidadN))
+                ));
+            }
+            else
+            {
+                entidadAux.properties.AddRange(AddProperty(
+                       new Property(propiedadNombreEntidad, StringGNOSSID(entityPartAux, nombreEntidad))
+                ));
+                entidadAux.properties.Add(new Property(propiedadEntidad, StringGNOSSID(entityPartAux, "")));
+            }
+        }
+
+        /// <summary>
         /// Añade en <paramref name="entidadAux"/> el <paramref name="valorXML"/> en caso de que no sea nulo.
         /// Si <paramref name="property"/> no es valor nulo, se añade el <paramref name="valorXML"/> en la propiedad,
         /// sino se crea una <paramref name="propiedadXML"/> en <paramref name="entidadAux"/>
@@ -349,7 +380,7 @@ namespace Utils
 
                 //Si no tiene ningun valor no lo inserto
                 if (string.IsNullOrEmpty(valorFirma) || string.IsNullOrEmpty(valorOrden) ||
-                    string.IsNullOrEmpty(valorNombre) || string.IsNullOrEmpty(valorPrimerApellido) || 
+                    string.IsNullOrEmpty(valorNombre) || string.IsNullOrEmpty(valorPrimerApellido) ||
                     string.IsNullOrEmpty(valorSegundoApellido)) { continue; }
 
                 CheckProperty(propertyFirma, entidadAux, valorFirma, propiedadAutorFirma);
