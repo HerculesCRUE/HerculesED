@@ -1597,7 +1597,76 @@
                   },
                   {
                     "properties": [
-                      // TODO
+                      {
+                        "property": "http://w3id.org/roh/operatingCountries",
+                        "type": "auxEntity",
+                        "title": {
+                          "es": "País de explotación"
+                        },
+                        "multiple": true,
+                        "width": 3,
+                        "auxEntityData": {
+                          "rdftype": "http://w3id.org/roh/Feature",
+                          "propertyTitle": {
+                            "property": "https://www.w3.org/2006/vcard/ns#hasCountryName"
+                          },
+                          "properties": [],
+                          "rows": [
+                            {
+                              "properties": [
+                                {
+                                  "title": {
+                                    "es": "País de celebración"
+                                  },
+                                  "placeholder": {
+                                    "es": "Introduce el país de explotación"
+                                  },
+                                  "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+                                  "combo": {
+                                    "rdftype": "http://www.geonames.org/ontology#Feature",
+                                    "filter": {
+                                      "property": "http://www.geonames.org/ontology#featureCode",
+                                      "value": "PCLD"
+                                    },
+                                    "graph": "feature",
+                                    "property": {
+                                      "property": "http://www.geonames.org/ontology#name"
+                                    }
+                                  },
+                                  "type": "selectCombo",
+                                  "width": 1
+                                },
+                                {
+                                  "title": {
+                                    "es": "C. Autón./Reg. de publicación"
+                                  },
+                                  "placeholder": {
+                                    "es": "Introduce la región de explotación"
+                                  },
+                                  "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+                                  "combo": {
+                                    "rdftype": "http://www.geonames.org/ontology#Feature",
+                                    "filter": {
+                                      "property": "http://www.geonames.org/ontology#featureCode",
+                                      "value": "ADM1"
+                                    },
+                                    "dependency": {
+                                      "property": "http://www.geonames.org/ontology#parentFeature",
+                                      "propertyValue": "https://www.w3.org/2006/vcard/ns#hasCountryName"
+                                    },
+                                    "graph": "feature",
+                                    "property": {
+                                      "property": "http://www.geonames.org/ontology#name"
+                                    }
+                                  },
+                                  "type": "selectCombo",
+                                  "width": 1
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      }
                     ]
                   },
                   {
@@ -1626,7 +1695,49 @@
                   },
                   {
                     "properties": [
-                      // TODO
+                      {
+                        "property": "http://w3id.org/roh/operatingCompanies",
+                        "type": "auxEntity",
+                        "title": {
+                          "es": "Empresas"
+                        },
+                        "multiple": true,
+                        "width": 3,
+                        "auxEntityData": {
+                          "rdftype": "http://w3id.org/roh/Organization",
+                          "propertyTitle": {
+                            "property": "http://w3id.org/roh/organizationTitle"
+                          },
+                          "properties": [],
+                          "rows": [
+                            {
+                              "properties": [
+                                {
+                                  "title": {
+                                    "es": "Entidad participante"
+                                  },
+                                  "autocomplete": true,
+                                  "required": true,
+                                  "placeholder": {
+                                    "es": "Introduce la entidad participante"
+                                  },
+                                  "property": "http://w3id.org/roh/organizationTitle",
+                                  "autocompleteConfig": {
+                                    "rdftype": "http://xmlns.com/foaf/0.1/Organization",
+                                    "graph": "organization",
+                                    "propertyEntity": "http://w3id.org/roh/organization",
+                                    "property": {
+                                      "property": "http://w3id.org/roh/title"
+                                    }
+                                  },
+                                  "type": "text",
+                                  "width": 1
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      }
                     ]
                   }
                 ]
