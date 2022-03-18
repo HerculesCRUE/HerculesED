@@ -4251,7 +4251,7 @@
               },
               {
                 "name": {
-                  "es": "Ciudad de realización"
+                  "es": "Ciudad entidad realización"
                 },
                 "child": {
                   "property": "http://vivoweb.org/ontology/core#relatedBy",
@@ -4263,7 +4263,7 @@
               },
               {
                 "name": {
-                  "es": "C. Autón./Reg. de realización"
+                  "es": "C. Autón./Reg. entidad realización"
                 },
                 "child": {
                   "property": "http://vivoweb.org/ontology/core#relatedBy",
@@ -4279,7 +4279,7 @@
               },
               {
                 "name": {
-                  "es": "País de realización"
+                  "es": "País entidad realización"
                 },
                 "child": {
                   "property": "http://vivoweb.org/ontology/core#relatedBy",
@@ -4375,7 +4375,7 @@
               },
               {
                 "name": {
-                  "es": "Firma (IP)"
+                  "es": "Firma (investigador/a principal)"
                 },
                 "type": "text",
                 "child": {
@@ -4388,7 +4388,7 @@
               },
               {
                 "name": {
-                  "es": "Nombre (IP)"
+                  "es": "Nombre (investigador/a principal)"
                 },
                 "type": "text",
                 "child": {
@@ -4401,7 +4401,7 @@
               },
               {
                 "name": {
-                  "es": "Primer apellido (IP)"
+                  "es": "Primer apellido (investigador/a principal)"
                 },
                 "type": "text",
                 "child": {
@@ -4414,7 +4414,7 @@
               },
               {
                 "name": {
-                  "es": "Segundo apellido (IP)"
+                  "es": "Segundo apellido (investigador/a principal)"
                 },
                 "type": "text",
                 "child": {
@@ -4448,6 +4448,21 @@
                   "graph": "teachingproject",
                   "child": {
                     "property": "http://w3id.org/roh/monetaryAmount"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Entidad/es participante/s"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingproject",
+                  "child": {
+                    "property": "http://w3id.org/roh/participates",
+                    "child": {
+                      "property": "http://w3id.org/roh/organizationTitle"
+                    }
                   }
                 }
               }
@@ -4641,11 +4656,11 @@
                     "properties": [
                       {
                         "title": {
-                          "es": "Ciudad de realización"
+                          "es": "Ciudad entidad realización"
                         },
                         "type": "text",
                         "placeholder": {
-                          "es": "Introduce la ciudad de realización"
+                          "es": "Introduce la ciudad de la entidad de realización"
                         },
                         "required": false,
                         "property": "https://www.w3.org/2006/vcard/ns#locality",
@@ -4653,7 +4668,7 @@
                       },
                       {
                         "title": {
-                          "es": "País de realización"
+                          "es": "País entidad realización"
                         },
                         "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                         "combo": {
@@ -4672,7 +4687,7 @@
                       },
                       {
                         "title": {
-                          "es": "C. Autón./Reg. de realización"
+                          "es": "C. Autón./Reg. entidad realización"
                         },
                         "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                         "combo": {
@@ -4735,8 +4750,8 @@
                         },
                         "property": "http://vivoweb.org/ontology/core#geographicFocus",
                         "combo": {
-                          "rdftype": "http://w3id.org/roh/EventGeographicRegion",
-                          "graph": "eventgeographicregion",
+                          "rdftype": "http://vivoweb.org/ontology/core#GeographicRegion",
+                          "graph": "geographicregion",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
                           }
@@ -4752,7 +4767,7 @@
                         "required": true,
                         "dependency": {
                           "property": "http://vivoweb.org/ontology/core#geographicFocus",
-                          "propertyValue": "{GraphsUrl}items/eventgeographicregion_OTHERS"
+                          "propertyValue": "{GraphsUrl}items/geographicregion_OTHERS"
                         },
                         "type": "text",
                         "width": 2
@@ -4793,7 +4808,7 @@
                     "properties": [
                       {
                         "title": {
-                          "es": "Firma (IP)"
+                          "es": "Firma (investigador/a principal)"
                         },
                         "placeholder": {
                           "es": "Introduce la firma"
@@ -4804,7 +4819,7 @@
                       },
                       {
                         "title": {
-                          "es": "Nombre (IP)"
+                          "es": "Nombre (investigador/a principal)"
                         },
                         "placeholder": {
                           "es": "Introduce el nombre"
@@ -4815,7 +4830,7 @@
                       },
                       {
                         "title": {
-                          "es": "Primer apellido (IP)"
+                          "es": "Primer apellido (investigador/a principal)"
                         },
                         "placeholder": {
                           "es": "Introduce el primer apellido"
@@ -4826,7 +4841,7 @@
                       },
                       {
                         "title": {
-                          "es": "Segundo apellido (IP)"
+                          "es": "Segundo apellido (investigador/a principal)"
                         },
                         "placeholder": {
                           "es": "Introduce el segundo apellido"
@@ -4849,7 +4864,7 @@
                       },
                       {
                         "title": {
-                          "es": "Importe concedido"
+                          "es": "Importe concedido (€)"
                         },
                         "property": "http://w3id.org/roh/monetaryAmount",
                         "type": "number",
