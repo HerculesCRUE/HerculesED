@@ -10,16 +10,24 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
 {
     class ParticipacionProyectosInnovacionDocente : DisambiguableEntity
     {
-        public string descripcion { get; set; }
+        public string titulo { get; set; }
         public string fecha { get; set; }
+        public string entidadFinanciadora { get; set; }
 
-        private static readonly DisambiguationDataConfig configDescripcion = new DisambiguationDataConfig()
+        private static readonly DisambiguationDataConfig configTitulo = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsTitle,
             score = 0.8f
         };
 
         private static readonly DisambiguationDataConfig configFecha = new DisambiguationDataConfig()
+        {
+            type = DisambiguationDataConfigType.equalsItem,
+            score = 0.5f,
+            scoreMinus = 0.5f
+        };
+        
+        private static readonly DisambiguationDataConfig configEF = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsItem,
             score = 0.5f,
@@ -32,9 +40,9 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
             {
                 new DisambiguationData()
                 {
-                    property = "descripcion",
-                    config = configDescripcion,
-                    value = descripcion
+                    property = "titulo",
+                    config = configTitulo,
+                    value = titulo
                 },
 
                 new DisambiguationData()
@@ -42,6 +50,13 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
                     property = "fecha",
                     config = configFecha,
                     value = fecha
+                },
+
+                new DisambiguationData()
+                {
+                    property = "entidadFinanciadora",
+                    config = configEF,
+                    value = entidadFinanciadora
                 }
             };
             return data;
@@ -67,10 +82,11 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
 
             foreach (List<string> lista in listaListas)
             {
-                string select = $@"SELECT distinct ?item ?itemTitle ?itemDate ";
+                string select = $@"SELECT distinct ?item ?itemTitle ?itemDate ?itemEF ";
                 string where = $@"where {{
                                         ?item <{Variables.ActividadDocente.participacionInnovaTitulo}> ?itemTitle . 
                                         OPTIONAL{{?item <{Variables.ActividadDocente.participacionInnovaFechaInicio}> ?itemDate }}.
+                                        OPTIONAL{{?item <{Variables.ActividadDocente.participacionInnovaEntidadFinanciadoraNombre}> ?itemEF }}.
                                         FILTER(?item in (<{string.Join(">,<", lista)}>))
                                     }}";
                 //TODO check where valores
@@ -80,8 +96,9 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
                     ParticipacionProyectosInnovacionDocente participacionProyectos = new ParticipacionProyectosInnovacionDocente
                     {
                         ID = fila["item"].value,
-                        descripcion = fila["itemTitle"].value,
-                        fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : ""
+                        titulo = fila["itemTitle"].value,
+                        fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : "",
+                        entidadFinanciadora = fila.ContainsKey("itemEF") ? fila["itemEF"].value : ""
                     };
 
                     resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), participacionProyectos);

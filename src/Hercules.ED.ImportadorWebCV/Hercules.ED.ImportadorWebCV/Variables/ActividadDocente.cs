@@ -173,38 +173,38 @@
         /// <summary>
         /// Participación en proyectos de innovacion docente - 030.080.000.000
         /// </summary>
-        public const string participacionInnovaTitulo = "";
-        public const string participacionInnovaPaisEntidadRealizacion = "";
-        public const string participacionInnovaCCAAEntidadRealizacion = "";
-        public const string participacionInnovaCiudadEntidadRealizacion = "";
-        public const string participacionInnovaTipoParticipacion = "";
-        public const string participacionInnovaTipoParticipacionOtros = "";
-        public const string participacionInnovaAportacionProyecto = "";
-        public const string participacionInnovaRegimenDedicacion = "";
-        public const string participacionInnovaEntidadFinanciadora = "";
-        public const string participacionInnovaEntidadFinanciadoraNombre = "";
-        public const string participacionInnovaTipoEntidadFinanciadora = "";
-        public const string participacionInnovaTipoEntidadFinanciadoraOtros = "";
-        public const string participacionInnovaTipoConvocatoria = "";
-        public const string participacionInnovaTipoConvocatoriaOtros = "";
-        public const string participacionInnovaEntidadParticipante = "";
-        public const string participacionInnovaEntidadParticipanteNombre = "";
-        public const string participacionInnovaTipoEntidadParticipante = "";
-        public const string participacionInnovaTipoEntidadParticipanteOtros = "";
-        public const string participacionInnovaTipoDuracionRelacionLaboral = "";
-        public const string participacionInnovaDuracionParticipacionAnio = "";
-        public const string participacionInnovaDuracionParticipacionMes = "";
-        public const string participacionInnovaDuracionParticipacionDia = "";
-        public const string participacionInnovaFechaFinalizacionParticipacion = "";
-        public const string participacionInnovaFirmaIP = "";
-        public const string participacionInnovaNombreIP = "";
-        public const string participacionInnovaPrimerApellidoIP = "";
-        public const string participacionInnovaSegundoApellidoIP = "";
-        public const string participacionInnovaNumParticipantes = "";
-        public const string participacionInnovaImporteConcedido = "";
-        public const string participacionInnovaAmbitoProyecto = "";
-        public const string participacionInnovaAmbitoProyectoOtros = "";
-        public const string participacionInnovaFechaInicio = "";
+        public const string participacionInnovaTitulo = "http://w3id.org/roh/title";
+        public const string participacionInnovaPaisEntidadRealizacion = "https://www.w3.org/2006/vcard/ns#hasCountryName";
+        public const string participacionInnovaCCAAEntidadRealizacion = "https://www.w3.org/2006/vcard/ns#hasRegion";
+        public const string participacionInnovaCiudadEntidadRealizacion = "https://www.w3.org/2006/vcard/ns#locality";
+        public const string participacionInnovaTipoParticipacion = "http://w3id.org/roh/participationType";
+        public const string participacionInnovaTipoParticipacionOtros = "http://w3id.org/roh/participationTypeOther";
+        public const string participacionInnovaAportacionProyecto = "http://w3id.org/roh/contribution";
+        public const string participacionInnovaRegimenDedicacion = "http://w3id.org/roh/dedication";
+        public const string participacionInnovaEntidadFinanciadora = "http://w3id.org/roh/fundedBy";
+        public const string participacionInnovaEntidadFinanciadoraNombre = "http://w3id.org/roh/fundedByTitle";
+        public const string participacionInnovaTipoEntidadFinanciadora = "http://w3id.org/roh/fundedByType";
+        public const string participacionInnovaTipoEntidadFinanciadoraOtros = "http://w3id.org/roh/fundedByTypeOther";
+        public const string participacionInnovaTipoConvocatoria = "http://w3id.org/roh/callType";
+        public const string participacionInnovaTipoConvocatoriaOtros = "http://w3id.org/roh/callTypeOther";
+        public const string participacionInnovaEntidadParticipante = "http://w3id.org/roh/participates@@@http://w3id.org/roh/Organization|http://w3id.org/roh/organization";
+        public const string participacionInnovaEntidadParticipanteNombre = "http://w3id.org/roh/participates@@@http://w3id.org/roh/Organization|http://w3id.org/roh/organizationTitle";
+        public const string participacionInnovaTipoEntidadParticipante = "http://w3id.org/roh/participates@@@http://w3id.org/roh/Organization|http://w3id.org/roh/organizationType";
+        public const string participacionInnovaTipoEntidadParticipanteOtros = "http://w3id.org/roh/participates@@@http://w3id.org/roh/Organization|http://w3id.org/roh/organizationTypeOther";
+        public const string participacionInnovaTipoDuracionRelacionLaboral = "http://w3id.org/roh/laboralDurationType";
+        public const string participacionInnovaDuracionParticipacionAnio = "http://w3id.org/roh/durationYears";
+        public const string participacionInnovaDuracionParticipacionMes = "http://w3id.org/roh/durationMonths";
+        public const string participacionInnovaDuracionParticipacionDia = "http://w3id.org/roh/durationDays";
+        public const string participacionInnovaFechaFinalizacionParticipacion = "http://vivoweb.org/ontology/core#end";
+        public const string participacionInnovaFirmaIP = "http://w3id.org/roh/principalInvestigatorNick";
+        public const string participacionInnovaNombreIP = "http://w3id.org/roh/principalInvestigatorName";
+        public const string participacionInnovaPrimerApellidoIP = "http://w3id.org/roh/principalInvestigatorFirstSurname";
+        public const string participacionInnovaSegundoApellidoIP = "http://w3id.org/roh/principalInvestigatorSecondSurname";
+        public const string participacionInnovaNumParticipantes = "http://w3id.org/roh/participantsNumber";
+        public const string participacionInnovaImporteConcedido = "http://w3id.org/roh/monetaryAmount";
+        public const string participacionInnovaAmbitoProyecto = "http://vivoweb.org/ontology/core#geographicFocus";
+        public const string participacionInnovaAmbitoProyectoOtros = "http://w3id.org/roh/geographicFocusOther";
+        public const string participacionInnovaFechaInicio = "http://vivoweb.org/ontology/core#start";
 
         /// <summary>
         /// Participación en congresos con ponencias orientadas a la formación docente - 030.090.000.000

@@ -13,7 +13,7 @@ namespace Utils
     public static class Utility
     {
         private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config\configOAuth\OAuthV3.config");
-        
+
         /// <summary>
         /// Dado un codigo devuelve si el formato es valido
         /// </summary>
@@ -574,7 +574,7 @@ namespace Utils
                 return campo.DatetimeStringGNOSS();
             }
             CvnItemBeanCvnDateMonthYear campoMesAnio = listadoCamposAux.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnDateMonthYear).Cast<CvnItemBeanCvnDateMonthYear>().FirstOrDefault();
-            if(campoMesAnio != null)
+            if (campoMesAnio != null)
             {
                 return campoMesAnio.DatetimeStringGNOSS();
             }
@@ -627,7 +627,7 @@ namespace Utils
             if (listado == null) { return null; }
             IEnumerable<CVNObject> listadoCamposAux = listado.Where(x => x.Code.StartsWith(codigo.Substring(0, 11))).SelectMany(x => x.Items)?.ToList();
             CvnItemBeanCvnString campo = listadoCamposAux.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
-            if (campo != null&& !string.IsNullOrEmpty(campo.Value))
+            if (campo != null && !string.IsNullOrEmpty(campo.Value))
             {
                 return mResourceApi.GraphsUrl + "items/gender_" + campo.Value;
             }
@@ -652,7 +652,7 @@ namespace Utils
             if (listado == null) { return null; }
             IEnumerable<CVNObject> listadoCamposAux = listado.Where(x => x.Code.StartsWith(codigo.Substring(0, 11))).SelectMany(x => x.Items)?.ToList();
             CvnItemBeanCvnString campo = listadoCamposAux?.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
-            if (campo != null&& !string.IsNullOrEmpty(campo.Value))
+            if (campo != null && !string.IsNullOrEmpty(campo.Value))
             {
                 return mResourceApi.GraphsUrl + "items/feature_PCLD_" + campo.Value;
             }
@@ -771,7 +771,7 @@ namespace Utils
 
             if (codigo.Length != 15) { return null; }
             CvnItemBeanCvnString campo = item.Items?.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
-            if (campo != null&& !string.IsNullOrEmpty(campo.Value))
+            if (campo != null && !string.IsNullOrEmpty(campo.Value))
             {
                 return mResourceApi.GraphsUrl + "items/organizationtype_" + campo.Value;
             }
@@ -794,7 +794,7 @@ namespace Utils
 
             if (codigo.Length != 15) { return null; }
             CvnItemBeanCvnString campo = item.Items?.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
-            if (campo != null&& !string.IsNullOrEmpty(campo.Value))
+            if (campo != null && !string.IsNullOrEmpty(campo.Value))
             {
                 return mResourceApi.GraphsUrl + "items/tutorshipsprogramtype_" + campo.Value;
             }
@@ -817,7 +817,7 @@ namespace Utils
 
             if (codigo.Length != 15) { return null; }
             CvnItemBeanCvnString campo = item.Items?.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
-            if (campo != null&& !string.IsNullOrEmpty(campo.Value))
+            if (campo != null && !string.IsNullOrEmpty(campo.Value))
             {
                 return mResourceApi.GraphsUrl + "items/eventtype_" + campo.Value;
             }
@@ -840,7 +840,7 @@ namespace Utils
 
             if (codigo.Length != 15) { return null; }
             CvnItemBeanCvnString campo = item.Items?.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
-            if (campo != null&& !string.IsNullOrEmpty(campo.Value))
+            if (campo != null && !string.IsNullOrEmpty(campo.Value))
             {
                 return mResourceApi.GraphsUrl + "items/eventinscriptiontype_" + campo.Value;
             }
@@ -854,6 +854,7 @@ namespace Utils
         /// <returns></returns>
         public static string GetFirmaAutor(this CvnItemBeanCvnAuthorBean item)
         {
+            if (item == null) { return null; }
             if (!string.IsNullOrWhiteSpace(item.Signature))
             {
                 return item.Signature;
@@ -868,6 +869,7 @@ namespace Utils
         /// <returns></returns>
         public static string GetOrdenAutor(this CvnItemBeanCvnAuthorBean item)
         {
+            if (item == null) { return null; }
             return item.SignatureOrder.ToString();
         }
 
@@ -878,6 +880,7 @@ namespace Utils
         /// <returns></returns>
         public static string GetNombreAutor(this CvnItemBeanCvnAuthorBean item)
         {
+            if (item == null) { return null; }
             if (!string.IsNullOrEmpty(item.GivenName))
             {
                 return item.GivenName;
@@ -892,6 +895,7 @@ namespace Utils
         /// <returns></returns>
         public static string GetPrimerApellidoAutor(this CvnItemBeanCvnAuthorBean item)
         {
+            if (item == null) { return null; }
             if (item.CvnFamilyNameBean != null)
             {
                 return item.CvnFamilyNameBean.FirstFamilyName;
@@ -906,6 +910,7 @@ namespace Utils
         /// <returns></returns>
         public static string GetSegundoApellidoAutor(this CvnItemBeanCvnAuthorBean item)
         {
+            if (item == null) { return null; }
             if (item.CvnFamilyNameBean != null)
             {
                 return item.CvnFamilyNameBean.SecondFamilyName;
@@ -956,7 +961,7 @@ namespace Utils
             }
             return null;
         }
-        
+
         /// <summary>
         /// Devuelve el identificador del TitleBean con código <paramref name="codigo"/>
         /// </summary>
@@ -995,7 +1000,7 @@ namespace Utils
 
             if (codigo.Length != 15) { return null; }
             CvnItemBeanCvnString campo = item.Items?.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
-            if (campo != null&& !string.IsNullOrEmpty(campo.Value))
+            if (campo != null && !string.IsNullOrEmpty(campo.Value))
             {
                 return mResourceApi.GraphsUrl + "items/staygoal_" + campo.Value;
             }
@@ -1018,7 +1023,7 @@ namespace Utils
 
             if (codigo.Length != 15) { return null; }
             CvnItemBeanCvnString campo = item.Items?.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
-            if (campo != null&& !string.IsNullOrEmpty(campo.Value))
+            if (campo != null && !string.IsNullOrEmpty(campo.Value))
             {
                 return mResourceApi.GraphsUrl + "items/activitymodality_" + campo.Value;
             }
@@ -1031,8 +1036,8 @@ namespace Utils
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
-        public static string ReferenciaProgramaDoctorado(this CvnItemBeanCvnTitleBean item) 
-        {           
+        public static string ReferenciaProgramaDoctorado(this CvnItemBeanCvnTitleBean item)
+        {
             if (!string.IsNullOrEmpty(item.Identification))
             {
                 return mResourceApi.GraphsUrl + "items/doctoralprogramtype_" + item.Identification;
@@ -1056,7 +1061,7 @@ namespace Utils
 
             if (codigo.Length != 15) { return null; }
             CvnItemBeanCvnString campo = item.Items?.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
-            if (campo != null&& !string.IsNullOrEmpty(campo.Value))
+            if (campo != null && !string.IsNullOrEmpty(campo.Value))
             {
                 return mResourceApi.GraphsUrl + "items/accesssystemactivity_" + campo.Value;
             }
@@ -1079,7 +1084,7 @@ namespace Utils
 
             if (codigo.Length != 15) { return null; }
             CvnItemBeanCvnString campo = item.Items?.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
-            if (campo != null&& !string.IsNullOrEmpty(campo.Value))
+            if (campo != null && !string.IsNullOrEmpty(campo.Value))
             {
                 return mResourceApi.GraphsUrl + "items/grantaim_" + campo.Value;
             }
@@ -1102,7 +1107,7 @@ namespace Utils
 
             if (codigo.Length != 15) { return null; }
             CvnItemBeanCvnString campo = item.Items?.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
-            if (campo != null&& !string.IsNullOrEmpty(campo.Value))
+            if (campo != null && !string.IsNullOrEmpty(campo.Value))
             {
                 return mResourceApi.GraphsUrl + "items/relationshiptype_" + campo.Value;
             }
@@ -1125,7 +1130,7 @@ namespace Utils
 
             if (codigo.Length != 15) { return null; }
             CvnItemBeanCvnString campo = item.Items?.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
-            if (campo != null&& !string.IsNullOrEmpty(campo.Value))
+            if (campo != null && !string.IsNullOrEmpty(campo.Value))
             {
                 return mResourceApi.GraphsUrl + "items/geographicregion_" + campo.Value;
             }
@@ -1139,7 +1144,7 @@ namespace Utils
         /// <param name="item"></param>
         /// <param name="codigo"></param>
         /// <returns></returns>
-        public static string GetTipoConvocatoriaPorIDCampo(this CvnItemBean item, string codigo) 
+        public static string GetTipoConvocatoriaPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
             {
@@ -1162,7 +1167,7 @@ namespace Utils
         /// <param name="item"></param>
         /// <param name="codigo"></param>
         /// <returns></returns>
-        public static string GetTipoEvaluacionPorIDCampo(this CvnItemBean item, string codigo) 
+        public static string GetTipoEvaluacionPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
             {
@@ -1185,7 +1190,7 @@ namespace Utils
         /// <param name="item"></param>
         /// <param name="codigo"></param>
         /// <returns></returns>
-        public static string GetHorasCreditosECTSPorIDCampo(this CvnItemBean item, string codigo) 
+        public static string GetHorasCreditosECTSPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
             {
@@ -1208,7 +1213,7 @@ namespace Utils
         /// <param name="item"></param>
         /// <param name="codigo"></param>
         /// <returns></returns>
-        public static string GetTipoCursoPorIDCampo(this CvnItemBean item, string codigo) 
+        public static string GetTipoCursoPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
             {
@@ -1231,7 +1236,7 @@ namespace Utils
         /// <param name="item"></param>
         /// <param name="codigo"></param>
         /// <returns></returns>
-        public static string GetTipoDocenciaModalidadPorIDCampo(this CvnItemBean item, string codigo) 
+        public static string GetTipoDocenciaModalidadPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
             {
@@ -1254,7 +1259,7 @@ namespace Utils
         /// <param name="item"></param>
         /// <param name="codigo"></param>
         /// <returns></returns>
-        public static string GetTipoProgramaPorIDCampo(this CvnItemBean item, string codigo) 
+        public static string GetTipoProgramaPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
             {
@@ -1277,7 +1282,7 @@ namespace Utils
         /// <param name="item"></param>
         /// <param name="codigo"></param>
         /// <returns></returns>
-        public static string GetTipoDocenciaOficialidadPorIDCampo(this CvnItemBean item, string codigo) 
+        public static string GetTipoDocenciaOficialidadPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
             {
@@ -1522,7 +1527,7 @@ namespace Utils
             }
 
             CvnItemBeanCvnCodeGroupCvnString campo = codeGroup.CvnString?.Where(x => x.Code.Equals(codigo)).FirstOrDefault();
-            if (campo != null&& !string.IsNullOrEmpty(campo.Value))
+            if (campo != null && !string.IsNullOrEmpty(campo.Value))
             {
                 return mResourceApi.GraphsUrl + "items/feature_PCLD_" + campo.Value;
             }
@@ -1544,7 +1549,7 @@ namespace Utils
             }
 
             CvnItemBeanCvnCodeGroupCvnString campo = codeGroup.CvnString?.Where(x => x.Code.Equals(codigo)).FirstOrDefault();
-            if (campo != null&& !string.IsNullOrEmpty(campo.Value))
+            if (campo != null && !string.IsNullOrEmpty(campo.Value))
             {
                 return mResourceApi.GraphsUrl + "items/feature_ADM1_" + campo.Value;
             }
@@ -1566,7 +1571,7 @@ namespace Utils
             }
 
             CvnItemBeanCvnString campo = item.Items.Where(x => x.Code.Equals(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
-            if (campo != null&& !string.IsNullOrEmpty(campo.Value))
+            if (campo != null && !string.IsNullOrEmpty(campo.Value))
             {
                 return mResourceApi.GraphsUrl + "items/universitydegreetype_" + campo.Value;
             }
@@ -1588,7 +1593,7 @@ namespace Utils
             }
 
             CvnItemBeanCvnString campo = item.Items.Where(x => x.Code.Equals(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
-            if (campo != null&& !string.IsNullOrEmpty(campo.Value))
+            if (campo != null && !string.IsNullOrEmpty(campo.Value))
             {
                 return mResourceApi.GraphsUrl + "items/qualificationtype_" + campo.Value;
             }
@@ -1610,7 +1615,7 @@ namespace Utils
             }
 
             CvnItemBeanCvnString campo = item.Items.Where(x => x.Code.Equals(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
-            if (campo != null&& !string.IsNullOrEmpty(campo.Value))
+            if (campo != null && !string.IsNullOrEmpty(campo.Value))
             {
                 return mResourceApi.GraphsUrl + "items/prizetype_" + campo.Value;
             }
@@ -1720,7 +1725,7 @@ namespace Utils
                 }
 
                 CvnItemBeanCvnCodeGroupCvnString campo = codeGroup.CvnString?.Where(x => x.Code.Equals(codigo)).FirstOrDefault();
-                if (campo != null&& !string.IsNullOrEmpty(campo.Value))
+                if (campo != null && !string.IsNullOrEmpty(campo.Value))
                 {
                     return mResourceApi.GraphsUrl + "items/organizationtype_" + campo.Value;
                 }
@@ -1814,7 +1819,7 @@ namespace Utils
                 return null;
             }
         }
-        
+
         /// <summary>
         /// Devuelve el Value del CvnItemBeanCvnExternalPKBean con codigo igual a <paramref name="codigo"/>
         /// </summary>
@@ -1860,7 +1865,7 @@ namespace Utils
             }
 
             CvnItemBeanCvnString campo = item.Items.Where(x => x.Code.Equals(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
-            if (campo != null&& !string.IsNullOrEmpty(campo.Value))
+            if (campo != null && !string.IsNullOrEmpty(campo.Value))
             {
                 return mResourceApi.GraphsUrl + "items/documentformat_" + campo.Value;
             }
@@ -1882,7 +1887,7 @@ namespace Utils
             }
 
             CvnItemBeanCvnString campo = item.Items.Where(x => x.Code.Equals(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
-            if (campo != null&& !string.IsNullOrEmpty(campo.Value))
+            if (campo != null && !string.IsNullOrEmpty(campo.Value))
             {
                 return mResourceApi.GraphsUrl + "items/supporttype_" + campo.Value;
             }
@@ -1904,7 +1909,7 @@ namespace Utils
             }
 
             CvnItemBeanCvnString campo = item.Items.Where(x => x.Code.Equals(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
-            if (campo != null&& !string.IsNullOrEmpty(campo.Value))
+            if (campo != null && !string.IsNullOrEmpty(campo.Value))
             {
                 return mResourceApi.GraphsUrl + "items/publicationtype_" + campo.Value;
             }
@@ -1926,7 +1931,7 @@ namespace Utils
             }
 
             CvnItemBeanCvnString campo = item.Items.Where(x => x.Code.Equals(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
-            if (campo != null&& !string.IsNullOrEmpty(campo.Value))
+            if (campo != null && !string.IsNullOrEmpty(campo.Value))
             {
                 return mResourceApi.GraphsUrl + "items/contractmodality_" + campo.Value;
             }
@@ -1948,7 +1953,7 @@ namespace Utils
             }
 
             CvnItemBeanCvnString campo = item.Items.Where(x => x.Code.Equals(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
-            if (campo != null&& !string.IsNullOrEmpty(campo.Value))
+            if (campo != null && !string.IsNullOrEmpty(campo.Value))
             {
                 return mResourceApi.GraphsUrl + "items/dedicationregime_" + campo.Value;
             }
@@ -1981,7 +1986,7 @@ namespace Utils
             }
 
             CvnItemBeanCvnString campo = item.Items.Where(x => x.Code.Equals(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
-            if (campo != null&& !string.IsNullOrEmpty(campo.Value))
+            if (campo != null && !string.IsNullOrEmpty(campo.Value))
             {
                 return mResourceApi.GraphsUrl + "items/scopemanagementactivity_" + campo.Value;
             }
@@ -2003,7 +2008,7 @@ namespace Utils
             }
 
             CvnItemBeanCvnString campo = item.Items.Where(x => x.Code.Equals(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
-            if (campo != null&& !string.IsNullOrEmpty(campo.Value))
+            if (campo != null && !string.IsNullOrEmpty(campo.Value))
             {
                 return mResourceApi.GraphsUrl + "items/contributiongradedocument_" + campo.Value;
             }
@@ -2025,7 +2030,7 @@ namespace Utils
             }
 
             CvnItemBeanCvnString campo = item.Items.Where(x => x.Code.Equals(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
-            if (campo != null&& !string.IsNullOrEmpty(campo.Value))
+            if (campo != null && !string.IsNullOrEmpty(campo.Value))
             {
                 return mResourceApi.GraphsUrl + "items/colaborationtypegroup_" + campo.Value;
             }
@@ -2047,7 +2052,7 @@ namespace Utils
             }
 
             CvnItemBeanCvnString campo = item.Items.Where(x => x.Code.Equals(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
-            if (campo != null&& !string.IsNullOrEmpty(campo.Value))
+            if (campo != null && !string.IsNullOrEmpty(campo.Value))
             {
                 return mResourceApi.GraphsUrl + "items/industrialpropertytype_" + campo.Value;
             }
@@ -2069,7 +2074,7 @@ namespace Utils
             }
 
             CvnItemBeanCvnString campo = item.Items.Where(x => x.Code.Equals(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
-            if (campo != null&& !string.IsNullOrEmpty(campo.Value))
+            if (campo != null && !string.IsNullOrEmpty(campo.Value))
             {
                 return mResourceApi.GraphsUrl + "items/participationtypeactivity_" + campo.Value;
             }
@@ -2091,9 +2096,53 @@ namespace Utils
             }
 
             CvnItemBeanCvnString campo = item.Items.Where(x => x.Code.Equals(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
-            if (campo != null&& !string.IsNullOrEmpty(campo.Value))
+            if (campo != null && !string.IsNullOrEmpty(campo.Value))
             {
                 return mResourceApi.GraphsUrl + "items/participationtypedocument_" + campo.Value;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Devuelve el tipo de participación como respuesta,
+        /// con formato mResourceApi.GraphsUrl + "items/participationtypeproject_" + valor
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="codigo"></param>
+        /// <returns></returns>
+        public static string GetTipoParticipacionProyectoPorIDCampo(this CvnItemBean item, string codigo)
+        {
+            if (!CodigoCampoCorrecto(codigo))
+            {
+                throw new ArgumentException("Codigo de campo incorrecto" + codigo);
+            }
+
+            CvnItemBeanCvnString campo = item.Items.Where(x => x.Code.Equals(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
+            if (campo != null && !string.IsNullOrEmpty(campo.Value))
+            {
+                return mResourceApi.GraphsUrl + "items/participationtypeproject_" + campo.Value;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Devuelve el tipo de duración laboral como respuesta,
+        /// con formato mResourceApi.GraphsUrl + "items/laboraldurationtype_" + valor
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="codigo"></param>
+        /// <returns></returns>
+        public static string GetTipoDuracionLaboralPorIDCampo(this CvnItemBean item, string codigo)
+        {
+            if (!CodigoCampoCorrecto(codigo))
+            {
+                throw new ArgumentException("Codigo de campo incorrecto" + codigo);
+            }
+
+            CvnItemBeanCvnString campo = item.Items.Where(x => x.Code.Equals(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
+            if (campo != null && !string.IsNullOrEmpty(campo.Value))
+            {
+                return mResourceApi.GraphsUrl + "items/laboraldurationtype_" + campo.Value;
             }
             return null;
         }
@@ -2113,7 +2162,7 @@ namespace Utils
             }
 
             CvnItemBeanCvnString campo = item.Items.Where(x => x.Code.Equals(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
-            if (campo != null&& !string.IsNullOrEmpty(campo.Value))
+            if (campo != null && !string.IsNullOrEmpty(campo.Value))
             {
                 return mResourceApi.GraphsUrl + "items/projectmodality_" + campo.Value;
             }
@@ -2135,7 +2184,7 @@ namespace Utils
             }
 
             CvnItemBeanCvnString campo = item.Items.Where(x => x.Code.Equals(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
-            if (campo != null&& !string.IsNullOrEmpty(campo.Value))
+            if (campo != null && !string.IsNullOrEmpty(campo.Value))
             {
                 return mResourceApi.GraphsUrl + "items/projecttype_" + campo.Value;
             }
@@ -2157,7 +2206,7 @@ namespace Utils
             }
 
             CvnItemBeanCvnString campo = item.Items.Where(x => x.Code.Equals(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
-            if (campo != null&& !string.IsNullOrEmpty(campo.Value))
+            if (campo != null && !string.IsNullOrEmpty(campo.Value))
             {
                 return mResourceApi.GraphsUrl + "items/projectcharactertype_" + campo.Value;
             }
@@ -2179,7 +2228,7 @@ namespace Utils
             }
 
             CvnItemBeanCvnString campo = item.Items.Where(x => x.Code.Equals(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
-            if (campo != null&& !string.IsNullOrEmpty(campo.Value))
+            if (campo != null && !string.IsNullOrEmpty(campo.Value))
             {
                 return mResourceApi.GraphsUrl + "items/managementtypeactivity_" + campo.Value;
             }
@@ -2201,7 +2250,7 @@ namespace Utils
             }
 
             CvnItemBeanCvnString campo = item.Items.Where(x => x.Code.Equals(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
-            if (campo != null&& !string.IsNullOrEmpty(campo.Value))
+            if (campo != null && !string.IsNullOrEmpty(campo.Value))
             {
                 return mResourceApi.GraphsUrl + "items/targetgroupprofile_" + campo.Value;
             }
@@ -2223,7 +2272,7 @@ namespace Utils
             }
 
             CvnItemBeanCvnString campo = item.Items.Where(x => x.Code.Equals(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
-            if (campo != null&& !string.IsNullOrEmpty(campo.Value))
+            if (campo != null && !string.IsNullOrEmpty(campo.Value))
             {
                 return mResourceApi.GraphsUrl + "items/hindexsource_" + campo.Value;
             }
@@ -2445,7 +2494,7 @@ namespace Utils
                 entidadAux.properties.Add(new Property(propiedadTitulacion, ""));
             }
         }
-    
+
 
     }
 }
