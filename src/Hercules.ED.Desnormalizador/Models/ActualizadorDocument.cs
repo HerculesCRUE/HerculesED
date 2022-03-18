@@ -365,13 +365,13 @@ namespace DesnormalizadorHercules.Models
                                         ?metric  <http://w3id.org/roh/citationCount> ?numCitas.
                                     }}UNION
                                     {{
-                                        ?document <http://w3id.org/roh/wos> ?numCitas.
+                                        ?document <http://w3id.org/roh/wosCitationCount> ?numCitas.
                                     }}
                                     UNION{{
-                                        ?document <http://w3id.org/roh/inrecs> ?numCitas.
+                                        ?document <http://w3id.org/roh/inrecsCitationCount> ?numCitas.
                                     }}
                                     UNION{{
-                                        ?document <http://w3id.org/roh/scopus> ?numCitas.
+                                        ?document <http://w3id.org/roh/scopusCitationCount> ?numCitas.
                                     }}
                                 }}                                
                               }}
