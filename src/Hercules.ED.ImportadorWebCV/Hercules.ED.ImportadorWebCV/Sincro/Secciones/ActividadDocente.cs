@@ -115,7 +115,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<Entity> listadoAux = GetTutoriasAcademicas(listadoDatos);
 
             Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
-            foreach (Entity entityXML in listadoAux)//TODO - check
+            foreach (Entity entityXML in listadoAux)
             {
                 TutoriasAcademicas tutoriasAcademicas = new TutoriasAcademicas();
                 tutoriasAcademicas.nombre = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.tutoAcademicaNombrePrograma)?.values.FirstOrDefault();
@@ -263,7 +263,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<Entity> listadoAux = GetParticipacionCongresosFormacionDocente(listadoDatos);
 
             Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
-            foreach (Entity entityXML in listadoAux)//TODO - check
+            foreach (Entity entityXML in listadoAux)
             {
                 ParticipacionCongresosFormacionDocente participacionCongresos = new ParticipacionCongresosFormacionDocente();
                 participacionCongresos.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.participaCongresosNombreEvento)?.values.FirstOrDefault();
@@ -300,7 +300,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<Entity> listadoAux = GetPremiosInovacionDocente(listadoPremios);
 
             Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
-            foreach (Entity entityXML in listadoAux)//TODO - check
+            foreach (Entity entityXML in listadoAux)
             {
                 PremiosInnovacionDocente premiosInnovacion = new PremiosInnovacionDocente();
                 premiosInnovacion.nombre = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.premiosInnovaNombre)?.values.FirstOrDefault();
@@ -1086,7 +1086,6 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <param name="entidadAux"></param>
         private void ParticipacionProyectosInnovacionDocenteEntidadParticipante(CvnItemBean item, Entity entidadAux)
         {
-            /**/
             List<CvnItemBeanCvnCodeGroup> listadoEntidadParticipante = item.GetListaElementosPorIDCampo<CvnItemBeanCvnCodeGroup>("030.080.000.150");
 
             string propiedadNombre = Variables.ActividadDocente.participacionInnovaEntidadParticipanteNombre;
@@ -1124,7 +1123,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                     UtilitySecciones.CheckProperty(propertyTipo, entidadAux, UtilitySecciones.StringGNOSSID(entityPartAux, valorTipo), propiedadTipo);
                     UtilitySecciones.CheckProperty(propertyTipoOtros, entidadAux, UtilitySecciones.StringGNOSSID(entityPartAux, valorTipoOtros), propiedadTipoOtros);
                 }
-
             }
         }
 
@@ -1142,10 +1140,10 @@ namespace ImportadorWebCV.Sincro.Secciones
                 {
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
-                    if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("030.090.000.030")))//TODO - check
+                    if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("030.090.000.030")))
                     {
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                            new Property(Variables.ActividadDocente.participaCongresosTipoEvento, item.GetTipoEventoPorIDCampo("030.090.000.010")),//TODO - check
+                            new Property(Variables.ActividadDocente.participaCongresosTipoEvento, item.GetTipoEventoPorIDCampo("030.090.000.010")),
                             new Property(Variables.ActividadDocente.participaCongresosTipoEventoOtros, item.GetStringPorIDCampo("030.090.000.020")),
                             new Property(Variables.ActividadDocente.participaCongresosNombreEvento, item.GetStringPorIDCampo("030.090.000.030")),
                             new Property(Variables.ActividadDocente.participaCongresosPaisEvento, item.GetPaisPorIDCampo("030.090.000.040")),
@@ -1156,11 +1154,11 @@ namespace ImportadorWebCV.Sincro.Secciones
                             new Property(Variables.ActividadDocente.participaCongresosCiudadEntidadOrganizadora, item.GetStringPorIDCampo("030.090.000.210")),
                             new Property(Variables.ActividadDocente.participaCongresosObjetivosEvento, item.GetStringPorIDCampo("030.090.000.120")),
                             new Property(Variables.ActividadDocente.participaCongresosPerfilDestinatarios, item.GetStringPorIDCampo("030.090.000.130")),
-                            new Property(Variables.ActividadDocente.participaCongresosIdiomaPresentacion, item.GetTraduccion("030.090.000.140")),//TODO - check
+                            new Property(Variables.ActividadDocente.participaCongresosIdiomaPresentacion, item.GetTraduccion("030.090.000.140")),
                             new Property(Variables.ActividadDocente.participaCongresosFechaPresentacion, item.GetStringDatetimePorIDCampo("030.090.000.150")),
-                            new Property(Variables.ActividadDocente.participaCongresosTipoParticipacion, item.GetTipoParticipacionDocumentoPorIDCampo("030.090.000.160")),//TODO - check
+                            new Property(Variables.ActividadDocente.participaCongresosTipoParticipacion, item.GetTipoParticipacionDocumentoPorIDCampo("030.090.000.160")),
                             new Property(Variables.ActividadDocente.participaCongresosTipoParticipacionOtros, item.GetStringPorIDCampo("030.090.000.170")),
-                            new Property(Variables.ActividadDocente.participaCongresosTipoPublicacion, item.GetTipoPublicacionPorIDCampo("030.090.000.220")),//TODO - check
+                            new Property(Variables.ActividadDocente.participaCongresosTipoPublicacion, item.GetTipoPublicacionPorIDCampo("030.090.000.220")),
                             new Property(Variables.ActividadDocente.participaCongresosTituloPublicacion, item.GetStringPorIDCampo("030.090.000.230")),
                             new Property(Variables.ActividadDocente.participaCongresosNombrePublicacion, item.GetStringPorIDCampo("030.090.000.330")),
                             new Property(Variables.ActividadDocente.participaCongresosVolumenPublicacion, item.GetVolumenPorIDCampo("030.090.000.240")),
@@ -1180,6 +1178,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                         ));
                         ParticipacionCongresosFormacionDocenteEntidadOrganizadora(item, entidadAux);
                         ParticipacionCongresosFormacionDocenteISBN(item, entidadAux);
+                        ParticipacionCongresosFormacionDocenteISSN(item, entidadAux);
                         ParticipacionCongresosFormacionDocenteIDPublicacion(item, entidadAux);
 
                         listado.Add(entidadAux);
@@ -1219,6 +1218,20 @@ namespace ImportadorWebCV.Sincro.Secciones
             string propiedadISBN = Variables.ActividadDocente.participaCongresosISBNPublicacion;
 
             UtilitySecciones.InsertaISBN(listadoISBN, entidadAux, propiedadISBN);
+        }
+        
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes al ISSN.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="entidadAux"></param>
+        private void ParticipacionCongresosFormacionDocenteISSN(CvnItemBean item, Entity entidadAux)
+        {
+            List<CvnItemBeanCvnExternalPKBean> listadoISSN = item.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("030.090.000.180");
+            string propiedadISSN = Variables.ActividadDocente.participaCongresosISSNPublicacion;
+
+            UtilitySecciones.InsertaISSN(listadoISSN, entidadAux, propiedadISSN);
         }
 
         /// <summary>
