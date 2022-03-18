@@ -3,12 +3,9 @@ using Hercules.ED.ImportadorWebCV.Models;
 using Import;
 using ImportadorWebCV.Sincro.Secciones;
 using Microsoft.AspNetCore.Http;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Xml;
 using System.Xml.Serialization;
 
 namespace ImportadorWebCV.Sincro
@@ -22,6 +19,13 @@ namespace ImportadorWebCV.Sincro
         {
             cvn = new cvnRootResultBean();
         }
+
+        /// <summary>
+        /// Genero un archivo XML a partir del PDF.
+        /// </summary>
+        /// <param name="_Configuracion"></param>
+        /// <param name="pInput"></param>
+        /// <returns></returns>
         private FormFile GenerarRootBean(ConfigService _Configuracion, IFormFile pInput)
         {
             long length = pInput.Length;
@@ -46,6 +50,12 @@ namespace ImportadorWebCV.Sincro
             return file;
         }
 
+        /// <summary>
+        /// Construyo el cvnRootResultBean a partir de un archivo PDF o XML, en el caso del PDF lo transformo a XML.
+        /// </summary>
+        /// <param name="_Configuracion"></param>
+        /// <param name="cvID"></param>
+        /// <param name="CVFile"></param>
         public SincroDatos(ConfigService _Configuracion, string cvID, IFormFile CVFile)
         {
             string extensionFile = Path.GetExtension(CVFile.FileName);
@@ -142,16 +152,16 @@ namespace ImportadorWebCV.Sincro
 
             List<Subseccion> listadoSecciones = new List<Subseccion>();
 
-            //listadoSecciones.Add(new Subseccion("030.040.010.000",actividadDocente.SincroDireccionTesis(preimportar)));
-            //listadoSecciones.Add(new Subseccion("030.010.000.000",actividadDocente.SincroFormacionAcademica(preimportar)));
-            //listadoSecciones.Add(new Subseccion("030.050.000.000",actividadDocente.SincroTutoriasAcademicas(preimportar)));
-            //listadoSecciones.Add(new Subseccion("030.060.000.000",actividadDocente.SincroCursosSeminarios(preimportar)));
-            //listadoSecciones.Add(new Subseccion("030.070.000.000",actividadDocente.SincroPublicacionDocentes(preimportar)));
-            //listadoSecciones.Add(new Subseccion("030.080.000.000",actividadDocente.SincroParticipacionProyectosInnovacionDocente(preimportar)));
-            //listadoSecciones.Add(new Subseccion("030.090.000.000",actividadDocente.SincroParticipacionCongresosFormacionDocente(preimportar)));
-            //listadoSecciones.Add(new Subseccion("060.030.080.000",actividadDocente.SincroPremiosInovacionDocente(preimportar)));
-            //listadoSecciones.Add(new Subseccion("030.100.000.000",actividadDocente.SincroOtrasActividades(preimportar)));
-            listadoSecciones.Add(new Subseccion("030.110.000.000",actividadDocente.SincroAportacionesRelevantes(preimportar)));
+            listadoSecciones.Add(new Subseccion("030.040.010.000", actividadDocente.SincroDireccionTesis(preimportar)));
+            listadoSecciones.Add(new Subseccion("030.010.000.000", actividadDocente.SincroFormacionAcademica(preimportar)));
+            listadoSecciones.Add(new Subseccion("030.050.000.000", actividadDocente.SincroTutoriasAcademicas(preimportar)));
+            listadoSecciones.Add(new Subseccion("030.060.000.000", actividadDocente.SincroCursosSeminarios(preimportar)));
+            listadoSecciones.Add(new Subseccion("030.070.000.000", actividadDocente.SincroPublicacionDocentes(preimportar)));
+            listadoSecciones.Add(new Subseccion("030.080.000.000", actividadDocente.SincroParticipacionProyectosInnovacionDocente(preimportar)));
+            listadoSecciones.Add(new Subseccion("030.090.000.000", actividadDocente.SincroParticipacionCongresosFormacionDocente(preimportar)));
+            listadoSecciones.Add(new Subseccion("060.030.080.000", actividadDocente.SincroPremiosInovacionDocente(preimportar)));
+            listadoSecciones.Add(new Subseccion("030.100.000.000", actividadDocente.SincroOtrasActividades(preimportar)));
+            listadoSecciones.Add(new Subseccion("030.110.000.000", actividadDocente.SincroAportacionesRelevantes(preimportar)));
 
             return listadoSecciones;
         }
