@@ -5523,7 +5523,7 @@
           "listItemEdit": {
             "graph": "teachingcongress",
             "proptitle": "http://w3id.org/roh/title",
-            "rdftype": "http://w3id.org/roh/TeachingPublication",
+            "rdftype": "http://w3id.org/roh/TeachingCongress",
             "sections": [
               {
                 "title": {
