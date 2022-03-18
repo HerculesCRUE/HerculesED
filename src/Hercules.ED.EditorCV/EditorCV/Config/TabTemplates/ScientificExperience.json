@@ -621,7 +621,7 @@
 										}
 									}
 								]
-							},
+							}
 						]
 					},
 					"listItemEdit": {
@@ -1633,7 +1633,7 @@
 										}
 									}
 								}
-							},
+							}
 						]
 					},
 					"listItemEdit": {
@@ -1823,6 +1823,8 @@
 				}
 			}
 		},
+
+		// Obras artísticas dirigidas
 		{
 			"rdftype": "http://w3id.org/roh/RelatedSupervisedArtisticProject",
 			"property": "http://w3id.org/roh/supervisedArtisticProjects",
@@ -1838,20 +1840,20 @@
 							"property": "http://vivoweb.org/ontology/core#relatedBy",
 							"graph": "supervisedartisticproject",
 							"child": {
-								"property": "http://vivoweb.org/ontology/core#description"
+								"property": "http://w3id.org/roh/title"
 							}
 						},
 						"orders": [
 							{
 								"name": {
-									"es": "Ordenar por fecha más reciente"
+									"es": "Ordenar por fecha de inicio más reciente"
 								},
 								"properties": [
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
 										"graph": "supervisedartisticproject",
 										"child": {
-											"property": "http://purl.org/dc/terms/issued"
+											"property": "http://vivoweb.org/ontology/core#start"
 										},
 										"asc": false
 									},
@@ -1859,7 +1861,7 @@
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
 										"graph": "supervisedartisticproject",
 										"child": {
-											"property": "http://vivoweb.org/ontology/core#description"
+											"property": "http://w3id.org/roh/title"
 										},
 										"asc": true
 									}
@@ -1867,14 +1869,14 @@
 							},
 							{
 								"name": {
-									"es": "Ordenar por fecha más antigua"
+									"es": "Ordenar por fecha de inicio más antigua"
 								},
 								"properties": [
 									{
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
 										"graph": "supervisedartisticproject",
 										"child": {
-											"property": "http://purl.org/dc/terms/issued"
+											"property": "http://vivoweb.org/ontology/core#start"
 										},
 										"asc": true
 									},
@@ -1882,7 +1884,7 @@
 										"property": "http://vivoweb.org/ontology/core#relatedBy",
 										"graph": "supervisedartisticproject",
 										"child": {
-											"property": "http://vivoweb.org/ontology/core#description"
+											"property": "http://w3id.org/roh/title"
 										},
 										"asc": true
 									}
@@ -1906,32 +1908,165 @@
 							},
 							{
 								"name": {
-									"es": "Autores/as (p. o. de firma"
+									"es": "Nombre de la exposición"
 								},
 								"showMini": true,
-								"childOR": [
-									{
-										"property": "http://vivoweb.org/ontology/core#relatedBy",
-										"graph": "supervisedartisticproject",
-										"order": "http://www.w3.org/1999/02/22-rdf-syntax-ns#comment",
+								"child": {
+									"property": "http://vivoweb.org/ontology/core#relatedBy",
+									"graph": "supervisedartisticproject",
+									"child": {
+										"property": "http://w3id.org/roh/exhibition"
+									}
+								}
+							},
+							{
+								"name": {
+									"es": "Título de la exposición"
+								},
+								"child": {
+									"property": "http://vivoweb.org/ontology/core#relatedBy",
+									"graph": "supervisedartisticproject",
+									"child": {
+										"property": "http://w3id.org/roh/publicationTitle"
+									}
+								}
+							},
+							{
+								"name": {
+									"es": "Otros"
+								},
+								"child": {
+									"property": "http://vivoweb.org/ontology/core#relatedBy",
+									"graph": "supervisedartisticproject",
+									"child": {
+										"property": "http://w3id.org/roh/others"
+									}
+								}
+							},
+							{
+								"name": {
+									"es": "Ciudad de celebración"
+								},
+								"child": {
+									"property": "http://vivoweb.org/ontology/core#relatedBy",
+									"graph": "supervisedartisticproject",
+									"child": {
+										"property": "https://www.w3.org/2006/vcard/ns#locality"
+									}
+								}
+							},
+							{
+								"name": {
+									"es": "C. Autón./Reg. de celebración"
+								},
+								"child": {
+									"property": "http://vivoweb.org/ontology/core#relatedBy",
+									"graph": "supervisedartisticproject",
+									"child": {
+										"property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+										"graph": "feature",
 										"child": {
-											"property": "http://vivoweb.org/ontology/core#relates",
-											"child": {
-												"property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
-												"graph": "person",
-												"child": {
-													"property": "http://xmlns.com/foaf/0.1/name"
-												}
-											}
+											"property": "http://www.geonames.org/ontology#name"
 										}
 									}
-								]
+								}
+							},
+							{
+								"name": {
+									"es": "País de celebración"
+								},
+								"child": {
+									"property": "http://vivoweb.org/ontology/core#relatedBy",
+									"graph": "supervisedartisticproject",
+									"child": {
+										"property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+										"graph": "feature",
+										"child": {
+											"property": "http://www.geonames.org/ontology#name"
+										}
+									}
+								}
+							},
+							{
+								"name": {
+									"es": "Foro donde se expone"
+								},
+								"child": {
+									"property": "http://vivoweb.org/ontology/core#relatedBy",
+									"graph": "supervisedartisticproject",
+									"child": {
+										"property": "http://w3id.org/roh/exhibitionForum"
+									}
+								}
+							},
+							{
+								"name": {
+									"es": "Monográfica"
+								},
+								"type": "boolean",
+								"child": {
+									"property": "http://vivoweb.org/ontology/core#relatedBy",
+									"graph": "supervisedartisticproject",
+									"child": {
+										"property": "http://w3id.org/roh/monographic"
+									}
+								}
+							},
+							{
+								"name": {
+									"es": "Catálogo"
+								},
+								"type": "boolean",
+								"child": {
+									"property": "http://vivoweb.org/ontology/core#relatedBy",
+									"graph": "supervisedartisticproject",
+									"child": {
+										"property": "http://w3id.org/roh/catalogue"
+									}
+								}
+							},
+							{
+								"name": {
+									"es": "Comisario"
+								},
+								"type": "boolean",
+								"child": {
+									"property": "http://vivoweb.org/ontology/core#relatedBy",
+									"graph": "supervisedartisticproject",
+									"child": {
+										"property": "http://w3id.org/roh/commissar"
+									}
+								}
+							},
+							{
+								"name": {
+									"es": "Catalogación"
+								},
+								"child": {
+									"property": "http://vivoweb.org/ontology/core#relatedBy",
+									"graph": "supervisedartisticproject",
+									"child": {
+										"property": "http://w3id.org/roh/cataloging"
+									}
+								}
+							},
+							{
+								"name": {
+									"es": "Premio"
+								},
+								"child": {
+									"property": "http://vivoweb.org/ontology/core#relatedBy",
+									"graph": "supervisedartisticproject",
+									"child": {
+										"property": "http://w3id.org/roh/award"
+									}
+								}
 							}
 						]
 					},
 					"listItemEdit": {
 						"graph": "supervisedartisticproject",
-						"proptitle": "http://vivoweb.org/ontology/core#description",
+						"proptitle": "http://w3id.org/roh/title",
 						"rdftype": "http://w3id.org/roh/SupervisedArtisticProject",
 						"sections": [
 							{
@@ -1948,7 +2083,7 @@
 												"placeholder": {
 													"es": "Introduce la descripción"
 												},
-												"property": "http://vivoweb.org/ontology/core#description",
+												"property": "http://w3id.org/roh/title",
 												"required": true,
 												"type": "text",
 												"width": 1
@@ -1957,7 +2092,7 @@
 												"title": {
 													"es": "Nombre de la exposición"
 												},
-												"property": "http://w3id.org/roh/title",
+												"property": "http://w3id.org/roh/exhibition",
 												"type": "text",
 												"width": 1
 											},
@@ -1974,12 +2109,97 @@
 									{
 										"properties": [
 											{
-												"property": "http://vivoweb.org/ontology/core#relates",
-												"type": "auxEntityAuthorList",
+												"property": "http://purl.org/ontology/bibo/authorList",
+												"type": "auxEntity",
 												"title": {
-													"es": "Autores/as (p.o. de firma)"
+													"es": "Autores/as (p. o. de firma)"
 												},
-												"width": 3
+												"multiple": true,
+												"width": 3,
+												"auxEntityData": {
+													"propertyOrder": "http://www.w3.org/1999/02/22-rdf-syntax-ns#comment",
+													"rdftype": "http://xmlns.com/foaf/0.1/Person",
+													"propertyTitle": {
+														"property": "http://xmlns.com/foaf/0.1/firstName"
+													},
+													"properties": [
+														{
+															"name": {
+																"es": "Primer apellido"
+															},
+															"child": {
+																"property": "http://xmlns.com/foaf/0.1/familyName"
+															}
+														},
+														{
+															"name": {
+																"es": "Segundo apellido"
+															},
+															"child": {
+																"property": "http://w3id.org/roh/secondFamilyName"
+															}
+														},
+														{
+															"name": {
+																"es": "Firma"
+															},
+															"child": {
+																"property": "http://xmlns.com/foaf/0.1/nick"
+															}
+														}
+													],
+													"rows": [
+														{
+															"properties": [
+																{
+																	"title": {
+																		"es": "Nombre"
+																	},
+																	"placeholder": {
+																		"es": "Introduce el nombre"
+																	},
+																	"required": true,
+																	"property": "http://xmlns.com/foaf/0.1/firstName",
+																	"type": "text",
+																	"width": 1
+																},
+																{
+																	"title": {
+																		"es": "Primera apellido"
+																	},
+																	"placeholder": {
+																		"es": "Introduce el primer apellido"
+																	},
+																	"property": "http://xmlns.com/foaf/0.1/familyName",
+																	"type": "text",
+																	"width": 1
+																},
+																{
+																	"title": {
+																		"es": "Segundo apellido"
+																	},
+																	"placeholder": {
+																		"es": "Introduce el segundo apellido"
+																	},
+																	"property": "http://w3id.org/roh/secondFamilyName",
+																	"type": "text",
+																	"width": 1
+																},
+																{
+																	"title": {
+																		"es": "Firma"
+																	},
+																	"placeholder": {
+																		"es": "Introduce la firma"
+																	},
+																	"property": "http://xmlns.com/foaf/0.1/nick",
+																	"type": "text",
+																	"width": 1
+																}
+															]
+														}
+													]
+												}
 											}
 										]
 									},
@@ -2079,7 +2299,7 @@
 												"title": {
 													"es": "Foro donde se expone"
 												},
-												"property": "http://w3id.org/roh/exhibitingForum",
+												"property": "http://w3id.org/roh/exhibitionForum",
 												"type": "text",
 												"width": 2
 											}
@@ -2088,30 +2308,27 @@
 									{
 										"properties": [
 											{
-												"TODO": "Booleano",
 												"title": {
 													"es": "Monográfica"
 												},
+												"type": "boolean",
 												"property": "http://w3id.org/roh/monographic",
-												"type": "text",
 												"width": 1
 											},
 											{
-												"TODO": "Booleano",
 												"title": {
 													"es": "Catálogo"
 												},
+												"type": "boolean",
 												"property": "http://w3id.org/roh/catalogue",
-												"type": "text",
 												"width": 1
 											},
 											{
-												"TODO": "Booleano",
 												"title": {
 													"es": "Comisario"
 												},
-												"property": "http://w3id.org/roh/",
-												"type": "text",
+												"type": "boolean",
+												"property": "http://w3id.org/roh/commissar",
 												"width": 1
 											}
 										]
@@ -2122,7 +2339,7 @@
 												"title": {
 													"es": "Catalogación"
 												},
-												"property": "http://w3id.org/roh/cataloguing",
+												"property": "http://w3id.org/roh/cataloging",
 												"type": "text",
 												"width": 1
 											},
@@ -2143,6 +2360,7 @@
 				}
 			}
 		},
+
 		{
 			"rdftype": "http://w3id.org/roh/RelatedTechnologicalResult",
 			"property": "http://w3id.org/roh/technologicalResults",
@@ -2306,7 +2524,7 @@
 												"property": "http://vivoweb.org/ontology/core#start",
 												"type": "date",
 												"width": 1
-											},
+											}
 										]
 									},
 									{
@@ -2336,7 +2554,7 @@
 												"width": 1
 											}
 										]
-									},
+									}
 								]
 							},
 							{
