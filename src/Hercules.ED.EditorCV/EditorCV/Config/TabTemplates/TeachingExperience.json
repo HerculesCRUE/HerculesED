@@ -3442,7 +3442,7 @@
               },
               {
                 "name": {
-                  "es": "Introduce la URL"
+                  "es": "URL"
                 },
                 "type": "text",
                 "child": {
@@ -4057,9 +4057,6 @@
         }
       }
     },
-
-
-    //TODO: Terminar 'ListItem'
     {
       "rdftype": "http://w3id.org/roh/RelatedTeachingProjects",
       "property": "http://w3id.org/roh/teachingProjects",
@@ -4971,8 +4968,1215 @@
         }
       }
     },
+    {
+      "rdftype": "http://w3id.org/roh/RelatedTeachingCongress",
+      "property": "http://w3id.org/roh/teachingCongress",
+      "presentation": {
+        "type": "listitems",
+        "title": {
+          "es": "Participación en congresos con ponencias orientadas a la formación docente"
+        },
+        "listItemsPresentation": {
+          "property": "http://vivoweb.org/ontology/core#relatedBy",
+          "listItem": {
+            "propertyTitle": {
+              "property": "http://vivoweb.org/ontology/core#relatedBy",
+              "graph": "teachingcongress",
+              "child": {
+                "property": "http://w3id.org/roh/title"
+              }
+            },
+            "orders": [
+              {
+                "name": {
+                  "es": "Ordenar por fecha de presentación más reciente"
+                },
+                "properties": [
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "teachingcongress",
+                    "child": {
+                      "property": "http://purl.org/dc/terms/issued"
+                    },
+                    "asc": false
+                  },
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "teachingcongress",
+                    "child": {
+                      "property": "http://w3id.org/roh/title"
+                    },
+                    "asc": true
+                  }
+                ]
+              },
+              {
+                "name": {
+                  "es": "Ordenar por fecha de inicio más antigua"
+                },
+                "properties": [
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "teachingcongress",
+                    "child": {
+                      "property": "http://purl.org/dc/terms/issued"
+                    },
+                    "asc": true
+                  },
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "teachingcongress",
+                    "child": {
+                      "property": "http://w3id.org/roh/title"
+                    },
+                    "asc": true
+                  }
+                ]
+              }
+            ],
+            "properties": [
+              {
+                "name": {
+                  "es": "Tipo de evento"
+                },
+                "childOR": [
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "teachingcongress",
+                    "child": {
+                      "property": "http://w3id.org/roh/eventTypeOther"
+                    }
+                  },
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "teachingcongress",
+                    "child": {
+                      "property": "http://w3id.org/roh/eventType",
+                      "graph": "eventtype",
+                      "child": {
+                        "property": "http://purl.org/dc/elements/1.1/title"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "name": {
+                  "es": "Fecha de presentación"
+                },
+                "showMiniBold": true,
+                "type": "date",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingcongress",
+                  "child": {
+                    "property": "http://purl.org/dc/terms/issued"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Fecha de inicio"
+                },
+                "type": "date",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingcongress",
+                  "child": {
+                    "property": "http://vivoweb.org/ontology/core#start"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Fecha de fin"
+                },
+                "type": "date",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingcongress",
+                  "child": {
+                    "property": "http://vivoweb.org/ontology/core#end"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Nº de horas"
+                },
+                "type": "number",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingcongress",
+                  "child": {
+                    "property": "http://w3id.org/roh/durationHours"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Ciudad de celebración"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingcongress",
+                  "child": {
+                    "property": "https://www.w3.org/2006/vcard/ns#locality"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "C. Autón./Reg. de celebración"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingcongress",
+                  "child": {
+                    "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+                    "graph": "feature",
+                    "child": {
+                      "property": "http://www.geonames.org/ontology#name"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "País de celebración"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingcongress",
+                  "child": {
+                    "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+                    "graph": "feature",
+                    "child": {
+                      "property": "http://www.geonames.org/ontology#name"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Entidad organizadora"
+                },
+                "showMini": true,
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingcongress",
+                  "child": {
+                    "property": "http://w3id.org/roh/conductedByTitle"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Ciudad entidad organizadora"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingcongress",
+                  "child": {
+                    "property": "http://w3id.org/roh/conductedByLocality"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "C. Autón./Reg. entidad organizadora"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingcongress",
+                  "child": {
+                    "property": "http://w3id.org/roh/conductedByHasRegion",
+                    "graph": "feature",
+                    "child": {
+                      "property": "http://www.geonames.org/ontology#name"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "País entidad organizadora"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingcongress",
+                  "child": {
+                    "property": "http://w3id.org/roh/conductedByHasCountryName",
+                    "graph": "feature",
+                    "child": {
+                      "property": "http://www.geonames.org/ontology#name"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Título de la publicación"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingcongress",
+                  "child": {
+                    "property": "http://w3id.org/roh/publicationTitle"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Objetivos del evento"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingcongress",
+                  "child": {
+                    "property": "http://w3id.org/roh/goals"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Tipo de participación"
+                },
+                "childOR": [
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "teachingcongress",
+                    "child": {
+                      "property": "http://w3id.org/roh/participationTypeOther"
+                    }
+                  },
+                  {
+                    "property": "http://vivoweb.org/ontology/core#relatedBy",
+                    "graph": "teachingcongress",
+                    "child": {
+                      "property": "http://w3id.org/roh/participationType",
+                      "graph": "participationtypedocument",
+                      "child": {
+                        "property": "http://purl.org/dc/elements/1.1/title"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "name": {
+                  "es": "Autor de correspondencia"
+                },
+                "type": "boolean",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "impartedcoursesseminars",
+                  "child": {
+                    "property": "http://w3id.org/roh/correspondingAuthor"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "URL"
+                },
+                "type": "text",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingpublication",
+                  "child": {
+                    "property": "https://www.w3.org/2006/vcard/ns#url"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Nombre de la publicación"
+                },
+                "type": "text",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingpublication",
+                  "child": {
+                    "property": "http://w3id.org/roh/publicationName"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Fecha de publicación"
+                },
+                "type": "date",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingcongress",
+                  "child": {
+                    "property": "http://w3id.org/roh/publicationDate"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Idioma de la publicación"
+                },
+                "type": "text",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingcongress",
+                  "child": {
+                    "property": "https://www.w3.org/2006/vcard/ns#hasLanguage",
+                    "graph": "language",
+                    "child": {
+                      "property": "http://purl.org/dc/elements/1.1/title"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Tipo de publicación"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingcongress",
+                  "child": {
+                    "property": "http://w3id.org/roh/publicationType",
+                    "graph": "publicationtype",
+                    "child": {
+                      "property": "http://purl.org/dc/elements/1.1/title"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Volumen"
+                },
+                "type": "text",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingcongress",
+                  "child": {
+                    "property": "http://purl.org/ontology/bibo/volume"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Número"
+                },
+                "type": "text",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingcongress",
+                  "child": {
+                    "property": "http://purl.org/ontology/bibo/issue"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Página inicial"
+                },
+                "type": "text",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingcongress",
+                  "child": {
+                    "property": "http://purl.org/ontology/bibo/pageStart"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Página final"
+                },
+                "type": "text",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingcongress",
+                  "child": {
+                    "property": "http://purl.org/ontology/bibo/pageEnd"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Editorial"
+                },
+                "type": "text",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingcongress",
+                  "child": {
+                    "property": "http://vivoweb.org/ontology/core#publisher"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "ISBN"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingcongress",
+                  "child": {
+                    "property": "http://w3id.org/roh/isbn"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "ISSN"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingcongress",
+                  "child": {
+                    "property": "http://purl.org/ontology/bibo/issn"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Identificador DOI"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingcongress",
+                  "child": {
+                    "property": "http://purl.org/ontology/bibo/doi"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Identificador Handle"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingcongress",
+                  "child": {
+                    "property": "http://purl.org/ontology/bibo/handle"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Identificador PMID"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingcongress",
+                  "child": {
+                    "property": "http://purl.org/ontology/bibo/pmid"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Depósito legal"
+                },
+                "type": "text",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingcongress",
+                  "child": {
+                    "property": "http://w3id.org/roh/legalDeposit"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "C. Autón./Reg. de publicación"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingcongress",
+                  "child": {
+                    "property": "http://w3id.org/roh/publicationHasRegion",
+                    "graph": "feature",
+                    "child": {
+                      "property": "http://www.geonames.org/ontology#name"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "País de publicación"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "teachingcongress",
+                  "child": {
+                    "property": "http://w3id.org/roh/publicationHasCountryName",
+                    "graph": "feature",
+                    "child": {
+                      "property": "http://www.geonames.org/ontology#name"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "listItemEdit": {
+            "graph": "teachingcongress",
+            "proptitle": "http://w3id.org/roh/title",
+            "rdftype": "http://w3id.org/roh/TeachingPublication",
+            "sections": [
+              {
+                "title": {
+                  "es": "Información general"
+                },
+                "rows": [
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Nombre del evento"
+                        },
+                        "placeholder": {
+                          "es": "Introduce el nombre del evento"
+                        },
+                        "property": "http://w3id.org/roh/title",
+                        "required": true,
+                        "type": "text",
+                        "width": 2
+                      },
+                      {
+                        "title": {
+                          "es": "Tipo de evento"
+                        },
+                        "property": "http://w3id.org/roh/eventType",
+                        "combo": {
+                          "rdftype": "http://w3id.org/roh/EventType",
+                          "graph": "eventtype",
+                          "property": {
+                            "property": "http://purl.org/dc/elements/1.1/title"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Otros"
+                        },
+                        "property": "http://w3id.org/roh/eventTypeOther",
+                        "required": true,
+                        "dependency": {
+                          "property": "http://w3id.org/roh/eventType",
+                          "propertyValue": "{GraphsUrl}items/eventtype_OTHERS"
+                        },
+                        "type": "text",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Fecha de presentación"
+                        },
+                        "property": "http://purl.org/dc/terms/issued",
+                        "type": "date",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Fecha de inicio"
+                        },
+                        "property": "http://vivoweb.org/ontology/core#start",
+                        "type": "date",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Fecha de fin"
+                        },
+                        "property": "http://vivoweb.org/ontology/core#end",
+                        "type": "date",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Nº de horas"
+                        },
+                        "property": "http://w3id.org/roh/durationHours",
+                        "type": "number",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Ciudad de celebración"
+                        },
+                        "type": "text",
+                        "placeholder": {
+                          "es": "Introduce la ciudad de celebración"
+                        },
+                        "required": false,
+                        "property": "https://www.w3.org/2006/vcard/ns#locality",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "País de celebración"
+                        },
+                        "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+                        "combo": {
+                          "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "filter": {
+                            "property": "http://www.geonames.org/ontology#featureCode",
+                            "value": "PCLD"
+                          },
+                          "graph": "feature",
+                          "property": {
+                            "property": "http://www.geonames.org/ontology#name"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "C. Autón./Reg. de celebración"
+                        },
+                        "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+                        "combo": {
+                          "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "filter": {
+                            "property": "http://www.geonames.org/ontology#featureCode",
+                            "value": "ADM1"
+                          },
+                          "dependency": {
+                            "property": "http://www.geonames.org/ontology#parentFeature",
+                            "propertyValue": "https://www.w3.org/2006/vcard/ns#hasCountryName"
+                          },
+                          "graph": "feature",
+                          "property": {
+                            "property": "http://www.geonames.org/ontology#name"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Entidad organizadora"
+                        },
+                        "autocomplete": true,
+                        "placeholder": {
+                          "es": "Introduce la entidad organizadora"
+                        },
+                        "property": "http://w3id.org/roh/conductedByTitle",
+                        "autocompleteConfig": {
+                          "rdftype": "http://xmlns.com/foaf/0.1/Organization",
+                          "graph": "organization",
+                          "propertyEntity": "http://w3id.org/roh/conductedBy",
+                          "property": {
+                            "property": "http://w3id.org/roh/title"
+                          }
+                        },
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Tipo de entidad"
+                        },
+                        "property": "http://w3id.org/roh/conductedByType",
+                        "combo": {
+                          "rdftype": "http://w3id.org/roh/OrganizationType",
+                          "graph": "organizationtype",
+                          "property": {
+                            "property": "http://purl.org/dc/elements/1.1/title"
+                          }
+                        },
+                        "dependency": {
+                          "property": "http://w3id.org/roh/conductedByTitle",
+                          "propertyValue": "*"
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Otros"
+                        },
+                        "property": "http://w3id.org/roh/conductedByTypeOther",
+                        "required": true,
+                        "dependency": {
+                          "property": "http://w3id.org/roh/conductedByType",
+                          "propertyValue": "{GraphsUrl}items/organizationtype_OTHERS"
+                        },
+                        "type": "text",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Ciudad entidad organizadora"
+                        },
+                        "type": "text",
+                        "placeholder": {
+                          "es": "Introduce la ciudad de la entidad organizadora"
+                        },
+                        "required": false,
+                        "property": "http://w3id.org/roh/conductedByLocality",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "País entidad organizadora"
+                        },
+                        "property": "http://w3id.org/roh/conductedByHasCountryName",
+                        "combo": {
+                          "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "filter": {
+                            "property": "http://www.geonames.org/ontology#featureCode",
+                            "value": "PCLD"
+                          },
+                          "graph": "feature",
+                          "property": {
+                            "property": "http://www.geonames.org/ontology#name"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "C. Autón./Reg. entidad organizadora"
+                        },
+                        "property": "http://w3id.org/roh/conductedByHasRegion",
+                        "combo": {
+                          "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "filter": {
+                            "property": "http://www.geonames.org/ontology#featureCode",
+                            "value": "ADM1"
+                          },
+                          "dependency": {
+                            "property": "http://www.geonames.org/ontology#parentFeature",
+                            "propertyValue": "http://w3id.org/roh/conductedByHasCountryName"
+                          },
+                          "graph": "feature",
+                          "property": {
+                            "property": "http://www.geonames.org/ontology#name"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Título de la publicación"
+                        },
+                        "property": "http://w3id.org/roh/publicationTitle",
+                        "type": "text",
+                        "width": 2
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "title": {
+                  "es": "Más campos"
+                },
+                "rows": [
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Objetivos del evento"
+                        },
+                        "property": "http://w3id.org/roh/goals",
+                        "type": "text",
+                        "width": 2
+                      },
+                      {
+                        "title": {
+                          "es": "Tipo de participación"
+                        },
+                        "property": "http://w3id.org/roh/participationType",
+                        "combo": {
+                          "rdftype": "http://w3id.org/roh/ParticipationTypeDocument",
+                          "graph": "participationtypedocument",
+                          "property": {
+                            "property": "http://purl.org/dc/elements/1.1/title"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Otros"
+                        },
+                        "property": "http://w3id.org/roh/participationTypeOther",
+                        "required": true,
+                        "dependency": {
+                          "property": "http://w3id.org/roh/participationType",
+                          "propertyValue": "{GraphsUrl}items/participationtypedocument_OTHERS"
+                        },
+                        "type": "text",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Autor de correspondencia"
+                        },
+                        "type": "boolean",
+                        "property": "http://w3id.org/roh/correspondingAuthor",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "URL"
+                        },
+                        "placeholder": {
+                          "es": "Introduce la URL"
+                        },
+                        "type": "text",
+                        "property": "https://www.w3.org/2006/vcard/ns#url",
+                        "width": 2
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Nombre de la publicación"
+                        },
+                        "placeholder": {
+                          "es": "Introduce el nombre de la publicación"
+                        },
+                        "type": "text",
+                        "property": "http://w3id.org/roh/publicationName",
+                        "width": 2
+                      },
+                      {
+                        "title": {
+                          "es": "Fecha de publicación"
+                        },
+                        "type": "date",
+                        "property": "http://w3id.org/roh/publicationDate",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Idioma de la presentación"
+                        },
+                        "property": "https://www.w3.org/2006/vcard/ns#hasLanguage",
+                        "combo": {
+                          "rdftype": "http://w3id.org/roh/Language",
+                          "graph": "language",
+                          "property": {
+                            "property": "http://purl.org/dc/elements/1.1/title"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Tipo de publicación"
+                        },
+                        "property": "http://w3id.org/roh/publicationType",
+                        "combo": {
+                          "rdftype": "http://w3id.org/roh/PublicationType",
+                          "graph": "publicationtype",
+                          "property": {
+                            "property": "http://purl.org/dc/elements/1.1/title"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Volumen"
+                        },
+                        "placeholder": {
+                          "es": "Introduce el volumen"
+                        },
+                        "type": "text",
+                        "property": "http://purl.org/ontology/bibo/volume",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Número"
+                        },
+                        "placeholder": {
+                          "es": "Introduce el número"
+                        },
+                        "type": "text",
+                        "property": "http://purl.org/ontology/bibo/issue",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Página inicial"
+                        },
+                        "placeholder": {
+                          "es": "Introduce la página inicial"
+                        },
+                        "type": "text",
+                        "property": "http://purl.org/ontology/bibo/pageStart",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Página final"
+                        },
+                        "placeholder": {
+                          "es": "Introduce la página final"
+                        },
+                        "type": "text",
+                        "property": "http://purl.org/ontology/bibo/pageEnd",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Editorial"
+                        },
+                        "placeholder": {
+                          "es": "Introduce la editorial"
+                        },
+                        "type": "text",
+                        "property": "http://vivoweb.org/ontology/core#publisher",
+                        "width": 2
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "ISBN"
+                        },
+                        "type": "text",
+                        "property": "http://w3id.org/roh/isbn",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "ISSN"
+                        },
+                        "type": "text",
+                        "property": "http://purl.org/ontology/bibo/issn",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Identificador DOI"
+                        },
+                        "placeholder": {
+                          "es": "Introduce el identificador DOI"
+                        },
+                        "property": "http://purl.org/ontology/bibo/doi",
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Identificador Handle"
+                        },
+                        "placeholder": {
+                          "es": "Introduce el identificador Handle"
+                        },
+                        "property": "http://purl.org/ontology/bibo/handle",
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Identificador PMID"
+                        },
+                        "placeholder": {
+                          "es": "Introduce el identificador PMID"
+                        },
+                        "property": "http://purl.org/ontology/bibo/pmid",
+                        "type": "text",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "property": "http://purl.org/ontology/bibo/identifier",
+                        "type": "auxEntity",
+                        "title": {
+                          "es": "Otros identificadores"
+                        },
+                        "multiple": true,
+                        "width": 3,
+                        "auxEntityData": {
+                          "rdftype": "http://xmlns.com/foaf/0.1/Document",
+                          "propertyTitle": {
+                            "property": "http://xmlns.com/foaf/0.1/topic"
+                          },
+                          "properties": [
+                            {
+                              "name": {
+                                "es": "Nombre del identificador"
+                              },
+                              "child": {
+                                "property": "http://xmlns.com/foaf/0.1/topic"
+                              }
+                            },
+                            {
+                              "name": {
+                                "es": "Identificador"
+                              },
+                              "child": {
+                                "property": "http://purl.org/dc/elements/1.1/title"
+                              }
+                            }
+                          ],
+                          "rows": [
+                            {
+                              "properties": [
 
-
+                                {
+                                  "title": {
+                                    "es": "Nombre del identificador"
+                                  },
+                                  "placeholder": {
+                                    "es": "Introduce el nombre del identificador"
+                                  },
+                                  "type": "text",
+                                  "required": true,
+                                  "property": "http://xmlns.com/foaf/0.1/topic",
+                                  "width": 1
+                                },
+                                {
+                                  "title": {
+                                    "es": "Identificador"
+                                  },
+                                  "placeholder": {
+                                    "es": "Introduce el identificador"
+                                  },
+                                  "type": "text",
+                                  "required": true,
+                                  "property": "http://purl.org/dc/elements/1.1/title",
+                                  "width": 1
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Depósito legal"
+                        },
+                        "placeholder": {
+                          "es": "Introduce el depósito legal"
+                        },
+                        "type": "text",
+                        "property": "http://w3id.org/roh/legalDeposit",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "País de la publicación"
+                        },
+                        "property": "http://w3id.org/roh/publicationHasCountryName",
+                        "combo": {
+                          "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "filter": {
+                            "property": "http://www.geonames.org/ontology#featureCode",
+                            "value": "PCLD"
+                          },
+                          "graph": "feature",
+                          "property": {
+                            "property": "http://www.geonames.org/ontology#name"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "C. Autón./Reg. de la publicación"
+                        },
+                        "property": "http://w3id.org/roh/publicationHasRegion",
+                        "combo": {
+                          "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "filter": {
+                            "property": "http://www.geonames.org/ontology#featureCode",
+                            "value": "ADM1"
+                          },
+                          "dependency": {
+                            "property": "http://www.geonames.org/ontology#parentFeature",
+                            "propertyValue": "http://w3id.org/roh/publicationHasCountryName"
+                          },
+                          "graph": "feature",
+                          "property": {
+                            "property": "http://www.geonames.org/ontology#name"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
     {
       "rdftype": "http://w3id.org/roh/RelatedTeachingInnovationAwardsReceived",
       "property": "http://w3id.org/roh/teachingInnovationAwardsReceived",
