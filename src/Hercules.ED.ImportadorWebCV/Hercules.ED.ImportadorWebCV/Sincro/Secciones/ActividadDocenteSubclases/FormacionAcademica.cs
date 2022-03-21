@@ -106,7 +106,6 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
                                         OPTIONAL{{?item <{Variables.ActividadDocente.formacionAcademicaEntidadRealizacionNombre}> ?itemER }}.
                                         FILTER(?item in (<{string.Join(">,<", lista)}>))
                                     }}";
-                //TODO check where valores
                 SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, graph);
                 foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                 {
