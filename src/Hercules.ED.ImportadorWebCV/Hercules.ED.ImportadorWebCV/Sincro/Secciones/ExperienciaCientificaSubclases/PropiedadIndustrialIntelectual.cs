@@ -11,6 +11,7 @@ namespace ImportadorWebCV.Sincro.Secciones.ExperienciaCientificaSubclases
     {
         public string descripcion { get; set; }
         public string fecha { get; set; }
+        public string entidadTitular { get; set; }
 
         private static readonly DisambiguationDataConfig configDescripcion = new DisambiguationDataConfig()
         {
@@ -19,6 +20,13 @@ namespace ImportadorWebCV.Sincro.Secciones.ExperienciaCientificaSubclases
         };
 
         private static readonly DisambiguationDataConfig configFecha = new DisambiguationDataConfig()
+        {
+            type = DisambiguationDataConfigType.equalsItem,
+            score = 0.5f,
+            scoreMinus = 0.5f
+        };
+        
+        private static readonly DisambiguationDataConfig configET = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsItem,
             score = 0.5f,
@@ -41,6 +49,13 @@ namespace ImportadorWebCV.Sincro.Secciones.ExperienciaCientificaSubclases
                     property = "fecha",
                     config = configFecha,
                     value = fecha
+                },
+
+                new DisambiguationData()
+                {
+                    property = "entidadTitular",
+                    config = configET,
+                    value = entidadTitular
                 }
             };
             return data;
@@ -58,13 +73,13 @@ namespace ImportadorWebCV.Sincro.Secciones.ExperienciaCientificaSubclases
 
             foreach (List<string> lista in listaListas)
             {
-                string select = $@"SELECT distinct ?item ?itemTitle ?itemDate ";
+                string select = $@"SELECT distinct ?item ?itemTitle ?itemDate ?itemET ";
                 string where = $@"where {{
-                                        ?item <{Variables.ExperienciaCientificaTecnologica.propIIDescripcion}> ?itemTitle . 
-                                        OPTIONAL{{?item <{Variables.ExperienciaCientificaTecnologica.propIIFechaRegistro}> ?itemDate }}.
+                                        ?item <{Variables.ExperienciaCientificaTecnologica.propIITituloPropIndus}> ?itemTitle . 
+                                        OPTIONAL{{?item <{Variables.ExperienciaCientificaTecnologica.propIIFechaConcesion}> ?itemDate }} .
+                                        OPTIONAL{{?item <{Variables.ExperienciaCientificaTecnologica.propIIEntidadTitularDerechosNombre}> ?itemET }} .
                                         FILTER(?item in (<{string.Join(">,<", lista)}>))
                                     }}";
-                //TODO check where valores
                 SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, graph);
                 foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                 {
@@ -72,7 +87,8 @@ namespace ImportadorWebCV.Sincro.Secciones.ExperienciaCientificaSubclases
                     {
                         ID = fila["item"].value,
                         descripcion = fila["itemTitle"].value,
-                        fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : ""
+                        fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : "",
+                        entidadTitular = fila.ContainsKey("itemET") ? fila["itemET"].value : ""
                     };
 
                     resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), propII);

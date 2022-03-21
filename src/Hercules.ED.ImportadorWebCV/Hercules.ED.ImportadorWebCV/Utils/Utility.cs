@@ -731,6 +731,29 @@ namespace Utils
         }
 
         /// <summary>
+        /// Devuelve la region como respuesta,
+        /// con formato mResourceApi.GraphsUrl + "items/resulttype_" + valor
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>Region</returns>
+        public static string GetTipoResultadoIDCampo(this CvnItemBean item, string codigo)
+        {
+            if (!CodigoCampoCorrecto(codigo))
+            {
+                throw new ArgumentException("Codigo de campo incorrecto" + codigo);
+            }
+            if (codigo.Length != 15) { return null; }
+
+            CvnItemBeanCvnString campo = item.Items?.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
+            if (campo != null && !string.IsNullOrEmpty(campo.Value))
+            {
+                return mResourceApi.GraphsUrl + "items/resulttype_" + campo.Value;
+            }
+            return null;
+        }
+
+        /// <summary>
         /// Devuelve la provincia como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/feature_ADM2_" + valor
         /// </summary>
