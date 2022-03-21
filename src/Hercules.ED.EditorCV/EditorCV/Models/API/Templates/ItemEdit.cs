@@ -405,7 +405,6 @@ namespace GuardadoCV.Models.API.Templates
         public string propertyOrder;
         /// <summary>
         /// Propiedad representante para el título
-        /// TODO
         /// </summary>
         public PropertyDataTemplate propertyTitle;
         /// <summary>
