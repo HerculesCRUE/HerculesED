@@ -29,6 +29,7 @@
         public const string proyectosIDICCAAEntidadFinancidora = "";
         public const string proyectosIDICiudadEntidadFinancidora = "";
         public const string proyectosIDIEntidadFinancidora = "";
+        public const string proyectosIDIEntidadFinancidoraNombre = "";
         public const string proyectosIDITipoEntidadFinancidora = "";
         public const string proyectosIDITipoEntidadFinancidoraOtros = "";
         public const string proyectosIDITipoParticipacion = "";
@@ -64,6 +65,7 @@
         public const string contratosCCAAEntidadRealizacion = "";
         public const string contratosCiudadEntidadRealizacion = "";
         public const string contratosEntidadRealizacion = "";
+        public const string contratosEntidadRealizacionNombre = "";
         public const string contratosTipoEntidadRealizacion = "";
         public const string contratosTipoEntidadRealizacionOtros = "";
         public const string contratosCodEntidadFinanciadora = "";
@@ -71,6 +73,7 @@
         public const string contratosCCAAEntidadFinanciadora = "";
         public const string contratosCiudadEntidadFinanciadora = "";
         public const string contratosEntidadFinanciadora = "";
+        public const string contratosEntidadFinanciadoraNombre = "";
         public const string contratosTipoEntidadFinanciadora = "";
         public const string contratosTipoEntidadFinanciadoraOtros = "";
         public const string contratosTipoProyecto = "";
@@ -95,6 +98,7 @@
         public const string contratosResultadosRelevantes = "";
         public const string contratosResultadosRelevantesPalabrasClave = "";
         public const string contratosEntidadParticipante = "";
+        public const string contratosEntidadParticipanteNombre = "";
 
         /// <summary>
         /// Propiedad industrial e intelectual - 050.030.010.000
@@ -190,46 +194,47 @@
         /// <summary>
         /// Resultados tecnológicos derivados de actividades especializadas y de transferencia no incluidos en apartados anteriores - 050.030.020.000
         /// </summary>
-        public const string resultadosTecnologicosDescripcion = "";
-        public const string resultadosTecnologicosCodUnescoPrimaria = "";
-        public const string resultadosTecnologicosCodUnescoSecundaria = "";
-        public const string resultadosTecnologicosCodUnescoTerciaria = "";
-        public const string resultadosTecnologicosIPNombre = "";
-        public const string resultadosTecnologicosIPPrimerApellido = "";
-        public const string resultadosTecnologicosIPSegundoApellido = "";
-        public const string resultadosTecnologicosIPFirma = "";
-        public const string resultadosTecnologicosCoIPNombre = "";
-        public const string resultadosTecnologicosCoIPPrimerApellido = "";
-        public const string resultadosTecnologicosCoIPSegundoApellido = "";
-        public const string resultadosTecnologicosCoIPFirma = "";
-        public const string resultadosTecnologicosGradoContribucion = "";
-        public const string resultadosTecnologicosGradoContribucionOtros = "";
-        public const string resultadosTecnologicosNuevasTecnicasEquip = "";
-        public const string resultadosTecnologicosEmpresasSpinOff = "";
-        public const string resultadosTecnologicosResultadosMejoraProd = "";
-        public const string resultadosTecnologicosHomologos = "";
-        public const string resultadosTecnologicosExpertoTecnologico = "";
-        public const string resultadosTecnologicosConveniosColab = "";
-        public const string resultadosTecnologicosAmbitoActividad = "";
-        public const string resultadosTecnologicosAmbitoActividadOtros = "";
-        public const string resultadosTecnologicosEntidadDestinataria = "";
-        //public const string resultadosTecnologicosTipoEntidadDestinataria = "";
-        //public const string resultadosTecnologicosTipoEntidadDestinatariaOtros = "";
-        //public const string resultadosTecnologicosPaisEntidadDestinataria = "";
-        //public const string resultadosTecnologicosCCAAEntidadDestinataria = "";
-        //public const string resultadosTecnologicosCiudadEntidadDestinataria = "";
-
-        public const string resultadosTecnologicosEntidadColaboradora = "";
-        //public const string resultadosTecnologicosTipoEntidadColaboradora = "";
-        //public const string resultadosTecnologicosTipoEntidadColaboradoraOtros = "";
-        //public const string resultadosTecnologicosPaisEntidadColaboradora = "";
-        //public const string resultadosTecnologicosCCAAEntidadColaboradora = "";
-        //public const string resultadosTecnologicosCiudadEntidadColaboradora = "";
-        public const string resultadosTecnologicosFechaInicio = "";
-        public const string resultadosTecnologicosDuracionAnio = "";
-        public const string resultadosTecnologicosDuracionMes = "";
-        public const string resultadosTecnologicosDuracionDia = "";
-        public const string resultadosTecnologicosResultadosRelevantes = "";
-        public const string resultadosTecnologicosPalabrasClave = "";
+        public const string resultadosTecnologicosDescripcion = "http://w3id.org/roh/title";
+        public const string resultadosTecnologicosCodUnescoPrimaria = "http://w3id.org/roh/unescoPrimary@@@http://w3id.org/roh/CategoryPath|http://w3id.org/roh/categoryNode";
+        public const string resultadosTecnologicosCodUnescoSecundaria = "http://w3id.org/roh/unescoSecondary@@@http://w3id.org/roh/CategoryPath|http://w3id.org/roh/categoryNode";
+        public const string resultadosTecnologicosCodUnescoTerciaria = "http://w3id.org/roh/unescoTertiary@@@http://w3id.org/roh/CategoryPath|http://w3id.org/roh/categoryNode";
+        public const string resultadosTecnologicosIPNombre = "http://w3id.org/roh/principalInvestigatorFirstName";
+        public const string resultadosTecnologicosIPPrimerApellido = "http://w3id.org/roh/principalInvestigatorFamilyName";
+        public const string resultadosTecnologicosIPSegundoApellido = "http://w3id.org/roh/principalInvestigatorSecondFamilyName";
+        public const string resultadosTecnologicosIPFirma = "http://w3id.org/roh/principalInvestigatorNick";
+        public const string resultadosTecnologicosCoIPNombre = "http://w3id.org/roh/coprincipalInvestigatorFirstName";
+        public const string resultadosTecnologicosCoIPPrimerApellido = "http://w3id.org/roh/coprincipalInvestigatorFamilyName";
+        public const string resultadosTecnologicosCoIPSegundoApellido = "http://w3id.org/roh/coprincipalInvestigatorSecondFamilyName";
+        public const string resultadosTecnologicosCoIPFirma = "http://w3id.org/roh/coprincipalInvestigatorNick";
+        public const string resultadosTecnologicosGradoContribucion = "http://w3id.org/roh/contributionGrade";
+        public const string resultadosTecnologicosGradoContribucionOtros = "http://w3id.org/roh/contributionGradeOther";
+        public const string resultadosTecnologicosNuevasTecnicasEquip = "http://w3id.org/roh/newTechniques";
+        public const string resultadosTecnologicosEmpresasSpinOff = "http://w3id.org/roh/spinoffCompanies";
+        public const string resultadosTecnologicosResultadosMejoraProd = "http://w3id.org/roh/activityResults";
+        public const string resultadosTecnologicosHomologos = "http://w3id.org/roh/homologation";
+        public const string resultadosTecnologicosExpertoTecnologico = "http://w3id.org/roh/technologicalExpert";
+        public const string resultadosTecnologicosConveniosColab = "http://w3id.org/roh/collaborationAgreements";
+        public const string resultadosTecnologicosAmbitoActividad = "http://vivoweb.org/ontology/core#geographicFocus";
+        public const string resultadosTecnologicosAmbitoActividadOtros = "http://w3id.org/roh/geographicFocusOther";
+        public const string resultadosTecnologicosEntidadDestinataria = "http://w3id.org/roh/targetOrganizations@@@http://w3id.org/roh/Organization|http://w3id.org/roh/organization";
+        public const string resultadosTecnologicosEntidadDestinatariaNombre = "http://w3id.org/roh/targetOrganizations@@@http://w3id.org/roh/Organization|http://w3id.org/roh/organizationTitle";
+        public const string resultadosTecnologicosTipoEntidadDestinataria = "http://w3id.org/roh/targetOrganizations@@@http://w3id.org/roh/Organization|http://w3id.org/roh/organizationType";
+        public const string resultadosTecnologicosTipoEntidadDestinatariaOtros = "http://w3id.org/roh/targetOrganizations@@@http://w3id.org/roh/Organization|http://w3id.org/roh/organizationTypeOther";
+        public const string resultadosTecnologicosCiudadEntidadDestinataria = "http://w3id.org/roh/targetOrganizations@@@http://w3id.org/roh/Organization|https://www.w3.org/2006/vcard/ns#locality";
+        public const string resultadosTecnologicosCCAAEntidadDestinataria = "http://w3id.org/roh/targetOrganizations@@@http://w3id.org/roh/Organization|https://www.w3.org/2006/vcard/ns#hasRegion";
+        public const string resultadosTecnologicosPaisEntidadDestinataria = "http://w3id.org/roh/targetOrganizations@@@http://w3id.org/roh/Organization|https://www.w3.org/2006/vcard/ns#hasCountryName";
+        public const string resultadosTecnologicosEntidadColaboradora = "http://w3id.org/roh/participates@@@http://w3id.org/roh/Organization|http://w3id.org/roh/organization";
+        public const string resultadosTecnologicosEntidadColaboradoraNombre = "http://w3id.org/roh/participates@@@http://w3id.org/roh/Organization|http://w3id.org/roh/organizationTitle";
+        public const string resultadosTecnologicosTipoEntidadColaboradora = "http://w3id.org/roh/participates@@@http://w3id.org/roh/Organization|http://w3id.org/roh/organizationType";
+        public const string resultadosTecnologicosTipoEntidadColaboradoraOtros = "http://w3id.org/roh/participates@@@http://w3id.org/roh/Organization|http://w3id.org/roh/organizationTypeOther";
+        public const string resultadosTecnologicosCiudadEntidadColaboradora = "http://w3id.org/roh/participates@@@http://w3id.org/roh/Organization|https://www.w3.org/2006/vcard/ns#locality";
+        public const string resultadosTecnologicosCCAAEntidadColaboradora = "http://w3id.org/roh/participates@@@http://w3id.org/roh/Organization|https://www.w3.org/2006/vcard/ns#hasRegion";
+        public const string resultadosTecnologicosPaisEntidadColaboradora = "http://w3id.org/roh/participates@@@http://w3id.org/roh/Organization|https://www.w3.org/2006/vcard/ns#hasCountryName";
+        public const string resultadosTecnologicosFechaInicio = "http://vivoweb.org/ontology/core#start";
+        public const string resultadosTecnologicosDuracionAnio = "http://w3id.org/roh/durationYears";
+        public const string resultadosTecnologicosDuracionMes = "http://w3id.org/roh/durationMonths";
+        public const string resultadosTecnologicosDuracionDia = "http://w3id.org/roh/durationDays";
+        public const string resultadosTecnologicosResultadosRelevantes = "http://w3id.org/roh/relevantResults";
+        public const string resultadosTecnologicosPalabrasClave = "http://vivoweb.org/ontology/core#freeTextKeywords@@@http://w3id.org/roh/CategoryPath|http://w3id.org/roh/categoryNode";
     }
 }
