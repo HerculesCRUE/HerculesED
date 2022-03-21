@@ -13,15 +13,12 @@ namespace ImportadorWebCV.Sincro.Secciones
 {
     class ActividadCientificaTecnologica : SeccionBase
     {
-
-
         private List<CvnItemBean> listadoDatos = new List<CvnItemBean>();
         private readonly string RdfTypeTab = "http://w3id.org/roh/ScientificActivity";
         public ActividadCientificaTecnologica(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
             listadoDatos = mCvn.GetListadoBloque("060");
         }
-
 
         /// <summary>
         /// Metodo para sincronizar los datos pertenecientes al
