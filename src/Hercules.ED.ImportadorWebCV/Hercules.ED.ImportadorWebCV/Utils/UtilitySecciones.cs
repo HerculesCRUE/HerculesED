@@ -188,51 +188,19 @@ namespace Utils
                 string.IsNullOrEmpty(propiedadEntidad) || string.IsNullOrEmpty(propiedadEntidad))
             { return; }
 
-            string entidadN = GetOrganizacionPorNombre(mResourceApi, nombreEntidad);
-            if (!string.IsNullOrEmpty(entidadN))
-            {
-                entidadAux.properties.AddRange(AddProperty(
-                    new Property(propiedadNombreEntidad, nombreEntidad),
-                    new Property(propiedadEntidad, entidadN)
-                ));
-            }
-            else
-            {
-                entidadAux.properties.AddRange(AddProperty(
-                       new Property(propiedadNombreEntidad, nombreEntidad)
-                ));
-                entidadAux.properties.Add(new Property(propiedadEntidad, ""));
-            }
-        }
-
-        /// <summary>
-        /// Añade la referencia a la entidad <paramref name="propiedadNombreEntidad"/> si esta se encuentra en BBDD.
-        /// </summary>
-        /// <param name="mResourceApi"></param>
-        /// <param name="nombreEntidad"></param>
-        /// <param name="propiedadNombreEntidad"></param>
-        /// <param name="propiedadEntidad"></param>
-        /// <param name="entidadAux"></param>
-        public static void AniadirEntidadAuxiliar(ResourceApi mResourceApi, string nombreEntidad, string propiedadNombreEntidad, string propiedadEntidad, Entity entidadAux, string entityPartAux)
-        {
-            if (mResourceApi == null || string.IsNullOrEmpty(nombreEntidad) ||
-                string.IsNullOrEmpty(propiedadEntidad) || string.IsNullOrEmpty(propiedadEntidad))
-            { return; }
+            Property propertyNombre = entidadAux.properties.FirstOrDefault(x => x.prop == propiedadNombreEntidad);
+            Property propertyEntidad = entidadAux.properties.FirstOrDefault(x => x.prop == propiedadEntidad);
 
             string entidadN = GetOrganizacionPorNombre(mResourceApi, nombreEntidad);
             if (!string.IsNullOrEmpty(entidadN))
             {
-                entidadAux.properties.AddRange(AddProperty(
-                    new Property(propiedadNombreEntidad, StringGNOSSID(entityPartAux, nombreEntidad)),
-                    new Property(propiedadEntidad, StringGNOSSID(entityPartAux, entidadN))
-                ));
+                CheckProperty(propertyNombre, entidadAux, nombreEntidad, propiedadNombreEntidad);
+                CheckProperty(propertyEntidad, entidadAux, entidadN, propiedadEntidad);
             }
             else
             {
-                entidadAux.properties.AddRange(AddProperty(
-                       new Property(propiedadNombreEntidad, StringGNOSSID(entityPartAux, nombreEntidad))
-                ));
-                entidadAux.properties.Add(new Property(propiedadEntidad, StringGNOSSID(entityPartAux, "")));
+                CheckProperty(propertyNombre, entidadAux, nombreEntidad, propiedadNombreEntidad);
+                CheckProperty(propertyEntidad, entidadAux, "", propiedadEntidad);
             }
         }
 
