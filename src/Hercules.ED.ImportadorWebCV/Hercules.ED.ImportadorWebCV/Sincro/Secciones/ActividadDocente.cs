@@ -907,7 +907,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                             new Property(Variables.ActividadDocente.publicacionDocenteURLPublicacion, item.GetStringPorIDCampo("030.070.000.160")),
                             new Property(Variables.ActividadDocente.publicacionDocenteDepositoLegal, item.GetValueCvnExternalPKBean("030.070.000.180")),
                             new Property(Variables.ActividadDocente.publicacionDocenteJustificacionMaterial, item.GetStringPorIDCampo("030.070.000.200")),
-                            new Property(Variables.ActividadDocente.publicacionDocenteGradoContribucion, item.GetGradoContribucionPorIDCampo("030.070.000.210")),
+                            new Property(Variables.ActividadDocente.publicacionDocenteGradoContribucion, item.GetGradoContribucionDocumentoPorIDCampo("030.070.000.210")),
                             new Property(Variables.ActividadDocente.publicacionDocenteAutorCorrespondencia, item.GetStringBooleanPorIDCampo("030.070.000.220"))
                         ));
                         PublicacionDocentesISBN(item, entidadAux);
