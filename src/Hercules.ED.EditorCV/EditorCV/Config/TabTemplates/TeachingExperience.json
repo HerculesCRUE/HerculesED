@@ -4209,7 +4209,7 @@
               },
               {
                 "name": {
-                  "es": "Años"
+                  "es": "Duración años"
                 },
                 "type": "number",
                 "child": {
@@ -4222,7 +4222,7 @@
               },
               {
                 "name": {
-                  "es": "Meses"
+                  "es": "Duración meses"
                 },
                 "type": "number",
                 "child": {
@@ -4235,7 +4235,7 @@
               },
               {
                 "name": {
-                  "es": "Days"
+                  "es": "Duración días"
                 },
                 "type": "number",
                 "child": {
@@ -4618,7 +4618,7 @@
                     "properties": [
                       {
                         "title": {
-                          "es": "Años"
+                          "es": "Duración años"
                         },
                         "property": "http://w3id.org/roh/durationYears",
                         "type": "number",
@@ -4626,7 +4626,7 @@
                       },
                       {
                         "title": {
-                          "es": "Meses"
+                          "es": "Duración meses"
                         },
                         "property": "http://w3id.org/roh/durationMonths",
                         "type": "number",
@@ -4634,7 +4634,7 @@
                       },
                       {
                         "title": {
-                          "es": "Días"
+                          "es": "Duración días"
                         },
                         "property": "http://w3id.org/roh/durationDays",
                         "type": "number",
