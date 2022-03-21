@@ -49,7 +49,6 @@ namespace CurriculumvitaeOntology
 		[RDFProperty("http://w3id.org/roh/relatedWorkSubmittedConferencesCV")]
 		public  RelatedWorkSubmittedConferencesCV Roh_relatedWorkSubmittedConferencesCV { get; set;}
 
-		[LABEL(LanguageEnum.es,"http://vivoweb.org/ontology/core#relatedBy")]
 		[RDFProperty("http://vivoweb.org/ontology/core#relatedBy")]
 		[Required]
 		public  Document Vivo_relatedBy  { get; set;} 

@@ -58,11 +58,9 @@ namespace CurriculumvitaeOntology
 		public  EventInscriptionType Roh_inscriptionType  { get; set;} 
 		public string IdRoh_inscriptionType  { get; set;} 
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/correspondingAuthor")]
 		[RDFProperty("http://w3id.org/roh/correspondingAuthor")]
 		public  bool Roh_correspondingAuthor { get; set;}
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/inscriptionTypeOther")]
 		[RDFProperty("http://w3id.org/roh/inscriptionTypeOther")]
 		public  string Roh_inscriptionTypeOther { get; set;}
 

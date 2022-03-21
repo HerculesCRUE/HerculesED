@@ -36,11 +36,9 @@ namespace DocumentOntology
 		public virtual string RdfsLabel { get { return "http://w3id.org/roh/PublicationMetric"; } }
 		public OntologyEntity Entity { get; set; }
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/metricName")]
 		[RDFProperty("http://w3id.org/roh/metricName")]
 		public  string Roh_metricName { get; set;}
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/citationCount")]
 		[RDFProperty("http://w3id.org/roh/citationCount")]
 		public  int Roh_citationCount { get; set;}
 

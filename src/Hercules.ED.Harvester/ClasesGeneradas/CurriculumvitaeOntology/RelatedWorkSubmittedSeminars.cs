@@ -29,10 +29,10 @@ namespace CurriculumvitaeOntology
 		{
 			this.mGNOSSID = pSemCmsModel.Entity.Uri;
 			this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
-			SemanticPropertyModel propRoh_relatedWorkSubmittedSeminars = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/relatedWorkSubmittedSeminars");
-			if(propRoh_relatedWorkSubmittedSeminars != null && propRoh_relatedWorkSubmittedSeminars.PropertyValues.Count > 0)
+			SemanticPropertyModel propRoh_relatedWorkSubmittedSeminarsCV = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/relatedWorkSubmittedSeminarsCV");
+			if(propRoh_relatedWorkSubmittedSeminarsCV != null && propRoh_relatedWorkSubmittedSeminarsCV.PropertyValues.Count > 0)
 			{
-				this.Roh_relatedWorkSubmittedSeminars = new RelatedWorkSubmittedSeminarsCV(propRoh_relatedWorkSubmittedSeminars.PropertyValues[0].RelatedEntity,idiomaUsuario);
+				this.Roh_relatedWorkSubmittedSeminarsCV = new RelatedWorkSubmittedSeminarsCV(propRoh_relatedWorkSubmittedSeminarsCV.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
 			SemanticPropertyModel propVivo_relatedBy = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#relatedBy");
 			if(propVivo_relatedBy != null && propVivo_relatedBy.PropertyValues.Count > 0)
@@ -46,17 +46,14 @@ namespace CurriculumvitaeOntology
 		public virtual string RdfsLabel { get { return "http://w3id.org/roh/RelatedWorkSubmittedSeminars"; } }
 		public OntologyEntity Entity { get; set; }
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/relatedWorkSubmittedSeminars")]
-		[RDFProperty("http://w3id.org/roh/relatedWorkSubmittedSeminars")]
-		public  RelatedWorkSubmittedSeminarsCV Roh_relatedWorkSubmittedSeminars { get; set;}
+		[RDFProperty("http://w3id.org/roh/relatedWorkSubmittedSeminarsCV")]
+		public  RelatedWorkSubmittedSeminarsCV Roh_relatedWorkSubmittedSeminarsCV { get; set;}
 
-		[LABEL(LanguageEnum.es,"http://vivoweb.org/ontology/core#relatedBy")]
 		[RDFProperty("http://vivoweb.org/ontology/core#relatedBy")]
 		[Required]
 		public  Document Vivo_relatedBy  { get; set;} 
 		public string IdVivo_relatedBy  { get; set;} 
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/isPublic")]
 		[RDFProperty("http://w3id.org/roh/isPublic")]
 		public  bool Roh_isPublic { get; set;}
 
@@ -71,11 +68,11 @@ namespace CurriculumvitaeOntology
 		internal override void GetEntities()
 		{
 			base.GetEntities();
-			if(Roh_relatedWorkSubmittedSeminars!=null){
-				Roh_relatedWorkSubmittedSeminars.GetProperties();
-				Roh_relatedWorkSubmittedSeminars.GetEntities();
-				OntologyEntity entityRoh_relatedWorkSubmittedSeminars = new OntologyEntity("http://w3id.org/roh/RelatedWorkSubmittedSeminarsCV", "http://w3id.org/roh/RelatedWorkSubmittedSeminarsCV", "roh:relatedWorkSubmittedSeminars", Roh_relatedWorkSubmittedSeminars.propList, Roh_relatedWorkSubmittedSeminars.entList);
-				entList.Add(entityRoh_relatedWorkSubmittedSeminars);
+			if(Roh_relatedWorkSubmittedSeminarsCV!=null){
+				Roh_relatedWorkSubmittedSeminarsCV.GetProperties();
+				Roh_relatedWorkSubmittedSeminarsCV.GetEntities();
+				OntologyEntity entityRoh_relatedWorkSubmittedSeminarsCV = new OntologyEntity("http://w3id.org/roh/RelatedWorkSubmittedSeminarsCV", "http://w3id.org/roh/RelatedWorkSubmittedSeminarsCV", "roh:relatedWorkSubmittedSeminarsCV", Roh_relatedWorkSubmittedSeminarsCV.propList, Roh_relatedWorkSubmittedSeminarsCV.entList);
+				entList.Add(entityRoh_relatedWorkSubmittedSeminarsCV);
 			}
 		} 
 

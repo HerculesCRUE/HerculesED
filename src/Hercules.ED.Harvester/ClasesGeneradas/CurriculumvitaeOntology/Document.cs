@@ -36,11 +36,9 @@ namespace CurriculumvitaeOntology
 		public virtual string RdfsLabel { get { return "http://xmlns.com/foaf/0.1/Document"; } }
 		public OntologyEntity Entity { get; set; }
 
-		[LABEL(LanguageEnum.es,"http://purl.org/dc/elements/1.1/title")]
 		[RDFProperty("http://purl.org/dc/elements/1.1/title")]
 		public  string Dc_title { get; set;}
 
-		[LABEL(LanguageEnum.es,"http://xmlns.com/foaf/0.1/topic")]
 		[RDFProperty("http://xmlns.com/foaf/0.1/topic")]
 		public  string Foaf_topic { get; set;}
 

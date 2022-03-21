@@ -14,7 +14,7 @@ namespace OAI_PMH.Models.SGI.Project
         public double TotalGastosPresupuesto { get; set; }
         public double TotalGastosConcedido { get; set; }
         public double TotalIngresos { get; set; }
-        public bool Presupuestar { get; set; }
-        public bool EnviadoSGE { get; set; }
+        public bool? Presupuestar { get; set; }
+        public bool? EnviadoSGE { get; set; }
     }
 }

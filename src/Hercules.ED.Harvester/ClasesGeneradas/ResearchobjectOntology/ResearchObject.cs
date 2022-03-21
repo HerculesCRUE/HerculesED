@@ -143,6 +143,7 @@ namespace ResearchobjectOntology
 			this.Dct_issued= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/dc/terms/issued"));
 			this.Roh_forksNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/forksNumber"));
 			this.Vcard_url = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#url"));
+			this.Roh_idZenodo = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/idZenodo"));
 			SemanticPropertyModel propRoh_userKeywords = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/userKeywords");
 			this.Roh_userKeywords = new List<string>();
 			if (propRoh_userKeywords != null && propRoh_userKeywords.PropertyValues.Count > 0)
@@ -319,6 +320,7 @@ namespace ResearchobjectOntology
 			this.Dct_issued= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/dc/terms/issued"));
 			this.Roh_forksNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/forksNumber"));
 			this.Vcard_url = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#url"));
+			this.Roh_idZenodo = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/idZenodo"));
 			SemanticPropertyModel propRoh_userKeywords = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/userKeywords");
 			this.Roh_userKeywords = new List<string>();
 			if (propRoh_userKeywords != null && propRoh_userKeywords.PropertyValues.Count > 0)
@@ -447,6 +449,9 @@ namespace ResearchobjectOntology
 		[RDFProperty("https://www.w3.org/2006/vcard/ns#url")]
 		public  string Vcard_url { get; set;}
 
+		[RDFProperty("http://w3id.org/roh/idZenodo")]
+		public  string Roh_idZenodo { get; set;}
+
 		[LABEL(LanguageEnum.es,"http://w3id.org/roh/userKeywords")]
 		[RDFProperty("http://w3id.org/roh/userKeywords")]
 		public  List<string> Roh_userKeywords { get; set;}
@@ -523,6 +528,7 @@ namespace ResearchobjectOntology
 				}
 			propList.Add(new StringOntologyProperty("roh:forksNumber", this.Roh_forksNumber.ToString()));
 			propList.Add(new StringOntologyProperty("vcard:url", this.Vcard_url));
+			propList.Add(new StringOntologyProperty("roh:idZenodo", this.Roh_idZenodo));
 			propList.Add(new ListStringOntologyProperty("roh:userKeywords", this.Roh_userKeywords));
 			propList.Add(new StringOntologyProperty("roh:idGit", this.Roh_idGit));
 			propList.Add(new ListStringOntologyProperty("roh:externalKeywords", this.Roh_externalKeywords));
@@ -837,6 +843,10 @@ namespace ResearchobjectOntology
 				if(this.Vcard_url != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ResearchObject_{ResourceID}_{ArticleID}",  "https://www.w3.org/2006/vcard/ns#url", $"\"{GenerarTextoSinSaltoDeLinea(this.Vcard_url)}\"", list, " . ");
+				}
+				if(this.Roh_idZenodo != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ResearchObject_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/idZenodo", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_idZenodo)}\"", list, " . ");
 				}
 				if(this.Roh_userKeywords != null)
 				{
@@ -1187,6 +1197,10 @@ namespace ResearchobjectOntology
 				if(this.Vcard_url != null)
 				{
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "https://www.w3.org/2006/vcard/ns#url", $"\"{GenerarTextoSinSaltoDeLinea(this.Vcard_url).ToLower()}\"", list, " . ");
+				}
+				if(this.Roh_idZenodo != null)
+				{
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/idZenodo", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_idZenodo).ToLower()}\"", list, " . ");
 				}
 				if(this.Roh_userKeywords != null)
 				{
