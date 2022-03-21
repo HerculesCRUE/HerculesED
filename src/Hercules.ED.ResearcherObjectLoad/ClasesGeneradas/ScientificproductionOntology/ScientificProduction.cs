@@ -34,6 +34,7 @@ namespace ScientificproductionOntology
 				this.Roh_h_indexSource = new HIndexSource(propRoh_h_indexSource.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
 			this.Dct_issued= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/dc/terms/issued"));
+			this.Roh_crisIdentifier = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/crisIdentifier"));
 			this.Roh_h_indexSourceOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/h-indexSourceOther"));
 			this.Roh_h_index = GetNumberFloatPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/h-index")).Value;
 		}
@@ -48,6 +49,7 @@ namespace ScientificproductionOntology
 				this.Roh_h_indexSource = new HIndexSource(propRoh_h_indexSource.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
 			this.Dct_issued= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/dc/terms/issued"));
+			this.Roh_crisIdentifier = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/crisIdentifier"));
 			this.Roh_h_indexSourceOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/h-indexSourceOther"));
 			this.Roh_h_index = GetNumberFloatPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/h-index")).Value;
 		}
@@ -60,6 +62,9 @@ namespace ScientificproductionOntology
 
 		[RDFProperty("http://purl.org/dc/terms/issued")]
 		public  DateTime? Dct_issued { get; set;}
+
+		[RDFProperty("http://w3id.org/roh/crisIdentifier")]
+		public  string Roh_crisIdentifier { get; set;}
 
 		[RDFProperty("http://w3id.org/roh/h-indexSourceOther")]
 		public  string Roh_h_indexSourceOther { get; set;}
@@ -75,6 +80,7 @@ namespace ScientificproductionOntology
 			if (this.Dct_issued.HasValue){
 				propList.Add(new DateOntologyProperty("dct:issued", this.Dct_issued.Value));
 				}
+			propList.Add(new StringOntologyProperty("roh:crisIdentifier", this.Roh_crisIdentifier));
 			propList.Add(new StringOntologyProperty("roh:h-indexSourceOther", this.Roh_h_indexSourceOther));
 			propList.Add(new StringOntologyProperty("roh:h-index", this.Roh_h_index.ToString()));
 		}
@@ -124,6 +130,10 @@ namespace ScientificproductionOntology
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ScientificProduction_{ResourceID}_{ArticleID}",  "http://purl.org/dc/terms/issued", $"\"{this.Dct_issued.Value.ToString("yyyyMMddHHmmss")}\"", list, " . ");
 				}
+				if(this.Roh_crisIdentifier != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ScientificProduction_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/crisIdentifier", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_crisIdentifier)}\"", list, " . ");
+				}
 				if(this.Roh_h_indexSourceOther != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ScientificProduction_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/h-indexSourceOther", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_h_indexSourceOther)}\"", list, " . ");
@@ -147,8 +157,8 @@ namespace ScientificproductionOntology
 			AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://gnoss/hasfechamodificacion", $"{DateTime.Now.ToString("yyyyMMddHHmmss")}", list, " . ");
 			AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://gnoss/hasnumeroVisitas", "0", list, " . ");
 			AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://gnoss/hasprivacidadCom", "\"publico\"", list, " . ");
-			AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://xmlns.com/foaf/0.1/firstName", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_h_index.ToString())}\"", list, " . ");
-			AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://gnoss/hasnombrecompleto", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_h_index.ToString())}\"", list, " . ");
+			AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://xmlns.com/foaf/0.1/firstName", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_crisIdentifier)}\"", list, " . ");
+			AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://gnoss/hasnombrecompleto", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_crisIdentifier)}\"", list, " . ");
 			string search = string.Empty;
 				if(this.IdRoh_h_indexSource != null)
 				{
@@ -167,6 +177,10 @@ namespace ScientificproductionOntology
 				if(this.Dct_issued != null)
 				{
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://purl.org/dc/terms/issued", $"{this.Dct_issued.Value.ToString("yyyyMMddHHmmss")}", list, " . ");
+				}
+				if(this.Roh_crisIdentifier != null)
+				{
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/crisIdentifier", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_crisIdentifier).ToLower()}\"", list, " . ");
 				}
 				if(this.Roh_h_indexSourceOther != null)
 				{
@@ -203,8 +217,8 @@ namespace ScientificproductionOntology
 			{
 				tags = tags.Substring(0, tags.LastIndexOf(','));
 			}
-			string titulo = $"{this.Roh_h_index.ToString().Replace("\r\n", "").Replace("\n", "").Replace("\r", "").Replace("\"", "\"\"").Replace("'", "''").Replace("|", "#PIPE#")}";
-			string descripcion = $"{this.Roh_h_index.ToString().Replace("\r\n", "").Replace("\n", "").Replace("\r", "").Replace("\"", "\"\"").Replace("'", "''").Replace("|", "#PIPE#")}";
+			string titulo = $"{this.Roh_crisIdentifier.Replace("\r\n", "").Replace("\n", "").Replace("\r", "").Replace("\"", "\"\"").Replace("'", "''").Replace("|", "#PIPE#")}";
+			string descripcion = $"{this.Roh_crisIdentifier.Replace("\r\n", "").Replace("\n", "").Replace("\r", "").Replace("\"", "\"\"").Replace("'", "''").Replace("|", "#PIPE#")}";
 			string tablaDoc = $"'{titulo}', '{descripcion}', '{resourceAPI.GraphsUrl}', '{tags}'";
 			KeyValuePair<Guid, string> valor = new KeyValuePair<Guid, string>(ResourceID, tablaDoc);
 
@@ -273,12 +287,12 @@ namespace ScientificproductionOntology
 
 		internal void AddResourceTitle(ComplexOntologyResource resource)
 		{
-			resource.Title = this.Roh_h_index.ToString();
+			resource.Title = this.Roh_crisIdentifier;
 		}
 
 		internal void AddResourceDescription(ComplexOntologyResource resource)
 		{
-			resource.Description = this.Roh_h_index.ToString();
+			resource.Description = this.Roh_crisIdentifier;
 		}
 
 		private void AgregarTripleALista(string pSujeto, string pPredicado, string pObjeto, List<string> pLista, string pDatosExtra)

@@ -15,6 +15,7 @@ using System.Globalization;
 using System.Collections;
 using Gnoss.ApiWrapper.Exceptions;
 using System.Diagnostics.CodeAnalysis;
+using LanguageCertificate = LanguagecertificateOntology.LanguageCertificate;
 
 namespace CurriculumvitaeOntology
 {
@@ -28,6 +29,11 @@ namespace CurriculumvitaeOntology
 		{
 			this.mGNOSSID = pSemCmsModel.Entity.Uri;
 			this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
+			SemanticPropertyModel propVivo_relatedBy = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#relatedBy");
+			if(propVivo_relatedBy != null && propVivo_relatedBy.PropertyValues.Count > 0)
+			{
+				this.Vivo_relatedBy = new LanguageCertificate(propVivo_relatedBy.PropertyValues[0].RelatedEntity,idiomaUsuario);
+			}
 			this.Roh_isPublic= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isPublic"));
 		}
 
@@ -37,7 +43,7 @@ namespace CurriculumvitaeOntology
 
 		[RDFProperty("http://vivoweb.org/ontology/core#relatedBy")]
 		[Required]
-		public  object Vivo_relatedBy  { get; set;} 
+		public  LanguageCertificate Vivo_relatedBy  { get; set;} 
 		public string IdVivo_relatedBy  { get; set;} 
 
 		[RDFProperty("http://w3id.org/roh/isPublic")]
@@ -47,7 +53,7 @@ namespace CurriculumvitaeOntology
 		internal override void GetProperties()
 		{
 			base.GetProperties();
-			//propList.Add(new StringOntologyProperty("vivo:relatedBy", this.Vivo_relatedBy));
+			propList.Add(new StringOntologyProperty("vivo:relatedBy", this.IdVivo_relatedBy));
 			propList.Add(new BoolOntologyProperty("roh:isPublic", this.Roh_isPublic));
 		}
 
