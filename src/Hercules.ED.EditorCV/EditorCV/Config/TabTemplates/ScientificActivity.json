@@ -1505,7 +1505,7 @@
                     "properties": [
                       {
                         "title": {
-                          "es": "Nombre del evento"
+                          "es": "Nombre del congreso"
                         },
                         "placeholder": {
                           "es": "Introduce el nombre del congreso"
@@ -2001,7 +2001,7 @@
                     ]
                   },
                   {
-                    "properties": [                      
+                    "properties": [
                       {
                         "title": {
                           "es": "URL"
@@ -2016,7 +2016,7 @@
                     ]
                   },
                   {
-                    "properties": [                      
+                    "properties": [
                       {
                         "title": {
                           "es": "País de publicación"
@@ -2070,7 +2070,6 @@
     },
     {
       "rdftype": "http://w3id.org/roh/RelatedWorkSubmittedSeminars",
-      "TODO": "Falta por incluir la entidad RelatedWorkSubmittedSeminarsCV, que contendría los datos propios del investigador.",
       "property": "http://w3id.org/roh/worksSubmittedSeminars",
       "presentation": {
         "type": "listitems",
@@ -2079,6 +2078,8 @@
         },
         "listItemsPresentation": {
           "property": "http://vivoweb.org/ontology/core#relatedBy",
+          "property_cv": "http://w3id.org/roh/relatedWorkSubmittedSeminarsCV",
+          "rdftype_cv": "http://w3id.org/roh/RelatedWorkSubmittedSeminarsCV",
           "listItem": {
             "propertyTitle": {
               "property": "http://vivoweb.org/ontology/core#relatedBy",
@@ -2138,7 +2139,7 @@
             "properties": [
               {
                 "name": {
-                  "es": "Fecha de celebración"
+                  "es": "Fecha de publicación"
                 },
                 "showMiniBold": true,
                 "type": "date",
@@ -2146,25 +2147,19 @@
                   "property": "http://vivoweb.org/ontology/core#relatedBy",
                   "graph": "document",
                   "child": {
-                    "property": "http://purl.org/ontology/bibo/presentedAt",
-                    "child": {
-                      "property": "http://vivoweb.org/ontology/core#start"
-                    }
+                    "property": "http://purl.org/dc/terms/issued"
                   }
                 }
               },
               {
                 "name": {
-                  "es": "Nombre del congreso"
+                  "es": "Nombre de la publicación"
                 },
                 "child": {
                   "property": "http://vivoweb.org/ontology/core#relatedBy",
                   "graph": "document",
                   "child": {
-                    "property": "http://vivoweb.org/ontology/core#presentedAt",
-                    "child": {
-                      "property": "http://purl.org/dc/elements/1.1/title"
-                    }
+                    "property": "http://w3id.org/roh/hasPublicationVenueText"
                   }
                 }
               },
@@ -2225,7 +2220,7 @@
             "propAuthor": {
               "property": "http://purl.org/ontology/bibo/authorList@@@http://purl.obolibrary.org/obo/BFO_0000023|http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
               "message": {
-                "es": "Es obligatorio incluirte a tí mismo como autor del trabajo"
+                "es": "Es obligatorio incluirte a tí mismo como autor de la publicación"
               }
             },
             "proptitle": "http://w3id.org/roh/title",
@@ -2235,7 +2230,7 @@
               {
                 "property": "http://w3id.org/roh/scientificActivityDocument",
                 "values": [
-                  "{GraphsUrl}items/scientificactivitydocument_SAD3"
+                  "{GraphsUrl}items/scientificactivitydocument_SAD2"
                 ]
               }
             ],
@@ -2249,7 +2244,7 @@
                     "properties": [
                       {
                         "title": {
-                          "es": "Título del trabajo"
+                          "es": "Título del trabajo (Título de la ponencia y/o comunicación presentada)"
                         },
                         "placeholder": {
                           "es": "Introduce el título del trabajo"
@@ -2258,6 +2253,66 @@
                         "required": true,
                         "type": "text",
                         "width": 3
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Título de la publicación (Título del artículo, capítulo o elemento publicado)"
+                        },
+                        "placeholder": {
+                          "es": "Introduce el título de la publicación"
+                        },
+                        "property": "http://w3id.org/roh/publicationTitle",
+                        "type": "text",
+                        "width": 3
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Nombre de la publicación (Título de la publicación principal (libro, revista, etc.) en la que se ha publicado el trabajo)"
+                        },
+                        "placeholder": {
+                          "es": "Introduce el nombre de la publicación"
+                        },
+                        "property": "http://w3id.org/roh/hasPublicationVenueText",
+                        "type": "text",
+                        "width": 3
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Forma de contribución"
+                        },
+                        "property": "http://purl.org/dc/elements/1.1/type",
+                        "combo": {
+                          "rdftype": "http://w3id.org/roh/PublicationType",
+                          "graph": "publicationtype",
+                          "property": {
+                            "property": "http://purl.org/dc/elements/1.1/title"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Fecha de publicación"
+                        },
+                        "placeholder": {
+                          "es": "Introduce la fecha de publicación"
+                        },
+                        "property": "http://purl.org/dc/terms/issued",
+                        "type": "date",
+                        "width": 1
                       }
                     ]
                   },
@@ -2393,6 +2448,442 @@
                     "properties": [
                       {
                         "title": {
+                          "es": "Volumen"
+                        },
+                        "placeholder": {
+                          "es": "Introduce el volumen"
+                        },
+                        "property": "http://purl.org/ontology/bibo/volume",
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Número"
+                        },
+                        "placeholder": {
+                          "es": "Introduce el número"
+                        },
+                        "property": "http://purl.org/ontology/bibo/issue",
+                        "type": "text",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Página inicial"
+                        },
+                        "placeholder": {
+                          "es": "Introduce la página inicial"
+                        },
+                        "property": "http://purl.org/ontology/bibo/pageStart",
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Página final"
+                        },
+                        "placeholder": {
+                          "es": "Introduce la página final"
+                        },
+                        "property": "http://purl.org/ontology/bibo/pageEnd",
+                        "type": "text",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Editorial"
+                        },
+                        "placeholder": {
+                          "es": "Introduce la ediorial"
+                        },
+                        "property": "http://purl.org/ontology/bibo/publisher",
+                        "type": "text",
+                        "width": 2
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "property": "http://purl.org/ontology/bibo/authorList",
+                        "type": "auxEntityAuthorList",
+                        "title": {
+                          "es": "Autores/as (p.o. de firma)"
+                        },
+                        "width": 3
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Autor de correspondencia"
+                        },
+                        "property": "http://w3id.org/roh/correspondingAuthor",
+                        "type": "boolean",
+                        "entity_cv": true,
+                        "width": 1
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "title": {
+                  "es": "Datos del evento"
+                },
+                "rows": [
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Nombre del evento"
+                        },
+                        "placeholder": {
+                          "es": "Introduce el nombre del evento"
+                        },
+                        "property": "http://purl.org/ontology/bibo/presentedAt",
+                        "width": 2
+                      },
+                      {
+                        "title": {
+                          "es": "Tipo evento"
+                        },
+                        "property": "http://w3id.org/roh/presentedAtSeminarType",
+                        "combo": {
+                          "rdftype": "http://w3id.org/roh/SeminarEventType",
+                          "graph": "seminareventtype",
+                          "property": {
+                            "property": "http://purl.org/dc/elements/1.1/title"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Otros"
+                        },
+                        "property": "http://w3id.org/roh/presentedAtSeminarTypeOther",
+                        "required": true,
+                        "dependency": {
+                          "property": "http://w3id.org/roh/presentedAtSeminarType",
+                          "propertyValue": "{GraphsUrl}items/seminareventtype_OTHERS"
+                        },
+                        "type": "text",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Fecha de celebración"
+                        },
+                        "placeholder": {
+                          "es": "Introduce la fecha de celebración"
+                        },
+                        "property": "http://w3id.org/roh/presentedAtStart",
+                        "type": "date",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Fecha de finalización"
+                        },
+                        "placeholder": {
+                          "es": "Introduce la fecha de finalización"
+                        },
+                        "property": "http://w3id.org/roh/presentedAtEnd",
+                        "type": "date",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Ciudad de celebración"
+                        },
+                        "placeholder": {
+                          "es": "Introduce la ciudad de celebración"
+                        },
+                        "property": "http://w3id.org/roh/presentedAtLocality",
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "País de celebración"
+                        },
+                        "property": "http://w3id.org/roh/presentedAtHasCountryName",
+                        "combo": {
+                          "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "filter": {
+                            "property": "http://www.geonames.org/ontology#featureCode",
+                            "value": "PCLD"
+                          },
+                          "graph": "feature",
+                          "property": {
+                            "property": "http://www.geonames.org/ontology#name"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "C. Autón./Reg. de celebración"
+                        },
+                        "property": "http://w3id.org/roh/presentedAtHasRegion",
+                        "combo": {
+                          "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "filter": {
+                            "property": "http://www.geonames.org/ontology#featureCode",
+                            "value": "ADM1"
+                          },
+                          "dependency": {
+                            "property": "http://www.geonames.org/ontology#parentFeature",
+                            "propertyValue": "http://w3id.org/roh/presentedAtHasCountryName"
+                          },
+                          "graph": "feature",
+                          "property": {
+                            "property": "http://www.geonames.org/ontology#name"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Entidad organizadora"
+                        },
+                        "autocomplete": true,
+                        "placeholder": {
+                          "es": "Introduce la entidad organizadora"
+                        },
+                        "property": "http://w3id.org/roh/presentedAtOrganizerTitle",
+                        "autocompleteConfig": {
+                          "rdftype": "http://xmlns.com/foaf/0.1/Organization",
+                          "graph": "organization",
+                          "propertyEntity": "http://w3id.org/roh/presentedAtOrganizer",
+                          "property": {
+                            "property": "http://w3id.org/roh/title"
+                          }
+                        },
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Tipo de entidad"
+                        },
+                        "property": "http://w3id.org/roh/presentedAtOrganizerType",
+                        "combo": {
+                          "rdftype": "http://w3id.org/roh/OrganizationType",
+                          "graph": "organizationtype",
+                          "property": {
+                            "property": "http://purl.org/dc/elements/1.1/title"
+                          }
+                        },
+                        "dependency": {
+                          "property": "http://w3id.org/roh/presentedAtOrganizerTitle",
+                          "propertyValue": "*"
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Otros"
+                        },
+                        "property": "http://w3id.org/roh/presentedAtOrganizerTypeOther",
+                        "required": true,
+                        "dependency": {
+                          "property": "http://w3id.org/roh/presentedAtOrganizerType",
+                          "propertyValue": "{GraphsUrl}items/organizationtype_OTHERS"
+                        },
+                        "type": "text",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Ciudad entidad organizadora"
+                        },
+                        "placeholder": {
+                          "es": "Introduce la ciudad de la entidad organizadora"
+                        },
+                        "property": "http://w3id.org/roh/presentedAtOrganizerLocality",
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "País entidad organizadora"
+                        },
+                        "property": "http://w3id.org/roh/presentedAtOrganizerHasCountryName",
+                        "combo": {
+                          "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "filter": {
+                            "property": "http://www.geonames.org/ontology#featureCode",
+                            "value": "PCLD"
+                          },
+                          "graph": "feature",
+                          "property": {
+                            "property": "http://www.geonames.org/ontology#name"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "C. Autón./Reg. entidad organizadora"
+                        },
+                        "property": "http://w3id.org/roh/presentedAtOrganizerHasRegion",
+                        "combo": {
+                          "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "filter": {
+                            "property": "http://www.geonames.org/ontology#featureCode",
+                            "value": "ADM1"
+                          },
+                          "dependency": {
+                            "property": "http://www.geonames.org/ontology#parentFeature",
+                            "propertyValue": "http://w3id.org/roh/presentedAtOrganizerHasCountryName"
+                          },
+                          "graph": "feature",
+                          "property": {
+                            "property": "http://www.geonames.org/ontology#name"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Ámbito geográfico"
+                        },
+                        "property": "http://w3id.org/roh/presentedAtGeographicFocus",
+                        "combo": {
+                          "rdftype": "http://vivoweb.org/ontology/core#GeographicRegion",
+                          "graph": "geographicregion",
+                          "property": {
+                            "property": "http://purl.org/dc/elements/1.1/title"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Otros"
+                        },
+                        "property": "http://w3id.org/roh/presentedAtGeographicFocusOther",
+                        "required": true,
+                        "dependency": {
+                          "property": "http://w3id.org/roh/presentedAtGeographicFocus",
+                          "propertyValue": "{GraphsUrl}items/geographicregion_OTHERS"
+                        },
+                        "type": "text",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Con comité de admisión ext."
+                        },
+                        "type": "boolean",
+                        "property": "http://w3id.org/roh/presentedAtWithExternalAdmissionsCommittee",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Intervención por"
+                        },
+                        "property": "http://w3id.org/roh/inscriptionType",
+                        "combo": {
+                          "rdftype": "http://w3id.org/roh/SeminarInscriptionType",
+                          "graph": "seminarinscriptiontype",
+                          "property": {
+                            "property": "http://purl.org/dc/elements/1.1/title"
+                          }
+                        },
+                        "entity_cv": true,
+                        "type": "selectCombo",
+                        "width": 1
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "title": {
+                  "es": "Más campos"
+                },
+                "rows": [
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "ISBN"
+                        },
+                        "type": "text",
+                        "placeholder": {
+                          "es": "Introduce el ISBN"
+                        },
+                        "required": false,
+                        "property": "http://w3id.org/roh/isbn",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "ISSN"
+                        },
+                        "type": "text",
+                        "placeholder": {
+                          "es": "Introduce el ISSN"
+                        },
+                        "required": false,
+                        "property": "http://purl.org/ontology/bibo/issn",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
                           "es": "Identificador DOI"
                         },
                         "placeholder": {
@@ -2430,7 +2921,6 @@
                     "properties": [
                       {
                         "property": "http://purl.org/ontology/bibo/identifier",
-                        "TODO": "Auxiliar múltiple. Incluir los valores de la fuente de citas en la tabla, junto a un 'Otros' que permita añadir un nuevo tipo.",
                         "type": "auxEntity",
                         "title": {
                           "es": "Otros identificadores"
@@ -2498,529 +2988,6 @@
                   {
                     "properties": [
                       {
-                        "property": "http://purl.org/ontology/bibo/presentedAt",
-                        "type": "auxEntity",
-                        "title": {
-                          "es": "Evento"
-                        },
-                        "multiple": true,
-                        "width": 3,
-                        "auxEntityData": {
-                          "rdftype": "http://purl.org/ontology/bibo/Event",
-                          "propertyTitle": {
-                            "property": "http://purl.org/dc/elements/1.1/title"
-                          },
-                          "properties": [
-                            {
-                              "name": {
-                                "es": "Nombre del evento"
-                              },
-                              "child": {
-                                "property": "http://purl.org/dc/elements/1.1/title"
-                              }
-                            },
-                            {
-                              "name": {
-                                "es": "Fecha de celebración"
-                              },
-                              "type": "date",
-                              "child": {
-                                "property": "http://vivoweb.org/ontology/core#start"
-                              }
-                            },
-                            {
-                              "name": {
-                                "es": "Fecha de finalización"
-                              },
-                              "type": "date",
-                              "child": {
-                                "property": "http://vivoweb.org/ontology/core#end"
-                              }
-                            },
-                            {
-                              "name": {
-                                "es": "Ciudad de celebración"
-                              },
-                              "child": {
-                                "property": "https://www.w3.org/2006/vcard/ns#locality"
-                              }
-                            },
-                            {
-                              "name": {
-                                "es": "País de celebración"
-                              },
-                              "child": {
-                                "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
-                                "graph": "feature",
-                                "child": {
-                                  "property": "http://www.geonames.org/ontology#name"
-                                }
-                              }
-                            },
-                            {
-                              "name": {
-                                "es": "C. Autón./Reg. de celebración"
-                              },
-                              "child": {
-                                "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
-                                "graph": "feature",
-                                "child": {
-                                  "property": "http://www.geonames.org/ontology#name"
-                                }
-                              }
-                            },
-                            {
-                              "name": {
-                                "es": "Entidad organizadora"
-                              },
-                              "TODO": "Autocompletado/texto libre",
-                              "child": {
-                                "property": "http://purl.org/ontology/bibo/organizer",
-                                "graph": "organization",
-                                "child": {
-                                  "property": "http://w3id.org/roh/title"
-                                }
-                              }
-                            },
-                            {
-                              "name": {
-                                "es": "Tipo de evento"
-                              },
-                              "child": {
-                                "property": "http://purl.org/dc/elements/1.1/type",
-                                "graph": "eventtype",
-                                "child": {
-                                  "property": "http://purl.org/dc/elements/1.1/title"
-                                }
-                              }
-                            },
-                            {
-                              "name": {
-                                "es": "Con comité de admisión ext."
-                              },
-                              "child": {
-                                "property": "http://w3id.org/roh/withExternalAdmissionsCommittee"
-                              }
-                            },
-                            {
-                              "name": {
-                                "es": "Ámbito geográfico"
-                              },
-                              "child": {
-                                "property": "http://vivoweb.org/ontology/core#geographicFocus",
-                                "graph": "geographicregion",
-                                "child": {
-                                  "property": "http://purl.org/dc/elements/1.1/title"
-                                }
-                              }
-                            },
-                            {
-                              "name": {
-                                "es": "Ámbito geográfico, otros"
-                              },
-                              "child": {
-                                "property": "http://w3id.org/roh/geographicFocusOther"
-                              }
-                            }
-                          ],
-                          "rows": [
-                            {
-                              "properties": [
-                                {
-                                  "title": {
-                                    "es": "Nombre del evento"
-                                  },
-                                  "type": "text",
-                                  "placeholder": {
-                                    "es": "Introduce el nombre del evento"
-                                  },
-                                  "required": true,
-                                  "property": "http://purl.org/dc/elements/1.1/title",
-                                  "width": 3
-                                }
-                              ]
-                            },
-                            {
-                              "properties": [
-                                {
-                                  "title": {
-                                    "es": "Fecha de celebración"
-                                  },
-                                  "type": "date",
-                                  "TODO": "El tipo se muestra como text en lugar de date",
-                                  "placeholder": {
-                                    "es": "Introduce la fecha de celebración"
-                                  },
-                                  "required": false,
-                                  "property": "http://vivoweb.org/ontology/core#start",
-                                  "width": 1
-                                },
-                                {
-                                  "title": {
-                                    "es": "Fecha de finalización"
-                                  },
-                                  "placeholder": {
-                                    "es": "Introduce la fecha de finalización"
-                                  },
-                                  "property": "http://vivoweb.org/ontology/core#end",
-                                  "TODO": "El tipo se muestra como text en lugar de date",
-                                  "type": "date",
-                                  "width": 1
-                                }
-                              ]
-                            },
-                            {
-                              "properties": [
-                                {
-                                  "title": {
-                                    "es": "Ciudad de celebración"
-                                  },
-                                  "type": "text",
-                                  "placeholder": {
-                                    "es": "Introduce la ciudad de celebración"
-                                  },
-                                  "required": false,
-                                  "property": "https://www.w3.org/2006/vcard/ns#locality",
-                                  "width": 1
-                                },
-                                {
-                                  "title": {
-                                    "es": "País de celebración"
-                                  },
-                                  "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
-                                  "combo": {
-                                    "rdftype": "http://www.geonames.org/ontology#Feature",
-                                    "graph": "feature",
-                                    "property": {
-                                      "property": "http://www.geonames.org/ontology#name"
-                                    }
-                                  },
-                                  "type": "selectCombo",
-                                  "TODO": "No se despliega el combo de valores",
-                                  "width": 1
-                                },
-                                {
-                                  "title": {
-                                    "es": "C. Autón./Reg. de celebración"
-                                  },
-                                  "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
-                                  "combo": {
-                                    "rdftype": "http://www.geonames.org/ontology#Feature",
-                                    "graph": "feature",
-                                    "property": {
-                                      "property": "http://www.geonames.org/ontology#name"
-                                    }
-                                  },
-                                  "type": "selectCombo",
-                                  "TODO": "No se despliega el combo de valores",
-                                  "width": 1
-                                }
-                              ]
-                            },
-                            {
-                              "properties": [
-                                {
-                                  "title": {
-                                    "es": "Entidad organizadora"
-                                  },
-                                  "TODO": "Autocompletado/texto libre. En caso de que haya que añadir una nueva organización, será por autocompletado o combo",
-                                  "type": "text",
-                                  "placeholder": {
-                                    "es": "Introduce la entidad organizadora"
-                                  },
-                                  "required": false,
-                                  "property": "http://purl.org/ontology/bibo/organizer",
-                                  "width": 2
-                                },
-                                {
-                                  "title": {
-                                    "es": "Tipo de evento"
-                                  },
-                                  "property": "http://purl.org/dc/elements/1.1/type",
-                                  "combo": {
-                                    "rdftype": "http://w3id.org/roh/EventType",
-                                    "graph": "eventtype",
-                                    "property": {
-                                      "property": "http://purl.org/dc/elements/1.1/title"
-                                    }
-                                  },
-                                  "type": "selectCombo",
-                                  "width": 1
-                                }
-                              ]
-                            },
-                            {
-                              "properties": [
-                                {
-                                  "title": {
-                                    "es": "Con comité de admisión ext."
-                                  },
-                                  "property": "http://w3id.org/roh/withExternalAdmissionsCommittee",
-                                  "type": "text",
-                                  "TODO": "El tipo bool/boolean no funciona",
-                                  "width": 1
-                                },
-                                {
-                                  "title": {
-                                    "es": "Ámbito geográfico"
-                                  },
-                                  "property": "http://vivoweb.org/ontology/core#geographicFocus",
-                                  "TODO": "No se despliega el combo de valores.",
-                                  "combo": {
-                                    "rdftype": "http://vivoweb.org/ontology/core#GeographicRegion",
-                                    "graph": "geographicregion",
-                                    "property": {
-                                      "property": "http://purl.org/dc/elements/1.1/title"
-                                    }
-                                  },
-                                  "type": "selectCombo",
-                                  "width": 1
-                                },
-                                {
-                                  "title": {
-                                    "es": "Otros"
-                                  },
-                                  "property": "http://w3id.org/roh/geographicFocusOther",
-                                  "type": "text",
-                                  "required": false,
-                                  "width": 1
-                                }
-                              ]
-                            }
-                          ]
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "properties": [
-                      {
-                        "property": "http://purl.org/ontology/bibo/authorList",
-                        "type": "auxEntityAuthorList",
-                        "title": {
-                          "es": "Autores/as (p.o. de firma)"
-                        },
-                        "width": 3
-                      }
-                    ]
-                  },
-                  {
-                    "properties": [
-                      {
-                        "title": {
-                          "es": "Título de la publicación"
-                        },
-                        "placeholder": {
-                          "es": "Introduce el título de la publicación"
-                        },
-                        "property": "http://w3id.org/roh/publicationTitle",
-                        "type": "text",
-                        "width": 3
-                      }
-                    ]
-                  },
-                  {
-                    "properties": [
-                      {
-                        "title": {
-                          "es": "Fecha de publicación"
-                        },
-                        "placeholder": {
-                          "es": "Introduce la fecha de publicación"
-                        },
-                        "property": "http://purl.org/dc/terms/issued",
-                        "type": "date",
-                        "width": 1
-                      }
-                    ]
-                  },
-                  {
-                    "properties": [
-                      {
-                        "title": {
-                          "es": "Publicación principal"
-                        },
-                        "type": "entity",
-                        "multiple": false,
-                        "required": false,
-                        "property": "http://vivoweb.org/ontology/core#hasPublicationVenue",
-                        "TODO": "Autocompletar para seleccionar la publicación principal. En caso de que no esté, 'Añadir' y popup.",
-                        "entityData": {
-                          "rdftype": "http://w3id.org/roh/MainDocument",
-                          "graph": "maindocument",
-                          "propertyTitle": {
-                            "property": "http://w3id.org/roh/title"
-                          },
-                          "properties": [
-                            {
-                              "name": {
-                                "es": "Nombre de la publicación"
-                              },
-                              "child": {
-                                "property": "http://w3id.org/roh/title"
-                              }
-                            },
-                            {
-                              "name": {
-                                "es": "ISBN"
-                              },
-                              "child": {
-                                "property": "http://w3id.org/roh/isbn"
-                              }
-                            },
-                            {
-                              "name": {
-                                "es": "ISSN"
-                              },
-                              "child": {
-                                "property": "http://w3id.org/roh/issn"
-                              }
-                            },
-                            {
-                              "name": {
-                                "es": "Editorial"
-                              },
-                              "child": {
-                                "property": "http://w3id.org/roh/editor"
-                              }
-                            },
-                            {
-                              "name": {
-                                "es": "Tipo de soporte"
-                              },
-                              "child": {
-                                "property": "http://w3id.org/roh/format",
-                                "graph": "documentformat",
-                                "child": {
-                                  "property": "http://purl.org/dc/elements/1.1/title"
-                                }
-                              }
-                            }
-                          ],
-                          "rows": [
-                            {
-                              "properties": [
-                                {
-                                  "title": {
-                                    "es": "Nombre de la publicación"
-                                  },
-                                  "type": "text",
-                                  "placeholder": {
-                                    "es": "Introduce el nombre de la publicación"
-                                  },
-                                  "required": true,
-                                  "property": "http://w3id.org/roh/title",
-                                  "width": 3
-                                }
-                              ]
-                            },
-                            {
-                              "properties": [
-                                {
-                                  "title": {
-                                    "es": "ISBN"
-                                  },
-                                  "type": "text",
-                                  "placeholder": {
-                                    "es": "Introduce el ISBN"
-                                  },
-                                  "required": false,
-                                  "property": "http://w3id.org/roh/isbn",
-                                  "width": 1
-                                },
-                                {
-                                  "title": {
-                                    "es": "ISSN"
-                                  },
-                                  "type": "text",
-                                  "placeholder": {
-                                    "es": "Introduce el ISSN"
-                                  },
-                                  "required": false,
-                                  "property": "http://w3id.org/roh/issn",
-                                  "width": 1
-                                },
-                                {
-                                  "title": {
-                                    "es": "Editorial"
-                                  },
-                                  "type": "text",
-                                  "placeholder": {
-                                    "es": "Introduce la editorial"
-                                  },
-                                  "required": false,
-                                  "property": "http://w3id.org/roh/editor",
-                                  "width": 1
-                                }
-                              ]
-                            }
-                          ]
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "properties": [
-                      {
-                        "title": {
-                          "es": "Volumen"
-                        },
-                        "placeholder": {
-                          "es": "Introduce el volumen"
-                        },
-                        "property": "http://purl.org/ontology/bibo/volume",
-                        "type": "text",
-                        "width": 1
-                      },
-                      {
-                        "title": {
-                          "es": "Número"
-                        },
-                        "placeholder": {
-                          "es": "Introduce el número"
-                        },
-                        "property": "http://purl.org/ontology/bibo/issue",
-                        "type": "text",
-                        "width": 1
-                      }
-                    ]
-                  },
-                  {
-                    "properties": [
-                      {
-                        "title": {
-                          "es": "Página inicial"
-                        },
-                        "placeholder": {
-                          "es": "Introduce la página inicial"
-                        },
-                        "property": "http://purl.org/ontology/bibo/pageStart",
-                        "type": "number",
-                        "width": 1
-                      },
-                      {
-                        "title": {
-                          "es": "Página final"
-                        },
-                        "placeholder": {
-                          "es": "Introduce la página final"
-                        },
-                        "property": "http://purl.org/ontology/bibo/pageEnd",
-                        "type": "number",
-                        "width": 1
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "title": {
-                  "es": "Más campos"
-                },
-                "rows": [
-                  {
-                    "properties": [
-                      {
                         "title": {
                           "es": "Depósito legal"
                         },
@@ -3029,17 +2996,20 @@
                         },
                         "property": "http://w3id.org/roh/legalDeposit",
                         "type": "text",
-                        "width": 1
+                        "width": 2
                       },
                       {
                         "title": {
                           "es": "Publicación en acta de congreso"
                         },
                         "property": "http://w3id.org/roh/congressProceedingsPublication",
-                        "type": "text",
-                        "TODO": "El tipo boolean/bool no funciona",
+                        "type": "boolean",
                         "width": 1
-                      },
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
                       {
                         "title": {
                           "es": "URL"
@@ -3049,23 +3019,12 @@
                         },
                         "property": "https://www.w3.org/2006/vcard/ns#url",
                         "type": "text",
-                        "width": 1
+                        "width": 3
                       }
                     ]
                   },
                   {
                     "properties": [
-                      {
-                        "title": {
-                          "es": "Ciudad de publicación"
-                        },
-                        "placeholder": {
-                          "es": "Introduce la ciudad de publicación"
-                        },
-                        "property": "https://www.w3.org/2006/vcard/ns#locality",
-                        "type": "text",
-                        "width": 1
-                      },
                       {
                         "title": {
                           "es": "País de publicación"
@@ -3109,112 +3068,6 @@
                         "width": 1
                       }
                     ]
-                  },
-                  {
-                    "properties": [
-                      {
-                        "title": {
-                          "es": "Nº de citas en IN-RECS"
-                        },
-                        "placeholder": {
-                          "es": "Introduce el nº de citas en IN-RECS"
-                        },
-                        "property": "http://w3id.org/roh/inrecs",
-                        "type": "number",
-                        "width": 1
-                      },
-                      {
-                        "title": {
-                          "es": "Nº de citas en SCOPUS"
-                        },
-                        "placeholder": {
-                          "es": "Introduce el nº de citas en SCOPUS"
-                        },
-                        "property": "http://w3id.org/roh/scopus",
-                        "type": "number",
-                        "width": 1
-                      },
-                      {
-                        "title": {
-                          "es": "Nº de citas en WOS"
-                        },
-                        "placeholder": {
-                          "es": "Introduce el nº de citas en WOS"
-                        },
-                        "property": "http://w3id.org/roh/wos",
-                        "type": "number",
-                        "width": 1
-                      }
-                    ]
-                  },
-                  {
-                    "properties": [
-                      {
-                        "property": "http://w3id.org/roh/hasMetric",
-                        "TODO": "Auxiliar múltiple. Incluir los valores de la fuente de citas en la tabla, junto a un 'Otros' que permita añadir un nuevo tipo.",
-                        "type": "auxEntity",
-                        "title": {
-                          "es": "Citas de otras fuentes"
-                        },
-                        "multiple": true,
-                        "width": 3,
-                        "auxEntityData": {
-                          "rdftype": "http://w3id.org/roh/PublicationMetric",
-                          "propertyTitle": {
-                            "property": "http://w3id.org/roh/metricName"
-                          },
-                          "properties": [
-                            {
-                              "name": {
-                                "es": "Fuente de citas"
-                              },
-                              "child": {
-                                "property": "http://w3id.org/roh/metricName"
-                              }
-                            },
-                            {
-                              "name": {
-                                "es": "Citas"
-                              },
-                              "child": {
-                                "property": "http://w3id.org/roh/citationCount"
-                              }
-                            }
-                          ],
-                          "rows": [
-                            {
-                              "properties": [
-
-                                {
-                                  "title": {
-                                    "es": "Fuente de citas"
-                                  },
-                                  "placeholder": {
-                                    "es": "Introduce la fuente de citas"
-                                  },
-                                  "type": "text",
-                                  "required": true,
-                                  "property": "http://w3id.org/roh/metricName",
-                                  "width": 1
-                                },
-                                {
-                                  "title": {
-                                    "es": "Nº de citas"
-                                  },
-                                  "placeholder": {
-                                    "es": "Introduce el número de citas"
-                                  },
-                                  "type": "number",
-                                  "required": true,
-                                  "property": "http://w3id.org/roh/citationCount",
-                                  "width": 1
-                                }
-                              ]
-                            }
-                          ]
-                        }
-                      }
-                    ]
                   }
                 ]
               }
@@ -3225,7 +3078,6 @@
     },
     {
       "rdftype": "http://w3id.org/roh/RelatedOtherDisseminationActivity",
-      "TODO": "Falta por incluir la entidad RelatedOtherDisseminationActivityCV, que contendría los datos propios del investigador.",
       "property": "http://w3id.org/roh/otherDisseminationActivities",
       "presentation": {
         "type": "listitems",
