@@ -624,7 +624,7 @@
                       },
                       {
                         "title": {
-                          "es": "Nombre de la publicacion"
+                          "es": "Nombre de la publicación"
                         },
                         "property": "http://w3id.org/roh/hasPublicationVenueText",
                         "dependency": {
@@ -1117,7 +1117,7 @@
                   "property": "http://vivoweb.org/ontology/core#relatedBy",
                   "graph": "document",
                   "child": {
-                    "property": "http://w3id.org/roh/publicationName"
+                    "property": "http://w3id.org/roh/hasPublicationVenueText"
                   }
                 }
               },
@@ -1238,7 +1238,7 @@
                         "placeholder": {
                           "es": "Introduce el nombre de la publicación"
                         },
-                        "property": "http://w3id.org/roh/publicationName",
+                        "property": "http://w3id.org/roh/hasPublicationVenueText",
                         "type": "text",
                         "width": 3
                       }
