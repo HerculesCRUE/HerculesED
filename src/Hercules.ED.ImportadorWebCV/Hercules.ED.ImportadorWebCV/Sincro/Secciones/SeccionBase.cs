@@ -499,7 +499,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 Entity entityXML = listadoAux[i];
                 string idXML = entityXML.id;
                 equivalenciasDocumentos[idXML] = "";
-                string idDesambiguacion = equivalencias.First(x => x.Value.Select(x => x.Split('|')[1]).Contains(idXML)).Key;
+                string idDesambiguacion = equivalencias.FirstOrDefault(x => x.Value.Select(x => x.Split('|')[1]).Contains(idXML)).Key;
                 if (!Guid.TryParse(idDesambiguacion, out Guid aux))
                 {
                     equivalenciasDocumentos[idXML] = idDesambiguacion;
