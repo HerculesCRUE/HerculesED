@@ -35,7 +35,6 @@ namespace CurriculumvitaeOntology
 				this.Roh_inscriptionType = new EventInscriptionType(propRoh_inscriptionType.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
 			this.Roh_correspondingAuthor= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/correspondingAuthor"));
-			this.Roh_inscriptionTypeOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/inscriptionTypeOther"));
 		}
 
 		public virtual string RdfType { get { return "http://w3id.org/roh/RelatedWorkSubmittedSeminarsCV"; } }
@@ -47,13 +46,8 @@ namespace CurriculumvitaeOntology
 		public  EventInscriptionType Roh_inscriptionType  { get; set;} 
 		public string IdRoh_inscriptionType  { get; set;} 
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/correspondingAuthor")]
 		[RDFProperty("http://w3id.org/roh/correspondingAuthor")]
 		public  bool Roh_correspondingAuthor { get; set;}
-
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/inscriptionTypeOther")]
-		[RDFProperty("http://w3id.org/roh/inscriptionTypeOther")]
-		public  string Roh_inscriptionTypeOther { get; set;}
 
 
 		internal override void GetProperties()
@@ -61,7 +55,6 @@ namespace CurriculumvitaeOntology
 			base.GetProperties();
 			propList.Add(new StringOntologyProperty("roh:inscriptionType", this.IdRoh_inscriptionType));
 			propList.Add(new BoolOntologyProperty("roh:correspondingAuthor", this.Roh_correspondingAuthor));
-			propList.Add(new StringOntologyProperty("roh:inscriptionTypeOther", this.Roh_inscriptionTypeOther));
 		}
 
 		internal override void GetEntities()

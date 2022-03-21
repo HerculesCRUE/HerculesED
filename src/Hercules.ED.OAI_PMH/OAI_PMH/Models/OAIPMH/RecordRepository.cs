@@ -44,7 +44,7 @@ namespace OAI_PMH.Models.OAIPMH
             {
                 case "Persona":
                     Persona persona = PersonalData.GetPersona(identifier, _Config);
-                    record = ToRecord(persona, set, identifier, date, metadataPrefix);
+                    record = ToRecord(persona, set, identifier, date, metadataPrefix); 
                     break;
                 case "Proyecto":
                     Proyecto proyecto = Project.GetProyecto(identifier, _Config);

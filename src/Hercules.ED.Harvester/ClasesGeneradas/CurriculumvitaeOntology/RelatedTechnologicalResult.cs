@@ -29,11 +29,6 @@ namespace CurriculumvitaeOntology
 		{
 			this.mGNOSSID = pSemCmsModel.Entity.Uri;
 			this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
-			SemanticPropertyModel propRoh_relatedTechnologicalResultCV = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/relatedTechnologicalResultCV");
-			if(propRoh_relatedTechnologicalResultCV != null && propRoh_relatedTechnologicalResultCV.PropertyValues.Count > 0)
-			{
-				this.Roh_relatedTechnologicalResultCV = new RelatedTechnologicalResultCV(propRoh_relatedTechnologicalResultCV.PropertyValues[0].RelatedEntity,idiomaUsuario);
-			}
 			SemanticPropertyModel propVivo_relatedBy = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#relatedBy");
 			if(propVivo_relatedBy != null && propVivo_relatedBy.PropertyValues.Count > 0)
 			{
@@ -46,17 +41,11 @@ namespace CurriculumvitaeOntology
 		public virtual string RdfsLabel { get { return "http://w3id.org/roh/RelatedTechnologicalResult"; } }
 		public OntologyEntity Entity { get; set; }
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/relatedTechnologicalResultCV")]
-		[RDFProperty("http://w3id.org/roh/relatedTechnologicalResultCV")]
-		public  RelatedTechnologicalResultCV Roh_relatedTechnologicalResultCV { get; set;}
-
-		[LABEL(LanguageEnum.es,"http://vivoweb.org/ontology/core#relatedBy")]
 		[RDFProperty("http://vivoweb.org/ontology/core#relatedBy")]
 		[Required]
 		public  TechnologicalResult Vivo_relatedBy  { get; set;} 
 		public string IdVivo_relatedBy  { get; set;} 
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/isPublic")]
 		[RDFProperty("http://w3id.org/roh/isPublic")]
 		public  bool Roh_isPublic { get; set;}
 
@@ -71,12 +60,6 @@ namespace CurriculumvitaeOntology
 		internal override void GetEntities()
 		{
 			base.GetEntities();
-			if(Roh_relatedTechnologicalResultCV!=null){
-				Roh_relatedTechnologicalResultCV.GetProperties();
-				Roh_relatedTechnologicalResultCV.GetEntities();
-				OntologyEntity entityRoh_relatedTechnologicalResultCV = new OntologyEntity("http://w3id.org/roh/RelatedTechnologicalResultCV", "http://w3id.org/roh/RelatedTechnologicalResultCV", "roh:relatedTechnologicalResultCV", Roh_relatedTechnologicalResultCV.propList, Roh_relatedTechnologicalResultCV.entList);
-				entList.Add(entityRoh_relatedTechnologicalResultCV);
-			}
 		} 
 
 

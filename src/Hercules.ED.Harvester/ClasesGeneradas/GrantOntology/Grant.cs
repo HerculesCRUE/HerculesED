@@ -31,18 +31,6 @@ namespace GrantOntology
 		public Grant(SemanticResourceModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
 		{
 			this.mGNOSSID = pSemCmsModel.RootEntities[0].Entity.Uri;
-			this.Vivo_freeTextKeywords = new List<CategoryPath>();
-			SemanticPropertyModel propVivo_freeTextKeywords = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#freeTextKeywords");
-			if(propVivo_freeTextKeywords != null && propVivo_freeTextKeywords.PropertyValues.Count > 0)
-			{
-				foreach (SemanticPropertyModel.PropertyValue propValue in propVivo_freeTextKeywords.PropertyValues)
-				{
-					if(propValue.RelatedEntity!=null){
-						CategoryPath vivo_freeTextKeywords = new CategoryPath(propValue.RelatedEntity,idiomaUsuario);
-						this.Vivo_freeTextKeywords.Add(vivo_freeTextKeywords);
-					}
-				}
-			}
 			SemanticPropertyModel propVcard_hasRegion = pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#hasRegion");
 			if(propVcard_hasRegion != null && propVcard_hasRegion.PropertyValues.Count > 0)
 			{
@@ -73,14 +61,26 @@ namespace GrantOntology
 			{
 				this.Roh_awardingEntity = new Organization(propRoh_awardingEntity.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
+			this.Vivo_freeTextKeyword = new List<CategoryPath>();
+			SemanticPropertyModel propVivo_freeTextKeyword = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#freeTextKeyword");
+			if(propVivo_freeTextKeyword != null && propVivo_freeTextKeyword.PropertyValues.Count > 0)
+			{
+				foreach (SemanticPropertyModel.PropertyValue propValue in propVivo_freeTextKeyword.PropertyValues)
+				{
+					if(propValue.RelatedEntity!=null){
+						CategoryPath vivo_freeTextKeyword = new CategoryPath(propValue.RelatedEntity,idiomaUsuario);
+						this.Vivo_freeTextKeyword.Add(vivo_freeTextKeyword);
+					}
+				}
+			}
 			this.Roh_entityTitle = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/entityTitle"));
 			this.Roh_durationMonths = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/durationMonths"));
 			this.Roh_conferralDate= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/conferralDate"));
 			this.Roh_durationDays = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/durationDays"));
 			this.Vivo_start= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#start"));
 			this.Roh_aimsOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/aimsOther"));
-			this.Vcard_locality = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#locality"));
 			this.Roh_awardingEntityTitle = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/awardingEntityTitle"));
+			this.Vcard_locality = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#locality"));
 			this.Roh_durationYears = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/durationYears"));
 			this.Roh_awardingEntityTypeOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/awardingEntityTypeOther"));
 			this.Roh_crisIdentifier = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/crisIdentifier"));
@@ -94,18 +94,6 @@ namespace GrantOntology
 		{
 			this.mGNOSSID = pSemCmsModel.Entity.Uri;
 			this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
-			this.Vivo_freeTextKeywords = new List<CategoryPath>();
-			SemanticPropertyModel propVivo_freeTextKeywords = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#freeTextKeywords");
-			if(propVivo_freeTextKeywords != null && propVivo_freeTextKeywords.PropertyValues.Count > 0)
-			{
-				foreach (SemanticPropertyModel.PropertyValue propValue in propVivo_freeTextKeywords.PropertyValues)
-				{
-					if(propValue.RelatedEntity!=null){
-						CategoryPath vivo_freeTextKeywords = new CategoryPath(propValue.RelatedEntity,idiomaUsuario);
-						this.Vivo_freeTextKeywords.Add(vivo_freeTextKeywords);
-					}
-				}
-			}
 			SemanticPropertyModel propVcard_hasRegion = pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#hasRegion");
 			if(propVcard_hasRegion != null && propVcard_hasRegion.PropertyValues.Count > 0)
 			{
@@ -136,14 +124,26 @@ namespace GrantOntology
 			{
 				this.Roh_awardingEntity = new Organization(propRoh_awardingEntity.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
+			this.Vivo_freeTextKeyword = new List<CategoryPath>();
+			SemanticPropertyModel propVivo_freeTextKeyword = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#freeTextKeyword");
+			if(propVivo_freeTextKeyword != null && propVivo_freeTextKeyword.PropertyValues.Count > 0)
+			{
+				foreach (SemanticPropertyModel.PropertyValue propValue in propVivo_freeTextKeyword.PropertyValues)
+				{
+					if(propValue.RelatedEntity!=null){
+						CategoryPath vivo_freeTextKeyword = new CategoryPath(propValue.RelatedEntity,idiomaUsuario);
+						this.Vivo_freeTextKeyword.Add(vivo_freeTextKeyword);
+					}
+				}
+			}
 			this.Roh_entityTitle = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/entityTitle"));
 			this.Roh_durationMonths = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/durationMonths"));
 			this.Roh_conferralDate= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/conferralDate"));
 			this.Roh_durationDays = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/durationDays"));
 			this.Vivo_start= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#start"));
 			this.Roh_aimsOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/aimsOther"));
-			this.Vcard_locality = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#locality"));
 			this.Roh_awardingEntityTitle = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/awardingEntityTitle"));
+			this.Vcard_locality = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#locality"));
 			this.Roh_durationYears = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/durationYears"));
 			this.Roh_awardingEntityTypeOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/awardingEntityTypeOther"));
 			this.Roh_crisIdentifier = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/crisIdentifier"));
@@ -155,10 +155,6 @@ namespace GrantOntology
 
 		public virtual string RdfType { get { return "http://vivoweb.org/ontology/core#Grant"; } }
 		public virtual string RdfsLabel { get { return "http://vivoweb.org/ontology/core#Grant"; } }
-		[LABEL(LanguageEnum.es,"freeTextKeywords")]
-		[RDFProperty("http://vivoweb.org/ontology/core#freeTextKeywords")]
-		public  List<CategoryPath> Vivo_freeTextKeywords { get; set;}
-
 		[LABEL(LanguageEnum.es,"hasRegion")]
 		[RDFProperty("https://www.w3.org/2006/vcard/ns#hasRegion")]
 		public  Feature Vcard_hasRegion  { get; set;} 
@@ -189,58 +185,51 @@ namespace GrantOntology
 		public  Organization Roh_awardingEntity  { get; set;} 
 		public string IdRoh_awardingEntity  { get; set;} 
 
+		[RDFProperty("http://vivoweb.org/ontology/core#freeTextKeyword")]
+		public  List<CategoryPath> Vivo_freeTextKeyword { get; set;}
+
 		[RDFProperty("http://w3id.org/roh/entityTitle")]
 		public  string Roh_entityTitle { get; set;}
 
-		[LABEL(LanguageEnum.es,"durationMonths")]
 		[RDFProperty("http://w3id.org/roh/durationMonths")]
 		public  string Roh_durationMonths { get; set;}
 
-		[LABEL(LanguageEnum.es,"conferralDate")]
 		[RDFProperty("http://w3id.org/roh/conferralDate")]
 		public  DateTime? Roh_conferralDate { get; set;}
 
-		[LABEL(LanguageEnum.es,"durationDays")]
 		[RDFProperty("http://w3id.org/roh/durationDays")]
 		public  string Roh_durationDays { get; set;}
 
-		[LABEL(LanguageEnum.es,"start")]
 		[RDFProperty("http://vivoweb.org/ontology/core#start")]
 		public  DateTime? Vivo_start { get; set;}
 
-		[LABEL(LanguageEnum.es,"aimsOther")]
 		[RDFProperty("http://w3id.org/roh/aimsOther")]
 		public  string Roh_aimsOther { get; set;}
-
-		[RDFProperty("https://www.w3.org/2006/vcard/ns#locality")]
-		public  string Vcard_locality { get; set;}
 
 		[RDFProperty("http://w3id.org/roh/awardingEntityTitle")]
 		public  string Roh_awardingEntityTitle { get; set;}
 
-		[LABEL(LanguageEnum.es,"durationYears")]
+		[RDFProperty("https://www.w3.org/2006/vcard/ns#locality")]
+		public  string Vcard_locality { get; set;}
+
 		[RDFProperty("http://w3id.org/roh/durationYears")]
 		public  string Roh_durationYears { get; set;}
 
 		[RDFProperty("http://w3id.org/roh/awardingEntityTypeOther")]
 		public  string Roh_awardingEntityTypeOther { get; set;}
 
-		[LABEL(LanguageEnum.es,"crisIdentifier")]
 		[RDFProperty("http://w3id.org/roh/crisIdentifier")]
 		public  string Roh_crisIdentifier { get; set;}
 
-		[LABEL(LanguageEnum.es,"end")]
 		[RDFProperty("http://vivoweb.org/ontology/core#end")]
 		public  DateTime? Vivo_end { get; set;}
 
 		[RDFProperty("http://w3id.org/roh/center")]
 		public  string Roh_center { get; set;}
 
-		[LABEL(LanguageEnum.es,"monetaryAmount")]
 		[RDFProperty("http://w3id.org/roh/monetaryAmount")]
 		public  float? Roh_monetaryAmount { get; set;}
 
-		[LABEL(LanguageEnum.es,"title")]
 		[RDFProperty("http://w3id.org/roh/title")]
 		public  string Roh_title { get; set;}
 
@@ -264,8 +253,8 @@ namespace GrantOntology
 				propList.Add(new DateOntologyProperty("vivo:start", this.Vivo_start.Value));
 				}
 			propList.Add(new StringOntologyProperty("roh:aimsOther", this.Roh_aimsOther));
-			propList.Add(new StringOntologyProperty("vcard:locality", this.Vcard_locality));
 			propList.Add(new StringOntologyProperty("roh:awardingEntityTitle", this.Roh_awardingEntityTitle));
+			propList.Add(new StringOntologyProperty("vcard:locality", this.Vcard_locality));
 			propList.Add(new StringOntologyProperty("roh:durationYears", this.Roh_durationYears));
 			propList.Add(new StringOntologyProperty("roh:awardingEntityTypeOther", this.Roh_awardingEntityTypeOther));
 			propList.Add(new StringOntologyProperty("roh:crisIdentifier", this.Roh_crisIdentifier));
@@ -280,11 +269,11 @@ namespace GrantOntology
 		internal override void GetEntities()
 		{
 			base.GetEntities();
-			if(Vivo_freeTextKeywords!=null){
-				foreach(CategoryPath prop in Vivo_freeTextKeywords){
+			if(Vivo_freeTextKeyword!=null){
+				foreach(CategoryPath prop in Vivo_freeTextKeyword){
 					prop.GetProperties();
 					prop.GetEntities();
-					OntologyEntity entityCategoryPath = new OntologyEntity("http://w3id.org/roh/CategoryPath", "http://w3id.org/roh/CategoryPath", "vivo:freeTextKeywords", prop.propList, prop.entList);
+					OntologyEntity entityCategoryPath = new OntologyEntity("http://w3id.org/roh/CategoryPath", "http://w3id.org/roh/CategoryPath", "vivo:freeTextKeyword", prop.propList, prop.entList);
 				entList.Add(entityCategoryPath);
 				prop.Entity= entityCategoryPath;
 				}
@@ -324,14 +313,14 @@ namespace GrantOntology
 			AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Grant_{ResourceID}_{ArticleID}", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", $"<http://vivoweb.org/ontology/core#Grant>", list, " . ");
 			AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Grant_{ResourceID}_{ArticleID}", "http://www.w3.org/2000/01/rdf-schema#label", $"\"http://vivoweb.org/ontology/core#Grant\"", list, " . ");
 			AgregarTripleALista($"{resourceAPI.GraphsUrl}{ResourceID}", "http://gnoss/hasEntidad", $"<{resourceAPI.GraphsUrl}items/Grant_{ResourceID}_{ArticleID}>", list, " . ");
-			if(this.Vivo_freeTextKeywords != null)
+			if(this.Vivo_freeTextKeyword != null)
 			{
-			foreach(var item0 in this.Vivo_freeTextKeywords)
+			foreach(var item0 in this.Vivo_freeTextKeyword)
 			{
 				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/CategoryPath_{ResourceID}_{item0.ArticleID}", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", $"<http://w3id.org/roh/CategoryPath>", list, " . ");
 				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/CategoryPath_{ResourceID}_{item0.ArticleID}", "http://www.w3.org/2000/01/rdf-schema#label", $"\"http://w3id.org/roh/CategoryPath\"", list, " . ");
 				AgregarTripleALista($"{resourceAPI.GraphsUrl}{ResourceID}", "http://gnoss/hasEntidad", $"<{resourceAPI.GraphsUrl}items/CategoryPath_{ResourceID}_{item0.ArticleID}>", list, " . ");
-				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Grant_{ResourceID}_{ArticleID}", "http://vivoweb.org/ontology/core#freeTextKeywords", $"<{resourceAPI.GraphsUrl}items/CategoryPath_{ResourceID}_{item0.ArticleID}>", list, " . ");
+				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Grant_{ResourceID}_{ArticleID}", "http://vivoweb.org/ontology/core#freeTextKeyword", $"<{resourceAPI.GraphsUrl}items/CategoryPath_{ResourceID}_{item0.ArticleID}>", list, " . ");
 				if(item0.IdsRoh_categoryNode != null)
 				{
 					foreach(var item2 in item0.IdsRoh_categoryNode)
@@ -389,13 +378,13 @@ namespace GrantOntology
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Grant_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/aimsOther", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_aimsOther)}\"", list, " . ");
 				}
-				if(this.Vcard_locality != null)
-				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Grant_{ResourceID}_{ArticleID}",  "https://www.w3.org/2006/vcard/ns#locality", $"\"{GenerarTextoSinSaltoDeLinea(this.Vcard_locality)}\"", list, " . ");
-				}
 				if(this.Roh_awardingEntityTitle != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Grant_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/awardingEntityTitle", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_awardingEntityTitle)}\"", list, " . ");
+				}
+				if(this.Vcard_locality != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Grant_{ResourceID}_{ArticleID}",  "https://www.w3.org/2006/vcard/ns#locality", $"\"{GenerarTextoSinSaltoDeLinea(this.Vcard_locality)}\"", list, " . ");
 				}
 				if(this.Roh_durationYears != null)
 				{
@@ -443,11 +432,11 @@ namespace GrantOntology
 			AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://xmlns.com/foaf/0.1/firstName", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_title)}\"", list, " . ");
 			AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://gnoss/hasnombrecompleto", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_title)}\"", list, " . ");
 			string search = string.Empty;
-			if(this.Vivo_freeTextKeywords != null)
+			if(this.Vivo_freeTextKeyword != null)
 			{
-			foreach(var item0 in this.Vivo_freeTextKeywords)
+			foreach(var item0 in this.Vivo_freeTextKeyword)
 			{
-				AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://vivoweb.org/ontology/core#freeTextKeywords", $"<{resourceAPI.GraphsUrl}items/categorypath_{ResourceID}_{item0.ArticleID}>", list, " . ");
+				AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://vivoweb.org/ontology/core#freeTextKeyword", $"<{resourceAPI.GraphsUrl}items/categorypath_{ResourceID}_{item0.ArticleID}>", list, " . ");
 				if(item0.IdsRoh_categoryNode != null)
 				{
 					foreach(var item2 in item0.IdsRoh_categoryNode)
@@ -575,13 +564,13 @@ namespace GrantOntology
 				{
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/aimsOther", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_aimsOther).ToLower()}\"", list, " . ");
 				}
-				if(this.Vcard_locality != null)
-				{
-					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "https://www.w3.org/2006/vcard/ns#locality", $"\"{GenerarTextoSinSaltoDeLinea(this.Vcard_locality).ToLower()}\"", list, " . ");
-				}
 				if(this.Roh_awardingEntityTitle != null)
 				{
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/awardingEntityTitle", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_awardingEntityTitle).ToLower()}\"", list, " . ");
+				}
+				if(this.Vcard_locality != null)
+				{
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "https://www.w3.org/2006/vcard/ns#locality", $"\"{GenerarTextoSinSaltoDeLinea(this.Vcard_locality).ToLower()}\"", list, " . ");
 				}
 				if(this.Roh_durationYears != null)
 				{

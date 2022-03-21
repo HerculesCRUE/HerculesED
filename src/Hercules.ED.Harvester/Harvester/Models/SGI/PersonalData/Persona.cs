@@ -15,6 +15,8 @@ namespace OAI_PMH.Models.SGI.PersonalData
         public TipoDocumento TipoDocumento { get; set; }
         public string EmpresaRef { get; set; }
         public bool? PersonalPropio { get; set; }
+        public string EntidadPropiaRef { get; set; }
+        public List<Email> Emails { get; set; }
         public bool? Activo { get; set; }
         public DatosPersonales DatosPersonales { get; set; }
         public DatosContacto DatosContacto { get; set; }

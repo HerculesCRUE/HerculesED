@@ -29,11 +29,6 @@ namespace CurriculumvitaeOntology
 		{
 			this.mGNOSSID = pSemCmsModel.Entity.Uri;
 			this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
-			SemanticPropertyModel propRoh_relatedResearchEvaluationCV = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/relatedResearchEvaluationCV");
-			if(propRoh_relatedResearchEvaluationCV != null && propRoh_relatedResearchEvaluationCV.PropertyValues.Count > 0)
-			{
-				this.Roh_relatedResearchEvaluationCV = new RelatedResearchEvaluationCV(propRoh_relatedResearchEvaluationCV.PropertyValues[0].RelatedEntity,idiomaUsuario);
-			}
 			SemanticPropertyModel propVivo_relatedBy = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#relatedBy");
 			if(propVivo_relatedBy != null && propVivo_relatedBy.PropertyValues.Count > 0)
 			{
@@ -46,17 +41,11 @@ namespace CurriculumvitaeOntology
 		public virtual string RdfsLabel { get { return "http://w3id.org/roh/RelatedResearchEvaluation"; } }
 		public OntologyEntity Entity { get; set; }
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/relatedResearchEvaluationCV")]
-		[RDFProperty("http://w3id.org/roh/relatedResearchEvaluationCV")]
-		public  RelatedResearchEvaluationCV Roh_relatedResearchEvaluationCV { get; set;}
-
-		[LABEL(LanguageEnum.es,"http://vivoweb.org/ontology/core#relatedBy")]
 		[RDFProperty("http://vivoweb.org/ontology/core#relatedBy")]
 		[Required]
 		public  Activity Vivo_relatedBy  { get; set;} 
 		public string IdVivo_relatedBy  { get; set;} 
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/isPublic")]
 		[RDFProperty("http://w3id.org/roh/isPublic")]
 		public  bool Roh_isPublic { get; set;}
 
@@ -71,12 +60,6 @@ namespace CurriculumvitaeOntology
 		internal override void GetEntities()
 		{
 			base.GetEntities();
-			if(Roh_relatedResearchEvaluationCV!=null){
-				Roh_relatedResearchEvaluationCV.GetProperties();
-				Roh_relatedResearchEvaluationCV.GetEntities();
-				OntologyEntity entityRoh_relatedResearchEvaluationCV = new OntologyEntity("http://w3id.org/roh/RelatedResearchEvaluationCV", "http://w3id.org/roh/RelatedResearchEvaluationCV", "roh:relatedResearchEvaluationCV", Roh_relatedResearchEvaluationCV.propList, Roh_relatedResearchEvaluationCV.entList);
-				entList.Add(entityRoh_relatedResearchEvaluationCV);
-			}
 		} 
 
 

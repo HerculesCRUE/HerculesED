@@ -30,25 +30,20 @@ namespace DocumentOntology
 			this.mGNOSSID = pSemCmsModel.Entity.Uri;
 			this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
 			this.Foaf_nick = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/nick"));
-			this.Rdf_comment = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://www.w3.org/1999/02/22-rdf-syntax-ns#comment")).Value;
 			SemanticPropertyModel propRdf_member = pSemCmsModel.GetPropertyByPath("http://www.w3.org/1999/02/22-rdf-syntax-ns#member");
 			if(propRdf_member != null && propRdf_member.PropertyValues.Count > 0)
 			{
 				this.Rdf_member = new Person(propRdf_member.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
+			this.Rdf_comment = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://www.w3.org/1999/02/22-rdf-syntax-ns#comment")).Value;
 		}
 
 		public virtual string RdfType { get { return "http://purl.obolibrary.org/obo/BFO_0000023"; } }
 		public virtual string RdfsLabel { get { return "http://purl.obolibrary.org/obo/BFO_0000023"; } }
 		public OntologyEntity Entity { get; set; }
 
-		[LABEL(LanguageEnum.es,"http://xmlns.com/foaf/0.1/nick")]
 		[RDFProperty("http://xmlns.com/foaf/0.1/nick")]
 		public  string Foaf_nick { get; set;}
-
-		[LABEL(LanguageEnum.es,"http://www.w3.org/1999/02/22-rdf-syntax-ns#comment")]
-		[RDFProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#comment")]
-		public  int Rdf_comment { get; set;}
 
 		[LABEL(LanguageEnum.es,"http://www.w3.org/1999/02/22-rdf-syntax-ns#member")]
 		[RDFProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#member")]
@@ -56,13 +51,16 @@ namespace DocumentOntology
 		public  Person Rdf_member  { get; set;} 
 		public string IdRdf_member  { get; set;} 
 
+		[RDFProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#comment")]
+		public  int Rdf_comment { get; set;}
+
 
 		internal override void GetProperties()
 		{
 			base.GetProperties();
 			propList.Add(new StringOntologyProperty("foaf:nick", this.Foaf_nick));
-			propList.Add(new StringOntologyProperty("rdf:comment", this.Rdf_comment.ToString()));
 			propList.Add(new StringOntologyProperty("rdf:member", this.IdRdf_member));
+			propList.Add(new StringOntologyProperty("rdf:comment", this.Rdf_comment.ToString()));
 		}
 
 		internal override void GetEntities()

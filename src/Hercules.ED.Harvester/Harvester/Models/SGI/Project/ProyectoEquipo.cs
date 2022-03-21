@@ -18,6 +18,6 @@ namespace OAI_PMH.Models.SGI.Project
         public RolProyecto RolProyecto { get; set; }
         public string FechaInicio { get; set; }
         public string FechaFin { get; set; }
-        public int? HorasDedicacion { get; set; }
+        public float? HorasDedicacion { get; set; }
     }
 }
