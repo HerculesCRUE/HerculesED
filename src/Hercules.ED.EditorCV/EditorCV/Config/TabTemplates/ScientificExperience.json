@@ -1390,6 +1390,18 @@
                     }
                   }
                 }
+              },
+              {
+                "name": {
+                  "es": "Productos"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "patent",
+                  "child": {
+                    "property": "http://w3id.org/roh/products"
+                  }
+                }
               }
             ]
           },
@@ -1407,10 +1419,10 @@
                     "properties": [
                       {
                         "title": {
-                          "es": "Título propiedad industrial e intelectual"
+                          "es": "Título propiedad industrial registrada"
                         },
                         "placeholder": {
-                          "es": "Introduce el título de la propiedad industrial e intelectual"
+                          "es": "Introduce el título de la propiedad industrial registrada"
                         },
                         "property": "http://w3id.org/roh/title",
                         "required": true,
@@ -1557,7 +1569,7 @@
                                 },
                                 {
                                   "title": {
-                                    "es": "Primera apellido"
+                                    "es": "Primer apellido"
                                   },
                                   "placeholder": {
                                     "es": "Introduce el primer apellido"
@@ -1608,7 +1620,11 @@
                         "auxEntityData": {
                           "rdftype": "http://w3id.org/roh/Feature",
                           "propertyTitle": {
-                            "property": "https://www.w3.org/2006/vcard/ns#hasCountryName"
+                            "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+                            "graph": "feature",
+                            "child": {
+                              "property": "http://www.geonames.org/ontology#name"
+                            }
                           },
                           "properties": [],
                           "rows": [
@@ -1706,7 +1722,7 @@
                         "auxEntityData": {
                           "rdftype": "http://w3id.org/roh/Organization",
                           "propertyTitle": {
-                            "property": "http://w3id.org/roh/organizationTitle"
+                            "property": "http://w3id.org/roh/organizationTitle",
                           },
                           "properties": [],
                           "rows": [
