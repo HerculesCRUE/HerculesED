@@ -5,6 +5,7 @@ using Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using static Models.Entity;
 
 namespace Utils
@@ -182,7 +183,7 @@ namespace Utils
         /// <param name="propiedadNombreEntidad"></param>
         /// <param name="propiedadEntidad"></param>
         /// <param name="entidadAux"></param>
-        public static void AniadirEntidad(ResourceApi mResourceApi, string nombreEntidad, string propiedadNombreEntidad, string propiedadEntidad, Entity entidadAux)
+        public static void AniadirEntidad(ResourceApi mResourceApi, string nombreEntidad, string propiedadNombreEntidad, string propiedadEntidad, Entity entidadAux, [Optional] string aux)
         {
             if (mResourceApi == null || string.IsNullOrEmpty(nombreEntidad) ||
                 string.IsNullOrEmpty(propiedadEntidad) || string.IsNullOrEmpty(propiedadEntidad))
@@ -192,6 +193,12 @@ namespace Utils
             Property propertyEntidad = entidadAux.properties.FirstOrDefault(x => x.prop == propiedadEntidad);
 
             string entidadN = GetOrganizacionPorNombre(mResourceApi, nombreEntidad);
+            if (!string.IsNullOrEmpty(aux))
+            {
+                nombreEntidad = aux + nombreEntidad;
+                entidadN = aux + entidadN;
+            }
+
             if (!string.IsNullOrEmpty(entidadN))
             {
                 CheckProperty(propertyNombre, entidadAux, nombreEntidad, propiedadNombreEntidad);

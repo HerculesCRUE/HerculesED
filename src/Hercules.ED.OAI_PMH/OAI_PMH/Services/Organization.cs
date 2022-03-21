@@ -59,7 +59,8 @@ namespace OAI_PMH.Services
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);
-            datosContacto = JsonConvert.DeserializeObject<DatosContacto>(response.Content);
+            string datosLimpios = response.Content;
+            datosContacto = JsonConvert.DeserializeObject<DatosContacto>(datosLimpios);
             return datosContacto;
         }
 

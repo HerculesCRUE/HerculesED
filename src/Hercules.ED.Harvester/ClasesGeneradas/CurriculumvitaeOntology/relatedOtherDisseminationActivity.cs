@@ -20,20 +20,15 @@ using Activity = ActivityOntology.Activity;
 namespace CurriculumvitaeOntology
 {
 	[ExcludeFromCodeCoverage]
-	public class relatedOtherDisseminationActivity : GnossOCBase
+	public class RelatedOtherDisseminationActivity : GnossOCBase
 	{
 
-		public relatedOtherDisseminationActivity() : base() { } 
+		public RelatedOtherDisseminationActivity() : base() { } 
 
-		public relatedOtherDisseminationActivity(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
+		public RelatedOtherDisseminationActivity(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
 		{
 			this.mGNOSSID = pSemCmsModel.Entity.Uri;
 			this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
-			SemanticPropertyModel propRoh_relatedOtherDisseminationActivityCV = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/relatedOtherDisseminationActivityCV");
-			if(propRoh_relatedOtherDisseminationActivityCV != null && propRoh_relatedOtherDisseminationActivityCV.PropertyValues.Count > 0)
-			{
-				this.Roh_relatedOtherDisseminationActivityCV = new RelatedOtherDisseminationActivityCV(propRoh_relatedOtherDisseminationActivityCV.PropertyValues[0].RelatedEntity,idiomaUsuario);
-			}
 			SemanticPropertyModel propVivo_relatedBy = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#relatedBy");
 			if(propVivo_relatedBy != null && propVivo_relatedBy.PropertyValues.Count > 0)
 			{
@@ -42,21 +37,15 @@ namespace CurriculumvitaeOntology
 			this.Roh_isPublic= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isPublic"));
 		}
 
-		public virtual string RdfType { get { return "http://w3id.org/roh/relatedOtherDisseminationActivity"; } }
-		public virtual string RdfsLabel { get { return "http://w3id.org/roh/relatedOtherDisseminationActivity"; } }
+		public virtual string RdfType { get { return "http://w3id.org/roh/RelatedOtherDisseminationActivity"; } }
+		public virtual string RdfsLabel { get { return "http://w3id.org/roh/RelatedOtherDisseminationActivity"; } }
 		public OntologyEntity Entity { get; set; }
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/relatedOtherDisseminationActivityCV")]
-		[RDFProperty("http://w3id.org/roh/relatedOtherDisseminationActivityCV")]
-		public  RelatedOtherDisseminationActivityCV Roh_relatedOtherDisseminationActivityCV { get; set;}
-
-		[LABEL(LanguageEnum.es,"http://vivoweb.org/ontology/core#relatedBy")]
 		[RDFProperty("http://vivoweb.org/ontology/core#relatedBy")]
 		[Required]
 		public  Activity Vivo_relatedBy  { get; set;} 
 		public string IdVivo_relatedBy  { get; set;} 
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/isPublic")]
 		[RDFProperty("http://w3id.org/roh/isPublic")]
 		public  bool Roh_isPublic { get; set;}
 
@@ -71,12 +60,6 @@ namespace CurriculumvitaeOntology
 		internal override void GetEntities()
 		{
 			base.GetEntities();
-			if(Roh_relatedOtherDisseminationActivityCV!=null){
-				Roh_relatedOtherDisseminationActivityCV.GetProperties();
-				Roh_relatedOtherDisseminationActivityCV.GetEntities();
-				OntologyEntity entityRoh_relatedOtherDisseminationActivityCV = new OntologyEntity("http://w3id.org/roh/RelatedOtherDisseminationActivityCV", "http://w3id.org/roh/RelatedOtherDisseminationActivityCV", "roh:relatedOtherDisseminationActivityCV", Roh_relatedOtherDisseminationActivityCV.propList, Roh_relatedOtherDisseminationActivityCV.entList);
-				entList.Add(entityRoh_relatedOtherDisseminationActivityCV);
-			}
 		} 
 
 

@@ -64,6 +64,7 @@ namespace AccreditationOntology
 			this.Roh_dateIssued= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/dateIssued"));
 			this.Roh_accreditationIssuedByTitle = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/accreditationIssuedByTitle"));
 			this.Roh_organizationTypeOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/organizationTypeOther"));
+			this.Roh_proposedBy = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/proposedBy"));
 			this.Vcard_locality = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#locality"));
 			this.Roh_classificationCVN = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/classificationCVN"));
 			this.Roh_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/title"));
@@ -106,6 +107,7 @@ namespace AccreditationOntology
 			this.Roh_dateIssued= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/dateIssued"));
 			this.Roh_accreditationIssuedByTitle = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/accreditationIssuedByTitle"));
 			this.Roh_organizationTypeOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/organizationTypeOther"));
+			this.Roh_proposedBy = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/proposedBy"));
 			this.Vcard_locality = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#locality"));
 			this.Roh_classificationCVN = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/classificationCVN"));
 			this.Roh_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/title"));
@@ -168,6 +170,9 @@ namespace AccreditationOntology
 		[RDFProperty("http://w3id.org/roh/organizationTypeOther")]
 		public  string Roh_organizationTypeOther { get; set;}
 
+		[RDFProperty("http://w3id.org/roh/proposedBy")]
+		public  string Roh_proposedBy { get; set;}
+
 		[RDFProperty("https://www.w3.org/2006/vcard/ns#locality")]
 		public  string Vcard_locality { get; set;}
 
@@ -200,6 +205,7 @@ namespace AccreditationOntology
 				}
 			propList.Add(new StringOntologyProperty("roh:accreditationIssuedByTitle", this.Roh_accreditationIssuedByTitle));
 			propList.Add(new StringOntologyProperty("roh:organizationTypeOther", this.Roh_organizationTypeOther));
+			propList.Add(new StringOntologyProperty("roh:proposedBy", this.Roh_proposedBy));
 			propList.Add(new StringOntologyProperty("vcard:locality", this.Vcard_locality));
 			propList.Add(new StringOntologyProperty("roh:classificationCVN", this.Roh_classificationCVN));
 			propList.Add(new StringOntologyProperty("roh:title", this.Roh_title));
@@ -293,6 +299,10 @@ namespace AccreditationOntology
 				if(this.Roh_organizationTypeOther != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Accreditation_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/organizationTypeOther", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_organizationTypeOther)}\"", list, " . ");
+				}
+				if(this.Roh_proposedBy != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Accreditation_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/proposedBy", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_proposedBy)}\"", list, " . ");
 				}
 				if(this.Vcard_locality != null)
 				{
@@ -425,6 +435,10 @@ namespace AccreditationOntology
 				if(this.Roh_organizationTypeOther != null)
 				{
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/organizationTypeOther", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_organizationTypeOther).ToLower()}\"", list, " . ");
+				}
+				if(this.Roh_proposedBy != null)
+				{
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/proposedBy", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_proposedBy).ToLower()}\"", list, " . ");
 				}
 				if(this.Vcard_locality != null)
 				{

@@ -48,15 +48,12 @@ namespace CurriculumvitaeOntology
 		public  ContributionGradeDocument Roh_contributionGrade  { get; set;} 
 		public string IdRoh_contributionGrade  { get; set;} 
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/relevantResults")]
 		[RDFProperty("http://w3id.org/roh/relevantResults")]
 		public  string Roh_relevantResults { get; set;}
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/correspondingAuthor")]
 		[RDFProperty("http://w3id.org/roh/correspondingAuthor")]
 		public  bool Roh_correspondingAuthor { get; set;}
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/relevantPublication")]
 		[RDFProperty("http://w3id.org/roh/relevantPublication")]
 		public  bool Roh_relevantPublication { get; set;}
 

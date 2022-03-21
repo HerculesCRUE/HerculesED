@@ -29,11 +29,6 @@ namespace CurriculumvitaeOntology
 		{
 			this.mGNOSSID = pSemCmsModel.Entity.Uri;
 			this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
-			SemanticPropertyModel propRoh_relatedSupervisedArtisticProjectCV = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/relatedSupervisedArtisticProjectCV");
-			if(propRoh_relatedSupervisedArtisticProjectCV != null && propRoh_relatedSupervisedArtisticProjectCV.PropertyValues.Count > 0)
-			{
-				this.Roh_relatedSupervisedArtisticProjectCV = new RelatedSupervisedArtisticProjectCV(propRoh_relatedSupervisedArtisticProjectCV.PropertyValues[0].RelatedEntity,idiomaUsuario);
-			}
 			SemanticPropertyModel propVivo_relatedBy = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#relatedBy");
 			if(propVivo_relatedBy != null && propVivo_relatedBy.PropertyValues.Count > 0)
 			{
@@ -46,17 +41,11 @@ namespace CurriculumvitaeOntology
 		public virtual string RdfsLabel { get { return "http://w3id.org/roh/RelatedSupervisedArtisticProject"; } }
 		public OntologyEntity Entity { get; set; }
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/relatedSupervisedArtisticProjectCV")]
-		[RDFProperty("http://w3id.org/roh/relatedSupervisedArtisticProjectCV")]
-		public  RelatedSupervisedArtisticProjectCV Roh_relatedSupervisedArtisticProjectCV { get; set;}
-
-		[LABEL(LanguageEnum.es,"http://vivoweb.org/ontology/core#relatedBy")]
 		[RDFProperty("http://vivoweb.org/ontology/core#relatedBy")]
 		[Required]
 		public  SupervisedArtisticProject Vivo_relatedBy  { get; set;} 
 		public string IdVivo_relatedBy  { get; set;} 
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/isPublic")]
 		[RDFProperty("http://w3id.org/roh/isPublic")]
 		public  bool Roh_isPublic { get; set;}
 
@@ -71,12 +60,6 @@ namespace CurriculumvitaeOntology
 		internal override void GetEntities()
 		{
 			base.GetEntities();
-			if(Roh_relatedSupervisedArtisticProjectCV!=null){
-				Roh_relatedSupervisedArtisticProjectCV.GetProperties();
-				Roh_relatedSupervisedArtisticProjectCV.GetEntities();
-				OntologyEntity entityRoh_relatedSupervisedArtisticProjectCV = new OntologyEntity("http://w3id.org/roh/RelatedSupervisedArtisticProjectCV", "http://w3id.org/roh/RelatedSupervisedArtisticProjectCV", "roh:relatedSupervisedArtisticProjectCV", Roh_relatedSupervisedArtisticProjectCV.propList, Roh_relatedSupervisedArtisticProjectCV.entList);
-				entList.Add(entityRoh_relatedSupervisedArtisticProjectCV);
-			}
 		} 
 
 

@@ -848,6 +848,29 @@ namespace Utils
         }
 
         /// <summary>
+        /// Devuelve el tipo de evento como respuesta,
+        /// con formato mResourceApi.GraphsUrl + "items/eventinscriptiontype_" + valor
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>OrganizaTipoEventocion</returns>
+        public static string GetTipoInscripcionEventoPorIDCampo(this CvnItemBean item, string codigo)
+        {
+            if (!CodigoCampoCorrecto(codigo))
+            {
+                throw new ArgumentException("Codigo de campo incorrecto" + codigo);
+            }
+
+            if (codigo.Length != 15) { return null; }
+            CvnItemBeanCvnString campo = item.Items?.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
+            if (campo != null && !string.IsNullOrEmpty(campo.Value))
+            {
+                return mResourceApi.GraphsUrl + "items/eventinscriptiontype_" + campo.Value;
+            }
+            return null;
+        }
+
+        /// <summary>
         /// Devuelve el tipo de intervención como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/eventinscriptiontype_" + valor
         /// </summary>
@@ -2023,7 +2046,7 @@ namespace Utils
         /// <param name="item"></param>
         /// <param name="codigo"></param>
         /// <returns></returns>
-        public static string GetGradoContribucionPorIDCampo(this CvnItemBean item, string codigo)
+        public static string GetGradoContribucionDocumentoPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
             {
@@ -2034,6 +2057,28 @@ namespace Utils
             if (campo != null && !string.IsNullOrEmpty(campo.Value))
             {
                 return mResourceApi.GraphsUrl + "items/contributiongradedocument_" + campo.Value;
+            }
+            return null;
+        }
+        
+        /// <summary>
+        /// Devuelve el grado de contribución del documento como respuesta,
+        /// con formato mResourceApi.GraphsUrl + "items/contributiongradeproyect_" + valor
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="codigo"></param>
+        /// <returns></returns>
+        public static string GetGradoContribucionProyectoPorIDCampo(this CvnItemBean item, string codigo)
+        {
+            if (!CodigoCampoCorrecto(codigo))
+            {
+                throw new ArgumentException("Codigo de campo incorrecto" + codigo);
+            }
+
+            CvnItemBeanCvnString campo = item.Items.Where(x => x.Code.Equals(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
+            if (campo != null && !string.IsNullOrEmpty(campo.Value))
+            {
+                return mResourceApi.GraphsUrl + "items/contributiongradeproject_" + campo.Value;
             }
             return null;
         }

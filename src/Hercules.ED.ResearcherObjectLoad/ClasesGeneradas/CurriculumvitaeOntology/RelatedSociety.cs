@@ -41,7 +41,6 @@ namespace CurriculumvitaeOntology
 		public virtual string RdfsLabel { get { return "http://w3id.org/roh/RelatedSociety"; } }
 		public OntologyEntity Entity { get; set; }
 
-		[LABEL(LanguageEnum.es,"http://vivoweb.org/ontology/core#relatedBy")]
 		[RDFProperty("http://vivoweb.org/ontology/core#relatedBy")]
 		[Required]
 		public  Society Vivo_relatedBy  { get; set;} 

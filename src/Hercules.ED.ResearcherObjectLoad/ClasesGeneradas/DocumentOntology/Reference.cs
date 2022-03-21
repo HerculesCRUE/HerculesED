@@ -40,10 +40,10 @@ namespace DocumentOntology
 					}
 				}
 			}
-			this.Roh_hasPublicationVenueText = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/hasPublicationVenueText"));
-			this.Bibo_doi = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/doi"));
 			this.Dct_issued= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/dc/terms/issued"));
 			this.Vcard_url = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#url"));
+			this.Roh_hasPublicationVenueText = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/hasPublicationVenueText"));
+			this.Bibo_doi = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/doi"));
 			this.Roh_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/title"));
 		}
 
@@ -54,17 +54,17 @@ namespace DocumentOntology
 		[RDFProperty("http://w3id.org/roh/authorList")]
 		public  List<ReferenceAuthor> Roh_authorList { get; set;}
 
-		[RDFProperty("http://w3id.org/roh/hasPublicationVenueText")]
-		public  string Roh_hasPublicationVenueText { get; set;}
-
-		[RDFProperty("http://purl.org/ontology/bibo/doi")]
-		public  string Bibo_doi { get; set;}
-
 		[RDFProperty("http://purl.org/dc/terms/issued")]
 		public  DateTime? Dct_issued { get; set;}
 
 		[RDFProperty("https://www.w3.org/2006/vcard/ns#url")]
 		public  string Vcard_url { get; set;}
+
+		[RDFProperty("http://w3id.org/roh/hasPublicationVenueText")]
+		public  string Roh_hasPublicationVenueText { get; set;}
+
+		[RDFProperty("http://purl.org/ontology/bibo/doi")]
+		public  string Bibo_doi { get; set;}
 
 		[RDFProperty("http://w3id.org/roh/title")]
 		public  string Roh_title { get; set;}
@@ -73,12 +73,12 @@ namespace DocumentOntology
 		internal override void GetProperties()
 		{
 			base.GetProperties();
-			propList.Add(new StringOntologyProperty("roh:hasPublicationVenueText", this.Roh_hasPublicationVenueText));
-			propList.Add(new StringOntologyProperty("bibo:doi", this.Bibo_doi));
 			if (this.Dct_issued.HasValue){
 				propList.Add(new DateOntologyProperty("dct:issued", this.Dct_issued.Value));
 				}
 			propList.Add(new StringOntologyProperty("vcard:url", this.Vcard_url));
+			propList.Add(new StringOntologyProperty("roh:hasPublicationVenueText", this.Roh_hasPublicationVenueText));
+			propList.Add(new StringOntologyProperty("bibo:doi", this.Bibo_doi));
 			propList.Add(new StringOntologyProperty("roh:title", this.Roh_title));
 		}
 

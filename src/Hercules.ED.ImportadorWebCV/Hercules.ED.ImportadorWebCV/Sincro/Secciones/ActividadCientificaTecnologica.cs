@@ -197,18 +197,69 @@ namespace ImportadorWebCV.Sincro.Secciones
             foreach (Entity entityXML in listadoAux)
             {
                 TrabajosCongresos trabajosCongresos = new TrabajosCongresos();
-                trabajosCongresos.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.trabajosCongresosTitulo)?.values.FirstOrDefault();
+                trabajosCongresos.titulo = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.trabajosCongresosTitulo)?.values.FirstOrDefault();
+                trabajosCongresos.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.trabajosCongresosPubFecha)?.values.FirstOrDefault();
                 trabajosCongresos.ID = Guid.NewGuid().ToString();
                 entidadesXML.Add(trabajosCongresos.ID, trabajosCongresos);
             }
 
+            foreach (string idPublicacion in entidadesXML.Keys)
+            {
+                entidadesXML[idPublicacion].distincts = new HashSet<string>(entidadesXML.Keys.Except(new List<string> { idPublicacion }));
+            }
+
+            //Añado los autores del documento para la desambiguación
+            for (int i = 0; i < listadoAux.Count; i++)
+            {
+                foreach (Persona persona in listadoAux[i].autores)
+                {
+                    if (string.IsNullOrEmpty(persona.nombreCompleto) && string.IsNullOrEmpty(persona.firma))
+                    {
+                        continue;
+                    }
+                    persona.coautores = new HashSet<string>(listadoAux[i].autores.Select(x => x.ID).Where(x => x != persona.ID));
+                    persona.documentos = new HashSet<string>() { listadoAux[i].id };
+                    entidadesXML[persona.ID] = persona;
+                }
+            }
+
             //2º Obtenemos las entidades de la BBDD
             Dictionary<string, DisambiguableEntity> entidadesBBDD = TrabajosCongresos.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+            List<string> idValuesBBDD = entidadesBBDD.Values.Select(x => x.ID).ToList();
 
             //3º Comparamos las equivalentes
-            Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
+            Disambiguation.mResourceApi = mResourceApi;
+            Dictionary<string, HashSet<string>> equivalencias = Disambiguation.Disambiguate(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
 
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab);
+            if (preimportar)
+            {
+                Dictionary<string, bool> bloqueados = ComprobarBloqueados(idValuesBBDD, graph);
+                List<SubseccionItem> listaAux = new List<SubseccionItem>();
+                for (int i = 0; i < listadoAux.Count; i++)
+                {
+                    KeyValuePair<string, HashSet<string>> x = equivalencias.FirstOrDefault(x => x.Value.Select(x => x.Split('|')[1]).Contains(listadoAux[i].id));
+                    //Si NO es un Guid añado el valor.
+                    string idBBDD = !Guid.TryParse(x.Key, out Guid aux) ? x.Key : "";
+
+                    if (bloqueados.ContainsKey(idBBDD))
+                    {
+                        listaAux.Add(new SubseccionItem(i, idBBDD, listadoAux.ElementAt(i).properties, bloqueados[idBBDD]));
+                    }
+                    else
+                    {
+                        listaAux.Add(new SubseccionItem(i, idBBDD, listadoAux.ElementAt(i).properties));
+                    }
+                }
+                return listaAux;
+            }
+            else
+            {
+                //4º Añadimos o modificamos las entidades
+                AniadirModificarPublicaciones(listadoAux, equivalencias, propTitle, graph, rdfType, rdfTypePrefix,
+                    propiedadesItem, RdfTypeTab, "http://w3id.org/roh/relatedworksSubmittedConferencesCV", "http://w3id.org/roh/RelatedWorksSubmittedConferencesCV");
+                return null;
+            }
+            //return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab);
         }
 
         /// <summary>
@@ -994,7 +1045,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                             new Property(Variables.ActividadCientificaTecnologica.pubDocumentosReseniaRevista, item.GetStringDoublePorIDCampo("060.010.010.340"))
                         ));
                         entidadAux.properties_cv.AddRange(UtilitySecciones.AddProperty(
-                            new Property(Variables.ActividadCientificaTecnologica.pubDocumentosGradoContribucion, item.GetGradoContribucionPorIDCampo("060.010.010.060")),
+                            new Property(Variables.ActividadCientificaTecnologica.pubDocumentosGradoContribucion, item.GetGradoContribucionDocumentoPorIDCampo("060.010.010.060")),
                             new Property(Variables.ActividadCientificaTecnologica.pubDocumentosResultadosDestacados, item.GetStringPorIDCampo("060.010.010.290")),
                             new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubRelevante, item.GetStringBooleanPorIDCampo("060.010.010.300")),
                             new Property(Variables.ActividadCientificaTecnologica.pubDocumentosAutorCorrespondencia, item.GetStringBooleanPorIDCampo("060.010.010.390"))
@@ -1143,69 +1194,54 @@ namespace ImportadorWebCV.Sincro.Secciones
                 {
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
+                    entidadAux.properties_cv = new List<Property>();
+                    entidadAux.id = Guid.NewGuid().ToString();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.010.020.010")))
                     {
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosTitulo, item.GetStringPorIDCampo("060.010.020.030")),
-                            //new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosTipoParticipacion, item.GetStringPorIDCampo("060.010.020.050")),//todo - funcion
-                            //new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosIntervencion, item.GetStringPorIDCampo("060.010.020.060")),//TODO - funcion
-                            //new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosIntervencionOtros, item.GetStringPorIDCampo("060.010.020.070")),
+                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosTitulo, item.GetStringPorIDCampo("060.010.020.030")),                            
                             new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubActa, item.GetStringPorIDCampo("060.010.020.200")),
-                            //new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosFormaContribucion, item.GetStringPorIDCampo("060.010.020.220")),//todo - funcion
+                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosFormaContribucion, item.GetTipoPublicacionPorIDCampo("060.010.020.220")),
                             new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubTitulo, item.GetStringPorIDCampo("060.010.020.230")),
-                            //new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubNombre, item.GetStringPorIDCampo("060.010.020.370")),
+                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubNombre, item.GetStringPorIDCampo("060.010.020.370")),
                             new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubVolumen, item.GetVolumenPorIDCampo("060.010.020.240")),
                             new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubNumero, item.GetNumeroVolumenPorIDCampo("060.010.020.240")),
                             new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubPagIni, item.GetPaginaInicialPorIDCampo("060.010.020.250")),
                             new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubPagFin, item.GetPaginaFinalPorIDCampo("060.010.020.250")),
                             new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubPais, item.GetPaisPorIDCampo("060.010.020.270")),
-                            //new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubEditorial, item.GetStringPorIDCampo("060.010.020.260")),
+                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubEditorial, item.GetStringPorIDCampo("060.010.020.260")),
                             new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubCCAA, item.GetRegionPorIDCampo("060.010.020.280")),
-                            //new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubFecha, item.GetStringDatetimePorIDCampo("060.010.020.300")),
+                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubFecha, item.GetStringDatetimePorIDCampo("060.010.020.300")),
                             new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubURL, item.GetStringPorIDCampo("060.010.020.310")),
-                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubDepositoLegal, item.GetStringPorIDCampo("060.010.020.330"))
-                        //,
-                        //new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosAutoCorrespondencia, item.GetStringBooleanPorIDCampo("060.010.020.390"))
+                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubDepositoLegal, item.GetStringPorIDCampo("060.010.020.330")), 
+                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosNombreCongreso, item.GetStringPorIDCampo("060.010.020.100")),
+                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosFechaCelebracion, item.GetStringPorIDCampo("060.010.020.190")),
+                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosFechaFin, item.GetStringDatetimePorIDCampo("060.010.020.380")),
+                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosCiudadCelebracion, item.GetStringPorIDCampo("060.010.020.180")),
+                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPaisCelebracion, item.GetPaisPorIDCampo("060.010.020.150")),
+                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosCCAACelebracion, item.GetRegionPorIDCampo("060.010.020.160")),
+                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosTipoEvento, item.GetTipoEventoPorIDCampo("060.010.020.010")),
+                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosTipoEventoOtros, item.GetStringPorIDCampo("060.010.020.020")),
+                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosComiteExterno, item.GetStringPorIDCampo("060.010.020.210")),
+                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosAmbitoGeo, item.GetGeographicRegionPorIDCampo("060.010.020.080")),
+                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosAmbitoGeoOtros, item.GetStringPorIDCampo("060.010.020.090"))
                         ));
-                        TrabajosCongresosEvento(item, entidadAux);
-                        //TrabajosCongresosAutores(item, entidadAux);
+                        entidadAux.properties_cv.AddRange(UtilitySecciones.AddProperty(
+                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosTipoParticipacion, item.GetTipoParticipacionDocumentoPorIDCampo("060.010.020.050")),
+                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosIntervencion, item.GetTipoInscripcionEventoPorIDCampo("060.010.020.060")),
+                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosIntervencionOtros, item.GetStringPorIDCampo("060.010.020.070")),
+                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosAutoCorrespondencia, item.GetStringBooleanPorIDCampo("060.010.020.390"))
+                        ));
+                        TrabajosCongresosAutores(item, entidadAux);
                         TrabajosCongresosIDPublicacion(item, entidadAux);
-                        //TrabajosCongresosISBN(item, entidadAux);
+                        TrabajosCongresosISSN(item, entidadAux);
+                        TrabajosCongresosISBN(item, entidadAux);
 
                         listado.Add(entidadAux);
                     }
                 }
             }
             return listado;
-        }
-
-        /// <summary>
-        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>
-        /// pertenecientes a los Eventos
-        /// </summary>
-        /// <param name="item">item</param>
-        /// <param name="entidadAux">entidadAux</param>
-        private void TrabajosCongresosEvento(CvnItemBean item, Entity entidadAux)
-        {
-            //new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPaisCongreso, item.GetPaisPorIDCampo("060.010.020.340")),
-            //new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosCCAACongreso, item.GetRegionPorIDCampo("060.010.020.350")),
-            //new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosCiudadCongreso, item.GetStringPorIDCampo("060.010.020.360"))
-
-            string entityPartAux = Guid.NewGuid().ToString() + "@@@";
-            entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosNombreCongreso, UtilitySecciones.StringGNOSSID(entityPartAux, item.GetStringPorIDCampo("060.010.020.100"))),
-                new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosFechaCelebracion, UtilitySecciones.StringGNOSSID(entityPartAux, item.GetStringPorIDCampo("060.010.020.190"))),
-                new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosFechaFin, UtilitySecciones.StringGNOSSID(entityPartAux, item.GetStringDatetimePorIDCampo("060.010.020.380"))),
-                new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosCiudadCelebracion, UtilitySecciones.StringGNOSSID(entityPartAux, item.GetStringPorIDCampo("060.010.020.180"))),
-                new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPaisCelebracion, UtilitySecciones.StringGNOSSID(entityPartAux, item.GetPaisPorIDCampo("060.010.020.150"))),
-                new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosCCAACelebracion, UtilitySecciones.StringGNOSSID(entityPartAux, item.GetRegionPorIDCampo("060.010.020.160"))),
-                //new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosEntidadOrganizadora, UtilitySecciones.StringGNOSSID(entityPartAux, item.GetStringPorIDCampo("060.010.020.110"))),
-                new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosTipoEvento, UtilitySecciones.StringGNOSSID(entityPartAux, item.GetTipoEventoPorIDCampo("060.010.020.010"))),
-                //new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosTipoEventoOtros, UtilitySecciones.StringGNOSSID(entityPartAux, item.GetStringPorIDCampo("060.010.020.020"))),
-                new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosComiteExterno, UtilitySecciones.StringGNOSSID(entityPartAux, item.GetStringPorIDCampo("060.010.020.210"))),
-                new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosAmbitoGeo, UtilitySecciones.StringGNOSSID(entityPartAux, item.GetGeographicRegionPorIDCampo("060.010.020.080"))),
-                new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosAmbitoGeoOtros, UtilitySecciones.StringGNOSSID(entityPartAux, item.GetStringPorIDCampo("060.010.020.090")))
-            ));
         }
 
         /// <summary>
@@ -1225,9 +1261,11 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                 //Si no tiene nombre no lo añado
                 if (string.IsNullOrEmpty(persona.nombreCompleto)) { continue; }
+                //Si no tiene firma le añado como firma el nombre completo
+                if (string.IsNullOrEmpty(persona.firma)) { persona.firma = persona.nombreCompleto; }
 
                 persona.ID = Guid.NewGuid().ToString();
-                entidadAux.autores.Add(persona);//TODO - check insert autores?
+                entidadAux.autores.Add(persona);
             }
 
             foreach (Persona persona in entidadAux.autores)
@@ -1256,7 +1294,7 @@ namespace ImportadorWebCV.Sincro.Secciones
 
         /// <summary>
         /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
-        /// pertenecientes al ISBN/ISSN.
+        /// pertenecientes al ISBN.
         /// </summary>
         /// <param name="item">item</param>
         /// <param name="entidadAux">entidadAux</param>
@@ -1267,6 +1305,20 @@ namespace ImportadorWebCV.Sincro.Secciones
 
             UtilitySecciones.InsertaISBN(listadoISBN, entidadAux, propiedadISBN);
         }
+        
+        /// <summary>
+        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
+        /// pertenecientes al ISSN.
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="entidadAux">entidadAux</param>
+        private void TrabajosCongresosISSN(CvnItemBean item, Entity entidadAux)
+        {
+            List<CvnItemBeanCvnExternalPKBean> listadoISSN = item.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("060.010.020.320");
+            string propiedadISSN = Variables.ActividadCientificaTecnologica.trabajosCongresosPubISSN;
+
+            UtilitySecciones.InsertaISBN(listadoISSN, entidadAux, propiedadISSN);
+        }
 
         /// <summary>
         /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
@@ -1274,13 +1326,13 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item">item</param>
         /// <param name="entidadAux">entidadAux</param>
-        private void TrabajosCongresosTipoEntidad(CvnItemBean item, Entity entidadAux)
+        private void TrabajosCongresosEntidadOrganizadora(CvnItemBean item, Entity entidadAux)
         {
             //Añado la referencia si existe Entidad Organizadora
 
-            //UtilitySecciones.AniadirEntidad(mResourceApi, UtilitySecciones.StringGNOSSID(entityPartAux, item.GetNameEntityBeanPorIDCampo("060.010.040.090")),
-            //    Variables.ActividadCientificaTecnologica.otrasActDivulEntidadOrgNombre,
-            //    Variables.ActividadCientificaTecnologica.otrasActDivulEntidadOrg, entidadAux);
+            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.010.020.110"),
+                Variables.ActividadCientificaTecnologica.trabajosCongresosEntidadOrganizadoraNombre,
+                Variables.ActividadCientificaTecnologica.trabajosCongresosEntidadOrganizadora, entidadAux);
 
             //Añado otros, o el ID de una preseleccion
             string valorTipo = !string.IsNullOrEmpty(item.GetStringPorIDCampo("060.010.020.140")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetOrganizacionPorIDCampo("060.010.020.130");
@@ -1288,6 +1340,13 @@ namespace ImportadorWebCV.Sincro.Secciones
             entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                 new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosTipoEntidadOrganizadora, valorTipo),
                 new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosTipoEntidadOrganizadoraOtros, item.GetStringPorIDCampo("060.010.020.140"))
+            ));
+
+            //Añado Pais, Region y ciudad
+            entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosCiudadEntidadOrganizadora, item.GetStringPorIDCampo("060.010.020.360")),
+                new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPaisEntidadOrganizadora, item.GetPaisPorIDCampo("060.010.020.340")),
+                new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosCCAAEntidadOrganizadora, item.GetRegionPorIDCampo("060.010.020.350"))
             ));
         }
 

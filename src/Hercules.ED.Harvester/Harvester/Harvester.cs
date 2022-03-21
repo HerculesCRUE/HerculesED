@@ -43,6 +43,8 @@ namespace Harvester
             foreach (var personId in personIdList)
             {
                 string id = personId.Identifier;
+                // TODO: QUITAR
+                //id = "Persona_28710458";
                 string xml = HaversterServices.GetRecord(id);
                 XmlSerializer serializer = new(typeof(Persona));
                 using (StringReader sr = new(xml))

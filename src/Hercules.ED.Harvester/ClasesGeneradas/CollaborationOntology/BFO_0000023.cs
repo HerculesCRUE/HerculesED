@@ -15,7 +15,6 @@ using System.Globalization;
 using System.Collections;
 using Gnoss.ApiWrapper.Exceptions;
 using System.Diagnostics.CodeAnalysis;
-using Person = PersonOntology.Person;
 
 namespace CollaborationOntology
 {
@@ -29,12 +28,18 @@ namespace CollaborationOntology
 		{
 			this.mGNOSSID = pSemCmsModel.Entity.Uri;
 			this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
-			this.Foaf_nick = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/nick"));
-			SemanticPropertyModel propRdf_member = pSemCmsModel.GetPropertyByPath("http://www.w3.org/1999/02/22-rdf-syntax-ns#member");
-			if(propRdf_member != null && propRdf_member.PropertyValues.Count > 0)
+			this.Foaf_familyName = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/familyName"));
+			SemanticPropertyModel propRoh_secondFamilyName = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/secondFamilyName");
+			this.Roh_secondFamilyName = new List<string>();
+			if (propRoh_secondFamilyName != null && propRoh_secondFamilyName.PropertyValues.Count > 0)
 			{
-				this.Rdf_member = new Person(propRdf_member.PropertyValues[0].RelatedEntity,idiomaUsuario);
+				foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_secondFamilyName.PropertyValues)
+				{
+					this.Roh_secondFamilyName.Add(propValue.Value);
+				}
 			}
+			this.Foaf_nick = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/nick"));
+			this.Foaf_firstName = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/firstName"));
 			this.Rdf_comment = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://www.w3.org/1999/02/22-rdf-syntax-ns#comment")).Value;
 		}
 
@@ -42,17 +47,18 @@ namespace CollaborationOntology
 		public virtual string RdfsLabel { get { return "http://purl.obolibrary.org/obo/BFO_0000023"; } }
 		public OntologyEntity Entity { get; set; }
 
-		[LABEL(LanguageEnum.es,"nick")]
+		[RDFProperty("http://xmlns.com/foaf/0.1/familyName")]
+		public  string Foaf_familyName { get; set;}
+
+		[RDFProperty("http://w3id.org/roh/secondFamilyName")]
+		public  List<string> Roh_secondFamilyName { get; set;}
+
 		[RDFProperty("http://xmlns.com/foaf/0.1/nick")]
 		public  string Foaf_nick { get; set;}
 
-		[LABEL(LanguageEnum.es,"member")]
-		[RDFProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#member")]
-		[Required]
-		public  Person Rdf_member  { get; set;} 
-		public string IdRdf_member  { get; set;} 
+		[RDFProperty("http://xmlns.com/foaf/0.1/firstName")]
+		public  string Foaf_firstName { get; set;}
 
-		[LABEL(LanguageEnum.es,"comment")]
 		[RDFProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#comment")]
 		public  int Rdf_comment { get; set;}
 
@@ -60,8 +66,10 @@ namespace CollaborationOntology
 		internal override void GetProperties()
 		{
 			base.GetProperties();
+			propList.Add(new StringOntologyProperty("foaf:familyName", this.Foaf_familyName));
+			propList.Add(new ListStringOntologyProperty("roh:secondFamilyName", this.Roh_secondFamilyName));
 			propList.Add(new StringOntologyProperty("foaf:nick", this.Foaf_nick));
-			propList.Add(new StringOntologyProperty("rdf:member", this.IdRdf_member));
+			propList.Add(new StringOntologyProperty("foaf:firstName", this.Foaf_firstName));
 			propList.Add(new StringOntologyProperty("rdf:comment", this.Rdf_comment.ToString()));
 		}
 

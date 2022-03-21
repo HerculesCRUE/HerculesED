@@ -41,13 +41,11 @@ namespace CurriculumvitaeOntology
 		public virtual string RdfsLabel { get { return "http://w3id.org/roh/RelatedPatent"; } }
 		public OntologyEntity Entity { get; set; }
 
-		[LABEL(LanguageEnum.es,"http://vivoweb.org/ontology/core#relatedBy")]
 		[RDFProperty("http://vivoweb.org/ontology/core#relatedBy")]
 		[Required]
 		public  Patent Vivo_relatedBy  { get; set;} 
 		public string IdVivo_relatedBy  { get; set;} 
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/isPublic")]
 		[RDFProperty("http://w3id.org/roh/isPublic")]
 		public  bool Roh_isPublic { get; set;}
 

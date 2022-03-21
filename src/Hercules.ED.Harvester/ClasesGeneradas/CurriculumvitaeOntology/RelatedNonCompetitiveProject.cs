@@ -46,17 +46,14 @@ namespace CurriculumvitaeOntology
 		public virtual string RdfsLabel { get { return "http://w3id.org/roh/RelatedNonCompetitiveProject"; } }
 		public OntologyEntity Entity { get; set; }
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/relatedNonCompetitiveProjectCV")]
 		[RDFProperty("http://w3id.org/roh/relatedNonCompetitiveProjectCV")]
 		public  RelatedNonCompetitiveProjectCV Roh_relatedNonCompetitiveProjectCV { get; set;}
 
-		[LABEL(LanguageEnum.es,"http://vivoweb.org/ontology/core#relatedBy")]
 		[RDFProperty("http://vivoweb.org/ontology/core#relatedBy")]
 		[Required]
 		public  Project Vivo_relatedBy  { get; set;} 
 		public string IdVivo_relatedBy  { get; set;} 
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/isPublic")]
 		[RDFProperty("http://w3id.org/roh/isPublic")]
 		public  bool Roh_isPublic { get; set;}
 

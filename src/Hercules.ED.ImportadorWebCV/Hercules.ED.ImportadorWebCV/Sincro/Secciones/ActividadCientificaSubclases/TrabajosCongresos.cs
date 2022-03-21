@@ -9,12 +9,20 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
 {
     class TrabajosCongresos : DisambiguableEntity
     {
-        public string descripcion { get; set; }
+        public string titulo { get; set; }
+        public string fecha { get; set; }
 
-        private static readonly DisambiguationDataConfig configDescripcion = new DisambiguationDataConfig()
+        private static readonly DisambiguationDataConfig configTitulo = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsTitle,
             score = 0.8f
+        };
+
+        private static readonly DisambiguationDataConfig configFecha = new DisambiguationDataConfig()
+        {
+            type = DisambiguationDataConfigType.equalsItem,
+            score = 0.5f,
+            scoreMinus = 0.5f
         };
 
         public override List<DisambiguationData> GetDisambiguationData()
@@ -23,9 +31,16 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
             {
                 new DisambiguationData()
                 {
-                    property = "descripcion",
-                    config = configDescripcion,
-                    value = descripcion
+                    property = "titulo",
+                    config = configTitulo,
+                    value = titulo
+                },
+
+                new DisambiguationData()
+                {
+                    property = "fecha",
+                    config = configFecha,
+                    value = fecha
                 }
             };
 
@@ -54,7 +69,8 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
             {
                 string select = $@"SELECT distinct ?item ?itemTitle ?itemDate ";
                 string where = $@"where {{
-                                        ?item <{Variables.ActividadCientificaTecnologica.trabajosCongresosTitulo}> ?itemTitle 
+                                        ?item <{Variables.ActividadCientificaTecnologica.trabajosCongresosTitulo}> ?itemTitle .
+                                        OPTIONAL{{?item <{Variables.ActividadDocente.direccionTesisFechaDefensa}> ?itemDate }} .
                                         FILTER(?item in (<{string.Join(">,<", lista)}>))
                                     }}";
 
@@ -64,7 +80,8 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                     TrabajosCongresos trabajosCongresos = new TrabajosCongresos
                     {
                         ID = fila["item"].value,
-                        descripcion = fila["itemTitle"].value
+                        titulo = fila["itemTitle"].value,
+                        fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : ""
                     };
 
                     resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), trabajosCongresos);
