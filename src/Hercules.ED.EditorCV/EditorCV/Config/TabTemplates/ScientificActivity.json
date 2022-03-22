@@ -533,10 +533,10 @@
                     "properties": [
                       {
                         "title": {
-                          "es": "Etiquetas externas"
+                          "es": "Descriptores específicos externos"
                         },
                         "placeholder": {
-                          "es": "Introduce la etiqueta"
+                          "es": "Introduce el descriptor específico"
                         },
                         "property": "http://w3id.org/roh/externalKeywords",
                         "multiple": true,
@@ -549,10 +549,10 @@
                     "properties": [
                       {
                         "title": {
-                          "es": "Etiquetas enriquecidas"
+                          "es": "Descriptores específicos enriquecidos"
                         },
                         "placeholder": {
-                          "es": "Introduce la etiqueta"
+                          "es": "Introduce el descriptores específico"
                         },
                         "property": "http://w3id.org/roh/enrichedKeywords",
                         "multiple": true,
@@ -565,10 +565,10 @@
                     "properties": [
                       {
                         "title": {
-                          "es": "Etiquetas"
+                          "es": "Descriptores específicos"
                         },
                         "placeholder": {
-                          "es": "Introduce la etiqueta"
+                          "es": "Introduce el descriptores específico"
                         },
                         "property": "http://w3id.org/roh/userKeywords",
                         "multiple": true,
@@ -1350,10 +1350,10 @@
                     "properties": [
                       {
                         "title": {
-                          "es": "Etiquetas externas"
+                          "es": "Descriptores específicos externos"
                         },
                         "placeholder": {
-                          "es": "Introduce la etiqueta"
+                          "es": "Introduce el descriptor específico"
                         },
                         "property": "http://w3id.org/roh/externalKeywords",
                         "multiple": true,
@@ -1366,10 +1366,10 @@
                     "properties": [
                       {
                         "title": {
-                          "es": "Etiquetas enriquecidas"
+                          "es": "Descriptores específicos enriquecidos"
                         },
                         "placeholder": {
-                          "es": "Introduce la etiqueta"
+                          "es": "Introduce el descriptor específico"
                         },
                         "property": "http://w3id.org/roh/enrichedKeywords",
                         "multiple": true,
@@ -1382,10 +1382,10 @@
                     "properties": [
                       {
                         "title": {
-                          "es": "Etiquetas"
+                          "es": "Descriptores específicos"
                         },
                         "placeholder": {
-                          "es": "Introduce la etiqueta"
+                          "es": "Introduce el descriptor específico"
                         },
                         "property": "http://w3id.org/roh/userKeywords",
                         "multiple": true,
@@ -2392,10 +2392,10 @@
                     "properties": [
                       {
                         "title": {
-                          "es": "Etiquetas externas"
+                          "es": "Descriptores específicos externos"
                         },
                         "placeholder": {
-                          "es": "Introduce la etiqueta"
+                          "es": "Introduce el descriptor específico"
                         },
                         "property": "http://w3id.org/roh/externalKeywords",
                         "multiple": true,
@@ -2408,10 +2408,10 @@
                     "properties": [
                       {
                         "title": {
-                          "es": "Etiquetas enriquecidas"
+                          "es": "Descriptores específicos enriquecidos"
                         },
                         "placeholder": {
-                          "es": "Introduce la etiqueta"
+                          "es": "Introduce el descriptor específico"
                         },
                         "property": "http://w3id.org/roh/enrichedKeywords",
                         "multiple": true,
@@ -2424,10 +2424,10 @@
                     "properties": [
                       {
                         "title": {
-                          "es": "Etiquetas"
+                          "es": "Descriptores específicos"
                         },
                         "placeholder": {
-                          "es": "Introduce la etiqueta"
+                          "es": "Introduce el descriptor específico"
                         },
                         "property": "http://w3id.org/roh/userKeywords",
                         "multiple": true,
