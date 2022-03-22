@@ -2230,7 +2230,7 @@
               {
                 "property": "http://w3id.org/roh/scientificActivityDocument",
                 "values": [
-                  "{GraphsUrl}items/scientificactivitydocument_SAD2"
+                  "{GraphsUrl}items/scientificactivitydocument_SAD3"
                 ]
               }
             ],
