@@ -350,7 +350,8 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <param name="propiedadesItem"></param>
         /// <returns></returns>
         protected List<SubseccionItem> CheckPreimportar(bool preimportar, List<Entity> listadoAux, Dictionary<string, DisambiguableEntity> entidadesXML,
-            Dictionary<string, string> equivalencias, string propTitle, string graph, string rdfType, string rdfTypePrefix, List<string> propiedadesItem, string RdfTypeTab)
+            Dictionary<string, string> equivalencias, string propTitle, string graph, string rdfType, string rdfTypePrefix,
+            List<string> propiedadesItem, string RdfTypeTab, [Optional] string pPropertyCV, [Optional] string pRdfTypeCV)
         {
             if (preimportar)
             {
@@ -364,7 +365,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             else
             {
                 //4º Añadimos o modificamos las entidades
-                AniadirModificar(listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab);
+                AniadirModificar(listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, pPropertyCV, pRdfTypeCV);
                 return null;
             }
         }
