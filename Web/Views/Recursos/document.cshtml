@@ -21,8 +21,8 @@
         Html.GetListaJS().Add($"{urlPersonalizacion}/{FichaDocumento.ItemLinked.ToString()}.js?v= {FichaDocumento.ItemLinkedFotoVersion}");
         Html.GetListaCSS().Add($"{urlPersonalizacion}/{FichaDocumento.ItemLinked.ToString()}.css?v= {FichaDocumento.ItemLinkedFotoVersion}");
     }
-    // string urlJS = $"{Html.GetBaseUrlContent()}/imagenes/proyectos/personalizacion/{Comunidad.Key.ToString()}/theme/ficharecurso.js";
-    // Html.GetListaJS().Add(urlJS);
+    string urlJS = $"{Html.GetBaseUrlContent()}/imagenes/proyectos/personalizacion/{Comunidad.Key.ToString()}/theme/ficharecurso.js";
+    Html.GetListaJS().Add(urlJS);
     SemanticResourceModel semCmsModel = Model.SemanticFrom;
     GnossOCBase.LanguageEnum idiomaUsuario = (GnossOCBase.LanguageEnum)Enum.Parse(typeof(GnossOCBase.LanguageEnum), Html.GetUtilIdiomas().LanguageCode.ToLower());
     Document pDocument = new Document(semCmsModel, idiomaUsuario); }
@@ -253,7 +253,7 @@
                             }
 
                             <li>
-                                <a href="@userUrl" class="faceta" name="@filtroPersona">@nombreFirma</a>
+                                <a href="@userUrl" name="@filtroPersona">@nombreFirma</a>
                                 <sup>@numOrganizacion</sup>
                             </li>
 
@@ -322,6 +322,14 @@
                                     //}
                                 }
                             }
+                        }                        
+                        else
+                        {
+                            <li>
+                                <a>
+                                    <span class="texto">---</span>
+                                </a>
+                            </li>
                         }
                     }
                 </ul>
@@ -405,7 +413,6 @@
             <div class="list-wrap website">
                 <div class="label">@Html.Translate("WEBS")</div>
                 <ul>
-
                     <li>
                         <a about="@pDocument.GNOSSID" property="@pDocument.GetPropertyURI(nameof(pDocument.Vcard_url))" target="_blank" href="@pDocument.Vcard_url">@pDocument.Vcard_url</a>
                     </li>
