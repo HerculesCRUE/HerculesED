@@ -996,6 +996,20 @@
                         "width": 2
                       }
                     ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Áreas temáticas"
+                        },
+                        "property": "http://w3id.org/roh/hasKnowledgeArea",
+                        "thesaurus": "researcharea",
+                        "type": "thesaurus",
+                        "width": 3,
+                        "multiple": true
+                      }
+                    ]
                   }
                 ]
               }
@@ -2517,7 +2531,7 @@
                   {
                     "properties": [
                       {
-                        "property": "http://w3id.org/roh/mainResearcher",
+                        "property": "http://w3id.org/roh/mainResearchers",
                         "type": "auxEntity",
                         "title": {
                           "es": "Investigador/a principal (IP)"
