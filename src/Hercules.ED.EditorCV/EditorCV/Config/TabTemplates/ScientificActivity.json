@@ -4521,7 +4521,6 @@
                             "property": "http://www.geonames.org/ontology#name"
                           }
                         },
-                        "TODO": "Autocompletados relacionados (ej. Comunidad de Murcia --> España",
                         "type": "selectCombo",
                         "width": 1
                       },
@@ -4545,7 +4544,6 @@
                             "property": "http://www.geonames.org/ontology#name"
                           }
                         },
-                        "TODO": "Algunos valores están duplicados (ej. La Rioja, Isle of Man...)",
                         "type": "selectCombo",
                         "width": 1
                       }
@@ -5247,7 +5245,6 @@
     },
     {
       "rdftype": "http://w3id.org/roh/RelatedActivityManagement",
-      "TODO": "Falta por incluir la entidad RelatedActivityManagementCV, que contendría los datos propios del investigador.",
       "property": "http://w3id.org/roh/activitiesManagement",
       "presentation": {
         "type": "listitems",
