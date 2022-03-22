@@ -25,13 +25,13 @@
         public const string proyectosIDINumPersonasAnio = "";
         public const string proyectosIDIGradoContribucion = "";
         public const string proyectosIDIGradoContribucionOtros = "";
-        public const string proyectosIDIPaisEntidadFinancidora = "";
-        public const string proyectosIDICCAAEntidadFinancidora = "";
-        public const string proyectosIDICiudadEntidadFinancidora = "";
-        public const string proyectosIDIEntidadFinancidora = "";
-        public const string proyectosIDIEntidadFinancidoraNombre = "";
-        public const string proyectosIDITipoEntidadFinancidora = "";
-        public const string proyectosIDITipoEntidadFinancidoraOtros = "";
+        public const string proyectosIDIPaisEntidadFinanciadora = "";
+        public const string proyectosIDICCAAEntidadFinanciadora = "";
+        public const string proyectosIDICiudadEntidadFinanciadora = "";
+        public const string proyectosIDIEntidadFinanciadora = "";
+        public const string proyectosIDIEntidadFinanciadoraNombre = "";
+        public const string proyectosIDITipoEntidadFinanciadora = "";
+        public const string proyectosIDITipoEntidadFinanciadoraOtros = "";
         public const string proyectosIDITipoParticipacion = "";
         public const string proyectosIDITipoParticipacionOtros = "";
         public const string proyectosIDINombreProgramaFinanciacion = "";
@@ -143,31 +143,31 @@
         /// <summary>
         /// Grupos/equipos de investigación, desarrollo o innovación - 050.010.000.000
         /// </summary>
-        public const string grupoIDIObjetoGrupo = "";
-        public const string grupoIDINombreGrupo = "";
-        public const string grupoIDICodNormalizado = "";
-        public const string grupoIDIPaisRadicacion = "";
-        public const string grupoIDICCAARadicacion = "";
-        public const string grupoIDICiudadRadicacion = "";
-        public const string grupoIDINombreIP = "";
-        public const string grupoIDIPrimerApellidoIP = "";
-        public const string grupoIDISegundoapellidoIP = "";
-        public const string grupoIDIFirmaIP = "";
-        public const string grupoIDIEntidadAfiliacion = "";
-        public const string grupoIDIEntidadAfiliacionNombre = "";
-        public const string grupoIDITipoEntidadAfiliacion = "";
-        public const string grupoIDITipoEntidadAfiliacionOtros = "";
-        public const string grupoIDINumComponentes = "";
-        public const string grupoIDIFechaInicio = "";
-        public const string grupoIDIDuracionAnio = "";
-        public const string grupoIDIDuracionMes = "";
-        public const string grupoIDIDuracionDia = "";
-        public const string grupoIDIClaseColaboracion = "";
-        public const string grupoIDINumTesisDirigidas = "";
-        public const string grupoIDINumPosDocDirigidos = "";
-        public const string grupoIDIResultadosOtros = "";
-        public const string grupoIDIResultadosMasRelevantes = "";
-        public const string grupoIDIPalabrasClave = "";
+        public const string grupoIDIObjetoGrupo = "http://vivoweb.org/ontology/core#description";
+        public const string grupoIDINombreGrupo = "http://w3id.org/roh/title";
+        public const string grupoIDICodNormalizado = "http://w3id.org/roh/normalizedCode";
+        public const string grupoIDIPaisRadicacion = "https://www.w3.org/2006/vcard/ns#hasCountryName";
+        public const string grupoIDICCAARadicacion = "https://www.w3.org/2006/vcard/ns#hasRegion";
+        public const string grupoIDICiudadRadicacion = "https://www.w3.org/2006/vcard/ns#locality";
+        public const string grupoIDINombreIP = "http://w3id.org/roh/mainResearchers@@@http://xmlns.com/foaf/0.1/Person|http://xmlns.com/foaf/0.1/firstName";
+        public const string grupoIDIPrimerApellidoIP = "http://w3id.org/roh/mainResearchers@@@http://xmlns.com/foaf/0.1/Person|http://xmlns.com/foaf/0.1/familyName";
+        public const string grupoIDISegundoapellidoIP = "http://w3id.org/roh/mainResearchers@@@http://xmlns.com/foaf/0.1/Person|http://w3id.org/roh/secondFamilyName";
+        public const string grupoIDIFirmaIP = "http://w3id.org/roh/mainResearchers@@@http://xmlns.com/foaf/0.1/Person|http://xmlns.com/foaf/0.1/nick";
+        public const string grupoIDIEntidadAfiliacion = "http://vivoweb.org/ontology/core#affiliatedOrganization";
+        public const string grupoIDIEntidadAfiliacionNombre = "http://w3id.org/roh/affiliatedOrganizationTitle";
+        public const string grupoIDITipoEntidadAfiliacion = "http://w3id.org/roh/affiliatedOrganizationType";
+        public const string grupoIDITipoEntidadAfiliacionOtros = "http://w3id.org/roh/affiliatedOrganizationTypeOther";
+        public const string grupoIDINumComponentes = "http://w3id.org/roh/membersNumber";
+        public const string grupoIDIFechaInicio = "http://w3id.org/roh/foundationDate";
+        public const string grupoIDIDuracionAnio = "http://w3id.org/roh/durationYears";
+        public const string grupoIDIDuracionMes = "http://w3id.org/roh/durationMonths";
+        public const string grupoIDIDuracionDia = "http://w3id.org/roh/durationDays";
+        public const string grupoIDIClaseColaboracion = "http://w3id.org/roh/collaborationType";
+        public const string grupoIDINumTesisDirigidas = "http://w3id.org/roh/directedThesisNumber";
+        public const string grupoIDINumPosDocDirigidos = "http://w3id.org/roh/directedPostdocsNumber";
+        public const string grupoIDIResultadosOtros = "http://w3id.org/roh/otherRelevantResults";
+        public const string grupoIDIResultadosRelevantes = "http://w3id.org/roh/relevantResults";
+        //public const string grupoIDIPalabrasClave = "http://w3id.org/roh/hasKnowledgeArea@@@http://w3id.org/roh/CategoryPath|http://w3id.org/roh/categoryNode";*
                 
         /// <summary>
         /// Obras artísticas dirigidas - 050.020.030.000
