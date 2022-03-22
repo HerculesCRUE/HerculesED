@@ -1537,7 +1537,6 @@ namespace ImportadorWebCV.Sincro.Secciones
             UtilitySecciones.InsertaISBN(listadoISBN, entidadAux, propiedadISBN);
         }
         
-
         /// <summary>
         /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
         /// pertenecientes al ISSN.
