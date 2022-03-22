@@ -8,6 +8,9 @@ using System.Threading;
 
 namespace Hercules.ED.DisambiguationEngine.Models
 {
+    /// <summary>
+    /// Clase para lanzar un sólo hilo
+    /// </summary>
     public class ThreadSafeSingleShotGuard
     {
         private static int NOTCALLED = 0;
@@ -17,11 +20,15 @@ namespace Hercules.ED.DisambiguationEngine.Models
         { get { return Interlocked.Exchange(ref _state, CALLED) == NOTCALLED; } }
     }
 
+    /// <summary>
+    /// Clase para realizar tareas de desambiguación
+    /// </summary>
     public static class Disambiguation
     {
+        /// <summary>
+        /// API
+        /// </summary>
         public static ResourceApi mResourceApi = null;
-
-        //TODO comentarios
         /// <summary>
         /// Frecuencia absoluta de los nombres
         /// </summary>
@@ -30,13 +37,23 @@ namespace Hercules.ED.DisambiguationEngine.Models
         /// Score de los nombres 
         /// </summary>
         private static Dictionary<string, float> mScoreNombresCalculado = null;
-        //Valores entre 0.4 y 0.6
+        /// <summary>
+        /// Score para las iniciales
+        /// </summary>
         private static float scoreInicial = 0.1f;
+        /// <summary>
+        /// Score mínimo para los nombres
+        /// </summary>
         private static float minimoScoreNombres = 0.4f;
+        /// <summary>
+        /// Score máximo para los nombres
+        /// </summary>
         private static float maximoScoreNombres = 0.6f;
         private static ThreadSafeSingleShotGuard _loading = new ThreadSafeSingleShotGuard();
 
-
+        /// <summary>
+        /// Obtiene la frecuencia de mombres
+        /// </summary>
         private static Dictionary<string, int> FrecuenciaNombres
         {
             get
@@ -58,7 +75,7 @@ namespace Hercules.ED.DisambiguationEngine.Models
                                     int numPersonas = 0;
                                     while (true)
                                     {
-                                        string select = "SELECT * WHERE { SELECT DISTINCT ?persona ?nombreCompleto FROM <http://gnoss.com/person.owl> ";
+                                        string select = $@"SELECT * WHERE {{ SELECT DISTINCT ?persona ?nombreCompleto";
                                         string where = $@"WHERE {{
                                                             ?persona a <http://xmlns.com/foaf/0.1/Person>. 
                                                             ?persona <http://xmlns.com/foaf/0.1/name> ?nombreCompleto.                                
@@ -152,6 +169,9 @@ namespace Hercules.ED.DisambiguationEngine.Models
             }
         }
 
+        /// <summary>
+        /// Obtiene el score de los nombres calculado
+        /// </summary>
         private static Dictionary<string, float> ScoreNombresCalculado
         {
             get
@@ -161,6 +181,14 @@ namespace Hercules.ED.DisambiguationEngine.Models
             }
         }
 
+        /// <summary>
+        /// Compara la similitud con los elementos de la BBDD
+        /// </summary>
+        /// <param name="pItems">Items a desambiguar</param>
+        /// <param name="pItemBBDD">Items de BBDD</param>
+        /// <param name="pUmbral">Umbral</param>
+        /// <param name="pToleranciaNombres">Tolerancia para los nombres</param>
+        /// <returns></returns>
         public static Dictionary<string, string> SimilarityBBDD(List<DisambiguableEntity> pItems, List<DisambiguableEntity> pItemBBDD, float pUmbral = 0.8f, float pToleranciaNombres = 0f)
         {
             Dictionary<string, Dictionary<string, float>> listaEquivalencias = new Dictionary<string, Dictionary<string, float>>();
@@ -255,6 +283,14 @@ namespace Hercules.ED.DisambiguationEngine.Models
             return listaEquivalenciasFinal;
         }
 
+        /// <summary>
+        /// Compara la similitud con los elementos de la BBDD y devuelve los scores
+        /// </summary>
+        /// <param name="pItems">Items a desambiguar</param>
+        /// <param name="pItemBBDD">Items de BBDD</param>
+        /// <param name="pUmbral">Umbral</param>
+        /// <param name="pToleranciaNombres">Tolerancia para los nombres</param>
+        /// <returns></returns>
         public static Dictionary<string, Dictionary<string, float>> SimilarityBBDDScores(List<DisambiguableEntity> pItems, List<DisambiguableEntity> pItemBBDD, float pUmbral = 0.8f, float pToleranciaNombres = 0f)
         {
             Dictionary<string, Dictionary<string, float>> listaEquivalencias = new Dictionary<string, Dictionary<string, float>>();
@@ -334,15 +370,6 @@ namespace Hercules.ED.DisambiguationEngine.Models
         /// <returns>Lista de datos desambiguables.</returns>
         public static Dictionary<string, HashSet<string>> Disambiguate(List<DisambiguableEntity> pItems, List<DisambiguableEntity> pItemBBDD, bool pDisambiguateItems = true, float pUmbral = 0.8f, float pToleranciaNombres = 0f)
         {
-            //Marin lopez
-            //Marin perez
-
-
-            //TODO confiuracion personas
-            //TODO tener en cuenta las probabilidades cuando se apunta a entidades (autores de docs) (test 2 docs con 2 autores)
-            //TODO block
-            //TODO tener en cuenta negativos
-
             //En esta variable se almacenarán todas las equivalencias encontradas con su peso
             Dictionary<string, Dictionary<string, float>> listaEquivalencias = new Dictionary<string, Dictionary<string, float>>();
             #region Diccionarios auxiliares para la desmbiguación
@@ -664,22 +691,6 @@ namespace Hercules.ED.DisambiguationEngine.Models
                 }
             }
 
-            //TODO ver co adrián, en el JSON nos llegan cosas que no pueden ser
-            List<DisambiguableEntity> perez = null;
-            List<DisambiguableEntity> lopez = null;
-            if (listadoEquivalencias.ContainsKey("http://gnoss.com/items/Person_32e0430e-ceca-46ad-87d2-e9e3ba9e1484_ab4849cb-ea56-4791-9b47-a70716dae5da"))
-            {
-                //Rafael Marin Pérez
-                var x = listadoEquivalencias["http://gnoss.com/items/Person_32e0430e-ceca-46ad-87d2-e9e3ba9e1484_ab4849cb-ea56-4791-9b47-a70716dae5da"];
-                perez = pItems.Where(y => x.Contains(y.ID)).ToList();
-            }
-            if (listadoEquivalencias.ContainsKey("http://gnoss.com/items/Person_9d8d3ec5-20fb-4cec-8bf3-c52ad27ce35e_d0d06f13-7aac-45f9-bed4-e4294088ee59"))
-            {
-                //Rafael Marin López
-                var x = listadoEquivalencias["http://gnoss.com/items/Person_9d8d3ec5-20fb-4cec-8bf3-c52ad27ce35e_d0d06f13-7aac-45f9-bed4-e4294088ee59"];
-                lopez = pItems.Where(y => x.Contains(y.ID)).ToList();
-            }
-
             return listadoEquivalencias;
         }
 
@@ -728,8 +739,6 @@ namespace Hercules.ED.DisambiguationEngine.Models
                             continue;
                         }
                         cambios = true;
-                        //TODO priorizar BBDD ¿que pasa sin en los que vamos a cargar esta el mismo ID dos veces?
-
                         //Obtenemos ItemA
                         DisambiguableEntity itemA = dicItems[idAtype + "|" + idAidentifier];
                         //Obtenemos ItemB
@@ -764,21 +773,6 @@ namespace Hercules.ED.DisambiguationEngine.Models
 
         private static void FusionarEntidades(string pIDA, string pIDb, DisambiguableEntity pItemA, DisambiguableEntity pItemB, Dictionary<DisambiguableEntity, List<DisambiguationData>> pDisambiguationDataItemsACargar, Dictionary<DisambiguableEntity, List<DisambiguationData>> pDisambiguationDataItemsACargarBBDD, Dictionary<string, Dictionary<string, float>> pListaEquivalenciasItemsACargar, Dictionary<string, Dictionary<string, float>> pListaEquivalencias, Dictionary<string, string> pCambiosReferencias)
         {
-            //TODO eliiar
-            foreach (var x in pItemA.GetDisambiguationData())
-            {
-                if (x.value != null && x.value.ToLower().Contains("aurora") && !x.value.ToLower().Contains("vidal"))
-                {
-                }
-            }
-            foreach (var x in pItemB.GetDisambiguationData())
-            {
-                if (x.value != null && x.value.ToLower().Contains("aurora") && !x.value.ToLower().Contains("vidal"))
-                {
-                }
-            }
-
-
             bool itemABBDD = !Guid.TryParse(pItemA.ID, out Guid aux);
             bool itemBBBDD = !Guid.TryParse(pItemB.ID, out Guid aux2);
             if (itemABBDD && itemBBBDD)
@@ -884,11 +878,6 @@ namespace Hercules.ED.DisambiguationEngine.Models
                 pListaEquivalencias.Add(pIDb, new Dictionary<string, float>());
             }
             pListaEquivalencias[pIDA][pIDb] = pListaEquivalenciasItemsACargar[pIDA][pIDb];
-            //TODO eliminar
-            if (!pListaEquivalenciasItemsACargar[pIDb].ContainsKey(pIDA))
-            {
-
-            }
             pListaEquivalencias[pIDb][pIDA] = pListaEquivalenciasItemsACargar[pIDb][pIDA];
 
             //Agregamos el listado del eliminado en el bueno
@@ -957,8 +946,6 @@ namespace Hercules.ED.DisambiguationEngine.Models
         /// <returns>Listado con las equivalencias y su peso.</returns>
         private static Dictionary<string, Dictionary<string, float>> ApplyDisambiguation(Dictionary<DisambiguableEntity, List<DisambiguationData>> pItemsToLoad, Dictionary<DisambiguableEntity, List<DisambiguationData>> pItemsBBDD, Dictionary<string, HashSet<string>> pListaDistintos, Dictionary<string, string> pDicNomPersonasDesnormalizadas, Dictionary<string, string> pDicTitulosDesnormalizados, float pToleranciaNombres)
         {
-            //TODO los ids de bbdd no hay que compararlos con nada
-
             // Respuesta: Diccionario con los IDs equivalentes.
             Dictionary<string, Dictionary<string, float>> equivalences = new Dictionary<string, Dictionary<string, float>>();
 
@@ -967,8 +954,7 @@ namespace Hercules.ED.DisambiguationEngine.Models
             // Diccionario con tipo de item y su listado correspondiente de los datos a desambiguar.
             Dictionary<string, Dictionary<DisambiguableEntity, List<DisambiguationData>>> itemsPorTipoBBDD = ObtenerItemsPorTipo(pItemsBBDD);
 
-            // Realizamos las comprobacions para ver si el input es correcto
-            //TODO mover de sitio
+            // Realizamos las comprobacions para ver si el input es correcto            
             RealizarComprobaciones(itemsPorTipoToLoad, itemsPorTipoBBDD);
 
             for (int i = 0; i < 2; i++)
