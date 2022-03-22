@@ -161,6 +161,29 @@ namespace PublicationConnect.ROs.Publications.Models
 
 
 
+    public class ObjEnriquecimientoSinPdf
+    {
+        public string rotype { get; set; }
+
+        public string title { get; set; }
+
+        [JsonProperty("abstract")]
+        public string abstract_ { get; set; }
+    }
+
+    public class ObjEnriquecimientoConPdf
+    {
+        public string rotype { get; set; }
+
+        [JsonProperty("pdf_url")]
+        public string pdfurl { get; set; }
+
+        public string title { get; set; }
+
+        [JsonProperty("abstract")]
+        public string abstract_ { get; set; }
+    }
+
     public class Topics_enriquecidos
     {
         public string pdf_url { get; set; }
@@ -172,55 +195,5 @@ namespace PublicationConnect.ROs.Publications.Models
     {
         public string word { get; set; }
         public string porcentaje { get; set; }
-    }
-
-    public class palabras_enriquecidas
-    {
-        public List<Knowledge_enriquecidos> topics { get; set; }
-        public string title { get; set; }
-        [JsonProperty("abstract")]
-        public string abstract_ { get; set; }
-
-
-    }
-
-    public class enriquecimiento
-    {
-        public string rotype { get; set; }
-        [JsonProperty("pdf_url")]
-        public string pdfurl { get; set; }
-        public string title { get; set; }
-
-        [JsonProperty("abstract")]
-        public string abstract_ { get; set; }
-        //public string author_name { get; set; }
-        public string journal { get; set; }
-
-    }
-
-    public class enriquecimiento_sin_pdf
-    {
-        public string rotype { get; set; }
-        // [JsonProperty("pdf_url")]
-        //public string pdfurl {get;set;}
-        public string title { get; set; }
-
-        [JsonProperty("abstract")]
-        public string abstract_ { get; set; }
-        //public string author_name { get; set; }
-        public string journal { get; set; }
-
-    }
-
-    public class enriquecimiento_palabras
-    {
-        public string rotype { get; set; }
-        // [JsonProperty("pdf_url")]
-        //public string pdfurl {get;set;}
-        public string title { get; set; }
-
-        [JsonProperty("abstract")]
-        public string abstract_ { get; set; }
-        public string journal { get; set; }
     }
 }
