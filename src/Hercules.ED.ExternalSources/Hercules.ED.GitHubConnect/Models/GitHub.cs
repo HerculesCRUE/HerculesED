@@ -176,8 +176,8 @@ namespace GitHubAPI.ROs.Codes.Controllers
                     {
                         data.etiquetasEnriquecidas = null;
                     }
-                   
-                    data.categoriasEnriquecidas = getDescriptores(dataEnriquecimientoSinPdf, "thematic");                    
+
+                    data.categoriasEnriquecidas = getDescriptores(dataEnriquecimientoSinPdf, "thematic");
                     if (data.categoriasEnriquecidas != null && !data.categoriasEnriquecidas.Any())
                     {
                         data.categoriasEnriquecidas = null;
@@ -269,6 +269,7 @@ namespace GitHubAPI.ROs.Codes.Controllers
                 foreach (KeyValuePair<string, string> item in dicLenguajes)
                 {
                     float porcentaje = (Int32.Parse(item.Value) * 100) / (float)numTotal;
+                    porcentaje = (float)Math.Round(porcentaje * 100f) / 100f;
                     dicLenguajesCalculados.Add(item.Key, porcentaje);
                 }
 

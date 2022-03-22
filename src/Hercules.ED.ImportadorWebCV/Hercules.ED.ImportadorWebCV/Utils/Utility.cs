@@ -1,11 +1,16 @@
 ﻿using Gnoss.ApiWrapper;
+using Gnoss.ApiWrapper.ApiModel;
+using Hercules.ED.DisambiguationEngine.Models;
+using Hercules.ED.ImportadorWebCV.Models;
 using ImportadorWebCV;
 using Models;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
+using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 using static Models.Entity;
 
 namespace Utils
@@ -522,6 +527,77 @@ namespace Utils
         }
 
         /// <summary>
+        /// Obtiene un listado de las personas a partir de <paramref name="firma"/>.
+        /// </summary>
+        /// <param name="pResourceApi"></param>
+        /// <param name="firma"></param>
+        /// <returns></returns>
+        public static List<Persona> ObtenerPersonasFirma(ResourceApi pResourceApi, string firma)
+        {
+            //TODO - Agrupar personas con UNION
+            List<Persona> listaPersonas = new List<Persona>();
+
+            string texto = Disambiguation.ObtenerTextosNombresNormalizados(firma);
+            string[] wordsTexto = texto.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+
+            if (wordsTexto.Length > 0)
+            {
+                #region Buscamos en nombres
+                {
+                    List<string> unions = new List<string>();
+                    foreach (string word in wordsTexto)
+                    {
+                        int score = 1;
+                        if (word.Length > 1)
+                        {
+                            score = 5;
+                        }
+                        StringBuilder sbUnion = new StringBuilder();
+                        sbUnion.AppendLine("   ?personID <http://xmlns.com/foaf/0.1/name> ?name.");
+                        sbUnion.AppendLine($@" ?name bif:contains ""'{word}'"" BIND({score} as ?num)");
+                        unions.Add(sbUnion.ToString());
+                    }
+
+
+                    string select = $@"select distinct ?personID ?name ?num  ";
+                    string where = $@"where
+                            {{
+                                    select ?personID ?name sum(?num) as ?num
+                                    where
+                                    {{
+                                        ?personID  a <http://xmlns.com/foaf/0.1/Person>.                                        
+                                        {{{string.Join("}UNION{", unions)}}}
+                                    }}
+                            }}order by desc (?num)limit 50";
+
+                    SparqlObject sparqlObject = pResourceApi.VirtuosoQuery(select, where, "person");
+                    HashSet<int> scores = new HashSet<int>();
+                    foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings)
+                    {
+                        string personID = fila["personID"].value;
+                        string name = fila["name"].value;
+                        int score = int.Parse(fila["num"].value);
+                        scores.Add(score);
+                        if (scores.Count > 2)
+                        {
+                            break;
+                        }
+                        Persona persona = new Persona
+                        {
+                            nombreCompleto = name,
+                            personid = personID,
+                            documentos = new HashSet<string>(),
+                            coautores = new HashSet<string>()
+                        };
+                        listaPersonas.Add(persona);
+                    }
+                }
+                #endregion
+            }
+            return listaPersonas;
+        }
+
+        /// <summary>
         /// Dado el codigo del campo, devuelve el valor del elemento, 
         /// de tipo CvnItemBeanCvnDouble que tenga ese codigo.
         /// En formato 
@@ -826,6 +902,29 @@ namespace Utils
 
         /// <summary>
         /// Devuelve el tipo de evento como respuesta,
+        /// con formato mResourceApi.GraphsUrl + "items/seminareventtype_" + valor
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>OrganizaTipoEventocion</returns>
+        public static string GetTipoEventoSeminarioPorIDCampo(this CvnItemBean item, string codigo)
+        {
+            if (!CodigoCampoCorrecto(codigo))
+            {
+                throw new ArgumentException("Codigo de campo incorrecto" + codigo);
+            }
+
+            if (codigo.Length != 15) { return null; }
+            CvnItemBeanCvnString campo = item.Items?.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
+            if (campo != null && !string.IsNullOrEmpty(campo.Value))
+            {
+                return mResourceApi.GraphsUrl + "items/seminareventtype_" + campo.Value;
+            }
+            return null;
+        }
+        
+        /// <summary>
+        /// Devuelve el tipo de evento como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/eventtype_" + valor
         /// </summary>
         /// <param name="item"></param>
@@ -866,6 +965,29 @@ namespace Utils
             if (campo != null && !string.IsNullOrEmpty(campo.Value))
             {
                 return mResourceApi.GraphsUrl + "items/eventinscriptiontype_" + campo.Value;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Devuelve el tipo de evento como respuesta,
+        /// con formato mResourceApi.GraphsUrl + "items/seminarinscriptiontype_" + valor
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>OrganizaTipoEventocion</returns>
+        public static string GetTipoInscripcionSeminarioPorIDCampo(this CvnItemBean item, string codigo)
+        {
+            if (!CodigoCampoCorrecto(codigo))
+            {
+                throw new ArgumentException("Codigo de campo incorrecto" + codigo);
+            }
+
+            if (codigo.Length != 15) { return null; }
+            CvnItemBeanCvnString campo = item.Items?.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
+            if (campo != null && !string.IsNullOrEmpty(campo.Value))
+            {
+                return mResourceApi.GraphsUrl + "items/seminarinscriptiontype_" + campo.Value;
             }
             return null;
         }
