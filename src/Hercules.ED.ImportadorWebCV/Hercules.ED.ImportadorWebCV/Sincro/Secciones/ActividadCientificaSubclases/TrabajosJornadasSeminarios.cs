@@ -84,9 +84,9 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
             //Divido la lista en listas de 1.000 elementos
             List<List<string>> listaListas = Utils.UtilitySecciones.SplitList(ids.ToList(), 1000).ToList();
 
-            foreach (List<string> lista in listaListas)//TODO -revisar consulta(autores)
+            foreach (List<string> lista in listaListas)
             {
-                string select = $@"SELECT distinct ?item ?itemTitle ?itemDate ";
+                string select = $@"SELECT distinct ?item ?itemTitle ?itemDate group_concat(?autor;separator=""|"") as ?autores ";
                 string where = $@"where {{
                                         ?item <{Variables.ActividadCientificaTecnologica.trabajosJornSemTituloTrabajo}> ?itemTitle . 
                                         OPTIONAL{{ ?item <{Variables.ActividadCientificaTecnologica.trabajosJornSemPubFecha}> ?itemDate }}
