@@ -28,6 +28,8 @@ namespace ImportadorWebCV.Sincro.Secciones
         public List<SubseccionItem> SincroProyectosIDI([Optional] bool preimportar)
         {
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience", "http://w3id.org/roh/competitiveProjects", "http://vivoweb.org/ontology/core#relatedBy" };
+            string propertyCV = "http://w3id.org/roh/relatedCompetitiveProyectCV";
+            string rdfTypeCV = "http://w3id.org/roh/RelatedCompetitiveProyectCV";
             string graph = "project";
             string propTitle = "http://w3id.org/roh/title";
             string rdfType = "http://vivoweb.org/ontology/core#Project";
@@ -53,7 +55,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
 
             //Comparamos si queremos Preimportar o actualizar las entidades
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab);
+            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, propertyCV, rdfTypeCV);
         }
 
         /// <summary>
@@ -64,6 +66,8 @@ namespace ImportadorWebCV.Sincro.Secciones
         public List<SubseccionItem> SincroContratos([Optional] bool preimportar)
         {
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience", "http://w3id.org/roh/nonCompetitiveProjects", "http://vivoweb.org/ontology/core#relatedBy" };
+            string propertyCV = "http://w3id.org/roh/relatedNonCompetitiveProyectCV";
+            string rdfTypeCV = "http://w3id.org/roh/RelatedNonCompetitiveProyectCV";
             string graph = "project";
             string propTitle = "http://w3id.org/roh/title";
             string rdfType = "http://vivoweb.org/ontology/core#Project";
@@ -89,7 +93,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
 
             //Comparamos si queremos Preimportar o actualizar las entidades
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab);
+            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, propertyCV, rdfTypeCV);
         }
 
         /// <summary>
@@ -137,6 +141,8 @@ namespace ImportadorWebCV.Sincro.Secciones
         public List<SubseccionItem> SincroGrupoIDI([Optional] bool preimportar)
         {
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience", "http://w3id.org/roh/groups", "http://vivoweb.org/ontology/core#relatedBy" };
+            string propertyCV = "http://w3id.org/roh/relatedGroupCV";
+            string rdfTypeCV = "http://w3id.org/roh/RelatedGroupCV";
             string graph = "group";
             string propTitle = "http://w3id.org/roh/title";
             string rdfType = "http://xmlns.com/foaf/0.1/Group";
@@ -146,7 +152,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<Entity> listadoAux = GetGrupoIDI(listadoDatos);
 
             Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
-            foreach (Entity entityXML in listadoAux)//TODO -check
+            foreach (Entity entityXML in listadoAux)
             {
                 GrupoIDI grupoIDI = new GrupoIDI();
                 grupoIDI.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.grupoIDINombreGrupo)?.values.FirstOrDefault();
@@ -162,7 +168,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
 
             //Comparamos si queremos Preimportar o actualizar las entidades
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab);
+            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, propertyCV, rdfTypeCV);
         }
 
         /// <summary>
@@ -252,6 +258,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 {
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
+                    entidadAux.properties_cv = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("050.020.010.010")))
                     {
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
@@ -261,10 +268,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                             new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDIAmbitoProyectoOtros, item.GetStringPorIDCampo("050.020.010.050")),
                             new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDINumInvestigadores, item.GetStringDoublePorIDCampo("050.020.010.150")),
                             new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDINumPersonasAnio, item.GetStringDoublePorIDCampo("050.020.010.160")),
-                            new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDIGradoContribucion, item.GetGradoContribucionDocumentoPorIDCampo("050.020.010.170")),//TODO-check
-                            new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDIGradoContribucionOtros, item.GetStringPorIDCampo("050.020.010.180")),
-                            new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDITipoParticipacion, item.GetTipoParticipacionActividadPorIDCampo("050.020.010.230")),//TODO- check 
-                            new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDITipoParticipacionOtros, item.GetStringPorIDCampo("050.020.010.240")),//TODO - revisar 
                             new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDINombreProgramaFinanciacion, item.GetStringPorIDCampo("050.020.010.250")),
                             new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDICodEntidadFinanciacion, item.GetValueCvnExternalPKBean("050.020.010.260")),//TODO - check
                             new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDIFechaInicio, item.GetStringDatetimePorIDCampo("050.020.010.270")),
@@ -273,13 +276,19 @@ namespace ImportadorWebCV.Sincro.Secciones
                             new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDIDuracionDia, item.GetDurationDiaPorIDCampo("050.020.010.280")),
                             new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDICuantiaTotal, item.GetStringDoublePorIDCampo("050.020.010.290")),
                             new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDIResultadosRelevantes, item.GetStringPorIDCampo("050.020.010.340")),
-                            new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDIFechaFinalizacion, item.GetStringDatetimePorIDCampo("050.020.010.410")),
-                        new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDIAportacionSolicitante, item.GetStringPorIDCampo("050.020.010.420")),
-                        new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDIRegimenDedicacion, item.GetStringPorIDCampo("050.020.010.430"))//TODO
+                            new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDIFechaFinalizacion, item.GetStringDatetimePorIDCampo("050.020.010.410"))
+                        ));
+                        entidadAux.properties_cv.AddRange(UtilitySecciones.AddProperty(
+                            new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDIGradoContribucion, item.GetGradoContribucionDocumentoPorIDCampo("050.020.010.170")),//TODO-check
+                            new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDIGradoContribucionOtros, item.GetStringPorIDCampo("050.020.010.180")),
+                            new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDITipoParticipacion, item.GetTipoParticipacionActividadPorIDCampo("050.020.010.230")),//TODO- check 
+                            new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDITipoParticipacionOtros, item.GetStringPorIDCampo("050.020.010.240")),//TODO - revisar
+                            new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDIRegimenDedicacion, item.GetStringPorIDCampo("050.020.010.430")),//TODO
+                            new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDIAportacionSolicitante, item.GetStringPorIDCampo("050.020.010.420"))
                         ));
                         ProyectosIDIEntidadRealizacion(item, entidadAux);
-                        ProyectosIDIResultadosRelevantesPalabrasClave(item, entidadAux);
-                        ProyectosIDIPalabrasClave(item, entidadAux);
+                        //ProyectosIDIResultadosRelevantesPalabrasClave(item, entidadAux);
+                        //ProyectosIDIPalabrasClave(item, entidadAux);
                         ProyectosIDIFinanciacion(item, entidadAux);
                         ProyectosIDIEntidadesParticipantes(item, entidadAux);
                         ProyectosIDIAutores(item, entidadAux);
@@ -382,14 +391,20 @@ namespace ImportadorWebCV.Sincro.Secciones
                 Variables.ExperienciaCientificaTecnologica.proyectosIDIEntidadRealizacionNombre,
                 Variables.ExperienciaCientificaTecnologica.proyectosIDIEntidadRealizacion, entidadAux);
 
-            //new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDIEntidadRealizacion, item.GetNameEntityBeanPorIDCampo("050.020.010.100"))
+            //Añado otros, o el ID de una preseleccion
+            string valorTipo = !string.IsNullOrEmpty(item.GetStringPorIDCampo("050.020.010.130")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetOrganizacionPorIDCampo("050.020.010.120");
 
-            //new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDIPaisEntidadRealizacion, item.GetPaisPorIDCampo("050.020.010.060")),
-            //new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDICCAAEntidadRealizacion, item.GetRegionPorIDCampo("050.020.010.070")),
-            //new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDICiudadEntidadRealizacion, item.GetStringPorIDCampo("050.020.010.090")),
-            //new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDITipoEntidadRealizacion, item.GetStringPorIDCampo("050.020.010.120")),
-            //new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDITipoEntidadRealizacionOtros, item.GetStringPorIDCampo("050.020.010.130")),
+            entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDITipoEntidadRealizacion, valorTipo),
+                new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDITipoEntidadRealizacionOtros, item.GetStringPorIDCampo("050.020.010.130"))
+            ));
 
+            //Añado pais, CCAA y ciudad
+            entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDIPaisEntidadRealizacion, item.GetPaisPorIDCampo("050.020.010.060")),
+                new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDICCAAEntidadRealizacion, item.GetRegionPorIDCampo("050.020.010.070")),
+                new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDICiudadEntidadRealizacion, item.GetStringPorIDCampo("050.020.010.090"))
+            ));
         }
 
         /// <summary>
@@ -400,7 +415,6 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <param name="entidadAux">entidadAux</param>
         private void ProyectosIDIEntidadesParticipantes(CvnItemBean item, Entity entidadAux)
         {
-
             //Añado el listado de entidades participantes
             List<CvnItemBeanCvnEntityBean> listadoEntidadesParticipantes = item.GetListaElementosPorIDCampo<CvnItemBeanCvnEntityBean>("050.020.010.400");
             foreach (CvnItemBeanCvnEntityBean entidad in listadoEntidadesParticipantes)
@@ -420,32 +434,33 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <param name="entidadAux">entidadAux</param>
         private void ProyectosIDIAutores(CvnItemBean item, Entity entidadAux)
         {
+            string propiedadFirma = Variables.ExperienciaCientificaTecnologica.proyectosIDIFirmaIP;
+            string propiedadNombre = Variables.ExperienciaCientificaTecnologica.proyectosIDINombreIP;
+            string propiedadPrimerApellido = Variables.ExperienciaCientificaTecnologica.proyectosIDIPrimerApellidoIP;
+            string propiedadSegundoApellido = Variables.ExperienciaCientificaTecnologica.proyectosIDISegundoApellidoIP;
+
             //Añado el listado de autores principales
             List<CvnItemBeanCvnAuthorBean> listadoAutores = item.GetListaElementosPorIDCampo<CvnItemBeanCvnAuthorBean>("050.020.010.140");
             foreach (CvnItemBeanCvnAuthorBean autor in listadoAutores)
             {
-                //Si no tiene nombre no lo inserto
+                //Si no tiene nombre continuo con el siguiente
                 if (string.IsNullOrEmpty(autor.GetNombreAutor())) { continue; }
 
-                Property propertyNombre = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.proyectosIDINombreIP);
-                Property propertyPrimerApellido = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.proyectosIDIPrimerApellidoIP);
-                Property propertySegundoApellido = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.proyectosIDISegundoApellidoIP);
-                Property propertyFirma = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.proyectosIDIFirmaIP);
+                string entityPartAux = Guid.NewGuid().ToString() + "@@@";
 
-                string valorNombre = autor.GetNombreAutor();
-                string valorPrimerApellido = autor.GetPrimerApellidoAutor();
-                string valorSegundoApellido = autor.GetSegundoApellidoAutor();
-                string valorFirma = autor.GetFirmaAutor();
+                Property propertyFirma = entidadAux.properties.FirstOrDefault(x => x.prop == propiedadFirma);
+                Property propertyNombre = entidadAux.properties.FirstOrDefault(x => x.prop == propiedadNombre);
+                Property propertyPrimerApellido = entidadAux.properties.FirstOrDefault(x => x.prop == propiedadPrimerApellido);
+                Property propertySegundoApellido = entidadAux.properties.FirstOrDefault(x => x.prop == propiedadSegundoApellido);
 
-                string propiedadNombre = Variables.ExperienciaCientificaTecnologica.proyectosIDINombreIP;
-                string propiedadPrimerApellido = Variables.ExperienciaCientificaTecnologica.proyectosIDIPrimerApellidoIP;
-                string propiedadSegundoApellido = Variables.ExperienciaCientificaTecnologica.proyectosIDISegundoApellidoIP;
-                string propiedadFirma = Variables.ExperienciaCientificaTecnologica.proyectosIDIFirmaIP;
-
-                UtilitySecciones.CheckProperty(propertyNombre, entidadAux, valorNombre, propiedadNombre);
-                UtilitySecciones.CheckProperty(propertyPrimerApellido, entidadAux, valorPrimerApellido, propiedadPrimerApellido);
-                UtilitySecciones.CheckProperty(propertySegundoApellido, entidadAux, valorSegundoApellido, propiedadSegundoApellido);
-                UtilitySecciones.CheckProperty(propertyFirma, entidadAux, valorFirma, propiedadFirma);
+                UtilitySecciones.CheckProperty(propertyFirma, entidadAux,
+                     UtilitySecciones.StringGNOSSID(entityPartAux, autor.GetFirmaAutor()), propiedadFirma);
+                UtilitySecciones.CheckProperty(propertyNombre, entidadAux,
+                    UtilitySecciones.StringGNOSSID(entityPartAux, autor.GetNombreAutor()), propiedadNombre);
+                UtilitySecciones.CheckProperty(propertyPrimerApellido, entidadAux,
+                     UtilitySecciones.StringGNOSSID(entityPartAux, autor.GetPrimerApellidoAutor()), propiedadPrimerApellido);
+                UtilitySecciones.CheckProperty(propertySegundoApellido, entidadAux,
+                    UtilitySecciones.StringGNOSSID(entityPartAux, autor.GetSegundoApellidoAutor()), propiedadSegundoApellido);
             }
         }
 
@@ -460,33 +475,26 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<CvnItemBeanCvnCodeGroup> listadoEntidadFinanciadora = item.GetListaElementosPorIDCampo<CvnItemBeanCvnCodeGroup>("050.020.010.190");
             foreach (CvnItemBeanCvnCodeGroup entidadFinanciadora in listadoEntidadFinanciadora)
             {
-                ////Añado la referencia si existe Entidad    //TODO - sustituir por el metodo actual
-                //UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("050.020.010.100"),
-                //    Variables.ExperienciaCientificaTecnologica.proyectosIDIEntidadFinanciadoraNombre,
-                //    Variables.ExperienciaCientificaTecnologica.proyectosIDIEntidadFinanciadora, entidadAux);
+                //Añado la referencia si existe Entidad
+                UtilitySecciones.AniadirEntidad(mResourceApi, entidadFinanciadora.GetNameEntityBeanCvnCodeGroup("050.020.010.100"),
+                    Variables.ExperienciaCientificaTecnologica.proyectosIDIEntidadFinanciadoraNombre,
+                    Variables.ExperienciaCientificaTecnologica.proyectosIDIEntidadFinanciadora, entidadAux);
+
+                //Añado otros, o el ID de una preseleccion
+                string valorTipo = !string.IsNullOrEmpty(entidadFinanciadora.GetStringCvnCodeGroup("050.020.010.220")) ?
+                    mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : entidadFinanciadora.GetOrganizationCvnCodeGroup("050.020.010.210");
+
+                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                    new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDITipoEntidadFinanciadora, valorTipo),
+                    new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDITipoEntidadFinanciadoraOtros, entidadFinanciadora.GetStringCvnCodeGroup("050.020.010.220"))
+                ));
 
                 //Añado pais, CCAA y ciudad
                 entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDIPaisEntidadFinancidora, entidadFinanciadora.GetPaisPorIDCampo("050.020.010.360")),
-                    new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDICCAAEntidadFinancidora, entidadFinanciadora.GetRegionPorIDCampo("050.020.010.370")),
-                    new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDICiudadEntidadFinancidora, entidadFinanciadora.GetStringCvnCodeGroup("050.020.010.390"))
+                    new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDIPaisEntidadFinanciadora, entidadFinanciadora.GetPaisPorIDCampo("050.020.010.360")),
+                    new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDICCAAEntidadFinanciadora, entidadFinanciadora.GetRegionPorIDCampo("050.020.010.370")),
+                    new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDICiudadEntidadFinanciadora, entidadFinanciadora.GetStringCvnCodeGroup("050.020.010.390"))
                 ));
-                //Añado los datos asociados a la entidad
-                if (!string.IsNullOrEmpty(entidadFinanciadora.GetNameEntityBeanCvnCodeGroup("060.010.010.190")))
-                {
-                    entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                        new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDIEntidadFinancidora, entidadFinanciadora.GetNameEntityBeanCvnCodeGroup("050.020.010.190"))
-                    ));
-
-                    //Añado otros, o el ID de una preseleccion
-                    string valorTipo = !string.IsNullOrEmpty(entidadFinanciadora.GetStringCvnCodeGroup("050.020.010.220")) ?
-                        "http://gnoss.com/items/organizationtype_OTHERS" : entidadFinanciadora.GetOrganizationCvnCodeGroup("050.020.010.210");
-
-                    entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                        new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDITipoEntidadFinancidora, valorTipo),
-                        new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDITipoEntidadFinancidoraOtros, entidadFinanciadora.GetStringCvnCodeGroup("050.020.010.220"))
-                    ));
-                }
             }
         }
 
@@ -506,6 +514,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 {
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
+                    entidadAux.properties_cv = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("050.020.020.010")))
                     {
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
@@ -516,8 +525,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                             new Property(Variables.ExperienciaCientificaTecnologica.contratosPaisEntidadRealizacion, item.GetPaisPorIDCampo("050.020.020.060")),
                             new Property(Variables.ExperienciaCientificaTecnologica.contratosCCAAEntidadRealizacion, item.GetRegionPorIDCampo("050.020.020.070")),
                             new Property(Variables.ExperienciaCientificaTecnologica.contratosCiudadEntidadRealizacion, item.GetStringPorIDCampo("050.020.020.090")),
-                            new Property(Variables.ExperienciaCientificaTecnologica.contratosEntidadRealizacion, item.GetStringPorIDCampo("050.020.020.370")),
-                            new Property(Variables.ExperienciaCientificaTecnologica.contratosCodEntidadFinanciadora, item.GetNameEntityBeanPorIDCampo("050.020.020.110")),
+                            new Property(Variables.ExperienciaCientificaTecnologica.contratosCodEntidadFinanciadora, item.GetValueCvnExternalPKBean("050.020.020.110")),
                             new Property(Variables.ExperienciaCientificaTecnologica.contratosTipoProyecto, item.GetTipoProyectoPorIDCampo("050.020.020.160")),//TODO-check
                             new Property(Variables.ExperienciaCientificaTecnologica.contratosNombrePrograma, item.GetStringPorIDCampo("050.020.020.170")),
                             new Property(Variables.ExperienciaCientificaTecnologica.contratosFechaInicio, item.GetStringDatetimePorIDCampo("050.020.020.180")),
@@ -527,18 +535,19 @@ namespace ImportadorWebCV.Sincro.Secciones
                             new Property(Variables.ExperienciaCientificaTecnologica.contratosCuantiaTotal, item.GetStringDoublePorIDCampo("050.020.020.200")),
                             new Property(Variables.ExperienciaCientificaTecnologica.contratosNumInvestigadores, item.GetStringDoublePorIDCampo("050.020.020.260")),
                             new Property(Variables.ExperienciaCientificaTecnologica.contratosNumPersonasAnio, item.GetStringDoublePorIDCampo("050.020.020.270")),
-                            new Property(Variables.ExperienciaCientificaTecnologica.contratosGradoContribucion, item.GetGradoContribucionDocumentoPorIDCampo("050.020.020.280")),//TODO -check
-                            new Property(Variables.ExperienciaCientificaTecnologica.contratosGradoContribucionOtros, item.GetStringPorIDCampo("050.020.020.290")),
                             new Property(Variables.ExperienciaCientificaTecnologica.contratosResultadosRelevantes, item.GetStringPorIDCampo("050.020.020.300"))
+                        ));
+                        entidadAux.properties_cv.AddRange(UtilitySecciones.AddProperty(
+                            new Property(Variables.ExperienciaCientificaTecnologica.contratosGradoContribucion, item.GetGradoContribucionDocumentoPorIDCampo("050.020.020.280")),//TODO -check
+                            new Property(Variables.ExperienciaCientificaTecnologica.contratosGradoContribucionOtros, item.GetStringPorIDCampo("050.020.020.290"))
                         ));
                         ContratosFinanciacion(item, entidadAux);
                         ContratosEntidadRealizacion(item, entidadAux);
-                        //ContratosTipoEntidadRealizacion(item, entidadAux);
                         ContratosEntidadesParticipantes(item, entidadAux);
                         ContratosAutores(item, entidadAux);
                         ContratosEntidadFinanciadora(item, entidadAux);
-                        ContratosResultadosRelevantesPalabrasClave(item, entidadAux);
-                        ContratosPalabrasClave(item, entidadAux);
+                        //ContratosResultadosRelevantesPalabrasClave(item, entidadAux);
+                        //ContratosPalabrasClave(item, entidadAux);
 
                         listado.Add(entidadAux);
                     }
@@ -628,35 +637,23 @@ namespace ImportadorWebCV.Sincro.Secciones
             //Añado la referencia si existe Entidad
             UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("050.020.020.370"),
                 Variables.ExperienciaCientificaTecnologica.contratosEntidadRealizacionNombre,
-                Variables.ExperienciaCientificaTecnologica.contratosEntidadRealizacion, entidadAux);
+                Variables.ExperienciaCientificaTecnologica.contratosEntidadRealizacion, entidadAux);            
 
-            //if (!string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("050.020.020.370")))
-            //{
-            //    string organizacion = UtilitySecciones.GetOrganizacionPorNombre(mResourceApi, item.GetNameEntityBeanPorIDCampo("050.020.020.370"));
-            //    entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-            //        new Property(Variables.ExperienciaCientificaTecnologica.contratosEntidadRealizacion, organizacion)
-            //    ));
-            //}
+            //Añado otros, o el ID de una preseleccion
+            string valorTipo = !string.IsNullOrEmpty(item.GetStringPorIDCampo("050.020.020.380")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetOrganizacionPorIDCampo("050.020.020.330");
+
+            entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                new Property(Variables.ExperienciaCientificaTecnologica.contratosTipoEntidadRealizacion, valorTipo),
+                new Property(Variables.ExperienciaCientificaTecnologica.contratosTipoEntidadRealizacionOtros, item.GetStringPorIDCampo("050.020.020.380"))
+            ));
+
+            //Añado pais, CCAA y ciudad
+            entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                new Property(Variables.ExperienciaCientificaTecnologica.contratosPaisEntidadRealizacion, item.GetPaisPorIDCampo("050.020.020.060")),
+                new Property(Variables.ExperienciaCientificaTecnologica.contratosCCAAEntidadRealizacion, item.GetRegionPorIDCampo("050.020.020.070")),
+                new Property(Variables.ExperienciaCientificaTecnologica.contratosCiudadEntidadRealizacion, item.GetStringPorIDCampo("050.020.020.090"))
+            ));
         }
-
-        //private void ContratosTipoEntidadRealizacion(CvnItemBean item, Entity entidadAux)
-        //{
-
-        //    //Añado otros, o el ID de una preseleccion
-        //    if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("050.020.020.380")))
-        //    {
-        //        entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-        //            new Property(Variables.ExperienciaCientificaTecnologica.contratosTipoEntidadRealizacion, "http://gnoss.com/items/organizationtype_OTHERS"),//TODO revisar
-        //            new Property(Variables.ExperienciaCientificaTecnologica.contratosTipoEntidadRealizacionOtros, item.GetStringPorIDCampo("050.020.020.380"))
-        //        ));
-        //    }
-        //    else
-        //    {
-        //        entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-        //            new Property(Variables.ExperienciaCientificaTecnologica.contratosTipoEntidadRealizacion, item.GetStringPorIDCampo("050.020.020.330"))
-        //        ));
-        //    }
-        //}
 
         /// <summary>
         /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
@@ -674,10 +671,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                 UtilitySecciones.AniadirEntidad(mResourceApi, entidad.Name,
                     Variables.ExperienciaCientificaTecnologica.contratosEntidadParticipanteNombre,
                     Variables.ExperienciaCientificaTecnologica.contratosEntidadParticipante, entidadAux);
-
-                //entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                //    new Property(Variables.ExperienciaCientificaTecnologica.contratosEntidadParticipante, entidad.Name)
-                //));
             }
         }
 
@@ -689,32 +682,33 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <param name="entidadAux">entidadAux</param>
         private void ContratosAutores(CvnItemBean item, Entity entidadAux)
         {
+            string propiedadFirma = Variables.ExperienciaCientificaTecnologica.contratosIPFirma;
+            string propiedadNombre = Variables.ExperienciaCientificaTecnologica.contratosIPNombre;
+            string propiedadPrimerApellido = Variables.ExperienciaCientificaTecnologica.contratosIPPrimerApellido;
+            string propiedadSegundoApellido = Variables.ExperienciaCientificaTecnologica.contratosIPSegundoApellido;
+
             //Añado el listado de autores principales
             List<CvnItemBeanCvnAuthorBean> listadoAutores = item.GetListaElementosPorIDCampo<CvnItemBeanCvnAuthorBean>("050.020.020.250");
             foreach (CvnItemBeanCvnAuthorBean autor in listadoAutores)
             {
-                //Si no tiene nombre no lo inserto
+                //Si no tiene nombre continuo con el siguiente
                 if (string.IsNullOrEmpty(autor.GetNombreAutor())) { continue; }
 
-                Property propertyNombre = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.contratosIPNombre);
-                Property propertyPrimerApellido = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.contratosIPPrimerApellido);
-                Property propertySegundoApellido = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.contratosIPSegundoApellido);
-                Property propertyFirma = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.contratosIPFirma);
+                string entityPartAux = Guid.NewGuid().ToString() + "@@@";
 
-                string valorNombre = autor.GetNombreAutor();
-                string valorPrimerApellido = autor.GetPrimerApellidoAutor();
-                string valorSegundoApellido = autor.GetSegundoApellidoAutor();
-                string valorFirma = autor.GetFirmaAutor();
+                Property propertyFirma = entidadAux.properties.FirstOrDefault(x => x.prop == propiedadFirma);
+                Property propertyNombre = entidadAux.properties.FirstOrDefault(x => x.prop == propiedadNombre);
+                Property propertyPrimerApellido = entidadAux.properties.FirstOrDefault(x => x.prop == propiedadPrimerApellido);
+                Property propertySegundoApellido = entidadAux.properties.FirstOrDefault(x => x.prop == propiedadSegundoApellido);
 
-                string propiedadNombre = Variables.ExperienciaCientificaTecnologica.contratosIPNombre;
-                string propiedadPrimerApellido = Variables.ExperienciaCientificaTecnologica.contratosIPPrimerApellido;
-                string propiedadSegundoApellido = Variables.ExperienciaCientificaTecnologica.contratosIPSegundoApellido;
-                string propiedadFirma = Variables.ExperienciaCientificaTecnologica.contratosIPFirma;
-
-                UtilitySecciones.CheckProperty(propertyNombre, entidadAux, valorNombre, propiedadNombre);
-                UtilitySecciones.CheckProperty(propertyPrimerApellido, entidadAux, valorPrimerApellido, propiedadPrimerApellido);
-                UtilitySecciones.CheckProperty(propertySegundoApellido, entidadAux, valorSegundoApellido, propiedadSegundoApellido);
-                UtilitySecciones.CheckProperty(propertyFirma, entidadAux, valorFirma, propiedadFirma);
+                UtilitySecciones.CheckProperty(propertyFirma, entidadAux,
+                     UtilitySecciones.StringGNOSSID(entityPartAux, autor.GetFirmaAutor()), propiedadFirma);
+                UtilitySecciones.CheckProperty(propertyNombre, entidadAux,
+                    UtilitySecciones.StringGNOSSID(entityPartAux, autor.GetNombreAutor()), propiedadNombre);
+                UtilitySecciones.CheckProperty(propertyPrimerApellido, entidadAux,
+                    UtilitySecciones.StringGNOSSID(entityPartAux, autor.GetPrimerApellidoAutor()), propiedadPrimerApellido);
+                UtilitySecciones.CheckProperty(propertySegundoApellido, entidadAux,
+                    UtilitySecciones.StringGNOSSID(entityPartAux, autor.GetSegundoApellidoAutor()), propiedadSegundoApellido);
             }
         }
 
@@ -731,44 +725,25 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 //Añado la referencia si existe Entidad
                 if (entidadFinanciadora.CvnEntityBean == null) { continue; }
-                UtilitySecciones.AniadirEntidad(mResourceApi, entidadFinanciadora.CvnEntityBean.Name,
+                UtilitySecciones.AniadirEntidad(mResourceApi, entidadFinanciadora.GetNameEntityBeanCvnCodeGroup("050.020.020.120"),
                     Variables.ExperienciaCientificaTecnologica.contratosEntidadFinanciadoraNombre,
                     Variables.ExperienciaCientificaTecnologica.contratosEntidadFinanciadora, entidadAux);
 
-                //Property entidad = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.contratosEntidadFinanciadora);
-                //string valor = UtilitySecciones.GetOrganizacionPorNombre(mResourceApi, entidadFinanciadora.GetNameEntityBeanCvnCodeGroup("050.020.020.120"));
-                //string propiedad = Variables.ExperienciaCientificaTecnologica.contratosEntidadFinanciadora;
-                //UtilitySecciones.CheckProperty(entidad, entidadAux, valor, propiedad);
-                /*
+                //Añado otros, o el ID de una preseleccion
+                string valorTipo = !string.IsNullOrEmpty(entidadFinanciadora.GetStringCvnCodeGroup("050.020.020.150")) ?
+                    mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : entidadFinanciadora.GetOrganizationCvnCodeGroup("050.020.020.140");
+
+                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                    new Property(Variables.ExperienciaCientificaTecnologica.contratosTipoEntidadFinanciadora, valorTipo),
+                    new Property(Variables.ExperienciaCientificaTecnologica.contratosTipoEntidadFinanciadoraOtros, entidadFinanciadora.GetStringCvnCodeGroup("050.020.020.150"))
+                ));               
+                
                 //Añado pais, CCAA y ciudad
                 entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                     new Property(Variables.ExperienciaCientificaTecnologica.contratosPaisEntidadFinanciadora, entidadFinanciadora.GetPaisPorIDCampo("050.020.020.350")),
                     new Property(Variables.ExperienciaCientificaTecnologica.contratosCCAAEntidadFinanciadora, entidadFinanciadora.GetRegionPorIDCampo("050.020.020.360")),
                     new Property(Variables.ExperienciaCientificaTecnologica.contratosCiudadEntidadFinanciadora, entidadFinanciadora.GetStringCvnCodeGroup("050.020.020.340"))
-                ));
-                //Añado los datos asociados a la entidad
-                if (!string.IsNullOrEmpty(entidadFinanciadora.GetNameEntityBeanCvnCodeGroup("050.020.020.120")))
-                {
-                    entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                        new Property(Variables.ExperienciaCientificaTecnologica.contratosEntidadFinanciadora, entidadFinanciadora.GetNameEntityBeanCvnCodeGroup("050.020.020.120"))
-                    ));
-
-                    //Añado otros, o el ID de una preseleccion
-                    if (!string.IsNullOrEmpty(entidadFinanciadora.GetStringCvnCodeGroup("050.020.020.150")))
-                    {
-                        entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                            new Property(Variables.ExperienciaCientificaTecnologica.contratosTipoEntidadFinanciadora, "http://gnoss.com/items/organizationtype_OTHERS"),//TODO revisar
-                            new Property(Variables.ExperienciaCientificaTecnologica.contratosTipoEntidadFinanciadoraOtros, entidadFinanciadora.GetStringCvnCodeGroup("050.020.020.150"))
-                        ));
-                    }
-                    else
-                    {
-                        entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                            new Property(Variables.ExperienciaCientificaTecnologica.contratosTipoEntidadFinanciadora, entidadFinanciadora.GetOrganizationCvnCodeGroup("050.020.020.140"))
-                        ));
-                    }
-                }
-                */
+                ));                
             }
         }
 
@@ -1002,6 +977,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 {
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
+                    entidadAux.properties_cv = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("050.010.000.020")))
                     {
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
@@ -1016,15 +992,17 @@ namespace ImportadorWebCV.Sincro.Secciones
                             new Property(Variables.ExperienciaCientificaTecnologica.grupoIDIDuracionAnio, item.GetDurationAnioPorIDCampo("050.010.000.150")),
                             new Property(Variables.ExperienciaCientificaTecnologica.grupoIDIDuracionMes, item.GetDurationMesPorIDCampo("050.010.000.150")),
                             new Property(Variables.ExperienciaCientificaTecnologica.grupoIDIDuracionDia, item.GetDurationDiaPorIDCampo("050.010.000.150")),
-                            new Property(Variables.ExperienciaCientificaTecnologica.grupoIDIClaseColaboracion, item.GetTipoColaboracionPorIDCampo("050.010.000.160")),//TODO - check
                             new Property(Variables.ExperienciaCientificaTecnologica.grupoIDINumTesisDirigidas, item.GetStringDoublePorIDCampo("050.010.000.170")),
                             new Property(Variables.ExperienciaCientificaTecnologica.grupoIDINumPosDocDirigidos, item.GetStringDoublePorIDCampo("050.010.000.180")),
                             new Property(Variables.ExperienciaCientificaTecnologica.grupoIDIResultadosOtros, item.GetStringPorIDCampo("050.010.000.190")),
-                            new Property(Variables.ExperienciaCientificaTecnologica.grupoIDIResultadosMasRelevantes, item.GetStringPorIDCampo("050.010.000.200"))
+                            new Property(Variables.ExperienciaCientificaTecnologica.grupoIDIResultadosRelevantes, item.GetStringPorIDCampo("050.010.000.200"))
+                        ));
+                        entidadAux.properties_cv.AddRange(UtilitySecciones.AddProperty(
+                            new Property(Variables.ExperienciaCientificaTecnologica.grupoIDIClaseColaboracion, item.GetTipoColaboracionPorIDCampo("050.010.000.160"))
                         ));
                         GrupoIDIAutores(item, entidadAux);
                         GrupoIDIEntidadAfiliacion(item, entidadAux);
-                        GrupoIDIPalabrasClave(item, entidadAux);
+                        ////GrupoIDIPalabrasClave(item, entidadAux);
 
                         listado.Add(entidadAux);
                     }
@@ -1043,20 +1021,20 @@ namespace ImportadorWebCV.Sincro.Secciones
         {
             List<CvnItemBeanCvnString> listadoPalabrasClave = item.GetListaElementosPorIDCampo<CvnItemBeanCvnString>("050.010.000.210");
 
-            string propiedadPalabrasClave = Variables.ExperienciaCientificaTecnologica.grupoIDIPalabrasClave;
+            //string propiedadPalabrasClave = Variables.ExperienciaCientificaTecnologica.grupoIDIPalabrasClave;
 
-            foreach (CvnItemBeanCvnString palabraClave in listadoPalabrasClave)
-            {
-                string entityPartAux = Guid.NewGuid().ToString() + "@@@";
+            //foreach (CvnItemBeanCvnString palabraClave in listadoPalabrasClave)
+            //{
+            //    string entityPartAux = Guid.NewGuid().ToString() + "@@@";
 
-                List<string> listadoPalabras = Utility.GetPadresPalabrasClave(palabraClave);
-                foreach (string palabra in listadoPalabras)
-                {
-                    Property propertyPalabrasClave = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.grupoIDIPalabrasClave);
-                    UtilitySecciones.CheckProperty(propertyPalabrasClave, entidadAux,
-                        UtilitySecciones.StringGNOSSID(entityPartAux, Utility.ObtenerPalabraClave(mResourceApi, palabra)), propiedadPalabrasClave);
-                }
-            }
+            //    List<string> listadoPalabras = Utility.GetPadresPalabrasClave(palabraClave);
+            //    foreach (string palabra in listadoPalabras)
+            //    {
+            //        Property propertyPalabrasClave = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.grupoIDIPalabrasClave);
+            //        UtilitySecciones.CheckProperty(propertyPalabrasClave, entidadAux,
+            //            UtilitySecciones.StringGNOSSID(entityPartAux, Utility.ObtenerPalabraClave(mResourceApi, palabra)), propiedadPalabrasClave);
+            //    }
+            //}
         }
 
         /// <summary>
@@ -1071,6 +1049,14 @@ namespace ImportadorWebCV.Sincro.Secciones
             UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("050.010.000.090"),
                 Variables.ExperienciaCientificaTecnologica.grupoIDIEntidadAfiliacionNombre,
                 Variables.ExperienciaCientificaTecnologica.grupoIDIEntidadAfiliacion, entidadAux);
+
+            //Añado otros, o el ID de una preseleccion
+            string valorTipo = !string.IsNullOrEmpty(item.GetStringPorIDCampo("050.010.000.120")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetOrganizacionPorIDCampo("050.010.000.110");
+
+            entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                new Property(Variables.ExperienciaCientificaTecnologica.grupoIDITipoEntidadAfiliacion, valorTipo),
+                new Property(Variables.ExperienciaCientificaTecnologica.grupoIDITipoEntidadAfiliacionOtros, item.GetStringPorIDCampo("050.010.000.120"))
+            ));
         }
 
         /// <summary>
@@ -1349,7 +1335,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 string valorTipo = !string.IsNullOrEmpty(entidadColaboradora.GetStringCvnCodeGroup("050.030.020.200")) ?
                     UtilitySecciones.StringGNOSSID(entityPartAux, mResourceApi.GraphsUrl + "items/organizationtype_OTHERS") :
                     UtilitySecciones.StringGNOSSID(entityPartAux, entidadColaboradora.GetOrganizationCvnCodeGroup("050.030.020.190"));
-                string valorOther = !string.IsNullOrEmpty(entidadColaboradora.GetStringCvnCodeGroup("050.030.020.200")) ? 
+                string valorOther = !string.IsNullOrEmpty(entidadColaboradora.GetStringCvnCodeGroup("050.030.020.200")) ?
                     UtilitySecciones.StringGNOSSID(entityPartAux, entidadColaboradora.GetStringCvnCodeGroup("050.030.020.200")) : null;
 
                 UtilitySecciones.CheckProperty(propertyTipo, entidadAux, valorTipo, Variables.ExperienciaCientificaTecnologica.resultadosTecnologicosTipoEntidadColaboradora);
