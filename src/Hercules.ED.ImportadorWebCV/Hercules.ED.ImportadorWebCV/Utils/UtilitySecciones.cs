@@ -303,16 +303,16 @@ namespace Utils
         public static Dictionary<string, string> ObtenerIdPersona(ResourceApi resourceApi, string CVID)
         {
             Dictionary<string, string> resultado = new Dictionary<string, string>();
-            string select = "SELECT distinct ?idPersona ?nickPersona";
+            string select = $@"SELECT distinct ?idPersona ?nombreCompleto from <{resourceApi.GraphsUrl}person.owl>";
             string where = $@"where {{
                                 <{CVID}> <http://w3id.org/roh/cvOf> ?idPersona . 
-                                OPTIONAL{{ ?idPersona <http://xmlns.com/foaf/0.1/nick> ?nickPersona }}
+                                ?idPersona <http://xmlns.com/foaf/0.1/name> ?nombreCompleto 
                             }}";
 
             SparqlObject sparqlObject = resourceApi.VirtuosoQuery(select, where, "curriculumvitae");
             if (sparqlObject.results.bindings.Count > 0)
             {
-                string nick = sparqlObject.results.bindings.Any(x => x.ContainsKey("nickPersona")) ? sparqlObject.results.bindings.Select(x => x["nickPersona"].value)?.FirstOrDefault() : null;
+                string nick = sparqlObject.results.bindings.Any(x => x.ContainsKey("nombreCompleto")) ? sparqlObject.results.bindings.Select(x => x["nombreCompleto"].value)?.FirstOrDefault() : null;
                 resultado.Add(sparqlObject.results.bindings.Select(x => x["idPersona"].value).FirstOrDefault(), nick);
             }
             return resultado;
