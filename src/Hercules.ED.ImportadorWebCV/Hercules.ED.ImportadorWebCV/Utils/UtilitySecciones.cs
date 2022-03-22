@@ -177,6 +177,7 @@ namespace Utils
 
         /// <summary>
         /// Añade la referencia a la entidad <paramref name="propiedadNombreEntidad"/> si esta se encuentra en BBDD.
+        /// Si se pasa el valor <paramref name="aux"/> lo concatena con <paramref name="nombreEntidad"/> para formar la entidad auxiliar.
         /// </summary>
         /// <param name="mResourceApi"></param>
         /// <param name="nombreEntidad"></param>
