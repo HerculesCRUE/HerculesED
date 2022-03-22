@@ -1307,7 +1307,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item">item</param>
         /// <param name="entidadAux">entidadAux</param>
-        private void TrabajosCongresosAutores(CvnItemBean item, Entity entidadAux)//TODO
+        private void TrabajosCongresosAutores(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnAuthorBean> listadoAutores = item.GetListaElementosPorIDCampo<CvnItemBeanCvnAuthorBean>("060.010.020.040");
 
@@ -1480,7 +1480,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item">item</param>
         /// <param name="entidadAux">entidadAux</param>
-        private void TrabajosJornadasSeminariosAutores(CvnItemBean item, Entity entidadAux)//TODO
+        private void TrabajosJornadasSeminariosAutores(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnAuthorBean> listadoAutores = item.GetListaElementosPorIDCampo<CvnItemBeanCvnAuthorBean>("060.010.030.310");
             entidadAux.autores = new List<Persona>();
