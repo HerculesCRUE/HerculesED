@@ -2693,7 +2693,7 @@
                         "property": "http://w3id.org/roh/hasKnowledgeArea",
                         "thesaurus": "researcharea",
                         "type": "thesaurus",
-                        "width": 0,
+                        "width": 3,
                         "multiple": true
                       }
                     ]
