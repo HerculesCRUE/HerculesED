@@ -36,6 +36,10 @@ namespace GuardadoCV.Models
 
         private static Dictionary<string,Dictionary<string,Dictionary<string,string>>> dicAutocompletar=new Dictionary<string, Dictionary<string, Dictionary<string, string>>>();
         private static Dictionary<string, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>>> dicCombos = new Dictionary<string, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>>>();
+        private static Dictionary<string, List<ThesaurusItem>> dicTesauros = new Dictionary<string, List<ThesaurusItem>>();
+
+
+        
 
 
         #region Métodos públicos
@@ -1628,27 +1632,35 @@ namespace GuardadoCV.Models
         private Dictionary<string, List<ThesaurusItem>> GetTesauros(List<string> pListaTesauros,string pLang)
         {
             Dictionary<string, List<ThesaurusItem>> elementosTesauros = new Dictionary<string, List<ThesaurusItem>>();
-
             foreach (string tesauro in pListaTesauros)
             {
-                string select = "select * ";
-                string where = @$"where {{
+                string claveTesauros = $@"{tesauro} {pLang}";
+                if (dicTesauros.ContainsKey(claveTesauros))
+                {
+                    elementosTesauros.Add(tesauro, dicTesauros[claveTesauros]);
+                }
+                else
+                {
+
+                    string select = "select * ";
+                    string where = @$"where {{
                     ?s a <http://www.w3.org/2008/05/skos#Concept>.
                     ?s <http://www.w3.org/2008/05/skos#prefLabel> ?nombre.
                     FILTER( lang(?nombre) = '{pLang}' OR lang(?nombre) = '')  
                     ?s <http://purl.org/dc/elements/1.1/source> '{tesauro}'
                     OPTIONAL {{ ?s <http://www.w3.org/2008/05/skos#broader> ?padre }}
                 }} ORDER BY ?padre ?s ";
-                SparqlObject sparqlObject = mResourceApi.VirtuosoQuery(select, where, "taxonomy");
+                    SparqlObject sparqlObject = mResourceApi.VirtuosoQuery(select, where, "taxonomy");
 
-                List<ThesaurusItem> items = sparqlObject.results.bindings.Select(x => new ThesaurusItem()
-                {
-                    id = x["s"].value,
-                    name = x["nombre"].value,
-                    parentId = x.ContainsKey("padre") ? x["padre"].value : ""
-                }).ToList();
-
-                elementosTesauros.Add(tesauro, items);
+                    List<ThesaurusItem> items = sparqlObject.results.bindings.Select(x => new ThesaurusItem()
+                    {
+                        id = x["s"].value,
+                        name = x["nombre"].value,
+                        parentId = x.ContainsKey("padre") ? x["padre"].value : ""
+                    }).ToList();
+                    elementosTesauros.Add(tesauro, items);
+                    dicTesauros[claveTesauros] = items;
+                }
             }
 
             return elementosTesauros;
@@ -1663,14 +1675,12 @@ namespace GuardadoCV.Models
         private Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> GetSubjectsCombo(ItemEditSectionRowPropertyCombo pItemEditSectionRowPropertyCombo, string pLang)
         {
             Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> respuesta = new Dictionary<string, List<Dictionary<string, Data>>>();
-
             string claveCombos = $@"{pItemEditSectionRowPropertyCombo.property.property} {pItemEditSectionRowPropertyCombo.property.graph} {pItemEditSectionRowPropertyCombo.property.property} {pItemEditSectionRowPropertyCombo.rdftype} {pItemEditSectionRowPropertyCombo.graph} {pLang}";
             if (pItemEditSectionRowPropertyCombo.filter != null)
             {
                 
                 claveCombos += $@"{pItemEditSectionRowPropertyCombo.filter.property} {pItemEditSectionRowPropertyCombo.filter.value}";
             }
-
             if (pItemEditSectionRowPropertyCombo.cache && dicCombos.ContainsKey(claveCombos))
             {
                 respuesta = dicCombos[claveCombos];
