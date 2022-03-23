@@ -474,8 +474,10 @@ namespace GuardadoCV.Models.API.Templates
         /// rdf:type de la entidad a recuperar
         /// </summary>
         public string rdftype;
-
-
+        /// <summary>
+        /// Indica si hay que cachear el combo
+        /// </summary>
+        public bool cache;
         public ItemEditSectionRowPropertyComboFilter filter;
         public ItemEditSectionRowPropertyComboDependency dependency;
     }
