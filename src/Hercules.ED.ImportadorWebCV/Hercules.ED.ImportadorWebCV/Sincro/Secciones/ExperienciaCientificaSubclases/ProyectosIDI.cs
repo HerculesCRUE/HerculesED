@@ -3,16 +3,17 @@ using Gnoss.ApiWrapper.ApiModel;
 using Hercules.ED.DisambiguationEngine.Models;
 using System.Collections.Generic;
 using System.Linq;
+using Utils;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
 namespace ImportadorWebCV.Sincro.Secciones.ExperienciaCientificaSubclases
 {
     class ProyectosIDI : DisambiguableEntity
     {
-        public string descripcion { get; set; }
+        public string nombre { get; set; }
         public string fecha { get; set; }
 
-        private static readonly DisambiguationDataConfig configDescripcion = new DisambiguationDataConfig()
+        private static readonly DisambiguationDataConfig configNombre = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsTitle,
             score = 0.8f
@@ -31,9 +32,9 @@ namespace ImportadorWebCV.Sincro.Secciones.ExperienciaCientificaSubclases
             {
                 new DisambiguationData()
                 {
-                    property = "descripcion",
-                    config = configDescripcion,
-                    value = descripcion
+                    property = "nombre",
+                    config = configNombre,
+                    value = nombre
                 },
 
                 new DisambiguationData()
@@ -49,12 +50,12 @@ namespace ImportadorWebCV.Sincro.Secciones.ExperienciaCientificaSubclases
         public static Dictionary<string, DisambiguableEntity> GetBBDD(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
         {
             //Obtenemos IDS
-            HashSet<string> ids = Utils.UtilitySecciones.GetIDS(pResourceApi, pCVID, propiedadesItem);
+            HashSet<string> ids = UtilitySecciones.GetIDS(pResourceApi, pCVID, propiedadesItem);
 
             Dictionary<string, DisambiguableEntity> resultados = new Dictionary<string, DisambiguableEntity>();
 
             //Divido la lista en listas de 1.000 elementos
-            List<List<string>> listaListas = Utils.UtilitySecciones.SplitList(ids.ToList(), 1000).ToList();
+            List<List<string>> listaListas = UtilitySecciones.SplitList(ids.ToList(), 1000).ToList();
 
             foreach (List<string> lista in listaListas)
             {
@@ -64,14 +65,14 @@ namespace ImportadorWebCV.Sincro.Secciones.ExperienciaCientificaSubclases
                                         OPTIONAL{{?item <{Variables.ExperienciaCientificaTecnologica.proyectosIDIFechaInicio}> ?itemDate }}.
                                         FILTER(?item in (<{string.Join(">,<", lista)}>))
                                     }}";
-
+                //TODO -check
                 SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, graph);
                 foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                 {
                     ProyectosIDI proyectosIDI = new ProyectosIDI
                     {
                         ID = fila["item"].value,
-                        descripcion = fila["itemTitle"].value,
+                        nombre = fila["itemTitle"].value,
                         fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : ""
                     };
 
