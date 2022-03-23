@@ -189,27 +189,15 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                 }
             }
 
-            //TODO
-            ////Divido la lista en listas de 10 elementos
-            //List<List<string>> listaListaNombres = Utils.UtilitySecciones.SplitList(listaNombres.ToList(), 10).ToList();
+            //Divido la lista en listas de 10 elementos
+            List<List<string>> listaListaNombres = UtilitySecciones.SplitList(listaNombres.ToList(), 10).ToList();
 
-            /*
              Parallel.ForEach(listaListaNombres, new ParallelOptions { MaxDegreeOfParallelism = 5 }, firma =>
             {
-                if (firma.Length > 0)
+                Dictionary<string, List<Persona>> personasBBDD = Utility.ObtenerPersonasFirma(pResourceApi, firma);
+                foreach(KeyValuePair<string, List<Persona>> valuePair in personasBBDD)
                 {
-                    Dictionary<Persona, List<string>> personasBBDD = ObtenerPersonasFirma(pResourceApi, firma);
-                    listaPersonasAux[firma.Trim()] = personasBBDD;
-                }
-            });
-             */
-
-            Parallel.ForEach(listaNombres, new ParallelOptions { MaxDegreeOfParallelism = 5 }, firma =>
-            {
-                if (firma.Trim() != "")
-                {
-                    List<Persona> personasBBDD = Utility.ObtenerPersonasFirma(pResourceApi, firma.Trim());
-                    listaPersonasAux[firma.Trim()] = personasBBDD;
+                    listaPersonasAux[valuePair.Key.Trim()] = valuePair.Value;
                 }
             });
 
