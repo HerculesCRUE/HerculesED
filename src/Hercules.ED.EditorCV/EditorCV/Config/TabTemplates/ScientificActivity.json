@@ -142,6 +142,7 @@
                         "property": "http://w3id.org/roh/h-indexSource",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/HIndexSource",
+                          "cache": true,
                           "graph": "hindexsource",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -423,6 +424,7 @@
                         "property": "http://purl.org/dc/elements/1.1/type",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/PublicationType",
+                          "cache": true,
                           "graph": "publicationtype",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -594,6 +596,7 @@
                         "property": "http://w3id.org/roh/supportType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/DocumentFormat",
+                          "cache": true,
                           "graph": "documentformat",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -729,6 +732,7 @@
                         "property": "http://w3id.org/roh/contributionGrade",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/ContributionGradeDocument",
+                          "cache": true,
                           "graph": "contributiongradedocument",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -918,6 +922,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "PCLD"
@@ -937,6 +942,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "ADM1"
@@ -992,6 +998,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasLanguage",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/Language",
+                          "cache": true,
                           "graph": "language",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -1253,6 +1260,7 @@
                         "property": "http://purl.org/dc/elements/1.1/type",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/PublicationType",
+                          "cache": true,
                           "graph": "publicationtype",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -1520,6 +1528,7 @@
                         "property": "http://w3id.org/roh/presentedAtType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/EventType",
+                          "cache": true,
                           "graph": "eventtype",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -1589,6 +1598,7 @@
                         "property": "http://w3id.org/roh/presentedAtHasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "PCLD"
@@ -1608,6 +1618,7 @@
                         "property": "http://w3id.org/roh/presentedAtHasRegion",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "ADM1"
@@ -1655,6 +1666,7 @@
                         "property": "http://w3id.org/roh/presentedAtOrganizerType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/OrganizationType",
+                          "cache": true,
                           "graph": "organizationtype",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -1702,6 +1714,7 @@
                         "property": "http://w3id.org/roh/presentedAtOrganizerHasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "PCLD"
@@ -1721,6 +1734,7 @@
                         "property": "http://w3id.org/roh/presentedAtOrganizerHasRegion",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "ADM1"
@@ -1748,6 +1762,7 @@
                         "property": "http://w3id.org/roh/presentedAtGeographicFocus",
                         "combo": {
                           "rdftype": "http://vivoweb.org/ontology/core#GeographicRegion",
+                          "cache": true,
                           "graph": "geographicregion",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -1792,6 +1807,7 @@
                         "property": "http://w3id.org/roh/inscriptionType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/EventInscriptionType",
+                          "cache": true,
                           "graph": "eventinscriptiontype",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -1826,6 +1842,7 @@
                         "property": "http://w3id.org/roh/participationType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/ParticipationTypeDocument",
+                          "cache": true,
                           "graph": "participationtypedocument",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -2024,6 +2041,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "PCLD"
@@ -2043,6 +2061,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "ADM1"
@@ -2295,6 +2314,7 @@
                         "property": "http://purl.org/dc/elements/1.1/type",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/PublicationType",
+                          "cache": true,
                           "graph": "publicationtype",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -2562,6 +2582,7 @@
                         "property": "http://w3id.org/roh/presentedAtSeminarType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/SeminarEventType",
+                          "cache": true,
                           "graph": "seminareventtype",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -2631,6 +2652,7 @@
                         "property": "http://w3id.org/roh/presentedAtHasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "PCLD"
@@ -2650,6 +2672,7 @@
                         "property": "http://w3id.org/roh/presentedAtHasRegion",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "ADM1"
@@ -2697,6 +2720,7 @@
                         "property": "http://w3id.org/roh/presentedAtOrganizerType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/OrganizationType",
+                          "cache": true,
                           "graph": "organizationtype",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -2744,6 +2768,7 @@
                         "property": "http://w3id.org/roh/presentedAtOrganizerHasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "PCLD"
@@ -2763,6 +2788,7 @@
                         "property": "http://w3id.org/roh/presentedAtOrganizerHasRegion",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "ADM1"
@@ -2790,6 +2816,7 @@
                         "property": "http://w3id.org/roh/presentedAtGeographicFocus",
                         "combo": {
                           "rdftype": "http://vivoweb.org/ontology/core#GeographicRegion",
+                          "cache": true,
                           "graph": "geographicregion",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -2834,6 +2861,7 @@
                         "property": "http://w3id.org/roh/inscriptionType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/SeminarInscriptionType",
+                          "cache": true,
                           "graph": "seminarinscriptiontype",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -3032,6 +3060,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "PCLD"
@@ -3051,6 +3080,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "ADM1"
@@ -3361,6 +3391,7 @@
                         "property": "http://w3id.org/roh/eventType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/EventType",
+                          "cache": true,
                           "graph": "eventtype",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -3405,6 +3436,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "PCLD"
@@ -3424,6 +3456,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "ADM1"
@@ -3471,6 +3504,7 @@
                         "property": "http://w3id.org/roh/promotedByType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/OrganizationType",
+                          "cache": true,
                           "graph": "organizationtype",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -3518,6 +3552,7 @@
                         "property": "http://w3id.org/roh/promotedByHasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "PCLD"
@@ -3537,6 +3572,7 @@
                         "property": "http://w3id.org/roh/promotedByHasRegion",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "ADM1"
@@ -3682,6 +3718,7 @@
                         "property": "http://vivoweb.org/ontology/core#geographicFocus",
                         "combo": {
                           "rdftype": "http://vivoweb.org/ontology/core#GeographicRegion",
+                          "cache": true,
                           "graph": "geographicregion",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -3722,6 +3759,7 @@
                         "property": "http://w3id.org/roh/eventInscriptionType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/EventInscriptionType",
+                          "cache": true,
                           "graph": "eventinscriptiontype",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -3762,6 +3800,7 @@
                         "property": "http://w3id.org/roh/publicationType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/PublicationType",
+                          "cache": true,
                           "graph": "publicationtype",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -4008,6 +4047,7 @@
                         "property": "http://w3id.org/roh/publicationHasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "PCLD"
@@ -4027,6 +4067,7 @@
                         "property": "http://w3id.org/roh/publicationHasRegion",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "ADM1"
@@ -4374,6 +4415,7 @@
                         "property": "http://w3id.org/roh/affiliatedOrganizationType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/OrganizationType",
+                          "cache": true,
                           "graph": "organizationtype",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -4422,6 +4464,7 @@
                         "property": "http://w3id.org/roh/affiliatedOrganizationHasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "PCLD"
@@ -4441,6 +4484,7 @@
                         "property": "http://w3id.org/roh/affiliatedOrganizationHasRegion",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "ADM1"
@@ -4512,6 +4556,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "PCLD"
@@ -4531,6 +4576,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "ADM1"
@@ -4558,6 +4604,7 @@
                         "property": "http://vivoweb.org/ontology/core#geographicFocus",
                         "combo": {
                           "rdftype": "http://vivoweb.org/ontology/core#GeographicRegion",
+                          "cache": true,
                           "graph": "geographicregion",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -4962,6 +5009,7 @@
                         "property": "http://w3id.org/roh/promotedByType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/OrganizationType",
+                          "cache": true,
                           "graph": "organizationtype",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -5009,6 +5057,7 @@
                         "property": "http://w3id.org/roh/promotedByHasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "PCLD"
@@ -5028,6 +5077,7 @@
                         "property": "http://w3id.org/roh/promotedByHasRegion",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "ADM1"
@@ -5055,6 +5105,7 @@
                         "property": "http://vivoweb.org/ontology/core#geographicFocus",
                         "combo": {
                           "rdftype": "http://vivoweb.org/ontology/core#GeographicRegion",
+                          "cache": true,
                           "graph": "geographicregion",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -5159,6 +5210,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "PCLD"
@@ -5178,6 +5230,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "ADM1"
@@ -5205,6 +5258,7 @@
                         "property": "http://w3id.org/roh/participationType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/ParticipationTypeActivity",
+                          "cache": true,
                           "graph": "participationtypeactivity",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -5637,6 +5691,7 @@
                         "property": "http://w3id.org/roh/promotedByType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/OrganizationType",
+                          "cache": true,
                           "graph": "organizationtype",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -5673,6 +5728,7 @@
                         "property": "http://w3id.org/roh/managementType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/ManagementTypeActivity",
+                          "cache": true,
                           "graph": "managementtypeactivity",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -5766,6 +5822,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "PCLD"
@@ -5785,6 +5842,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "ADM1"
@@ -5811,6 +5869,7 @@
                         },
                         "property": "http://w3id.org/roh/accessSystemActivity",
                         "combo": {
+                          "cache": true,
                           "rdftype": "http://w3id.org/roh/AccessSystemActivity",
                           "graph": "accesssystemactivity",
                           "property": {
@@ -5870,6 +5929,7 @@
                         "property": "http://w3id.org/roh/targetGroupProfile",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/TargetGroupProfile",
+                          "cache": true,
                           "graph": "targetgroupprofile",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -5889,6 +5949,7 @@
                         "property": "http://vivoweb.org/ontology/core#geographicFocus",
                         "combo": {
                           "rdftype": "http://vivoweb.org/ontology/core#GeographicRegion",
+                          "cache": true,
                           "graph": "geographicregion",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -6291,6 +6352,7 @@
                         "property": "http://w3id.org/roh/promotedByType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/OrganizationType",
+                          "cache": true,
                           "graph": "organizationtype",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -6338,6 +6400,7 @@
                         "property": "http://w3id.org/roh/promotedByHasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "PCLD"
@@ -6357,6 +6420,7 @@
                         "property": "http://w3id.org/roh/promotedByHasRegion",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "ADM1"
@@ -6428,6 +6492,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "PCLD"
@@ -6447,6 +6512,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "ADM1"
@@ -6494,6 +6560,7 @@
                         "property": "http://w3id.org/roh/representedEntityType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/OrganizationType",
+                          "cache": true,
                           "graph": "organizationtype",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -6541,6 +6608,7 @@
                         "property": "http://w3id.org/roh/representedEntityHasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "PCLD"
@@ -6560,6 +6628,7 @@
                         "property": "http://w3id.org/roh/representedEntityHasRegion",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "ADM1"
@@ -6904,6 +6973,7 @@
                         "property": "http://w3id.org/roh/conductedByType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/OrganizationType",
+                          "cache": true,
                           "graph": "organizationtype",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -6951,6 +7021,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "PCLD"
@@ -6970,6 +7041,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "ADM1"
@@ -7024,6 +7096,7 @@
                         "property": "http://vivoweb.org/ontology/core#geographicFocus",
                         "combo": {
                           "rdftype": "http://vivoweb.org/ontology/core#GeographicRegion",
+                          "cache": true,
                           "graph": "geographicregion",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -7056,6 +7129,7 @@
                         "property": "http://w3id.org/roh/activityModality",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/ActivityModality",
+                          "cache": true,
                           "graph": "activitymodality",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -7088,6 +7162,7 @@
                         "property": "http://w3id.org/roh/accessSystemActivity",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/AccessSystemActivity",
+                          "cache": true,
                           "graph": "accesssystemactivity",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -7484,6 +7559,7 @@
                         "property": "http://w3id.org/roh/goals",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/StayGoal",
+                          "cache": true,
                           "graph": "staygoal",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -7536,6 +7612,7 @@
                         "property": "http://w3id.org/roh/entityType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/OrganizationType",
+                          "cache": true,
                           "graph": "organizationtype",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -7602,6 +7679,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "PCLD"
@@ -7621,6 +7699,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "ADM1"
@@ -7808,6 +7887,7 @@
                         "property": "http://w3id.org/roh/fundedByType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/OrganizationType",
+                          "cache": true,
                           "graph": "organizationtype",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -7856,6 +7936,7 @@
                         "property": "http://w3id.org/roh/fundedByHasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "PCLD"
@@ -7875,6 +7956,7 @@
                         "property": "http://w3id.org/roh/fundedByHasRegion",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "ADM1"
@@ -8220,6 +8302,7 @@
                         "property": "http://w3id.org/roh/awardingEntityType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/OrganizationType",
+                          "cache": true,
                           "graph": "organizationtype",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -8256,6 +8339,7 @@
                         "property": "http://w3id.org/roh/aims",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/GrantAim",
+                          "cache": true,
                           "graph": "grantaim",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -8393,6 +8477,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "PCLD"
@@ -8412,6 +8497,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "ADM1"
@@ -8718,6 +8804,7 @@
                         "property": "http://w3id.org/roh/relationshipType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/RelationshipType",
+                          "cache": true,
                           "graph": "relationshiptype",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -8921,6 +9008,7 @@
                                   "property": "http://w3id.org/roh/organizationType",
                                   "combo": {
                                     "rdftype": "http://w3id.org/roh/OrganizationType",
+                                    "cache": true,
                                     "graph": "organizationtype",
                                     "property": {
                                       "property": "http://purl.org/dc/elements/1.1/title"
@@ -8968,6 +9056,7 @@
                                   "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                                   "combo": {
                                     "rdftype": "http://www.geonames.org/ontology#Feature",
+                                    "cache": true,
                                     "filter": {
                                       "property": "http://www.geonames.org/ontology#featureCode",
                                       "value": "PCLD"
@@ -8987,6 +9076,7 @@
                                   "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                                   "combo": {
                                     "rdftype": "http://www.geonames.org/ontology#Feature",
+                                    "cache": true,
                                     "filter": {
                                       "property": "http://www.geonames.org/ontology#featureCode",
                                       "value": "ADM1"
@@ -9077,6 +9167,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "PCLD"
@@ -9096,6 +9187,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "ADM1"
@@ -9427,6 +9519,7 @@
                         "property": "http://w3id.org/roh/affiliatedOrganizationType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/OrganizationType",
+                          "cache": true,
                           "graph": "organizationtype",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -9474,6 +9567,7 @@
                         "property": "http://w3id.org/roh/affiliatedOrganizationHasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "PCLD"
@@ -9493,6 +9587,7 @@
                         "property": "http://w3id.org/roh/affiliatedOrganizationHasRegion",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "ADM1"
@@ -9559,6 +9654,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "PCLD"
@@ -9578,6 +9674,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "ADM1"
@@ -9980,6 +10077,7 @@
                         "property": "http://w3id.org/roh/affiliatedOrganizationType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/OrganizationType",
+                          "cache": true,
                           "graph": "organizationtype",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -10027,6 +10125,7 @@
                         "property": "http://w3id.org/roh/affiliatedOrganizationHasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "PCLD"
@@ -10046,6 +10145,7 @@
                         "property": "http://w3id.org/roh/affiliatedOrganizationHasRegion",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "ADM1"
@@ -10131,6 +10231,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "PCLD"
@@ -10150,6 +10251,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "ADM1"
@@ -10205,6 +10307,7 @@
                         "property": "http://vivoweb.org/ontology/core#geographicFocus",
                         "combo": {
                           "rdftype": "http://vivoweb.org/ontology/core#GeographicRegion",
+                          "cache": true,
                           "graph": "geographicregion",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -10605,6 +10708,7 @@
                                   "property": "http://w3id.org/roh/organizationType",
                                   "combo": {
                                     "rdftype": "http://w3id.org/roh/OrganizationType",
+                                    "cache": true,
                                     "graph": "organizationtype",
                                     "property": {
                                       "property": "http://purl.org/dc/elements/1.1/title"
@@ -10704,6 +10808,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "PCLD"
@@ -10723,6 +10828,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "ADM1"
@@ -10770,6 +10876,7 @@
                         "property": "http://w3id.org/roh/selectionEntityType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/OrganizationType",
+                          "cache": true,
                           "graph": "organizationtype",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -10817,6 +10924,7 @@
                         "property": "http://w3id.org/roh/selectionEntityHasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "PCLD"
@@ -10836,6 +10944,7 @@
                         "property": "http://w3id.org/roh/selectionEntityHasRegion",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "ADM1"
@@ -11105,6 +11214,7 @@
                         "property": "http://w3id.org/roh/organizationType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/OrganizationType",
+                          "cache": true,
                           "graph": "organizationtype",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -11160,6 +11270,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "PCLD"
@@ -11179,6 +11290,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "ADM1"
@@ -11456,6 +11568,7 @@
                         "property": "http://w3id.org/roh/organizationType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/OrganizationType",
+                          "cache": true,
                           "graph": "organizationtype",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -11511,6 +11624,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "PCLD"
@@ -11530,6 +11644,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "ADM1"
@@ -11564,6 +11679,7 @@
                         "property": "http://vivoweb.org/ontology/core#geographicFocus",
                         "combo": {
                           "rdftype": "http://vivoweb.org/ontology/core#GeographicRegion",
+                          "cache": true,
                           "graph": "geographicregion",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -11833,6 +11949,7 @@
                         "property": "http://w3id.org/roh/organizationType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/OrganizationType",
+                          "cache": true,
                           "graph": "organizationtype",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -11880,6 +11997,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "PCLD"
@@ -11899,6 +12017,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "ADM1"
@@ -11933,6 +12052,7 @@
                         "property": "http://vivoweb.org/ontology/core#geographicFocus",
                         "combo": {
                           "rdftype": "http://vivoweb.org/ontology/core#GeographicRegion",
+                          "cache": true,
                           "graph": "geographicregion",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -12188,6 +12308,7 @@
                         "property": "http://w3id.org/roh/organizationType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/OrganizationType",
+                          "cache": true,
                           "graph": "organizationtype",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -12243,6 +12364,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "PCLD"
@@ -12262,6 +12384,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "ADM1"
@@ -12514,6 +12637,7 @@
                         "property": "http://w3id.org/roh/organizationType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/OrganizationType",
+                          "cache": true,
                           "graph": "organizationtype",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -12569,6 +12693,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "PCLD"
@@ -12588,6 +12713,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "ADM1"
