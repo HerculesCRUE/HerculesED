@@ -283,10 +283,10 @@ var edicionCV = {
 		if (data.entityID != null) {
 			$('div[about="' + entityID + '"] .col-12.col-contenido').append(this.printPersonalData(data));
 		} else {
-			for (var i = 0; i < data.sections.length; i++) {				
-				$('div[about="' + entityID + '"] .col-12.col-contenido').append(this.printTabSection(data.sections[i]));
+			for (var i = 0; i < data.sections.length; i++) {	
+				$('div[about="' + entityID + '"] .col-12.col-contenido').append(this.printTabSection(data.sections[i]));				
 				if (data.sections[i].items != null) {
-					this.repintarListadoTab(data.sections[i].identifier);
+					this.repintarListadoTab(data.sections[i].identifier,true);
 				} else if (data.sections[i].item != null) {
 					that.printSectionItem(data.sections[i].item.idContenedor, data.sections[i].item, data.sections[i].identifier, $('div[about="' + entityID + '"]').attr('rdftype'), data.sections[i].item.entityID);
 					//Si no tiene ningun campo valor se repliega
@@ -780,8 +780,8 @@ var edicionCV = {
 					${htmlProp}
 				</div>`;
     },
-    repintarListadoTab: function(id) {
-
+    repintarListadoTab: function(id,noEngancharComportamientosCV) {
+		
         var numResultadosPagina = parseInt($('.panel-group[section="' + id + '"] .panNavegador .dropdown-toggle span').attr('items'));
         var texto = $('.panel-group[section="' + id + '"] .txtBusqueda').val();
         var paginaActual = parseInt($('.panel-group[section="' + id + '"] .panNavegador .pagination.numbers li.actual a').attr('page'));
@@ -790,19 +790,25 @@ var edicionCV = {
         //paginaActual
         //orden
 
+
         var NUM_PAG_INICIO = 3;
         var NUM_PAG_PROX_CENTRO = 2;
         var NUM_PAG_FIN = 3;
-
+		
         var articulos = $('div[section="' + id + '"] article');
+		var ordenPropertySplit=[];
+		var ordenAscSplit=[];
+		if(ordenProperty!=null)
+		{
+			ordenPropertySplit = ordenProperty.split('||');
+            ordenAscSplit = ordenAsc.split('||');
+		}
         articulos = articulos.sort(function(a, b) {
             if (ordenProperty == null || ordenProperty == '') {
                 if ($(a).find('div.orderItems div[property="default"]').text() > $(b).find('div.orderItems div[property="default"]').text()) return 1;
                 if ($(a).find('div.orderItems div[property="default"]').text() < $(b).find('div.orderItems div[property="default"]').text()) return -1;
                 return 0;
             } else {
-                let ordenPropertySplit = ordenProperty.split('||');
-                let ordenAscSplit = ordenAsc.split('||');
                 for (var i = 0; i < ordenPropertySplit.length; i++) {
                     let property = ordenPropertySplit[i];
                     let asc = ordenAscSplit[i];
@@ -828,25 +834,26 @@ var edicionCV = {
 
             }
         });
+				
         $('div[section="' + id + '"] article').remove();
         $('div[section="' + id + '"] .resource-list .resource-list-wrap').prepend(articulos);
+
 
         var numTotal = 1;
         var numPaginas = 1;
         var texto = EliminarAcentos(texto).toLowerCase();
+		$('div[section="' + id + '"] article').attr('style','display:none');
+		
         $('div[section="' + id + '"] article').each(function() {
-            var existeEnTitulo = EliminarAcentos($(this).find('h2').text()).toLowerCase().indexOf(texto) > -1;
-            var existeEnPropiedad = EliminarAcentos($(this).find('.content-wrap .group p:not(.title),.content-wrap .group li').text()).toLowerCase().indexOf(texto) > -1;
-            if (existeEnTitulo || existeEnPropiedad) {
+			var existe=texto=='';
+            var existeEnTitulo = existe || EliminarAcentos($(this).find('h2').text()).toLowerCase().indexOf(texto) > -1;
+            var existeEnPropiedad = existe || EliminarAcentos($(this).find('.content-wrap .group p:not(.title),.content-wrap .group li').text()).toLowerCase().indexOf(texto) > -1;
+            if (existe ||existeEnTitulo || existeEnPropiedad) {
                 numPaginas = Math.floor((numTotal - 1 + numResultadosPagina) / numResultadosPagina);
                 if (numPaginas == paginaActual) {
                     $(this).show();
-                } else {
-                    $(this).hide();
                 }
                 numTotal++;
-            } else {
-                $(this).hide();
             }
         });
         $('div[section="' + id + '"] .pagination.numbers').empty();
@@ -952,9 +959,13 @@ var edicionCV = {
         } else {
             $('div[section="' + id + '"] .pagination.arrows').append(`<li><a href="javascript: void(0)" page="${(paginaActual + 1)}" class="ultimaPagina">Página siguiente</a></li>`);
         }
-        $('div[section="' + id + '"] .numResultados').text('(' + $('div[section="' + id + '"] article').length + ')');
-        this.engancharComportamientosCV();
-        accionesPlegarDesplegarModal.init();
+		
+        $('div[section="' + id + '"] .numResultados').text('(' + $('div[section="' + id + '"] article').length + ')');     
+		if(noEngancharComportamientosCV==null || !noEngancharComportamientosCV)
+		{
+			this.engancharComportamientosCV();				
+		}
+        accionesPlegarDesplegarModal.init();		
     },
     paginarListado: function(sectionID, pagina) {
         $('.panel-group[section="' + sectionID + '"] .panNavegador .pagination.numbers .actual').removeClass('actual');
@@ -1115,6 +1126,12 @@ var edicionCV = {
             css += ' topic';
         }
 
+		if(!iseditable)
+		{
+			//Si el elemento está bloqueado pero la propiedad está marcada como editable sí que se pude editar
+			iseditable=property.editable;
+		}
+
         if (!iseditable) {
             css += ' disabled ';
         }
@@ -1146,7 +1163,7 @@ var edicionCV = {
                     htmlInput = this.printPropertyEditEntityAutocomplete(property.property, property.placeholder, property.propertyEntityValue, property.required, !iseditable, property.autocomplete, property.dependency,property.autocompleteConfig);
                     break;
 				case 'text':
-                    htmlInput = this.printPropertyEditTextInput(property.property, property.placeholder, value, property.required, !iseditable, property.autocomplete, property.dependency,property.autocompleteConfig,property.entity_cv);
+                    htmlInput = this.printPropertyEditTextInput(property.property, property.placeholder, value, property.required, !iseditable, property.autocomplete, property.dependency,property.autocompleteConfig,property.entity_cv,property.multilang);
                     break;
                 case 'number':
                     htmlInput = this.printPropertyEditNumberInput(property.property, property.placeholder, value, property.required, !iseditable, property.dependency);
@@ -1187,7 +1204,7 @@ var edicionCV = {
                     rdftype = ` rdftype='${property.entityData.rdftype}'`;
                     htmlInput += `<div class='item added entity' propertyrdf='${property.property}' rdftype='${property.entityData.rdftype}' about='${value}'>`;
 
-                    htmlInput += this.printPropertyEditTextInput(property.property, property.placeholder, value, property.required, !iseditable);
+                    htmlInput += this.printPropertyEditTextInput(property.property, property.placeholder, value, property.required, !iseditable,null,null,null,null,property.multilang);
 
                     //Pintamos el título
                     if (property.values.length > 0 && property.values[0] != null && property.entityData.titles[property.values[0]] != null) {
@@ -1258,7 +1275,7 @@ var edicionCV = {
             }
             switch (property.type) {
                 case 'text':
-                    htmlMultiple += this.printPropertyEditTextInput(property.property, property.placeholder, '', property.required, !iseditable, property.autocomplete, property.dependency,property.autocompleteConfig,property.entity_cv);
+                    htmlMultiple += this.printPropertyEditTextInput(property.property, property.placeholder, '', property.required, !iseditable, property.autocomplete, property.dependency,property.autocompleteConfig,property.entity_cv,property.multilang);
                     break;
                 case 'number':
                     htmlMultiple = this.printPropertyEditNumberInput(property.property, property.placeholder, value, property.required, !iseditable, property.dependency);
@@ -1285,7 +1302,7 @@ var edicionCV = {
                     htmlMultiple += this.printRowsEdit(iseditable, property.entityAuxData.rows);
                     break;
                 case 'entity':
-                    htmlMultiple += this.printPropertyEditTextInput(property.property, property.placeholder, value, property.required, !iseditable);
+                    htmlMultiple += this.printPropertyEditTextInput(property.property, property.placeholder, value, property.required, !iseditable,null,null,null,null,property.multilang);
                     break;
             }
             if (property.type == 'auxEntity' || property.type == 'auxEntityAuthorList' || property.type == 'thesaurus') {
@@ -1352,7 +1369,7 @@ var edicionCV = {
                 }
                 switch (property.type) {
                     case 'text':
-                        htmlMultiple += this.printPropertyEditTextInput(property.property, property.placeholder, property.values[valor], property.required, true, false);
+                        htmlMultiple += this.printPropertyEditTextInput(property.property, property.placeholder, property.values[valor], property.required, true, false,null,null,null,property.multilang);
                         break;
                     case 'number':
                         htmlMultiple += this.printPropertyEditNumberInput(property.property, property.placeholder, property.values[valor], property.required, true);
@@ -1398,7 +1415,7 @@ var edicionCV = {
 
                         break;
                     case 'entity':
-                        htmlMultiple += this.printPropertyEditTextInput(property.property, property.placeholder, value, property.required, !iseditable);
+                        htmlMultiple += this.printPropertyEditTextInput(property.property, property.placeholder, value, property.required, !iseditable,null,null,null,null,property.multilang);
 
                         //Pintamos el título
                         if (property.values[valor] != null && property.entityData.titles[property.values[valor]] != null) {
@@ -1470,7 +1487,7 @@ var edicionCV = {
 					<input propertyrdf="${property}" type="hidden">
 				</div>`;
     },
-    printPropertyEditTextInput: function(property, placeholder, value, required, pDisabled, autocomplete, dependency,autocompleteConfig,pEntity_cv) {
+    printPropertyEditTextInput: function(property, placeholder, value, required, pDisabled, autocomplete, dependency,autocompleteConfig,pEntity_cv,pMultilang) {
         var css = "";
         if (required) {
             css = "obligatorio";
@@ -1503,6 +1520,10 @@ var edicionCV = {
 				{
 					atributesAutocomplete+=' graphautocomplete="'+autocompleteConfig.graph+'" ';
 				}
+				if(autocompleteConfig.cache!=null)
+				{
+					atributesAutocomplete+=' cache="'+autocompleteConfig.cache+'" ';
+				}
 				if(autocompleteConfig.getEntityId)
 				{
 					atributesAutocomplete+=' entityidautocomplete="true" ';
@@ -1524,8 +1545,15 @@ var edicionCV = {
 			}
 			
 		}
-
-        return `<input ${disabled} ${atributesAutocomplete} propertyrdf="${property}" placeholder="${placeholder}" value="${value}" value="${value}" onclick="${action}" type="text" class="form-control not-outline ${css}" ${htmlDependency}>`;
+		
+		if(pMultilang)
+		{
+			return `<input ${disabled} ${atributesAutocomplete} propertyrdf="${property}" placeholder="${placeholder}" value="${value}" onfocus="${action}" type="text" class="form-control not-outline ${css}" ${htmlDependency}>
+			<input ${disabled} ${atributesAutocomplete} multilang="en" propertyrdf="${property}" placeholder="${placeholder}" value="${value.replaceAll("\"","\\\"")}" " onfocus="${action}" type="text" class="form-control not-outline ${css}" ${htmlDependency}>`;
+		}else
+		{
+			return `<input ${disabled} ${atributesAutocomplete} propertyrdf="${property}" placeholder="${placeholder}" value="${value.replace(/"/g, "&quot;")}" onfocus="${action}" type="text" class="form-control not-outline ${css}" ${htmlDependency}>`;
+		}
     },
     printPropertyEditEntityAutocomplete: function(property, placeholder, value, required, pDisabled, autocomplete, dependency,autocompleteConfig) {
         var css = "";
@@ -1555,6 +1583,14 @@ var edicionCV = {
 				if(autocompleteConfig.graph!=null)
 				{
 					atributesAutocomplete+=' graphautocomplete="'+autocompleteConfig.graph+'" ';
+				}			
+				if(autocompleteConfig.cache!=null)
+				{
+					atributesAutocomplete+=' cache="'+autocompleteConfig.cache+'" ';
+				}
+				if(autocompleteConfig.getEntityId)
+				{
+					atributesAutocomplete+=' entityidautocomplete="true" ';
 				}				
 				atributesAutocomplete+=' entityidautocomplete="true" ';
 			}
@@ -1903,22 +1939,37 @@ var edicionCV = {
 
         });
 
-        var listadosTesauros = $(".entityauxcontainer.thesaurus");
-		
-		$(listadosTesauros).each(function() {
-			var tesauroUser=$(".entityauxcontainer.thesaurus div.item.aux[propertyrdf='http://w3id.org/roh/userKnowledgeArea']").closest('.entityauxcontainer.thesaurus');
+		var tesauroUser=$(".entityauxcontainer.thesaurus div.item.aux[propertyrdf='http://w3id.org/roh/userKnowledgeArea']").closest('.entityauxcontainer.thesaurus');
+		var listadosTesauros = $(".entityauxcontainer.thesaurus");
+
+		//Añadimos enriquecidas al principio
+        $(listadosTesauros).each(function() {			
 			if(tesauroUser.length==1)
 			{
-				//Si existe el tesauro del usuario y el tesauro actual es http://w3id.org/roh/externalKnowledgeArea o
-				//http://w3id.org/roh/enrichedKnowledgeArea o http://w3id.org/roh/userKnowledgeArea, lo añadimos al del usuario
 				var propActual=$(this).find('div.item.aux').attr('propertyrdf');
-				if(propActual=="http://w3id.org/roh/externalKnowledgeArea"||propActual=="http://w3id.org/roh/enrichedKnowledgeArea"||propActual=="http://w3id.org/roh/userKnowledgeArea")
+				if(propActual=="http://w3id.org/roh/enrichedKnowledgeArea")
 				{
-					tesauroUser.find('.simple-collapse-content .resource-list ul').append($(this).find('.simple-collapse-content .resource-list ul li'));
+					tesauroUser.find('.simple-collapse-content .resource-list ul').prepend($(this).find('.simple-collapse-content .resource-list ul li'));
 				}
 			}
 			
 		});
+		
+		//Añadimos externas al principio
+		$(listadosTesauros).each(function() {
+			
+			if(tesauroUser.length==1)
+			{
+				var propActual=$(this).find('div.item.aux').attr('propertyrdf');
+				if(propActual=="http://w3id.org/roh/externalKnowledgeArea")
+				{
+					tesauroUser.find('.simple-collapse-content .resource-list ul').prepend($(this).find('.simple-collapse-content .resource-list ul li'));
+				}
+			}
+			
+		});
+		
+		
 
         this.engancharComportamientosCV();
     },
@@ -1970,31 +2021,6 @@ var edicionCV = {
                 check.addClass('lock');
             }
         });
-		
-		
-		
-		
-		var listadosTesauros = $(".entityauxcontainer.thesaurus");
-		
-		$(listadosTesauros).each(function() {
-			var tesauroUser=$(".entityauxcontainer.thesaurus div.item.aux[propertyrdf='http://w3id.org/roh/userKnowledgeArea']").closest('.entityauxcontainer.thesaurus');
-			if(tesauroUser.length==1)
-			{
-				//Si existe el tesauro del usuario y el tesauro actual es http://w3id.org/roh/externalKnowledgeArea o
-				//http://w3id.org/roh/enrichedKnowledgeArea o http://w3id.org/roh/userKnowledgeArea, lo añadimos al del usuario
-				var propActual=$(this).find('div.item.aux').attr('propertyrdf');
-				if(propActual=="http://w3id.org/roh/externalKnowledgeArea"||propActual=="http://w3id.org/roh/enrichedKnowledgeArea"||propActual=="http://w3id.org/roh/userKnowledgeArea")
-				{
-					tesauroUser.find('.simple-collapse-content .resource-list ul').append($(this).find('.simple-collapse-content .resource-list ul li'));
-				}
-			}
-			
-		});
-
-		
-		
-		
-
 
         return `<li class="${background}" about="${item.attr('about')}" parent-idtemp="${idTemp}" order="${num}">
 					<a href="javascript: void(0);">
@@ -2773,8 +2799,10 @@ var edicionCV = {
             if (contenedor.hasClass('topic')) {
                 edicionCV.repintarTopic();
             }
-
-            that.engancharComportamientosCV();
+			if($(this).closest('div[rdftype="http://w3id.org/roh/CategoryPath"]').length==0)
+			{
+				that.engancharComportamientosCV();
+			}
         });
 
         //Eliminar propiedad multiple que no es una entidad
@@ -2785,14 +2813,21 @@ var edicionCV = {
         //Mostrar popup entidad nueva/editar auxiliar/editar especiales
         //$('.multiple.entityauxcontainer .acciones-listado-edicion .add,.multiple.entityauxcontainer .acciones-listado-edicion .edit').off('click').on('click', function (e) {			
         $('.entityauxcontainer .acciones-listado-edicion .add,.entityauxcontainer .acciones-listado-edicion .edit').off('click').on('click', function(e) {
-            var edit = $(this).hasClass('edit');
+            MostrarUpdateProgress();
+			var edit = $(this).hasClass('edit');
             if ($(this).closest('.entityauxauthorlist').length > 0) {
                 if (!edit) {
                     //Creación
                     $('#modal-anadir-autor').modal('show');
                     $('#modal-anadir-autor .ko').hide();
-                    $('#modal-anadir-autor .resultados .form-group.full-group').remove();
-                    $('#inputsignatures').val('');
+                    $('#modal-anadir-autor .resultados .form-group.full-group').remove();					                    
+					if($('div.added.entityaux[propertyrdf="http://purl.org/ontology/bibo/authorList"] div.added.entity[about="'+edicionCV.idPerson+'"]').length)
+					{
+						$('#inputsignatures').val('');
+					}else
+					{
+						$('#inputsignatures').val($('#namePersonCV').val()+';');
+					}
                     $('#inputsignatures').removeAttr('disabled');
                     $('#modal-anadir-autor .validar').removeAttr('disabled');
 					$('#modal-anadir-autor .validar').text(GetText('CV_BUSCAR'));
@@ -2862,6 +2897,7 @@ var edicionCV = {
                 }
             }
             that.repintarListadoEntity();
+			OcultarUpdateProgress();
         });
 
 
@@ -3272,14 +3308,20 @@ var edicionCV = {
 
 
         //Combos dependientes
-        $('select.hasdependency').each(function() {
+        $('select.hasdependency').each(function() {			
             //Obtenemos el input del que es dependiente
             var dependency = $(this).attr('dependency');
-			if(dependency!='')
+			let contenedor = $(this).closest('.item.added');
+			if(contenedor.length==0)
 			{
+				contenedor=$(this).closest('.simple-collapse-content');
+			}
+			contenedor=$(contenedor[0]);
+			if(dependency!='')
+			{	
 				//Seleccionamos el input del que es dependiente y le añadimos el input sobre el que tiene que actuar
-				$('select[propertyrdf="' + dependency + '"]').attr('dependencyact', $(this).attr('propertyrdf'));
-				$('select[propertyrdf="' + dependency + '"]').unbind("change.dependencycombo").bind("change.dependencycombo", function() {
+				contenedor.find('select[propertyrdf="' + dependency + '"]').attr('dependencyact', $(this).attr('propertyrdf'));
+				contenedor.find('select[propertyrdf="' + dependency + '"]').unbind("change.dependencycombo").bind("change.dependencycombo", function() {
 					var valorSeleccionado = $(this).val();
 					var comboHijo = $(this).closest('.custom-form-row').find('select[propertyrdf="' + $(this).attr('dependencyact') + '"]');
 					comboHijo.find('option').each(function() {
@@ -3296,23 +3338,23 @@ var edicionCV = {
 							.trigger('change')
 					}
 				});
-				$('select[propertyrdf="' + dependency + '"]').trigger('change');
+				contenedor.find('select[propertyrdf="' + dependency + '"]').trigger('change');
 			}else
 			{
 				//Obtenemos el input del que es dependiente
 				var dependencyproperty = $(this).attr('dependencyproperty');
 				//Seleccionamos el input del que es dependiente y le añadimos el/los input sobre el que tiene que actuar
 				var lista=[];
-				if($('select[propertyrdf="' + dependencyproperty + '"]').attr('dependencyactcombo')!=null)
+				if(contenedor.find('select[propertyrdf="' + dependencyproperty + '"]').attr('dependencyactcombo')!=null)
 				{
-					lista=$('select[propertyrdf="' + dependencyproperty + '"]').attr('dependencyactcombo').split(',');
+					lista=contenedor.find('select[propertyrdf="' + dependencyproperty + '"]').attr('dependencyactcombo').split(',');
 				}
 				if(lista.indexOf($(this).attr('propertyrdf'))==-1)
 				{
 					lista.push($(this).attr('propertyrdf'));
 				}
-				$('select[propertyrdf="' + dependencyproperty + '"],input[propertyrdf="' + dependencyproperty + '"]').attr('dependencyactcombo',lista.join(','));
-				$('select[propertyrdf="' + dependencyproperty + '"],input[propertyrdf="' + dependencyproperty + '"]').unbind("change.dependencycombo").bind("change.dependencycombo", function() {
+				contenedor.find('select[propertyrdf="' + dependencyproperty + '"],input[propertyrdf="' + dependencyproperty + '"]').attr('dependencyactcombo',lista.join(','));
+				contenedor.find('select[propertyrdf="' + dependencyproperty + '"],input[propertyrdf="' + dependencyproperty + '"]').unbind("change.dependencycombo").bind("change.dependencycombo", function() {
 					var valorSeleccionado = $(this).val();
 					var that2=this;
 					$.each($(this).attr('dependencyactcombo').split(','), function (ind, elem) { 
@@ -3351,7 +3393,7 @@ var edicionCV = {
 					
 					
 				});
-				$('select[propertyrdf="' + dependencyproperty + '"],input[propertyrdf="' + dependencyproperty + '"]').trigger('change');
+				contenedor.find('select[propertyrdf="' + dependencyproperty + '"],input[propertyrdf="' + dependencyproperty + '"]').trigger('change');
 			}
         });
 
@@ -3539,7 +3581,8 @@ var edicionCV = {
         var modal = pFormulario.closest('.modal');
         //Auxiliar
         if (pFormulario.attr('entityid') == null && pFormulario.attr('entityload') == null) {
-            if (modal.attr('new') == 'true') {
+            MostrarUpdateProgress();
+			if (modal.attr('new') == 'true') {
                 if (modal.hasClass('modal-tesauro')) {
                     var panThesaurus = $('.entityauxcontainer[idtemp="' + modal.attr('idtemp') + '"]');
                     panThesaurus.children('.item.added.entityaux').remove();
@@ -3585,6 +3628,7 @@ var edicionCV = {
             }
             $(modal).modal('hide');
             that.repintarListadoEntity();
+			OcultarUpdateProgress();
         } else {
             //Modal principal (item del CV)	
             //o
@@ -3618,7 +3662,6 @@ var edicionCV = {
 						var property = $(this).attr('propertyrdf');
 						//Cargar propiedades padre
 						if ($(this).closest('.entityaux').length == 1) {
-							//TODO mas de un nivel de auxiliar
 							var propertyParent = $(this).closest('.entityaux').attr('propertyrdf');
 							var rdfTypeEntity = $(this).closest('.entityaux').attr('rdftype');
 							property = propertyParent + "@@@" + rdfTypeEntity + "|" + property;
@@ -3643,6 +3686,7 @@ var edicionCV = {
 							prop = {};
 							prop.prop = property;
 							prop.values = [];
+							prop.valuesmultilang = {};
 							if(entityCV)
 							{
 								entidad.properties_cv.push(prop);
@@ -3652,11 +3696,16 @@ var edicionCV = {
 						}
 						var valor = $(this).val();
 						if ($(this).closest('.entityaux').length == 1) {
-							//TODO mas de un nivel de auxiliar
 							var entityParent = $(this).closest('.entityaux').attr('about');
 							valor = entityParent + "@@@" + valor;
 						}
-						prop.values.push(valor);
+						if($(this).attr('multilang')!=null)
+						{
+							prop.valuesmultilang[$(this).attr('multilang')]=valor;
+						}else
+						{
+							prop.values.push(valor);
+						}
 					}
 				}
             });
@@ -4032,6 +4081,7 @@ function addAutocompletar(control) {
     var pProperty = $(control).attr('propertyrdf')
     var pRdfType = $('#modal-editar-entidad form').attr('rdftype');
     var pGraph = $('#modal-editar-entidad form').attr('ontology');
+	var pLang = lang;
 	
 	//Si hay alguna configuración lo coge de la configuración
 	if($(control).attr('propertyautocomplete')!=null)
@@ -4045,6 +4095,13 @@ function addAutocompletar(control) {
 	if($(control).attr('graphautocomplete')!=null)
 	{
 		pGraph=$(control).attr('graphautocomplete');
+	}
+	if($(control).attr('cache')!=null)
+	{
+		pCache=$(control).attr('cache')=='true';
+	}else
+	{
+		pCache=false;
 	}
 	if($(control).attr('entityidautocomplete')=='true')
 	{
@@ -4116,12 +4173,14 @@ function addAutocompletar(control) {
                 pProperty: pProperty,
                 pRdfType: pRdfType,
                 pGraph: pGraph,
+				pLang: pLang,
+				pCache: pCache,
 				pGetEntityID:pGetEntityID,
                 botonBuscar: btnID
             }
         }
     );
-    $(control).removeAttr('onclick')
+    $(control).removeAttr('onfocus')
 }
 
 function TransFormData(data, type) {
