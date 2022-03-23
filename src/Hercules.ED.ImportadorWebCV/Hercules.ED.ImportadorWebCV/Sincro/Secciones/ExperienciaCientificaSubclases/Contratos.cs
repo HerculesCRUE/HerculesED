@@ -10,16 +10,24 @@ namespace ImportadorWebCV.Sincro.Secciones.ExperienciaCientificaSubclases
 {
     class Contratos : DisambiguableEntity
     {
-        public string descripcion { get; set; }
+        public string nombre { get; set; }
         public string fecha { get; set; }
+        public string entidadRealizacion { get; set; }
 
-        private static readonly DisambiguationDataConfig configDescripcion = new DisambiguationDataConfig()
+        private static readonly DisambiguationDataConfig configNombre = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsTitle,
             score = 0.8f
         };
 
         private static readonly DisambiguationDataConfig configFecha = new DisambiguationDataConfig()
+        {
+            type = DisambiguationDataConfigType.equalsItem,
+            score = 0.5f,
+            scoreMinus = 0.5f
+        };
+        
+        private static readonly DisambiguationDataConfig configER = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsItem,
             score = 0.5f,
@@ -32,9 +40,9 @@ namespace ImportadorWebCV.Sincro.Secciones.ExperienciaCientificaSubclases
             {
                 new DisambiguationData()
                 {
-                    property = "descripcion",
-                    config = configDescripcion,
-                    value = descripcion
+                    property = "nombre",
+                    config = configNombre,
+                    value = nombre
                 },
 
                 new DisambiguationData()
@@ -42,6 +50,13 @@ namespace ImportadorWebCV.Sincro.Secciones.ExperienciaCientificaSubclases
                     property = "fecha",
                     config = configFecha,
                     value = fecha
+                },
+
+                new DisambiguationData()
+                {
+                    property = "entidadRealizacion",
+                    config = configER,
+                    value = entidadRealizacion
                 }
             };
             return data;
@@ -59,10 +74,11 @@ namespace ImportadorWebCV.Sincro.Secciones.ExperienciaCientificaSubclases
 
             foreach (List<string> lista in listaListas)
             {
-                string select = $@"SELECT distinct ?item ?itemTitle ?itemDate ";
+                string select = $@"SELECT distinct ?item ?itemTitle ?itemDate ?itemER ";
                 string where = $@"where {{
-                                        ?item <{Variables.ExperienciaCientificaTecnologica.contratosNombrePrograma}> ?itemTitle . 
+                                        ?item <{Variables.ExperienciaCientificaTecnologica.contratosNombreProyecto}> ?itemTitle . 
                                         OPTIONAL{{?item <{Variables.ExperienciaCientificaTecnologica.contratosFechaInicio}> ?itemDate }}.
+                                        OPTIONAL{{?item <{Variables.ExperienciaCientificaTecnologica.contratosEntidadRealizacionNombre}> ?itemER }}.
                                         FILTER(?item in (<{string.Join(">,<", lista)}>))
                                     }}";
                 //TODO check where valores
@@ -72,8 +88,9 @@ namespace ImportadorWebCV.Sincro.Secciones.ExperienciaCientificaSubclases
                     Contratos contratos = new Contratos
                     {
                         ID = fila["item"].value,
-                        descripcion = fila["itemTitle"].value,
-                        fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : ""
+                        nombre = fila["itemTitle"].value,
+                        fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : "",
+                        entidadRealizacion = fila.ContainsKey("itemER") ? fila["itemER"].value : ""
                     };
 
                     resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), contratos);
