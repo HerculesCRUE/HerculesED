@@ -838,7 +838,7 @@
                     "properties": [
                       {
                         "title": {
-                          "es": "Cuantía subproyecto"
+                          "es": "Cuantía subproyecto (€)"
                         },
                         "property": "http://w3id.org/roh/subProjectMonetaryAmount",
                         "type": "number",
@@ -952,6 +952,19 @@
                         }
                       }
                     ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Aportación del solicitante"
+                        },
+                        "entity_cv":true,
+                        "property": "http://w3id.org/roh/applicantContribution",
+                        "type": "textarea",
+                        "width": 3
+                      }
+                    ]
                   }
                 ]
               }
@@ -970,6 +983,8 @@
         },
         "listItemsPresentation": {
           "property": "http://vivoweb.org/ontology/core#relatedBy",
+          "property_cv": "http://w3id.org/roh/relatedNonCompetitiveProjectCV",
+          "rdftype_cv": "http://w3id.org/roh/RelatedNonCompetitiveProjectCV",
           "listItem": {
             "propertyTitle": {
               "property": "http://vivoweb.org/ontology/core#relatedBy",
@@ -981,14 +996,14 @@
             "orders": [
               {
                 "name": {
-                  "es": "Ordenar por fecha más reciente"
+                  "es": "Ordenar por fecha de inicio más reciente"
                 },
                 "properties": [
                   {
                     "property": "http://vivoweb.org/ontology/core#relatedBy",
                     "graph": "project",
                     "child": {
-                      "property": "http://purl.org/dc/terms/issued"
+                      "property": "http://vivoweb.org/ontology/core#start"
                     },
                     "asc": false
                   },
@@ -1004,14 +1019,14 @@
               },
               {
                 "name": {
-                  "es": "Ordenar por fecha más antigua"
+                  "es": "Ordenar por fecha de inicio más antigua"
                 },
                 "properties": [
                   {
                     "property": "http://vivoweb.org/ontology/core#relatedBy",
                     "graph": "project",
                     "child": {
-                      "property": "http://purl.org/dc/terms/issued"
+                      "property": "http://vivoweb.org/ontology/core#start"
                     },
                     "asc": true
                   },
@@ -1029,23 +1044,6 @@
             "properties": [
               {
                 "name": {
-                  "es": "Entidad/es financiadora/s"
-                },
-                "showMiniBold": true,
-                "child": {
-                  "property": "http://vivoweb.org/ontology/core#relatedBy",
-                  "graph": "project",
-                  "child": {
-                    "property": "http://w3id.org/roh/grantedBy",
-                    "graph": "organization",
-                    "child": {
-                      "property": "http://w3id.org/roh/title"
-                    }
-                  }
-                }
-              },
-              {
-                "name": {
                   "es": "Fecha de inicio"
                 },
                 "showMiniBold": true,
@@ -1060,26 +1058,60 @@
               },
               {
                 "name": {
-                  "es": "Nombres investigadores principales (IP, Co-IP,...)"
+                  "es": "Entidad de realización"
                 },
-                "showMini": true,
-                "childOR": [
-                  {
-                    "property": "http://vivoweb.org/ontology/core#relatedBy",
-                    "graph": "project",
-                    "order": "http://www.w3.org/1999/02/22-rdf-syntax-ns#comment",
+                "showMiniBold": true,
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "project",
+                  "child": {
+                    "property": "http://w3id.org/roh/conductedByTitle"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Ciudad entidad realización"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "project",
+                  "child": {
+                    "property": "https://www.w3.org/2006/vcard/ns#locality"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "C. Autón./Reg. entidad realización"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "project",
+                  "child": {
+                    "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+                    "graph": "feature",
                     "child": {
-                      "property": "http://vivoweb.org/ontology/core#relates",
-                      "child": {
-                        "property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
-                        "graph": "person",
-                        "child": {
-                          "property": "http://xmlns.com/foaf/0.1/name"
-                        }
-                      }
+                      "property": "http://www.geonames.org/ontology#name"
                     }
                   }
-                ]
+                }
+              },
+              {
+                "name": {
+                  "es": "País entidad realización"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "project",
+                  "child": {
+                    "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+                    "graph": "feature",
+                    "child": {
+                      "property": "http://www.geonames.org/ontology#name"
+                    }
+                  }
+                }
               }
             ]
           },
@@ -1129,12 +1161,112 @@
                   {
                     "properties": [
                       {
-                        "property": "http://vivoweb.org/ontology/core#relates",
-                        "type": "auxEntityAuthorList",
+                        "title": {
+                          "es": "Descripción"
+                        },
+                        "placeholder": {
+                          "es": "Introduce la descripción"
+                        },
+                        "property": "http://vivoweb.org/ontology/core#description",
+                        "type": "textarea",
+                        "width": 3
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "property": "http://w3id.org/roh/mainResearchers",
+                        "type": "auxEntity",
                         "title": {
                           "es": "Nombres investigadores principales (IP, Co-IP,...)"
                         },
-                        "width": 3
+                        "multiple": true,
+                        "width": 3,
+                        "auxEntityData": {
+                          "propertyOrder": "http://www.w3.org/1999/02/22-rdf-syntax-ns#comment",
+                          "rdftype": "http://xmlns.com/foaf/0.1/Person",
+                          "propertyTitle": {
+                            "property": "http://xmlns.com/foaf/0.1/firstName"
+                          },
+                          "properties": [
+                            {
+                              "name": {
+                                "es": "Primer apellido"
+                              },
+                              "child": {
+                                "property": "http://xmlns.com/foaf/0.1/familyName"
+                              }
+                            },
+                            {
+                              "name": {
+                                "es": "Segundo apellido"
+                              },
+                              "child": {
+                                "property": "http://w3id.org/roh/secondFamilyName"
+                              }
+                            },
+                            {
+                              "name": {
+                                "es": "Firma"
+                              },
+                              "child": {
+                                "property": "http://xmlns.com/foaf/0.1/nick"
+                              }
+                            }
+                          ],
+                          "rows": [
+                            {
+                              "properties": [
+                                {
+                                  "title": {
+                                    "es": "Nombre"
+                                  },
+                                  "placeholder": {
+                                    "es": "Introduce el nombre"
+                                  },
+                                  "required": true,
+                                  "property": "http://xmlns.com/foaf/0.1/firstName",
+                                  "type": "text",
+                                  "width": 1
+                                },
+                                {
+                                  "title": {
+                                    "es": "Primer apellido"
+                                  },
+                                  "placeholder": {
+                                    "es": "Introduce el primer apellido"
+                                  },
+                                  "property": "http://xmlns.com/foaf/0.1/familyName",
+                                  "type": "text",
+                                  "width": 1
+                                },
+                                {
+                                  "title": {
+                                    "es": "Segundo apellido"
+                                  },
+                                  "placeholder": {
+                                    "es": "Introduce el segundo apellido"
+                                  },
+                                  "property": "http://w3id.org/roh/secondFamilyName",
+                                  "type": "text",
+                                  "width": 1
+                                },
+                                {
+                                  "title": {
+                                    "es": "Firma"
+                                  },
+                                  "placeholder": {
+                                    "es": "Introduce la firma"
+                                  },
+                                  "property": "http://xmlns.com/foaf/0.1/nick",
+                                  "type": "text",
+                                  "width": 1
+                                }
+                              ]
+                            }
+                          ]
+                        }
                       }
                     ]
                   },
@@ -1144,12 +1276,106 @@
                         "title": {
                           "es": "Entidad de realización"
                         },
-                        "property": "http://w3id.org/roh/conductedBy",
-                        "combo": {
+                        "autocomplete": true,
+                        "placeholder": {
+                          "es": "Introduce la entidad convocante"
+                        },
+                        "property": "http://w3id.org/roh/conductedByTitle",
+                        "autocompleteConfig": {
                           "rdftype": "http://xmlns.com/foaf/0.1/Organization",
                           "graph": "organization",
+                          "propertyEntity": "http://w3id.org/roh/conductedBy",
                           "property": {
                             "property": "http://w3id.org/roh/title"
+                          }
+                        },
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Tipo de entidad"
+                        },
+                        "property": "http://w3id.org/roh/conductedByType",
+                        "combo": {
+                          "rdftype": "http://w3id.org/roh/OrganizationType",
+                          "graph": "organizationtype",
+                          "property": {
+                            "property": "http://purl.org/dc/elements/1.1/title"
+                          }
+                        },
+                        "dependency": {
+                          "property": "http://w3id.org/roh/conductedByTitle",
+                          "propertyValue": "*"
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Otros"
+                        },
+                        "property": "http://w3id.org/roh/conductedByTypeOther",
+                        "required": true,
+                        "dependency": {
+                          "property": "http://w3id.org/roh/conductedByType",
+                          "propertyValue": "{GraphsUrl}items/organizationtype_OTHERS"
+                        },
+                        "type": "text",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Ciudad entidad realización"
+                        },
+                        "placeholder": {
+                          "es": "Introduce la ciudad de realización"
+                        },
+                        "property": "https://www.w3.org/2006/vcard/ns#locality",
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "País entidad realización"
+                        },
+                        "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+                        "combo": {
+                          "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "filter": {
+                            "property": "http://www.geonames.org/ontology#featureCode",
+                            "value": "PCLD"
+                          },
+                          "graph": "feature",
+                          "property": {
+                            "property": "http://www.geonames.org/ontology#name"
+                          }
+                        },
+                        "type": "selectCombo",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "C. Autón./Reg. entidad realización"
+                        },
+                        "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+                        "combo": {
+                          "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "filter": {
+                            "property": "http://www.geonames.org/ontology#featureCode",
+                            "value": "ADM1"
+                          },
+                          "dependency": {
+                            "property": "http://www.geonames.org/ontology#parentFeature",
+                            "propertyValue": "https://www.w3.org/2006/vcard/ns#hasCountryName"
+                          },
+                          "graph": "feature",
+                          "property": {
+                            "property": "http://www.geonames.org/ontology#name"
                           }
                         },
                         "type": "selectCombo",
@@ -1160,20 +1386,181 @@
                   {
                     "properties": [
                       {
+                        "property": "http://w3id.org/roh/grantedBy",
+                        "type": "auxEntity",
                         "title": {
                           "es": "Entidad/es financiadora/s"
                         },
-                        "property": "http://w3id.org/roh/grantedBy",
-                        "combo": {
-                          "rdftype": "http://xmlns.com/foaf/0.1/Organization",
-                          "graph": "organization",
-                          "property": {
-                            "property": "http://w3id.org/roh/title"
-                          }
-                        },
                         "multiple": true,
-                        "type": "selectCombo",
-                        "width": 1
+                        "width": 3,
+                        "auxEntityData": {
+                          "rdftype": "http://w3id.org/roh/Organization",
+                          "propertyTitle": {
+                            "property": "http://w3id.org/roh/organizationTitle"
+                          },
+                          "properties": [
+                            {
+                              "name": {
+                                "es": "Tipo de entidad"
+                              },
+                              "child": {
+                                "property": "http://w3id.org/roh/organizationType",
+                                "graph": "organizationtype",
+                                "child": {
+                                  "property": "http://purl.org/dc/elements/1.1/title"
+                                }
+                              }
+                            },
+                            {
+                              "name": {
+                                "es": "Ciudad entidad financiadora"
+                              },
+                              "child": {
+                                "property": "https://www.w3.org/2006/vcard/ns#locality"
+                              }
+                            },
+                            {
+                              "name": {
+                                "es": "País entidad financiadora"
+                              },
+                              "child": {
+                                "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+                                "graph": "feature",
+                                "child": {
+                                  "property": "http://www.geonames.org/ontology#name"
+                                }
+                              }
+                            },
+                            {
+                              "name": {
+                                "es": "C. Autón./Reg. entidad financiadora"
+                              },
+                              "child": {
+                                "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+                                "graph": "feature",
+                                "child": {
+                                  "property": "http://www.geonames.org/ontology#name"
+                                }
+                              }
+                            }
+                          ],
+                          "rows": [
+                            {
+                              "properties": [
+                                {
+                                  "title": {
+                                    "es": "Entidad financiadora"
+                                  },
+                                  "autocomplete": true,
+                                  "required": true,
+                                  "placeholder": {
+                                    "es": "Introduce la entidad financiadora"
+                                  },
+                                  "property": "http://w3id.org/roh/organizationTitle",
+                                  "autocompleteConfig": {
+                                    "rdftype": "http://xmlns.com/foaf/0.1/Organization",
+                                    "graph": "organization",
+                                    "propertyEntity": "http://w3id.org/roh/organization",
+                                    "property": {
+                                      "property": "http://w3id.org/roh/title"
+                                    }
+                                  },
+                                  "type": "text",
+                                  "width": 1
+                                },
+                                {
+                                  "title": {
+                                    "es": "Tipo de entidad"
+                                  },
+                                  "property": "http://w3id.org/roh/organizationType",
+                                  "combo": {
+                                    "rdftype": "http://w3id.org/roh/OrganizationType",
+                                    "graph": "organizationtype",
+                                    "property": {
+                                      "property": "http://purl.org/dc/elements/1.1/title"
+                                    }
+                                  },
+                                  "dependency": {
+                                    "property": "http://w3id.org/roh/organizationTitle",
+                                    "propertyValue": "*"
+                                  },
+                                  "type": "selectCombo",
+                                  "width": 1
+                                },
+                                {
+                                  "title": {
+                                    "es": "Otros"
+                                  },
+                                  "property": "http://w3id.org/roh/organizationTypeOther",
+                                  "required": true,
+                                  "dependency": {
+                                    "property": "http://w3id.org/roh/organizationType",
+                                    "propertyValue": "{GraphsUrl}items/organizationtype_OTHERS"
+                                  },
+                                  "type": "text",
+                                  "width": 1
+                                }
+                              ]
+                            },
+                            {
+                              "properties": [
+                                {
+                                  "title": {
+                                    "es": "Ciudad entidad financiadora"
+                                  },
+                                  "placeholder": {
+                                    "es": "Introduce la ciudad de entidad financiadora"
+                                  },
+                                  "property": "https://www.w3.org/2006/vcard/ns#locality",
+                                  "type": "text",
+                                  "width": 1
+                                },
+                                {
+                                  "title": {
+                                    "es": "País entidad financiadora"
+                                  },
+                                  "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
+                                  "combo": {
+                                    "rdftype": "http://www.geonames.org/ontology#Feature",
+                                    "filter": {
+                                      "property": "http://www.geonames.org/ontology#featureCode",
+                                      "value": "PCLD"
+                                    },
+                                    "graph": "feature",
+                                    "property": {
+                                      "property": "http://www.geonames.org/ontology#name"
+                                    }
+                                  },
+                                  "type": "selectCombo",
+                                  "width": 1
+                                },
+                                {
+                                  "title": {
+                                    "es": "C. Autón./Reg. entidad financiadora"
+                                  },
+                                  "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
+                                  "combo": {
+                                    "rdftype": "http://www.geonames.org/ontology#Feature",
+                                    "filter": {
+                                      "property": "http://www.geonames.org/ontology#featureCode",
+                                      "value": "ADM1"
+                                    },
+                                    "dependency": {
+                                      "property": "http://www.geonames.org/ontology#parentFeature",
+                                      "propertyValue": "https://www.w3.org/2006/vcard/ns#hasCountryName"
+                                    },
+                                    "graph": "feature",
+                                    "property": {
+                                      "property": "http://www.geonames.org/ontology#name"
+                                    }
+                                  },
+                                  "type": "selectCombo",
+                                  "width": 1
+                                }
+                              ]
+                            }
+                          ]
+                        }
                       }
                     ]
                   },
@@ -1189,15 +1576,7 @@
                       },
                       {
                         "title": {
-                          "es": "Fecha de finalización"
-                        },
-                        "property": "http://vivoweb.org/ontology/core#end",
-                        "type": "date",
-                        "width": 1
-                      },
-                      {
-                        "title": {
-                          "es": "Cuantía total (€)"
+                          "es": "Cuantía total"
                         },
                         "placeholder": {
                           "es": "Introduce la cuantía total"
@@ -1219,26 +1598,17 @@
                     "properties": [
                       {
                         "title": {
-                          "es": "Duración años"
+                          "es": "Tipo de proyecto"
                         },
-                        "property": "http://w3id.org/roh/durationYears",
-                        "type": "text",
-                        "width": 1
-                      },
-                      {
-                        "title": {
-                          "es": "Duración meses"
+                        "property": "http://w3id.org/roh/projectType",
+                        "combo": {
+                          "rdftype": "http://w3id.org/roh/ProjectType",
+                          "graph": "projecttype",
+                          "property": {
+                            "property": "http://purl.org/dc/elements/1.1/title"
+                          }
                         },
-                        "property": "http://w3id.org/roh/durationMonths",
-                        "type": "text",
-                        "width": 1
-                      },
-                      {
-                        "title": {
-                          "es": "Duración días"
-                        },
-                        "property": "http://w3id.org/roh/durationDays",
-                        "type": "text",
+                        "type": "selectCombo",
                         "width": 1
                       }
                     ]
@@ -1247,12 +1617,41 @@
                     "properties": [
                       {
                         "title": {
-                          "es": "Identificar palabras clave"
+                          "es": "Duración años"
                         },
-                        "property": "http://vivoweb.org/ontology/core#freeTextKeyword",
-                        "multiple": true,
-                        "type": "text",
+                        "property": "http://w3id.org/roh/durationYears",
+                        "type": "number",
                         "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Duración meses"
+                        },
+                        "property": "http://w3id.org/roh/durationMonths",
+                        "type": "number",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Duración días"
+                        },
+                        "property": "http://w3id.org/roh/durationDays",
+                        "type": "number",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Áreas temáticas"
+                        },
+                        "property": "http://w3id.org/roh/hasKnowledgeArea",
+                        "thesaurus": "researcharea",
+                        "type": "thesaurus",
+                        "width": 3,
+                        "multiple": true
                       }
                     ]
                   },
@@ -1271,7 +1670,7 @@
                           }
                         },
                         "type": "selectCombo",
-                        "width": 2
+                        "width": 1
                       }
                     ]
                   },
@@ -1297,150 +1696,115 @@
                           "es": "Otros"
                         },
                         "property": "http://w3id.org/roh/geographicFocusOther",
-                        "type": "text",
-                        "width": 1
-                      }
-                    ]
-                  },
-                  {
-                    "properties": [
-                      {
-                        "title": {
-                          "es": "Entidad de realización"
+                        "required": true,
+                        "dependency": {
+                          "property": "http://vivoweb.org/ontology/core#geographicFocus",
+                          "propertyValue": "{GraphsUrl}items/geographicregion_OTHERS"
                         },
-                        "property": "http://w3id.org/roh/conductedBy",
-                        "combo": {
-                          "rdftype": "http://w3id.org/roh/PublicationType",
-                          "graph": "organization",
-                          "property": {
-                            "property": "http://w3id.org/roh/title"
-                          }
-                        },
-                        "type": "selectCombo",
-                        "width": 1
-                      }
-                    ]
-                  },
-                  {
-                    "properties": [
-                      {
-                        "title": {
-                          "es": "Nº de personas/año"
-                        },
-                        "property": "http://w3id.org/roh/researchersNumber",
                         "type": "text",
                         "width": 1
                       },
                       {
                         "title": {
-                          "es": "Tipo de proyecto"
+                          "es": "Nº de personas/año"
                         },
-                        "property": "http://w3id.org/roh/projectType",
+                        "property": "http://w3id.org/roh/peopleYearNumber",
+                        "type": "number",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Grado de contribución"
+                        },
+                        "entity_cv": true,
+                        "property": "http://w3id.org/roh/contributionGradeProject",
                         "combo": {
-                          "rdftype": "http://w3id.org/roh/ProjectType",
-                          "graph": "projecttype",
+                          "rdftype": "http://w3id.org/roh/ContributionGradeProject",
+                          "graph": "contributiongradeproject",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
                           }
                         },
                         "type": "selectCombo",
                         "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Otros"
+                        },
+                        "entity_cv": true,
+                        "property": "http://w3id.org/roh/contributionGradeProjectOther",
+                        "required": true,
+                        "dependency": {
+                          "property": "http://w3id.org/roh/contributionGradeProject",
+                          "propertyValue": "{GraphsUrl}items/contributiongradeproject_OTHERS"
+                        },
+                        "type": "text",
+                        "width": 1
                       }
                     ]
                   },
                   {
                     "properties": [
                       {
-                        "TODO": "Entidad auxiliar múltiple que contiene otra entidad auxiliar (FundingProgram)",
-                        "property": "http://w3id.org/roh/isSupportedBy",
-                        "type": "auxEntity",
                         "title": {
-                          "es": "Financiación"
+                          "es": "Nombre del programa"
                         },
-                        "multiple": true,
-                        "width": 3,
-                        "auxEntityData": {
-                          "rdftype": "http://w3id.org/roh/Funding",
-                          "propertyTitle": {
-                            "property": "http://w3id.org/roh/monetaryAmount"
-                          },
-                          "properties": [
-                            {
-                              "name": {
-                                "es": "Cuantía subproyecto"
-                              },
-                              "child": {
-                                "property": "http://w3id.org/roh/monetaryAmount"
-                              }
-                            },
-                            {
-                              "name": {
-                                "es": "Porcentaje en subvención"
-                              },
-                              "child": {
-                                "property": "http://w3id.org/roh/grantsPercentage"
-                              }
-                            },
-                            {
-                              "name": {
-                                "es": "Porcentaje en crédito"
-                              },
-                              "child": {
-                                "property": "http://w3id.org/roh/creditPercentage"
-                              }
-                            },
-                            {
-                              "name": {
-                                "es": "Porcentaje mixto"
-                              },
-                              "child": {
-                                "property": "http://w3id.org/roh/mixedPercentage"
-                              }
-                            }
-                          ],
-                          "rows": [
-                            {
-                              "properties": [
-                                {
-                                  "title": {
-                                    "es": "Cuantía subproyecto"
-                                  },
-                                  "property": "http://w3id.org/roh/monetaryAmount",
-                                  "type": "number",
-                                  "width": 1
-                                }
-                              ]
-                            },
-                            {
-                              "properties": [
-                                {
-                                  "title": {
-                                    "es": "Porcentaje en subvención"
-                                  },
-                                  "property": "http://w3id.org/roh/grantsPercentage",
-                                  "type": "number",
-                                  "width": 1
-                                },
-                                {
-                                  "title": {
-                                    "es": "Porcentaje en crédito"
-                                  },
-                                  "property": "http://w3id.org/roh/creditPercentage",
-                                  "type": "number",
-                                  "width": 1
-                                },
-                                {
-                                  "title": {
-                                    "es": "Porcentaje mixto"
-                                  },
-                                  "property": "http://w3id.org/roh/mixedPercentage",
-                                  "type": "number",
-                                  "width": 1
-                                }
-                              ]
-                            }
-                          ]
-                        }
+                        "property": "http://w3id.org/roh/isSupportedBy",
+                        "type": "text",
+                        "width": 2
+                      },
+                      {
+                        "title": {
+                          "es": "Cód. según financiadora"
+                        },
+                        "property": "http://w3id.org/roh/projectCode",
+                        "type": "text",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Cuantía subproyecto (€)"
+                        },
+                        "property": "http://w3id.org/roh/subProjectMonetaryAmount",
+                        "type": "number",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Porcentaje en subvención"
+                        },
+                        "property": "http://w3id.org/roh/grantsPercentage",
+                        "type": "number",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Porcentaje en crédito"
+                        },
+                        "property": "http://w3id.org/roh/creditPercentage",
+                        "type": "number",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Porcentaje mixto"
+                        },
+                        "property": "http://w3id.org/roh/mixedPercentage",
+                        "type": "number",
+                        "width": 1
                       }
                     ]
                   },
@@ -1459,14 +1823,47 @@
                   {
                     "properties": [
                       {
+                        "property": "http://w3id.org/roh/participates",
+                        "type": "auxEntity",
                         "title": {
-                          "es": "Áreas temáticas"
+                          "es": "Entidad/es particpante/s"
                         },
-                        "property": "http://w3id.org/roh/hasKnowledgeArea",
-                        "thesaurus": "researcharea",
-                        "type": "thesaurus",
+                        "multiple": true,
                         "width": 3,
-                        "multiple": true
+                        "auxEntityData": {
+                          "rdftype": "http://w3id.org/roh/Organization",
+                          "propertyTitle": {
+                            "property": "http://w3id.org/roh/organizationTitle"
+                          },
+                          "properties": [],
+                          "rows": [
+                            {
+                              "properties": [
+                                {
+                                  "title": {
+                                    "es": "Entidad particpante"
+                                  },
+                                  "autocomplete": true,
+                                  "required": true,
+                                  "placeholder": {
+                                    "es": "Introduce la entidad particpante"
+                                  },
+                                  "property": "http://w3id.org/roh/organizationTitle",
+                                  "autocompleteConfig": {
+                                    "rdftype": "http://xmlns.com/foaf/0.1/Organization",
+                                    "graph": "organization",
+                                    "propertyEntity": "http://w3id.org/roh/organization",
+                                    "property": {
+                                      "property": "http://w3id.org/roh/title"
+                                    }
+                                  },
+                                  "type": "text",
+                                  "width": 1
+                                }
+                              ]
+                            }
+                          ]
+                        }
                       }
                     ]
                   }
@@ -1476,7 +1873,7 @@
           }
         }
       }
-    },
+    },    
     {
       "rdftype": "http://w3id.org/roh/RelatedPatent",
       "property": "http://w3id.org/roh/patents",
@@ -2195,7 +2592,7 @@
                         "auxEntityData": {
                           "rdftype": "http://w3id.org/roh/Organization",
                           "propertyTitle": {
-                            "property": "http://w3id.org/roh/organizationTitle",
+                            "property": "http://w3id.org/roh/organizationTitle"
                           },
                           "properties": [],
                           "rows": [
