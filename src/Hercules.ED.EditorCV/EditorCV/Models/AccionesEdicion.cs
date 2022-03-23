@@ -1460,7 +1460,7 @@ namespace GuardadoCV.Models
                     if (pId != null && pData.ContainsKey(pId))
                     {
                         string entity = pData[pId].Where(x => x["p"].value == entityEditSectionRowProperty.property).Select(x => x["o"].value).Distinct().FirstOrDefault();
-                        if (!string.IsNullOrEmpty(entity))
+                        if (!string.IsNullOrEmpty(entity) && pData.ContainsKey(entity))
                         {
                             string entityText = pData[entity].Where(x => x["p"].value == pItemEditSectionRowProperty.autocompleteConfig.property.property).Select(x => x["o"].value).Distinct().FirstOrDefault();
                             entityEditSectionRowProperty.propertyEntityValue = entityText;
