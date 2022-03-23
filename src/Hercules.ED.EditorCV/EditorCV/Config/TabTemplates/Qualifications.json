@@ -299,6 +299,7 @@
                         "property": "http://w3id.org/roh/universityDegreeType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/UniversityDegreeType",
+                          "cache": true,
                           "graph": "universitydegreetype",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -351,6 +352,7 @@
                         "property": "http://w3id.org/roh/conductedByType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/OrganizationType",
+                          "cache": true,
                           "graph": "organizationtype",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -405,6 +407,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "PCLD"
@@ -424,6 +427,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "ADM1"
@@ -493,6 +497,7 @@
                         "property": "http://w3id.org/roh/mark",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/QualificationType",
+                          "cache": true,
                           "graph": "qualificationtype",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -512,6 +517,7 @@
                         "property": "http://w3id.org/roh/prize",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/PrizeType",
+                          "cache": true,
                           "graph": "prizetype",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -943,6 +949,7 @@
                         "property": "http://w3id.org/roh/conductedByType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/OrganizationType",
+                          "cache": true,
                           "graph": "organizationtype",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -997,6 +1004,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "PCLD"
@@ -1016,6 +1024,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "ADM1"
@@ -1461,6 +1470,7 @@
                         "property": "http://w3id.org/roh/languageOfTheCertificate",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/Language",
+                          "cache": true,
                           "graph": "language",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -1476,6 +1486,7 @@
                         "property": "http://w3id.org/roh/listeningSkill",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/LanguageLevel",
+                          "cache": true,
                           "graph": "languagelevel",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -1491,6 +1502,7 @@
                         "property": "http://w3id.org/roh/readingSkill",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/LanguageLevel",
+                          "cache": true,
                           "graph": "languagelevel",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -1510,6 +1522,7 @@
                         "property": "http://w3id.org/roh/spokingInteractionSkill",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/LanguageLevel",
+                          "cache": true,
                           "graph": "languagelevel",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -1525,6 +1538,7 @@
                         "property": "http://w3id.org/roh/speakingSkill",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/LanguageLevel",
+                          "cache": true,
                           "graph": "languagelevel",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -1540,6 +1554,7 @@
                         "property": "http://w3id.org/roh/writingSkill",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/LanguageLevel",
+                          "cache": true,
                           "graph": "languagelevel",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -1836,6 +1851,7 @@
                         "property": "http://w3id.org/roh/conductedByType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/OrganizationType",
+                          "cache": true,
                           "graph": "organizationtype",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -1902,6 +1918,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "PCLD"
@@ -1921,6 +1938,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "ADM1"
@@ -1948,6 +1966,7 @@
                         "property": "http://w3id.org/roh/formationType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/FormationType",
+                          "cache": true,
                           "graph": "formationtype",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -2286,6 +2305,7 @@
                         "property": "http://w3id.org/roh/conductedByType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/OrganizationType",
+                          "cache": true,
                           "graph": "organizationtype",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -2360,6 +2380,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "PCLD"
@@ -2379,6 +2400,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "ADM1"
@@ -2406,6 +2428,7 @@
                         "property": "http://w3id.org/roh/formationActivityType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/FormationActivityType",
+                          "cache": true,
                           "graph": "formationactivitytype",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -2841,6 +2864,7 @@
                         "property": "http://w3id.org/roh/conductedByType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/OrganizationType",
+                          "cache": true,
                           "graph": "organizationtype",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -2935,6 +2959,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "PCLD"
@@ -2954,6 +2979,7 @@
                         "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                         "combo": {
                           "rdftype": "http://www.geonames.org/ontology#Feature",
+                          "cache": true,
                           "filter": {
                             "property": "http://www.geonames.org/ontology#featureCode",
                             "value": "ADM1"
@@ -3009,6 +3035,7 @@
                         "property": "http://w3id.org/roh/stayGoal",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/StayGoal",
+                          "cache": true,
                           "graph": "staygoal",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
