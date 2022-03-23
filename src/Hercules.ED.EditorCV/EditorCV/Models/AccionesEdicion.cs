@@ -1188,13 +1188,12 @@ namespace GuardadoCV.Models
                         {
                             new EntityEditRepresentativeProperty()
                             {
-                                //TODO
+                                //TODO multiidioma
                                 name = "Nombre",
                                 route = "http://www.w3.org/1999/02/22-rdf-syntax-ns#member||person||http://xmlns.com/foaf/0.1/name"
                             },
                             new EntityEditRepresentativeProperty()
                             {
-                                //TODO
                                 name = "ORCID",
                                 route = "http://www.w3.org/1999/02/22-rdf-syntax-ns#member||person||http://w3id.org/roh/ORCID"
                             }
@@ -1216,7 +1215,7 @@ namespace GuardadoCV.Models
                     {
                         properties = new List<ItemEditSectionRowProperty>(){
                             new ItemEditSectionRowProperty(){
-                                //TODO
+                                //TODO multiidioma
                                 title = new Dictionary<string, string>() { { "es", "Firma" } },
                                 type = DataTypeEdit.text,
                                 required = true,
@@ -1224,7 +1223,7 @@ namespace GuardadoCV.Models
                                 width = 2
                             },
                             new ItemEditSectionRowProperty(){
-                                //TODO
+                                //TODO multiidioma
                                 title = new Dictionary<string, string>() { { "es", "Persona" } },
                                 type = DataTypeEdit.entity,
                                 required = true,
@@ -1283,14 +1282,13 @@ namespace GuardadoCV.Models
                     {
                         new EntityEditRepresentativeProperty()
                         {
-                            //TODO
+                            //TODO  multiidioma
                             name = "Nombre",
                             value = string.Join(", ", GetPropValues(id, "http://www.w3.org/1999/02/22-rdf-syntax-ns#member@@@http://xmlns.com/foaf/0.1/name", pData)),
                             route = "http://www.w3.org/1999/02/22-rdf-syntax-ns#member||person||http://xmlns.com/foaf/0.1/name"
                         },
                         new EntityEditRepresentativeProperty()
                         {
-                            //TODO
                             name = "ORCID",
                             value = string.Join(", ", GetPropValues(id, "http://www.w3.org/1999/02/22-rdf-syntax-ns#member@@@http://w3id.org/roh/ORCID", pData)),
                             route = "http://www.w3.org/1999/02/22-rdf-syntax-ns#member||person||http://w3id.org/roh/ORCID"
@@ -1479,8 +1477,6 @@ namespace GuardadoCV.Models
                         rdftype = "http://w3id.org/roh/CategoryPath",
                         titleConfig = new EntityEditRepresentativeProperty()
                         {
-                            //TODO
-                            //route = "http://xmlns.com/foaf/0.1/nick"
                         }
                     };
                     entityEditSectionRowProperty.entityAuxData.entities = new Dictionary<string, List<EntityEditSectionRow>>();
@@ -1489,7 +1485,7 @@ namespace GuardadoCV.Models
                         {
                             properties = new List<ItemEditSectionRowProperty>(){
                                 new ItemEditSectionRowProperty(){
-                                    //TODO
+                                    //TODO multiidioma
                                     title = new Dictionary<string, string>() { { "es", "Categoria" } },
                                     type = DataTypeEdit.text,
                                     multiple=true,

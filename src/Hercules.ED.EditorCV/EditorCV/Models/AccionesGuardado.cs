@@ -529,7 +529,6 @@ namespace GuardadoCV.Models
                                 values = new List<string>() {pORCID }
                             }
                         };
-                        //TODO privacidad
                         mResourceApi.ChangeOntoly("person");
                         ComplexOntologyResource resource = ToGnossApiResource(entity);
                         string result = mResourceApi.LoadComplexSemanticResource(resource, false, true);
@@ -574,7 +573,6 @@ namespace GuardadoCV.Models
                             values = new List<string>() { pSurname }
                         }
                     };
-            //TODO privacidad
             mResourceApi.ChangeOntoly("person");
             ComplexOntologyResource resource = ToGnossApiResource(entity);
             string result = mResourceApi.LoadComplexSemanticResource(resource, false, true);
@@ -582,7 +580,6 @@ namespace GuardadoCV.Models
             {
                 return GetPerson(result);
             }
-            //TODO mensaje
             return new JsonResult() { ok = false, id = "", error = "Se ha producido un error al crear la persona" };
         }
 

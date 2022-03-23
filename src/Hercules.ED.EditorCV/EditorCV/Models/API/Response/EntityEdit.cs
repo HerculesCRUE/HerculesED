@@ -154,14 +154,31 @@ namespace GuardadoCV.Models.API.Response
         /// </summary>
         public bool entity_cv { get; set; }
     }
-
-    //TODO comentarios
+        
+    /// <summary>
+    /// Clase para la configuración del autocompletar
+    /// </summary>
     public class AutocompleteConfig
     {
+        /// <summary>
+        /// Propiedad
+        /// </summary>
         public string property { get; set; }
+        /// <summary>
+        /// Rdf:type de la entidad a buscar en el autocompletar
+        /// </summary>
         public string rdftype { get; set; }
+        /// <summary>
+        /// Grafo
+        /// </summary>
         public string graph { get; set; }
+        /// <summary>
+        /// Indica si hay que cachear el autocompletar
+        /// </summary>
         public bool cache { get; set; }
+        /// <summary>
+        /// Indica si hay que obtener los IDs
+        /// </summary>
         public bool getEntityId { get; set; }
         /// <summary>
         /// Indica si sólo se pueden seleccionar opciones del autocompletar
@@ -169,17 +186,37 @@ namespace GuardadoCV.Models.API.Response
         public bool mandatory;
     }
 
-
+    /// <summary>
+    /// Indica si hay una dependencia
+    /// </summary>
     public class Dependency
     {
+        /// <summary>
+        /// Propiedad de la que depende
+        /// </summary>
         public string parent { get; set; }
+        /// <summary>
+        /// Valor que tiene que tner la propiedad dependiente para mostrar el campo
+        /// </summary>
         public string parentDependencyValue { get; set; }
+        /// <summary>
+        /// Valor que NO tiene que tner la propiedad dependiente para mostrar el campo
+        /// </summary>
         public string parentDependencyValueDistinct { get; set; }
     }
 
+    /// <summary>
+    /// Clase para la dependencia de combos (regiones)
+    /// </summary>
     public class ComboDependency
     {
+        /// <summary>
+        /// Propiedad de la que depende
+        /// </summary>
         public string parent { get; set; }
+        /// <summary>
+        /// Valores de dependencia
+        /// </summary>
         public Dictionary<string, string> parentDependency { get; set; }
     }
 

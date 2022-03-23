@@ -170,8 +170,6 @@ namespace GuardadoCV.Controllers
             }
         }
 
-        //TODO es obligatorio añadirse a uno mismo como autor
-        //TODO crear servicio que incluya/elimie en los CV a los autores
         //TODO entidades del propio CV
         //GEstión multiidioma
 

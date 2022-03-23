@@ -192,7 +192,6 @@
             "properties": [
               {
                 "property": "http://w3id.org/roh/otherIds",
-                "TODO": "Auxiliar múltiple. Incluir los valores de la fuente de citas en la tabla, junto a un 'Otros' que permita añadir un nuevo tipo.",
                 "type": "auxEntity",
                 "title": {
                   "es": "Otros identificadores"
