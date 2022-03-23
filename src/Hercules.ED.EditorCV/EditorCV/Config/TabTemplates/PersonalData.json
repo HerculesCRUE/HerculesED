@@ -57,6 +57,7 @@
                 "property": "http://xmlns.com/foaf/0.1/gender",
                 "combo": {
                   "rdftype": "http://w3id.org/roh/Gender",
+                  "cache": true,
                   "graph": "gender",
                   "property": {
                     "property": "http://purl.org/dc/elements/1.1/title"
@@ -687,6 +688,7 @@
                           "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                           "combo": {
                             "rdftype": "http://www.geonames.org/ontology#Feature",
+                            "cache": true,
                             "filter": {
                               "property": "http://www.geonames.org/ontology#featureCode",
                               "value": "PCLD"
@@ -709,6 +711,7 @@
                           "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                           "combo": {
                             "rdftype": "http://www.geonames.org/ontology#Feature",
+                            "cache": true,
                             "filter": {
                               "property": "http://www.geonames.org/ontology#featureCode",
                               "value": "ADM1"
@@ -735,6 +738,7 @@
                           "property": "http://w3id.org/roh/hasProvince",
                           "combo": {
                             "rdftype": "http://www.geonames.org/ontology#Feature",
+                            "cache": true,
                             "filter": {
                               "property": "http://www.geonames.org/ontology#featureCode",
                               "value": "ADM2"
@@ -831,6 +835,7 @@
                           "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                           "combo": {
                             "rdftype": "http://www.geonames.org/ontology#Feature",
+                            "cache": true,
                             "filter": {
                               "property": "http://www.geonames.org/ontology#featureCode",
                               "value": "PCLD"
@@ -853,6 +858,7 @@
                           "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                           "combo": {
                             "rdftype": "http://www.geonames.org/ontology#Feature",
+                            "cache": true,
                             "filter": {
                               "property": "http://www.geonames.org/ontology#featureCode",
                               "value": "ADM1"
@@ -888,6 +894,7 @@
                 "property": "http://www.schema.org/nationality",
                 "combo": {
                   "rdftype": "http://www.geonames.org/ontology#Feature",
+                  "cache": true,
                   "filter": {
                     "property": "http://www.geonames.org/ontology#featureCode",
                     "value": "PCLD"
