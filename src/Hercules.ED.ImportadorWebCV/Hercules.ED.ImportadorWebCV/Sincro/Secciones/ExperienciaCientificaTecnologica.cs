@@ -476,7 +476,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item">item</param>
         /// <param name="entidadAux">entidadAux</param>
-        private void ProyectosIDIEntidadFinanciadora(CvnItemBean item, Entity entidadAux)//TODO 
+        private void ProyectosIDIEntidadFinanciadora(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnCodeGroup> listadoEntidadFinanciadora = item.GetListaElementosPorIDCampo<CvnItemBeanCvnCodeGroup>("050.020.010.190");
             foreach (CvnItemBeanCvnCodeGroup entidadFinanciadora in listadoEntidadFinanciadora)
