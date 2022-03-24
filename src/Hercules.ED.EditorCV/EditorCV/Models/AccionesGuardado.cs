@@ -45,8 +45,8 @@ namespace GuardadoCV.Models
 
             mResourceApi.ChangeOntoly("curriculumvitae");
             Tuple<List<string>, List<string>, List<string>> subjectPropertiesAndRdfTypes = GetSubjectsPropertiesAndRdftypesFromAuxCV(pEntity, UtilityCV.PropertyIspublic);
-            List<string> properties = subjectPropertiesAndRdfTypes.Item1;
-            List<string> entities = subjectPropertiesAndRdfTypes.Item2.GetRange(1, subjectPropertiesAndRdfTypes.Item2.Count - 1);
+            List<string> properties = subjectPropertiesAndRdfTypes.Item2;
+            List<string> entities = subjectPropertiesAndRdfTypes.Item1.GetRange(1, subjectPropertiesAndRdfTypes.Item2.Count - 1);
 
             //Obtenemos el valor actual de la propiedad
             string valorActual = "";
