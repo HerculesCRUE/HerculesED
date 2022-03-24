@@ -511,6 +511,7 @@
                         },
                         "property": "http://w3id.org/roh/enrichedKnowledgeArea",
                         "thesaurus": "researcharea",
+                        "editable": true,
                         "type": "thesaurus",
                         "width": 0,
                         "multiple": true
@@ -525,6 +526,7 @@
                         },
                         "property": "http://w3id.org/roh/userKnowledgeArea",
                         "thesaurus": "researcharea",
+                        "editable": true,
                         "type": "thesaurus",
                         "width": 3,
                         "multiple": true
@@ -554,9 +556,10 @@
                           "es": "Descriptores específicos enriquecidos"
                         },
                         "placeholder": {
-                          "es": "Introduce el descriptores específico"
+                          "es": "Introduce el descriptor específico"
                         },
                         "property": "http://w3id.org/roh/enrichedKeywords",
+                        "editable": true,
                         "multiple": true,
                         "type": "text",
                         "width": 0
@@ -570,10 +573,11 @@
                           "es": "Descriptores específicos"
                         },
                         "placeholder": {
-                          "es": "Introduce el descriptores específico"
+                          "es": "Introduce el descriptor específico"
                         },
                         "property": "http://w3id.org/roh/userKeywords",
                         "multiple": true,
+                        "editable": true,
                         "autocomplete": true,
                         "autocompleteConfig": {
                           "rdftype": "http://purl.org/ontology/bibo/Document",
@@ -1334,6 +1338,7 @@
                         },
                         "property": "http://w3id.org/roh/enrichedKnowledgeArea",
                         "thesaurus": "researcharea",
+                        "editable": true,
                         "type": "thesaurus",
                         "width": 0,
                         "multiple": true
@@ -1348,6 +1353,7 @@
                         },
                         "property": "http://w3id.org/roh/userKnowledgeArea",
                         "thesaurus": "researcharea",
+                        "editable": true,
                         "type": "thesaurus",
                         "width": 3,
                         "multiple": true
@@ -1381,6 +1387,7 @@
                         },
                         "property": "http://w3id.org/roh/enrichedKeywords",
                         "multiple": true,
+                        "editable": true,
                         "type": "text",
                         "width": 0
                       }
@@ -1397,6 +1404,7 @@
                         },
                         "property": "http://w3id.org/roh/userKeywords",
                         "multiple": true,
+                        "editable": true,
                         "autocomplete": true,
                         "autocompleteConfig": {
                           "rdftype": "http://purl.org/ontology/bibo/Document",
@@ -2388,6 +2396,7 @@
                         },
                         "property": "http://w3id.org/roh/enrichedKnowledgeArea",
                         "thesaurus": "researcharea",
+                        "editable": true,
                         "type": "thesaurus",
                         "width": 0,
                         "multiple": true
@@ -2402,6 +2411,7 @@
                         },
                         "property": "http://w3id.org/roh/userKnowledgeArea",
                         "thesaurus": "researcharea",
+                        "editable": true,
                         "type": "thesaurus",
                         "width": 3,
                         "multiple": true
@@ -2434,6 +2444,7 @@
                           "es": "Introduce el descriptor específico"
                         },
                         "property": "http://w3id.org/roh/enrichedKeywords",
+                        "editable": true,
                         "multiple": true,
                         "type": "text",
                         "width": 0
@@ -2451,6 +2462,7 @@
                         },
                         "property": "http://w3id.org/roh/userKeywords",
                         "multiple": true,
+                        "editable": true,
                         "autocomplete": true,
                         "autocompleteConfig": {
                           "rdftype": "http://purl.org/ontology/bibo/Document",
