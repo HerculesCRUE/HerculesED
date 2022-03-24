@@ -111,7 +111,6 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 PublicacionesDocumentos publicacionesDocumentos = new PublicacionesDocumentos();
                 publicacionesDocumentos.title = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.pubDocumentosPubTitulo)?.values.FirstOrDefault();
-                publicacionesDocumentos.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.pubDocumentosPubFecha)?.values.FirstOrDefault();
                 publicacionesDocumentos.autores = new HashSet<string>(entityXML.autores.Select(x => x.ID));
                 publicacionesDocumentos.ID = entityXML.id;
                 entidadesXML.Add(publicacionesDocumentos.ID, publicacionesDocumentos);
@@ -198,7 +197,6 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 TrabajosCongresos trabajosCongresos = new TrabajosCongresos();
                 trabajosCongresos.titulo = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.trabajosCongresosTitulo)?.values.FirstOrDefault();
-                trabajosCongresos.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.trabajosCongresosPubFecha)?.values.FirstOrDefault();
                 trabajosCongresos.ID = entityXML.id;
                 entidadesXML.Add(trabajosCongresos.ID, trabajosCongresos);
             }
@@ -283,7 +281,6 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 TrabajosJornadasSeminarios trabajosJornadas = new TrabajosJornadasSeminarios();
                 trabajosJornadas.titulo = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.trabajosJornSemTituloTrabajo)?.values.FirstOrDefault();
-                trabajosJornadas.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.trabajosJornSemPubFecha)?.values.FirstOrDefault();
                 trabajosJornadas.ID = entityXML.id;
                 entidadesXML.Add(trabajosJornadas.ID, trabajosJornadas);
             }
@@ -1118,31 +1115,27 @@ namespace ImportadorWebCV.Sincro.Secciones
 
         /// <summary>
         /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
-        /// pertenecientes al Soporte.
+        /// pertenecientes al Soporte. En el caso de que se encuentre el nombre de la revista en BBDD
+        /// se añade directamente como tipo de soporte revista.
         /// </summary>
         /// <param name="item">item</param>
         /// <param name="entidadAux">entidadAux</param>
         private void PublicacionesDocumentosSoporte(CvnItemBean item, Entity entidadAux)
         {
-            //Si es nulo no hago nada
-            if (string.IsNullOrEmpty(item.GetStringPorIDCampo("060.010.010.070"))) { return; }
+            //Compruebo si existe alguna revista con ese nombre
+            string revista = UtilitySecciones.GetNombreRevista(mResourceApi, item.GetStringPorIDCampo("060.010.010.210"));
 
-            //Si es revista(057)
-            if (item.GetStringPorIDCampo("060.010.010.070").Equals("057"))
+            //Si existe añado como tipo de soporte revista directamente.
+            if (!string.IsNullOrEmpty(revista))
             {
-                string revista = UtilitySecciones.GetNombreRevista(mResourceApi, item.GetStringPorIDCampo("060.010.010.210"));
-                //asignar el documento
-                if (!string.IsNullOrEmpty(revista))
-                {
-                    entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                        new Property(Variables.ActividadCientificaTecnologica.pubDocumentosTipoSoporte, item.GetFormatoDocumentoPorIDCampo("060.010.010.070")),
-                        new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubMainDoc, revista)
-                    ));
-                }
+                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosTipoSoporte, mResourceApi.GraphsUrl + "items/documentformat_057"),
+                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubMainDoc, revista)
+                ));
             }
 
-            //Si es Libro(032), Documento o informe cientifico-tecnico(018) o Catálogo de obra artistica(006)
-            else
+            //Si el tipo de soporte es distinto a revista, añado los datos
+            if(!item.GetStringPorIDCampo("060.010.010.070").Equals("057"))
             {
                 entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                     new Property(Variables.ActividadCientificaTecnologica.pubDocumentosTipoSoporte, item.GetFormatoDocumentoPorIDCampo("060.010.010.070")),
@@ -1167,7 +1160,19 @@ namespace ImportadorWebCV.Sincro.Secciones
                 Persona persona = new Persona(autor.GetNombreAutor(), autor.GetPrimerApellidoAutor(), autor.GetSegundoApellidoAutor(), autor.GetFirmaAutor());
 
                 //Si no tiene nombre no lo añado
-                if (string.IsNullOrEmpty(persona.nombreCompleto)) { continue; }
+                if (string.IsNullOrEmpty(persona.nombreCompleto) && string.IsNullOrEmpty(persona.firma))
+                {
+                    continue;
+                }
+                if (string.IsNullOrEmpty(persona.nombreCompleto) && !string.IsNullOrEmpty(persona.firma))
+                {
+                    persona.nombreCompleto = persona.firma;
+                    persona.nombre = persona.firma.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries)[0];
+                    if (persona.firma.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries).Count() > 1)
+                    {
+                        persona.primerApellido = persona.firma.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries)[1];
+                    }
+                }
                 //Si no tiene firma le añado como firma el nombre completo
                 if (string.IsNullOrEmpty(persona.firma)) { persona.firma = persona.nombreCompleto; }
 
@@ -1249,7 +1254,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     entidadAux.properties = new List<Property>();
                     entidadAux.properties_cv = new List<Property>();
                     entidadAux.id = Guid.NewGuid().ToString();
-                    if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.010.020.010")))
+                    if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.010.020.030")))
                     {
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                             new Property("http://w3id.org/roh/scientificActivityDocument", mResourceApi.GraphsUrl + "items/scientificactivitydocument_SAD2")
@@ -1317,7 +1322,19 @@ namespace ImportadorWebCV.Sincro.Secciones
                 Persona persona = new Persona(autor.GetNombreAutor(), autor.GetPrimerApellidoAutor(), autor.GetSegundoApellidoAutor(), autor.GetFirmaAutor());
 
                 //Si no tiene nombre no lo añado
-                if (string.IsNullOrEmpty(persona.nombreCompleto)) { continue; }
+                if (string.IsNullOrEmpty(persona.nombreCompleto) && string.IsNullOrEmpty(persona.firma))
+                {
+                    continue;
+                }
+                if (string.IsNullOrEmpty(persona.nombreCompleto) && !string.IsNullOrEmpty(persona.firma))
+                {
+                    persona.nombreCompleto = persona.firma;
+                    persona.nombre = persona.firma.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries)[0];
+                    if (persona.firma.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries).Count() > 1)
+                    {
+                        persona.primerApellido = persona.firma.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries)[1];
+                    }
+                }
                 //Si no tiene firma le añado como firma el nombre completo
                 if (string.IsNullOrEmpty(persona.firma)) { persona.firma = persona.nombreCompleto; }
 
@@ -1444,7 +1461,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                             new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemPubCCAA, item.GetRegionPorIDCampo("060.010.030.250")),
                             new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemPubFecha, item.GetStringDatetimePorIDCampo("060.010.030.270")),
                             new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemPubURL, item.GetStringPorIDCampo("060.010.030.280")),
-                            new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemPubDepositoLegal, item.GetValueCvnExternalPKBean("060.010.030.300")), 
+                            new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemPubDepositoLegal, item.GetValueCvnExternalPKBean("060.010.030.300")),
                             new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemNombreEvento, item.GetStringPorIDCampo("060.010.030.070")),
                             new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemFechaCelebracion, item.GetStringDatetimePorIDCampo("060.010.030.160")),
                             new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemPubFechaFinCelebracion, item.GetStringDatetimePorIDCampo("060.010.030.370")),
@@ -1490,7 +1507,19 @@ namespace ImportadorWebCV.Sincro.Secciones
                 Persona persona = new Persona(autor.GetNombreAutor(), autor.GetPrimerApellidoAutor(), autor.GetSegundoApellidoAutor(), autor.GetFirmaAutor());
 
                 //Si no tiene nombre no lo añado
-                if (string.IsNullOrEmpty(persona.nombreCompleto)) { continue; }
+                if (string.IsNullOrEmpty(persona.nombreCompleto) && string.IsNullOrEmpty(persona.firma))
+                {
+                    continue;
+                }
+                if (string.IsNullOrEmpty(persona.nombreCompleto) && !string.IsNullOrEmpty(persona.firma))
+                {
+                    persona.nombreCompleto = persona.firma;
+                    persona.nombre = persona.firma.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries)[0];
+                    if (persona.firma.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries).Count() > 1)
+                    {
+                        persona.primerApellido = persona.firma.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries)[1];
+                    }
+                }
                 //Si no tiene firma le añado como firma el nombre completo
                 if (string.IsNullOrEmpty(persona.firma)) { persona.firma = persona.nombreCompleto; }
 
@@ -1536,7 +1565,7 @@ namespace ImportadorWebCV.Sincro.Secciones
 
             UtilitySecciones.InsertaISBN(listadoISBN, entidadAux, propiedadISBN);
         }
-        
+
         /// <summary>
         /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
         /// pertenecientes al ISSN.
