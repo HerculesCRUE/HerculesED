@@ -537,7 +537,7 @@ namespace Utils
             Dictionary<string, List<Persona>> diccionarioPersonasFirma = new Dictionary<string, List<Persona>>();
             string nameInput = "";
 
-            string selectOut = "select distinct ?personID ?name ?num ?nameInput";
+            string selectOut = "select distinct ?personID ?name ?num ?nameInput ";
             string whereOut = $@"where{{
                                     ?personID <http://xmlns.com/foaf/0.1/name> ?name.
                                     {{";
@@ -560,10 +560,20 @@ namespace Utils
                             {
                                 score = 5;
                             }
-                            StringBuilder sbUnion = new StringBuilder();
-                            sbUnion.AppendLine("				?personID <http://xmlns.com/foaf/0.1/name> ?name.");
-                            sbUnion.AppendLine($@"				?name bif:contains ""'{word}'"" BIND({score} as ?num) ");
-                            unions.Add(sbUnion.ToString());
+                            if (score == 1)
+                            {
+                                StringBuilder sbUnion = new StringBuilder();
+                                sbUnion.AppendLine("				?personID <http://xmlns.com/foaf/0.1/name> ?name.");
+                                sbUnion.AppendLine($@"				{{  FILTER(lcase(?name) like'{word}%').}} UNION  {{  FILTER(lcase(?name) like'% {word}%').}}  BIND({score} as ?num)  ");
+                                unions.Add(sbUnion.ToString());
+                            }
+                            else
+                            {
+                                StringBuilder sbUnion = new StringBuilder();
+                                sbUnion.AppendLine("				?personID <http://xmlns.com/foaf/0.1/name> ?name.");
+                                sbUnion.AppendLine($@"				?name bif:contains ""'{word}'"" BIND({score} as ?num) ");
+                                unions.Add(sbUnion.ToString());
+                            }
                         }
 
                         string select = $@" select distinct ?personID sum(?num) as ?num ?nameInput ";
@@ -571,7 +581,7 @@ namespace Utils
                                         {{
                                             ?personID a <http://xmlns.com/foaf/0.1/Person>.
                                             {{{string.Join("}UNION{", unions)}}}           
-                                            BIND(""'{texto}'"" as ?nameInput)
+                                            BIND(""{texto}"" as ?nameInput)
                                         }}order by desc (?num) limit 50
                                      ";
                         string consultaInterna = select + where;
@@ -584,31 +594,35 @@ namespace Utils
             whereOut += " }order by desc (?nameInput) desc ( ?num)";
 
             SparqlObject sparqlObject = pResourceApi.VirtuosoQuery(selectOut, whereOut, "person");
-            HashSet<int> scores = new HashSet<int>();
-            foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings)
-            {
-                nameInput = fila["nameInput"].value;
-                if(!diccionarioPersonasFirma.ContainsKey(nameInput))
-                {
-                    diccionarioPersonasFirma[nameInput] = new List<Persona>();
-                }
 
-                string personID = fila["personID"].value;
-                string name = fila["name"].value;
-                int score = int.Parse(fila["num"].value);
-                scores.Add(score);
-                if (scores.Count > 2)
+            foreach (string firma in listadoFirma)
+            {
+                HashSet<int> scores = new HashSet<int>();
+                foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings.Where(x=>x["nameInput"].value==firma))
                 {
-                    break;
+                    nameInput = fila["nameInput"].value;
+                    if (!diccionarioPersonasFirma.ContainsKey(nameInput))
+                    {
+                        diccionarioPersonasFirma[nameInput] = new List<Persona>();
+                    }
+
+                    string personID = fila["personID"].value;
+                    string name = fila["name"].value;
+                    int score = int.Parse(fila["num"].value);
+                    scores.Add(score);
+                    if (scores.Count > 2)
+                    {
+                        break;
+                    }
+                    Persona persona = new Persona
+                    {
+                        nombreCompleto = name,
+                        personid = personID,
+                        documentos = new HashSet<string>(),
+                        coautores = new HashSet<string>()
+                    };
+                    diccionarioPersonasFirma[nameInput].Add(persona);
                 }
-                Persona persona = new Persona
-                {
-                    nombreCompleto = name,
-                    personid = personID,
-                    documentos = new HashSet<string>(),
-                    coautores = new HashSet<string>()
-                };
-                diccionarioPersonasFirma[nameInput].Add(persona);
             }
 
             return diccionarioPersonasFirma;
@@ -671,6 +685,11 @@ namespace Utils
             {
                 return campoMesAnio.DatetimeStringGNOSS();
             }
+            CvnItemBeanCvnDateYear campoDiaAnio = listadoCamposAux.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnDateYear).Cast<CvnItemBeanCvnDateYear>().FirstOrDefault();
+            if (campoDiaAnio != null)
+            {
+                return campoDiaAnio.DatetimeStringGNOSS();
+            }
 
             return null;
         }
@@ -697,6 +716,11 @@ namespace Utils
             if (campoMesAnio != null)
             {
                 return campoMesAnio.DatetimeStringGNOSS();
+            }
+            CvnItemBeanCvnDateYear campoDiaAnio = item.Items.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnDateYear).Cast<CvnItemBeanCvnDateYear>().FirstOrDefault();
+            if (campoDiaAnio != null)
+            {
+                return campoDiaAnio.DatetimeStringGNOSS();
             }
 
             return null;
@@ -1659,6 +1683,22 @@ namespace Utils
         /// <param name="dateTime"></param>
         /// <returns>YYYYMMDD000000</returns>
         public static string DatetimeStringGNOSS(this CvnItemBeanCvnDateMonthYear dateTime)
+        {
+            string fechaString = dateTime.Value.ToString().Replace("-", "").Replace("T", "").Replace(":", "").Split("+")[0];
+            string[] fechaAux = fechaString.Split("/");
+            string anio = fechaAux[2].Split(" ")[0];
+
+            fechaString = anio + fechaAux[1] + fechaAux[0] + "000000";
+            return fechaString;
+        }
+        
+        /// <summary>
+        /// Devuelve un string en formato de fecha de GNOSS
+        /// YYYYMMDD000000
+        /// </summary>
+        /// <param name="dateTime"></param>
+        /// <returns>YYYYMMDD000000</returns>
+        public static string DatetimeStringGNOSS(this CvnItemBeanCvnDateYear dateTime)
         {
             string fechaString = dateTime.Value.ToString().Replace("-", "").Replace("T", "").Replace(":", "").Split("+")[0];
             string[] fechaAux = fechaString.Split("/");
