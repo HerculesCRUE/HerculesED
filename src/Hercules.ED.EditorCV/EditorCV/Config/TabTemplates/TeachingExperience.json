@@ -771,6 +771,7 @@
                 "name": {
                   "es": "Nombre de la asignatura/curso"
                 },
+                "showMini": true,
                 "type": "text",
                 "child": {
                   "property": "http://vivoweb.org/ontology/core#relatedBy",
