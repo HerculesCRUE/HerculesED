@@ -527,74 +527,91 @@ namespace Utils
         }
 
         /// <summary>
-        /// Obtiene un listado de las personas a partir de <paramref name="firma"/>.
+        /// Obtiene un diccionario con las firma, como clave, y las posibles personas asociadas a la misma encontradas en BBDD de <paramref name="listadoFirma"/>.
         /// </summary>
         /// <param name="pResourceApi"></param>
-        /// <param name="firma"></param>
+        /// <param name="listadoFirma">Listado de firmas</param>
         /// <returns></returns>
-        public static List<Persona> ObtenerPersonasFirma(ResourceApi pResourceApi, string firma)
+        public static Dictionary<string, List<Persona>> ObtenerPersonasFirma(ResourceApi pResourceApi, List<string> listadoFirma)
         {
-            //TODO - Agrupar personas con UNION
-            List<Persona> listaPersonas = new List<Persona>();
+            Dictionary<string, List<Persona>> diccionarioPersonasFirma = new Dictionary<string, List<Persona>>();
+            string nameInput = "";
 
-            string texto = Disambiguation.ObtenerTextosNombresNormalizados(firma);
-            string[] wordsTexto = texto.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+            string selectOut = "select distinct ?personID ?name ?num ?nameInput";
+            string whereOut = $@"where{{
+                                    ?personID <http://xmlns.com/foaf/0.1/name> ?name.
+                                    {{";
 
-            if (wordsTexto.Length > 0)
+            foreach (string firma in listadoFirma)
             {
-                #region Buscamos en nombres
+                string texto = Disambiguation.ObtenerTextosNombresNormalizados(firma);
+                string[] wordsTexto = texto.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+
+                if (wordsTexto.Length > 0)
                 {
-                    List<string> unions = new List<string>();
-                    foreach (string word in wordsTexto)
+                    #region Buscamos en nombres
                     {
-                        int score = 1;
-                        if (word.Length > 1)
+                        List<string> unions = new List<string>();
+                        List<string> unionsOut = new List<string>();
+                        foreach (string word in wordsTexto)
                         {
-                            score = 5;
+                            int score = 1;
+                            if (word.Length > 1)
+                            {
+                                score = 5;
+                            }
+                            StringBuilder sbUnion = new StringBuilder();
+                            sbUnion.AppendLine("				?personID <http://xmlns.com/foaf/0.1/name> ?name.");
+                            sbUnion.AppendLine($@"				?name bif:contains ""'{word}'"" BIND({score} as ?num) ");
+                            unions.Add(sbUnion.ToString());
                         }
-                        StringBuilder sbUnion = new StringBuilder();
-                        sbUnion.AppendLine("   ?personID <http://xmlns.com/foaf/0.1/name> ?name.");
-                        sbUnion.AppendLine($@" ?name bif:contains ""'{word}'"" BIND({score} as ?num)");
-                        unions.Add(sbUnion.ToString());
+
+                        string select = $@" select distinct ?personID sum(?num) as ?num ?nameInput ";
+                        string where = $@" where
+                                        {{
+                                            ?personID a <http://xmlns.com/foaf/0.1/Person>.
+                                            {{{string.Join("}UNION{", unions)}}}           
+                                            BIND(""'{texto}'"" as ?nameInput)
+                                        }}order by desc (?num) limit 50
+                                     ";
+                        string consultaInterna = select + where;
+                        whereOut += consultaInterna + "}UNION{";
                     }
-
-
-                    string select = $@"select distinct ?personID ?name ?num  ";
-                    string where = $@"where
-                            {{
-                                    select ?personID ?name sum(?num) as ?num
-                                    where
-                                    {{
-                                        ?personID  a <http://xmlns.com/foaf/0.1/Person>.                                        
-                                        {{{string.Join("}UNION{", unions)}}}
-                                    }}
-                            }}order by desc (?num)limit 50";
-
-                    SparqlObject sparqlObject = pResourceApi.VirtuosoQuery(select, where, "person");
-                    HashSet<int> scores = new HashSet<int>();
-                    foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings)
-                    {
-                        string personID = fila["personID"].value;
-                        string name = fila["name"].value;
-                        int score = int.Parse(fila["num"].value);
-                        scores.Add(score);
-                        if (scores.Count > 2)
-                        {
-                            break;
-                        }
-                        Persona persona = new Persona
-                        {
-                            nombreCompleto = name,
-                            personid = personID,
-                            documentos = new HashSet<string>(),
-                            coautores = new HashSet<string>()
-                        };
-                        listaPersonas.Add(persona);
-                    }
+                    #endregion
                 }
-                #endregion
             }
-            return listaPersonas;
+            whereOut = whereOut.Remove(whereOut.Length - 6, 6);
+            whereOut += " }order by desc (?nameInput) desc ( ?num)";
+
+            SparqlObject sparqlObject = pResourceApi.VirtuosoQuery(selectOut, whereOut, "person");
+            HashSet<int> scores = new HashSet<int>();
+            foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings)
+            {
+                nameInput = fila["nameInput"].value;
+                if(!diccionarioPersonasFirma.ContainsKey(nameInput))
+                {
+                    diccionarioPersonasFirma[nameInput] = new List<Persona>();
+                }
+
+                string personID = fila["personID"].value;
+                string name = fila["name"].value;
+                int score = int.Parse(fila["num"].value);
+                scores.Add(score);
+                if (scores.Count > 2)
+                {
+                    break;
+                }
+                Persona persona = new Persona
+                {
+                    nombreCompleto = name,
+                    personid = personID,
+                    documentos = new HashSet<string>(),
+                    coautores = new HashSet<string>()
+                };
+                diccionarioPersonasFirma[nameInput].Add(persona);
+            }
+
+            return diccionarioPersonasFirma;
         }
 
         /// <summary>
@@ -922,7 +939,7 @@ namespace Utils
             }
             return null;
         }
-        
+
         /// <summary>
         /// Devuelve el tipo de evento como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/eventtype_" + valor
@@ -2182,7 +2199,7 @@ namespace Utils
             }
             return null;
         }
-        
+
         /// <summary>
         /// Devuelve el grado de contribución del documento como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/contributiongradeproyect_" + valor

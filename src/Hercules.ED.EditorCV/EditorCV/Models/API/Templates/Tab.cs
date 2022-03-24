@@ -307,12 +307,10 @@ namespace GuardadoCV.Models.API.Templates
         public bool showMiniBold;
         /// <summary>
         /// Propiedad a pintar
-        /// //TODO
         /// </summary>
         public PropertyDataTemplate child;
         /// <summary>
         /// Propiedades a pintar de forma alternativa (si no está la primera se pinta la siguiente y así sucesivamente)
-        /// //TODO
         /// </summary>
         public List<PropertyDataTemplate> childOR;
     }

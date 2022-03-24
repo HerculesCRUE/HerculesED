@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Utils;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
 namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
@@ -132,12 +133,12 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
         public static Dictionary<string, DisambiguableEntity> GetBBDD(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem, List<Entity> listadoAux)
         {
             //Obtenemos IDS
-            HashSet<string> ids = Utils.UtilitySecciones.GetIDS(pResourceApi, pCVID, propiedadesItem);
+            HashSet<string> ids = UtilitySecciones.GetIDS(pResourceApi, pCVID, propiedadesItem);
 
             Dictionary<string, DisambiguableEntity> resultados = new Dictionary<string, DisambiguableEntity>();
 
             //Divido la lista en listas de 1.000 elementos
-            List<List<string>> listaListas = Utils.UtilitySecciones.SplitList(ids.ToList(), 1000).ToList();
+            List<List<string>> listaListas = UtilitySecciones.SplitList(ids.ToList(), 1000).ToList();
 
             foreach (List<string> lista in listaListas)
             {
@@ -188,17 +189,20 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                 }
             }
 
-            Parallel.ForEach(listaNombres, new ParallelOptions { MaxDegreeOfParallelism = 5 }, firma =>
+            //Divido la lista en listas de 10 elementos
+            List<List<string>> listaListaNombres = UtilitySecciones.SplitList(listaNombres.ToList(), 10).ToList();
+
+             Parallel.ForEach(listaListaNombres, new ParallelOptions { MaxDegreeOfParallelism = 5 }, firma =>
             {
-                if (firma.Trim() != "")
+                Dictionary<string, List<Persona>> personasBBDD = Utility.ObtenerPersonasFirma(pResourceApi, firma);
+                foreach(KeyValuePair<string, List<Persona>> valuePair in personasBBDD)
                 {
-                    List<Persona> personasBBDD = ObtenerPersonasFirma(pResourceApi, firma.Trim());
-                    listaPersonasAux[firma.Trim()] = personasBBDD;
+                    listaPersonasAux[valuePair.Key.Trim()] = valuePair.Value;
                 }
             });
 
             //Divido la lista en listas de 1.000 elementos
-            List<List<string>> listaListasIdPersonas = Utils.UtilitySecciones.SplitList(listaPersonasAux.SelectMany(x => x.Value).Select(x => x.personid).ToList(), 1000).ToList();
+            List<List<string>> listaListasIdPersonas = UtilitySecciones.SplitList(listaPersonasAux.SelectMany(x => x.Value).Select(x => x.personid).ToList(), 1000).ToList();
 
             foreach (List<string> lista in listaListasIdPersonas)
             {
@@ -237,7 +241,6 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                 }
             }
 
-
             //Añado los autores de BBDD para la desambiguación
             for (int i = 0; i < listaPersonasAux.Count; i++)
             {
@@ -257,73 +260,6 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
 
             return resultados;
         }
-
-        /// <summary>
-        /// Obtiene un listado de las personas a partir de <paramref name="firma"/>.
-        /// </summary>
-        /// <param name="pResourceApi"></param>
-        /// <param name="firma"></param>
-        /// <returns></returns>
-        public static List<Persona> ObtenerPersonasFirma(ResourceApi pResourceApi, string firma)
-        {
-            List<Persona> listaPersonas = new List<Persona>();
-
-            string texto = Disambiguation.ObtenerTextosNombresNormalizados(firma);
-            string[] wordsTexto = texto.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
-
-            if (wordsTexto.Length > 0)
-            {
-                #region Buscamos en nombres
-                {
-                    List<string> unions = new List<string>();
-                    foreach (string word in wordsTexto)
-                    {
-                        int score = 1;
-                        if (word.Length > 1)
-                        {
-                            score = 5;
-                        }
-                        StringBuilder sbUnion = new StringBuilder();
-                        sbUnion.AppendLine("   ?personID <http://xmlns.com/foaf/0.1/name> ?name.");
-                        sbUnion.AppendLine($@" ?name bif:contains ""'{word}'"" BIND({score} as ?num)");
-                        unions.Add(sbUnion.ToString());
-                    }
-
-
-                    string select = $@"select distinct ?personID ?name ?num  ";
-                    string where = $@"where
-                            {{
-                                    select ?personID ?name sum(?num) as ?num
-                                    where
-                                    {{
-                                        ?personID  a <http://xmlns.com/foaf/0.1/Person>.                                        
-                                        {{{string.Join("}UNION{", unions)}}}
-                                    }}
-                            }}order by desc (?num)limit 50";
-
-                    SparqlObject sparqlObject = pResourceApi.VirtuosoQuery(select, where, "person");
-                    HashSet<int> scores = new HashSet<int>();
-                    foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings)
-                    {
-                        string personID = fila["personID"].value;
-                        string name = fila["name"].value;
-                        int score = int.Parse(fila["num"].value);
-                        scores.Add(score);
-                        if (scores.Count > 2)
-                        {
-                            break;
-                        }
-                        Persona persona = new Persona();
-                        persona.nombreCompleto = name;
-                        persona.personid = personID;
-                        persona.documentos = new HashSet<string>();
-                        persona.coautores = new HashSet<string>();
-                        listaPersonas.Add(persona);
-                    }
-                }
-                #endregion
-            }
-            return listaPersonas;
-        }
+        
     }
 }

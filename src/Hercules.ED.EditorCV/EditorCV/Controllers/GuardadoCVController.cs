@@ -24,7 +24,6 @@ namespace GuardadoCV.Controllers
         {
             try
             {
-                var x = Request;
                 AccionesGuardado accionesGuardado = new AccionesGuardado();
                 return Ok(accionesGuardado.ChangePrivacityItem(pIdSection, pRdfTypeTab, pEntity, pIsPublic));
             }

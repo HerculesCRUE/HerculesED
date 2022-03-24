@@ -35,7 +35,11 @@ namespace GuardadoCV.Models
         private static Tuple<Dictionary<string, string>, Dictionary<string, string>> tuplaTesauro;
 
         private static Dictionary<string,Dictionary<string,Dictionary<string,string>>> dicAutocompletar=new Dictionary<string, Dictionary<string, Dictionary<string, string>>>();
+        private static Dictionary<string, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>>> dicCombos = new Dictionary<string, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>>>();
+        private static Dictionary<string, List<ThesaurusItem>> dicTesauros = new Dictionary<string, List<ThesaurusItem>>();
 
+
+        
 
 
         #region Métodos públicos
@@ -1188,13 +1192,12 @@ namespace GuardadoCV.Models
                         {
                             new EntityEditRepresentativeProperty()
                             {
-                                //TODO
+                                //TODO multiidioma
                                 name = "Nombre",
                                 route = "http://www.w3.org/1999/02/22-rdf-syntax-ns#member||person||http://xmlns.com/foaf/0.1/name"
                             },
                             new EntityEditRepresentativeProperty()
                             {
-                                //TODO
                                 name = "ORCID",
                                 route = "http://www.w3.org/1999/02/22-rdf-syntax-ns#member||person||http://w3id.org/roh/ORCID"
                             }
@@ -1216,7 +1219,7 @@ namespace GuardadoCV.Models
                     {
                         properties = new List<ItemEditSectionRowProperty>(){
                             new ItemEditSectionRowProperty(){
-                                //TODO
+                                //TODO multiidioma
                                 title = new Dictionary<string, string>() { { "es", "Firma" } },
                                 type = DataTypeEdit.text,
                                 required = true,
@@ -1224,7 +1227,7 @@ namespace GuardadoCV.Models
                                 width = 2
                             },
                             new ItemEditSectionRowProperty(){
-                                //TODO
+                                //TODO multiidioma
                                 title = new Dictionary<string, string>() { { "es", "Persona" } },
                                 type = DataTypeEdit.entity,
                                 required = true,
@@ -1283,14 +1286,13 @@ namespace GuardadoCV.Models
                     {
                         new EntityEditRepresentativeProperty()
                         {
-                            //TODO
+                            //TODO  multiidioma
                             name = "Nombre",
                             value = string.Join(", ", GetPropValues(id, "http://www.w3.org/1999/02/22-rdf-syntax-ns#member@@@http://xmlns.com/foaf/0.1/name", pData)),
                             route = "http://www.w3.org/1999/02/22-rdf-syntax-ns#member||person||http://xmlns.com/foaf/0.1/name"
                         },
                         new EntityEditRepresentativeProperty()
                         {
-                            //TODO
                             name = "ORCID",
                             value = string.Join(", ", GetPropValues(id, "http://www.w3.org/1999/02/22-rdf-syntax-ns#member@@@http://w3id.org/roh/ORCID", pData)),
                             route = "http://www.w3.org/1999/02/22-rdf-syntax-ns#member||person||http://w3id.org/roh/ORCID"
@@ -1462,7 +1464,7 @@ namespace GuardadoCV.Models
                     if (pId != null && pData.ContainsKey(pId))
                     {
                         string entity = pData[pId].Where(x => x["p"].value == entityEditSectionRowProperty.property).Select(x => x["o"].value).Distinct().FirstOrDefault();
-                        if (!string.IsNullOrEmpty(entity))
+                        if (!string.IsNullOrEmpty(entity) && pData.ContainsKey(entity))
                         {
                             string entityText = pData[entity].Where(x => x["p"].value == pItemEditSectionRowProperty.autocompleteConfig.property.property).Select(x => x["o"].value).Distinct().FirstOrDefault();
                             entityEditSectionRowProperty.propertyEntityValue = entityText;
@@ -1479,8 +1481,6 @@ namespace GuardadoCV.Models
                         rdftype = "http://w3id.org/roh/CategoryPath",
                         titleConfig = new EntityEditRepresentativeProperty()
                         {
-                            //TODO
-                            //route = "http://xmlns.com/foaf/0.1/nick"
                         }
                     };
                     entityEditSectionRowProperty.entityAuxData.entities = new Dictionary<string, List<EntityEditSectionRow>>();
@@ -1489,7 +1489,7 @@ namespace GuardadoCV.Models
                         {
                             properties = new List<ItemEditSectionRowProperty>(){
                                 new ItemEditSectionRowProperty(){
-                                    //TODO
+                                    //TODO multiidioma
                                     title = new Dictionary<string, string>() { { "es", "Categoria" } },
                                     type = DataTypeEdit.text,
                                     multiple=true,
@@ -1632,32 +1632,39 @@ namespace GuardadoCV.Models
         private Dictionary<string, List<ThesaurusItem>> GetTesauros(List<string> pListaTesauros,string pLang)
         {
             Dictionary<string, List<ThesaurusItem>> elementosTesauros = new Dictionary<string, List<ThesaurusItem>>();
-
             foreach (string tesauro in pListaTesauros)
             {
-                string select = "select * ";
-                string where = @$"where {{
+                string claveTesauros = $@"{tesauro} {pLang}";
+                if (dicTesauros.ContainsKey(claveTesauros))
+                {
+                    elementosTesauros.Add(tesauro, dicTesauros[claveTesauros]);
+                }
+                else
+                {
+
+                    string select = "select * ";
+                    string where = @$"where {{
                     ?s a <http://www.w3.org/2008/05/skos#Concept>.
                     ?s <http://www.w3.org/2008/05/skos#prefLabel> ?nombre.
                     FILTER( lang(?nombre) = '{pLang}' OR lang(?nombre) = '')  
                     ?s <http://purl.org/dc/elements/1.1/source> '{tesauro}'
                     OPTIONAL {{ ?s <http://www.w3.org/2008/05/skos#broader> ?padre }}
                 }} ORDER BY ?padre ?s ";
-                SparqlObject sparqlObject = mResourceApi.VirtuosoQuery(select, where, "taxonomy");
+                    SparqlObject sparqlObject = mResourceApi.VirtuosoQuery(select, where, "taxonomy");
 
-                List<ThesaurusItem> items = sparqlObject.results.bindings.Select(x => new ThesaurusItem()
-                {
-                    id = x["s"].value,
-                    name = x["nombre"].value,
-                    parentId = x.ContainsKey("padre") ? x["padre"].value : ""
-                }).ToList();
-
-                elementosTesauros.Add(tesauro, items);
+                    List<ThesaurusItem> items = sparqlObject.results.bindings.Select(x => new ThesaurusItem()
+                    {
+                        id = x["s"].value,
+                        name = x["nombre"].value,
+                        parentId = x.ContainsKey("padre") ? x["padre"].value : ""
+                    }).ToList();
+                    elementosTesauros.Add(tesauro, items);
+                    dicTesauros[claveTesauros] = items;
+                }
             }
 
             return elementosTesauros;
         }
-
 
         /// <summary>
         /// Obtiene los datos para los combos (entidad y texto)
@@ -1667,43 +1674,57 @@ namespace GuardadoCV.Models
         /// <returns></returns>
         private Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> GetSubjectsCombo(ItemEditSectionRowPropertyCombo pItemEditSectionRowPropertyCombo, string pLang)
         {
-            int paginacion = 10000;
-            int offset = 0;
-            int limit = paginacion;
-            HashSet<string> ids = new HashSet<string>();
-            while (limit == paginacion)
+            Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> respuesta = new Dictionary<string, List<Dictionary<string, Data>>>();
+            string claveCombos = $@"{pItemEditSectionRowPropertyCombo.property.property} {pItemEditSectionRowPropertyCombo.property.graph} {pItemEditSectionRowPropertyCombo.property.property} {pItemEditSectionRowPropertyCombo.rdftype} {pItemEditSectionRowPropertyCombo.graph} {pLang}";
+            if (pItemEditSectionRowPropertyCombo.filter != null)
             {
-                string filter = "";
-                if (pItemEditSectionRowPropertyCombo.filter != null)
-                {
-                    filter = $" . ?s <{pItemEditSectionRowPropertyCombo.filter.property}> '{pItemEditSectionRowPropertyCombo.filter.value}'";
-                }
-
-                //Obtenemos los IDS
-                string select = "select * where{select distinct ?s ";
-                string where = $"where{{?s a <{pItemEditSectionRowPropertyCombo.rdftype}> {filter} }} order by asc(?s)}} limit {limit} offset {offset}";
-                SparqlObject sparqlObject = mResourceApi.VirtuosoQuery(select, where, pItemEditSectionRowPropertyCombo.graph);
-                limit = sparqlObject.results.bindings.Count;
-                offset += sparqlObject.results.bindings.Count;
-                foreach (Dictionary<string, SparqlObject.Data> fila in sparqlObject.results.bindings)
-                {
-                    ids.Add(fila["s"].value);
-                }
+                
+                claveCombos += $@"{pItemEditSectionRowPropertyCombo.filter.property} {pItemEditSectionRowPropertyCombo.filter.value}";
             }
-            List<PropertyData> propertyDatas = new List<PropertyData>() { pItemEditSectionRowPropertyCombo.property.GenerarPropertyData(pItemEditSectionRowPropertyCombo.graph) };
-
-
-            if (pItemEditSectionRowPropertyCombo.dependency != null)
+            if (pItemEditSectionRowPropertyCombo.cache && dicCombos.ContainsKey(claveCombos))
             {
-                propertyDatas.Add(new Utils.PropertyData()
-                {
-                    property = pItemEditSectionRowPropertyCombo.dependency.property,
-                    order = null,
-                    childs = new List<Utils.PropertyData>()
-                });
+                respuesta = dicCombos[claveCombos];
             }
+            else
+            {
+                int paginacion = 10000;
+                int offset = 0;
+                int limit = paginacion;
+                HashSet<string> ids = new HashSet<string>();
+                while (limit == paginacion)
+                {
+                    string filter = "";
+                    if (pItemEditSectionRowPropertyCombo.filter != null)
+                    {
+                        filter = $" . ?s <{pItemEditSectionRowPropertyCombo.filter.property}> '{pItemEditSectionRowPropertyCombo.filter.value}'";
+                    }
+                    //Obtenemos los IDS
+                    string select = "select * where{select distinct ?s ";
+                    string where = $"where{{?s a <{pItemEditSectionRowPropertyCombo.rdftype}> {filter} }} order by asc(?s)}} limit {limit} offset {offset}";
+                    SparqlObject sparqlObject = mResourceApi.VirtuosoQuery(select, where, pItemEditSectionRowPropertyCombo.graph);
+                    limit = sparqlObject.results.bindings.Count;
+                    offset += sparqlObject.results.bindings.Count;
+                    foreach (Dictionary<string, SparqlObject.Data> fila in sparqlObject.results.bindings)
+                    {
+                        ids.Add(fila["s"].value);
+                    }
+                }
+                List<PropertyData> propertyDatas = new List<PropertyData>() { pItemEditSectionRowPropertyCombo.property.GenerarPropertyData(pItemEditSectionRowPropertyCombo.graph) };
 
-            return UtilityCV.GetProperties(ids, pItemEditSectionRowPropertyCombo.graph, propertyDatas, pLang, new Dictionary<string, SparqlObject>());
+
+                if (pItemEditSectionRowPropertyCombo.dependency != null)
+                {
+                    propertyDatas.Add(new Utils.PropertyData()
+                    {
+                        property = pItemEditSectionRowPropertyCombo.dependency.property,
+                        order = null,
+                        childs = new List<Utils.PropertyData>()
+                    });
+                }
+                respuesta = UtilityCV.GetProperties(ids, pItemEditSectionRowPropertyCombo.graph, propertyDatas, pLang, new Dictionary<string, SparqlObject>());
+                dicCombos[claveCombos] = respuesta;
+            }
+            return respuesta;
         }
 
         /// <summary>

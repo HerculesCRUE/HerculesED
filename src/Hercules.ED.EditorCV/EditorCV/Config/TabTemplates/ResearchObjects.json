@@ -157,6 +157,7 @@
                         "property": "http://purl.org/dc/elements/1.1/type",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/ResearchObjectType",
+                          "cache": true,
                           "graph": "researchobjecttype",
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
@@ -337,25 +338,6 @@
                   {
                     "properties": [
                       {
-                        "title": {
-                          "es": "Proyecto"
-                        },
-                        "property": "http://w3id.org/roh/project",
-                        "combo": {
-                          "rdftype": "http://vivoweb.org/ontology/core#Project",
-                          "graph": "project",
-                          "property": {
-                            "property": "http://w3id.org/roh/title"
-                          }
-                        },
-                        "type": "selectCombo",
-                        "width": 1
-                      }
-                    ]
-                  },
-                  {
-                    "properties": [
-                      {
                         "property": "http://w3id.org/roh/annotations",
                         "type": "auxEntity",
                         "title": {
@@ -407,6 +389,7 @@
                                   "property": "http://www.w3.org/1999/02/22-rdf-syntax-ns#member",
                                   "combo": {
                                     "rdftype": "http://xmlns.com/foaf/0.1/Person",
+                                    "cache": true,
                                     "graph": "person",
                                     "property": {
                                       "property": "http://xmlns.com/foaf/0.1/name"

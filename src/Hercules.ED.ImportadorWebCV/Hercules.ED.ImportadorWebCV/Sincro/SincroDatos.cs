@@ -37,7 +37,7 @@ namespace ImportadorWebCV.Sincro
             var x = cvnRootBeanClient.cvnPdf2CvnRootBeanAsync(_Configuracion.GetUsuarioPDF(), _Configuracion.GetContraseñaPDF(), bytes);
             Import.cvnRootResultBean cvnRootResultBean = x.Result.@return;
 
-            XmlSerializer xmlSerializer = new XmlSerializer(cvnRootResultBean.GetType());            
+            XmlSerializer xmlSerializer = new XmlSerializer(cvnRootResultBean.GetType());
             MemoryStream memoryStream = new MemoryStream();
 
             xmlSerializer.Serialize(memoryStream, cvnRootResultBean);
@@ -173,16 +173,16 @@ namespace ImportadorWebCV.Sincro
         /// </summary>
         public List<Subseccion> SincroExperienciaCientificaTecnologica([Optional] bool preimportar)
         {
-            //ExperienciaCientificaTecnologica experienciaCientificaTecnologica = new ExperienciaCientificaTecnologica(cvn,cvID);
+            ExperienciaCientificaTecnologica experienciaCientificaTecnologica = new ExperienciaCientificaTecnologica(cvn, cvID);
 
             List<Subseccion> listadoSecciones = new List<Subseccion>();
 
-            //listadoSecciones.Add(new Subseccion("050.020.010.000",experienciaCientificaTecnologica.SincroProyectosIDI(preimportar)));//TODO
-            //listadoSecciones.Add(new Subseccion("050.020.020.000",experienciaCientificaTecnologica.SincroContratos(preimportar)));
-            //listadoSecciones.Add(new Subseccion("050.030.010.000",experienciaCientificaTecnologica.SincroPropiedadIndustrialIntelectual(preimportar)));
-            //listadoSecciones.Add(new Subseccion("050.010.000.000",experienciaCientificaTecnologica.SincroGrupoIDI(preimportar)));
-            //listadoSecciones.Add(new Subseccion("050.020.030.000",experienciaCientificaTecnologica.SincroObrasArtisticas(preimportar)));
-            //listadoSecciones.Add(new Subseccion("050.030.020.000",experienciaCientificaTecnologica.SincroResultadosTecnologicos(preimportar)));
+            listadoSecciones.Add(new Subseccion("050.020.010.000", experienciaCientificaTecnologica.SincroProyectosIDI(preimportar)));
+            listadoSecciones.Add(new Subseccion("050.020.020.000", experienciaCientificaTecnologica.SincroContratos(preimportar)));
+            listadoSecciones.Add(new Subseccion("050.030.010.000", experienciaCientificaTecnologica.SincroPropiedadIndustrialIntelectual(preimportar)));
+            listadoSecciones.Add(new Subseccion("050.010.000.000", experienciaCientificaTecnologica.SincroGrupoIDI(preimportar)));
+            listadoSecciones.Add(new Subseccion("050.020.030.000", experienciaCientificaTecnologica.SincroObrasArtisticas(preimportar)));
+            listadoSecciones.Add(new Subseccion("050.030.020.000", experienciaCientificaTecnologica.SincroResultadosTecnologicos(preimportar)));
 
             return listadoSecciones;
         }
@@ -200,9 +200,9 @@ namespace ImportadorWebCV.Sincro
 
             listadoSecciones.Add(new Subseccion("060.010.000.000", actividadCientificaTecnologica.SincroProduccionCientifica(preimportar)));
             listadoSecciones.Add(new Subseccion("060.010.060.010", actividadCientificaTecnologica.SincroIndicadoresGenerales(preimportar)));
-            listadoSecciones.Add(new Subseccion("060.010.010.000", actividadCientificaTecnologica.SincroPublicacionesDocumentos(preimportar)));//TODO - ?
-            //listadoSecciones.Add(new Subseccion("060.010.020.000", actividadCientificaTecnologica.SincroTrabajosCongresos(preimportar)));//TODO - Autores, Publicacion editorial¿?
-            //listadoSecciones.Add(new Subseccion("060.010.030.000", actividadCientificaTecnologica.SincroTrabajosJornadasSeminarios(preimportar)));//TODO - Autores, TiposEntidadOrganizadora?
+            listadoSecciones.Add(new Subseccion("060.010.010.000", actividadCientificaTecnologica.SincroPublicacionesDocumentos(preimportar)));
+            listadoSecciones.Add(new Subseccion("060.010.020.000", actividadCientificaTecnologica.SincroTrabajosCongresos(preimportar)));
+            listadoSecciones.Add(new Subseccion("060.010.030.000", actividadCientificaTecnologica.SincroTrabajosJornadasSeminarios(preimportar)));
             listadoSecciones.Add(new Subseccion("060.010.040.000", actividadCientificaTecnologica.SincroOtrasActividadesDivulgacion(preimportar)));
             listadoSecciones.Add(new Subseccion("060.020.010.000", actividadCientificaTecnologica.SincroComitesCTA(preimportar)));
             listadoSecciones.Add(new Subseccion("060.020.030.000", actividadCientificaTecnologica.SincroOrganizacionIDI(preimportar)));

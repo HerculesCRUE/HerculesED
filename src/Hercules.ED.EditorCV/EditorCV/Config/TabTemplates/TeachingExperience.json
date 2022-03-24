@@ -721,14 +721,14 @@
             "orders": [
               {
                 "name": {
-                  "es": "Ordenar por fecha de inicio más reciente"
+                  "es": "Ordenar por fecha de fin más reciente"
                 },
                 "properties": [
                   {
                     "property": "http://vivoweb.org/ontology/core#relatedBy",
                     "graph": "impartedacademictraining",
                     "child": {
-                      "property": "http://vivoweb.org/ontology/core#start"
+                      "property": "http://vivoweb.org/ontology/core#end"
                     },
                     "asc": false
                   },
@@ -744,14 +744,14 @@
               },
               {
                 "name": {
-                  "es": "Ordenar por fecha de inicio más antigua"
+                  "es": "Ordenar por fecha de fin más antigua"
                 },
                 "properties": [
                   {
                     "property": "http://vivoweb.org/ontology/core#relatedBy",
                     "graph": "impartedacademictraining",
                     "child": {
-                      "property": "http://vivoweb.org/ontology/core#start"
+                      "property": "http://vivoweb.org/ontology/core#end"
                     },
                     "asc": true
                   },
@@ -771,6 +771,7 @@
                 "name": {
                   "es": "Nombre de la asignatura/curso"
                 },
+                "showMini": true,
                 "type": "text",
                 "child": {
                   "property": "http://vivoweb.org/ontology/core#relatedBy",
