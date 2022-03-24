@@ -316,7 +316,7 @@
                     "child": {
                       "property": "http://w3id.org/roh/title"
                     },
-                    "asc": true
+                    "asc": false
                   }
                 ]
               }
@@ -340,6 +340,7 @@
                 "name": {
                   "es": "Nombre de la publicación"
                 },
+                "showMini": true,
                 "child": {
                   "property": "http://vivoweb.org/ontology/core#relatedBy",
                   "graph": "document",
@@ -1160,7 +1161,7 @@
                     "child": {
                       "property": "http://w3id.org/roh/title"
                     },
-                    "asc": true
+                    "asc": false
                   }
                 ]
               }
@@ -2248,7 +2249,7 @@
                     "child": {
                       "property": "http://w3id.org/roh/title"
                     },
-                    "asc": true
+                    "asc": false
                   }
                 ]
               }
