@@ -769,22 +769,8 @@
             "properties": [
               {
                 "name": {
-                  "es": "Nombre de la asignatura/curso"
-                },
-                "showMini": true,
-                "type": "text",
-                "child": {
-                  "property": "http://vivoweb.org/ontology/core#relatedBy",
-                  "graph": "impartedacademictraining",
-                  "child": {
-                    "property": "http://w3id.org/roh/teaches"
-                  }
-                }
-              },
-              {
-                "name": {
                   "es": "Fecha de inicio"
-                },                
+                },
                 "type": "date",
                 "child": {
                   "property": "http://vivoweb.org/ontology/core#relatedBy",
@@ -805,6 +791,20 @@
                   "graph": "impartedacademictraining",
                   "child": {
                     "property": "http://vivoweb.org/ontology/core#end"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Nombre de la asignatura/curso"
+                },
+                "showMini": true,
+                "type": "text",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "impartedacademictraining",
+                  "child": {
+                    "property": "http://w3id.org/roh/teaches"
                   }
                 }
               },
