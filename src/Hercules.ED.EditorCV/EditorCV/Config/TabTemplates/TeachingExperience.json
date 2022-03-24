@@ -784,8 +784,7 @@
               {
                 "name": {
                   "es": "Fecha de inicio"
-                },
-                "showMiniBold": true,
+                },                
                 "type": "date",
                 "child": {
                   "property": "http://vivoweb.org/ontology/core#relatedBy",
@@ -799,6 +798,7 @@
                 "name": {
                   "es": "Fecha de fin"
                 },
+                "showMiniBold": true,
                 "type": "date",
                 "child": {
                   "property": "http://vivoweb.org/ontology/core#relatedBy",
