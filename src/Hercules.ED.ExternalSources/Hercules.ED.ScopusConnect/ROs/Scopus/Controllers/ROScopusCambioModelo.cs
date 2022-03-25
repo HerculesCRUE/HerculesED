@@ -64,6 +64,8 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                     publicacion.pageStart = getPageStart(objInicial);
                     publicacion.pageEnd = getPageEnd(objInicial);
                     publicacion.volume = getVolume(objInicial);
+                    publicacion.articleNumber = getArticleNumber(objInicial);
+                    publicacion.openAccess = getOpenAccess(objInicial);
                     publicacion.correspondingAuthor = getAuthorPrincipal(objInicial);
                     publicacion.hasPublicationVenue = getJournal(objInicial);
                     publicacion.hasMetric = getPublicationMetric(objInicial);
@@ -214,6 +216,30 @@ namespace ScopusConnect.ROs.Scopus.Controllers
             if (objInicial.PrismVolume != null)
             {
                 return objInicial.PrismVolume;
+            }
+            return null;
+        }
+
+        public string getArticleNumber(PublicacionInicial objInicial)
+        {
+            if (objInicial.ArticleNumber != null)
+            {
+                return objInicial.ArticleNumber;
+            }
+            return null;
+        }
+
+        public bool? getOpenAccess(PublicacionInicial objInicial)
+        {
+            if (objInicial.openaccess != null)
+            {
+                switch(objInicial.openaccess)
+                {
+                    case "1":
+                        return true;
+                    case "2":
+                        return false;
+                }
             }
             return null;
         }
