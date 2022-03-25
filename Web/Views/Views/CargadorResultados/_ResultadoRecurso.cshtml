@@ -51,6 +51,7 @@
                             string valorInrecs = string.Empty;
                             string valorWos = string.Empty;
                             string valorScopus = string.Empty;
+							string valorSemanticScholar = string.Empty;
 
                             if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
                             {
@@ -62,6 +63,7 @@
                                         string propInrecs = "inrecs";
                                         string propWos = "wos";
                                         string propScopus = "scopus";
+										string propSemanticScholar = "semanticScholar";
                                         foreach (Dictionary<string, string> row in item.Rows)
                                         {
                                             if (row.ContainsKey(propInrecs))
@@ -77,6 +79,11 @@
                                             if (row.ContainsKey(propScopus))
                                             {
                                                 valorScopus = row[propScopus];
+                                            }
+											
+											if (row.ContainsKey(propSemanticScholar))
+                                            {
+                                                valorSemanticScholar = row[propSemanticScholar];
                                             }
                                         }
                                     }
@@ -140,7 +147,7 @@
                                 valorOtros = valorOtros.Substring(0, valorOtros.Length - 1);
                             }
                         }
-                        <div class="d-flex quotes" data-scopus="@valorScopus" data-wos="@valorWos" data-inrecs="@valorInrecs" data-otros="@valorOtros">
+                        <div class="d-flex quotes" data-scopus="@valorScopus" data-wos="@valorWos" data-semanticscholar="@valorSemanticScholar" data-inrecs="@valorInrecs" data-otros="@valorOtros">
                             @{
                                 if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
                                 {
