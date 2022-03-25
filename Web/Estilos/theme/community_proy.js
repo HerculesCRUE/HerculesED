@@ -200,6 +200,16 @@ function CompletadaCargaRecursosComunidad()
 	enlazarFacetasBusqueda();
 	montarTooltip.init();
 	contarLineasDescripcion.init();
+	
+	// Engancha el filtro de persona a la minificha.
+	$('.list-wrap.authors a.faceta')
+	.unbind()
+	.click(function (e) {
+	    AgregarFaceta($(this).attr("name"));
+        // Quitar el panel de filtrado para móvil para visualizar resultados correctamente
+        $(body).removeClass("facetas-abiertas");
+	    e.preventDefault();
+	});
 }
 
 comportamientoFacetasPopUp.numPaginas=2,
@@ -1272,8 +1282,10 @@ var metabuscador = {
         this.numMaxSearchs = 10;
         // Panel sin resultados por elementos no encontrados
         this.panelSinResultados = $(`#sinResultadosMetabuscador`);
-        this.timeWaitingForUserToType = 750; // Esperar 0.75 segundos a si el usuario ha dejado de escribir para iniciar búsqueda
-        this.ignoreKeysToBuscador = [37, 38, 39, 40, 46, 8, 32, 91, 17, 18, 20, 36, 18, 27];
+        //this.timeWaitingForUserToType = 750; // Esperar 0.75 segundos a si el usuario ha dejado de escribir para iniciar búsqueda
+		this.timeWaitingForUserToType = 150; // Esperar 0.75 segundos a si el usuario ha dejado de escribir para iniciar búsqueda
+        //this.ignoreKeysToBuscador = [37, 38, 39, 40, 46, 8, 32, 91, 17, 18, 20, 36, 18, 27];
+		this.ignoreKeysToBuscador = [];
         // Palabra clave introducida en el metaBuscador para mostrar en el panel de resultados no encontrados
         this.idPalabraBuscadaMetabuscador = `metabuscadorBusqueda`;
         this.sugerenciasMetabuscadorItems = this.body.find('#sugerenciasMetabuscador ul');
@@ -1357,9 +1369,9 @@ var metabuscador = {
 
 	                clearTimeout(that.timer);
 	                that.timer = setTimeout(function () {
-                        that.ocultarResultados();
+                        //that.ocultarResultados();
                         // Ocultar panel sin resultados por posible busqueda anterior sin resultados
-                        that.mostrarPanelSinResultados(false);
+                        //that.mostrarPanelSinResultados(false);
                         that.cargarResultados();
                         // Guardar búsqueda en localStorage
                         that.saveSearchInLocalStorage(that.keyInput);
@@ -1482,8 +1494,8 @@ var metabuscador = {
         var that = this;
 
         // Oculta la sección de resultados
-        var bloque = that.resultadosMetabuscador.find('.bloque');
-        bloque.hide();
+        //var bloque = that.resultadosMetabuscador.find('.bloque');
+        //bloque.hide();
 
         // Rellena los datos por si se les pasara por parámetro
         if (searchTxt != "") {
@@ -1500,11 +1512,11 @@ var metabuscador = {
 
         	// Si hay resultados, pinta los items
         	if (totalItems > 0) {
-        		that.mostrarPanelSinResultados(false);
-        		that.pintarItems(data);
+        		that.mostrarPanelSinResultados(false);        		
         	} else {
         		that.mostrarPanelSinResultados(true);
         	}
+			that.pintarItems(data);
         });
     },
 
@@ -1549,7 +1561,11 @@ var metabuscador = {
 
     				// Muestra el bloque
     				currenTbloque.show();
-    			}
+    			}else
+				{
+					//Oculta el bloque
+					currenTbloque.hide();
+				}
     		}
     	})
     },
