@@ -15,6 +15,7 @@ namespace ScopusConnect.ROs.Scopus.Models
         public Person correspondingAuthor { get; set; }
         public string pageEnd { get; set; }
         public string pageStart { get; set; }
+        public string volume { get; set; }
         public string scopusID { get; set; }
         public Source hasPublicationVenue { get; set; }
         public List<PublicationMetric> hasMetric { get; set; }

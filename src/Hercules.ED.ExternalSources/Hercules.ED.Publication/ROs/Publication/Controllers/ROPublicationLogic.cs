@@ -1013,7 +1013,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 }
                 else
                 {
-                    if (pub_1.typeOfPublication != null)
+                    if (!string.IsNullOrEmpty(pub_1.typeOfPublication))
                     {
                         pub.typeOfPublication = pub_1.typeOfPublication;
                     }
@@ -1021,7 +1021,8 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     {
                         pub.typeOfPublication = pub_2.typeOfPublication;
                     }
-                    if (pub_1.title != null)
+
+                    if (!string.IsNullOrEmpty(pub_1.title))
                     {
                         pub.title = pub_1.title;
                     }
@@ -1030,7 +1031,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         pub.title = pub_2.title;
                     }
 
-                    if (pub_1.Abstract != null)
+                    if (!string.IsNullOrEmpty(pub_1.Abstract))
                     {
                         pub.Abstract = pub_1.Abstract;
                     }
@@ -1039,7 +1040,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         pub.Abstract = pub_2.Abstract;
                     }
 
-                    if (pub_1.freetextKeywords != null)
+                    if (pub_1.freetextKeywords != null && pub_1.freetextKeywords.Any())
                     {
                         pub.freetextKeywords = pub_1.freetextKeywords;
                         if (pub_2.freetextKeywords != null)
@@ -1052,7 +1053,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         pub.freetextKeywords = pub_2.freetextKeywords;
                     }
 
-                    if (pub_1.language != null)
+                    if (!string.IsNullOrEmpty(pub_1.language))
                     {
                         pub.language = pub_1.language;
                     }
@@ -1086,7 +1087,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         }
                         else { pub.dataIssued = null; }
                     }
-                    if (pub_1.url != null)
+                    if (pub_1.url != null && pub_1.url.Any())
                     {
                         pub.url = pub_1.url;
                         if (pub_2.url != null)
@@ -1120,7 +1121,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         pub.seqOfAuthors.AddRange(pub_2.seqOfAuthors);
                     }
 
-                    if (pub_1.hasKnowledgeAreas != null)
+                    if (pub_1.hasKnowledgeAreas != null && pub_1.hasKnowledgeAreas.Any())
                     {
                         pub.hasKnowledgeAreas = pub_1.hasKnowledgeAreas;
                         if (pub_2.hasKnowledgeAreas != null)
@@ -1132,7 +1133,8 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     {
                         pub.hasKnowledgeAreas = pub_2.hasKnowledgeAreas;
                     }
-                    if (pub_1.pageEnd != null)
+
+                    if (!string.IsNullOrEmpty(pub_1.pageEnd))
                     {
                         pub.pageEnd = pub_1.pageEnd;
                     }
@@ -1140,7 +1142,8 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     {
                         pub.pageEnd = pub_2.pageEnd;
                     }
-                    if (pub_1.pageStart != null)
+
+                    if (!string.IsNullOrEmpty(pub_1.pageStart))
                     {
                         pub.pageStart = pub_1.pageStart;
                     }
@@ -1149,7 +1152,16 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         pub.pageStart = pub_2.pageStart;
                     }
 
-                    if (pub_1.IDs != null)
+                    if (!string.IsNullOrEmpty(pub_1.volume))
+                    {
+                        pub.volume = pub_1.volume;
+                    }
+                    else
+                    {
+                        pub.volume = pub_2.volume;
+                    }
+
+                    if (pub_1.IDs != null && pub_1.IDs.Any())
                     {
                         pub.IDs = pub_1.IDs;
                         if (pub_2.IDs != null)
@@ -1161,7 +1173,8 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     {
                         pub.IDs = pub_2.IDs;
                     }
-                    if (pub_1.presentedAt != null)
+
+                    if (!string.IsNullOrEmpty(pub_1.presentedAt))
                     {
                         pub.presentedAt = pub_1.presentedAt;
                     }
@@ -1262,7 +1275,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         pub.pdf = pub_2.pdf;
                     }
 
-                    if (pub_1.topics_enriquecidos != null)
+                    if (pub_1.topics_enriquecidos != null && pub_1.topics_enriquecidos.Any())
                     {
                         pub.topics_enriquecidos = pub_1.topics_enriquecidos;
                     }
@@ -1271,7 +1284,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         pub.topics_enriquecidos = pub_2.topics_enriquecidos;
                     }
 
-                    if (pub_1.freetextKeyword_enriquecidas != null)
+                    if (pub_1.freetextKeyword_enriquecidas != null && pub_1.freetextKeyword_enriquecidas.Any())
                     {
                         pub.freetextKeyword_enriquecidas = pub_1.freetextKeyword_enriquecidas;
                     }
@@ -1280,7 +1293,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         pub.freetextKeyword_enriquecidas = pub_2.freetextKeyword_enriquecidas;
                     }
 
-                    if (pub_1.bibliografia != null)
+                    if (pub_1.bibliografia != null && pub_1.bibliografia.Any())
                     {
                         pub.bibliografia = pub_1.bibliografia;
                     }
@@ -2890,6 +2903,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             }
             publicacion.pageStart = pPublicacionScopus.pageStart;
             publicacion.pageEnd = pPublicacionScopus.pageEnd;
+            publicacion.volume = pPublicacionScopus.volume;
             publicacion.IDs = new List<string>();
             publicacion.IDs.Add(pPublicacionScopus.scopusID);
             if (pPublicacionScopus.hasPublicationVenue != null)
