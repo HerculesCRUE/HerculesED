@@ -364,9 +364,9 @@
                                 <div class="bloque">
                                     <div class="label">@Html.Translate("PUBLICACIONES")</div>
                                     @{
-                                        if (pPerson.Roh_publicationsNumber != null && pPerson.Roh_publicationsNumber > 0 && !string.IsNullOrEmpty(pPerson.GNOSSID))
+                                        if (pPerson.Roh_publicPublicationsNumber != null && pPerson.Roh_publicPublicationsNumber > 0 && !string.IsNullOrEmpty(pPerson.GNOSSID))
                                         {
-                                            <div about="@pPerson.GNOSSID" property="@pPerson.GetPropertyURI(nameof(pPerson.Roh_publicationsNumber))" class="data">@pPerson.Roh_publicationsNumber</div>
+                                            <div about="@pPerson.GNOSSID" property="@pPerson.GetPropertyURI(nameof(pPerson.Roh_publicPublicationsNumber))" class="data">@pPerson.Roh_publicPublicationsNumber</div>
                                         }
                                         else
                                         {
@@ -381,9 +381,9 @@
                                 <div class="bloque">
                                     <div class="label">@Html.Translate("PROYECTOS")</div>
                                     @{
-                                        if (pPerson.Roh_projectsNumber != null && pPerson.Roh_projectsNumber > 0 && !string.IsNullOrEmpty(pPerson.GNOSSID))
+                                        if (pPerson.Roh_publicProjectsNumber != null && pPerson.Roh_publicProjectsNumber > 0 && !string.IsNullOrEmpty(pPerson.GNOSSID))
                                         {
-                                            <div about="@pPerson.GNOSSID" property="@pPerson.GetPropertyURI(nameof(pPerson.Roh_projectsNumber))" class="data">@pPerson.Roh_projectsNumber</div>
+                                            <div about="@pPerson.GNOSSID" property="@pPerson.GetPropertyURI(nameof(pPerson.Roh_publicProjectsNumber))" class="data">@pPerson.Roh_publicProjectsNumber</div>
                                         }
                                         else
                                         {
@@ -423,9 +423,9 @@
                                 <div class="bloque">
                                     <div class="label">@Html.Translate("COLABORACIONES")</div>
                                     @{
-                                        if (pPerson.Roh_collaboratorsNumber != null && pPerson.Roh_collaboratorsNumber > 0 && !string.IsNullOrEmpty(pPerson.GNOSSID))
+                                        if (pPerson.Roh_publicCollaboratorsNumber != null && pPerson.Roh_publicCollaboratorsNumber > 0 && !string.IsNullOrEmpty(pPerson.GNOSSID))
                                         {
-                                            <div about="@pPerson.GNOSSID" property="@pPerson.GetPropertyURI(nameof(pPerson.Roh_collaboratorsNumber))" class="data">@pPerson.Roh_collaboratorsNumber</div>
+                                            <div about="@pPerson.GNOSSID" property="@pPerson.GetPropertyURI(nameof(pPerson.Roh_publicCollaboratorsNumber))" class="data">@pPerson.Roh_publicCollaboratorsNumber</div>
                                         }
                                         else
                                         {
@@ -471,9 +471,9 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div>                            
                             <div class="col col-12 col-section-title font-weight-bold searcherTitle">
-                                <div class="wrapCol">
+                                <div class="wrapCol">                                    
                                     <p>@Html.Translate("LISTADO_PUBLICACIONES")</p>
                                 </div>
                             </div>
@@ -780,7 +780,7 @@
 <script type="text/javascript">
     var depuracion = false; // TODO:
 
-    const localUrlBase = "https://localhost:44321/";
+    const localUrlBase = "https://localhost:44347/";
     const servicioExtermpBaseUrl = "@Html.GetBaseUrlContent()/";
 
     const urlBase = "@Html.GetBaseUrl()";
@@ -1033,12 +1033,12 @@
             $('#publicaciones-tab').unbind().click(function (e) {
                 e.preventDefault();
                 that.tabActive = "publicaciones";
-                buscadorPersonalizado.init("@Html.Translate("PUBLICACIONES")", "#contenedorBuscadorPublicaciones", "roh:publicAuthorList=http://gnoss/@pPerson.GNOSSID.Split('_')[1].ToUpper()", "dct:issued", "rdf:type=document", "@Comunidad.Url", "@Comunidad.Key.ToString()");
+                buscadorPersonalizado.init("@Html.Translate("PUBLICACIONES")", "#contenedorBuscadorPublicaciones", "searchPublicacionesPublicasPerson=http://gnoss/@pPerson.GNOSSID.Split('_')[1].ToUpper()", "dct:issued", "rdf:type=document", "@Comunidad.Url", "@Comunidad.Key.ToString()");
             });
             $('#proyectos-tab').unbind().click(function (e) {
                 e.preventDefault();
                 that.tabActive = "proyectos";
-                buscadorPersonalizado.init("Proyectos", "#contenedorBuscadorProyectos", "roh:publicAuthorList=http://gnoss/@pPerson.GNOSSID.Split('_')[1].ToUpper()", "", "rdf:type=project", "@Comunidad.Url", "@Comunidad.Key.ToString()");
+                buscadorPersonalizado.init("Proyectos", "#contenedorBuscadorProyectos", "searchProyectosPublicosPerson=http://gnoss/@pPerson.GNOSSID.Split('_')[1].ToUpper()", "", "rdf:type=project", "@Comunidad.Url", "@Comunidad.Key.ToString()");
             });
             $('#topics-tab').unbind().click(function (e) {
                 e.preventDefault();
@@ -1063,7 +1063,7 @@
     // Acciones a llevar a cabo en el filtrado.
     function accionFiltrado() {
         console.log("ejectuado: ", comportamientoPaginaInvestigador.tabActive);
-        var parametros = ObtenerHash2()+"&" + buscadorPersonalizado.filtro;
+        var parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro;
         if (comportamientoPaginaInvestigador.tabActive == "publicaciones") {
             CargarGraficaPublicaciones(parametros,'publicaciongraph');
         }
@@ -1500,6 +1500,9 @@
                 }
             }
             this.Roh_h_index = GetNumberFloatPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/h-index"));
+            this.Roh_publicPublicationsNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/publicPublicationsNumber"));
+            this.Roh_publicProjectsNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/publicProjectsNumber"));
+            this.Roh_publicCollaboratorsNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/publicCollaboratorsNumber"));
             this.Vivo_researcherId = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#researcherId"));
             this.Vivo_scopusId = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#scopusId"));
             this.Roh_projectsNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/projectsNumber"));
@@ -1693,6 +1696,15 @@
         [LABEL(LanguageEnum.es, "http://vivoweb.org/ontology/core#hasResearchArea")]
         [RDFProperty("http://vivoweb.org/ontology/core#hasResearchArea")]
         public List<CategoryPath> Vivo_hasResearchArea { get; set; }
+
+        [RDFProperty("http://w3id.org/roh/publicPublicationsNumber")]
+		public  int? Roh_publicPublicationsNumber { get; set;}
+
+        [RDFProperty("http://w3id.org/roh/publicProjectsNumber")]
+		public  int? Roh_publicProjectsNumber { get; set;}
+
+        [RDFProperty("http://w3id.org/roh/publicCollaboratorsNumber")]
+		public  int? Roh_publicCollaboratorsNumber { get; set;}
 
         [LABEL(LanguageEnum.es, "http://w3id.org/roh/h-index")]
         [RDFProperty("http://w3id.org/roh/h-index")]
