@@ -592,7 +592,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             string info = JsonConvert.SerializeObject(resultado);
             string path = _Configuracion.GetRutaJsonSalida();
             Log.Information("Escribiendo datos en fichero...");
-            File.WriteAllText($@"Files/{name}___2022-03-24___campos.json", info);
+            File.WriteAllText($@"Files/{name}___2022-03-25___skarmeta.json", info);
             return resultado;
 
         }
@@ -1161,6 +1161,24 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         pub.volume = pub_2.volume;
                     }
 
+                    if (!string.IsNullOrEmpty(pub_1.articleNumber))
+                    {
+                        pub.articleNumber = pub_1.articleNumber;
+                    }
+                    else
+                    {
+                        pub.articleNumber = pub_2.articleNumber;
+                    }
+
+                    if (pub_1.openAccess != null)
+                    {
+                        pub.openAccess = pub_1.openAccess;
+                    }
+                    else
+                    {
+                        pub.openAccess = pub_2.openAccess;
+                    }
+
                     if (pub_1.IDs != null && pub_1.IDs.Any())
                     {
                         pub.IDs = pub_1.IDs;
@@ -1283,6 +1301,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     {
                         pub.topics_enriquecidos = pub_2.topics_enriquecidos;
                     }
+
 
                     if (pub_1.freetextKeyword_enriquecidas != null && pub_1.freetextKeyword_enriquecidas.Any())
                     {

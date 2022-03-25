@@ -34,6 +34,8 @@ namespace PublicationConnect.ROs.Publications.Models
         //public Status documentStatus { get; set; }
         //public string eanucc13 { get; set; }
         public string volume { get; set; }
+        public string articleNumber { get; set; }
+        public bool? openAccess { get; set; }
         public List<string> IDs { get; set; }
         public string presentedAt { get; set; }
         //todo no creo que esto en nuestra ontologia sea un string y no esta contemplado de mommento rellenarlo! 

@@ -97,8 +97,8 @@ public class Affiliation
 
         [JsonProperty("source-id")]
         public string SourceId { get; set; }
-       // public string openaccess { get; set; }
-  // public bool openaccessFlag { get; set; }
+        public string openaccess { get; set; }
+        public bool openaccessFlag { get; set; }
 
         [JsonProperty("prism:isbn")]
         public List<PrismIsbn> PrismIsbn { get; set; }
@@ -106,8 +106,8 @@ public class Affiliation
         [JsonProperty("prism:doi")]
         public string PrismDoi { get; set; }
 
-      //  [JsonProperty("article-number")]
-        //public string ArticleNumber { get; set; }
+        [JsonProperty("article-number")]
+        public string ArticleNumber { get; set; }
 
        // [JsonProperty("prism:issueIdentifier")]
       //  public string PrismIssueIdentifier { get; set; } 

@@ -13,6 +13,8 @@ namespace PublicationAPI.ROs.Publication.Models
         public string pageEnd { get; set; }
         public string pageStart { get; set; }
         public string volume { get; set; }
+        public string articleNumber { get; set; }
+        public bool? openAccess { get; set; }
         public string scopusID { get; set; }
         public Source hasPublicationVenue { get; set; }
         public List<PublicationMetric> hasMetric { get; set; }

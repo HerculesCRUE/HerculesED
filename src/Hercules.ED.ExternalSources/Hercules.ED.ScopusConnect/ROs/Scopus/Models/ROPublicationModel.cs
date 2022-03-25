@@ -17,6 +17,8 @@ namespace ScopusConnect.ROs.Scopus.Models
         public string pageStart { get; set; }
         public string volume { get; set; }
         public string scopusID { get; set; }
+        public string articleNumber { get; set; }
+        public bool? openAccess { get; set; }
         public Source hasPublicationVenue { get; set; }
         public List<PublicationMetric> hasMetric { get; set; }
     }
