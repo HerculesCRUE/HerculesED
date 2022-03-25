@@ -1148,6 +1148,14 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     {
                         pub.pageStart = pub_2.pageStart;
                     }
+                    if (pub_1.volume != null)
+                    {
+                        pub.volume = pub_1.volume;
+                    }
+                    else
+                    {
+                        pub.volume = pub_2.volume;
+                    }
 
                     if (pub_1.IDs != null)
                     {
@@ -2890,6 +2898,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             }
             publicacion.pageStart = pPublicacionScopus.pageStart;
             publicacion.pageEnd = pPublicacionScopus.pageEnd;
+            publicacion.volume = pPublicacionScopus.volume;
             publicacion.IDs = new List<string>();
             publicacion.IDs.Add(pPublicacionScopus.scopusID);
             if (pPublicacionScopus.hasPublicationVenue != null)

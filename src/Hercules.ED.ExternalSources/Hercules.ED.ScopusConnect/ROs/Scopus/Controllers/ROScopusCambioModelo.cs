@@ -63,6 +63,7 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                     publicacion.datimeTime = getDate(objInicial);
                     publicacion.pageStart = getPageStart(objInicial);
                     publicacion.pageEnd = getPageEnd(objInicial);
+                    publicacion.volume = getVolume(objInicial);
                     publicacion.correspondingAuthor = getAuthorPrincipal(objInicial);
                     publicacion.hasPublicationVenue = getJournal(objInicial);
                     publicacion.hasMetric = getPublicationMetric(objInicial);
@@ -204,6 +205,15 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                     string[] paginas = objInicial.PrismPageRange.Split("-");
                     return paginas[1];
                 }
+            }
+            return null;
+        }
+
+        public string getVolume(PublicacionInicial objInicial)
+        {
+            if (objInicial.PrismVolume != null)
+            {
+                return objInicial.PrismVolume;
             }
             return null;
         }
