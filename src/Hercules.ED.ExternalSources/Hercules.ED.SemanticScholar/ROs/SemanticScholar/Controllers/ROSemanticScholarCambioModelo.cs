@@ -290,7 +290,7 @@ namespace SemanticScholarAPI.ROs.SemanticScholar.Controllers
         public List<PublicationMetric> getPublicationMetric(Root objInicial)
         {
 
-            if (objInicial.citationCount != null)
+            if (objInicial.citationCount != 0)
             {
                 List<PublicationMetric> metriscas = new List<PublicationMetric>();
                 PublicationMetric metricPublicacion = new PublicationMetric();
