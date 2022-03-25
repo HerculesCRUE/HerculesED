@@ -589,10 +589,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
             }
 
-            string info = JsonConvert.SerializeObject(resultado);
-            string path = _Configuracion.GetRutaJsonSalida();
-            Log.Information("Escribiendo datos en fichero...");
-            File.WriteAllText($@"Files/{name}___2022-03-25___skarmeta.json", info);
+            //string info = JsonConvert.SerializeObject(resultado);
+            //string path = _Configuracion.GetRutaJsonSalida();
+            //Log.Information("Escribiendo datos en fichero...");
+            //File.WriteAllText($@"Files/{name}___2022-03-25___ejemplo.json", info);
             return resultado;
 
         }
