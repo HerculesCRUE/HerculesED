@@ -2923,6 +2923,8 @@ namespace PublicationConnect.ROs.Publications.Controllers
             publicacion.pageStart = pPublicacionScopus.pageStart;
             publicacion.pageEnd = pPublicacionScopus.pageEnd;
             publicacion.volume = pPublicacionScopus.volume;
+            publicacion.articleNumber = pPublicacionScopus.articleNumber;
+            publicacion.openAccess = pPublicacionScopus.openAccess;
             publicacion.IDs = new List<string>();
             publicacion.IDs.Add(pPublicacionScopus.scopusID);
             if (pPublicacionScopus.hasPublicationVenue != null)

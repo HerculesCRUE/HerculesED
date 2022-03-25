@@ -233,11 +233,11 @@ namespace ScopusConnect.ROs.Scopus.Controllers
         {
             if (objInicial.openaccess != null)
             {
-                switch(objInicial.openaccess)
+                switch (objInicial.openaccess)
                 {
                     case "1":
                         return true;
-                    case "2":
+                    case "0":
                         return false;
                 }
             }
