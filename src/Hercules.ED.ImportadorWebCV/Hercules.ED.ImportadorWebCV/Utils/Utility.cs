@@ -553,26 +553,40 @@ namespace Utils
                     {
                         List<string> unions = new List<string>();
                         List<string> unionsOut = new List<string>();
-                        foreach (string word in wordsTexto)
+                        foreach (string wordOut in wordsTexto)
                         {
-                            int score = 1;
-                            if (word.Length > 1)
+                            List<string> words = new List<string>();
+                            if (wordOut.Length == 2)
                             {
-                                score = 5;
-                            }
-                            if (score == 1)
-                            {
-                                StringBuilder sbUnion = new StringBuilder();
-                                sbUnion.AppendLine("				?personID <http://xmlns.com/foaf/0.1/name> ?name.");
-                                sbUnion.AppendLine($@"				{{  FILTER(lcase(?name) like'{word}%').}} UNION  {{  FILTER(lcase(?name) like'% {word}%').}}  BIND({score} as ?num)  ");
-                                unions.Add(sbUnion.ToString());
+                                words.Add(wordOut[0].ToString());
+                                words.Add(wordOut[1].ToString());
                             }
                             else
                             {
-                                StringBuilder sbUnion = new StringBuilder();
-                                sbUnion.AppendLine("				?personID <http://xmlns.com/foaf/0.1/name> ?name.");
-                                sbUnion.AppendLine($@"				?name bif:contains ""'{word}'"" BIND({score} as ?num) ");
-                                unions.Add(sbUnion.ToString());
+                                words.Add(wordOut);
+                            }
+
+                            foreach (string word in words)
+                            {
+                                int score = 1;
+                                if (word.Length > 1)
+                                {
+                                    score = 5;
+                                }
+                                if (score == 1)
+                                {
+                                    StringBuilder sbUnion = new StringBuilder();
+                                    sbUnion.AppendLine("				?personID <http://xmlns.com/foaf/0.1/name> ?name.");
+                                    sbUnion.AppendLine($@"				{{  FILTER(lcase(?name) like'{word}%').}} UNION  {{  FILTER(lcase(?name) like'% {word}%').}}  BIND({score} as ?num)  ");
+                                    unions.Add(sbUnion.ToString());
+                                }
+                                else
+                                {
+                                    StringBuilder sbUnion = new StringBuilder();
+                                    sbUnion.AppendLine("				?personID <http://xmlns.com/foaf/0.1/name> ?name.");
+                                    sbUnion.AppendLine($@"				?name bif:contains ""'{word}'"" BIND({score} as ?num) ");
+                                    unions.Add(sbUnion.ToString());
+                                }
                             }
                         }
 
