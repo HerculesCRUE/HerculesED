@@ -29,16 +29,16 @@ namespace OpenAireConnect.ROs.OpenAire.Models.Inicial
 
     public class Bestaccessright
     {
-        [JsonProperty("-classid")]
+        [JsonProperty("@classid")]
         public string Classid { get; set; }
 
-        [JsonProperty("-classname")]
+        [JsonProperty("@classname")]
         public string Classname { get; set; }
 
-        [JsonProperty("-schemeid")]
+        [JsonProperty("@schemeid")]
         public string Schemeid { get; set; }
 
-        [JsonProperty("-schemename")]
+        [JsonProperty("@schemename")]
         public string Schemename { get; set; }
     }
 
@@ -224,6 +224,8 @@ namespace OpenAireConnect.ROs.OpenAire.Models.Inicial
         public Resourcetype resourcetype { get; set; }
 
         public Journal journal { get; set; }
+
+        public Bestaccessright bestaccessright { get; set; }
     }
 
     public class Relevantdate

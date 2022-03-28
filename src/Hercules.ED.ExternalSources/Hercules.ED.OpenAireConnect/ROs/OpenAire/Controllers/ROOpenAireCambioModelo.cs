@@ -50,11 +50,12 @@ namespace OpenAireConnect.ROs.OpenAire.Controllers
             publicacionFinal.seqOfAuthors = getAuthors(pPublicacionIn);
             publicacionFinal.correspondingAuthor = publicacionFinal.seqOfAuthors[0];
             publicacionFinal.hasPublicationVenue = getJournal(pPublicacionIn);
+            publicacionFinal.openAccess = getOpenAccess(pPublicacionIn);
+            publicacionFinal.volume = getVolume(pPublicacionIn);
             //publicacionFinal.hasMetric = getPublicationMetric(pPublicacionIn);
 
             return publicacionFinal;
         }
-
 
         public List<Publication> getListPublicatio(Root objInicial)
         {
@@ -109,6 +110,8 @@ namespace OpenAireConnect.ROs.OpenAire.Controllers
             publicacion.seqOfAuthors = getAuthors(objInicial);
             publicacion.correspondingAuthor = getAuthorPrincipal(objInicial);
             publicacion.hasPublicationVenue = getJournal(objInicial);
+            publicacion.openAccess = getOpenAccess(objInicial);
+            publicacion.volume = getVolume(objInicial);
             if (publicacion.typeOfPublication == CHAPTER)
             {
                 publicacion.doi = null;
@@ -511,6 +514,43 @@ namespace OpenAireConnect.ROs.OpenAire.Controllers
                 }
 
                 return source;
+            }
+
+            return null;
+        }
+
+        public string getVolume(Result2 pPublicacionIn)
+        {
+            if (pPublicacionIn.metadata != null && pPublicacionIn.metadata.OafEntity != null && pPublicacionIn.metadata.OafEntity.OafResult != null && pPublicacionIn.metadata.OafEntity.OafResult.journal != null)
+            {
+                if (pPublicacionIn.metadata.OafEntity.OafResult.journal.Vol != null)
+                {
+                    return pPublicacionIn.metadata.OafEntity.OafResult.journal.Vol;
+                }               
+            }
+
+            return null;
+        }
+
+        public bool? getOpenAccess(Result2 pPublicacionIn)
+        {
+            if (pPublicacionIn.metadata != null && pPublicacionIn.metadata.OafEntity != null && pPublicacionIn.metadata.OafEntity.OafResult != null && pPublicacionIn.metadata.OafEntity.OafResult.bestaccessright != null)
+            {
+                if(pPublicacionIn.metadata.OafEntity.OafResult.bestaccessright.Classname == "Open Access")
+                {
+                    if(pPublicacionIn.metadata.OafEntity.OafResult.bestaccessright.Classid == "OPEN")
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
             }
 
             return null;

@@ -20,6 +20,8 @@ namespace WoSConnect.ROs.WoS.Models
         public List<string> IDs { get; set; }
         public Source hasPublicationVenue { get; set; }
         public List<PublicationMetric> hasMetric { get; set; }
+        public bool? openAccess { get; set; }
+        public string volume { get; set; }
     }
     public class FreetextKeywords
     {

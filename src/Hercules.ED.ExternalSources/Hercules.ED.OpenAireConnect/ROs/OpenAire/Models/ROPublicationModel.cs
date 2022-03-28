@@ -20,6 +20,8 @@ namespace OpenAireConnect.ROs.OpenAire.Models
         public List<string> IDs { get; set; }
         public Source hasPublicationVenue { get; set; }
         public List<PublicationMetric> hasMetric { get; set; }
+        public bool? openAccess { get; set; }
+        public string volume { get; set; }
     }
     public class FreetextKeywords
     {
@@ -41,7 +43,7 @@ namespace OpenAireConnect.ROs.OpenAire.Models
         public string type { get; set; }
         public List<string> issn { get; set; }
         public string name { get; set; }
-        public string eissn { get; set; }
+        public string eissn { get; set; }       
 
     }
     public class Person

@@ -53,6 +53,8 @@ namespace WoSConnect.ROs.WoS.Controllers
             publicacionFinal.correspondingAuthor = publicacionFinal.seqOfAuthors[0];
             publicacionFinal.hasPublicationVenue = getJournal(pPublicacionIn);
             publicacionFinal.hasMetric = getPublicationMetric(pPublicacionIn);
+            publicacionFinal.openAccess = getOpenAccess(pPublicacionIn);
+            publicacionFinal.volume = getVolume(pPublicacionIn);
 
             return publicacionFinal;
         }
@@ -76,10 +78,6 @@ namespace WoSConnect.ROs.WoS.Controllers
                                 {
                                     try
                                     {
-                                        if (rec.UID == "WOS:000224385500052")
-                                        {
-
-                                        }
                                         Publication publicacion = cambioDeModeloPublicacion(rec, true);
 
                                         if (publicacion != null)
@@ -124,6 +122,8 @@ namespace WoSConnect.ROs.WoS.Controllers
             publicacion.correspondingAuthor = publicacion.seqOfAuthors[0];
             publicacion.hasPublicationVenue = getJournal(objInicial);
             publicacion.hasMetric = getPublicationMetric(objInicial);
+            publicacion.openAccess = getOpenAccess(objInicial);
+            publicacion.volume = getVolume(objInicial);
             if (publicacion.typeOfPublication == CHAPTER)
             {
                 publicacion.doi = null;
@@ -639,6 +639,39 @@ namespace WoSConnect.ROs.WoS.Controllers
                 listaMetricas.Add(metrica);
 
                 return listaMetricas;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Obtiene si es Open Access o no.
+        /// </summary>
+        /// <param name="pPublicacionIn"></param>
+        /// <returns></returns>
+        public bool? getOpenAccess(PublicacionInicial pPublicacionIn)
+        {
+            if (pPublicacionIn.static_data != null && pPublicacionIn.static_data.summary != null & pPublicacionIn.static_data.summary.pub_info != null && !string.IsNullOrEmpty(pPublicacionIn.static_data.summary.pub_info.journal_oas_gold))
+            {
+                if(pPublicacionIn.static_data.summary.pub_info.journal_oas_gold == "S")
+                {
+                    return true;
+                }
+
+                if (pPublicacionIn.static_data.summary.pub_info.journal_oas_gold == "N")
+                {
+                    return false;
+                }
+            }
+
+            return null;
+        }
+
+        public string getVolume(PublicacionInicial pPublicacionIn)
+        {
+            if (pPublicacionIn.static_data != null && pPublicacionIn.static_data.summary != null & pPublicacionIn.static_data.summary.pub_info != null && !string.IsNullOrEmpty(pPublicacionIn.static_data.summary.pub_info.vol))
+            {
+                return pPublicacionIn.static_data.summary.pub_info.vol;
             }
 
             return null;
