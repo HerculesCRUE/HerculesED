@@ -1939,8 +1939,42 @@ namespace Hercules.ED.DisambiguationEngine.Models
             //Almacenamos los scores de cada una de las palabras
             List<float> scores = new List<float>();
 
-            string[] pFirmaNormalizadoSplit = pSource.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
-            string[] pTargetNormalizadoSplit = pTarget.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+            string[] pFirmaNormalizadoSplitAux = pSource.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+            string[] pTargetNormalizadoSplitAux = pTarget.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+
+            List<string> pFirmaNormalizadoSplitAux2 = new List<string>();
+            List<string> pTargetNormalizadoSplitAux2 = new List<string>();
+
+            foreach (string word in pFirmaNormalizadoSplitAux)
+            {
+                if(word.Length==2)
+                {
+                    pFirmaNormalizadoSplitAux2.Add(word[0].ToString());
+                    pFirmaNormalizadoSplitAux2.Add(word[1].ToString());
+                }
+                else
+                {
+                    pFirmaNormalizadoSplitAux2.Add(word);
+                }
+            }
+
+            foreach (string word in pTargetNormalizadoSplitAux)
+            {
+                if (word.Length == 2)
+                {
+                    pTargetNormalizadoSplitAux2.Add(word[0].ToString());
+                    pTargetNormalizadoSplitAux2.Add(word[1].ToString());
+                }
+                else
+                {
+                    pTargetNormalizadoSplitAux2.Add(word);
+                }
+            }
+
+            string[] pFirmaNormalizadoSplit = pFirmaNormalizadoSplitAux2.ToArray();
+            string[] pTargetNormalizadoSplit = pTargetNormalizadoSplitAux2.ToArray();
+
+
 
             string[] source = pFirmaNormalizadoSplit;
             string[] target = pTargetNormalizadoSplit;
