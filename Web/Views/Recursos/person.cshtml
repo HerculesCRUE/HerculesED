@@ -406,7 +406,7 @@
                                 <div class="bloque">
                                     <div class="label">@Html.Translate("AREAS_TEMATICAS")</div>
                                     @{
-                                        if (pPerson.Roh_themedAreasNumber != null && pPerson.Roh_themedAreasNumber > 0 && !string.IsNullOrEmpty(pPerson.GNOSSID))
+                                        if (pPerson.Roh_themedAreasNumber != null && && !string.IsNullOrEmpty(pPerson.GNOSSID))
                                         {
                                             <div about="@pPerson.GNOSSID" property="@pPerson.GetPropertyURI(nameof(pPerson.Roh_themedAreasNumber))" class="data">@pPerson.Roh_themedAreasNumber</div>
                                         }
