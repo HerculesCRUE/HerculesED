@@ -330,12 +330,12 @@ namespace OpenAireConnect.ROs.OpenAire.Controllers
 
             if (pPublicacionIn.metadata != null && pPublicacionIn.metadata.OafEntity != null && pPublicacionIn.metadata.OafEntity.OafResult != null && pPublicacionIn.metadata.OafEntity.OafResult.relevantdate != null)
             {
-                foreach (Title item in pPublicacionIn.metadata.OafEntity.OafResult.relevantdate)
+                foreach (Relevantdate item in pPublicacionIn.metadata.OafEntity.OafResult.relevantdate)
                 {
                     if (item.Classname == "created")
                     {
                         DateTimeValue date = new DateTimeValue();
-                        date.datimeTime = item.Text;
+                        date.datimeTime = item.date;
                         return date;
                     }
                 }

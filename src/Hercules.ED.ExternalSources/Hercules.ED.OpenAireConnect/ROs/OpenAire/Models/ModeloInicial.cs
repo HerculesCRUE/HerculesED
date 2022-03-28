@@ -5,27 +5,26 @@ using OpenAireConnect.ROs.OpenAire.Controllers;
 
 namespace OpenAireConnect.ROs.OpenAire.Models.Inicial
 {
-   
+
     public class Header
     {
         //public string query { get; set; }
-       // public string locale { get; set; }
+        //public string locale { get; set; }
         public Total size { get; set; }
         public Total page { get; set; }
         public Total total { get; set; }
-        //public Fields fields { get; set; }
 
-        // [JsonProperty("-xmlns:xsi")]
-        // public string XmlnsXsi { get; set; }
+        [JsonProperty("-xmlns:xsi")]
+        public string XmlnsXsi { get; set; }
 
-        // [JsonProperty("dri:objIdentifier")]
-        // public string DriObjIdentifier { get; set; }
+        [JsonProperty("dri:objIdentifier")]
+        public object DriObjIdentifier { get; set; }
 
-        // [JsonProperty("dri:dateOfCollection")]
-        // public object DriDateOfCollection { get; set; }
+        [JsonProperty("dri:dateOfCollection")]
+        public object DriDateOfCollection { get; set; }
 
-        // [JsonProperty("dri:dateOfTransformation")]
-        // public object DriDateOfTransformation { get; set; }
+        [JsonProperty("dri:dateOfTransformation")]
+        public object DriDateOfTransformation { get; set; }
     }
 
     public class Bestaccessright
@@ -79,9 +78,9 @@ namespace OpenAireConnect.ROs.OpenAire.Models.Inicial
         public string Text { get; set; }
     }
 
-   public class Total
+    public class Total
     {
-       
+
         [JsonProperty("$")]
         public string Text { get; set; }
     }
@@ -93,8 +92,8 @@ namespace OpenAireConnect.ROs.OpenAire.Models.Inicial
         [JsonProperty("@classname")]
         public string Classname { get; set; }
 
-        
-		
+
+
     }
 
     public class Resulttype
@@ -142,15 +141,6 @@ namespace OpenAireConnect.ROs.OpenAire.Models.Inicial
         public string Schemename { get; set; }
     }
 
-    public class Datainfo
-    {
-        public string inferred { get; set; }
-        public string deletedbyinference { get; set; }
-        public string trust { get; set; }
-        public string inferenceprovenance { get; set; }
-        public Provenanceaction provenanceaction { get; set; }
-    }
-
     public class Rels
     {
         public object rel { get; set; }
@@ -164,20 +154,20 @@ namespace OpenAireConnect.ROs.OpenAire.Models.Inicial
         [JsonProperty("@classname")]
         public string Classname { get; set; }
 
-        // [JsonProperty("-schemeid")]
-        // public string Schemeid { get; set; }
+        [JsonProperty("-schemeid")]
+        public string Schemeid { get; set; }
 
-        // [JsonProperty("-schemename")]
-        // public string Schemename { get; set; }
+        [JsonProperty("-schemename")]
+        public string Schemename { get; set; }
 
-        // [JsonProperty("-inferred")]
-        // public string Inferred { get; set; }
+        [JsonProperty("-inferred")]
+        public string Inferred { get; set; }
 
-        // [JsonProperty("-provenanceaction")]
-        // public string Provenanceaction { get; set; }
+        [JsonProperty("-provenanceaction")]
+        public string Provenanceaction { get; set; }
 
-        // [JsonProperty("-trust")]
-        // public string Trust { get; set; }
+        [JsonProperty("-trust")]
+        public string Trust { get; set; }
 
         [JsonProperty("$")]
         public string Text { get; set; }
@@ -185,19 +175,6 @@ namespace OpenAireConnect.ROs.OpenAire.Models.Inicial
 
     public class Result2
     {
-     //   [JsonProperty("-objidentifier")]
-     //   public string Objidentifier { get; set; }
-        public string publisher { get; set; }
-        public Title title { get; set; }
-     //   public object collectedfrom { get; set; }
-      //  public string dateofacceptance { get; set; }
-      [JsonConverter(typeof(SingleOrArrayConverter<Title>))]
-
-        public List<Title>  pid { get; set; }
-
-        //[JsonProperty("-xmlns:dri")]
-       // public string XmlnsDri { get; set; }
-        //public Header header { get; set; }
         public Metadata metadata { get; set; }
     }
 
@@ -224,48 +201,58 @@ namespace OpenAireConnect.ROs.OpenAire.Models.Inicial
 
     public class OafResult
     {
-     //   public object collectedfrom { get; set; }
-      //  public List<string> originalId { get; set; }
-       [JsonConverter(typeof(SingleOrArrayConverter<Title>))]
+        [JsonConverter(typeof(SingleOrArrayConverter<Title>))]
+        public List<Title> pid { get; set; }
 
-        public List<Title>  pid { get; set; }
-               [JsonConverter(typeof(SingleOrArrayConverter<Title>))]
-
+        [JsonConverter(typeof(SingleOrArrayConverter<Title>))]
         public List<Title> title { get; set; }
-//        public Bestaccessright bestaccessright { get; set; }
-[JsonConverter(typeof(SingleOrArrayConverter<Creator>))]
+
+        [JsonConverter(typeof(SingleOrArrayConverter<Creator>))]
         public List<Creator> creator { get; set; }
-        public Dateofacceptance dateofacceptance { get; set; }
+
         [JsonConverter(typeof(SingleOrArrayConverter<Descripton>))]
         public List<Descripton> description { get; set; }
+
+        [JsonConverter(typeof(SingleOrArrayConverter<Subject>))]
         public List<Subject> subject { get; set; }
+
         public Language language { get; set; }
-        [JsonConverter(typeof(SingleOrArrayConverter<Title>))]
-        public List<Title> relevantdate { get; set; }
-        //        [JsonConverter(typeof(SingleOrArrayConverter<string>))]
-        public object publisher { get; set; }
-        public object source { get; set; }
-       // public string format { get; set; }
-        public Resulttype resulttype { get; set; }
+
+        [JsonConverter(typeof(SingleOrArrayConverter<Relevantdate>))]
+        public List<Relevantdate> relevantdate { get; set; }
+
         public Resourcetype resourcetype { get; set; }
-        
+
         public Journal journal { get; set; }
-        // public object context { get; set; }
-        // public Datainfo datainfo { get; set; }
-        // public Rels rels { get; set; }
-        // public Children children { get; set; }
-        // public Country country { get; set; }
     }
 
-     public class Dateofacceptance
+    public class Relevantdate
     {
+        [JsonProperty("@classid")]
+        public string Classid { get; set; }
+
+        [JsonProperty("@classname")]
+        public string Classname { get; set; }
+
+        [JsonProperty("@schemeid")]
+        public string Schemeid { get; set; }
+
+        [JsonProperty("@schemename")]
+        public string Schemename { get; set; }
+
         [JsonProperty("$")]
-        public string  date { get; set; }
+        public string date { get; set; }
     }
-     public class Descripton
+
+    public class Dateofacceptance
     {
         [JsonProperty("$")]
-        public string  descripton { get; set; }
+        public string date { get; set; }
+    }
+    public class Descripton
+    {
+        [JsonProperty("$")]
+        public string descripton { get; set; }
     }
 
     public class Id
@@ -308,7 +295,7 @@ namespace OpenAireConnect.ROs.OpenAire.Models.Inicial
         public string Trust { get; set; }
         public Citations citations { get; set; }
     }
-        public class Journal
+    public class Journal
     {
         [JsonProperty("@eissn")]
         public string Eissn { get; set; }
@@ -325,24 +312,14 @@ namespace OpenAireConnect.ROs.OpenAire.Models.Inicial
         [JsonProperty("@vol")]
         public string Vol { get; set; }
 
-     [JsonProperty("$")]
+        [JsonProperty("$")]
         public string Text { get; set; }
     }
 
     public class OafEntity
     {
-        // [JsonProperty("-xmlns:oaf")]
-        // public string XmlnsOaf { get; set; }
-
-        // [JsonProperty("-xmlns:xsi")]
-        // public string XmlnsXsi { get; set; }
-
-        // [JsonProperty("-xsi:schemaLocation")]
-        // public string XsiSchemaLocation { get; set; }
-
         [JsonProperty("oaf:result")]
         public OafResult OafResult { get; set; }
-        //public ExtraInfo extraInfo { get; set; }
     }
 
     public class Metadata
@@ -356,11 +333,11 @@ namespace OpenAireConnect.ROs.OpenAire.Models.Inicial
         public List<Result2> result { get; set; }
     }
 
-   
+
 
     public class Response
     {
-      public Header header { get; set; }
+        public Header header { get; set; }
         public Results results { get; set; }
     }
 
