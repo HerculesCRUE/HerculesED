@@ -1145,7 +1145,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             }
 
             //Si el tipo de soporte es distinto a revista, añado los datos
-            if(!item.GetStringPorIDCampo("060.010.010.070").Equals("057"))
+            if(item.GetStringPorIDCampo("060.010.010.070")!=null && !item.GetStringPorIDCampo("060.010.010.070").Equals("057"))
             {
                 entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                     new Property(Variables.ActividadCientificaTecnologica.pubDocumentosTipoSoporte, item.GetFormatoDocumentoPorIDCampo("060.010.010.070")),
