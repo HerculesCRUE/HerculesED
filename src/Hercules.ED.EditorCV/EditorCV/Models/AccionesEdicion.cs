@@ -34,12 +34,12 @@ namespace GuardadoCV.Models
 
         private static Tuple<Dictionary<string, string>, Dictionary<string, string>> tuplaTesauro;
 
-        private static Dictionary<string,Dictionary<string,Dictionary<string,string>>> dicAutocompletar=new Dictionary<string, Dictionary<string, Dictionary<string, string>>>();
+        private static Dictionary<string, Dictionary<string, Dictionary<string, string>>> dicAutocompletar = new Dictionary<string, Dictionary<string, Dictionary<string, string>>>();
         private static Dictionary<string, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>>> dicCombos = new Dictionary<string, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>>>();
         private static Dictionary<string, List<ThesaurusItem>> dicTesauros = new Dictionary<string, List<ThesaurusItem>>();
 
 
-        
+
 
 
         #region Métodos públicos
@@ -55,11 +55,11 @@ namespace GuardadoCV.Models
         /// <param name="pLang">Idioma</param>
         /// <param name="pCache">Indica si hay que cachear</param>
         /// <returns></returns>
-        public object GetAutocomplete(string pSearch, string pProperty, string pRdfType, string pGraph, bool pGetEntityID, List<string> pLista,string pLang,bool pCache)
+        public object GetAutocomplete(string pSearch, string pProperty, string pRdfType, string pGraph, bool pGetEntityID, List<string> pLista, string pLang, bool pCache)
         {
             int numMax = 20;
             string searchText = pSearch.Trim();
-            if(pCache)
+            if (pCache)
             {
 
                 Dictionary<string, string> dicBuscar = new Dictionary<string, string>();
@@ -107,12 +107,12 @@ namespace GuardadoCV.Models
                 searchText = UtilityCV.NormalizeText(searchText);
                 if (!pGetEntityID)
                 {
-                    var resultados = dicBuscar.Values.Where(x=> UtilityCV.NormalizeText(x).Contains(searchText)).Distinct();
+                    var resultados = dicBuscar.Values.Where(x => UtilityCV.NormalizeText(x).Contains(searchText)).Distinct();
                     if (pLista != null)
                     {
                         resultados = resultados.Except(pLista, StringComparer.OrdinalIgnoreCase);
                     }
-                    if(resultados.Count()> numMax)
+                    if (resultados.Count() > numMax)
                     {
                         resultados = resultados.ToList().GetRange(0, numMax);
                     }
@@ -125,7 +125,7 @@ namespace GuardadoCV.Models
                     foreach (KeyValuePair<string, string> fila in dicBuscar.Where(x => UtilityCV.NormalizeText(x.Value).Contains(searchText)))
                     {
                         i++;
-                        if(i>numMax)
+                        if (i > numMax)
                         {
                             break;
                         }
@@ -138,8 +138,9 @@ namespace GuardadoCV.Models
                     }
                     return respuesta;
                 }
-            }else
-            {                
+            }
+            else
+            {
                 string filter = "";
                 if (!pSearch.EndsWith(' '))
                 {
@@ -574,17 +575,47 @@ namespace GuardadoCV.Models
             string texto = Disambiguation.ObtenerTextosNombresNormalizados(firma);
             string[] wordsTexto = texto.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
 
+
             if (wordsTexto.Length > 0)
             {
                 #region Buscamos en nombres
                 {
                     List<string> unions = new List<string>();
-                    foreach (string word in wordsTexto)
+                    foreach (string wordOut in wordsTexto)
                     {
-                        StringBuilder sbUnion = new StringBuilder();
-                        sbUnion.AppendLine("   ?personID <http://xmlns.com/foaf/0.1/name> ?name.");
-                        sbUnion.AppendLine($@" ?name bif:contains ""'{word}'"" BIND({word.Length} as ?num)");
-                        unions.Add(sbUnion.ToString());
+                        List<string> words = new List<string>();
+                        if(wordOut.Length==2)
+                        {
+                            words.Add(wordOut[0].ToString());
+                            words.Add(wordOut[1].ToString());
+                        }
+                        else
+                        {
+                            words.Add(wordOut);
+                        }
+
+                        foreach (string word in words)
+                        {
+                            int score = 1;
+                            if (word.Length > 1)
+                            {
+                                score = 5;
+                            }
+                            if (score == 1)
+                            {
+                                StringBuilder sbUnion = new StringBuilder();
+                                sbUnion.AppendLine("				?personID <http://xmlns.com/foaf/0.1/name> ?name.");
+                                sbUnion.AppendLine($@"				{{  FILTER(lcase(?name) like'{word}%').}} UNION  {{  FILTER(lcase(?name) like'% {word}%').}}  BIND({score} as ?num)  ");
+                                unions.Add(sbUnion.ToString());
+                            }
+                            else
+                            {
+                                StringBuilder sbUnion = new StringBuilder();
+                                sbUnion.AppendLine("				?personID <http://xmlns.com/foaf/0.1/name> ?name.");
+                                sbUnion.AppendLine($@"				?name bif:contains ""'{word}'"" BIND({score} as ?num) ");
+                                unions.Add(sbUnion.ToString());
+                            }
+                        }
                     }
 
                     string select = $@"select distinct ?signature ?personID ?ORCID ?name ?num ?departamento from <{mResourceApi.GraphsUrl}person.owl> from <{mResourceApi.GraphsUrl}department.owl>";
@@ -611,7 +642,7 @@ namespace GuardadoCV.Models
                                     ?personID <http://vivoweb.org/ontology/core#departmentOrSchool> ?depID.
                                     ?depID <http://purl.org/dc/elements/1.1/title> ?departamento.
                                 }}
-                            }}order by desc (?num)limit 1000";
+                            }}order by desc (?num)limit 500";
                     SparqlObject sparqlObject = mResourceApi.VirtuosoQuery(select, where, "document");
                     foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings)
                     {
@@ -1021,12 +1052,12 @@ namespace GuardadoCV.Models
                 {
                     string id = idCV.results.bindings[0]["s"].value;
                     Dictionary<string, List<MultilangProperty>> multilangData = UtilityCV.GetMultilangPropertiesCV(id, pId);
-                    foreach(string prop in multilangData.Keys)
+                    foreach (string prop in multilangData.Keys)
                     {
                         foreach (MultilangProperty multilangProperty in multilangData[prop])
                         {
                             Dictionary<string, SparqlObject.Data> filaAux = new Dictionary<string, Data>();
-                            filaAux.Add("s", new Data() { value = pId,type="uri" });
+                            filaAux.Add("s", new Data() { value = pId, type = "uri" });
                             filaAux.Add("p", new Data() { value = prop, type = "uri" });
                             filaAux.Add("o", new Data() { value = multilangProperty.value, type = "literal" });
                             filaAux.Add("lang", new Data() { value = multilangProperty.lang, type = "literal" });
@@ -1080,7 +1111,7 @@ namespace GuardadoCV.Models
             }
 
             List<string> listaTesaurosConfig = GetEditThesaurus(pPresentationEdit.sections.SelectMany(x => x.rows).SelectMany(x => x.properties).ToList());
-            Dictionary<string, List<ThesaurusItem>> tesauros = GetTesauros(listaTesaurosConfig,pLang);
+            Dictionary<string, List<ThesaurusItem>> tesauros = GetTesauros(listaTesaurosConfig, pLang);
 
             EntityEdit entityEdit = new EntityEdit()
             {
@@ -1379,10 +1410,10 @@ namespace GuardadoCV.Models
                     {
                         entityEditSectionRowProperty.values.Add(value);
                     }
-                    if(pItemEditSectionRowProperty.multilang)
+                    if (pItemEditSectionRowProperty.multilang)
                     {
                         entityEditSectionRowProperty.valuesmultilang = new Dictionary<string, string>();
-                        foreach (Dictionary<string,SparqlObject.Data> fila in pData[pId].Where(x => x["p"].value == entityEditSectionRowProperty.property && x.ContainsKey("lang")))
+                        foreach (Dictionary<string, SparqlObject.Data> fila in pData[pId].Where(x => x["p"].value == entityEditSectionRowProperty.property && x.ContainsKey("lang")))
                         {
                             entityEditSectionRowProperty.valuesmultilang[fila["lang"].value] = fila["o"].value;
                         }
@@ -1629,7 +1660,7 @@ namespace GuardadoCV.Models
 
         #region Métodos de recolección de datos
 
-        private Dictionary<string, List<ThesaurusItem>> GetTesauros(List<string> pListaTesauros,string pLang)
+        private Dictionary<string, List<ThesaurusItem>> GetTesauros(List<string> pListaTesauros, string pLang)
         {
             Dictionary<string, List<ThesaurusItem>> elementosTesauros = new Dictionary<string, List<ThesaurusItem>>();
             foreach (string tesauro in pListaTesauros)
@@ -1678,7 +1709,7 @@ namespace GuardadoCV.Models
             string claveCombos = $@"{pItemEditSectionRowPropertyCombo.property.property} {pItemEditSectionRowPropertyCombo.property.graph} {pItemEditSectionRowPropertyCombo.property.property} {pItemEditSectionRowPropertyCombo.rdftype} {pItemEditSectionRowPropertyCombo.graph} {pLang}";
             if (pItemEditSectionRowPropertyCombo.filter != null)
             {
-                
+
                 claveCombos += $@"{pItemEditSectionRowPropertyCombo.filter.property} {pItemEditSectionRowPropertyCombo.filter.value}";
             }
             if (pItemEditSectionRowPropertyCombo.cache && dicCombos.ContainsKey(claveCombos))
