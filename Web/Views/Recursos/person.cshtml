@@ -522,13 +522,15 @@
                     </div>
 
                     <div class="tab-pane fade" id="otros-panel" role="tabpanel" aria-labelledby="otros-tab">
-                        <div class="row">
+                        <div class="row" id="contenedorBuscadorResearchObjects">
                             <div class="col col-12 col-section-title font-weight-bold">
                                 <div class="wrapCol">
+                                    <p></p>
                                 </div>
-                            </div>
-                            <div class="col col-12 col-chart">
-                                <div class="wrapCol">
+                            </div>                        
+                            <div class="col col-12 col-section-title font-weight-bold searcherTitle">
+                                <div class="wrapCol">                                    
+                                    <p>@Html.Translate("LISTADO_RESEARCHOBJECTS")</p>
                                 </div>
                             </div>
                         </div>
@@ -1039,6 +1041,11 @@
                 e.preventDefault();
                 that.tabActive = "proyectos";
                 buscadorPersonalizado.init("Proyectos", "#contenedorBuscadorProyectos", "searchProyectosPublicosPerson=http://gnoss/@pPerson.GNOSSID.Split('_')[1].ToUpper()", "", "rdf:type=project", "@Comunidad.Url", "@Comunidad.Key.ToString()");
+            });
+			$('#otros-tab').unbind().click(function (e) {
+                e.preventDefault();
+                that.tabActive = "researchobjects";
+                buscadorPersonalizado.init("@Html.Translate("OTROS_RESULTADOS")", "#contenedorBuscadorResearchObjects", "searchResearchObjectsPublicosPerson=http://gnoss/@pPerson.GNOSSID.Split('_')[1].ToUpper()", "dct:issued", "rdf:type=researchobject", "@Comunidad.Url", "@Comunidad.Key.ToString()");
             });
             $('#topics-tab').unbind().click(function (e) {
                 e.preventDefault();
