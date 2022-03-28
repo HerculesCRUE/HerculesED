@@ -192,14 +192,14 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
             //Divido la lista en listas de 10 elementos
             List<List<string>> listaListaNombres = UtilitySecciones.SplitList(listaNombres.ToList(), 10).ToList();
 
-             Parallel.ForEach(listaListaNombres, new ParallelOptions { MaxDegreeOfParallelism = 5 }, firma =>
-            {
-                Dictionary<string, List<Persona>> personasBBDD = Utility.ObtenerPersonasFirma(pResourceApi, firma);
-                foreach(KeyValuePair<string, List<Persona>> valuePair in personasBBDD)
-                {
-                    listaPersonasAux[valuePair.Key.Trim()] = valuePair.Value;
-                }
-            });
+            Parallel.ForEach(listaListaNombres, new ParallelOptions { MaxDegreeOfParallelism = 5 }, firma =>
+           {
+               Dictionary<string, List<Persona>> personasBBDD = Utility.ObtenerPersonasFirma(pResourceApi, firma);
+               foreach (KeyValuePair<string, List<Persona>> valuePair in personasBBDD)
+               {
+                   listaPersonasAux[valuePair.Key.Trim()] = valuePair.Value;
+               }
+           });
 
             //Divido la lista en listas de 1.000 elementos
             List<List<string>> listaListasIdPersonas = UtilitySecciones.SplitList(listaPersonasAux.SelectMany(x => x.Value).Select(x => x.personid).ToList(), 1000).ToList();
@@ -231,10 +231,10 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                     foreach (string autorIn in autores)
                     {
                         List<Persona> personas = listaPersonasAux.SelectMany(x => x.Value).Where(x => x.personid == autorIn).ToList();
-                        foreach(Persona persona in personas)
+                        foreach (Persona persona in personas)
                         {
                             persona.documentos.Add(doc);
-                            persona.coautores.UnionWith(autores.Except(new List<string>() {persona.personid }));
+                            persona.coautores.UnionWith(autores.Except(new List<string>() { persona.personid }));
                         }
                     }
 
@@ -244,22 +244,15 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
             //Añado los autores de BBDD para la desambiguación
             for (int i = 0; i < listaPersonasAux.Count; i++)
             {
-                Persona persona = new Persona
+                foreach (Persona persona in listaPersonasAux.ElementAt(i).Value)
                 {
-                    nombreCompleto = listaPersonasAux.ElementAt(i).Value.Select(x => x.nombreCompleto).FirstOrDefault(),
-                    firma = listaPersonasAux.ElementAt(i).Value.Select(x => x.firma).FirstOrDefault(),
-                    coautores = listaPersonasAux.ElementAt(i).Value.Select(x => x.coautores).FirstOrDefault(),
-                    documentos = listaPersonasAux.ElementAt(i).Value.Select(x => x.documentos).FirstOrDefault(),
-
-                    ID = listaPersonasAux.ElementAt(i).Value.Select(x => x.personid).FirstOrDefault()
-                };
-                if (string.IsNullOrEmpty(persona.nombreCompleto) && string.IsNullOrEmpty(persona.firma)) { continue; }
-
-                resultados[persona.ID] = persona;
+                    persona.ID = persona.personid;
+                    resultados[persona.ID] = persona;
+                }
             }
 
             return resultados;
         }
-        
+
     }
 }

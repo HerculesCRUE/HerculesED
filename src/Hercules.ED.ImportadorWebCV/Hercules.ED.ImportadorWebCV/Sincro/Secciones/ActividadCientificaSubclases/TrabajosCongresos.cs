@@ -16,7 +16,7 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
     {
         public string titulo { get; set; }
         public string fecha { get; set; }
-        private HashSet<string> autores { get; set; }
+        public HashSet<string> autores { get; set; }
 
         private static readonly DisambiguationDataConfig configTitulo = new DisambiguationDataConfig()
         {
@@ -186,18 +186,11 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
             //Añado los autores de BBDD para la desambiguación
             for (int i = 0; i < listaPersonasAux.Count; i++)
             {
-                Persona persona = new Persona
+                foreach(Persona persona in listaPersonasAux.ElementAt(i).Value)
                 {
-                    nombreCompleto = listaPersonasAux.ElementAt(i).Value.Select(x => x.nombreCompleto).FirstOrDefault(),
-                    firma = listaPersonasAux.ElementAt(i).Value.Select(x => x.firma).FirstOrDefault(),
-                    coautores = listaPersonasAux.ElementAt(i).Value.Select(x => x.coautores).FirstOrDefault(),
-                    documentos = listaPersonasAux.ElementAt(i).Value.Select(x => x.documentos).FirstOrDefault(),
-
-                    ID = listaPersonasAux.ElementAt(i).Value.Select(x => x.personid).FirstOrDefault()
-                };
-                if (string.IsNullOrEmpty(persona.nombreCompleto) && string.IsNullOrEmpty(persona.firma)) { continue; }
-
-                resultados[persona.ID] = persona;
+                    persona.ID = persona.personid;
+                    resultados[persona.ID] = persona;
+                }
             }
 
             return resultados;
