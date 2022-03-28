@@ -1056,7 +1056,7 @@
             $('#colaboraciones-tab').unbind().click(function (e) {
                 e.preventDefault();
                 that.tabActive = "colaboradores";
-                buscadorPersonalizado.init("Colaboradores", "#contenedorBuscadorColaboradores", "searchColaboradoresPorPersona=@pPerson.GNOSSID.Split('_')[1].ToUpper()", "", "rdf:type=person", "@Comunidad.Url", "@Comunidad.Key.ToString()");
+                buscadorPersonalizado.init("Colaboradores", "#contenedorBuscadorColaboradores", "searchColaboradoresPersonPublic=http://gnoss/@pPerson.GNOSSID.Split('_')[1].ToUpper()", "", "rdf:type=person", "@Comunidad.Url", "@Comunidad.Key.ToString()");
             });
             return;
         }
