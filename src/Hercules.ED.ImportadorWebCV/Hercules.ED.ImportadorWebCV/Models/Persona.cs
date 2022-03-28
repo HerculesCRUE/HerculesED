@@ -45,12 +45,61 @@ namespace Hercules.ED.ImportadorWebCV.Models
             }
         }
         
+        private string mOrganizacion { get; set; }
+        public string organizacion {
+            get
+            {
+                return mOrganizacion;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    mOrganizacion = "";
+                }
+                else
+                {
+                    mOrganizacion = value;
+                }
+            }
+        }
+        private string mDepartamento { get; set; }
+        public string departamento {
+            get
+            {
+                return mDepartamento;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    mDepartamento = "";
+                }
+                else
+                {
+                    mDepartamento = value;
+                }
+            }
+        }
+
         private static readonly DisambiguationDataConfig configName = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.algoritmoNombres,
             score = 1f
         };
         private static readonly DisambiguationDataConfig configCoautores = new DisambiguationDataConfig()
+        {
+            type = DisambiguationDataConfigType.equalsItemList,
+            score = 0.5f
+        };
+
+        private static readonly DisambiguationDataConfig configOrganizacion = new DisambiguationDataConfig()
+        {
+            type = DisambiguationDataConfigType.equalsItemList,
+            score = 0.5f
+        };
+
+        private static readonly DisambiguationDataConfig configDepartamento = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsItemList,
             score = 0.5f
@@ -145,6 +194,20 @@ namespace Hercules.ED.ImportadorWebCV.Models
                     property = "coautores",
                     config = configCoautores,
                     values = coautores
+                },
+
+                new DisambiguationData()
+                {
+                    property = "organizacion",
+                    config = configOrganizacion,
+                    value = organizacion
+                },
+
+                new DisambiguationData()
+                {
+                    property = "departamento",
+                    config = configDepartamento,
+                    value = departamento
                 }
             };
 

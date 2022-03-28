@@ -14,10 +14,12 @@ namespace ImportadorWebCV.Sincro.Secciones
     class ActividadCientificaTecnologica : SeccionBase
     {
         private List<CvnItemBean> listadoDatos = new List<CvnItemBean>();
+        private List<CvnItemBean> listadoSituacionProfesional = new List<CvnItemBean>();
         private readonly string RdfTypeTab = "http://w3id.org/roh/ScientificActivity";
         public ActividadCientificaTecnologica(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
             listadoDatos = mCvn.GetListadoBloque("060");
+            listadoSituacionProfesional = mCvn.GetListadoBloque("010");
         }
 
         /// <summary>
@@ -104,7 +106,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             string rdfTypePrefix = "RelatedScientificPublication";
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetPublicacionesDocumentos(listadoDatos);
+            List<Entity> listadoAux = GetPublicacionesDocumentos(listadoDatos, listadoSituacionProfesional);
 
             Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
             foreach (Entity entityXML in listadoAux)
@@ -133,6 +135,8 @@ namespace ImportadorWebCV.Sincro.Secciones
                     }
                     persona.coautores = new HashSet<string>(listadoAux[i].autores.Select(x => x.ID).Where(x => x != persona.ID));
                     persona.documentos = new HashSet<string>() { listadoAux[i].id };
+                    persona.organizacion = listadoAux[i].autores.Where(x => x.ID.Equals(persona.ID)).Select(x => x.organizacion).FirstOrDefault();
+                    persona.departamento = listadoAux[i].autores.Where(x => x.ID.Equals(persona.ID)).Select(x => x.departamento).FirstOrDefault();
                     entidadesXML[persona.ID] = persona;
                 }
             }
@@ -197,6 +201,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 TrabajosCongresos trabajosCongresos = new TrabajosCongresos();
                 trabajosCongresos.titulo = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.trabajosCongresosTitulo)?.values.FirstOrDefault();
+                trabajosCongresos.autores = new HashSet<string>(entityXML.autores.Select(x => x.ID));
                 trabajosCongresos.ID = entityXML.id;
                 entidadesXML.Add(trabajosCongresos.ID, trabajosCongresos);
             }
@@ -215,6 +220,8 @@ namespace ImportadorWebCV.Sincro.Secciones
                     {
                         continue;
                     }
+                    persona.departamento = listadoAux[i].autores.Where(x=>x.ID.Equals(persona.ID)).Select(x => x.departamento).FirstOrDefault();
+                    persona.organizacion = listadoAux[i].autores.Where(x=>x.ID.Equals(persona.ID)).Select(x => x.organizacion).FirstOrDefault();
                     persona.coautores = new HashSet<string>(listadoAux[i].autores.Select(x => x.ID).Where(x => x != persona.ID));
                     persona.documentos = new HashSet<string>() { listadoAux[i].id };
                     entidadesXML[persona.ID] = persona;
@@ -281,6 +288,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 TrabajosJornadasSeminarios trabajosJornadas = new TrabajosJornadasSeminarios();
                 trabajosJornadas.titulo = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.trabajosJornSemTituloTrabajo)?.values.FirstOrDefault();
+                trabajosJornadas.autores = new HashSet<string>(entityXML.autores.Select(x => x.ID));
                 trabajosJornadas.ID = entityXML.id;
                 entidadesXML.Add(trabajosJornadas.ID, trabajosJornadas);
             }
@@ -299,6 +307,8 @@ namespace ImportadorWebCV.Sincro.Secciones
                     {
                         continue;
                     }
+                    persona.departamento = listadoAux[i].autores.Where(x => x.ID.Equals(persona.ID)).Select(x => x.departamento).FirstOrDefault();
+                    persona.organizacion = listadoAux[i].autores.Where(x => x.ID.Equals(persona.ID)).Select(x => x.organizacion).FirstOrDefault();
                     persona.coautores = new HashSet<string>(listadoAux[i].autores.Select(x => x.ID).Where(x => x != persona.ID));
                     persona.documentos = new HashSet<string>() { listadoAux[i].id };
                     entidadesXML[persona.ID] = persona;
@@ -1059,7 +1069,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="listadoDatos"></param>
         /// <returns></returns>
-        public List<Entity> GetPublicacionesDocumentos(List<CvnItemBean> listadoDatos)
+        public List<Entity> GetPublicacionesDocumentos(List<CvnItemBean> listadoDatos, List<CvnItemBean> listadoSituacionProfesional)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -1101,7 +1111,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                             new Property(Variables.ActividadCientificaTecnologica.pubDocumentosAutorCorrespondencia, item.GetStringBooleanPorIDCampo("060.010.010.390"))
                         ));
                         PublicacionesDocumentosSoporte(item, entidadAux);
-                        PublicacionesDocumentosAutores(item, entidadAux);
+                        PublicacionesDocumentosAutores(item, entidadAux, listadoSituacionProfesional);
                         PublicacionesDocumentosTraducciones(item, entidadAux);
                         PublicacionesDocumentosIDPublicacion(item, entidadAux);
                         PublicacionesDocumentosISBN(item, entidadAux);
@@ -1150,7 +1160,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item">item</param>
         /// <param name="entidadAux">entidadAux</param>
-        private void PublicacionesDocumentosAutores(CvnItemBean item, Entity entidadAux)
+        private void PublicacionesDocumentosAutores(CvnItemBean item, Entity entidadAux, List<CvnItemBean> listadoSituacionProfesional)
         {
             List<CvnItemBeanCvnAuthorBean> listadoAutores = item.GetListaElementosPorIDCampo<CvnItemBeanCvnAuthorBean>("060.010.010.040");
 
@@ -1176,6 +1186,8 @@ namespace ImportadorWebCV.Sincro.Secciones
                 //Si no tiene firma le añado como firma el nombre completo
                 if (string.IsNullOrEmpty(persona.firma)) { persona.firma = persona.nombreCompleto; }
 
+                persona.organizacion = listadoSituacionProfesional.GetElementoPorIDCampo<CvnItemBeanCvnEntityBean>("010.010.000.020").Name;
+                persona.departamento = listadoSituacionProfesional.GetElementoPorIDCampo<CvnItemBeanCvnEntityBean>("010.010.000.060").Name;
                 persona.ID = Guid.NewGuid().ToString();
                 entidadAux.autores.Add(persona);
             }
@@ -1338,6 +1350,8 @@ namespace ImportadorWebCV.Sincro.Secciones
                 //Si no tiene firma le añado como firma el nombre completo
                 if (string.IsNullOrEmpty(persona.firma)) { persona.firma = persona.nombreCompleto; }
 
+                persona.organizacion = listadoSituacionProfesional.GetElementoPorIDCampo<CvnItemBeanCvnEntityBean>("010.010.000.020").Name;
+                persona.departamento = listadoSituacionProfesional.GetElementoPorIDCampo<CvnItemBeanCvnEntityBean>("010.010.000.060").Name;
                 persona.ID = Guid.NewGuid().ToString();
                 entidadAux.autores.Add(persona);
             }
@@ -1523,6 +1537,8 @@ namespace ImportadorWebCV.Sincro.Secciones
                 //Si no tiene firma le añado como firma el nombre completo
                 if (string.IsNullOrEmpty(persona.firma)) { persona.firma = persona.nombreCompleto; }
 
+                persona.organizacion = listadoSituacionProfesional.GetElementoPorIDCampo<CvnItemBeanCvnEntityBean>("010.010.000.020").Name;
+                persona.departamento = listadoSituacionProfesional.GetElementoPorIDCampo<CvnItemBeanCvnEntityBean>("010.010.000.060").Name;
                 persona.ID = Guid.NewGuid().ToString();
                 entidadAux.autores.Add(persona);
             }
