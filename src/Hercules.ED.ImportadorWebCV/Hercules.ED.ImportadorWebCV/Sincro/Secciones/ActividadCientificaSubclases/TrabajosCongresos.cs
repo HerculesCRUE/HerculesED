@@ -186,7 +186,7 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
             //Añado los autores de BBDD para la desambiguación
             for (int i = 0; i < listaPersonasAux.Count; i++)
             {
-                foreach(Persona persona in listaPersonasAux.ElementAt(i).Value)
+                foreach (Persona persona in listaPersonasAux.ElementAt(i).Value)
                 {
                     persona.ID = persona.personid;
                     resultados[persona.ID] = persona;

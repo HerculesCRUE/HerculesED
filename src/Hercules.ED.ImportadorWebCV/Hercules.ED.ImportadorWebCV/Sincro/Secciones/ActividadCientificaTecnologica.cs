@@ -123,6 +123,13 @@ namespace ImportadorWebCV.Sincro.Secciones
                 entidadesXML[idPublicacion].distincts = new HashSet<string>(entidadesXML.Keys.Except(new List<string> { idPublicacion }));
             }
 
+            //Obtenemos Organización, Departamento, Grupos y Publicaciones del propietario del CV.
+            HashSet<string> departamentos = new HashSet<string>();
+            HashSet<string> organizaciones = new HashSet<string>();
+            HashSet<string> grupos = new HashSet<string>();
+            HashSet<string> proComp = new HashSet<string>();
+            HashSet<string> proNoComp = new HashSet<string>();
+            Utility.DatosDesambiguacionAutor(departamentos, organizaciones, grupos, proComp, proNoComp, mCvID);
 
             //Añado los autores del documento para la desambiguación
             for (int i = 0; i < listadoAux.Count; i++)
@@ -133,10 +140,13 @@ namespace ImportadorWebCV.Sincro.Secciones
                     {
                         continue;
                     }
+                    persona.departamento = departamentos;
+                    persona.organizacion = organizaciones;
+                    persona.grupos = grupos;
+                    persona.proyectosComp = proComp;
+                    persona.proyectosNoComp = proNoComp;
                     persona.coautores = new HashSet<string>(listadoAux[i].autores.Select(x => x.ID).Where(x => x != persona.ID));
                     persona.documentos = new HashSet<string>() { listadoAux[i].id };
-                    persona.organizacion = listadoAux[i].autores.Where(x => x.ID.Equals(persona.ID)).Select(x => x.organizacion).FirstOrDefault();
-                    persona.departamento = listadoAux[i].autores.Where(x => x.ID.Equals(persona.ID)).Select(x => x.departamento).FirstOrDefault();
                     entidadesXML[persona.ID] = persona;
                 }
             }
@@ -211,6 +221,14 @@ namespace ImportadorWebCV.Sincro.Secciones
                 entidadesXML[idPublicacion].distincts = new HashSet<string>(entidadesXML.Keys.Except(new List<string> { idPublicacion }));
             }
 
+            //Obtenemos Organización, Departamento, Grupos y Publicaciones del propietario del CV.
+            HashSet<string> departamentos = new HashSet<string>();
+            HashSet<string> organizaciones = new HashSet<string>();
+            HashSet<string> grupos = new HashSet<string>();
+            HashSet<string> proComp = new HashSet<string>();
+            HashSet<string> proNoComp = new HashSet<string>();
+            Utility.DatosDesambiguacionAutor(departamentos, organizaciones, grupos, proComp, proNoComp, mCvID);
+
             //Añado los autores del documento para la desambiguación
             for (int i = 0; i < listadoAux.Count; i++)
             {
@@ -220,8 +238,11 @@ namespace ImportadorWebCV.Sincro.Secciones
                     {
                         continue;
                     }
-                    persona.departamento = listadoAux[i].autores.Where(x=>x.ID.Equals(persona.ID)).Select(x => x.departamento).FirstOrDefault();
-                    persona.organizacion = listadoAux[i].autores.Where(x=>x.ID.Equals(persona.ID)).Select(x => x.organizacion).FirstOrDefault();
+                    persona.departamento = departamentos;
+                    persona.organizacion = organizaciones;
+                    persona.grupos = grupos;
+                    persona.proyectosComp = proComp;
+                    persona.proyectosNoComp = proNoComp;
                     persona.coautores = new HashSet<string>(listadoAux[i].autores.Select(x => x.ID).Where(x => x != persona.ID));
                     persona.documentos = new HashSet<string>() { listadoAux[i].id };
                     entidadesXML[persona.ID] = persona;
@@ -298,6 +319,14 @@ namespace ImportadorWebCV.Sincro.Secciones
                 entidadesXML[idPublicacion].distincts = new HashSet<string>(entidadesXML.Keys.Except(new List<string> { idPublicacion }));
             }
 
+            //Obtenemos Organización, Departamento, Grupos y Publicaciones del propietario del CV.
+            HashSet<string> departamentos = new HashSet<string>();
+            HashSet<string> organizaciones = new HashSet<string>();
+            HashSet<string> grupos = new HashSet<string>();
+            HashSet<string> proComp = new HashSet<string>();
+            HashSet<string> proNoComp = new HashSet<string>();
+            Utility.DatosDesambiguacionAutor(departamentos, organizaciones, grupos, proComp, proNoComp, mCvID);
+
             //Añado los autores del documento para la desambiguación
             for (int i = 0; i < listadoAux.Count; i++)
             {
@@ -307,8 +336,11 @@ namespace ImportadorWebCV.Sincro.Secciones
                     {
                         continue;
                     }
-                    persona.departamento = listadoAux[i].autores.Where(x => x.ID.Equals(persona.ID)).Select(x => x.departamento).FirstOrDefault();
-                    persona.organizacion = listadoAux[i].autores.Where(x => x.ID.Equals(persona.ID)).Select(x => x.organizacion).FirstOrDefault();
+                    persona.departamento = departamentos;
+                    persona.organizacion = organizaciones;
+                    persona.grupos = grupos;
+                    persona.proyectosComp = proComp;
+                    persona.proyectosNoComp = proNoComp;
                     persona.coautores = new HashSet<string>(listadoAux[i].autores.Select(x => x.ID).Where(x => x != persona.ID));
                     persona.documentos = new HashSet<string>() { listadoAux[i].id };
                     entidadesXML[persona.ID] = persona;
@@ -1145,7 +1177,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             }
 
             //Si el tipo de soporte es distinto a revista, añado los datos
-            if(item.GetStringPorIDCampo("060.010.010.070")!=null && !item.GetStringPorIDCampo("060.010.010.070").Equals("057"))
+            if (item.GetStringPorIDCampo("060.010.010.070") != null && !item.GetStringPorIDCampo("060.010.010.070").Equals("057"))
             {
                 entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                     new Property(Variables.ActividadCientificaTecnologica.pubDocumentosTipoSoporte, item.GetFormatoDocumentoPorIDCampo("060.010.010.070")),
@@ -1186,8 +1218,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                 //Si no tiene firma le añado como firma el nombre completo
                 if (string.IsNullOrEmpty(persona.firma)) { persona.firma = persona.nombreCompleto; }
 
-                persona.organizacion = listadoSituacionProfesional.GetElementoPorIDCampo<CvnItemBeanCvnEntityBean>("010.010.000.020").Name;
-                persona.departamento = listadoSituacionProfesional.GetElementoPorIDCampo<CvnItemBeanCvnEntityBean>("010.010.000.060").Name;
                 persona.ID = Guid.NewGuid().ToString();
                 entidadAux.autores.Add(persona);
             }
@@ -1350,8 +1380,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                 //Si no tiene firma le añado como firma el nombre completo
                 if (string.IsNullOrEmpty(persona.firma)) { persona.firma = persona.nombreCompleto; }
 
-                persona.organizacion = listadoSituacionProfesional.GetElementoPorIDCampo<CvnItemBeanCvnEntityBean>("010.010.000.020").Name;
-                persona.departamento = listadoSituacionProfesional.GetElementoPorIDCampo<CvnItemBeanCvnEntityBean>("010.010.000.060").Name;
                 persona.ID = Guid.NewGuid().ToString();
                 entidadAux.autores.Add(persona);
             }
@@ -1537,8 +1565,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                 //Si no tiene firma le añado como firma el nombre completo
                 if (string.IsNullOrEmpty(persona.firma)) { persona.firma = persona.nombreCompleto; }
 
-                persona.organizacion = listadoSituacionProfesional.GetElementoPorIDCampo<CvnItemBeanCvnEntityBean>("010.010.000.020").Name;
-                persona.departamento = listadoSituacionProfesional.GetElementoPorIDCampo<CvnItemBeanCvnEntityBean>("010.010.000.060").Name;
                 persona.ID = Guid.NewGuid().ToString();
                 entidadAux.autores.Add(persona);
             }

@@ -43,10 +43,10 @@ namespace Hercules.ED.ImportadorWebCV.Models
                     mDocumentos = value;
                 }
             }
-        }
+        }        
         
-        private string mOrganizacion { get; set; }
-        public string organizacion {
+        private HashSet<string> mOrganizacion { get; set; }
+        public HashSet<string> organizacion {
             get
             {
                 return mOrganizacion;
@@ -55,7 +55,7 @@ namespace Hercules.ED.ImportadorWebCV.Models
             {
                 if (value == null)
                 {
-                    mOrganizacion = "";
+                    mOrganizacion = new HashSet<string>();
                 }
                 else
                 {
@@ -63,8 +63,8 @@ namespace Hercules.ED.ImportadorWebCV.Models
                 }
             }
         }
-        private string mDepartamento { get; set; }
-        public string departamento {
+        private HashSet<string> mDepartamento { get; set; }
+        public HashSet<string> departamento {
             get
             {
                 return mDepartamento;
@@ -73,11 +73,65 @@ namespace Hercules.ED.ImportadorWebCV.Models
             {
                 if (value == null)
                 {
-                    mDepartamento = "";
+                    mDepartamento = new HashSet<string>();
                 }
                 else
                 {
                     mDepartamento = value;
+                }
+            }
+        }
+        private HashSet<string> mGrupos { get; set; }
+        public HashSet<string> grupos {
+            get
+            {
+                return mGrupos;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    mGrupos = new HashSet<string>();
+                }
+                else
+                {
+                    mGrupos = value;
+                }
+            }
+        }
+        private HashSet<string> mProyectosComp { get; set; }
+        public HashSet<string> proyectosComp{
+            get
+            {
+                return mProyectosComp;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    mProyectosComp = new HashSet<string>();
+                }
+                else
+                {
+                    mProyectosComp = value;
+                }
+            }
+        }
+        private HashSet<string> mProyectosNoComp { get; set; }
+        public HashSet<string> proyectosNoComp {
+            get
+            {
+                return mProyectosNoComp;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    mProyectosNoComp = new HashSet<string>();
+                }
+                else
+                {
+                    mProyectosNoComp = value;
                 }
             }
         }
@@ -96,13 +150,36 @@ namespace Hercules.ED.ImportadorWebCV.Models
         private static readonly DisambiguationDataConfig configOrganizacion = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsItemList,
-            score = 0.5f
+            score = 0.5f,
+            scoreMinus = 0.0f
         };
 
         private static readonly DisambiguationDataConfig configDepartamento = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsItemList,
-            score = 0.5f
+            score = 0.5f,
+            scoreMinus = 0.0f
+        };
+
+        private static readonly DisambiguationDataConfig configGrupos = new DisambiguationDataConfig()
+        {
+            type = DisambiguationDataConfigType.equalsItemList,
+            score = 0.5f,
+            scoreMinus = 0.0f
+        };
+
+        private static readonly DisambiguationDataConfig configProyectosComp = new DisambiguationDataConfig()
+        {
+            type = DisambiguationDataConfigType.equalsItemList,
+            score = 0.5f,
+            scoreMinus = 0.0f
+        };
+
+        private static readonly DisambiguationDataConfig configProyectosNoComp = new DisambiguationDataConfig()
+        {
+            type = DisambiguationDataConfigType.equalsItemList,
+            score = 0.5f,
+            scoreMinus = 0.0f
         };
 
         private static readonly DisambiguationDataConfig configDocumentos = new DisambiguationDataConfig()
@@ -200,14 +277,35 @@ namespace Hercules.ED.ImportadorWebCV.Models
                 {
                     property = "organizacion",
                     config = configOrganizacion,
-                    value = organizacion
+                    values = organizacion
                 },
 
                 new DisambiguationData()
                 {
                     property = "departamento",
                     config = configDepartamento,
-                    value = departamento
+                    values = departamento
+                },
+
+                new DisambiguationData()
+                {
+                    property = "grupos",
+                    config = configGrupos,
+                    values = grupos
+                },
+
+                new DisambiguationData()
+                {
+                    property = "proyectosCompetitivos",
+                    config = configProyectosComp,
+                    values = proyectosComp
+                },
+
+                new DisambiguationData()
+                {
+                    property = "proyectosNoCompetitivos",
+                    config = configProyectosNoComp,
+                    values = proyectosNoComp
                 }
             };
 

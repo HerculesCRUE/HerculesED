@@ -18,6 +18,66 @@ namespace Utils
     public static class Utility
     {
         private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config\configOAuth\OAuthV3.config");
+        public static void DatosDesambiguacionAutor(HashSet<string> departamentos, HashSet<string> organizaciones, HashSet<string> grupos, HashSet<string> proComp, HashSet<string> proNoComp, string pCVID)
+        {
+            //Obtenemos Organización, Departamento, Grupos y Publicaciones del propietario del CV.          
+
+            string selectOD = $@"SELECT distinct ?dep ?org 
+                                group_concat(distinct ?group;separator=""|"") as ?grupos 
+                                group_concat(distinct ?compPro;separator=""|"") as ?comp 
+                                group_concat(distinct ?noCompPro;separator=""|"") as ?noComp
+
+                                from <{mResourceApi.GraphsUrl}scientificexperience.owl> 
+                                from <{mResourceApi.GraphsUrl}position.owl>";
+            string whereOD = $@"where {{
+                                        ?s <http://w3id.org/roh/professionalSituation> ?o . 
+                                        ?o <http://w3id.org/roh/currentProfessionalSituation> ?currentsituation . 
+                                        ?s <http://w3id.org/roh/scientificExperience> ?sci . 
+                                        OPTIONAL{{?sci <http://w3id.org/roh/groups> ?group}} 
+                                        OPTIONAL{{?sci <http://w3id.org/roh/competitiveProjects> ?compPro}} 
+                                        OPTIONAL{{?sci <http://w3id.org/roh/nonCompetitiveProjects> ?noCompPro}} 
+                                        ?currentsituation <http://vivoweb.org/ontology/core#relatedBy> ?related .
+                                        OPTIONAL{{?related <http://w3id.org/roh/employerOrganizationTitle> ?org}}
+                                        OPTIONAL{{?related <http://w3id.org/roh/department> ?dep}}
+                                        FILTER(?s=<{pCVID}>)
+                                    }} ";
+            SparqlObject resultDataOD = mResourceApi.VirtuosoQuery(selectOD, whereOD, "curriculumvitae");
+            foreach (Dictionary<string, Data> fila in resultDataOD.results.bindings)
+            {
+                if (fila.ContainsKey("dep"))
+                {
+                    departamentos.Add(fila["dep"].value);
+                }
+                if (fila.ContainsKey("org"))
+                {
+                    organizaciones.Add(fila["org"].value);
+                }
+                if (fila.ContainsKey("grupos"))
+                {
+                    string[] gruposSplit = fila["grupos"].value.Split("|");
+                    foreach (string grupo in gruposSplit)
+                    {
+                        grupos.Add(grupo);
+                    }
+                }
+                if (fila.ContainsKey("comp"))
+                {
+                    string[] compSplit = fila["comp"].value.Split("|");
+                    foreach (string proyecto in compSplit)
+                    {
+                        proComp.Add(proyecto);
+                    }
+                }
+                if (fila.ContainsKey("noComp"))
+                {
+                    string[] proNoCompSplit = fila["noComp"].value.Split("|");
+                    foreach (string proyecto in proNoCompSplit)
+                    {
+                        proNoComp.Add(proyecto);
+                    }
+                }
+            }
+        }
 
         /// <summary>
         /// Dado un codigo devuelve si el formato es valido
