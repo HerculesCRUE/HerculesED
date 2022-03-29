@@ -18,6 +18,17 @@ namespace Utils
     public static class Utility
     {
         private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config\configOAuth\OAuthV3.config");
+
+        /// <summary>
+        /// Inserta en <paramref name="departamentos"/>, <paramref name="grupos"/>, <paramref name="organizaciones"/>,
+        /// <paramref name="proComp"/> y <paramref name="proNoComp"/> los datos respectivos al propietario de <paramref name="pCVID"/>.
+        /// </summary>
+        /// <param name="departamentos">departamentos</param>
+        /// <param name="organizaciones">organizaciones</param>
+        /// <param name="grupos">grupos</param>
+        /// <param name="proComp">proyectosCompetitivos</param>
+        /// <param name="proNoComp">proyectosNocompetitivos</param>
+        /// <param name="pCVID">CV ID</param>
         public static void DatosDesambiguacionAutor(HashSet<string> departamentos, HashSet<string> organizaciones, HashSet<string> grupos, HashSet<string> proComp, HashSet<string> proNoComp, string pCVID)
         {
             //Obtenemos Organización, Departamento, Grupos y Publicaciones del propietario del CV.          
