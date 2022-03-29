@@ -147,7 +147,10 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
 
             foreach (List<string> lista in listaListasIdPersonas)
             {
-                string selectDatos = $@"SELECT distinct ?item ?dep ?org 
+                //Selecciono los datos de grupos, proyectos comperititvos, proyectos no competitivos, organizaciones y departamentos para la posterior desambiguacion de la persona.
+                string selectDatos = $@"SELECT distinct ?item 
+                                group_concat(distinct ?dep ;separator=""|"") as ?departamentos
+                                group_concat(distinct ?org ;separator=""|"") as ?organizaciones
                                 group_concat(distinct ?group;separator=""|"") as ?grupos 
                                 group_concat(distinct ?compPro;separator=""|"") as ?comp 
                                 group_concat(distinct ?noCompPro;separator=""|"") as ?noComp
@@ -173,17 +176,29 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                 {
                     if (fila.ContainsKey("item"))
                     {
+                        //Busco las personas que tengan el mismo ID y les inserto los datos.
                         List<Persona> listado = listaPersonasAux.SelectMany(x => x.Value).Where(x => x.personid.Equals(fila["item"].value)).ToList();
                         foreach (Persona persona in listado)
                         {
-                            if (fila.ContainsKey("dep"))
+                            //Departamentos
+                            if (fila.ContainsKey("departamentos"))
                             {
-                                persona.departamento.Add(fila["dep"].value);
+                                string[] departamentosSplit = fila["departamentos"].value.Split("|");
+                                foreach (string departamento in departamentosSplit)
+                                {
+                                    persona.departamento.Add(departamento);
+                                }
                             }
+                            //Organizaciones
                             if (fila.ContainsKey("org"))
                             {
-                                persona.organizacion.Add(fila["org"].value);
+                                string[] organizacionesSplit = fila["organizaciones"].value.Split("|");
+                                foreach (string organizacion in organizacionesSplit)
+                                {
+                                    persona.organizacion.Add(organizacion);
+                                }
                             }
+                            //Grupos
                             if (fila.ContainsKey("grupos"))
                             {
                                 string[] gruposSplit = fila["grupos"].value.Split("|");
@@ -192,6 +207,7 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                                     persona.grupos.Add(grupo);
                                 }
                             }
+                            //Proyectos competitivos
                             if (fila.ContainsKey("comp"))
                             {
                                 string[] compSplit = fila["comp"].value.Split("|");
@@ -200,6 +216,7 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                                     persona.proyectosComp.Add(proyecto);
                                 }
                             }
+                            //Proyectos no competitivos
                             if (fila.ContainsKey("noComp"))
                             {
                                 string[] proNoCompSplit = fila["noComp"].value.Split("|");
