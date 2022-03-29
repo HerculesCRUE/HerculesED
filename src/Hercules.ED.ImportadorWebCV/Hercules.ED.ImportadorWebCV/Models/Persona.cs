@@ -141,6 +141,7 @@ namespace Hercules.ED.ImportadorWebCV.Models
             type = DisambiguationDataConfigType.algoritmoNombres,
             score = 1f
         };
+        
         private static readonly DisambiguationDataConfig configCoautores = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsItemList,
@@ -203,12 +204,26 @@ namespace Hercules.ED.ImportadorWebCV.Models
             this.nombre = nombre;
             this.primerApellido = primerApellido;
             this.segundoApellido = segundoApellido;
+            this.coautores = new HashSet<string>();
+            this.documentos = new HashSet<string>();
+            this.departamento = new HashSet<string>();
+            this.organizacion = new HashSet<string>();
+            this.grupos = new HashSet<string>();
+            this.proyectosComp = new HashSet<string>();
+            this.proyectosNoComp = new HashSet<string>();
         }
 
         public Persona()
         {
             this.nombreCompleto = "";
             this.firma = "";
+            this.coautores = new HashSet<string>();
+            this.documentos = new HashSet<string>();
+            this.departamento = new HashSet<string>();
+            this.organizacion = new HashSet<string>();
+            this.grupos = new HashSet<string>();
+            this.proyectosComp = new HashSet<string>();
+            this.proyectosNoComp = new HashSet<string>();
         }
 
         public string NombreBuscar
