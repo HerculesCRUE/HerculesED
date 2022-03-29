@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.InteropServices;
 
 namespace Hercules.ED.ImportadorWebCV.Controllers
 {
@@ -28,7 +30,7 @@ namespace Hercules.ED.ImportadorWebCV.Controllers
         /// <param name="File">Archivo en formato PDF o XML</param>
         /// <returns></returns>
         [HttpPost("Importar")]
-        public ActionResult Importar([Required] string pCVID, [Required] IFormFile File)
+        public ActionResult Importar([FromHeader][Required] string pCVID, [FromHeader][Optional] List<string> Secciones, [Required] IFormFile File)
         {
             SincroDatos sincro = new SincroDatos(_Configuracion, pCVID, File);
 

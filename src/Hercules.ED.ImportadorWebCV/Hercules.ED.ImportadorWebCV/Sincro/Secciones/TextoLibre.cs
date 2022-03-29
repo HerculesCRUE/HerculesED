@@ -22,8 +22,14 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// subapartado "Texto libre"
         /// Con código identificativo "070.010.000.000".
         /// </summary>
-        public List<SubseccionItem> SincroTextoLibre([Optional] bool preimportar)
+        public List<SubseccionItem> SincroTextoLibre(bool procesar, [Optional] bool preimportar)
         {
+            //Si procesar es false, no hago nada.
+            if (!procesar)
+            {
+                return null;
+            }
+
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/freeTextSummary", "http://w3id.org/roh/freeTextSummaryValues", "http://w3id.org/roh/freeTextSummaryValuesCV" };
             List<string> rdfTypeItem = new List<string>() { "http://w3id.org/roh/FreeTextSummaryValues", "http://w3id.org/roh/FreeTextSummaryValuesCV" };
 

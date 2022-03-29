@@ -26,8 +26,14 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// (licenciados, Diplomados, Ingenieros Superiores, Ingenieros Técnicos, Arquitectos)".
         /// Con codigo identificativo "020.010.010.000".
         /// </summary>
-        public List<SubseccionItem> SincroEstudiosCiclos([Optional] bool preimportar)
+        public List<SubseccionItem> SincroEstudiosCiclos(bool procesar, [Optional] bool preimportar)
         {
+            //Si procesar es false, no hago nada.
+            if (!procesar)
+            {
+                return null;
+            }
+
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/qualifications", "http://w3id.org/roh/firstSecondCycles", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "academicdegree";
             string propTitle = "http://w3id.org/roh/title";
@@ -62,8 +68,14 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// Función para sincronizar los datos pertenecientes al bloque "Doctorados".
         /// Con codigo identificativo "020.010.020.000".
         /// </summary>
-        public List<SubseccionItem> SincroDoctorados([Optional] bool preimportar)
+        public List<SubseccionItem> SincroDoctorados(bool procesar, [Optional] bool preimportar)
         {
+            //Si procesar es false, no hago nada.
+            if (!procesar)
+            {
+                return null;
+            }
+
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/qualifications", "http://w3id.org/roh/doctorates", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "academicdegree";
             string propTitle = "http://w3id.org/roh/title";
@@ -99,8 +111,14 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// "Otra formación universitaria de posgrado Formación especializada".
         /// Con codigo identificativo "020.010.030.000".
         /// </summary>
-        public List<SubseccionItem> SincroOtraFormacionPosgrado([Optional] bool preimportar)
+        public List<SubseccionItem> SincroOtraFormacionPosgrado(bool procesar, [Optional] bool preimportar)
         {
+            //Si procesar es false, no hago nada.
+            if (!procesar)
+            {
+                return null;
+            }
+
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/qualifications", "http://w3id.org/roh/postgraduates", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "academicdegree";
             string propTitle = "http://w3id.org/roh/title";
@@ -136,8 +154,14 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// "Formación especializada, continuada, técnica, profesionalizada, de reciclaje y actualización".
         /// Con codigo identificativo "020.020.000.000".
         /// </summary>
-        public List<SubseccionItem> SincroFormacionEspecializada([Optional] bool preimportar)
+        public List<SubseccionItem> SincroFormacionEspecializada(bool procesar, [Optional] bool preimportar)
         {
+            //Si procesar es false, no hago nada.
+            if (!procesar)
+            {
+                return null;
+            }
+
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/qualifications", "http://w3id.org/roh/specialisedTraining", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "academicdegree";
             string propTitle = "http://w3id.org/roh/title";
@@ -173,8 +197,14 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// "Cursos y semin. mejora docente".
         /// Con codigo identificativo "020.050.000.000".
         /// </summary>
-        public List<SubseccionItem> SincroCursosMejoraDocente([Optional] bool preimportar)
+        public List<SubseccionItem> SincroCursosMejoraDocente(bool procesar, [Optional] bool preimportar)
         {
+            //Si procesar es false, no hago nada.
+            if (!procesar)
+            {
+                return null;
+            }
+
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/qualifications", "http://w3id.org/roh/coursesAndSeminars", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "academicdegree";
             string propTitle = "http://w3id.org/roh/title";
@@ -210,8 +240,14 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// "Conocimiento de idiomas".
         /// Con codigo identificativo "020.060.000.000".
         /// </summary>
-        public List<SubseccionItem> SincroConocimientoIdiomas([Optional] bool preimportar)
+        public List<SubseccionItem> SincroConocimientoIdiomas(bool procesar, [Optional] bool preimportar)
         {
+            //Si procesar es false, no hago nada.
+            if (!procesar)
+            {
+                return null;
+            }
+
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/qualifications", "http://w3id.org/roh/languageSkills", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "languagecertificate";
             string propTitle = "http://w3id.org/roh/languageOfTheCertificate";
@@ -411,7 +447,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void DoctoradosProgramaDoctorado(CvnItemBean item, Entity entidadAux) 
+        private void DoctoradosProgramaDoctorado(CvnItemBean item, Entity entidadAux)
         {
             string programaDoctorado = item.GetNameTitleBeanPorIDCampo("020.010.020.010");
             entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
@@ -742,7 +778,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 new Property(Variables.FormacionAcademica.formacionEspeTipoEntidadTitulacionOtros, item.GetStringPorIDCampo("020.020.000.110"))
             ));
         }
-               
+
 
         /// <summary>
         /// 020.050.000.000
