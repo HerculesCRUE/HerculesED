@@ -33,7 +33,9 @@ namespace Utils
         {
             //Obtenemos Organización, Departamento, Grupos y Publicaciones del propietario del CV.          
 
-            string selectOD = $@"SELECT distinct ?dep ?org 
+            string selectOD = $@"SELECT distinct 
+                                group_concat(distinct ?dep ;separator=""|"") as ?departamentos
+                                group_concat(distinct ?org ;separator=""|"") as ?organizaciones
                                 group_concat(distinct ?group;separator=""|"") as ?grupos 
                                 group_concat(distinct ?compPro;separator=""|"") as ?comp 
                                 group_concat(distinct ?noCompPro;separator=""|"") as ?noComp
@@ -55,13 +57,23 @@ namespace Utils
             SparqlObject resultDataOD = mResourceApi.VirtuosoQuery(selectOD, whereOD, "curriculumvitae");
             foreach (Dictionary<string, Data> fila in resultDataOD.results.bindings)
             {
-                if (fila.ContainsKey("dep"))
+                //Departamentos
+                if (fila.ContainsKey("departamentos"))
                 {
-                    departamentos.Add(fila["dep"].value);
+                    string[] departamentosSplit = fila["departamentos"].value.Split("|");
+                    foreach (string departamento in departamentosSplit)
+                    {
+                        departamentos.Add(departamento);
+                    }
                 }
+                //Organizaciones
                 if (fila.ContainsKey("org"))
                 {
-                    organizaciones.Add(fila["org"].value);
+                    string[] organizacionesSplit = fila["organizaciones"].value.Split("|");
+                    foreach (string organizacion in organizacionesSplit)
+                    {
+                        organizaciones.Add(organizacion);
+                    }
                 }
                 if (fila.ContainsKey("grupos"))
                 {
