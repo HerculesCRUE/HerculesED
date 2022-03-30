@@ -41,7 +41,7 @@ namespace Hercules.ED.ImportadorWebCV.Models
         public Subseccion(string id, List<SubseccionItem> subsecciones)
         {
             this.id = id;
-            this.subsecciones = subsecciones;
+            this.subsecciones = subsecciones == null ? new List<SubseccionItem>() : subsecciones;
         }
 
         public Subseccion(string id)

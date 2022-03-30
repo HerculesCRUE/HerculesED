@@ -75,6 +75,7 @@ namespace Utils
                         organizaciones.Add(organizacion);
                     }
                 }
+                //Grupos
                 if (fila.ContainsKey("grupos"))
                 {
                     string[] gruposSplit = fila["grupos"].value.Split("|");
@@ -83,6 +84,7 @@ namespace Utils
                         grupos.Add(grupo);
                     }
                 }
+                //Proyectos competitivos
                 if (fila.ContainsKey("comp"))
                 {
                     string[] compSplit = fila["comp"].value.Split("|");
@@ -91,6 +93,7 @@ namespace Utils
                         proComp.Add(proyecto);
                     }
                 }
+                //Proyectos no competitivos
                 if (fila.ContainsKey("noComp"))
                 {
                     string[] proNoCompSplit = fila["noComp"].value.Split("|");
