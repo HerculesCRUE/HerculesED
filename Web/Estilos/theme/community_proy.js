@@ -1284,8 +1284,8 @@ var metabuscador = {
         this.panelSinResultados = $(`#sinResultadosMetabuscador`);
         //this.timeWaitingForUserToType = 750; // Esperar 0.75 segundos a si el usuario ha dejado de escribir para iniciar búsqueda
 		this.timeWaitingForUserToType = 150; // Esperar 0.75 segundos a si el usuario ha dejado de escribir para iniciar búsqueda
-        //this.ignoreKeysToBuscador = [37, 38, 39, 40, 46, 8, 32, 91, 17, 18, 20, 36, 18, 27];
-		this.ignoreKeysToBuscador = [];
+        this.ignoreKeysToBuscador = [37, 38, 39, 40, 46, 8, 32, 91, 17, 18, 20, 36, 18, 27];
+		this.ignoreKeysToBuscador = [37, 38, 39, 40, 91, 17, 18, 20, 36, 18, 27];
         // Palabra clave introducida en el metaBuscador para mostrar en el panel de resultados no encontrados
         this.idPalabraBuscadaMetabuscador = `metabuscadorBusqueda`;
         this.sugerenciasMetabuscadorItems = this.body.find('#sugerenciasMetabuscador ul');
@@ -1508,7 +1508,7 @@ var metabuscador = {
 
         	// Comprueba que hay resultados
         	var totalItems = 0;
-        	Object.keys(data).forEach(e => totalItems += data[e].length);
+        	Object.keys(data).forEach(e => totalItems += data[e].value.length);
 
         	// Si hay resultados, pinta los items
         	if (totalItems > 0) {
@@ -1544,16 +1544,16 @@ var metabuscador = {
     			listCurrenTbloque.children().remove();
 
     			// Comprueba que tiene resultados los datos para este elemento
-    			if (data[ndx].length > 0) {
+    			if (data[ndx].value.length > 0) {
 
     				// Pinta los elementos dentro de la lista
-    				var result = data[ndx].map(item => $('<li class="con-icono-before ' + that.typeSearch[ndx].icon + '" data-id="'+item.id+'">\
+    				var result = data[ndx].value.map(item => $('<li class="con-icono-before ' + that.typeSearch[ndx].icon + '" data-id="'+item.id+'">\
                         	<a href="'+item.url+'">'+item.title+'</a>\
                     	</li>')
     				);
     				result.forEach(item => listCurrenTbloque.append(item));
 
-    				if (data[ndx].length > 2) {
+    				if (data[ndx].key) {
     					listCurrenTbloque.append($('<li class="con-icono-after ver-mas-icono ver-mas">\
                             <a href="'+urlComunidad+'?' + that.typeSearch[ndx].searchParm + '='+that.keyInput+'">Ver ' + that.keyInput + ' en ' + textoBloque.text().toLowerCase() + '</a>\
                         </li>'));
@@ -1642,9 +1642,9 @@ var metabuscador = {
                 localStorage.getItem(this.KEY_LOCAL_SEARCHS) || "[]"
             );
 
-            // Comprobar que no existe la búsqueda actual en localStorage
+            // Comprobar que no existe la búsqueda actual en localStorage (como texto parcial)
             localSearchs.forEach((item) => {
-                if (item.search.indexOf(search) != -1) {
+                if (item.search.indexOf(search) == 0) {
                     searchRepeated = true;
                 }
             });
@@ -1652,6 +1652,24 @@ var metabuscador = {
             if (searchRepeated) {
                 return;
             }
+			
+			// Comprobamos si es la continuación de alguna búsqueda actual, en caso de que lo sea eliminamos esa búsqueda
+			let eliminar=[];
+			let index=0;
+			localSearchs.forEach((item) => {				
+                if (search.indexOf(item.search) == 0) {
+					eliminar.push(index);
+                }else
+				{
+					index++;
+				}
+            });
+			
+			
+			eliminar.forEach((item) => {				
+                localSearchs.splice(item, 1); 
+            });
+			
 
             // Si hay un máximo de X resultados en localStorage, eliminar el Último
             if (localSearchs.length >= this.numMaxSearchs) {
