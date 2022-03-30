@@ -151,11 +151,11 @@
                                         foreach (PersonAux persona in pProject.Roh_mainResearchers)
                                         {
                                             if (persona != null)
-                                            {                                                
+                                            {
                                                 nombrePersona = persona.Foaf_firstName + " " + persona.Foaf_familyName + " " + persona.Roh_secondFamilyName;
                                                 <li>
                                                     <a about="@persona.GNOSSID" property="@persona.GetPropertyURI(nameof(persona.Foaf_firstName))" href="@persona.URL">@nombrePersona</a>
-                                                </li>                                                
+                                                </li>
                                             }
                                         }
                                     }
@@ -302,15 +302,26 @@
 
                             foreach (CategoryPath areatematica in pProject.Roh_hasKnowledgeArea)
                             {
-                            //    if (areatematica != null && !string.IsNullOrEmpty(areatematica.Roh_title))
-                            //    {
+                                Concept concept = areatematica.Roh_categoryNode.LastOrDefault(); // TODO: Implementar lógica por si vienen desordenadas las categorías.
 
-                            //        <li>
-                            //            <a>
-                            //                <span about="@areatematica.GNOSSID" property="@areatematica.GetPropertyURI(nameof(areatematica.RdfsLabel))" class="texto">@areatematica.Roh_title</span>
-                            //            </a>
-                            //        </li>
-                            //    }
+                                if (concept != null && !string.IsNullOrEmpty(concept.Skos_prefLabel) && contadorCategorias < 3)
+                                {
+                                    contadorCategorias++;
+                                    <li>
+                                        <a>
+                                            <span about="@concept.GNOSSID" property="@concept.GetPropertyURI(nameof(concept.Skos_prefLabel))" class="texto">@concept.Skos_prefLabel</span>
+                                        </a>
+                                    </li>
+                                }
+                                else if (concept != null && !string.IsNullOrEmpty(concept.Skos_prefLabel))
+                                {
+                                    contadorCategorias++;
+                                    <li class="ocultar" style="display: none;">
+                                        <a>
+                                            <span about="@concept.GNOSSID" property="@concept.GetPropertyURI(nameof(concept.Skos_prefLabel))" class="texto">@concept.Skos_prefLabel</span>
+                                        </a>
+                                    </li>
+                                }
                             }
                         }
                     </ul>
@@ -1185,14 +1196,14 @@
             }
             this.Roh_mainResearchers = new List<PersonAux>();
             SemanticPropertyModel propRoh_mainResearchers = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/mainResearchers");
-            if  (propRoh_mainResearchers != null && propRoh_mainResearchers.PropertyValues.Count > 0)
+            if (propRoh_mainResearchers != null && propRoh_mainResearchers.PropertyValues.Count > 0)
             {
                 foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_mainResearchers.PropertyValues)
                 {
-                    if  (propValue.RelatedEntity  !=  null)
+                    if (propValue.RelatedEntity != null)
 
                     {
-                        PersonAux roh_mainResearchers = new PersonAux(propValue.RelatedEntity,  idiomaUsuario);
+                        PersonAux roh_mainResearchers = new PersonAux(propValue.RelatedEntity, idiomaUsuario);
                         this.Roh_mainResearchers.Add(roh_mainResearchers);
                     }
                 }
@@ -1236,20 +1247,20 @@
             //    this.Vcard_hasRegion = new Feature(propVcard_hasRegion.PropertyValues[0].RelatedEntity,  idiomaUsuario);
             //}
             SemanticPropertyModel propRoh_conductedBy = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/conductedBy");
-            if  (propRoh_conductedBy != null && propRoh_conductedBy.PropertyValues.Count > 0)
+            if (propRoh_conductedBy != null && propRoh_conductedBy.PropertyValues.Count > 0)
             {
-                this.Roh_conductedBy = new Organization(propRoh_conductedBy.PropertyValues[0].RelatedEntity,  idiomaUsuario);
+                this.Roh_conductedBy = new Organization(propRoh_conductedBy.PropertyValues[0].RelatedEntity, idiomaUsuario);
             }
             this.Roh_hasKnowledgeArea = new List<CategoryPath>();
             SemanticPropertyModel propRoh_hasKnowledgeArea = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/hasKnowledgeArea");
-            if  (propRoh_hasKnowledgeArea != null && propRoh_hasKnowledgeArea.PropertyValues.Count > 0)
+            if (propRoh_hasKnowledgeArea != null && propRoh_hasKnowledgeArea.PropertyValues.Count > 0)
             {
                 foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_hasKnowledgeArea.PropertyValues)
                 {
-                    if  (propValue.RelatedEntity  !=  null)
+                    if (propValue.RelatedEntity != null)
 
                     {
-                        CategoryPath roh_hasKnowledgeArea = new CategoryPath(propValue.RelatedEntity,  idiomaUsuario);
+                        CategoryPath roh_hasKnowledgeArea = new CategoryPath(propValue.RelatedEntity, idiomaUsuario);
                         this.Roh_hasKnowledgeArea.Add(roh_hasKnowledgeArea);
                     }
                 }
@@ -1303,9 +1314,9 @@
             this.Roh_monetaryAmount = GetNumberFloatPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/monetaryAmount"));
             this.Roh_collaboratorsNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/collaboratorsNumber"));
             SemanticPropertyModel propRoh_scientificExperienceProject = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/scientificExperienceProject");
-            if  (propRoh_scientificExperienceProject != null && propRoh_scientificExperienceProject.PropertyValues.Count > 0)
+            if (propRoh_scientificExperienceProject != null && propRoh_scientificExperienceProject.PropertyValues.Count > 0)
             {
-                this.Roh_scientificExperienceProject = new ScientificExperienceProject(propRoh_scientificExperienceProject.PropertyValues[0].RelatedEntity,  idiomaUsuario);
+                this.Roh_scientificExperienceProject = new ScientificExperienceProject(propRoh_scientificExperienceProject.PropertyValues[0].RelatedEntity, idiomaUsuario);
             }
             this.Roh_isValidated = GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isValidated"));
             this.Roh_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/title"));
@@ -1325,7 +1336,7 @@
         public List<OrganizationAux> Roh_grantedBy { get; set; }
 
         [RDFProperty("http://w3id.org/roh/mainResearchers")]
-        public List<PersonAux> Roh_mainResearchers { get; set;  }
+        public List<PersonAux> Roh_mainResearchers { get; set; }
 
         [RDFProperty("http://vivoweb.org/ontology/core#geographicFocus")]
         public GeographicRegion Vivo_geographicFocus { get; set; }
@@ -1342,11 +1353,11 @@
         //public string IdVcard_hasRegion { get; set;  }
 
         [RDFProperty("http://w3id.org/roh/conductedBy")]
-        public Organization Roh_conductedBy { get; set;  }
-        public string IdRoh_conductedBy{ get; set;  }
+        public Organization Roh_conductedBy { get; set; }
+        public string IdRoh_conductedBy { get; set; }
 
         [RDFProperty("http://w3id.org/roh/hasKnowledgeArea")]
-        public List<CategoryPath> Roh_hasKnowledgeArea { get; set;  }
+        public List<CategoryPath> Roh_hasKnowledgeArea { get; set; }
 
         //[RDFProperty("http://w3id.org/roh/projectType")]
         //public ProjectType Roh_projectType { get; set;  }
@@ -1432,8 +1443,8 @@
         public int? Roh_collaboratorsNumber { get; set; }
 
         [RDFProperty("http://w3id.org/roh/scientificExperienceProject")]
-        public ScientificExperienceProject Roh_scientificExperienceProject { get; set;  }
-        public string IdRoh_scientificExperienceProject{ get; set;  }
+        public ScientificExperienceProject Roh_scientificExperienceProject { get; set; }
+        public string IdRoh_scientificExperienceProject { get; set; }
 
         [RDFProperty("http://w3id.org/roh/isValidated")]
         public bool Roh_isValidated { get; set; }
