@@ -94,7 +94,7 @@ namespace ImportadorWebCV.Sincro
         /// apartado de Datos de identificacion y contacto.
         /// Con el codigo identificativo 000.000.000.000
         /// </summary>
-        public List<Subseccion> SincroDatosIdentificacion([Optional] bool preimportar, [Optional] List<string> secciones)
+        public List<Subseccion> SincroDatosIdentificacion([Optional] List<string> secciones, [Optional] bool preimportar)
         {
             DatosIdentificacion datosIdentificacion = new DatosIdentificacion(cvn, cvID);
 
@@ -109,7 +109,7 @@ namespace ImportadorWebCV.Sincro
         /// apartado de Situación profesional.
         /// Con el codigo identificativo 010.000.000.000
         /// </summary>
-        public List<Subseccion> SincroDatosSituacionProfesional([Optional] bool preimportar, [Optional] List<string> secciones)
+        public List<Subseccion> SincroDatosSituacionProfesional([Optional] List<string> secciones, [Optional] bool preimportar)
         {
             SituacionProfesional situacionProfesional = new SituacionProfesional(cvn, cvID);
 
@@ -125,7 +125,7 @@ namespace ImportadorWebCV.Sincro
         /// apartado de Formación académica recibida.
         /// Con el codigo identificativo 020.000.000.000
         /// </summary>
-        public List<Subseccion> SincroFormacionAcademica([Optional] bool preimportar, [Optional] List<string> secciones)
+        public List<Subseccion> SincroFormacionAcademica([Optional] List<string> secciones, [Optional] bool preimportar)
         {
             FormacionAcademica formacionAcademica = new FormacionAcademica(cvn, cvID);
 
@@ -145,7 +145,7 @@ namespace ImportadorWebCV.Sincro
         /// apartado de Actividad docente.
         /// Con el codigo identificativo 030.000.000.000
         /// </summary>
-        public List<Subseccion> SincroActividadDocente([Optional] bool preimportar, [Optional] List<string> secciones)
+        public List<Subseccion> SincroActividadDocente([Optional] List<string> secciones, [Optional] bool preimportar)
         {
             ActividadDocente actividadDocente = new ActividadDocente(cvn, cvID);
 
@@ -169,7 +169,7 @@ namespace ImportadorWebCV.Sincro
         /// apartado de Experiencia científica y tecnológica.
         /// Con el codigo identificativo 050.000.000.000
         /// </summary>
-        public List<Subseccion> SincroExperienciaCientificaTecnologica([Optional] bool preimportar, [Optional] List<string> secciones)
+        public List<Subseccion> SincroExperienciaCientificaTecnologica([Optional] List<string> secciones, [Optional] bool preimportar)
         {
             ExperienciaCientificaTecnologica experienciaCientificaTecnologica = new ExperienciaCientificaTecnologica(cvn, cvID);
 
@@ -189,7 +189,7 @@ namespace ImportadorWebCV.Sincro
         /// apartado de Actividad científica y tecnológica.
         /// Con el codigo identificativo 060.000.000.000
         /// </summary>
-        public List<Subseccion> SincroActividadCientificaTecnologica([Optional] bool preimportar, [Optional] List<string> secciones)
+        public List<Subseccion> SincroActividadCientificaTecnologica([Optional] List<string> secciones, [Optional] bool preimportar)
         {
             ActividadCientificaTecnologica actividadCientificaTecnologica = new ActividadCientificaTecnologica(cvn, cvID);
 
@@ -227,7 +227,7 @@ namespace ImportadorWebCV.Sincro
         /// </summary>
         /// <param name="preimportar"></param>
         /// <returns></returns>
-        public List<Subseccion> SincroTextoLibre([Optional] bool preimportar, [Optional] List<string> secciones)
+        public List<Subseccion> SincroTextoLibre([Optional] List<string> secciones, [Optional] bool preimportar)
         {
             TextoLibre textoLibre = new TextoLibre(cvn, cvID);
 
