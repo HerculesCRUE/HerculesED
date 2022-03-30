@@ -91,8 +91,8 @@ namespace ImportadorWebCV.Sincro.Secciones
         {
             if (item == null) { return null; }
 
-            string b1 = "B.1. Breve descripción del Trabajo de Fin de Grado (TFG) y puntuación obtenida ";
-            string b2 = "B.2. Breve descripción del Trabajo de Fin de Máster (TFM) y puntuación obtenida ";
+            string b1 = "B.1. Breve descripción del Trabajo de Fin de Grado (TFG) y puntuación obtenida";
+            string b2 = "B.2. Breve descripción del Trabajo de Fin de Máster (TFM) y puntuación obtenida";
 
             string resumenLibre = "";
             string TFG = "";
@@ -120,7 +120,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 resumenLibre = resumen;
             }
 
-            List<(string, string)> listadoResumen = new List<(string, string)> { ("resumenLibre", resumenLibre), ("TFG", TFG), ("TFM", TFM) };
+            List<(string, string)> listadoResumen = new List<(string, string)> { ("resumenLibre", resumenLibre.Trim()), ("TFG", TFG.Trim()), ("TFM", TFM.Trim()) };
 
             return listadoResumen;
         }
