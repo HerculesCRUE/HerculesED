@@ -440,7 +440,7 @@
                         "multiple": true,
                         "width": 3,
                         "auxEntityData": {
-                          "rdftype": "http://w3id.org/roh/Organization",
+                          "rdftype": "http://w3id.org/roh/OrganizationAux",
                           "propertyTitle": {
                             "property": "http://w3id.org/roh/organizationTitle"
                           },
@@ -928,7 +928,7 @@
                         "multiple": true,
                         "width": 3,
                         "auxEntityData": {
-                          "rdftype": "http://w3id.org/roh/Organization",
+                          "rdftype": "http://w3id.org/roh/OrganizationAux",
                           "propertyTitle": {
                             "property": "http://w3id.org/roh/organizationTitle"
                           },
@@ -1408,7 +1408,7 @@
                         "multiple": true,
                         "width": 3,
                         "auxEntityData": {
-                          "rdftype": "http://w3id.org/roh/Organization",
+                          "rdftype": "http://w3id.org/roh/OrganizationAux",
                           "propertyTitle": {
                             "property": "http://w3id.org/roh/organizationTitle"
                           },
@@ -1852,7 +1852,7 @@
                         "multiple": true,
                         "width": 3,
                         "auxEntityData": {
-                          "rdftype": "http://w3id.org/roh/Organization",
+                          "rdftype": "http://w3id.org/roh/OrganizationAux",
                           "propertyTitle": {
                             "property": "http://w3id.org/roh/organizationTitle"
                           },
