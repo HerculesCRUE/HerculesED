@@ -20,6 +20,89 @@ namespace Utils
         private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config\configOAuth\OAuthV3.config");
 
         /// <summary>
+        /// Inserta en <paramref name="departamentos"/>, <paramref name="grupos"/>, <paramref name="organizaciones"/>,
+        /// <paramref name="proComp"/> y <paramref name="proNoComp"/> los datos respectivos al propietario de <paramref name="pCVID"/>.
+        /// </summary>
+        /// <param name="departamentos">departamentos</param>
+        /// <param name="organizaciones">organizaciones</param>
+        /// <param name="grupos">grupos</param>
+        /// <param name="proComp">proyectosCompetitivos</param>
+        /// <param name="proNoComp">proyectosNocompetitivos</param>
+        /// <param name="pCVID">CV ID</param>
+        public static void DatosDesambiguacionAutor(HashSet<string> departamentos, HashSet<string> organizaciones, HashSet<string> grupos, HashSet<string> proComp, HashSet<string> proNoComp, string pCVID)
+        {
+            //Obtenemos Organización, Departamento, Grupos y Publicaciones del propietario del CV.          
+
+            string selectOD = $@"SELECT distinct 
+                                group_concat(distinct ?dep ;separator=""|"") as ?departamentos
+                                group_concat(distinct ?org ;separator=""|"") as ?organizaciones
+                                group_concat(distinct ?group;separator=""|"") as ?grupos 
+                                group_concat(distinct ?compPro;separator=""|"") as ?comp 
+                                group_concat(distinct ?noCompPro;separator=""|"") as ?noComp
+
+                                from <{mResourceApi.GraphsUrl}scientificexperience.owl> 
+                                from <{mResourceApi.GraphsUrl}position.owl>";
+            string whereOD = $@"where {{
+                                        ?s <http://w3id.org/roh/professionalSituation> ?o . 
+                                        ?o <http://w3id.org/roh/currentProfessionalSituation> ?currentsituation . 
+                                        ?s <http://w3id.org/roh/scientificExperience> ?sci . 
+                                        OPTIONAL{{?sci <http://w3id.org/roh/groups> ?group}} 
+                                        OPTIONAL{{?sci <http://w3id.org/roh/competitiveProjects> ?compPro}} 
+                                        OPTIONAL{{?sci <http://w3id.org/roh/nonCompetitiveProjects> ?noCompPro}} 
+                                        ?currentsituation <http://vivoweb.org/ontology/core#relatedBy> ?related .
+                                        OPTIONAL{{?related <http://w3id.org/roh/employerOrganizationTitle> ?org}}
+                                        OPTIONAL{{?related <http://w3id.org/roh/department> ?dep}}
+                                        FILTER(?s=<{pCVID}>)
+                                    }} ";
+            SparqlObject resultDataOD = mResourceApi.VirtuosoQuery(selectOD, whereOD, "curriculumvitae");
+            foreach (Dictionary<string, Data> fila in resultDataOD.results.bindings)
+            {
+                //Departamentos
+                if (fila.ContainsKey("departamentos"))
+                {
+                    string[] departamentosSplit = fila["departamentos"].value.Split("|");
+                    foreach (string departamento in departamentosSplit)
+                    {
+                        departamentos.Add(departamento);
+                    }
+                }
+                //Organizaciones
+                if (fila.ContainsKey("org"))
+                {
+                    string[] organizacionesSplit = fila["organizaciones"].value.Split("|");
+                    foreach (string organizacion in organizacionesSplit)
+                    {
+                        organizaciones.Add(organizacion);
+                    }
+                }
+                if (fila.ContainsKey("grupos"))
+                {
+                    string[] gruposSplit = fila["grupos"].value.Split("|");
+                    foreach (string grupo in gruposSplit)
+                    {
+                        grupos.Add(grupo);
+                    }
+                }
+                if (fila.ContainsKey("comp"))
+                {
+                    string[] compSplit = fila["comp"].value.Split("|");
+                    foreach (string proyecto in compSplit)
+                    {
+                        proComp.Add(proyecto);
+                    }
+                }
+                if (fila.ContainsKey("noComp"))
+                {
+                    string[] proNoCompSplit = fila["noComp"].value.Split("|");
+                    foreach (string proyecto in proNoCompSplit)
+                    {
+                        proNoComp.Add(proyecto);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Dado un codigo devuelve si el formato es valido
         /// </summary>
         /// <param name="codigo">Codigo</param>

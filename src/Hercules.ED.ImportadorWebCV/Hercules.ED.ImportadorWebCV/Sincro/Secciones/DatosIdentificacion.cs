@@ -24,8 +24,14 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// El cual comprende los subapartados "Identificación CVN" (000.010.000.000)
         /// e Identificación de currículo (000.020.000.000).
         /// </summary>
-        public List<SubseccionItem> SincroDatosIdentificacion([Optional] bool preimportar)
+        public List<SubseccionItem> SincroDatosIdentificacion(bool procesar, [Optional] bool preimportar)
         {
+            //Si procesar es false, no hago nada.
+            if (!procesar)
+            { 
+                return null;
+            }
+
             //1º Recuperamos los elementos necesarios del cv, del archivo xml.
             List<CvnItemBean> listadoDatosIdentificacion = mCvn.GetListadoBloque("000");
 

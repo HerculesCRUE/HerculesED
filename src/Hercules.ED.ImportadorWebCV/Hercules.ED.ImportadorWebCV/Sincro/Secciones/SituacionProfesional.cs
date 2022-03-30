@@ -25,8 +25,14 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// "Cargos y actividades desempeñados con anterioridad", con codigo identificativo 
         /// "010.010.000.000".
         /// </summary>
-        public List<SubseccionItem> SincroSituacionProfesionalActual([Optional] bool preimportar)
+        public List<SubseccionItem> SincroSituacionProfesionalActual(bool procesar, [Optional] bool preimportar)
         {
+            //Si procesar es false, no hago nada.
+            if (!procesar) 
+            { 
+                return null; 
+            }
+
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/professionalSituation", "http://w3id.org/roh/currentProfessionalSituation", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "position";
             string propTitle = "http://w3id.org/roh/employerOrganizationTitle";
@@ -61,8 +67,14 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// "Situación profesional actual", con codigo identificativo 
         /// "010.020.000.000".
         /// </summary>
-        public List<SubseccionItem> SincroCargosActividades([Optional] bool preimportar)
+        public List<SubseccionItem> SincroCargosActividades(bool procesar, [Optional] bool preimportar)
         {
+            //Si procesar es false, no hago nada.
+            if (!procesar)
+            { 
+                return null;
+            }
+
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/professionalSituation", "http://w3id.org/roh/previousPositions", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "position";
             string propTitle = "http://w3id.org/roh/employerOrganizationTitle";

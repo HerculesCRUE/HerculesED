@@ -4,11 +4,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 
 namespace Hercules.ED.ImportadorWebCV.Controllers
 {
@@ -32,17 +30,17 @@ namespace Hercules.ED.ImportadorWebCV.Controllers
         /// <param name="File">Archivo en formato PDF o XML</param>
         /// <returns></returns>
         [HttpPost("Importar")]
-        public ActionResult Importar([Required] string pCVID, [Required] IFormFile File)
+        public ActionResult Importar([FromHeader][Required] string pCVID, [FromHeader][Optional] List<string> Secciones, [Required] IFormFile File)
         {
             SincroDatos sincro = new SincroDatos(_Configuracion, pCVID, File);
 
-            ////sincro.SincroDatosIdentificacion();
-            ////sincro.SincroDatosSituacionProfesional();
-            ////sincro.SincroFormacionAcademica();
-            sincro.SincroActividadDocente();
-            //sincro.SincroExperienciaCientificaTecnologica();
-            //sincro.SincroActividadCientificaTecnologica();
-            ////sincro.SincroTextoLibre();
+            sincro.SincroDatosIdentificacion(Secciones);
+            sincro.SincroDatosSituacionProfesional(Secciones);
+            sincro.SincroFormacionAcademica(Secciones);
+            sincro.SincroActividadDocente(Secciones);
+            sincro.SincroExperienciaCientificaTecnologica(Secciones);
+            sincro.SincroActividadCientificaTecnologica(Secciones);
+            sincro.SincroTextoLibre(Secciones);
 
             return Ok();
         }
@@ -55,18 +53,18 @@ namespace Hercules.ED.ImportadorWebCV.Controllers
         /// <param name="File">Archivo en formato PDF o XML</param>
         /// <returns>Json con los datos a preimportar</returns>
         [HttpPost("Preimportar")]
-        public ActionResult Preimportar([Required] string pCVID, [Required] IFormFile File)
+        public ActionResult Preimportar([Required] string pCVID, [FromHeader][Optional] List<string> Secciones, [Required] IFormFile File)
         {
             SincroDatos sincro = new SincroDatos(_Configuracion, pCVID, File);
             Preimport preimportar = new Preimport();
 
-            //preimportar.secciones.AddRange(sincro.SincroDatosIdentificacion(true));
-            //preimportar.secciones.AddRange(sincro.SincroDatosSituacionProfesional(true));
-            //preimportar.secciones.AddRange(sincro.SincroFormacionAcademica(true));
-            //preimportar.secciones.AddRange(sincro.SincroActividadDocente(true));
-            //preimportar.secciones.AddRange(sincro.SincroExperienciaCientificaTecnologica(true));
-            preimportar.secciones.AddRange(sincro.SincroActividadCientificaTecnologica(true));
-            //preimportar.secciones.AddRange(sincro.SincroTextoLibre(true));
+            preimportar.secciones.AddRange(sincro.SincroDatosIdentificacion(Secciones, true));
+            preimportar.secciones.AddRange(sincro.SincroDatosSituacionProfesional(Secciones, true));
+            preimportar.secciones.AddRange(sincro.SincroFormacionAcademica(Secciones, true));
+            preimportar.secciones.AddRange(sincro.SincroActividadDocente(Secciones, true));
+            preimportar.secciones.AddRange(sincro.SincroExperienciaCientificaTecnologica(Secciones, true));
+            preimportar.secciones.AddRange(sincro.SincroActividadCientificaTecnologica(Secciones, true));
+            preimportar.secciones.AddRange(sincro.SincroTextoLibre(Secciones, true));
 
             return Ok(preimportar);
         } 

@@ -27,8 +27,14 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// bloque "Producción cientifica".
         /// Con el codigo identificativo 060.010.000.000
         /// </summary>
-        public List<SubseccionItem> SincroProduccionCientifica([Optional] bool preimportar)
+        public List<SubseccionItem> SincroProduccionCientifica(bool procesar, [Optional] bool preimportar)
         {
+            //Si procesar es false, no hago nada.
+            if (!procesar)
+            {
+                return null;
+            }
+
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/scientificProduction", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "scientificproduction";
             string propTitle = "http://w3id.org/roh/h-index";
@@ -63,8 +69,14 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// "Indicadores generales de calidad de la producción científica".
         /// Con el codigo identificativo 060.010.060.010
         /// </summary>
-        public List<SubseccionItem> SincroIndicadoresGenerales([Optional] bool preimportar)
+        public List<SubseccionItem> SincroIndicadoresGenerales(bool procesar, [Optional] bool preimportar)
         {
+            //Si procesar es false, no hago nada.
+            if (!procesar)
+            {
+                return null;
+            }
+
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/generalQualityIndicators", "http://w3id.org/roh/generalQualityIndicatorCV" };
             List<string> rdfTypeItem = new List<string>() { "http://w3id.org/roh/GeneralQualityIndicator", "http://w3id.org/roh/GeneralQualityIndicatorCV" };
 
@@ -97,8 +109,14 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// bloque "Publicaciones, documentos científicos y técnicos".
         /// Con el codigo identificativo 060.010.010.000
         /// </summary>
-        public List<SubseccionItem> SincroPublicacionesDocumentos([Optional] bool preimportar)
+        public List<SubseccionItem> SincroPublicacionesDocumentos(bool procesar, [Optional] bool preimportar)
         {
+            //Si procesar es false, no hago nada.
+            if (!procesar)
+            {
+                return null;
+            }
+
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/scientificPublications", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "document";
             string propTitle = "http://w3id.org/roh/title";
@@ -123,6 +141,13 @@ namespace ImportadorWebCV.Sincro.Secciones
                 entidadesXML[idPublicacion].distincts = new HashSet<string>(entidadesXML.Keys.Except(new List<string> { idPublicacion }));
             }
 
+            //Obtenemos Organización, Departamento, Grupos y Publicaciones del propietario del CV.
+            HashSet<string> departamentos = new HashSet<string>();
+            HashSet<string> organizaciones = new HashSet<string>();
+            HashSet<string> grupos = new HashSet<string>();
+            HashSet<string> proComp = new HashSet<string>();
+            HashSet<string> proNoComp = new HashSet<string>();
+            Utility.DatosDesambiguacionAutor(departamentos, organizaciones, grupos, proComp, proNoComp, mCvID);
 
             //Añado los autores del documento para la desambiguación
             for (int i = 0; i < listadoAux.Count; i++)
@@ -133,10 +158,13 @@ namespace ImportadorWebCV.Sincro.Secciones
                     {
                         continue;
                     }
+                    persona.departamento = departamentos;
+                    persona.organizacion = organizaciones;
+                    persona.grupos = grupos;
+                    persona.proyectosComp = proComp;
+                    persona.proyectosNoComp = proNoComp;
                     persona.coautores = new HashSet<string>(listadoAux[i].autores.Select(x => x.ID).Where(x => x != persona.ID));
                     persona.documentos = new HashSet<string>() { listadoAux[i].id };
-                    persona.organizacion = listadoAux[i].autores.Where(x => x.ID.Equals(persona.ID)).Select(x => x.organizacion).FirstOrDefault();
-                    persona.departamento = listadoAux[i].autores.Where(x => x.ID.Equals(persona.ID)).Select(x => x.departamento).FirstOrDefault();
                     entidadesXML[persona.ID] = persona;
                 }
             }
@@ -185,8 +213,14 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// bloque "Trabajos presentados en congresos nacionales o internacionales".
         /// Con el codigo identificativo 060.010.020.000
         /// </summary>
-        public List<SubseccionItem> SincroTrabajosCongresos([Optional] bool preimportar)
+        public List<SubseccionItem> SincroTrabajosCongresos(bool procesar, [Optional] bool preimportar)
         {
+            //Si procesar es false, no hago nada.
+            if (!procesar)
+            {
+                return null;
+            }
+
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/worksSubmittedConferences", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "document";
             string propTitle = "http://w3id.org/roh/title";
@@ -211,6 +245,14 @@ namespace ImportadorWebCV.Sincro.Secciones
                 entidadesXML[idPublicacion].distincts = new HashSet<string>(entidadesXML.Keys.Except(new List<string> { idPublicacion }));
             }
 
+            //Obtenemos Organización, Departamento, Grupos y Publicaciones del propietario del CV.
+            HashSet<string> departamentos = new HashSet<string>();
+            HashSet<string> organizaciones = new HashSet<string>();
+            HashSet<string> grupos = new HashSet<string>();
+            HashSet<string> proComp = new HashSet<string>();
+            HashSet<string> proNoComp = new HashSet<string>();
+            Utility.DatosDesambiguacionAutor(departamentos, organizaciones, grupos, proComp, proNoComp, mCvID);
+
             //Añado los autores del documento para la desambiguación
             for (int i = 0; i < listadoAux.Count; i++)
             {
@@ -220,8 +262,11 @@ namespace ImportadorWebCV.Sincro.Secciones
                     {
                         continue;
                     }
-                    persona.departamento = listadoAux[i].autores.Where(x=>x.ID.Equals(persona.ID)).Select(x => x.departamento).FirstOrDefault();
-                    persona.organizacion = listadoAux[i].autores.Where(x=>x.ID.Equals(persona.ID)).Select(x => x.organizacion).FirstOrDefault();
+                    persona.departamento = departamentos;
+                    persona.organizacion = organizaciones;
+                    persona.grupos = grupos;
+                    persona.proyectosComp = proComp;
+                    persona.proyectosNoComp = proNoComp;
                     persona.coautores = new HashSet<string>(listadoAux[i].autores.Select(x => x.ID).Where(x => x != persona.ID));
                     persona.documentos = new HashSet<string>() { listadoAux[i].id };
                     entidadesXML[persona.ID] = persona;
@@ -272,8 +317,14 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// talleres de trabajo y/o cursos nacionales o internacionales".
         /// Con el codigo identificativo 060.010.030.000
         /// </summary>
-        public List<SubseccionItem> SincroTrabajosJornadasSeminarios([Optional] bool preimportar)
+        public List<SubseccionItem> SincroTrabajosJornadasSeminarios(bool procesar, [Optional] bool preimportar)
         {
+            //Si procesar es false, no hago nada.
+            if (!procesar)
+            {
+                return null;
+            }
+
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/worksSubmittedSeminars", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "document";
             string propTitle = "http://w3id.org/roh/title";
@@ -298,6 +349,14 @@ namespace ImportadorWebCV.Sincro.Secciones
                 entidadesXML[idPublicacion].distincts = new HashSet<string>(entidadesXML.Keys.Except(new List<string> { idPublicacion }));
             }
 
+            //Obtenemos Organización, Departamento, Grupos y Publicaciones del propietario del CV.
+            HashSet<string> departamentos = new HashSet<string>();
+            HashSet<string> organizaciones = new HashSet<string>();
+            HashSet<string> grupos = new HashSet<string>();
+            HashSet<string> proComp = new HashSet<string>();
+            HashSet<string> proNoComp = new HashSet<string>();
+            Utility.DatosDesambiguacionAutor(departamentos, organizaciones, grupos, proComp, proNoComp, mCvID);
+
             //Añado los autores del documento para la desambiguación
             for (int i = 0; i < listadoAux.Count; i++)
             {
@@ -307,8 +366,11 @@ namespace ImportadorWebCV.Sincro.Secciones
                     {
                         continue;
                     }
-                    persona.departamento = listadoAux[i].autores.Where(x => x.ID.Equals(persona.ID)).Select(x => x.departamento).FirstOrDefault();
-                    persona.organizacion = listadoAux[i].autores.Where(x => x.ID.Equals(persona.ID)).Select(x => x.organizacion).FirstOrDefault();
+                    persona.departamento = departamentos;
+                    persona.organizacion = organizaciones;
+                    persona.grupos = grupos;
+                    persona.proyectosComp = proComp;
+                    persona.proyectosNoComp = proNoComp;
                     persona.coautores = new HashSet<string>(listadoAux[i].autores.Select(x => x.ID).Where(x => x != persona.ID));
                     persona.documentos = new HashSet<string>() { listadoAux[i].id };
                     entidadesXML[persona.ID] = persona;
@@ -359,8 +421,14 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// bloque "Otras actividades de divulgación".
         /// Con el codigo identificativo 060.010.040.000
         /// </summary>
-        public List<SubseccionItem> SincroOtrasActividadesDivulgacion([Optional] bool preimportar)
+        public List<SubseccionItem> SincroOtrasActividadesDivulgacion(bool procesar, [Optional] bool preimportar)
         {
+            //Si procesar es false, no hago nada.
+            if (!procesar)
+            {
+                return null;
+            }
+
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/otherDisseminationActivities", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "activity";
             string propTitle = "http://w3id.org/roh/title";
@@ -395,8 +463,14 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// bloque "Comités científicos, técnicos y/o asesores".
         /// Con el codigo identificativo 060.020.010.000
         /// </summary>
-        public List<SubseccionItem> SincroComitesCTA([Optional] bool preimportar)
+        public List<SubseccionItem> SincroComitesCTA(bool procesar, [Optional] bool preimportar)
         {
+            //Si procesar es false, no hago nada.
+            if (!procesar)
+            {
+                return null;
+            }
+
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/committees", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "committee";
             string propTitle = "http://w3id.org/roh/title";
@@ -431,8 +505,14 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// bloque "Organización de actividades de I+D+i".
         /// Con el codigo identificativo 060.020.030.000
         /// </summary>
-        public List<SubseccionItem> SincroOrganizacionIDI([Optional] bool preimportar)
+        public List<SubseccionItem> SincroOrganizacionIDI(bool procesar, [Optional] bool preimportar)
         {
+            //Si procesar es false, no hago nada.
+            if (!procesar)
+            {
+                return null;
+            }
+
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/activitiesOrganization", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "activity";
             string propTitle = "http://w3id.org/roh/title";
@@ -468,8 +548,14 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// bloque "Gestión de I+D+i".
         /// Con el codigo identificativo 060.020.040.000
         /// </summary>
-        public List<SubseccionItem> SincroGestionIDI([Optional] bool preimportar)
+        public List<SubseccionItem> SincroGestionIDI(bool procesar, [Optional] bool preimportar)
         {
+            //Si procesar es false, no hago nada.
+            if (!procesar)
+            {
+                return null;
+            }
+
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/activitiesManagement", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "activity";
             string propTitle = "http://w3id.org/roh/title";
@@ -505,8 +591,14 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// bloque "Foros y comités nacionales e internacionales".
         /// Con el codigo identificativo 060.020.050.000
         /// </summary>
-        public List<SubseccionItem> SincroForosComites([Optional] bool preimportar)
+        public List<SubseccionItem> SincroForosComites(bool procesar, [Optional] bool preimportar)
         {
+            //Si procesar es false, no hago nada.
+            if (!procesar)
+            {
+                return null;
+            }
+
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/forums", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "activity";
             string propTitle = "http://w3id.org/roh/title";
@@ -540,8 +632,14 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// bloque "Evaluación y revisión de proyectos y artículos de I+D+i".
         /// Con el codigo identificativo 060.020.060.000
         /// </summary>
-        public List<SubseccionItem> SincroEvalRevIDI([Optional] bool preimportar)
+        public List<SubseccionItem> SincroEvalRevIDI(bool procesar, [Optional] bool preimportar)
         {
+            //Si procesar es false, no hago nada.
+            if (!procesar)
+            {
+                return null;
+            }
+
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/researchEvaluations", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "activity";
             string propTitle = "http://w3id.org/roh/functions";
@@ -577,8 +675,14 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// bloque "Estancias en centros de I+D+i públicos o privados".
         /// Con el codigo identificativo 060.010.050.000
         /// </summary>
-        public List<SubseccionItem> SincroEstanciasIDI([Optional] bool preimportar)
+        public List<SubseccionItem> SincroEstanciasIDI(bool procesar, [Optional] bool preimportar)
         {
+            //Si procesar es false, no hago nada.
+            if (!procesar)
+            {
+                return null;
+            }
+
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/stays", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "stay";
             string propTitle = "http://w3id.org/roh/performedTasks";
@@ -613,8 +717,14 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// bloque "Ayudas y becas obtenidas".
         /// Con el codigo identificativo 060.030.010.000
         /// </summary>
-        public List<SubseccionItem> SincroAyudasBecas([Optional] bool preimportar)
+        public List<SubseccionItem> SincroAyudasBecas(bool procesar, [Optional] bool preimportar)
         {
+            //Si procesar es false, no hago nada.
+            if (!procesar)
+            {
+                return null;
+            }
+
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/grants", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "grant";
             string propTitle = "http://w3id.org/roh/title";
@@ -649,8 +759,14 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// bloque "Otros modos de colaboración con investigadores/as o tecnólogos/as".
         /// Con el codigo identificativo 060.020.020.000
         /// </summary>
-        public List<SubseccionItem> SincroOtrosModosColaboracion([Optional] bool preimportar)
+        public List<SubseccionItem> SincroOtrosModosColaboracion(bool procesar, [Optional] bool preimportar)
         {
+            //Si procesar es false, no hago nada.
+            if (!procesar)
+            {
+                return null;
+            }
+
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/otherCollaborations", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "collaboration";
             string propTitle = "http://w3id.org/roh/title";
@@ -684,8 +800,14 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// bloque "Sociedades científicas y asociaciones profesionales".
         /// Con el codigo identificativo 060.030.020.000
         /// </summary>
-        public List<SubseccionItem> SincroSociedadesAsociaciones([Optional] bool preimportar)
+        public List<SubseccionItem> SincroSociedadesAsociaciones(bool procesar, [Optional] bool preimportar)
         {
+            //Si procesar es false, no hago nada.
+            if (!procesar)
+            {
+                return null;
+            }
+
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/societies", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "society";
             string propTitle = "http://w3id.org/roh/title";
@@ -720,8 +842,14 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// bloque "Consejos editoriales".
         /// Con el codigo identificativo 060.030.030.000
         /// </summary>
-        public List<SubseccionItem> SincroConsejos([Optional] bool preimportar)
+        public List<SubseccionItem> SincroConsejos(bool procesar, [Optional] bool preimportar)
         {
+            //Si procesar es false, no hago nada.
+            if (!procesar)
+            {
+                return null;
+            }
+
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/councils", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "council";
             string propTitle = "http://w3id.org/roh/title";
@@ -755,8 +883,14 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// bloque "Redes de cooperación".
         /// Con el codigo identificativo 060.030.040.000
         /// </summary>
-        public List<SubseccionItem> SincroRedesCooperacion([Optional] bool preimportar)
+        public List<SubseccionItem> SincroRedesCooperacion(bool procesar, [Optional] bool preimportar)
         {
+            //Si procesar es false, no hago nada.
+            if (!procesar)
+            {
+                return null;
+            }
+
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/networks", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "network";
             string propTitle = "http://w3id.org/roh/title";
@@ -790,8 +924,14 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// bloque "Premios, menciones y distinciones".
         /// Con el codigo identificativo 060.030.050.000
         /// </summary>
-        public List<SubseccionItem> SincroPremiosMenciones([Optional] bool preimportar)
+        public List<SubseccionItem> SincroPremiosMenciones(bool procesar, [Optional] bool preimportar)
         {
+            //Si procesar es false, no hago nada.
+            if (!procesar)
+            {
+                return null;
+            }
+
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/prizes", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "accreditation";
             string propTitle = "http://w3id.org/roh/title";
@@ -825,8 +965,14 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// bloque "Otras distinciones (carrera profesional y/o empresarial)".
         /// Con codigo identificativo 060.030.060.000
         /// </summary>
-        public List<SubseccionItem> SincroOtrasDistinciones([Optional] bool preimportar)
+        public List<SubseccionItem> SincroOtrasDistinciones(bool procesar, [Optional] bool preimportar)
         {
+            //Si procesar es false, no hago nada.
+            if (!procesar)
+            {
+                return null;
+            }
+
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/otherDistinctions", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "accreditation";
             string propTitle = "http://w3id.org/roh/title";
@@ -860,8 +1006,14 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// bloque "Períodos de actividad investigadora".
         /// Con codigo identificativo 060.030.070.000
         /// </summary>
-        public List<SubseccionItem> SincroPeriodosActividad([Optional] bool preimportar)
+        public List<SubseccionItem> SincroPeriodosActividad(bool procesar, [Optional] bool preimportar)
         {
+            //Si procesar es false, no hago nada.
+            if (!procesar)
+            {
+                return null;
+            }
+
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/researchActivityPeriods", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "accreditation";
             string propTitle = "http://w3id.org/roh/recognizedPeriods";
@@ -897,8 +1049,14 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// bloque "Acreditaciones/reconocimientos obtenidos".
         /// Con codigo identificativo 060.030.090.000
         /// </summary>
-        public List<SubseccionItem> SincroAcreditacionesObtenidas([Optional] bool preimportar)
+        public List<SubseccionItem> SincroAcreditacionesObtenidas(bool procesar, [Optional] bool preimportar)
         {
+            //Si procesar es false, no hago nada.
+            if (!procesar)
+            {
+                return null;
+            }
+
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/obtainedRecognitions", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "accreditation";
             string propTitle = "http://w3id.org/roh/title";
@@ -932,8 +1090,14 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// bloque "Resumen de otros méritos".
         /// Con codigo identificativo 060.030.100.000
         /// </summary>
-        public List<SubseccionItem> SincroResumenOtrosMeritos([Optional] bool preimportar)
+        public List<SubseccionItem> SincroResumenOtrosMeritos(bool procesar, [Optional] bool preimportar)
         {
+            //Si procesar es false, no hago nada.
+            if (!procesar)
+            {
+                return null;
+            }
+
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/otherAchievements", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "accreditation";
             string propTitle = "http://w3id.org/roh/title";
@@ -1145,7 +1309,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             }
 
             //Si el tipo de soporte es distinto a revista, añado los datos
-            if(item.GetStringPorIDCampo("060.010.010.070")!=null && !item.GetStringPorIDCampo("060.010.010.070").Equals("057"))
+            if (item.GetStringPorIDCampo("060.010.010.070") != null && !item.GetStringPorIDCampo("060.010.010.070").Equals("057"))
             {
                 entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                     new Property(Variables.ActividadCientificaTecnologica.pubDocumentosTipoSoporte, item.GetFormatoDocumentoPorIDCampo("060.010.010.070")),
@@ -1186,8 +1350,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                 //Si no tiene firma le añado como firma el nombre completo
                 if (string.IsNullOrEmpty(persona.firma)) { persona.firma = persona.nombreCompleto; }
 
-                persona.organizacion = listadoSituacionProfesional.GetElementoPorIDCampo<CvnItemBeanCvnEntityBean>("010.010.000.020").Name;
-                persona.departamento = listadoSituacionProfesional.GetElementoPorIDCampo<CvnItemBeanCvnEntityBean>("010.010.000.060").Name;
                 persona.ID = Guid.NewGuid().ToString();
                 entidadAux.autores.Add(persona);
             }
@@ -1350,8 +1512,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                 //Si no tiene firma le añado como firma el nombre completo
                 if (string.IsNullOrEmpty(persona.firma)) { persona.firma = persona.nombreCompleto; }
 
-                persona.organizacion = listadoSituacionProfesional.GetElementoPorIDCampo<CvnItemBeanCvnEntityBean>("010.010.000.020").Name;
-                persona.departamento = listadoSituacionProfesional.GetElementoPorIDCampo<CvnItemBeanCvnEntityBean>("010.010.000.060").Name;
                 persona.ID = Guid.NewGuid().ToString();
                 entidadAux.autores.Add(persona);
             }
@@ -1537,8 +1697,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                 //Si no tiene firma le añado como firma el nombre completo
                 if (string.IsNullOrEmpty(persona.firma)) { persona.firma = persona.nombreCompleto; }
 
-                persona.organizacion = listadoSituacionProfesional.GetElementoPorIDCampo<CvnItemBeanCvnEntityBean>("010.010.000.020").Name;
-                persona.departamento = listadoSituacionProfesional.GetElementoPorIDCampo<CvnItemBeanCvnEntityBean>("010.010.000.060").Name;
                 persona.ID = Guid.NewGuid().ToString();
                 entidadAux.autores.Add(persona);
             }

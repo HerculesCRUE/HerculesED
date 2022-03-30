@@ -25,8 +25,14 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// "Proyectos de I+D+i financiados en convocatorias competitivas de Administraciones o entidades públicas y privadas".
         /// Con el codigo identificativo 050.020.010.000
         /// </summary>
-        public List<SubseccionItem> SincroProyectosIDI([Optional] bool preimportar)
+        public List<SubseccionItem> SincroProyectosIDI(bool procesar, [Optional] bool preimportar)
         {
+            //Si procesar es false, no hago nada.
+            if (!procesar)
+            {
+                return null;
+            }
+
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience", "http://w3id.org/roh/competitiveProjects", "http://vivoweb.org/ontology/core#relatedBy" };
             string propertyCV = "http://w3id.org/roh/relatedCompetitiveProjectCV";
             string rdfTypeCV = "http://w3id.org/roh/RelatedCompetitiveProjectCV";
@@ -64,8 +70,14 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// "Contratos, convenios o proyectos de I+D+i no competitivos con Administraciones o entidades públicas o privadas".
         /// Con el codigo identificativo 050.020.020.000
         /// </summary>
-        public List<SubseccionItem> SincroContratos([Optional] bool preimportar)
+        public List<SubseccionItem> SincroContratos(bool procesar, [Optional] bool preimportar)
         {
+            //Si procesar es false, no hago nada.
+            if (!procesar)
+            {
+                return null;
+            }
+
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience", "http://w3id.org/roh/nonCompetitiveProjects", "http://vivoweb.org/ontology/core#relatedBy" };
             string propertyCV = "http://w3id.org/roh/relatedNonCompetitiveProjectCV";
             string rdfTypeCV = "http://w3id.org/roh/RelatedNonCompetitiveProjectCV";
@@ -103,8 +115,14 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// "Propiedad industrial e intelectual".
         /// Con el codigo identificativo 050.030.010.000
         /// </summary>
-        public List<SubseccionItem> SincroPropiedadIndustrialIntelectual([Optional] bool preimportar)
+        public List<SubseccionItem> SincroPropiedadIndustrialIntelectual(bool procesar, [Optional] bool preimportar)
         {
+            //Si procesar es false, no hago nada.
+            if (!procesar)
+            {
+                return null;
+            }
+
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience", "http://w3id.org/roh/patents", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "patent";
             string propTitle = "http://w3id.org/roh/title";
@@ -140,8 +158,14 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// "Grupos/equipos de investigación, desarrollo o innovación".
         /// Con el codigo identificativo 050.010.000.000
         /// </summary>
-        public List<SubseccionItem> SincroGrupoIDI([Optional] bool preimportar)
+        public List<SubseccionItem> SincroGrupoIDI(bool procesar, [Optional] bool preimportar)
         {
+            //Si procesar es false, no hago nada.
+            if (!procesar)
+            {
+                return null;
+            }
+
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience", "http://w3id.org/roh/groups", "http://vivoweb.org/ontology/core#relatedBy" };
             string propertyCV = "http://w3id.org/roh/relatedGroupCV";
             string rdfTypeCV = "http://w3id.org/roh/RelatedGroupCV";
@@ -178,8 +202,14 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// "Obras artísticas dirigidas".
         /// Con el codigo identificativo 050.020.030.000
         /// </summary>
-        public List<SubseccionItem> SincroObrasArtisticas([Optional] bool preimportar)
+        public List<SubseccionItem> SincroObrasArtisticas(bool procesar, [Optional] bool preimportar)
         {
+            //Si procesar es false, no hago nada.
+            if (!procesar)
+            {
+                return null;
+            }
+
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience", "http://w3id.org/roh/supervisedArtisticProjects", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "supervisedartisticproject";
             string propTitle = "http://w3id.org/roh/title";
@@ -214,8 +244,14 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// "Resultados tecnológicos derivados de actividades especializadas y de transferencia no incluidos en apartados anteriores".
         /// Con el codigo identificativo 050.030.020.000
         /// </summary>
-        public List<SubseccionItem> SincroResultadosTecnologicos([Optional] bool preimportar)
+        public List<SubseccionItem> SincroResultadosTecnologicos(bool procesar, [Optional] bool preimportar)
         {
+            //Si procesar es false, no hago nada.
+            if (!procesar)
+            {
+                return null;
+            }
+
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience", "http://w3id.org/roh/technologicalResults", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "technologicalresult";
             string propTitle = "http://w3id.org/roh/title";

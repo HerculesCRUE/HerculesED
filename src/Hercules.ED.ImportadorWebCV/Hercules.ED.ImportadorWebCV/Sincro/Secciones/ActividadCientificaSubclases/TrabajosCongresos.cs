@@ -78,7 +78,6 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
         {
             //Obtenemos IDS
             HashSet<string> ids = UtilitySecciones.GetIDS(pResourceApi, pCVID, propiedadesItem);
-
             Dictionary<string, DisambiguableEntity> resultados = new Dictionary<string, DisambiguableEntity>();
 
             //Divido la lista en listas de 1.000 elementos
@@ -148,6 +147,89 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
 
             foreach (List<string> lista in listaListasIdPersonas)
             {
+                //Selecciono los datos de grupos, proyectos comperititvos, proyectos no competitivos, organizaciones y departamentos para la posterior desambiguacion de la persona.
+                string selectDatos = $@"SELECT distinct ?item 
+                                group_concat(distinct ?dep ;separator=""|"") as ?departamentos
+                                group_concat(distinct ?org ;separator=""|"") as ?organizaciones
+                                group_concat(distinct ?group;separator=""|"") as ?grupos 
+                                group_concat(distinct ?compPro;separator=""|"") as ?comp 
+                                group_concat(distinct ?noCompPro;separator=""|"") as ?noComp
+
+                                from <{pResourceApi.GraphsUrl}scientificexperience.owl> 
+                                from <{pResourceApi.GraphsUrl}position.owl>";
+                string whereDatos = $@"where {{
+                                        ?cv <http://w3id.org/roh/cvOf> ?item .
+                                        ?cv <http://w3id.org/roh/professionalSituation> ?o . 
+                                        ?o <http://w3id.org/roh/currentProfessionalSituation> ?currentsituation . 
+                                        ?cv <http://w3id.org/roh/scientificExperience> ?sci . 
+                                        OPTIONAL{{?sci <http://w3id.org/roh/groups> ?group}} 
+                                        OPTIONAL{{?sci <http://w3id.org/roh/competitiveProjects> ?compPro}} 
+                                        OPTIONAL{{?sci <http://w3id.org/roh/nonCompetitiveProjects> ?noCompPro}} 
+                                        ?currentsituation <http://vivoweb.org/ontology/core#relatedBy> ?related .
+                                        OPTIONAL{{?related <http://w3id.org/roh/employerOrganizationTitle> ?org}}
+                                        OPTIONAL{{?related <http://w3id.org/roh/department> ?dep}}
+
+                                        FILTER(?item in (<{string.Join(">,<", lista)}>))
+                                    }}";
+                SparqlObject resultDataDatos = pResourceApi.VirtuosoQuery(selectDatos, whereDatos, "curriculumvitae");
+                foreach (Dictionary<string, Data> fila in resultDataDatos.results.bindings)
+                {
+                    if (fila.ContainsKey("item"))
+                    {
+                        //Busco las personas que tengan el mismo ID y les inserto los datos.
+                        List<Persona> listado = listaPersonasAux.SelectMany(x => x.Value).Where(x => x.personid.Equals(fila["item"].value)).ToList();
+                        foreach (Persona persona in listado)
+                        {
+                            //Departamentos
+                            if (fila.ContainsKey("departamentos"))
+                            {
+                                string[] departamentosSplit = fila["departamentos"].value.Split("|");
+                                foreach (string departamento in departamentosSplit)
+                                {
+                                    persona.departamento.Add(departamento);
+                                }
+                            }
+                            //Organizaciones
+                            if (fila.ContainsKey("org"))
+                            {
+                                string[] organizacionesSplit = fila["organizaciones"].value.Split("|");
+                                foreach (string organizacion in organizacionesSplit)
+                                {
+                                    persona.organizacion.Add(organizacion);
+                                }
+                            }
+                            //Grupos
+                            if (fila.ContainsKey("grupos"))
+                            {
+                                string[] gruposSplit = fila["grupos"].value.Split("|");
+                                foreach (string grupo in gruposSplit)
+                                {
+                                    persona.grupos.Add(grupo);
+                                }
+                            }
+                            //Proyectos competitivos
+                            if (fila.ContainsKey("comp"))
+                            {
+                                string[] compSplit = fila["comp"].value.Split("|");
+                                foreach (string proyecto in compSplit)
+                                {
+                                    persona.proyectosComp.Add(proyecto);
+                                }
+                            }
+                            //Proyectos no competitivos
+                            if (fila.ContainsKey("noComp"))
+                            {
+                                string[] proNoCompSplit = fila["noComp"].value.Split("|");
+                                foreach (string proyecto in proNoCompSplit)
+                                {
+                                    persona.proyectosNoComp.Add(proyecto);
+                                }
+                            }
+                        }
+                    }
+                }
+
+
                 string select = $@"SELECT distinct ?item group_concat(?autor;separator=""|"") as ?autores ";
                 string where = $@"where {{
                                         ?item a <http://purl.org/ontology/bibo/Document> . 
@@ -186,7 +268,7 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
             //Añado los autores de BBDD para la desambiguación
             for (int i = 0; i < listaPersonasAux.Count; i++)
             {
-                foreach(Persona persona in listaPersonasAux.ElementAt(i).Value)
+                foreach (Persona persona in listaPersonasAux.ElementAt(i).Value)
                 {
                     persona.ID = persona.personid;
                     resultados[persona.ID] = persona;
