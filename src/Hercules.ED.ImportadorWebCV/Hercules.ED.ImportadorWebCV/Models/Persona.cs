@@ -24,7 +24,6 @@ namespace Hercules.ED.ImportadorWebCV.Models
                 }
             }
         }
-        
         private HashSet<string> mDocumentos { get; set; }
         public HashSet<string> documentos
         {
@@ -44,7 +43,6 @@ namespace Hercules.ED.ImportadorWebCV.Models
                 }
             }
         }        
-        
         private HashSet<string> mOrganizacion { get; set; }
         public HashSet<string> organizacion {
             get
