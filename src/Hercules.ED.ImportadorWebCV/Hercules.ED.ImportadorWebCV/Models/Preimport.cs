@@ -1,5 +1,6 @@
 ﻿using Models;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace Hercules.ED.ImportadorWebCV.Models
 {
@@ -72,7 +73,7 @@ namespace Hercules.ED.ImportadorWebCV.Models
         /// </summary>
         public List<Entity.Property> propiedades { get; set; }
 
-        public SubseccionItem(int id, string idBBDD, List<Entity.Property> propiedades, bool isBlocked=false)
+        public SubseccionItem(int id, string idBBDD, List<Entity.Property> propiedades, bool isBlocked = false)
         {
             this.id = id;
             this.idBBDD = idBBDD;
