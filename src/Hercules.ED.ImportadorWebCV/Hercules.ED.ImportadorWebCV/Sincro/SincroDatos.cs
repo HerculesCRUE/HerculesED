@@ -106,7 +106,7 @@ namespace ImportadorWebCV.Sincro
 
         /// <summary>
         /// Metodo para sincronizar los datos pertenecientes al 
-        /// apartado de Situación profesional.stop
+        /// apartado de Situación profesional.
         /// Con el codigo identificativo 010.000.000.000
         /// </summary>
         public List<Subseccion> SincroDatosSituacionProfesional([Optional] bool preimportar, [Optional] List<string> secciones)
@@ -116,7 +116,6 @@ namespace ImportadorWebCV.Sincro
             List<Subseccion> listadoSecciones = new List<Subseccion>();
             listadoSecciones.Add(new Subseccion("010.010.000.000", situacionProfesional.SincroSituacionProfesionalActual(secciones != null && secciones.Contains("010.010.000.000"), preimportar)));
             listadoSecciones.Add(new Subseccion("010.020.000.000", situacionProfesional.SincroCargosActividades(secciones != null && secciones.Contains("010.020.000.000"), preimportar)));
-
 
             return listadoSecciones;
         }
