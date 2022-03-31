@@ -22,7 +22,7 @@ namespace ImportadorWebCV.Sincro.Secciones
 
         /// <summary>
         /// Función para sincronizar los datos pertenecientes al apartado 
-        /// "Cargos y actividades desempeñados con anterioridad", con codigo identificativo 
+        /// "Situación profesional actual", con codigo identificativo 
         /// "010.010.000.000".
         /// </summary>
         public List<SubseccionItem> SincroSituacionProfesionalActual(bool procesar, [Optional] bool preimportar)
@@ -64,7 +64,7 @@ namespace ImportadorWebCV.Sincro.Secciones
 
         /// <summary>
         /// Función para sincronizar los datos pertenecientes al apartado 
-        /// "Situación profesional actual", con codigo identificativo 
+        /// "Cargos y actividades desempeñados con anterioridad", con codigo identificativo 
         /// "010.020.000.000".
         /// </summary>
         public List<SubseccionItem> SincroCargosActividades(bool procesar, [Optional] bool preimportar)
