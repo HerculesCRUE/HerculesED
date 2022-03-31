@@ -97,6 +97,10 @@ namespace GuardadoCV.Models.API.Response
         /// </summary>
         public bool iseditable { get; set; }
         /// <summary>
+        /// Indica si es openaccess
+        /// </summary>
+        public bool isopenaccess { get; set; }
+        /// <summary>
         /// Propiedades del item
         /// </summary>
         public List<TabSectionItemProperty> properties { get; set; }
