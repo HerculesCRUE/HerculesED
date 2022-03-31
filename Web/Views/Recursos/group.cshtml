@@ -1023,7 +1023,7 @@
             $('#miembros-tab').unbind().click(function (e) {
                 e.preventDefault();
                 that.tabActive = "miembros";
-                buscadorPersonalizado.init("@Html.Translate("MIEMBROS")", "#contenedorBuscadorMiembros", "vivo:relates=http://gnoss/@pGroup.GNOSSID.Split('_')[1].ToUpper()", null, "rdf:type=person", "@Comunidad.Url", "@Comunidad.Key.ToString()");
+                buscadorPersonalizado.init("@Html.Translate("MIEMBROS")", "#contenedorBuscadorMiembros", "searchMiembrosGrupo=http://gnoss/@pGroup.GNOSSID.Split('_')[1].ToUpper()", null, "rdf:type=person", "@Comunidad.Url", "@Comunidad.Key.ToString()");
             });
             $('#colaboradores-tab').unbind().click(function (e) {
                 e.preventDefault();
