@@ -150,7 +150,7 @@ namespace ImportadorWebCV.Sincro
             ActividadDocente actividadDocente = new ActividadDocente(cvn, cvID);
 
             List<Subseccion> listadoSecciones = new List<Subseccion>();
-            listadoSecciones.Add(new Subseccion("030.040.010.000", actividadDocente.SincroDireccionTesis(secciones != null && secciones.Contains("030.040.010.000"), preimportar)));
+            listadoSecciones.Add(new Subseccion("030.040.000.000", actividadDocente.SincroDireccionTesis(secciones != null && secciones.Contains("030.040.000.000"), preimportar)));
             listadoSecciones.Add(new Subseccion("030.010.000.000", actividadDocente.SincroFormacionAcademica(secciones != null && secciones.Contains("030.010.000.000"), preimportar)));
             listadoSecciones.Add(new Subseccion("030.050.000.000", actividadDocente.SincroTutoriasAcademicas(secciones != null && secciones.Contains("030.050.000.000"), preimportar)));
             listadoSecciones.Add(new Subseccion("030.060.000.000", actividadDocente.SincroCursosSeminarios(secciones != null && secciones.Contains("030.060.000.000"), preimportar)));
