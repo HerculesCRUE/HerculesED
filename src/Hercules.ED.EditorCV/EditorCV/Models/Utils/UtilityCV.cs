@@ -21,9 +21,14 @@ namespace GuardadoCV.Models.Utils
     public class UtilityCV
     {
         /// <summary>
-        /// Propiedad para marcar las entidades como públicas
+        /// Propiedad para marcar las entidades como públicas en el CV
         /// </summary>
         public static string PropertyIspublic { get { return "http://w3id.org/roh/isPublic"; } }
+
+        /// <summary>
+        /// Propiedad para marcar las entidades con openAccess
+        /// </summary>
+        public static string PropertyOpenAccess { get { return "http://w3id.org/roh/openAccess"; } }
 
         /// <summary>
         /// Propiedad para comprobar si no es editable, tiene que tener en alguna propiedad

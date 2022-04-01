@@ -406,7 +406,7 @@
                         <li class="nav-item" role="presentation">
                             <a class="nav-link" id="colaboradores-tab" data-toggle="tab" href="#colaboradores-panel" role="tab" aria-controls="colaboradores-panel" aria-selected="false">
                                 <div class="bloque">
-                                    <div class="label">@Html.Translate("COLABORADORES")</div>
+                                    <div class="label">@Html.Translate("COLABORADORES_EXTERNOS")</div>
                                     @{
                                         // members
                                         if (pGroup.Roh_collaboratorsNumber != null)
@@ -1028,7 +1028,7 @@
             $('#colaboradores-tab').unbind().click(function (e) {
                 e.preventDefault();
                 that.tabActive = "colaboradores";
-                buscadorPersonalizado.init("@Html.Translate("COLABORADORES")", "#contenedorBuscadorMiembrosFuera", "searchColaboradoresPorGrupo=@pGroup.GNOSSID.Split('_')[1].ToUpper()", null, "rdf:type=person", "@Comunidad.Url", "@Comunidad.Key.ToString()");
+                buscadorPersonalizado.init("@Html.Translate("COLABORADORES")", "#contenedorBuscadorMiembrosFuera", "searchColaboradoresGruposExternos=http://gnoss/@pGroup.GNOSSID.Split('_')[1].ToUpper()", null, "rdf:type=person", "@Comunidad.Url", "@Comunidad.Key.ToString()");
             });
             return;
         }

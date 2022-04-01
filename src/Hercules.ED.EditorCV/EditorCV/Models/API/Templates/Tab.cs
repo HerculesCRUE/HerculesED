@@ -1,3 +1,4 @@
+using GuardadoCV.Models.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -82,6 +83,16 @@ namespace GuardadoCV.Models.API.Templates
                                 }
                             );
                         }
+                        //OpenAccess
+                        propertyDataListItems.childs.First(x => x.graph == this.presentation.listItemsPresentation.listItemEdit.graph).childs.Add(
+                                //Editabilidad
+                                new Utils.PropertyData()
+                                {
+                                    property = UtilityCV.PropertyOpenAccess,
+                                    childs = new List<Utils.PropertyData>()
+                                }
+                            );
+
                         propertyDataListItems.property = this.property;
                         return propertyDataListItems;
                     }

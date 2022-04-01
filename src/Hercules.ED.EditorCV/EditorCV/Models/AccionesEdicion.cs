@@ -727,7 +727,22 @@ namespace GuardadoCV.Models
                         }
                     );
                 }
+            }
 
+            //OpenAccess
+            {
+                PropertyData propertyItem = propertyDatas.FirstOrDefault(x => x.property == "http://vivoweb.org/ontology/core#relatedBy");
+                if (propertyItem != null)
+                {
+                    propertyItem.childs.Add(
+                        //Editabilidad
+                        new Utils.PropertyData()
+                        {
+                            property = UtilityCV.PropertyOpenAccess,
+                            childs = new List<Utils.PropertyData>()
+                        }
+                    );
+                }
             }
 
             return UtilityCV.GetProperties(new HashSet<string>() { pId }, graph, propertyDatas, pLang, new Dictionary<string, SparqlObject>());
@@ -882,6 +897,17 @@ namespace GuardadoCV.Models
                     {
                         item.iseditable = false;
                     }
+                }
+            }
+
+            //OpenAccess
+            item.isopenaccess = false;
+            if (!string.IsNullOrEmpty(pId))
+            {                
+                string valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@"+ UtilityCV.PropertyOpenAccess, pData).FirstOrDefault();
+                if (valorPropiedad=="true")
+                {
+                    item.isopenaccess = true;
                 }
             }
 
