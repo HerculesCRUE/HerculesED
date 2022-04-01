@@ -47,7 +47,6 @@ namespace CurriculumvitaeOntology
 		public virtual string RdfsLabel { get { return "http://w3id.org/roh/CategoryPath"; } }
 		public OntologyEntity Entity { get; set; }
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/categoryNode")]
 		[RDFProperty("http://w3id.org/roh/categoryNode")]
 		[MinLength(1)]
 		public  List<Concept> Roh_categoryNode { get; set;}

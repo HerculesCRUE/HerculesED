@@ -43,7 +43,6 @@ namespace CurriculumvitaeOntology
 		public virtual string RdfsLabel { get { return "http://w3id.org/roh/RelatedScientificPublicationCV"; } }
 		public OntologyEntity Entity { get; set; }
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/contributionGrade")]
 		[RDFProperty("http://w3id.org/roh/contributionGrade")]
 		public  ContributionGradeDocument Roh_contributionGrade  { get; set;} 
 		public string IdRoh_contributionGrade  { get; set;} 

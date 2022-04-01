@@ -115,52 +115,41 @@ namespace AccreditationOntology
 
 		public virtual string RdfType { get { return "http://w3id.org/roh/Accreditation"; } }
 		public virtual string RdfsLabel { get { return "http://w3id.org/roh/Accreditation"; } }
-		[LABEL(LanguageEnum.es,"https://www.w3.org/2006/vcard/ns#hasRegion")]
 		[RDFProperty("https://www.w3.org/2006/vcard/ns#hasRegion")]
 		public  Feature Vcard_hasRegion  { get; set;} 
 		public string IdVcard_hasRegion  { get; set;} 
 
-		[LABEL(LanguageEnum.es,"http://vivoweb.org/ontology/core#geographicFocus")]
 		[RDFProperty("http://vivoweb.org/ontology/core#geographicFocus")]
 		public  GeographicRegion Vivo_geographicFocus  { get; set;} 
 		public string IdVivo_geographicFocus  { get; set;} 
 
-		[LABEL(LanguageEnum.es,"https://www.w3.org/2006/vcard/ns#hasCountryName")]
 		[RDFProperty("https://www.w3.org/2006/vcard/ns#hasCountryName")]
 		public  Feature Vcard_hasCountryName  { get; set;} 
 		public string IdVcard_hasCountryName  { get; set;} 
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/accreditationIssuedBy")]
 		[RDFProperty("http://w3id.org/roh/accreditationIssuedBy")]
 		public  Organization Roh_accreditationIssuedBy  { get; set;} 
 		public string IdRoh_accreditationIssuedBy  { get; set;} 
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/organizationType")]
 		[RDFProperty("http://w3id.org/roh/organizationType")]
 		public  OrganizationType Roh_organizationType  { get; set;} 
 		public string IdRoh_organizationType  { get; set;} 
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/recognitionLinked")]
 		[RDFProperty("http://w3id.org/roh/recognitionLinked")]
 		public  string Roh_recognitionLinked { get; set;}
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/receptionDate")]
 		[RDFProperty("http://w3id.org/roh/receptionDate")]
 		public  DateTime? Roh_receptionDate { get; set;}
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/recognizedPeriods")]
 		[RDFProperty("http://w3id.org/roh/recognizedPeriods")]
 		public  float? Roh_recognizedPeriods { get; set;}
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/crisIdentifier")]
 		[RDFProperty("http://w3id.org/roh/crisIdentifier")]
 		public  string Roh_crisIdentifier { get; set;}
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/geographicFocusOther")]
 		[RDFProperty("http://w3id.org/roh/geographicFocusOther")]
 		public  string Roh_geographicFocusOther { get; set;}
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/dateIssued")]
 		[RDFProperty("http://w3id.org/roh/dateIssued")]
 		public  DateTime? Roh_dateIssued { get; set;}
 
@@ -176,11 +165,9 @@ namespace AccreditationOntology
 		[RDFProperty("https://www.w3.org/2006/vcard/ns#locality")]
 		public  string Vcard_locality { get; set;}
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/classificationCVN")]
 		[RDFProperty("http://w3id.org/roh/classificationCVN")]
 		public  string Roh_classificationCVN { get; set;}
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/title")]
 		[RDFProperty("http://w3id.org/roh/title")]
 		public  string Roh_title { get; set;}
 
