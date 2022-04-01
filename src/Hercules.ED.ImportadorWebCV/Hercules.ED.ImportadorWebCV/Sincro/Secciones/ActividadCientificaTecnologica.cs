@@ -140,14 +140,16 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 entidadesXML[idPublicacion].distincts = new HashSet<string>(entidadesXML.Keys.Except(new List<string> { idPublicacion }));
             }
+                        
+            string personaCV = Utility.PersonaCV(mCvID);
+            List<string> listado = new List<string>() { personaCV };
 
             //Obtenemos Organización, Departamento, Grupos y Publicaciones del propietario del CV.
-            HashSet<string> departamentos = new HashSet<string>();
-            HashSet<string> organizaciones = new HashSet<string>();
-            HashSet<string> grupos = new HashSet<string>();
-            HashSet<string> proComp = new HashSet<string>();
-            HashSet<string> proNoComp = new HashSet<string>();
-            Utility.DatosDesambiguacionAutor(departamentos, organizaciones, grupos, proComp, proNoComp, mCvID);
+            Utility.DatosDepartamentoPersona(listado).TryGetValue(personaCV, out HashSet<string> departamentos);
+            Utility.DatosOrganizacionPersona(listado).TryGetValue(personaCV, out HashSet<string> organizaciones);
+            Utility.DatosGrupoPersona(listado).TryGetValue(personaCV, out HashSet<string> grupos);
+            Utility.DatosProyectoPersona(listado).TryGetValue(personaCV, out HashSet<string> proyectos);
+
 
             //Añado los autores del documento para la desambiguación
             for (int i = 0; i < listadoAux.Count; i++)
@@ -161,8 +163,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     persona.departamento = departamentos;
                     persona.organizacion = organizaciones;
                     persona.grupos = grupos;
-                    persona.proyectosComp = proComp;
-                    persona.proyectosNoComp = proNoComp;
+                    persona.proyectos = proyectos;
                     persona.coautores = new HashSet<string>(listadoAux[i].autores.Select(x => x.ID).Where(x => x != persona.ID));
                     persona.documentos = new HashSet<string>() { listadoAux[i].id };
                     entidadesXML[persona.ID] = persona;
@@ -245,13 +246,14 @@ namespace ImportadorWebCV.Sincro.Secciones
                 entidadesXML[idPublicacion].distincts = new HashSet<string>(entidadesXML.Keys.Except(new List<string> { idPublicacion }));
             }
 
+            string personaCV = Utility.PersonaCV(mCvID);
+            List<string> listado = new List<string>() { personaCV };
+
             //Obtenemos Organización, Departamento, Grupos y Publicaciones del propietario del CV.
-            HashSet<string> departamentos = new HashSet<string>();
-            HashSet<string> organizaciones = new HashSet<string>();
-            HashSet<string> grupos = new HashSet<string>();
-            HashSet<string> proComp = new HashSet<string>();
-            HashSet<string> proNoComp = new HashSet<string>();
-            Utility.DatosDesambiguacionAutor(departamentos, organizaciones, grupos, proComp, proNoComp, mCvID);
+            Utility.DatosDepartamentoPersona(listado).TryGetValue(personaCV, out HashSet<string> departamentos);
+            Utility.DatosOrganizacionPersona(listado).TryGetValue(personaCV, out HashSet<string> organizaciones);
+            Utility.DatosGrupoPersona(listado).TryGetValue(personaCV, out HashSet<string> grupos);
+            Utility.DatosProyectoPersona(listado).TryGetValue(personaCV, out HashSet<string> proyectos);
 
             //Añado los autores del documento para la desambiguación
             for (int i = 0; i < listadoAux.Count; i++)
@@ -265,8 +267,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     persona.departamento = departamentos;
                     persona.organizacion = organizaciones;
                     persona.grupos = grupos;
-                    persona.proyectosComp = proComp;
-                    persona.proyectosNoComp = proNoComp;
+                    persona.proyectos = proyectos;
                     persona.coautores = new HashSet<string>(listadoAux[i].autores.Select(x => x.ID).Where(x => x != persona.ID));
                     persona.documentos = new HashSet<string>() { listadoAux[i].id };
                     entidadesXML[persona.ID] = persona;
@@ -349,13 +350,14 @@ namespace ImportadorWebCV.Sincro.Secciones
                 entidadesXML[idPublicacion].distincts = new HashSet<string>(entidadesXML.Keys.Except(new List<string> { idPublicacion }));
             }
 
+            string personaCV = Utility.PersonaCV(mCvID);
+            List<string> listado = new List<string>() { personaCV };
+
             //Obtenemos Organización, Departamento, Grupos y Publicaciones del propietario del CV.
-            HashSet<string> departamentos = new HashSet<string>();
-            HashSet<string> organizaciones = new HashSet<string>();
-            HashSet<string> grupos = new HashSet<string>();
-            HashSet<string> proComp = new HashSet<string>();
-            HashSet<string> proNoComp = new HashSet<string>();
-            Utility.DatosDesambiguacionAutor(departamentos, organizaciones, grupos, proComp, proNoComp, mCvID);
+            Utility.DatosDepartamentoPersona(listado).TryGetValue(personaCV, out HashSet<string> departamentos);
+            Utility.DatosOrganizacionPersona(listado).TryGetValue(personaCV, out HashSet<string> organizaciones);
+            Utility.DatosGrupoPersona(listado).TryGetValue(personaCV, out HashSet<string> grupos);
+            Utility.DatosProyectoPersona(listado).TryGetValue(personaCV, out HashSet<string> proyectos);
 
             //Añado los autores del documento para la desambiguación
             for (int i = 0; i < listadoAux.Count; i++)
@@ -369,8 +371,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     persona.departamento = departamentos;
                     persona.organizacion = organizaciones;
                     persona.grupos = grupos;
-                    persona.proyectosComp = proComp;
-                    persona.proyectosNoComp = proNoComp;
+                    persona.proyectos = proyectos;
                     persona.coautores = new HashSet<string>(listadoAux[i].autores.Select(x => x.ID).Where(x => x != persona.ID));
                     persona.documentos = new HashSet<string>() { listadoAux[i].id };
                     entidadesXML[persona.ID] = persona;
