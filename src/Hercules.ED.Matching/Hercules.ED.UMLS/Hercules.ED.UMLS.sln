@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32126.317
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hercules.ED.UMLS", "Hercules.ED.UMLS\Hercules.ED.UMLS.csproj", "{53DB5820-8A62-465D-97D3-B34A9C49329C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{53DB5820-8A62-465D-97D3-B34A9C49329C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53DB5820-8A62-465D-97D3-B34A9C49329C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53DB5820-8A62-465D-97D3-B34A9C49329C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53DB5820-8A62-465D-97D3-B34A9C49329C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9EF1809C-F086-4406-B43C-3969EA3FA7B0}
+	EndGlobalSection
+EndGlobal
