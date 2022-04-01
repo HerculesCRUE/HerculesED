@@ -97,39 +97,21 @@ namespace Hercules.ED.ImportadorWebCV.Models
                 }
             }
         }
-        private HashSet<string> mProyectosComp { get; set; }
-        public HashSet<string> proyectosComp{
+        private HashSet<string> mProyectos { get; set; }
+        public HashSet<string> proyectos{
             get
             {
-                return mProyectosComp;
+                return mProyectos;
             }
             set
             {
                 if (value == null)
                 {
-                    mProyectosComp = new HashSet<string>();
+                    mProyectos = new HashSet<string>();
                 }
                 else
                 {
-                    mProyectosComp = value;
-                }
-            }
-        }
-        private HashSet<string> mProyectosNoComp { get; set; }
-        public HashSet<string> proyectosNoComp {
-            get
-            {
-                return mProyectosNoComp;
-            }
-            set
-            {
-                if (value == null)
-                {
-                    mProyectosNoComp = new HashSet<string>();
-                }
-                else
-                {
-                    mProyectosNoComp = value;
+                    mProyectos = value;
                 }
             }
         }
@@ -149,36 +131,25 @@ namespace Hercules.ED.ImportadorWebCV.Models
         private static readonly DisambiguationDataConfig configOrganizacion = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsItemList,
-            score = 0.5f,
-            scoreMinus = 0.0f
+            score = 0.5f
         };
 
         private static readonly DisambiguationDataConfig configDepartamento = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsItemList,
-            score = 0.5f,
-            scoreMinus = 0.0f
+            score = 0.5f
         };
 
         private static readonly DisambiguationDataConfig configGrupos = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsItemList,
-            score = 0.5f,
-            scoreMinus = 0.0f
+            score = 0.5f
         };
 
-        private static readonly DisambiguationDataConfig configProyectosComp = new DisambiguationDataConfig()
+        private static readonly DisambiguationDataConfig configProyectos = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsItemList,
-            score = 0.5f,
-            scoreMinus = 0.0f
-        };
-
-        private static readonly DisambiguationDataConfig configProyectosNoComp = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsItemList,
-            score = 0.5f,
-            scoreMinus = 0.0f
+            score = 0.5f
         };
 
         private static readonly DisambiguationDataConfig configDocumentos = new DisambiguationDataConfig()
@@ -207,8 +178,7 @@ namespace Hercules.ED.ImportadorWebCV.Models
             this.departamento = new HashSet<string>();
             this.organizacion = new HashSet<string>();
             this.grupos = new HashSet<string>();
-            this.proyectosComp = new HashSet<string>();
-            this.proyectosNoComp = new HashSet<string>();
+            this.proyectos = new HashSet<string>();
         }
 
         public Persona()
@@ -220,8 +190,7 @@ namespace Hercules.ED.ImportadorWebCV.Models
             this.departamento = new HashSet<string>();
             this.organizacion = new HashSet<string>();
             this.grupos = new HashSet<string>();
-            this.proyectosComp = new HashSet<string>();
-            this.proyectosNoComp = new HashSet<string>();
+            this.proyectos = new HashSet<string>();
         }
 
         public string NombreBuscar
@@ -309,16 +278,9 @@ namespace Hercules.ED.ImportadorWebCV.Models
 
                 new DisambiguationData()
                 {
-                    property = "proyectosCompetitivos",
-                    config = configProyectosComp,
-                    values = proyectosComp
-                },
-
-                new DisambiguationData()
-                {
-                    property = "proyectosNoCompetitivos",
-                    config = configProyectosNoComp,
-                    values = proyectosNoComp
+                    property = "proyectos",
+                    config = configProyectos,
+                    values = proyectos
                 }
             };
 
