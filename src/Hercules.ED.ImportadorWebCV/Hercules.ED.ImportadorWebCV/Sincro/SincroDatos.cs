@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Xml.Serialization;
-using Utils;
 
 namespace ImportadorWebCV.Sincro
 {

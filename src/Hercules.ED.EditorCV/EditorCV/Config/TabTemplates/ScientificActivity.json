@@ -614,7 +614,7 @@
                           "rdftype": "http://purl.org/ontology/bibo/Document",
                           "graph": "document",
                           "property": {
-                            "property": "http://vivoweb.org/ontology/core#freeTextKeyword"
+                            "property": "http://vivoweb.org/ontology/core#freeTextKeyword|http://w3id.org/roh/title"
                           }
                         },
                         "type": "text",
@@ -1471,7 +1471,7 @@
                           "rdftype": "http://purl.org/ontology/bibo/Document",
                           "graph": "document",
                           "property": {
-                            "property": "http://vivoweb.org/ontology/core#freeTextKeyword"
+                            "property": "http://vivoweb.org/ontology/core#freeTextKeyword|http://w3id.org/roh/title"
                           }
                         },
                         "type": "text",
@@ -2559,7 +2559,7 @@
                           "rdftype": "http://purl.org/ontology/bibo/Document",
                           "graph": "document",
                           "property": {
-                            "property": "http://vivoweb.org/ontology/core#freeTextKeyword"
+                            "property": "http://vivoweb.org/ontology/core#freeTextKeyword|http://w3id.org/roh/title"
                           }
                         },
                         "type": "text",
