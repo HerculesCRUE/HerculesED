@@ -315,7 +315,7 @@
                           "rdftype": "http://w3id.org/roh/ResearchObject",
                           "graph": "researchobject",
                           "property": {
-                            "property": "http://vivoweb.org/ontology/core#freeTextKeyword"
+                            "property": "http://vivoweb.org/ontology/core#freeTextKeyword|http://w3id.org/roh/title"
                           }
                         },
                         "type": "text",

@@ -351,23 +351,23 @@
                         int contadorCategorias = 0;
                         if (pDocument.Vivo_freeTextKeyword != null && pDocument.Vivo_freeTextKeyword.Count > 0)
                         {
-                            foreach (string etiquetas in pDocument.Vivo_freeTextKeyword)
+                            foreach (KeyWord etiquetas in pDocument.Vivo_freeTextKeyword)
                             {
-                                if (!string.IsNullOrEmpty(etiquetas) && contadorCategorias < 3)
+                                if (!string.IsNullOrEmpty(etiquetas.Roh_title) && contadorCategorias < 3)
                                 {
                                     contadorCategorias++;
                                     <li>
-                                        <a href="@Comunidad.Url/@Html.Translate("PUBLICACIONES_URL")?vivo:freeTextKeyword=@etiquetas">
-                                            <span about="@pDocument.GNOSSID" property="@pDocument.GetPropertyURI(nameof(pDocument.Vivo_freeTextKeyword))" class="texto">@etiquetas</span>
+                                        <a href="@Comunidad.Url/@Html.Translate("PUBLICACIONES_URL")?vivo:freeTextKeyword@@@@@@roh:title=@etiquetas">
+                                            <span about="@pDocument.GNOSSID" property="@pDocument.GetPropertyURI(nameof(pDocument.Vivo_freeTextKeyword))" class="texto">@etiquetas.Roh_title</span>
                                         </a>
                                     </li>
                                 }
-                                else if (!string.IsNullOrEmpty(etiquetas))
+                                else if (!string.IsNullOrEmpty(etiquetas.Roh_title))
                                 {
                                     contadorCategorias++;
                                     <li class="ocultar" style="display: none;">
-                                        <a href="@Comunidad.Url/@Html.Translate("PUBLICACIONES_URL")?vivo:freeTextKeyword=@etiquetas">
-                                            <span about="@pDocument.GNOSSID" property="@pDocument.GetPropertyURI(nameof(pDocument.Vivo_freeTextKeyword))" class="texto">@etiquetas</span>
+                                        <a href="@Comunidad.Url/@Html.Translate("PUBLICACIONES_URL")?vivo:freeTextKeyword@@@@@@roh:title=@etiquetas">
+                                            <span about="@pDocument.GNOSSID" property="@pDocument.GetPropertyURI(nameof(pDocument.Vivo_freeTextKeyword))" class="texto">@etiquetas.Roh_title</span>
                                         </a>
                                     </li>
                                 }
@@ -1495,15 +1495,18 @@
             this.Roh_presentedAtTypeOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/presentedAtTypeOther"));
             this.Roh_inrecsCitationCount = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/inrecsCitationCount"));
             this.Bibo_pmid = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/pmid"));
-            SemanticPropertyModel propVivo_freeTextKeyword = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#freeTextKeyword");
-            this.Vivo_freeTextKeyword = new List<string>();
-            if (propVivo_freeTextKeyword != null && propVivo_freeTextKeyword.PropertyValues.Count > 0)
-            {
-                foreach (SemanticPropertyModel.PropertyValue propValue in propVivo_freeTextKeyword.PropertyValues)
-                {
-                    this.Vivo_freeTextKeyword.Add(propValue.Value);
-                }
-            }
+            this.Vivo_freeTextKeyword = new List<KeyWord>();
+			SemanticPropertyModel propVivo_freeTextKeyword = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#freeTextKeyword");
+			if(propVivo_freeTextKeyword != null && propVivo_freeTextKeyword.PropertyValues.Count > 0)
+			{
+				foreach (SemanticPropertyModel.PropertyValue propValue in propVivo_freeTextKeyword.PropertyValues)
+				{
+					if(propValue.RelatedEntity!=null){
+						KeyWord vivo_freeTextKeyword = new KeyWord(propValue.RelatedEntity,idiomaUsuario);
+						this.Vivo_freeTextKeyword.Add(vivo_freeTextKeyword);
+					}
+				}
+			}
             this.Bibo_handle = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/handle"));
             this.Roh_hasPublicationVenueText = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/hasPublicationVenueText"));
             this.Roh_presentedAtOrganizerTitle = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/presentedAtOrganizerTitle"));
@@ -1743,7 +1746,7 @@
         public string Bibo_pmid { get; set; }
 
         [RDFProperty("http://vivoweb.org/ontology/core#freeTextKeyword")]
-        public List<string> Vivo_freeTextKeyword { get; set; }
+        public List<KeyWord> Vivo_freeTextKeyword { get; set; }
 
         [RDFProperty("http://purl.org/ontology/bibo/handle")]
         public string Bibo_handle { get; set; }
@@ -2364,5 +2367,31 @@
 
         [RDFProperty("http://xmlns.com/foaf/0.1/name")]
         public string Foaf_name { get; set; }
+    }
+    public class KeyWord : GnossOCBase
+    {
+
+        public KeyWord() : base() { }
+
+        public KeyWord(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
+        {
+            this.mGNOSSID = pSemCmsModel.Entity.Uri;
+            this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
+            this.Roh_snomed = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/snomed"));
+            this.Roh_mesh = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/mesh"));
+            this.Roh_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/title"));
+        }
+
+        public virtual string RdfType { get { return "http://w3id.org/roh/KeyWord"; } }
+        public virtual string RdfsLabel { get { return "http://w3id.org/roh/KeyWord"; } }
+
+        [RDFProperty("http://w3id.org/roh/snomed")]
+        public string Roh_snomed { get; set; }
+
+        [RDFProperty("http://w3id.org/roh/mesh")]
+        public string Roh_mesh { get; set; }
+
+        [RDFProperty("http://w3id.org/roh/title")]
+        public string Roh_title { get; set; }
     }
 }

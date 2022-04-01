@@ -55,17 +55,14 @@ namespace CurriculumvitaeOntology
 		public virtual string RdfsLabel { get { return "http://w3id.org/roh/RelatedCompetitiveProjectCV"; } }
 		public OntologyEntity Entity { get; set; }
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/dedication")]
 		[RDFProperty("http://w3id.org/roh/dedication")]
 		public  DedicationRegime Roh_dedication  { get; set;} 
 		public string IdRoh_dedication  { get; set;} 
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/participationType")]
 		[RDFProperty("http://w3id.org/roh/participationType")]
 		public  ParticipationTypeProject Roh_participationType  { get; set;} 
 		public string IdRoh_participationType  { get; set;} 
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/contributionGradeProject")]
 		[RDFProperty("http://w3id.org/roh/contributionGradeProject")]
 		public  ContributionGradeProject Roh_contributionGradeProject  { get; set;} 
 		public string IdRoh_contributionGradeProject  { get; set;} 

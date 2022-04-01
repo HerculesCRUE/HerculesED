@@ -59,6 +59,26 @@ namespace GuardadoCV.Models
         {
             int numMax = 20;
             string searchText = pSearch.Trim();
+
+            //Subdivido las propiedades, en caso de venir varias, y las concateno para la consulta.
+            string pPropertyAux = "";
+            string[] pPropertySplit = pProperty.Split("|");
+            int contador = 0;
+            bool inicio = true;
+            foreach (string pProp in pPropertySplit)
+            {
+                if (inicio)
+                {
+                    pPropertyAux = pProp + "> ?o" + contador + " . ";
+                    inicio = !inicio;
+                    continue;
+                }
+                pPropertyAux += " ?o" + contador + " <" + pProp + "> ?o";
+                contador++;
+                pPropertyAux += contador + " . ";
+            }
+            pPropertyAux = pPropertyAux.Substring(0, pPropertyAux.Length - 8);
+
             if (pCache)
             {
 
@@ -77,7 +97,7 @@ namespace GuardadoCV.Models
                         Dictionary<string, string> dicValores = new Dictionary<string, string>();
                         string select = "SELECT * WHERE { SELECT DISTINCT ?s ?o  ";
                         string where = $@"WHERE {{
-                                                            ?s a <{ pRdfType }>. ?s <{ pProperty }> ?o . FILTER( lang(?o) = '{pLang}' OR lang(?o) = '')                          
+                                                            ?s a <{ pRdfType }>. ?s <{ pPropertyAux }> ?o . FILTER( lang(?o) = '{pLang}' OR lang(?o) = '')                          
                                                         }} ORDER BY DESC(?o) DESC (?s) }} LIMIT {limit} OFFSET {offset}";
                         SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, pGraph);
                         if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
@@ -172,7 +192,7 @@ namespace GuardadoCV.Models
                     filter = $"bif:contains(?o, \"'{ searchText }'\"){filter}";
                 }
                 string select = "SELECT DISTINCT ?s ?o ";
-                string where = $"WHERE {{ ?s a <{ pRdfType }>. ?s <{ pProperty }> ?o . FILTER( {filter} ) FILTER( lang(?o) = '{pLang}' OR lang(?o) = '')   }} ORDER BY ?o";
+                string where = $"WHERE {{ ?s a <{ pRdfType }>. ?s <{ pPropertyAux }> ?o . FILTER( {filter} ) FILTER( lang(?o) = '{pLang}' OR lang(?o) = '')   }} ORDER BY ?o";
                 SparqlObject sparqlObjectAux = mResourceApi.VirtuosoQuery(select, where, pGraph);
                 if (!pGetEntityID)
                 {
@@ -584,7 +604,7 @@ namespace GuardadoCV.Models
                     foreach (string wordOut in wordsTexto)
                     {
                         List<string> words = new List<string>();
-                        if(wordOut.Length==2)
+                        if (wordOut.Length == 2)
                         {
                             words.Add(wordOut[0].ToString());
                             words.Add(wordOut[1].ToString());
@@ -903,9 +923,9 @@ namespace GuardadoCV.Models
             //OpenAccess
             item.isopenaccess = false;
             if (!string.IsNullOrEmpty(pId))
-            {                
-                string valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@"+ UtilityCV.PropertyOpenAccess, pData).FirstOrDefault();
-                if (valorPropiedad=="true")
+            {
+                string valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + UtilityCV.PropertyOpenAccess, pData).FirstOrDefault();
+                if (valorPropiedad == "true")
                 {
                     item.isopenaccess = true;
                 }

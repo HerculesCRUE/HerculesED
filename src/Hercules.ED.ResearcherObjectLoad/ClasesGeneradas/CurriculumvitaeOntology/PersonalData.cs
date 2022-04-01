@@ -108,12 +108,10 @@ namespace CurriculumvitaeOntology
 		[RDFProperty("https://www.w3.org/2006/vcard/ns#address")]
 		public  Address Vcard_address { get; set;}
 
-		[LABEL(LanguageEnum.es,"http://xmlns.com/foaf/0.1/gender")]
 		[RDFProperty("http://xmlns.com/foaf/0.1/gender")]
 		public  Gender Foaf_gender  { get; set;} 
 		public string IdFoaf_gender  { get; set;} 
 
-		[LABEL(LanguageEnum.es,"http://www.schema.org/nationality")]
 		[RDFProperty("http://www.schema.org/nationality")]
 		public  Feature Schema_nationality  { get; set;} 
 		public string IdSchema_nationality  { get; set;} 

@@ -30,41 +30,40 @@ namespace ProjectOntology
 			this.mGNOSSID = pSemCmsModel.Entity.Uri;
 			this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
 			this.Vivo_start= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#start"));
+			this.Rdf_comment = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://www.w3.org/1999/02/22-rdf-syntax-ns#comment"));
 			this.Vivo_end= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#end"));
 			this.Foaf_nick = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/nick"));
-			SemanticPropertyModel propRdf_member = pSemCmsModel.GetPropertyByPath("http://www.w3.org/1999/02/22-rdf-syntax-ns#member");
-			if(propRdf_member != null && propRdf_member.PropertyValues.Count > 0)
+			SemanticPropertyModel propRoh_roleOf = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/roleOf");
+			if(propRoh_roleOf != null && propRoh_roleOf.PropertyValues.Count > 0)
 			{
-				this.Rdf_member = new Person(propRdf_member.PropertyValues[0].RelatedEntity,idiomaUsuario);
+				this.Roh_roleOf = new Person(propRoh_roleOf.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
-			this.Rdf_comment = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://www.w3.org/1999/02/22-rdf-syntax-ns#comment")).Value;
+			this.Roh_isIP= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isIP"));
 		}
 
 		public virtual string RdfType { get { return "http://purl.obolibrary.org/obo/BFO_0000023"; } }
 		public virtual string RdfsLabel { get { return "http://purl.obolibrary.org/obo/BFO_0000023"; } }
 		public OntologyEntity Entity { get; set; }
 
-		[LABEL(LanguageEnum.es,"http://vivoweb.org/ontology/core#start")]
 		[RDFProperty("http://vivoweb.org/ontology/core#start")]
 		public  DateTime? Vivo_start { get; set;}
 
-		[LABEL(LanguageEnum.es,"http://vivoweb.org/ontology/core#end")]
+		[RDFProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#comment")]
+		public  int? Rdf_comment { get; set;}
+
 		[RDFProperty("http://vivoweb.org/ontology/core#end")]
 		public  DateTime? Vivo_end { get; set;}
 
-		[LABEL(LanguageEnum.es,"http://xmlns.com/foaf/0.1/nick")]
 		[RDFProperty("http://xmlns.com/foaf/0.1/nick")]
 		public  string Foaf_nick { get; set;}
 
-		[LABEL(LanguageEnum.es,"http://www.w3.org/1999/02/22-rdf-syntax-ns#member")]
-		[RDFProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#member")]
+		[RDFProperty("http://w3id.org/roh/roleOf")]
 		[Required]
-		public  Person Rdf_member  { get; set;} 
-		public string IdRdf_member  { get; set;} 
+		public  Person Roh_roleOf  { get; set;} 
+		public string IdRoh_roleOf  { get; set;} 
 
-		[LABEL(LanguageEnum.es,"http://www.w3.org/1999/02/22-rdf-syntax-ns#comment")]
-		[RDFProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#comment")]
-		public  int Rdf_comment { get; set;}
+		[RDFProperty("http://w3id.org/roh/isIP")]
+		public  bool Roh_isIP { get; set;}
 
 
 		internal override void GetProperties()
@@ -73,12 +72,13 @@ namespace ProjectOntology
 			if (this.Vivo_start.HasValue){
 				propList.Add(new DateOntologyProperty("vivo:start", this.Vivo_start.Value));
 				}
+			propList.Add(new StringOntologyProperty("rdf:comment", this.Rdf_comment.ToString()));
 			if (this.Vivo_end.HasValue){
 				propList.Add(new DateOntologyProperty("vivo:end", this.Vivo_end.Value));
 				}
 			propList.Add(new StringOntologyProperty("foaf:nick", this.Foaf_nick));
-			propList.Add(new StringOntologyProperty("rdf:member", this.IdRdf_member));
-			propList.Add(new StringOntologyProperty("rdf:comment", this.Rdf_comment.ToString()));
+			propList.Add(new StringOntologyProperty("roh:roleOf", this.IdRoh_roleOf));
+			propList.Add(new BoolOntologyProperty("roh:isIP", this.Roh_isIP));
 		}
 
 		internal override void GetEntities()

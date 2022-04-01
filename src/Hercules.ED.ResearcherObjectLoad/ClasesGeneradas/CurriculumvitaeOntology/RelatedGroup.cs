@@ -29,6 +29,11 @@ namespace CurriculumvitaeOntology
 		{
 			this.mGNOSSID = pSemCmsModel.Entity.Uri;
 			this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
+			SemanticPropertyModel propRoh_relatedGroupCV = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/relatedGroupCV");
+			if(propRoh_relatedGroupCV != null && propRoh_relatedGroupCV.PropertyValues.Count > 0)
+			{
+				this.Roh_relatedGroupCV = new RelatedGroupCV(propRoh_relatedGroupCV.PropertyValues[0].RelatedEntity,idiomaUsuario);
+			}
 			SemanticPropertyModel propVivo_relatedBy = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#relatedBy");
 			if(propVivo_relatedBy != null && propVivo_relatedBy.PropertyValues.Count > 0)
 			{
@@ -40,6 +45,9 @@ namespace CurriculumvitaeOntology
 		public virtual string RdfType { get { return "http://w3id.org/roh/RelatedGroup"; } }
 		public virtual string RdfsLabel { get { return "http://w3id.org/roh/RelatedGroup"; } }
 		public OntologyEntity Entity { get; set; }
+
+		[RDFProperty("http://w3id.org/roh/relatedGroupCV")]
+		public  RelatedGroupCV Roh_relatedGroupCV { get; set;}
 
 		[RDFProperty("http://vivoweb.org/ontology/core#relatedBy")]
 		[Required]
@@ -60,6 +68,12 @@ namespace CurriculumvitaeOntology
 		internal override void GetEntities()
 		{
 			base.GetEntities();
+			if(Roh_relatedGroupCV!=null){
+				Roh_relatedGroupCV.GetProperties();
+				Roh_relatedGroupCV.GetEntities();
+				OntologyEntity entityRoh_relatedGroupCV = new OntologyEntity("http://w3id.org/roh/RelatedGroupCV", "http://w3id.org/roh/RelatedGroupCV", "roh:relatedGroupCV", Roh_relatedGroupCV.propList, Roh_relatedGroupCV.entList);
+				entList.Add(entityRoh_relatedGroupCV);
+			}
 		} 
 
 

@@ -20,89 +20,177 @@ namespace Utils
         private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config\configOAuth\OAuthV3.config");
 
         /// <summary>
-        /// Inserta en <paramref name="departamentos"/>, <paramref name="grupos"/>, <paramref name="organizaciones"/>,
-        /// <paramref name="proComp"/> y <paramref name="proNoComp"/> los datos respectivos al propietario de <paramref name="pCVID"/>.
+        /// Devuelve la persona a partir del CV
         /// </summary>
-        /// <param name="departamentos">departamentos</param>
-        /// <param name="organizaciones">organizaciones</param>
-        /// <param name="grupos">grupos</param>
-        /// <param name="proComp">proyectosCompetitivos</param>
-        /// <param name="proNoComp">proyectosNocompetitivos</param>
-        /// <param name="pCVID">CV ID</param>
-        public static void DatosDesambiguacionAutor(HashSet<string> departamentos, HashSet<string> organizaciones, HashSet<string> grupos, HashSet<string> proComp, HashSet<string> proNoComp, string pCVID)
+        /// <param name="pCVID"></param>
+        /// <returns></returns>
+        public static string PersonaCV(string pCVID)
         {
-            //Obtenemos Organización, Departamento, Grupos y Publicaciones del propietario del CV.          
-
-            string selectOD = $@"SELECT distinct 
-                                group_concat(distinct ?dep ;separator=""|"") as ?departamentos
-                                group_concat(distinct ?org ;separator=""|"") as ?organizaciones
-                                group_concat(distinct ?group;separator=""|"") as ?grupos 
-                                group_concat(distinct ?compPro;separator=""|"") as ?comp 
-                                group_concat(distinct ?noCompPro;separator=""|"") as ?noComp
-
-                                from <{mResourceApi.GraphsUrl}scientificexperience.owl> 
-                                from <{mResourceApi.GraphsUrl}position.owl>";
-            string whereOD = $@"where {{
-                                        ?s <http://w3id.org/roh/professionalSituation> ?o . 
-                                        ?o <http://w3id.org/roh/currentProfessionalSituation> ?currentsituation . 
-                                        ?s <http://w3id.org/roh/scientificExperience> ?sci . 
-                                        OPTIONAL{{?sci <http://w3id.org/roh/groups> ?group}} 
-                                        OPTIONAL{{?sci <http://w3id.org/roh/competitiveProjects> ?compPro}} 
-                                        OPTIONAL{{?sci <http://w3id.org/roh/nonCompetitiveProjects> ?noCompPro}} 
-                                        ?currentsituation <http://vivoweb.org/ontology/core#relatedBy> ?related .
-                                        OPTIONAL{{?related <http://w3id.org/roh/employerOrganizationTitle> ?org}}
-                                        OPTIONAL{{?related <http://w3id.org/roh/department> ?dep}}
-                                        FILTER(?s=<{pCVID}>)
-                                    }} ";
-            SparqlObject resultDataOD = mResourceApi.VirtuosoQuery(selectOD, whereOD, "curriculumvitae");
-            foreach (Dictionary<string, Data> fila in resultDataOD.results.bindings)
+            string select = $@"select distinct ?person ";
+            string where = $@" where {{
+                                    ?s <http://w3id.org/roh/cvOf> ?person .
+                                    FILTER(?s=<{pCVID}>)
+                                }}";
+            SparqlObject resultData = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+            foreach (Dictionary<string, Data> fila in resultData.results.bindings)
             {
-                //Departamentos
-                if (fila.ContainsKey("departamentos"))
-                {
-                    string[] departamentosSplit = fila["departamentos"].value.Split("|");
-                    foreach (string departamento in departamentosSplit)
-                    {
-                        departamentos.Add(departamento);
-                    }
-                }
+                return fila["person"].value;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Dada una lista de personas, devuelve las organizaciones correspondientes a cada persona.
+        /// </summary>
+        /// <param name="personas"></param>
+        /// <returns></returns>
+        public static Dictionary<string, HashSet<string>> DatosOrganizacionPersona(List<string> personas)
+        {
+            Dictionary<string, HashSet<string>> organizaciones = new Dictionary<string, HashSet<string>>();
+            string select = $@"select distinct ?person ?organization
+                                from <{mResourceApi.GraphsUrl}person.owl> 
+                                from <{mResourceApi.GraphsUrl}group.owl> 
+                                ";
+            string where = $@" where {{
+                                    ?s <http://w3id.org/roh/cvOf> ?person .
+                                    ?person a <http://xmlns.com/foaf/0.1/Person>.
+                                    ?person <http://w3id.org/roh/hasRole> ?organization .
+                                    FILTER(?person in (<{string.Join(">,<", personas)}>))
+                                }} ";
+            SparqlObject resultData = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+            foreach (Dictionary<string, Data> fila in resultData.results.bindings)
+            {
                 //Organizaciones
-                if (fila.ContainsKey("org"))
+                if (fila.ContainsKey("organization"))
                 {
-                    string[] organizacionesSplit = fila["organizaciones"].value.Split("|");
-                    foreach (string organizacion in organizacionesSplit)
+                    if (organizaciones.ContainsKey(fila["person"].value))
                     {
-                        organizaciones.Add(organizacion);
+                        organizaciones[fila["person"].value].Append(fila["organization"].value);
                     }
-                }
-                //Grupos
-                if (fila.ContainsKey("grupos"))
-                {
-                    string[] gruposSplit = fila["grupos"].value.Split("|");
-                    foreach (string grupo in gruposSplit)
+                    else
                     {
-                        grupos.Add(grupo);
-                    }
-                }
-                //Proyectos competitivos
-                if (fila.ContainsKey("comp"))
-                {
-                    string[] compSplit = fila["comp"].value.Split("|");
-                    foreach (string proyecto in compSplit)
-                    {
-                        proComp.Add(proyecto);
-                    }
-                }
-                //Proyectos no competitivos
-                if (fila.ContainsKey("noComp"))
-                {
-                    string[] proNoCompSplit = fila["noComp"].value.Split("|");
-                    foreach (string proyecto in proNoCompSplit)
-                    {
-                        proNoComp.Add(proyecto);
+                        organizaciones.Add(fila["person"].value, new HashSet<string>() { fila["organization"].value });
                     }
                 }
             }
+            return organizaciones;
+        }
+
+        /// <summary>
+        /// Dada una lista de personas, devuelve los departamentos correspondientes a cada persona.
+        /// </summary>
+        /// <param name="personas"></param>
+        /// <returns></returns>
+        public static Dictionary<string, HashSet<string>> DatosDepartamentoPersona(List<string> personas)
+        {
+            Dictionary<string, HashSet<string>> departamentos = new Dictionary<string, HashSet<string>>();
+            string select = $@"select distinct ?person ?departament
+                                from <{mResourceApi.GraphsUrl}person.owl> 
+                                from <{mResourceApi.GraphsUrl}group.owl> 
+                                ";
+            string where = $@" where {{
+                                    ?s <http://w3id.org/roh/cvOf> ?person .
+                                    ?person a <http://xmlns.com/foaf/0.1/Person>.
+                                    ?person <http://vivoweb.org/ontology/core#departmentOrSchool> ?departament .
+                                    FILTER(?person in (<{string.Join(">,<", personas)}>))
+                                }} ";
+            SparqlObject resultData = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+            foreach (Dictionary<string, Data> fila in resultData.results.bindings)
+            {
+                //Departamentos
+                if (fila.ContainsKey("departament"))
+                {
+                    if (departamentos.ContainsKey(fila["person"].value))
+                    {
+                        departamentos[fila["person"].value].Append(fila["departament"].value);
+                    }
+                    else
+                    {
+                        departamentos.Add(fila["person"].value, new HashSet<string>() { fila["departament"].value });
+                    }
+                }
+            }
+            return departamentos;
+        }
+
+        /// <summary>
+        /// Dada una lista de personas, devuelve los proyectos correspondientes a cada persona.
+        /// </summary>
+        /// <param name="personas"></param>
+        /// <returns></returns>
+        public static Dictionary<string, HashSet<string>> DatosProyectoPersona( List<string> personas)
+        {
+            Dictionary<string, HashSet<string>> proyectos = new Dictionary<string, HashSet<string>>();
+            string select = $@"select distinct ?person ?project
+                                from <{mResourceApi.GraphsUrl}person.owl> 
+                                from <{mResourceApi.GraphsUrl}project.owl> 
+                                ";
+            string where = $@" where {{
+                                    ?s <http://w3id.org/roh/cvOf> ?person .
+                                    ?person a <http://xmlns.com/foaf/0.1/Person>.
+                                    ?project a <http://vivoweb.org/ontology/core#Project>.
+                                    ?project ?propRol ?rol .
+                                    FILTER(?propRol in (<http://w3id.org/roh/researchers>,<http://w3id.org/roh/mainResearchers>))
+                                    ?rol <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person .
+                                    FILTER(?person in (<{string.Join(">,<", personas)}>))
+                                }} ";
+            SparqlObject resultData = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+            foreach (Dictionary<string, Data> fila in resultData.results.bindings)
+            {
+                //Proyectos
+                if (fila.ContainsKey("project"))
+                {
+                    if (proyectos.ContainsKey(fila["person"].value))
+                    {
+                        proyectos[fila["person"].value].Append(fila["project"].value);
+                    }
+                    else
+                    {
+                        proyectos.Add(fila["person"].value, new HashSet<string>() { fila["project"].value });
+                    }
+                }
+            }
+            return proyectos;
+        }
+
+        /// <summary>
+        /// Dada una lista de personas, devuelve los grupos correspondientes a cada persona.
+        /// </summary>
+        /// <param name="personas"></param>
+        /// <returns></returns>
+        public static Dictionary<string, HashSet<string>> DatosGrupoPersona(List<string> personas)
+        {
+            Dictionary<string, HashSet<string>> grupos = new Dictionary<string, HashSet<string>>();
+            string select = $@"select distinct ?person ?group
+                                from <{mResourceApi.GraphsUrl}person.owl> 
+                                from <{mResourceApi.GraphsUrl}group.owl> 
+                                ";
+            string where = $@" where {{
+                                    ?s <http://w3id.org/roh/cvOf> ?person .
+                                    ?person a <http://xmlns.com/foaf/0.1/Person>.
+                                    ?group a <http://xmlns.com/foaf/0.1/Group>.
+                                    ?group ?propRol ?rol .
+                                    FILTER(?propRol in (<http://w3id.org/roh/researchers>,<http://w3id.org/roh/mainResearchers>))
+                                    ?rol <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person .
+                                    FILTER(?person in (<{string.Join(">,<", personas)}>))
+                                }} ";
+            SparqlObject resultData = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+            foreach (Dictionary<string, Data> fila in resultData.results.bindings)
+            {
+                //Grupos
+                if (fila.ContainsKey("group"))
+                {
+                    if (grupos.ContainsKey(fila["person"].value))
+                    {
+                        grupos[fila["person"].value].Append(fila["group"].value);
+                    }
+                    else
+                    {
+                        grupos.Add(fila["person"].value, new HashSet<string>() { fila["group"].value });
+                    }
+                }
+            }
+            return grupos;
         }
 
         /// <summary>
@@ -698,7 +786,7 @@ namespace Utils
             foreach (string firma in listadoFirma)
             {
                 HashSet<int> scores = new HashSet<int>();
-                foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings.Where(x=>x["nameInput"].value==firma))
+                foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings.Where(x => x["nameInput"].value == firma))
                 {
                     nameInput = fila["nameInput"].value;
                     if (!diccionarioPersonasFirma.ContainsKey(nameInput))
@@ -1791,7 +1879,7 @@ namespace Utils
             fechaString = anio + fechaAux[1] + fechaAux[0] + "000000";
             return fechaString;
         }
-        
+
         /// <summary>
         /// Devuelve un string en formato de fecha de GNOSS
         /// YYYYMMDD000000
