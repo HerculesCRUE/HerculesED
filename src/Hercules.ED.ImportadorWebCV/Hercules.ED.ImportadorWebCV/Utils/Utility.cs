@@ -19,6 +19,11 @@ namespace Utils
     {
         private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config\configOAuth\OAuthV3.config");
 
+        /// <summary>
+        /// Devuelve la persona a partir del CV
+        /// </summary>
+        /// <param name="pCVID"></param>
+        /// <returns></returns>
         public static string PersonaCV(string pCVID)
         {
             string select = $@"select distinct ?person ";
@@ -33,6 +38,12 @@ namespace Utils
             }
             return null;
         }
+
+        /// <summary>
+        /// Dada una lista de personas, devuelve las organizaciones correspondientes a cada persona.
+        /// </summary>
+        /// <param name="personas"></param>
+        /// <returns></returns>
         public static Dictionary<string, HashSet<string>> DatosOrganizacionPersona(List<string> personas)
         {
             Dictionary<string, HashSet<string>> organizaciones = new Dictionary<string, HashSet<string>>();
@@ -64,7 +75,12 @@ namespace Utils
             }
             return organizaciones;
         }
-        
+
+        /// <summary>
+        /// Dada una lista de personas, devuelve los departamentos correspondientes a cada persona.
+        /// </summary>
+        /// <param name="personas"></param>
+        /// <returns></returns>
         public static Dictionary<string, HashSet<string>> DatosDepartamentoPersona(List<string> personas)
         {
             Dictionary<string, HashSet<string>> departamentos = new Dictionary<string, HashSet<string>>();
@@ -96,7 +112,12 @@ namespace Utils
             }
             return departamentos;
         }
-        
+
+        /// <summary>
+        /// Dada una lista de personas, devuelve los proyectos correspondientes a cada persona.
+        /// </summary>
+        /// <param name="personas"></param>
+        /// <returns></returns>
         public static Dictionary<string, HashSet<string>> DatosProyectoPersona( List<string> personas)
         {
             Dictionary<string, HashSet<string>> proyectos = new Dictionary<string, HashSet<string>>();
@@ -131,6 +152,12 @@ namespace Utils
             }
             return proyectos;
         }
+
+        /// <summary>
+        /// Dada una lista de personas, devuelve los grupos correspondientes a cada persona.
+        /// </summary>
+        /// <param name="personas"></param>
+        /// <returns></returns>
         public static Dictionary<string, HashSet<string>> DatosGrupoPersona(List<string> personas)
         {
             Dictionary<string, HashSet<string>> grupos = new Dictionary<string, HashSet<string>>();
@@ -165,6 +192,7 @@ namespace Utils
             }
             return grupos;
         }
+
         /// <summary>
         /// Dado un codigo devuelve si el formato es valido
         /// </summary>
