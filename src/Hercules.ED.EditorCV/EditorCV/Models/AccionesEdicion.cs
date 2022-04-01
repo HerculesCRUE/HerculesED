@@ -292,7 +292,7 @@ namespace GuardadoCV.Models
             }
             else
             {
-                return GetEditModel(entityID, templateEdit, pLang);
+                return GetEditModel(entityID, templateEdit, pLang, pEntityID);
             }
         }
 
