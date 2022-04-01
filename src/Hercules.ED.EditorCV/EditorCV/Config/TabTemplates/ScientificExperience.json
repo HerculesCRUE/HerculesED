@@ -186,6 +186,7 @@
                         "placeholder": {
                           "es": "Introduce el nombre del proyecto"
                         },
+                        "multilang": true,
                         "property": "http://w3id.org/roh/title",
                         "required": true,
                         "type": "text",
@@ -831,6 +832,7 @@
                           "es": "Nombre del programa"
                         },
                         "property": "http://w3id.org/roh/isSupportedBy",
+                        "multilang": true,
                         "type": "text",
                         "width": 2
                       },
@@ -891,6 +893,7 @@
                           "es": "Resultados relevantes"
                         },
                         "property": "http://w3id.org/roh/relevantResults",
+                        "multilang": true,
                         "type": "text",
                         "width": 2
                       }
@@ -970,8 +973,9 @@
                         "title": {
                           "es": "Aportación del solicitante"
                         },
-                        "entity_cv":true,
+                        "entity_cv": true,
                         "property": "http://w3id.org/roh/applicantContribution",
+                        "multilang": true,
                         "type": "textarea",
                         "width": 3
                       }
