@@ -206,6 +206,10 @@ namespace GuardadoCV.Models
                     throw new Exception("Código no implementado");
                 }
 
+                //Almacenamos las propiedades multiidioma para posteriormente procesarlas
+                List<Entity.Property> propiedadesMultiidiomaNoCV = new List<Entity.Property>();
+                propiedadesMultiidiomaNoCV = pEntity.properties.Where(x => x.valuesmultilang != null).ToList();
+
                 string entityID = "";
                 string entityIDResponse = "";
                 //Entidad externa CV
@@ -332,10 +336,11 @@ namespace GuardadoCV.Models
                         {
                             editable = false;
                         }
-                    }
+                    }                   
 
                     if (!editable)
                     {
+                        //Si no es editable eliminamos las propiedades que no sean editables
                         List<string> propertiesEditables = templateSection.presentation.listItemsPresentation.listItemEdit.sections.SelectMany(x => x.rows).SelectMany(x => x.properties).Where(x => x.editable).Select(x => x.property).ToList();
                         pEntity.properties.RemoveAll(x => !propertiesEditables.Contains(x.prop.Split(new string[] { "@@@" }, StringSplitOptions.RemoveEmptyEntries)[0]));
                     }
@@ -451,24 +456,52 @@ namespace GuardadoCV.Models
                     //Entidad entityID
                     Dictionary<string, List<MultilangProperty>> propiedadesActuales = UtilityCV.GetMultilangPropertiesCV(pCvID, entityID);
                     Dictionary<string, List<MultilangProperty>> propiedadesNuevas = new Dictionary<string, List<MultilangProperty>>();
-                    foreach (Entity.Property prop in pEntity.properties)
+                    if (propiedadesMultiidiomaNoCV != null)
                     {
-                        if (prop.valuesmultilang != null)
+                        foreach (Entity.Property prop in propiedadesMultiidiomaNoCV)
                         {
-                            foreach (string idioma in prop.valuesmultilang.Keys)
+                            if (prop.valuesmultilang != null)
                             {
-                                if (!string.IsNullOrEmpty(prop.valuesmultilang[idioma]))
+                                foreach (string idioma in prop.valuesmultilang.Keys)
                                 {
-                                    if (!propiedadesNuevas.ContainsKey(prop.prop))
+                                    if (!string.IsNullOrEmpty(prop.valuesmultilang[idioma]))
                                     {
-                                        propiedadesNuevas.Add(prop.prop, new List<MultilangProperty>());
+                                        if (!propiedadesNuevas.ContainsKey(prop.prop))
+                                        {
+                                            propiedadesNuevas.Add(prop.prop, new List<MultilangProperty>());
+                                        }
+                                        MultilangProperty multilangProperty = new MultilangProperty()
+                                        {
+                                            lang = idioma,
+                                            value = prop.valuesmultilang[idioma]
+                                        };
+                                        propiedadesNuevas[prop.prop].Add(multilangProperty);
                                     }
-                                    MultilangProperty multilangProperty = new MultilangProperty()
+                                }
+                            }
+                        }
+                    }
+                    if (pEntity.properties_cv != null)
+                    {
+                        foreach (Entity.Property prop in pEntity.properties_cv)
+                        {
+                            if (prop.valuesmultilang != null)
+                            {
+                                foreach (string idioma in prop.valuesmultilang.Keys)
+                                {
+                                    if (!string.IsNullOrEmpty(prop.valuesmultilang[idioma]))
                                     {
-                                        lang = idioma,
-                                        value = prop.valuesmultilang[idioma]
-                                    };
-                                    propiedadesNuevas[prop.prop].Add(multilangProperty);
+                                        if (!propiedadesNuevas.ContainsKey(prop.prop))
+                                        {
+                                            propiedadesNuevas.Add(prop.prop, new List<MultilangProperty>());
+                                        }
+                                        MultilangProperty multilangProperty = new MultilangProperty()
+                                        {
+                                            lang = idioma,
+                                            value = prop.valuesmultilang[idioma]
+                                        };
+                                        propiedadesNuevas[prop.prop].Add(multilangProperty);
+                                    }
                                 }
                             }
                         }
