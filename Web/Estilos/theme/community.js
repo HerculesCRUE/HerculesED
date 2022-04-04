@@ -247,7 +247,7 @@ var metabuscador = {
     cargarResultados: function () {
         var that = this;
         this.metabuscador.addClass('mostrarResultados');
-        // simular la carga de cada secciÃ³n
+        // simular la carga de cada sección
         that.cargarRecursos();
         that.cargarDebates();
         that.cargarPreguntas();
@@ -496,9 +496,9 @@ var iniciarDatepicker = {
             currentText: 'Hoy',
             monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
             monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
-            dayNames: ['Domingo', 'Lunes', 'Martes', 'MiÃ©rcoles', 'Jueves', 'Viernes', 'SÃ¡bado'],
-            dayNamesShort: ['Dom', 'Lun', 'Mar', 'MiÃ©', 'Juv', 'Vie', 'SÃ¡b'],
-            dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'SÃ¡'],
+            dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+            dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Juv', 'Vie', 'Sáb'],
+            dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'],
             weekHeader: 'Sm',
             dateFormat: 'dd/mm/yy',
             firstDay: 1,
@@ -753,9 +753,59 @@ var clonarNombreFicha = {
 };
 
 var montarTooltip = {
+    lanzar: function (elem, title, classes) {
+        elem.tooltip({
+            html: true,
+            placement: 'bottom',
+            template: '<div class="tooltip ' + classes + '" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
+            title: title
+        }).on('mouseenter', function () {
+            // console.log('enter')
+            var _this = this;
+            // $(this).tooltip('show');
+            $(this).siblings(elem).on('mouseleave', function () {
+                $(_this).tooltip('hide');
+            });
+        }).on('mouseleave', function () {
+            // console.log('leave')
+            var _this = this;
+            $(this).tooltip('show');
+            setTimeout(function () {
+                if ($('.tooltip:hover').length < 0) {
+                    // console.log('hover')
+                    $(_this).tooltip("hide")
+                }
+                $('.tooltip').on('mouseleave', function () {
+                    //console.log('leave')
+                    $(_this).tooltip("hide");
+                });
+            });
+        });
+
+        this.comportamiento(elem);
+    },
+    comportamiento: function (elem) {
+        var that = this;
+        $(elem).on('shown.bs.tooltip', function () {
+            that.cerrar();
+
+            // Close tooltip in 3 seconds
+            setTimeout(function () {
+                $(elem).tooltip('hide');
+            }, 3000);
+        });
+    },
+    cerrar: function () {
+        $('.tooltip').find('.cerrar').off('click').on('click', function() {
+            $(this).parents('.tooltip').tooltip('hide');
+        });
+    }
+};
+
+var tooltipsAccionesRecursos = {
     init: function () {
         this.config();
-        this.comportamiento();
+        this.lanzar();
     },
     config: function () {
         this.body = body;
@@ -763,57 +813,17 @@ var montarTooltip = {
         this.info_resource = this.body.find('.info-resource');
         this.quotes = this.body.find('.quotes');
         this.link = this.listWrap.find('.link');
+        this.block = this.body.find('.block-wrapper');
+        this.visible = this.body.find('.eye');
+        this.oculto = this.body.find('.visibility-activo');
     },
-    comportamiento: function () {
-        var that = this;
-        this.montarTooltips();
-
-        this.link.on('shown.bs.tooltip', function () {
-            $('.tooltip').find('.cerrar').off('click').on('click', function () {
-                $('.tooltip').tooltip('hide');
-            });
-        });
-    },
-    montarTooltips: function () {
-        var that = this;
-        this.info_resource.tooltip({
-            html: true,
-            placement: 'bottom',
-            template: '<div class="tooltip background-gris grupos" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
-        });
-        this.quotes.tooltip({
-            html: true,
-            placement: 'bottom',
-            template: '<div class="tooltip background-blanco citas" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
-            title: that.getTooltipQuotes()
-        });
-        this.link.tooltip({
-            html: true,
-            placement: 'bottom',
-            template: '<div class="tooltip background-blanco link" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
-            title: that.getTooltipLink(),
-            trigger: 'manual'
-        }).on("mouseenter", function () {
-            //console.log('enter')
-            var _this = this;
-            $(this).tooltip('show');
-            $(this).siblings('.tooltip').on('mouseleave', function () {
-                $(_this).tooltip('hide');
-            });
-        }).on("mouseleave", function () {
-            //console.log('leave')
-            var _this = this;
-            setTimeout(function () {
-                if ($('.tooltip:hover').length < 0) {
-                    //console.log('hover')
-                    $(_this).tooltip("hide")
-                }
-                $('.tooltip').on('mouseleave', function () {
-                    //console.log('leave')
-                    $(_this).tooltip("hide");
-                });
-            }, 100);
-        });
+    lanzar: function () {
+        montarTooltip.lanzar(this.info_resource, '', 'background-gris grupos');
+        montarTooltip.lanzar(this.quotes, this.getTooltipQuotes(), 'background-blanco citas');
+        montarTooltip.lanzar(this.link, this.getTooltipLink(), 'background-blanco link');
+        montarTooltip.lanzar(this.block, 'Bloqueado', 'background-gris-oscuro');
+        montarTooltip.lanzar(this.visible, 'Visible', 'background-gris-oscuro');
+        montarTooltip.lanzar(this.oculto, 'Oculto', 'background-gris-oscuro');
     },
     getTooltipQuotes: function () {
         return `<p class="tooltip-title">Fuente de citas</p>
@@ -841,6 +851,84 @@ var montarTooltip = {
                     <p>National Center for Biotechnology Information Search database</p>
                 </div>
                 <a href="#" class="tooltip-link">Ir al enlace <span class="material-icons">keyboard_arrow_right</span></a>`
+    }
+};
+
+var tooltipsCV = {
+    init: function () {
+        this.config();
+        this.navegacion();
+        this.traducciones();
+    },
+    config: function () {
+        this.navegacionCV = $('#navegacion-cv');
+        this.traduccionesWrap = $('.traducciones-wrapper');
+    },
+    navegacion: function () {
+        var elemento = this.navegacionCV.find('li > a');
+
+        $.each(elemento, function (i) {
+            if ($(elemento[i]).find('.texto-tooltip').length > 0) {
+                montarTooltip.lanzar($(elemento[i]), $(elemento[i]).find('.texto-tooltip'), 'background-gris-oscuro');
+            } else {
+                montarTooltip.lanzar($(elemento[i]), $(elemento[i]).text(), 'background-gris-oscuro');
+            }
+        });
+    },
+    traducciones: function () {
+        var item = this.traduccionesWrap.find('.translation');
+
+        $.each(item, function (i) {
+            var circulo = $(item[i]).find('.circulo-color');
+            var texto;
+
+            if ($(item[i]).hasClass('translation-es')) {
+                texto = 'Español (ES)';
+            } else if ($(item[i]).hasClass('translation-en')) {
+                texto = 'Inglés (EN)';
+            }
+
+            if (circulo.hasClass('circulo-verde')) {
+                montarTooltip.lanzar($(item[i]), 'Con traducción: ' + texto, 'background-gris-oscuro');
+            } else {
+                montarTooltip.lanzar($(item[i]), 'Sin traducción: ' + texto, 'background-gris-oscuro');
+            }
+        });
+    }
+};
+
+var cambioTraducciones = {
+    init: function () {
+        this.config();
+        this.comportamiento();
+    },
+    config: function () {
+        this.body = body;
+    },
+    comportamiento: function () {
+        var accionesListado = this.body.find('.acciones-listado');
+        var traducciones = accionesListado.find('.traducciones');
+        var resourceList = this.body.find('.resource-list');
+        var dropdownMenu = traducciones.find('.dropdown-menu');
+        var dropdownToggle = traducciones.find('.dropdown-toggle');
+        var dropdownToggleIcon = dropdownToggle.find('.material-icons');
+        var modosTraducciones = dropdownMenu.find('a');
+
+        modosTraducciones.on('click', function (e) {
+            e.preventDefault();
+            var item = $(this);
+            var clase = item.data('class-resource-list');
+
+            modosTraducciones.removeClass('activeView');
+            item.addClass('activeView');
+
+            if (clase != "") {
+                var icon = item.find('.material-icons').text();
+                dropdownToggleIcon.text(icon);
+                resourceList.removeClass('translationEsView translationEnView');
+                resourceList.addClass(clase);
+            }
+        });
     }
 };
 
@@ -928,18 +1016,34 @@ var comportamientoAbrirArbol = {
     }
 };
 
+var operativaModalSeleccionarTemas = {
+    init: function () {
+        $('#modal-seleccionar-area-tematica').on('show.bs.modal', function () {
+            $('#modal-crear-cluster').modal('hide');
+            comportamientoAbrirArbol.init();
+        });
+
+        $('#modal-seleccionar-area-tematica').on('hide.bs.modal', function () {
+            $('#modal-crear-cluster').modal('show');
+        });
+    }
+};
+
 $(function () {
     accionesBuscadorCabecera.init();
     communityMenuMovil.init();
     iniciarDatepicker.init();
     collapseResource.init();
-    montarTooltip.init();
+    tooltipsAccionesRecursos.init();
     contarLineasDescripcion.init();
+    cambioTraducciones.init();
 
     comportamientoVerMasVerMenos.init();
     comportamientoVerMasVerMenosTags.init();
 
     accionesPlegarDesplegarModal.init();
+
+    operativaModalSeleccionarTemas.init();
 
     if (body.hasClass('fichaRecurso') || body.hasClass('edicionRecurso')) {
         comportamientoCargaFacetasComunidad();
@@ -961,6 +1065,7 @@ $(function () {
         operativaFormularioAutor.init();
         operativaFormularioTesauro.init();
         comportamientoTopicosCV.init();
+        tooltipsCV.init();
     }
 
     if (body.hasClass('edicionCluster')) {
@@ -972,16 +1077,16 @@ $(function () {
 
     /**
     Para hacer que la imagen se guarde directamente por ajax hay que configurar las siguientes opciones
-    (Por defecto es "false" por lo que el File se guardarÃ¡ con el formulario al que pertenezca):
+    (Por defecto es "false" por lo que el File se guardará con el formulario al que pertenezca):
 
     options: {
         ajax: {
-            url: (string) url a la que se quiere hacer la peticiÃ³n,
-            param_name: (string) nombre del parÃ¡metro con el que se va a pasar el objeto File
+            url: (string) url a la que se quiere hacer la petición,
+            param_name: (string) nombre del parámetro con el que se va a pasar el objeto File
         }
     }
 
-    Se puede configurar tambiÃ©n cual serÃ¡n los selectores para cada elemento del droparea
+    Se puede configurar también cual serán los selectores para cada elemento del droparea
     options: {
         inputSelector: ".image-uploader__input",
         dropAreaSelector: ".image-uploader__drop-area",
@@ -990,15 +1095,15 @@ $(function () {
         errorDisplay: ".image-uploader__error",
     }
 
-    Configurar lÃ­mite de tamaÃ±o en Kb (por defecto sin lÃ­mite)
+    Configurar límite de tamaño en Kb (por defecto sin límite)
     options: {
         sizeLimit: 100
     }
 
-    El html por defecto deberÃ­a ser asÃ­:
+    El html por defecto debería ser así:
         <div class="image-uploader js-image-uploader">
             <div class="image-uploader__preview">
-                <!-- Si hay una imagen en el servidor pintarla en el src, si no dejarlo vacÃ­o  -->
+                <!-- Si hay una imagen en el servidor pintarla en el src, si no dejarlo vacío  -->
                 <img class="image-uploader__img" src="">
             </div>
             <div class="image-uploader__drop-area">
@@ -1007,8 +1112,8 @@ $(function () {
                 </div>
                 <div class="image-uploader__info">
                     <p><strong>Arrastra y suelta en la zona punteada una foto para tu perfil</strong></p>
-                    <p>ImÃ¡genes en formato .PNG o .JPG</p>
-                    <p>Peso mÃ¡ximo de las imÃ¡genes 250 kb</p>
+                    <p>Imágenes en formato .PNG o .JPG</p>
+                    <p>Peso máximo de las imágenes 250 kb</p>
                 </div>
             </div>
             <div class="image-uploader__error">
@@ -1050,7 +1155,7 @@ $(function () {
 
         /**
          * Comprueba si en el inicio del plugin ya hay una imagen
-         * para aÃ±adirla al input file
+         * para añadirla al input file
          */
         var initialImageCheck = async function () {
             const image_url = plugin.previewImg.attr("src");
@@ -1071,12 +1176,12 @@ $(function () {
         var addInputChangeEvent = function () {
             plugin.input.change(function () {
                 if (!isFileImage()) {
-                    displayError('El archivo no es una imÃ¡gen vÃ¡lida. Los formatos vÃ¡lidos son .png y .jpg.');
+                    displayError('El archivo no es una imágen válida. Los formatos válidos son .png y .jpg.');
                     return;
                 }
 
                 if (!imageSizeAllowed()) {
-                    displayError('El archivo pesa demasiado. El lÃ­mite es ' + plugin.settings.sizeLimit + 'Kb');
+                    displayError('El archivo pesa demasiado. El límite es ' + plugin.settings.sizeLimit + 'Kb');
                     return;
                 }
 
@@ -1089,7 +1194,7 @@ $(function () {
         };
 
         /**
-         * Muestra la imagen que se ha aÃ±adido al input file
+         * Muestra la imagen que se ha añadido al input file
          */
         var showImageTemporalPreview = function () {
 
@@ -1100,7 +1205,7 @@ $(function () {
         };
 
         /**
-         * Incia lÃ³gica para llamada ajax
+         * Incia lógica para llamada ajax
          */
         var uploadImageWithAjax = function () {
 
@@ -1142,11 +1247,11 @@ $(function () {
          */
         var checkAjaxSettings = function () {
             if (plugin.settings.ajax.hasProperty('param_name')) {
-                console.log('La opciÃ³n "ajax.param_name" no estÃ¡ configurada')
+                console.log('La opción "ajax.param_name" no está configurada')
                 return false;
             }
             if (plugin.settings.ajax.hasProperty('url')) {
-                console.log('La opciÃ³n de "ajax.url" no estÃ¡ configurada')
+                console.log('La opción de "ajax.url" no está configurada')
                 return false;
             }
             return true;
@@ -1186,7 +1291,7 @@ $(function () {
 
         /**
          * @param {boolean} showLoading: Indicar si ha iniciado la carga y por lo tanto, es necesario mostrar un "loading".
-         * true: MostrarÃ¡ el "loading"
+         * true: Mostrará el "loading"
          * false: Quitar ese "loading" -> Fin carga de imagen
          */
         var showLoadingImagePreview = function (showLoading) {
