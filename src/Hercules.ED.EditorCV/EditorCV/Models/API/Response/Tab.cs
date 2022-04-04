@@ -108,6 +108,10 @@ namespace GuardadoCV.Models.API.Response
         /// Propiedades del item para su ordenación
         /// </summary>
         public List<TabSectionItemOrderProperty> orderProperties { get; set; }
+        /// <summary>
+        /// Diccionario que indica para que idiomas está completo el item
+        /// </summary>
+        public Dictionary<string,bool> multilang { get; set; }
     }
 
     /// <summary>
