@@ -210,6 +210,10 @@ function CompletadaCargaRecursosComunidad()
         $(body).removeClass("facetas-abiertas");
 	    e.preventDefault();
 	});
+	
+	if ((typeof CompletadaCargaRecursosCluster != 'undefined')) {
+		CompletadaCargaRecursosCluster();
+	}
 }
 
 comportamientoFacetasPopUp.numPaginas=2,
@@ -228,7 +232,7 @@ comportamientoFacetasPopUp.config= function () {
 	var that = this;
 	this.facetasConPopUp = [
 	['bibo:authorList@@@rdf:member@@@foaf:name', 'Busca por nombre o apellido de la persona', "Search by person's name or surname", true],
-	['vivo:freeTextKeyword', 'Busca por nombre de la etiqueta', "Search by tag's name", true],
+	['vivo:freeTextKeyword@@@roh:title', 'Busca por nombre de la etiqueta', "Search by tag's name", true],
 	['vivo:hasPublicationVenue', 'Busca por nombre de la revista', "Search by journal's name", true],
 	['roh:hasKnowledgeArea@@@roh:categoryNode', 'Busca por área de conocimiento', "Search by knowledge area", true],
 	['bibo:authorList@@@rdf:member@@@roh:hasKnowledgeArea@@@roh:categoryNode', 'Busca por tópicos', "Search by topics", true],
@@ -1284,7 +1288,7 @@ var metabuscador = {
         this.panelSinResultados = $(`#sinResultadosMetabuscador`);
         //this.timeWaitingForUserToType = 750; // Esperar 0.75 segundos a si el usuario ha dejado de escribir para iniciar búsqueda
 		this.timeWaitingForUserToType = 150; // Esperar 0.75 segundos a si el usuario ha dejado de escribir para iniciar búsqueda
-        this.ignoreKeysToBuscador = [37, 38, 39, 40, 46, 8, 32, 91, 17, 18, 20, 36, 18, 27];
+        //this.ignoreKeysToBuscador = [37, 38, 39, 40, 46, 8, 32, 91, 17, 18, 20, 36, 18, 27];
 		this.ignoreKeysToBuscador = [37, 38, 39, 40, 91, 17, 18, 20, 36, 18, 27];
         // Palabra clave introducida en el metaBuscador para mostrar en el panel de resultados no encontrados
         this.idPalabraBuscadaMetabuscador = `metabuscadorBusqueda`;
@@ -1467,13 +1471,10 @@ var metabuscador = {
         var uri = that.resultadosMetabuscador.data('url');
 
         // Compone la url para la llamada
-        var url = new URL(servicioExternoBaseUrl + 'servicioexterno/' + uri);
-
-        if (window.location.hostname == 'depuracion.net') {
-        	url = new URL('https://localhost:44321/' + uri);
-        }
+        var url = new URL(servicioExternoBaseUrl +  uri);
+		
         url.searchParams.set('stringSearch', this.keyInput);
-        url.searchParams.set('lang', currentLang);
+        url.searchParams.set('lang', lang);
 
         // Llama al servicio y devuelve una promesa
         return new Promise((resolve, reject) => {
@@ -1729,3 +1730,4 @@ var metabuscador = {
         }        
     }
 };
+
