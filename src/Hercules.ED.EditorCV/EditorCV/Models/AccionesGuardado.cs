@@ -88,7 +88,7 @@ namespace GuardadoCV.Models
             //Obtenemos la entidad para luego borrarla si es necesario
             string entityDestino = "";
             string entityCV = "";
-            SparqlObject resultadoEntityCV= mResourceApi.VirtuosoQuery("select ?idCV ?idEntity", "where{?idCV ?p ?o. ?o ?p2 ?idAux. ?idAux <http://vivoweb.org/ontology/core#relatedBy> ?idEntity. FILTER(?idAux=<" + pEntity+ ">) FILTER(?p!=<http://gnoss/hasEntidad>) }", "curriculumvitae");
+            SparqlObject resultadoEntityCV = mResourceApi.VirtuosoQuery("select ?idCV ?idEntity", "where{?idCV ?p ?o. ?o ?p2 ?idAux. ?idAux <http://vivoweb.org/ontology/core#relatedBy> ?idEntity. FILTER(?idAux=<" + pEntity + ">) FILTER(?p!=<http://gnoss/hasEntidad>) }", "curriculumvitae");
             entityDestino = resultadoEntityCV.results.bindings.First()["idEntity"].value;
             entityCV = resultadoEntityCV.results.bindings.First()["idCV"].value;
 
@@ -132,7 +132,12 @@ namespace GuardadoCV.Models
             Dictionary<Guid, bool> dicCorrecto = mResourceApi.DeletePropertiesLoadedResources(dicEliminar);
 
             //Elimianmos los valores multiidioma de la entidad
-            Dictionary<string, List<MultilangProperty>> propiedadesActuales = UtilityCV.GetMultilangPropertiesCV(entityCV, entityDestino);
+            Dictionary<string, Dictionary<string, List<MultilangProperty>>> propiedadesActualesAux = UtilityCV.GetMultilangPropertiesCV(entityCV, entityDestino);
+            Dictionary<string, List<MultilangProperty>> propiedadesActuales = new Dictionary<string, List<MultilangProperty>>();
+            if (propiedadesActualesAux.ContainsKey(entityDestino))
+            {
+                propiedadesActuales = propiedadesActualesAux[entityDestino];
+            }
             Dictionary<string, List<MultilangProperty>> propiedadesNuevas = new Dictionary<string, List<MultilangProperty>>();
             UpdateMultilangProperties(propiedadesActuales, propiedadesNuevas, entityCV, entityDestino);
 
@@ -336,7 +341,7 @@ namespace GuardadoCV.Models
                         {
                             editable = false;
                         }
-                    }                   
+                    }
 
                     if (!editable)
                     {
@@ -454,7 +459,13 @@ namespace GuardadoCV.Models
                 //Actualizamos las propiedades multiidioma
                 {
                     //Entidad entityID
-                    Dictionary<string, List<MultilangProperty>> propiedadesActuales = UtilityCV.GetMultilangPropertiesCV(pCvID, entityID);
+                    Dictionary<string, Dictionary<string, List<MultilangProperty>>> propiedadesActualesAux = UtilityCV.GetMultilangPropertiesCV(pCvID, entityID);
+                    Dictionary<string, List<MultilangProperty>> propiedadesActuales = new Dictionary<string, List<MultilangProperty>>();
+                    if (propiedadesActualesAux.ContainsKey(entityID))
+                    {
+                        propiedadesActuales = propiedadesActualesAux[entityID];
+                    }
+
                     Dictionary<string, List<MultilangProperty>> propiedadesNuevas = new Dictionary<string, List<MultilangProperty>>();
                     if (propiedadesMultiidiomaNoCV != null)
                     {
@@ -1131,7 +1142,7 @@ namespace GuardadoCV.Models
                 foreach (MultilangProperty multilangProperty in pValoresAntiguos[property])
                 {
                     //Si no existe en las propiedades nuevas esa propiedad en ese idioma la eliminamos
-                    if (!pValoresNuevos.ContainsKey(property) || !pValoresNuevos[property].Exists(x => x.lang == multilangProperty.lang) || pValoresNuevos[property].Exists(x => x.lang == multilangProperty.lang && string.IsNullOrEmpty( x.value)))
+                    if (!pValoresNuevos.ContainsKey(property) || !pValoresNuevos[property].Exists(x => x.lang == multilangProperty.lang) || pValoresNuevos[property].Exists(x => x.lang == multilangProperty.lang && string.IsNullOrEmpty(x.value)))
                     {
                         triplesRemove[guidCV].Add(new RemoveTriples()
                         {
@@ -1471,7 +1482,7 @@ namespace GuardadoCV.Models
             }
             return null;
         }
-                
+
 
         /// <summary>
         /// Carga los datos en el objeto entidad con los datos obtenidos
