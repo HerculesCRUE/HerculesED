@@ -176,6 +176,28 @@ namespace Utils
         }
 
         /// <summary>
+        /// Devuelve si un listado de secciones contiene el codigo, en caso de que <paramref name="secciones"/> sea nulo o vacio se devuelve true.
+        /// </summary>
+        /// <param name="secciones"></param>
+        /// <param name="codigo"></param>
+        /// <returns></returns>
+        public static bool CheckSecciones(List<string> secciones, string codigo)
+        {
+            if (secciones == null)
+            {
+                return true;
+            }
+            if (secciones.Count == 0)
+            {
+                return true;
+            }
+            else
+            {
+                return secciones.Contains(codigo);
+            }
+        }
+
+        /// <summary>
         /// Añade la referencia a la entidad <paramref name="propiedadNombreEntidad"/> si esta se encuentra en BBDD.
         /// Si se pasa el valor <paramref name="aux"/> lo concatena con <paramref name="nombreEntidad"/> para formar la entidad auxiliar.
         /// </summary>
