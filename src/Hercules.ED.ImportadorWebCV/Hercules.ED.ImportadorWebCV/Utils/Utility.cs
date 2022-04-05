@@ -805,9 +805,7 @@ namespace Utils
                     Persona persona = new Persona
                     {
                         nombreCompleto = name,
-                        personid = personID,
-                        documentos = new HashSet<string>(),
-                        coautores = new HashSet<string>()
+                        personid = personID
                     };
                     diccionarioPersonasFirma[nameInput].Add(persona);
                 }
@@ -2107,6 +2105,7 @@ namespace Utils
                 {
                     throw new ArgumentException("Codigo de campo incorrecto" + codigo);
                 }
+                if (codeGroup.CvnEntityBean == null) { return null; }
 
                 if ((bool)codeGroup.CvnEntityBean?.Code.Equals(codigo))
                 {
