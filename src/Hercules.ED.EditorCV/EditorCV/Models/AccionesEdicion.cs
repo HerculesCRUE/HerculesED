@@ -1106,11 +1106,26 @@ namespace GuardadoCV.Models
                     else
                     {
                         string propiedadDependencia = proEdit.dependency.property;
-                        string propiedadValorDependencia = proEdit.dependency.propertyValue.Replace("{GraphsUrl}", mResourceApi.GraphsUrl);
-                        string valorPropiedadCargadaDependencia = GetPropValues(pId, "http://vivoweb.org/ontology/core#relatedBy@@@" + propiedadDependencia, pData).FirstOrDefault();
-                        if(valorPropiedadCargadaDependencia== propiedadValorDependencia)
+                        if (!string.IsNullOrEmpty(propiedadDependencia))
                         {
-                            propiedadesMultiidiomaConfiguradas.Add(proEdit.property);
+                            string propiedadValorDependencia = proEdit.dependency.propertyValue.Replace("{GraphsUrl}", mResourceApi.GraphsUrl);
+                            string propiedadValorDependenciaDistinto = proEdit.dependency.propertyValueDistinct.Replace("{GraphsUrl}", mResourceApi.GraphsUrl);
+                            if (!string.IsNullOrEmpty(propiedadValorDependencia))
+                            {
+                                string valorPropiedadCargadaDependencia = GetPropValues(pId, "http://vivoweb.org/ontology/core#relatedBy@@@" + propiedadDependencia, pData).FirstOrDefault();
+                                if (valorPropiedadCargadaDependencia == propiedadValorDependencia)
+                                {
+                                    propiedadesMultiidiomaConfiguradas.Add(proEdit.property);
+                                }
+                            }
+                            else if (!string.IsNullOrEmpty(propiedadValorDependenciaDistinto))
+                            {
+                                string valorPropiedadCargadaDependencia = GetPropValues(pId, "http://vivoweb.org/ontology/core#relatedBy@@@" + propiedadDependencia, pData).FirstOrDefault();
+                                if (valorPropiedadCargadaDependencia != propiedadValorDependenciaDistinto)
+                                {
+                                    propiedadesMultiidiomaConfiguradas.Add(proEdit.property);
+                                }
+                            }
                         }
                     }
                 }
