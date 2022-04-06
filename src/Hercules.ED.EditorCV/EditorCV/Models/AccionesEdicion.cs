@@ -1107,19 +1107,19 @@ namespace GuardadoCV.Models
                     {
                         string propiedadDependencia = proEdit.dependency.property;
                         if (!string.IsNullOrEmpty(propiedadDependencia))
-                        {
-                            string propiedadValorDependencia = proEdit.dependency.propertyValue.Replace("{GraphsUrl}", mResourceApi.GraphsUrl);
-                            string propiedadValorDependenciaDistinto = proEdit.dependency.propertyValueDistinct.Replace("{GraphsUrl}", mResourceApi.GraphsUrl);
-                            if (!string.IsNullOrEmpty(propiedadValorDependencia))
+                        {   
+                            if (!string.IsNullOrEmpty(proEdit.dependency.propertyValue))
                             {
+                                string propiedadValorDependencia = proEdit.dependency.propertyValue.Replace("{GraphsUrl}", mResourceApi.GraphsUrl);
                                 string valorPropiedadCargadaDependencia = GetPropValues(pId, "http://vivoweb.org/ontology/core#relatedBy@@@" + propiedadDependencia, pData).FirstOrDefault();
                                 if (valorPropiedadCargadaDependencia == propiedadValorDependencia)
                                 {
                                     propiedadesMultiidiomaConfiguradas.Add(proEdit.property);
                                 }
                             }
-                            else if (!string.IsNullOrEmpty(propiedadValorDependenciaDistinto))
+                            else if (!string.IsNullOrEmpty(proEdit.dependency.propertyValueDistinct))
                             {
+                                string propiedadValorDependenciaDistinto = proEdit.dependency.propertyValueDistinct.Replace("{GraphsUrl}", mResourceApi.GraphsUrl);
                                 string valorPropiedadCargadaDependencia = GetPropValues(pId, "http://vivoweb.org/ontology/core#relatedBy@@@" + propiedadDependencia, pData).FirstOrDefault();
                                 if (valorPropiedadCargadaDependencia != propiedadValorDependenciaDistinto)
                                 {
