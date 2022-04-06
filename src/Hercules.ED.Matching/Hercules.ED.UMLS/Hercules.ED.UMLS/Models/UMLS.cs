@@ -131,10 +131,11 @@ namespace Hercules.ED.UMLS.Models
         /// <summary>
         /// Mediante un ID MESH, obtiene la equivalencia al ID SNOMED.
         /// </summary>
+        /// <param name="pName">Nombre del término a obtener.</param>
         /// <param name="pMeshId">ID MESH.</param>
         /// <param name="pST">Service Ticket.</param>
         /// <returns>ID SNOMED.</returns>
-        public string GetSnomedId(string pMeshId, string pST, Data.Data pData)
+        public string GetSnomedId(string pName, string pMeshId, string pST, Data.Data pData)
         {
             // Mensaje de error.
             string msg = string.Empty;
@@ -149,9 +150,18 @@ namespace Hercules.ED.UMLS.Models
                 CrosswalkObj data = JsonConvert.DeserializeObject<CrosswalkObj>(result);
 
                 // ID SNOMED.
-                // TODO: Detectar el nombre del término, ya que nunca es el primer elemento.
-                pData.snomedTerm = data.result[0];
-                return data.result[0].ui;
+                string snomedId = string.Empty;
+                foreach (Result item in data.result)
+                {
+                    if(item.name.ToLower().Trim() == pName.ToLower().Trim())
+                    {
+                        pData.snomedTerm = item;
+                        snomedId = item.ui;
+                        break;
+                    }
+                }
+
+                return snomedId;
             }
             catch (Exception error)
             {

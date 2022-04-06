@@ -26,7 +26,7 @@ namespace Hercules.ED.UMLS.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public Data GetData(string pMeshId)
+        public Data GetData(string pName, string pMeshId)
         {
             // Objeto a devolver.
             Data data = new Data();
@@ -54,7 +54,7 @@ namespace Hercules.ED.UMLS.Controllers
                 string st = _UMLS.GetTicket(tgt);
 
                 // Petición al servicio de obtención de ID.
-                idSnomed = _UMLS.GetSnomedId(pMeshId.Trim(), st, data);                
+                idSnomed = _UMLS.GetSnomedId(pName, pMeshId.Trim(), st, data);                
             }
 
             // Obtención de la información de las relaciones.
