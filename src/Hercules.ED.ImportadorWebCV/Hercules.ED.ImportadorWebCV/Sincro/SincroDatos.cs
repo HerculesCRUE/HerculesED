@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Xml.Serialization;
+using Utils;
 
 namespace ImportadorWebCV.Sincro
 {
@@ -98,7 +99,7 @@ namespace ImportadorWebCV.Sincro
             DatosIdentificacion datosIdentificacion = new DatosIdentificacion(cvn, cvID);
 
             List<Subseccion> listadoSecciones = new List<Subseccion>();
-            listadoSecciones.Add(new Subseccion("000.000.000.000", datosIdentificacion.SincroDatosIdentificacion(secciones != null && secciones.Contains("000.000.000.000"), preimportar)));
+            listadoSecciones.Add(new Subseccion("000.000.000.000", datosIdentificacion.SincroDatosIdentificacion(UtilitySecciones.CheckSecciones(secciones,"000.000.000.000"), preimportar)));
 
             return listadoSecciones;
         }
@@ -113,8 +114,8 @@ namespace ImportadorWebCV.Sincro
             SituacionProfesional situacionProfesional = new SituacionProfesional(cvn, cvID);
 
             List<Subseccion> listadoSecciones = new List<Subseccion>();
-            listadoSecciones.Add(new Subseccion("010.010.000.000", situacionProfesional.SincroSituacionProfesionalActual(secciones != null && secciones.Contains("010.010.000.000"), preimportar)));
-            listadoSecciones.Add(new Subseccion("010.020.000.000", situacionProfesional.SincroCargosActividades(secciones != null && secciones.Contains("010.020.000.000"), preimportar)));
+            listadoSecciones.Add(new Subseccion("010.010.000.000", situacionProfesional.SincroSituacionProfesionalActual(UtilitySecciones.CheckSecciones(secciones,"010.010.000.000"), preimportar)));
+            listadoSecciones.Add(new Subseccion("010.020.000.000", situacionProfesional.SincroCargosActividades(UtilitySecciones.CheckSecciones(secciones,"010.020.000.000"), preimportar)));
 
             return listadoSecciones;
         }
@@ -129,12 +130,12 @@ namespace ImportadorWebCV.Sincro
             FormacionAcademica formacionAcademica = new FormacionAcademica(cvn, cvID);
 
             List<Subseccion> listadoSecciones = new List<Subseccion>();
-            listadoSecciones.Add(new Subseccion("020.010.010.000", formacionAcademica.SincroEstudiosCiclos(secciones != null && secciones.Contains("020.010.010.000"), preimportar)));
-            listadoSecciones.Add(new Subseccion("020.010.020.000", formacionAcademica.SincroDoctorados(secciones != null && secciones.Contains("020.010.020.000"), preimportar)));
-            listadoSecciones.Add(new Subseccion("020.010.030.000", formacionAcademica.SincroOtraFormacionPosgrado(secciones != null && secciones.Contains("020.010.030.000"), preimportar)));
-            listadoSecciones.Add(new Subseccion("020.020.000.000", formacionAcademica.SincroFormacionEspecializada(secciones != null && secciones.Contains("020.020.000.000"), preimportar)));
-            listadoSecciones.Add(new Subseccion("020.050.000.000", formacionAcademica.SincroCursosMejoraDocente(secciones != null && secciones.Contains("020.050.000.000"), preimportar)));
-            listadoSecciones.Add(new Subseccion("020.060.000.000", formacionAcademica.SincroConocimientoIdiomas(secciones != null && secciones.Contains("020.060.000.000"), preimportar)));
+            listadoSecciones.Add(new Subseccion("020.010.010.000", formacionAcademica.SincroEstudiosCiclos(UtilitySecciones.CheckSecciones(secciones,"020.010.010.000"), preimportar)));
+            listadoSecciones.Add(new Subseccion("020.010.020.000", formacionAcademica.SincroDoctorados(UtilitySecciones.CheckSecciones(secciones,"020.010.020.000"), preimportar)));
+            listadoSecciones.Add(new Subseccion("020.010.030.000", formacionAcademica.SincroOtraFormacionPosgrado(UtilitySecciones.CheckSecciones(secciones,"020.010.030.000"), preimportar)));
+            listadoSecciones.Add(new Subseccion("020.020.000.000", formacionAcademica.SincroFormacionEspecializada(UtilitySecciones.CheckSecciones(secciones,"020.020.000.000"), preimportar)));
+            listadoSecciones.Add(new Subseccion("020.050.000.000", formacionAcademica.SincroCursosMejoraDocente(UtilitySecciones.CheckSecciones(secciones,"020.050.000.000"), preimportar)));
+            listadoSecciones.Add(new Subseccion("020.060.000.000", formacionAcademica.SincroConocimientoIdiomas(UtilitySecciones.CheckSecciones(secciones,"020.060.000.000"), preimportar)));
 
             return listadoSecciones;
         }
@@ -149,16 +150,16 @@ namespace ImportadorWebCV.Sincro
             ActividadDocente actividadDocente = new ActividadDocente(cvn, cvID);
 
             List<Subseccion> listadoSecciones = new List<Subseccion>();
-            listadoSecciones.Add(new Subseccion("030.040.000.000", actividadDocente.SincroDireccionTesis(secciones != null && secciones.Contains("030.040.000.000"), preimportar)));
-            listadoSecciones.Add(new Subseccion("030.010.000.000", actividadDocente.SincroFormacionAcademica(secciones != null && secciones.Contains("030.010.000.000"), preimportar)));
-            listadoSecciones.Add(new Subseccion("030.050.000.000", actividadDocente.SincroTutoriasAcademicas(secciones != null && secciones.Contains("030.050.000.000"), preimportar)));
-            listadoSecciones.Add(new Subseccion("030.060.000.000", actividadDocente.SincroCursosSeminarios(secciones != null && secciones.Contains("030.060.000.000"), preimportar)));
-            listadoSecciones.Add(new Subseccion("030.070.000.000", actividadDocente.SincroPublicacionDocentes(secciones != null && secciones.Contains("030.070.000.000"), preimportar)));
-            listadoSecciones.Add(new Subseccion("030.080.000.000", actividadDocente.SincroParticipacionProyectosInnovacionDocente(secciones != null && secciones.Contains("030.080.000.000"), preimportar)));
-            listadoSecciones.Add(new Subseccion("030.090.000.000", actividadDocente.SincroParticipacionCongresosFormacionDocente(secciones != null && secciones.Contains("030.090.000.000"), preimportar)));
-            listadoSecciones.Add(new Subseccion("060.030.080.000", actividadDocente.SincroPremiosInovacionDocente(secciones != null && secciones.Contains("060.030.080.000"), preimportar)));
-            listadoSecciones.Add(new Subseccion("030.100.000.000", actividadDocente.SincroOtrasActividades(secciones != null && secciones.Contains("030.100.000.000"), preimportar)));
-            listadoSecciones.Add(new Subseccion("030.110.000.000", actividadDocente.SincroAportacionesRelevantes(secciones != null && secciones.Contains("030.110.000.000"), preimportar)));
+            listadoSecciones.Add(new Subseccion("030.040.000.000", actividadDocente.SincroDireccionTesis(UtilitySecciones.CheckSecciones(secciones,"030.040.000.000"), preimportar)));
+            listadoSecciones.Add(new Subseccion("030.010.000.000", actividadDocente.SincroFormacionAcademica(UtilitySecciones.CheckSecciones(secciones,"030.010.000.000"), preimportar)));
+            listadoSecciones.Add(new Subseccion("030.050.000.000", actividadDocente.SincroTutoriasAcademicas(UtilitySecciones.CheckSecciones(secciones,"030.050.000.000"), preimportar)));
+            listadoSecciones.Add(new Subseccion("030.060.000.000", actividadDocente.SincroCursosSeminarios(UtilitySecciones.CheckSecciones(secciones,"030.060.000.000"), preimportar)));
+            listadoSecciones.Add(new Subseccion("030.070.000.000", actividadDocente.SincroPublicacionDocentes(UtilitySecciones.CheckSecciones(secciones,"030.070.000.000"), preimportar)));
+            listadoSecciones.Add(new Subseccion("030.080.000.000", actividadDocente.SincroParticipacionProyectosInnovacionDocente(UtilitySecciones.CheckSecciones(secciones,"030.080.000.000"), preimportar)));
+            listadoSecciones.Add(new Subseccion("030.090.000.000", actividadDocente.SincroParticipacionCongresosFormacionDocente(UtilitySecciones.CheckSecciones(secciones,"030.090.000.000"), preimportar)));
+            listadoSecciones.Add(new Subseccion("060.030.080.000", actividadDocente.SincroPremiosInovacionDocente(UtilitySecciones.CheckSecciones(secciones, "060.030.080.000"), preimportar)));
+            listadoSecciones.Add(new Subseccion("030.100.000.000", actividadDocente.SincroOtrasActividades(UtilitySecciones.CheckSecciones(secciones, "030.100.000.000"), preimportar)));
+            listadoSecciones.Add(new Subseccion("030.110.000.000", actividadDocente.SincroAportacionesRelevantes(UtilitySecciones.CheckSecciones(secciones, "030.110.000.000"), preimportar)));
 
             return listadoSecciones;
         }
@@ -173,12 +174,12 @@ namespace ImportadorWebCV.Sincro
             ExperienciaCientificaTecnologica experienciaCientificaTecnologica = new ExperienciaCientificaTecnologica(cvn, cvID);
 
             List<Subseccion> listadoSecciones = new List<Subseccion>();
-            listadoSecciones.Add(new Subseccion("050.020.010.000", experienciaCientificaTecnologica.SincroProyectosIDI(secciones != null && secciones.Contains("050.020.010.000"), preimportar)));//TODO palabras clave
-            listadoSecciones.Add(new Subseccion("050.020.020.000", experienciaCientificaTecnologica.SincroContratos(secciones != null && secciones.Contains("050.020.020.000"), preimportar)));//TODO palabras clave
-            listadoSecciones.Add(new Subseccion("050.030.010.000", experienciaCientificaTecnologica.SincroPropiedadIndustrialIntelectual(secciones != null && secciones.Contains("050.030.010.000"), preimportar)));
-            listadoSecciones.Add(new Subseccion("050.010.000.000", experienciaCientificaTecnologica.SincroGrupoIDI(secciones != null && secciones.Contains("050.010.000.000"), preimportar)));//TODO - tesauro palabras clave->areas tematicas
-            listadoSecciones.Add(new Subseccion("050.020.030.000", experienciaCientificaTecnologica.SincroObrasArtisticas(secciones != null && secciones.Contains("050.020.030.000"), preimportar)));
-            listadoSecciones.Add(new Subseccion("050.030.020.000", experienciaCientificaTecnologica.SincroResultadosTecnologicos(secciones != null && secciones.Contains("050.030.020.000"), preimportar)));
+            listadoSecciones.Add(new Subseccion("050.020.010.000", experienciaCientificaTecnologica.SincroProyectosIDI(UtilitySecciones.CheckSecciones(secciones,"050.020.010.000"), preimportar)));//TODO palabras clave
+            listadoSecciones.Add(new Subseccion("050.020.020.000", experienciaCientificaTecnologica.SincroContratos(UtilitySecciones.CheckSecciones(secciones, "050.020.020.000"), preimportar)));//TODO palabras clave
+            listadoSecciones.Add(new Subseccion("050.030.010.000", experienciaCientificaTecnologica.SincroPropiedadIndustrialIntelectual(UtilitySecciones.CheckSecciones(secciones, "050.030.010.000"), preimportar)));
+            listadoSecciones.Add(new Subseccion("050.010.000.000", experienciaCientificaTecnologica.SincroGrupoIDI(UtilitySecciones.CheckSecciones(secciones, "050.010.000.000"), preimportar)));//TODO - tesauro palabras clave->areas tematicas
+            listadoSecciones.Add(new Subseccion("050.020.030.000", experienciaCientificaTecnologica.SincroObrasArtisticas(UtilitySecciones.CheckSecciones(secciones, "050.020.030.000"), preimportar)));
+            listadoSecciones.Add(new Subseccion("050.030.020.000", experienciaCientificaTecnologica.SincroResultadosTecnologicos(UtilitySecciones.CheckSecciones(secciones, "050.030.020.000"), preimportar)));
 
             return listadoSecciones;
         }
@@ -193,28 +194,28 @@ namespace ImportadorWebCV.Sincro
             ActividadCientificaTecnologica actividadCientificaTecnologica = new ActividadCientificaTecnologica(cvn, cvID);
 
             List<Subseccion> listadoSecciones = new List<Subseccion>();
-            listadoSecciones.Add(new Subseccion("060.010.000.000", actividadCientificaTecnologica.SincroProduccionCientifica(secciones != null && secciones.Contains("060.010.000.000"), preimportar)));
-            listadoSecciones.Add(new Subseccion("060.010.060.010", actividadCientificaTecnologica.SincroIndicadoresGenerales(secciones != null && secciones.Contains("060.010.060.010"), preimportar)));
-            listadoSecciones.Add(new Subseccion("060.010.010.000", actividadCientificaTecnologica.SincroPublicacionesDocumentos(secciones != null && secciones.Contains("060.010.010.000"), preimportar)));//TODO
-            listadoSecciones.Add(new Subseccion("060.010.020.000", actividadCientificaTecnologica.SincroTrabajosCongresos(secciones != null && secciones.Contains("060.010.020.000"), preimportar)));//TODO
-            listadoSecciones.Add(new Subseccion("060.010.030.000", actividadCientificaTecnologica.SincroTrabajosJornadasSeminarios(secciones != null && secciones.Contains("060.010.030.000"), preimportar))); //TODO - error al insertar despues de eliminar todos
-            listadoSecciones.Add(new Subseccion("060.010.040.000", actividadCientificaTecnologica.SincroOtrasActividadesDivulgacion(secciones != null && secciones.Contains("060.010.040.000"), preimportar)));
-            listadoSecciones.Add(new Subseccion("060.020.010.000", actividadCientificaTecnologica.SincroComitesCTA(secciones != null && secciones.Contains("060.020.010.000"), preimportar)));
-            listadoSecciones.Add(new Subseccion("060.020.030.000", actividadCientificaTecnologica.SincroOrganizacionIDI(secciones != null && secciones.Contains("060.020.030.000"), preimportar)));
-            listadoSecciones.Add(new Subseccion("060.020.040.000", actividadCientificaTecnologica.SincroGestionIDI(secciones != null && secciones.Contains("060.020.040.000"), preimportar)));
-            listadoSecciones.Add(new Subseccion("060.020.050.000", actividadCientificaTecnologica.SincroForosComites(secciones != null && secciones.Contains("060.020.050.000"), preimportar)));
-            listadoSecciones.Add(new Subseccion("060.020.060.000", actividadCientificaTecnologica.SincroEvalRevIDI(secciones != null && secciones.Contains("060.020.060.000"), preimportar)));
-            listadoSecciones.Add(new Subseccion("060.010.050.000", actividadCientificaTecnologica.SincroEstanciasIDI(secciones != null && secciones.Contains("060.010.050.000"), preimportar)));
-            listadoSecciones.Add(new Subseccion("060.030.010.000", actividadCientificaTecnologica.SincroAyudasBecas(secciones != null && secciones.Contains("060.030.010.000"), preimportar)));
-            listadoSecciones.Add(new Subseccion("060.020.020.000", actividadCientificaTecnologica.SincroOtrosModosColaboracion(secciones != null && secciones.Contains("060.020.020.000"), preimportar)));
-            listadoSecciones.Add(new Subseccion("060.030.020.000", actividadCientificaTecnologica.SincroSociedadesAsociaciones(secciones != null && secciones.Contains("060.030.020.000"), preimportar)));
-            listadoSecciones.Add(new Subseccion("060.030.030.000", actividadCientificaTecnologica.SincroConsejos(secciones != null && secciones.Contains("060.030.030.000"), preimportar)));
-            listadoSecciones.Add(new Subseccion("060.030.040.000", actividadCientificaTecnologica.SincroRedesCooperacion(secciones != null && secciones.Contains("060.030.040.000"), preimportar)));
-            listadoSecciones.Add(new Subseccion("060.030.050.000", actividadCientificaTecnologica.SincroPremiosMenciones(secciones != null && secciones.Contains("060.030.050.000"), preimportar)));
-            listadoSecciones.Add(new Subseccion("060.030.060.000", actividadCientificaTecnologica.SincroOtrasDistinciones(secciones != null && secciones.Contains("060.030.060.000"), preimportar)));
-            listadoSecciones.Add(new Subseccion("060.030.070.000", actividadCientificaTecnologica.SincroPeriodosActividad(secciones != null && secciones.Contains("060.030.070.000"), preimportar)));
-            listadoSecciones.Add(new Subseccion("060.030.090.000", actividadCientificaTecnologica.SincroAcreditacionesObtenidas(secciones != null && secciones.Contains("060.030.090.000"), preimportar)));
-            listadoSecciones.Add(new Subseccion("060.030.100.000", actividadCientificaTecnologica.SincroResumenOtrosMeritos(secciones != null && secciones.Contains("060.030.100.000"), preimportar)));
+            listadoSecciones.Add(new Subseccion("060.010.000.000", actividadCientificaTecnologica.SincroProduccionCientifica(UtilitySecciones.CheckSecciones(secciones,"060.010.000.000"), preimportar)));
+            listadoSecciones.Add(new Subseccion("060.010.060.010", actividadCientificaTecnologica.SincroIndicadoresGenerales(UtilitySecciones.CheckSecciones(secciones,"060.010.060.010"), preimportar)));
+            listadoSecciones.Add(new Subseccion("060.010.010.000", actividadCientificaTecnologica.SincroPublicacionesDocumentos(UtilitySecciones.CheckSecciones(secciones,"060.010.010.000"), preimportar)));//TODO
+            listadoSecciones.Add(new Subseccion("060.010.020.000", actividadCientificaTecnologica.SincroTrabajosCongresos(UtilitySecciones.CheckSecciones(secciones,"060.010.020.000"), preimportar)));//TODO
+            listadoSecciones.Add(new Subseccion("060.010.030.000", actividadCientificaTecnologica.SincroTrabajosJornadasSeminarios(UtilitySecciones.CheckSecciones(secciones,"060.010.030.000"), preimportar))); //TODO - error al insertar despues de eliminar todos
+            listadoSecciones.Add(new Subseccion("060.010.040.000", actividadCientificaTecnologica.SincroOtrasActividadesDivulgacion(UtilitySecciones.CheckSecciones(secciones,"060.010.040.000"), preimportar)));
+            listadoSecciones.Add(new Subseccion("060.020.010.000", actividadCientificaTecnologica.SincroComitesCTA(UtilitySecciones.CheckSecciones(secciones,"060.020.010.000"), preimportar)));
+            listadoSecciones.Add(new Subseccion("060.020.030.000", actividadCientificaTecnologica.SincroOrganizacionIDI(UtilitySecciones.CheckSecciones(secciones,"060.020.030.000"), preimportar)));
+            listadoSecciones.Add(new Subseccion("060.020.040.000", actividadCientificaTecnologica.SincroGestionIDI(UtilitySecciones.CheckSecciones(secciones,"060.020.040.000"), preimportar)));
+            listadoSecciones.Add(new Subseccion("060.020.050.000", actividadCientificaTecnologica.SincroForosComites(UtilitySecciones.CheckSecciones(secciones,"060.020.050.000"), preimportar)));
+            listadoSecciones.Add(new Subseccion("060.020.060.000", actividadCientificaTecnologica.SincroEvalRevIDI(UtilitySecciones.CheckSecciones(secciones,"060.020.060.000"), preimportar)));
+            listadoSecciones.Add(new Subseccion("060.010.050.000", actividadCientificaTecnologica.SincroEstanciasIDI(UtilitySecciones.CheckSecciones(secciones,"060.010.050.000"), preimportar)));
+            listadoSecciones.Add(new Subseccion("060.030.010.000", actividadCientificaTecnologica.SincroAyudasBecas(UtilitySecciones.CheckSecciones(secciones,"060.030.010.000"), preimportar)));
+            listadoSecciones.Add(new Subseccion("060.020.020.000", actividadCientificaTecnologica.SincroOtrosModosColaboracion(UtilitySecciones.CheckSecciones(secciones,"060.020.020.000"), preimportar)));
+            listadoSecciones.Add(new Subseccion("060.030.020.000", actividadCientificaTecnologica.SincroSociedadesAsociaciones(UtilitySecciones.CheckSecciones(secciones,"060.030.020.000"), preimportar)));
+            listadoSecciones.Add(new Subseccion("060.030.030.000", actividadCientificaTecnologica.SincroConsejos(UtilitySecciones.CheckSecciones(secciones,"060.030.030.000"), preimportar)));
+            listadoSecciones.Add(new Subseccion("060.030.040.000", actividadCientificaTecnologica.SincroRedesCooperacion(UtilitySecciones.CheckSecciones(secciones,"060.030.040.000"), preimportar)));
+            listadoSecciones.Add(new Subseccion("060.030.050.000", actividadCientificaTecnologica.SincroPremiosMenciones(UtilitySecciones.CheckSecciones(secciones,"060.030.050.000"), preimportar)));
+            listadoSecciones.Add(new Subseccion("060.030.060.000", actividadCientificaTecnologica.SincroOtrasDistinciones(UtilitySecciones.CheckSecciones(secciones,"060.030.060.000"), preimportar)));
+            listadoSecciones.Add(new Subseccion("060.030.070.000", actividadCientificaTecnologica.SincroPeriodosActividad(UtilitySecciones.CheckSecciones(secciones,"060.030.070.000"), preimportar)));
+            listadoSecciones.Add(new Subseccion("060.030.090.000", actividadCientificaTecnologica.SincroAcreditacionesObtenidas(UtilitySecciones.CheckSecciones(secciones,"060.030.090.000"), preimportar)));
+            listadoSecciones.Add(new Subseccion("060.030.100.000", actividadCientificaTecnologica.SincroResumenOtrosMeritos(UtilitySecciones.CheckSecciones(secciones,"060.030.100.000"), preimportar)));
 
             return listadoSecciones;
         }
@@ -231,7 +232,7 @@ namespace ImportadorWebCV.Sincro
             TextoLibre textoLibre = new TextoLibre(cvn, cvID);
 
             List<Subseccion> listadoSecciones = new List<Subseccion>();
-            listadoSecciones.Add(new Subseccion("070.010.000.000", textoLibre.SincroTextoLibre(secciones != null && secciones.Contains("070.010.000.000"), preimportar)));
+            listadoSecciones.Add(new Subseccion("070.010.000.000", textoLibre.SincroTextoLibre(UtilitySecciones.CheckSecciones(secciones,"070.010.000.000"), preimportar)));
 
             return listadoSecciones;
         }

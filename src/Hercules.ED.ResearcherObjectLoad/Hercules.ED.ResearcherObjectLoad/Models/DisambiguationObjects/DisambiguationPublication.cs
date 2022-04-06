@@ -49,26 +49,6 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
             }
         }
 
-        private string mFecha { get; set; }
-        public string fecha
-        {
-            get
-            {
-                return mFecha;
-            }
-            set
-            {
-                if (value == null)
-                {
-                    mFecha = string.Empty;
-                }
-                else
-                {
-                    mFecha = value;
-                }
-            }
-        }
-
         private HashSet<string> mAutores { get; set; }
         public HashSet<string> autores
         {
@@ -92,14 +72,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
         private static DisambiguationDataConfig configTitulo = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsTitle,
-            score = 0.5f
-        };
-
-        private static DisambiguationDataConfig configFecha = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsItem,
-            score = 0.5f,
-            scoreMinus = 0.5f
+            score = 0.8f
         };
 
         private static DisambiguationDataConfig configDOI = new DisambiguationDataConfig()
@@ -131,12 +104,6 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
                 value = doi
             });
 
-            data.Add(new DisambiguationData()
-            {
-                property = "fecha",
-                config = configFecha,
-                value = fecha
-            });
 
             data.Add(new DisambiguationData()
             {

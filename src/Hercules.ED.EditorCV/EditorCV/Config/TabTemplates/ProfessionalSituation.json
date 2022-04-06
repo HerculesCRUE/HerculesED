@@ -491,6 +491,7 @@
                         },
                         "property": "http://w3id.org/roh/professionalCategory",
                         "type": "text",
+                        "multilang": true,
                         "width": 1
                       },
                       {
@@ -1939,6 +1940,7 @@
                         },
                         "property": "http://w3id.org/roh/concreteFunctions",
                         "type": "textarea",
+                        "multilang": true,
                         "width": 3
                       }
                     ]
@@ -1954,6 +1956,7 @@
                         "placeholder": {
                           "es": "Introduce el interés para docencia y/o inv."
                         },
+                        "multilang": true,
                         "width": 3
                       }
                     ]

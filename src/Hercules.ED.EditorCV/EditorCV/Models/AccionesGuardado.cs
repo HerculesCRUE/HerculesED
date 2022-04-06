@@ -88,7 +88,7 @@ namespace GuardadoCV.Models
             //Obtenemos la entidad para luego borrarla si es necesario
             string entityDestino = "";
             string entityCV = "";
-            SparqlObject resultadoEntityCV= mResourceApi.VirtuosoQuery("select ?idCV ?idEntity", "where{?idCV ?p ?o. ?o ?p2 ?idAux. ?idAux <http://vivoweb.org/ontology/core#relatedBy> ?idEntity. FILTER(?idAux=<" + pEntity+ ">) FILTER(?p!=<http://gnoss/hasEntidad>) }", "curriculumvitae");
+            SparqlObject resultadoEntityCV = mResourceApi.VirtuosoQuery("select ?idCV ?idEntity", "where{?idCV ?p ?o. ?o ?p2 ?idAux. ?idAux <http://vivoweb.org/ontology/core#relatedBy> ?idEntity. FILTER(?idAux=<" + pEntity + ">) FILTER(?p!=<http://gnoss/hasEntidad>) }", "curriculumvitae");
             entityDestino = resultadoEntityCV.results.bindings.First()["idEntity"].value;
             entityCV = resultadoEntityCV.results.bindings.First()["idCV"].value;
 
@@ -132,7 +132,12 @@ namespace GuardadoCV.Models
             Dictionary<Guid, bool> dicCorrecto = mResourceApi.DeletePropertiesLoadedResources(dicEliminar);
 
             //Elimianmos los valores multiidioma de la entidad
-            Dictionary<string, List<MultilangProperty>> propiedadesActuales = UtilityCV.GetMultilangPropertiesCV(entityCV, entityDestino);
+            Dictionary<string, Dictionary<string, List<MultilangProperty>>> propiedadesActualesAux = UtilityCV.GetMultilangPropertiesCV(entityCV, entityDestino);
+            Dictionary<string, List<MultilangProperty>> propiedadesActuales = new Dictionary<string, List<MultilangProperty>>();
+            if (propiedadesActualesAux.ContainsKey(entityDestino))
+            {
+                propiedadesActuales = propiedadesActualesAux[entityDestino];
+            }
             Dictionary<string, List<MultilangProperty>> propiedadesNuevas = new Dictionary<string, List<MultilangProperty>>();
             UpdateMultilangProperties(propiedadesActuales, propiedadesNuevas, entityCV, entityDestino);
 
@@ -205,6 +210,10 @@ namespace GuardadoCV.Models
                 {
                     throw new Exception("Código no implementado");
                 }
+
+                //Almacenamos las propiedades multiidioma para posteriormente procesarlas
+                List<Entity.Property> propiedadesMultiidiomaNoCV = new List<Entity.Property>();
+                propiedadesMultiidiomaNoCV = pEntity.properties.Where(x => x.valuesmultilang != null).ToList();
 
                 string entityID = "";
                 string entityIDResponse = "";
@@ -336,6 +345,7 @@ namespace GuardadoCV.Models
 
                     if (!editable)
                     {
+                        //Si no es editable eliminamos las propiedades que no sean editables
                         List<string> propertiesEditables = templateSection.presentation.listItemsPresentation.listItemEdit.sections.SelectMany(x => x.rows).SelectMany(x => x.properties).Where(x => x.editable).Select(x => x.property).ToList();
                         pEntity.properties.RemoveAll(x => !propertiesEditables.Contains(x.prop.Split(new string[] { "@@@" }, StringSplitOptions.RemoveEmptyEntries)[0]));
                     }
@@ -449,26 +459,60 @@ namespace GuardadoCV.Models
                 //Actualizamos las propiedades multiidioma
                 {
                     //Entidad entityID
-                    Dictionary<string, List<MultilangProperty>> propiedadesActuales = UtilityCV.GetMultilangPropertiesCV(pCvID, entityID);
-                    Dictionary<string, List<MultilangProperty>> propiedadesNuevas = new Dictionary<string, List<MultilangProperty>>();
-                    foreach (Entity.Property prop in pEntity.properties)
+                    Dictionary<string, Dictionary<string, List<MultilangProperty>>> propiedadesActualesAux = UtilityCV.GetMultilangPropertiesCV(pCvID, entityID);
+                    Dictionary<string, List<MultilangProperty>> propiedadesActuales = new Dictionary<string, List<MultilangProperty>>();
+                    if (propiedadesActualesAux.ContainsKey(entityID))
                     {
-                        if (prop.valuesmultilang != null)
+                        propiedadesActuales = propiedadesActualesAux[entityID];
+                    }
+
+                    Dictionary<string, List<MultilangProperty>> propiedadesNuevas = new Dictionary<string, List<MultilangProperty>>();
+                    if (propiedadesMultiidiomaNoCV != null)
+                    {
+                        foreach (Entity.Property prop in propiedadesMultiidiomaNoCV)
                         {
-                            foreach (string idioma in prop.valuesmultilang.Keys)
+                            if (prop.valuesmultilang != null)
                             {
-                                if (!string.IsNullOrEmpty(prop.valuesmultilang[idioma]))
+                                foreach (string idioma in prop.valuesmultilang.Keys)
                                 {
-                                    if (!propiedadesNuevas.ContainsKey(prop.prop))
+                                    if (!string.IsNullOrEmpty(prop.valuesmultilang[idioma]))
                                     {
-                                        propiedadesNuevas.Add(prop.prop, new List<MultilangProperty>());
+                                        if (!propiedadesNuevas.ContainsKey(prop.prop))
+                                        {
+                                            propiedadesNuevas.Add(prop.prop, new List<MultilangProperty>());
+                                        }
+                                        MultilangProperty multilangProperty = new MultilangProperty()
+                                        {
+                                            lang = idioma,
+                                            value = prop.valuesmultilang[idioma]
+                                        };
+                                        propiedadesNuevas[prop.prop].Add(multilangProperty);
                                     }
-                                    MultilangProperty multilangProperty = new MultilangProperty()
+                                }
+                            }
+                        }
+                    }
+                    if (pEntity.properties_cv != null)
+                    {
+                        foreach (Entity.Property prop in pEntity.properties_cv)
+                        {
+                            if (prop.valuesmultilang != null)
+                            {
+                                foreach (string idioma in prop.valuesmultilang.Keys)
+                                {
+                                    if (!string.IsNullOrEmpty(prop.valuesmultilang[idioma]))
                                     {
-                                        lang = idioma,
-                                        value = prop.valuesmultilang[idioma]
-                                    };
-                                    propiedadesNuevas[prop.prop].Add(multilangProperty);
+                                        if (!propiedadesNuevas.ContainsKey(prop.prop))
+                                        {
+                                            propiedadesNuevas.Add(prop.prop, new List<MultilangProperty>());
+                                        }
+                                        MultilangProperty multilangProperty = new MultilangProperty()
+                                        {
+                                            lang = idioma,
+                                            value = prop.valuesmultilang[idioma]
+                                        };
+                                        propiedadesNuevas[prop.prop].Add(multilangProperty);
+                                    }
                                 }
                             }
                         }
@@ -1098,7 +1142,7 @@ namespace GuardadoCV.Models
                 foreach (MultilangProperty multilangProperty in pValoresAntiguos[property])
                 {
                     //Si no existe en las propiedades nuevas esa propiedad en ese idioma la eliminamos
-                    if (!pValoresNuevos.ContainsKey(property) || !pValoresNuevos[property].Exists(x => x.lang == multilangProperty.lang) || pValoresNuevos[property].Exists(x => x.lang == multilangProperty.lang && string.IsNullOrEmpty( x.value)))
+                    if (!pValoresNuevos.ContainsKey(property) || !pValoresNuevos[property].Exists(x => x.lang == multilangProperty.lang) || pValoresNuevos[property].Exists(x => x.lang == multilangProperty.lang && string.IsNullOrEmpty(x.value)))
                     {
                         triplesRemove[guidCV].Add(new RemoveTriples()
                         {
@@ -1438,7 +1482,7 @@ namespace GuardadoCV.Models
             }
             return null;
         }
-                
+
 
         /// <summary>
         /// Carga los datos en el objeto entidad con los datos obtenidos

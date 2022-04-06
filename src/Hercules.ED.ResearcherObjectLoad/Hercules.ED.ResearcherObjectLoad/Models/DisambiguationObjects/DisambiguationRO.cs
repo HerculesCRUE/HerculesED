@@ -135,7 +135,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
         private static DisambiguationDataConfig configTitulo = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsTitle,
-            score = 0.5f
+            score = 0.8f
         };
 
         private static DisambiguationDataConfig configDOI = new DisambiguationDataConfig()

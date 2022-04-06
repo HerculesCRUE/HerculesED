@@ -53,17 +53,18 @@ namespace GuardadoCV.Controllers
         /// <summary>
         /// Obtiene los datos de una pestaña dentro del editor
         /// </summary>
+        /// <param name="pCVId">Identificador del CV</param>
         /// <param name="pId">Identificador de la entidad a recuperar</param>
         /// <param name="pRdfType">Rdf:type de la entidad a recuperar</param>
         /// <param name="pLang">Idioma para recuperar los datos</param>
         /// <returns></returns>
         [HttpGet("GetTab")]
-        public IActionResult GetTab(string pId, string pRdfType, string pLang)
+        public IActionResult GetTab(string pCVId,string pId, string pRdfType, string pLang)
         {
             try
             {
                 AccionesEdicion accionesEdicion = new AccionesEdicion();
-                return Ok(accionesEdicion.GetTab(pId, pRdfType, pLang));
+                return Ok(accionesEdicion.GetTab( pCVId, pId, pRdfType, pLang));
             }
             catch (Exception ex)
             {
@@ -74,18 +75,19 @@ namespace GuardadoCV.Controllers
         /// <summary>
         /// Obtiene una minificha de una entidad de un listado de una pestaña
         /// </summary>
+        /// <param name="pCVId">Identificador del CV</param>
         /// <param name="pIdSection">Identificador de la sección</param>
         /// <param name="pRdfTypeTab">Rdftype del tab</param>
         /// <param name="pEntityID">Identificador de la entidad</param>
         /// <param name="pLang">Idioma</param>
         /// <returns></returns>
         [HttpGet("GetItemMini")]
-        public IActionResult GetItemMini(string pIdSection, string pRdfTypeTab, string pEntityID, string pLang)
+        public IActionResult GetItemMini(string pCVId, string pIdSection, string pRdfTypeTab, string pEntityID, string pLang)
         {
             try
             {
                 AccionesEdicion accionesEdicion = new AccionesEdicion();
-                return Ok(accionesEdicion.GetItemMini(pIdSection, pRdfTypeTab, pEntityID, pLang));
+                return Ok(accionesEdicion.GetItemMini(pCVId,pIdSection, pRdfTypeTab, pEntityID, pLang));
             }
             catch (Exception ex)
             {
@@ -97,18 +99,19 @@ namespace GuardadoCV.Controllers
         /// <summary>
         /// Obtiene una ficha de edición de una entidad de un listado de una pestaña
         /// </summary>
+        /// <param name="pCVId">Identificador del CV</param>
         /// <param name="pIdSection">Identificador de la sección</param>
         /// <param name="pRdfTypeTab">Rdftype del tab</param>
         /// <param name="pEntityID">Identificador de la entidad</param>
         /// <param name="pLang">Idioma</param>
         /// <returns></returns>
         [HttpGet("GetEdit")]
-        public IActionResult GetEdit(string pIdSection, string pRdfTypeTab, string pEntityID, string pLang)
+        public IActionResult GetEdit(string pCVId, string pIdSection, string pRdfTypeTab, string pEntityID, string pLang)
         {
             try
             {
                 AccionesEdicion accionesEdicion = new AccionesEdicion();
-                return Ok(accionesEdicion.GetEdit(pIdSection, pRdfTypeTab, pEntityID, pLang));
+                return Ok(accionesEdicion.GetEdit(pCVId, pIdSection, pRdfTypeTab, pEntityID, pLang));
             }
             catch (Exception ex)
             {

@@ -7,6 +7,7 @@ $(function() {
 //var urlGuardadoCV = "https://localhost:44360/GuardadoCV/";
 var urlEdicionCV = "http://serviciosedma.gnoss.com/editorcv/EdicionCV/";
 var urlGuardadoCV = "http://serviciosedma.gnoss.com/editorcv/GuardadoCV/";
+var languages=['en','ca','eu','gl','fr'];
 
 function GetText(id, param1, param2, param3, param4) {
     if ($('#' + id).length) {
@@ -221,7 +222,18 @@ var edicionCV = {
 			left: calc(50% - 94px)!important;
 		}
 		
+		.formulario-edicion .nav.nav-tabs {
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			padding: 0px 40px;
+			padding-top: 20px;
+		}
 		
+		#modal-editar-entidad .modal-content .modal-body {
+			padding: 60px 40px;
+		}
 
 		</style>`);
 
@@ -639,8 +651,11 @@ var edicionCV = {
         return html;
     },
     printHtmlListItem: function(id, data) {
-
-        var htmlListItem = `<article class="resource success">									
+		let openAccess="";
+		if (data.isopenaccess) {
+            openAccess = "open-access";
+        }
+        var htmlListItem = `<article class="resource success ${openAccess}" >									
 									<div class="wrap">
 										<div class="middle-wrap">
 											${this.printHtmlListItemOrders(data)}
@@ -648,10 +663,10 @@ var edicionCV = {
 											</div>
 											<div class="title-wrap">
 												<h2 class="resource-title">
-													<a href="#" data-id="${id}" internal-id="${data.identifier}">${data.title}</a>
-													${this.printHtmlListItemVisibilidad(data)}
-													${this.printHtmlListItemEditable(data)}
+													<a href="#" data-id="${id}" internal-id="${data.identifier}">${data.title}</a>													
 												</h2>
+												${this.printHtmlListItemEditable(data)}
+												${this.printHtmlListItemVisibilidad(data)}		
 												${this.printHtmlListItemAcciones(data, id)}                        
 												<span class="material-icons arrow">keyboard_arrow_down</span>
 											</div>
@@ -681,15 +696,12 @@ var edicionCV = {
         return html;
     },
     printHtmlListItemEditable: function(data) {
-        if (data.iseditable) {
-            return `	<div class="candado-wrapper">
-							<div class="con-icono-before candado-activo"></div>
-						</div>`;
-        } else {
-            return `	<div class="candado-wrapper">
-							<div class="con-icono-before candado"></div>
-						</div>`;
+        if (!data.iseditable) {
+            return `	<div class="block-wrapper">
+                            <span class="material-icons">block</span>
+                        </div>`;
         }
+		return '';
     },
     printHtmlListItemVisibilidad: function(data) {
         if (data.ispublic) {
@@ -965,7 +977,8 @@ var edicionCV = {
 		{
 			this.engancharComportamientosCV();				
 		}
-        accionesPlegarDesplegarModal.init();		
+        accionesPlegarDesplegarModal.init();	
+		tooltipsAccionesRecursos.init()		
     },
     paginarListado: function(sectionID, pagina) {
         $('.panel-group[section="' + sectionID + '"] .panNavegador .pagination.numbers .actual').removeClass('actual');
@@ -1033,6 +1046,37 @@ var edicionCV = {
         $(contenedor).attr('rdfTypeTab', rdfTypeTab);
         //TODO ¿se usa, cambiar de nombre?
         $(contenedor).attr('entityload', entityID);
+		
+		let htmlLangs='<ul class="nav nav-tabs grey" id="" role="tablist">';
+		htmlLangs+=`	<li class="nav-item">
+            <a href="javascript: void(0);" lang="es" class="nav-link active">${GetText('ESPAGNOL')}</a>
+        </li>`;
+		languages.forEach(function(language, index) {
+			var nombreIdioma="";
+			switch (language) {
+				case 'en':
+					nombreIdioma=GetText('INGLES');
+					break;
+				case 'ca':
+					nombreIdioma=GetText('CATALAN');
+					break;
+				case 'eu':
+					nombreIdioma=GetText('EUSKERA');
+					break;
+				case 'gl':
+					nombreIdioma=GetText('GALLEGO');
+					break;
+				case 'fr':
+					nombreIdioma=GetText('FRANCES');
+					break;
+			}			
+			htmlLangs+=`	<li class="nav-item">
+            <a href="javascript: void(0);" lang=${language} class="nav-link">${nombreIdioma}</a>
+        </li>`;
+		});
+		htmlLangs+='</ul>';
+		$(contenedor).append(htmlLangs);
+		
         for (var i = 0; i < data.sections.length; i++) {
             var collapsed = ""
             var ariaexpanded = "true";
@@ -1061,7 +1105,8 @@ var edicionCV = {
     printEditEntity: function(modalContenedor, data, rdfType) {
         $(modalContenedor + ' form').empty();
         $(modalContenedor + ' form').attr('entityid', data.entityID);
-        $(modalContenedor + ' form').attr('rdftype', data.rdftype);
+        $(modalContenedor + ' form').attr('rdftype', data.rdftype);		
+		
         for (var i = 0; i < data.sections.length; i++) {
             var collapsed = ""
             var ariaexpanded = "true";
@@ -1070,7 +1115,7 @@ var edicionCV = {
                 collapsed = "collapsed";
                 ariaexpanded = "false";
                 show = "";
-            }
+            }			
             var section =
                 `<div class="simple-collapse">
 								<a class="collapse-toggle ${collapsed}" data-toggle="collapse" href="#collapse-${i}" role="button" aria-expanded="${ariaexpanded}" aria-controls="collapse-${i}">${data.sections[i].title}</a>
@@ -1163,7 +1208,7 @@ var edicionCV = {
                     htmlInput = this.printPropertyEditEntityAutocomplete(property.property, property.placeholder, property.propertyEntityValue, property.required, !iseditable, property.autocomplete, property.dependency,property.autocompleteConfig);
                     break;
 				case 'text':
-                    htmlInput = this.printPropertyEditTextInput(property.property, property.placeholder, value, property.required, !iseditable, property.autocomplete, property.dependency,property.autocompleteConfig,property.entity_cv,property.multilang);
+                    htmlInput = this.printPropertyEditTextInput(property.property, property.placeholder, value, property.required, !iseditable, property.autocomplete, property.dependency,property.autocompleteConfig,property.entity_cv,property.multilang,property.valuesmultilang);
                     break;
                 case 'number':
                     htmlInput = this.printPropertyEditNumberInput(property.property, property.placeholder, value, property.required, !iseditable, property.dependency);
@@ -1172,7 +1217,7 @@ var edicionCV = {
                     htmlInput = this.printSelectCombo(property.property, value, property.comboValues, property.comboDependency, property.required, !iseditable,property.entity_cv,property.dependency);
                     break;
                 case 'textarea':
-                    htmlInput = this.printPropertyEditTextArea(property.property, property.placeholder, value, property.required, !iseditable,property.entity_cv);
+                    htmlInput = this.printPropertyEditTextArea(property.property, property.placeholder, value, property.required, !iseditable,property.entity_cv,property.multilang,property.valuesmultilang);
                     break;
                 case 'date':
                     htmlInput = this.printPropertyEditDate(property.property, property.placeholder, value, property.required, !iseditable, property.dependency);
@@ -1204,7 +1249,7 @@ var edicionCV = {
                     rdftype = ` rdftype='${property.entityData.rdftype}'`;
                     htmlInput += `<div class='item added entity' propertyrdf='${property.property}' rdftype='${property.entityData.rdftype}' about='${value}'>`;
 
-                    htmlInput += this.printPropertyEditTextInput(property.property, property.placeholder, value, property.required, !iseditable,null,null,null,null,property.multilang);
+                    htmlInput += this.printPropertyEditTextInput(property.property, property.placeholder, value, property.required, !iseditable,null,null,null,null);
 
                     //Pintamos el título
                     if (property.values.length > 0 && property.values[0] != null && property.entityData.titles[property.values[0]] != null) {
@@ -1275,7 +1320,7 @@ var edicionCV = {
             }
             switch (property.type) {
                 case 'text':
-                    htmlMultiple += this.printPropertyEditTextInput(property.property, property.placeholder, '', property.required, !iseditable, property.autocomplete, property.dependency,property.autocompleteConfig,property.entity_cv,property.multilang);
+                    htmlMultiple += this.printPropertyEditTextInput(property.property, property.placeholder, '', property.required, !iseditable, property.autocomplete, property.dependency,property.autocompleteConfig,property.entity_cv,property.multilang,property.valuesmultilang);
                     break;
                 case 'number':
                     htmlMultiple = this.printPropertyEditNumberInput(property.property, property.placeholder, value, property.required, !iseditable, property.dependency);
@@ -1292,7 +1337,7 @@ var edicionCV = {
                     htmlMultiple += this.printRowsEdit(iseditable, property.entityAuxData.rows);
                     break;
                 case 'textarea':
-                    htmlMultiple += this.printPropertyEditTextArea(property.property, property.placeholder, '', property.required, !iseditable,property.entity_cv);
+                    htmlMultiple += this.printPropertyEditTextArea(property.property, property.placeholder, '', property.required, !iseditable,property.entity_cv,property.multilang,property.valuesmultilang);
                     break;
                 case 'date':
                     htmlMultiple += this.printPropertyEditDate(property.property, property.placeholder, '', property.required, !iseditable, property.dependency);
@@ -1369,7 +1414,7 @@ var edicionCV = {
                 }
                 switch (property.type) {
                     case 'text':
-                        htmlMultiple += this.printPropertyEditTextInput(property.property, property.placeholder, property.values[valor], property.required, true, false,null,null,null,property.multilang);
+                        htmlMultiple += this.printPropertyEditTextInput(property.property, property.placeholder, property.values[valor], property.required, true, false,null,null,null,property.multilang,property.valuesmultilang);
                         break;
                     case 'number':
                         htmlMultiple += this.printPropertyEditNumberInput(property.property, property.placeholder, property.values[valor], property.required, true);
@@ -1378,7 +1423,7 @@ var edicionCV = {
                         htmlMultiple += this.printSelectCombo(property.property, property.values[valor], property.comboValues, property.comboDependency, property.required, true,property.entity_cv,property.dependency);
                         break;
                     case 'textarea':
-                        htmlMultiple += this.printPropertyEditTextArea(property.property, property.placeholder, property.values[valor], property.required, true,property.entity_cv);
+                        htmlMultiple += this.printPropertyEditTextArea(property.property, property.placeholder, property.values[valor], property.required, true,property.entity_cv,property.multilang,property.valuesmultilang);
                         break;
                     case 'date':
                         htmlMultiple += this.printPropertyEditDate(property.property, property.placeholder, property.values[valor], property.required, true);
@@ -1415,7 +1460,7 @@ var edicionCV = {
 
                         break;
                     case 'entity':
-                        htmlMultiple += this.printPropertyEditTextInput(property.property, property.placeholder, value, property.required, !iseditable,null,null,null,null,property.multilang);
+                        htmlMultiple += this.printPropertyEditTextInput(property.property, property.placeholder, value, property.required, !iseditable,null,null,null,null);
 
                         //Pintamos el título
                         if (property.values[valor] != null && property.entityData.titles[property.values[valor]] != null) {
@@ -1487,8 +1532,8 @@ var edicionCV = {
 					<input propertyrdf="${property}" type="hidden">
 				</div>`;
     },
-    printPropertyEditTextInput: function(property, placeholder, value, required, pDisabled, autocomplete, dependency,autocompleteConfig,pEntity_cv,pMultilang) {
-        var css = "";
+    printPropertyEditTextInput: function(property, placeholder, value, required, pDisabled, autocomplete, dependency,autocompleteConfig,pEntity_cv,pMultilang,pValuesMultilang) {
+        let css = "";
         if (required) {
             css = "obligatorio";
         }
@@ -1496,14 +1541,15 @@ var edicionCV = {
 		{
 			css+=" entity_cv";
 		}
-        var prop_property = 'propertyrdf';
-        var disabled = '';
+        let prop_property = 'propertyrdf';
+        let disabled = '';
         if (pDisabled && !pEntity_cv) {
             disabled = 'disabled';
+			css+=" disabled ";
         }
 
-        var action = '';
-		var atributesAutocomplete='';
+        let action = '';
+		let atributesAutocomplete='';
         if (autocomplete) {
             action = 'addAutocompletar(this)';
 			if(autocompleteConfig!=null)
@@ -1531,7 +1577,7 @@ var edicionCV = {
 			}
         }
 		
-		var htmlDependency = '';
+		let htmlDependency = '';
 		if(dependency!=null)
 		{
 			css+=' hasdependency';
@@ -1546,14 +1592,22 @@ var edicionCV = {
 			
 		}
 		
+		let html='';
 		if(pMultilang)
 		{
-			return `<input ${disabled} ${atributesAutocomplete} propertyrdf="${property}" placeholder="${placeholder}" value="${value}" onfocus="${action}" type="text" class="form-control not-outline ${css}" ${htmlDependency}>
-			<input ${disabled} ${atributesAutocomplete} multilang="en" propertyrdf="${property}" placeholder="${placeholder}" value="${value.replaceAll("\"","\\\"")}" " onfocus="${action}" type="text" class="form-control not-outline ${css}" ${htmlDependency}>`;
-		}else
-		{
-			return `<input ${disabled} ${atributesAutocomplete} propertyrdf="${property}" placeholder="${placeholder}" value="${value.replace(/"/g, "&quot;")}" onfocus="${action}" type="text" class="form-control not-outline ${css}" ${htmlDependency}>`;
+			css+=' multilang ';
+			let cssMulti=css.replace('obligatorio','').replace('disabled','');
+			languages.forEach(function(language, index) {
+				let valorIdioma='';
+				if(pValuesMultilang!=null && pValuesMultilang[language]!=null)
+				{
+					valorIdioma=pValuesMultilang[language];
+				}
+				html+=`	<input ${atributesAutocomplete} multilang="${language}" propertyrdf="${property}" 		placeholder="${placeholder}" value="${valorIdioma.replace(/"/g, "&quot;")}" " onfocus="${action}" type="text" class="form-control not-outline ${cssMulti} " style="display:none" ${htmlDependency}>`;
+			});
 		}
+		html+=`<input ${disabled} ${atributesAutocomplete} propertyrdf="${property}" placeholder="${placeholder}" value="${value.replace(/"/g, "&quot;")}" onfocus="${action}" type="text" class="form-control not-outline ${css}" ${htmlDependency}>`;
+		return html;
     },
     printPropertyEditEntityAutocomplete: function(property, placeholder, value, required, pDisabled, autocomplete, dependency,autocompleteConfig) {
         var css = "";
@@ -1564,6 +1618,7 @@ var edicionCV = {
         var disabled = '';
         if (pDisabled) {
             disabled = 'disabled';
+			css+=" disabled ";
         }
 
         var action = '';
@@ -1621,6 +1676,7 @@ var edicionCV = {
         var disabled = '';
         if (pDisabled) {
             disabled = 'disabled';
+			css+=" disabled ";
         }
 		var htmlDependency = '';
 		if(dependency!=null)
@@ -1650,6 +1706,7 @@ var edicionCV = {
         var disabled = '';
         if (pDisabled) {
             disabled = 'disabled';
+			css+=" disabled ";
         }
 		var htmlDependency = '';
 		if(dependency!=null)
@@ -1667,7 +1724,7 @@ var edicionCV = {
 		<input ${disabled} propertyrdf="${property}" placeholder="${placeholder}" value="${valueDate}" type="text" class="form-control aux not-outline form-group-date datepicker ${css}">
 				<span class="material-icons form-group-date">today</span>`;
     },
-    printPropertyEditTextArea: function(property, placeholder, value, required, pDisabled,pEntity_cv) {
+    printPropertyEditTextArea: function(property, placeholder, value, required, pDisabled,pEntity_cv,pMultilang,pValuesMultilang) {
         var css = "";
         if (required) {
             css = "obligatorio";
@@ -1679,17 +1736,37 @@ var edicionCV = {
         var disabled = '';
         if (pDisabled && !pEntity_cv) {
             disabled = 'disabled';
+			css+=" disabled ";
         }
-        return `<textarea ${disabled} propertyrdf="${property}" placeholder="${placeholder}" type="text" class="form-control not-outline ${css}">${value}</textarea>`;
+		
+		
+		let html='';
+		if(pMultilang)
+		{
+			css+=' multilang ';
+			let cssMulti=css.replace('obligatorio','').replace('disabled','');
+			languages.forEach(function(language, index) {
+				let valorIdioma='';
+				if(pValuesMultilang!=null && pValuesMultilang[language]!=null)
+				{
+					valorIdioma=pValuesMultilang[language];
+				}
+				html+=`<textarea multilang="${language}" propertyrdf="${property}" placeholder="${placeholder}" type="text" class="form-control not-outline ${css}" style="display:none">${valorIdioma}</textarea>`;
+			});
+		}
+		html+=`<textarea ${disabled} propertyrdf="${property}" placeholder="${placeholder}" type="text" class="form-control not-outline ${css}">${value}</textarea>`;
+		return html;
     },
     printSelectCombo: function(property, pId, pItems, pComboDependency, required, pDisabled,pEntity_cv,pDependency) {
-        var disabled = '';
-        if (pDisabled && !pEntity_cv) {
-            disabled = 'disabled';
-        }
+        
         var css = "";
         if (required) {
             css = "obligatorio";
+        }
+		var disabled = '';
+        if (pDisabled && !pEntity_cv) {
+            disabled = 'disabled';
+			css+=" disabled ";
         }
 		if(pEntity_cv)
 		{
@@ -1732,14 +1809,15 @@ var edicionCV = {
         selector += "</select>";
         return selector;
     },
-    printThesaurus: function(property, values, pItems, required, pDisabled) {
-        var disabled = '';
-        if (pDisabled) {
-            disabled = 'disabled';
-        }
+    printThesaurus: function(property, values, pItems, required, pDisabled) {        
         var css = "";
         if (required) {
             css = "obligatorio";
+        }
+		var disabled = '';
+        if (pDisabled) {
+            disabled = 'disabled';
+			css+=" disabled ";
         }
 
         var itemsHijo = $.grep(pItems, function(p) { return p.parentId == ''; });
@@ -2653,6 +2731,25 @@ var edicionCV = {
             OcultarUpdateProgress();
         });
     },
+	cambiarIdiomaEdicion: function(lang,contenedor) {
+        if(lang=='es')
+		{
+			//Ocultamos todos los campos multiidioma que tienen idioma
+			contenedor.find('input.multilang[multilang],textarea.multilang[multilang]').hide();
+			//Mostramos todos los campos multiidioma que no tienen idioma
+			contenedor.find('input.multilang:not([multilang]),textarea.multilang:not([multilang])').show();		
+			//Hablitamos todos los campos q(que no sean campos deshabilitados)
+			contenedor.find('input:not(.disabled),select:not(.disabled),textarea:not(.disabled)').removeAttr('disabled');				
+		}else
+		{
+			//Ocultamos todos los campos multiidioma 
+			contenedor.find('input.multilang,textarea.multilang').hide();
+			//Mostramos todos los campos multiidioma que tienen el idioma seleccionado
+			contenedor.find(`input.multilang[multilang="${lang}"],textarea.multilang[multilang="${lang}"]`).show();
+			//Deshablitamos todos los campos que no son multiidioma
+			contenedor.find('input:not(.multilang),select,textarea:not(.multilang)').attr('disabled','disabled');			
+		}
+    },
     //Fin de métodos de edición
     engancharComportamientosCV: function() {
 		 $('select').unbind("change.selectitem").bind("change.selectitem", function() {
@@ -3496,6 +3593,14 @@ var edicionCV = {
             $('select[propertyrdf="' + dependencyproperty + '"]').trigger('change');
         });
 
+
+		//CAmbiamos de idioma en la edición
+        $('.formulario-edicion ul.nav-tabs li a').off('click').on('click', function(e) {
+			$(this).closest('ul').find('a').removeClass('active');
+			$(this).addClass('active');
+			that.cambiarIdiomaEdicion($(this).attr('lang'),$(this).closest('.formulario-edicion'));
+        });
+
         return;
     },
     validarFormulario: function(formulario, contenedor) {
@@ -3503,10 +3608,24 @@ var edicionCV = {
         //Validamos los campos obligatorios
         var camposObligatorios = [];
         //Validamos inputs que no pertenezcan a una entidad auxiliar (ni sean multiples)
-        $(formulario).find('input.obligatorio:visible, select.obligatorio, textarea.obligatorio').each(function(index) {
+        $(formulario).find('input.obligatorio, select.obligatorio, textarea.obligatorio').each(function(index) {
             if ($(this).closest('.entityauxcontainer,.entitycontainer,.multiple').length == 0) {
                 if ($(this).val() == null || $(this).val() == '') {
-                    camposObligatorios.push($(this).closest('.form-group').find('.control-label').text());
+					if($(this).is('input')||$(this).is('textarea'))
+					{						
+						//Si es un input o textarea multiidioma y no tiene idioma es obligatorio aunque no esté visible
+						//Si es un input o textarea multiidioma sin multiidioma es obligatorio sólo si esta visible
+						if(
+							$(this).hasClass('multilang') && $(this).attr('multilang')==null ||
+							$(this).is(':visible') && !$(this).hasClass('multilang')
+							)
+						{
+							camposObligatorios.push($(this).closest('.form-group').find('.control-label').text());
+						}
+					}else
+					{
+						camposObligatorios.push($(this).closest('.form-group').find('.control-label').text());
+					}
                 }
             }
         });
@@ -5909,3 +6028,21 @@ function getParam(param)
 		x++;
 	}
 }
+
+
+tooltipsAccionesRecursos.lanzar= function () {
+	montarTooltip.lanzar(this.block, GetText('CV_BLOQUEADO'), 'background-gris-oscuro');
+	montarTooltip.lanzar(this.visible, GetText('CV_VISIBLE'), 'background-gris-oscuro');
+	montarTooltip.lanzar(this.oculto, GetText('CV_OCULTO'), 'background-gris-oscuro');
+};
+
+montarTooltip.lanzar= function (elem, title, classes) {
+	elem.tooltip({
+		html: true,
+		placement: 'bottom',
+		template: '<div class="tooltip ' + classes + '" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
+		title: title
+	});
+
+	this.comportamiento(elem);
+};

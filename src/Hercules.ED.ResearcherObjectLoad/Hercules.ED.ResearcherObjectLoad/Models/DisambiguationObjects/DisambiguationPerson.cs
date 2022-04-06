@@ -149,6 +149,102 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
             }
         }
 
+        private HashSet<string> mOrganizacion { get; set; }
+        public HashSet<string> organizacion
+        {
+            get
+            {
+                return mOrganizacion;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    mOrganizacion = new HashSet<string>();
+                }
+                else
+                {
+                    mOrganizacion = value;
+                }
+            }
+        }
+
+        private HashSet<string> mDepartamento { get; set; }
+        public HashSet<string> departamento
+        {
+            get
+            {
+                return mDepartamento;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    mDepartamento = new HashSet<string>();
+                }
+                else
+                {
+                    mDepartamento = value;
+                }
+            }
+        }
+
+        private HashSet<string> mGrupos { get; set; }
+        public HashSet<string> grupos
+        {
+            get
+            {
+                return mGrupos;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    mGrupos = new HashSet<string>();
+                }
+                else
+                {
+                    mGrupos = value;
+                }
+            }
+        }
+
+        private HashSet<string> mProyectos { get; set; }
+        public HashSet<string> proyectos
+        {
+            get
+            {
+                return mProyectos;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    mProyectos = new HashSet<string>();
+                }
+                else
+                {
+                    mProyectos = value;
+                }
+            }
+        }
+
+        public DisambiguationPerson()
+        {
+            completeName = "";
+            orcid = "";
+            gitHubId = "";
+            figShareId = "";
+            zenodoId = "";
+            distincts = new HashSet<string>();
+            mCoautores = new HashSet<string>();
+            mDocumentos = new HashSet<string>();
+            mOrganizacion = new HashSet<string>();
+            mDepartamento = new HashSet<string>();
+            mGrupos = new HashSet<string>();
+            mProyectos = new HashSet<string>();
+        }
+
         private static DisambiguationDataConfig configCompleteName = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.algoritmoNombres,
@@ -182,6 +278,30 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
         };
 
         private static DisambiguationDataConfig configDocumentos = new DisambiguationDataConfig()
+        {
+            type = DisambiguationDataConfigType.equalsItemList,
+            score = 0.5f
+        };
+
+        private static readonly DisambiguationDataConfig configOrganizacion = new DisambiguationDataConfig()
+        {
+            type = DisambiguationDataConfigType.equalsItemList,
+            score = 0.5f
+        };
+
+        private static readonly DisambiguationDataConfig configDepartamento = new DisambiguationDataConfig()
+        {
+            type = DisambiguationDataConfigType.equalsItemList,
+            score = 0.5f
+        };
+
+        private static readonly DisambiguationDataConfig configGrupos = new DisambiguationDataConfig()
+        {
+            type = DisambiguationDataConfigType.equalsItemList,
+            score = 0.5f
+        };
+
+        private static readonly DisambiguationDataConfig configProyectos = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsItemList,
             score = 0.5f
@@ -241,6 +361,33 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
                 value = zenodoId
             });
 
+            data.Add(new DisambiguationData()
+            {
+                property = "organizacion",
+                config = configOrganizacion,
+                values = organizacion
+            });
+
+            data.Add(new DisambiguationData()
+            {
+                property = "departamento",
+                config = configDepartamento,
+                values = departamento
+            });
+
+            data.Add(new DisambiguationData()
+            {
+                property = "grupos",
+                config = configGrupos,
+                values = grupos
+            });
+
+            data.Add(new DisambiguationData()
+            {
+                property = "proyectos",
+                config = configProyectos,
+                values = proyectos
+            });
             return data;
         }
     }

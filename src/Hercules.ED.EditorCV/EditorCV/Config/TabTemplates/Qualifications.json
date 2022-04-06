@@ -264,6 +264,7 @@
                         },
                         "autocomplete": true,
                         "required": true,
+                        "multilang": true,
                         "placeholder": {
                           "es": "Introduce el nombre del título"
                         },
@@ -314,6 +315,7 @@
                         },
                         "property": "http://w3id.org/roh/universityDegreeTypeOther",
                         "required": true,
+                        "multilang": true,
                         "dependency": {
                           "property": "http://w3id.org/roh/universityDegreeType",
                           "propertyValue": "{GraphsUrl}items/universitydegreetype_OTHERS"
@@ -333,6 +335,7 @@
                         "placeholder": {
                           "es": "Introduce la entidad de titulación"
                         },
+                        "multilang": true,
                         "property": "http://w3id.org/roh/conductedByTitle",
                         "autocompleteConfig": {
                           "rdftype": "http://xmlns.com/foaf/0.1/Organization",
@@ -453,7 +456,6 @@
                           "es": "Título extranjero"
                         },
                         "autocomplete": true,
-                        "required": true,
                         "placeholder": {
                           "es": "Introduce el título extranjero"
                         },
@@ -532,6 +534,7 @@
                         },
                         "property": "http://w3id.org/roh/prizeOther",
                         "required": true,
+                        "multilang": true,
                         "dependency": {
                           "property": "http://w3id.org/roh/prize",
                           "propertyValue": "{GraphsUrl}items/prizetype_OTHERS"
