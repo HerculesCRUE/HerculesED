@@ -8458,6 +8458,7 @@
                         },
                         "property": "http://w3id.org/roh/aimsOther",
                         "required": true,
+                        "multilang": true,
                         "dependency": {
                           "property": "http://w3id.org/roh/aims",
                           "propertyValue": "{GraphsUrl}items/grantaim_OTHERS"
@@ -8892,6 +8893,7 @@
                         "placeholder": {
                           "es": "Introduce la descripción de la colaboración"
                         },
+                        "multilang": true,
                         "property": "http://w3id.org/roh/title",
                         "required": true,
                         "type": "text",
@@ -8923,6 +8925,7 @@
                         },
                         "required": true,
                         "property": "http://w3id.org/roh/relationshipTypeOther",
+                        "multilang": true,
                         "dependency": {
                           "property": "http://w3id.org/roh/relationshipType",
                           "propertyValue": "{GraphsUrl}items/relationshiptype_OTHERS"
@@ -9333,6 +9336,7 @@
                         "placeholder": {
                           "es": "Introduce los resultados relevantes"
                         },
+                        "multilang": true,
                         "property": "http://w3id.org/roh/relevantResults",
                         "type": "text",
                         "width": 3
@@ -9820,6 +9824,7 @@
                         "placeholder": {
                           "es": "Introduce la categoría profesional"
                         },
+                        "multilang": true,
                         "property": "http://w3id.org/roh/professionalCategory",
                         "type": "text",
                         "width": 1
@@ -10381,6 +10386,7 @@
                           "es": "Tareas desarrolladas"
                         },
                         "property": "http://w3id.org/roh/performedTasks",
+                        "multilang": true,
                         "type": "text",
                         "width": 1
                       },
@@ -10389,6 +10395,7 @@
                           "es": "Categoría profesional"
                         },
                         "property": "http://w3id.org/roh/professionalCategory",
+                        "multilang": true,
                         "type": "text",
                         "width": 1
                       },
@@ -10426,6 +10433,7 @@
                         },
                         "property": "http://w3id.org/roh/geographicFocusOther",
                         "required": true,
+                        "multilang": true,
                         "dependency": {
                           "property": "http://vivoweb.org/ontology/core#geographicFocus",
                           "propertyValue": "{GraphsUrl}items/geographicregion_OTHERS"
@@ -10746,6 +10754,7 @@
                         "placeholder": {
                           "es": "Introduce la identificación de la red"
                         },
+                        "multilang": true,
                         "property": "http://w3id.org/roh/identification",
                         "type": "text",
                         "width": 1
@@ -11076,6 +11085,7 @@
                         "placeholder": {
                           "es": "Introduce las tareas desarrolladas"
                         },
+                        "multilang": true,
                         "property": "http://w3id.org/roh/performedTasks",
                         "type": "text",
                         "width": 1
