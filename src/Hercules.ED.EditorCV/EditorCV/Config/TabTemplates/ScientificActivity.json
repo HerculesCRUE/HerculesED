@@ -211,6 +211,7 @@
                         },
                         "property": "http://w3id.org/roh/generalQualityIndicator",
                         "required": false,
+                        "multilang": true,
                         "type": "textarea",
                         "width": 3
                       }
