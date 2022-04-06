@@ -539,7 +539,11 @@
 
                                             @foreach (var reference in pDocument.Roh_references)
                                             {
-                                                string fecha = reference.Dct_issued.ToString().Split('/')[2].Split(' ')[0];
+                                                string fecha = string.Empty;
+                                                if (reference.Dct_issued != null)
+                                                {
+                                                    fecha = reference.Dct_issued.ToString().Split('/')[2].Split(' ')[0];
+                                                }
                                                 string url = reference.Bibo_doi != "" ? "//doi.org/" + reference.Bibo_doi : "";
                                                 string urlInternalDoc = "";
                                                 string cssArticle = "";
