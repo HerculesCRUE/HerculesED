@@ -1158,6 +1158,7 @@
                         "placeholder": {
                           "es": "Introduce el nombre del proyecto"
                         },
+                        "multilang": true,
                         "property": "http://w3id.org/roh/title",
                         "required": true,
                         "type": "text",
@@ -1841,6 +1842,7 @@
                         },
                         "property": "http://w3id.org/roh/relevantResults",
                         "type": "text",
+                        "multilang": true,
                         "width": 2
                       }
                     ]
@@ -2594,6 +2596,7 @@
                         "placeholder": {
                           "es": "Introduce la entidad titular de derechos"
                         },
+                        "multilang": true,
                         "property": "http://w3id.org/roh/ownerOrganizationTitle",
                         "autocompleteConfig": {
                           "rdftype": "http://xmlns.com/foaf/0.1/Organization",
@@ -2636,6 +2639,7 @@
                                   "placeholder": {
                                     "es": "Introduce la entidad participante"
                                   },
+                                  "multilang": true,
                                   "property": "http://w3id.org/roh/organizationTitle",
                                   "autocompleteConfig": {
                                     "rdftype": "http://xmlns.com/foaf/0.1/Organization",
@@ -2686,6 +2690,7 @@
                         },
                         "property": "http://w3id.org/roh/industrialPropertyTypeOther",
                         "required": true,
+                        "multilang": true,
                         "dependency": {
                           "property": "http://w3id.org/roh/industrialPropertyType",
                           "propertyValue": "{GraphsUrl}items/industrialpropertytype_OTHERS"
@@ -2816,6 +2821,7 @@
                         "placeholder": {
                           "es": "Introduce los resultados relevantes"
                         },
+                        "multilang": true,
                         "property": "http://w3id.org/roh/relevantResults",
                         "type": "text",
                         "width": 2
@@ -2836,6 +2842,7 @@
                         "title": {
                           "es": "Descripción de cualidades"
                         },
+                        "multilang": true,
                         "property": "http://w3id.org/roh/qualityDescription",
                         "type": "text",
                         "width": 2
