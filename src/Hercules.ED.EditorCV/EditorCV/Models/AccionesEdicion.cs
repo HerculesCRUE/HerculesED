@@ -1207,7 +1207,7 @@ namespace GuardadoCV.Models
             if (pItemEdit.sections.Exists(x => x.rows.Exists(y => y.properties.Exists(z => z.multilang))))
             {
                 Dictionary<string, Dictionary<string, List<MultilangProperty>>> multilangData = UtilityCV.GetMultilangPropertiesCV(pCVId, pId);
-                if (multilangData.ContainsKey(pId))
+                if (!string.IsNullOrEmpty(pId) && multilangData.ContainsKey(pId))
                 {
                     foreach (string prop in multilangData[pId].Keys)
                     {
