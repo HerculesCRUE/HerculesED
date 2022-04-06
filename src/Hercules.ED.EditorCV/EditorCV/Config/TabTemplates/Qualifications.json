@@ -897,6 +897,7 @@
                         },
                         "autocomplete": true,
                         "required": true,
+                        "multilang": true,
                         "placeholder": {
                           "es": "Introduce el programa de doctorado"
                         },
@@ -933,6 +934,7 @@
                         "placeholder": {
                           "es": "Introduce la entidad de titulación"
                         },
+                        "multilang": true,
                         "property": "http://w3id.org/roh/conductedByTitle",
                         "autocompleteConfig": {
                           "rdftype": "http://xmlns.com/foaf/0.1/Organization",
@@ -1056,6 +1058,7 @@
                         "placeholder": {
                           "es": "Introduce la entidad de titulación"
                         },
+                        "multilang": true,
                         "property": "http://w3id.org/roh/deaEntityTitle",
                         "autocompleteConfig": {
                           "rdftype": "http://xmlns.com/foaf/0.1/Organization",
@@ -1798,6 +1801,7 @@
                           "es": "Titulación de posgrado"
                         },
                         "autocomplete": true,
+                        "multilang": true,
                         "required": true,
                         "placeholder": {
                           "es": "Introduce el nombre de la titulación de posgrado"
@@ -1836,6 +1840,7 @@
                           "es": "Introduce la entidad de titulación"
                         },
                         "property": "http://w3id.org/roh/conductedByTitle",
+                        "multilang": true,
                         "autocompleteConfig": {
                           "rdftype": "http://xmlns.com/foaf/0.1/Organization",
                           "graph": "organization",
@@ -2269,6 +2274,7 @@
                         "title": {
                           "es": "Título de la formación"
                         },
+                        "multilang": true,
                         "required": true,
                         "placeholder": {
                           "es": "Introduce el título de la formación"
@@ -2286,6 +2292,7 @@
                           "es": "Entidad de titulación"
                         },
                         "autocomplete": true,
+                        "multilang": true,
                         "placeholder": {
                           "es": "Introduce la entidad de titulación"
                         },
@@ -2445,6 +2452,7 @@
                           "es": "Otros"
                         },
                         "property": "http://w3id.org/roh/formationActivityTypeOther",
+                        "multilang": true,
                         "required": true,
                         "dependency": {
                           "property": "http://w3id.org/roh/formationActivityType",
@@ -2462,6 +2470,7 @@
                           "es": "Objetivos de la entidad"
                         },
                         "type": "text",
+                        "multilang": true,
                         "property": "http://w3id.org/roh/goals",
                         "width": 2
                       }
@@ -2818,6 +2827,7 @@
                           "es": "Título del curso/seminario"
                         },
                         "required": true,
+                        "multilang": true,
                         "placeholder": {
                           "es": "Introduce el título del curso/seminario"
                         },
@@ -2829,6 +2839,7 @@
                         "title": {
                           "es": "Objetivos del curso/seminario"
                         },
+                        "multilang": true,
                         "placeholder": {
                           "es": "Introduce el objetivo del curso/seminario"
                         },
@@ -2845,6 +2856,7 @@
                           "es": "Entidad organizadora"
                         },
                         "autocomplete": true,
+                        "multilang": true,
                         "placeholder": {
                           "es": "Introduce la entidad organizadora"
                         },
@@ -3052,6 +3064,7 @@
                           "es": "Otros"
                         },
                         "property": "http://w3id.org/roh/stayGoalOther",
+                        "multilang": true,
                         "required": true,
                         "dependency": {
                           "property": "http://w3id.org/roh/stayGoal",
@@ -3083,6 +3096,7 @@
                         "title": {
                           "es": "Perfil de destinatarios/as"
                         },
+                        "multilang": true,
                         "property": "http://w3id.org/roh/targetProfile",
                         "type": "textarea",
                         "width": 3
@@ -3095,6 +3109,7 @@
                         "title": {
                           "es": "Tareas contrastables"
                         },
+                        "multilang": true,
                         "property": "http://w3id.org/roh/performedTasks",
                         "type": "textarea",
                         "width": 3
