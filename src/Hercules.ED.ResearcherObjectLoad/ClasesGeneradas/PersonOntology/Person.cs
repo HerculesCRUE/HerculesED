@@ -133,7 +133,6 @@ namespace PersonOntology
 			this.Foaf_firstName = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/firstName"));
 			this.Roh_isActive= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isActive"));
 			this.Foaf_name = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/name"));
-			this.Roh_hasResearchAreaEdited= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/hasResearchAreaEdited"));
 			this.Foaf_lastName = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/lastName"));
 		}
 
@@ -244,7 +243,6 @@ namespace PersonOntology
 			this.Foaf_firstName = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/firstName"));
 			this.Roh_isActive= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isActive"));
 			this.Foaf_name = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/name"));
-			this.Roh_hasResearchAreaEdited= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/hasResearchAreaEdited"));
 			this.Foaf_lastName = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/lastName"));
 		}
 
@@ -383,10 +381,6 @@ namespace PersonOntology
 		[RDFProperty("http://xmlns.com/foaf/0.1/name")]
 		public  string Foaf_name { get; set;}
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/hasResearchAreaEdited")]
-		[RDFProperty("http://w3id.org/roh/hasResearchAreaEdited")]
-		public  bool Roh_hasResearchAreaEdited { get; set;}
-
 		[LABEL(LanguageEnum.es,"http://xmlns.com/foaf/0.1/lastName")]
 		[RDFProperty("http://xmlns.com/foaf/0.1/lastName")]
 		public  string Foaf_lastName { get; set;}
@@ -430,7 +424,6 @@ namespace PersonOntology
 			propList.Add(new StringOntologyProperty("foaf:firstName", this.Foaf_firstName));
 			propList.Add(new BoolOntologyProperty("roh:isActive", this.Roh_isActive));
 			propList.Add(new StringOntologyProperty("foaf:name", this.Foaf_name));
-			propList.Add(new BoolOntologyProperty("roh:hasResearchAreaEdited", this.Roh_hasResearchAreaEdited));
 			propList.Add(new StringOntologyProperty("foaf:lastName", this.Foaf_lastName));
 		}
 
@@ -647,10 +640,6 @@ namespace PersonOntology
 				if(this.Foaf_name != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Person_{ResourceID}_{ArticleID}",  "http://xmlns.com/foaf/0.1/name", $"\"{GenerarTextoSinSaltoDeLinea(this.Foaf_name)}\"", list, " . ");
-				}
-				if(this.Roh_hasResearchAreaEdited != null)
-				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Person_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/hasResearchAreaEdited", $"\"{this.Roh_hasResearchAreaEdited.ToString()}\"", list, " . ");
 				}
 				if(this.Foaf_lastName != null)
 				{
@@ -887,10 +876,6 @@ namespace PersonOntology
 				if(this.Foaf_name != null)
 				{
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://xmlns.com/foaf/0.1/name", $"\"{GenerarTextoSinSaltoDeLinea(this.Foaf_name).ToLower()}\"", list, " . ");
-				}
-				if(this.Roh_hasResearchAreaEdited != null)
-				{
-					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/hasResearchAreaEdited", $"\"{this.Roh_hasResearchAreaEdited.ToString().ToLower()}\"", list, " . ");
 				}
 				if(this.Foaf_lastName != null)
 				{
