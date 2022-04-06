@@ -308,7 +308,7 @@ namespace Hercules.ED.UpdateKeywords
             listaTriplesBorrado.Add(triple);
 
             dicBorrado.Add(guid, listaTriplesBorrado);
-            var x = mResourceApi.DeletePropertiesLoadedResources(dicBorrado);
+            mResourceApi.DeletePropertiesLoadedResources(dicBorrado);
         }
 
         public List<DataConcept> GetDataConcepts(List<Data> pListaData)
@@ -821,7 +821,6 @@ namespace Hercules.ED.UpdateKeywords
             catch (Exception error)
             {
                 // TODO:
-                Thread.Sleep(1000);
             }
         }
 
