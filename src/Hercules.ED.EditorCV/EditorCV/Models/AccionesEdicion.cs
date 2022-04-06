@@ -278,7 +278,7 @@ namespace GuardadoCV.Models
             {
                 propiedadesMultiIdiomaCargadas = entidadesMultiidioma[pEntityID];
             }
-            List<string> listaPropiedadesConfiguradas = presentationListItem.listItemEdit.sections.SelectMany(x => x.rows).SelectMany(x => x.properties).Where(x => x.multilang).Select(x => x.property).Distinct().ToList();
+            List<ItemEditSectionRowProperty> listaPropiedadesConfiguradas = presentationListItem.listItemEdit.sections.SelectMany(x => x.rows).SelectMany(x => x.properties).Where(x => x.multilang).ToList();
             return GetItem(pEntityID, data, presentationListItem, pLang, propiedadesMultiIdiomaCargadas, listaPropiedadesConfiguradas);
         }
 
@@ -882,7 +882,7 @@ namespace GuardadoCV.Models
                                     foreach (string idEntity in pData[pId].Where(x => x["p"].value == templateSection.property).Select(x => x["o"].value).Distinct())
                                     {
                                         Dictionary<string, HashSet<string>> propiedadesMultiIdiomaCargadas = new Dictionary<string, HashSet<string>>();
-                                        List<string> listaPropiedadesConfiguradas = templateSection.presentation.listItemsPresentation.listItemEdit.sections.SelectMany(x => x.rows).SelectMany(x => x.properties).Where(x => x.multilang).Select(x => x.property).Distinct().ToList();
+                                        List<ItemEditSectionRowProperty> listaPropiedadesConfiguradas = templateSection.presentation.listItemsPresentation.listItemEdit.sections.SelectMany(x => x.rows).SelectMany(x => x.properties).Where(x => x.multilang).ToList();
                                         if (entidadesMultiidioma.ContainsKey(idEntity))
                                         {
                                             propiedadesMultiIdiomaCargadas = entidadesMultiidioma[idEntity];
@@ -938,7 +938,7 @@ namespace GuardadoCV.Models
         /// <param name="pPropiedadesMultiidiomaCargadas">Listado con las propiedades cargadas multiidioma del item junto con su idioma</param>
         /// <param name="pListaPropiedadesMultiidiomaConfiguradas">Lista de propiedades que tienen el multiidoima configurado</param>
         /// <returns></returns>
-        private TabSectionItem GetItem(string pId, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> pData, TabSectionPresentationListItems pListItemConfig, string pLang, Dictionary<string, HashSet<string>> pPropiedadesMultiidiomaCargadas, List<string> pListaPropiedadesMultiidiomaConfiguradas)
+        private TabSectionItem GetItem(string pId, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> pData, TabSectionPresentationListItems pListItemConfig, string pLang, Dictionary<string, HashSet<string>> pPropiedadesMultiidiomaCargadas, List<ItemEditSectionRowProperty> pListaPropiedadesMultiidiomaConfiguradas)
         {
             TabSectionItem item = new TabSectionItem();
             string propertyInTitle = "";
@@ -1096,11 +1096,30 @@ namespace GuardadoCV.Models
             /*pPropiedadesMultiidiomaCargadas,List<string> pListaPropiedadesMultiidiomaConfiguradas*/
             if (pListaPropiedadesMultiidiomaConfiguradas.Count > 0)
             {
+                List<string> propiedadesMultiidiomaConfiguradas = new List<string>();
+                foreach (ItemEditSectionRowProperty proEdit in pListaPropiedadesMultiidiomaConfiguradas)
+                {
+                    if (proEdit.dependency == null)
+                    {
+                        propiedadesMultiidiomaConfiguradas.Add(proEdit.property);
+                    }
+                    else
+                    {
+                        string propiedadDependencia = proEdit.dependency.property;
+                        string propiedadValorDependencia = proEdit.dependency.propertyValue.Replace("{GraphsUrl}", mResourceApi.GraphsUrl);
+                        string valorPropiedadCargadaDependencia = GetPropValues(pId, "http://vivoweb.org/ontology/core#relatedBy@@@" + propiedadDependencia, pData).FirstOrDefault();
+                        if(valorPropiedadCargadaDependencia== propiedadValorDependencia)
+                        {
+                            propiedadesMultiidiomaConfiguradas.Add(proEdit.property);
+                        }
+                    }
+                }
+
                 List<string> idiomas = new List<string>() { "en", "ca", "eu", "gl", "fr" };
                 foreach (string idioma in idiomas)
                 {
                     item.multilang[idioma] = false;
-                    if (pPropiedadesMultiidiomaCargadas.Where(x => x.Value.Contains(idioma)).Select(x => x.Key).Intersect(pListaPropiedadesMultiidiomaConfiguradas).Count() == pListaPropiedadesMultiidiomaConfiguradas.Count)
+                    if (pPropiedadesMultiidiomaCargadas.Where(x => x.Value.Contains(idioma)).Select(x => x.Key).Intersect(propiedadesMultiidiomaConfiguradas).Count() == propiedadesMultiidiomaConfiguradas.Count)
                     {
                         item.multilang[idioma] = true;
                     }
@@ -1205,7 +1224,7 @@ namespace GuardadoCV.Models
         /// <returns></returns>
         private EntityEdit GetEditModel(string pCVId, string pId, ItemEdit pPresentationEdit, string pLang, string pEntityCV = null, string pPropertyCV = null)
         {
-            Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> data = GetEditData(pCVId,pId, pPresentationEdit, pPresentationEdit.graph, pLang, pEntityCV, pPropertyCV);
+            Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> data = GetEditData(pCVId, pId, pPresentationEdit, pPresentationEdit.graph, pLang, pEntityCV, pPropertyCV);
 
             List<ItemEditSectionRowPropertyCombo> listCombosConfig = GetEditCombos(pPresentationEdit.sections.SelectMany(x => x.rows).SelectMany(x => x.properties).ToList());
             Dictionary<ItemEditSectionRowPropertyCombo, Dictionary<string, string>> combos = new Dictionary<ItemEditSectionRowPropertyCombo, Dictionary<string, string>>();
