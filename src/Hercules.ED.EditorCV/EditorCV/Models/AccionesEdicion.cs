@@ -254,7 +254,7 @@ namespace GuardadoCV.Models
             else
             {
 
-                respuesta = GetEditModel(pId, template.personalDataSections, pLang);
+                respuesta = GetEditModel(pCVId, pId, template.personalDataSections, pLang);
             }
             return respuesta;
         }
@@ -268,7 +268,7 @@ namespace GuardadoCV.Models
         /// <param name="pEntity">Identificador de la entidad</param>
         /// <param name="pLang">Idioma</param>
         /// <returns></returns>
-        public TabSectionItem GetItemMini(string pCVId,string pIdSection, string pRdfTypeTab, string pEntityID, string pLang)
+        public TabSectionItem GetItemMini(string pCVId, string pIdSection, string pRdfTypeTab, string pEntityID, string pLang)
         {
             TabSectionPresentationListItems presentationListItem = UtilityCV.TabTemplates.First(x => x.rdftype == pRdfTypeTab).sections.First(x => x.property == pIdSection).presentation.listItemsPresentation;
             Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> data = GetItemMiniData(pEntityID, presentationListItem.listItem, pLang);
@@ -286,12 +286,13 @@ namespace GuardadoCV.Models
         /// <summary>
         /// Obtiene los datos de edición de una entidad
         /// </summary>
+        /// <param name="pCVId">Identificador del CV</param>
         /// <param name="pIdSection">Identificador de la sección</param>
         /// <param name="pRdfTypeTab">Rdftype del tab</param>
         /// <param name="pEntityID">Identificador de la entidad</param>
         /// <param name="pLang">Idioma</param>
         /// <returns></returns>
-        public EntityEdit GetEdit(string pIdSection, string pRdfTypeTab, string pEntityID, string pLang)
+        public EntityEdit GetEdit(string pCVId, string pIdSection, string pRdfTypeTab, string pEntityID, string pLang)
         {
             TabSectionPresentation tabSectionPresentation = UtilityCV.TabTemplates.First(x => x.rdftype == pRdfTypeTab).sections.First(x => x.property == pIdSection).presentation;
             ItemEdit templateEdit = null;
@@ -317,11 +318,11 @@ namespace GuardadoCV.Models
             }
             if (tabSectionPresentation.listItemsPresentation != null && !string.IsNullOrEmpty(tabSectionPresentation.listItemsPresentation.property_cv))
             {
-                return GetEditModel(entityID, templateEdit, pLang, pEntityID, tabSectionPresentation.listItemsPresentation.property_cv);
+                return GetEditModel(pCVId, entityID, templateEdit, pLang, pEntityID, tabSectionPresentation.listItemsPresentation.property_cv);
             }
             else
             {
-                return GetEditModel(entityID, templateEdit, pLang, pEntityID);
+                return GetEditModel(pCVId, entityID, templateEdit, pLang, pEntityID);
             }
         }
 
@@ -909,7 +910,7 @@ namespace GuardadoCV.Models
                                         }
                                     }
                                 }
-                                tabSection.item = GetEditModel(id, templateSection.presentation.itemPresentation.itemEdit, pLang);
+                                tabSection.item = GetEditModel(pCVId, id, templateSection.presentation.itemPresentation.itemEdit, pLang);
                                 if (string.IsNullOrEmpty(tabSection.item.entityID))
                                 {
                                     tabSection.item.entityID = Guid.NewGuid().ToString().ToLower();
@@ -937,7 +938,7 @@ namespace GuardadoCV.Models
         /// <param name="pPropiedadesMultiidiomaCargadas">Listado con las propiedades cargadas multiidioma del item junto con su idioma</param>
         /// <param name="pListaPropiedadesMultiidiomaConfiguradas">Lista de propiedades que tienen el multiidoima configurado</param>
         /// <returns></returns>
-        private TabSectionItem GetItem(string pId, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> pData, TabSectionPresentationListItems pListItemConfig, string pLang, Dictionary<string, HashSet<string>> pPropiedadesMultiidiomaCargadas,List<string> pListaPropiedadesMultiidiomaConfiguradas)
+        private TabSectionItem GetItem(string pId, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> pData, TabSectionPresentationListItems pListItemConfig, string pLang, Dictionary<string, HashSet<string>> pPropiedadesMultiidiomaCargadas, List<string> pListaPropiedadesMultiidiomaConfiguradas)
         {
             TabSectionItem item = new TabSectionItem();
             string propertyInTitle = "";
@@ -1093,13 +1094,13 @@ namespace GuardadoCV.Models
             //Multiidiomas cargados
             item.multilang = new Dictionary<string, bool>();
             /*pPropiedadesMultiidiomaCargadas,List<string> pListaPropiedadesMultiidiomaConfiguradas*/
-            if (pListaPropiedadesMultiidiomaConfiguradas.Count>0)
+            if (pListaPropiedadesMultiidiomaConfiguradas.Count > 0)
             {
                 List<string> idiomas = new List<string>() { "en", "ca", "eu", "gl", "fr" };
-                foreach(string idioma in idiomas)
+                foreach (string idioma in idiomas)
                 {
                     item.multilang[idioma] = false;
-                    if(pPropiedadesMultiidiomaCargadas.Where(x=>x.Value.Contains(idioma)).Select(x=>x.Key).Intersect(pListaPropiedadesMultiidiomaConfiguradas).Count()== pListaPropiedadesMultiidiomaConfiguradas.Count)
+                    if (pPropiedadesMultiidiomaCargadas.Where(x => x.Value.Contains(idioma)).Select(x => x.Key).Intersect(pListaPropiedadesMultiidiomaConfiguradas).Count() == pListaPropiedadesMultiidiomaConfiguradas.Count)
                     {
                         item.multilang[idioma] = true;
                     }
@@ -1115,6 +1116,7 @@ namespace GuardadoCV.Models
         /// <summary>
         /// Obtiene todos los datos de una entidad de BBDD para su posterior edición
         /// </summary>
+        /// <param name="pCVId">Identificador del CV</param>
         /// <param name="pId">Identificador</param>
         /// <param name="pItemEdit">Configuración de edición</param>
         /// <param name="pGraph">Grafo de la entidad</param>
@@ -1122,7 +1124,7 @@ namespace GuardadoCV.Models
         /// <param name="pEntityCV">Entidad del cv desde la que se apunta a la entidad</param>
         /// <param name="pPropertyCV">Propiedad que apunta a la entidad en el CV</param>
         /// <returns></returns>
-        private Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> GetEditData(string pId, ItemEdit pItemEdit, string pGraph, string pLang, string pEntityCV = null, string pPropertyCV = null)
+        private Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> GetEditData(string pCVId, string pId, ItemEdit pItemEdit, string pGraph, string pLang, string pEntityCV = null, string pPropertyCV = null)
         {
             List<PropertyData> propertyDatas = pItemEdit.GenerarPropertyDatas(pGraph);
             //Editabilidad
@@ -1170,28 +1172,22 @@ namespace GuardadoCV.Models
             //Si tiene multidioma cargamos los datos
             if (pItemEdit.sections.Exists(x => x.rows.Exists(y => y.properties.Exists(z => z.multilang))))
             {
-                SparqlObject idCV = mResourceApi.VirtuosoQuery("select ?s ", "where{?s a <http://w3id.org/roh/CV>. ?s ?p ?o. ?o ?p2 <" + pEntityCV + ">}", "curriculumvitae");
-                if (idCV.results.bindings.Count > 0)
+                Dictionary<string, Dictionary<string, List<MultilangProperty>>> multilangData = UtilityCV.GetMultilangPropertiesCV(pCVId, pId);
+                if (multilangData.ContainsKey(pId))
                 {
-                    string id = idCV.results.bindings[0]["s"].value;
-                    Dictionary<string, Dictionary<string, List<MultilangProperty>>> multilangData = UtilityCV.GetMultilangPropertiesCV(id, pId);
-                    if (multilangData.ContainsKey(pId))
+                    foreach (string prop in multilangData[pId].Keys)
                     {
-                        foreach (string prop in multilangData[pId].Keys)
+                        foreach (MultilangProperty multilangProperty in multilangData[pId][prop])
                         {
-                            foreach (MultilangProperty multilangProperty in multilangData[pId][prop])
-                            {
-                                Dictionary<string, SparqlObject.Data> filaAux = new Dictionary<string, Data>();
-                                filaAux.Add("s", new Data() { value = pId, type = "uri" });
-                                filaAux.Add("p", new Data() { value = prop, type = "uri" });
-                                filaAux.Add("o", new Data() { value = multilangProperty.value, type = "literal" });
-                                filaAux.Add("lang", new Data() { value = multilangProperty.lang, type = "literal" });
-                                respuesta[pId].Add(filaAux);
-                            }
+                            Dictionary<string, SparqlObject.Data> filaAux = new Dictionary<string, Data>();
+                            filaAux.Add("s", new Data() { value = pId, type = "uri" });
+                            filaAux.Add("p", new Data() { value = prop, type = "uri" });
+                            filaAux.Add("o", new Data() { value = multilangProperty.value, type = "literal" });
+                            filaAux.Add("lang", new Data() { value = multilangProperty.lang, type = "literal" });
+                            respuesta[pId].Add(filaAux);
                         }
                     }
                 }
-
             }
 
             return respuesta;
@@ -1200,15 +1196,16 @@ namespace GuardadoCV.Models
         /// <summary>
         /// Genera el modelo de edición de una entidad una vez tenemos todos los datos de la entidad cargados
         /// </summary>
+        /// <param name="pCVId">Identificador del CV</param>
         /// <param name="pId">Identificador de la entidad</param>
         /// <param name="pPresentationEdit">Configuración de presentación</param>
         /// <param name="pLang">Idioma</param>
         /// <param name="pEntityCV">Entidad del cv desde la que se apunta a la entidad</param>
         /// <param name="pPropertyCV">Propiedad que apunta a la entidad en el CV</param>
         /// <returns></returns>
-        private EntityEdit GetEditModel(string pId, ItemEdit pPresentationEdit, string pLang, string pEntityCV = null, string pPropertyCV = null)
+        private EntityEdit GetEditModel(string pCVId, string pId, ItemEdit pPresentationEdit, string pLang, string pEntityCV = null, string pPropertyCV = null)
         {
-            Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> data = GetEditData(pId, pPresentationEdit, pPresentationEdit.graph, pLang, pEntityCV, pPropertyCV);
+            Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> data = GetEditData(pCVId,pId, pPresentationEdit, pPresentationEdit.graph, pLang, pEntityCV, pPropertyCV);
 
             List<ItemEditSectionRowPropertyCombo> listCombosConfig = GetEditCombos(pPresentationEdit.sections.SelectMany(x => x.rows).SelectMany(x => x.properties).ToList());
             Dictionary<ItemEditSectionRowPropertyCombo, Dictionary<string, string>> combos = new Dictionary<ItemEditSectionRowPropertyCombo, Dictionary<string, string>>();
