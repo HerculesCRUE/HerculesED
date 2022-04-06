@@ -377,6 +377,7 @@
                         "placeholder": {
                           "es": "Introduce la entidad de realización"
                         },
+                        "multilang": true,
                         "property": "http://w3id.org/roh/promotedByTitle",
                         "autocompleteConfig": {
                           "rdftype": "http://xmlns.com/foaf/0.1/Organization",
@@ -510,6 +511,7 @@
                         },
                         "property": "http://w3id.org/roh/projectCharacterTypeOther",
                         "required": true,
+                        "multilang": true,
                         "dependency": {
                           "property": "http://w3id.org/roh/projectCharacterType",
                           "propertyValue": "{GraphsUrl}items/projectcharactertype_OTHERS"
@@ -1313,6 +1315,7 @@
                         },
                         "autocomplete": true,
                         "required": true,
+                        "multilang": true,
                         "placeholder": {
                           "es": "Introduce la titulación universitaria"
                         },
@@ -1336,6 +1339,7 @@
                         "placeholder": {
                           "es": "Introduce el nombre de la asignatura/curso"
                         },
+                        "multilang": true,
                         "property": "http://w3id.org/roh/teaches",
                         "type": "text",
                         "width": 1
@@ -1369,6 +1373,7 @@
                           "es": "Entidad de realización"
                         },
                         "autocomplete": true,
+                        "multilang": true,
                         "placeholder": {
                           "es": "Introduce la entidad de realización"
                         },
@@ -1552,6 +1557,7 @@
                         },
                         "property": "http://w3id.org/roh/programTypeOther",
                         "required": true,
+                        "multilang": true,
                         "dependency": {
                           "property": "http://w3id.org/roh/programType",
                           "propertyValue": "{GraphsUrl}items/programtype_OTHERS"
@@ -1584,6 +1590,7 @@
                         },
                         "property": "http://w3id.org/roh/modalityTeachingTypeOther",
                         "required": true,
+                        "multilang": true,
                         "dependency": {
                           "property": "http://w3id.org/roh/modalityTeachingType",
                           "propertyValue": "{GraphsUrl}items/modalityteachingtype_OTHERS"
@@ -1631,6 +1638,7 @@
                         },
                         "property": "http://w3id.org/roh/courseTypeOther",
                         "required": true,
+                        "multilang": true,
                         "dependency": {
                           "property": "http://w3id.org/roh/courseType",
                           "propertyValue": "{GraphsUrl}items/coursetype_OTHERS"
@@ -1691,6 +1699,7 @@
                         "placeholder": {
                           "es": "Introduce las competencias relacionadas"
                         },
+                        "multilang": true,
                         "property": "http://w3id.org/roh/competencies",
                         "type": "text",
                         "width": 1
@@ -1702,6 +1711,7 @@
                         "placeholder": {
                           "es": "Introduce la categoría profesional"
                         },
+                        "multilang": true,
                         "property": "http://w3id.org/roh/professionalCategory",
                         "type": "text",
                         "width": 1
@@ -1744,6 +1754,7 @@
                         "placeholder": {
                           "es": "Introduce la entidad de evaluación"
                         },
+                        "multilang": true,
                         "property": "http://w3id.org/roh/evaluatedByTitle",
                         "autocompleteConfig": {
                           "rdftype": "http://xmlns.com/foaf/0.1/Organization",
@@ -1870,6 +1881,7 @@
                         },
                         "property": "http://w3id.org/roh/evaluationTypeOther",
                         "required": true,
+                        "multilang": true,
                         "dependency": {
                           "property": "http://w3id.org/roh/evaluationType",
                           "propertyValue": "{GraphsUrl}items/evaluationtype_OTHERS"
@@ -1889,6 +1901,7 @@
                         "placeholder": {
                           "es": "Introduce la entidad financiadora"
                         },
+                        "multilang": true,
                         "property": "http://w3id.org/roh/financedByTitle",
                         "autocompleteConfig": {
                           "rdftype": "http://xmlns.com/foaf/0.1/Organization",
@@ -2015,6 +2028,7 @@
                         },
                         "property": "http://w3id.org/roh/callTypeOther",
                         "required": true,
+                        "multilang": true,
                         "dependency": {
                           "property": "http://w3id.org/roh/callType",
                           "propertyValue": "{GraphsUrl}items/calltype_OTHERS"
@@ -2047,6 +2061,7 @@
                         },
                         "property": "http://w3id.org/roh/geographicFocusOther",
                         "required": true,
+                        "multilang": true,
                         "dependency": {
                           "property": "http://vivoweb.org/ontology/core#geographicFocus",
                           "propertyValue": "{GraphsUrl}items/eventgeographicregion_OTHERS"
@@ -2229,6 +2244,7 @@
                         },
                         "property": "http://w3id.org/roh/tutorshipProgramTypeOther",
                         "required": true,
+                        "multilang": true,
                         "dependency": {
                           "property": "http://w3id.org/roh/tutorshipProgramType",
                           "propertyValue": "{GraphsUrl}items/tutorshipsprogramtype_OTHERS"
@@ -2256,6 +2272,7 @@
                           "es": "Entidad de realización"
                         },
                         "autocomplete": true,
+                        "multilang": true,
                         "placeholder": {
                           "es": "Introduce la entidad de realización"
                         },
@@ -2739,6 +2756,7 @@
                         "placeholder": {
                           "es": "Introduce el nombre del evento"
                         },
+                        "multilang": true,
                         "property": "http://w3id.org/roh/title",
                         "required": true,
                         "type": "text",
@@ -2763,6 +2781,7 @@
                         "title": {
                           "es": "Otros"
                         },
+                        "multilang": true,
                         "property": "http://w3id.org/roh/eventTypeOther",
                         "required": true,
                         "dependency": {
@@ -2784,6 +2803,7 @@
                         "placeholder": {
                           "es": "Introduce la entidad organizadora"
                         },
+                        "multilang": true,
                         "property": "http://w3id.org/roh/promotedByTitle",
                         "autocompleteConfig": {
                           "rdftype": "http://xmlns.com/foaf/0.1/Organization",
@@ -2921,6 +2941,7 @@
                           "es": "Objetivos del curso"
                         },
                         "type": "text",
+                        "multilang": true,
                         "property": "http://w3id.org/roh/goals",
                         "width": 2
                       },
@@ -3081,6 +3102,7 @@
                           "es": "Perfil de destinatarios/as"
                         },
                         "type": "text",
+                        "multilang": true,
                         "property": "http://w3id.org/roh/targetProfile",
                         "width": 1
                       },
@@ -3105,6 +3127,7 @@
                         },
                         "property": "http://w3id.org/roh/participationTypeOther",
                         "required": true,
+                        "multilang": true,
                         "dependency": {
                           "property": "http://w3id.org/roh/participationType",
                           "propertyValue": "{GraphsUrl}items/participationtypedocument_OTHERS"
@@ -4781,6 +4804,7 @@
                         "placeholder": {
                           "es": "Introduce la aportación al proyecto"
                         },
+                        "multilang": true,
                         "property": "http://w3id.org/roh/contribution",
                         "type": "text",
                         "width": 2
@@ -5821,6 +5845,7 @@
                         "title": {
                           "es": "Objetivos del evento"
                         },
+                        "multilang": true,
                         "property": "http://w3id.org/roh/goals",
                         "type": "text",
                         "width": 2
@@ -5887,6 +5912,7 @@
                         "placeholder": {
                           "es": "Introduce el perfil de destinatarios/as"
                         },
+                        "multilang": true,
                         "type": "text",
                         "property": "http://w3id.org/roh/targetProfile",
                         "width": 1
@@ -6679,6 +6705,7 @@
                         "placeholder": {
                           "es": "Introduce la descripción"
                         },
+                        "multilang": true,
                         "property": "http://w3id.org/roh/title",
                         "required": true,
                         "type": "text",
@@ -6998,6 +7025,7 @@
                         "placeholder": {
                           "es": "Introduce la descripción"
                         },
+                        "multilang": true,
                         "property": "http://w3id.org/roh/title",
                         "required": true,
                         "type": "text",
