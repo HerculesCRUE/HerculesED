@@ -456,7 +456,6 @@
                           "es": "Título extranjero"
                         },
                         "autocomplete": true,
-                        "required": true,
                         "placeholder": {
                           "es": "Introduce el título extranjero"
                         },
