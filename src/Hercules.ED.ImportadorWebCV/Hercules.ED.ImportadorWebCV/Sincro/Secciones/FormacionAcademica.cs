@@ -431,9 +431,9 @@ namespace ImportadorWebCV.Sincro.Secciones
                         DoctoradosEntidadTitulacionDEA(item, entidadAux);
                         DoctoradosDirectorTesis(item, entidadAux);
                         DoctoradosCodirectoresTesis(item, entidadAux);
-                        DoctoradosTituloHomologado(item, entidadAux);
+                        DoctoradosDoctoradoUE(item, entidadAux);
                         DoctoradosPremioExtraordinario(item, entidadAux);
-                        DoctoradosDoctoradoEuropeo(item, entidadAux);
+                        DoctoradosTituloHomologado(item, entidadAux);
 
                         listado.Add(entidadAux);
                     }
@@ -461,7 +461,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void DoctoradosTituloHomologado(CvnItemBean item, Entity entidadAux)
+        private void DoctoradosDoctoradoUE(CvnItemBean item, Entity entidadAux)
         {
             string tituloDoctoradoUE = item.GetStringBooleanPorIDCampo("020.010.020.200");
             if (!string.IsNullOrEmpty(tituloDoctoradoUE))
@@ -495,7 +495,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void DoctoradosDoctoradoEuropeo(CvnItemBean item, Entity entidadAux)
+        private void DoctoradosTituloHomologado(CvnItemBean item, Entity entidadAux)
         {
             string tituloHomologado = item.GetStringBooleanPorIDCampo("020.010.020.240");
             if (!string.IsNullOrEmpty(tituloHomologado))
