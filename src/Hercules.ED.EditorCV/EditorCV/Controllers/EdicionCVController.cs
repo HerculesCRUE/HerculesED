@@ -99,18 +99,19 @@ namespace GuardadoCV.Controllers
         /// <summary>
         /// Obtiene una ficha de edición de una entidad de un listado de una pestaña
         /// </summary>
+        /// <param name="pCVId">Identificador del CV</param>
         /// <param name="pIdSection">Identificador de la sección</param>
         /// <param name="pRdfTypeTab">Rdftype del tab</param>
         /// <param name="pEntityID">Identificador de la entidad</param>
         /// <param name="pLang">Idioma</param>
         /// <returns></returns>
         [HttpGet("GetEdit")]
-        public IActionResult GetEdit(string pIdSection, string pRdfTypeTab, string pEntityID, string pLang)
+        public IActionResult GetEdit(string pCVId, string pIdSection, string pRdfTypeTab, string pEntityID, string pLang)
         {
             try
             {
                 AccionesEdicion accionesEdicion = new AccionesEdicion();
-                return Ok(accionesEdicion.GetEdit(pIdSection, pRdfTypeTab, pEntityID, pLang));
+                return Ok(accionesEdicion.GetEdit(pCVId, pIdSection, pRdfTypeTab, pEntityID, pLang));
             }
             catch (Exception ex)
             {
