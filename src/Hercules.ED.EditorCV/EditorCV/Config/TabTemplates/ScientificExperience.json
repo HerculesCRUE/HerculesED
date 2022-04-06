@@ -2639,7 +2639,6 @@
                                   "placeholder": {
                                     "es": "Introduce la entidad participante"
                                   },
-                                  "multilang": true,
                                   "property": "http://w3id.org/roh/organizationTitle",
                                   "autocompleteConfig": {
                                     "rdftype": "http://xmlns.com/foaf/0.1/Organization",
