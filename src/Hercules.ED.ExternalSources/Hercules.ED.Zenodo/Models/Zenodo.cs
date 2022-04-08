@@ -204,7 +204,7 @@ namespace ZenodoAPI.Models
                     // Descripción.
                     if (!string.IsNullOrEmpty(ro.metadata.description))
                     {
-                        data.descripcion = Regex.Replace(ro.metadata.description, "<.*?>", string.Empty);
+                        data.descripcion = System.Web.HttpUtility.HtmlDecode(Regex.Replace(ro.metadata.description, "<.*?>", string.Empty));
                     }
 
                     // Fecha publicación.
