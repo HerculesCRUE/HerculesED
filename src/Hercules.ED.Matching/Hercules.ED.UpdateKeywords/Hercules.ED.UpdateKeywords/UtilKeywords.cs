@@ -27,6 +27,10 @@ namespace Hercules.ED.UpdateKeywords
         private static string mPrefijos = string.Join(" ", JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(RUTA_PREFIJOS)));
         readonly ConfigService _Configuracion;
 
+        // Lista Preposiciones
+        public List<string> preposicionesEng = new List<string>() { "above", "across", "along", "around", "against", "at", "behind", "beside", "below", "beneath", "between", "by", "close to", "in", "in front of", "inside", "near", "on", "opposite", "outside", "over", "under", "underneath", "upon", "about", "after", "around", "before", "beyond", "by", "during", "for", "past", "since", "throughout", "until", "across", "along", "around", "away from", "down", "from", "into", "off", "onto", "out of", "over", "past", "to", "towards", "under", "up", "in", "at", "on", "ago", "circa", "per", "about", "at", "from", "for", "in", "of", "to", "with" };
+        public List<string> preposicionesEsp = new List<string>() { "a", "ante", "bajo", "cabe", "con", "contra", "de", "desde", "durante", "en", "entre", "hacia", "hasta", "mediante", "para", "por", "según", "sin", "so", "sobre", "tras", "versus", "via" };
+
         public UtilKeywords(ResourceApi pResourceApi, CommunityApi pCommunityApi)
         {
             this.mResourceApi = pResourceApi;
@@ -407,91 +411,99 @@ namespace Hercules.ED.UpdateKeywords
         /// Obtiene el ID y Valor de la consulta a Mesh.
         /// </summary>
         /// <param name="pTopicalDescriptor">Tópico a consultar.</param>
+        /// <param name="pTipoFiltro">True: Exact Match // False: All Fragments</param>
         /// <returns>Diccionario resultante.</returns>
-        public Dictionary<string, string> SelectDataMesh(string pTopicalDescriptor)
+        public Dictionary<string, string> SelectDataMesh(string[] listaTopicalDescriptors, bool pTipoFiltro)
         {
-            pTopicalDescriptor = pTopicalDescriptor.Trim().ToLower().Replace("\'", "\\\'");
             Dictionary<string, string> dicResultados = new Dictionary<string, string>();
 
             // Endpoint.
             string urlConsulta = "https://id.nlm.nih.gov/mesh/sparql";
 
             // Consulta.
-            // ?a -> MeshId
-            // ?b -> Label
-            // ?c -> Concept
-            // ?d -> AltLabel
-            // ?e -> PrefLabel
-            // ?f -> SortVersion
-            // ?g -> ConceptAltLabel
-            // ?h -> ConceptPrefLabel
-            // ?i -> ConceptSortVersion
             string consulta = $@"
-                PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-                PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
-                SELECT ?a ?b ?c ?d ?e ?f ?g ?h ?i
-                FROM <http://id.nlm.nih.gov/mesh>
+                PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
+                SELECT ?a ?b ?c ?d ?e ?f ?g ?h ?i ?j ?k ?l ?m ?n ?o FROM <http://id.nlm.nih.gov/mesh>
                 WHERE {{
                   {{?a a meshv:TopicalDescriptor}}.  
                   {{
-                    ?a rdfs:label ?b.
-  	                FILTER(REGEX(?b,'^{pTopicalDescriptor}$','i'))
-                  }}
-                  UNION
-                  {{
+                    ?a rdfs:label ?b.                    
+                    {ContruirFiltro("b", listaTopicalDescriptors, pTipoFiltro)}
+                  }}UNION{{
                     ?a rdfs:label ?b.
                     ?a meshv:concept ?x.
                     ?x rdfs:label ?c.
-  	                FILTER(REGEX(?c,'^{pTopicalDescriptor}$','i'))
-                  }}
-                  UNION
-                  {{
+                    {ContruirFiltro("c", listaTopicalDescriptors, pTipoFiltro)}
+                  }}UNION{{
                     ?a rdfs:label ?b.
-                    ?a meshv:preferredTerm ?x.
-                    ?x meshv:altLabel ?d.
-  	                FILTER(REGEX(?d,'^{pTopicalDescriptor}$','i'))
-                  }}
-                  UNION
-                  {{
+                    ?a meshv:concept ?x.
+                    ?x meshv:term ?x2.
+                    ?x2 meshv:altLabel ?d.
+                    {ContruirFiltro("d", listaTopicalDescriptors, pTipoFiltro)}
+                  }}UNION{{
                     ?a rdfs:label ?b.
-                    ?a meshv:preferredTerm ?x.
-                    ?x meshv:prefLabel ?e.
-  	                FILTER(REGEX(?e,'^{pTopicalDescriptor}$','i'))
-                  }}
-                  UNION
-                  {{
+                    ?a meshv:concept ?x.
+                    ?x meshv:term ?x2.
+                    ?x2 meshv:prefLabel ?e.
+                    {ContruirFiltro("e", listaTopicalDescriptors, pTipoFiltro)}
+                  }}UNION{{
                     ?a rdfs:label ?b.
-                    ?a meshv:preferredTerm ?x.
-                    ?x meshv:sortVersion ?f.
-  	                FILTER(REGEX(?f,'^{pTopicalDescriptor}$','i'))
-                  }}
-                  UNION
-                  {{
+                    ?a meshv:concept ?x.
+                    ?x meshv:term ?x2.
+                    ?x2 meshv:sortVersion ?f.
+                    {ContruirFiltro("f", listaTopicalDescriptors, pTipoFiltro)}
+                  }}UNION{{
                     ?a rdfs:label ?b.
-                    ?a meshv:preferredConcept ?y.
-                    ?y meshv:term ?x.
-                    ?x meshv:altLabel ?g.
-                    FILTER(REGEX(?g,'^{pTopicalDescriptor}$','i'))
-                  }}
-                  UNION
-                  {{
+                    ?a meshv:concept ?x.
+                    ?x meshv:preferredTerm ?x2.
+                    ?x2 meshv:altLabel ?g.
+                    {ContruirFiltro("g", listaTopicalDescriptors, pTipoFiltro)}
+                  }}UNION{{
                     ?a rdfs:label ?b.
-                    ?a meshv:preferredConcept ?y.
-                    ?y meshv:term ?x.
-                    ?x meshv:prefLabel ?h.
-                    FILTER(REGEX(?h,'^{pTopicalDescriptor}$','i'))
-                  }}
-                  UNION
-                  {{
+                    ?a meshv:concept ?x.
+                    ?x meshv:preferredTerm ?x2.
+                    ?x2 meshv:prefLabel ?h.
+                    {ContruirFiltro("h", listaTopicalDescriptors, pTipoFiltro)}
+                  }}UNION{{
+                    ?a rdfs:label ?b.
+                    ?a meshv:concept ?x.
+                    ?x meshv:preferredTerm ?x2.
+                    ?x2 meshv:sortVersion ?i.
+                    {ContruirFiltro("i", listaTopicalDescriptors, pTipoFiltro)}
+                  }}UNION{{
                     ?a rdfs:label ?b.
                     ?a meshv:preferredConcept ?y.
                     ?y meshv:term ?x.
-                    ?x meshv:sortVersion ?i.
-                    FILTER(REGEX(?i,'^{pTopicalDescriptor}$','i'))
-                  }}
-                }}
-                ORDER BY ?a
-            ";
+                    ?x meshv:altLabel ?j.
+                    {ContruirFiltro("j", listaTopicalDescriptors, pTipoFiltro)}
+                  }}UNION{{
+                    ?a rdfs:label ?b.
+                    ?a meshv:preferredConcept ?y.
+                    ?y meshv:term ?x.
+                    ?x meshv:prefLabel ?k.
+                    {ContruirFiltro("k", listaTopicalDescriptors, pTipoFiltro)}
+                  }}UNION{{
+                    ?a rdfs:label ?b.
+                    ?a meshv:preferredConcept ?y.
+                    ?y meshv:term ?x.
+                    ?x meshv:sortVersion ?l.
+                    {ContruirFiltro("l", listaTopicalDescriptors, pTipoFiltro)}
+                  }}UNION{{
+                    ?a rdfs:label ?b.
+                    ?a meshv:preferredTerm ?x.
+                    ?x meshv:altLabel ?m.
+                    {ContruirFiltro("m", listaTopicalDescriptors, pTipoFiltro)}
+                  }}UNION{{
+                    ?a rdfs:label ?b.
+                    ?a meshv:preferredTerm ?x.
+                    ?x meshv:prefLabel ?n.
+                    {ContruirFiltro("n", listaTopicalDescriptors, pTipoFiltro)}
+                  }}UNION{{
+                    ?a rdfs:label ?b.
+                    ?a meshv:preferredTerm ?x.
+                    ?x meshv:sortVersion ?o.
+                    {ContruirFiltro("o", listaTopicalDescriptors, pTipoFiltro)}
+                  }}}}ORDER BY ?a";
 
             // Tipo de salida.
             string format = "JSON";
@@ -501,13 +513,22 @@ namespace Hercules.ED.UpdateKeywords
             string downloadString = string.Empty;
 
             // TODO: Meter control.
-            try
+            int contadorDownload = 0;
+            while (string.IsNullOrEmpty(downloadString))
             {
-                downloadString = webClient.DownloadString($@"{urlConsulta}?query={HttpUtility.UrlEncode(consulta)}&format={format}");
-            }
-            catch (Exception)
-            {
-                return new Dictionary<string, string>();
+                try
+                {
+                    downloadString = webClient.DownloadString($@"{urlConsulta}?query={HttpUtility.UrlEncode(consulta)}&format={format}");
+                }
+                catch (Exception)
+                {
+                    contadorDownload++;
+                    Thread.Sleep(1000);
+                    if (contadorDownload == 5)
+                    {
+                        return new Dictionary<string, string>();
+                    }
+                }
             }
 
             SparqlObject resultadoQuery = JsonConvert.DeserializeObject<SparqlObject>(downloadString);
@@ -541,6 +562,122 @@ namespace Hercules.ED.UpdateKeywords
             }
 
             return dicResultados;
+        }
+
+        public Dictionary<string, string> SelectDataMeshAllFragments(string pConsulta)
+        {
+            Dictionary<string, string> dicResultados = new Dictionary<string, string>();
+
+            // Endpoint.
+            string urlConsulta = "https://id.nlm.nih.gov/mesh/sparql";
+
+            // Tipo de salida.
+            string format = "JSON";
+
+            // Petición.
+            WebClient webClient = new WebClient();
+            string downloadString = string.Empty;
+
+            int contadorDownload = 0;
+            while(string.IsNullOrEmpty(downloadString))
+            {
+                try
+                {
+                    downloadString = webClient.DownloadString($@"{urlConsulta}?query={HttpUtility.UrlEncode(pConsulta)}&format={format}");
+                }
+                catch (Exception)
+                {
+                    contadorDownload++;
+                    Thread.Sleep(1000);
+                    if (contadorDownload == 5)
+                    {
+                        return new Dictionary<string, string>();
+                    }
+                }
+            }            
+
+            SparqlObject resultadoQuery = JsonConvert.DeserializeObject<SparqlObject>(downloadString);
+
+            if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Any())
+            {
+                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                {
+                    string id = string.Empty;
+                    string label = string.Empty;
+
+                    if (fila.ContainsKey("item") && !string.IsNullOrEmpty(fila["item"].value))
+                    {
+                        id = fila["item"].value;
+                        id = id.Substring(id.LastIndexOf("/") + 1);
+                    }
+
+                    if (fila.ContainsKey("label") && !string.IsNullOrEmpty(fila["label"].value))
+                    {
+                        label = fila["label"].value;
+                    }
+
+                    if (!string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(label))
+                    {
+                        if (!dicResultados.ContainsKey(id))
+                        {
+                            dicResultados.Add(id, label);
+                        }
+                    }
+                }
+            }
+
+            if (dicResultados.Count() != 1)
+            {
+                return new Dictionary<string, string>();
+            }
+            else
+            {
+                return dicResultados;
+            }
+        }
+
+        public string ContruirFiltro(string pVariable, string[] pPalabras, bool pTipoFiltro)
+        {
+            string filtro = string.Empty;
+
+            if (pTipoFiltro)
+            {
+                foreach (string palabra in pPalabras)
+                {
+                    string palabraAux = palabra.ToLower().Replace("\'", "\\\'");
+
+                    if (preposicionesEng.Contains(palabraAux) || preposicionesEsp.Contains(palabraAux))
+                    {
+                        continue;
+                    }
+
+                    filtro += $@"FILTER(REGEX(?{pVariable},'^{palabraAux}$','i')) ";
+                }
+            }
+            else
+            {
+                foreach (string palabra in pPalabras)
+                {
+                    string palabraAux = palabra.ToLower().Replace("\'", "\\\'");
+
+                    if (preposicionesEng.Contains(palabraAux) || preposicionesEsp.Contains(palabraAux))
+                    {
+                        continue;
+                    }
+
+                    filtro += $@"{{
+                        FILTER(REGEX(?{pVariable}, ' {palabraAux} ', 'i'))
+                      }} UNION {{
+                        FILTER(REGEX(?{pVariable}, '^{palabraAux}$', 'i'))
+                      }} UNION {{
+                        FILTER(REGEX(?{pVariable}, '^{palabraAux} ', 'i'))
+                      }} UNION {{
+                        FILTER(REGEX(?{pVariable}, ' {palabraAux}$', 'i'))
+                    }} ";
+                }
+            }
+
+            return filtro;
         }
 
         /// <summary>
@@ -610,13 +747,22 @@ namespace Hercules.ED.UpdateKeywords
             string downloadString = string.Empty;
 
             // TODO: Meter control.
-            try
+            int contadorDownload = 0;
+            while (string.IsNullOrEmpty(downloadString))
             {
-                downloadString = webClient.DownloadString($@"{urlConsulta}?query={HttpUtility.UrlEncode(consulta)}&format={format}");
-            }
-            catch (Exception)
-            {
-                return;
+                try
+                {
+                    downloadString = webClient.DownloadString($@"{urlConsulta}?query={HttpUtility.UrlEncode(consulta)}&format={format}");
+                }
+                catch (Exception)
+                {
+                    contadorDownload++;
+                    Thread.Sleep(1000);
+                    if (contadorDownload == 5)
+                    {
+                        return;
+                    }
+                }
             }
 
             SparqlObject resultadoQuery = JsonConvert.DeserializeObject<SparqlObject>(downloadString);
@@ -694,28 +840,7 @@ namespace Hercules.ED.UpdateKeywords
                         request.Content = pBody;
                     }
 
-                    int intentos = 3;
-                    while (true)
-                    {
-                        try
-                        {
-                            response = await httpClient.SendAsync(request);
-                            break;
-                        }
-                        catch (Exception)
-                        {
-                            intentos--;
-                            if (intentos == 0)
-                            {
-                                //_FileLogger.Log(pUrl, error.ToString());
-                                throw;
-                            }
-                            else
-                            {
-                                Thread.Sleep(1000);
-                            }
-                        }
-                    }
+                    response = await httpClient.SendAsync(request);
                 }
             }
 
@@ -736,12 +861,26 @@ namespace Hercules.ED.UpdateKeywords
         public string GetTGT()
         {
             // Petición.
-            Uri url = new Uri(_Configuracion.GetUrlTGT());
-            FormUrlEncodedContent body = new FormUrlEncodedContent(new[]
+            string result = String.Empty;
+            while (true)
             {
+                Uri url = new Uri(_Configuracion.GetUrlTGT());
+                FormUrlEncodedContent body = new FormUrlEncodedContent(new[]
+                {
                 new KeyValuePair<string, string>("apikey", _Configuracion.GetApiKey())
-            });
-            string result = httpCall(url.ToString(), "POST", pBody: body).Result;
+                });
+
+                result = httpCall(url.ToString(), "POST", pBody: body).Result;
+
+                if (string.IsNullOrEmpty(result))
+                {
+                    Thread.Sleep(30000);
+                }
+                else
+                {
+                    break;
+                }
+            }
 
             // Obtención del dato del HTML de respuesta.
             HtmlDocument doc = new HtmlDocument();
@@ -856,6 +995,21 @@ namespace Hercules.ED.UpdateKeywords
                 numPagina++;
                 numPaginasTotal = data.pageCount;
             }
+
+            //Dictionary<string, List<string>> dicAux = new Dictionary<string, List<string>>();
+            //foreach(ResultRelations item in listaResultados)
+            //{
+            //    string id = item.relationLabel;
+            //    string nom = item.relatedIdName;
+            //    if(!dicAux.ContainsKey(id))
+            //    {
+            //        dicAux[id] = new List<string>() { nom };
+            //    }
+            //    else
+            //    {
+            //        dicAux[id].Add(nom);
+            //    }
+            //}
 
             // Datos.
             return listaResultados;

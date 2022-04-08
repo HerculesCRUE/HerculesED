@@ -3,6 +3,7 @@ using Gnoss.ApiWrapper.ApiModel;
 using Hercules.ED.UpdateKeywords.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Hercules.ED.UpdateKeywords
 {
@@ -11,7 +12,6 @@ namespace Hercules.ED.UpdateKeywords
         private static string RUTA_OAUTH = $@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config";
         private static ResourceApi mResourceApi = new ResourceApi(RUTA_OAUTH);
         private static CommunityApi mCommunityApi = new CommunityApi(RUTA_OAUTH);
-
 
         static void Main(string[] args)
         {
@@ -28,7 +28,56 @@ namespace Hercules.ED.UpdateKeywords
                 foreach (KeyValuePair<string, string> etiquetaTag in dicEtiquetas)
                 {
                     string idEtiquetaAux = etiquetaTag.Key;
-                    Dictionary<string, string> dicResultados = utilKeywords.SelectDataMesh(etiquetaTag.Value);
+
+                    // 1.- Probamos con el término en "Exact Match".
+                    List<string> listaAux = new List<string>() { etiquetaTag.Value };
+                    Dictionary<string, string> dicResultados = utilKeywords.SelectDataMesh(listaAux.ToArray(), true);
+
+                    // 2.- Si no se ha encontrado resultado y el término contiene más de una palabra...
+                    if (dicResultados.Count() != 1 && etiquetaTag.Value.Contains(" "))
+                    {
+                        // 2.1.- Buscamos por el término en "All fragments".
+                        string[] partes = etiquetaTag.Value.Split(" ");
+
+                        dicResultados = ConsultarDatos(utilKeywords, partes);
+
+                        // 2.2.- Buscamos por combinación de palabras en "All fragments" en el caso que tenga más de dos.
+                        if (dicResultados.Count() != 1 && partes.Count() >= 2)
+                        {
+                            for (int i = 0; i < partes.Length; i++)
+                            {
+                                string parte1 = partes[i];
+                                if (utilKeywords.preposicionesEng.Contains(parte1) || utilKeywords.preposicionesEsp.Contains(parte1))
+                                {
+                                    continue;
+                                }
+
+                                for (int x = i + 1; x < partes.Length; x++)
+                                {
+                                    string parte2 = partes[x];
+                                    if (utilKeywords.preposicionesEng.Contains(parte2) || utilKeywords.preposicionesEsp.Contains(parte2))
+                                    {
+                                        continue;
+                                    }
+
+                                    List<string> lista = new List<string>() { parte1, parte2 };
+                                    string[] arrayParte = lista.ToArray();
+
+                                    dicResultados = ConsultarDatos(utilKeywords, arrayParte);
+
+                                    if (dicResultados.Count() == 1)
+                                    {
+                                        break;
+                                    }
+                                }
+
+                                if (dicResultados.Count() == 1)
+                                {
+                                    break;
+                                }
+                            }
+                        }
+                    }
 
                     // Obtencón de información de SNOMED.
                     List<Data> listaSnomed = new List<Data>();
@@ -78,6 +127,169 @@ namespace Hercules.ED.UpdateKeywords
                 // Borrar triple de obtención de etiquetas.
                 utilKeywords.BorrarGetKeywordProperty(id);
             }
+        }
+
+        public static Dictionary<string, string> ConsultarDatos(UtilKeywords pUtilKeywords, string[] pPartes)
+        {
+            Dictionary<string, string> dicResultados = new Dictionary<string, string>();
+
+            // Buscar en el label y concept label
+            #region --- Consulta.
+            string consulta = $@"
+                        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
+                        SELECT ?item ?label FROM <http://id.nlm.nih.gov/mesh>
+                        WHERE {{{{
+                            ?item a meshv:TopicalDescriptor.
+                            ?item rdfs:label ?label.
+                            {pUtilKeywords.ContruirFiltro("label", pPartes, false)}
+                            }}UNION{{
+                            ?item a meshv:TopicalDescriptor.
+                            ?item rdfs:label ?label.
+                            ?item meshv:concept ?x.
+                            ?x rdfs:label ?labelConcept.
+                            {pUtilKeywords.ContruirFiltro("labelConcept", pPartes, false)}                            
+                            }}}}";
+            #endregion
+            
+            if (dicResultados.Count() == 0)
+            {
+                dicResultados = pUtilKeywords.SelectDataMeshAllFragments(consulta);
+            }
+
+            // Buscar en los Concept - Term
+            #region --- Consulta.
+            consulta = $@"
+                        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
+                        SELECT ?item ?label FROM <http://id.nlm.nih.gov/mesh>
+                        WHERE {{{{
+                            ?item a meshv:TopicalDescriptor.
+                            ?item rdfs:label ?label.
+                            ?item meshv:concept ?x.
+                            ?x meshv:term ?x2.
+                            ?x2 meshv:prefLabel ?prefLabel. 
+                            {pUtilKeywords.ContruirFiltro("prefLabel", pPartes, false)}
+                            }}UNION{{
+                            ?item a meshv:TopicalDescriptor.
+                            ?item rdfs:label ?label.
+                            ?item meshv:concept ?x.
+                            ?x meshv:term ?x2.
+                            ?x2 meshv:altLabel ?altLabel. 
+                            {pUtilKeywords.ContruirFiltro("altLabel", pPartes, false)}
+                            }}UNION{{
+                            ?item a meshv:TopicalDescriptor.
+                            ?item rdfs:label ?label.
+                            ?item meshv:concept ?x.
+                            ?x meshv:term ?x2.
+                            ?x2 meshv:sortVersion ?sortVersion. 
+                            {pUtilKeywords.ContruirFiltro("sortVersion", pPartes, false)}
+                            }}}}";
+            #endregion
+
+            if (dicResultados.Count() == 0)
+            {
+                dicResultados = pUtilKeywords.SelectDataMeshAllFragments(consulta);
+            }
+
+            // Buscar en los Concept - PreferredConcept
+            #region --- Consulta.
+            consulta = $@"
+                        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
+                        SELECT ?item ?label FROM <http://id.nlm.nih.gov/mesh>
+                        WHERE {{{{
+                            ?item a meshv:TopicalDescriptor.
+                            ?item rdfs:label ?label.
+                            ?item meshv:concept ?x.
+                            ?x meshv:preferredConcept ?x2.
+                            ?x2 meshv:prefLabel ?prefLabel. 
+                            {pUtilKeywords.ContruirFiltro("prefLabel", pPartes, false)}
+                            }}UNION{{
+                            ?item a meshv:TopicalDescriptor.
+                            ?item rdfs:label ?label.
+                            ?item meshv:concept ?x.
+                            ?x meshv:preferredConcept ?x2.
+                            ?x2 meshv:altLabel ?altLabel. 
+                            {pUtilKeywords.ContruirFiltro("altLabel", pPartes, false)}
+                            }}UNION{{
+                            ?item a meshv:TopicalDescriptor.
+                            ?item rdfs:label ?label.
+                            ?item meshv:concept ?x.
+                            ?x meshv:preferredConcept ?x2.
+                            ?x2 meshv:sortVersion ?sortVersion. 
+                            {pUtilKeywords.ContruirFiltro("sortVersion", pPartes, false)}
+                            }}}}";
+            #endregion
+
+            if (dicResultados.Count() == 0)
+            {
+                dicResultados = pUtilKeywords.SelectDataMeshAllFragments(consulta);
+            }
+
+            // Buscar en los PreferredConcept - Term
+            #region --- Consulta.
+            consulta = $@"
+                        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
+                        SELECT ?item ?label FROM <http://id.nlm.nih.gov/mesh>
+                        WHERE {{{{
+                            ?item a meshv:TopicalDescriptor.
+                            ?item rdfs:label ?label.
+                            ?item meshv:preferredConcept ?x.
+                            ?x meshv:term ?x2.
+                            ?x2 meshv:prefLabel ?prefLabel. 
+                            {pUtilKeywords.ContruirFiltro("prefLabel", pPartes, false)}
+                            }}UNION{{
+                            ?item a meshv:TopicalDescriptor.
+                            ?item rdfs:label ?label.
+                            ?item meshv:preferredConcept ?x.
+                            ?x meshv:term ?x2.
+                            ?x2 meshv:altLabel ?altLabel. 
+                            {pUtilKeywords.ContruirFiltro("altLabel", pPartes, false)}
+                            }}UNION{{
+                            ?item a meshv:TopicalDescriptor.
+                            ?item rdfs:label ?label.
+                            ?item meshv:preferredConcept ?x.
+                            ?x meshv:term ?x2.
+                            ?x2 meshv:sortVersion ?sortVersion. 
+                            {pUtilKeywords.ContruirFiltro("sortVersion", pPartes, false)}
+                            }}}}";
+            #endregion
+
+            if (dicResultados.Count() == 0)
+            {
+                dicResultados = pUtilKeywords.SelectDataMeshAllFragments(consulta);
+            }
+
+            // Buscar en los PreferedTerm
+            #region --- Consulta.
+            consulta = $@"
+                        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
+                        SELECT ?item ?label FROM <http://id.nlm.nih.gov/mesh>
+                        WHERE {{{{
+                            ?item a meshv:TopicalDescriptor.
+                            ?item rdfs:label ?label.
+                            ?item meshv:preferredTerm ?x.
+                            ?x meshv:prefLabel ?prefLabel. 
+                            {pUtilKeywords.ContruirFiltro("prefLabel", pPartes, false)}
+                            }}UNION{{
+                            ?item a meshv:TopicalDescriptor.
+                            ?item rdfs:label ?label.
+                            ?item meshv:preferredTerm ?x.
+                            ?x meshv:altLabel ?altLabel. 
+                            {pUtilKeywords.ContruirFiltro("altLabel", pPartes, false)}
+                            }}UNION{{
+                            ?item a meshv:TopicalDescriptor.
+                            ?item rdfs:label ?label.
+                            ?item meshv:preferredTerm ?x.
+                            ?x meshv:sortVersion ?sortVersion. 
+                            {pUtilKeywords.ContruirFiltro("sortVersion", pPartes, false)}
+                            }}}}";
+            #endregion
+
+            if (dicResultados.Count() == 0)
+            {
+                dicResultados = pUtilKeywords.SelectDataMeshAllFragments(consulta);
+            }
+
+            return dicResultados;
         }
     }
 }
