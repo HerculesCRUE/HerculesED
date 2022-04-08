@@ -282,7 +282,7 @@ namespace ZenodoAPI.Models
                 ObjEnriquecimiento objEnriquecimiento = new ObjEnriquecimiento();
                 objEnriquecimiento.rotype = "papers";
                 objEnriquecimiento.title = pRo.metadata.title;
-                objEnriquecimiento.abstract_ = Regex.Replace(pRo.metadata.description, "<.*?>", string.Empty);
+                objEnriquecimiento.abstract_ = System.Web.HttpUtility.HtmlDecode(Regex.Replace(pRo.metadata.description, "<.*?>", string.Empty));
                 return objEnriquecimiento;
             }
             else
