@@ -1854,11 +1854,8 @@ namespace Utils
         /// <returns>YYYYMMDD000000</returns>
         public static string DatetimeStringGNOSS(this CvnItemBeanCvnDateDayMonthYear dateTime)
         {
-            string fechaString = dateTime.Value.ToString().Replace("-", "").Replace("T", "").Replace(":", "").Split("+")[0];
-            string[] fechaAux = fechaString.Split("/");
-            string anio = fechaAux[2].Split(" ")[0];
-
-            fechaString = anio + fechaAux[1] + fechaAux[0] + "000000";
+            string fechaString = dateTime.Value.ToString("yyyyMMdd");
+            fechaString += "000000";
             return fechaString;
         }
 
@@ -1870,11 +1867,8 @@ namespace Utils
         /// <returns>YYYYMMDD000000</returns>
         public static string DatetimeStringGNOSS(this CvnItemBeanCvnDateMonthYear dateTime)
         {
-            string fechaString = dateTime.Value.ToString().Replace("-", "").Replace("T", "").Replace(":", "").Split("+")[0];
-            string[] fechaAux = fechaString.Split("/");
-            string anio = fechaAux[2].Split(" ")[0];
-
-            fechaString = anio + fechaAux[1] + fechaAux[0] + "000000";
+            string fechaString = dateTime.Value.ToString("yyyyMMdd");
+            fechaString += "000000";
             return fechaString;
         }
 
@@ -1886,11 +1880,8 @@ namespace Utils
         /// <returns>YYYYMMDD000000</returns>
         public static string DatetimeStringGNOSS(this CvnItemBeanCvnDateYear dateTime)
         {
-            string fechaString = dateTime.Value.ToString().Replace("-", "").Replace("T", "").Replace(":", "").Split("+")[0];
-            string[] fechaAux = fechaString.Split("/");
-            string anio = fechaAux[2].Split(" ")[0];
-
-            fechaString = anio + fechaAux[1] + fechaAux[0] + "000000";
+            string fechaString = dateTime.Value.ToString("yyyyMMdd");
+            fechaString += "000000";
             return fechaString;
         }
 
