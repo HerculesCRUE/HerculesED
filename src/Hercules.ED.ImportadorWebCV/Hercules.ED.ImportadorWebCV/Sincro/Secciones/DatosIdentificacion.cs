@@ -107,10 +107,11 @@ namespace ImportadorWebCV.Sincro.Secciones
                     new Property(Variables.DatosIdentificacion.nie, listadoDatosIdentificacion.GetStringPorIDCampo("000.010.000.110")),
                     new Property(Variables.DatosIdentificacion.pasaporte, listadoDatosIdentificacion.GetStringPorIDCampo("000.010.000.120")),
                     new Property(Variables.DatosIdentificacion.imagenDigital, listadoDatosIdentificacion.GetImagenPorIDCampo("000.010.000.130")),
-                    new Property(Variables.DatosIdentificacion.email, listadoDatosIdentificacion.GetStringPorIDCampo("000.010.000.230")),
+                    new Property(Variables.DatosIdentificacion.email, listadoDatosIdentificacion.GetStringPorIDCampo("000.010.000.230")),                    
+                    new Property(Variables.DatosIdentificacion.paginaWeb, listadoDatosIdentificacion.GetStringPorIDCampo("000.010.000.250")),
                     new Property(Variables.DatosIdentificacion.ORCID, listadoDatosIdentificacion.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("000.010.000.260").GetORCID()),
                     new Property(Variables.DatosIdentificacion.scopus, listadoDatosIdentificacion.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("000.010.000.260").GetScopus()),
-                    new Property(Variables.DatosIdentificacion.researcherId, listadoDatosIdentificacion.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("000.010.000.260").GetResearcherID())
+                    new Property(Variables.DatosIdentificacion.researcherId, listadoDatosIdentificacion.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("000.010.000.260").GetResearcherID())                
                 );
                 GetDireccionNacimiento(listadoDatosIdentificacion, entity, entityBBDD);
                 GetDireccionContacto(listadoDatosIdentificacion, entity, entityBBDD);
