@@ -763,13 +763,14 @@ var montarTooltip = {
             // console.log('enter')
             var _this = this;
             // $(this).tooltip('show');
-            $(this).siblings(elem).on('mouseleave', function () {
-                $(_this).tooltip('hide');
-            });
+            $('.tooltip').on('mouseenter', function () {
+                $(this).tooltip('show');
+            }).on('mouseleave', function () {
+                $(this).tooltip('hide')
+            })
         }).on('mouseleave', function () {
             // console.log('leave')
             var _this = this;
-            $(this).tooltip('show');
             setTimeout(function () {
                 if ($('.tooltip:hover').length < 0) {
                     // console.log('hover')
@@ -788,11 +789,6 @@ var montarTooltip = {
         var that = this;
         $(elem).on('shown.bs.tooltip', function () {
             that.cerrar();
-
-            // Close tooltip in 3 seconds
-            setTimeout(function () {
-                $(elem).tooltip('hide');
-            }, 3000);
         });
     },
     cerrar: function () {
@@ -1044,6 +1040,8 @@ $(function () {
     accionesPlegarDesplegarModal.init();
 
     operativaModalSeleccionarTemas.init();
+
+    $('.js-select2.disabled').prop('disabled', true);
 
     if (body.hasClass('fichaRecurso') || body.hasClass('edicionRecurso')) {
         comportamientoCargaFacetasComunidad();
