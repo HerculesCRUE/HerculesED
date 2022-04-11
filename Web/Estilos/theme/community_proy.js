@@ -198,7 +198,8 @@ function CompletadaCargaRecursosComunidad()
 	comportamientoVerMasVerMenos.init();
 	comportamientoVerMasVerMenosTags.init();
 	enlazarFacetasBusqueda();
-	montarTooltip.init();
+	//montarTooltip.init();
+	tooltipsAccionesRecursos.init();
 	contarLineasDescripcion.init();
 	
 	// Engancha el filtro de persona a la minificha.
