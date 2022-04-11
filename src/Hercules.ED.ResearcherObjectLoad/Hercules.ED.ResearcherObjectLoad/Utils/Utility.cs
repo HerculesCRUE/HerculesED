@@ -9,7 +9,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
 {
     public class Utility
     {
-        public static ResourceApi mResourceApi = Carga.mResourceApi;
+        private static ResourceApi mResourceApi = Carga.mResourceApi;
 
         /// <summary>
         /// Método para dividir listas
