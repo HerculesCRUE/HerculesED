@@ -10,7 +10,25 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
     {
         public static ResourceApi mResourceApi;
 
-        public static ResearchobjectOntology.ResearchObject ConstruirRO(string pTipo, ResearchObjectFigShare pResearchObject, ResearchObjectGitHub pGitHubObj, ResearchObjectZenodo pZenodoObj, Dictionary<string, string> pDicAreasBroader, Dictionary<string, string> pDicAreasNombre, ResearchObjectFigShare pResearchObjectB = null, ResearchObjectGitHub pGitHubObjB = null, ResearchObjectZenodo pZenodoObjB = null)
+        /// <summary>
+        /// Método para dividir listas
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="pItems">Listado</param>
+        /// <param name="pSize">Tamaño</param>
+        /// <returns></returns>
+        public static IEnumerable<List<T>> SplitList<T>(List<T> pItems, int pSize)
+        {
+            for (int i = 0; i < pItems.Count; i += pSize)
+            {
+                yield return pItems.GetRange(i, Math.Min(pSize, pItems.Count - i));
+            }
+        }
+
+        public static ResearchobjectOntology.ResearchObject ConstruirRO(string pTipo,
+            ResearchObjectFigShare pResearchObject, ResearchObjectGitHub pGitHubObj, ResearchObjectZenodo pZenodoObj,
+            Dictionary<string, string> pDicAreasBroader, Dictionary<string, string> pDicAreasNombre,
+            ResearchObjectFigShare pResearchObjectB = null, ResearchObjectGitHub pGitHubObjB = null, ResearchObjectZenodo pZenodoObjB = null)
         {
             ResearchobjectOntology.ResearchObject ro = new ResearchobjectOntology.ResearchObject();
 
@@ -757,19 +775,6 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
             return ro;
         }
 
-        /// <summary>
-        /// Método para dividir listas
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="pItems">Listado</param>
-        /// <param name="pSize">Tamaño</param>
-        /// <returns></returns>
-        public static IEnumerable<List<T>> SplitList<T>(List<T> pItems, int pSize)
-        {
-            for (int i = 0; i < pItems.Count; i += pSize)
-            {
-                yield return pItems.GetRange(i, Math.Min(pSize, pItems.Count - i));
-            }
-        }
+        
     }
 }
