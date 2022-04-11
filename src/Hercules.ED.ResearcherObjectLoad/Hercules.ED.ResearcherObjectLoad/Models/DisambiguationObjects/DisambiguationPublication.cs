@@ -69,18 +69,18 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
             }
         }
 
-        private static DisambiguationDataConfig configTitulo = new DisambiguationDataConfig()
+        private static readonly DisambiguationDataConfig configTitulo = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsTitle,
             score = 0.8f
         };
 
-        private static DisambiguationDataConfig configDOI = new DisambiguationDataConfig()
+        private static readonly DisambiguationDataConfig configDOI = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsIdentifiers
         };
 
-        private static DisambiguationDataConfig configAutores = new DisambiguationDataConfig()
+        private static readonly DisambiguationDataConfig configAutores = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsItemList,
             score = 0.5f
