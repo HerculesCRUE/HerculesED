@@ -1062,7 +1062,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                 {
                     if (organizaciones.ContainsKey(fila["person"].value))
                     {
-                        organizaciones[fila["person"].value].Append(fila["organization"].value);
+                        organizaciones[fila["person"].value].Add(fila["organization"].value);
                     }
                     else
                     {
@@ -1100,7 +1100,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                 {
                     if (departamentos.ContainsKey(fila["person"].value))
                     {
-                        departamentos[fila["person"].value].Append(fila["departament"].value);
+                        departamentos[fila["person"].value].Add(fila["departament"].value);
                     }
                     else
                     {
@@ -1140,7 +1140,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                 {
                     if (proyectos.ContainsKey(fila["person"].value))
                     {
-                        proyectos[fila["person"].value].Append(fila["project"].value);
+                        proyectos[fila["person"].value].Add(fila["project"].value);
                     }
                     else
                     {
@@ -1181,7 +1181,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                 {
                     if (grupos.ContainsKey(fila["person"].value))
                     {
-                        grupos[fila["person"].value].Append(fila["group"].value);
+                        grupos[fila["person"].value].Add(fila["group"].value);
                     }
                     else
                     {
