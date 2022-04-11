@@ -7,6 +7,7 @@ using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 using Gnoss.ApiWrapper;
 using System.Linq;
 using Hercules.ED.ResearcherObjectLoad.Models;
+using ResearchobjectOntology;
 
 namespace Hercules.ED.ResearcherObjectLoad.Utils
 {
@@ -30,11 +31,11 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
         }
 
         public static void CrearRoFigshareDesambiguado(string idRo, HashSet<string> pListaIds,
-            Dictionary<string, ResearchObjectFigShare> pDicIdRo, Dictionary<ResearchobjectOntology.ResearchObject, HashSet<string>> pListaRosCreados,
+            Dictionary<string, ResearchObjectFigShare> pDicIdRo, Dictionary<ResearchObject, HashSet<string>> pListaRosCreados,
             Dictionary<string, string> pDicAreasBroader, Dictionary<string, string> pDicAreasNombre)
         {
             ResearchObjectFigShare roA = pDicIdRo[idRo];
-            ResearchobjectOntology.ResearchObject roCreado = new ResearchobjectOntology.ResearchObject();
+            ResearchObject roCreado = new ResearchObject();
 
             foreach (string idSimilar in pListaIds)
             {
@@ -118,7 +119,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
             return personID;
         }
 
-        public static ResearchobjectOntology.ResearchObject ConstruirROFigShare(ResearchobjectOntology.ResearchObject ro, ResearchObjectFigShare pResearchObject,
+        public static ResearchObject ConstruirROFigShare(ResearchObject ro, ResearchObjectFigShare pResearchObject,
             Dictionary<string, string> pDicAreasBroader, Dictionary<string, string> pDicAreasNombre, ResearchObjectFigShare pResearchObjectB = null)
         {
             // ID
@@ -253,12 +254,12 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
             HashSet<string> listaIDs = new HashSet<string>();
             if (pResearchObject.categoriasEnriquecidas != null && pResearchObject.categoriasEnriquecidas.Count > 0)
             {
-                ro.Roh_enrichedKnowledgeArea = new List<ResearchobjectOntology.CategoryPath>();
+                ro.Roh_enrichedKnowledgeArea = new List<CategoryPath>();
                 foreach (string area in pResearchObject.categoriasEnriquecidas)
                 {
                     if (pDicAreasNombre.ContainsKey(area.ToLower()))
                     {
-                        ResearchobjectOntology.CategoryPath categoria = new ResearchobjectOntology.CategoryPath();
+                        CategoryPath categoria = new CategoryPath();
                         categoria.IdsRoh_categoryNode = new List<string>();
                         categoria.IdsRoh_categoryNode.Add(pDicAreasNombre[area.ToLower()]);
                         string idHijo = pDicAreasNombre[area.ToLower()];
@@ -281,12 +282,12 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
 
                 if (pResearchObjectB != null && pResearchObjectB.categoriasEnriquecidas != null && pResearchObjectB.categoriasEnriquecidas.Any())
                 {
-                    ro.Roh_enrichedKnowledgeArea = new List<ResearchobjectOntology.CategoryPath>();
+                    ro.Roh_enrichedKnowledgeArea = new List<CategoryPath>();
                     foreach (string area in pResearchObjectB.categoriasEnriquecidas)
                     {
                         if (pDicAreasNombre.ContainsKey(area.ToLower()))
                         {
-                            ResearchobjectOntology.CategoryPath categoria = new ResearchobjectOntology.CategoryPath();
+                            CategoryPath categoria = new CategoryPath();
                             categoria.IdsRoh_categoryNode = new List<string>();
                             categoria.IdsRoh_categoryNode.Add(pDicAreasNombre[area.ToLower()]);
                             string idHijo = pDicAreasNombre[area.ToLower()];
@@ -323,11 +324,11 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
             // Autores
             if (pResearchObject.autores != null && pResearchObject.autores.Any())
             {
-                ro.Bibo_authorList = new List<ResearchobjectOntology.BFO_0000023>();
+                ro.Bibo_authorList = new List<BFO_0000023>();
                 int orden = 1;
                 foreach (Person_JSON personaRO in pResearchObject.autores)
                 {
-                    ResearchobjectOntology.BFO_0000023 bfo_0000023 = new ResearchobjectOntology.BFO_0000023();
+                    BFO_0000023 bfo_0000023 = new BFO_0000023();
                     bfo_0000023.Rdf_comment = orden;
                     bfo_0000023.IdRdf_member = personaRO.ID;
                     ro.Bibo_authorList.Add(bfo_0000023);
