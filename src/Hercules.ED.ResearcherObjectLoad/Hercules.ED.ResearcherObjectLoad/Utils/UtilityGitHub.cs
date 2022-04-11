@@ -7,6 +7,7 @@ using Hercules.ED.ResearcherObjectLoad.Models.ObjetoJson;
 using Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 using Hercules.ED.ResearcherObjectLoad.Models;
+using ResearchobjectOntology;
 
 namespace Hercules.ED.ResearcherObjectLoad.Utils
 {
@@ -15,11 +16,11 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
         private static ResourceApi mResourceApi = Carga.mResourceApi;
 
         public static void CrearRoGitHubDesambiguado(string idRo, HashSet<string> pListaIds, Dictionary<string, ResearchObjectGitHub> pDicIdRo,
-            Dictionary<ResearchobjectOntology.ResearchObject, HashSet<string>> pListaRosCreados,
+            Dictionary<ResearchObject, HashSet<string>> pListaRosCreados,
             Dictionary<string, string> pDicAreasBroader, Dictionary<string, string> pDicAreasNombre)
         {
             ResearchObjectGitHub roA = pDicIdRo[idRo];
-            ResearchobjectOntology.ResearchObject roCreado = new ResearchobjectOntology.ResearchObject();
+            ResearchObject roCreado = new ResearchObject();
 
             foreach (string idSimilar in pListaIds)
             {
@@ -190,7 +191,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                 }
             }
         }
-        public static ResearchobjectOntology.ResearchObject ConstruirROGithub(ResearchobjectOntology.ResearchObject ro, ResearchObjectGitHub pGitHubObj,
+        public static ResearchObject ConstruirROGithub(ResearchObject ro, ResearchObjectGitHub pGitHubObj,
             Dictionary<string, string> pDicAreasBroader, Dictionary<string, string> pDicAreasNombre, ResearchObjectGitHub pGitHubObjB = null)
         {
             // ID
@@ -289,11 +290,11 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
             // Lenguajes de programación.
             if (pGitHubObj.lenguajes != null && pGitHubObj.lenguajes.Any())
             {
-                ro.Vcard_hasLanguage = new List<ResearchobjectOntology.Language>();
+                ro.Vcard_hasLanguage = new List<Language>();
 
                 foreach (KeyValuePair<string, float> item in pGitHubObj.lenguajes)
                 {
-                    ResearchobjectOntology.Language lenguajeProg = new ResearchobjectOntology.Language();
+                    Language lenguajeProg = new Language();
                     lenguajeProg.Roh_title = item.Key;
                     lenguajeProg.Roh_percentage = item.Value;
                     ro.Vcard_hasLanguage.Add(lenguajeProg);
@@ -301,11 +302,11 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
 
                 if (pGitHubObjB != null && pGitHubObjB.lenguajes != null && pGitHubObjB.lenguajes.Any() && ro.Vcard_hasLanguage == null)
                 {
-                    ro.Vcard_hasLanguage = new List<ResearchobjectOntology.Language>();
+                    ro.Vcard_hasLanguage = new List<Language>();
 
                     foreach (KeyValuePair<string, float> item in pGitHubObjB.lenguajes)
                     {
-                        ResearchobjectOntology.Language lenguajeProg = new ResearchobjectOntology.Language();
+                        Language lenguajeProg = new Language();
                         lenguajeProg.Roh_title = item.Key;
                         lenguajeProg.Roh_percentage = item.Value;
                         ro.Vcard_hasLanguage.Add(lenguajeProg);
@@ -383,12 +384,12 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
             HashSet<string> listaIDs = new HashSet<string>();
             if (pGitHubObj.categoriasEnriquecidas != null && pGitHubObj.categoriasEnriquecidas.Count > 0)
             {
-                ro.Roh_enrichedKnowledgeArea = new List<ResearchobjectOntology.CategoryPath>();
+                ro.Roh_enrichedKnowledgeArea = new List<CategoryPath>();
                 foreach (string area in pGitHubObj.categoriasEnriquecidas)
                 {
                     if (pDicAreasNombre.ContainsKey(area.ToLower()))
                     {
-                        ResearchobjectOntology.CategoryPath categoria = new ResearchobjectOntology.CategoryPath();
+                        CategoryPath categoria = new CategoryPath();
                         categoria.IdsRoh_categoryNode = new List<string>();
                         categoria.IdsRoh_categoryNode.Add(pDicAreasNombre[area.ToLower()]);
                         string idHijo = pDicAreasNombre[area.ToLower()];
@@ -411,12 +412,12 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
 
                 if (pGitHubObjB != null && pGitHubObjB.categoriasEnriquecidas != null && pGitHubObjB.categoriasEnriquecidas.Any())
                 {
-                    ro.Roh_enrichedKnowledgeArea = new List<ResearchobjectOntology.CategoryPath>();
+                    ro.Roh_enrichedKnowledgeArea = new List<CategoryPath>();
                     foreach (string area in pGitHubObjB.categoriasEnriquecidas)
                     {
                         if (pDicAreasNombre.ContainsKey(area.ToLower()))
                         {
-                            ResearchobjectOntology.CategoryPath categoria = new ResearchobjectOntology.CategoryPath();
+                            CategoryPath categoria = new CategoryPath();
                             categoria.IdsRoh_categoryNode = new List<string>();
                             categoria.IdsRoh_categoryNode.Add(pDicAreasNombre[area.ToLower()]);
                             string idHijo = pDicAreasNombre[area.ToLower()];
@@ -442,7 +443,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
             // Autores.
             if (pGitHubObj.listaAutores != null && pGitHubObj.listaAutores.Any())
             {
-                ro.Bibo_authorList = new List<ResearchobjectOntology.BFO_0000023>();
+                ro.Bibo_authorList = new List<BFO_0000023>();
                 int seqAutor = 1;
                 foreach (string nombre in pGitHubObj.listaAutores)
                 {
@@ -450,7 +451,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                     if (!string.IsNullOrEmpty(idRecursoPersona))
                     {
                         // Autores.   
-                        ResearchobjectOntology.BFO_0000023 miembro = new ResearchobjectOntology.BFO_0000023();
+                        BFO_0000023 miembro = new BFO_0000023();
                         miembro.IdRdf_member = idRecursoPersona;
                         miembro.Rdf_comment = seqAutor;
                         seqAutor++;
@@ -460,7 +461,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
 
                 if (pGitHubObjB != null && pGitHubObjB.listaAutores != null && pGitHubObjB.listaAutores.Any())
                 {
-                    ro.Bibo_authorList = new List<ResearchobjectOntology.BFO_0000023>();
+                    ro.Bibo_authorList = new List<BFO_0000023>();
                     seqAutor = 1;
 
                     foreach (string nombre in pGitHubObjB.listaAutores)
@@ -469,7 +470,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                         if (!string.IsNullOrEmpty(idRecursoPersona))
                         {
                             // Autores.   
-                            ResearchobjectOntology.BFO_0000023 miembro = new ResearchobjectOntology.BFO_0000023();
+                            BFO_0000023 miembro = new BFO_0000023();
                             miembro.IdRdf_member = idRecursoPersona;
                             miembro.Rdf_comment = seqAutor;
                             seqAutor++;
