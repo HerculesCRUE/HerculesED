@@ -13,7 +13,9 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
     {
         public static ResourceApi mResourceApi;
 
-        public static void CrearRoGitHubDesambiguado(string idRo, HashSet<string> pListaIds, Dictionary<string, ResearchObjectGitHub> pDicIdRo, Dictionary<ResearchobjectOntology.ResearchObject, HashSet<string>> pListaRosCreados, Dictionary<string, string> pDicAreasBroader, Dictionary<string, string> pDicAreasNombre)
+        public static void CrearRoGitHubDesambiguado(string idRo, HashSet<string> pListaIds, Dictionary<string, ResearchObjectGitHub> pDicIdRo,
+            Dictionary<ResearchobjectOntology.ResearchObject, HashSet<string>> pListaRosCreados,
+            Dictionary<string, string> pDicAreasBroader, Dictionary<string, string> pDicAreasNombre)
         {
             ResearchObjectGitHub roA = pDicIdRo[idRo];
             ResearchobjectOntology.ResearchObject roCreado = new ResearchobjectOntology.ResearchObject();
@@ -122,10 +124,9 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
         /// <param name="resourceApi"></param>
         /// <param name="listado"></param>
         /// <returns></returns>
-        public static Dictionary<string, DisambiguationPerson> ObtenerPersonasGitHub(ResourceApi resourceApi, List<string> listado)
+        public static Dictionary<string, DisambiguationPerson> ObtenerPersonasGitHub(List<string> listado)
         {
             Dictionary<string, DisambiguationPerson> diccionarioPersonas = new Dictionary<string, DisambiguationPerson>();
-            string nameInput = "";
 
             string selectOut = "SELECT DISTINCT ?personID ?github ?name ?orcid ";
             string whereOut = $@"where{{
