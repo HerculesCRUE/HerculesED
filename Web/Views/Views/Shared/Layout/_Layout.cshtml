@@ -614,19 +614,19 @@
                                     <div class="step-progress-wrap mb-5">
                                         <ul class="step-progress">
                                             <li class="step-progress__circle active" id="step1">
-                                                <a href="javascript:stepsCls.goStep(1)">
+                                                <a href="javascript: void(0);">
                                                     <span class="step-progress__text current">@Html.Translate("DEFINIR_CLUSTER")</span>
                                                 </a>
                                             </li>
                                             <li class="step-progress__bar"></li>
                                             <li class="step-progress__circle" id="step2">
-                                                <a href="javascript:stepsCls.goStep(2)">
+                                                <a href="javascript: void(0);">
                                                     <span class="step-progress__text">@Html.Translate("DEFINIR_PERFILES_AREAS_INVESTIGACION")</span>
                                                 </a>
                                             </li>
                                             <li class="step-progress__bar"></li>
                                             <li class="step-progress__circle" id="step3">
-                                                <a href="javascript:stepsCls.goStep(3)">
+                                                <a href="javascript: void(0);">
                                                     <span class="step-progress__text">@Html.Translate("RECOMENDACIONES_SELECCION_INVESTIGADORES")</span>
                                                 </a>
                                             </li>
@@ -736,9 +736,6 @@
                                             <li class="nav-item">
                                                 <a class="nav-link" id="seleccionados-cluster-tab" data-toggle="tab" href="#seleccionados-cluster" role="tab" aria-controls="seleccionados-cluster" aria-selected="false">Seleccionados</a>
                                             </li>
-                                            <li class="nav-item">
-                                                <a class="nav-link" id="grafo-seleccionados-cluster-tab" data-toggle="tab" href="#grafo-seleccionados-cluster" role="tab" aria-controls="grafo-seleccionados-cluster" aria-selected="false">Grafo de seleccionados</a>
-                                            </li>
                                         </ul>
                                         <div class="tab-content">
                                             <div class="tab-pane fade active show" id="sugeridos-cluster" role="tabpanel" aria-labelledby="sugeridos-cluster-tab">
@@ -819,96 +816,9 @@
                                                             <input type="hidden" id="numColaboradoresCluster" value="10" />
                                                             <div class="wrapCol" id="colaboratorsgraphCluster" style="width: 100%; height: 400px;"></div>
                                                         </div>
-                                                    </div>
-                                                    <!-- <div class="col col-12 header-listado">
-                                                        <div class="h1-container">
-                                                            <h1>Publicaciones <span class="numResultados">90</span></h1>
-                                                        </div>
-                                                        <div class="acciones-listado">
-                                                            <div class="wrap">
-                                                                <div class="descargar dropdown">
-                                                                    <a class="dropdown-toggle" data-toggle="dropdown">
-                                                                        <span class="material-icons">download</span>
-                                                                        <span class="texto">Descargar</span>
-                                                                    </a>
-                                                                    <div class="dropdown-menu basic-dropdown dropdown-menu-right">
-                                                                        <a href="javascript: void(0)" class="item-dropdown">PDF</a>
-                                                                        <a href="javascript: void(0)" class="item-dropdown">Hoja de cálculo</a>
-                                                                        <a href="javascript: void(0)" class="item-dropdown">Documento word</a>
-                                                                        <a href="javascript: void(0)" class="item-dropdown">Imagen JPG</a>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="ordenar dropdown dropdown-select">
-                                                                    <a class="dropdown-toggle" data-toggle="dropdown">
-                                                                        <span class="material-icons">swap_vert</span>
-                                                                        <span class="texto">Ordenar</span>
-                                                                    </a>
-                                                                    <div class="dropdown-menu basic-dropdown dropdown-menu-right">
-                                                                        <a href="javascript: void(0)" class="item-dropdown">
-                                                                            <span class="material-icons">swap_vert</span>
-                                                                            <span class="texto">Fecha más reciente</span>
-                                                                        </a>
-                                                                        <a href="javascript: void(0)" class="item-dropdown">
-                                                                            <span class="material-icons">swap_vert</span>
-                                                                            <span class="texto">Fecha más antigua</span>
-                                                                        </a>
-                                                                        <a href="javascript: void(0)" class="item-dropdown">
-                                                                            <span class="material-icons">swap_vert</span>
-                                                                            <span class="texto">Relevancia</span>
-                                                                        </a>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="visualizacion dropdown dropdown-select">
-                                                                    <a class="dropdown-toggle" data-toggle="dropdown">
-                                                                        <span class="material-icons">view_agenda</span>
-                                                                        <span class="texto">Visualizar</span>
-                                                                    </a>
-                                                                    <div class="dropdown-menu basic-dropdown .dropdown-icons dropdown-menu-right">
-                                                                        <a class="item-dropdown aCompacView" data-class-resource-list="compacView">
-                                                                            <span class="material-icons">reorder</span>
-                                                                            <span class="texto">Compacto</span>
-                                                                        </a>
-                                                                        <a class="item-dropdown aListView activeView" data-class-resource-list="listView">
-                                                                            <span class="material-icons">view_agenda</span>
-                                                                            <span class="texto">Lista</span>
-                                                                        </a>
-                                                                        <a class="item-dropdown aMosaicView" data-class-resource-list="mosaicView">
-                                                                            <span class="material-icons">view_comfy</span>
-                                                                            <span class="texto">Mosaico</span>
-                                                                        </a>
-                                                                        <a class="item-dropdown aGraphView" data-class-resource-list="mapView">
-                                                                            <span class="material-icons">leaderboard</span>
-                                                                            <span class="texto">Gráfica</span>
-                                                                        </a>
-                                                                        <a class="item-dropdown aMapView" data-class-resource-list="graphView">
-                                                                            <span class="material-icons">location_on</span>
-                                                                            <span class="texto">Mapa</span>
-                                                                        </a>
-                                                                        <a class="item-dropdown aGrafoView" data-class-resource-list="grafoView">
-                                                                            <span class="material-icons">share</span>
-                                                                            <span class="texto">Grafo</span>
-                                                                        </a>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div> -->
+                                                    </div>                                                    
                                                     <div class="col col-12">
                                                         <div class="wrapCol mt-4">
-                                                            @* <div class="col-buscador">
-                                                                <form method="post" id="formCajaBusquedaCluster" action="javascript:void(0)">
-                                                                    <fieldset style="display: block">
-                                                                        <legend class="nota">facetas</legend>
-                                                                        <div class="finderUtils" id="divCajaBusqueda">
-                                                                            <div class="group finderSection">
-                                                                                <label for="finderSection" class="">Encontrar</label>
-                                                                                <input type="text" id="finderSection" class="not-outline finderSectionText autocompletar ac_input" autocomplete="off" placeholder="Buscar en sección">
-                                                                                <input title="Encontrar" type="button" class="findAction" id="inputLupa">
-                                                                            </div>
-                                                                        </div>
-                                                                    </fieldset>
-                                                                </form>
-                                                            </div> *@
                                                             <div class="row" id="clusterListUsers">
                                                                 
                                                             </div>
@@ -920,26 +830,12 @@
                                                 <div class="row">
                                                     <div class="col col-12 col-section-title font-weight-bold">
                                                         <div class="wrapCol">
-                                                            <p>@Html.Translate("LISTADO_INVETIGADORES_SELECCIONADOS") Listado de investigadores seleccionados</p>
+                                                            <p>@Html.Translate("LISTADO_INVETIGADORES_SELECCIONADOS")</p>
                                                         </div>
                                                     </div>
                                                     <div class="col col-12 col-perfiles" id="perfiles-stp3-result-cluster">
                                                         <p class="section-title">@Html.Translate("PERFILES") </p>
                                                         
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="tab-pane fade" id="grafo-seleccionados-cluster" role="tabpanel" aria-labelledby="grafo-seleccionados-cluster-tab">
-                                                <div class="row">
-                                                    <div class="col col-12 col-section-title font-weight-bold">
-                                                        <div class="wrapCol">
-                                                            <p>@Html.Translate("GRAFRO_RELACIONES_OTROS_INVESTIGADORES")</p>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col col-12 col-grafo">
-                                                        <div class="wrapCol">
-                                                            aqui iria el grafos
-                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
