@@ -245,39 +245,39 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
             mProyectos = new HashSet<string>();
         }
 
-        private static DisambiguationDataConfig configCompleteName = new DisambiguationDataConfig()
+        private static readonly DisambiguationDataConfig configCompleteName = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.algoritmoNombres,
             score = 1f
         };
 
-        private static DisambiguationDataConfig configORCID = new DisambiguationDataConfig()
+        private static readonly DisambiguationDataConfig configORCID = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsIdentifiers
         };
 
-        private static DisambiguationDataConfig configFigshare = new DisambiguationDataConfig()
+        private static readonly DisambiguationDataConfig configFigshare = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsIdentifiers
         };
 
-        private static DisambiguationDataConfig configGithub = new DisambiguationDataConfig()
+        private static readonly DisambiguationDataConfig configGithub = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsIdentifiers
         };
 
-        private static DisambiguationDataConfig configZenodo = new DisambiguationDataConfig()
+        private static readonly DisambiguationDataConfig configZenodo = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsIdentifiers
         };
 
-        private static DisambiguationDataConfig configCoautores = new DisambiguationDataConfig()
+        private static readonly DisambiguationDataConfig configCoautores = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsItemList,
             score = 0.5f
         };
 
-        private static DisambiguationDataConfig configDocumentos = new DisambiguationDataConfig()
+        private static readonly DisambiguationDataConfig configDocumentos = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsItemList,
             score = 0.5f
