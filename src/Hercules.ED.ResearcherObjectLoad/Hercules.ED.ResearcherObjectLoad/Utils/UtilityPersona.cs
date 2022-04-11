@@ -12,12 +12,13 @@ using Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects;
 using System.Collections.Concurrent;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 using System.Runtime.InteropServices;
+using Hercules.ED.ResearcherObjectLoad.Models;
 
 namespace Hercules.ED.ResearcherObjectLoad.Utils
 {
     public class UtilityPersona
     {
-        public static ResourceApi mResourceApi;
+        public static ResourceApi mResourceApi = Carga.mResourceApi;
 
         /// <summary>
         /// Contruye el objeto persona a cargar.
@@ -26,7 +27,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
         /// <param name="pNombre">Nombre de la persona.</param>
         /// <param name="pApellidos">Apellidos de la persona.</param>
         /// <returns>Objeto persona con los datos.</returns>
-        public static Person ConstruirPersona(PersonaPub pPersona = null, PersonRO pPersonaRO = null)
+        public static Person ConstruirPersona(PersonaPub pPersona = null, Person_JSON pPersonaRO = null)
         {
             if (pPersona != null)
             {
@@ -131,7 +132,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
         /// </summary>
         /// <param name="pPersona">Persona a convertir.</param>
         /// <returns>Objeto para desambiguar.</returns>
-        public static DisambiguationPerson GetDisambiguationPerson(PersonaPub pPersona = null, PersonRO pPersonaRo = null, PersonZenodo pPersonaRoZenodo = null, string pPersonaGit = null)
+        public static DisambiguationPerson GetDisambiguationPerson(PersonaPub pPersona = null, Person_JSON pPersonaRo = null ,string pPersonaGit = null)
         {
             if (pPersona != null)
             {
@@ -162,19 +163,6 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                     orcid = pPersonaRo.orcid,
                     figShareId = pPersonaRo.id.ToString(),
                     completeName = pPersonaRo.nombreCompleto
-                };
-
-                return persona;
-            }
-
-            if (pPersonaRoZenodo != null)
-            {
-                pPersonaRoZenodo.ID = Guid.NewGuid().ToString();
-                DisambiguationPerson persona = new DisambiguationPerson()
-                {
-                    ID = pPersonaRoZenodo.ID,
-                    orcid = pPersonaRoZenodo.orcid,
-                    completeName = pPersonaRoZenodo.nombreCompleto
                 };
 
                 return persona;
@@ -391,7 +379,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
         {
             string personID = "";
 
-            string selectOut = "SELECT DISTINCT ?personID ?orcid";
+            string selectOut = "SELECT DISTINCT ?personID";
             string whereOut = $@"where{{
                                     ?personID a <http://xmlns.com/foaf/0.1/Person> .
                                     ?personID <http://w3id.org/roh/ORCID> ""{orcid}"" .

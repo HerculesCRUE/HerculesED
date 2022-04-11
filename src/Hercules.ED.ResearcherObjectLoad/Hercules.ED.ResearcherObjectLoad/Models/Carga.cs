@@ -120,7 +120,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             if (researchObject.autores != null && researchObject.autores.Any())
                             {
                                 List<DisambiguationPerson> coautores = new List<DisambiguationPerson>();
-                                foreach (PersonRO autor in researchObject.autores)
+                                foreach (Person_JSON autor in researchObject.autores)
                                 {
                                     DisambiguationPerson disambiguationPerson = UtilityPersona.GetDisambiguationPerson(pPersonaRo: autor);
                                     string idPerson = disambiguationPerson.ID;
@@ -134,7 +134,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                 listaDesambiguar.AddRange(coautores);
                             }
 
-                            dicIdRo.Add(idRo, Utility.ConstruirRO("FigShare", researchObject, null, null, tupla.Item1, tupla.Item2));
+                            dicIdRo.Add(idRo, Utility.ConstruirRO("FigShare", researchObject, tupla.Item1, tupla.Item2));
                             dicIdDatosRoFigshare.Add(idRo, researchObject);
                         }
 
@@ -202,7 +202,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             disambiguationRoGitHub.autores = new HashSet<string>(coautores.Select(x => x.ID));
                             listaDesambiguar.AddRange(coautores);
 
-                            dicIdRo.Add(idRo, Utility.ConstruirRO("GitHub", null, githubObject, null, tupla.Item1, tupla.Item2));
+                            dicIdRo.Add(idRo, Utility.ConstruirRO("GitHub", githubObject, tupla.Item1, tupla.Item2));
                             dicIdDatosRoGitHub.Add(idRo, githubObject);
                         }
 
@@ -241,9 +241,9 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             listaDesambiguar.Add(disambiguationRoZenodo);
 
                             List<DisambiguationPerson> coautores = new List<DisambiguationPerson>();
-                            foreach (PersonZenodo persona in zenodoObject.autores)
+                            foreach (Person_JSON persona in zenodoObject.autores)
                             {
-                                DisambiguationPerson disambiguationPerson = UtilityPersona.GetDisambiguationPerson(pPersonaRoZenodo: persona);
+                                DisambiguationPerson disambiguationPerson = UtilityPersona.GetDisambiguationPerson(pPersonaRo: persona);
                                 string idPerson = disambiguationPerson.ID;
                                 coautores.Add(disambiguationPerson);
 
@@ -269,7 +269,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             disambiguationRoZenodo.autores = new HashSet<string>(coautores.Select(x => x.ID));
                             listaDesambiguar.AddRange(coautores);
 
-                            dicIdRo.Add(idRo, Utility.ConstruirRO("Zenodo", null, null, zenodoObject, tupla.Item1, tupla.Item2));
+                            dicIdRo.Add(idRo, Utility.ConstruirRO("Zenodo", zenodoObject, tupla.Item1, tupla.Item2));
                             dicIdDatosRoZenodo.Add(idRo, zenodoObject);
                         }
 
