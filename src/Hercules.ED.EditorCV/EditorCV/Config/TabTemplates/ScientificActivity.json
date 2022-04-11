@@ -672,6 +672,18 @@
                         },
                         "type": "text",
                         "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "Editorial"
+                        },
+                        "property": "http://purl.org/ontology/bibo/publisher",
+                        "dependency": {
+                          "property": "http://w3id.org/roh/supportType",
+                          "propertyValueDistinct": "{GraphsUrl}items/documentformat_057"
+                        },
+                        "type": "text",
+                        "width": 1
                       }
                     ]
                   },
@@ -3987,7 +3999,7 @@
                         "property": "http://purl.org/ontology/bibo/publisher",
                         "type": "text",
                         "width": 1
-                      },
+                      }
                     ]
                   },
                   {
