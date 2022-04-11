@@ -40,5 +40,6 @@
         public const string researcherId = "http://vivoweb.org/ontology/core#researcherId";
         public const string otroIdentificador = "http://w3id.org/roh/otherIds@@@http://xmlns.com/foaf/0.1/Document|http://xmlns.com/foaf/0.1/topic";
         public const string otroIdentificadorTitulo = "http://w3id.org/roh/otherIds@@@http://xmlns.com/foaf/0.1/Document|http://purl.org/dc/elements/1.1/title";
+        public const string paginaWeb = "http://xmlns.com/foaf/0.1/homepage";
     }
 }
