@@ -201,3 +201,7 @@ header .row .col.col02 .col-buscador {
 
 .icono-work.con-icono-before:before { content: 'work'; }
 .icono-group.con-icono-before:before { content: 'groups'; }
+
+a.faceta.applied{
+	font-weight: 700!important;
+}
