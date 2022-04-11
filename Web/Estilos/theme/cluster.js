@@ -100,6 +100,7 @@ class StepsCluster {
 	 * param pos: Posición a la que se quiere pasar
 	 */
 	async goStep(pos) {
+		var _self = this
 		if (pos > 0 && this.step > pos) {
 
 			this.errorDiv.hide()
@@ -115,7 +116,7 @@ class StepsCluster {
 				break;
 				case 2:
 				continueStep = this.checkContinue2()
-				if (continueStep) {
+				/*if (continueStep) {
 					try {
 						continueStep = await this.saveInit()
 					} catch(err) {
@@ -124,7 +125,8 @@ class StepsCluster {
 						window.location.hash = '#' + this.errorDivServer.attr('id')
 						continueStep = false;
 					}
-				}
+				}*/
+				_self.startStep3()
 				break;
 			}
 
@@ -201,6 +203,7 @@ class StepsCluster {
 				"name": $(e).data('name'),
 				"terms": profTerms,
 				"tags": profTags,
+				"entityID":$(e).attr('profileid')
 			})
 		})
 
@@ -235,8 +238,9 @@ class StepsCluster {
 	 */
 	fillDataTaxonomies(data) {
 		// Set tree
-		let resultHtml = this.fillTaxonomiesTree(data['researcharea'])
-		this.divTesArbol.append(resultHtml)
+		let resultHtml = this.fillTaxonomiesTree(data['researcharea']);
+		this.divTesArbol.find('.categoria-wrap').remove();
+		this.divTesArbol.append(resultHtml);
 
 		// Set list
 		/* resultHtml = this.fillTaxonomiesList(data['researcharea'])
@@ -735,7 +739,7 @@ class StepsCluster {
 					<span class="material-icons-outlined">delete</span>
 				</a>
 			</div>
-			<div id="`+ nameId +`" data-name="`+ name +`" class="panel-collapse collapse show" role="tabpanel" aria-labelledby="`+ nameId +`-tab">
+			<div profileid="`+guidGenerator()+`" id="`+ nameId +`" data-name="`+ name +`" class="panel-collapse collapse show" role="tabpanel" aria-labelledby="`+ nameId +`-tab">
 				<div class="panel-body">
 
 					<!-- Areas temáticas -->
@@ -810,8 +814,9 @@ class StepsCluster {
 	}
 
 	startStep3() { 
-		comportamientoPopupCluster.init(this.data)
-		this.PrintPerfilesstp3 ()
+		comportamientoPopupCluster.init(this.data);
+		this.PrintPerfilesstp3 ();
+		$('#sugeridos-cluster-tab').click();
 	}
 
 	/**
@@ -822,8 +827,40 @@ class StepsCluster {
 		let imgUser = this.modalCrearCluster.data('imguser')
 
 		let profiles = this.data.profiles.map((e, i) => {
-			let idAccordion = (e.name.replace(/[^a-z0-9_]+/gi, '-').replace(/^-|-$/g, '').toLowerCase() + "-" + i)
-			return $(`<div class="panel-group pmd-accordion" id="accordion-`+ idAccordion +`" role="tablist" aria-multiselectable="true">
+			let idAccordion = (e.name.replace(/[^a-z0-9_]+/gi, '-').replace(/^-|-$/g, '').toLowerCase() + "-" + i);
+			let htmlUsers=[];
+			if(e.users!=null)
+			{
+				htmlUsers=e.users.map((user, i) => {
+					return `<tr>
+										<td class="td-user">
+											<div class="user-miniatura">
+												<div class="nombre-usuario-wrap">
+													<a href="#">
+														<p class="nombre">${user.name}</p>
+													</a>
+												</div>
+											</div>
+										</td>
+										<td class="td-publicaciones">
+											
+										</td>
+										<td class="td-principal">                                        
+										</td>
+										<td class="td-acciones">
+											<ul class="no-list-style">
+												<li>
+													<a href="javascript: void(0);" class="texto-gris-claro">
+														Eliminar
+														<span class="material-icons-outlined">delete</span>
+													</a>
+												</li>
+											</ul>
+										</td>
+									</tr>`;
+				});
+			}
+			let htmlProfile=`<div class="panel-group pmd-accordion" id="accordion-`+ idAccordion +`" role="tablist" aria-multiselectable="true">
 				<div class="panel">
 					<div class="panel-heading" role="tab" id="experto-`+ idAccordion +`-tab">
 						<p class="panel-title">
@@ -836,7 +873,6 @@ class StepsCluster {
 					</div>
 					<div id="experto-`+ idAccordion +`" class="panel-collapse collapse show" role="tabpanel" aria-labelledby="experto-`+ idAccordion +`-tab">
 						<div class="panel-body">
-
 							<table class="display nowrap table table-sm tableusers">
 								<thead>
 									<tr>
@@ -846,76 +882,24 @@ class StepsCluster {
 										<th class="th-publicaciones">
 											Publicaciones
 										</th>
-										<th class="th-principal">
-											Principal
-										</th>
 										<th class="th-acciones">
 
 										</th>
 									</tr>
 								</thead>
 								<tbody>
-									
+								${htmlUsers.join('')}
 								</tbody>
 							</table>
 						</div>
 					</div>
 				</div>
-			</div>`)
+			</div>`;
+			return $(htmlProfile);
 		})
-
+		this.perfilesStep3.find('.panel-group.pmd-accordion').remove();
 		this.perfilesStep3.append(profiles)
 	}
-
-	/** 
-	* Añade un usuario perfil de las pestañas y al objeto
-	*/
-	addUserClusterStep3 (itemToAdd) {
-		let user = {}
-		// Obtiene el usuario 
-		// TODO
-
-		var userHTML = $(`
-			<tr>
-				<td class="td-user">
-					<div class="user-miniatura">
-						<div class="imagen-usuario-wrap d-none">
-							<a href="javascript:void(0)">
-								<div class="imagen">
-									<span style="background-image: url(theme/resources/imagenes-pre/foto-usuario-2.jpg)"></span>
-								</div>
-							</a>
-						</div>
-						<div class="nombre-usuario-wrap">
-							<a href="`+ user.url +`">
-								<p class="nombre">`+ user.name +`</p>
-								<p class="nombre-completo">`+ user.category +`. `+ user.departament +`</p>
-							</a>
-						</div>
-					</div>
-				</td>
-				<td class="td-publicaciones">
-					`+ user.publicacions +`
-				</td>
-				<td class="td-principal">
-					`+ user.principal +`
-				</td>
-				<td class="td-acciones">
-					<ul class="no-list-style">
-						<li>
-							<a href="javascript: void(0);" class="texto-gris-claro">
-								Eliminar
-								<span class="material-icons-outlined">delete</span>
-							</a>
-						</li>
-					</ul>
-				</td>
-			</tr>
-		`)
-
-		$('accordion-' + itemToAdd).find('table.tableusers tbody').append(userHTML)
-	}
-
 }
 
 
@@ -986,13 +970,35 @@ var comportamientoPopupCluster = {
 		this.config();
 		let paramsCl = this.workCO(clusterObj)
 		let profiles = this.setProfiles(clusterObj)
-
+		
 		// Iniciar el listado de usuarios
-		buscadorPersonalizado.init($('#INVESTIGADORES').val(), "#clusterListUsers", "searchCluster=" + paramsCl, null, "profiles=" + JSON.stringify(profiles) + "|viewmode=cluster|rdf:type=person", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
+		buscadorPersonalizado.init($('#INVESTIGADORES').val(), "#clusterListUsers", "searchClusterMixto=" + paramsCl, null, "profiles=" + JSON.stringify(profiles) + "|viewmode=cluster|rdf:type=person", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
+		
+		// Agrgamos los ordenes
+		$('.searcherResults .h1-container').after(
+		`<div class="acciones-listado acciones-listado-buscador">
+			<div class="wrap">
+				
+				<div class="ordenar dropdown">
+					<a class="dropdown-toggle" data-toggle="dropdown">
+						<span class="material-icons">swap_vert</span>
+						<span class="texto">ORDER_MIXTO</span>
+					</a>
+					<div class="dropdown-menu basic-dropdown dropdown-menu-right">
+						<a href="javascript: void(0)" filter="searchClusterMixto" class="item-dropdown">ORDER_MIXTO</a>
+						<a href="javascript: void(0)" filter="searchClusterAjuste" class="item-dropdown">ORDER_AJUSTE</a>
+						<a href="javascript: void(0)" filter="searchClusterVolumen" class="item-dropdown">ORDER_VOLUMEN</a>
+					</div>
+				</div>
+			</div>
+		</div>`);
+		
+		$('.acciones-listado-buscador a.item-dropdown').unbind().click(function (e) {
+			e.preventDefault();
+			buscadorPersonalizado.filtro=$(this).attr('filter')+'='+paramsCl;
+			FiltrarPorFacetas(ObtenerHash2());
+		});
 
-		//TODO
-		//var parametros = ObtenerHash2()+"&" + buscadorPersonalizado.filtro;
-		//newGrafProjClust.CargarGraficaProjectoClusterObj("", parametros, 'colaboratorsgraphCluster');
 
 		return;
 	},
@@ -1253,9 +1259,71 @@ function CompletadaCargaRecursosCluster()
 {	
 	if(stepsCls!=null && stepsCls.data!=null)
 	{
+		$('#clusterListUsers article.investigador h2.resource-title').attr('tagert','_blank');
 		stepsCls.data.pPersons=$('#clusterListUsers article.investigador').toArray().map(e => {return $(e).attr('id')});
 		$.post(urlCargarPerfiles, stepsCls.data, function(data) {
-			console.log('ok')
+			$('article.investigador .user-perfil').remove();
+			for (const [idperson, datospersona] of Object.entries(data)) {
+				let htmlPerfiles='';				
+				for (const [idProfile, score] of Object.entries(datospersona)) {
+					if(score.numPublicaciones>0)
+					{
+						let nombrePerfil=stepsCls.data.profiles.filter(function (item) {return item.entityID ==idProfile;})[0].name;
+						htmlPerfiles+=`	<div class="perfil-wrap">
+                                        <div class="">
+                                            <input type="checkbox" class="custom-control-input" id="${idperson}-${idProfile}">
+                                            <label class="custom-control-label" for="${idperson}-${idProfile}">${nombrePerfil} Ajuste: ${score.ajuste} Publicaciones:${score.numPublicaciones}/${score.numPublicacionesTotal}</label>
+                                        </div>
+                                    </div>`;
+					}
+				}
+				let htmlPerfilesPersona=`	<div class="user-perfil">
+												<p>Perfiles</p>
+												${htmlPerfiles}
+											</div>`;				
+				$('#'+idperson+' .content-wrap.flex-column').append(htmlPerfilesPersona);				
+			}	
+
+			
+			//Marcamos como checkeados los correspondientes
+			stepsCls.data.profiles.forEach(function(perfil, index) {
+				let idProfile= perfil.name.replace(/[^a-z0-9_]+/gi, '-').replace(/^-|-$/g, '').toLowerCase();
+				if(perfil.users!=null)
+				{
+					perfil.users.forEach(function(user, index) {
+						$('#'+user.userID+'-'+idProfile).prop('checked', true);
+					});					
+				}
+			});
+			
+			//Enganchamos el chek de los chekbox	
+			$('.perfil-wrap .custom-control-input').change(function() {
+				let id=$(this).attr('id');
+				let idUser=id.substring(0,36);
+				let idProfile=id.substring(37);					
+				let perfil=stepsCls.data.profiles.filter(function (perfilInt) {
+					return perfilInt.entityID==idProfile;
+				})[0];
+				if(this.checked) {
+					
+					let user={};
+					user.userID=idUser;
+					user.name=$(this).closest('.resource.investigador').find('h2.resource-title').text().trim();
+					//user.publications=$(this).find('h2.resource-title').text();					
+					if(perfil.users==null)					
+					{
+						perfil.users=[];
+					}
+					perfil.users.push(user);
+				}else
+				{
+					perfil.users=perfil.users.filter(function (userInt) {
+						return userInt.userID!=idUser;
+					});
+				}
+				stepsCls.PrintPerfilesstp3();
+			});	
+			
 		});
 	}
 }
