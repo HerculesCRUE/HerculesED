@@ -47,6 +47,7 @@
         public const string pubDocumentosIDPubDigitalPMID = "http://purl.org/ontology/bibo/pmid";
         public const string pubDocumentosIDOtroPubDigital = "http://purl.org/ontology/bibo/identifier@@@http://xmlns.com/foaf/0.1/Document|http://purl.org/dc/elements/1.1/title";
         public const string pubDocumentosNombreOtroPubDigital = "http://purl.org/ontology/bibo/identifier@@@http://xmlns.com/foaf/0.1/Document|http://xmlns.com/foaf/0.1/topic";
+        public const string pubDocumentosPubEditorial = "http://purl.org/ontology/bibo/publisher";
         
         /// <summary>
         /// Trabajos presentados en congresos nacionales o internacionales - 060.010.020.000
@@ -192,7 +193,8 @@
         public const string otrasActDivulIDPubDigitalPMID = "http://purl.org/ontology/bibo/pmid";
         public const string otrasActDivulNombreOtroIDPubDigital = "http://purl.org/ontology/bibo/identifier@@@http://xmlns.com/foaf/0.1/Document|http://xmlns.com/foaf/0.1/topic";
         public const string otrasActDivulIDOtroPubDigital = "http://purl.org/ontology/bibo/identifier@@@http://xmlns.com/foaf/0.1/Document|http://purl.org/dc/elements/1.1/title";
-        
+        public const string otrasActDivulResponsableEditorial = "http://purl.org/ontology/bibo/publisher";
+
         /// <summary>
         /// Comités científicos, técnicos y/o asesores - 060.020.010.000
         /// <summary>
