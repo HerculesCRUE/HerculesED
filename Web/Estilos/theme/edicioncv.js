@@ -235,6 +235,26 @@ var edicionCV = {
 			padding: 60px 40px;
 		}
 
+		.resource-list.translationEnView .translation-en {
+			display: block;
+		}
+		
+		.resource-list.translationCaView .translation-ca {
+			display: block;
+		}
+		
+		.resource-list.translationEuView .translation-eu {
+			display: block;
+		}
+		
+		.resource-list.translationGlView .translation-gl {
+			display: block;
+		}
+		
+		.resource-list.translationFrView .translation-fr {
+			display: block;
+		}
+
 		</style>`);
 
         //Carga de secciones principales
@@ -267,7 +287,7 @@ var edicionCV = {
         $('div[about="' + entityID + '"] .col-12.col-contenido').empty();
         MostrarUpdateProgress();
 
-        $.get(urlEdicionCV + 'GetTab?pId=' + entityID + "&pRdfType=" + rdfType + "&pLang=" + lang, null, function(data) {
+        $.get(urlEdicionCV + 'GetTab?pCVId='+that.idCV+'&pId=' + entityID + "&pRdfType=" + rdfType + "&pLang=" + lang, null, function(data) {
             that.printTab(entityID, data);
             OcultarUpdateProgress();
 			
@@ -326,6 +346,7 @@ var edicionCV = {
 		}
 		accionesPlegarDesplegarModal.init();
 		this.engancharComportamientosCV();
+		this.mostrarTraducciones();		
 	},
     printSectionItem: function(contenedor,item,identifier,rdftype,entityID) {
 		this.printEditItemCV('#' + contenedor, item, identifier, rdftype, entityID);		
@@ -545,11 +566,11 @@ var edicionCV = {
 												<a href="javascript: void(0)" class="item-dropdown" items="100">Ver 100 items</a>
 											</div>
 										</div>
-										<nav>
+										<nav>											
+											<ul class="pagination arrows">											
+											</ul>
 											<ul class="pagination numbers">	
 												<li class="actual"><a href="javascript: void(0)" page="1">1</a></li>
-											</ul>
-											<ul class="pagination arrows">											
 											</ul>
 										</nav>
 									</div>    
@@ -667,6 +688,7 @@ var edicionCV = {
 												</h2>
 												${this.printHtmlListItemEditable(data)}
 												${this.printHtmlListItemVisibilidad(data)}		
+												${this.printHtmlListItemIdiomas(data)}		
 												${this.printHtmlListItemAcciones(data, id)}                        
 												<span class="material-icons arrow">keyboard_arrow_down</span>
 											</div>
@@ -713,6 +735,29 @@ var edicionCV = {
 							<div class="con-icono-before visibility-activo"></div>
 						</div>`;
         }
+    },
+    printHtmlListItemIdiomas: function(data) {
+        if (data.multilang!=null && Object.entries(data.multilang).length>0) {
+			let listado=``;
+			
+			for (const [key, value] of Object.entries(data.multilang)) {
+				let css='';
+				if(value)
+				{
+					css+='circulo-verde';
+				}
+				listado+=`<div class="translation translation-${key} " data-original-title="" title="">
+                                <span class="circulo-color ${css}">
+                                    ${key.toUpperCase()}
+                                </span>
+                            </div>`;
+			}
+			
+            return `<div class="traducciones-wrapper">
+                            ${listado}
+                        </div>`;
+        }
+		return '';
     },
     printHtmlListItemAcciones: function(data, id) {
         var htmlAcciones = "";
@@ -978,7 +1023,8 @@ var edicionCV = {
 			this.engancharComportamientosCV();				
 		}
         accionesPlegarDesplegarModal.init();	
-		tooltipsAccionesRecursos.init()		
+		tooltipsAccionesRecursos.init();
+		tooltipsCV.init();
     },
     paginarListado: function(sectionID, pagina) {
         $('.panel-group[section="' + sectionID + '"] .panNavegador .pagination.numbers .actual').removeClass('actual');
@@ -1015,7 +1061,7 @@ var edicionCV = {
         var article = $(element).closest('article');
         MostrarUpdateProgress();
         $.post(urlGuardadoCV + 'ChangePrivacityItem', item, function(data) {
-            $.get(urlEdicionCV + 'GetItemMini?pIdSection=' + sectionID + "&pRdfTypeTab=" + rdfTypeTab + "&pEntityID=" + item.pEntity + "&pLang=" + lang, null, function(data) {
+            $.get(urlEdicionCV + 'GetItemMini?pCVId='+that.idCV+'&pIdSection=' + sectionID + "&pRdfTypeTab=" + rdfTypeTab + "&pEntityID=" + item.pEntity + "&pLang=" + lang, null, function(data) {
                 article.replaceWith(that.printHtmlListItem(item.pEntity, data));
                 that.repintarListadoTab(sectionID);
                 OcultarUpdateProgress();
@@ -1027,7 +1073,7 @@ var edicionCV = {
             MostrarUpdateProgress();
             $('#modal-editar-entidad form').empty();
             $('#modal-editar-entidad .form-actions .ko').remove();
-            $.get(urlEdicionCV + 'GetEdit?pIdSection=' + sectionID + "&pRdfTypeTab=" + rdfTypeTab + "&pEntityID=" + entityID + "&pLang=" + lang, null, function(data) {
+            $.get(urlEdicionCV + 'GetEdit?pCVId='+that.idCV+'&pIdSection=' + sectionID + "&pRdfTypeTab=" + rdfTypeTab + "&pEntityID=" + entityID + "&pLang=" + lang, null, function(data) {
                 that.printEditItemCV('#modal-editar-entidad form', data, sectionID, rdfTypeTab, entityID);
                 OcultarUpdateProgress();
 
@@ -1047,35 +1093,46 @@ var edicionCV = {
         //TODO ¿se usa, cambiar de nombre?
         $(contenedor).attr('entityload', entityID);
 		
-		let htmlLangs='<ul class="nav nav-tabs grey" id="" role="tablist">';
-		htmlLangs+=`	<li class="nav-item">
-            <a href="javascript: void(0);" lang="es" class="nav-link active">${GetText('ESPAGNOL')}</a>
-        </li>`;
-		languages.forEach(function(language, index) {
-			var nombreIdioma="";
-			switch (language) {
-				case 'en':
-					nombreIdioma=GetText('INGLES');
-					break;
-				case 'ca':
-					nombreIdioma=GetText('CATALAN');
-					break;
-				case 'eu':
-					nombreIdioma=GetText('EUSKERA');
-					break;
-				case 'gl':
-					nombreIdioma=GetText('GALLEGO');
-					break;
-				case 'fr':
-					nombreIdioma=GetText('FRANCES');
-					break;
-			}			
-			htmlLangs+=`	<li class="nav-item">
-            <a href="javascript: void(0);" lang=${language} class="nav-link">${nombreIdioma}</a>
-        </li>`;
+		let multiidioma= data.sections.some(function (section) {
+			return section.rows.some(function (row) {
+				return row.properties.some(function (property) {
+					return property.multilang;
+				});
+			});
 		});
-		htmlLangs+='</ul>';
-		$(contenedor).append(htmlLangs);
+		
+		if(multiidioma)
+		{
+			let htmlLangs='<ul class="nav nav-tabs grey" id="" role="tablist">';
+			htmlLangs+=`	<li class="nav-item">
+				<a href="javascript: void(0);" lang="es" class="nav-link active">${GetText('ESPAGNOL')}</a>
+			</li>`;
+			languages.forEach(function(language, index) {
+				var nombreIdioma="";
+				switch (language) {
+					case 'en':
+						nombreIdioma=GetText('INGLES');
+						break;
+					case 'ca':
+						nombreIdioma=GetText('CATALAN');
+						break;
+					case 'eu':
+						nombreIdioma=GetText('EUSKERA');
+						break;
+					case 'gl':
+						nombreIdioma=GetText('GALLEGO');
+						break;
+					case 'fr':
+						nombreIdioma=GetText('FRANCES');
+						break;
+				}			
+				htmlLangs+=`	<li class="nav-item">
+				<a href="javascript: void(0);" lang=${language} class="nav-link">${nombreIdioma}</a>
+			</li>`;
+			});
+			htmlLangs+='</ul>';
+			$(contenedor).append(htmlLangs);
+		}
 		
         for (var i = 0; i < data.sections.length; i++) {
             var collapsed = ""
@@ -2260,7 +2317,7 @@ var edicionCV = {
 												${htmlSearch}
 											</div>
 										</div>
-										<div class="resource-list listView ${classList}">
+										<div class="resource-list listView list-con-checks ${classList}">
 											<div class="resource-list-wrap">
 												${that.repintarListadoEntityItems(items,idTemp,$(this).attr('order'),texto)}
 											</div>
@@ -3396,7 +3453,7 @@ var edicionCV = {
         //Cargar edición datos personales
         $('#personalDataEdit').off('click').on('click', function(e) {
             MostrarUpdateProgress();
-            $.get(urlEdicionCV + 'GetTab?pId=' + $(this).attr('personaldataid') + "&pRdfType=http://w3id.org/roh/PersonalData&pLang=" + lang, null, function(data) {
+            $.get(urlEdicionCV + 'GetTab?pCVId='+that.idCV+'&pId=' + $(this).attr('personaldataid') + "&pRdfType=http://w3id.org/roh/PersonalData&pLang=" + lang, null, function(data) {
                 $('#modal-editar-entidad').modal('show');
                 that.printEditItemCV('#modal-editar-entidad form', data, data.entityID, 'http://w3id.org/roh/PersonalData', data.entityID);
                 OcultarUpdateProgress();
@@ -3594,11 +3651,18 @@ var edicionCV = {
         });
 
 
-		//CAmbiamos de idioma en la edición
+		//CAmbiamos de idioma en la edición de item
         $('.formulario-edicion ul.nav-tabs li a').off('click').on('click', function(e) {
 			$(this).closest('ul').find('a').removeClass('active');
 			$(this).addClass('active');
 			that.cambiarIdiomaEdicion($(this).attr('lang'),$(this).closest('.formulario-edicion'));
+        });
+		
+		//CAmbiamos de idioma en la edición de cv
+        $('.row.cvTab ul.nav-tabs li a').off('click').on('click', function(e) {
+			$(this).closest('ul').find('a').removeClass('active');
+			$(this).addClass('active');
+			that.cambiarIdiomaEdicion($(this).attr('lang'),$(this).closest('.panel-collapse'));
         });
 
         return;
@@ -3613,11 +3677,9 @@ var edicionCV = {
                 if ($(this).val() == null || $(this).val() == '') {
 					if($(this).is('input')||$(this).is('textarea'))
 					{						
-						//Si es un input o textarea multiidioma y no tiene idioma es obligatorio aunque no esté visible
-						//Si es un input o textarea multiidioma sin multiidioma es obligatorio sólo si esta visible
+						//Si es un input o textarea sólo es obligatorio si no tiene idioma y está visible
 						if(
-							$(this).hasClass('multilang') && $(this).attr('multilang')==null ||
-							$(this).is(':visible') && !$(this).hasClass('multilang')
+							($(this).closest('.form-group').attr('style')==null || $(this).closest('.form-group').attr('style').replaceAll(' ','').replaceAll(';','')!='display:none') && $(this).attr('multilang')==null
 							)
 						{
 							camposObligatorios.push($(this).closest('.form-group').find('.control-label').text());
@@ -3887,7 +3949,7 @@ var edicionCV = {
 								if($(modal).length)
 								{
 									//Item NO CV
-									$.get(urlEdicionCV + 'GetItemMini?pIdSection=' + entidad.sectionID + "&pRdfTypeTab=" + entidad.rdfTypeTab + "&pEntityID=" + entityLoad + "&pLang=" + lang, null, function(data) {
+									$.get(urlEdicionCV + 'GetItemMini?pCVId='+that.idCV+'&pIdSection=' + entidad.sectionID + "&pRdfTypeTab=" + entidad.rdfTypeTab + "&pEntityID=" + entityLoad + "&pLang=" + lang, null, function(data) {
 										$('a[data-id="' + entityLoad + '"]').closest('article').replaceWith(that.printHtmlListItem(entityLoad, data));
 										that.repintarListadoTab(entidad.sectionID);
 										OcultarUpdateProgress();
@@ -3895,7 +3957,7 @@ var edicionCV = {
 								}else
 								{
 									//Item CV
-									$.get(urlEdicionCV + 'GetEdit?pIdSection=' + entidad.sectionID + "&pRdfTypeTab=" + entidad.rdfTypeTab + "&pEntityID=" + data.id + "&pLang=" + lang, null, function(data2) {
+									$.get(urlEdicionCV + 'GetEdit?pCVId='+that.idCV+'&pIdSection=' + entidad.sectionID + "&pRdfTypeTab=" + entidad.rdfTypeTab + "&pEntityID=" + data.id + "&pLang=" + lang, null, function(data2) {
 										that.printSectionItem($('div[sectionid="'+entidad.sectionID+'"]').attr('id'), data2, entidad.sectionID, entidad.rdfTypeTab, data2.entityID);			
 										that.engancharComportamientosCV();
 										OcultarUpdateProgress();
@@ -3905,7 +3967,7 @@ var edicionCV = {
 							}
 						} else {
 							//Si no viene entityLoad carga el item
-							$.get(urlEdicionCV + 'GetItemMini?pIdSection=' + entidad.sectionID + "&pRdfTypeTab=" + entidad.rdfTypeTab + "&pEntityID=" + data.id + "&pLang=" + lang, null, function(data2) {
+							$.get(urlEdicionCV + 'GetItemMini?pCVId='+that.idCV+'&pIdSection=' + entidad.sectionID + "&pRdfTypeTab=" + entidad.rdfTypeTab + "&pEntityID=" + data.id + "&pLang=" + lang, null, function(data2) {
 								$('div[section="' + entidad.sectionID + '"] .resource-list-wrap').append(that.printHtmlListItem(data.id, data2));
 								that.repintarListadoTab(entidad.sectionID);
 								OcultarUpdateProgress();
@@ -4155,8 +4217,13 @@ var edicionCV = {
                 item.parents('.oculto').removeClass('oculto');
             }
         });
+    },
+    mostrarTraducciones: function() {
+		let clase=$('.acciones-listado.acciones-curriculum .traducciones a.activeView').attr('data-class-resource-list');
+		var resourceList = body.find('.resource-list');
+		resourceList.removeClass('translationEnView translationCaView translationEuView translationGlView translationFrView');
+		resourceList.addClass(clase);
     }
-
 };
 
 //Métodos auxiliares
@@ -4174,7 +4241,10 @@ function addAutocompletar(control) {
 	$(control).on("keyup", e => {
 		if($(e.target).val()!= $(e.target).data('previousValue'))
 		{
-			$(control).parent().find('input[propertyorigin="'+$(control).attr('propertyrdf')+'"]').val('');
+			if($(e.target).attr('multilang')==null)
+			{
+				$(control).parent().find('input[propertyorigin="'+$(control).attr('propertyrdf')+'"]').val('');
+			}
 		}
 	});
 	
@@ -4200,8 +4270,11 @@ function addAutocompletar(control) {
     var pProperty = $(control).attr('propertyrdf')
     var pRdfType = $('#modal-editar-entidad form').attr('rdftype');
     var pGraph = $('#modal-editar-entidad form').attr('ontology');
-	var pLang = lang;
-	
+	var pLang = 'es';
+	if($(control).attr('multilang')!=null)
+	{
+		pLang = $(control).attr('multilang');
+	}
 	//Si hay alguna configuración lo coge de la configuración
 	if($(control).attr('propertyautocomplete')!=null)
 	{
@@ -5529,15 +5602,6 @@ $.Autocompleter.Select = function (options, input, select, pintar, config) {
                 list.scrollTop(offset);
             }
         } 
-
-//	    try
-//	    {
-//            pintar($(input), activeItem.html());
-//        }
-//        catch(ex)
-//        {}
-		//$(input).val($(input).val().replace(lastWord($(input).val()), QuitarContadores(activeItem.html())));
-		//$(input).val(QuitarContadores(activeItem.html()));     
 	};
 	
 	function movePosition(step) {
@@ -5636,20 +5700,6 @@ $.Autocompleter.Select = function (options, input, select, pintar, config) {
 					maxHeight: options.scrollHeight,
 					overflow: 'auto'
 				});
-				
-//                if($.browser.msie && typeof document.body.style.maxHeight === "undefined") {
-//					var listHeight = 0;
-//					listItems.each(function() {
-//						listHeight += this.offsetHeight;
-//					});
-//					var scrollbarsVisible = listHeight > options.scrollHeight;
-//                    list.css('height', scrollbarsVisible ? options.scrollHeight : listHeight );
-//					if (!scrollbarsVisible) {
-//						// IE doesn't recalculate width when scrollbar disappears
-//						listItems.width( list.width() - parseInt(listItems.css("padding-left")) - parseInt(listItems.css("padding-right")) );
-//					}
-//                }
-                
             }
 		},
 		selected: function() {
@@ -6045,4 +6095,56 @@ montarTooltip.lanzar= function (elem, title, classes) {
 	});
 
 	this.comportamiento(elem);
+};
+
+cambioTraducciones.comportamiento= function () {
+	var that=this;
+	var accionesListado = this.body.find('.acciones-listado');
+	var traducciones = accionesListado.find('.traducciones');	
+	var dropdownMenu = traducciones.find('.dropdown-menu');
+	var dropdownToggle = traducciones.find('.dropdown-toggle');
+	var dropdownToggleIcon = dropdownToggle.find('.material-icons');
+	var modosTraducciones = dropdownMenu.find('a');
+
+	modosTraducciones.on('click', function (e) {
+		e.preventDefault();
+		var resourceList = that.body.find('.resource-list');
+		var item = $(this);
+		var clase = item.data('class-resource-list');
+
+		modosTraducciones.removeClass('activeView');
+		item.addClass('activeView');
+
+		if (clase != "") {
+			edicionCV.mostrarTraducciones();
+		}
+	});
+};
+
+
+tooltipsCV.traducciones= function () {
+	var item = this.traduccionesWrap.find('.translation');
+	$.each(item, function (i) {
+		var circulo = $(item[i]).find('.circulo-color');
+		var texto;
+		if ($(item[i]).hasClass('translation-es')) {
+			texto = GetText('ESPAGNOL')+' (ES)';
+		}else if ($(item[i]).hasClass('translation-en')) {
+			texto = GetText('INGLES')+' (EN)';
+		}else if ($(item[i]).hasClass('translation-ca')) {
+			texto = GetText('CATALAN')+' (CA)';
+		}else if ($(item[i]).hasClass('translation-eu')) {
+			texto = GetText('EUSKERA')+' (EU)';
+		}else if ($(item[i]).hasClass('translation-gl')) {
+			texto = GetText('GALLEGO')+' (GL)';
+		}else if ($(item[i]).hasClass('translation-fr')) {
+			texto = GetText('FRANCES')+' (FR)';
+		}
+
+		if (circulo.hasClass('circulo-verde')) {
+			montarTooltip.lanzar($(item[i]), GetText('CV_CONTRADUCCION')+': ' + texto, 'background-gris-oscuro');
+		} else {
+			montarTooltip.lanzar($(item[i]), GetText('CV_SINTRADUCCION')+': ' + texto, 'background-gris-oscuro');
+		}
+	});
 };
