@@ -1096,9 +1096,15 @@ namespace GuardadoCV.Models
             /*pPropiedadesMultiidiomaCargadas,List<string> pListaPropiedadesMultiidiomaConfiguradas*/
             if (pListaPropiedadesMultiidiomaConfiguradas.Count > 0)
             {
+                //Cargamos las propiedades visibles y que tienen valor en el idioma base
                 List<string> propiedadesMultiidiomaConfiguradas = new List<string>();
                 foreach (ItemEditSectionRowProperty proEdit in pListaPropiedadesMultiidiomaConfiguradas)
                 {
+                    string valorPropiedadIdiomaBase = GetPropValues(pId, "http://vivoweb.org/ontology/core#relatedBy@@@" + proEdit.property, pData).FirstOrDefault();                    
+                    if(string.IsNullOrEmpty(valorPropiedadIdiomaBase))
+                    {
+                        continue;
+                    }
                     if (proEdit.dependency == null)
                     {
                         propiedadesMultiidiomaConfiguradas.Add(proEdit.property);
