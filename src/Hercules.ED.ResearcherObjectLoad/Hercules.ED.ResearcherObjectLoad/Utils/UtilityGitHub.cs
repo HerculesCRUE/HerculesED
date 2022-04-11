@@ -12,7 +12,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
 {
     public class UtilityGitHub
     {
-        public static ResourceApi mResourceApi = Carga.mResourceApi;
+        private static ResourceApi mResourceApi = Carga.mResourceApi;
 
         public static void CrearRoGitHubDesambiguado(string idRo, HashSet<string> pListaIds, Dictionary<string, ResearchObjectGitHub> pDicIdRo,
             Dictionary<ResearchobjectOntology.ResearchObject, HashSet<string>> pListaRosCreados,
