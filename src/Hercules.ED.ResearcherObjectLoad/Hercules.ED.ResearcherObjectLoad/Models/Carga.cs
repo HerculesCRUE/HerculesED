@@ -1306,14 +1306,14 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
 
             // URL (Url)
             HashSet<string> urlSinRepetir = new HashSet<string>();
-            if (pPublicacion.url != null && pPublicacion.url.Count() > 0)
+            if (pPublicacion.url != null && pPublicacion.url.Count > 0)
             {
                 foreach (string url in pPublicacion.url)
                 {
                     urlSinRepetir.Add(url);
                 }
             }
-            if (pPublicacionB != null && pPublicacionB.url != null && pPublicacionB.url.Count() > 0)
+            if (pPublicacionB != null && pPublicacionB.url != null && pPublicacionB.url.Count > 0)
             {
                 foreach (string url in pPublicacionB.url)
                 {
