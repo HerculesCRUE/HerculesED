@@ -5,6 +5,7 @@ using Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects;
 using Gnoss.ApiWrapper;
 using System.Linq;
 using Hercules.ED.ResearcherObjectLoad.Models;
+using ResearchobjectOntology;
 
 namespace Hercules.ED.ResearcherObjectLoad.Utils
 {
@@ -39,11 +40,11 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
         }
 
         public static void CrearRoZenodoDesambiguado(string idRo, HashSet<string> pListaIds, Dictionary<string, ResearchObjectZenodo> pDicIdRo,
-            Dictionary<ResearchobjectOntology.ResearchObject, HashSet<string>> pListaRosCreados, Dictionary<string, string> pDicAreasBroader,
+            Dictionary<ResearchObject, HashSet<string>> pListaRosCreados, Dictionary<string, string> pDicAreasBroader,
             Dictionary<string, string> pDicAreasNombre)
         {
             ResearchObjectZenodo roA = pDicIdRo[idRo];
-            ResearchobjectOntology.ResearchObject roCreado = new ResearchobjectOntology.ResearchObject();
+            ResearchObject roCreado = new ResearchObject();
 
             foreach (string idSimilar in pListaIds)
             {
@@ -72,7 +73,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
         }
 
 
-        public static ResearchobjectOntology.ResearchObject ConstruirROZenodo(ResearchobjectOntology.ResearchObject ro, ResearchObjectZenodo pZenodoObj,
+        public static ResearchObject ConstruirROZenodo(ResearchObject ro, ResearchObjectZenodo pZenodoObj,
             Dictionary<string, string> pDicAreasBroader, Dictionary<string, string> pDicAreasNombre, ResearchObjectZenodo pZenodoObjB = null)
         {
             // ID
@@ -222,12 +223,12 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
             HashSet<string> listaIDs = new HashSet<string>();
             if (pZenodoObj.categoriasEnriquecidas != null && pZenodoObj.categoriasEnriquecidas.Count > 0)
             {
-                ro.Roh_enrichedKnowledgeArea = new List<ResearchobjectOntology.CategoryPath>();
+                ro.Roh_enrichedKnowledgeArea = new List<CategoryPath>();
                 foreach (string area in pZenodoObj.categoriasEnriquecidas)
                 {
                     if (pDicAreasNombre.ContainsKey(area.ToLower()))
                     {
-                        ResearchobjectOntology.CategoryPath categoria = new ResearchobjectOntology.CategoryPath();
+                        CategoryPath categoria = new CategoryPath();
                         categoria.IdsRoh_categoryNode = new List<string>();
                         categoria.IdsRoh_categoryNode.Add(pDicAreasNombre[area.ToLower()]);
                         string idHijo = pDicAreasNombre[area.ToLower()];
@@ -250,12 +251,12 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
 
                 if (pZenodoObjB != null && pZenodoObjB.categoriasEnriquecidas != null && pZenodoObjB.categoriasEnriquecidas.Any())
                 {
-                    ro.Roh_enrichedKnowledgeArea = new List<ResearchobjectOntology.CategoryPath>();
+                    ro.Roh_enrichedKnowledgeArea = new List<CategoryPath>();
                     foreach (string area in pZenodoObjB.categoriasEnriquecidas)
                     {
                         if (pDicAreasNombre.ContainsKey(area.ToLower()))
                         {
-                            ResearchobjectOntology.CategoryPath categoria = new ResearchobjectOntology.CategoryPath();
+                            CategoryPath categoria = new CategoryPath();
                             categoria.IdsRoh_categoryNode = new List<string>();
                             categoria.IdsRoh_categoryNode.Add(pDicAreasNombre[area.ToLower()]);
                             string idHijo = pDicAreasNombre[area.ToLower()];
@@ -292,11 +293,11 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
             // Autores
             if (pZenodoObj.autores != null && pZenodoObj.autores.Any())
             {
-                ro.Bibo_authorList = new List<ResearchobjectOntology.BFO_0000023>();
+                ro.Bibo_authorList = new List<BFO_0000023>();
                 int orden = 1;
                 foreach (Person_JSON personaRO in pZenodoObj.autores)
                 {
-                    ResearchobjectOntology.BFO_0000023 bfo_0000023 = new ResearchobjectOntology.BFO_0000023();
+                    BFO_0000023 bfo_0000023 = new BFO_0000023();
                     bfo_0000023.Rdf_comment = orden;
                     bfo_0000023.IdRdf_member = personaRO.ID;
                     ro.Bibo_authorList.Add(bfo_0000023);
