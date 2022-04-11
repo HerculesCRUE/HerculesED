@@ -1222,442 +1222,185 @@
         // viewmode=cluster|rdf:type=person
         if (theAdiccionalParams.ContainsKey("viewmode") && theAdiccionalParams["viewmode"] == "cluster" )
         {
-            // Listado de categorías
-            List<string> listadoCath = new();
-            if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
-            {
-                foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
-                {
-                    string idQuery = "Categorias";
-                    if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
-                    {
-                        string propiedad = "node";
-                        
-                        foreach (Dictionary<string, string> row in item.Rows)
-                        {
-                            if (row.ContainsKey(propiedad))
-                            {
-                                listadoCath.Add(@row[propiedad]);
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Listado de Tags
-            List<string> listadoTags = new();
-            if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
-            {
-                foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
-                {
-                    string idQuery = "Etiquetas";
-                    if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
-                    {
-                        string propiedad = "tag";
-                        
-                        foreach (Dictionary<string, string> row in item.Rows)
-                        {
-                            if (row.ContainsKey(propiedad))
-                            {
-                                listadoTags.Add(@row[propiedad]);
-                            }
-                        }
-                    }
-                }
-            }
-
-            var modelUser = new UserJsonData() {
-                name = Model.Title,
-                url = Model.CompletCardLink,
-                listadoCath = listadoCath,
-                listadoTags = listadoTags,
-            };
-
-            <article class="resource investigador" id="resource_@Model.Key">
-                <div class="wrap">
-                    <div class="user-miniatura">
-                        <div class="imagen-usuario-wrap">
-                            <span class="material-icons">person</span>
-                        </div>
-                    </div>
-                    <div class="middle-wrap">
-                        <div class="title-wrap">
-                            <h2 class="resource-title">
-                                <a href="@Model.CompletCardLink">@Model.Title</a>
-                            </h2>
-                            <div class="info-resource">
-                                @{
-                                    if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
-                                    {
-                                        foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
-                                        {
-                                            string idQuery = "TotalPublicaciones";
-                                            if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
-                                            {
-                                                string propiedad = "numDocumento";
-                                                foreach (Dictionary<string, string> row in item.Rows)
-                                                {
-                                                    if (row.ContainsKey(propiedad))
-                                                    {
-                                                        modelUser.numDocumento = row[propiedad];
-                                                        <span class="material-icons">article</span>
-                                                        <span class="texto">@row[propiedad] publicaciones</span>
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            </div>
-                            <div class="info-resource">
-                                @{
-                                    if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
-                                    {
-                                        foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
-                                        {
-                                            string idQuery = "HIndex";
-                                            if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
-                                            {
-                                                string propiedad = "hIndex";
-                                                foreach (Dictionary<string, string> row in item.Rows)
-                                                {
-                                                    if (row.ContainsKey(propiedad))
-                                                    {
-                                                        modelUser.hIndex = row[propiedad];
-                                                        <span class="material-icons">tag</span>
-                                                        <span class="texto">@row[propiedad] Índice H</span>
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            </div>
-                        </div>
-                        <div class="content-wrap flex-column">
-                            <div class="list-wrap">
-                                <ul>
-                                    @{
-                                        if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
-                                        {
-                                            foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
-                                            {
-                                                string idQuery = "HasPosition";
-                                                if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
-                                                {
-                                                    string propiedad = "hasPosition";
-                                                    foreach (Dictionary<string, string> row in item.Rows)
-                                                    {
-                                                        if (row.ContainsKey(propiedad))
-                                                        {
-                                                            modelUser.hasPosition = row[propiedad];
-                                                            <li class="entity">
-                                                                @row[propiedad]
-                                                            </li>
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                    @{
-                                        if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
-                                        {
-                                            foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
-                                            {
-                                                string idQuery = "Organizacion";
-                                                if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
-                                                {
-                                                    string propiedad = "tituloOrg";
-                                                    foreach (Dictionary<string, string> row in item.Rows)
-                                                    {
-                                                        if (row.ContainsKey(propiedad))
-                                                        {
-                                                            modelUser.tituloOrg = row[propiedad];
-                                                            <li>
-                                                                <a>@row[propiedad]</a>
-                                                            </li>
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                    @{
-                                        if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
-                                        {
-                                            foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
-                                            {
-                                                string idQuery = "Departamento";
-                                                if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
-                                                {
-                                                    string propiedad = "departamento";
-                                                    foreach (Dictionary<string, string> row in item.Rows)
-                                                    {
-                                                        if (row.ContainsKey(propiedad))
-                                                        {
-                                                            modelUser.departamento = row[propiedad];
-                                                            <li>
-                                                                <a>@row[propiedad]</a>
-                                                            </li>
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                </ul>
-                            </div>
-                            <div class="description-wrap">
-                                <div class="desc">
-                                    @{
-                                        if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
-                                        {
-                                            foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
-                                            {
-                                                string idQuery = "Descripcion";
-                                                if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
-                                                {
-                                                    string propiedad = "descripcion";
-                                                    foreach (Dictionary<string, string> row in item.Rows)
-                                                    {
-                                                        if (row.ContainsKey(propiedad))
-                                                        {
-                                                            modelUser.descripcion = row[propiedad];
-                                                            <p>@row[propiedad]</p>
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                </div>
-                                <div>
-                                    @{
-                                        if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
-                                        {
-                                            foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
-                                            {
-                                                string idQuery = "Descripcion";
-                                                if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
-                                                {
-                                                    <p class="moreResults showMore">
-                                                        <a href="javascript: void(0);" class="ver-mas" style="display: flex;">@Html.Translate("VER_MAS") <span class="material-icons">expand_more</span></a>
-                                                        <a href="javascript: void(0);" class="ver-menos" style="display: none;">@Html.Translate("VER_MENOS") <span class="material-icons">expand_less</span></a>
-                                                    </p>
-                                                }
-                                            }
-                                        }
-                                    }
-                                </div>
-                            </div>
-                        </div>
-                        <div class="user-perfil">
-                            <p>@Html.Translate("PERFIL")</p>
-                            @if (theAdiccionalParams.ContainsKey("profiles"))
-                            {
-                                try
-                                {
-                                    var profiles = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(theAdiccionalParams["profiles"]);
-                                    foreach (KeyValuePair<string,string> item in profiles) {
-
-                                        <div class="perfil-wrap">
-                                            <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" data-rel="resource_@Model.Key" id="input-@item.Key-@Model.Key" data-name ="@item.Value" data-key ="@item.Key" onClick="stepsCls.addUserClusterStep3(@item.Key)">
-                                                <label class="custom-control-label" for="input-@item.Key-@Model.Key">@item.Value</label>
-                                            </div>
-                                        </div>
-                                    }
-                                } catch (Exception e) {}
-                                <span> true </span>
-                            }
-                            
-                        </div>
-                    </div>
-                </div>
-                <input type="hidden" value="@System.Web.HttpUtility.UrlEncode(Newtonsoft.Json.JsonConvert.SerializeObject(modelUser))" name="user-object">
-            </article>
-        } else {
-
-            <article class="resource investigador">
-                <div class="wrap">
-                    <div class="user-miniatura">
-                        <div class="imagen-usuario-wrap">
-                            <span class="material-icons">person</span>
-                        </div>
-                    </div>
-                    <div class="middle-wrap">
-                        <div class="title-wrap">
-                            <h2 class="resource-title">
-                                <a href="@Model.CompletCardLink">@Model.Title</a>
-                            </h2>
-                            <div class="info-resource">
-                                @{
-                                    if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
-                                    {
-                                        foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
-                                        {
-                                            string idQuery = "TotalPublicaciones";
-                                            if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
-                                            {
-                                                string propiedad = "numDocumento";
-                                                foreach (Dictionary<string, string> row in item.Rows)
-                                                {
-                                                    if (row.ContainsKey(propiedad))
-                                                    {
-                                                        <span class="material-icons">article</span>
-                                                        <span class="texto">@row[propiedad] publicaciones</span>
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            </div>
-                            <div class="info-resource">
-                                @{
-                                    if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
-                                    {
-                                        foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
-                                        {
-                                            string idQuery = "HIndex";
-                                            if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
-                                            {
-                                                string propiedad = "hIndex";
-                                                foreach (Dictionary<string, string> row in item.Rows)
-                                                {
-                                                    if (row.ContainsKey(propiedad))
-                                                    {
-                                                        <span class="material-icons">tag</span>
-                                                        <span class="texto">@row[propiedad] Índice H</span>
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            </div>
-                        </div>
-                        <div class="content-wrap flex-column">
-                            <div class="list-wrap">
-                                <ul>
-                                    @{
-                                        if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
-                                        {
-                                            foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
-                                            {
-                                                string idQuery = "HasPosition";
-                                                if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
-                                                {
-                                                    string propiedad = "hasPosition";
-                                                    foreach (Dictionary<string, string> row in item.Rows)
-                                                    {
-                                                        if (row.ContainsKey(propiedad))
-                                                        {
-                                                            <li class="entity">
-                                                                @row[propiedad]
-                                                            </li>
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                    @{
-                                        if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
-                                        {
-                                            foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
-                                            {
-                                                string idQuery = "Organizacion";
-                                                if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
-                                                {
-                                                    string propiedad = "tituloOrg";
-                                                    foreach (Dictionary<string, string> row in item.Rows)
-                                                    {
-                                                        if (row.ContainsKey(propiedad))
-                                                        {
-                                                            <li>
-                                                                <a>@row[propiedad]</a>
-                                                            </li>
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                    @{
-                                        if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
-                                        {
-                                            foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
-                                            {
-                                                string idQuery = "Departamento";
-                                                if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
-                                                {
-                                                    string propiedad = "departamento";
-                                                    foreach (Dictionary<string, string> row in item.Rows)
-                                                    {
-                                                        if (row.ContainsKey(propiedad))
-                                                        {
-                                                            <li>
-                                                                <a>@row[propiedad]</a>
-                                                            </li>
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                </ul>
-                            </div>
-                            <div class="description-wrap">
-                                <div class="desc">
-                                    @{
-                                        if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
-                                        {
-                                            foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
-                                            {
-                                                string idQuery = "Descripcion";
-                                                if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
-                                                {
-                                                    string propiedad = "descripcion";
-                                                    foreach (Dictionary<string, string> row in item.Rows)
-                                                    {
-                                                        if (row.ContainsKey(propiedad))
-                                                        {
-                                                            <p>@row[propiedad]</p>
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                </div>
-                                <div>
-                                    @{
-                                        if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
-                                        {
-                                            foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
-                                            {
-                                                string idQuery = "Descripcion";
-                                                if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
-                                                {
-                                                    <p class="moreResults showMore">
-                                                        <a href="javascript: void(0);" class="ver-mas" style="display: flex;">@Html.Translate("VER_MAS") <span class="material-icons">expand_more</span></a>
-                                                        <a href="javascript: void(0);" class="ver-menos" style="display: none;">@Html.Translate("VER_MENOS") <span class="material-icons">expand_less</span></a>
-                                                    </p>
-                                                }
-                                            }
-                                        }
-                                    }
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </article>
-
-        }
-
+            
+			
+        } 
+		<article class="resource investigador" id="@Model.Key">
+			<div class="wrap">
+				<div class="user-miniatura">
+					<div class="imagen-usuario-wrap">
+						<span class="material-icons">person</span>
+					</div>
+				</div>
+				<div class="middle-wrap">
+					<div class="title-wrap">
+						<h2 class="resource-title">
+							<a href="@Model.CompletCardLink">@Model.Title</a>
+						</h2>
+						<div class="info-resource">
+							@{
+								if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+								{
+									foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+									{
+										string idQuery = "TotalPublicaciones";
+										if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
+										{
+											string propiedad = "numDocumento";
+											foreach (Dictionary<string, string> row in item.Rows)
+											{
+												if (row.ContainsKey(propiedad))
+												{
+													<span class="material-icons">article</span>
+													<span class="texto">@row[propiedad] publicaciones</span>
+												}
+											}
+										}
+									}
+								}
+							}
+						</div>
+						<div class="info-resource">
+							@{
+								if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+								{
+									foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+									{
+										string idQuery = "HIndex";
+										if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
+										{
+											string propiedad = "hIndex";
+											foreach (Dictionary<string, string> row in item.Rows)
+											{
+												if (row.ContainsKey(propiedad))
+												{
+													<span class="material-icons">tag</span>
+													<span class="texto">@row[propiedad] Índice H</span>
+												}
+											}
+										}
+									}
+								}
+							}
+						</div>
+					</div>
+					<div class="content-wrap flex-column">
+						<div class="list-wrap">
+							<ul>
+								@{
+									if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+									{
+										foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+										{
+											string idQuery = "HasPosition";
+											if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
+											{
+												string propiedad = "hasPosition";
+												foreach (Dictionary<string, string> row in item.Rows)
+												{
+													if (row.ContainsKey(propiedad))
+													{
+														<li class="entity">
+															@row[propiedad]
+														</li>
+													}
+												}
+											}
+										}
+									}
+								}
+								@{
+									if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+									{
+										foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+										{
+											string idQuery = "Organizacion";
+											if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
+											{
+												string propiedad = "tituloOrg";
+												foreach (Dictionary<string, string> row in item.Rows)
+												{
+													if (row.ContainsKey(propiedad))
+													{
+														<li>
+															<a>@row[propiedad]</a>
+														</li>
+													}
+												}
+											}
+										}
+									}
+								}
+								@{
+									if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+									{
+										foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+										{
+											string idQuery = "Departamento";
+											if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
+											{
+												string propiedad = "departamento";
+												foreach (Dictionary<string, string> row in item.Rows)
+												{
+													if (row.ContainsKey(propiedad))
+													{
+														<li>
+															<a>@row[propiedad]</a>
+														</li>
+													}
+												}
+											}
+										}
+									}
+								}
+							</ul>
+						</div>
+						<div class="description-wrap">
+							<div class="desc">
+								@{
+									if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+									{
+										foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+										{
+											string idQuery = "Descripcion";
+											if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
+											{
+												string propiedad = "descripcion";
+												foreach (Dictionary<string, string> row in item.Rows)
+												{
+													if (row.ContainsKey(propiedad))
+													{
+														<p>@row[propiedad]</p>
+													}
+												}
+											}
+										}
+									}
+								}
+							</div>
+							<div>
+								@{
+									if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+									{
+										foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+										{
+											string idQuery = "Descripcion";
+											if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
+											{
+												<p class="moreResults showMore">
+													<a href="javascript: void(0);" class="ver-mas" style="display: flex;">@Html.Translate("VER_MAS") <span class="material-icons">expand_more</span></a>
+													<a href="javascript: void(0);" class="ver-menos" style="display: none;">@Html.Translate("VER_MENOS") <span class="material-icons">expand_less</span></a>
+												</p>
+											}
+										}
+									}
+								}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
 
     }
     else if (Model.RdfTypeName == "Group") // Grupo
