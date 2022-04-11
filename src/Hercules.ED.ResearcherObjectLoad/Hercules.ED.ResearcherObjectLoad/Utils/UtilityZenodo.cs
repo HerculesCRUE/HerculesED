@@ -10,7 +10,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
 {
     public class UtilityZenodo
     {
-        public static ResourceApi mResourceApi = Carga.mResourceApi;
+        private static ResourceApi mResourceApi = Carga.mResourceApi;
 
         /// <summary>
         /// Devuelve en <paramref name="listaORCID"/> los ORCID y en <paramref name="listaNombres"/> 
