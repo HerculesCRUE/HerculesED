@@ -12,7 +12,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
 {
     public class UtilityFigShare
     {
-        public static ResourceApi mResourceApi = Carga.mResourceApi;
+        private static ResourceApi mResourceApi = Carga.mResourceApi;
 
         public static DisambiguationRO GetDisambiguationRO(ResearchObjectFigShare pResearchObject)
         {
