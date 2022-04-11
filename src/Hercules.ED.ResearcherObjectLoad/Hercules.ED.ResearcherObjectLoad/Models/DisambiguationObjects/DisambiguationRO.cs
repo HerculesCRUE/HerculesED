@@ -49,7 +49,6 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
             }
         }
 
-
         private string mIdFigShare { get; set; }
         public string idFigshare
         {
@@ -109,8 +108,6 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
                 }
             }
         }
-
-
 
         private HashSet<string> mAutores { get; set; }
         public HashSet<string> autores
