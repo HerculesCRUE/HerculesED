@@ -204,7 +204,6 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
             {
                 int limit = 10000;
                 int offset = 0;
-                bool salirBucle = false;
 
                 // Consulta sparql.
                 while(true)
@@ -275,7 +274,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
             return listaResultados;
         }
 
-        public static Dictionary<string, DisambiguationPerson> ObtenerPersonasNombre(ResourceApi resourceApi, List<string> listado)
+        public static Dictionary<string, DisambiguationPerson> ObtenerPersonasNombre(List<string> listado)
         {
             Dictionary<string, DisambiguationPerson> diccionarioPersonas = new Dictionary<string, DisambiguationPerson>();
             string nameInput = "";
@@ -388,7 +387,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
         /// <param name="resourceApi"></param>
         /// <param name="orcid"></param>
         /// <returns></returns>
-        public static string ObtenerPersonaPorORCID(ResourceApi resourceApi, string orcid)
+        public static string ObtenerPersonaPorORCID(string orcid)
         {
             string personID = "";
 
@@ -411,10 +410,9 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
         /// <param name="resourceApi"></param>
         /// <param name="listado"></param>
         /// <returns></returns>
-        public static Dictionary<string, DisambiguationPerson> ObtenerPersonasORCID(ResourceApi resourceApi, List<string> listado)
+        public static Dictionary<string, DisambiguationPerson> ObtenerPersonasORCID(List<string> listado)
         {
             Dictionary<string, DisambiguationPerson> diccionarioPersonas = new Dictionary<string, DisambiguationPerson>();
-            string nameInput = "";
 
             string selectOut = "SELECT DISTINCT ?personID ?orcid ?name";
             string whereOut = $@"where{{
@@ -509,7 +507,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
             List<List<string>> listaListaNombres = Utility.SplitList(listaNombres.ToList(), 10).ToList();
             Parallel.ForEach(listaListaNombres, new ParallelOptions { MaxDegreeOfParallelism = 5 }, lista =>
             {
-                Dictionary<string, DisambiguationPerson> personasBBDD = ObtenerPersonasNombre(mResourceApi, lista);
+                Dictionary<string, DisambiguationPerson> personasBBDD = ObtenerPersonasNombre(lista);
                 foreach (KeyValuePair<string, DisambiguationPerson> valuePair in personasBBDD)
                 {
                     listaPersonasAux[valuePair.Key.Trim()] = valuePair.Value;
@@ -520,7 +518,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
             List<List<string>> listaListaORCID = Utility.SplitList(listaORCID.ToList(), 10).ToList();
             Parallel.ForEach(listaListaORCID, new ParallelOptions { MaxDegreeOfParallelism = 5 }, lista =>
             {
-                Dictionary<string, DisambiguationPerson> personasBBDD = ObtenerPersonasORCID(mResourceApi, lista);
+                Dictionary<string, DisambiguationPerson> personasBBDD = ObtenerPersonasORCID(lista);
                 foreach (KeyValuePair<string, DisambiguationPerson> valuePair in personasBBDD)
                 {
                     listaPersonasAux[valuePair.Key.Trim()] = valuePair.Value;
@@ -798,7 +796,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
             List<List<string>> listaListaNombres = Utility.SplitList(listaNombres.ToList(), 10).ToList();
             Parallel.ForEach(listaListaNombres, new ParallelOptions { MaxDegreeOfParallelism = 5 }, lista =>
             {
-                Dictionary<string, DisambiguationPerson> personasBBDD = ObtenerPersonasNombre(mResourceApi, lista);
+                Dictionary<string, DisambiguationPerson> personasBBDD = ObtenerPersonasNombre(lista);
                 foreach (KeyValuePair<string, DisambiguationPerson> valuePair in personasBBDD)
                 {
                     listaPersonasAux[valuePair.Key.Trim()] = valuePair.Value;
@@ -808,7 +806,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
             List<List<string>> listaListaGitHub = Utility.SplitList(listaGitHub.ToList(), 10).ToList();
             Parallel.ForEach(listaListaGitHub, new ParallelOptions { MaxDegreeOfParallelism = 5 }, lista =>
             {
-                Dictionary<string, DisambiguationPerson> personasBBDD = UtilityGitHub.ObtenerPersonasGitHub(mResourceApi, lista);
+                Dictionary<string, DisambiguationPerson> personasBBDD = UtilityGitHub.ObtenerPersonasGitHub(lista);
                 foreach (KeyValuePair<string, DisambiguationPerson> valuePair in personasBBDD)
                 {
                     listaPersonasAux[valuePair.Key.Trim()] = valuePair.Value;
@@ -819,7 +817,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
             List<List<string>> listaListaORCID = Utility.SplitList(listaORCID.ToList(), 10).ToList();
             Parallel.ForEach(listaListaORCID, new ParallelOptions { MaxDegreeOfParallelism = 5 }, lista =>
             {
-                Dictionary<string, DisambiguationPerson> personasBBDD = ObtenerPersonasORCID(mResourceApi, lista);
+                Dictionary<string, DisambiguationPerson> personasBBDD = ObtenerPersonasORCID(lista);
                 foreach (KeyValuePair<string, DisambiguationPerson> valuePair in personasBBDD)
                 {
                     listaPersonasAux[valuePair.Key.Trim()] = valuePair.Value;
