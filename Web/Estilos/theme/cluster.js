@@ -1287,7 +1287,7 @@ function CompletadaCargaRecursosCluster()
 			
 			//Marcamos como checkeados los correspondientes
 			stepsCls.data.profiles.forEach(function(perfil, index) {
-				let idProfile= perfil.name.replace(/[^a-z0-9_]+/gi, '-').replace(/^-|-$/g, '').toLowerCase();
+				let idProfile= perfil.entityID;
 				if(perfil.users!=null)
 				{
 					perfil.users.forEach(function(user, index) {
@@ -1309,7 +1309,6 @@ function CompletadaCargaRecursosCluster()
 					let user={};
 					user.userID=idUser;
 					user.name=$(this).closest('.resource.investigador').find('h2.resource-title').text().trim();
-					//user.publications=$(this).find('h2.resource-title').text();					
 					if(perfil.users==null)					
 					{
 						perfil.users=[];
