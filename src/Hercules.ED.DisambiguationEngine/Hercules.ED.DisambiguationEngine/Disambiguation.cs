@@ -40,15 +40,15 @@ namespace Hercules.ED.DisambiguationEngine.Models
         /// <summary>
         /// Score para las iniciales
         /// </summary>
-        private static float scoreInicial = 0.1f;
+        private static readonly float scoreInicial = 0.1f;
         /// <summary>
         /// Score mínimo para los nombres
         /// </summary>
-        private static float minimoScoreNombres = 0.4f;
+        private static readonly float minimoScoreNombres = 0.4f;
         /// <summary>
         /// Score máximo para los nombres
         /// </summary>
-        private static float maximoScoreNombres = 0.6f;
+        private static readonly float maximoScoreNombres = 0.6f;
         private static ThreadSafeSingleShotGuard _loading = new ThreadSafeSingleShotGuard();
 
         /// <summary>
@@ -1167,7 +1167,7 @@ namespace Hercules.ED.DisambiguationEngine.Models
                                 }
                             }
                             List<DisambiguationData> data = itemsData[tipo].First().Value;
-                            if (data.Select(x => x.property).Distinct().Count() != data.Count())
+                            if (data.Select(x => x.property).Distinct().Count() != data.Count)
                             {
                                 throw new Exception("En los items " + tipo + " hay propiedades repetidas");
                             }
@@ -2076,7 +2076,7 @@ namespace Hercules.ED.DisambiguationEngine.Models
             pText = pText.Trim();
             if (pText.Contains(","))
             {
-                pText = (pText.Substring(pText.IndexOf(",") + 1)).Trim() + " " + (pText.Substring(0, pText.IndexOf(","))).Trim();
+                pText = pText.Substring(pText.IndexOf(",") + 1).Trim() + " " + (pText.Substring(0, pText.IndexOf(","))).Trim();
             }
             pText = pText.Replace("-", " ");
             string textoNormalizado = pText.Normalize(NormalizationForm.FormD);
