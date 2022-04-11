@@ -27,7 +27,9 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
             return ro;
         }
 
-        public static void CrearRoFigshareDesambiguado(string idRo, HashSet<string> pListaIds, Dictionary<string, ResearchObjectFigShare> pDicIdRo, Dictionary<ResearchobjectOntology.ResearchObject, HashSet<string>> pListaRosCreados, Dictionary<string, string> pDicAreasBroader, Dictionary<string, string> pDicAreasNombre)
+        public static void CrearRoFigshareDesambiguado(string idRo, HashSet<string> pListaIds,
+            Dictionary<string, ResearchObjectFigShare> pDicIdRo, Dictionary<ResearchobjectOntology.ResearchObject, HashSet<string>> pListaRosCreados,
+            Dictionary<string, string> pDicAreasBroader, Dictionary<string, string> pDicAreasNombre)
         {
             ResearchObjectFigShare roA = pDicIdRo[idRo];
             ResearchobjectOntology.ResearchObject roCreado = new ResearchobjectOntology.ResearchObject();
