@@ -97,12 +97,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                         string idFigShareAutor = fichero.Name.Split("___")[1];
                         string orcidAutor = UtilityFigShare.ObtenerORCIDPorFigShareID(idFigShareAutor);
                         List<string> lista = new List<string>() { UtilityFigShare.ObtenerPersonaPorFigShareID(idFigShareAutor) };
-                        DisambiguationPerson personaFigShare = new DisambiguationPerson();
-                        personaFigShare.ID = lista.First();
-                        personaFigShare.departamento = UtilityPersona.DatosDepartamentoPersona(lista).Select(x => x.Value).FirstOrDefault();
-                        personaFigShare.organizacion = UtilityPersona.DatosOrganizacionPersona(lista).Select(x => x.Value).FirstOrDefault();
-                        personaFigShare.grupos = UtilityPersona.DatosGrupoPersona(lista).Select(x => x.Value).FirstOrDefault();
-                        personaFigShare.proyectos = UtilityPersona.DatosProyectoPersona(lista).Select(x => x.Value).FirstOrDefault();
+                        DisambiguationPerson personaFigShare = UtilityPersona.ObtenerDatosBasicosPersona(lista);
 
                         // Obtención de los datos del JSON.
                         jsonString = File.ReadAllText(fichero.FullName);
@@ -149,12 +144,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                         string idGitHubAutor = fichero.Name.Split("___")[1];
                         string orcidAutor = UtilityGitHub.ObtenerORCIDPorGitHubID(idGitHubAutor);
                         List<string> lista = new List<string>() { UtilityGitHub.ObtenerPersonaPorGitHubID(idGitHubAutor) };
-                        DisambiguationPerson personaGitHub = new DisambiguationPerson();
-                        personaGitHub.ID = lista.First();
-                        personaGitHub.departamento = UtilityPersona.DatosDepartamentoPersona(lista).Select(x => x.Value).FirstOrDefault();
-                        personaGitHub.organizacion = UtilityPersona.DatosOrganizacionPersona(lista).Select(x => x.Value).FirstOrDefault();
-                        personaGitHub.grupos = UtilityPersona.DatosGrupoPersona(lista).Select(x => x.Value).FirstOrDefault();
-                        personaGitHub.proyectos = UtilityPersona.DatosProyectoPersona(lista).Select(x => x.Value).FirstOrDefault();
+                        DisambiguationPerson personaGitHub = UtilityPersona.ObtenerDatosBasicosPersona(lista);
 
                         // Obtención de los datos del JSON.
                         jsonString = File.ReadAllText(fichero.FullName);
@@ -216,12 +206,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     {
                         string idAutor = fichero.Name.Split("___")[1];
                         List<string> lista = new List<string>() { UtilityPersona.ObtenerPersonaPorORCID(idAutor) };
-                        DisambiguationPerson personaZenodo = new DisambiguationPerson();
-                        personaZenodo.ID = lista.First();
-                        personaZenodo.departamento = UtilityPersona.DatosDepartamentoPersona(lista).Select(x => x.Value).FirstOrDefault();
-                        personaZenodo.organizacion = UtilityPersona.DatosOrganizacionPersona(lista).Select(x => x.Value).FirstOrDefault();
-                        personaZenodo.grupos = UtilityPersona.DatosGrupoPersona(lista).Select(x => x.Value).FirstOrDefault();
-                        personaZenodo.proyectos = UtilityPersona.DatosProyectoPersona(lista).Select(x => x.Value).FirstOrDefault();
+                        DisambiguationPerson personaZenodo = UtilityPersona.ObtenerDatosBasicosPersona(lista);
 
                         // Obtención de los datos del JSON.
                         jsonString = File.ReadAllText(fichero.FullName);
@@ -283,12 +268,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     {
                         string idAutor = fichero.Name.Split("___")[0];
                         List<string> lista = new List<string>() { UtilityPersona.ObtenerPersonaPorORCID(idAutor) };
-                        DisambiguationPerson personaDocumento = new DisambiguationPerson();
-                        personaDocumento.ID = lista.First();
-                        personaDocumento.departamento = UtilityPersona.DatosDepartamentoPersona(lista).Select(x => x.Value).FirstOrDefault();
-                        personaDocumento.organizacion = UtilityPersona.DatosOrganizacionPersona(lista).Select(x => x.Value).FirstOrDefault();
-                        personaDocumento.grupos = UtilityPersona.DatosGrupoPersona(lista).Select(x => x.Value).FirstOrDefault();
-                        personaDocumento.proyectos = UtilityPersona.DatosProyectoPersona(lista).Select(x => x.Value).FirstOrDefault();
+                        DisambiguationPerson personaDocumento = UtilityPersona.ObtenerDatosBasicosPersona(lista);
 
                         // Obtención de los datos del JSON.
                         jsonString = File.ReadAllText(fichero.FullName);

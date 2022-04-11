@@ -20,6 +20,18 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
     {
         private static ResourceApi mResourceApi = Carga.mResourceApi;
 
+        public static DisambiguationPerson ObtenerDatosBasicosPersona(List<string> listaDatos)
+        {
+            DisambiguationPerson persona = new DisambiguationPerson();
+            persona.ID = listaDatos.First();
+            persona.departamento = DatosDepartamentoPersona(listaDatos).Select(x => x.Value).FirstOrDefault();
+            persona.organizacion = DatosOrganizacionPersona(listaDatos).Select(x => x.Value).FirstOrDefault();
+            persona.grupos = DatosGrupoPersona(listaDatos).Select(x => x.Value).FirstOrDefault();
+            persona.proyectos = DatosProyectoPersona(listaDatos).Select(x => x.Value).FirstOrDefault();
+
+            return persona;
+        }
+
         /// <summary>
         /// Contruye el objeto persona a cargar.
         /// </summary>
