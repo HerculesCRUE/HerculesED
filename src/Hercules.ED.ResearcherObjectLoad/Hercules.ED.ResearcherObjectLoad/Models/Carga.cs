@@ -1499,7 +1499,6 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             // Métricas (HasMetric)
             if (pPublicacion.hasMetric != null && pPublicacion.hasMetric.Count > 0)
             {
-                HashSet<string> listaMetricas = new HashSet<string>();
                 foreach (HasMetric itemMetric in pPublicacion.hasMetric)
                 {
                     if (itemMetric.metricName.ToLower() == "wos")
@@ -1522,7 +1521,6 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             {
                 if (pPublicacionB != null && pPublicacionB.hasMetric != null && pPublicacionB.hasMetric.Count > 0)
                 {
-                    HashSet<string> listaMetricas = new HashSet<string>();
                     foreach (HasMetric itemMetric in pPublicacionB.hasMetric)
                     {
                         if (itemMetric.metricName.ToLower() == "wos")
