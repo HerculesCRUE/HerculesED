@@ -3979,6 +3979,21 @@
                     "properties": [
                       {
                         "title": {
+                          "es": "Editorial"
+                        },
+                        "placeholder": {
+                          "es": "Introduce la Editorial"
+                        },
+                        "property": "http://purl.org/ontology/bibo/publisher",
+                        "type": "text",
+                        "width": 1
+                      },
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
                           "es": "ISBN"
                         },
                         "placeholder": {
