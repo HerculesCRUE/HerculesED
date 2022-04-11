@@ -215,7 +215,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     else if (fichero.Name.StartsWith("zenodo___"))
                     {
                         string idAutor = fichero.Name.Split("___")[1];
-                        List<string> lista = new List<string>() { UtilityPersona.ObtenerPersonaPorORCID(mResourceApi, idAutor) };
+                        List<string> lista = new List<string>() { UtilityPersona.ObtenerPersonaPorORCID(idAutor) };
                         DisambiguationPerson personaZenodo = new DisambiguationPerson();
                         personaZenodo.ID = lista.First();
                         personaZenodo.departamento = UtilityPersona.DatosDepartamentoPersona(lista).Select(x => x.Value).FirstOrDefault();
@@ -282,7 +282,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     else
                     {
                         string idAutor = fichero.Name.Split("___")[0];
-                        List<string> lista = new List<string>() { UtilityPersona.ObtenerPersonaPorORCID(mResourceApi, idAutor) };
+                        List<string> lista = new List<string>() { UtilityPersona.ObtenerPersonaPorORCID(idAutor) };
                         DisambiguationPerson personaDocumento = new DisambiguationPerson();
                         personaDocumento.ID = lista.First();
                         personaDocumento.departamento = UtilityPersona.DatosDepartamentoPersona(lista).Select(x => x.Value).FirstOrDefault();
@@ -663,7 +663,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                         {
                             string[] idSplit = recursoModificar.Key.Split('_');
                             Document doc = listaDocumentosModificar[recursoModificar.Key];
-                            ModificarDocumento(doc, recursoModificar.Key, tupla.Item1, tupla.Item2);
+                            ModificarDocumento(doc, recursoModificar.Key);
                             ComplexOntologyResource complexOntologyResource = doc.ToGnossApiResource(mResourceApi, null, new Guid(idSplit[idSplit.Length - 2]), new Guid(idSplit[idSplit.Length - 1]));
 
                             int numIntentos = 0;
@@ -691,7 +691,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                         {
                             string[] idSplit = recursoModificar.Key.Split('_');
                             ResearchobjectOntology.ResearchObject ro = listaROsModificar[recursoModificar.Key];
-                            ModificarRO(ro, recursoModificar.Key, tupla.Item1, tupla.Item2);
+                            ModificarRO(ro, recursoModificar.Key);
                             ComplexOntologyResource complexOntologyResource = ro.ToGnossApiResource(mResourceApi, null, new Guid(idSplit[idSplit.Length - 2]), new Guid(idSplit[idSplit.Length - 1]));
 
                             int numIntentos = 0;
@@ -1029,7 +1029,9 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
         /// <param name="pListaPublicacionesCreadas"></param>
         /// <param name="pDicAreasBroader"></param>
         /// <param name="pDicAreasNombre"></param>
-        private static void CrearDocumentDesambiguado(string idPublicacion, HashSet<string> pListaIds, Dictionary<string, Publication> pDicIdPublicacion, Dictionary<Document, HashSet<string>> pListaPublicacionesCreadas, Dictionary<string, string> pDicAreasBroader, Dictionary<string, string> pDicAreasNombre)
+        private static void CrearDocumentDesambiguado(string idPublicacion, HashSet<string> pListaIds,
+            Dictionary<string, Publication> pDicIdPublicacion, Dictionary<Document, HashSet<string>> pListaPublicacionesCreadas,
+            Dictionary<string, string> pDicAreasBroader, Dictionary<string, string> pDicAreasNombre)
         {
             Publication documentoA = pDicIdPublicacion[idPublicacion];
             Document documentoCreado = new Document();
@@ -1054,7 +1056,8 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
         /// <param name="pDicAreasNombre"></param>
         /// <param name="pPublicacionB"></param>
         /// <returns></returns>
-        public static Document ConstruirDocument(Publication pPublicacion, Dictionary<string, string> pDicAreasBroader, Dictionary<string, string> pDicAreasNombre, Publication pPublicacionB = null)
+        public static Document ConstruirDocument(Publication pPublicacion, Dictionary<string, string> pDicAreasBroader,
+            Dictionary<string, string> pDicAreasNombre, Publication pPublicacionB = null)
         {
             Document document = new Document();
 
@@ -2249,7 +2252,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
         /// <param name="pDicAreasBroader">Diccionario con los hijos.</param>
         /// <param name="pDicAreasNombre">Diccionario con las áreas temáticas.</param>        
         /// <returns></returns>
-        public static void ModificarDocumento(Document pDocument, string pIdDocumento, Dictionary<string, string> pDicAreasBroader, Dictionary<string, string> pDicAreasNombre)
+        public static void ModificarDocumento(Document pDocument, string pIdDocumento)
         {
             //TODO revisar campos
 
@@ -2286,7 +2289,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
         /// <param name="pDicAreasBroader">Diccionario con los hijos.</param>
         /// <param name="pDicAreasNombre">Diccionario con las áreas temáticas.</param>        
         /// <returns></returns>
-        public static void ModificarRO(ResearchobjectOntology.ResearchObject pResearchObject, string pIdResearchObject, Dictionary<string, string> pDicAreasBroader, Dictionary<string, string> pDicAreasNombre)
+        public static void ModificarRO(ResearchobjectOntology.ResearchObject pResearchObject, string pIdResearchObject)
         {
             //TODO revisar campos
 
