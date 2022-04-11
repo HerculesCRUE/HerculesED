@@ -18,7 +18,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
 {
     public class UtilityPersona
     {
-        public static ResourceApi mResourceApi = Carga.mResourceApi;
+        private static ResourceApi mResourceApi = Carga.mResourceApi;
 
         /// <summary>
         /// Contruye el objeto persona a cargar.
