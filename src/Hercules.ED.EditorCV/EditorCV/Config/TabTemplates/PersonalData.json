@@ -131,6 +131,20 @@
             "properties": [
               {
                 "title": {
+                  "es": "Página web personal"
+                },
+                "property": "http://xmlns.com/foaf/0.1/homepage",
+                "placeholder": {
+                  "es": "Introduce la página web personal"
+                },
+                "width": 3
+              }
+            ]
+          },
+          {
+            "properties": [
+              {
+                "title": {
                   "es": "Foto de perfil"
                 },
                 "property": "http://xmlns.com/foaf/0.1/img",
