@@ -1,24 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System.Net;
 using Newtonsoft.Json;
 using System.Net.Http;
-using System.Net.Http.Headers;
-using ZenodoConnect.ROs.Zenodo;
-using ZenodoConnect.ROs.Zenodo.Models;
 using ZenodoConnect.ROs.Zenodo.Models.Inicial;
-using System.Web;
-using System.Text.Json;
-using Newtonsoft.Json.Linq;
-using System.IO;
 using System.Threading;
-using ZenodoAPI.ROs.Zenodo.Models;
 //using Newtonsoft.Json.Linq.JObject;
 
 namespace ZenodoConnect.ROs.Zenodo.Controllers
@@ -111,33 +97,13 @@ namespace ZenodoConnect.ROs.Zenodo.Controllers
             {
                 Root_2 objInicial = JsonConvert.DeserializeObject<Root_2>("{\"data\":" + info_publication + "}");
 
-                 if (objInicial != null & objInicial != new Root_2())
+                if (objInicial != null && objInicial != new Root_2() && 
+                    objInicial.data != null && objInicial.data.Count > 0 && objInicial.data[0] != null && 
+                    objInicial.data[0].files != null && objInicial.data[0].files.Count > 0 && objInicial.data[0].files[0] != null && 
+                    objInicial.data[0].files[0].links != null && objInicial.data[0].files[0].links.download != null &&
+                    objInicial.data[0].files[0].links.download.EndsWith(".pdf"))
                 {
-                    if (objInicial.data != null & objInicial.data.Count > 0)
-                    {
-                        if (objInicial.data[0] != null)
-                        {
-                            if (objInicial.data[0].files != null & objInicial.data[0].files.Count > 0)
-                            {
-                                if (objInicial.data[0].files[0] != null)
-                                {
-                                    if (objInicial.data[0].files[0].links != null)
-                                    {
-                                        if (objInicial.data[0].files[0].links.download != null)
-                                        {
-                                            if (objInicial.data[0].files[0].links.download.EndsWith(".pdf"))
-                                            {
-                                                return objInicial.data[0].files[0].links.download;
-                                            }
-                                            else { return null; }
-                                        }
-                                    }
-                                }
-
-                            }
-                        }
-
-                    }
+                    return objInicial.data[0].files[0].links.download;
                 }
                 return null;
             }
