@@ -418,12 +418,12 @@ namespace Hercules.ED.UpdateKeywords
             Dictionary<string, string> dicResultados = new Dictionary<string, string>();
 
             // Endpoint.
-            string urlConsulta = "https://id.nlm.nih.gov/mesh/sparql";
+            string urlConsulta = _Configuracion.GetSparqlEndpoint();
 
             // Consulta.
             string consulta = $@"
                 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
-                SELECT ?a ?b ?c ?d ?e ?f ?g ?h ?i ?j ?k ?l ?m ?n ?o FROM <http://id.nlm.nih.gov/mesh>
+                SELECT ?a ?b ?c ?d ?e ?f ?g ?h ?i ?j ?k ?l ?m ?n ?o FROM <http://mesh.gnoss.com/edma>
                 WHERE {{
                   {{?a a meshv:TopicalDescriptor}}.  
                   {{
@@ -512,26 +512,42 @@ namespace Hercules.ED.UpdateKeywords
             WebClient webClient = new WebClient();
             string downloadString = string.Empty;
 
-            // TODO: Meter control.
-            int contadorDownload = 0;
-            while (string.IsNullOrEmpty(downloadString))
+            // TODO
+            SparqlObject resultadoQuery = null;
+            webClient.Encoding = Encoding.UTF8;
+            webClient.Headers.Add(HttpRequestHeader.ContentType, "application/x-www-form-urlencoded");
+
+            NameValueCollection parametros = new NameValueCollection();
+            parametros.Add("query", consulta);
+            parametros.Add("format", "application/sparql-results+json");
+
+            byte[] responseArray = null;
+            int numIntentos = 0;
+
+            Exception exception = null;
+            while (responseArray == null && numIntentos < 5)
             {
+                numIntentos++;
                 try
                 {
-                    downloadString = webClient.DownloadString($@"{urlConsulta}?query={HttpUtility.UrlEncode(consulta)}&format={format}");
+                    responseArray = webClient.UploadValues(urlConsulta, "POST", parametros);
+                    exception = null;
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    contadorDownload++;
-                    Thread.Sleep(1000);
-                    if (contadorDownload == 5)
-                    {
-                        return new Dictionary<string, string>();
-                    }
+                    exception = ex;
                 }
             }
+            if (exception != null)
+            {
+                throw exception;
+            }
 
-            SparqlObject resultadoQuery = JsonConvert.DeserializeObject<SparqlObject>(downloadString);
+            string jsonRespuesta = System.Text.Encoding.UTF8.GetString(responseArray);
+            if (!string.IsNullOrEmpty(jsonRespuesta))
+            {
+                resultadoQuery = JsonConvert.DeserializeObject<SparqlObject>(jsonRespuesta);
+            }
 
             if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Any())
             {
@@ -569,34 +585,46 @@ namespace Hercules.ED.UpdateKeywords
             Dictionary<string, string> dicResultados = new Dictionary<string, string>();
 
             // Endpoint.
-            string urlConsulta = "https://id.nlm.nih.gov/mesh/sparql";
-
-            // Tipo de salida.
-            string format = "JSON";
+            string urlConsulta = _Configuracion.GetSparqlEndpoint();
 
             // Petición.
             WebClient webClient = new WebClient();
-            string downloadString = string.Empty;
 
-            int contadorDownload = 0;
-            while(string.IsNullOrEmpty(downloadString))
+            SparqlObject resultadoQuery = null;
+            webClient.Encoding = Encoding.UTF8;
+            webClient.Headers.Add(HttpRequestHeader.ContentType, "application/x-www-form-urlencoded");
+
+            NameValueCollection parametros = new NameValueCollection();
+            parametros.Add("query", pConsulta);
+            parametros.Add("format", "application/sparql-results+json");
+
+            byte[] responseArray = null;
+            int numIntentos = 0;
+
+            Exception exception = null;
+            while (responseArray == null && numIntentos < 5)
             {
+                numIntentos++;
                 try
                 {
-                    downloadString = webClient.DownloadString($@"{urlConsulta}?query={HttpUtility.UrlEncode(pConsulta)}&format={format}");
+                    responseArray = webClient.UploadValues(urlConsulta, "POST", parametros);
+                    exception = null;
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    contadorDownload++;
-                    Thread.Sleep(1000);
-                    if (contadorDownload == 5)
-                    {
-                        return new Dictionary<string, string>();
-                    }
+                    exception = ex;
                 }
-            }            
+            }
+            if (exception != null)
+            {
+                throw exception;
+            }
 
-            SparqlObject resultadoQuery = JsonConvert.DeserializeObject<SparqlObject>(downloadString);
+            string jsonRespuesta = System.Text.Encoding.UTF8.GetString(responseArray);
+            if (!string.IsNullOrEmpty(jsonRespuesta))
+            {
+                resultadoQuery = JsonConvert.DeserializeObject<SparqlObject>(jsonRespuesta);
+            }
 
             if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Any())
             {
@@ -746,17 +774,20 @@ namespace Hercules.ED.UpdateKeywords
             WebClient webClient = new WebClient();
             string downloadString = string.Empty;
 
-            // TODO: Meter control.
             int contadorDownload = 0;
             while (string.IsNullOrEmpty(downloadString))
             {
+                contadorDownload++;
                 try
                 {
                     downloadString = webClient.DownloadString($@"{urlConsulta}?query={HttpUtility.UrlEncode(consulta)}&format={format}");
+                    if (contadorDownload == 5)
+                    {
+                        return;
+                    }
                 }
                 catch (Exception)
                 {
-                    contadorDownload++;
                     Thread.Sleep(1000);
                     if (contadorDownload == 5)
                     {
@@ -989,7 +1020,10 @@ namespace Hercules.ED.UpdateKeywords
 
                 // Obtención del dato del JSON de respuesta.
                 RelationsObj data = JsonConvert.DeserializeObject<RelationsObj>(result);
-                listaResultados.AddRange(data.result);
+                if (data.result != null && data.result.Any())
+                {
+                    listaResultados.AddRange(data.result);
+                }
 
                 // Obtención de número de paginas total y actual.
                 numPagina++;

@@ -30,16 +30,21 @@ namespace Hercules.ED.UpdateKeywords
                     string idEtiquetaAux = etiquetaTag.Key;
 
                     // 1.- Probamos con el término en "Exact Match".
-                    List<string> listaAux = new List<string>() { etiquetaTag.Value };
+                    List<string> listaAux = new List<string>() { etiquetaTag.Value };                    
                     Dictionary<string, string> dicResultados = utilKeywords.SelectDataMesh(listaAux.ToArray(), true);
 
-                    // 2.- Si no se ha encontrado resultado y el término contiene más de una palabra...
+                    // 2.- Si no se ha encontrado resultado y el término contiene más de una palabra...                    
                     if (dicResultados.Count() != 1 && etiquetaTag.Value.Contains(" "))
                     {
                         // 2.1.- Buscamos por el término en "All fragments".
                         string[] partes = etiquetaTag.Value.Split(" ");
 
-                        dicResultados = ConsultarDatos(utilKeywords, partes);
+                        // Si la etiqueta tiene más de 3 palabras, la consideramos inválida para esta búsqueda
+                        // debido al excesivo tamaño de la query. TODO: ¿Hacerlo en dos peticiones?
+                        if (partes.Count() <= 3)
+                        {
+                            dicResultados = ConsultarDatos(utilKeywords, partes);
+                        }
 
                         // 2.2.- Buscamos por combinación de palabras en "All fragments" en el caso que tenga más de dos.
                         if (dicResultados.Count() != 1 && partes.Count() >= 2)
@@ -134,10 +139,10 @@ namespace Hercules.ED.UpdateKeywords
             Dictionary<string, string> dicResultados = new Dictionary<string, string>();
 
             // Buscar en el label y concept label
-            #region --- Consulta.
+
             string consulta = $@"
                         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
-                        SELECT ?item ?label FROM <http://id.nlm.nih.gov/mesh>
+                        SELECT ?item ?label FROM <http://mesh.gnoss.com/edma>
                         WHERE {{{{
                             ?item a meshv:TopicalDescriptor.
                             ?item rdfs:label ?label.
@@ -147,21 +152,8 @@ namespace Hercules.ED.UpdateKeywords
                             ?item rdfs:label ?label.
                             ?item meshv:concept ?x.
                             ?x rdfs:label ?labelConcept.
-                            {pUtilKeywords.ContruirFiltro("labelConcept", pPartes, false)}                            
-                            }}}}";
-            #endregion
-            
-            if (dicResultados.Count() == 0)
-            {
-                dicResultados = pUtilKeywords.SelectDataMeshAllFragments(consulta);
-            }
-
-            // Buscar en los Concept - Term
-            #region --- Consulta.
-            consulta = $@"
-                        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
-                        SELECT ?item ?label FROM <http://id.nlm.nih.gov/mesh>
-                        WHERE {{{{
+                            {pUtilKeywords.ContruirFiltro("labelConcept", pPartes, false)}
+                            }}UNION{{
                             ?item a meshv:TopicalDescriptor.
                             ?item rdfs:label ?label.
                             ?item meshv:concept ?x.
@@ -182,20 +174,7 @@ namespace Hercules.ED.UpdateKeywords
                             ?x meshv:term ?x2.
                             ?x2 meshv:sortVersion ?sortVersion. 
                             {pUtilKeywords.ContruirFiltro("sortVersion", pPartes, false)}
-                            }}}}";
-            #endregion
-
-            if (dicResultados.Count() == 0)
-            {
-                dicResultados = pUtilKeywords.SelectDataMeshAllFragments(consulta);
-            }
-
-            // Buscar en los Concept - PreferredConcept
-            #region --- Consulta.
-            consulta = $@"
-                        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
-                        SELECT ?item ?label FROM <http://id.nlm.nih.gov/mesh>
-                        WHERE {{{{
+                            }}UNION{{
                             ?item a meshv:TopicalDescriptor.
                             ?item rdfs:label ?label.
                             ?item meshv:concept ?x.
@@ -216,20 +195,7 @@ namespace Hercules.ED.UpdateKeywords
                             ?x meshv:preferredConcept ?x2.
                             ?x2 meshv:sortVersion ?sortVersion. 
                             {pUtilKeywords.ContruirFiltro("sortVersion", pPartes, false)}
-                            }}}}";
-            #endregion
-
-            if (dicResultados.Count() == 0)
-            {
-                dicResultados = pUtilKeywords.SelectDataMeshAllFragments(consulta);
-            }
-
-            // Buscar en los PreferredConcept - Term
-            #region --- Consulta.
-            consulta = $@"
-                        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
-                        SELECT ?item ?label FROM <http://id.nlm.nih.gov/mesh>
-                        WHERE {{{{
+                            }}UNION{{
                             ?item a meshv:TopicalDescriptor.
                             ?item rdfs:label ?label.
                             ?item meshv:preferredConcept ?x.
@@ -250,20 +216,7 @@ namespace Hercules.ED.UpdateKeywords
                             ?x meshv:term ?x2.
                             ?x2 meshv:sortVersion ?sortVersion. 
                             {pUtilKeywords.ContruirFiltro("sortVersion", pPartes, false)}
-                            }}}}";
-            #endregion
-
-            if (dicResultados.Count() == 0)
-            {
-                dicResultados = pUtilKeywords.SelectDataMeshAllFragments(consulta);
-            }
-
-            // Buscar en los PreferedTerm
-            #region --- Consulta.
-            consulta = $@"
-                        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
-                        SELECT ?item ?label FROM <http://id.nlm.nih.gov/mesh>
-                        WHERE {{{{
+                            }}UNION{{
                             ?item a meshv:TopicalDescriptor.
                             ?item rdfs:label ?label.
                             ?item meshv:preferredTerm ?x.
@@ -282,12 +235,9 @@ namespace Hercules.ED.UpdateKeywords
                             ?x meshv:sortVersion ?sortVersion. 
                             {pUtilKeywords.ContruirFiltro("sortVersion", pPartes, false)}
                             }}}}";
-            #endregion
 
-            if (dicResultados.Count() == 0)
-            {
-                dicResultados = pUtilKeywords.SelectDataMeshAllFragments(consulta);
-            }
+
+            dicResultados = pUtilKeywords.SelectDataMeshAllFragments(consulta);
 
             return dicResultados;
         }
