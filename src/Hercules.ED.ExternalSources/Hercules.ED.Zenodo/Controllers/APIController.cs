@@ -35,8 +35,7 @@ namespace ZenodoConnect.Controllers
         ///
         ///     GET /scopus/GetROs?author_id=SCOPUS_ID&amp;year=2020
         /// </remarks>
-        /// <param name="orcid">Orcid</param>
-        /// <param date="date">Year-month-day</param>
+        /// <param name="ID">Orcid</param>
         /// <returns></returns>
         /// <response code="200">Ok</response>
         /// <response code="400">Invalid app</response> 
