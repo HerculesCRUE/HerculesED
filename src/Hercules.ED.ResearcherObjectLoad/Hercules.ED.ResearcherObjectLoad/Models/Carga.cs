@@ -1321,22 +1321,22 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             }
 
             // Página de inicio (PageStart)
-            if (!string.IsNullOrEmpty(pPublicacion.pageStart) && Int32.TryParse(pPublicacion.pageStart, out int n1))
+            if (!string.IsNullOrEmpty(pPublicacion.pageStart) && int.TryParse(pPublicacion.pageStart, out int n1))
             {
                 document.Bibo_pageStart = pPublicacion.pageStart;
 
-                if (pPublicacionB != null && !string.IsNullOrEmpty(pPublicacionB.pageStart) && Int32.TryParse(pPublicacionB.pageStart, out int n11) && document.Bibo_pageStart == null)
+                if (pPublicacionB != null && !string.IsNullOrEmpty(pPublicacionB.pageStart) && int.TryParse(pPublicacionB.pageStart, out int n11) && document.Bibo_pageStart == null)
                 {
                     document.Bibo_pageStart = pPublicacionB.pageStart;
                 }
             }
 
             // Página de fin (PageEnd)
-            if (!string.IsNullOrEmpty(pPublicacion.pageEnd) && Int32.TryParse(pPublicacion.pageEnd, out int n3))
+            if (!string.IsNullOrEmpty(pPublicacion.pageEnd) && int.TryParse(pPublicacion.pageEnd, out int n3))
             {
                 document.Bibo_pageEnd = pPublicacion.pageEnd;
 
-                if (pPublicacionB != null && !string.IsNullOrEmpty(pPublicacionB.pageEnd) && Int32.TryParse(pPublicacion.pageEnd, out int n33) && document.Bibo_pageEnd == null)
+                if (pPublicacionB != null && !string.IsNullOrEmpty(pPublicacionB.pageEnd) && int.TryParse(pPublicacion.pageEnd, out int n33) && document.Bibo_pageEnd == null)
                 {
                     document.Bibo_pageEnd = pPublicacionB.pageEnd;
                 }
@@ -1378,7 +1378,8 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     }
                 }
             }
-            if ((document.Roh_externalKnowledgeArea == null || document.Roh_externalKnowledgeArea.Count == 0) && pPublicacionB != null && pPublicacionB.hasKnowledgeAreas != null && pPublicacionB.hasKnowledgeAreas.Count > 0)
+            if ((document.Roh_externalKnowledgeArea == null ||
+                document.Roh_externalKnowledgeArea.Count == 0) && pPublicacionB != null && pPublicacionB.hasKnowledgeAreas != null && pPublicacionB.hasKnowledgeAreas.Count > 0)
             {
                 document.Roh_externalKnowledgeArea = new List<DocumentOntology.CategoryPath>();
                 foreach (HasKnowledgeArea knowledgearea in pPublicacionB.hasKnowledgeAreas)
@@ -1442,7 +1443,8 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     }
                 }
             }
-            if ((document.Roh_enrichedKnowledgeArea == null || document.Roh_enrichedKnowledgeArea.Count == 0) && pPublicacionB != null && pPublicacionB.topics_enriquecidos != null && pPublicacionB.topics_enriquecidos.Count > 0)
+            if ((document.Roh_enrichedKnowledgeArea == null || 
+                document.Roh_enrichedKnowledgeArea.Count == 0) && pPublicacionB != null && pPublicacionB.topics_enriquecidos != null && pPublicacionB.topics_enriquecidos.Count > 0)
             {
                 document.Roh_enrichedKnowledgeArea = new List<DocumentOntology.CategoryPath>();
                 foreach (TopicsEnriquecido area in pPublicacionB.topics_enriquecidos)
@@ -1478,17 +1480,17 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                 {
                     if (itemMetric.metricName.ToLower() == "wos")
                     {
-                        document.Roh_wosCitationCount = Int32.Parse(itemMetric.citationCount);
+                        document.Roh_wosCitationCount = int.Parse(itemMetric.citationCount);
                     }
 
                     if (itemMetric.metricName.ToLower() == "scopus")
                     {
-                        document.Roh_scopusCitationCount = Int32.Parse(itemMetric.citationCount);
+                        document.Roh_scopusCitationCount = int.Parse(itemMetric.citationCount);
                     }
 
                     //if (itemMetric.metricName.ToLower() == "semanticscholar")
                     //{
-                    //    document.Roh_semanticScholarCitationCount = Int32.Parse(itemMetric.citationCount);
+                    //    document.Roh_semanticScholarCitationCount = int.Parse(itemMetric.citationCount);
                     //}
                 }
             }
@@ -1500,24 +1502,25 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     {
                         if (itemMetric.metricName.ToLower() == "wos")
                         {
-                            document.Roh_wosCitationCount = Int32.Parse(itemMetric.citationCount);
+                            document.Roh_wosCitationCount = int.Parse(itemMetric.citationCount);
                         }
 
                         if (itemMetric.metricName.ToLower() == "scopus")
                         {
-                            document.Roh_scopusCitationCount = Int32.Parse(itemMetric.citationCount);
+                            document.Roh_scopusCitationCount = int.Parse(itemMetric.citationCount);
                         }
 
                         //if (itemMetric.metricName.ToLower() == "semanticscholar")
                         //{
-                        //    document.Roh_semanticScholarCitationCount = Int32.Parse(itemMetric.citationCount);
+                        //    document.Roh_semanticScholarCitationCount = int.Parse(itemMetric.citationCount);
                         //}
                     }
                 }
             }
 
             // Revista (HasPublicationVenue)
-            if (pPublicacion.hasPublicationVenue != null && !string.IsNullOrEmpty(pPublicacion.hasPublicationVenue.name) && (pPublicacion.hasPublicationVenue.type == "Journal" || string.IsNullOrEmpty(pPublicacion.hasPublicationVenue.type)))
+            if (pPublicacion.hasPublicationVenue != null && !string.IsNullOrEmpty(pPublicacion.hasPublicationVenue.name) && (pPublicacion.hasPublicationVenue.type == "Journal" ||
+                string.IsNullOrEmpty(pPublicacion.hasPublicationVenue.type)))
             {
                 // Comprobar si la revista existe o no.
                 string idRevista = string.Empty;
