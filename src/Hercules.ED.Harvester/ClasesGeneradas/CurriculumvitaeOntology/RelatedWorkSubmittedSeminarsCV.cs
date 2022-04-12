@@ -41,7 +41,6 @@ namespace CurriculumvitaeOntology
 		public virtual string RdfsLabel { get { return "http://w3id.org/roh/RelatedWorkSubmittedSeminarsCV"; } }
 		public OntologyEntity Entity { get; set; }
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/inscriptionType")]
 		[RDFProperty("http://w3id.org/roh/inscriptionType")]
 		public  EventInscriptionType Roh_inscriptionType  { get; set;} 
 		public string IdRoh_inscriptionType  { get; set;} 

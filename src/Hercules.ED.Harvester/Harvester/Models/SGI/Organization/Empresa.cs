@@ -9,12 +9,11 @@ namespace OAI_PMH.Models.SGI.Organization
     {
         public string Id { get; set; }
         public string Nombre { get; set; }
-        public string RazonSocial { get; set; }
         public TipoIdentificador TipoIdentificador { get; set; }
         public string NumeroIdentificacion { get; set; }
-        public bool DatosEconomicos { get; set; }
+        public string RazonSocial { get; set; }
+        public bool? DatosEconomicos { get; set; }
         public string PadreId { get; set; }
         public DatosContacto DatosContacto { get; set; }
-        public DatosTipoEmpresa DatosTipoEmpresa { get; set; }
     }
 }

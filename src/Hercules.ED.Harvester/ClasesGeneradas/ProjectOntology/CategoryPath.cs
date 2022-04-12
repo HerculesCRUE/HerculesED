@@ -17,46 +17,47 @@ using Gnoss.ApiWrapper.Exceptions;
 using System.Diagnostics.CodeAnalysis;
 using Concept = TaxonomyOntology.Concept;
 
-namespace GroupOntology
+namespace ProjectOntology
 {
 	[ExcludeFromCodeCoverage]
-	public class GroupClassification : GnossOCBase
+	public class CategoryPath : GnossOCBase
 	{
 
-		public GroupClassification() : base() { } 
+		public CategoryPath() : base() { } 
 
-		public GroupClassification(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
+		public CategoryPath(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
 		{
 			this.mGNOSSID = pSemCmsModel.Entity.Uri;
 			this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
-			this.Roh_groupClassificationNode = new List<Concept>();
-			SemanticPropertyModel propRoh_groupClassificationNode = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/groupClassificationNode");
-			if(propRoh_groupClassificationNode != null && propRoh_groupClassificationNode.PropertyValues.Count > 0)
+			this.Roh_categoryNode = new List<Concept>();
+			SemanticPropertyModel propRoh_categoryNode = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/categoryNode");
+			if(propRoh_categoryNode != null && propRoh_categoryNode.PropertyValues.Count > 0)
 			{
-				foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_groupClassificationNode.PropertyValues)
+				foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_categoryNode.PropertyValues)
 				{
 					if(propValue.RelatedEntity!=null){
-						Concept roh_groupClassificationNode = new Concept(propValue.RelatedEntity,idiomaUsuario);
-						this.Roh_groupClassificationNode.Add(roh_groupClassificationNode);
+						Concept roh_categoryNode = new Concept(propValue.RelatedEntity,idiomaUsuario);
+						this.Roh_categoryNode.Add(roh_categoryNode);
 					}
 				}
 			}
 		}
 
-		public virtual string RdfType { get { return "http://w3id.org/roh/GroupClassification"; } }
-		public virtual string RdfsLabel { get { return "http://w3id.org/roh/GroupClassification"; } }
+		public virtual string RdfType { get { return "http://w3id.org/roh/CategoryPath"; } }
+		public virtual string RdfsLabel { get { return "http://w3id.org/roh/CategoryPath"; } }
 		public OntologyEntity Entity { get; set; }
 
-		[LABEL(LanguageEnum.es,"Nodo de clasificación del grupo")]
-		[RDFProperty("http://w3id.org/roh/groupClassificationNode")]
-		public  List<Concept> Roh_groupClassificationNode { get; set;}
-		public List<string> IdsRoh_groupClassificationNode { get; set;}
+		[LABEL(LanguageEnum.es,"http://w3id.org/roh/categoryNode")]
+		[RDFProperty("http://w3id.org/roh/categoryNode")]
+		[MinLength(1)]
+		public  List<Concept> Roh_categoryNode { get; set;}
+		public List<string> IdsRoh_categoryNode { get; set;}
 
 
 		internal override void GetProperties()
 		{
 			base.GetProperties();
-			propList.Add(new ListStringOntologyProperty("roh:groupClassificationNode", this.IdsRoh_groupClassificationNode));
+			propList.Add(new ListStringOntologyProperty("roh:categoryNode", this.IdsRoh_categoryNode));
 		}
 
 		internal override void GetEntities()

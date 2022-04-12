@@ -37,11 +37,9 @@ namespace GroupOntology
 		public virtual string RdfsLabel { get { return "http://w3id.org/roh/ResearchArea"; } }
 		public OntologyEntity Entity { get; set; }
 
-		[LABEL(LanguageEnum.es,"Fecha de inicio")]
 		[RDFProperty("http://vivoweb.org/ontology/core#start")]
 		public  DateTime? Vivo_start { get; set;}
 
-		[LABEL(LanguageEnum.es,"Fecha de fin")]
 		[RDFProperty("http://vivoweb.org/ontology/core#end")]
 		public  DateTime? Vivo_end { get; set;}
 

@@ -90,23 +90,18 @@ namespace MaindocumentOntology
 		public  DocumentFormat Roh_format  { get; set;} 
 		public string IdRoh_format  { get; set;} 
 
-		[LABEL(LanguageEnum.es,"e-ISSN")]
 		[RDFProperty("http://purl.org/ontology/bibo/eissn")]
 		public  string Bibo_eissn { get; set;}
 
-		[LABEL(LanguageEnum.es,"Título de la publicación principal")]
 		[RDFProperty("http://w3id.org/roh/title")]
 		public  string Roh_title { get; set;}
 
-		[LABEL(LanguageEnum.es,"ISBN")]
 		[RDFProperty("http://purl.org/ontology/bibo/isbn")]
 		public  string Bibo_isbn { get; set;}
 
-		[LABEL(LanguageEnum.es,"Editorial")]
 		[RDFProperty("http://purl.org/ontology/bibo/editor")]
 		public  string Bibo_editor { get; set;}
 
-		[LABEL(LanguageEnum.es,"ISSN")]
 		[RDFProperty("http://purl.org/ontology/bibo/issn")]
 		public  string Bibo_issn { get; set;}
 

@@ -26,79 +26,103 @@ namespace Harvester
 
         public Harvester(IHaversterServices haversterServices)
         {
-            this.HaversterServices = haversterServices; ;
+            this.HaversterServices = haversterServices;
         }
 
-
-
-
-
-        //Harvest people data
-        public List<Persona> HarvestPeople()
+        /// <summary>
+        /// Obtiene los IDs de las Organizaciones.
+        /// </summary>
+        /// <returns></returns>
+        public List<string> HarvestOrganizationsIds(ReadConfig pConfig)
         {
-            Persona person = new();
-            List<Persona> peopleList = new();
-            List<IdentifierOAIPMH> personIdList = HaversterServices.ListIdentifiers(LastSyncDate, set:"Persona");
+            // Comprobar si existe el fichero de IDs.
+            List<string> listaIds = new List<string>();
 
-            foreach (var personId in personIdList)
-            {
-                string id = personId.Identifier;
-                // TODO: QUITAR
-                //id = "Persona_28710458";
-                string xml = HaversterServices.GetRecord(id);
-                XmlSerializer serializer = new(typeof(Persona));
-                using (StringReader sr = new(xml))
+            if (!File.Exists(pConfig.GetLogIdentifier() + "/Organizaciones.txt"))
+            {             
+                HashSet<string> listaIdsSinRepetir = new HashSet<string>();
+                List<IdentifierOAIPMH> organizationIdList = HaversterServices.ListIdentifiers("2022-01-01T00:00:00Z", set: "Organizacion");
+                //List<IdentifierOAIPMH> organizationIdList = HaversterServices.ListIdentifiers(DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss") + "Z", set: "Organizacion");
+                foreach (var organizationId in organizationIdList)
                 {
-                    person = (Persona)serializer.Deserialize(sr);
+                    listaIdsSinRepetir.Add(organizationId.Identifier);
                 }
-                peopleList.Add(person);
-                Console.WriteLine("Fetched " + id);
+                List<string> listaIdsOrdenados = listaIdsSinRepetir.ToList();
+                listaIdsOrdenados.Sort();
+                listaIds = listaIdsOrdenados;
+                File.WriteAllLines(pConfig.GetLogIdentifier() + "/Organizaciones.txt", listaIdsOrdenados);
             }
-            return peopleList;
+            else
+            {
+                string[] lineas = File.ReadAllLines(pConfig.GetLogIdentifier() + "/Organizaciones.txt");
+                listaIds = lineas.ToList();
+            }
+
+            return listaIds;
         }
 
-        //Harvest organizations data
-        public List<Empresa> HarvestOrganizations()
+        /// <summary>
+        /// Obtiene los IDs de las Personas.
+        /// </summary>
+        /// <returns></returns>
+        public List<string> HarvestPersonsIds(ReadConfig pConfig)
         {
-            Empresa organization = new();
-            List<Empresa> organizationsList = new();
-            List<IdentifierOAIPMH> organizationIdList = HaversterServices.ListIdentifiers(LastSyncDate, set:"Organizacion");
+            // Comprobar si existe el fichero de IDs.
+            List<string> listaIds = new List<string>();
 
-            foreach (var organizationId in organizationIdList)
+            if (!File.Exists(pConfig.GetLogIdentifier() + "/Personas.txt"))
             {
-                string id = organizationId.Identifier;
-                string xml = HaversterServices.GetRecord(id);
-                XmlSerializer serializer = new(typeof(Empresa));
-                using (StringReader sr = new(xml))
+                HashSet<string> listaIdsSinRepetir = new HashSet<string>();
+                List<IdentifierOAIPMH> personIdList = HaversterServices.ListIdentifiers("2022-01-01T00:00:00Z", set: "Persona");
+                //List<IdentifierOAIPMH> personIdList = HaversterServices.ListIdentifiers(DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss") + "Z", set: "Persona");
+                foreach (var personId in personIdList)
                 {
-                    organization = (Empresa)serializer.Deserialize(sr);
+                    listaIdsSinRepetir.Add(personId.Identifier);
                 }
-                organizationsList.Add(organization);
-                Console.WriteLine("Fetched " + id);
+                List<string> listaIdsOrdenados = listaIdsSinRepetir.ToList();
+                listaIdsOrdenados.Sort();
+                listaIds = listaIdsOrdenados;
+                File.WriteAllLines(pConfig.GetLogIdentifier() + "/Personas.txt", listaIdsOrdenados);
             }
-            return organizationsList;
+            else
+            {
+                string[] lineas = File.ReadAllLines(pConfig.GetLogIdentifier() + "/Personas.txt");
+                listaIds = lineas.ToList();
+            }
+
+            return listaIds;
         }
 
-        //Harvest projects data
-        public List<Proyecto> HarvestProjects()
+        /// <summary>
+        /// Obtiene los IDs de los Proyectos.
+        /// </summary>
+        /// <returns></returns>
+        public List<string> HarvestProjectsIds(ReadConfig pConfig)
         {
-            Proyecto project = new();
-            List<Proyecto> projectList = new();
-            List<IdentifierOAIPMH> projectIdList = HaversterServices.ListIdentifiers(LastSyncDate, set:"Proyecto");
+            // Comprobar si existe el fichero de IDs.
+            List<string> listaIds = new List<string>();
 
-            foreach (var projectId in projectIdList)
+            if (!File.Exists(pConfig.GetLogIdentifier() + "/Proyectos.txt"))
             {
-                string id = projectId.Identifier;
-                string xml = HaversterServices.GetRecord(id);
-                XmlSerializer serializer = new(typeof(Proyecto));
-                using (StringReader sr = new(xml))
+                HashSet<string> listaIdsSinRepetir = new HashSet<string>();
+                List<IdentifierOAIPMH> projectIdList = HaversterServices.ListIdentifiers("2022-01-01T00:00:00Z", set: "Proyecto");
+                //List<IdentifierOAIPMH> projectIdList = HaversterServices.ListIdentifiers(DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss") + "Z", set: "Proyecto");
+                foreach (var personId in projectIdList)
                 {
-                    project = (Proyecto)serializer.Deserialize(sr);
+                    listaIdsSinRepetir.Add(personId.Identifier);
                 }
-                projectList.Add(project);
-                Console.WriteLine("Fetched " + id);
+                List<string> listaIdsOrdenados = listaIdsSinRepetir.ToList();
+                listaIdsOrdenados.Sort();
+                listaIds = listaIdsOrdenados;
+                File.WriteAllLines(pConfig.GetLogIdentifier() + "/Proyectos.txt", listaIdsOrdenados);
             }
-            return projectList;
+            else
+            {
+                string[] lineas = File.ReadAllLines(pConfig.GetLogIdentifier() + "/Proyectos.txt");
+                listaIds = lineas.ToList();
+            }
+
+            return listaIds;
         }
 
         public static string GetLastSyncDate()

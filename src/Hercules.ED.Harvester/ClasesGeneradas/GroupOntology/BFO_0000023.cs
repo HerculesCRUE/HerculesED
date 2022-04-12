@@ -49,25 +49,22 @@ namespace GroupOntology
 			{
 				this.Roh_roleOf = new Person(propRoh_roleOf.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
+			this.Roh_isIP= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isIP"));
 		}
 
 		public virtual string RdfType { get { return "http://purl.obolibrary.org/obo/BFO_0000023"; } }
 		public virtual string RdfsLabel { get { return "http://purl.obolibrary.org/obo/BFO_0000023"; } }
 		public OntologyEntity Entity { get; set; }
 
-		[LABEL(LanguageEnum.es,"Líneas de investigación")]
 		[RDFProperty("http://vivoweb.org/ontology/core#hasResearchArea")]
 		public  List<ResearchArea> Vivo_hasResearchArea { get; set;}
 
-		[LABEL(LanguageEnum.es,"Firma")]
 		[RDFProperty("http://vivoweb.org/ontology/core#start")]
 		public  DateTime? Vivo_start { get; set;}
 
-		[LABEL(LanguageEnum.es,"Fecha inicio")]
 		[RDFProperty("http://vivoweb.org/ontology/core#end")]
 		public  DateTime? Vivo_end { get; set;}
 
-		[LABEL(LanguageEnum.es,"Fecha fin")]
 		[RDFProperty("http://xmlns.com/foaf/0.1/nick")]
 		public  string Foaf_nick { get; set;}
 
@@ -76,6 +73,9 @@ namespace GroupOntology
 		[Required]
 		public  Person Roh_roleOf  { get; set;} 
 		public string IdRoh_roleOf  { get; set;} 
+
+		[RDFProperty("http://w3id.org/roh/isIP")]
+		public  bool Roh_isIP { get; set;}
 
 
 		internal override void GetProperties()
@@ -89,6 +89,7 @@ namespace GroupOntology
 				}
 			propList.Add(new StringOntologyProperty("foaf:nick", this.Foaf_nick));
 			propList.Add(new StringOntologyProperty("roh:roleOf", this.IdRoh_roleOf));
+			propList.Add(new BoolOntologyProperty("roh:isIP", this.Roh_isIP));
 		}
 
 		internal override void GetEntities()
