@@ -114,21 +114,67 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
             if (pDoi != null) // Recuperar una publicación por DOI.
             {
-                Log.Information("Haciendo petición a Scopus...");
-                objInicial_Scopus = llamada_Scopus_Doi(pDoi);
-                Log.Information("Haciendo petición a Wos...");
-                objInicial_woS = llamada_WoS_Doi(pDoi);
-                Log.Information("Haciendo petición a OpenAire...");
-                objInicial_openAire = llamada_OpenAire_Doi(pDoi);
+                try
+                {
+                    Log.Information("Haciendo petición a Scopus...");
+                    objInicial_Scopus = llamada_Scopus_Doi(pDoi);
+                }
+                catch (Exception e)
+                {
+                    Log.Information("No se ha podido recuperar los datos de Scopus...");
+                }
+
+                try
+                {
+                    Log.Information("Haciendo petición a Wos...");
+                    objInicial_woS = llamada_WoS_Doi(pDoi);
+                }
+                catch (Exception e)
+                {
+                    Log.Information("No se ha podido recuperar los datos de Wos...");
+                }
+
+                try
+                {
+                    Log.Information("Haciendo petición a OpenAire...");
+                    objInicial_openAire = llamada_OpenAire_Doi(pDoi);
+                }
+                catch (Exception e)
+                {
+                    Log.Information("No se ha podido recuperar los datos de OpenAire...");
+                }
             }
             else // Recuperar las publicaciones de un autor desde 'X' fecha.
             {
-                Log.Information("Haciendo petición a Scopus...");
-                objInicial_Scopus = llamada_Scopus(name, date);
-                Log.Information("Haciendo petición a Wos...");
-                objInicial_woS = llamada_WoS(name, date);
-                Log.Information("Haciendo petición a OpenAire...");
-                objInicial_openAire = llamada_OpenAire(name, date);
+                try
+                {
+                    Log.Information("Haciendo petición a Scopus...");
+                    objInicial_Scopus = llamada_Scopus(name, date);
+                }
+                catch (Exception e)
+                {
+                    Log.Information("No se ha podido recuperar los datos de Scopus...");
+                }
+
+                try
+                {
+                    Log.Information("Haciendo petición a Wos...");
+                    objInicial_woS = llamada_WoS(name, date);
+                }
+                catch (Exception e)
+                {
+                    Log.Information("No se ha podido recuperar los datos de Wos...");
+                }
+
+                try
+                {
+                    Log.Information("Haciendo petición a OpenAire...");
+                    objInicial_openAire = llamada_OpenAire(name, date);
+                }
+                catch (Exception e)
+                {
+                    Log.Information("No se ha podido recuperar los datos de OpenAire...");
+                }
             }
 
             int contadorPubWos = 1;
@@ -296,7 +342,8 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         contadorPubWos++;
                     }
                 }
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
 
             }
@@ -450,7 +497,8 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         contadoPubScopus++;
                     }
                 }
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
 
             }
@@ -584,7 +632,8 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         contadorPubOpenAire++;
                     }
                 }
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
 
             }
@@ -592,9 +641,8 @@ namespace PublicationConnect.ROs.Publications.Controllers
             //string info = JsonConvert.SerializeObject(resultado);
             //string path = _Configuracion.GetRutaJsonSalida();
             //Log.Information("Escribiendo datos en fichero...");
-            //File.WriteAllText($@"Files/{name}___2022-03-25___ejemplo.json", info);
+            //File.WriteAllText($@"Files/{name}___FECHA___USUARIO.json", info);
             return resultado;
-
         }
         //public List<Knowledge_enriquecidos> enriquedicmiento_pal(Publication pub)
         //{
@@ -2675,7 +2723,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 }
 
                 // ÑAPA
-                if(!dicPersonas["SemanticScholar"].Any())
+                if (!dicPersonas["SemanticScholar"].Any())
                 {
                     foreach (Models.Person personaOpenAire in dicPersonas["OpenAire"])
                     {
@@ -2726,7 +2774,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         }
 
                         listaPersonasDefinitivas.Add(personaFinal);
-                    }                    
+                    }
                 }
 
                 // Encontrar el autor
