@@ -16,9 +16,12 @@ namespace OAI_PMH.Services
         private static string accessToken;
         private static string refreshToken;
         private static DateTime lastUpdate;
+        private static ConfigService _ConfigService;
 
         public static string CheckToken(ConfigService pConfig)
         {
+            _ConfigService = pConfig;
+
             if (lastUpdate != default)
             {
                 TimeSpan diff = DateTime.UtcNow.Subtract(lastUpdate);
@@ -73,7 +76,7 @@ namespace OAI_PMH.Services
             }
             else
             {
-                return "";
+                return string.Empty;
             }
         }
 
@@ -83,8 +86,8 @@ namespace OAI_PMH.Services
             var content = new FormUrlEncodedContent(new[]
             {
                 new KeyValuePair<string, string>("client_id", "front"),
-                new KeyValuePair<string, string>("username", "visor-csp"),
-                new KeyValuePair<string, string>("password", "visor-csp-2021"),
+                new KeyValuePair<string, string>("username", _ConfigService.GetUsernameToken()),
+                new KeyValuePair<string, string>("password", _ConfigService.GetPasswordToken()),
                 new KeyValuePair<string, string>("grant_type", "password")
             });
 

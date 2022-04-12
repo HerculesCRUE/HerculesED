@@ -4,5 +4,6 @@
     {
         public string Numero { get; set; }
         public string PaisRef { get; set; }
+        public string PersonaRef { get; set; }
     }
 }

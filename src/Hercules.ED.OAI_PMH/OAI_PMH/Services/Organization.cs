@@ -47,7 +47,6 @@ namespace OAI_PMH.Services
             var json = JObject.Parse(response.Content);
             empresa = JsonConvert.DeserializeObject<Empresa>(json.ToString());
             empresa.DatosContacto = GetDatosContacto(identifier, pConfig);
-            empresa.DatosTipoEmpresa = GetDatosTipoEmpresa(identifier, pConfig);
             return empresa;
         }
 
@@ -62,6 +61,19 @@ namespace OAI_PMH.Services
             string datosLimpios = response.Content;
             datosContacto = JsonConvert.DeserializeObject<DatosContacto>(datosLimpios);
             return datosContacto;
+        }
+
+        private static EmpresaClasificacion GetEmpresaClasificacion(string id, ConfigService pConfig)
+        {
+            string accessToken = Token.CheckToken(pConfig);
+            EmpresaClasificacion datos = new();
+            RestClient client = new(pConfig.GetUrlBaseOrganizacion() + "empresas-clasificaciones/empresa/" + id);
+            client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
+            var request = new RestRequest(Method.GET);
+            IRestResponse response = client.Execute(request);
+            string datosLimpios = response.Content;
+            datos = JsonConvert.DeserializeObject<EmpresaClasificacion>(datosLimpios);
+            return datos;
         }
 
         private static DatosTipoEmpresa GetDatosTipoEmpresa(string id, ConfigService pConfig)

@@ -17,6 +17,8 @@ namespace OAI_PMH.Services
         {
             string accessToken = Token.CheckToken(pConfig);
             Dictionary<string, DateTime> idDictionary = new();
+
+            #region --- Personal Data
             List<string> idList = new();
             RestClient client = new(pConfig.GetUrlBasePersona() + "personas/modificadas-ids?q=fechaModificacion=ge=\"" + from + "\"");
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
@@ -35,6 +37,131 @@ namespace OAI_PMH.Services
                     }
                 }
             }
+            #endregion
+
+            #region --- Formación Académica
+            Dictionary<string, DateTime> dicFormacionAcademica = AcademicFormation.GetModifiedCiclos(from, pConfig);
+            foreach(KeyValuePair<string, DateTime> item in dicFormacionAcademica)
+            {
+                string idPersona = "Persona_" + item.Key.Split("_")[1];
+                if (!idDictionary.ContainsKey(idPersona))
+                {
+                    idDictionary.Add(idPersona, DateTime.UtcNow);
+                }
+                else
+                {
+                    if (DateTime.Compare(item.Value, idDictionary[idPersona]) == 1)
+                    {
+                        idDictionary[idPersona] = item.Value;
+                    }
+                }
+            }
+
+            dicFormacionAcademica = AcademicFormation.GetModifiedDoctorados(from, pConfig);
+            foreach (KeyValuePair<string, DateTime> item in dicFormacionAcademica)
+            {
+                string idPersona = "Persona_" + item.Key.Split("_")[1];
+                if (!idDictionary.ContainsKey(idPersona))
+                {
+                    idDictionary.Add(idPersona, DateTime.UtcNow);
+                }
+                else
+                {
+                    if (DateTime.Compare(item.Value, idDictionary[idPersona]) == 1)
+                    {
+                        idDictionary[idPersona] = item.Value;
+                    }
+                }
+            }
+
+            dicFormacionAcademica = AcademicFormation.GetModifiedPosgrado(from, pConfig);
+            foreach (KeyValuePair<string, DateTime> item in dicFormacionAcademica)
+            {
+                string idPersona = "Persona_" + item.Key.Split("_")[1];
+                if (!idDictionary.ContainsKey(idPersona))
+                {
+                    idDictionary.Add(idPersona, DateTime.UtcNow);
+                }
+                else
+                {
+                    if (DateTime.Compare(item.Value, idDictionary[idPersona]) == 1)
+                    {
+                        idDictionary[idPersona] = item.Value;
+                    }
+                }
+            }
+
+            dicFormacionAcademica = AcademicFormation.GetModifiedEspecializada(from, pConfig);
+            foreach (KeyValuePair<string, DateTime> item in dicFormacionAcademica)
+            {
+                string idPersona = "Persona_" + item.Key.Split("_")[1];
+                if (!idDictionary.ContainsKey(idPersona))
+                {
+                    idDictionary.Add(idPersona, DateTime.UtcNow);
+                }
+                else
+                {
+                    if (DateTime.Compare(item.Value, idDictionary[idPersona]) == 1)
+                    {
+                        idDictionary[idPersona] = item.Value;
+                    }
+                }
+            }
+            #endregion
+
+            #region --- Actividad Docente
+            Dictionary<string, DateTime> dicActividadDocente = DocentActivity.GetModifiedTesis(from, pConfig);
+            foreach (KeyValuePair<string, DateTime> item in dicActividadDocente)
+            {
+                string idPersona = "Persona_" + item.Key.Split("_")[1];
+                if (!idDictionary.ContainsKey(idPersona))
+                {
+                    idDictionary.Add(idPersona, DateTime.UtcNow);
+                }
+                else
+                {
+                    if (DateTime.Compare(item.Value, idDictionary[idPersona]) == 1)
+                    {
+                        idDictionary[idPersona] = item.Value;
+                    }
+                }
+            }
+
+            dicActividadDocente = DocentActivity.GetModifiedAcademicFormationProvided(from, pConfig);
+            foreach (KeyValuePair<string, DateTime> item in dicActividadDocente)
+            {
+                string idPersona = "Persona_" + item.Key.Split("_")[1];
+                if (!idDictionary.ContainsKey(idPersona))
+                {
+                    idDictionary.Add(idPersona, DateTime.UtcNow);
+                }
+                else
+                {
+                    if (DateTime.Compare(item.Value, idDictionary[idPersona]) == 1)
+                    {
+                        idDictionary[idPersona] = item.Value;
+                    }
+                }
+            }
+
+            dicActividadDocente = DocentActivity.GetModifiedSeminars(from, pConfig);
+            foreach (KeyValuePair<string, DateTime> item in dicActividadDocente)
+            {
+                string idPersona = "Persona_" + item.Key.Split("_")[1];
+                if (!idDictionary.ContainsKey(idPersona))
+                {
+                    idDictionary.Add(idPersona, DateTime.UtcNow);
+                }
+                else
+                {
+                    if (DateTime.Compare(item.Value, idDictionary[idPersona]) == 1)
+                    {
+                        idDictionary[idPersona] = item.Value;
+                    }
+                }
+            }
+            #endregion
+
             return idDictionary;
         }
 
@@ -47,6 +174,10 @@ namespace OAI_PMH.Services
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);
+            if(string.IsNullOrEmpty(response.Content))
+            {
+                return null;
+            }
             var json = JObject.Parse(response.Content);
             persona = JsonConvert.DeserializeObject<Persona>(json.ToString());
             persona.DatosPersonales = GetDatosPersonales(identifier, pConfig);
@@ -55,6 +186,13 @@ namespace OAI_PMH.Services
             persona.DatosAcademicos = GetDatosAcademicos(identifier, pConfig);
             persona.Fotografia = GetFotografia(identifier, pConfig);
             persona.Sexenios = GetSexenios(identifier, pConfig);
+            persona.FormacionAcademicaImpartida = DocentActivity.GetAcademicFormationProvided(identifier, pConfig);
+            persona.SeminariosCursos = DocentActivity.GetSeminars(identifier, pConfig);
+            persona.Tesis = DocentActivity.GetTesis(identifier, pConfig);
+            persona.Ciclos = AcademicFormation.GetFormacionAcademicaCiclos(identifier, pConfig);
+            persona.Doctorados = AcademicFormation.GetFormacionAcademicaDoctorados(identifier, pConfig);
+            persona.FormacionEspecializada = AcademicFormation.GetFormacionAcademicaEspecializada(identifier, pConfig);
+            persona.Posgrado = AcademicFormation.GetFormacionAcademicaPosgrado(identifier, pConfig);
             return persona;
         }
 
@@ -105,6 +243,7 @@ namespace OAI_PMH.Services
             datosAcademicos = JsonConvert.DeserializeObject<DatosAcademicos>(response.Content);
             return datosAcademicos;
         }
+
         private static Fotografia GetFotografia(string id, ConfigService pConfig)
         {
             string accessToken = Token.CheckToken(pConfig);

@@ -53,5 +53,7 @@ namespace OAI_PMH.Models.SGI.Project
         public List<ProyectoEntidadConvocante> EntidadesConvocantes { get; set; }
         public List<ProyectoEntidadFinanciadora> EntidadesFinanciadoras { get; set; }
         public List<ProyectoAnualidadResumen> ResumenAnualidades { get; set; }
+        public List<ProyectoClasificacion> ProyectoClasificacion { get; set; }
+        public List<NotificacionProyectoExternoCVN> NotificacionProyectoExternoCVN { get; set; }
     }
 }
