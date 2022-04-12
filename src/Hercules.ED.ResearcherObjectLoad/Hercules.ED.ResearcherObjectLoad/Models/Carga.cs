@@ -4,9 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 using System.IO.Compression;
 using Gnoss.ApiWrapper.ApiModel;
 using DocumentOntology;
@@ -16,11 +14,8 @@ using Hercules.ED.ResearcherObjectLoad.Models.ObjetoJson;
 using Hercules.ED.ResearcherObjectLoad.Config;
 using System.Threading;
 using Hercules.ED.DisambiguationEngine.Models;
-using System.Reflection;
 using Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects;
 using System.Collections.Concurrent;
-using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
-using System.Runtime.InteropServices;
 using Hercules.ED.ResearcherObjectLoad.Utils;
 
 namespace Hercules.ED.ResearcherObjectLoad.Models
