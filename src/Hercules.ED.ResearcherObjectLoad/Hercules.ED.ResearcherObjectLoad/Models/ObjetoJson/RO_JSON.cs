@@ -15,7 +15,6 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.ObjetoJson
         public string descripcion { get; set; }
         public string url { get; set; }
         public string licencia { get; set; }
-        public List<string> etiquetas { get; set; }
         public List<string> etiquetasEnriquecidas { get; set; }
         public List<string> categoriasEnriquecidas { get; set; }
     }

@@ -12,6 +12,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.ObjetoJson
         public string fechaPublicacion { get; set; }
         public string doi { get; set; }
         public List<Person_JSON> autores { get; set; }
+        public List<string> etiquetas { get; set; }
     }
 
 }
