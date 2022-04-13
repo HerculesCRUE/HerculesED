@@ -127,7 +127,7 @@
                                                     if (bfo_0000023.Rdf_member != null && bfo_0000023.Rdf_member.Roh_cvOf != null && bfo_0000023.Rdf_member.Roh_gnossUser.Replace("http://gnoss/", "").ToLower() == IdentidadActual.KeyUser.ToString().ToLower())
                                                     {
                                                         urlCV = bfo_0000023.Rdf_member.Roh_cvOf.URL;
-                                                        urlCV += "?tab=actividad-tab&id=" + FichaDocumento.Key.ToString().ToLower();
+                                                        urlCV += "?tab=http://w3id.org/roh/scientificActivity&id=" + FichaDocumento.Key.ToString().ToLower();
                                                     }
                                                 }
                                                 if (!string.IsNullOrEmpty(urlCV))
