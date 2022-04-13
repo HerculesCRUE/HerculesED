@@ -16,23 +16,11 @@ namespace DesnormalizadorHercules
         {
             //TODO eliminar
             CrearPersonas();
-            ActualizadorEDMA.FusionNombre(new List<string> { "skarmeta" });
-            ActualizadorEDMA.FusionNombre(new List<string> { "oscar", "canovas" });
-            ActualizadorEDMA.FusionNombre(new List<string> { "jorge", "bernal" });
-            ActualizadorEDMA.FusionNombre(new List<string> { "alberto", "caballero" });
-            ActualizadorEDMA.FusionNombre(new List<string> { "garcia", "sola" });
-            ActualizadorEDMA.FusionNombre(new List<string> { "garcia", "carrillo" });
-            ActualizadorEDMA.FusionNombre(new List<string> { "felix", "garcia", "clemente" });
-            ActualizadorEDMA.FusionNombre(new List<string> { "elena", "garcia", "torroglosa" });
-            ActualizadorEDMA.FusionNombre(new List<string> { "t", "garcia", "valverde" });            
-            ActualizadorEDMA.FusionNombre(new List<string> { "pedro", "garcia", "lopez" });
-            ActualizadorEDMA.FusionNombre(new List<string> { "fernando", "jimenez" });
 
-
-            bool eliminarDatos = false;
-            if (eliminarDatos)
+            bool eliminarCVs = false;
+            if (eliminarCVs)
             {
-                ActualizadorEDMA.EliminarDatosDesnormalizados();
+                ActualizadorEDMA.EliminarCVs();
             }
             while (true)
             {
@@ -52,6 +40,26 @@ namespace DesnormalizadorHercules
 
         private static void CrearPersonas()
         {
+            //Antonio Skaremta-->skarmeta22
+            //Manuel Campos-->manuel-camp2
+            //Francisco Esquembre-->francisco-es
+            //Jose Tomas Palma Mendez-->jose-tomas
+            //Diana Castilla-->diana-castil
+            //Felix Cesareo Gomez de Leon Hijes-->felix-cesare
+            //Fernando Jimenez Barrionuevo-->fernando-jim
+            //Gracia Sanchez Carpena-->gracia-sanch
+            //Jose Manuel Juarez Herrero-->jose-juarez
+            //Maria Antonia Cardenas Viedma-->maria-carden
+
+
+            //http://gnoss.com/items/Person_ad372791-7287-425d-8238-83931a5d9818_b06212ce-8c39-4608-8542-ec97463a6fdb
+            //8310
+            //31248453
+
+            string rutaOauth = $@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/OAuthV3.config";
+            UserApi userApi = new UserApi(rutaOauth);
+            ResourceApi resourceApi = new ResourceApi(rutaOauth);
+
             //Antonio Skaremta 28710458
             AltaUsuarioGnoss("Antonio", "Skarmeta", "antonio--skarmeta@pruebagnoss.com", "skarmeta22", "28710458", "AdrianSaavedra-GNOSS", "12070100");
 
@@ -60,6 +68,31 @@ namespace DesnormalizadorHercules
 
             //Francisco Esquembre 27443184
             AltaUsuarioGnoss("Francisco", "Esquembre", "francisco--esquembre@pruebagnoss.com", "francisco-es", "27443184", "franciscoEsquembre-github", "33333333");
+
+            //José Tomás 8310
+            AltaUsuarioGnoss("Jose", "Tomas", "jose---tomas@pruebagnoss.com", "jose-tomas", "31248453", "", "");
+
+            //Diana Castilla 27281387213879
+            AltaUsuarioGnoss("Diana", "Castilla", "diana---castilla@pruebagnoss.com", "diana-castil", "27281387213879", "", "");
+
+
+            //Felix Cesareo Gomez de Leon Hijes
+            AltaUsuarioGnoss("Felix", "Cesareo", "Felix--Cesareo@pruebagnoss.com", "felix-cesare", "22463209", "", "");
+
+            //Fernando Jimenez Barrionuevo
+            AltaUsuarioGnoss("Fernando", "Jimenez", "Fernando---Jimenez@pruebagnoss.com", "fernando-jim", "29084098", "", "");
+
+            //Gracia Sanchez Carpena
+            AltaUsuarioGnoss("Gracia", "Sanchez", "Gracia---Sanchez@pruebagnoss.com", "gracia-sanch", "22144772", "", "");
+
+            //Jose Manuel Juarez Herrero
+            AltaUsuarioGnoss("Jose", "Juarez", "Jose---Juarez@pruebagnoss.com", "jose-juarez", "48479115", "", "");
+
+            //Maria Antonia Cardenas Viedma
+            AltaUsuarioGnoss("Maria", "Cardenas", "Maria---Cardenas@pruebagnoss.com", "maria-carden", "26476225", "", "");
+
+
+
         }
 
         public static User AltaUsuarioGnoss(string pNombre, string pApellidos, string pEmail, string pNombreCorto,string pID, string pUsuarioGitHub,string pUsuarioFigShare)
