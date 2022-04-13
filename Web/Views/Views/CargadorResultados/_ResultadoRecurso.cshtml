@@ -111,7 +111,7 @@
                                                 if(IdentidadActual.KeyUser == new Guid(idUser))
                                                 {
                                                     urlCV = Comunidad.Url+"/"+ Html.GetText("URLSEM","RECURSO")+"/cv/"+ row[propCV].Replace("http://gnoss/", "").ToLower();
-                                                    urlCV += "?tab=actividad-tab&id=" + Model.Key.ToString().ToLower();
+                                                    urlCV += "?tab=http://w3id.org/roh/scientificActivity&id=" + Model.Key.ToString().ToLower();
                                                 }
                                             }
                                         }

@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
-namespace GuardadoCV.Models.API.Input
+namespace EditorCV.Models.API.Input
 {
     //Contiene la/las clases necesarias que tiene como entrada el servicio para la obtención de propiedades
 

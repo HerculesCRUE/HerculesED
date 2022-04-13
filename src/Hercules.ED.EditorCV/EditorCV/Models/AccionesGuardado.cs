@@ -1,14 +1,13 @@
 ﻿using EditorCV.Models;
+using EditorCV.Models.API;
+using EditorCV.Models.API.Input;
 using EditorCV.Models.API.Response;
+using EditorCV.Models.API.Templates;
 using EditorCV.Models.ORCID;
+using EditorCV.Models.Utils;
 using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.ApiModel;
 using Gnoss.ApiWrapper.Model;
-using GuardadoCV.Models.API;
-using GuardadoCV.Models.API.Input;
-using GuardadoCV.Models.API.Response;
-using GuardadoCV.Models.API.Templates;
-using GuardadoCV.Models.Utils;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
@@ -17,11 +16,10 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Threading.Tasks;
 using System.Web;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
-namespace GuardadoCV.Models
+namespace EditorCV.Models
 {
     /// <summary>
     /// Clase utilizada para las acciones de modificación de datos en el CV
@@ -100,8 +98,8 @@ namespace GuardadoCV.Models
             List<string> properties = subjectPropertiesAndRdfTypes.Item2;
             List<string> rdftypes = subjectPropertiesAndRdfTypes.Item3;
 
-            GuardadoCV.Models.API.Templates.Tab template = UtilityCV.TabTemplates.First(x => x.rdftype == rdftypes[1]);
-            GuardadoCV.Models.API.Templates.TabSection templateSection = template.sections.First(x => x.property == properties[1]);
+            API.Templates.Tab template = UtilityCV.TabTemplates.First(x => x.rdftype == rdftypes[1]);
+            API.Templates.TabSection templateSection = template.sections.First(x => x.property == properties[1]);
 
             if (templateSection.presentation.listItemsPresentation.listItemEdit.propAuthor != null)
             {
@@ -164,7 +162,7 @@ namespace GuardadoCV.Models
         {
             if (pRdfTypeTab == "http://w3id.org/roh/PersonalData")
             {
-                GuardadoCV.Models.API.Templates.Tab template = UtilityCV.TabTemplates.First(x => x.rdftype == pRdfTypeTab);
+                API.Templates.Tab template = UtilityCV.TabTemplates.First(x => x.rdftype == pRdfTypeTab);
 
                 //Modificamos
                 Entity loadedEntity = GetLoadedEntity(pEntity.id, "curriculumvitae");
@@ -183,8 +181,8 @@ namespace GuardadoCV.Models
             else
             {
                 //Item de CV
-                GuardadoCV.Models.API.Templates.Tab template = UtilityCV.TabTemplates.First(x => x.rdftype == pRdfTypeTab);
-                GuardadoCV.Models.API.Templates.TabSection templateSection = template.sections.First(x => x.property == pSectionID);
+                API.Templates.Tab template = UtilityCV.TabTemplates.First(x => x.rdftype == pRdfTypeTab);
+                API.Templates.TabSection templateSection = template.sections.First(x => x.property == pSectionID);
 
                 ItemEdit itemEditConfig = null;
                 if (templateSection.presentation.listItemsPresentation != null)
@@ -351,6 +349,12 @@ namespace GuardadoCV.Models
                         //Si no es editable eliminamos las propiedades que no sean editables
                         List<string> propertiesEditables = templateSection.presentation.listItemsPresentation.listItemEdit.sections.SelectMany(x => x.rows).SelectMany(x => x.properties).Where(x => x.editable).Select(x => x.property).ToList();
                         pEntity.properties.RemoveAll(x => !propertiesEditables.Contains(x.prop.Split(new string[] { "@@@" }, StringSplitOptions.RemoveEmptyEntries)[0]));
+                    }
+                    else
+                    {
+                        //Si es editable eliminamos las propiedades bloqueadas
+                        List<string> propertiesBloqueadas = templateSection.presentation.listItemsPresentation.listItemEdit.sections.SelectMany(x => x.rows).SelectMany(x => x.properties).Where(x => x.blocked).Select(x => x.property).ToList();
+                        pEntity.properties.RemoveAll(x => propertiesBloqueadas.Contains(x.prop.Split(new string[] { "@@@" }, StringSplitOptions.RemoveEmptyEntries)[0]));
                     }
 
                     Entity loadedEntity = GetLoadedEntity(pEntity.id, pEntity.ontology);

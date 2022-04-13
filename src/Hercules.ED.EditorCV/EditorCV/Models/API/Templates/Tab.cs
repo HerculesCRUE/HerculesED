@@ -1,10 +1,9 @@
-using GuardadoCV.Models.Utils;
+using EditorCV.Models.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 
-namespace GuardadoCV.Models.API.Templates
+namespace EditorCV.Models.API.Templates
 {
     //Clases de configuración para la presetación de las pestañas
 

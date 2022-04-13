@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace GuardadoCV.Models.API.Response
+namespace EditorCV.Models.API.Response
 {
     /// <summary>
     /// Json de respuesta básico

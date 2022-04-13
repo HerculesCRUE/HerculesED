@@ -1,22 +1,17 @@
-﻿using EditorCV.Models;
+﻿using EditorCV.Models.API.Templates;
 using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.ApiModel;
-using Gnoss.ApiWrapper.Model;
-using GuardadoCV.Models.API;
-using GuardadoCV.Models.API.Templates;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
-namespace GuardadoCV.Models.Utils
+namespace EditorCV.Models.Utils
 {
     public class UtilityCV
     {
