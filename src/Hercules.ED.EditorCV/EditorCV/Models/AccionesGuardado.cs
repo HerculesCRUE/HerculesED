@@ -349,6 +349,12 @@ namespace GuardadoCV.Models
                         List<string> propertiesEditables = templateSection.presentation.listItemsPresentation.listItemEdit.sections.SelectMany(x => x.rows).SelectMany(x => x.properties).Where(x => x.editable).Select(x => x.property).ToList();
                         pEntity.properties.RemoveAll(x => !propertiesEditables.Contains(x.prop.Split(new string[] { "@@@" }, StringSplitOptions.RemoveEmptyEntries)[0]));
                     }
+                    else
+                    {
+                        //Si es editable eliminamos las propiedades bloqueadas
+                        List<string> propertiesBloqueadas = templateSection.presentation.listItemsPresentation.listItemEdit.sections.SelectMany(x => x.rows).SelectMany(x => x.properties).Where(x => x.blocked).Select(x => x.property).ToList();
+                        pEntity.properties.RemoveAll(x => propertiesBloqueadas.Contains(x.prop.Split(new string[] { "@@@" }, StringSplitOptions.RemoveEmptyEntries)[0]));
+                    }
 
 
 
