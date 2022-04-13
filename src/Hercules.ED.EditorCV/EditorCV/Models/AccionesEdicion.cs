@@ -1,25 +1,23 @@
 ﻿using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.ApiModel;
-using GuardadoCV.Models.API.Input;
-using GuardadoCV.Models.API.Response;
-using GuardadoCV.Models.API.Templates;
-using GuardadoCV.Models.Utils;
+using EditorCV.Models.API.Input;
+using EditorCV.Models.API.Response;
+using EditorCV.Models.API.Templates;
+using EditorCV.Models.Utils;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 using System.Text;
-using EditorCV.Models.API.Response;
 using System.Threading.Tasks;
 using System.Net.Http;
 using EditorCV.Models.Enrichment;
 using EditorCV.Controllers;
 using static EditorCV.Models.Enrichment.EnrichmentResponse;
 using Hercules.ED.DisambiguationEngine.Models;
-using EditorCV.Models;
 
-namespace GuardadoCV.Models
+namespace EditorCV.Models
 {
     /// <summary>
     /// Clase utilizada para las acciones de recuperación de datos de edición
