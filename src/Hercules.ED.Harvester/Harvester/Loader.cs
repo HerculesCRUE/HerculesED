@@ -43,216 +43,206 @@ namespace Harvester
         /// </summary>
         public void LoadMainEntities()
         {
-            // Harvest Organizaciones
-            mResourceApi.ChangeOntoly("organization");
             Dictionary<string, string> dicOrganizaciones = GetEntityBBDD("http://xmlns.com/foaf/0.1/Organization", "organization");
-            List<string> idsOrganizaciones = harvester.HarvestOrganizationsIds(_Config);
-            CargarModificarOrganizaciones(_Config, idsOrganizaciones, dicOrganizaciones);
-
-            // Harvest Personas
-            mResourceApi.ChangeOntoly("person");
             Dictionary<string, string> dicPersonas = GetEntityBBDD("http://xmlns.com/foaf/0.1/Person", "person");
-            List<string> idsPersonas = harvester.HarvestPersonsIds(_Config);
-            CargarModificarPersonas(_Config, idsPersonas, dicPersonas);
-
-            // Harvest Projects
-            mResourceApi.ChangeOntoly("project");
             Dictionary<string, string> dicProyectos = GetEntityBBDD("http://vivoweb.org/ontology/core#Project", "project");
-            List<string> idsProyectos = harvester.HarvestProjectsIds(_Config);
-            CargarModificarProyectos(_Config, idsProyectos, dicProyectos, dicPersonas);
+
+            mResourceApi.ChangeOntoly("organization");
+            ProcesarFichero(_Config, "Organizacion", dicOrganizaciones);
+            mResourceApi.ChangeOntoly("person");
+            ProcesarFichero(_Config, "Persona", dicPersonas);
+            mResourceApi.ChangeOntoly("project");
+            ProcesarFichero(_Config, "Proyecto", dicProyectos);
+
+            string fecha = DateTime.Now.ToString("yyyy-MM-ddT00:00:00") + "Z";
+
+            GuardarIdentificadores(_Config, "Organizacion", fecha);
+            GuardarIdentificadores(_Config, "Persona", fecha);            
+            GuardarIdentificadores(_Config, "Proyecto", fecha);
+
+            UpdateLastDate(_Config, fecha);
+
+            mResourceApi.ChangeOntoly("organization");
+            ProcesarFichero(_Config, "Organizacion", dicOrganizaciones);
+            mResourceApi.ChangeOntoly("person");
+            ProcesarFichero(_Config, "Persona", dicPersonas);
+            mResourceApi.ChangeOntoly("project");
+            ProcesarFichero(_Config, "Proyecto", dicProyectos);
         }
 
         /// <summary>
-        /// Permite cargar en BBDD los datos de las organizaciones obtenidas por el SGI.
+        /// Obtiene los identificadores de los datos modificados.
         /// </summary>
         /// <param name="pConfig"></param>
-        /// <param name="pListaIds"></param>
-        /// <param name="pDicOrganizacionesCargadas"></param>
-        private void CargarModificarOrganizaciones(ReadConfig pConfig, List<string> pListaIds, Dictionary<string, string> pDicOrganizacionesCargadas)
+        /// <param name="pSet"></param>
+        /// <param name="pFecha"></param>
+        public void GuardarIdentificadores(ReadConfig pConfig, string pSet, string pFecha)
         {
-            // Obtiene los IDs cargados.
-            List<string> listaIdsCargados = new List<string>();
-            if (File.Exists(pConfig.GetLogCargas() + "/Organizaciones.txt"))
-            {
-                string[] lineas = File.ReadAllLines(pConfig.GetLogCargas() + "/Organizaciones.txt");
-                listaIdsCargados = lineas.ToList();
-            }
-
-            // Obtiene los IDs que faltan por cargar.
-            List<string> idsACargar = pListaIds.Except(listaIdsCargados).ToList();
-            idsACargar.Sort();
-
-            foreach (string id in idsACargar)
-            {
-                // Obtención de datos en bruto.
-                Empresa organization = new Empresa();
-                string xml = harvesterServices.GetRecord(id);
-
-                if (string.IsNullOrEmpty(xml))
-                {
-                    File.AppendAllText(pConfig.GetLogCargas() + "/Organizaciones.txt", id + Environment.NewLine);
-                    continue;
-                }
-
-                XmlSerializer serializer = new(typeof(Empresa));
-                using (StringReader sr = new(xml))
-                {
-                    organization = (Empresa)serializer.Deserialize(sr);
-                }
-
-                // Cambio de modelo.
-                OrganizationOntology.Organization organizationOntology = CrearOrganizacion(organization);
-
-                // Creamos el recurso a cargar/modificar.
-                ComplexOntologyResource resource = organizationOntology.ToGnossApiResource(mResourceApi, null);
-                if (pDicOrganizacionesCargadas.ContainsKey(organizationOntology.Roh_crisIdentifier))
-                {
-                    // Modificación.
-                    mResourceApi.ModifyComplexOntologyResource(resource, false, false);
-                }
-                else
-                {
-                    // Carga.                   
-                    mResourceApi.LoadComplexSemanticResource(resource, false, false);
-                    pDicOrganizacionesCargadas[organizationOntology.Roh_crisIdentifier] = resource.GnossId;
-                }
-
-                // Guardamos el ID cargado.
-                File.AppendAllText(pConfig.GetLogCargas() + "/Organizaciones.txt", id + Environment.NewLine);
-            }
-
-            // Borrar ficheros.
-            File.Delete(pConfig.GetLogIdentifier() + "/Organizaciones.txt");
-            File.Delete(pConfig.GetLogCargas() + "/Organizaciones.txt");
+            harvester.Harvest(pConfig, pSet, pFecha);
         }
 
         /// <summary>
-        /// Permite cargar en BBDD los datos de las personas obtenidas por el SGI.
+        /// Obtiene los datos de los ficheros y los carga.
         /// </summary>
         /// <param name="pConfig"></param>
-        /// <param name="pListaIds"></param>
-        /// <param name="pDicPersonasCargadas"></param>
-        private void CargarModificarPersonas(ReadConfig pConfig, List<string> pListaIds, Dictionary<string, string> pDicPersonasCargadas)
+        /// <param name="pSet"></param>
+        /// <param name="pDicRecursosCargados"></param>
+        public void ProcesarFichero(ReadConfig pConfig, string pSet, Dictionary<string, string> pDicRecursosCargados)
         {
-            // Obtiene los IDs cargados.
-            List<string> listaIdsCargados = new List<string>();
-            if (File.Exists(pConfig.GetLogCargas() + "/Personas.txt"))
+            string directorioPendientes = $@"{pConfig.GetLogCargas()}/{pSet}/pending/";
+            string directorioProcesados = $@"{pConfig.GetLogCargas()}/{pSet}/processed/";
+
+            if (Directory.Exists(directorioPendientes))
             {
-                string[] lineas = File.ReadAllLines(pConfig.GetLogCargas() + "/Personas.txt");
-                listaIdsCargados = lineas.ToList();
+                foreach (string fichero in Directory.EnumerateFiles(directorioPendientes))
+                {
+                    string ficheroProcesado = directorioProcesados + fichero.Substring(fichero.LastIndexOf("/"));
+                    List<string> idsACargar = File.ReadAllLines(fichero).ToList();
+
+                    if (File.Exists(ficheroProcesado))
+                    {
+                        List<string> listaIdsCargados = File.ReadAllLines(ficheroProcesado).ToList();
+                        idsACargar = idsACargar.Except(listaIdsCargados).ToList();
+                    }
+                    idsACargar.Sort();
+
+                    string xmlResult = string.Empty;
+                    XmlSerializer xmlSerializer = null;
+                    ComplexOntologyResource resource = null;
+
+                    foreach (string id in idsACargar)
+                    {
+                        switch (pSet)
+                        {
+                            case "Organizacion":
+
+                                // Obtención de datos en bruto.
+                                Empresa organization = new Empresa();
+                                xmlResult = harvesterServices.GetRecord(id);
+
+                                if (string.IsNullOrEmpty(xmlResult))
+                                {
+                                    File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
+                                    continue;
+                                }
+
+                                xmlSerializer = new(typeof(Empresa));
+                                using (StringReader sr = new(xmlResult))
+                                {
+                                    organization = (Empresa)xmlSerializer.Deserialize(sr);
+                                }
+
+                                // Cambio de modelo. TODO: Mirar propiedades.
+                                OrganizationOntology.Organization empresaOntology = CrearOrganizacion(organization);
+
+                                resource = empresaOntology.ToGnossApiResource(mResourceApi, null);
+                                if (pDicRecursosCargados.ContainsKey(empresaOntology.Roh_crisIdentifier))
+                                {
+                                    // Modificación.
+                                    mResourceApi.ModifyComplexOntologyResource(resource, false, false);
+                                }
+                                else
+                                {
+                                    // Carga.                   
+                                    mResourceApi.LoadComplexSemanticResource(resource, false, false);
+                                    pDicRecursosCargados[empresaOntology.Roh_crisIdentifier] = resource.GnossId;
+                                }
+
+                                // Guardamos el ID cargado.
+                                File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
+                                break;
+
+                            case "Persona":
+
+                                // Obtención de datos en bruto.
+                                Persona persona = new Persona();
+                                xmlResult = harvesterServices.GetRecord(id);
+
+                                if (string.IsNullOrEmpty(xmlResult))
+                                {
+                                    File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
+                                    continue;
+                                }
+
+                                xmlSerializer = new(typeof(Persona));
+                                using (StringReader sr = new(xmlResult))
+                                {
+                                    persona = (Persona)xmlSerializer.Deserialize(sr);
+                                }
+
+                                // Cambio de modelo. TODO: Mirar propiedades.
+                                PersonOntology.Person personOntology = CrearPersona(persona);
+
+                                resource = personOntology.ToGnossApiResource(mResourceApi, null);
+                                if (pDicRecursosCargados.ContainsKey(personOntology.Roh_crisIdentifier))
+                                {
+                                    // Modificación.
+                                    mResourceApi.ModifyComplexOntologyResource(resource, false, false);
+                                }
+                                else
+                                {
+                                    // Carga.                   
+                                    mResourceApi.LoadComplexSemanticResource(resource, false, false);
+                                    pDicRecursosCargados[personOntology.Roh_crisIdentifier] = resource.GnossId;
+                                }
+
+                                // Guardamos el ID cargado.
+                                File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
+                                break;
+
+                            case "Proyecto":
+
+                                // Obtención de datos en bruto.
+                                Proyecto proyecto = new Proyecto();
+                                xmlResult = harvesterServices.GetRecord(id);
+
+                                if (string.IsNullOrEmpty(xmlResult))
+                                {
+                                    File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
+                                    continue;
+                                }
+
+                                xmlSerializer = new(typeof(Proyecto));
+                                using (StringReader sr = new(xmlResult))
+                                {
+                                    proyecto = (Proyecto)xmlSerializer.Deserialize(sr);
+                                }
+
+                                // Cambio de modelo. TODO: Mirar propiedades.
+                                //ProjectOntology.Project projectOntology = CrearProyecto(proyecto);
+
+                                //resource = projectOntology.ToGnossApiResource(mResourceApi, null);
+                                //if (pDicRecursosCargados.ContainsKey(projectOntology.Roh_crisIdentifier))
+                                //{
+                                //    // Modificación.
+                                //    mResourceApi.ModifyComplexOntologyResource(resource, false, false);
+                                //}
+                                //else
+                                //{
+                                //    // Carga.                   
+                                //    mResourceApi.LoadComplexSemanticResource(resource, false, false);
+                                //    pDicRecursosCargados[projectOntology.Roh_crisIdentifier] = resource.GnossId;
+                                //}
+
+                                // Guardamos el ID cargado.
+                                File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
+                                break;
+                        }
+
+                        // Borra el fichero.
+                        File.Delete(fichero);
+                    }
+                }
             }
-
-            // Obtiene los IDs que faltan por cargar.
-            List<string> idsACargar = pListaIds.Except(listaIdsCargados).ToList();
-            idsACargar.Sort();
-
-            foreach (string id in idsACargar)
-            {
-                // Obtención de datos en bruto.
-                Persona persona = new Persona();
-                string xml = harvesterServices.GetRecord(id);
-
-                if (string.IsNullOrEmpty(xml))
-                {
-                    File.AppendAllText(pConfig.GetLogCargas() + "/Personas.txt", id + Environment.NewLine);
-                    continue;
-                }
-
-                XmlSerializer serializer = new(typeof(Persona));
-                using (StringReader sr = new(xml))
-                {
-                    persona = (Persona)serializer.Deserialize(sr);
-                }
-
-                // Cambio de modelo.
-                PersonOntology.Person personOntology = CrearPersona(persona);
-
-                // Creamos el recurso a cargar/modificar.
-                ComplexOntologyResource resource = personOntology.ToGnossApiResource(mResourceApi, null);
-                if (pDicPersonasCargadas.ContainsKey(personOntology.Roh_crisIdentifier))
-                {
-                    // Modificación.
-                    mResourceApi.ModifyComplexOntologyResource(resource, false, false);
-                }
-                else
-                {
-                    // Carga.                   
-                    mResourceApi.LoadComplexSemanticResource(resource, false, false);
-                    pDicPersonasCargadas[personOntology.Roh_crisIdentifier] = resource.GnossId;
-                }
-
-                // Guardamos el ID cargado.
-                File.AppendAllText(pConfig.GetLogCargas() + "/Personas.txt", id + Environment.NewLine);
-            }
-
-            // Borrar ficheros.
-            File.Delete(pConfig.GetLogIdentifier() + "/Personas.txt");
-            File.Delete(pConfig.GetLogCargas() + "/Personas.txt");
         }
 
         /// <summary>
-        /// Permite cargar en BBDD los datos de los proyectos obtenidos por el SGI.
+        /// Modifica el fichero con la última fecha.
         /// </summary>
         /// <param name="pConfig"></param>
-        /// <param name="pListaIds"></param>
-        /// <param name="pDicProyectosCargados"></param>
-        /// <param name="pDicPersonasCargadas"></param>
-        private void CargarModificarProyectos(ReadConfig pConfig, List<string> pListaIds, Dictionary<string, string> pDicProyectosCargados, Dictionary<string, string> pDicPersonasCargadas)
+        public void UpdateLastDate(ReadConfig pConfig, string pFecha)
         {
-            // Obtiene los IDs cargados.
-            List<string> listaIdsCargados = new List<string>();
-            if (File.Exists(pConfig.GetLogCargas() + "/Proyectos.txt"))
-            {
-                string[] lineas = File.ReadAllLines(pConfig.GetLogCargas() + "/Proyectos.txt");
-                listaIdsCargados = lineas.ToList();
-            }
-
-            // Obtiene los IDs que faltan por cargar.
-            List<string> idsACargar = pListaIds.Except(listaIdsCargados).ToList();
-            idsACargar.Sort();
-
-            foreach (string id in idsACargar)
-            {
-                // Obtención de datos en bruto.
-                Proyecto proyecto = new Proyecto();
-                string xml = harvesterServices.GetRecord(id);
-
-                if (string.IsNullOrEmpty(xml))
-                {
-                    File.AppendAllText(pConfig.GetLogCargas() + "/Proyectos.txt", id + Environment.NewLine);
-                    continue;
-                }
-
-                XmlSerializer serializer = new(typeof(Proyecto));
-                using (StringReader sr = new(xml))
-                {
-                    proyecto = (Proyecto)serializer.Deserialize(sr);
-                }
-
-                // Cambio de modelo.
-                ProjectOntology.Project projectOntology = CrearProyecto(proyecto, pDicPersonasCargadas);
-
-                // Creamos el recurso a cargar/modificar.
-                ComplexOntologyResource resource = projectOntology.ToGnossApiResource(mResourceApi, null);
-                if (pDicPersonasCargadas.ContainsKey(projectOntology.Roh_crisIdentifier))
-                {
-                    // Modificación.
-                    mResourceApi.ModifyComplexOntologyResource(resource, false, false);
-                }
-                else
-                {
-                    // Carga.                   
-                    mResourceApi.LoadComplexSemanticResource(resource, false, false);
-                    pDicPersonasCargadas[projectOntology.Roh_crisIdentifier] = resource.GnossId;
-                }
-
-                // Guardamos el ID cargado.
-                File.AppendAllText(pConfig.GetLogCargas() + "/Proyectos.txt", id + Environment.NewLine);
-            }
-
-            // Borrar ficheros.
-            File.Delete(pConfig.GetLogIdentifier() + "/Proyectos.txt");
-            File.Delete(pConfig.GetLogCargas() + "/Proyectos.txt");
+            File.WriteAllText(pConfig.GetLastUpdateDate(), pFecha);
         }
 
         /// <summary>

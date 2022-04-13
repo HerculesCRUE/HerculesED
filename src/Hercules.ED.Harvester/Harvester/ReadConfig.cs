@@ -14,8 +14,8 @@ namespace Harvester
         public static IConfigurationRoot configuracion;
 
         // Rutas
-        private static string dirLogIdentifier { get; set; }
         private static string dirLogCargas { get; set; }
+        private static string lastUpdateDateFile { get; set; }
 
         /// <summary>
         /// Constructor.
@@ -23,31 +23,6 @@ namespace Harvester
         public ReadConfig()
         {
             configuracion = new ConfigurationBuilder().AddJsonFile($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}/Config/appsettings.json").Build();
-        }
-
-        /// <summary>
-        /// Obtiene la ruta dónde se van a almacenar los IDs obtenidos por el OAI-PMH.
-        /// </summary>
-        /// <returns>Ruta.</returns>
-        public string GetLogIdentifier()
-        {
-            if (string.IsNullOrEmpty(dirLogIdentifier))
-            {
-                string connectionString = string.Empty;
-                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
-                if (environmentVariables.Contains("DirLogIdentifier"))
-                {
-                    connectionString = environmentVariables["DirLogIdentifier"] as string;
-                }
-                else
-                {
-                    connectionString = configuracion["DirLogIdentifier"];
-                }
-
-                dirLogIdentifier = connectionString;
-            }
-
-            return dirLogIdentifier;
         }
 
         /// <summary>
@@ -73,6 +48,31 @@ namespace Harvester
             }
 
             return dirLogCargas;
+        }
+
+        /// <summary>
+        /// Obtiene la ruta del fichero de la última fecha de modificación.
+        /// </summary>
+        /// <returns>Ruta.</returns>
+        public string GetLastUpdateDate()
+        {
+            if (string.IsNullOrEmpty(lastUpdateDateFile))
+            {
+                string connectionString = string.Empty;
+                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                if (environmentVariables.Contains("LastUpdateDateFile"))
+                {
+                    connectionString = environmentVariables["LastUpdateDateFile"] as string;
+                }
+                else
+                {
+                    connectionString = configuracion["LastUpdateDateFile"];
+                }
+
+                lastUpdateDateFile = connectionString;
+            }
+
+            return lastUpdateDateFile;
         }
     }
 }

@@ -17,11 +17,6 @@ namespace Harvester
 {
     public class Harvester
     {
-        //Syncs
-        private static readonly string Syncs = @"C:\Data\Syncs.json";
-
-        //Last sync date
-        private static readonly string LastSyncDate = GetLastSyncDate();
         public IHaversterServices HaversterServices;
 
         public Harvester(IHaversterServices haversterServices)
@@ -29,108 +24,22 @@ namespace Harvester
             this.HaversterServices = haversterServices;
         }
 
-        /// <summary>
-        /// Obtiene los IDs de las Organizaciones.
-        /// </summary>
-        /// <returns></returns>
-        public List<string> HarvestOrganizationsIds(ReadConfig pConfig)
+        public List<string> Harvest(ReadConfig pConfig, string pSet, string pFecha)
         {
-            // Comprobar si existe el fichero de IDs.
-            List<string> listaIds = new List<string>();
-
-            if (!File.Exists(pConfig.GetLogIdentifier() + "/Organizaciones.txt"))
-            {             
-                HashSet<string> listaIdsSinRepetir = new HashSet<string>();
-                List<IdentifierOAIPMH> organizationIdList = HaversterServices.ListIdentifiers("2022-01-01T00:00:00Z", set: "Organizacion");
-                //List<IdentifierOAIPMH> organizationIdList = HaversterServices.ListIdentifiers(DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss") + "Z", set: "Organizacion");
-                foreach (var organizationId in organizationIdList)
-                {
-                    listaIdsSinRepetir.Add(organizationId.Identifier);
-                }
-                List<string> listaIdsOrdenados = listaIdsSinRepetir.ToList();
-                listaIdsOrdenados.Sort();
-                listaIds = listaIdsOrdenados;
-                File.WriteAllLines(pConfig.GetLogIdentifier() + "/Organizaciones.txt", listaIdsOrdenados);
-            }
-            else
+            // Obtención de los IDs.
+            HashSet<string> listaIdsSinRepetir = new HashSet<string>();
+            List<IdentifierOAIPMH> idList = HaversterServices.ListIdentifiers(pFecha, set: pSet);
+            foreach (var id in idList)
             {
-                string[] lineas = File.ReadAllLines(pConfig.GetLogIdentifier() + "/Organizaciones.txt");
-                listaIds = lineas.ToList();
+                listaIdsSinRepetir.Add(id.Identifier);
             }
+            List<string> listaIdsOrdenados = listaIdsSinRepetir.ToList();
+            listaIdsOrdenados.Sort();
 
-            return listaIds;
-        }
+            // Guardado de los IDs.
+            File.WriteAllLines(pConfig.GetLogCargas() + $@"/{pSet}/pending/{pSet}_{pFecha.Replace(":", "-")}.txt", listaIdsOrdenados);
 
-        /// <summary>
-        /// Obtiene los IDs de las Personas.
-        /// </summary>
-        /// <returns></returns>
-        public List<string> HarvestPersonsIds(ReadConfig pConfig)
-        {
-            // Comprobar si existe el fichero de IDs.
-            List<string> listaIds = new List<string>();
-
-            if (!File.Exists(pConfig.GetLogIdentifier() + "/Personas.txt"))
-            {
-                HashSet<string> listaIdsSinRepetir = new HashSet<string>();
-                List<IdentifierOAIPMH> personIdList = HaversterServices.ListIdentifiers("2022-01-01T00:00:00Z", set: "Persona");
-                //List<IdentifierOAIPMH> personIdList = HaversterServices.ListIdentifiers(DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss") + "Z", set: "Persona");
-                foreach (var personId in personIdList)
-                {
-                    listaIdsSinRepetir.Add(personId.Identifier);
-                }
-                List<string> listaIdsOrdenados = listaIdsSinRepetir.ToList();
-                listaIdsOrdenados.Sort();
-                listaIds = listaIdsOrdenados;
-                File.WriteAllLines(pConfig.GetLogIdentifier() + "/Personas.txt", listaIdsOrdenados);
-            }
-            else
-            {
-                string[] lineas = File.ReadAllLines(pConfig.GetLogIdentifier() + "/Personas.txt");
-                listaIds = lineas.ToList();
-            }
-
-            return listaIds;
-        }
-
-        /// <summary>
-        /// Obtiene los IDs de los Proyectos.
-        /// </summary>
-        /// <returns></returns>
-        public List<string> HarvestProjectsIds(ReadConfig pConfig)
-        {
-            // Comprobar si existe el fichero de IDs.
-            List<string> listaIds = new List<string>();
-
-            if (!File.Exists(pConfig.GetLogIdentifier() + "/Proyectos.txt"))
-            {
-                HashSet<string> listaIdsSinRepetir = new HashSet<string>();
-                List<IdentifierOAIPMH> projectIdList = HaversterServices.ListIdentifiers("2022-01-01T00:00:00Z", set: "Proyecto");
-                //List<IdentifierOAIPMH> projectIdList = HaversterServices.ListIdentifiers(DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss") + "Z", set: "Proyecto");
-                foreach (var personId in projectIdList)
-                {
-                    listaIdsSinRepetir.Add(personId.Identifier);
-                }
-                List<string> listaIdsOrdenados = listaIdsSinRepetir.ToList();
-                listaIdsOrdenados.Sort();
-                listaIds = listaIdsOrdenados;
-                File.WriteAllLines(pConfig.GetLogIdentifier() + "/Proyectos.txt", listaIdsOrdenados);
-            }
-            else
-            {
-                string[] lineas = File.ReadAllLines(pConfig.GetLogIdentifier() + "/Proyectos.txt");
-                listaIds = lineas.ToList();
-            }
-
-            return listaIds;
-        }
-
-        public static string GetLastSyncDate()
-        {
-            string syncs = File.ReadAllText(Syncs);
-            List<Sync> syncList = JsonConvert.DeserializeObject<List<Sync>>(syncs);
-            string lastSyncDate = syncList[^1].Date;
-            return lastSyncDate;
+            return listaIdsOrdenados;
         }
     }
 }
