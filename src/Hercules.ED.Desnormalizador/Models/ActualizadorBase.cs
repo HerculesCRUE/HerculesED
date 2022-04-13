@@ -107,6 +107,63 @@ namespace DesnormalizadorHercules.Models
         }
 
         /// <summary>
+        /// Método para inserción múltiple de triples
+        /// </summary>
+        /// <param name="pFilas">Filas con los datos para insertar</param>
+        /// <param name="pPropSubject">Propiedad de las filas utilizada para el sujeto</param>
+        /// <param name="pPropObject">Propiedad de las filas utilizada para el objeto</param>
+        public void InsercionMultipleTags(List<Dictionary<string, Data>> pFilas, string pPropSubject, string pPropObject)
+        {
+            List<string> ids = pFilas.Select(x => x[pPropSubject].value).Distinct().ToList();
+            if (ids.Count > 0)
+            {
+                Parallel.ForEach(ids, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, id =>
+                {
+                    Guid guid = mResourceApi.GetShortGuid(id);
+                    Dictionary<Guid, List<TriplesToInclude>> triples = new() { { guid, new List<TriplesToInclude>() } };
+                    foreach (string value in pFilas.Where(x => x[pPropSubject].value == id).Select(x => x[pPropObject].value))
+                    {
+                        string idAux = mResourceApi.GraphsUrl + "items/KeyWord_" + guid.ToString().ToLower() + "_" + Guid.NewGuid().ToString().ToLower();
+                        TriplesToInclude t = new();
+                        t.Predicate = "http://vivoweb.org/ontology/core#freeTextKeyword|http://w3id.org/roh/title";
+                        t.NewValue = idAux + "|" + value;
+                        triples[guid].Add(t);
+                    }
+                    var resultado = mResourceApi.InsertPropertiesLoadedResources(triples);
+                });
+
+
+                String select = @"select ?id ?getKeyWords ";
+                String where = @$"where
+                                {{
+                                    ?id <http://w3id.org/roh/getKeyWords> ?getKeyWords. 
+                                    FILTER(?id in (<{string.Join(">,<", ids)}>))
+                                }}";
+                SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
+                Dictionary<string, string> documentGetKeywords = new Dictionary<string, string>();
+                foreach (Dictionary<string, SparqlObject.Data> fila in resultado.results.bindings)
+                {
+                    documentGetKeywords[fila["id"].value] = fila["getKeyWords"].value;
+                }
+
+
+
+                Parallel.ForEach(ids, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, id =>
+                {
+                    string valorAnterior = "";
+                    if(documentGetKeywords.ContainsKey(id))
+                    {
+                        valorAnterior = documentGetKeywords[id];
+                    }
+                    ActualizadorTriple(id, "http://w3id.org/roh/getKeyWords", valorAnterior, "true");
+                });
+
+            }
+
+
+        }
+
+        /// <summary>
         /// Método para cargar/actualizar/eliminar triples
         /// </summary>
         /// <param name="pSujeto">Sujeto</param>
@@ -116,7 +173,7 @@ namespace DesnormalizadorHercules.Models
         public void ActualizadorTriple(string pSujeto, string pPredicado, string pValorAntiguo, string pValorNuevo)
         {
             Guid guid = mResourceApi.GetShortGuid(pSujeto);
-            if (!string.IsNullOrEmpty(pValorAntiguo) && !string.IsNullOrEmpty(pValorNuevo))
+            if (!string.IsNullOrEmpty(pValorAntiguo) && !string.IsNullOrEmpty(pValorNuevo) && pValorAntiguo!=pValorNuevo)
             {
                 //Si el valor nuevo y el viejo no son nulos -->modificamos
                 TriplesToModify t = new();
@@ -288,5 +345,124 @@ namespace DesnormalizadorHercules.Models
                 yield return pList.GetRange(i, Math.Min(pSize, pList.Count - i));
             }
         }
+
+
+        //TODO comenrtario
+        protected void InsercionMiembrosProyectoGrupo(List<Dictionary<string, Data>> pFilas, string pTipo)
+        {
+            List<string> ids = pFilas.Select(x => x[pTipo].value).Distinct().ToList();
+            Parallel.ForEach(ids, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, id =>
+            {
+                Guid guid = mResourceApi.GetShortGuid(id);
+                Dictionary<Guid, List<TriplesToInclude>> triples = new() { { guid, new List<TriplesToInclude>() } };
+                foreach (Dictionary<string, Data> fila in pFilas.Where(x => x[pTipo].value == id))
+                {
+                    string idAux = mResourceApi.GraphsUrl + "items/PersonAux_" + guid.ToString().ToLower() + "_" + Guid.NewGuid().ToString().ToLower();
+                    string propMiembro = "";
+                    if (fila["ip"].value == "true")
+                    {
+                        propMiembro = "http://w3id.org/roh/mainResearchers";
+                    }
+                    else
+                    {
+                        propMiembro = "http://w3id.org/roh/researchers";
+                    }
+                    {
+                        TriplesToInclude t = new();
+                        t.Predicate = propMiembro + "|http://www.w3.org/1999/02/22-rdf-syntax-ns#member";
+                        t.NewValue = idAux + "|" + fila["person"].value;
+                        triples[guid].Add(t);
+                    }
+                    if (fila.ContainsKey("nick"))
+                    {
+                        TriplesToInclude t = new();
+                        t.Predicate = propMiembro + "|http://xmlns.com/foaf/0.1/nick";
+                        t.NewValue = idAux + "|" + fila["nick"].value;
+                        triples[guid].Add(t);
+                    }
+                }
+                var resultado = mResourceApi.InsertPropertiesLoadedResources(triples);
+            });
+        }
+        //TODO comenrtario
+        protected void EliminacionMiembrosProyectoGrupo(List<Dictionary<string, Data>> pFilas, string pTipo)
+        {
+            List<string> ids = pFilas.Select(x => x[pTipo].value).Distinct().ToList();
+            Parallel.ForEach(ids, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, id =>
+            {
+                Guid guid = mResourceApi.GetShortGuid(id);
+                Dictionary<Guid, List<RemoveTriples>> triples = new() { { guid, new List<RemoveTriples>() } };
+                foreach (Dictionary<string, Data> fila in pFilas.Where(x => x[pTipo].value == id))
+                {
+                    RemoveTriples t = new();
+                    t.Predicate = fila["propPersonAux"].value;
+                    t.Value = fila["personAux"].value;
+                    triples[guid].Add(t);
+                }
+                var resultado = mResourceApi.DeletePropertiesLoadedResources(triples);
+            });
+        }
+
+        //TODO comenrtario
+        protected void ActualizarPropiedadMiembrosProyectoGrupo(List<Dictionary<string, Data>> pFilas, string pTipo)
+        {
+            List<string> ids = pFilas.Select(x => x[pTipo].value).Distinct().ToList();
+            Parallel.ForEach(ids, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, id =>
+            {
+                Guid guid = mResourceApi.GetShortGuid(id);
+                Dictionary<Guid, List<TriplesToModify>> triplesModify = new() { { guid, new List<TriplesToModify>() } };
+                Dictionary<Guid, List<TriplesToInclude>> triplesInsertar = new() { { guid, new List<TriplesToInclude>() } };
+                Dictionary<Guid, List<RemoveTriples>> triplesEliminar = new() { { guid, new List<RemoveTriples>() } };
+                foreach (Dictionary<string, Data> fila in pFilas.Where(x => x[pTipo].value == id))
+                {
+                    string valorAntiguo = "";
+                    string valorNuevo = "";
+                    if (fila.ContainsKey("propertyLoad"))
+                    {
+                        valorAntiguo = fila["propertyLoad"].value;
+                    }
+                    if (fila.ContainsKey("propertyToLoad"))
+                    {
+                        valorNuevo = fila["propertyToLoad"].value;
+                    }
+
+                    if (!string.IsNullOrEmpty(valorNuevo) && string.IsNullOrEmpty(valorAntiguo))
+                    {
+                        TriplesToInclude t = new();
+                        t.Predicate = fila["propPersonAux"].value + "|" + fila["property"].value;
+                        t.NewValue = fila["personAux"].value + "|" + fila["propertyToLoad"].value;
+                        triplesInsertar[guid].Add(t);
+                    }
+                    else if (string.IsNullOrEmpty(valorNuevo) && !string.IsNullOrEmpty(valorAntiguo))
+                    {
+                        RemoveTriples t = new();
+                        t.Predicate = fila["propPersonAux"].value + "|" + fila["property"].value;
+                        t.Value = fila["personAux"].value + "|" + fila["propertyLoad"].value;
+                        triplesEliminar[guid].Add(t);
+                    }
+                    else if (!string.IsNullOrEmpty(valorNuevo) && !string.IsNullOrEmpty(valorAntiguo) && valorAntiguo != valorNuevo)
+                    {
+                        TriplesToModify t = new();
+                        t.Predicate = fila["propPersonAux"].value + "|" + fila["property"].value;
+                        t.NewValue = fila["personAux"].value + "|" + fila["propertyToLoad"].value;
+                        t.OldValue = fila["personAux"].value + "|" + fila["propertyLoad"].value;
+                        triplesModify[guid].Add(t);
+                    }
+                }
+                if (triplesInsertar[guid].Count > 0)
+                {
+                    var resultadoInsetar = mResourceApi.InsertPropertiesLoadedResources(triplesInsertar);
+                }
+                if (triplesEliminar[guid].Count > 0)
+                {
+                    var resultadoEliminar = mResourceApi.DeletePropertiesLoadedResources(triplesEliminar);
+                }
+                if (triplesModify[guid].Count > 0)
+                {
+                    var resultadoModificar = mResourceApi.ModifyPropertiesLoadedResources(triplesModify);
+                }
+            });
+        }
+
     }
 }
