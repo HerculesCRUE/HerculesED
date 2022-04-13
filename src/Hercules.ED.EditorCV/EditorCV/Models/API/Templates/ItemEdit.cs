@@ -309,6 +309,10 @@ namespace GuardadoCV.Models.API.Templates
         /// </summary>
         public bool editable;
         /// <summary>
+        /// Indica si no es editable aunque la entidad no esté bloqueada
+        /// </summary>
+        public bool blocked;
+        /// <summary>
         /// Indica si es multiidioma
         /// </summary>
         public bool multilang; 
