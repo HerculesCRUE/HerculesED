@@ -68,12 +68,12 @@ namespace EditorCV.Models.NotificationOntology
 			propList.Add(new StringOntologyProperty("roh:type", this.Roh_type));
 		}
 
-		public ComplexOntologyResource ToGnossApiResource(ResourceApi resourceAPI, List<string> listaDeCategorias)
+		public ComplexOntologyResource ToGnossApiResource(ResourceApi resourceAPI)
 		{
-			return ToGnossApiResource(resourceAPI, listaDeCategorias, Guid.Empty, Guid.Empty);
+			return ToGnossApiResource(resourceAPI, Guid.Empty, Guid.Empty);
 		}
 
-		public ComplexOntologyResource ToGnossApiResource(ResourceApi resourceAPI, List<string> listaDeCategorias, Guid idrecurso, Guid idarticulo)
+		public ComplexOntologyResource ToGnossApiResource(ResourceApi resourceAPI, Guid idrecurso, Guid idarticulo)
 		{
 			ComplexOntologyResource resource = new ComplexOntologyResource();
 			Ontology ontology = null;
@@ -87,7 +87,6 @@ namespace EditorCV.Models.NotificationOntology
 				ontology = new Ontology(resourceAPI.GraphsUrl, resourceAPI.OntologyUrl, RdfType, RdfsLabel, prefList, propList, entList, idrecurso, idarticulo);
 			}
 			resource.Ontology = ontology;
-			resource.TextCategories = listaDeCategorias;
 			resource.Title = this.IdRoh_owner;
 			return resource;
 		}

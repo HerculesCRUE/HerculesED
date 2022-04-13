@@ -123,6 +123,7 @@ namespace EditorCV.Models
                         }
                     }
                 }
+                ModificacionNotificacion(entityBBDD, template, templateSection, personCV);
             }
 
             List<RemoveTriples> lista = new List<RemoveTriples>();
@@ -528,35 +529,35 @@ namespace EditorCV.Models
                 //Si es un Documento lo modifico e informo a los usuarios correspondientes.
                 if (pEntity.rdfType.Equals("http://purl.org/ontology/bibo/Document") || pEntity.rdfType.Equals("http://w3id.org/roh/ResearchObject"))
                 {
-                    ModificacionNotificacion(pEntity, template, templateSection);
+                    string personaCV = UtilityCV.GetPersonFromCV(pCvID);
+                    ModificacionNotificacion(pEntity, template, templateSection,personaCV);
                 }
 
                 return new JsonResult() { ok = true, id = entityIDResponse };
             }
         }
+
         /// <summary>
         /// Modificamos un recurso y lanzamos una notificación a las personas que se vean afectadas por las modificaciones.
         /// </summary>
         /// <param name="entity"></param>
         /// <param name="template"></param>
         /// <param name="templateSection"></param>
-        private void ModificacionNotificacion(Entity entity, API.Templates.Tab template, API.Templates.TabSection templateSection)
+        private void ModificacionNotificacion(Entity entity, API.Templates.Tab template, API.Templates.TabSection templateSection, string personaCV)
         {
             string graphsUrl = mResourceApi.GraphsUrl;
             if (!string.IsNullOrEmpty(graphsUrl))
             {
                 string filter = $" FILTER(?document =<{entity.id}>)";
 
-                ConcurrentDictionary<Guid, Tuple<string, string>> diccionarioConc = new ConcurrentDictionary<Guid, Tuple<string, string>>();
+                ConcurrentBag<NotificationOntology.Notification> notificaciones = new ConcurrentBag<NotificationOntology.Notification>();
 
                 //Añadimos
                 while (true)
                 {
                     int limit = 500;
                     //TODO eliminar from
-                    string select = @$"SELECT * 
-                                        WHERE{{
-                                            select distinct ?cv ?cvSection 
+                    string select = @$"select distinct ?cv ?cvSection ?person
                                             from <http://gnoss.com/document.owl> 
                                             from <http://gnoss.com/researchobject.owl> 
                                             from <http://gnoss.com/person.owl>    ";
@@ -567,7 +568,7 @@ namespace EditorCV.Models
                                         select distinct ?person ?cv ?cvSection ?document
                                         Where
                                         {{
-                                            ?person a <http://xmlns.com/foaf/0.1/Person>.                                            
+                                            ?person a <http://xmlns.com/foaf/0.1/Person>. 
                                             ?document a <{entity.rdfType}>.
                                             ?cv a <http://w3id.org/roh/CV>.
                                             ?cv <http://w3id.org/roh/cvOf> ?person.
@@ -579,7 +580,7 @@ namespace EditorCV.Models
                                     MINUS
                                     {{
                                         #ACTUALES
-                                        ?person a <http://xmlns.com/foaf/0.1/Person>.                                            
+                                        ?person a <http://xmlns.com/foaf/0.1/Person>. 
                                         ?document a <{entity.rdfType}>.
                                         ?cv a <http://w3id.org/roh/CV>.
                                         ?cv <http://w3id.org/roh/cvOf> ?person.
@@ -587,7 +588,7 @@ namespace EditorCV.Models
                                         ?cvSection ?p ?item.
                                         ?item <http://vivoweb.org/ontology/core#relatedBy> ?document.
                                     }}
-                                }}}}order by desc(?cv) limit {limit}";
+                                }}order by desc(?cv) limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
 
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = 5 }, fila =>
@@ -620,7 +621,15 @@ namespace EditorCV.Models
 
                         foreach (KeyValuePair<Guid, bool> keyValue in respuesta)
                         {
-                            diccionarioConc.TryAdd(keyValue.Key, new Tuple<string, string>(keyValue.Value.ToString(), "Insertar"));
+                            NotificationOntology.Notification notificacion = new NotificationOntology.Notification();
+                            notificacion.IdRoh_trigger = personaCV;
+                            notificacion.Roh_tabPropertyCV = template.property;
+                            notificacion.Roh_entity = entity.id;
+                            notificacion.IdRoh_owner = fila["person"].value;
+                            notificacion.Dct_issued = DateTime.Now;
+                            notificacion.Roh_type = "create";
+
+                            notificaciones.Add(notificacion);
                         }
                     });
                     if (resultado.results.bindings.Count != limit)
@@ -634,17 +643,15 @@ namespace EditorCV.Models
                 {
                     int limit = 500;
                     //TODO eliminar from
-                    string select = @$"SELECT * 
-                                        WHERE{{
-                                            select distinct ?cv ?cvSection ?item 
+                    string select = @$"select distinct ?cv ?cvSection ?item ?person
                                             from <http://gnoss.com/document.owl> 
                                             from <http://gnoss.com/researchobject.owl> 
                                             from <http://gnoss.com/person.owl>  ";
                     string where = @$"where{{
-                                    {filter}                                    
+                                    {filter} 
                                     {{
                                         #ACTUALES
-                                        ?person a <http://xmlns.com/foaf/0.1/Person>.                                            
+                                        ?person a <http://xmlns.com/foaf/0.1/Person>. 
                                         ?document a <{entity.rdfType}>.
                                         ?cv a <http://w3id.org/roh/CV>.
                                         ?cv <http://w3id.org/roh/cvOf> ?person.
@@ -658,7 +665,7 @@ namespace EditorCV.Models
                                         select distinct ?person ?cv ?cvSection  ?document
                                         Where
                                         {{
-                                            ?person a <http://xmlns.com/foaf/0.1/Person>.                                            
+                                            ?person a <http://xmlns.com/foaf/0.1/Person>. 
                                             ?document a <{entity.rdfType}>.
                                             ?cv a <http://w3id.org/roh/CV>.
                                             ?cv <http://w3id.org/roh/cvOf> ?person.
@@ -667,7 +674,7 @@ namespace EditorCV.Models
                                             ?autor <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person.
                                         }}                                        
                                     }}
-                                }} }}order by desc(?cv) limit {limit}";
+                                }} order by desc(?cv) limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
 
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = 5 }, fila =>
@@ -688,6 +695,19 @@ namespace EditorCV.Models
                         }
 
                         Dictionary<Guid, bool> respuesta = mResourceApi.DeletePropertiesLoadedResources(new Dictionary<Guid, List<RemoveTriples>>() { { idCV, triplesToDelete.First().Value } });
+
+                        foreach (KeyValuePair<Guid, bool> keyValue in respuesta)
+                        {
+                            NotificationOntology.Notification notificacion = new NotificationOntology.Notification();
+                            notificacion.IdRoh_trigger = personaCV;
+                            notificacion.Roh_tabPropertyCV = template.property;
+                            notificacion.Roh_entity = entity.id;
+                            notificacion.IdRoh_owner = fila["person"].value;
+                            notificacion.Dct_issued = DateTime.Now;
+                            notificacion.Roh_type = "delete";
+
+                            notificaciones.Add(notificacion);
+                        }
                     });
                     if (resultado.results.bindings.Count != limit)
                     {
@@ -696,6 +716,41 @@ namespace EditorCV.Models
                 }
 
 
+                string propiedad = "http://purl.org/ontology/bibo/authorList@@@http://purl.obolibrary.org/obo/BFO_0000023|http://www.w3.org/1999/02/22-rdf-syntax-ns#member";
+                //Generamos notificaciones de edición
+                List<string> personasEdicion = entity.properties.FirstOrDefault(x => x.prop == propiedad).values.Select(x => x.Split("@@@")[1])
+                    .Where(x => !notificaciones.Select(x => x.IdRoh_owner).Contains(x) && x != personaCV && !string.IsNullOrEmpty(x)).ToList();
+                foreach (string persona in personasEdicion)
+                {
+                    NotificationOntology.Notification notificacion = new NotificationOntology.Notification();
+                    notificacion.IdRoh_trigger = personaCV;
+                    notificacion.Roh_tabPropertyCV = template.property;
+                    notificacion.Roh_entity = entity.id;
+                    notificacion.IdRoh_owner = persona;
+                    notificacion.Dct_issued = DateTime.Now;
+                    notificacion.Roh_type = "edit";
+
+                    notificaciones.Add(notificacion);
+                }
+                List<NotificationOntology.Notification> notificacionesCargar = notificaciones.ToList();
+                notificacionesCargar.RemoveAll(x => x.IdRoh_owner == personaCV);
+                mResourceApi.ChangeOntoly("notification");
+                //TODO cambiar parallel
+                Parallel.ForEach(notificacionesCargar, new ParallelOptions { MaxDegreeOfParallelism = 1 }, notificacion =>
+                {
+                    ComplexOntologyResource recursoCargar = notificacion.ToGnossApiResource(mResourceApi);
+                    int numIntentos = 0;
+                    while (!recursoCargar.Uploaded)
+                    {
+                        numIntentos++;
+
+                        if (numIntentos > 5)
+                        {
+                            break;
+                        }
+                        mResourceApi.LoadComplexSemanticResource(recursoCargar);
+                    }                    
+                });
             }
         }
 
