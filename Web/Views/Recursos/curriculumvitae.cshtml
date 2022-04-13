@@ -79,12 +79,15 @@
 <input type="hidden" id="CV_RESTABLECER" value="@Html.Translate("CV_RESTABLECER")"/>
 <input type="hidden" id="CV_BLOQUEADO" value="@Html.Translate("CV_BLOQUEADO")"/>
 <input type="hidden" id="CV_VISIBLE" value="@Html.Translate("CV_VISIBLE")"/>
+<input type="hidden" id="CV_OCULTO" value="@Html.Translate("CV_OCULTO")"/>
 <input type="hidden" id="ESPAGNOL" value="@Html.Translate("ESPAGNOL")"/>
 <input type="hidden" id="INGLES" value="@Html.Translate("INGLES")"/>
 <input type="hidden" id="CATALAN" value="@Html.Translate("CATALAN")"/>
 <input type="hidden" id="EUSKERA" value="@Html.Translate("EUSKERA")"/>
 <input type="hidden" id="GALLEGO" value="@Html.Translate("GALLEGO")"/>
 <input type="hidden" id="FRANCES" value="@Html.Translate("FRANCES")"/>
+<input type="hidden" id="CV_SINTRADUCCION" value="@Html.Translate("CV_SINTRADUCCION")"/>
+<input type="hidden" id="CV_CONTRADUCCION" value="@Html.Translate("CV_CONTRADUCCION")"/>
 
 	
 <div class="row">
@@ -118,26 +121,57 @@
                             </div>
                         </div>
                     </div>
-                    <div class="acciones-curriculum">
+                    <div class="acciones-listado acciones-curriculum">
                         <div class="wrap">
 							<!--TODO-->
-                            <div class="idioma dropdown">
+                            <div class="traducciones dropdown dropdown-select">
                                 <a class="dropdown-toggle" data-toggle="dropdown">
-                                    <span class="texto">Idioma</span>
-                                    <span class="texto seleccionado">@Html.GetUtilIdiomas().LanguageCode.ToUpper()</span>
+                                    <span class="textoAlternativo">@Html.Translate("CV_TRADUCCIONES")</span>
+                                    <span class="texto">ES</span>
                                 </a>
                                 <div class="dropdown-menu basic-dropdown dropdown-menu-right">
-									@foreach (KeyValuePair<string, string> idioma in cabecera.Languajes)
-									{
-										string urlIdioma = "";
-										if (cabecera.MultiLingualLinks != null && cabecera.MultiLingualLinks.ContainsKey(idioma.Key))
-										{
-											urlIdioma = cabecera.MultiLingualLinks[idioma.Key].Value;
-										}
-										<a class="item-dropdown" lang="@idioma.Key" href="@urlIdioma" title="@idioma.Value">
-													@idioma.Value
-												</a>
+									@{
+										string translate="translationEsView";
 									}
+									<a href="javascript: void(0)" class="item-dropdown" data-class-resource-list="@translate">
+										<span class="textoAlternativo">@Html.Translate("CV_TRADUCCIONES")</span>
+										<span class="texto">ES</span>
+									</a>
+									@{
+										translate="translationEnView";
+									}
+									<a href="javascript: void(0)" class="item-dropdown" data-class-resource-list="@translate">
+										<span class="textoAlternativo">@Html.Translate("CV_TRADUCCIONES")</span>
+										<span class="texto">EN</span>
+									</a>
+									@{
+										translate="translationCaView";
+									}
+									<a href="javascript: void(0)" class="item-dropdown" data-class-resource-list="@translate">
+										<span class="textoAlternativo">@Html.Translate("CV_TRADUCCIONES")</span>
+										<span class="texto">CA</span>
+									</a>
+									@{
+										translate="translationEuView";
+									}
+									<a href="javascript: void(0)" class="item-dropdown" data-class-resource-list="@translate">
+										<span class="textoAlternativo">@Html.Translate("CV_TRADUCCIONES")</span>
+										<span class="texto">EU</span>
+									</a>
+									@{
+										translate="translationGlView";
+									}
+									<a href="javascript: void(0)" class="item-dropdown" data-class-resource-list="@translate">
+										<span class="textoAlternativo">@Html.Translate("CV_TRADUCCIONES")</span>
+										<span class="texto">GL</span>
+									</a>
+									@{
+										 translate="translationFrView";
+									}
+									<a href="javascript: void(0)" class="item-dropdown" data-class-resource-list="@translate">
+										<span class="textoAlternativo">@Html.Translate("CV_TRADUCCIONES")</span>
+										<span class="texto">FR</span>
+									</a>
                                 </div>
                             </div>
                             <div class="plegar dropdown">
@@ -157,28 +191,28 @@
                 <div class="tab-paneles-cv">
                     <ul class="nav nav-tabs" id="navegacion-cv" role="tablist">
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link active" id="identificacion-tab" data-toggle="tab" href="#identificacion-panel" role="tab" aria-controls="identificacion-panel" aria-selected="true">@Html.Translate("CV_DATOSIDENTIFICACION")</a>
+                            <a class="nav-link active" id="identificacion-tab" property="http://w3id.org/roh/personalData" data-toggle="tab" href="#identificacion-panel" role="tab" aria-controls="identificacion-panel" aria-selected="true">@Html.Translate("CV_DATOSIDENTIFICACION")</a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" id="situacion-tab" data-toggle="tab" href="#situacion-panel" role="tab" aria-controls="situacion-panel" aria-selected="true">@Html.Translate("CV_SITUACIONPROFESIONAL")</a>
+                            <a class="nav-link" id="situacion-tab" property="http://w3id.org/roh/professionalSituation" data-toggle="tab" href="#situacion-panel" role="tab" aria-controls="situacion-panel" aria-selected="true">@Html.Translate("CV_SITUACIONPROFESIONAL")</a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" id="formacion-tab" data-toggle="tab" href="#formacion-panel" role="tab" aria-controls="formacion-panel" aria-selected="true">@Html.Translate("CV_FORMACIONRECIBIDA")</a>
+                            <a class="nav-link" id="formacion-tab" property="http://w3id.org/roh/qualifications" data-toggle="tab" href="#formacion-panel" role="tab" aria-controls="formacion-panel" aria-selected="true">@Html.Translate("CV_FORMACIONRECIBIDA")</a>
                         </li>
 						<li class="nav-item" role="presentation">
-                            <a class="nav-link" id="actividad-docente-tab" data-toggle="tab" href="#actividad-docente-panel" role="tab" aria-controls="actividad-docente-panel" aria-selected="true">@Html.Translate("CV_ACTIVIDADDOCENTE")</a>
+                            <a class="nav-link" id="actividad-docente-tab" property="http://w3id.org/roh/teachingExperience" data-toggle="tab" href="#actividad-docente-panel" role="tab" aria-controls="actividad-docente-panel" aria-selected="true">@Html.Translate("CV_ACTIVIDADDOCENTE")</a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link " id="experiencia-tab" data-toggle="tab" href="#experiencia-panel" role="tab" aria-controls="experiencia-panel" aria-selected="true">@Html.Translate("CV_EXPERIENCIACIENTIFICAYTECNOLOGICA")</a>
+                            <a class="nav-link " id="experiencia-tab" property="http://w3id.org/roh/scientificExperience" data-toggle="tab" href="#experiencia-panel" role="tab" aria-controls="experiencia-panel" aria-selected="true">@Html.Translate("CV_EXPERIENCIACIENTIFICAYTECNOLOGICA")</a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" id="actividad-tab" data-toggle="tab" href="#actividad-panel" role="tab" aria-controls="actividad-panel" aria-selected="true">@Html.Translate("CV_ACTIVIDADCIENTIFICAYTECNOLOGICA")</a>
+                            <a class="nav-link" id="actividad-tab" property="http://w3id.org/roh/scientificActivity" data-toggle="tab" href="#actividad-panel" role="tab" aria-controls="actividad-panel" aria-selected="true">@Html.Translate("CV_ACTIVIDADCIENTIFICAYTECNOLOGICA")</a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" id="resumen-tab" data-toggle="tab" href="#resumen-panel" role="tab" aria-controls="resumen-panel" aria-selected="true">@Html.Translate("CV_RESUMENTEXTOLIBRE")</a>
+                            <a class="nav-link" id="resumen-tab" property="http://w3id.org/roh/freeTextSummary" data-toggle="tab" href="#resumen-panel" role="tab" aria-controls="resumen-panel" aria-selected="true">@Html.Translate("CV_RESUMENTEXTOLIBRE")</a>
                         </li>
 						<li class="nav-item" role="presentation">
-                            <a class="nav-link" id="researchobject-tab" data-toggle="tab" href="#researchobject-panel" role="tab" aria-controls="researchobject-panel" aria-selected="true">@Html.Translate("CV_RESEARCHOBJECTS")</a>
+                            <a class="nav-link" id="researchobject-tab" property="http://w3id.org/roh/researchObject" data-toggle="tab" href="#researchobject-panel" role="tab" aria-controls="researchobject-panel" aria-selected="true">@Html.Translate("CV_RESEARCHOBJECTS")</a>
                         </li>
                     </ul>
                     <div class="tab-content" id="paneles-cv">
