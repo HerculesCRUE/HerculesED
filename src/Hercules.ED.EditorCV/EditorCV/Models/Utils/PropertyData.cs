@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace GuardadoCV.Models.Utils
+namespace EditorCV.Models.Utils
 {
     /// <summary>
     /// Clase para la obtención de datos de la BBDD
