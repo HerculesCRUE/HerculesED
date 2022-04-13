@@ -1,14 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using GuardadoCV.Models;
-using GuardadoCV.Models.API.Input;
 using System;
 using Microsoft.AspNetCore.Cors;
-using System.Net.Http;
-using System.Collections.Generic;
 using System.Linq;
 using EditorCV.Controllers;
 using EditorCV.Models.Enrichment;
-using Newtonsoft.Json;
+using EditorCV.Models;
+using EditorCV.Models.API.Input;
 
 namespace GuardadoCV.Controllers
 {
@@ -46,7 +43,7 @@ namespace GuardadoCV.Controllers
             }
             catch (Exception ex)
             {
-                return Ok(new Models.API.Response.JsonResult() { error = ex.Message + " " + ex.StackTrace });
+                return Ok(new EditorCV.Models.API.Response.JsonResult() { error = ex.Message + " " + ex.StackTrace });
             }
         }
 
@@ -68,7 +65,7 @@ namespace GuardadoCV.Controllers
             }
             catch (Exception ex)
             {
-                return Ok(new Models.API.Response.JsonResult() { error = ex.Message + " " + ex.StackTrace });
+                return Ok(new EditorCV.Models.API.Response.JsonResult() { error = ex.Message + " " + ex.StackTrace });
             }
         }
 
@@ -91,7 +88,7 @@ namespace GuardadoCV.Controllers
             }
             catch (Exception ex)
             {
-                return Ok(new Models.API.Response.JsonResult() { error = ex.Message });
+                return Ok(new EditorCV.Models.API.Response.JsonResult() { error = ex.Message });
             }
 
         }
@@ -115,7 +112,7 @@ namespace GuardadoCV.Controllers
             }
             catch (Exception ex)
             {
-                return Ok(new Models.API.Response.JsonResult() { error = ex.Message });
+                return Ok(new EditorCV.Models.API.Response.JsonResult() { error = ex.Message });
             }
         }
 
@@ -135,7 +132,7 @@ namespace GuardadoCV.Controllers
             }
             catch (Exception ex)
             {
-                return Ok(new Models.API.Response.JsonResult() { error = ex.Message });
+                return Ok(new EditorCV.Models.API.Response.JsonResult() { error = ex.Message });
             }
         }
 
@@ -150,7 +147,7 @@ namespace GuardadoCV.Controllers
             }
             catch (Exception ex)
             {
-                return Ok(new Models.API.Response.JsonResult() { error = ex.Message });
+                return Ok(new EditorCV.Models.API.Response.JsonResult() { error = ex.Message });
             }
         }
 
@@ -169,7 +166,7 @@ namespace GuardadoCV.Controllers
             }
             catch (Exception ex)
             {
-                return Ok(new Models.API.Response.JsonResult() { error = ex.Message });
+                return Ok(new EditorCV.Models.API.Response.JsonResult() { error = ex.Message });
             }
         }
 
