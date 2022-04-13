@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace GuardadoCV.Models.API.Templates
+namespace EditorCV.Models.API.Templates
 {  
     //Contiene las clases mecesarias para la configuración de la edición de un item de un listado de una pestaña
 
