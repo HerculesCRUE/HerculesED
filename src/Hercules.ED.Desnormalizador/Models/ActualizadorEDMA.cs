@@ -31,223 +31,264 @@ namespace DesnormalizadorHercules.Models
                 ActualizadorProject actualizadorProject = new(resourceApi);
                 ActualizadorRO actualizadorRO = new(resourceApi);
 
-                //Ejecuciones ordenadas en función de sus dependencias
-
-                //No tienen dependencias
+                //CV + dependencias
                 actualizadorCV.CrearCVs();
-                actualizadorGrupos.ActualizarGruposPublicos();
-                actualizadorPersonas.ActualizarPersonasPublicas();
-                actualizadorProject.ActualizarProyectosPublicos();
-                actualizadorDocument.ActualizarPertenenciaGrupos();
-                actualizadorDocument.ActualizarNumeroCitasMaximas();
-                actualizadorDocument.ActualizarAreasDocumentos();
-                actualizadorDocument.ActualizarTagsDocumentos();
-                actualizadorGrupos.ActualizarPertenenciaLineas();
-                actualizadorPersonas.ActualizarPertenenciaGrupos();
-                actualizadorPersonas.ActualizarPertenenciaLineas();
-
-                actualizadorProject.ActualizarPertenenciaGrupos();
-                actualizadorProject.ActualizarNumeroAreasTematicas();
-                actualizadorProject.ActualizarNumeroPublicaciones();
-
-                //Dependen únicamente del CV
                 actualizadorCV.ModificarDocumentos();
-                actualizadorCV.ModificarResearchObjects();
                 actualizadorCV.CambiarPrivacidadDocumentos();
+                actualizadorCV.ModificarResearchObjects();
+                actualizadorCV.CambiarPrivacidadResearchObjects();
                 actualizadorCV.ModificarGrupos();
                 actualizadorCV.ModificarProyectos();
-                actualizadorDocument.ActualizarDocumentosPublicos();
-                actualizadorDocument.ActualizarPertenenciaPersonas();
 
-                //Otras dependencias
-                actualizadorProject.ActualizarPertenenciaPersonas();
-                actualizadorPersonas.ActualizarNumeroPublicaciones();
-                actualizadorPersonas.ActualizarNumeroProyectos();
+                //Persona sin dependencias
+                actualizadorPersonas.ActualizarNumeroPublicacionesValidadas();
+                actualizadorPersonas.ActualizarPertenenciaLineas();
                 actualizadorPersonas.ActualizarAreasPersonas();
+                actualizadorPersonas.ActualizarIPGruposActuales(); 
+                actualizadorPersonas.ActualizarIPGruposHistoricos();
+                actualizadorPersonas.ActualizarIPProyectosActuales();
+                actualizadorPersonas.ActualizarIPProyectosHistoricos();
+
+                //Persona con dependencias
+                actualizadorPersonas.ActualizarNumeroColaboradoresPublicos();                
+                actualizadorPersonas.ActualizarNumeroPublicacionesPublicas();
+                actualizadorPersonas.ActualizarNumeroProyectosValidados();
+                actualizadorPersonas.ActualizarNumeroProyectosPublicos();
                 actualizadorPersonas.ActualizarNumeroAreasTematicas();
-                actualizadorPersonas.ActualizarNumeroColaboradores();
+
+                //Grupo sin dependencias                
+                actualizadorGrupos.ActualizarGruposValidados();
+                actualizadorGrupos.ActualizarMiembros();
+                actualizadorGrupos.ActualizarPertenenciaLineas();
+
+                //Grupo con dependencias
                 actualizadorGrupos.ActualizarNumeroMiembros();
+                actualizadorGrupos.ActualizarNumeroPublicaciones();                
                 actualizadorGrupos.ActualizarNumeroColaboradores();
-                actualizadorGrupos.ActualizarNumeroProyectos();
-                actualizadorGrupos.ActualizarNumeroPublicaciones();
                 actualizadorGrupos.ActualizarNumeroAreasTematicas();
                 actualizadorGrupos.ActualizarAreasGrupos();
+                actualizadorGrupos.ActualizarNumeroProyectos();
+                actualizadorGrupos.ActualizarMiembrosUnificados();
+
+                //Proyectos sin dependencias
+                actualizadorProject.ActualizarProyectosValidados();
+                actualizadorProject.ActualizarMiembros();
+                actualizadorProject.ActualizarPertenenciaGrupos();
+
+                //Proyectos con dependencias
+                actualizadorProject.ActualizarNumeroAreasTematicas();
                 actualizadorProject.ActualizarNumeroColaboradores();
                 actualizadorProject.ActualizarNumeroMiembros();
-                // actualizadorPersonas.EliminarPersonasNoReferenciadas();
+                actualizadorProject.ActualizarNumeroPublicaciones();
+                actualizadorProject.ActualizarMiembrosUnificados();
 
-
-
-                //TODO Reubicar
-                //TODO Eliminar from
-                //TODO eliminar decha competa revista
-                //TODO agregar la fuente para el factor de impacto
-                actualizadorDocument.ActualizarIndiceImpacto();
-                //TODO hacer bien
-                actualizadorDocument.ActualizarCuartil();
-                actualizadorRO.ActualizarAreasRO();
-                actualizadorRO.ActualizarTagsRO();
-                actualizadorRO.ActualizarROsPublicos();
-            }
-            catch (Exception)
-            {
-
-            }
-        }
-
-
-        /// <summary>
-        /// Actualiza elementos desnormalizados que afectan a una persona
-        /// </summary>
-        /// <param name="pPerson">ID de la persona</param>
-        public static void DesnormalizarDatosPersona(string pPerson = null)
-        {
-            try
-            {
-                ActualizadorCV actualizadorCV = new(resourceApi);
-                ActualizadorPerson actualizadorPersonas = new(resourceApi);
-                ActualizadorGroup actualizadorGrupos = new(resourceApi);
-                ActualizadorDocument actualizadorDocument = new(resourceApi);
-                ActualizadorProject actualizadorProject = new(resourceApi);
-
-                //No tienen dependencias
-                actualizadorCV.CrearCVs(pPerson);
-                actualizadorPersonas.ActualizarPersonasPublicas(pPerson);
-                actualizadorPersonas.ActualizarPertenenciaGrupos(pPerson);
-                actualizadorPersonas.ActualizarPertenenciaLineas(pPerson);
-                actualizadorProject.ActualizarPertenenciaPersonas(pPerson);
-
-                //Dependen únicamente del CV
-                actualizadorCV.ModificarDocumentos(pPerson);
-                actualizadorCV.CambiarPrivacidadDocumentos(pPerson);
-                actualizadorCV.ModificarGrupos(pPerson);
-                actualizadorCV.ModificarProyectos(pPerson);
-                actualizadorDocument.ActualizarPertenenciaPersonas(pPerson);
-
-                //Otras dependencias
-                actualizadorPersonas.ActualizarNumeroPublicaciones(pPerson);
-                actualizadorPersonas.ActualizarNumeroProyectos(pPerson);
-                actualizadorPersonas.ActualizarAreasPersonas(pPerson);
-                actualizadorPersonas.ActualizarNumeroAreasTematicas(pPerson);
-                actualizadorPersonas.ActualizarNumeroColaboradores(pPerson);
-            }
-            catch (Exception)
-            {
-
-            }
-        }
-
-        /// <summary>
-        /// Actualiza elementos desnormalizados que afectan a un poyecto
-        /// </summary>
-        /// <param name="pProyecto">ID del proyecto</param>
-        public static void DesnormalizarDatosProyecto(string pProyecto = null)
-        {
-            try
-            {
-                ActualizadorCV actualizadorCV = new(resourceApi);
-                ActualizadorPerson actualizadorPersonas = new(resourceApi);
-                ActualizadorGroup actualizadorGrupos = new(resourceApi);
-                ActualizadorDocument actualizadorDocument = new(resourceApi);
-                ActualizadorProject actualizadorProject = new(resourceApi);
-
-                //No tienen dependencias
-                actualizadorProject.ActualizarProyectosPublicos(pProyecto);
-                actualizadorProject.ActualizarPertenenciaPersonas("", pProyecto);
-                actualizadorProject.ActualizarPertenenciaGrupos("", pProyecto);
-                actualizadorProject.ActualizarNumeroAreasTematicas(pProyecto);
-                actualizadorProject.ActualizarNumeroPublicaciones(pProyecto);
-
-                //Dependen únicamente del CV
-                actualizadorCV.ModificarProyectos("", pProyecto);
-
-                //Otras dependencias
-                actualizadorProject.ActualizarNumeroColaboradores(pProyecto);
-                actualizadorProject.ActualizarNumeroMiembros(pProyecto);
-            }
-            catch (Exception)
-            {
-
-            }
-        }
-
-        /// <summary>
-        /// Actualiza elementos desnormalizados que afectan a un grupo
-        /// </summary>
-        /// <param name="pGrupo">ID del grupo</param>
-        public static void DesnormalizarDatosGrupo(string pGrupo = null)
-        {
-            try
-            {
-                ActualizadorCV actualizadorCV = new(resourceApi);
-                ActualizadorPerson actualizadorPersonas = new(resourceApi);
-                ActualizadorGroup actualizadorGrupos = new(resourceApi);
-                ActualizadorDocument actualizadorDocument = new(resourceApi);
-                ActualizadorProject actualizadorProject = new(resourceApi);
-
-                //No tienen dependencias
-                actualizadorGrupos.ActualizarGruposPublicos(pGrupo);
-                actualizadorDocument.ActualizarPertenenciaGrupos(pGrupo);
-                actualizadorGrupos.ActualizarPertenenciaLineas(pGrupo);
-                actualizadorPersonas.ActualizarPertenenciaGrupos("", pGrupo);
-                actualizadorProject.ActualizarPertenenciaGrupos(pGrupo);
-
-                //Dependen únicamente del CV
-                actualizadorCV.ModificarGrupos("", pGrupo);
-
-                //Otras dependencias
-                actualizadorGrupos.ActualizarNumeroMiembros(pGrupo);
-                actualizadorGrupos.ActualizarNumeroColaboradores(pGrupo);
-                actualizadorGrupos.ActualizarNumeroProyectos(pGrupo);
-                actualizadorGrupos.ActualizarNumeroPublicaciones(pGrupo);
-                actualizadorGrupos.ActualizarNumeroAreasTematicas(pGrupo);
-                actualizadorGrupos.ActualizarAreasGrupos(pGrupo);
-            }
-            catch (Exception)
-            {
-
-            }
-        }
-
-        /// <summary>
-        /// Actualiza elementos desnormalizados que afectan a un documento
-        /// </summary>
-        /// <param name="pDocumento">ID del documento</param>
-        public static void DesnormalizarDatosDocumento(string pDocumento)
-        {
-            try
-            {
-                ActualizadorCV actualizadorCV = new(resourceApi);
-                ActualizadorPerson actualizadorPersonas = new(resourceApi);
-                ActualizadorGroup actualizadorGrupos = new(resourceApi);
-                ActualizadorDocument actualizadorDocument = new(resourceApi);
-                ActualizadorProject actualizadorProject = new(resourceApi);
 
                 //Ejecuciones ordenadas en función de sus dependencias
 
                 //No tienen dependencias
-                actualizadorDocument.ActualizarPertenenciaGrupos("", pDocumento);
-                actualizadorDocument.ActualizarNumeroCitasMaximas(pDocumento);
-                actualizadorDocument.ActualizarAreasDocumentos(pDocumento);
-                actualizadorDocument.ActualizarTagsDocumentos(pDocumento);
+
+
+
+                actualizadorDocument.ActualizarDocumentosValidados();
+                actualizadorRO.ActualizarROsValidados();                
+                actualizadorDocument.ActualizarPertenenciaGrupos();                       
+                actualizadorDocument.ActualizarNumeroCitasMaximas();                
+                
+                actualizadorDocument.ActualizarAreasDocumentos();
+                actualizadorDocument.ActualizarTagsDocumentos();
+                actualizadorRO.ActualizarAreasRO();
+                actualizadorRO.ActualizarTagsRO();
+
+
+
+
+                actualizadorDocument.ActualizarAnios();
+
+                //TODO agregar la fuente para el factor de impacto
+                actualizadorDocument.ActualizarIndicesImpacto();
+                actualizadorDocument.ActualizarIndiceImpacto();
+                
+                //TODO hacer bien
+                actualizadorDocument.ActualizarCuartil();
 
                 //Dependen únicamente del CV
-                actualizadorCV.ModificarDocumentos("", pDocumento);
-                actualizadorCV.CambiarPrivacidadDocumentos("", pDocumento);
-                actualizadorDocument.ActualizarDocumentosPublicos(pDocumento);
-                actualizadorDocument.ActualizarPertenenciaPersonas("", pDocumento);
+                
+
+                
+                //Otras dependencias
+
+
+
+
+
+
+
+
+
+
+                //TODO nombres org
+
+
+
+
+
+
+
+
+
+
             }
             catch (Exception)
             {
 
             }
         }
+
+
+        ///// <summary>
+        ///// Actualiza elementos desnormalizados que afectan a una persona
+        ///// </summary>
+        ///// <param name="pPerson">ID de la persona</param>
+        //public static void DesnormalizarDatosPersona(string pPerson = null)
+        //{
+        //    try
+        //    {
+        //        ActualizadorCV actualizadorCV = new(resourceApi);
+        //        ActualizadorPerson actualizadorPersonas = new(resourceApi);
+        //        ActualizadorGroup actualizadorGrupos = new(resourceApi);
+        //        ActualizadorDocument actualizadorDocument = new(resourceApi);
+        //        ActualizadorProject actualizadorProject = new(resourceApi);
+
+        //        //No tienen dependencias
+        //        actualizadorCV.CrearCVs(pPerson);
+        //        actualizadorPersonas.ActualizarPertenenciaLineas(pPerson);
+
+        //        //Dependen únicamente del CV
+        //        actualizadorCV.ModificarDocumentos(pPerson);
+        //        actualizadorCV.CambiarPrivacidadDocumentos(pPerson);
+        //        actualizadorCV.ModificarGrupos(pPerson);
+        //        actualizadorCV.ModificarProyectos(pPerson);
+
+        //        //Otras dependencias
+        //        actualizadorPersonas.ActualizarAreasPersonas(pPerson);
+        //        actualizadorPersonas.ActualizarNumeroAreasTematicas(pPerson);
+        //        actualizadorPersonas.ActualizarNumeroColaboradoresPublicos(pPerson);
+        //    }
+        //    catch (Exception)
+        //    {
+
+        //    }
+        //}
+
+        ///// <summary>
+        ///// Actualiza elementos desnormalizados que afectan a un poyecto
+        ///// </summary>
+        ///// <param name="pProyecto">ID del proyecto</param>
+        //public static void DesnormalizarDatosProyecto(string pProyecto = null)
+        //{
+        //    try
+        //    {
+        //        ActualizadorCV actualizadorCV = new(resourceApi);
+        //        ActualizadorPerson actualizadorPersonas = new(resourceApi);
+        //        ActualizadorGroup actualizadorGrupos = new(resourceApi);
+        //        ActualizadorDocument actualizadorDocument = new(resourceApi);
+        //        ActualizadorProject actualizadorProject = new(resourceApi);
+
+        //        //No tienen dependencias
+        //        actualizadorProject.ActualizarProyectosValidados(pProyecto);
+        //        actualizadorProject.ActualizarPertenenciaGrupos("", pProyecto);
+        //        actualizadorProject.ActualizarNumeroAreasTematicas(pProyecto);
+        //        actualizadorProject.ActualizarNumeroPublicaciones(pProyecto);
+
+        //        //Dependen únicamente del CV
+        //        actualizadorCV.ModificarProyectos("", pProyecto);
+
+        //        //Otras dependencias
+        //        actualizadorProject.ActualizarNumeroColaboradores(pProyecto);
+        //        actualizadorProject.ActualizarNumeroMiembros(pProyecto);
+        //    }
+        //    catch (Exception)
+        //    {
+
+        //    }
+        //}
+
+        ///// <summary>
+        ///// Actualiza elementos desnormalizados que afectan a un grupo
+        ///// </summary>
+        ///// <param name="pGrupo">ID del grupo</param>
+        //public static void DesnormalizarDatosGrupo(string pGrupo = null)
+        //{
+        //    try
+        //    {
+        //        ActualizadorCV actualizadorCV = new(resourceApi);
+        //        ActualizadorPerson actualizadorPersonas = new(resourceApi);
+        //        ActualizadorGroup actualizadorGrupos = new(resourceApi);
+        //        ActualizadorDocument actualizadorDocument = new(resourceApi);
+        //        ActualizadorProject actualizadorProject = new(resourceApi);
+
+        //        //No tienen dependencias
+        //        actualizadorGrupos.ActualizarGruposValidados(pGrupo);
+        //        actualizadorDocument.ActualizarPertenenciaGrupos(pGrupo);
+        //        actualizadorGrupos.ActualizarPertenenciaLineas(pGrupo);
+        //        actualizadorProject.ActualizarPertenenciaGrupos(pGrupo);
+
+        //        //Dependen únicamente del CV
+        //        actualizadorCV.ModificarGrupos("", pGrupo);
+
+        //        //Otras dependencias
+        //        actualizadorGrupos.ActualizarNumeroMiembros(pGrupo);
+        //        actualizadorGrupos.ActualizarNumeroColaboradores(pGrupo);
+        //        actualizadorGrupos.ActualizarNumeroProyectos(pGrupo);
+        //        actualizadorGrupos.ActualizarNumeroPublicaciones(pGrupo);
+        //        actualizadorGrupos.ActualizarNumeroAreasTematicas(pGrupo);
+        //        actualizadorGrupos.ActualizarAreasGrupos(pGrupo);
+        //    }
+        //    catch (Exception)
+        //    {
+
+        //    }
+        //}
+
+        ///// <summary>
+        ///// Actualiza elementos desnormalizados que afectan a un documento
+        ///// </summary>
+        ///// <param name="pDocumento">ID del documento</param>
+        //public static void DesnormalizarDatosDocumento(string pDocumento)
+        //{
+        //    try
+        //    {
+        //        ActualizadorCV actualizadorCV = new(resourceApi);
+        //        ActualizadorPerson actualizadorPersonas = new(resourceApi);
+        //        ActualizadorGroup actualizadorGrupos = new(resourceApi);
+        //        ActualizadorDocument actualizadorDocument = new(resourceApi);
+        //        ActualizadorProject actualizadorProject = new(resourceApi);
+
+        //        //Ejecuciones ordenadas en función de sus dependencias
+
+        //        //No tienen dependencias
+        //        actualizadorDocument.ActualizarPertenenciaGrupos("", pDocumento);
+        //        actualizadorDocument.ActualizarNumeroCitasMaximas(pDocumento);
+        //        actualizadorDocument.ActualizarAreasDocumentos(pDocumento);
+        //        actualizadorDocument.ActualizarTagsDocumentos(pDocumento);
+        //        actualizadorDocument.ActualizarDocumentosValidados(pDocumento);
+
+        //        //Dependen únicamente del CV
+        //        actualizadorCV.ModificarDocumentos("", pDocumento);
+        //        actualizadorCV.CambiarPrivacidadDocumentos("", pDocumento);
+                
+        //    }
+        //    catch (Exception)
+        //    {
+
+        //    }
+        //}
 
         /// <summary>
         /// IMPORTANTE!!! esto sólo debe usarse para pruebas, si se eliminan los datos no son recuperables
         /// Elimina los datos desnormalizados
         /// </summary>
-        public static void EliminarDatosDesnormalizados()
+        public static void EliminarCVs()
         {
             bool eliminarDatos = false;
             //IMPORTANTE!!!
@@ -274,241 +315,9 @@ namespace DesnormalizadorHercules.Models
                         break;
                     }
                 }
-
-                //Modificamos "http://w3id.org/roh/isPublic" de "http://xmlns.com/foaf/0.1/Group"
-                ModificarPropiedadDeObjeto("http://w3id.org/roh/isPublic", "http://xmlns.com/foaf/0.1/Group", "group", "false");
-
-                //Modificamos "http://w3id.org/roh/isPublic" de "http://xmlns.com/foaf/0.1/Person"
-                ModificarPropiedadDeObjeto("http://w3id.org/roh/isPublic", "http://xmlns.com/foaf/0.1/Person", "person", "false");
-
-                //Modificamos "http://w3id.org/roh/isPublic" de "http://purl.org/ontology/bibo/Document"
-                ModificarPropiedadDeObjeto("http://w3id.org/roh/isPublic", "http://purl.org/ontology/bibo/Document", "document", "false");
-
-                //Modificamos "http://w3id.org/roh/isPublic" de "http://vivoweb.org/ontology/core#Project"
-                ModificarPropiedadDeObjeto("http://w3id.org/roh/isPublic", "http://vivoweb.org/ontology/core#Project", "project", "false");
-
-                //Eliminamos "http://vivoweb.org/ontology/core#relates" de "http://xmlns.com/foaf/0.1/Person"
-                EliminarPropiedadDeObjeto("http://vivoweb.org/ontology/core#relates", "http://xmlns.com/foaf/0.1/Person", "person");
-
-                //Eliminamos "http://w3id.org/roh/lineResearch" de "http://xmlns.com/foaf/0.1/Person"
-                EliminarPropiedadDeObjeto("http://w3id.org/roh/lineResearch", "http://xmlns.com/foaf/0.1/Person", "person");
-
-                //Eliminamos "http://w3id.org/roh/publicAuthorList" de "http://purl.org/ontology/bibo/Document"
-                EliminarPropiedadDeObjeto("http://w3id.org/roh/publicAuthorList", "http://purl.org/ontology/bibo/Document", "document");
-
-                //Eliminamos "http://w3id.org/roh/publicationsNumber" de "http://xmlns.com/foaf/0.1/Person"
-                EliminarPropiedadDeObjeto("http://w3id.org/roh/publicationsNumber", "http://xmlns.com/foaf/0.1/Person", "person");
-
-                //Eliminamos "http://w3id.org/roh/publicAuthorList" de "http://vivoweb.org/ontology/core#Project"
-                EliminarPropiedadDeObjeto("http://w3id.org/roh/publicAuthorList", "http://vivoweb.org/ontology/core#Project", "project");
-
-                //Eliminamos "http://w3id.org/roh/projectsNumber" de "http://xmlns.com/foaf/0.1/Person"
-                EliminarPropiedadDeObjeto("http://w3id.org/roh/projectsNumber", "http://xmlns.com/foaf/0.1/Person", "person");
-
-                //Eliminamos "http://vivoweb.org/ontology/core#hasResearchArea" de "http://xmlns.com/foaf/0.1/Person"
-                EliminarPropiedadDeObjeto("http://vivoweb.org/ontology/core#hasResearchArea", "http://xmlns.com/foaf/0.1/Person", "person");
-
-                //Eliminamos "http://w3id.org/roh/themedAreasNumber" de "http://xmlns.com/foaf/0.1/Person"
-                EliminarPropiedadDeObjeto("http://w3id.org/roh/themedAreasNumber", "http://xmlns.com/foaf/0.1/Person", "person");
-
-                //Eliminamos "http://w3id.org/roh/collaboratorsNumber" de "http://xmlns.com/foaf/0.1/Person"
-                EliminarPropiedadDeObjeto("http://w3id.org/roh/collaboratorsNumber", "http://xmlns.com/foaf/0.1/Person", "person");
-
-                //Eliminamos "http://w3id.org/roh/researchersNumber" de "http://xmlns.com/foaf/0.1/Group"
-                EliminarPropiedadDeObjeto("http://w3id.org/roh/researchersNumber", "http://xmlns.com/foaf/0.1/Group", "group");
-
-                //Eliminamos "http://w3id.org/roh/publicGroupList" de "http://vivoweb.org/ontology/core#Project"
-                EliminarPropiedadDeObjeto("http://w3id.org/roh/publicGroupList", "http://vivoweb.org/ontology/core#Project", "project");
-
-                //Eliminamos "http://w3id.org/roh/collaboratorsNumber" de "http://xmlns.com/foaf/0.1/Group"
-                EliminarPropiedadDeObjeto("http://w3id.org/roh/collaboratorsNumber", "http://xmlns.com/foaf/0.1/Group", "group");
-
-                //Eliminamos "http://w3id.org/roh/projectsNumber" de "http://xmlns.com/foaf/0.1/Group"
-                EliminarPropiedadDeObjeto("http://w3id.org/roh/projectsNumber", "http://xmlns.com/foaf/0.1/Group", "group");
-
-                //Eliminamos "http://w3id.org/roh/isProducedBy" de "http://purl.org/ontology/bibo/Document"
-                EliminarPropiedadDeObjeto("http://w3id.org/roh/isProducedBy", "http://purl.org/ontology/bibo/Document", "document");
-
-                //Eliminamos "http://w3id.org/roh/publicationsNumber" de "http://xmlns.com/foaf/0.1/Group"
-                EliminarPropiedadDeObjeto("http://w3id.org/roh/publicationsNumber", "http://xmlns.com/foaf/0.1/Group", "group");
-
-                //Eliminamos "http://w3id.org/roh/themedAreasNumber" de "http://xmlns.com/foaf/0.1/Group"
-                EliminarPropiedadDeObjeto("http://w3id.org/roh/themedAreasNumber", "http://xmlns.com/foaf/0.1/Group", "group");
-
-                //Eliminamos "http://w3id.org/roh/lineResearch" de "http://xmlns.com/foaf/0.1/Group"
-                EliminarPropiedadDeObjeto("http://w3id.org/roh/lineResearch", "http://xmlns.com/foaf/0.1/Group", "group");
-
-                //Eliminamos "http://w3id.org/roh/hasKnowledgeArea" de "http://xmlns.com/foaf/0.1/Group"
-                EliminarPropiedadDeObjeto("http://w3id.org/roh/hasKnowledgeArea", "http://xmlns.com/foaf/0.1/Group", "group");
-
-                //Eliminamos "http://w3id.org/roh/citationCount" de "http://purl.org/ontology/bibo/Document"
-                ModificarPropiedadDeObjeto("http://w3id.org/roh/citationCount", "http://purl.org/ontology/bibo/Document", "document", "0");
-
-                //Eliminamos "http://w3id.org/roh/citationLoadedCount" de "http://purl.org/ontology/bibo/Document"
-                ModificarPropiedadDeObjeto("http://w3id.org/roh/citationLoadedCount", "http://purl.org/ontology/bibo/Document", "document", "0");
-
-                //Eliminamos "http://w3id.org/roh/referencesLoadedCount" de "http://purl.org/ontology/bibo/Document"
-                ModificarPropiedadDeObjeto("http://w3id.org/roh/referencesLoadedCount", "http://purl.org/ontology/bibo/Document", "document", "0");
-
-                //Eliminamos "http://w3id.org/roh/hasKnowledgeArea" de "http://purl.org/ontology/bibo/Document"
-                EliminarPropiedadDeObjeto("http://w3id.org/roh/hasKnowledgeArea", "http://purl.org/ontology/bibo/Document", "document");
-
-                //Eliminamos "http://vivoweb.org/ontology/core#freeTextKeyword" de "http://purl.org/ontology/bibo/Document"
-                EliminarPropiedadDeObjeto("http://vivoweb.org/ontology/core#freeTextKeyword", "http://purl.org/ontology/bibo/Document", "document");
-
-                //Eliminamos "http://w3id.org/roh/themedAreasNumber" de "http://vivoweb.org/ontology/core#Project"
-                EliminarPropiedadDeObjeto("http://w3id.org/roh/themedAreasNumber", "http://vivoweb.org/ontology/core#Project", "project");
-
-                //Eliminamos "http://w3id.org/roh/publicationsNumber" de "http://vivoweb.org/ontology/core#Project"
-                EliminarPropiedadDeObjeto("http://w3id.org/roh/publicationsNumber", "http://vivoweb.org/ontology/core#Project", "project");
-
-                //Eliminamos "http://w3id.org/roh/collaboratorsNumber" de "http://vivoweb.org/ontology/core#Project"
-                EliminarPropiedadDeObjeto("http://w3id.org/roh/collaboratorsNumber", "http://vivoweb.org/ontology/core#Project", "project");
-
-                //Eliminamos "http://w3id.org/roh/researchersNumber" de "http://vivoweb.org/ontology/core#Project"
-                EliminarPropiedadDeObjeto("http://w3id.org/roh/researchersNumber", "http://vivoweb.org/ontology/core#Project", "project");
             }
         }
 
-        private static void ModificarPropiedadDeObjeto(string pPropiedad, string pClase, string pGrafo, string pValor)
-        {
-            while (true)
-            {
-                int limit = 500;
-                String select = @"SELECT ?item ?valor ";
-                String where = @$"  where{{
-                                            ?item a <{pClase}>.
-                                            ?item <{pPropiedad}> ?valor.
-                                            FILTER(?valor!='{pValor}')
-                                        }}order by asc(?item) limit {limit}";
-
-                SparqlObject resultado = resourceApi.VirtuosoQuery(select, where, pGrafo);
-
-                List<string> ids = resultado.results.bindings.Select(x => x["item"].value).Distinct().ToList();
-
-                Parallel.ForEach(ids, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, id =>
-                {
-                    Guid guid = resourceApi.GetShortGuid(id);
-                    Dictionary<Guid, List<Gnoss.ApiWrapper.Model.TriplesToModify>> triples = new() { { guid, new List<TriplesToModify>() } };
-                    foreach (string value in resultado.results.bindings.Where(x => x["item"].value == id).Select(x => x["valor"].value))
-                    {
-                        TriplesToModify t = new();
-                        t.Predicate = pPropiedad;
-                        t.NewValue = pValor;
-                        t.OldValue = value;
-                        triples[guid].Add(t);
-                    }
-                    resourceApi.ModifyPropertiesLoadedResources(triples);
-                });
-                if (resultado.results.bindings.Count != limit)
-                {
-                    break;
-                }
-            }
-        }
-
-        private static void EliminarPropiedadDeObjeto(string pPropiedad, string pClase, string pGrafo)
-        {
-            while (true)
-            {
-                int limit = 500;
-                String select = @"SELECT ?item ?valor ";
-                String where = @$"  where{{
-                                            ?item a <{pClase}>.
-                                            ?item <{pPropiedad}> ?valor
-                                        }}order by asc(?item) limit {limit}";
-
-                SparqlObject resultado = resourceApi.VirtuosoQuery(select, where, pGrafo);
-
-                List<string> ids = resultado.results.bindings.Select(x => x["item"].value).Distinct().ToList();
-                Parallel.ForEach(ids, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, id =>
-                {
-                    Guid guid = resourceApi.GetShortGuid(id);
-                    Dictionary<Guid, List<RemoveTriples>> triples = new() { { guid, new List<RemoveTriples>() } };
-                    foreach (string value in resultado.results.bindings.Where(x => x["item"].value == id).Select(x => x["valor"].value))
-                    {
-                        RemoveTriples t = new();
-                        t.Predicate = pPropiedad;
-                        t.Value = value;
-                        triples[guid].Add(t);
-                    }
-                    resourceApi.DeletePropertiesLoadedResources(triples);
-                });
-                if (resultado.results.bindings.Count != limit)
-                {
-                    break;
-                }
-            }
-        }
-
-        /// <summary>
-        /// TODO eliminar
-        /// </summary>
-        public static void FusionNombre(List<string> pNombre)
-        {
-            //ID persona / nombre /orcid
-            Dictionary<string, Tuple<string, string, string>> personas = new Dictionary<string, Tuple<string, string, string>>();
-
-            int limit = 10000;
-            int offset = 0;
-            while (true)
-            {
-                string select = "SELECT * WHERE { SELECT DISTINCT ?persona ?nombreCompleto ?orcid ?ci ";
-                string where = $@"WHERE {{
-                                ?persona a <http://xmlns.com/foaf/0.1/Person>. 
-                                ?persona <http://xmlns.com/foaf/0.1/name> ?nombreCompleto.
-                                OPTIONAL{{?persona <http://w3id.org/roh/ORCID> ?orcid. }}
-                                OPTIONAL{{?persona <http://w3id.org/roh/crisIdentifier> ?ci}}
-                            }} ORDER BY DESC(?persona) }} LIMIT {limit} OFFSET {offset}";
-                SparqlObject resultadoQuery = resourceApi.VirtuosoQuery(select, where, "person");
-                if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
-                {
-                    offset += limit;
-                    foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
-                    {
-                        string id = fila["persona"].value;
-                        string nombre = fila["nombreCompleto"].value;
-                        bool cargar = true;
-                        foreach (string nom in pNombre)
-                        {
-                            if (!nombre.ToLower().Contains(nom))
-                            {
-                                cargar = false;
-                            }
-                        }
-                        if (cargar)
-                        {
-                            string orcid = "";
-                            string ci = "";
-                            if (fila.ContainsKey("orcid"))
-                            {
-                                orcid = fila["orcid"].value;
-                            }
-                            if (fila.ContainsKey("ci"))
-                            {
-                                ci = fila["ci"].value;
-                            }
-                            personas.Add(id, new Tuple<string, string, string>(nombre, orcid, ci));
-                        }
-                    }
-                    if (resultadoQuery.results.bindings.Count < limit)
-                    {
-                        break;
-                    }
-                }
-            }
-            if (personas.Where(x => !string.IsNullOrEmpty(x.Value.Item3)).Count() != 1)
-            {
-                throw new Exception("aa");
-            }
-            string idBueno = personas.First(x => !string.IsNullOrEmpty(x.Value.Item3)).Key;
-            HashSet<string> idsMalos = new HashSet<string>(personas.Where(x => string.IsNullOrEmpty(x.Value.Item3)).Select(x => x.Key));
-            foreach (string idMalo in idsMalos)
-            {
-                Fusion(idMalo, idBueno);
-            }
-
-        }
 
         /// <summary>
         /// Realiza la fusión de 2 entidades
