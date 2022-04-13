@@ -40,7 +40,7 @@ namespace ZenodoConnect.ROs.Zenodo.Controllers
                 {
                     request.Headers.TryAddWithoutValidation("Accept", "application/json");
                     if (headers != null && headers.Count > 0)
-                    {                       
+                    {
                         foreach (var item in headers)
                         {
                             request.Headers.TryAddWithoutValidation(item.Key, item.Value);
@@ -85,11 +85,11 @@ namespace ZenodoConnect.ROs.Zenodo.Controllers
         /// <summary>
         /// Main function from get all repositories from the RO account
         /// </summary>
-        /// <param name="ID"></param>
+        /// <param name="name"></param>
         /// <returns></returns>?access_token=ACCESS_TOKEN
-        public string getPublications(string name, string uri = "?q=doi:\"{0}\"")
+        public string getPublications(string name)
         {
-            Uri url = new Uri("https://zenodo.org/api/records/" + string.Format(uri, name));
+            Uri url = new Uri("https://zenodo.org/api/records/?q=doi:\"" + name + "\"");
 
             string info_publication = httpCall(url.ToString(), "GET", headers).Result;
 
