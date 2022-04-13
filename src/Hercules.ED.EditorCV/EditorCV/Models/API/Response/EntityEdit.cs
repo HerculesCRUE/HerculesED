@@ -110,6 +110,10 @@ namespace GuardadoCV.Models.API.Response
         /// </summary>
         public bool editable { get; set; }
         /// <summary>
+        /// Indica si no es editable aunque la entidad no esté bloqueada
+        /// </summary>
+        public bool blocked { get; set; }
+        /// <summary>
         /// Indica si es multiidioma
         /// </summary>
         public bool multilang { get; set; }
