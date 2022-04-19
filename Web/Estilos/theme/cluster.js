@@ -31,6 +31,7 @@ class StepsCluster {
 		var _self = this
 		this.step = 1
 		this.body = $('body')
+		this.dataTaxonomies = null
 
 		// Secciones principales
 		this.modalCrearCluster = this.body.find('#modal-crear-cluster')
@@ -90,6 +91,7 @@ class StepsCluster {
 		// Fill taxonomies data
 		this.getDataTaxonomies().then((data) => {
 			_self.fillDataTaxonomies(data);
+			_self.dataTaxonomies = data['researcharea'];
 		})
 
 		this.topicsM = new ModalSearchTags()
@@ -97,7 +99,7 @@ class StepsCluster {
 	
 	/**
 	 * Método que inicia las comprobaciones para pasar a la siguiente sección
-	 * param pos: Posición a la que se quiere pasar
+	 * @param pos: Posición a la que se quiere pasar
 	 */
 	async goStep(pos) {
 		var _self = this
@@ -153,7 +155,7 @@ class StepsCluster {
 	/**
 	 * Método que comprueba que los campos obligatorios de la sección 1 han sido rellenados
 	 * También guarda el estado de la sección 1
-	 * return bool: Devuelve true or false dependiendo de si ha pasado la validación
+	 * @return bool: Devuelve true or false dependiendo de si ha pasado la validación
 	 */
 	checkContinue1() {
 		var _self = this
@@ -178,7 +180,7 @@ class StepsCluster {
 	/**
 	 * Método que comprueba que al menos hay un perfil con areas temáticas para la sección 2
 	 * También guarda el estado de la sección 2
-	 * return bool: Devuelve true or false dependiendo de si ha pasado la validación
+	 * @return bool: Devuelve true or false dependiendo de si ha pasado la validación
 	 */
 	checkContinue2() {
 		var _self = this
@@ -234,7 +236,7 @@ class StepsCluster {
 
 	/**
 	 * Inicia la generación del html para las diferentes taxonomías
-	 * param data, Objeto con los items
+	 * @param data, Objeto con los items
 	 */
 	fillDataTaxonomies(data) {
 		// Set tree
@@ -305,8 +307,8 @@ class StepsCluster {
 
 	/**
 	 * Select the parent in the list and add a class to active the item
-	 * param pId, the parent id
-	 * param addclass, check if should dishabled the item
+	 * @param pId, the parent id
+	 * @param addclass, check if should dishabled the item
 	 */
 	selectParent(pId, addclass = true) {
 
@@ -334,9 +336,9 @@ class StepsCluster {
 
 	/**
 	 * Crea el html con las taxonomías
-	 * param data, array con los items
-	 * param idParent, id del nodo padre, para generar los hijos
-	 * return string con el texto generado
+	 * @param data, array con los items
+	 * @param idParent, id del nodo padre, para generar los hijos
+	 * @return string con el texto generado
 	 */
 	fillTaxonomiesTree(data, idParent = "") {
 
@@ -377,8 +379,8 @@ class StepsCluster {
 
 	/**
 	 * Crea el html con las taxonomías en arbol
-	 * param data, array con los items
-	 * return string con el texto generado
+	 * @param data, array con los items
+	 * @return string con el texto generado
 	 */
 	fillTaxonomiesList(data) {
 
@@ -402,7 +404,7 @@ class StepsCluster {
 
 	/**
 	 * Filtra los items de la lista de categorías
-	 * param input con el texto a filtrar
+	 * @param input con el texto a filtrar
 	 */
 	MVCFiltrarListaSelCat(item) {
 
@@ -450,8 +452,8 @@ class StepsCluster {
 
 	/** 
 	 * Método que realiza la llamada POST
-	 * param url, objeto URL que contiene la url de la petición POST
-	 * param theParams, parámetros para la petición POST
+	 * @param url, objeto URL que contiene la url de la petición POST
+	 * @param theParams, parámetros para la petición POST
 	 */
 	postCall(url, theParams) {
 		let _self = this
@@ -466,7 +468,7 @@ class StepsCluster {
 
 	/**
 	 * Carga todas las áreas temáticas seleccionadas para ese perfil / sección 
-	 * param item, sección donde se encuentra la información para cargar las areas temáticas
+	 * @param item, sección donde se encuentra la información para cargar las areas temáticas
 	 */
 	setAreasTematicas(item) {
 		let _self = this
@@ -532,7 +534,7 @@ class StepsCluster {
 
 	/**
 	 * Método que genera el evento para añadir los tags selecciondas en el popup
-	 * param relItem, elemento relacionado para indicar dónde deben de guardarse las areas temátcias seleccionadas
+	 * @param relItem, elemento relacionado para indicar dónde deben de guardarse las areas temátcias seleccionadas
 	 */
 	saveTAGS(relItem, data) {
 
@@ -568,7 +570,7 @@ class StepsCluster {
 
 	/**
 	 * Método que elimina las etiquetas del arbol y del listado
-	 * param relItem, contenedor donde se encuentran las áreas temáticas seleccionadas
+	 * @param relItem, contenedor donde se encuentran las áreas temáticas seleccionadas
 	 */
 	deleteTAGS(relItem) {
 
@@ -596,7 +598,7 @@ class StepsCluster {
 
 	/**
 	 * Carga todas las áreas temáticas seleccionadas para ese perfil / sección 
-	 * param item, sección donde se encuentra la información para cargar las areas temáticas
+	 * @param item, sección donde se encuentra la información para cargar las areas temáticas
 	 */
 	setTAGS(item) {
 		let _self = this
@@ -623,7 +625,7 @@ class StepsCluster {
 
 	/**
 	 * Método que genera el evento para añadir las áreas temáticas selecciondas en el popup
-	 * param relItem, elemento relacionado para indicar dónde deben de guardarse las areas temátcias seleccionadas
+	 * @param relItem, elemento relacionado para indicar dónde deben de guardarse las areas temátcias seleccionadas
 	 */
 	saveAreasTematicas(relItem) {
 
@@ -669,7 +671,7 @@ class StepsCluster {
 
 	/**
 	 * Método que elimina las áreas temáticas del arbol y del listado
-	 * param relItem, contenedor donde se encuentran las áreas temáticas seleccionadas
+	 * @param relItem, contenedor donde se encuentran las áreas temáticas seleccionadas
 	 */
 	deleteAreasTematicas(relItem) {
 
@@ -775,7 +777,7 @@ class StepsCluster {
 
 	/**
 	 * Establece el "estado" del "step-progress"
-	 * param tstep, posición a establecer
+	 * @param tstep, posición a establecer
 	 */
 	setStep(tstep) {
 		this.step = tstep
@@ -1181,7 +1183,7 @@ class ModalSearchTags {
 
 	/**
 	 * Añade un tag al modal
-	 * param texto, texto del tag a añadir
+	 * @param texto, texto del tag a añadir
 	 */
 	addTag(texto) {
 		let item = $(`<li>
@@ -1206,7 +1208,7 @@ class ModalSearchTags {
 
 	/**
 	 * Método que genera un evento para el botón "guardar" y devuelve el número de TAGS añadidas
-	 * return promise (array) con la lista de resultados 
+	 * @return promise (array) con la lista de resultados 
 	 */
 	closeBtnClick() {
 		let _self = this
@@ -1227,8 +1229,8 @@ class ModalSearchTags {
 	/**
 	 * Comprobará la tecla pulsada, y si no se encuentra entre las excluidas, dará lo introducido por válido devolviendo true
 	 * Si se pulsa una tecla de las excluidas, devolverá false y por lo tanto el metabuscador no debería iniciarse
-	 * param {any} event: Evento o tecla pulsada en el teclado
-	 * return bool, devuelve si la tecla pulsada es válida o no
+	 * @param {any} event: Evento o tecla pulsada en el teclado
+	 * @return bool, devuelve si la tecla pulsada es válida o no
 	 */
 	validarKeyPulsada (event) {
 		const keyPressed = this.ignoreKeysToBuscador.find(key => key == event.keyCode);
@@ -1240,8 +1242,8 @@ class ModalSearchTags {
 
 	/**
 	 * Realiza la petición ajax (GET) para buscar los tags sugeridos en el input
-	 * param {string} inputVal: Texto para la búsqueda
-	 * return promise (array) con la lista de resultados 
+	 * @param {string} inputVal: Texto para la búsqueda
+	 * @return promise (array) con la lista de resultados 
 	 */
 	searchCall (inputVal) {
 		// Set the url parameters
@@ -1264,21 +1266,120 @@ function CompletadaCargaRecursosCluster()
 		$.post(urlCargarPerfiles, stepsCls.data, function(data) {
 			$('article.investigador .user-perfil').remove();
 			for (const [idperson, datospersona] of Object.entries(data)) {
+				console.log(idperson, ": ", datospersona);
 				let htmlPerfiles='';				
 				for (const [idProfile, score] of Object.entries(datospersona)) {
 					if(score.numPublicaciones>0)
 					{
 						let nombrePerfil=stepsCls.data.profiles.filter(function (item) {return item.entityID ==idProfile;})[0].name;
+						let publicationsPercent = score.numPublicaciones/score.numPublicacionesTotal*100
+
+
+      					// Print the terms
+      					let termsHtml = ""
+      					if (score.terms) {
+	      					for (const [termId, count] of Object.entries(score.terms))
+	      					{
+	      						let titem = stepsCls.dataTaxonomies.find(e => e.id == termId)
+
+	      						if (titem) {
+		      						termsHtml += `
+		      							<li>
+		                                    ${titem.name}
+		                                    <span class="numResultados">${count}</span>
+		                                </li>
+									`
+	      						}
+	      					}
+      					}
+
+      					// Print the tags
+      					let tagsHtml = ""
+      					if (score.tags) {
+	      					for (const [tag, count] of Object.entries(score.tags))
+	      					{
+	      						tagsHtml += `
+	      							<li>
+	                                    ${tag}
+	                                    <span class="numResultados">${count}</span>
+	                                </li>
+								`
+	      					}
+	      				}
+
 						htmlPerfiles+=`	<div class="perfil-wrap">
-                                        <div class="">
-                                            <input type="checkbox" class="custom-control-input" id="${idperson}-${idProfile}">
-                                            <label class="custom-control-label" for="${idperson}-${idProfile}">${nombrePerfil} Ajuste: ${score.ajuste} Publicaciones:${score.numPublicaciones}/${score.numPublicacionesTotal}</label>
-                                        </div>
-                                    </div>`;
+								        <div class="custom-wrap">
+								            <div class="custom-control custom-checkbox">
+								                <input type="checkbox" class="custom-control-input" id="${idperson}-${idProfile}">
+								                <label class="custom-control-label" for="${idperson}-${idProfile}">
+								                    ${nombrePerfil}
+								                </label>
+								            </div>
+								            <div class="check-actions-wrap">
+								                <a href="javascript: void(0);" class="dropdown-toggle check-actions-toggle" data-toggle="dropdown" aria-expanded="true">
+								                    <span class="material-icons">
+								                        arrow_drop_down
+								                    </span>
+								                </a>
+								                <div class="dropdown-menu basic-dropdown check-actions" id="checkActions" x-placement="bottom-start">
+								                    <div class="barras-progreso-wrapper">
+								                        <div class="progreso-wrapper">
+								                            <div class="progress">
+								                                <div class="progress-bar background-success" role="progressbar" style="width: ${score.ajuste * 100}%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+								                            </div>
+								                            <span class="progress-text"><span class="font-weight-bold">${Math.round(score.ajuste * 10000)/100}%</span></span>
+								                        </div>
+								                        <div class="progreso-wrapper">
+								                            <div class="progress">
+								                                <div class="progress-bar" role="progressbar" style="width: ${publicationsPercent}%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+								                            </div>
+								                            <span class="progress-text"><span class="font-weight-bold">${score.numPublicaciones} /</span> ${score.numPublicacionesTotal}</span>
+								                        </div>
+								                    </div>
+								                    <div class="wrap">
+								                        <div class="header-wrap">
+								                            <p>Areas temáticas</p>
+								                            <p>Publicaciones</p>
+								                        </div>
+								                        <div class="areas-tematicas-wrap">
+								                            <ul class="no-list-style">
+								                                ${termsHtml}
+								                            </ul>
+								                        </div>
+								                    </div>
+								                    <div class="wrap">
+								                        <div class="header-wrap">
+								                            <p>Descriptores</p>
+								                        </div>
+								                        <div class="descriptores-wrap">
+								                            <ul class="no-list-style">
+								                                ${tagsHtml}
+								                            </ul>
+								                        </div>
+								                    </div>
+								                </div>
+								            </div>
+								        </div>
+								        <div class="barras-progreso-wrap">
+								            <div class="progreso-wrapper">
+								                <div class="progress">
+								                    <div class="progress-bar background-success" role="progressbar" style="width: ${score.ajuste * 100}%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+								                </div>
+								                <span class="progress-text"><span class="font-weight-bold">${Math.round(score.ajuste * 10000)/100}%</span></span>
+								            </div>
+								            <div class="progreso-wrapper">
+								                <div class="progress">
+								                    <div class="progress-bar" role="progressbar" style="width: ${publicationsPercent}%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+								                </div>
+								                <span class="progress-text"><span class="font-weight-bold">${score.numPublicaciones} /</span> ${score.numPublicacionesTotal}</span>
+								            </div>
+								        </div>
+								    </div>`;
+
+
 					}
 				}
-				let htmlPerfilesPersona=`	<div class="user-perfil">
-												<p>Perfiles</p>
+				let htmlPerfilesPersona=`	<div class="user-perfil pl-0">
 												${htmlPerfiles}
 											</div>`;				
 				$('#'+idperson+' .content-wrap.flex-column').append(htmlPerfilesPersona);				

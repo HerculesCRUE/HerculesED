@@ -42,3 +42,17 @@
 	margin-right: 0;
 	margin-bottom: 20px;
 }
+
+.edicionCluster .resource-list.resource-list-buscador .resource .custom-control.custom-checkbox {
+	position: relative; 
+	top: initial; 
+	left: initial; 
+}
+
+.edicionCluster .resource-list.listView .resource .wrap .description-wrap {
+	padding-left: 0;
+}
+
+.edicionCluster .resource-list .resource .user-perfil {
+	padding-left: 0;
+}
