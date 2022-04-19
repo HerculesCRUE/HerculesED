@@ -43,15 +43,12 @@ namespace MaindocumentOntology
 		public virtual string RdfsLabel { get { return "http://w3id.org/roh/ImpactCategory"; } }
 		public OntologyEntity Entity { get; set; }
 
-		[LABEL(LanguageEnum.es,"Número de revistas en la categoría")]
 		[RDFProperty("http://w3id.org/roh/journalNumberInCat")]
 		public  int? Roh_journalNumberInCat { get; set;}
 
-		[LABEL(LanguageEnum.es,"Posición de publicación")]
 		[RDFProperty("http://w3id.org/roh/publicationPosition")]
 		public  int? Roh_publicationPosition { get; set;}
 
-		[LABEL(LanguageEnum.es,"Cuartil")]
 		[RDFProperty("http://w3id.org/roh/quartile")]
 		public  int Roh_quartile { get; set;}
 

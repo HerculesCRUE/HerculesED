@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace GuardadoCV.Models.API
+namespace EditorCV.Models.API
 {
     /// <summary>
     /// Clases usadas para el guardado de una ontología

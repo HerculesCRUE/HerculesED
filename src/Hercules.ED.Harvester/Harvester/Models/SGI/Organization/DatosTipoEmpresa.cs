@@ -7,8 +7,8 @@ namespace OAI_PMH.Models.SGI.Organization
 {
     public class DatosTipoEmpresa : SGI_Base
     {
-        public TipoTercero Id { get; set; }
-        public TipoEmpresa Nombre { get; set; }
+        public TipoTercero TipoTercero { get; set; }
+        public TipoEmpresa TipoEmpresa { get; set; }
         public TipoEmpresaContabilidad TipoEmpresaContabilidad { get; set; }
         public TipoTerceroReinoUnido TipoTerceroReinoUnido { get; set; }
     }

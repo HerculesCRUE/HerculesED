@@ -1,4 +1,5 @@
-﻿using Gnoss.ApiWrapper;
+﻿using Es.Riam.Gnoss.Web.MVC.Models.IntegracionContinua;
+using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.ApiModel;
 using Gnoss.ApiWrapper.Model;
 using System;
@@ -24,69 +25,64 @@ namespace DesnormalizadorHercules.Models
         }
 
         /// <summary>
-        /// Actualizamos en la propiedad http://w3id.org/roh/isPublic de los http://purl.org/ontology/bibo/Document
-        /// los documentos públicos (son los documentos oficiales, es decir, los que tienen http://w3id.org/roh/crisIdentifier o los documentos que son públicos en algún CV)
+        /// Actualizamos en la propiedad http://w3id.org/roh/isValidated de los http://purl.org/ontology/bibo/Document
+        /// los documentos validados (son los documentos oficiales, es decir, los que tienen http://w3id.org/roh/crisIdentifier o validados por la universidad)
         /// Esta propiedad se utilizará como filtro en el bucador general de publicaciones
-        /// Depende de ActualizadorCV.ModificarDocumentos y ActualizadorCV.CambiarPrivacidadDocumentos
+        /// No tiene dependencias
         /// </summary>
         /// <param name="pDocument">ID del documento</param>
-        public void ActualizarDocumentosPublicos(string pDocument = null)
+        public void ActualizarDocumentosValidados(string pDocument = null)
         {
+            //TODO validación de la universidad
             string filter = "";
             if (!string.IsNullOrEmpty(pDocument))
             {
                 filter = $" FILTER(?document =<{pDocument}>)";
             }
             //Eliminamos los duplicados
-            EliminarDuplicados("document", "http://purl.org/ontology/bibo/Document", "http://w3id.org/roh/isPublic");
+            EliminarDuplicados("document", "http://purl.org/ontology/bibo/Document", "http://w3id.org/roh/isValidated");
 
             while (true)
             {
                 int limit = 500;
-                //TODO eliminar from
-                String select = @"select * where{ select ?document ?isPublicCargado ?isPublicACargar  from <http://gnoss.com/curriculumvitae.owl>  from <http://gnoss.com/person.owl>";
+                String select = @"select ?document ?isValidatedCargado ?isValidatedCargar";
                 String where = @$"where{{
-                            ?document a <http://purl.org/ontology/bibo/Document>.
-                            {filter}
-                            OPTIONAL
-                            {{
-                                ?document <http://w3id.org/roh/isPublic> ?isPublicCargado.
-                            }}
-                            {{
-                                select distinct ?document IF(BOUND(?isPublicACargar),?isPublicACargar,'false')  as ?isPublicACargar
-                                Where
+                                ?document a <http://purl.org/ontology/bibo/Document>.
+                                {filter}
+                                MINUS
                                 {{
-                                    ?document a <http://purl.org/ontology/bibo/Document>.
-                                    OPTIONAL
-                                    {{
-                                        ?document <http://w3id.org/roh/crisIdentifier> ?crisIdentifier.
-                                        BIND('true' as ?isPublicACargar)
-                                    }}
-                                    OPTIONAL
-                                    {{  
-                                        ?cv a <http://w3id.org/roh/CV>.
-                                        ?cv ?lvl1 ?cvlvl2.
-                                        ?cvlvl2 ?lvl2 ?cvlvl3.
-                                        ?cvlvl3 <http://vivoweb.org/ontology/core#relatedBy> ?document.
-                                        ?cvlvl3  <http://w3id.org/roh/isPublic> 'true'.
-                                        BIND('true' as ?isPublicACargar)
-                                    }}      
+                                    ?document <http://w3id.org/roh/isValidated> 'true'.
                                 }}
-                            }}
-                            FILTER(?isPublicCargado!= ?isPublicACargar OR !BOUND(?isPublicCargado) )
-                            }}}} limit {limit}";
+                                OPTIONAL
+                                {{
+                                    ?document <http://w3id.org/roh/isValidated> ?isValidatedCargado.
+                                }}
+                                {{
+                                    select distinct ?document IF(BOUND(?isValidatedCargar),?isValidatedCargar,'false')  as ?isValidatedCargar
+                                    Where
+                                    {{
+                                        ?document a <http://purl.org/ontology/bibo/Document>.
+                                        OPTIONAL
+                                        {{
+                                            ?document <http://w3id.org/roh/crisIdentifier> ?crisIdentifier.
+                                            BIND('true' as ?isValidatedCargar)
+                                        }}     
+                                    }}
+                                }}
+                                FILTER(?isValidatedCargado!= ?isValidatedCargar OR !BOUND(?isValidatedCargado) )
+                            }} limit {limit}";
                 SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
 
                 Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                 {
                     string document = fila["document"].value;
-                    string isPublicACargar = fila["isPublicACargar"].value;
-                    string isPublicCargado = "";
-                    if (fila.ContainsKey("isPublicCargado"))
+                    string isValidatedCargar = fila["isValidatedCargar"].value;
+                    string isValidatedCargado = "";
+                    if (fila.ContainsKey("isValidatedCargado"))
                     {
-                        isPublicCargado = fila["isPublicCargado"].value;
+                        isValidatedCargado = fila["isValidatedCargado"].value;
                     }
-                    ActualizadorTriple(document, "http://w3id.org/roh/isPublic", isPublicCargado, isPublicACargar);
+                    ActualizadorTriple(document, "http://w3id.org/roh/isValidated", isValidatedCargado, isValidatedCargar);
                 });
 
                 if (resultado.results.bindings.Count != limit)
@@ -94,127 +90,6 @@ namespace DesnormalizadorHercules.Models
                     break;
                 }
             }
-
-        }
-
-        /// <summary>
-        /// Actualizamos en la propiedad http://w3id.org/roh/publicAuthorList de los http://purl.org/ontology/bibo/Document los autores 'públicos'
-        /// Cargamos en los investigadores con CV que tengan la publicación PÚBLICA en su CV
-        /// Cargamos en los investigadores sin CV sólo los documentos validados
-        /// Esta propiedad se utilizará para mostrar en las fichas de los investigadores el listado de sus publicaciones públicas
-        /// Depende de ActualizadorCV.CrearCVs, de ActualizadorCV.InsertarDocumentos y de ActualizadorCV.CambiarPrivacidadDocumentos
-        /// </summary>
-        /// <param name="pPerson">ID de la persona</param>
-        /// <param name="pDocument">ID del documento</param>
-        public void ActualizarPertenenciaPersonas(string pPerson = null, string pDocument = null)
-        {
-            string filter = "";
-            if (!string.IsNullOrEmpty(pPerson))
-            {
-                filter = $" FILTER(?person =<{pPerson}>)";
-            }
-            if (!string.IsNullOrEmpty(pDocument))
-            {
-                filter = $" FILTER(?document =<{pDocument}>)";
-            }
-            while (true)
-            {
-                //Añadimos a documentos
-                int limit = 500;
-                //TODO eliminar from
-                String select = @"select * where{select distinct ?document  ?person  from <http://gnoss.com/curriculumvitae.owl>  from <http://gnoss.com/person.owl>  ";
-                String where = @$"where{{
-                                    {filter}
-                                    {{
-                                        select distinct ?document ?person
-                                        Where
-                                        {{
-                                            ?person a <http://xmlns.com/foaf/0.1/Person>.     
-                                            ?document a <http://purl.org/ontology/bibo/Document>.
-                                            ?document <http://purl.org/ontology/bibo/authorList> ?autores.
-                                            ?autores <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person.
-                                            {{
-                                                    ?cv <http://w3id.org/roh/cvOf> ?person.
-                                                    ?cv a <http://w3id.org/roh/CV>.
-                                                    ?cv ?lvl1 ?cvlvl2.
-                                                    ?cvlvl2 ?lvl2 ?cvlvl3.
-                                                    ?cvlvl3 <http://vivoweb.org/ontology/core#relatedBy> ?document.
-                                                    ?cvlvl3  <http://w3id.org/roh/isPublic> 'true'.
-                                            }}
-                                            UNION
-                                            {{
-                                                    ?document <http://w3id.org/roh/isValidated> 'true'
-                                                    MINUS
-                                                    {{
-                                                            ?anycv <http://w3id.org/roh/cvOf>?person.
-                                                    }}
-                                            }}
-                                        }}
-                                    }}
-                                    MINUS
-                                    {{
-                                        ?person a <http://xmlns.com/foaf/0.1/Person>.
-                                        ?document a <http://purl.org/ontology/bibo/Document>.
-                                        ?document <http://w3id.org/roh/publicAuthorList> ?person.
-                                    }}
-                                }}}}order by desc(?document) limit {limit}";
-                SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
-                InsercionMultiple(resultado.results.bindings, "http://w3id.org/roh/publicAuthorList", "document", "person");
-                if (resultado.results.bindings.Count != limit)
-                {
-                    break;
-                }
-            }
-
-            while (true)
-            {
-                //Eliminamos de dcumentpos
-                int limit = 500;
-                //TODO eliminar from
-                String select = @"select * where{select distinct ?document  ?person  from <http://gnoss.com/curriculumvitae.owl>  from <http://gnoss.com/person.owl>  ";
-                String where = @$"where{{
-                                    {filter}
-                                    {{
-                                        ?person a <http://xmlns.com/foaf/0.1/Person>.
-                                        ?document a <http://purl.org/ontology/bibo/Document>.
-                                        ?document <http://w3id.org/roh/publicAuthorList> ?person.                                                                           
-                                    }}
-                                    MINUS
-                                    {{
-                                        select distinct ?document ?person
-                                        Where
-                                        {{
-                                            ?person a <http://xmlns.com/foaf/0.1/Person>.     
-                                            ?document a <http://purl.org/ontology/bibo/Document>.
-                                            ?document <http://purl.org/ontology/bibo/authorList> ?autores.
-                                            ?autores <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person.
-                                            {{
-                                                    ?cv <http://w3id.org/roh/cvOf>?person.
-                                                    ?cv a <http://w3id.org/roh/CV>.
-                                                    ?cv ?lvl1 ?cvlvl2.
-                                                    ?cvlvl2 ?lvl2 ?cvlvl3.
-                                                    ?cvlvl3 <http://vivoweb.org/ontology/core#relatedBy> ?document.
-                                                    ?cvlvl3  <http://w3id.org/roh/isPublic> 'true'.
-                                            }}
-                                            UNION
-                                            {{
-                                                    ?document <http://w3id.org/roh/isValidated> 'true'
-                                                    MINUS
-                                                    {{
-                                                            ?anycv <http://w3id.org/roh/cvOf>?person.
-                                                    }}
-                                            }}                                            
-                                        }}
-                                    }}
-                                }}}}order by desc(?document) limit {limit}";
-                var resultado = mResourceApi.VirtuosoQuery(select, where, "document");
-                EliminacionMultiple(resultado.results.bindings, "http://w3id.org/roh/publicAuthorList", "document", "person");
-                if (resultado.results.bindings.Count != limit)
-                {
-                    break;
-                }
-            }
-
 
         }
 
@@ -242,17 +117,16 @@ namespace DesnormalizadorHercules.Models
                 //Añadimos a documentos
                 int limit = 500;
                 //TODO eliminar from
-                String select = @"select * where{select distinct ?doc ?grupo  from <http://gnoss.com/curriculumvitae.owl>  from <http://gnoss.com/person.owl> from <http://gnoss.com/group.owl>  ";
+                String select = @"select distinct ?doc ?grupo  from <http://gnoss.com/curriculumvitae.owl>  from <http://gnoss.com/person.owl> from <http://gnoss.com/group.owl>  ";
                 String where = @$"where{{
                                     {filter}
                                     {{
                                         select distinct ?grupo ?doc
                                         Where{{
                                             ?grupo a <http://xmlns.com/foaf/0.1/Group>.
-                                            ?grupo ?propmembers ?members.
+                                            ?grupo <http://vivoweb.org/ontology/core#relates> ?members.
                                             ?members <http://w3id.org/roh/roleOf> ?person.
                                             ?person a <http://xmlns.com/foaf/0.1/Person>.
-                                            FILTER(?propmembers  in (<http://xmlns.com/foaf/0.1/member>, <http://w3id.org/roh/mainResearchers>))
                                             OPTIONAL{{?members <http://vivoweb.org/ontology/core#start> ?fechaPersonaInit.}}
                                             OPTIONAL{{?members <http://vivoweb.org/ontology/core#end> ?fechaPersonaEnd.}}
                                             BIND(IF(bound(?fechaPersonaEnd), xsd:integer(?fechaPersonaEnd), 30000000000000) as ?fechaPersonaEndAux)
@@ -271,7 +145,7 @@ namespace DesnormalizadorHercules.Models
                                         ?doc a <http://purl.org/ontology/bibo/Document>.
                                         ?doc <http://w3id.org/roh/isProducedBy> ?grupo.
                                     }}
-                                }}}}order by desc(?doc) limit {limit}";
+                                }}order by desc(?doc) limit {limit}";
                 SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
                 InsercionMultiple(resultado.results.bindings, "http://w3id.org/roh/isProducedBy", "doc", "grupo");
                 if (resultado.results.bindings.Count != limit)
@@ -285,7 +159,7 @@ namespace DesnormalizadorHercules.Models
                 //Eliminamos de dcumentpos
                 int limit = 500;
                 //TODO eliminar from
-                String select = @"select * where{select distinct ?doc ?grupo  from <http://gnoss.com/curriculumvitae.owl>  from <http://gnoss.com/person.owl> from <http://gnoss.com/group.owl>  ";
+                String select = @"select distinct ?doc ?grupo  from <http://gnoss.com/curriculumvitae.owl>  from <http://gnoss.com/person.owl> from <http://gnoss.com/group.owl>  ";
                 String where = @$"where{{
                                     {filter}
                                     {{
@@ -298,10 +172,9 @@ namespace DesnormalizadorHercules.Models
                                         select distinct ?grupo ?doc
                                         Where{{
                                             ?grupo a <http://xmlns.com/foaf/0.1/Group>.
-                                            ?grupo ?propmembers ?members.
+                                            ?grupo <http://vivoweb.org/ontology/core#relates> ?members.
                                             ?members <http://w3id.org/roh/roleOf> ?person.
                                             ?person a <http://xmlns.com/foaf/0.1/Person>.
-                                            FILTER(?propmembers  in (<http://xmlns.com/foaf/0.1/member>, <http://w3id.org/roh/mainResearchers>))
                                             OPTIONAL{{?members <http://vivoweb.org/ontology/core#start> ?fechaPersonaInit.}}
                                             OPTIONAL{{?members <http://vivoweb.org/ontology/core#end> ?fechaPersonaEnd.}}
                                             BIND(IF(bound(?fechaPersonaEnd), xsd:integer(?fechaPersonaEnd), 30000000000000) as ?fechaPersonaEndAux)
@@ -314,7 +187,7 @@ namespace DesnormalizadorHercules.Models
                                             FILTER(xsd:integer(?fechaPublicacion)>= ?fechaPersonaInitAux AND xsd:integer(?fechaPublicacion)<= ?fechaPersonaEndAux)
                                         }}
                                     }}
-                                }}}}order by desc(?doc) limit {limit}";
+                                }}order by desc(?doc) limit {limit}";
                 var resultado = mResourceApi.VirtuosoQuery(select, where, "document");
                 EliminacionMultiple(resultado.results.bindings, "http://w3id.org/roh/isProducedBy", "doc", "grupo");
                 if (resultado.results.bindings.Count != limit)
@@ -346,38 +219,41 @@ namespace DesnormalizadorHercules.Models
             while (true)
             {
                 int limit = 500;
-                String select = @"select * where{select ?document ?numCitasCargadas IF (BOUND (?numCitasACargar), ?numCitasACargar, 0 ) as ?numCitasACargar";
+                String select = @"select ?document ?numCitasCargadas IF (BOUND (?numCitasACargar), ?numCitasACargar, 0 ) as ?numCitasACargar";
                 String where = @$"where{{
-                            ?document a <http://purl.org/ontology/bibo/Document>.
-                            {filter}
-                            OPTIONAL
-                            {{
-                              ?document <http://w3id.org/roh/citationCount> ?numCitasCargadasAux. 
-                              BIND(xsd:int( ?numCitasCargadasAux) as  ?numCitasCargadas)
-                            }}
-                            {{
-                              select ?document max(xsd:int( ?numCitas)) as ?numCitasACargar
-                              Where{{
                                 ?document a <http://purl.org/ontology/bibo/Document>.
-                                OPTIONAL{{
-                                    {{
-                                        ?document <http://w3id.org/roh/hasMetric> ?metric.
-                                        ?metric  <http://w3id.org/roh/citationCount> ?numCitas.
-                                    }}UNION
-                                    {{
-                                        ?document <http://w3id.org/roh/wosCitationCount> ?numCitas.
-                                    }}
-                                    UNION{{
-                                        ?document <http://w3id.org/roh/inrecsCitationCount> ?numCitas.
-                                    }}
-                                    UNION{{
-                                        ?document <http://w3id.org/roh/scopusCitationCount> ?numCitas.
-                                    }}
-                                }}                                
-                              }}
-                            }}
-                            FILTER(?numCitasCargadas!= ?numCitasACargar OR !BOUND(?numCitasCargadas) )
-                            }}}} limit {limit}";
+                                {filter}
+                                OPTIONAL
+                                {{
+                                  ?document <http://w3id.org/roh/citationCount> ?numCitasCargadasAux. 
+                                  BIND(xsd:int( ?numCitasCargadasAux) as  ?numCitasCargadas)
+                                }}
+                                {{
+                                  select ?document max(xsd:int( ?numCitas)) as ?numCitasACargar
+                                  Where{{
+                                    ?document a <http://purl.org/ontology/bibo/Document>.
+                                    OPTIONAL{{
+                                        {{
+                                            ?document <http://w3id.org/roh/hasMetric> ?metric.
+                                            ?metric  <http://w3id.org/roh/citationCount> ?numCitas.
+                                        }}UNION
+                                        {{
+                                            ?document <http://w3id.org/roh/wosCitationCount> ?numCitas.
+                                        }}
+                                        UNION{{
+                                            ?document <http://w3id.org/roh/inrecsCitationCount> ?numCitas.
+                                        }}
+                                        UNION{{
+                                            ?document <http://w3id.org/roh/scopusCitationCount> ?numCitas.
+                                        }}
+                                        UNION{{
+                                            ?document <http://w3id.org/roh/semanticScholarCitationCount> ?numCitas.
+                                        }}
+                                    }}                                
+                                  }}
+                                }}
+                                FILTER(?numCitasCargadas!= ?numCitasACargar OR !BOUND(?numCitasCargadas) )
+                            }} limit {limit}";
                 SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
 
                 Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
@@ -398,7 +274,6 @@ namespace DesnormalizadorHercules.Models
                 }
             }
         }
-                
 
         /// <summary>
         /// Insertamos en la propiedad http://w3id.org/roh/hasKnowledgeArea de los http://purl.org/ontology/bibo/Document públicos 
@@ -490,7 +365,7 @@ namespace DesnormalizadorHercules.Models
 
 
                 //Cargamos el tesauro
-                Dictionary<string, string> dicAreasBroader = new ();
+                Dictionary<string, string> dicAreasBroader = new();
                 {
                     String select = @"select distinct * ";
                     String where = @$"where{{
@@ -518,35 +393,35 @@ namespace DesnormalizadorHercules.Models
                     int limit = 500;
                     //INSERTAMOS
                     //TODO eliminar from
-                    String select = @"select distinct * where{select ?document ?categoryNode from <http://gnoss.com/taxonomy.owl>";
+                    String select = @"select ?document ?categoryNode from <http://gnoss.com/taxonomy.owl>";
                     String where = @$"where{{
-                            ?document a <http://purl.org/ontology/bibo/Document>.
-                            {filter}
-                            {{
-                                select  distinct ?document ?hasKnowledgeAreaDocument ?categoryNode where{{
-                                    ?document a <http://purl.org/ontology/bibo/Document>.
-                                    ?document ?props ?hasKnowledgeAreaDocument.
-                                    FILTER(?props in (<http://w3id.org/roh/userKnowledgeArea>,<http://w3id.org/roh/externalKnowledgeArea>,<http://w3id.org/roh/enrichedKnowledgeArea>))
-                                    ?hasKnowledgeAreaDocument <http://w3id.org/roh/categoryNode> ?categoryNode.
-                                    MINUS{{
-                                        ?categoryNode <http://www.w3.org/2008/05/skos#narrower> ?hijo.
+                                ?document a <http://purl.org/ontology/bibo/Document>.
+                                {filter}
+                                {{
+                                    select  distinct ?document ?hasKnowledgeAreaDocument ?categoryNode where{{
+                                        ?document a <http://purl.org/ontology/bibo/Document>.
+                                        ?document ?props ?hasKnowledgeAreaDocument.
+                                        FILTER(?props in (<http://w3id.org/roh/userKnowledgeArea>,<http://w3id.org/roh/externalKnowledgeArea>,<http://w3id.org/roh/enrichedKnowledgeArea>))
+                                        ?hasKnowledgeAreaDocument <http://w3id.org/roh/categoryNode> ?categoryNode.
+                                        MINUS{{
+                                            ?categoryNode <http://www.w3.org/2008/05/skos#narrower> ?hijo.
+                                        }}
                                     }}
                                 }}
-                            }}
-                            MINUS{{
-                                select distinct ?document ?hasKnowledgeAreaDocumentAux ?categoryNode 
-                                where{{
-                                    ?document a <http://purl.org/ontology/bibo/Document>.
-                                    ?document <http://w3id.org/roh/hasKnowledgeArea> ?hasKnowledgeAreaDocumentAux.
-                                    ?hasKnowledgeAreaDocumentAux <http://w3id.org/roh/categoryNode> ?categoryNode
-                                    MINUS{{
-                                        ?categoryNode <http://www.w3.org/2008/05/skos#narrower> ?hijo.
+                                MINUS{{
+                                    select distinct ?document ?hasKnowledgeAreaDocumentAux ?categoryNode 
+                                    where{{
+                                        ?document a <http://purl.org/ontology/bibo/Document>.
+                                        ?document <http://w3id.org/roh/hasKnowledgeArea> ?hasKnowledgeAreaDocumentAux.
+                                        ?hasKnowledgeAreaDocumentAux <http://w3id.org/roh/categoryNode> ?categoryNode
+                                        MINUS{{
+                                            ?categoryNode <http://www.w3.org/2008/05/skos#narrower> ?hijo.
+                                        }}
                                     }}
                                 }}
-                            }}
-                            }}}}order by (?document) limit {limit}";
+                            }}order by (?document) limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
-                    InsertarCategorias(resultado, dicAreasBroader, graphsUrl,"document", "http://w3id.org/roh/hasKnowledgeArea");
+                    InsertarCategorias(resultado, dicAreasBroader, graphsUrl, "document", "http://w3id.org/roh/hasKnowledgeArea");
                     if (resultado.results.bindings.Count != limit)
                     {
                         break;
@@ -558,34 +433,34 @@ namespace DesnormalizadorHercules.Models
                     int limit = 500;
                     //ELIMINAMOS
                     //TODO eliminar from
-                    String select = @"select distinct * where{select ?document ?hasKnowledgeArea from <http://gnoss.com/taxonomy.owl>";
+                    String select = @"select ?document ?hasKnowledgeArea from <http://gnoss.com/taxonomy.owl>";
                     String where = @$"where{{
-                            ?document a <http://purl.org/ontology/bibo/Document>.
-                            {filter}
-                            {{
-                                select distinct ?document ?hasKnowledgeArea ?categoryNode 
-                                where{{
-                                    ?document a <http://purl.org/ontology/bibo/Document>.
-                                    ?document <http://w3id.org/roh/hasKnowledgeArea> ?hasKnowledgeArea.
-                                    ?hasKnowledgeArea <http://w3id.org/roh/categoryNode> ?categoryNode
-                                    MINUS{{
-                                        ?categoryNode <http://www.w3.org/2008/05/skos#narrower> ?hijo.
-                                    }}
-                                }}                               
-                            }}
-                            MINUS{{
-                                select  distinct ?document ?hasKnowledgeAreaDocument ?categoryNode where{{
-                                    ?document a <http://purl.org/ontology/bibo/Document>.
-                                    ?document ?props ?hasKnowledgeAreaDocument.
-                                    FILTER(?props in (<http://w3id.org/roh/userKnowledgeArea>,<http://w3id.org/roh/externalKnowledgeArea>,<http://w3id.org/roh/enrichedKnowledgeArea>))
-                                    ?hasKnowledgeAreaDocument <http://w3id.org/roh/categoryNode> ?categoryNode.
-                                    MINUS{{
-                                        ?categoryNode <http://www.w3.org/2008/05/skos#narrower> ?hijo.
-                                    }}
+                                ?document a <http://purl.org/ontology/bibo/Document>.
+                                {filter}
+                                {{
+                                    select distinct ?document ?hasKnowledgeArea ?categoryNode 
+                                    where{{
+                                        ?document a <http://purl.org/ontology/bibo/Document>.
+                                        ?document <http://w3id.org/roh/hasKnowledgeArea> ?hasKnowledgeArea.
+                                        ?hasKnowledgeArea <http://w3id.org/roh/categoryNode> ?categoryNode
+                                        MINUS{{
+                                            ?categoryNode <http://www.w3.org/2008/05/skos#narrower> ?hijo.
+                                        }}
+                                    }}                               
                                 }}
+                                MINUS{{
+                                    select  distinct ?document ?hasKnowledgeAreaDocument ?categoryNode where{{
+                                        ?document a <http://purl.org/ontology/bibo/Document>.
+                                        ?document ?props ?hasKnowledgeAreaDocument.
+                                        FILTER(?props in (<http://w3id.org/roh/userKnowledgeArea>,<http://w3id.org/roh/externalKnowledgeArea>,<http://w3id.org/roh/enrichedKnowledgeArea>))
+                                        ?hasKnowledgeAreaDocument <http://w3id.org/roh/categoryNode> ?categoryNode.
+                                        MINUS{{
+                                            ?categoryNode <http://www.w3.org/2008/05/skos#narrower> ?hijo.
+                                        }}
+                                    }}
                                  
-                            }}
-                            }}}} limit {limit}";
+                                }}
+                            }} limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
                     EliminarCategorias(resultado, "document", "http://w3id.org/roh/hasKnowledgeArea");
                     if (resultado.results.bindings.Count != limit)
@@ -595,6 +470,7 @@ namespace DesnormalizadorHercules.Models
                 }
             }
         }
+
 
         /// <summary>
         /// Insertamos en la propiedad http://vivoweb.org/ontology/core#freeTextKeyword de los http://purl.org/ontology/bibo/Document públicos 
@@ -623,27 +499,28 @@ namespace DesnormalizadorHercules.Models
                 {
                     int limit = 500;
                     //INSERTAMOS
-                    String select = @"select distinct * where{select ?document ?tag";
+                    String select = @"select ?document ?tag";
                     String where = @$"where{{
-                            ?document a <http://purl.org/ontology/bibo/Document>.
-                            {filter}
-                            {{
-                                select  distinct ?document ?tag where{{
-                                    ?document a <http://purl.org/ontology/bibo/Document>.
-                                    ?document ?props ?tag.
-                                    FILTER(?props in (<http://w3id.org/roh/userKeywords>,<http://w3id.org/roh/externalKeywords>,<http://w3id.org/roh/enrichedKeywords>))
+                                ?document a <http://purl.org/ontology/bibo/Document>.
+                                {filter}
+                                {{
+                                    select  distinct ?document ?tag where{{
+                                        ?document a <http://purl.org/ontology/bibo/Document>.
+                                        ?document ?props ?tag.
+                                        FILTER(?props in (<http://w3id.org/roh/userKeywords>,<http://w3id.org/roh/externalKeywords>,<http://w3id.org/roh/enrichedKeywords>))
+                                    }}
                                 }}
-                            }}
-                            MINUS{{
-                                select distinct ?document ?tag
-                                where{{
-                                    ?document a <http://purl.org/ontology/bibo/Document>.
-                                    ?document <http://vivoweb.org/ontology/core#freeTextKeyword> ?tag.
+                                MINUS{{
+                                    select distinct ?document ?tag
+                                    where{{
+                                        ?document a <http://purl.org/ontology/bibo/Document>.
+                                        ?document <http://vivoweb.org/ontology/core#freeTextKeyword> ?tagAux.
+                                        ?tagAux <http://w3id.org/roh/title> ?tag.
+                                    }}
                                 }}
-                            }}
-                            }}}}order by (?document) limit {limit}";
+                            }}order by (?document) limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
-                    InsercionMultiple(resultado.results.bindings, "http://vivoweb.org/ontology/core#freeTextKeyword", "document", "tag");
+                    InsercionMultipleTags(resultado.results.bindings, "document", "tag");
                     if (resultado.results.bindings.Count != limit)
                     {
                         break;
@@ -654,28 +531,28 @@ namespace DesnormalizadorHercules.Models
                 {
                     int limit = 500;
                     //ELIMINAMOS
-                    String select = @"select distinct * where{select ?document ?tag";
+                    String select = @"select ?document ?tagAux";
                     String where = @$"where{{
                             ?document a <http://purl.org/ontology/bibo/Document>.
-                            {filter}
-                            {{
-                                select distinct ?document ?tag
-                                where{{
-                                    ?document a <http://purl.org/ontology/bibo/Document>.
-                                    ?document <http://vivoweb.org/ontology/core#freeTextKeyword> ?tag.
-                                }}                               
-                            }}
-                            MINUS{{
-                                select  distinct ?document ?tag where{{
-                                    ?document a <http://purl.org/ontology/bibo/Document>.
-                                    ?document ?props ?tag.
-                                    FILTER(?props in (<http://w3id.org/roh/userKeywords>,<http://w3id.org/roh/externalKeywords>,<http://w3id.org/roh/enrichedKeywords>))
+                                {filter}
+                                {{
+                                    select distinct ?document ?tagAux ?tag
+                                    where{{
+                                        ?document a <http://purl.org/ontology/bibo/Document>.
+                                        ?document <http://vivoweb.org/ontology/core#freeTextKeyword> ?tagAux.
+                                        ?tagAux <http://w3id.org/roh/title> ?tag.
+                                    }}                               
                                 }}
-                                 
-                            }}
-                            }}}} limit {limit}";
+                                MINUS{{
+                                    select  distinct ?document ?tag where{{
+                                        ?document a <http://purl.org/ontology/bibo/Document>.
+                                        ?document ?props ?tag.
+                                        FILTER(?props in (<http://w3id.org/roh/userKeywords>,<http://w3id.org/roh/externalKeywords>,<http://w3id.org/roh/enrichedKeywords>))
+                                    }}
+                                }}
+                            }} limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
-                    EliminacionMultiple(resultado.results.bindings, "http://vivoweb.org/ontology/core#freeTextKeyword", "document", "tag");
+                    EliminacionMultiple(resultado.results.bindings, "http://vivoweb.org/ontology/core#freeTextKeyword", "document", "tagAux");
                     if (resultado.results.bindings.Count != limit)
                     {
                         break;
@@ -684,7 +561,248 @@ namespace DesnormalizadorHercules.Models
             }
         }
 
+        /// <summary>
+        /// TODO hacer bien
+        /// </summary>
+        /// <param name="pDocument"></param>
+        public void ActualizarAnios(string pDocument = null)
+        {
+            string filter = "";
+            if (!string.IsNullOrEmpty(pDocument))
+            {
+                filter = $" FILTER(?document =<{pDocument}>)";
+            }
 
+            EliminarDuplicados("document", "http://purl.org/ontology/bibo/Document", "http://w3id.org/roh/year");
+
+            //Inserciones
+            while (true)
+            {
+                int limit = 500;
+
+                String select = @"select distinct * where{select ?document ?yearCargado ?yearCargar  ";
+                String where = @$"where{{
+                                ?document a <http://purl.org/ontology/bibo/Document>.
+                                {filter}
+                                OPTIONAL{{
+	                                ?document <http://purl.org/dc/terms/issued> ?fechaDoc.
+	                                BIND(substr(str(?fechaDoc),0,4) as ?yearCargar).
+                                }}
+                                OPTIONAL{{
+                                    ?document <http://w3id.org/roh/year> ?yearCargado.      
+                                }}
+                                
+                                FILTER(?yearCargado!= ?yearCargar)
+
+                            }}}} limit {limit}";
+                SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
+
+                Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
+                {
+                    string document = fila["document"].value;
+                    string yearCargar = "";
+                    if (fila.ContainsKey("yearCargar"))
+                    {
+                        yearCargar = fila["yearCargar"].value;
+                    }
+                    string yearCargado = "";
+                    if (fila.ContainsKey("yearCargado"))
+                    {
+                        yearCargado = fila["yearCargado"].value;
+                    }
+                    ActualizadorTriple(document, "http://w3id.org/roh/year", yearCargado, yearCargar);
+                });
+
+                if (resultado.results.bindings.Count != limit)
+                {
+                    break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// TODO hacer bien
+        /// </summary>
+        /// <param name="pDocument"></param>
+        public void ActualizarIndicesImpacto(string pDocument = null)
+        {
+            string filter = "";
+            if (!string.IsNullOrEmpty(pDocument))
+            {
+                filter = $" FILTER(?document =<{pDocument}>)";
+            }
+
+            //Inserciones
+            while (true)
+            {
+                int limit = 500;
+
+                String select = @"select distinct * where{select ?document ?impactIndexInYear ?impactSource ?impactSourceOther ?impactIndexCategory from <http://gnoss.com/maindocument.owl> ";
+                String where = @$"where{{
+                                ?document a <http://purl.org/ontology/bibo/Document>.                               
+                                {filter}
+                                {{
+                                    ?document <http://w3id.org/roh/isValidated>  'true'.
+	                                ?document <http://purl.org/dc/terms/issued> ?fechaDoc.
+	                                ?document<http://w3id.org/roh/year> ?anioDoc.
+	                                ?document <http://vivoweb.org/ontology/core#hasPublicationVenue> ?revista. 
+	                                ?revista a <http://w3id.org/roh/MainDocument>.
+	                                ?revista <http://w3id.org/roh/impactIndex> ?impactIndex.
+	                                ?impactIndex <http://w3id.org/roh/impactIndexInYear> ?impactIndexInYear.
+	                                ?impactIndex <http://w3id.org/roh/year> ?anioFactorImpactoRevista.                          
+	                                FILTER(?anioDoc=?anioFactorImpactoRevista)
+                                    OPTIONAL{{?impactIndex  <http://w3id.org/roh/impactSource> ?impactSource. }}
+                                    OPTIONAL{{?impactIndex  <http://w3id.org/roh/impactSourceOther> ?impactSourceOther. }}  
+	                                ?impactIndex  <http://w3id.org/roh/impactCategory> ?impactCategory.
+	                                ?impactCategory  <http://w3id.org/roh/impactIndexCategory> ?impactIndexCategory.           
+	                                {{
+		                                SELECT ?impactIndex max(?impactCategory) as ?impactCategory
+		                                WHERE {{
+			                                ?impactIndex  <http://w3id.org/roh/impactCategory> ?impactCategory.
+		                                }}
+		                                GROUP BY ?impactIndex
+	                                }}
+                                }}MINUS
+                                {{
+                                    ?document <http://w3id.org/roh/impactIndex> ?impactIndexDoc.
+                                    ?impactIndexDoc <http://w3id.org/roh/impactIndexInYear> ?impactIndexInYear.
+                                    OPTIONAL{{?impactIndexDoc  <http://w3id.org/roh/impactSource> ?impactSource. }}
+                                    OPTIONAL{{?impactIndexDoc  <http://w3id.org/roh/impactSourceOther> ?impactSourceOther. }}  
+		                            ?impactIndexDoc  <http://w3id.org/roh/impactIndexCategory> ?impactIndexCategory.
+	                                
+                                }}
+
+                            }}}} limit {limit}";
+                SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
+
+                InsercionIndicesImpacto(resultado.results.bindings);
+
+                if (resultado.results.bindings.Count != limit)
+                {
+                    break;
+                }
+            }
+
+            //Eliminaciones
+            while (true)
+            {
+                int limit = 500;
+
+                String select = @"select distinct * where{select ?document ?impactIndexDoc from <http://gnoss.com/maindocument.owl> ";
+                String where = @$"where{{
+                                ?document a <http://purl.org/ontology/bibo/Document>.
+                                ?document <http://w3id.org/roh/isValidated>  'true'.
+                                {filter}
+                                {{
+                                    ?document <http://w3id.org/roh/impactIndex> ?impactIndexDoc.
+                                    ?impactIndexDoc <http://w3id.org/roh/impactIndexInYear> ?impactIndexInYear.
+                                    OPTIONAL{{?impactIndexDoc  <http://w3id.org/roh/impactSource> ?impactSource. }}
+                                    OPTIONAL{{?impactIndexDoc  <http://w3id.org/roh/impactSourceOther> ?impactSourceOther. }}  
+		                            ?impactIndexDoc  <http://w3id.org/roh/impactIndexCategory> ?impactIndexCategory.
+                                }}MINUS
+                                {{
+                                    ?document <http://w3id.org/roh/isValidated>  'true'.
+	                                ?document <http://purl.org/dc/terms/issued> ?fechaDoc.
+	                                ?document<http://w3id.org/roh/year> ?anioDoc.
+	                                ?document <http://vivoweb.org/ontology/core#hasPublicationVenue> ?revista. 
+	                                ?revista a <http://w3id.org/roh/MainDocument>.
+	                                ?revista <http://w3id.org/roh/impactIndex> ?impactIndex.
+	                                ?impactIndex <http://w3id.org/roh/impactIndexInYear> ?impactIndexInYear.
+	                                ?impactIndex <http://w3id.org/roh/year> ?anioFactorImpactoRevista.                  
+	                                FILTER(?anioDoc=?anioFactorImpactoRevista)
+	                                OPTIONAL{{?impactIndex  <http://w3id.org/roh/impactSource> ?impactSource. }}
+                                    OPTIONAL{{?impactIndex  <http://w3id.org/roh/impactSourceOther> ?impactSourceOther. }}                   
+	                                ?impactIndex  <http://w3id.org/roh/impactCategory> ?impactCategory.
+	                                ?impactCategory  <http://w3id.org/roh/impactIndexCategory> ?impactIndexCategory.             
+	                                {{
+		                                SELECT ?impactIndex max(?impactCategory) as ?impactCategory
+		                                WHERE {{
+			                                ?impactIndex  <http://w3id.org/roh/impactCategory> ?impactCategory.
+		                                }}
+		                                GROUP BY ?impactIndex
+	                                }}
+                                }}
+
+                            }}}} limit {limit}";
+
+                SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
+
+                Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
+                {
+                    string document = fila["document"].value;
+                    string indiceImpactoAEliminar = fila["impactIndexDoc"].value;
+                    ActualizadorTriple(document, "http://w3id.org/roh/impactIndex", indiceImpactoAEliminar, "");
+                });
+
+                if (resultado.results.bindings.Count != limit)
+                {
+                    break;
+                }
+            }
+
+            //Actualizamos publicationPosition
+            while (true)
+            {
+                int limit = 500;
+
+                String select = @"select distinct * where{select ?document ?impactIndexDoc ?cargado ?cargar from <http://gnoss.com/maindocument.owl> ";
+                String where = @$"where{{
+                                ?document a <http://purl.org/ontology/bibo/Document>.
+                                {filter}
+                                
+                                ?document <http://w3id.org/roh/impactIndex> ?impactIndexDoc.
+                                ?document <http://w3id.org/roh/year> ?year.
+                                ?impactIndexDoc <http://w3id.org/roh/impactIndexInYear> ?impactIndexInYear.
+                                OPTIONAL{{?impactIndexDoc  <http://w3id.org/roh/impactSource> ?impactSource. }}
+                                OPTIONAL{{?impactIndexDoc  <http://w3id.org/roh/impactSourceOther> ?impactSourceOther. }}  
+		                        ?impactIndexDoc  <http://w3id.org/roh/impactIndexCategory> ?impactIndexCategory.
+                                ?document <http://vivoweb.org/ontology/core#hasPublicationVenue> ?revista. 
+                                ?revista a <http://w3id.org/roh/MainDocument>.
+	                            ?revista <http://w3id.org/roh/impactIndex> ?impactIndexRevista.
+                                ?impactIndexRevista <http://w3id.org/roh/year> ?year.
+                                ?impactIndexRevista  <http://w3id.org/roh/impactCategory> ?impactCategory.
+	                            ?impactCategory  <http://w3id.org/roh/impactIndexCategory> ?impactIndexCategory.   
+                                
+
+                                OPTIONAL{{
+	                                ?impactIndexDoc <http://w3id.org/roh/publicationPosition> ?cargado.
+                                }}
+                                OPTIONAL{{
+                                    ?impactCategory <http://w3id.org/roh/publicationPosition> ?cargar.      
+                                }}                                
+                                FILTER(?cargado!= ?cargar)
+                            }}}} limit {limit}";
+
+                SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
+
+                Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
+                {
+                    string document = fila["document"].value;
+                    string impactIndexDoc = fila["impactIndexDoc"].value;
+                    string cargar = "";
+                    if (fila.ContainsKey("cargar"))
+                    {
+                        cargar = impactIndexDoc + "|" + fila["cargar"].value;
+                    }
+                    string cargado = "";
+                    if (fila.ContainsKey("cargado"))
+                    {
+                        cargado = impactIndexDoc + "|" + fila["cargado"].value;
+                    }
+                    ActualizadorTriple(document, "http://w3id.org/roh/impactIndex|http://w3id.org/roh/publicationPosition", cargado, cargar);
+                });
+
+                if (resultado.results.bindings.Count != limit)
+                {
+                    break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// TODO hacer bien
+        /// </summary>
+        /// <param name="pDocument"></param>
         public void ActualizarIndiceImpacto(string pDocument = null)
         {
             string filter = "";
@@ -753,6 +871,10 @@ namespace DesnormalizadorHercules.Models
             }
         }
 
+        /// <summary>
+        /// TODO hacer bien
+        /// </summary>
+        /// <param name="pDocument"></param>
         public void ActualizarCuartil(string pDocument = null)
         {
             string filter = "";
@@ -815,6 +937,61 @@ namespace DesnormalizadorHercules.Models
                 {
                     break;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Método para inserción múltiple de indices de impacto
+        /// </summary>
+        /// <param name="pFilas">Filas con los datos para insertar</param>
+        public void InsercionIndicesImpacto(List<Dictionary<string, SparqlObject.Data>> pFilas)
+        {
+            List<string> ids = pFilas.Select(x => x["document"].value).Distinct().ToList();
+            if (ids.Count > 0)
+            {
+                Parallel.ForEach(ids, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, id =>
+                {
+                    Guid guid = mResourceApi.GetShortGuid(id);
+
+                    Dictionary<Guid, List<TriplesToInclude>> triples = new() { { guid, new List<TriplesToInclude>() } };
+                    foreach (Dictionary<string, SparqlObject.Data> fila in pFilas.Where(x => x["document"].value == id))
+                    {
+                        string idAux = mResourceApi.GraphsUrl + "items/ImpactIndex_" + guid.ToString().ToLower() + "_" + Guid.NewGuid().ToString().ToLower();
+                        string document = fila["document"].value;
+                        {
+                            TriplesToInclude t = new();
+                            t.Predicate = "http://w3id.org/roh/impactIndex|http://w3id.org/roh/impactIndexInYear";
+                            t.NewValue = idAux + "|" + fila["impactIndexInYear"].value;
+                            triples[guid].Add(t);
+                        }
+
+                        if (fila.ContainsKey("impactSource"))
+                        {
+                            TriplesToInclude t = new();
+                            t.Predicate = "http://w3id.org/roh/impactIndex|http://w3id.org/roh/impactSource";
+                            t.NewValue = idAux + "|" + fila["impactSource"].value;
+                            triples[guid].Add(t);
+                        }
+                        if (fila.ContainsKey("impactSourceOther"))
+                        {
+                            TriplesToInclude t = new();
+                            t.Predicate = "http://w3id.org/roh/impactIndex|http://w3id.org/roh/impactSourceOther";
+                            t.NewValue = idAux + "|" + fila["impactSourceOther"].value;
+                            triples[guid].Add(t);
+                        }
+                        if (fila.ContainsKey("impactIndexCategory"))
+                        {
+                            TriplesToInclude t = new();
+                            t.Predicate = "http://w3id.org/roh/impactIndex|http://w3id.org/roh/impactIndexCategory";
+                            t.NewValue = idAux + "|" + fila["impactIndexCategory"].value;
+                            triples[guid].Add(t);
+                        }
+                    }
+                    if (triples[guid].Count > 0)
+                    {
+                        var resultado = mResourceApi.InsertPropertiesLoadedResources(triples);
+                    }
+                });
             }
         }
     }

@@ -83,6 +83,9 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     Dictionary<string, ResearchObjectGitHub> dicIdDatosRoGitHub = new Dictionary<string, ResearchObjectGitHub>();
                     Dictionary<string, ResearchObjectZenodo> dicIdDatosRoZenodo = new Dictionary<string, ResearchObjectZenodo>();
 
+                    //Diccionario para almacenar las notificaciones
+                    ConcurrentBag<NotificationOntology.Notification> notificaciones = new ConcurrentBag<NotificationOntology.Notification>(); 
+
                     string jsonString = String.Empty;
 
                     string idPersona = null;
@@ -505,10 +508,38 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                 if (string.IsNullOrEmpty(idBBDD))
                                 {
                                     ComplexOntologyResource resourceDocumento = documento.ToGnossApiResource(mResourceApi, null);
+
+                                    foreach(BFO_0000023 autor in documento.Bibo_authorList)
+                                    {
+                                        NotificationOntology.Notification notificacion = new NotificationOntology.Notification();
+                                        notificacion.IdRoh_trigger = null;
+                                        notificacion.Roh_tabPropertyCV = documento.RdfType;
+                                        notificacion.Roh_entity = resourceDocumento.GnossId;
+                                        notificacion.IdRoh_owner = autor.IdRdf_member;
+                                        notificacion.Dct_issued = DateTime.Now;
+                                        notificacion.Roh_type = "create";
+
+                                        notificaciones.Add(notificacion);
+                                    }
+                                    
+
                                     listaDocumentosCargar.Add(resourceDocumento);
                                 }
                                 else
                                 {
+                                    foreach (BFO_0000023 autor in documento.Bibo_authorList)
+                                    {
+                                        NotificationOntology.Notification notificacion = new NotificationOntology.Notification();
+                                        notificacion.IdRoh_trigger = null;
+                                        notificacion.Roh_tabPropertyCV = documento.RdfType;
+                                        notificacion.Roh_entity = listaDocumentosCargados[idBBDD];
+                                        notificacion.IdRoh_owner = autor.IdRdf_member;
+                                        notificacion.Dct_issued = DateTime.Now;
+                                        notificacion.Roh_type = "edit";
+
+                                        notificaciones.Add(notificacion);
+                                    }
+
                                     idBBDD = listaDocumentosCargados[idBBDD];
                                     listaDocumentosModificar.Add(idBBDD, documento);
                                 }
@@ -616,10 +647,37 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                 if (string.IsNullOrEmpty(idBBDD))
                                 {
                                     ComplexOntologyResource resourceResearchObject = researchobject.ToGnossApiResource(mResourceApi, null);
+
+                                    foreach (ResearchobjectOntology.BFO_0000023 autor in researchobject.Bibo_authorList)
+                                    {
+                                        NotificationOntology.Notification notificacion = new NotificationOntology.Notification();
+                                        notificacion.IdRoh_trigger = null;
+                                        notificacion.Roh_tabPropertyCV = researchobject.RdfType;
+                                        notificacion.Roh_entity = resourceResearchObject.GnossId;
+                                        notificacion.IdRoh_owner = autor.IdRdf_member;
+                                        notificacion.Dct_issued = DateTime.Now;
+                                        notificacion.Roh_type = "create";
+
+                                        notificaciones.Add(notificacion);
+                                    }
+
                                     listaROsCargar.Add(resourceResearchObject);
                                 }
                                 else
                                 {
+                                    foreach (ResearchobjectOntology.BFO_0000023 autor in researchobject.Bibo_authorList)
+                                    {
+                                        NotificationOntology.Notification notificacion = new NotificationOntology.Notification();
+                                        notificacion.IdRoh_trigger = null;
+                                        notificacion.Roh_tabPropertyCV = researchobject.RdfType;
+                                        notificacion.Roh_entity = listaROsCargados[idBBDD];
+                                        notificacion.IdRoh_owner = autor.IdRdf_member;
+                                        notificacion.Dct_issued = DateTime.Now;
+                                        notificacion.Roh_type = "edit";
+
+                                        notificaciones.Add(notificacion);
+                                    }
+
                                     idBBDD = listaROsCargados[idBBDD];
                                     listaROsModificar.Add(idBBDD, researchobject);
                                 }
@@ -686,6 +744,39 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                 {
                                     mResourceApi.ModifyComplexOntologyResource(complexOntologyResource, false, true);
                                 }
+                            }
+                        });
+
+                        //Desnormalizamos los documentos
+                        List<string> listaDocumentos = listaDocumentosCargar.Select(x => x.GnossId).Union(listaDocumentosModificar.Select(x => x.Key)).Distinct().ToList();
+                        Utility.ModificarDocumentos(pDocuments: listaDocumentos);
+
+                        //Desnormalizamos los research object
+                        List<string> listaRO = listaROsCargar.Select(x => x.GnossId).Union(listaROsModificar.Select(x => x.Key)).Distinct().ToList();
+                        Utility.ModificarResearchObjects(pResearchObjects: listaRO);
+
+                        //Desnormalizamos las personas
+                        List<string> listaPersonas = listaPersonasCargar.Select(x => x.GnossId).ToList();
+                        Utility.ModificarDocumentos(pPersons: listaPersonas);
+                        Utility.ModificarResearchObjects(pPersons: listaPersonas);
+
+                        //Cargamos las notificaciones
+                        List<NotificationOntology.Notification> notificacionesCargar = notificaciones.ToList();
+                        mResourceApi.ChangeOntoly("notification");
+                        //TODO cambiar parallel
+                        Parallel.ForEach(notificacionesCargar, new ParallelOptions { MaxDegreeOfParallelism = 1 }, notificacion =>
+                        {
+                            ComplexOntologyResource recursoCargar = notificacion.ToGnossApiResource(mResourceApi);
+                            int numIntentos = 0;
+                            while (!recursoCargar.Uploaded)
+                            {
+                                numIntentos++;
+
+                                if (numIntentos > 5)
+                                {
+                                    break;
+                                }
+                                mResourceApi.LoadComplexSemanticResource(recursoCargar);
                             }
                         });
                     }
@@ -1321,22 +1412,22 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             }
 
             // Página de inicio (PageStart)
-            if (!string.IsNullOrEmpty(pPublicacion.pageStart) && Int32.TryParse(pPublicacion.pageStart, out int n1))
+            if (!string.IsNullOrEmpty(pPublicacion.pageStart) && int.TryParse(pPublicacion.pageStart, out int n1))
             {
                 document.Bibo_pageStart = pPublicacion.pageStart;
 
-                if (pPublicacionB != null && !string.IsNullOrEmpty(pPublicacionB.pageStart) && Int32.TryParse(pPublicacionB.pageStart, out int n11) && document.Bibo_pageStart == null)
+                if (pPublicacionB != null && !string.IsNullOrEmpty(pPublicacionB.pageStart) && int.TryParse(pPublicacionB.pageStart, out int n11) && document.Bibo_pageStart == null)
                 {
                     document.Bibo_pageStart = pPublicacionB.pageStart;
                 }
             }
 
             // Página de fin (PageEnd)
-            if (!string.IsNullOrEmpty(pPublicacion.pageEnd) && Int32.TryParse(pPublicacion.pageEnd, out int n3))
+            if (!string.IsNullOrEmpty(pPublicacion.pageEnd) && int.TryParse(pPublicacion.pageEnd, out int n3))
             {
                 document.Bibo_pageEnd = pPublicacion.pageEnd;
 
-                if (pPublicacionB != null && !string.IsNullOrEmpty(pPublicacionB.pageEnd) && Int32.TryParse(pPublicacion.pageEnd, out int n33) && document.Bibo_pageEnd == null)
+                if (pPublicacionB != null && !string.IsNullOrEmpty(pPublicacionB.pageEnd) && int.TryParse(pPublicacion.pageEnd, out int n33) && document.Bibo_pageEnd == null)
                 {
                     document.Bibo_pageEnd = pPublicacionB.pageEnd;
                 }
@@ -1378,7 +1469,8 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     }
                 }
             }
-            if ((document.Roh_externalKnowledgeArea == null || document.Roh_externalKnowledgeArea.Count == 0) && pPublicacionB != null && pPublicacionB.hasKnowledgeAreas != null && pPublicacionB.hasKnowledgeAreas.Count > 0)
+            if ((document.Roh_externalKnowledgeArea == null ||
+                document.Roh_externalKnowledgeArea.Count == 0) && pPublicacionB != null && pPublicacionB.hasKnowledgeAreas != null && pPublicacionB.hasKnowledgeAreas.Count > 0)
             {
                 document.Roh_externalKnowledgeArea = new List<DocumentOntology.CategoryPath>();
                 foreach (HasKnowledgeArea knowledgearea in pPublicacionB.hasKnowledgeAreas)
@@ -1442,7 +1534,8 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     }
                 }
             }
-            if ((document.Roh_enrichedKnowledgeArea == null || document.Roh_enrichedKnowledgeArea.Count == 0) && pPublicacionB != null && pPublicacionB.topics_enriquecidos != null && pPublicacionB.topics_enriquecidos.Count > 0)
+            if ((document.Roh_enrichedKnowledgeArea == null || 
+                document.Roh_enrichedKnowledgeArea.Count == 0) && pPublicacionB != null && pPublicacionB.topics_enriquecidos != null && pPublicacionB.topics_enriquecidos.Count > 0)
             {
                 document.Roh_enrichedKnowledgeArea = new List<DocumentOntology.CategoryPath>();
                 foreach (TopicsEnriquecido area in pPublicacionB.topics_enriquecidos)
@@ -1478,17 +1571,17 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                 {
                     if (itemMetric.metricName.ToLower() == "wos")
                     {
-                        document.Roh_wosCitationCount = Int32.Parse(itemMetric.citationCount);
+                        document.Roh_wosCitationCount = int.Parse(itemMetric.citationCount);
                     }
 
                     if (itemMetric.metricName.ToLower() == "scopus")
                     {
-                        document.Roh_scopusCitationCount = Int32.Parse(itemMetric.citationCount);
+                        document.Roh_scopusCitationCount = int.Parse(itemMetric.citationCount);
                     }
 
                     //if (itemMetric.metricName.ToLower() == "semanticscholar")
                     //{
-                    //    document.Roh_semanticScholarCitationCount = Int32.Parse(itemMetric.citationCount);
+                    //    document.Roh_semanticScholarCitationCount = int.Parse(itemMetric.citationCount);
                     //}
                 }
             }
@@ -1500,24 +1593,25 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     {
                         if (itemMetric.metricName.ToLower() == "wos")
                         {
-                            document.Roh_wosCitationCount = Int32.Parse(itemMetric.citationCount);
+                            document.Roh_wosCitationCount = int.Parse(itemMetric.citationCount);
                         }
 
                         if (itemMetric.metricName.ToLower() == "scopus")
                         {
-                            document.Roh_scopusCitationCount = Int32.Parse(itemMetric.citationCount);
+                            document.Roh_scopusCitationCount = int.Parse(itemMetric.citationCount);
                         }
 
                         //if (itemMetric.metricName.ToLower() == "semanticscholar")
                         //{
-                        //    document.Roh_semanticScholarCitationCount = Int32.Parse(itemMetric.citationCount);
+                        //    document.Roh_semanticScholarCitationCount = int.Parse(itemMetric.citationCount);
                         //}
                     }
                 }
             }
 
             // Revista (HasPublicationVenue)
-            if (pPublicacion.hasPublicationVenue != null && !string.IsNullOrEmpty(pPublicacion.hasPublicationVenue.name) && (pPublicacion.hasPublicationVenue.type == "Journal" || string.IsNullOrEmpty(pPublicacion.hasPublicationVenue.type)))
+            if (pPublicacion.hasPublicationVenue != null && !string.IsNullOrEmpty(pPublicacion.hasPublicationVenue.name) && (pPublicacion.hasPublicationVenue.type == "Journal" ||
+                string.IsNullOrEmpty(pPublicacion.hasPublicationVenue.type)))
             {
                 // Comprobar si la revista existe o no.
                 string idRevista = string.Empty;

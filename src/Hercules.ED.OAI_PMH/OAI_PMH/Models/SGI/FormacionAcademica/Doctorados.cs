@@ -16,8 +16,8 @@ namespace OAI_PMH.Models.SGI.FormacionAcademica
         public Entidad EntidadTitulacionDEA { get; set; }
         public string TituloTesis { get; set; }
         public string CalificacionObtenida { get; set; }
-        public Director DirectorTesis { get; set; }
-        public Director CoDirectorTesis { get; set; }
+        public string DirectorTesis { get; set; }
+        public string CoDirectorTesis { get; set; }
         public bool? DoctoradoEuropeo { get; set; }
         public DateTime FechaMencionDoctoradoEuropeo { get; set; }
         public bool? MencionCalidad { get; set; }

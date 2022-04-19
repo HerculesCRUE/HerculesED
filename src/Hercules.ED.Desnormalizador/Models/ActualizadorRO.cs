@@ -309,64 +309,62 @@ namespace DesnormalizadorHercules.Models
         }
 
         /// <summary>
-        /// Actualizamos en la propiedad http://w3id.org/roh/isPublic de los http://w3id.org/roh/ResearchObject
-        /// los ros públicos (Los ros que son públicos en algún CV)
+        /// Actualizamos en la propiedad http://w3id.org/roh/isValidated de los http://w3id.org/roh/ResearchObject
+        /// los ros validados (son los ros oficiales, es decir, los que tienen http://w3id.org/roh/crisIdentifier o validados por la universidad)
         /// Esta propiedad se utilizará como filtro en el bucador general de ros
-        /// Depende de ActualizadorCV.ModificarResearchObjects
+        /// No tiene dependencias
         /// </summary>
         /// <param name="pDocument">ID del documento</param>
-        public void ActualizarROsPublicos(string pRO = null)
+        public void ActualizarROsValidados(string pRO = null)
         {
+            //TODO validación de la universidad
             string filter = "";
             if (!string.IsNullOrEmpty(pRO))
             {
                 filter = $" FILTER(?ro =<{pRO}>)";
             }
             //Eliminamos los duplicados
-            EliminarDuplicados("document", "http://w3id.org/roh/ResearchObject", "http://w3id.org/roh/isPublic");
+            EliminarDuplicados("document", "http://w3id.org/roh/ResearchObject", "http://w3id.org/roh/isValidated");
 
             while (true)
             {
+                //TODO añadir validación
                 int limit = 500;
-                //TODO eliminar from
-                String select = @"select * where{ select ?ro ?isPublicCargado ?isPublicACargar  from <http://gnoss.com/curriculumvitae.owl>  from <http://gnoss.com/person.owl>";
+                String select = @"select * where{ select ?ro ?isValidatedCargado ?isValidatedCargar ";
                 String where = @$"where{{
                             ?ro a <http://w3id.org/roh/ResearchObject>.
                             {filter}
                             OPTIONAL
                             {{
-                                ?ro <http://w3id.org/roh/isPublic> ?isPublicCargado.
+                                ?ro <http://w3id.org/roh/isValidated> ?isValidatedCargado.
                             }}
                             {{
-                                select distinct ?ro IF(BOUND(?isPublicACargar),?isPublicACargar,'false')  as ?isPublicACargar
+                                select distinct ?ro IF(BOUND(?isValidatedCargar),?isValidatedCargar,'false')  as ?isValidatedCargar
                                 Where
                                 {{
                                     ?ro a <http://w3id.org/roh/ResearchObject>.
                                     OPTIONAL
-                                    {{  
-                                        ?cv a <http://w3id.org/roh/CV>.
-                                        ?cv ?lvl1 ?cvlvl2.
-                                        ?cvlvl2 ?lvl2 ?cvlvl3.
-                                        ?cvlvl3 <http://vivoweb.org/ontology/core#relatedBy> ?ro.
-                                        ?cvlvl3  <http://w3id.org/roh/isPublic> 'true'.
-                                        BIND('true' as ?isPublicACargar)
+                                    {{
+                                        ?document ?propIdRo ?id.
+                                        FILTER(?propIdRo in (<http://w3id.org/roh/idZenodo>,<http://w3id.org/roh/idGit>,<http://w3id.org/roh/idFigShare>))
+                                        BIND('true' as ?isValidatedCargar)
                                     }}      
                                 }}
                             }}
-                            FILTER(?isPublicCargado!= ?isPublicACargar OR !BOUND(?isPublicCargado) )
+                            FILTER(?isValidatedCargado!= ?isValidatedCargar OR !BOUND(?isValidatedCargado) )
                             }}}} limit {limit}";
                 SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "researchobject");
 
                 Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                 {
                     string ro = fila["ro"].value;
-                    string isPublicACargar = fila["isPublicACargar"].value;
-                    string isPublicCargado = "";
-                    if (fila.ContainsKey("isPublicCargado"))
+                    string isValidatedCargar = fila["isValidatedCargar"].value;
+                    string isValidatedCargado = "";
+                    if (fila.ContainsKey("isValidatedCargado"))
                     {
-                        isPublicCargado = fila["isPublicCargado"].value;
+                        isValidatedCargado = fila["isValidatedCargado"].value;
                     }
-                    ActualizadorTriple(ro, "http://w3id.org/roh/isPublic", isPublicCargado, isPublicACargar);
+                    ActualizadorTriple(ro, "http://w3id.org/roh/isValidated", isValidatedCargado, isValidatedCargar);
                 });
 
                 if (resultado.results.bindings.Count != limit)

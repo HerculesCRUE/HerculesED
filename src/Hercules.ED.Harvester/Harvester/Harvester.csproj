@@ -7,6 +7,8 @@
 
   <ItemGroup>
     <Folder Include="Config\" />
+    <Folder Include="Logs\Carga\" />
+    <Folder Include="Logs\Identifiers\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -16,6 +18,15 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ClasesGeneradas\hercules.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Config\appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Config\OAuthV3.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

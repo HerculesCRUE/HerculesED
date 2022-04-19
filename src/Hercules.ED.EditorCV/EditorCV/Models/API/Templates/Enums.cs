@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace GuardadoCV.Models.API.Templates
+namespace EditorCV.Models.API.Templates
 {
     //Contiene las enumerciones disponibles
 

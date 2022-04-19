@@ -157,138 +157,41 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
             }
 
             // Título.
-            if (!string.IsNullOrEmpty(pZenodoObj.titulo))
-            {
-                ro.Roh_title = pZenodoObj.titulo;
-
-                if (pZenodoObjB != null && !string.IsNullOrEmpty(pZenodoObjB.titulo) && string.IsNullOrEmpty(ro.Roh_title))
-                {
-                    ro.Roh_title = pZenodoObjB.titulo;
-                }
-            }
+            Utility.Titulo(pZenodoObj, pZenodoObjB, ro);
 
             // Descripción.
-            if (!string.IsNullOrEmpty(pZenodoObj.descripcion))
-            {
-                ro.Bibo_abstract = pZenodoObj.descripcion;
-
-                if (pZenodoObjB != null && !string.IsNullOrEmpty(pZenodoObjB.descripcion) && string.IsNullOrEmpty(ro.Bibo_abstract))
-                {
-                    ro.Bibo_abstract = pZenodoObjB.descripcion;
-                }
-            }
+            Utility.Descripcion(pZenodoObj, pZenodoObjB, ro);
 
             // URL
-            if (!string.IsNullOrEmpty(pZenodoObj.url))
-            {
-                ro.Vcard_url = pZenodoObj.url;
-
-                if (pZenodoObjB != null && !string.IsNullOrEmpty(pZenodoObjB.url) && string.IsNullOrEmpty(ro.Vcard_url))
-                {
-                    ro.Vcard_url = pZenodoObjB.url;
-                }
-            }
+            Utility.URL(pZenodoObj, pZenodoObjB, ro);
 
             // Fecha Publicación
             if (!string.IsNullOrEmpty(pZenodoObj.fechaPublicacion))
             {
-                int dia = Int32.Parse(pZenodoObj.fechaPublicacion.Split("-")[2]);
-                int mes = Int32.Parse(pZenodoObj.fechaPublicacion.Split("-")[1]);
-                int anyo = Int32.Parse(pZenodoObj.fechaPublicacion.Split("-")[0]);
+                int dia = int.Parse(pZenodoObj.fechaPublicacion.Split("-")[2]);
+                int mes = int.Parse(pZenodoObj.fechaPublicacion.Split("-")[1]);
+                int anyo = int.Parse(pZenodoObj.fechaPublicacion.Split("-")[0]);
 
                 ro.Dct_issued = new DateTime(anyo, mes, dia);
 
                 if (pZenodoObjB != null && !string.IsNullOrEmpty(pZenodoObjB.fechaPublicacion) && ro.Dct_issued == null)
                 {
-                    dia = Int32.Parse(pZenodoObjB.fechaPublicacion.Split("-")[2]);
-                    mes = Int32.Parse(pZenodoObjB.fechaPublicacion.Split("-")[1]);
-                    anyo = Int32.Parse(pZenodoObjB.fechaPublicacion.Split("-")[0]);
+                    dia = int.Parse(pZenodoObjB.fechaPublicacion.Split("-")[2]);
+                    mes = int.Parse(pZenodoObjB.fechaPublicacion.Split("-")[1]);
+                    anyo = int.Parse(pZenodoObjB.fechaPublicacion.Split("-")[0]);
 
                     ro.Dct_issued = new DateTime(anyo, mes, dia);
                 }
             }
 
             // Etiquetas Enriquecidas
-            if (pZenodoObj.etiquetasEnriquecidas != null && pZenodoObj.etiquetasEnriquecidas.Any())
-            {
-                ro.Roh_enrichedKeywords = pZenodoObj.etiquetasEnriquecidas;
-
-                if (pZenodoObjB != null && pZenodoObjB.etiquetasEnriquecidas != null && pZenodoObjB.etiquetasEnriquecidas.Any())
-                {
-                    ro.Roh_enrichedKeywords = pZenodoObjB.etiquetasEnriquecidas;
-                }
-            }
+            Utility.EtiquetasEnriquecidas(pZenodoObj, pZenodoObjB, ro);
 
             // Categorias Enriquecidas
-            HashSet<string> listaIDs = new HashSet<string>();
-            if (pZenodoObj.categoriasEnriquecidas != null && pZenodoObj.categoriasEnriquecidas.Count > 0)
-            {
-                ro.Roh_enrichedKnowledgeArea = new List<CategoryPath>();
-                foreach (string area in pZenodoObj.categoriasEnriquecidas)
-                {
-                    if (pDicAreasNombre.ContainsKey(area.ToLower()))
-                    {
-                        CategoryPath categoria = new CategoryPath();
-                        categoria.IdsRoh_categoryNode = new List<string>();
-                        categoria.IdsRoh_categoryNode.Add(pDicAreasNombre[area.ToLower()]);
-                        string idHijo = pDicAreasNombre[area.ToLower()];
-                        string idHijoAux = idHijo;
-                        if (!listaIDs.Contains(idHijo))
-                        {
-                            while (!idHijo.EndsWith(".0.0.0"))
-                            {
-                                categoria.IdsRoh_categoryNode.Add(pDicAreasBroader[idHijo]);
-                                idHijo = pDicAreasBroader[idHijo];
-                            }
-                            if (categoria.IdsRoh_categoryNode.Count > 0)
-                            {
-                                ro.Roh_enrichedKnowledgeArea.Add(categoria);
-                            }
-                        }
-                        listaIDs.Add(idHijoAux);
-                    }
-                }
-
-                if (pZenodoObjB != null && pZenodoObjB.categoriasEnriquecidas != null && pZenodoObjB.categoriasEnriquecidas.Any())
-                {
-                    ro.Roh_enrichedKnowledgeArea = new List<CategoryPath>();
-                    foreach (string area in pZenodoObjB.categoriasEnriquecidas)
-                    {
-                        if (pDicAreasNombre.ContainsKey(area.ToLower()))
-                        {
-                            CategoryPath categoria = new CategoryPath();
-                            categoria.IdsRoh_categoryNode = new List<string>();
-                            categoria.IdsRoh_categoryNode.Add(pDicAreasNombre[area.ToLower()]);
-                            string idHijo = pDicAreasNombre[area.ToLower()];
-                            string idHijoAux = idHijo;
-                            if (!listaIDs.Contains(idHijo))
-                            {
-                                while (!idHijo.EndsWith(".0.0.0"))
-                                {
-                                    categoria.IdsRoh_categoryNode.Add(pDicAreasBroader[idHijo]);
-                                    idHijo = pDicAreasBroader[idHijo];
-                                }
-                                if (categoria.IdsRoh_categoryNode.Count > 0)
-                                {
-                                    ro.Roh_enrichedKnowledgeArea.Add(categoria);
-                                }
-                            }
-                            listaIDs.Add(idHijoAux);
-                        }
-                    }
-                }
-            }
+            Utility.CategoriasEnriquecidas(pZenodoObj, pZenodoObjB, pDicAreasNombre, pDicAreasBroader, ro);
 
             // Licencia
-            if (!string.IsNullOrEmpty(pZenodoObj.licencia))
-            {
-                ro.Dct_license = pZenodoObj.licencia;
-
-                if (pZenodoObjB != null && !string.IsNullOrEmpty(pZenodoObjB.licencia) && string.IsNullOrEmpty(ro.Dct_license))
-                {
-                    ro.Dct_license = pZenodoObjB.licencia;
-                }
-            }
+            Utility.Licencia(pZenodoObj, pZenodoObjB, ro);
 
             // Autores
             if (pZenodoObj.autores != null && pZenodoObj.autores.Any())

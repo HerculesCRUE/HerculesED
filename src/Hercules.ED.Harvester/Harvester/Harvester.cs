@@ -17,96 +17,29 @@ namespace Harvester
 {
     public class Harvester
     {
-        //Syncs
-        private static readonly string Syncs = @"C:\Data\Syncs.json";
-
-        //Last sync date
-        private static readonly string LastSyncDate = GetLastSyncDate();
         public IHaversterServices HaversterServices;
 
         public Harvester(IHaversterServices haversterServices)
         {
-            this.HaversterServices = haversterServices; ;
+            this.HaversterServices = haversterServices;
         }
 
-
-
-
-
-        //Harvest people data
-        public List<Persona> HarvestPeople()
+        public List<string> Harvest(ReadConfig pConfig, string pSet, string pFecha)
         {
-            Persona person = new();
-            List<Persona> peopleList = new();
-            List<IdentifierOAIPMH> personIdList = HaversterServices.ListIdentifiers(LastSyncDate, set:"Persona");
-
-            foreach (var personId in personIdList)
+            // Obtención de los IDs.
+            HashSet<string> listaIdsSinRepetir = new HashSet<string>();
+            List<IdentifierOAIPMH> idList = HaversterServices.ListIdentifiers(pFecha, set: pSet);
+            foreach (var id in idList)
             {
-                string id = personId.Identifier;
-                // TODO: QUITAR
-                //id = "Persona_28710458";
-                string xml = HaversterServices.GetRecord(id);
-                XmlSerializer serializer = new(typeof(Persona));
-                using (StringReader sr = new(xml))
-                {
-                    person = (Persona)serializer.Deserialize(sr);
-                }
-                peopleList.Add(person);
-                Console.WriteLine("Fetched " + id);
+                listaIdsSinRepetir.Add(id.Identifier);
             }
-            return peopleList;
-        }
+            List<string> listaIdsOrdenados = listaIdsSinRepetir.ToList();
+            listaIdsOrdenados.Sort();
 
-        //Harvest organizations data
-        public List<Empresa> HarvestOrganizations()
-        {
-            Empresa organization = new();
-            List<Empresa> organizationsList = new();
-            List<IdentifierOAIPMH> organizationIdList = HaversterServices.ListIdentifiers(LastSyncDate, set:"Organizacion");
+            // Guardado de los IDs.
+            File.WriteAllLines(pConfig.GetLogCargas() + $@"/{pSet}/pending/{pSet}_{pFecha.Replace(":", "-")}.txt", listaIdsOrdenados);
 
-            foreach (var organizationId in organizationIdList)
-            {
-                string id = organizationId.Identifier;
-                string xml = HaversterServices.GetRecord(id);
-                XmlSerializer serializer = new(typeof(Empresa));
-                using (StringReader sr = new(xml))
-                {
-                    organization = (Empresa)serializer.Deserialize(sr);
-                }
-                organizationsList.Add(organization);
-                Console.WriteLine("Fetched " + id);
-            }
-            return organizationsList;
-        }
-
-        //Harvest projects data
-        public List<Proyecto> HarvestProjects()
-        {
-            Proyecto project = new();
-            List<Proyecto> projectList = new();
-            List<IdentifierOAIPMH> projectIdList = HaversterServices.ListIdentifiers(LastSyncDate, set:"Proyecto");
-
-            foreach (var projectId in projectIdList)
-            {
-                string id = projectId.Identifier;
-                string xml = HaversterServices.GetRecord(id);
-                XmlSerializer serializer = new(typeof(Proyecto));
-                using (StringReader sr = new(xml))
-                {
-                    project = (Proyecto)serializer.Deserialize(sr);
-                }
-                projectList.Add(project);
-                Console.WriteLine("Fetched " + id);
-            }
-            return projectList;
-        }
-
-        public static string GetLastSyncDate()
-        {
-            string syncs = File.ReadAllText(Syncs);
-            List<Sync> syncList = JsonConvert.DeserializeObject<List<Sync>>(syncs);
-            string lastSyncDate = syncList[^1].Date;
-            return lastSyncDate;
+            return listaIdsOrdenados;
         }
     }
 }

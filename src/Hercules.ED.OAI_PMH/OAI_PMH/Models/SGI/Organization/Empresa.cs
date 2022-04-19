@@ -14,6 +14,6 @@ namespace OAI_PMH.Models.SGI.Organization
         public string RazonSocial { get; set; }                
         public bool? DatosEconomicos { get; set; }
         public string PadreId { get; set; }
-        public string DatosContacto { get; set; }
+        public DatosContacto DatosContacto { get; set; }
     }
 }

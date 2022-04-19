@@ -16,69 +16,89 @@ namespace OAI_PMH.Services
             string accessToken = Token.CheckToken(pConfig);
             Dictionary<string, DateTime> idDictionary = new();
             List<string> idList = new();
-            RestClient client = new(pConfig.GetUrlBaseActividadDocente() + "actividad-docente/modificados-ids?q=fechaModificacion=ge=\"" + from + "\"" + "&q=tipoFormacion=\"030.040.000.000\"");
+            RestClient client = new(pConfig.GetUrlBaseActividadDocente() + "actividad-docente/modificados-ids?q=fechaModificacion=ge=\"" + from + "\"" + ";tipoActividad=\"030.040.000.000\"");
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);
 
-            if (!String.IsNullOrEmpty(response.Content))
+            if (!string.IsNullOrEmpty(response.Content))
             {
                 idList = response.Content[1..^1].Split(',').ToList();
                 foreach (string id in idList)
                 {
-                    idDictionary.Add("Tesis_" + id, DateTime.UtcNow);
+                    string idMod = "Tesis_" + id.Replace("\"", "");
+                    if (!idDictionary.ContainsKey(idMod))
+                    {
+                        idDictionary.Add(idMod, DateTime.UtcNow);
+                    }
                 }
             }
             return idDictionary;
         }
-        public static Tesis GetTesis(string id, ConfigService pConfig)
+        public static List<Tesis> GetTesis(string id, ConfigService pConfig)
         {
             string accessToken = Token.CheckToken(pConfig);
-            string identifier = id.Split('_')[1];
-            RestClient client = new(pConfig.GetUrlBaseActividadDocente() + "actividad-docente/" + identifier);
+            string identifier = id.Replace("\"", "");
+            RestClient client = new(pConfig.GetUrlBaseActividadDocente() + "actividad-docente/" + identifier + "?tipoActividad=\"030.040.000.000\"");
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);
-            var json = JObject.Parse(response.Content);
-            return JsonConvert.DeserializeObject<Tesis>(json.ToString());
+            try
+            {
+                return JsonConvert.DeserializeObject<List<Tesis>>(response.Content);
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
         }
         public static Dictionary<string, DateTime> GetModifiedAcademicFormationProvided(string from, ConfigService pConfig)
         {
             string accessToken = Token.CheckToken(pConfig);
             Dictionary<string, DateTime> idDictionary = new();
             List<string> idList = new();
-            RestClient client = new(pConfig.GetUrlBaseActividadDocente() + "actividad-docente/modificados-ids?q=fechaModificacion=ge=\"" + from + "\"" + "&q=tipoFormacion=\"030.010.000.000\"");
+            RestClient client = new(pConfig.GetUrlBaseActividadDocente() + "actividad-docente/modificados-ids?q=fechaModificacion=ge=\"" + from + "\"" + ";tipoActividad=\"030.010.000.000\"");
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);
 
-            if (!String.IsNullOrEmpty(response.Content))
+            if (!string.IsNullOrEmpty(response.Content))
             {
                 idList = response.Content[1..^1].Split(',').ToList();
                 foreach (string id in idList)
                 {
-                    idDictionary.Add("FormacionImpartida_" + id, DateTime.UtcNow);
+                    string idMod = "FormacionImpartida_" + id.Replace("\"", "");
+                    if (!idDictionary.ContainsKey(idMod))
+                    {
+                        idDictionary.Add(idMod, DateTime.UtcNow);
+                    }
                 }
             }
             return idDictionary;
         }
-        public static FormacionAcademicaImpartida GetAcademicFormationProvided(string id, ConfigService pConfig)
+        public static List<FormacionAcademicaImpartida> GetAcademicFormationProvided(string id, ConfigService pConfig)
         {
             string accessToken = Token.CheckToken(pConfig);
-            string identifier = id.Split('_')[1];
-            RestClient client = new(pConfig.GetUrlBaseActividadDocente() + "actividad-docente/" + identifier);
+            string identifier = id.Replace("\"", "");
+            RestClient client = new(pConfig.GetUrlBaseActividadDocente() + "actividad-docente/" + identifier + "?tipoActividad=\"030.010.000.000\"");
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);
-            var json = JObject.Parse(response.Content);
-            return JsonConvert.DeserializeObject<FormacionAcademicaImpartida>(json.ToString());
+            try
+            {
+                return JsonConvert.DeserializeObject<List<FormacionAcademicaImpartida>>(response.Content);
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
         }
         public static Dictionary<string, DateTime> GetModifiedSeminars(string from, ConfigService pConfig)
         {
             string accessToken = Token.CheckToken(pConfig);
             Dictionary<string, DateTime> idDictionary = new();
             List<string> idList = new();
-            RestClient client = new(pConfig.GetUrlBaseActividadDocente() + "actividad-docente/modificados-ids?q=fechaModificacion=ge=\"" + from + "\"" + "&q=tipoFormacion=\"030.060.000.000\"");
+            RestClient client = new(pConfig.GetUrlBaseActividadDocente() + "actividad-docente/modificados-ids?q=fechaModificacion=ge=\"" + from + "\"" + ";tipoActividad=\"030.060.000.000\"");
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);
@@ -88,21 +108,31 @@ namespace OAI_PMH.Services
                 idList = response.Content[1..^1].Split(',').ToList();
                 foreach (string id in idList)
                 {
-                    idDictionary.Add("CursosSeminarios_" + id, DateTime.UtcNow);
+                    string idMod = "CursosSeminarios_" + id.Replace("\"", "");
+                    if (!idDictionary.ContainsKey(idMod))
+                    {
+                        idDictionary.Add(idMod, DateTime.UtcNow);
+                    }
                 }
             }
             return idDictionary;
         }
-        public static SeminariosCursos GetSeminars(string id, ConfigService pConfig)
+        public static List<SeminariosCursos> GetSeminars(string id, ConfigService pConfig)
         {
             string accessToken = Token.CheckToken(pConfig);
-            string identifier = id.Split('_')[1];
-            RestClient client = new(pConfig.GetUrlBaseActividadDocente() + "actividad-docente/" + identifier);
+            string identifier = id.Replace("\"", "");
+            RestClient client = new(pConfig.GetUrlBaseActividadDocente() + "actividad-docente/" + identifier + "?tipoActividad=\"030.060.000.000\"");
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);
-            var json = JObject.Parse(response.Content);
-            return JsonConvert.DeserializeObject<SeminariosCursos>(json.ToString());
+            try
+            {
+                return JsonConvert.DeserializeObject<List<SeminariosCursos>>(response.Content);
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
         }
     }
 }

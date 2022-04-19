@@ -19,6 +19,8 @@ namespace Utils
     {
         private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config\configOAuth\OAuthV3.config");
 
+        public static readonly int splitListNum = 500;
+
         /// <summary>
         /// Devuelve la persona a partir del CV
         /// </summary>

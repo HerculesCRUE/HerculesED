@@ -132,6 +132,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                     ro.Roh_idFigShare = pResearchObjectB.id.Value.ToString();
                 }
             }
+            
             // DOI
             if (!string.IsNullOrEmpty(pResearchObject.doi))
             {
@@ -177,52 +178,28 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
             }
 
             // Título.
-            if (!string.IsNullOrEmpty(pResearchObject.titulo))
-            {
-                ro.Roh_title = pResearchObject.titulo;
-
-                if (pResearchObjectB != null && !string.IsNullOrEmpty(pResearchObjectB.titulo) && string.IsNullOrEmpty(ro.Roh_title))
-                {
-                    ro.Roh_title = pResearchObjectB.titulo;
-                }
-            }
+            Utility.Titulo(pResearchObject, pResearchObjectB, ro);
 
             // Descripción.
-            if (!string.IsNullOrEmpty(pResearchObject.descripcion))
-            {
-                ro.Bibo_abstract = pResearchObject.descripcion;
-
-                if (pResearchObjectB != null && !string.IsNullOrEmpty(pResearchObjectB.descripcion) && string.IsNullOrEmpty(ro.Bibo_abstract))
-                {
-                    ro.Bibo_abstract = pResearchObjectB.descripcion;
-                }
-            }
+            Utility.Descripcion(pResearchObject, pResearchObjectB, ro);
 
             // URL
-            if (!string.IsNullOrEmpty(pResearchObject.url))
-            {
-                ro.Vcard_url = pResearchObject.url;
-
-                if (pResearchObjectB != null && !string.IsNullOrEmpty(pResearchObjectB.url) && string.IsNullOrEmpty(ro.Vcard_url))
-                {
-                    ro.Vcard_url = pResearchObjectB.url;
-                }
-            }
+            Utility.URL(pResearchObject, pResearchObjectB, ro);
 
             // Fecha Publicación
             if (!string.IsNullOrEmpty(pResearchObject.fechaPublicacion))
             {
-                int dia = Int32.Parse(pResearchObject.fechaPublicacion.Split(" ")[0].Split("/")[1]);
-                int mes = Int32.Parse(pResearchObject.fechaPublicacion.Split(" ")[0].Split("/")[0]);
-                int anyo = Int32.Parse(pResearchObject.fechaPublicacion.Split(" ")[0].Split("/")[2]);
+                int dia = int.Parse(pResearchObject.fechaPublicacion.Split(" ")[0].Split("/")[1]);
+                int mes = int.Parse(pResearchObject.fechaPublicacion.Split(" ")[0].Split("/")[0]);
+                int anyo = int.Parse(pResearchObject.fechaPublicacion.Split(" ")[0].Split("/")[2]);
 
                 ro.Roh_updatedDate = new DateTime(anyo, mes, dia);
 
                 if (pResearchObjectB != null && !string.IsNullOrEmpty(pResearchObjectB.fechaPublicacion) && ro.Roh_updatedDate == null)
                 {
-                    dia = Int32.Parse(pResearchObjectB.fechaPublicacion.Split(" ")[0].Split("/")[0]);
-                    mes = Int32.Parse(pResearchObjectB.fechaPublicacion.Split(" ")[0].Split("/")[1]);
-                    anyo = Int32.Parse(pResearchObjectB.fechaPublicacion.Split(" ")[0].Split("/")[2]);
+                    dia = int.Parse(pResearchObjectB.fechaPublicacion.Split(" ")[0].Split("/")[0]);
+                    mes = int.Parse(pResearchObjectB.fechaPublicacion.Split(" ")[0].Split("/")[1]);
+                    anyo = int.Parse(pResearchObjectB.fechaPublicacion.Split(" ")[0].Split("/")[2]);
 
                     ro.Roh_updatedDate = new DateTime(anyo, mes, dia);
                 }
@@ -240,86 +217,13 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
             }
 
             // Etiquetas Enriquecidas
-            if (pResearchObject.etiquetasEnriquecidas != null && pResearchObject.etiquetasEnriquecidas.Any())
-            {
-                ro.Roh_enrichedKeywords = pResearchObject.etiquetasEnriquecidas;
-
-                if (pResearchObjectB != null && pResearchObjectB.etiquetasEnriquecidas != null && pResearchObjectB.etiquetasEnriquecidas.Any())
-                {
-                    ro.Roh_enrichedKeywords = pResearchObjectB.etiquetasEnriquecidas;
-                }
-            }
+            Utility.EtiquetasEnriquecidas(pResearchObject, pResearchObjectB, ro);
 
             // Categorias Enriquecidas
-            HashSet<string> listaIDs = new HashSet<string>();
-            if (pResearchObject.categoriasEnriquecidas != null && pResearchObject.categoriasEnriquecidas.Count > 0)
-            {
-                ro.Roh_enrichedKnowledgeArea = new List<CategoryPath>();
-                foreach (string area in pResearchObject.categoriasEnriquecidas)
-                {
-                    if (pDicAreasNombre.ContainsKey(area.ToLower()))
-                    {
-                        CategoryPath categoria = new CategoryPath();
-                        categoria.IdsRoh_categoryNode = new List<string>();
-                        categoria.IdsRoh_categoryNode.Add(pDicAreasNombre[area.ToLower()]);
-                        string idHijo = pDicAreasNombre[area.ToLower()];
-                        string idHijoAux = idHijo;
-                        if (!listaIDs.Contains(idHijo))
-                        {
-                            while (!idHijo.EndsWith(".0.0.0"))
-                            {
-                                categoria.IdsRoh_categoryNode.Add(pDicAreasBroader[idHijo]);
-                                idHijo = pDicAreasBroader[idHijo];
-                            }
-                            if (categoria.IdsRoh_categoryNode.Count > 0)
-                            {
-                                ro.Roh_enrichedKnowledgeArea.Add(categoria);
-                            }
-                        }
-                        listaIDs.Add(idHijoAux);
-                    }
-                }
-
-                if (pResearchObjectB != null && pResearchObjectB.categoriasEnriquecidas != null && pResearchObjectB.categoriasEnriquecidas.Any())
-                {
-                    ro.Roh_enrichedKnowledgeArea = new List<CategoryPath>();
-                    foreach (string area in pResearchObjectB.categoriasEnriquecidas)
-                    {
-                        if (pDicAreasNombre.ContainsKey(area.ToLower()))
-                        {
-                            CategoryPath categoria = new CategoryPath();
-                            categoria.IdsRoh_categoryNode = new List<string>();
-                            categoria.IdsRoh_categoryNode.Add(pDicAreasNombre[area.ToLower()]);
-                            string idHijo = pDicAreasNombre[area.ToLower()];
-                            string idHijoAux = idHijo;
-                            if (!listaIDs.Contains(idHijo))
-                            {
-                                while (!idHijo.EndsWith(".0.0.0"))
-                                {
-                                    categoria.IdsRoh_categoryNode.Add(pDicAreasBroader[idHijo]);
-                                    idHijo = pDicAreasBroader[idHijo];
-                                }
-                                if (categoria.IdsRoh_categoryNode.Count > 0)
-                                {
-                                    ro.Roh_enrichedKnowledgeArea.Add(categoria);
-                                }
-                            }
-                            listaIDs.Add(idHijoAux);
-                        }
-                    }
-                }
-            }
+            Utility.CategoriasEnriquecidas(pResearchObject, pResearchObjectB, pDicAreasNombre, pDicAreasBroader, ro);
 
             // Licencia
-            if (!string.IsNullOrEmpty(pResearchObject.licencia))
-            {
-                ro.Dct_license = pResearchObject.licencia;
-
-                if (pResearchObjectB != null && !string.IsNullOrEmpty(pResearchObjectB.licencia) && string.IsNullOrEmpty(ro.Dct_license))
-                {
-                    ro.Dct_license = pResearchObjectB.licencia;
-                }
-            }
+            Utility.Licencia(pResearchObject, pResearchObjectB, ro);
 
             // Autores
             if (pResearchObject.autores != null && pResearchObject.autores.Any())

@@ -13,6 +13,9 @@ namespace Hercules.ED.UpdateKeywords
         // Archivo de configuración.
         public static IConfigurationRoot configuracion;
 
+        // Endpoint
+        private string endpoint { get; set; }
+
         // Ruta Logs
         private string logPath { get; set; }
 
@@ -181,6 +184,31 @@ namespace Hercules.ED.UpdateKeywords
             }
 
             return urlRelaciones;
+        }
+
+        /// <summary>
+        /// Obtiene la URL del SPARQL endpoint.
+        /// </summary>
+        /// <returns>URL.</returns>
+        public string GetSparqlEndpoint()
+        {
+            if (string.IsNullOrEmpty(endpoint))
+            {
+                string connectionString = string.Empty;
+                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                if (environmentVariables.Contains("SparqlEndpoint"))
+                {
+                    connectionString = environmentVariables["SparqlEndpoint"] as string;
+                }
+                else
+                {
+                    connectionString = configuracion["SparqlEndpoint"];
+                }
+
+                endpoint = connectionString;
+            }
+
+            return endpoint;
         }
     }
 }

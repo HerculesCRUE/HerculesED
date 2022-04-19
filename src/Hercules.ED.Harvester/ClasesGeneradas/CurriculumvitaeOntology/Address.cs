@@ -54,17 +54,14 @@ namespace CurriculumvitaeOntology
 		public virtual string RdfsLabel { get { return "https://www.w3.org/2006/vcard/ns#Address"; } }
 		public OntologyEntity Entity { get; set; }
 
-		[LABEL(LanguageEnum.es,"https://www.w3.org/2006/vcard/ns#hasCountryName")]
 		[RDFProperty("https://www.w3.org/2006/vcard/ns#hasCountryName")]
 		public  Feature Vcard_hasCountryName  { get; set;} 
 		public string IdVcard_hasCountryName  { get; set;} 
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/hasProvince")]
 		[RDFProperty("http://w3id.org/roh/hasProvince")]
 		public  Feature Roh_hasProvince  { get; set;} 
 		public string IdRoh_hasProvince  { get; set;} 
 
-		[LABEL(LanguageEnum.es,"https://www.w3.org/2006/vcard/ns#hasRegion")]
 		[RDFProperty("https://www.w3.org/2006/vcard/ns#hasRegion")]
 		public  Feature Vcard_hasRegion  { get; set;} 
 		public string IdVcard_hasRegion  { get; set;} 

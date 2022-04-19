@@ -15,61 +15,40 @@ using System.Globalization;
 using System.Collections;
 using Gnoss.ApiWrapper.Exceptions;
 using System.Diagnostics.CodeAnalysis;
-using Organization = OrganizationOntology.Organization;
+using ColaboratoinTypeGroup = ColaborationtypegroupOntology.ColaborationTypeGroup;
 
-namespace ProjectOntology
+namespace CurriculumvitaeOntology
 {
 	[ExcludeFromCodeCoverage]
-	public class FundingProgram : GnossOCBase
+	public class RelatedGroupCV : GnossOCBase
 	{
 
-		public FundingProgram() : base() { } 
+		public RelatedGroupCV() : base() { } 
 
-		public FundingProgram(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
+		public RelatedGroupCV(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
 		{
 			this.mGNOSSID = pSemCmsModel.Entity.Uri;
 			this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
-			SemanticPropertyModel propRoh_promotedBy = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/promotedBy");
-			if(propRoh_promotedBy != null && propRoh_promotedBy.PropertyValues.Count > 0)
+			SemanticPropertyModel propRoh_collaborationType = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/collaborationType");
+			if(propRoh_collaborationType != null && propRoh_collaborationType.PropertyValues.Count > 0)
 			{
-				this.Roh_promotedBy = new Organization(propRoh_promotedBy.PropertyValues[0].RelatedEntity,idiomaUsuario);
+				this.Roh_collaborationType = new ColaboratoinTypeGroup(propRoh_collaborationType.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
-			SemanticPropertyModel propVivo_identifier = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#identifier");
-			this.Vivo_identifier = new List<string>();
-			if (propVivo_identifier != null && propVivo_identifier.PropertyValues.Count > 0)
-			{
-				foreach (SemanticPropertyModel.PropertyValue propValue in propVivo_identifier.PropertyValues)
-				{
-					this.Vivo_identifier.Add(propValue.Value);
-				}
-			}
-			this.Roh_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/title"));
 		}
 
-		public virtual string RdfType { get { return "http://w3id.org/roh/FundingProgram"; } }
-		public virtual string RdfsLabel { get { return "http://w3id.org/roh/FundingProgram"; } }
+		public virtual string RdfType { get { return "http://w3id.org/roh/RelatedGroupCV"; } }
+		public virtual string RdfsLabel { get { return "http://w3id.org/roh/RelatedGroupCV"; } }
 		public OntologyEntity Entity { get; set; }
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/promotedBy")]
-		[RDFProperty("http://w3id.org/roh/promotedBy")]
-		public  Organization Roh_promotedBy  { get; set;} 
-		public string IdRoh_promotedBy  { get; set;} 
-
-		[LABEL(LanguageEnum.es,"http://vivoweb.org/ontology/core#identifier")]
-		[RDFProperty("http://vivoweb.org/ontology/core#identifier")]
-		public  List<string> Vivo_identifier { get; set;}
-
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/title")]
-		[RDFProperty("http://w3id.org/roh/title")]
-		public  string Roh_title { get; set;}
+		[RDFProperty("http://w3id.org/roh/collaborationType")]
+		public  ColaboratoinTypeGroup Roh_collaborationType  { get; set;} 
+		public string IdRoh_collaborationType  { get; set;} 
 
 
 		internal override void GetProperties()
 		{
 			base.GetProperties();
-			propList.Add(new StringOntologyProperty("roh:promotedBy", this.IdRoh_promotedBy));
-			propList.Add(new ListStringOntologyProperty("vivo:identifier", this.Vivo_identifier));
-			propList.Add(new StringOntologyProperty("roh:title", this.Roh_title));
+			propList.Add(new StringOntologyProperty("roh:collaborationType", this.IdRoh_collaborationType));
 		}
 
 		internal override void GetEntities()

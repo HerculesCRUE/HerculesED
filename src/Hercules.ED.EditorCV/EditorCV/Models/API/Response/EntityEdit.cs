@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace GuardadoCV.Models.API.Response
+namespace EditorCV.Models.API.Response
 {
     //Contiene la/las clases necesarias que tiene como salida el servicio para la carga/edciión de una entidad
 
@@ -109,6 +109,10 @@ namespace GuardadoCV.Models.API.Response
         /// Indica si es editable aunque la entidad esté bloqueada
         /// </summary>
         public bool editable { get; set; }
+        /// <summary>
+        /// Indica si no es editable aunque la entidad no esté bloqueada
+        /// </summary>
+        public bool blocked { get; set; }
         /// <summary>
         /// Indica si es multiidioma
         /// </summary>

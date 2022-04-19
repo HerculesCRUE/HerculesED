@@ -1,4 +1,6 @@
-﻿using System;
+﻿using OAI_PMH.Models.SGI.ActividadDocente;
+using OAI_PMH.Models.SGI.FormacionAcademica;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -25,5 +27,12 @@ namespace OAI_PMH.Models.SGI.PersonalData
         public DatosAcademicos DatosAcademicos { get; set; }
         public Fotografia Fotografia { get; set; }
         public Sexenio Sexenios { get; set; }
+        public List<Posgrado> Posgrado { get; set; }
+        public List<Ciclos> Ciclos { get; set; }
+        public List<Doctorados> Doctorados { get; set; }
+        public List<FormacionEspecializada> FormacionEspecializada { get; set; }
+        public List<Tesis> Tesis { get; set; }
+        public List<SeminariosCursos> SeminariosCursos { get; set; }
+        public List<FormacionAcademicaImpartida> FormacionAcademicaImpartida { get; set; }
     }
 }

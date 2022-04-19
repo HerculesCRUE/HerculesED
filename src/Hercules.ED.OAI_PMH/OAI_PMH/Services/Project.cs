@@ -51,6 +51,8 @@ namespace OAI_PMH.Services
             proyecto.EntidadesConvocantes = GetEntidadesConvocantes(identifier, pConfig);
             proyecto.EntidadesFinanciadoras = GetEntidadesFinanciadoras(identifier, pConfig);
             proyecto.ResumenAnualidades = GetAnualidades(identifier, pConfig);
+            proyecto.ProyectoClasificacion = GetProyectoClasificaciones(identifier, pConfig);
+            proyecto.NotificacionProyectoExternoCVN = GetNotificacionProyectoExternoCVN(identifier, pConfig);
             return proyecto;
         }
 
@@ -124,6 +126,30 @@ namespace OAI_PMH.Services
             IRestResponse response = client.Execute(request);
             anualidades = JsonConvert.DeserializeObject<List<ProyectoAnualidadResumen>>(response.Content);
             return anualidades;
+        }
+
+        public static List<ProyectoClasificacion> GetProyectoClasificaciones(string id, ConfigService pConfig)
+        {
+            string accessToken = Token.CheckToken(pConfig);
+            List<ProyectoClasificacion> proyectoClasificaciones = new();
+            RestClient client = new(pConfig.GetUrlBaseProyecto() + "proyectos/" + id + "/proyectoclasificaciones");
+            client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
+            var request = new RestRequest(Method.GET);
+            IRestResponse response = client.Execute(request);
+            proyectoClasificaciones = JsonConvert.DeserializeObject<List<ProyectoClasificacion>>(response.Content);
+            return proyectoClasificaciones;
+        }
+
+        public static List<NotificacionProyectoExternoCVN> GetNotificacionProyectoExternoCVN(string id, ConfigService pConfig)
+        {
+            string accessToken = Token.CheckToken(pConfig);
+            List<NotificacionProyectoExternoCVN> notificacionProyectos = new();
+            RestClient client = new(pConfig.GetUrlBaseProyecto() + "proyectos/" + id + "/notificacionesproyectos");
+            client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
+            var request = new RestRequest(Method.GET);
+            IRestResponse response = client.Execute(request);
+            notificacionProyectos = JsonConvert.DeserializeObject<List<NotificacionProyectoExternoCVN>>(response.Content);
+            return notificacionProyectos;
         }
     }
 }

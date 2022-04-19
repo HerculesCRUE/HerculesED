@@ -78,8 +78,8 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
 
             Dictionary<string, DisambiguableEntity> resultados = new Dictionary<string, DisambiguableEntity>();
 
-            //Divido la lista en listas de 1.000 elementos
-            List<List<string>> listaListas = UtilitySecciones.SplitList(ids.ToList(), 1000).ToList();
+            //Divido la lista en listas de elementos
+            List<List<string>> listaListas = UtilitySecciones.SplitList(ids.ToList(), Utility.splitListNum).ToList();
 
             foreach (List<string> lista in listaListas)
             {

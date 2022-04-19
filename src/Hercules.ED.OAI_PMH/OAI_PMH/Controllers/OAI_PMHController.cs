@@ -50,28 +50,28 @@ namespace OAI_PMH.Controllers
             SetRepository setRepository = new(_configOAI);
             DataProvider provider = new(_configOAI, metadataFormatRepository, recordRepository, setRepository);
 
-            switch (verb.ToString())
-            {
-                case "Identify":
-                    break;
-                case "ListMetadataFormats":
-                    metadataFormatRepository.GetMetadataFormats();
-                    break;
-                case "ListRecords":
-                    recordRepository.GetRecords(arguments);
-                    break;
-                case "ListIdentifiers":
-                    recordRepository.GetIdentifiers(arguments);
-                    break;
-                case "GetRecord":
-                    recordRepository.GetRecord(identifier, metadataPrefix);
-                    break;
-                case "ListSets":
-                    setRepository.GetSets(arguments);
-                    break;
-                default:
-                    break;
-            }
+            //switch (verb.ToString())
+            //{
+            //    case "Identify":
+            //        break;
+            //    case "ListMetadataFormats":
+            //        metadataFormatRepository.GetMetadataFormats();
+            //        break;
+            //    case "ListRecords":
+            //        recordRepository.GetRecords(arguments);
+            //        break;
+            //    case "ListIdentifiers":
+            //        recordRepository.GetIdentifiers(arguments);
+            //        break;
+            //    case "GetRecord":
+            //        recordRepository.GetRecord(identifier, metadataPrefix);
+            //        break;
+            //    case "ListSets":
+            //        setRepository.GetSets(arguments);
+            //        break;
+            //    default:
+            //        break;
+            //}
 
             XDocument document = provider.ToXDocument(DateTime.UtcNow, arguments);
 

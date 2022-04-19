@@ -199,7 +199,6 @@ namespace ResearchobjectOntology
 			this.Roh_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/title"));
 			this.Roh_isValidated= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isValidated"));
 			this.Roh_citationLoadedCount = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/citationLoadedCount")).Value;
-			this.Roh_isPublic= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isPublic"));
 		}
 
 		public ResearchObject(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
@@ -376,7 +375,6 @@ namespace ResearchobjectOntology
 			this.Roh_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/title"));
 			this.Roh_isValidated= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isValidated"));
 			this.Roh_citationLoadedCount = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/citationLoadedCount")).Value;
-			this.Roh_isPublic= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isPublic"));
 		}
 
 		public virtual string RdfType { get { return "http://w3id.org/roh/ResearchObject"; } }
@@ -506,10 +504,6 @@ namespace ResearchobjectOntology
 		[RDFProperty("http://w3id.org/roh/citationLoadedCount")]
 		public  int Roh_citationLoadedCount { get; set;}
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/isPublic")]
-		[RDFProperty("http://w3id.org/roh/isPublic")]
-		public  bool Roh_isPublic { get; set;}
-
 
 		internal override void GetProperties()
 		{
@@ -544,7 +538,6 @@ namespace ResearchobjectOntology
 			propList.Add(new StringOntologyProperty("roh:title", this.Roh_title));
 			propList.Add(new BoolOntologyProperty("roh:isValidated", this.Roh_isValidated));
 			propList.Add(new StringOntologyProperty("roh:citationLoadedCount", this.Roh_citationLoadedCount.ToString()));
-			propList.Add(new BoolOntologyProperty("roh:isPublic", this.Roh_isPublic));
 		}
 
 		internal override void GetEntities()
@@ -923,10 +916,6 @@ namespace ResearchobjectOntology
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ResearchObject_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/citationLoadedCount", $"{this.Roh_citationLoadedCount.ToString()}", list, " . ");
 				}
-				if(this.Roh_isPublic != null)
-				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ResearchObject_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/isPublic", $"\"{this.Roh_isPublic.ToString()}\"", list, " . ");
-				}
 			return list;
 		}
 
@@ -1276,10 +1265,6 @@ namespace ResearchobjectOntology
 				if(this.Roh_citationLoadedCount != null)
 				{
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/citationLoadedCount", $"{this.Roh_citationLoadedCount.ToString()}", list, " . ");
-				}
-				if(this.Roh_isPublic != null)
-				{
-					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/isPublic", $"\"{this.Roh_isPublic.ToString().ToLower()}\"", list, " . ");
 				}
 			if (listaSearch != null && listaSearch.Count > 0)
 			{

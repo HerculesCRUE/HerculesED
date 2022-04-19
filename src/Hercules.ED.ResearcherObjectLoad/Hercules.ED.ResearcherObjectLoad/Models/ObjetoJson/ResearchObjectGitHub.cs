@@ -15,5 +15,6 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.ObjetoJson
         public int? numReleases { get; set; }
         public int? numForks { get; set; }
         public int? numIssues { get; set; }
+        public List<string> etiquetas { get; set; }
     }
 }

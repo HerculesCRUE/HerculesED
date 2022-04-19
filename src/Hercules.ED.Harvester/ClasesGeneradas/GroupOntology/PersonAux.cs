@@ -15,48 +15,61 @@ using System.Globalization;
 using System.Collections;
 using Gnoss.ApiWrapper.Exceptions;
 using System.Diagnostics.CodeAnalysis;
-using Concept = TaxonomyOntology.Concept;
+using Person = PersonOntology.Person;
 
-namespace ProjectOntology
+namespace GroupOntology
 {
 	[ExcludeFromCodeCoverage]
-	public class ProjectClassification : GnossOCBase
+	public class PersonAux : GnossOCBase
 	{
 
-		public ProjectClassification() : base() { } 
+		public PersonAux() : base() { } 
 
-		public ProjectClassification(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
+		public PersonAux(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
 		{
 			this.mGNOSSID = pSemCmsModel.Entity.Uri;
 			this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
-			this.Roh_projectClassificationNode = new List<Concept>();
-			SemanticPropertyModel propRoh_projectClassificationNode = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/projectClassificationNode");
-			if(propRoh_projectClassificationNode != null && propRoh_projectClassificationNode.PropertyValues.Count > 0)
+			SemanticPropertyModel propRdf_member = pSemCmsModel.GetPropertyByPath("http://www.w3.org/1999/02/22-rdf-syntax-ns#member");
+			if(propRdf_member != null && propRdf_member.PropertyValues.Count > 0)
 			{
-				foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_projectClassificationNode.PropertyValues)
-				{
-					if(propValue.RelatedEntity!=null){
-						Concept roh_projectClassificationNode = new Concept(propValue.RelatedEntity,idiomaUsuario);
-						this.Roh_projectClassificationNode.Add(roh_projectClassificationNode);
-					}
-				}
+				this.Rdf_member = new Person(propRdf_member.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
+			this.Foaf_familyName = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/familyName"));
+			this.Roh_secondFamilyName = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/secondFamilyName"));
+			this.Foaf_nick = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/nick"));
+			this.Foaf_firstName = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/firstName"));
 		}
 
-		public virtual string RdfType { get { return "http://w3id.org/roh/ProjectClassification"; } }
-		public virtual string RdfsLabel { get { return "http://w3id.org/roh/ProjectClassification"; } }
+		public virtual string RdfType { get { return "http://w3id.org/roh/PersonAux"; } }
+		public virtual string RdfsLabel { get { return "http://w3id.org/roh/PersonAux"; } }
 		public OntologyEntity Entity { get; set; }
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/projectClassificationNode")]
-		[RDFProperty("http://w3id.org/roh/projectClassificationNode")]
-		public  List<Concept> Roh_projectClassificationNode { get; set;}
-		public List<string> IdsRoh_projectClassificationNode { get; set;}
+		[LABEL(LanguageEnum.es,"Persona")]
+		[RDFProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#member")]
+		public  Person Rdf_member  { get; set;} 
+		public string IdRdf_member  { get; set;} 
+
+		[RDFProperty("http://xmlns.com/foaf/0.1/familyName")]
+		public  string Foaf_familyName { get; set;}
+
+		[RDFProperty("http://w3id.org/roh/secondFamilyName")]
+		public  string Roh_secondFamilyName { get; set;}
+
+		[RDFProperty("http://xmlns.com/foaf/0.1/nick")]
+		public  string Foaf_nick { get; set;}
+
+		[RDFProperty("http://xmlns.com/foaf/0.1/firstName")]
+		public  string Foaf_firstName { get; set;}
 
 
 		internal override void GetProperties()
 		{
 			base.GetProperties();
-			propList.Add(new ListStringOntologyProperty("roh:projectClassificationNode", this.IdsRoh_projectClassificationNode));
+			propList.Add(new StringOntologyProperty("rdf:member", this.IdRdf_member));
+			propList.Add(new StringOntologyProperty("foaf:familyName", this.Foaf_familyName));
+			propList.Add(new StringOntologyProperty("roh:secondFamilyName", this.Roh_secondFamilyName));
+			propList.Add(new StringOntologyProperty("foaf:nick", this.Foaf_nick));
+			propList.Add(new StringOntologyProperty("foaf:firstName", this.Foaf_firstName));
 		}
 
 		internal override void GetEntities()

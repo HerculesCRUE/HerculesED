@@ -18,7 +18,7 @@ namespace Harvester
     public interface IHaversterServices
     {
         public List<IdentifierOAIPMH> ListIdentifiers(string from, string until = null, string set = null);
-        public string GetRecord(string id,string file=null);
+        public string GetRecord(string id, string file = null);
 
     }
 
@@ -26,8 +26,6 @@ namespace Harvester
     {
         public List<IdentifierOAIPMH> ListIdentifiers(string from, string until = null, string set = null)
         {
-
-            //List<IdentifierOAIPMH> personIdList = new();
             List<IdentifierOAIPMH> idList = new();
             string uri = "https://localhost:44300/OAI_PMH?verb=ListIdentifiers&metadataPrefix=EDMA";
             if (from != null)
@@ -72,17 +70,23 @@ namespace Harvester
             }
             return idList;
         }
-        public string GetRecord(string id,String file=null)
+        public string GetRecord(string id, String file = null)
         {
-            string uri = "https://localhost:44300/OAI_PMH?verb=GetRecord&identifier=" + id + "&metadataPrefix=EDMA";
-
-            WebRequest wrGETURL = WebRequest.Create(uri);
-            Stream stream = wrGETURL.GetResponse().GetResponseStream();
-            XDocument XMLresponse = XDocument.Load(stream);
-            XNamespace nameSpace = XMLresponse.Root.GetDefaultNamespace();
-            string record = XMLresponse.Root.Element(nameSpace + "GetRecord").Descendants(nameSpace + "metadata").First().FirstNode.ToString();
-            record = record.Replace("xmlns=\"" + nameSpace + "\"", "");
-            return record;
+            try
+            {
+                string uri = "https://localhost:44300/OAI_PMH?verb=GetRecord&identifier=" + id + "&metadataPrefix=EDMA";
+                WebRequest wrGETURL = WebRequest.Create(uri);
+                Stream stream = wrGETURL.GetResponse().GetResponseStream();
+                XDocument XMLresponse = XDocument.Load(stream);
+                XNamespace nameSpace = XMLresponse.Root.GetDefaultNamespace();
+                string record = XMLresponse.Root.Element(nameSpace + "GetRecord").Descendants(nameSpace + "metadata").First().FirstNode.ToString();
+                record = record.Replace("xmlns=\"" + nameSpace + "\"", "");
+                return record;
+            }
+            catch (Exception error)
+            {
+                return null;
+            }
         }
     }
 

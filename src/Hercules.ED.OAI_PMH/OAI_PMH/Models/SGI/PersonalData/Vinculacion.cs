@@ -8,7 +8,6 @@ namespace OAI_PMH.Models.SGI.PersonalData
 {
     public class Vinculacion : SGI_Base
     {       
-        //public CategoriaProfesional CategoriaProfesional { get; set; }
         public VinculacionCategoriaProfesional VinculacionCategoriaProfesional { get; set; }
         public Departamento Departamento { get; set; }
         public Centro centro { get; set; }

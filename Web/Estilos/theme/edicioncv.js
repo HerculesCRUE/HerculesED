@@ -270,8 +270,7 @@ var edicionCV = {
 		
 		if(getParam('tab')!=null)
 		{
-			$('#'+getParam('tab')).click();
-			
+			$('a.nav-link[propertyrdf="'+getParam('tab')+'"]').click();			
 		}else
 		{		
 			$('#identificacion-tab').click();
@@ -1234,7 +1233,8 @@ var edicionCV = {
 			iseditable=property.editable;
 		}
 
-        if (!iseditable) {
+        if (!iseditable || property.blocked) {
+			//Si no es editable o esta bloqueado está deshabilitado
             css += ' disabled ';
         }
 
@@ -1256,28 +1256,28 @@ var edicionCV = {
 
             switch (property.type) {
 				case 'boolean':
-                    htmlInput = this.printSelectCombo(property.property, value, property.comboValues, property.comboDependency, property.required, !iseditable,property.entity_cv,property.dependency);
+                    htmlInput = this.printSelectCombo(property.property, value, property.comboValues, property.comboDependency, property.required, !iseditable|| property.blocked,property.entity_cv,property.dependency);
                     break;
 				case 'image':
                     htmlInput = this.printPropertyEditImage(property.property, property.placeholder, value);
                     break;
                 case "entityautocomplete":
-                    htmlInput = this.printPropertyEditEntityAutocomplete(property.property, property.placeholder, property.propertyEntityValue, property.required, !iseditable, property.autocomplete, property.dependency,property.autocompleteConfig);
+                    htmlInput = this.printPropertyEditEntityAutocomplete(property.property, property.placeholder, property.propertyEntityValue, property.required, !iseditable|| property.blocked, property.autocomplete, property.dependency,property.autocompleteConfig);
                     break;
 				case 'text':
-                    htmlInput = this.printPropertyEditTextInput(property.property, property.placeholder, value, property.required, !iseditable, property.autocomplete, property.dependency,property.autocompleteConfig,property.entity_cv,property.multilang,property.valuesmultilang);
+                    htmlInput = this.printPropertyEditTextInput(property.property, property.placeholder, value, property.required, !iseditable|| property.blocked, property.autocomplete, property.dependency,property.autocompleteConfig,property.entity_cv,property.multilang,property.valuesmultilang);
                     break;
                 case 'number':
-                    htmlInput = this.printPropertyEditNumberInput(property.property, property.placeholder, value, property.required, !iseditable, property.dependency);
+                    htmlInput = this.printPropertyEditNumberInput(property.property, property.placeholder, value, property.required, !iseditable|| property.blocked, property.dependency);
                     break;
                 case 'selectCombo':
-                    htmlInput = this.printSelectCombo(property.property, value, property.comboValues, property.comboDependency, property.required, !iseditable,property.entity_cv,property.dependency);
+                    htmlInput = this.printSelectCombo(property.property, value, property.comboValues, property.comboDependency, property.required, !iseditable|| property.blocked,property.entity_cv,property.dependency);
                     break;
                 case 'textarea':
-                    htmlInput = this.printPropertyEditTextArea(property.property, property.placeholder, value, property.required, !iseditable,property.entity_cv,property.multilang,property.valuesmultilang);
+                    htmlInput = this.printPropertyEditTextArea(property.property, property.placeholder, value, property.required, !iseditable|| property.blocked,property.entity_cv,property.multilang,property.valuesmultilang);
                     break;
                 case 'date':
-                    htmlInput = this.printPropertyEditDate(property.property, property.placeholder, value, property.required, !iseditable, property.dependency);
+                    htmlInput = this.printPropertyEditDate(property.property, property.placeholder, value, property.required, !iseditable|| property.blocked, property.dependency);
                     break;
                 case 'auxEntity':
                 case 'auxEntityAuthorList':
@@ -1377,13 +1377,13 @@ var edicionCV = {
             }
             switch (property.type) {
                 case 'text':
-                    htmlMultiple += this.printPropertyEditTextInput(property.property, property.placeholder, '', property.required, !iseditable, property.autocomplete, property.dependency,property.autocompleteConfig,property.entity_cv,property.multilang,property.valuesmultilang);
+                    htmlMultiple += this.printPropertyEditTextInput(property.property, property.placeholder, '', property.required, !iseditable|| property.blocked, property.autocomplete, property.dependency,property.autocompleteConfig,property.entity_cv,property.multilang,property.valuesmultilang);
                     break;
                 case 'number':
-                    htmlMultiple = this.printPropertyEditNumberInput(property.property, property.placeholder, value, property.required, !iseditable, property.dependency);
+                    htmlMultiple = this.printPropertyEditNumberInput(property.property, property.placeholder, value, property.required, !iseditable || property.blocked, property.dependency);
                     break;
                 case 'selectCombo':
-                    htmlMultiple += this.printSelectCombo(property.property, '', property.comboValues, property.comboDependency, property.required, !iseditable,property.entity_cv,property.dependency);
+                    htmlMultiple += this.printSelectCombo(property.property, '', property.comboValues, property.comboDependency, property.required, !iseditable|| property.blocked,property.entity_cv,property.dependency);
                     break;
                 case 'thesaurus':
                     var valuesThesaurus = $.map(property.entityAuxData.entities, function(entity) {
@@ -1394,17 +1394,17 @@ var edicionCV = {
                     htmlMultiple += this.printRowsEdit(iseditable, property.entityAuxData.rows);
                     break;
                 case 'textarea':
-                    htmlMultiple += this.printPropertyEditTextArea(property.property, property.placeholder, '', property.required, !iseditable,property.entity_cv,property.multilang,property.valuesmultilang);
+                    htmlMultiple += this.printPropertyEditTextArea(property.property, property.placeholder, '', property.required, !iseditable|| property.blocked,property.entity_cv,property.multilang,property.valuesmultilang);
                     break;
                 case 'date':
-                    htmlMultiple += this.printPropertyEditDate(property.property, property.placeholder, '', property.required, !iseditable, property.dependency);
+                    htmlMultiple += this.printPropertyEditDate(property.property, property.placeholder, '', property.required, !iseditable|| property.blocked, property.dependency);
                     break;
                 case 'auxEntity':
                 case 'auxEntityAuthorList':
-                    htmlMultiple += this.printRowsEdit(iseditable, property.entityAuxData.rows);
+                    htmlMultiple += this.printRowsEdit(iseditable && !property.blocked, property.entityAuxData.rows);
                     break;
                 case 'entity':
-                    htmlMultiple += this.printPropertyEditTextInput(property.property, property.placeholder, value, property.required, !iseditable,null,null,null,null,property.multilang);
+                    htmlMultiple += this.printPropertyEditTextInput(property.property, property.placeholder, value, property.required, !iseditable|| property.blocked,null,null,null,null,property.multilang);
                     break;
             }
             if (property.type == 'auxEntity' || property.type == 'auxEntityAuthorList' || property.type == 'thesaurus') {

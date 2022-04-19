@@ -21,15 +21,7 @@ namespace OAI_PMH.Models.OAIPMH
             {
                 "Persona",
                 "Organizacion",
-                "Proyecto",
-                "FormacionAcademica-Ciclos",
-                "FormacionAcademica-Doctorados",
-                "FormacionAcademica-Posgrado",
-                "FormacionAcademica-Especializada",
-                "FormacionAcademica-Idiomas",
-                "Tesis",
-                "FormacionImpartida",
-                "Seminarios"
+                "Proyecto"
             };
 
             foreach (string setName in setNameList)
