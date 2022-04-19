@@ -250,6 +250,8 @@
             "graph": "academicdegree",
             "proptitle": "http://w3id.org/roh/title",
             "rdftype": "http://vivoweb.org/ontology/core#AcademicDegree",
+            "cvnsection": "020.010.010.000",
+            "propertyowner": "http://w3id.org/roh/owner",
             "sections": [
               {
                 "title": {
@@ -883,6 +885,8 @@
             "graph": "academicdegree",
             "proptitle": "http://w3id.org/roh/title",
             "rdftype": "http://vivoweb.org/ontology/core#AcademicDegree",
+            "cvnsection": "020.010.020.000",
+            "propertyowner": "http://w3id.org/roh/owner",
             "sections": [
               {
                 "title": {
@@ -1460,6 +1464,8 @@
             "graph": "languagecertificate",
             "proptitle": "http://w3id.org/roh/languageOfTheCertificate",
             "rdftype": "http://w3id.org/roh/LanguageCertificate",
+            "cvnsection": "020.060.000.000",
+            "propertyowner": "http://w3id.org/roh/owner",
             "sections": [
               {
                 "title": {
@@ -1788,6 +1794,8 @@
             "graph": "academicdegree",
             "proptitle": "http://w3id.org/roh/title",
             "rdftype": "http://vivoweb.org/ontology/core#AcademicDegree",
+            "cvnsection": "020.010.030.000",
+            "propertyowner": "http://w3id.org/roh/owner",
             "sections": [
               {
                 "title": {
@@ -2262,6 +2270,8 @@
             "graph": "academicdegree",
             "proptitle": "http://w3id.org/roh/title",
             "rdftype": "http://vivoweb.org/ontology/core#AcademicDegree",
+            "cvnsection": "020.020.000.000",
+            "propertyowner": "http://w3id.org/roh/owner",
             "sections": [
               {
                 "title": {
@@ -2814,6 +2824,8 @@
             "graph": "academicdegree",
             "proptitle": "http://w3id.org/roh/title",
             "rdftype": "http://vivoweb.org/ontology/core#AcademicDegree",
+            "cvnsection": "020.050.000.000",
+            "propertyowner": "http://w3id.org/roh/owner",
             "sections": [
               {
                 "title": {
