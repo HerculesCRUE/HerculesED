@@ -4,6 +4,7 @@ using OAI_PMH.Models.SGI.ActividadDocente;
 using OAI_PMH.Models.SGI.FormacionAcademica;
 using OAI_PMH.Models.SGI.Organization;
 using OAI_PMH.Models.SGI.PersonalData;
+using OAI_PMH.Models.SGI.ProduccionCientifica;
 using OAI_PMH.Models.SGI.Project;
 using OAI_PMH.Services;
 using OaiPmhNet;
@@ -134,6 +135,15 @@ namespace OAI_PMH.Models.OAIPMH
                         }
                         container.Records = projectRecordList;
                         break;
+                    case "PRC":
+                        Dictionary<string, DateTime> modifiedPRC = PRC.GetModifiedPRC(arguments.From, _Config);
+                        List<Record> prcRecordList = new();
+                        foreach (string prcId in modifiedPRC.Keys)
+                        {
+                            prcRecordList.Add(ToIdentifiersRecord("PRC", prcId, modifiedPRC[prcId]));
+                        }
+                        container.Records = prcRecordList;
+                        break;
                 }
             }
             else
@@ -147,6 +157,12 @@ namespace OAI_PMH.Models.OAIPMH
                         {
                             peopleList.Add(PersonalData.GetPersona(personId, _Config));
                         }
+                        List<Record> personRecordList = new();
+                        foreach (Persona persona in peopleList)
+                        {
+                            personRecordList.Add(ToRecord(persona, arguments.Set, persona.Id, startDate, arguments.MetadataPrefix));
+                        }
+                        container.Records = personRecordList;
                         break;
                     case "Organizacion":
                         Dictionary<string, DateTime> modifiedOrganizationsIds = Organization.GetModifiedOrganizations(arguments.From, _Config);
@@ -155,6 +171,12 @@ namespace OAI_PMH.Models.OAIPMH
                         {
                             organizationsList.Add(Organization.GetEmpresa(organizationId, _Config));
                         }
+                        List<Record> organizationRecordList = new();
+                        foreach (Empresa empresa in organizationsList)
+                        {
+                            organizationRecordList.Add(ToRecord(empresa, arguments.Set, empresa.Id, startDate, arguments.MetadataPrefix));
+                        }
+                        container.Records = organizationRecordList;
                         break;
                     case "Proyecto":
                         Dictionary<string, DateTime> modifiedProjectsIds = Project.GetModifiedProjects(arguments.From, _Config);
@@ -163,6 +185,21 @@ namespace OAI_PMH.Models.OAIPMH
                         {
                             projectsList.Add(Project.GetProyecto(projectId, _Config));
                         }
+                        List<Record> projectRecordList = new();
+                        foreach (Proyecto proyecto in projectsList)
+                        {
+                            projectRecordList.Add(ToRecord(proyecto, arguments.Set, proyecto.Id, startDate, arguments.MetadataPrefix));
+                        }
+                        container.Records = projectRecordList;
+                        break;
+                    case "PRC":
+                        List<ProduccionCientificaEstado> prcList = PRC.GetPRC(arguments.From, _Config);
+                        List<Record> prcRecordList = new();
+                        foreach (ProduccionCientificaEstado prc in prcList)
+                        {
+                            prcRecordList.Add(ToRecord(prc, arguments.Set, prc.IdRef, startDate, arguments.MetadataPrefix));
+                        }
+                        container.Records = prcRecordList;
                         break;
                 }
             }
