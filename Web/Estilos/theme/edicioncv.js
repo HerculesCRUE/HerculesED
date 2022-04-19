@@ -270,7 +270,7 @@ var edicionCV = {
 		
 		if(getParam('tab')!=null)
 		{
-			$('a.nav-link[propertyrdf="'+getParam('tab')+'"]').click();			
+			$('a.nav-link[property="'+getParam('tab')+'"]').click();			
 		}else
 		{		
 			$('#identificacion-tab').click();

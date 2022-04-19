@@ -1013,6 +1013,126 @@
                     "properties": [
                       {
                         "title": {
+                          "es": "TODO indice impacto"
+                        },
+                        "property": "http://w3id.org/roh/todo",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "TODO citas inrecs"
+                        },
+                        "property": "http://w3id.org/roh/inrecsCitationCount",
+                        "blocked": true,
+                        "type": "number",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "TODO citas scopus"
+                        },
+                        "property": "http://w3id.org/roh/scopusCitationCount",
+                        "blocked": true,
+                        "type": "number",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "TODO citas wos"
+                        },
+                        "property": "http://w3id.org/roh/wosCitationCount",
+                        "blocked": true,
+                        "type": "number",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "TODO citas semantic scholar"
+                        },
+                        "property": "http://w3id.org/roh/semanticScholarCitationCount",
+                        "blocked": true,
+                        "type": "number",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "property": "http://w3id.org/roh/hasMetric",
+                        "type": "auxEntity",
+                        "title": {
+                          "es": "TODO Otras fuentes de citas"
+                        },
+                        "multiple": true,
+                        "blocked": true,
+                        "width": 3,
+                        "auxEntityData": {
+                          "rdftype": "http://w3id.org/roh/PublicationMetric",
+                          "propertyTitle": {
+                            "property": "http://w3id.org/roh/metricName"
+                          },
+                          "properties": [
+                            {
+                              "name": {
+                                "es": "Nº de citas"
+                              },
+                              "child": {
+                                "property": "http://w3id.org/roh/citationCount"
+                              }
+                            }
+                          ],
+                          "rows": [
+                            {
+                              "properties": [
+
+                                {
+                                  "title": {
+                                    "es": "Nombre de la fuente"
+                                  },
+                                  "type": "text",
+                                  "required": true,
+                                  "blocked": true,
+                                  "property": "http://w3id.org/roh/metricName",
+                                  "width": 1
+                                },
+                                {
+                                  "title": {
+                                    "es": "Nº de citas"
+                                  },
+                                  "type": "number",
+                                  "required": true,
+                                  "blocked": true,
+                                  "property": "http://w3id.org/roh/citationCount",
+                                  "width": 1
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
                           "es": "Publicación relevante"
                         },
                         "property": "http://w3id.org/roh/relevantPublication",

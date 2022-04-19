@@ -289,6 +289,8 @@
             "graph": "thesissupervision",
             "proptitle": "http://w3id.org/roh/title",
             "rdftype": "http://w3id.org/roh/ThesisSupervision",
+            "cvnsection": "030.040.000.000",
+            "propertyowner": "http://w3id.org/roh/owner",
             "sections": [
               {
                 "title": {
@@ -1301,6 +1303,8 @@
             "graph": "impartedacademictraining",
             "proptitle": "http://w3id.org/roh/title",
             "rdftype": "http://w3id.org/roh/ImpartedAcademicTraining",
+            "cvnsection": "030.010.000.000",
+            "propertyowner": "http://w3id.org/roh/owner",
             "sections": [
               {
                 "title": {
@@ -2214,6 +2218,8 @@
             "graph": "tutorship",
             "proptitle": "http://w3id.org/roh/tutorshipProgramType",
             "rdftype": "http://w3id.org/roh/Tutorship",
+            "cvnsection": "030.050.000.000",
+            "propertyowner": "http://w3id.org/roh/owner",
             "sections": [
               {
                 "title": {
@@ -2741,6 +2747,8 @@
             "graph": "impartedcoursesseminars",
             "proptitle": "http://w3id.org/roh/title",
             "rdftype": "http://w3id.org/roh/ImpartedCoursesSeminars",
+            "cvnsection": "030.060.000.000",
+            "propertyowner": "http://w3id.org/roh/owner",
             "sections": [
               {
                 "title": {
@@ -3554,6 +3562,8 @@
             "graph": "teachingpublication",
             "proptitle": "http://w3id.org/roh/title",
             "rdftype": "http://w3id.org/roh/TeachingPublication",
+            "cvnsection": "030.070.000.000",
+            "propertyowner": "http://w3id.org/roh/owner",
             "sections": [
               {
                 "title": {
@@ -4493,6 +4503,8 @@
             "graph": "teachingproject",
             "proptitle": "http://w3id.org/roh/title",
             "rdftype": "http://w3id.org/roh/TeachingProject",
+            "cvnsection": "030.080.000.000",
+            "propertyowner": "http://w3id.org/roh/owner",
             "sections": [
               {
                 "title": {
@@ -5562,6 +5574,8 @@
             "graph": "teachingcongress",
             "proptitle": "http://w3id.org/roh/title",
             "rdftype": "http://w3id.org/roh/TeachingCongress",
+            "cvnsection": "030.090.000.000",
+            "propertyowner": "http://w3id.org/roh/owner",
             "sections": [
               {
                 "title": {
@@ -6385,6 +6399,8 @@
             "graph": "accreditation",
             "proptitle": "http://w3id.org/roh/title",
             "rdftype": "http://w3id.org/roh/Accreditation",
+            "cvnsection": "060.030.080.000",
+            "propertyowner": "http://w3id.org/roh/owner",
             "sections": [
               {
                 "title": {
@@ -6690,6 +6706,8 @@
             "graph": "activity",
             "proptitle": "http://w3id.org/roh/title",
             "rdftype": "http://w3id.org/roh/Activity",
+            "cvnsection": "030.100.000.000",
+            "propertyowner": "http://w3id.org/roh/owner",
             "sections": [
               {
                 "title": {
@@ -7010,6 +7028,8 @@
             "graph": "activity",
             "proptitle": "http://w3id.org/roh/title",
             "rdftype": "http://w3id.org/roh/Activity",
+            "cvnsection": "030.110.000.000",
+            "propertyowner": "http://w3id.org/roh/owner",
             "sections": [
               {
                 "title": {

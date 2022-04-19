@@ -106,10 +106,10 @@ namespace DesnormalizadorHercules.Models
 
                 //TODO agregar la fuente para el factor de impacto
                 actualizadorDocument.ActualizarIndicesImpacto();
-                actualizadorDocument.ActualizarIndiceImpacto();
+                //actualizadorDocument.ActualizarIndiceImpacto();
                 
                 //TODO hacer bien
-                actualizadorDocument.ActualizarCuartil();
+                //actualizadorDocument.ActualizarCuartil();
 
                 //Dependen únicamente del CV
                 

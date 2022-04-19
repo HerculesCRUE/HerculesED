@@ -192,14 +192,36 @@ namespace EditorCV.Models
                     mResourceApi.ChangeOntoly(templateSection.presentation.listItemsPresentation.listItemEdit.graph);
                     pEntity.ontology = templateSection.presentation.listItemsPresentation.listItemEdit.graph;
                     itemEditConfig = templateSection.presentation.listItemsPresentation.listItemEdit;
+                    string personCV = UtilityCV.GetPersonFromCV(pCvID);
                     if (templateSection.presentation.listItemsPresentation.listItemEdit.propAuthor != null)
-                    {
-                        string personCV = UtilityCV.GetPersonFromCV(pCvID);
+                    {                        
                         if (!pEntity.properties.Exists(x => x.prop == templateSection.presentation.listItemsPresentation.listItemEdit.propAuthor.property) ||
                             !pEntity.properties.First(x => x.prop == templateSection.presentation.listItemsPresentation.listItemEdit.propAuthor.property).values.Exists(x => x.Contains(personCV)))
                         {
                             return new JsonResult() { ok = false, error = UtilityCV.GetTextLang(pLang, templateSection.presentation.listItemsPresentation.listItemEdit.propAuthor.message) };
                         }
+                    }
+                    if (!string.IsNullOrEmpty(itemEditConfig.cvnsection))
+                    {
+                        pEntity.properties.Add(new Entity.Property() 
+                        { 
+                            prop = "http://w3id.org/roh/cvnCode", 
+                            values = new List<string>() 
+                            { 
+                                itemEditConfig.cvnsection 
+                            } 
+                        });
+                    }
+                    if (!string.IsNullOrEmpty(itemEditConfig.propertyowner))
+                    {
+                        pEntity.properties.Add(new Entity.Property()
+                        {
+                            prop = itemEditConfig.propertyowner,
+                            values = new List<string>()
+                            {
+                                personCV
+                            }
+                        });
                     }
                 }
                 else if (templateSection.presentation.itemPresentation != null)
@@ -1068,8 +1090,12 @@ namespace EditorCV.Models
                 }
                 else if (!remove)
                 {
-                    change = true;
-                    pLoadedEntity.properties.Add(property);
+                    if ((property.values != null && property.values.Exists(x => !x.EndsWith("@@@"))) || 
+                        (property.valuesmultilang != null && property.valuesmultilang.Values.ToList().Exists(x => !x.EndsWith("@@@"))))
+                    {
+                        change = true;
+                        pLoadedEntity.properties.Add(property);
+                    }
                 }
                 else if (remove)
                 {
