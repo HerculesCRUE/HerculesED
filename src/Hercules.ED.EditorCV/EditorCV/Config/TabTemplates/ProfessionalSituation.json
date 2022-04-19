@@ -382,6 +382,8 @@
             "proptitle": "http://w3id.org/roh/employerOrganizationTitle",
             "propdescription": "http://purl.org/ontology/bibo/abstract",
             "rdftype": "http://vivoweb.org/ontology/core#Position",
+            "cvnsection": "010.010.000.000",
+            "propertyowner": "http://w3id.org/roh/owner",
             "sections": [
               {
                 "title": {
@@ -1375,6 +1377,8 @@
             "proptitle": "http://w3id.org/roh/employerOrganizationTitle",
             "propdescription": "http://purl.org/ontology/bibo/abstract",
             "rdftype": "http://vivoweb.org/ontology/core#Position",
+            "cvnsection": "010.020.000.000",
+            "propertyowner": "http://w3id.org/roh/owner",
             "sections": [
               {
                 "title": {
@@ -1497,7 +1501,7 @@
                         "width": 1
                       }
                     ]
-                  }                  
+                  }
                 ]
               },
               {
