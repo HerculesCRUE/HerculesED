@@ -42,6 +42,14 @@ namespace EditorCV.Models.API.Templates
         /// </summary>
         public List<LoadPropertyValues> loadPropertyValues;
         /// <summary>
+        /// Propiedad con el ID de la sección de CVN
+        /// </summary>
+        public string cvnsection;
+        /// <summary>
+        /// Propiedad para aádir al propietario
+        /// </summary>
+        public string propertyowner;
+        /// <summary>
         /// Genera el PropertyData para recuperar los datos
         /// </summary>
         /// <param name="pGraph">Grafo</param>
