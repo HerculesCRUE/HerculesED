@@ -692,8 +692,8 @@ namespace ImportadorWebCV.Sincro.Secciones
             Dictionary<string, bool> resultados = new Dictionary<string, bool>();
             resultados = entidadesBBDD.ToDictionary(x => x, x => false);
 
-            //Divido la lista en listas de 1.000 elementos
-            List<List<string>> listaListas = UtilitySecciones.SplitList(entidadesBBDD, 1000).ToList();
+            //Divido la lista en listas de elementos
+            List<List<string>> listaListas = UtilitySecciones.SplitList(entidadesBBDD, Utility.splitListNum).ToList();
 
             foreach (List<string> lista in listaListas)
             {

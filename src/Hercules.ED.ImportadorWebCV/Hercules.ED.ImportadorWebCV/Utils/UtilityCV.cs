@@ -73,23 +73,5 @@ namespace Utils
                 return "";
             }
         }
-
-        /// <summary>
-        /// Método para dividir listas
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="pItems">Listado</param>
-        /// <param name="pSize">Tamaño</param>
-        /// <returns></returns>
-        public static IEnumerable<List<T>> SplitList<T>(List<T> pItems, int pSize)
-        {
-            for (int i = 0; i < pItems.Count; i += pSize)
-            {
-                yield return pItems.GetRange(i, Math.Min(pSize, pItems.Count - i));
-            }
-        }
-
-
-
     }
 }
