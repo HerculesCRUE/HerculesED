@@ -80,8 +80,8 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
             HashSet<string> ids = UtilitySecciones.GetIDS(pResourceApi, pCVID, propiedadesItem);
             Dictionary<string, DisambiguableEntity> resultados = new Dictionary<string, DisambiguableEntity>();
 
-            //Divido la lista en listas de 1.000 elementos
-            List<List<string>> listaListas = UtilitySecciones.SplitList(ids.ToList(), 1000).ToList();
+            //Divido la lista en listas de elementos
+            List<List<string>> listaListas = UtilitySecciones.SplitList(ids.ToList(), Utility.splitListNum).ToList();
 
             foreach (List<string> lista in listaListas)
             {
@@ -142,8 +142,8 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                 }
             });
 
-            //Divido la lista en listas de 1.000 elementos
-            List<List<string>> listaListasIdPersonas = UtilitySecciones.SplitList(listaPersonasAux.SelectMany(x => x.Value).Select(x => x.personid).ToList(), 1000).ToList();
+            //Divido la lista en listas de elementos
+            List<List<string>> listaListasIdPersonas = UtilitySecciones.SplitList(listaPersonasAux.SelectMany(x => x.Value).Select(x => x.personid).ToList(), Utility.splitListNum).ToList();
 
             foreach (List<string> lista in listaListasIdPersonas)
             {

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +14,7 @@ using System.Collections;
 using Gnoss.ApiWrapper.Exceptions;
 using System.Diagnostics.CodeAnalysis;
 
-namespace EditorCV.Models.NotificationOntology
+namespace Hercules.ED.ResearcherObjectLoad.Models.NotificationOntology
 {
 	[ExcludeFromCodeCoverage]
 	public class Notification
@@ -26,7 +26,8 @@ namespace EditorCV.Models.NotificationOntology
 		private Guid resourceID;
 		private Guid articleID;
 
-		public Notification(){
+		public Notification()
+		{
 			prefList.Add("xmlns:roh=\"http://w3id.org/roh/\"");
 			prefList.Add("xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"");
 			prefList.Add("xmlns:xsd=\"http://www.w3.org/2001/XMLSchema#\"");
@@ -48,13 +49,13 @@ namespace EditorCV.Models.NotificationOntology
 		public string RdfsLabel { get { return "http://w3id.org/roh/Notification"; } }
 
 
-		public string IdRoh_trigger  { get; set;} 
-		public  string Roh_idEntityCV { get; set;}
-		public  string Roh_tabPropertyCV { get; set;}
-		public  string Roh_entity { get; set;}
-		public string IdRoh_owner  { get; set;} 
-		public  DateTime Dct_issued { get; set;}
-		public  string Roh_type { get; set;}
+		public string IdRoh_trigger { get; set; }
+		public string Roh_idEntityCV { get; set; }
+		public string Roh_tabPropertyCV { get; set; }
+		public string Roh_entity { get; set; }
+		public string IdRoh_owner { get; set; }
+		public DateTime Dct_issued { get; set; }
+		public string Roh_type { get; set; }
 
 
 		private void GetProperties()

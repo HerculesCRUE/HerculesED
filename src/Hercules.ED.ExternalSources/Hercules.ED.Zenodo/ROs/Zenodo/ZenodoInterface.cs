@@ -8,7 +8,7 @@ namespace ZenodoConnect.ROs.Zenodo
 {
    interface ZenodoInterface
     {
-        string getPublications(string userId, string uri);
+        string getPublications(string userId);
 
     }
 }

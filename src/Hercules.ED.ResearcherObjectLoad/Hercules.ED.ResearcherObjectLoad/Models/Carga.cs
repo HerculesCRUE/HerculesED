@@ -83,6 +83,9 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     Dictionary<string, ResearchObjectGitHub> dicIdDatosRoGitHub = new Dictionary<string, ResearchObjectGitHub>();
                     Dictionary<string, ResearchObjectZenodo> dicIdDatosRoZenodo = new Dictionary<string, ResearchObjectZenodo>();
 
+                    //Diccionario para almacenar las notificaciones
+                    ConcurrentBag<NotificationOntology.Notification> notificaciones = new ConcurrentBag<NotificationOntology.Notification>(); 
+
                     string jsonString = String.Empty;
 
                     string idPersona = null;
@@ -505,10 +508,38 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                 if (string.IsNullOrEmpty(idBBDD))
                                 {
                                     ComplexOntologyResource resourceDocumento = documento.ToGnossApiResource(mResourceApi, null);
+
+                                    foreach(BFO_0000023 autor in documento.Bibo_authorList)
+                                    {
+                                        NotificationOntology.Notification notificacion = new NotificationOntology.Notification();
+                                        notificacion.IdRoh_trigger = null;
+                                        notificacion.Roh_tabPropertyCV = documento.RdfType;
+                                        notificacion.Roh_entity = resourceDocumento.GnossId;
+                                        notificacion.IdRoh_owner = autor.IdRdf_member;
+                                        notificacion.Dct_issued = DateTime.Now;
+                                        notificacion.Roh_type = "create";
+
+                                        notificaciones.Add(notificacion);
+                                    }
+                                    
+
                                     listaDocumentosCargar.Add(resourceDocumento);
                                 }
                                 else
                                 {
+                                    foreach (BFO_0000023 autor in documento.Bibo_authorList)
+                                    {
+                                        NotificationOntology.Notification notificacion = new NotificationOntology.Notification();
+                                        notificacion.IdRoh_trigger = null;
+                                        notificacion.Roh_tabPropertyCV = documento.RdfType;
+                                        notificacion.Roh_entity = listaDocumentosCargados[idBBDD];
+                                        notificacion.IdRoh_owner = autor.IdRdf_member;
+                                        notificacion.Dct_issued = DateTime.Now;
+                                        notificacion.Roh_type = "edit";
+
+                                        notificaciones.Add(notificacion);
+                                    }
+
                                     idBBDD = listaDocumentosCargados[idBBDD];
                                     listaDocumentosModificar.Add(idBBDD, documento);
                                 }
@@ -616,10 +647,37 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                 if (string.IsNullOrEmpty(idBBDD))
                                 {
                                     ComplexOntologyResource resourceResearchObject = researchobject.ToGnossApiResource(mResourceApi, null);
+
+                                    foreach (ResearchobjectOntology.BFO_0000023 autor in researchobject.Bibo_authorList)
+                                    {
+                                        NotificationOntology.Notification notificacion = new NotificationOntology.Notification();
+                                        notificacion.IdRoh_trigger = null;
+                                        notificacion.Roh_tabPropertyCV = researchobject.RdfType;
+                                        notificacion.Roh_entity = resourceResearchObject.GnossId;
+                                        notificacion.IdRoh_owner = autor.IdRdf_member;
+                                        notificacion.Dct_issued = DateTime.Now;
+                                        notificacion.Roh_type = "create";
+
+                                        notificaciones.Add(notificacion);
+                                    }
+
                                     listaROsCargar.Add(resourceResearchObject);
                                 }
                                 else
                                 {
+                                    foreach (ResearchobjectOntology.BFO_0000023 autor in researchobject.Bibo_authorList)
+                                    {
+                                        NotificationOntology.Notification notificacion = new NotificationOntology.Notification();
+                                        notificacion.IdRoh_trigger = null;
+                                        notificacion.Roh_tabPropertyCV = researchobject.RdfType;
+                                        notificacion.Roh_entity = listaROsCargados[idBBDD];
+                                        notificacion.IdRoh_owner = autor.IdRdf_member;
+                                        notificacion.Dct_issued = DateTime.Now;
+                                        notificacion.Roh_type = "edit";
+
+                                        notificaciones.Add(notificacion);
+                                    }
+
                                     idBBDD = listaROsCargados[idBBDD];
                                     listaROsModificar.Add(idBBDD, researchobject);
                                 }
@@ -686,6 +744,39 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                 {
                                     mResourceApi.ModifyComplexOntologyResource(complexOntologyResource, false, true);
                                 }
+                            }
+                        });
+
+                        //Desnormalizamos los documentos
+                        List<string> listaDocumentos = listaDocumentosCargar.Select(x => x.GnossId).Union(listaDocumentosModificar.Select(x => x.Key)).Distinct().ToList();
+                        Utility.ModificarDocumentos(pDocuments: listaDocumentos);
+
+                        //Desnormalizamos los research object
+                        List<string> listaRO = listaROsCargar.Select(x => x.GnossId).Union(listaROsModificar.Select(x => x.Key)).Distinct().ToList();
+                        Utility.ModificarResearchObjects(pResearchObjects: listaRO);
+
+                        //Desnormalizamos las personas
+                        List<string> listaPersonas = listaPersonasCargar.Select(x => x.GnossId).ToList();
+                        Utility.ModificarDocumentos(pPersons: listaPersonas);
+                        Utility.ModificarResearchObjects(pPersons: listaPersonas);
+
+                        //Cargamos las notificaciones
+                        List<NotificationOntology.Notification> notificacionesCargar = notificaciones.ToList();
+                        mResourceApi.ChangeOntoly("notification");
+                        //TODO cambiar parallel
+                        Parallel.ForEach(notificacionesCargar, new ParallelOptions { MaxDegreeOfParallelism = 1 }, notificacion =>
+                        {
+                            ComplexOntologyResource recursoCargar = notificacion.ToGnossApiResource(mResourceApi);
+                            int numIntentos = 0;
+                            while (!recursoCargar.Uploaded)
+                            {
+                                numIntentos++;
+
+                                if (numIntentos > 5)
+                                {
+                                    break;
+                                }
+                                mResourceApi.LoadComplexSemanticResource(recursoCargar);
                             }
                         });
                     }
