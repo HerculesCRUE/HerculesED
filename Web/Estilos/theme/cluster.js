@@ -831,76 +831,115 @@ class StepsCluster {
 		let profiles = this.data.profiles.map((e, i) => {
 			let idAccordion = (e.name.replace(/[^a-z0-9_]+/gi, '-').replace(/^-|-$/g, '').toLowerCase() + "-" + i);
 			let htmlUsers=[];
+
+			// Clases para mostrar o no el listado de usuarios
+			let collapseClss1 = ""
+			let collapseClss2 = "show"
+			if (i > 0) {
+				let collapseClss1 = "collapsed"
+				let collapseClss2 = ""
+			}
+
 			if(e.users!=null)
 			{
-				htmlUsers=e.users.map((user, i) => {
-					return `<tr>
-										<td class="td-user">
-											<div class="user-miniatura">
-												<div class="nombre-usuario-wrap">
-													<a href="#">
-														<p class="nombre">${user.name}</p>
-													</a>
-												</div>
-											</div>
-										</td>
-										<td class="td-publicaciones">
-											
-										</td>
-										<td class="td-principal">                                        
-										</td>
-										<td class="td-acciones">
-											<ul class="no-list-style">
-												<li>
-													<a href="javascript: void(0);" class="texto-gris-claro">
-														Eliminar
-														<span class="material-icons-outlined">delete</span>
-													</a>
-												</li>
-											</ul>
-										</td>
-									</tr>`;
+
+				htmlUsers=e.users.map((user, nuser) => {
+					return `<article class="resource">
+                        <div class="wrap">
+                            <div class="usuario-wrap">
+                                <div class="user-miniatura">
+                                    <div class="imagen-usuario-wrap">
+                                        <a href="#">
+                                            <div class="imagen">
+                                                <span style="background-image: url(${imgUser})"></span>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="nombre-usuario-wrap">
+                                        <a href="#">
+                                            <p class="nombre">${user.name}</p>
+                                            <p class="nombre-completo">`+ user.info +`</p>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="publicaciones-wrap">
+                                ${user.numPublicacionesTotal}
+                            </div>
+                            <div class="principal-wrap">
+                                -
+                            </div>
+                            <div class="acciones-wrap">
+                                <ul class="no-list-style">
+                                    <li>
+                                        <a href="javascript:stepsCls.removeSelectedUserFromProfile('`+e.entityID+`', '`+user.userID+`')" class="texto-gris-claro">
+                                            Eliminar
+                                            <span class="material-icons-outlined">delete</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </article>`;
 				});
 			}
-			let htmlProfile=`<div class="panel-group pmd-accordion" id="accordion-`+ idAccordion +`" role="tablist" aria-multiselectable="true">
-				<div class="panel">
-					<div class="panel-heading" role="tab" id="experto-`+ idAccordion +`-tab">
-						<p class="panel-title">
-							<a class="perfil" data-toggle="collapse" data-parent="#accordion" href="#experto-`+ idAccordion +`" aria-expanded="true" aria-controls="experto-1" data-expandable="false">
-								<span class="material-icons">keyboard_arrow_down</span>
-								<img src="`+ imgUser +`" alt="imguser">
-								<span class="texto">`+ e.name +`</span>
-							</a>
-						</p>
-					</div>
-					<div id="experto-`+ idAccordion +`" class="panel-collapse collapse show" role="tabpanel" aria-labelledby="experto-`+ idAccordion +`-tab">
-						<div class="panel-body">
-							<table class="display nowrap table table-sm tableusers">
-								<thead>
-									<tr>
-										<th class="th-user">
+			let htmlProfile = `<div class="panel-group pmd-accordion" id="accordion`+ idAccordion +`" role="tablist" aria-multiselectable="true">
+	            <div class="panel">
+	                <div class="panel-heading" role="tab" id="experto-`+ idAccordion +`-tab">
+	                    <p class="panel-title">
+	                        <a class="perfil `+ collapseClss1 +`" data-toggle="collapse" data-parent="#accordion`+ idAccordion +`" href="#experto-`+ idAccordion +`" aria-expanded="false" aria-controls="experto-`+ idAccordion +`" data-expandable="false">
+	                            <span class="material-icons">keyboard_arrow_down</span>
+	                            <img src="`+ imgUser +`" alt="image">
+	                            <span class="texto">`+ e.name +`</span>
+	                        </a>
+	                    </p>
+	                </div>
+	                <div id="experto-`+ idAccordion +`" class="panel-collapse collapse `+ collapseClss2 +`" role="tabpanel" aria-labelledby="experto-`+ idAccordion +`-tab" style="">
+	                    <div class="panel-body">
 
-										</th>
-										<th class="th-publicaciones">
-											Publicaciones
-										</th>
-										<th class="th-acciones">
+	                        <div class="acciones-listado">
+	                            <div class="wrap">
+	                                <div class="usuario-wrap"></div>
+	                                <div class="publicaciones-wrap">
+	                                    Publicaciones
+	                                </div>
+	                                <div class="principal-wrap">
+	                                    Principal
+	                                </div>
+	                                <div class="acciones-wrap"></div>
+	                            </div>
+	                        </div>
+	                        <div class="resource-list listView resource-list-personas">
+	                            <div class="resource-list-wrap">
+	                                ${htmlUsers.join('')}
+	                            </div>
+	                        </div>
 
-										</th>
-									</tr>
-								</thead>
-								<tbody>
-								${htmlUsers.join('')}
-								</tbody>
-							</table>
-						</div>
-					</div>
-				</div>
-			</div>`;
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+	        `;
+
 			return $(htmlProfile);
 		})
 		this.perfilesStep3.find('.panel-group.pmd-accordion').remove();
 		this.perfilesStep3.append(profiles)
+	}
+
+	removeSelectedUserFromProfile(idProfile, idUser) {
+
+		let currentProfile = stepsCls.data.profiles.filter(function (perfilInt) {
+			return perfilInt.entityID==idProfile;
+		})[0];
+
+		currentProfile.users=currentProfile.users.filter(function (userInt) {
+			return userInt.userID!=idUser;
+		});
+
+		document.getElementById(idUser + '-' +idProfile).checked = false
+
+		this.PrintPerfilesstp3();
 	}
 }
 
@@ -1382,7 +1421,10 @@ function CompletadaCargaRecursosCluster()
 				let htmlPerfilesPersona=`	<div class="user-perfil pl-0">
 												${htmlPerfiles}
 											</div>`;				
-				$('#'+idperson+' .content-wrap.flex-column').append(htmlPerfilesPersona);				
+				$('#'+idperson+' .content-wrap.flex-column').append(htmlPerfilesPersona);
+				try {
+					$('#'+idperson).data('numPublicacionesTotal', Object.values(datospersona)[0].numPublicacionesTotal);
+				} catch (e) { }
 			}	
 
 			
@@ -1406,10 +1448,12 @@ function CompletadaCargaRecursosCluster()
 					return perfilInt.entityID==idProfile;
 				})[0];
 				if(this.checked) {
-					
+					let elementUser = $(this).closest('.resource.investigador')
 					let user={};
 					user.userID=idUser;
-					user.name=$(this).closest('.resource.investigador').find('h2.resource-title').text().trim();
+					user.name=elementUser.find('h2.resource-title').text().trim();
+					user.info=elementUser.find('.middle-wrap > .content-wrap > .list-wrap').text();
+					user.numPublicacionesTotal=elementUser.data('numPublicacionesTotal');
 					if(perfil.users==null)					
 					{
 						perfil.users=[];
