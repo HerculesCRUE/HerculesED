@@ -56,3 +56,9 @@
 .edicionCluster .resource-list .resource .user-perfil {
 	padding-left: 0;
 }
+
+.edicionCluster .formulario-edicion .botonera {
+    position: absolute;
+    top: -77px;
+    right: 0;
+}
