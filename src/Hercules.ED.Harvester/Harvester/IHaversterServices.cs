@@ -18,6 +18,7 @@ namespace Harvester
     public interface IHaversterServices
     {
         public List<IdentifierOAIPMH> ListIdentifiers(string from, string until = null, string set = null);
+        public List<ListRecordsOAIPMH> ListRecords(string from, string until = null, string set = null);
         public string GetRecord(string id, string file = null);
 
     }
@@ -66,6 +67,62 @@ namespace Harvester
                         Deleted = false
                     };
                     idList.Add(identifierOAIPMH);
+                }
+            }
+            return idList;
+        }
+        public List<ListRecordsOAIPMH> ListRecords(string from, string until = null, string set = null)
+        {
+            List<ListRecordsOAIPMH> idList = new();
+            string uri = "https://localhost:44300/OAI_PMH?verb=ListRecords&metadataPrefix=EDMA";
+            if (from != null)
+            {
+                uri += $"&from={from}";
+            }
+            if (until != null)
+            {
+                uri += $"&until={until}";
+            }
+            if (set != null)
+            {
+                uri += $"&set={set}";
+            }
+
+            WebRequest wrGETURL = WebRequest.Create(uri);
+            Stream stream = wrGETURL.GetResponse().GetResponseStream();
+
+            XDocument XMLresponse = XDocument.Load(stream);
+            XNamespace nameSpace = XMLresponse.Root.GetDefaultNamespace();
+            XElement idListElement = XMLresponse.Root.Element(nameSpace + "ListRecords");
+
+            if (idListElement != null)
+            {
+                IEnumerable<XElement> recordList = idListElement.Descendants(nameSpace + "record");
+
+                foreach (var record in recordList)
+                {
+                    ListRecordsOAIPMH identifierRecord = new ListRecordsOAIPMH();
+
+                    var headerList = record.Descendants(nameSpace + "header");
+                    foreach (var header in headerList)
+                    {
+                        header.Attribute(nameSpace + "status");
+                        identifierRecord.Identifier = header.Element(nameSpace + "identifier").Value;
+                        identifierRecord.Date = DateTime.Parse(header.Element(nameSpace + "datestamp").Value);
+                        identifierRecord.Set = header.Element(nameSpace + "setSpec").Value;                        
+                    }
+
+                    var metadataList = record.Descendants(nameSpace + "metadata");
+                    foreach (var metadata in metadataList)
+                    {
+                        var prc = metadata.Descendants(nameSpace + "ProduccionCientificaEstado");
+                        foreach (var prod in prc)
+                        {
+                            identifierRecord.Estado = prod.Element(nameSpace + "Estado").Value;
+                        }
+                    }
+
+                    idList.Add(identifierRecord);
                 }
             }
             return idList;

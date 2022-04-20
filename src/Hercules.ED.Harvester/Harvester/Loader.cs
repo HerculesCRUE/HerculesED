@@ -2,6 +2,7 @@
 using Gnoss.ApiWrapper.ApiModel;
 using Gnoss.ApiWrapper.Model;
 using Harvester.Models;
+using Hercules.MA.ServicioExterno.Controllers.Utilidades;
 using Newtonsoft.Json;
 using OAI_PMH.Models.SGI.Organization;
 using OAI_PMH.Models.SGI.PersonalData;
@@ -22,6 +23,9 @@ namespace Harvester
         private static Harvester harvester;
         private static IHarvesterServices harvesterServices;
         private static ReadConfig _Config;
+
+        private static string RUTA_PREFIJOS = $@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Utilidades/prefijos.json";
+        private static string mPrefijos = string.Join(" ", JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(RUTA_PREFIJOS)));
 
         //Resource API
         public static ResourceApi mResourceApi { get; set; }
@@ -55,10 +59,12 @@ namespace Harvester
             ProcesarFichero(_Config, "Proyecto", dicProyectos);
 
             string fecha = DateTime.Now.ToString("yyyy-MM-ddT00:00:00") + "Z";
+            fecha = "2022-01-01T00:00:00Z";
 
             GuardarIdentificadores(_Config, "Organizacion", fecha);
-            GuardarIdentificadores(_Config, "Persona", fecha);            
+            GuardarIdentificadores(_Config, "Persona", fecha);
             GuardarIdentificadores(_Config, "Proyecto", fecha);
+            GuardarIdentificadores(_Config, "PRC", fecha, true);
 
             UpdateLastDate(_Config, fecha);
 
@@ -68,6 +74,7 @@ namespace Harvester
             ProcesarFichero(_Config, "Persona", dicPersonas);
             mResourceApi.ChangeOntoly("project");
             ProcesarFichero(_Config, "Proyecto", dicProyectos);
+            ProcesarFichero(_Config, "PRC", dicProyectos);
         }
 
         /// <summary>
@@ -76,9 +83,16 @@ namespace Harvester
         /// <param name="pConfig"></param>
         /// <param name="pSet"></param>
         /// <param name="pFecha"></param>
-        public void GuardarIdentificadores(ReadConfig pConfig, string pSet, string pFecha)
+        public void GuardarIdentificadores(ReadConfig pConfig, string pSet, string pFecha, bool pPRC = false)
         {
-            harvester.Harvest(pConfig, pSet, pFecha);
+            if (pPRC == false)
+            {
+                harvester.Harvest(pConfig, pSet, pFecha);
+            }
+            else
+            {
+                harvester.HarvestPRC(pConfig, pSet, pFecha);
+            }
         }
 
         /// <summary>
@@ -112,6 +126,7 @@ namespace Harvester
 
                     foreach (string id in idsACargar)
                     {
+                        continue;
                         switch (pSet)
                         {
                             case "Organizacion":
@@ -139,13 +154,13 @@ namespace Harvester
                                 if (pDicRecursosCargados.ContainsKey(empresaOntology.Roh_crisIdentifier))
                                 {
                                     // Modificación.
-                                    mResourceApi.ModifyComplexOntologyResource(resource, false, false);
+                                    //mResourceApi.ModifyComplexOntologyResource(resource, false, false);
                                 }
                                 else
                                 {
                                     // Carga.                   
-                                    mResourceApi.LoadComplexSemanticResource(resource, false, false);
-                                    pDicRecursosCargados[empresaOntology.Roh_crisIdentifier] = resource.GnossId;
+                                    //mResourceApi.LoadComplexSemanticResource(resource, false, false);
+                                    //pDicRecursosCargados[empresaOntology.Roh_crisIdentifier] = resource.GnossId;
                                 }
 
                                 // Guardamos el ID cargado.
@@ -177,13 +192,13 @@ namespace Harvester
                                 if (pDicRecursosCargados.ContainsKey(personOntology.Roh_crisIdentifier))
                                 {
                                     // Modificación.
-                                    mResourceApi.ModifyComplexOntologyResource(resource, false, false);
+                                    //mResourceApi.ModifyComplexOntologyResource(resource, false, false);
                                 }
                                 else
                                 {
                                     // Carga.                   
-                                    mResourceApi.LoadComplexSemanticResource(resource, false, false);
-                                    pDicRecursosCargados[personOntology.Roh_crisIdentifier] = resource.GnossId;
+                                    //mResourceApi.LoadComplexSemanticResource(resource, false, false);
+                                    //pDicRecursosCargados[personOntology.Roh_crisIdentifier] = resource.GnossId;
                                 }
 
                                 // Guardamos el ID cargado.
@@ -227,6 +242,44 @@ namespace Harvester
                                 // Guardamos el ID cargado.
                                 File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
                                 break;
+
+                            case "PRC":
+                                string idRecurso = id.Split("||")[0];
+                                string estado = id.Split("||")[1];
+
+                                Guid guid = mResourceApi.GetShortGuid(idRecurso);
+                                Dictionary<string, string> data = GetValues(idRecurso);
+
+                                foreach (KeyValuePair<string, string> item in data)
+                                {
+                                    if (!string.IsNullOrEmpty(item.Value))
+                                    {
+                                        if (item.Key == "projectAux")
+                                        {
+                                            //Borrado(guid, "http://w3id.org/roh/projectAux", item.Value);
+                                        }
+                                        else if (item.Key == "status")
+                                        {
+                                            //Modificacion(guid, "http://w3id.org/roh/validationStatusPRC", estado, item.Value);
+                                        }
+                                        else
+                                        {
+                                            switch (estado)
+                                            {
+                                                case "VALIDADO":
+                                                    //Modificacion(guid, "http://w3id.org/roh/isValidated", "true", item.Value);
+                                                    break;
+                                                default:
+                                                    //Modificacion(guid, "http://w3id.org/roh/isValidated", "false", item.Value);
+                                                    break;
+                                            }
+                                        }
+                                    }
+                                }
+
+                                // Guardamos el ID cargado.
+                                File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
+                                break;
                         }
 
                         // Borra el fichero.
@@ -234,6 +287,109 @@ namespace Harvester
                     }
                 }
             }
+        }
+
+        private Dictionary<string, string> GetValues(string pIdRecurso)
+        {
+            Dictionary<string, string> dicResultados = new Dictionary<string, string>();
+            dicResultados.Add("projectAux", "");
+            dicResultados.Add("isValidated", "");
+            dicResultados.Add("validationStatusPRC", ""); // TODO: Nombre de la propiedad
+
+            string valorEnviado = string.Empty;
+            StringBuilder select = new StringBuilder();
+            StringBuilder where = new StringBuilder();
+
+            select.Append(mPrefijos);
+            select.Append("SELECT DISTINCT ?projectAux ?isValidated ?validationStatusPRC ");
+            where.Append("WHERE { ");
+            where.Append("?s a bibo:Document. ");
+            where.Append("OPTIONAL{?s roh:projectAux ?projectAux. } ");
+            where.Append("OPTIONAL{?s roh:isValidated ?isValidated. } ");
+            where.Append("OPTIONAL{?s roh:validationStatusPRC ?validationStatusPRC. } "); // TODO: Nombre de la propiedad
+            where.Append($@"FILTER(?s = <{pIdRecurso}>) ");
+            where.Append("} ");
+
+            SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), "document");
+
+            if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+            {
+                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                {
+                    if (fila.ContainsKey("projectAux"))
+                    {
+                        dicResultados["projectAux"] = UtilidadesAPI.GetValorFilaSparqlObject(fila, "projectAux");
+                    }
+                    if (fila.ContainsKey("isValidated"))
+                    {
+                        dicResultados["isValidated"] = UtilidadesAPI.GetValorFilaSparqlObject(fila, "isValidated");
+                    }
+                    if (fila.ContainsKey("validationStatusPRC"))
+                    {
+                        dicResultados["validationStatusPRC"] = UtilidadesAPI.GetValorFilaSparqlObject(fila, "validationStatusPRC");
+                    }
+                }
+            }
+
+            return dicResultados;
+        }
+
+        /// <summary>
+        /// Inserta un triple.
+        /// </summary>
+        /// <param name="pGuid"></param>
+        /// <param name="pPropiedad"></param>
+        /// <param name="pValorNuevo"></param>
+        private void Insercion(Guid pGuid, string pPropiedad, string pValorNuevo)
+        {
+            Dictionary<Guid, List<TriplesToInclude>> dicInsercion = new Dictionary<Guid, List<TriplesToInclude>>();
+            List<TriplesToInclude> listaTriplesInsercion = new List<TriplesToInclude>();
+            TriplesToInclude triple = new TriplesToInclude();
+            triple.Predicate = pPropiedad;
+            triple.NewValue = pValorNuevo;
+            listaTriplesInsercion.Add(triple);
+            dicInsercion.Add(pGuid, listaTriplesInsercion);
+            mResourceApi.InsertPropertiesLoadedResources(dicInsercion);
+        }
+
+        /// <summary>
+        /// Modifica un triple.
+        /// </summary>
+        /// <param name="pGuid"></param>
+        /// <param name="pPropiedad"></param>
+        /// <param name="pValorNuevo"></param>
+        /// <param name="pValorAntiguo"></param>
+        private void Modificacion(Guid pGuid, string pPropiedad, string pValorNuevo, string pValorAntiguo)
+        {
+            Dictionary<Guid, List<TriplesToModify>> dicModificacion = new Dictionary<Guid, List<TriplesToModify>>();
+            List<TriplesToModify> listaTriplesModificacion = new List<TriplesToModify>();
+            TriplesToModify triple = new TriplesToModify();
+            triple.Predicate = pPropiedad;
+            triple.NewValue = pValorNuevo;
+            triple.OldValue = pValorAntiguo;
+            listaTriplesModificacion.Add(triple);
+            dicModificacion.Add(pGuid, listaTriplesModificacion);
+            mResourceApi.ModifyPropertiesLoadedResources(dicModificacion);
+        }
+
+        /// <summary>
+        /// Borra un triple.
+        /// </summary>
+        /// <param name="pGuid"></param>
+        /// <param name="pPropiedad"></param>
+        /// <param name="pValorAntiguo"></param>
+        private void Borrado(Guid pGuid, string pPropiedad, string pValorAntiguo)
+        {
+            Dictionary<Guid, List<RemoveTriples>> dicBorrado = new Dictionary<Guid, List<RemoveTriples>>();
+            List<RemoveTriples> listaTriplesBorrado = new List<RemoveTriples>();
+            RemoveTriples triple = new RemoveTriples();
+            triple.Predicate = pPropiedad;
+            triple.Value = pValorAntiguo;
+            triple.Title = false;
+            triple.Description = false;
+            listaTriplesBorrado.Add(triple);
+            dicBorrado.Add(pGuid, listaTriplesBorrado);
+            mResourceApi.DeletePropertiesLoadedResources(dicBorrado);
         }
 
         /// <summary>

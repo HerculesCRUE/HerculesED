@@ -13,7 +13,7 @@ namespace Harvester
         // Archivo de configuración.
         public static IConfigurationRoot configuracion;
 
-        // Rutas
+        // Rutas.
         private static string dirLogCargas { get; set; }
         private static string lastUpdateDateFile { get; set; }
 

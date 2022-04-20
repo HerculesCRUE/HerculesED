@@ -28,10 +28,30 @@ namespace Harvester
         {
             // Obtención de los IDs.
             HashSet<string> listaIdsSinRepetir = new HashSet<string>();
+
             List<IdentifierOAIPMH> idList = HaversterServices.ListIdentifiers(pFecha, set: pSet);
             foreach (var id in idList)
             {
                 listaIdsSinRepetir.Add(id.Identifier);
+            }
+            List<string> listaIdsOrdenados = listaIdsSinRepetir.ToList();
+            listaIdsOrdenados.Sort();
+
+            // Guardado de los IDs.
+            File.WriteAllLines(pConfig.GetLogCargas() + $@"/{pSet}/pending/{pSet}_{pFecha.Replace(":", "-")}.txt", listaIdsOrdenados);
+
+            return listaIdsOrdenados;
+        }
+
+        public List<string> HarvestPRC(ReadConfig pConfig, string pSet, string pFecha)
+        {
+            // Obtención de los IDs.
+            HashSet<string> listaIdsSinRepetir = new HashSet<string>();
+
+            List<ListRecordsOAIPMH> idList = HaversterServices.ListRecords(pFecha, set: pSet);
+            foreach (var id in idList)
+            {
+                listaIdsSinRepetir.Add(id.Identifier + "||" + id.Estado);
             }
             List<string> listaIdsOrdenados = listaIdsSinRepetir.ToList();
             listaIdsOrdenados.Sort();
