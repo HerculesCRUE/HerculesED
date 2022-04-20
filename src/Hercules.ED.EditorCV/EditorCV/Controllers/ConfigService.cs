@@ -9,9 +9,15 @@ namespace EditorCV.Controllers
         // Archivo de configuración.
         public static IConfigurationRoot configuracion;
 
+        // Credenciales
+        private string usernameESB { get; set; }
+        private string passwordESB { get; set; }
+
         // URLs
         private string urlThematicEnrichment { get; set; }
         private string urlSpecificEnrichment { get; set; }
+        private string urlToken { get; set; }
+        private string urlProduccionCientifica { get; set; }
 
         /// <summary>
         /// Constructor.
@@ -19,6 +25,56 @@ namespace EditorCV.Controllers
         public ConfigService()
         {
             configuracion = new ConfigurationBuilder().AddJsonFile($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}appsettings.json").Build();
+        }
+
+        /// <summary>
+        /// Obtiene el usuario necesario para la conexión con el ESB.
+        /// </summary>
+        /// <returns>Usuario.</returns>
+        public string GetUsernameESB()
+        {
+            if (string.IsNullOrEmpty(usernameESB))
+            {
+                string connectionString = string.Empty;
+                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                if (environmentVariables.Contains("username_esb"))
+                {
+                    connectionString = environmentVariables["username_esb"] as string;
+                }
+                else
+                {
+                    connectionString = configuracion["username_esb"];
+                }
+
+                usernameESB = connectionString;
+            }
+
+            return usernameESB;
+        }
+
+        /// <summary>
+        /// Obtiene el password necesario para la conexión con el ESB.
+        /// </summary>
+        /// <returns>Password.</returns>
+        public string GetPasswordESB()
+        {
+            if (string.IsNullOrEmpty(passwordESB))
+            {
+                string connectionString = string.Empty;
+                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                if (environmentVariables.Contains("password_esb"))
+                {
+                    connectionString = environmentVariables["password_esb"] as string;
+                }
+                else
+                {
+                    connectionString = configuracion["password_esb"];
+                }
+
+                passwordESB = connectionString;
+            }
+
+            return passwordESB;
         }
 
         /// <summary>
@@ -69,6 +125,56 @@ namespace EditorCV.Controllers
             }
 
             return urlSpecificEnrichment;
+        }
+
+        /// <summary>
+        /// Obtiene la URL del API de obtención de tokens.
+        /// </summary>
+        /// <returns>URI del API de tokens.</returns>
+        public string GetUrlToken()
+        {
+            if (string.IsNullOrEmpty(urlToken))
+            {
+                string connectionString = string.Empty;
+                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                if (environmentVariables.Contains("url_token"))
+                {
+                    connectionString = environmentVariables["url_token"] as string;
+                }
+                else
+                {
+                    connectionString = configuracion["url_token"];
+                }
+
+                urlToken = connectionString;
+            }
+
+            return urlToken;
+        }
+
+        /// <summary>
+        /// Obtiene la URL del API del envío a producción científica.
+        /// </summary>
+        /// <returns>URI del API de envío a producción científica.</returns>
+        public string GetUrlProduccionCientifica()
+        {
+            if (string.IsNullOrEmpty(urlProduccionCientifica))
+            {
+                string connectionString = string.Empty;
+                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                if (environmentVariables.Contains("url_produccion_cientifica"))
+                {
+                    connectionString = environmentVariables["url_produccion_cientifica"] as string;
+                }
+                else
+                {
+                    connectionString = configuracion["url_produccion_cientifica"];
+                }
+
+                urlProduccionCientifica = connectionString;
+            }
+
+            return urlProduccionCientifica;
         }
     }
 }
