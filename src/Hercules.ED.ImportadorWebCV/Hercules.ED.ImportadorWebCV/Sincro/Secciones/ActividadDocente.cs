@@ -17,7 +17,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         private List<CvnItemBean> listadoPremios = new List<CvnItemBean>();
         private readonly string RdfTypeTab = "http://w3id.org/roh/TeachingExperience";
 
-        public ActividadDocente(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
+        public ActividadDocente(cvnRootResultBean cvn, string cvID, string personID) : base(cvn, cvID, personID)
         {
             listadoDatos = mCvn.GetListadoBloque("030");
             listadoPremios = mCvn.GetListadoBloque("060.030.080");
@@ -475,6 +475,10 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("030.040.000.030")))
                     {
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                            new Property(Variables.Generico.codigoCVN, "030.040.000.000"),
+                            new Property(Variables.Generico.personaCVN, mPersonID)
+                        ));
+                        entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                             new Property(Variables.ActividadDocente.direccionTesisTipoProyecto, item.GetTipoProyectoCharacterPorIDCampo("030.040.000.010")),
                             new Property(Variables.ActividadDocente.direccionTesisTipoProyectoOtros, item.GetStringPorIDCampo("030.040.000.020")),
                             new Property(Variables.ActividadDocente.direccionTesisTituloTrabajo, item.GetStringPorIDCampo("030.040.000.030")),
@@ -606,6 +610,10 @@ namespace ImportadorWebCV.Sincro.Secciones
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetNameTitleBeanPorIDCampo("030.010.000.020")))
                     {
+                        entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                            new Property(Variables.Generico.codigoCVN, "030.010.000.000"),
+                            new Property(Variables.Generico.personaCVN, mPersonID)
+                        ));
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                             new Property(Variables.ActividadDocente.formacionAcademicaTipoDocenciaOficialidad, item.GetTipoDocenciaOficialidadPorIDCampo("030.010.000.010")),
                             new Property(Variables.ActividadDocente.formacionAcademicaPaisEntidadRealizacion, item.GetPaisPorIDCampo("030.010.000.040")),
@@ -757,6 +765,10 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("030.050.000.010")))
                     {
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                            new Property(Variables.Generico.codigoCVN, "030.050.000.000"),
+                            new Property(Variables.Generico.personaCVN, mPersonID)
+                        ));
+                        entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                             new Property(Variables.ActividadDocente.tutoAcademicaPaisEntidadRealizacion, item.GetPaisPorIDCampo("030.050.000.030")),
                             new Property(Variables.ActividadDocente.tutoAcademicaCCAAEntidadRealizacion, item.GetRegionPorIDCampo("030.050.000.040")),
                             new Property(Variables.ActividadDocente.tutoAcademicaCiudadEntidadRealizacion, item.GetStringPorIDCampo("030.050.000.060")),
@@ -835,6 +847,10 @@ namespace ImportadorWebCV.Sincro.Secciones
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("030.060.000.030")))
                     {
+                        entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                            new Property(Variables.Generico.codigoCVN, "030.060.000.000"),
+                            new Property(Variables.Generico.personaCVN, mPersonID)
+                        ));
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                             new Property(Variables.ActividadDocente.cursosSeminariosTipoEvento, item.GetTipoEventoPorIDCampo("030.060.000.010")),
                             new Property(Variables.ActividadDocente.cursosSeminariosTipoEventoOtros, item.GetStringPorIDCampo("030.060.000.020")),
@@ -947,6 +963,10 @@ namespace ImportadorWebCV.Sincro.Secciones
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("030.070.000.010")))
                     {
+                        entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                            new Property(Variables.Generico.codigoCVN, "030.070.000.000"),
+                            new Property(Variables.Generico.personaCVN, mPersonID)
+                        ));
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                             new Property(Variables.ActividadDocente.publicacionDocenteNombre, item.GetStringPorIDCampo("030.070.000.010")),
                             new Property(Variables.ActividadDocente.publicacionDocentePerfilDestinatario, item.GetStringPorIDCampo("030.070.000.020")),
@@ -1064,6 +1084,10 @@ namespace ImportadorWebCV.Sincro.Secciones
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("030.080.000.010")))
                     {
+                        entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                            new Property(Variables.Generico.codigoCVN, "030.080.000.000"),
+                            new Property(Variables.Generico.personaCVN, mPersonID)
+                        ));
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                             new Property(Variables.ActividadDocente.participacionInnovaTitulo, item.GetStringPorIDCampo("030.080.000.010")),
                             new Property(Variables.ActividadDocente.participacionInnovaPaisEntidadRealizacion, item.GetPaisPorIDCampo("030.080.000.020")),
@@ -1203,6 +1227,10 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("030.090.000.030")))
                     {
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                            new Property(Variables.Generico.codigoCVN, "030.090.000.000"),
+                            new Property(Variables.Generico.personaCVN, mPersonID)
+                        ));
+                        entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                             new Property(Variables.ActividadDocente.participaCongresosTipoEvento, item.GetTipoEventoPorIDCampo("030.090.000.010")),
                             new Property(Variables.ActividadDocente.participaCongresosTipoEventoOtros, item.GetStringPorIDCampo("030.090.000.020")),
                             new Property(Variables.ActividadDocente.participaCongresosNombreEvento, item.GetStringPorIDCampo("030.090.000.030")),
@@ -1333,6 +1361,10 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.030.080.010")))
                     {
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                            new Property(Variables.Generico.codigoCVN, "060.030.080.000"),
+                            new Property(Variables.Generico.personaCVN, mPersonID)
+                        ));
+                        entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                             new Property(Variables.ActividadDocente.premiosInnovaNombre, item.GetStringPorIDCampo("060.030.080.010")),
                             new Property(Variables.ActividadDocente.premiosInnovaPaisEntidadConcesionaria, item.GetPaisPorIDCampo("060.030.080.020")),
                             new Property(Variables.ActividadDocente.premiosInnovaCCAAEntidadConcesionaria, item.GetRegionPorIDCampo("060.030.080.030")),
@@ -1387,6 +1419,10 @@ namespace ImportadorWebCV.Sincro.Secciones
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("030.100.000.010")))
                     {
+                        entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                            new Property(Variables.Generico.codigoCVN, "030.100.000.000"),
+                            new Property(Variables.Generico.personaCVN, mPersonID)
+                        ));
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                             new Property(Variables.ActividadDocente.otrasActividadesDescripcion, item.GetStringPorIDCampo("030.100.000.010")),
                             new Property(Variables.ActividadDocente.otrasActividadesPaisRealizacion, item.GetPaisPorIDCampo("030.100.000.030")),
@@ -1468,6 +1504,10 @@ namespace ImportadorWebCV.Sincro.Secciones
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("030.110.000.010")))
                     {
+                        entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                               new Property(Variables.Generico.codigoCVN, "030.110.000.000"),
+                               new Property(Variables.Generico.personaCVN, mPersonID)
+                           ));
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                             new Property(Variables.ActividadDocente.aportacionesCVDescripcion, item.GetStringPorIDCampo("030.110.000.010")),
                             new Property(Variables.ActividadDocente.aportacionesCVPaisRealizacion, item.GetPaisPorIDCampo("030.110.000.030")),

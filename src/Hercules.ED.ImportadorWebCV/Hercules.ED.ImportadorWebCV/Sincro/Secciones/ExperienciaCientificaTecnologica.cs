@@ -15,7 +15,7 @@ namespace ImportadorWebCV.Sincro.Secciones
     {
         private List<CvnItemBean> listadoDatos = new List<CvnItemBean>();
         private readonly string RdfTypeTab = "http://w3id.org/roh/ScientificExperience";
-        public ExperienciaCientificaTecnologica(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
+        public ExperienciaCientificaTecnologica(cvnRootResultBean cvn, string cvID, string personID) : base(cvn, cvID, personID)
         {
             listadoDatos = mCvn.GetListadoBloque("050");
         }
@@ -827,6 +827,10 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("050.030.010.020")))
                     {
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                            new Property(Variables.Generico.codigoCVN, "050.030.010.000"),
+                            new Property(Variables.Generico.personaCVN, mPersonID)
+                        ));
+                        entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                             new Property(Variables.ExperienciaCientificaTecnologica.propIIDescripcion, item.GetStringPorIDCampo("050.030.010.010")),
                             new Property(Variables.ExperienciaCientificaTecnologica.propIITituloPropIndus, item.GetStringPorIDCampo("050.030.010.020")),
                             new Property(Variables.ExperienciaCientificaTecnologica.propIITipoPropIndus, item.GetTipoPropiedadIndustrialPorIDCampo("050.030.010.030")),
@@ -1180,6 +1184,10 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("050.020.030.010")))
                     {
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                            new Property(Variables.Generico.codigoCVN, "050.020.030.000"),
+                            new Property(Variables.Generico.personaCVN, mPersonID)
+                        ));
+                        entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                             new Property(Variables.ExperienciaCientificaTecnologica.obrasArtisticasDescripcion, item.GetStringPorIDCampo("050.020.030.010")),
                             new Property(Variables.ExperienciaCientificaTecnologica.obrasArtisticasNombreExpo, item.GetStringPorIDCampo("050.020.030.020")),
                             new Property(Variables.ExperienciaCientificaTecnologica.obrasArtisticasPaisExpo, item.GetPaisPorIDCampo("050.020.030.040")),
@@ -1259,6 +1267,10 @@ namespace ImportadorWebCV.Sincro.Secciones
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("050.030.020.010")))
                     {
+                        entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                            new Property(Variables.Generico.codigoCVN, "050.030.020.000"),
+                            new Property(Variables.Generico.personaCVN, mPersonID)
+                        ));
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                             new Property(Variables.ExperienciaCientificaTecnologica.resultadosTecnologicosDescripcion, item.GetStringPorIDCampo("050.030.020.010")),
                             new Property(Variables.ExperienciaCientificaTecnologica.resultadosTecnologicosGradoContribucion, item.GetGradoContribucionProyectoPorIDCampo("050.030.020.070")),

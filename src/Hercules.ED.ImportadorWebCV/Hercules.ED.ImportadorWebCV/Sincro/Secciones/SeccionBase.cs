@@ -19,10 +19,17 @@ namespace ImportadorWebCV.Sincro.Secciones
         protected static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config\configOAuth\OAuthV3.config");
         protected cvnRootResultBean mCvn { get; set; }
         protected string mCvID { get; set; }
+        protected string mPersonID { get; set; }
         public SeccionBase(cvnRootResultBean cvn, string cvID)
         {
             mCvn = cvn;
             mCvID = cvID;
+        }
+        public SeccionBase(cvnRootResultBean cvn, string cvID, string personID)
+        {
+            mCvn = cvn;
+            mCvID = cvID;
+            mPersonID = personID;
         }
 
         /// <summary>
