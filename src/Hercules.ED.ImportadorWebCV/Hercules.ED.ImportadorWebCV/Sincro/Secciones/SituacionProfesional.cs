@@ -15,7 +15,7 @@ namespace ImportadorWebCV.Sincro.Secciones
     {
         private List<CvnItemBean> listadoDatos = new List<CvnItemBean>();
         private readonly string RdfTypeTab = "http://w3id.org/roh/ProfessionalSituation";
-        public SituacionProfesional(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
+        public SituacionProfesional(cvnRootResultBean cvn, string cvID, string personID) : base(cvn, cvID, personID)
         {
             listadoDatos = mCvn.GetListadoBloque("010");
         }
@@ -124,6 +124,10 @@ namespace ImportadorWebCV.Sincro.Secciones
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("010.010.000.020")))
                     {
+                        entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                            new Property(Variables.Generico.codigoCVN, "010.010.000.000"),
+                            new Property(Variables.Generico.personaCVN, mPersonID)
+                        ));
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                             new Property(Variables.SituacionProfesional.situacionProfesionalGestionDocente, item.GetStringBooleanPorIDCampo("010.010.000.010")),
                             new Property(Variables.SituacionProfesional.situacionProfesionalFacultadEscuela, item.GetNameEntityBeanPorIDCampo("010.010.000.060")),
@@ -299,6 +303,10 @@ namespace ImportadorWebCV.Sincro.Secciones
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("010.020.000.020")))
                     {
+                        entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                            new Property(Variables.Generico.codigoCVN, "010.020.000.000"),
+                            new Property(Variables.Generico.personaCVN, mPersonID)
+                        ));
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                             new Property(Variables.SituacionProfesional.cargosActividadesGestionDocente, item.GetStringBooleanPorIDCampo("010.020.000.010")),
                             new Property(Variables.SituacionProfesional.cargosActividadesFacultadEscuela, item.GetNameEntityBeanPorIDCampo("010.020.000.060")),
