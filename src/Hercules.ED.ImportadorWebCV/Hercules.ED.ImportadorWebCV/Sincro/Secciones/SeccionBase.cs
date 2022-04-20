@@ -4,7 +4,9 @@ using Gnoss.ApiWrapper.Model;
 using Hercules.ED.DisambiguationEngine.Models;
 using Hercules.ED.ImportadorWebCV.Models;
 using Models;
+using Models.NotificationOntology;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -394,6 +396,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             string graph, string rdfType, string rdfTypePrefix,
             List<string> propiedadesItem, string RdfTypeTab, [Optional] string pPropertyCV, [Optional] string pRdfTypeCV)
         {
+            //Diccionario para almacenar las notificaciones
+            ConcurrentBag<Notification> notificaciones = new ConcurrentBag<Notification>();
+
             //Obtengo los datos de la persona para comprobar que existe en los documentos que cargamos
             Dictionary<string, string> idPersonaNick = UtilitySecciones.ObtenerIdPersona(mResourceApi, mCvID);
             string idPersona = idPersonaNick.ElementAt(0).Key;
@@ -532,6 +537,24 @@ namespace ImportadorWebCV.Sincro.Secciones
                     entityXML.rdfType = rdfType;
                     idBBDD = CreateListEntityAux(mCvID, RdfTypeTab, rdfTypePrefix, propiedadesItem, entityXML);
                     modificado = true;
+                    //Notificar
+                    foreach(Persona autor in entityXML.autores)
+                    {
+                        //No notifico a quien suben el documento
+                        if (autor.personid == idPersona)
+                        {
+                            continue;
+                        }
+                        Notification notificacion = new Notification();
+                        notificacion.IdRoh_trigger = idPersona;
+                        notificacion.Roh_tabPropertyCV = "http://w3id.org/roh/scientificActivity";
+                        notificacion.Roh_entity = idBBDD;
+                        notificacion.IdRoh_owner = equivalencias.Where(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key;
+                        notificacion.Dct_issued = DateTime.Now;
+                        notificacion.Roh_type = "create";
+
+                        notificaciones.Add(notificacion);
+                    }                    
                 }
                 else
                 {
@@ -540,6 +563,25 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                     //Añadimos la referencia a BBDD para usarla en caso de añadir elementos en el CV.
                     idBBDD = equivalenciasDocumentos[idXML];
+
+                    //Notificar
+                    foreach (Persona autor in entityXML.autores)
+                    {
+                        //No notifico a quien suben el documento
+                        if (autor.personid == idPersona)
+                        {
+                            continue;
+                        }
+                        Notification notificacion = new Notification();
+                        notificacion.IdRoh_trigger = idPersona;
+                        notificacion.Roh_tabPropertyCV = "http://w3id.org/roh/scientificActivity";
+                        notificacion.Roh_entity = idBBDD;
+                        notificacion.IdRoh_owner = equivalencias.Where(x=>x.Value.Any(y=>y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key;
+                        notificacion.Dct_issued = DateTime.Now;
+                        notificacion.Roh_type = "edit";
+
+                        notificaciones.Add(notificacion);
+                    }
                 }
 
                 //Si el documento se ha cargado nuevo o se ha podido modificar añado los autores.
@@ -574,6 +616,26 @@ namespace ImportadorWebCV.Sincro.Secciones
                 }
             });
 
+            //Enviamos las notificaciones
+            List<Notification> notificacionesCargar = notificaciones.ToList();
+            notificacionesCargar.RemoveAll(x => x.IdRoh_owner == idPersona);
+            mResourceApi.ChangeOntoly("notification");
+            //TODO cambiar parallel
+            Parallel.ForEach(notificacionesCargar, new ParallelOptions { MaxDegreeOfParallelism = 1 }, notificacion =>
+            {
+                ComplexOntologyResource recursoCargar = notificacion.ToGnossApiResource(mResourceApi);
+                int numIntentos = 0;
+                while (!recursoCargar.Uploaded)
+                {
+                    numIntentos++;
+
+                    if (numIntentos > 5)
+                    {
+                        break;
+                    }
+                    mResourceApi.LoadComplexSemanticResource(recursoCargar);
+                }
+            });
         }
 
         /// <summary>

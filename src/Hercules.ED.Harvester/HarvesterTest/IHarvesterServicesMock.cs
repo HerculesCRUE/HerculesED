@@ -13,7 +13,7 @@ namespace HavesterTest
 {
     public class HarvesterServicesMock : IHaversterServices
     {
-        public string GetRecord(string id,String file=null)
+        public string GetRecord(string id, String file = null)
         {
             string uri = "https://localhost:44300/OAI_PMH?verb=GetRecord&identifier=" + id + "&metadataPrefix=EDMA";
 
@@ -31,7 +31,7 @@ namespace HavesterTest
         public List<IdentifierOAIPMH> ListIdentifiers(string from, string until = null, string set = null)
         {
             List<IdentifierOAIPMH> idList = new();
-        //C: \Users\hsolar\Source\Repos\HerculesED\src\Harvester\HavesterTest\xml_examples\
+            //C: \Users\hsolar\Source\Repos\HerculesED\src\Harvester\HavesterTest\xml_examples\
             XDocument XMLresponse = XDocument.Load(from);
             XNamespace nameSpace = XMLresponse.Root.GetDefaultNamespace();
             XElement idListElement = XMLresponse.Root.Element(nameSpace + "ListIdentifiers");
@@ -61,6 +61,9 @@ namespace HavesterTest
 
         }
 
-       
+        public List<ListRecordsOAIPMH> ListRecords(string from, string until = null, string set = null)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -198,7 +198,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
         {
             List<Tuple<string, string, string, string, string, string>> listaResultados = new List<Tuple<string, string, string, string, string, string>>();
 
-            List<List<string>> listaListas = Utility.SplitList(pIdsPersonas.ToList(), 1000).ToList();
+            List<List<string>> listaListas = Utility.SplitList(pIdsPersonas.ToList(), 500).ToList();
 
             foreach (List<string> lista in listaListas)
             {
@@ -661,8 +661,8 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                 }
             }
 
-            //Divido la lista en listas de 1.000 elementos
-            List<List<string>> listaListasIdPersonas = Utility.SplitList(listaPersonasAux.Select(x => x.Value).Select(x => x.ID).ToList(), 1000).ToList();
+            //Divido la lista en listas de 500 elementos
+            List<List<string>> listaListasIdPersonas = Utility.SplitList(listaPersonasAux.Select(x => x.Value).Select(x => x.ID).ToList(), 500).ToList();
 
             foreach (List<string> lista in listaListasIdPersonas)
             {
@@ -960,8 +960,8 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                 }
             }
 
-            //Divido la lista en listas de 1.000 elementos
-            List<List<string>> listaListasIdPersonas = Utility.SplitList(listaPersonasAux.Select(x => x.Value).Select(x => x.ID).ToList(), 1000).ToList();
+            //Divido la lista en listas de 500 elementos
+            List<List<string>> listaListasIdPersonas = Utility.SplitList(listaPersonasAux.Select(x => x.Value).Select(x => x.ID).ToList(), 500).ToList();
 
             foreach (List<string> lista in listaListasIdPersonas)
             {

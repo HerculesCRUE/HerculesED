@@ -513,7 +513,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                     {
                                         NotificationOntology.Notification notificacion = new NotificationOntology.Notification();
                                         notificacion.IdRoh_trigger = null;
-                                        notificacion.Roh_tabPropertyCV = documento.RdfType;
+                                        notificacion.Roh_tabPropertyCV = "http://w3id.org/roh/scientificActivity";
                                         notificacion.Roh_entity = resourceDocumento.GnossId;
                                         notificacion.IdRoh_owner = autor.IdRdf_member;
                                         notificacion.Dct_issued = DateTime.Now;
@@ -531,7 +531,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                     {
                                         NotificationOntology.Notification notificacion = new NotificationOntology.Notification();
                                         notificacion.IdRoh_trigger = null;
-                                        notificacion.Roh_tabPropertyCV = documento.RdfType;
+                                        notificacion.Roh_tabPropertyCV = "http://w3id.org/roh/scientificActivity";
                                         notificacion.Roh_entity = listaDocumentosCargados[idBBDD];
                                         notificacion.IdRoh_owner = autor.IdRdf_member;
                                         notificacion.Dct_issued = DateTime.Now;
@@ -652,7 +652,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                     {
                                         NotificationOntology.Notification notificacion = new NotificationOntology.Notification();
                                         notificacion.IdRoh_trigger = null;
-                                        notificacion.Roh_tabPropertyCV = researchobject.RdfType;
+                                        notificacion.Roh_tabPropertyCV = "http://w3id.org/roh/researchObject";
                                         notificacion.Roh_entity = resourceResearchObject.GnossId;
                                         notificacion.IdRoh_owner = autor.IdRdf_member;
                                         notificacion.Dct_issued = DateTime.Now;
@@ -669,7 +669,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                     {
                                         NotificationOntology.Notification notificacion = new NotificationOntology.Notification();
                                         notificacion.IdRoh_trigger = null;
-                                        notificacion.Roh_tabPropertyCV = researchobject.RdfType;
+                                        notificacion.Roh_tabPropertyCV = "http://w3id.org/roh/researchObject";
                                         notificacion.Roh_entity = listaROsCargados[idBBDD];
                                         notificacion.IdRoh_owner = autor.IdRdf_member;
                                         notificacion.Dct_issued = DateTime.Now;
@@ -885,7 +885,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                 }
             };
 
-            List<List<string>> listaListasDocs = Utility.SplitList(listaRO.Keys.ToList(), 1000).ToList();
+            List<List<string>> listaListasDocs = Utility.SplitList(listaRO.Keys.ToList(), 500).ToList();
             ObtenerAutoresRO(listaListasDocs, listaRO);
 
             return listaRO;
@@ -988,7 +988,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                 }
             };
 
-            List<List<string>> listaListasDocs = Utility.SplitList(listaDocumentos.Keys.ToList(), 1000).ToList();
+            List<List<string>> listaListasDocs = Utility.SplitList(listaDocumentos.Keys.ToList(), 500).ToList();
             ObtenerAutoresPublicacion(listaListasDocs, listaDocumentos);            
 
             return listaDocumentos;

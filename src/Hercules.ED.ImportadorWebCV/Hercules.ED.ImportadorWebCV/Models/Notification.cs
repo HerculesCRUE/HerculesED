@@ -4,7 +4,7 @@ using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.Model;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Hercules.ED.ResearcherObjectLoad.Models.NotificationOntology
+namespace Models.NotificationOntology
 {
     [ExcludeFromCodeCoverage]
 	public class Notification
