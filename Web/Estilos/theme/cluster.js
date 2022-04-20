@@ -9,7 +9,6 @@ var urlLT = "";
 var urlSC ="";
 var urlSTAGS = "";
 var urlCargarPerfiles = "";
-var stepsCls;
 
 $(document).ready(function () {
 	servicioExternoBaseUrl=$('#inpt_baseURLContent').val()+'/servicioexterno/';
@@ -17,7 +16,6 @@ $(document).ready(function () {
 	urlSC = new URL(servicioExternoBaseUrl +  uriSaveCluster);
 	urlSTAGS = new URL(servicioExternoBaseUrl +  uriSearchTags);
 	urlCargarPerfiles = new URL(servicioExternoBaseUrl +  uriLoadProfiles);
-	stepsCls = new StepsCluster();
 });
 
 
@@ -34,14 +32,14 @@ class StepsCluster {
 		this.dataTaxonomies = null
 
 		// Secciones principales
-		this.modalCrearCluster = this.body.find('#modal-crear-cluster')
+		this.modalCrearCluster = this.body.find('#wrapper-crear-cluster')
 		this.stepProgressWrap = this.modalCrearCluster.find(".step-progress-wrap")
 		this.stepsCircle = this.stepProgressWrap.find(".step-progress__circle")
 		this.stepsBar = this.stepProgressWrap.find(".step-progress__bar")
 		this.stepsText = this.stepProgressWrap.find(".step-progress__text")
-		this.modalCrearClusterStep1 = this.modalCrearCluster.find("#modal-crear-cluster-step1")
-		this.modalCrearClusterStep2 = this.modalCrearCluster.find("#modal-crear-cluster-step2")
-		this.modalCrearClusterStep3 = this.modalCrearCluster.find("#modal-crear-cluster-step3")
+		this.modalCrearClusterStep1 = this.modalCrearCluster.find("#wrapper-crear-cluster-step1")
+		this.modalCrearClusterStep2 = this.modalCrearCluster.find("#wrapper-crear-cluster-step2")
+		this.modalCrearClusterStep3 = this.modalCrearCluster.find("#wrapper-crear-cluster-step3")
 		this.clusterAccordionPerfil = this.modalCrearCluster.find("#accordion_cluster")
 		this.errorDiv = this.modalCrearCluster.find("#error-modal-cluster")
 		this.errorDivServer = this.modalCrearCluster.find("#error-modal-server-cluster")
@@ -77,9 +75,9 @@ class StepsCluster {
 		this.descriptoresEspecificosText = this.modalCrearCluster.data("descriptoresespecificostext")
 
 		// Incia las funcionalidades iniciales de modal si este se abre
-		this.modalCrearCluster.on('shown.bs.modal', function () {
-			_self.init()
-		});
+		// this.modalCrearCluster.on('shown.bs.modal', function () {
+		// 	_self.init()
+		// });
 
 	}
 
@@ -118,17 +116,17 @@ class StepsCluster {
 				break;
 				case 2:
 				continueStep = this.checkContinue2()
-				/*if (continueStep) {
-					try {
-						continueStep = await this.saveInit()
-					} catch(err) {
-						// this.errorDiv.show()
-						this.errorDivServer.show()
-						window.location.hash = '#' + this.errorDivServer.attr('id')
-						continueStep = false;
-					}
-				}*/
 				_self.startStep3()
+				break;
+				case 3:
+				try {
+					continueStep = await this.saveInit()
+				} catch(err) {
+					// this.errorDiv.show()
+					this.errorDivServer.show()
+					window.location.hash = '#' + this.errorDivServer.attr('id')
+					continueStep = false;
+				}
 				break;
 			}
 
@@ -439,8 +437,6 @@ class StepsCluster {
 
 			this.postCall(urlSC, this.data).then((data) => {
 				_self.clusterId = data
-				console.log("_self.clusterId", _self.clusterId)
-				// _self.goStep(3)
 				_self.startStep3()
 				resolve(true)
 			}).catch(err => {
@@ -525,9 +521,6 @@ class StepsCluster {
 		this.topicsM.closeBtnClick().then((data) => {
 			// parent.data('jsondata', data)
 			let relItem = $('#' + $(el).data("rel"))
-			console.log("///// closeBtnClick CLICKADO /////")
-			console.log('$(el).data("rel")', $(el).data("rel"))
-			console.log("data", data)
 			this.saveTAGS(relItem, data)
 		})
 	}
@@ -537,10 +530,6 @@ class StepsCluster {
 	 * @param relItem, elemento relacionado para indicar dónde deben de guardarse las areas temátcias seleccionadas
 	 */
 	saveTAGS(relItem, data) {
-
-		console.log("relItem", relItem)
-		console.log("data", data)
-		console.log("relItem.data()", relItem.data())
 
 		let htmlResWrapper = $('<div class="tag-list mb-4 d-inline"></div>')
 
@@ -1007,15 +996,17 @@ function ActualizarGraficaClusterolaboradoresCluster(typesOcultar = [], showRela
 // Comportamiento página proyecto
 var comportamientoPopupCluster = {
 	tabActive: null,
+
 	init: function (clusterObj) {
+		let that = this
 		this.config();
 		let paramsCl = this.workCO(clusterObj)
 		let profiles = this.setProfiles(clusterObj)
-		
+
 		// Iniciar el listado de usuarios
 		buscadorPersonalizado.init($('#INVESTIGADORES').val(), "#clusterListUsers", "searchClusterMixto=" + paramsCl, null, "profiles=" + JSON.stringify(profiles) + "|viewmode=cluster|rdf:type=person", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
 		
-		// Agrgamos los ordenes
+		// Agregamos los ordenes
 		$('.searcherResults .h1-container').after(
 		`<div class="acciones-listado acciones-listado-buscador">
 			<div class="wrap">
@@ -1023,18 +1014,19 @@ var comportamientoPopupCluster = {
 				<div class="ordenar dropdown">
 					<a class="dropdown-toggle" data-toggle="dropdown">
 						<span class="material-icons">swap_vert</span>
-						<span class="texto">ORDER_MIXTO</span>
+						<span class="texto">${that.text_mixto}</span>
 					</a>
 					<div class="dropdown-menu basic-dropdown dropdown-menu-right">
-						<a href="javascript: void(0)" filter="searchClusterMixto" class="item-dropdown">ORDER_MIXTO</a>
-						<a href="javascript: void(0)" filter="searchClusterAjuste" class="item-dropdown">ORDER_AJUSTE</a>
-						<a href="javascript: void(0)" filter="searchClusterVolumen" class="item-dropdown">ORDER_VOLUMEN</a>
+						<a href="javascript: void(0)" filter="searchClusterMixto" class="item-dropdown">${that.text_volumen}</a>
+						<a href="javascript: void(0)" filter="searchClusterAjuste" class="item-dropdown">${that.text_ajuste}</a>
+						<a href="javascript: void(0)" filter="searchClusterVolumen" class="item-dropdown">${that.text_mixto}</a>
 					</div>
 				</div>
 			</div>
 		</div>`);
 		
 		$('.acciones-listado-buscador a.item-dropdown').unbind().click(function (e) {
+			$('.acciones-listado-buscador .dropdown-toggle .texto').text($(this).text())
 			e.preventDefault();
 			buscadorPersonalizado.filtro=$(this).attr('filter')+'='+paramsCl;
 			FiltrarPorFacetas(ObtenerHash2());
@@ -1045,6 +1037,11 @@ var comportamientoPopupCluster = {
 	},
 	config: function () {
 		var that = this;
+
+		this.printitem = $('#clusterListUsers')
+		this.text_volumen = this.printitem.data('volumen')
+		this.text_ajuste = this.printitem.data('ajuste')
+		this.text_mixto = this.printitem.data('mixto')
 
 		//Métodos colaboradores
 		$('#removeNodesCollaboratorsCluster').unbind().click(function (e) {
@@ -1064,8 +1061,8 @@ var comportamientoPopupCluster = {
 			$('#numColaboradoresCluster').val((numColaboradores + 10));
 			$('#numNodosCollaboratorsCluster').html($('#numColaboradoresCluster').val());
 			var parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro;
-			 CargarGraficaProjectoClusterObj("", parametros,'colaboratorsgraph',true);
-			 newGrafProjClust.CargarGraficaProjectoClusterObj("", parametros, 'colaboratorsgraphCluster', true);
+			// newGrafProjClust.CargarGraficaProjectoClusterObj("", parametros,'colaboratorsgraph',true);
+			newGrafProjClust.CargarGraficaProjectoClusterObj("", parametros, 'colaboratorsgraphCluster', true);
 		});
 		//Fin métodos colaboradores
 
@@ -1108,8 +1105,6 @@ var comportamientoPopupCluster = {
 
 		return results
 	}
-
-
 };
 
 /**
@@ -1305,7 +1300,6 @@ function CompletadaCargaRecursosCluster()
 		$.post(urlCargarPerfiles, stepsCls.data, function(data) {
 			$('article.investigador .user-perfil').remove();
 			for (const [idperson, datospersona] of Object.entries(data)) {
-				console.log(idperson, ": ", datospersona);
 				let htmlPerfiles='';				
 				for (const [idProfile, score] of Object.entries(datospersona)) {
 					if(score.numPublicaciones>0)
@@ -1449,11 +1443,18 @@ function CompletadaCargaRecursosCluster()
 				})[0];
 				if(this.checked) {
 					let elementUser = $(this).closest('.resource.investigador')
-					let user={};
-					user.userID=idUser;
-					user.name=elementUser.find('h2.resource-title').text().trim();
-					user.info=elementUser.find('.middle-wrap > .content-wrap > .list-wrap').text();
-					user.numPublicacionesTotal=elementUser.data('numPublicacionesTotal');
+					let user = {}
+					let arrInfo = []
+					user.userID = idUser
+					user.name = elementUser.find('h2.resource-title').text().trim()
+
+					// Obtener la descripción
+					elementUser.find('.middle-wrap > .content-wrap > .list-wrap li').each((i, elem) => {
+						arrInfo.push($(elem).text().trim())
+					})
+					user.info = arrInfo.join(', ')
+
+					user.numPublicacionesTotal = elementUser.data('numPublicacionesTotal')
 					if(perfil.users==null)					
 					{
 						perfil.users=[];
