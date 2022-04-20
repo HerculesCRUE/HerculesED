@@ -84,12 +84,12 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     Dictionary<string, ResearchObjectZenodo> dicIdDatosRoZenodo = new Dictionary<string, ResearchObjectZenodo>();
 
                     //Diccionario para almacenar las notificaciones
-                    ConcurrentBag<NotificationOntology.Notification> notificaciones = new ConcurrentBag<NotificationOntology.Notification>(); 
+                    ConcurrentBag<NotificationOntology.Notification> notificaciones = new ConcurrentBag<NotificationOntology.Notification>();
 
                     string jsonString = String.Empty;
 
                     string idPersona = null;
-                    
+
                     if (fichero.Name.StartsWith("figshare___"))
                     {
                         string idFigShareAutor = fichero.Name.Split("___")[1];
@@ -509,7 +509,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                 {
                                     ComplexOntologyResource resourceDocumento = documento.ToGnossApiResource(mResourceApi, null);
 
-                                    foreach(BFO_0000023 autor in documento.Bibo_authorList)
+                                    foreach (BFO_0000023 autor in documento.Bibo_authorList)
                                     {
                                         NotificationOntology.Notification notificacion = new NotificationOntology.Notification();
                                         notificacion.IdRoh_trigger = null;
@@ -518,10 +518,11 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                         notificacion.IdRoh_owner = autor.IdRdf_member;
                                         notificacion.Dct_issued = DateTime.Now;
                                         notificacion.Roh_type = "create";
+                                        notificacion.CvnCode = Utility.IdentificadorFECYT(documento.IdRoh_scientificActivityDocument);
 
                                         notificaciones.Add(notificacion);
                                     }
-                                    
+
 
                                     listaDocumentosCargar.Add(resourceDocumento);
                                 }
@@ -536,6 +537,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                         notificacion.IdRoh_owner = autor.IdRdf_member;
                                         notificacion.Dct_issued = DateTime.Now;
                                         notificacion.Roh_type = "edit";
+                                        notificacion.CvnCode = Utility.IdentificadorFECYT(listaDocumentosCargarEquivalencias.Where(x => x.Value.Contains(idBBDD)).FirstOrDefault().Key.IdRoh_scientificActivityDocument);
 
                                         notificaciones.Add(notificacion);
                                     }
@@ -657,6 +659,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                         notificacion.IdRoh_owner = autor.IdRdf_member;
                                         notificacion.Dct_issued = DateTime.Now;
                                         notificacion.Roh_type = "create";
+                                        notificacion.CvnCode = "";
 
                                         notificaciones.Add(notificacion);
                                     }
@@ -674,6 +677,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                         notificacion.IdRoh_owner = autor.IdRdf_member;
                                         notificacion.Dct_issued = DateTime.Now;
                                         notificacion.Roh_type = "edit";
+                                        notificacion.CvnCode = "";
 
                                         notificaciones.Add(notificacion);
                                     }
@@ -789,7 +793,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                 Thread.Sleep(5000);
             }
         }
-                
+
         /// <summary>
         /// Obtiene los RO pertenecientes al autor con ORCID <paramref name="orcidAutor"/>
         /// </summary>
@@ -989,7 +993,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             };
 
             List<List<string>> listaListasDocs = Utility.SplitList(listaDocumentos.Keys.ToList(), 500).ToList();
-            ObtenerAutoresPublicacion(listaListasDocs, listaDocumentos);            
+            ObtenerAutoresPublicacion(listaListasDocs, listaDocumentos);
 
             return listaDocumentos;
         }
@@ -1534,7 +1538,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     }
                 }
             }
-            if ((document.Roh_enrichedKnowledgeArea == null || 
+            if ((document.Roh_enrichedKnowledgeArea == null ||
                 document.Roh_enrichedKnowledgeArea.Count == 0) && pPublicacionB != null && pPublicacionB.topics_enriquecidos != null && pPublicacionB.topics_enriquecidos.Count > 0)
             {
                 document.Roh_enrichedKnowledgeArea = new List<DocumentOntology.CategoryPath>();
@@ -2079,7 +2083,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                 int offset = 0;
 
                 // Consulta sparql.
-                while(true)
+                while (true)
                 {
                     string select = "SELECT * WHERE { SELECT ?revista ?issn ";
                     string where = $@"WHERE {{
@@ -2104,7 +2108,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     {
                         break;
                     }
-                } 
+                }
             }
             if (ISSN_Revista.ContainsKey(pISSN.Trim().ToLower()))
             {
@@ -2126,7 +2130,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                 int offset = 0;
 
                 // Consulta sparql.
-                while(true)
+                while (true)
                 {
                     string select = "SELECT * WHERE { SELECT ?revista ?eissn ";
                     string where = $@"WHERE {{
@@ -2173,7 +2177,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                 int offset = 0;
 
                 // Consulta sparql.
-                while(true)
+                while (true)
                 {
                     string select = "SELECT * WHERE { SELECT ?revista ?titulo ";
                     string where = $@"WHERE {{

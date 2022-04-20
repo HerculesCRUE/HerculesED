@@ -928,5 +928,18 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
         }
         #endregion
                 
+        public static string IdentificadorFECYT(string tipoDocumento)
+        {
+            if (tipoDocumento.Equals("http://gnoss.com/items/scientificactivitydocument_SAD1")) { 
+                return "060.010.010.000"; 
+            }
+            if (tipoDocumento.Equals("http://gnoss.com/items/scientificactivitydocument_SAD2")) { 
+                return "060.010.020.000"; 
+            }
+            if (tipoDocumento.Equals("http://gnoss.com/items/scientificactivitydocument_SAD3")) { 
+                return "060.010.030.000"; 
+            }
+            return null;
+        }
     }
 }
