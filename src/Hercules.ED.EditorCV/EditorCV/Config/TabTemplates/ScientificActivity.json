@@ -115,6 +115,8 @@
             "graph": "scientificproduction",
             "proptitle": "http://w3id.org/roh/h-index",
             "rdftype": "http://w3id.org/roh/ScientificProduction",
+            "cvnsection": "060.010.000.000",
+            "propertyowner": "http://w3id.org/roh/owner",
             "sections": [
               {
                 "title": {
@@ -3573,6 +3575,8 @@
             "graph": "activity",
             "proptitle": "http://w3id.org/roh/title",
             "rdftype": "http://w3id.org/roh/Activity",
+            "cvnsection": "060.010.040.000",
+            "propertyowner": "http://w3id.org/roh/owner",
             "sections": [
               {
                 "title": {
@@ -4572,6 +4576,8 @@
             "graph": "committee",
             "proptitle": "http://w3id.org/roh/title",
             "rdftype": "http://w3id.org/roh/Committee",
+            "cvnsection": "060.020.010.000",
+            "propertyowner": "http://w3id.org/roh/owner",
             "sections": [
               {
                 "title": {
@@ -5198,6 +5204,8 @@
             "graph": "activity",
             "proptitle": "http://w3id.org/roh/title",
             "rdftype": "http://w3id.org/roh/Activity",
+            "cvnsection": "060.020.030.000",
+            "propertyowner": "http://w3id.org/roh/owner",
             "sections": [
               {
                 "title": {
@@ -5880,6 +5888,8 @@
             "graph": "activity",
             "proptitle": "http://w3id.org/roh/title",
             "rdftype": "http://w3id.org/roh/Activity",
+            "cvnsection": "060.020.040.000",
+            "propertyowner": "http://w3id.org/roh/owner",
             "sections": [
               {
                 "title": {
@@ -6541,6 +6551,8 @@
             "graph": "activity",
             "proptitle": "http://w3id.org/roh/title",
             "rdftype": "http://w3id.org/roh/Activity",
+            "cvnsection": "060.020.050.000",
+            "propertyowner": "http://w3id.org/roh/owner",
             "sections": [
               {
                 "title": {
@@ -7162,6 +7174,8 @@
             "graph": "activity",
             "proptitle": "http://w3id.org/roh/functions",
             "rdftype": "http://w3id.org/roh/Activity",
+            "cvnsection": "060.020.060.000",
+            "propertyowner": "http://w3id.org/roh/owner",
             "sections": [
               {
                 "title": {
@@ -7784,6 +7798,8 @@
             "graph": "stay",
             "proptitle": "http://w3id.org/roh/performedTasks",
             "rdftype": "http://w3id.org/roh/Stay",
+            "cvnsection": "060.010.050.000",
+            "propertyowner": "http://w3id.org/roh/owner",
             "sections": [
               {
                 "title": {
@@ -8506,6 +8522,8 @@
             "graph": "grant",
             "proptitle": "http://w3id.org/roh/title",
             "rdftype": "http://vivoweb.org/ontology/core#Grant",
+            "cvnsection": "060.030.100.000",
+            "propertyowner": "http://w3id.org/roh/owner",
             "sections": [
               {
                 "title": {
@@ -9030,6 +9048,8 @@
             "graph": "collaboration",
             "proptitle": "http://w3id.org/roh/title",
             "rdftype": "http://w3id.org/roh/Collaboration",
+            "cvnsection": "060.020.020.000",
+            "propertyowner": "http://w3id.org/roh/owner",
             "sections": [
               {
                 "title": {
@@ -9728,6 +9748,8 @@
             "graph": "society",
             "proptitle": "http://w3id.org/roh/title",
             "rdftype": "http://w3id.org/roh/Society",
+            "cvnsection": "060.030.020.000",
+            "propertyowner": "http://w3id.org/roh/owner",
             "sections": [
               {
                 "title": {
@@ -10287,6 +10309,8 @@
             "graph": "council",
             "proptitle": "http://w3id.org/roh/title",
             "rdftype": "http://w3id.org/roh/Council",
+            "cvnsection": "060.030.030.000",
+            "propertyowner": "http://w3id.org/roh/owner",
             "sections": [
               {
                 "title": {
@@ -10879,6 +10903,8 @@
             "graph": "network",
             "proptitle": "http://w3id.org/roh/title",
             "rdftype": "http://w3id.org/roh/Network",
+            "cvnsection": "060.030.040.000",
+            "propertyowner": "http://w3id.org/roh/owner",
             "sections": [
               {
                 "title": {
@@ -11429,6 +11455,8 @@
             "graph": "accreditation",
             "proptitle": "http://w3id.org/roh/title",
             "rdftype": "http://w3id.org/roh/Accreditation",
+            "cvnsection": "060.030.050.000",
+            "propertyowner": "http://w3id.org/roh/owner",
             "sections": [
               {
                 "title": {
@@ -11784,6 +11812,8 @@
             "graph": "accreditation",
             "proptitle": "http://w3id.org/roh/title",
             "rdftype": "http://w3id.org/roh/Accreditation",
+            "cvnsection": "060.030.060.000",
+            "propertyowner": "http://w3id.org/roh/owner",
             "sections": [
               {
                 "title": {
@@ -12160,6 +12190,8 @@
             "graph": "accreditation",
             "proptitle": "http://w3id.org/roh/recognizedPeriods",
             "rdftype": "http://w3id.org/roh/Accreditation",
+            "cvnsection": "060.030.070.000",
+            "propertyowner": "http://w3id.org/roh/owner",
             "sections": [
               {
                 "title": {
@@ -12524,6 +12556,8 @@
             "graph": "accreditation",
             "proptitle": "http://w3id.org/roh/title",
             "rdftype": "http://w3id.org/roh/Accreditation",
+            "cvnsection": "060.030.090.000",
+            "propertyowner": "http://w3id.org/roh/owner",
             "sections": [
               {
                 "title": {
@@ -12853,6 +12887,8 @@
             "graph": "accreditation",
             "proptitle": "http://w3id.org/roh/title",
             "rdftype": "http://w3id.org/roh/Accreditation",
+            "cvnsection": "060.030.010.000",
+            "propertyowner": "http://w3id.org/roh/owner",
             "sections": [
               {
                 "title": {
