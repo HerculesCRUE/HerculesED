@@ -1,30 +1,17 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
 using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.Model;
-using Gnoss.ApiWrapper.Helpers;
-using System.Text.RegularExpressions;
-using System.Globalization;
-using System.Collections;
-using Gnoss.ApiWrapper.Exceptions;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Hercules.ED.ResearcherObjectLoad.Models.NotificationOntology
 {
-	[ExcludeFromCodeCoverage]
+    [ExcludeFromCodeCoverage]
 	public class Notification
 	{
 		private List<OntologyEntity> entList = new List<OntologyEntity>();
 		private List<OntologyProperty> propList = new List<OntologyProperty>();
 		private List<string> prefList = new List<string>();
-		private string mGNOSSID;
-		private Guid resourceID;
-		private Guid articleID;
 
 		public Notification()
 		{

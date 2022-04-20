@@ -86,6 +86,7 @@ namespace EditorCV.Models
         /// <returns></returns>
         public JsonResult RemoveItem(string pEntity)
         {
+            string accion = "delete";
             //Obtenemos la entidad para luego borrarla si es necesario
             string entityDestino = "";
             string entityCV = "";
@@ -123,7 +124,7 @@ namespace EditorCV.Models
                         }
                     }
                 }
-                ModificacionNotificacion(entityBBDD, template, templateSection, personCV);
+                ModificacionNotificacion(entityBBDD, template, templateSection, personCV, accion);
             }
 
             List<RemoveTriples> lista = new List<RemoveTriples>();
@@ -162,6 +163,7 @@ namespace EditorCV.Models
         /// <returns></returns>
         public JsonResult ActualizarEntidad(Entity pEntity, string pCvID, string pSectionID, string pRdfTypeTab, string pLang)
         {
+            string accion = "";
             if (pRdfTypeTab == "http://w3id.org/roh/PersonalData")
             {
                 API.Templates.Tab template = UtilityCV.TabTemplates.First(x => x.rdftype == pRdfTypeTab);
@@ -192,36 +194,14 @@ namespace EditorCV.Models
                     mResourceApi.ChangeOntoly(templateSection.presentation.listItemsPresentation.listItemEdit.graph);
                     pEntity.ontology = templateSection.presentation.listItemsPresentation.listItemEdit.graph;
                     itemEditConfig = templateSection.presentation.listItemsPresentation.listItemEdit;
-                    string personCV = UtilityCV.GetPersonFromCV(pCvID);
                     if (templateSection.presentation.listItemsPresentation.listItemEdit.propAuthor != null)
-                    {                        
+                    {
+                        string personCV = UtilityCV.GetPersonFromCV(pCvID);
                         if (!pEntity.properties.Exists(x => x.prop == templateSection.presentation.listItemsPresentation.listItemEdit.propAuthor.property) ||
                             !pEntity.properties.First(x => x.prop == templateSection.presentation.listItemsPresentation.listItemEdit.propAuthor.property).values.Exists(x => x.Contains(personCV)))
                         {
                             return new JsonResult() { ok = false, error = UtilityCV.GetTextLang(pLang, templateSection.presentation.listItemsPresentation.listItemEdit.propAuthor.message) };
                         }
-                    }
-                    if (!string.IsNullOrEmpty(itemEditConfig.cvnsection))
-                    {
-                        pEntity.properties.Add(new Entity.Property() 
-                        { 
-                            prop = "http://w3id.org/roh/cvnCode", 
-                            values = new List<string>() 
-                            { 
-                                itemEditConfig.cvnsection 
-                            } 
-                        });
-                    }
-                    if (!string.IsNullOrEmpty(itemEditConfig.propertyowner))
-                    {
-                        pEntity.properties.Add(new Entity.Property()
-                        {
-                            prop = itemEditConfig.propertyowner,
-                            values = new List<string>()
-                            {
-                                personCV
-                            }
-                        });
                     }
                 }
                 else if (templateSection.presentation.itemPresentation != null)
@@ -245,6 +225,8 @@ namespace EditorCV.Models
                 if (string.IsNullOrEmpty(pEntity.id) || Guid.TryParse(pEntity.id, out Guid x))
                 {
                     //Creamos
+                    accion = "create";
+
                     pEntity.propTitle = itemEditConfig.proptitle;
                     pEntity.propDescription = itemEditConfig.propdescription;
                     ProcesCompossedProperties(itemEditConfig, pEntity);
@@ -338,6 +320,8 @@ namespace EditorCV.Models
                 else
                 {
                     //Modificamos
+                    accion = "edit";
+
                     //Si está bloqueado sólo hay que editar los campos editables                   
                     List<PropertyData> propertyDatas = new List<PropertyData>();
                     foreach (string propEditabilidad in Utils.UtilityCV.PropertyNotEditable.Keys)
@@ -552,7 +536,8 @@ namespace EditorCV.Models
                 if (pEntity.rdfType.Equals("http://purl.org/ontology/bibo/Document") || pEntity.rdfType.Equals("http://w3id.org/roh/ResearchObject"))
                 {
                     string personaCV = UtilityCV.GetPersonFromCV(pCvID);
-                    ModificacionNotificacion(pEntity, template, templateSection,personaCV);
+                    pEntity.id = entityID;
+                    ModificacionNotificacion(pEntity, template, templateSection, personaCV, accion);
                 }
 
                 return new JsonResult() { ok = true, id = entityIDResponse };
@@ -565,8 +550,13 @@ namespace EditorCV.Models
         /// <param name="entity"></param>
         /// <param name="template"></param>
         /// <param name="templateSection"></param>
-        private void ModificacionNotificacion(Entity entity, API.Templates.Tab template, API.Templates.TabSection templateSection, string personaCV)
+        private void ModificacionNotificacion(Entity entity, API.Templates.Tab template, API.Templates.TabSection templateSection, string personaCV, string accion)
         {
+            if(accion== null) 
+            {
+                return; 
+            }
+
             string graphsUrl = mResourceApi.GraphsUrl;
             if (!string.IsNullOrEmpty(graphsUrl))
             {
@@ -649,7 +639,93 @@ namespace EditorCV.Models
                             notificacion.Roh_entity = entity.id;
                             notificacion.IdRoh_owner = fila["person"].value;
                             notificacion.Dct_issued = DateTime.Now;
-                            notificacion.Roh_type = "create";
+                            notificacion.Roh_type = accion;
+
+                            notificaciones.Add(notificacion);
+                        }
+                    });
+                    if (resultado.results.bindings.Count != limit)
+                    {
+                        break;
+                    }
+                }
+
+                //Modificamos
+                while (true)
+                {
+                    int limit = 500;
+                    //TODO eliminar from
+                    string select = @$"select distinct ?cv ?cvSection ?person
+                                            from <http://gnoss.com/document.owl> 
+                                            from <http://gnoss.com/researchobject.owl> 
+                                            from <http://gnoss.com/person.owl>    ";
+                    string where = @$"where{{
+                                    {filter}
+                                    {{
+                                        #DESEABLES
+                                        select distinct ?person ?cv ?cvSection ?document
+                                        Where
+                                        {{
+                                            ?person a <http://xmlns.com/foaf/0.1/Person>. 
+                                            ?document a <{entity.rdfType}>.
+                                            ?cv a <http://w3id.org/roh/CV>.
+                                            ?cv <http://w3id.org/roh/cvOf> ?person.
+                                            ?cv <{template.property}> ?cvSection.
+                                            ?document <http://purl.org/ontology/bibo/authorList> ?autor.
+                                            ?autor <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person.
+                                        }}
+                                    }}
+                                    MINUS
+                                    {{
+                                        #ACTUALES
+                                        ?person a <http://xmlns.com/foaf/0.1/Person>. 
+                                        ?document a <{entity.rdfType}>.
+                                        ?cv a <http://w3id.org/roh/CV>.
+                                        ?cv <http://w3id.org/roh/cvOf> ?person.
+                                        ?cv <{template.property}> ?cvSection.
+                                        ?cvSection ?p ?item.
+                                        ?item <http://vivoweb.org/ontology/core#relatedBy> ?document.
+                                    }}
+                                }}order by desc(?cv) limit {limit}";
+                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+
+                    Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = 5 }, fila =>
+                    {
+                        //Obtenemos la auxiliar en la que cargar la entidad                        
+                        string rdfTypePrefix = UtilityCV.AniadirPrefijo(templateSection.rdftype);
+                        rdfTypePrefix = rdfTypePrefix.Substring(rdfTypePrefix.IndexOf(":") + 1);
+                        string idNewAux = $"{mResourceApi.GraphsUrl}items/" + rdfTypePrefix + "_" + mResourceApi.GetShortGuid(fila["cv"].value) + "_" + Guid.NewGuid();
+
+                        List<TriplesToInclude> listaTriples = new List<TriplesToInclude>();
+                        string idEntityAux = fila["cvSection"].value + "|" + idNewAux;
+
+                        //Privacidad, por defecto falso                    
+                        string predicadoPrivacidad = template.property + "|" + templateSection.property + "|" + UtilityCV.PropertyIspublic;
+                        TriplesToInclude tr2 = new TriplesToInclude(idEntityAux + "|false", predicadoPrivacidad);
+                        listaTriples.Add(tr2);
+
+                        //Entidad
+                        string predicadoEntidad = template.property + "|" + templateSection.property + "|" + templateSection.presentation.listItemsPresentation.property;
+                        TriplesToInclude tr1 = new TriplesToInclude(idEntityAux + "|" + entity.id, predicadoEntidad);
+                        listaTriples.Add(tr1);
+
+                        Dictionary<Guid, List<TriplesToInclude>> triplesToInclude = new Dictionary<Guid, List<TriplesToInclude>>()
+                            {
+                                {
+                                    mResourceApi.GetShortGuid(fila["cv"].value), listaTriples
+                                }
+                            };
+                        Dictionary<Guid, bool> respuesta = mResourceApi.InsertPropertiesLoadedResources(triplesToInclude);
+
+                        foreach (KeyValuePair<Guid, bool> keyValue in respuesta)
+                        {
+                            NotificationOntology.Notification notificacion = new NotificationOntology.Notification();
+                            notificacion.IdRoh_trigger = personaCV;
+                            notificacion.Roh_tabPropertyCV = template.property;
+                            notificacion.Roh_entity = entity.id;
+                            notificacion.IdRoh_owner = fila["person"].value;
+                            notificacion.Dct_issued = DateTime.Now;
+                            notificacion.Roh_type = accion;
 
                             notificaciones.Add(notificacion);
                         }
@@ -750,7 +826,7 @@ namespace EditorCV.Models
                     notificacion.Roh_entity = entity.id;
                     notificacion.IdRoh_owner = persona;
                     notificacion.Dct_issued = DateTime.Now;
-                    notificacion.Roh_type = "edit";
+                    notificacion.Roh_type = accion;
 
                     notificaciones.Add(notificacion);
                 }
@@ -771,7 +847,7 @@ namespace EditorCV.Models
                             break;
                         }
                         mResourceApi.LoadComplexSemanticResource(recursoCargar);
-                    }                    
+                    }
                 });
             }
         }
@@ -965,8 +1041,6 @@ namespace EditorCV.Models
             return changes;
         }
 
-
-
         /// <summary>
         /// Procesa las entidades configuradas como compuestas (por ejemplo el nombre completo de una persona 'nombre'+' '+ 'apellidos') (recursivo)
         /// </summary>
@@ -1090,12 +1164,8 @@ namespace EditorCV.Models
                 }
                 else if (!remove)
                 {
-                    if ((property.values != null && property.values.Exists(x => !x.EndsWith("@@@"))) || 
-                        (property.valuesmultilang != null && property.valuesmultilang.Values.ToList().Exists(x => !x.EndsWith("@@@"))))
-                    {
-                        change = true;
-                        pLoadedEntity.properties.Add(property);
-                    }
+                    change = true;
+                    pLoadedEntity.properties.Add(property);
                 }
                 else if (remove)
                 {
@@ -1424,7 +1494,6 @@ namespace EditorCV.Models
             return update;
         }
 
-
         /// <summary>
         /// Transforma la propiedad para su carga en una entiadad auxiliar
         /// </summary>
@@ -1474,7 +1543,6 @@ namespace EditorCV.Models
             }
             return entityID;
         }
-
 
         /// <summary>
         /// Crea un ComplexOntologyResource con los datos de una entidad para su carga
@@ -1593,7 +1661,6 @@ namespace EditorCV.Models
             return resource;
         }
 
-
         /// <summary>
         /// Procesa una entidad principal para crear el ComplexOntologyResource
         /// </summary>
@@ -1641,7 +1708,6 @@ namespace EditorCV.Models
 
             return ontology;
         }
-
 
         /// <summary>
         /// Procesa una entidad auxiliar para crear el ComplexOntologyResource
@@ -1738,7 +1804,6 @@ namespace EditorCV.Models
             }
             return null;
         }
-
 
         /// <summary>
         /// Carga los datos en el objeto entidad con los datos obtenidos
