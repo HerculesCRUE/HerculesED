@@ -38,7 +38,7 @@ namespace Utils
             {"gn", "http://www.geonames.org/ontology#" }
         };
 
-        
+
         /// <summary>
         /// Cambia la propiedad añadiendole elprefijo
         /// </summary>
@@ -48,6 +48,27 @@ namespace Utils
         {
             KeyValuePair<string, string> prefix = dicPrefix.First(x => pProperty.StartsWith(x.Value));
             return pProperty.Replace(prefix.Value, prefix.Key + ":");
+        }
+        
+        public static string IdentificadorFECYT(string tipoDocumento)
+        {
+            if (string.IsNullOrEmpty(tipoDocumento))
+            {
+                return null;
+            }
+            if (tipoDocumento.Equals("http://gnoss.com/items/scientificactivitydocument_SAD1"))
+            {
+                return "060.010.010.000";
+            }
+            if (tipoDocumento.Equals("http://gnoss.com/items/scientificactivitydocument_SAD2"))
+            {
+                return "060.010.020.000";
+            }
+            if (tipoDocumento.Equals("http://gnoss.com/items/scientificactivitydocument_SAD3"))
+            {
+                return "060.010.030.000";
+            }
+            return null;
         }
 
         public static string GetTextLang(string pLang, Dictionary<string, string> pValores)
