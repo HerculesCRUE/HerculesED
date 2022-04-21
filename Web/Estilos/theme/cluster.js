@@ -1001,6 +1001,7 @@ var comportamientoPopupCluster = {
 		let that = this
 		this.config();
 		let paramsCl = this.workCO(clusterObj)
+		let paramsProfiles = this.workCOProfiles(clusterObj)
 		let profiles = this.setProfiles(clusterObj)
 
 		// Iniciar el listado de usuarios
@@ -1084,6 +1085,19 @@ var comportamientoPopupCluster = {
 		}
 
 		return results
+	},
+	
+	/*
+	* Convierte el objeto del cluster a los parámetros de consulta 
+	*/
+	workCOProfiles: function (clusterObj) {
+		var dicPerfiles = [];
+		stepsCls.data.profiles.forEach(function(perfil, index) {
+			let terms = (perfil.terms.length) ? perfil.terms.map(itm => '<' + itm + '>').join(',') : "<>"
+			let tags = (perfil.tags.length) ? perfil.tags.map(itm => "'" + itm + "'").join(',') : "''"
+			dicPerfiles[perfil.entityID]=terms + '@@@' + tags
+		});
+		return dicPerfiles;
 	},
 
 	/*
@@ -1470,5 +1484,47 @@ function CompletadaCargaRecursosCluster()
 			});	
 			
 		});
+	}
+}
+
+
+
+function CompletadaCargaFacetasCluster()
+{	
+	if(stepsCls!=null && stepsCls.data!=null)
+	{
+		if($('#out_roh_profiles').length==0)
+		{
+			//Creamos la faceta
+			let liPerfiles='';
+			stepsCls.data.profiles.forEach(function(perfil, index) {
+					let idProfile= perfil.entityID;
+					let nameProfile= perfil.name;
+					liPerfiles+=`<li>
+										<a rel="nofollow" href="javascript: void(0);" class="facetaperfil con-subfaceta ocultarSubFaceta" profile="${idProfile}">
+											<span class="textoFaceta">${nameProfile}</span>
+										</a>
+									</li>`;
+				});
+			let htmlPerfiles=`<div id="out_roh_profiles">
+					<div id="in_roh_profiles">
+						<div class="box " id="roh_profiles">
+							<span class="faceta-title">TODO perfiles</span>
+								<ul class="listadoFacetas">
+									${liPerfiles}
+								</ul>
+						</div>
+					</div>
+				</div>`;
+			$('#facetedSearch').prepend(htmlPerfiles);
+			//Añadimos el comporamiento a la faceta
+			$('.facetedSearch a.facetaperfil')
+				.unbind()
+				.click(function (e) {		
+					//TODO
+					buscadorPersonalizado.filtro=$(this).attr('filter')+'='+comportamientoPopupCluster.workCO(stepsCls.data);
+					FiltrarPorFacetas(ObtenerHash2());
+				});
+		}
 	}
 }
