@@ -1,20 +1,10 @@
 using System;
-using System.IO;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
 using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.Model;
-using Gnoss.ApiWrapper.Helpers;
-using System.Text.RegularExpressions;
-using System.Globalization;
-using System.Collections;
-using Gnoss.ApiWrapper.Exceptions;
 using System.Diagnostics.CodeAnalysis;
 
-namespace EditorCV.Models.NotificationOntology
+namespace Hercules.ED.ResearcherObjectLoad.Models.NotificationOntology
 {
 	[ExcludeFromCodeCoverage]
 	public class Notification
@@ -22,11 +12,9 @@ namespace EditorCV.Models.NotificationOntology
 		private List<OntologyEntity> entList = new List<OntologyEntity>();
 		private List<OntologyProperty> propList = new List<OntologyProperty>();
 		private List<string> prefList = new List<string>();
-		private string mGNOSSID;
-		private Guid resourceID;
-		private Guid articleID;
 
-		public Notification(){
+		public Notification()
+		{
 			prefList.Add("xmlns:roh=\"http://w3id.org/roh/\"");
 			prefList.Add("xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"");
 			prefList.Add("xmlns:xsd=\"http://www.w3.org/2001/XMLSchema#\"");
@@ -48,13 +36,14 @@ namespace EditorCV.Models.NotificationOntology
 		public string RdfsLabel { get { return "http://w3id.org/roh/Notification"; } }
 
 
-		public string IdRoh_trigger  { get; set;} 
-		public  string Roh_idEntityCV { get; set;}
-		public  string Roh_tabPropertyCV { get; set;}
-		public  string Roh_entity { get; set;}
-		public string IdRoh_owner  { get; set;} 
-		public  DateTime Dct_issued { get; set;}
-		public  string Roh_type { get; set;}
+		public string IdRoh_trigger { get; set; }
+		public string Roh_idEntityCV { get; set; }
+		public string Roh_tabPropertyCV { get; set; }
+		public string Roh_entity { get; set; }
+		public string IdRoh_owner { get; set; }
+		public DateTime Dct_issued { get; set; }
+		public string Roh_type { get; set; }
+		public string CvnCode { get; set; }
 
 
 		private void GetProperties()
@@ -66,6 +55,7 @@ namespace EditorCV.Models.NotificationOntology
 			propList.Add(new StringOntologyProperty("roh:owner", this.IdRoh_owner));
 			propList.Add(new DateOntologyProperty("dct:issued", this.Dct_issued));
 			propList.Add(new StringOntologyProperty("roh:type", this.Roh_type));
+			propList.Add(new StringOntologyProperty("roh:cvnCode", this.CvnCode));
 		}
 
 		public ComplexOntologyResource ToGnossApiResource(ResourceApi resourceAPI)

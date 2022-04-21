@@ -8,6 +8,7 @@ using EditorCV.Models.Utils;
 using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.ApiModel;
 using Gnoss.ApiWrapper.Model;
+using Hercules.ED.ResearcherObjectLoad.Models.NotificationOntology;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
@@ -560,6 +561,7 @@ namespace EditorCV.Models
                 {
                     string personaCV = UtilityCV.GetPersonFromCV(pCvID);
                     pEntity.id = entityID;
+                    ProcesLoadPropertyValues(itemEditConfig, pEntity);
                     ModificacionNotificacion(pEntity, template, templateSection, personaCV, accion);
                 }
 
@@ -585,7 +587,7 @@ namespace EditorCV.Models
             {
                 string filter = $" FILTER(?document =<{entity.id}>)";
 
-                ConcurrentBag<NotificationOntology.Notification> notificaciones = new ConcurrentBag<NotificationOntology.Notification>();
+                ConcurrentBag<Notification> notificaciones = new ConcurrentBag<Notification>();
 
                 //Añadimos
                 while (true)
@@ -656,13 +658,14 @@ namespace EditorCV.Models
 
                         foreach (KeyValuePair<Guid, bool> keyValue in respuesta)
                         {
-                            NotificationOntology.Notification notificacion = new NotificationOntology.Notification();
+                            Notification notificacion = new Notification();
                             notificacion.IdRoh_trigger = personaCV;
                             notificacion.Roh_tabPropertyCV = template.property;
                             notificacion.Roh_entity = entity.id;
                             notificacion.IdRoh_owner = fila["person"].value;
                             notificacion.Dct_issued = DateTime.Now;
                             notificacion.Roh_type = accion;
+                            notificacion.CvnCode = IdentificadorFECYT(entity.properties.Where(x => x.prop.Equals("http://w3id.org/roh/scientificActivityDocument")).SelectMany(x=>x.values).FirstOrDefault());
 
                             notificaciones.Add(notificacion);
                         }
@@ -742,13 +745,14 @@ namespace EditorCV.Models
 
                         foreach (KeyValuePair<Guid, bool> keyValue in respuesta)
                         {
-                            NotificationOntology.Notification notificacion = new NotificationOntology.Notification();
+                            Notification notificacion = new Notification();
                             notificacion.IdRoh_trigger = personaCV;
                             notificacion.Roh_tabPropertyCV = template.property;
                             notificacion.Roh_entity = entity.id;
                             notificacion.IdRoh_owner = fila["person"].value;
                             notificacion.Dct_issued = DateTime.Now;
                             notificacion.Roh_type = accion;
+                            notificacion.CvnCode = IdentificadorFECYT(entity.properties.Where(x => x.prop.Equals("http://w3id.org/roh/scientificActivityDocument")).SelectMany(x => x.values).FirstOrDefault());
 
                             notificaciones.Add(notificacion);
                         }
@@ -819,13 +823,14 @@ namespace EditorCV.Models
 
                         foreach (KeyValuePair<Guid, bool> keyValue in respuesta)
                         {
-                            NotificationOntology.Notification notificacion = new NotificationOntology.Notification();
+                            Notification notificacion = new Notification();
                             notificacion.IdRoh_trigger = personaCV;
                             notificacion.Roh_tabPropertyCV = template.property;
                             notificacion.Roh_entity = entity.id;
                             notificacion.IdRoh_owner = fila["person"].value;
                             notificacion.Dct_issued = DateTime.Now;
                             notificacion.Roh_type = "delete";
+                            notificacion.CvnCode = IdentificadorFECYT(entity.properties.Where(x => x.prop.Equals("http://w3id.org/roh/scientificActivityDocument")).SelectMany(x => x.values).FirstOrDefault());
 
                             notificaciones.Add(notificacion);
                         }
@@ -843,17 +848,18 @@ namespace EditorCV.Models
                     .Where(x => !notificaciones.Select(x => x.IdRoh_owner).Contains(x) && x != personaCV && !string.IsNullOrEmpty(x)).ToList();
                 foreach (string persona in personasEdicion)
                 {
-                    NotificationOntology.Notification notificacion = new NotificationOntology.Notification();
+                    Notification notificacion = new Notification();
                     notificacion.IdRoh_trigger = personaCV;
                     notificacion.Roh_tabPropertyCV = template.property;
                     notificacion.Roh_entity = entity.id;
                     notificacion.IdRoh_owner = persona;
                     notificacion.Dct_issued = DateTime.Now;
                     notificacion.Roh_type = accion;
+                    notificacion.CvnCode = IdentificadorFECYT(entity.properties.Where(x => x.prop.Equals("http://w3id.org/roh/scientificActivityDocument")).SelectMany(x => x.values).FirstOrDefault());
 
                     notificaciones.Add(notificacion);
                 }
-                List<NotificationOntology.Notification> notificacionesCargar = notificaciones.ToList();
+                List<Notification> notificacionesCargar = notificaciones.ToList();
                 notificacionesCargar.RemoveAll(x => x.IdRoh_owner == personaCV);
                 mResourceApi.ChangeOntoly("notification");
                 //TODO cambiar parallel
@@ -1062,6 +1068,26 @@ namespace EditorCV.Models
                 }
             }
             return changes;
+        }
+        private static string IdentificadorFECYT(string tipoDocumento)
+        {
+            if (string.IsNullOrEmpty(tipoDocumento))
+            {
+                return null;
+            }
+            if (tipoDocumento.Equals("http://gnoss.com/items/scientificactivitydocument_SAD1"))
+            {
+                return "060.010.010.000";
+            }
+            if (tipoDocumento.Equals("http://gnoss.com/items/scientificactivitydocument_SAD2"))
+            {
+                return "060.010.020.000";
+            }
+            if (tipoDocumento.Equals("http://gnoss.com/items/scientificactivitydocument_SAD3"))
+            {
+                return "060.010.030.000";
+            }
+            return null;
         }
 
         /// <summary>
