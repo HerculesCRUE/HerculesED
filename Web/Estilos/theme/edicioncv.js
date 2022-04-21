@@ -254,6 +254,10 @@ var edicionCV = {
 		.resource-list.translationFrView .translation-fr {
 			display: block;
 		}
+		
+		.page-cv .resource-list .resource .middle-wrap .content-wrap .description-wrap .group ul li{
+			margin-bottom: 0;
+		}
 
 		</style>`);
 
