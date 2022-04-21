@@ -23,8 +23,7 @@ namespace ImportadorWebCV.Sincro.Secciones.ExperienciaCientificaSubclases
         private static readonly DisambiguationDataConfig configFecha = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsItem,
-            score = 0.5f,
-            scoreMinus = 0.5f
+            score = 0.5f
         };
         
         private static readonly DisambiguationDataConfig configET = new DisambiguationDataConfig()
