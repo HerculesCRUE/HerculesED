@@ -1009,6 +1009,10 @@ var comportamientoPopupCluster = {
 		// Iniciar el listado de usuarios
 		buscadorPersonalizado.init($('#INVESTIGADORES').val(), "#clusterListUsers", "searchClusterMixto=" + paramsCl, null, "profiles=" + JSON.stringify(profiles) + "|viewmode=cluster|rdf:type=person", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
 		
+		// Iniciamos la gráfica
+		var parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro;
+		newGrafProjClust.CargarGraficaProjectoClusterObj("", parametros, 'colaboratorsgraphCluster', true);
+
 		// Agregamos los ordenes
 		$('.searcherResults .h1-container').after(
 		`<div class="acciones-listado acciones-listado-buscador">
