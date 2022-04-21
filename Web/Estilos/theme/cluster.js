@@ -856,7 +856,7 @@ class StepsCluster {
                                 ${user.numPublicacionesTotal}
                             </div>
                             <div class="principal-wrap">
-                                -
+                                ${user.ipNumber}
                             </div>
                             <div class="acciones-wrap">
                                 <ul class="no-list-style">
@@ -1418,6 +1418,7 @@ function CompletadaCargaRecursosCluster()
 				$('#'+idperson+' .content-wrap.flex-column').append(htmlPerfilesPersona);
 				try {
 					$('#'+idperson).data('numPublicacionesTotal', Object.values(datospersona)[0].numPublicacionesTotal);
+					$('#'+idperson).data('ipNumber', Object.values(datospersona)[0].ipNumber);
 				} catch (e) { }
 			}	
 
@@ -1455,6 +1456,7 @@ function CompletadaCargaRecursosCluster()
 					user.info = arrInfo.join(', ')
 
 					user.numPublicacionesTotal = elementUser.data('numPublicacionesTotal')
+					user.ipNumber = elementUser.data('ipNumber')
 					if(perfil.users==null)					
 					{
 						perfil.users=[];
