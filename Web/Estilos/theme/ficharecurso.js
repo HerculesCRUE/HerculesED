@@ -807,7 +807,7 @@ function comportamientoCargaFacetasComunidad() {
 	plegarSubFacetas.init();
 	comportamientoRangosFechas();
 	comportamientoRangosNumeros();
-	if ((typeof CompletadaCargaFacetasCluster != 'undefined')) {
+	if ((typeof stepsCls != 'undefined') && (typeof CompletadaCargaFacetasCluster != 'undefined')) {
 		CompletadaCargaFacetasCluster();
 	}
 }
