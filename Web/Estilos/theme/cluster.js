@@ -1011,7 +1011,7 @@ var comportamientoPopupCluster = {
 		
 		// Iniciamos la gráfica
 		var parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro;
-		newGrafProjClust.CargarGraficaProjectoClusterObj("", parametros, 'colaboratorsgraphCluster', true);
+		//newGrafProjClust.CargarGraficaProjectoClusterObj("", parametros, 'colaboratorsgraphCluster', true);
 
 		// Agregamos los ordenes
 		$('.searcherResults .h1-container').after(
@@ -1036,7 +1036,7 @@ var comportamientoPopupCluster = {
 			$('.acciones-listado-buscador .dropdown-toggle .texto').text($(this).text())
 			e.preventDefault();
 			buscadorPersonalizado.search=$(this).attr('filter');
-			if(buscadorPersonalizado.profile=null)
+			if(buscadorPersonalizado.profile==null)
 			{
 				buscadorPersonalizado.filtro=$(this).attr('filter')+'='+paramsCl;
 			}else
@@ -1075,7 +1075,7 @@ var comportamientoPopupCluster = {
 			$('#numColaboradoresCluster').val((numColaboradores + 10));
 			$('#numNodosCollaboratorsCluster').html($('#numColaboradoresCluster').val());
 			var parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro;
-			// newGrafProjClust.CargarGraficaProjectoClusterObj("", parametros,'colaboratorsgraph',true);
+			newGrafProjClust.CargarGraficaProjectoClusterObj("", parametros,'colaboratorsgraph',true);
 			newGrafProjClust.CargarGraficaProjectoClusterObj("", parametros, 'colaboratorsgraphCluster', true);
 		});
 		//Fin métodos colaboradores
