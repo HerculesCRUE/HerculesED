@@ -17,7 +17,7 @@
               "property": "http://vivoweb.org/ontology/core#relatedBy",
               "graph": "position",
               "child": {
-                "property": "http://w3id.org/roh/employerOrganizationTitle"
+                "property": "http://w3id.org/roh/professionalCategory"
               }
             },
             "properties": [
@@ -30,7 +30,7 @@
                   "property": "http://vivoweb.org/ontology/core#relatedBy",
                   "graph": "position",
                   "child": {
-                    "property": "http://w3id.org/roh/professionalCategory"
+                    "property": "http://w3id.org/roh/employerOrganizationTitle"
                   }
                 }
               },
@@ -493,6 +493,7 @@
                         },
                         "property": "http://w3id.org/roh/professionalCategory",
                         "type": "text",
+                        "required": true,
                         "multilang": true,
                         "width": 1
                       },
@@ -963,7 +964,7 @@
               "property": "http://vivoweb.org/ontology/core#relatedBy",
               "graph": "position",
               "child": {
-                "property": "http://w3id.org/roh/employerOrganizationTitle"
+                "property": "http://w3id.org/roh/professionalCategory"
               }
             },
             "properties": [
@@ -976,7 +977,7 @@
                   "property": "http://vivoweb.org/ontology/core#relatedBy",
                   "graph": "position",
                   "child": {
-                    "property": "http://w3id.org/roh/professionalCategory"
+                    "property": "http://w3id.org/roh/employerOrganizationTitle"
                   }
                 }
               },
@@ -999,6 +1000,7 @@
                   "es": "Fecha de fin"
                 },
                 "type": "date",
+                "showMiniBold": true,
                 "child": {
                   "property": "http://vivoweb.org/ontology/core#relatedBy",
                   "graph": "position",
@@ -1452,6 +1454,7 @@
                         "placeholder": {
                           "es": "Introduce la categoría profesional"
                         },
+                        "required": true,
                         "property": "http://w3id.org/roh/professionalCategory",
                         "type": "text",
                         "width": 1

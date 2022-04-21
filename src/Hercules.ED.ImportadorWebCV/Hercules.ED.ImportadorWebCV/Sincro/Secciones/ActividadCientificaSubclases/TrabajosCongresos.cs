@@ -27,8 +27,7 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
         private static readonly DisambiguationDataConfig configFecha = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsItem,
-            score = 0.5f,
-            scoreMinus = 0.5f
+            score = 0.5f
         };
 
         private static readonly DisambiguationDataConfig configAutores = new DisambiguationDataConfig()

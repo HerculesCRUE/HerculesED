@@ -8522,7 +8522,7 @@
             "graph": "grant",
             "proptitle": "http://w3id.org/roh/title",
             "rdftype": "http://vivoweb.org/ontology/core#Grant",
-            "cvnsection": "060.030.100.000",
+            "cvnsection": "060.030.010.000",
             "propertyowner": "http://w3id.org/roh/owner",
             "sections": [
               {
@@ -12887,7 +12887,7 @@
             "graph": "accreditation",
             "proptitle": "http://w3id.org/roh/title",
             "rdftype": "http://w3id.org/roh/Accreditation",
-            "cvnsection": "060.030.010.000",
+            "cvnsection": "060.030.100.000",
             "propertyowner": "http://w3id.org/roh/owner",
             "sections": [
               {

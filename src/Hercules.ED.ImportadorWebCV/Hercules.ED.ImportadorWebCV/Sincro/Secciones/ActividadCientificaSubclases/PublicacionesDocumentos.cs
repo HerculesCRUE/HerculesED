@@ -74,7 +74,7 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
             }
         }
 
-        private static readonly DisambiguationDataConfig configDescripcion = new DisambiguationDataConfig()
+        private static readonly DisambiguationDataConfig configTitulo = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsTitle,
             score = 0.8f
@@ -83,8 +83,7 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
         private static readonly DisambiguationDataConfig configFecha = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsItem,
-            score = 0.5f,
-            scoreMinus = 0.5f
+            score = 0.5f
         };
 
         private static readonly DisambiguationDataConfig configAutores = new DisambiguationDataConfig()
@@ -101,7 +100,7 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                 new DisambiguationData()
                 {
                     property = "descripcion",
-                    config = configDescripcion,
+                    config = configTitulo,
                     value = title
                 },
 
