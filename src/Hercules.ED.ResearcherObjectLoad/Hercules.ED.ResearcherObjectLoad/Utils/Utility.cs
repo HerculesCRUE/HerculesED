@@ -930,6 +930,10 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                 
         public static string IdentificadorFECYT(string tipoDocumento)
         {
+            if (string.IsNullOrEmpty(tipoDocumento))
+            {
+                return null;
+            }
             if (tipoDocumento.Equals("http://gnoss.com/items/scientificactivitydocument_SAD1")) { 
                 return "060.010.010.000"; 
             }

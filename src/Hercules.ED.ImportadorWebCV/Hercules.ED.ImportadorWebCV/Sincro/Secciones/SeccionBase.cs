@@ -552,6 +552,8 @@ namespace ImportadorWebCV.Sincro.Secciones
                         notificacion.IdRoh_owner = equivalencias.Where(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key;
                         notificacion.Dct_issued = DateTime.Now;
                         notificacion.Roh_type = "create";
+                        notificacion.CvnCode = UtilityCV.IdentificadorFECYT(entityXML.properties
+                            .Where(x => x.prop.Equals("http://w3id.org/roh/scientificActivityDocument")).SelectMany(x => x.values).FirstOrDefault());
 
                         notificaciones.Add(notificacion);
                     }                    
@@ -579,6 +581,8 @@ namespace ImportadorWebCV.Sincro.Secciones
                         notificacion.IdRoh_owner = equivalencias.Where(x=>x.Value.Any(y=>y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key;
                         notificacion.Dct_issued = DateTime.Now;
                         notificacion.Roh_type = "edit";
+                        notificacion.CvnCode = UtilityCV.IdentificadorFECYT(entityXML.properties
+                            .Where(x => x.prop.Equals("http://w3id.org/roh/scientificActivityDocument")).SelectMany(x => x.values).FirstOrDefault());
 
                         notificaciones.Add(notificacion);
                     }
@@ -621,7 +625,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             notificacionesCargar.RemoveAll(x => x.IdRoh_owner == idPersona);
             mResourceApi.ChangeOntoly("notification");
             //TODO cambiar parallel
-            Parallel.ForEach(notificacionesCargar, new ParallelOptions { MaxDegreeOfParallelism = 1 }, notificacion =>
+            Parallel.ForEach(notificacionesCargar, new ParallelOptions { MaxDegreeOfParallelism = 6 }, notificacion =>
             {
                 ComplexOntologyResource recursoCargar = notificacion.ToGnossApiResource(mResourceApi);
                 int numIntentos = 0;
