@@ -1003,6 +1003,9 @@ var comportamientoPopupCluster = {
 		let paramsProfiles = this.workCOProfiles(clusterObj)
 		let profiles = this.setProfiles(clusterObj)
 
+		buscadorPersonalizado.profile=null;
+		buscadorPersonalizado.search='searchClusterMixto';
+		
 		// Iniciar el listado de usuarios
 		buscadorPersonalizado.init($('#INVESTIGADORES').val(), "#clusterListUsers", "searchClusterMixto=" + paramsCl, null, "profiles=" + JSON.stringify(profiles) + "|viewmode=cluster|rdf:type=person", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
 		
@@ -1028,7 +1031,14 @@ var comportamientoPopupCluster = {
 		$('.acciones-listado-buscador a.item-dropdown').unbind().click(function (e) {
 			$('.acciones-listado-buscador .dropdown-toggle .texto').text($(this).text())
 			e.preventDefault();
-			buscadorPersonalizado.filtro=$(this).attr('filter')+'='+paramsCl;
+			buscadorPersonalizado.search=$(this).attr('filter');
+			if(buscadorPersonalizado.profile=null)
+			{
+				buscadorPersonalizado.filtro=$(this).attr('filter')+'='+paramsCl;
+			}else
+			{
+				buscadorPersonalizado.filtro=$(this).attr('filter')+'='+paramsProfiles[buscadorPersonalizado.profile];
+			}
 			FiltrarPorFacetas(ObtenerHash2());
 		});
 
@@ -1522,8 +1532,8 @@ function CompletadaCargaFacetasCluster()
 			$('.facetedSearch a.facetaperfil')
 				.unbind()
 				.click(function (e) {		
-					//TODO
-					buscadorPersonalizado.filtro=$(this).attr('filter')+'='+comportamientoPopupCluster.workCO(stepsCls.data);
+					buscadorPersonalizado.profile=$(this).attr('profile');
+					buscadorPersonalizado.filtro=buscadorPersonalizado.search+'='+comportamientoPopupCluster.workCOProfiles(stepsCls.data)[buscadorPersonalizado.profile];
 					FiltrarPorFacetas(ObtenerHash2());
 				});
 		}
