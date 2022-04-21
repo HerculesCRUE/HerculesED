@@ -122,7 +122,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 {
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
-                    if (!string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("010.010.000.020")))
+                    if (!string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("010.010.000.020")) && !string.IsNullOrEmpty(item.GetStringPorIDCampo("010.010.000.170")))
                     {
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                             new Property(Variables.Generico.codigoCVN, "010.010.000.000"),
@@ -301,7 +301,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 {
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
-                    if (!string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("010.020.000.020")))
+                    if (!string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("010.020.000.020")) && !string.IsNullOrEmpty(item.GetStringPorIDCampo("010.020.000.170")))
                     {
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                             new Property(Variables.Generico.codigoCVN, "010.020.000.000"),
