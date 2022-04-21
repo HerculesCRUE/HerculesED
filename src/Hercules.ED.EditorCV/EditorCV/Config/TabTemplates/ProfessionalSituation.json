@@ -23,7 +23,7 @@
             "properties": [
               {
                 "name": {
-                  "es": "Categoría professional"
+                  "es": "Entidad empleadora"
                 },
                 "showMini": true,
                 "child": {
@@ -394,6 +394,19 @@
                     "properties": [
                       {
                         "title": {
+                          "es": "Categoría profesional"
+                        },
+                        "placeholder": {
+                          "es": "Introduce la categoría profesional"
+                        },
+                        "property": "http://w3id.org/roh/professionalCategory",
+                        "type": "text",
+                        "required": true,
+                        "multilang": true,
+                        "width": 1
+                      },
+                      {
+                        "title": {
                           "es": "Entidad empleadora"
                         },
                         "autocomplete": true,
@@ -478,23 +491,6 @@
                           "property": "http://w3id.org/roh/employerOrganizationTitle",
                           "propertyValue": "*"
                         },
-                        "width": 1
-                      }
-                    ]
-                  },
-                  {
-                    "properties": [
-                      {
-                        "title": {
-                          "es": "Categoría profesional"
-                        },
-                        "placeholder": {
-                          "es": "Introduce la categoría profesional"
-                        },
-                        "property": "http://w3id.org/roh/professionalCategory",
-                        "type": "text",
-                        "required": true,
-                        "multilang": true,
                         "width": 1
                       },
                       {
@@ -970,7 +966,7 @@
             "properties": [
               {
                 "name": {
-                  "es": "Categoría professional"
+                  "es": "Entidad empleadora"
                 },
                 "showMini": true,
                 "child": {
@@ -1391,6 +1387,18 @@
                     "properties": [
                       {
                         "title": {
+                          "es": "Categoría profesional"
+                        },
+                        "placeholder": {
+                          "es": "Introduce la categoría profesional"
+                        },
+                        "required": true,
+                        "property": "http://w3id.org/roh/professionalCategory",
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
                           "es": "Entidad empleadora"
                         },
                         "autocomplete": true,
@@ -1446,19 +1454,7 @@
                     ]
                   },
                   {
-                    "properties": [
-                      {
-                        "title": {
-                          "es": "Categoría profesional"
-                        },
-                        "placeholder": {
-                          "es": "Introduce la categoría profesional"
-                        },
-                        "required": true,
-                        "property": "http://w3id.org/roh/professionalCategory",
-                        "type": "text",
-                        "width": 1
-                      },
+                    "properties": [                      
                       {
                         "title": {
                           "es": "Fecha de inicio"
