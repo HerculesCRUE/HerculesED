@@ -807,6 +807,9 @@ function comportamientoCargaFacetasComunidad() {
 	plegarSubFacetas.init();
 	comportamientoRangosFechas();
 	comportamientoRangosNumeros();
+	if ((typeof CompletadaCargaFacetasCluster != 'undefined')) {
+		CompletadaCargaFacetasCluster();
+	}
 }
 
 // Cuando se filtra no hay que subir arriba
