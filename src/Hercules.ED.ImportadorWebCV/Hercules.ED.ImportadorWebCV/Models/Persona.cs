@@ -155,7 +155,7 @@ namespace Hercules.ED.ImportadorWebCV.Models
         private static readonly DisambiguationDataConfig configDocumentos = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsItemList,
-            score = 1f
+            score = 0.5f
         };
 
 
