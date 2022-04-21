@@ -84,12 +84,12 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     Dictionary<string, ResearchObjectZenodo> dicIdDatosRoZenodo = new Dictionary<string, ResearchObjectZenodo>();
 
                     //Diccionario para almacenar las notificaciones
-                    ConcurrentBag<NotificationOntology.Notification> notificaciones = new ConcurrentBag<NotificationOntology.Notification>(); 
+                    ConcurrentBag<NotificationOntology.Notification> notificaciones = new ConcurrentBag<NotificationOntology.Notification>();
 
                     string jsonString = String.Empty;
 
                     string idPersona = null;
-                    
+
                     if (fichero.Name.StartsWith("figshare___"))
                     {
                         string idFigShareAutor = fichero.Name.Split("___")[1];
@@ -509,7 +509,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                 {
                                     ComplexOntologyResource resourceDocumento = documento.ToGnossApiResource(mResourceApi, null);
 
-                                    foreach(BFO_0000023 autor in documento.Bibo_authorList)
+                                    foreach (BFO_0000023 autor in documento.Bibo_authorList)
                                     {
                                         NotificationOntology.Notification notificacion = new NotificationOntology.Notification();
                                         notificacion.IdRoh_trigger = null;
@@ -521,7 +521,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
 
                                         notificaciones.Add(notificacion);
                                     }
-                                    
+
 
                                     listaDocumentosCargar.Add(resourceDocumento);
                                 }
@@ -789,7 +789,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                 Thread.Sleep(5000);
             }
         }
-                
+
         /// <summary>
         /// Obtiene los RO pertenecientes al autor con ORCID <paramref name="orcidAutor"/>
         /// </summary>
@@ -989,7 +989,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             };
 
             List<List<string>> listaListasDocs = Utility.SplitList(listaDocumentos.Keys.ToList(), 500).ToList();
-            ObtenerAutoresPublicacion(listaListasDocs, listaDocumentos);            
+            ObtenerAutoresPublicacion(listaListasDocs, listaDocumentos);
 
             return listaDocumentos;
         }
@@ -1224,6 +1224,39 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             document.Bibo_identifier.Add(fDocumento);
                         }
                     }
+                }
+            }
+
+            // Volumen
+            if (!string.IsNullOrEmpty(pPublicacion.volume))
+            {
+                document.Bibo_volume = pPublicacion.volume;
+
+                if (pPublicacionB != null && !string.IsNullOrEmpty(pPublicacionB.volume) && string.IsNullOrEmpty(document.Bibo_volume))
+                {
+                    document.Bibo_volume = pPublicacionB.volume;
+                }
+            }
+
+            // Numero
+            if (!string.IsNullOrEmpty(pPublicacion.articleNumber))
+            {
+                document.Bibo_issue = pPublicacion.articleNumber;
+
+                if (pPublicacionB != null && !string.IsNullOrEmpty(pPublicacionB.articleNumber) && string.IsNullOrEmpty(document.Bibo_issue))
+                {
+                    document.Bibo_issue = pPublicacionB.articleNumber;
+                }
+            }
+
+            // OpenAccess
+            if (pPublicacion.openAccess.HasValue)
+            {
+                document.Roh_openAccess = pPublicacion.openAccess.Value;
+
+                if (pPublicacionB != null && pPublicacionB.openAccess.HasValue && document.Roh_openAccess == false)
+                {
+                    document.Roh_openAccess = pPublicacionB.openAccess.Value;
                 }
             }
 
@@ -1534,7 +1567,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     }
                 }
             }
-            if ((document.Roh_enrichedKnowledgeArea == null || 
+            if ((document.Roh_enrichedKnowledgeArea == null ||
                 document.Roh_enrichedKnowledgeArea.Count == 0) && pPublicacionB != null && pPublicacionB.topics_enriquecidos != null && pPublicacionB.topics_enriquecidos.Count > 0)
             {
                 document.Roh_enrichedKnowledgeArea = new List<DocumentOntology.CategoryPath>();
@@ -2079,7 +2112,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                 int offset = 0;
 
                 // Consulta sparql.
-                while(true)
+                while (true)
                 {
                     string select = "SELECT * WHERE { SELECT ?revista ?issn ";
                     string where = $@"WHERE {{
@@ -2104,7 +2137,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     {
                         break;
                     }
-                } 
+                }
             }
             if (ISSN_Revista.ContainsKey(pISSN.Trim().ToLower()))
             {
@@ -2126,7 +2159,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                 int offset = 0;
 
                 // Consulta sparql.
-                while(true)
+                while (true)
                 {
                     string select = "SELECT * WHERE { SELECT ?revista ?eissn ";
                     string where = $@"WHERE {{
@@ -2173,7 +2206,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                 int offset = 0;
 
                 // Consulta sparql.
-                while(true)
+                while (true)
                 {
                     string select = "SELECT * WHERE { SELECT ?revista ?titulo ";
                     string where = $@"WHERE {{

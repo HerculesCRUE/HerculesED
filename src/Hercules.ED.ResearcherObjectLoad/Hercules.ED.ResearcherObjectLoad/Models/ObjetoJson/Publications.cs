@@ -103,6 +103,9 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.ObjetoJson
         public List<HasKnowledgeArea> hasKnowledgeAreas { get; set; }
         public string pageEnd { get; set; }
         public string pageStart { get; set; }
+        public  string volume { get; set; }
+        public string articleNumber { get; set; }
+        public bool? openAccess { get; set; }
         public List<string> iDs { get; set; }
         public object presentedAt { get; set; }
         public HasPublicationVenue hasPublicationVenue { get; set; }
