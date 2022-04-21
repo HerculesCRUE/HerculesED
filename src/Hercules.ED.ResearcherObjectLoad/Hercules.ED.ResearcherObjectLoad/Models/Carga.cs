@@ -1231,6 +1231,39 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                 }
             }
 
+            // Volumen
+            if (!string.IsNullOrEmpty(pPublicacion.volume))
+            {
+                document.Bibo_volume = pPublicacion.volume;
+
+                if (pPublicacionB != null && !string.IsNullOrEmpty(pPublicacionB.volume) && string.IsNullOrEmpty(document.Bibo_volume))
+                {
+                    document.Bibo_volume = pPublicacionB.volume;
+                }
+            }
+
+            // Numero
+            if (!string.IsNullOrEmpty(pPublicacion.articleNumber))
+            {
+                document.Bibo_issue = pPublicacion.articleNumber;
+
+                if (pPublicacionB != null && !string.IsNullOrEmpty(pPublicacionB.articleNumber) && string.IsNullOrEmpty(document.Bibo_issue))
+                {
+                    document.Bibo_issue = pPublicacionB.articleNumber;
+                }
+            }
+
+            // OpenAccess
+            if (pPublicacion.openAccess.HasValue)
+            {
+                document.Roh_openAccess = pPublicacion.openAccess.Value;
+
+                if (pPublicacionB != null && pPublicacionB.openAccess.HasValue && document.Roh_openAccess == false)
+                {
+                    document.Roh_openAccess = pPublicacionB.openAccess.Value;
+                }
+            }
+
             // Título (Title)
             if (!string.IsNullOrEmpty(pPublicacion.title))
             {
