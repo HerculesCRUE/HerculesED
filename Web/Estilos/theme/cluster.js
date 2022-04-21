@@ -944,11 +944,10 @@ class CargarGraficaProjectoClusterObj {
 		AjustarGraficaArania(this.dataCB, this.idContenedorCB, this.typesOcultar, this.showRelation);
 	};
 
-	CargarGraficaColaboradores = (pIdGrupo, parametros, idContenedor, mostrarCargando = false) => {
-		var url = servicioExternoBaseUrl + "Hercules/DatosGraficaColaboradoresGrupo";
+	CargarGraficaColaboradores = (parametros, idContenedor, mostrarCargando = false) => {
+		var url = servicioExternoBaseUrl + "Cluster/DatosGraficaColaboradoresCluster";
 		var self = this;
 		var arg = {};
-		arg.pIdGrupo = pIdGrupo;
 		arg.pParametros = parametros;
 		arg.pMax = $('#numColaboradoresCluster').val();
 		$('#' + idContenedor).empty();
@@ -1017,9 +1016,9 @@ var comportamientoPopupCluster = {
 						<span class="texto">${that.text_mixto}</span>
 					</a>
 					<div class="dropdown-menu basic-dropdown dropdown-menu-right">
+						<a href="javascript: void(0)" filter="searchClusterVolumen" class="item-dropdown">${that.text_mixto}</a>
 						<a href="javascript: void(0)" filter="searchClusterMixto" class="item-dropdown">${that.text_volumen}</a>
 						<a href="javascript: void(0)" filter="searchClusterAjuste" class="item-dropdown">${that.text_ajuste}</a>
-						<a href="javascript: void(0)" filter="searchClusterVolumen" class="item-dropdown">${that.text_mixto}</a>
 					</div>
 				</div>
 			</div>
