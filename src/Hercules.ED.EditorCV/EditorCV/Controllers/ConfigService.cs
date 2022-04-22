@@ -18,6 +18,7 @@ namespace EditorCV.Controllers
         private string urlSpecificEnrichment { get; set; }
         private string urlToken { get; set; }
         private string urlProduccionCientifica { get; set; }
+        private string urlEnvioProyecto { get; set; }
 
         /// <summary>
         /// Constructor.
@@ -175,6 +176,31 @@ namespace EditorCV.Controllers
             }
 
             return urlProduccionCientifica;
+        }
+
+        /// <summary>
+        /// Obtiene la URL del API del envío a validar proyecto.
+        /// </summary>
+        /// <returns>URI del API de envío a producción científica.</returns>
+        public string GetUrlEnvioProyecto()
+        {
+            if (string.IsNullOrEmpty(urlEnvioProyecto))
+            {
+                string connectionString = string.Empty;
+                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                if (environmentVariables.Contains("url_validar_proyectos"))
+                {
+                    connectionString = environmentVariables["url_validar_proyectos"] as string;
+                }
+                else
+                {
+                    connectionString = configuracion["url_validar_proyectos"];
+                }
+
+                urlEnvioProyecto = connectionString;
+            }
+
+            return urlEnvioProyecto;
         }
     }
 }

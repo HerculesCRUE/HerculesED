@@ -8,11 +8,11 @@ namespace EditorCV.Controllers
     [ApiController]
     [Route("[controller]")]
     [EnableCors("_myAllowSpecificOrigins")]
-    public class ProduccionCientificaController : ControllerBase
+    public class EnvioValidacionController : ControllerBase
     {
         readonly ConfigService _Configuracion;
 
-        public ProduccionCientificaController(ConfigService pConfig)
+        public EnvioValidacionController(ConfigService pConfig)
         {
             _Configuracion = pConfig;
         }

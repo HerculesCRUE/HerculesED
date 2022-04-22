@@ -570,7 +570,7 @@ namespace EditorCV.Models
             }
             #endregion
 
-            #region -- Cambio del estado del envío.
+            #region --- Cambio del estado del envío.
             // Comprobar si está el triple del estado.
             string valorEnviado = string.Empty;
             select = new StringBuilder();

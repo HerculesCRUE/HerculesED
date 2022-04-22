@@ -19,7 +19,7 @@
   "PREFIX roh:<http://w3id.org/roh/>",
   "PREFIX vivo:<http://vivoweb.org/ontology/core#>",
   "PREFIX schema:<http://www.schema.org/>",
-  //"PREFIX vcard:<https://www.w3.org/2006/vcard/ns#>",
+  "PREFIX vcards:<https://www.w3.org/2006/vcard/ns#>",
   "PREFIX dc:<http://purl.org/dc/elements/1.1/>",
   "PREFIX bibo:<http://purl.org/ontology/bibo/>",
   "PREFIX gn:<http://www.geonames.org/ontology#>",
