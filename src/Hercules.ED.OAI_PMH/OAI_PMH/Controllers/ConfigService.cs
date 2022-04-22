@@ -23,6 +23,7 @@ namespace OAI_PMH.Controllers
         private string UrlBaseFormacionAcademica { get; set; }
         private string UrlBaseActividadDocente { get; set; }
         private string UrlBaseProduccionCientifica { get; set; }
+        private string UrlBaseAutorizacion { get; set; }
 
         /// <summary>
         /// Constructor.
@@ -305,6 +306,27 @@ namespace OAI_PMH.Controllers
             }
 
             return PasswordToken;
+        }
+
+        public string GetUrlBaseAutorizacion()
+        {
+            if (string.IsNullOrEmpty(UrlBaseAutorizacion))
+            {
+                string connectionString = string.Empty;
+                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                if (environmentVariables.Contains("UrlBaseAutorizacion"))
+                {
+                    connectionString = environmentVariables["UrlBaseAutorizacion"] as string;
+                }
+                else
+                {
+                    connectionString = configuracion["UrlBaseAutorizacion"];
+                }
+
+                UrlBaseAutorizacion = connectionString;
+            }
+
+            return UrlBaseAutorizacion;
         }
     }
 }

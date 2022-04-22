@@ -1,6 +1,7 @@
 ﻿using OAI_PMH.Controllers;
 using OAI_PMH.Models.SGI;
 using OAI_PMH.Models.SGI.ActividadDocente;
+using OAI_PMH.Models.SGI.Autorizacion;
 using OAI_PMH.Models.SGI.FormacionAcademica;
 using OAI_PMH.Models.SGI.Organization;
 using OAI_PMH.Models.SGI.PersonalData;
@@ -55,6 +56,10 @@ namespace OAI_PMH.Models.OAIPMH
                 case "Organizacion":
                     Empresa organizacion = Organization.GetEmpresa(identifier, _Config);
                     record = ToRecord(organizacion, set, identifier, date, metadataPrefix);
+                    break;
+                case "Autorizacion":
+                    Autorizacion autorizacion = Autorizaciones.GetAutorizacion(identifier, _Config);
+                    record = ToRecord(autorizacion, set, identifier, date, metadataPrefix);
                     break;
                 default:
                     break;
@@ -144,6 +149,15 @@ namespace OAI_PMH.Models.OAIPMH
                         }
                         container.Records = prcRecordList;
                         break;
+                    case "Autorizacion":
+                        Dictionary<string, DateTime> modifiedAutorizaciones = Autorizaciones.GetModifiedAutorizaciones(arguments.From, _Config);
+                        List<Record> autorizacionRecordList = new();
+                        foreach (string autorizacionId in modifiedAutorizaciones.Keys)
+                        {
+                            autorizacionRecordList.Add(ToIdentifiersRecord("Autorizacion", autorizacionId, modifiedAutorizaciones[autorizacionId]));
+                        }
+                        container.Records = autorizacionRecordList;
+                        break;
                 }
             }
             else
@@ -200,6 +214,20 @@ namespace OAI_PMH.Models.OAIPMH
                             prcRecordList.Add(ToRecord(prc, arguments.Set, prc.IdRef, startDate, arguments.MetadataPrefix));
                         }
                         container.Records = prcRecordList;
+                        break;
+                    case "Autorizaciob":
+                        Dictionary<string, DateTime> modifiedAutorizacionIds = Autorizaciones.GetModifiedAutorizaciones(arguments.From, _Config);
+                        List<Autorizacion> autorizacionList = new();
+                        foreach (string autorizacionId in modifiedAutorizacionIds.Keys)
+                        {
+                            autorizacionList.Add(Autorizaciones.GetAutorizacion(autorizacionId, _Config));
+                        }
+                        List<Record> autorizacionRecordList = new();
+                        foreach (Autorizacion autorizacion in autorizacionList)
+                        {
+                            autorizacionRecordList.Add(ToRecord(autorizacion, arguments.Set, autorizacion.id.ToString(), startDate, arguments.MetadataPrefix));
+                        }
+                        container.Records = autorizacionRecordList;
                         break;
                 }
             }

@@ -22,7 +22,8 @@ namespace OAI_PMH.Models.OAIPMH
                 "Persona",
                 "Organizacion",
                 "Proyecto",
-                "PRC"
+                "PRC",
+                "Autorizacion"
             };
 
             foreach (string setName in setNameList)
