@@ -300,6 +300,9 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("050.020.010.010")))
                     {
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                               new Property("http://w3id.org/roh/scientificExperienceProject", mResourceApi.GraphsUrl + "items/scientificexperienceproject_SEP1")
+                           ));
+                        entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                             new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDINombre, item.GetStringPorIDCampo("050.020.010.010")),
                             new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDIModalidadProyecto, item.GetModalidadProyectoPorIDCampo("050.020.010.030")),
                             new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDIAmbitoProyecto, item.GetGeographicRegionPorIDCampo("050.020.010.040")),
@@ -569,6 +572,9 @@ namespace ImportadorWebCV.Sincro.Secciones
                     entidadAux.properties_cv = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("050.020.020.010")))
                     {
+                        entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                               new Property("http://w3id.org/roh/scientificExperienceProject", mResourceApi.GraphsUrl + "items/scientificexperienceproject_SEP2")
+                           ));
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                             new Property(Variables.ExperienciaCientificaTecnologica.contratosNombreProyecto, item.GetStringPorIDCampo("050.020.020.010")),
                             new Property(Variables.ExperienciaCientificaTecnologica.contratosModalidadProyecto, item.GetModalidadProyectoPorIDCampo("050.020.020.030")),
