@@ -58,7 +58,7 @@ namespace OAI_PMH.Models.OAIPMH
                     Empresa organizacion = Organization.GetEmpresa(identifier, _Config);
                     record = ToRecord(organizacion, set, identifier, date, metadataPrefix);
                     break;
-                case "Autorizacion":
+                case "AutorizacionProyecto":
                     Autorizacion autorizacion = Autorizaciones.GetAutorizacion(identifier, _Config);
                     record = ToRecord(autorizacion, set, identifier, date, metadataPrefix);
                     break;
@@ -154,12 +154,12 @@ namespace OAI_PMH.Models.OAIPMH
                         }
                         container.Records = prcRecordList;
                         break;
-                    case "Autorizacion":
+                    case "AutorizacionProyecto":
                         Dictionary<string, DateTime> modifiedAutorizaciones = Autorizaciones.GetModifiedAutorizaciones(arguments.From, _Config);
                         List<Record> autorizacionRecordList = new();
                         foreach (string autorizacionId in modifiedAutorizaciones.Keys)
                         {
-                            autorizacionRecordList.Add(ToIdentifiersRecord("Autorizacion", autorizacionId, modifiedAutorizaciones[autorizacionId]));
+                            autorizacionRecordList.Add(ToIdentifiersRecord("AutorizacionProyecto", autorizacionId, modifiedAutorizaciones[autorizacionId]));
                         }
                         container.Records = autorizacionRecordList;
                         break;
@@ -229,7 +229,7 @@ namespace OAI_PMH.Models.OAIPMH
                         }
                         container.Records = prcRecordList;
                         break;
-                    case "Autorizacion":
+                    case "AutorizacionProyecto":
                         Dictionary<string, DateTime> modifiedAutorizacionIds = Autorizaciones.GetModifiedAutorizaciones(arguments.From, _Config);
                         List<Autorizacion> autorizacionList = new();
                         foreach (string autorizacionId in modifiedAutorizacionIds.Keys)

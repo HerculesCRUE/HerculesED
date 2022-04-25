@@ -23,7 +23,7 @@ namespace OAI_PMH.Models.OAIPMH
                 "Organizacion",
                 "Proyecto",
                 "PRC",
-                "Autorizacion",
+                "AutorizacionProyecto",
                 "Invencion"
             };
 
