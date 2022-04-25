@@ -24,6 +24,7 @@ namespace OAI_PMH.Controllers
         private string UrlBaseActividadDocente { get; set; }
         private string UrlBaseProduccionCientifica { get; set; }
         private string UrlBaseAutorizacion { get; set; }
+        private string UrlBaseInvenciones { get; set; }
 
         /// <summary>
         /// Constructor.
@@ -259,6 +260,57 @@ namespace OAI_PMH.Controllers
         }
 
         /// <summary>
+        /// Obtiene la URL base del API de obtención de Autorizacines que ha sido configurada.
+        /// </summary>
+        /// <returns></returns>
+        public string GetUrlBaseAutorizacion()
+        {
+            if (string.IsNullOrEmpty(UrlBaseAutorizacion))
+            {
+                string connectionString = string.Empty;
+                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                if (environmentVariables.Contains("UrlBaseAutorizacion"))
+                {
+                    connectionString = environmentVariables["UrlBaseAutorizacion"] as string;
+                }
+                else
+                {
+                    connectionString = configuracion["UrlBaseAutorizacion"];
+                }
+
+                UrlBaseAutorizacion = connectionString;
+            }
+
+            return UrlBaseAutorizacion;
+        }
+
+
+        /// <summary>
+        /// Obtiene la URL base del API de obtención de Invenciones que ha sido configurada.
+        /// </summary>
+        /// <returns></returns>
+        public string GetUrlBaseInvenciones()
+        {
+            if (string.IsNullOrEmpty(UrlBaseInvenciones))
+            {
+                string connectionString = string.Empty;
+                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                if (environmentVariables.Contains("UrlBaseInvenciones"))
+                {
+                    connectionString = environmentVariables["UrlBaseInvenciones"] as string;
+                }
+                else
+                {
+                    connectionString = configuracion["UrlBaseInvenciones"];
+                }
+
+                UrlBaseInvenciones = connectionString;
+            }
+
+            return UrlBaseInvenciones;
+        }
+
+        /// <summary>
         /// Obtiene el user del token del API que ha sido configurada.
         /// </summary>
         /// <returns></returns>
@@ -306,27 +358,6 @@ namespace OAI_PMH.Controllers
             }
 
             return PasswordToken;
-        }
-
-        public string GetUrlBaseAutorizacion()
-        {
-            if (string.IsNullOrEmpty(UrlBaseAutorizacion))
-            {
-                string connectionString = string.Empty;
-                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
-                if (environmentVariables.Contains("UrlBaseAutorizacion"))
-                {
-                    connectionString = environmentVariables["UrlBaseAutorizacion"] as string;
-                }
-                else
-                {
-                    connectionString = configuracion["UrlBaseAutorizacion"];
-                }
-
-                UrlBaseAutorizacion = connectionString;
-            }
-
-            return UrlBaseAutorizacion;
         }
     }
 }

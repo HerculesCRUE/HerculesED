@@ -7,6 +7,7 @@ using OAI_PMH.Models.SGI.Organization;
 using OAI_PMH.Models.SGI.PersonalData;
 using OAI_PMH.Models.SGI.ProduccionCientifica;
 using OAI_PMH.Models.SGI.Project;
+using OAI_PMH.Models.SGI.ProteccionIndustrialIntelectual;
 using OAI_PMH.Services;
 using OaiPmhNet;
 using OaiPmhNet.Converters;
@@ -60,6 +61,10 @@ namespace OAI_PMH.Models.OAIPMH
                 case "Autorizacion":
                     Autorizacion autorizacion = Autorizaciones.GetAutorizacion(identifier, _Config);
                     record = ToRecord(autorizacion, set, identifier, date, metadataPrefix);
+                    break;
+                case "Invencion":
+                    Invencion invencion = Invention.GetInvenciones(identifier, _Config);
+                    record = ToRecord(invencion, set, identifier, date, metadataPrefix);
                     break;
                 default:
                     break;
@@ -158,6 +163,15 @@ namespace OAI_PMH.Models.OAIPMH
                         }
                         container.Records = autorizacionRecordList;
                         break;
+                    case "Invencion":
+                        Dictionary<string, DateTime> modifiedInvenciones = Invention.GetModifiedInvenciones(arguments.From, _Config);
+                        List<Record> invencionRecordList = new();
+                        foreach (string invencionnId in modifiedInvenciones.Keys)
+                        {
+                            invencionRecordList.Add(ToIdentifiersRecord("Invencion", invencionnId, modifiedInvenciones[invencionnId]));
+                        }
+                        container.Records = invencionRecordList;
+                        break;
                 }
             }
             else
@@ -228,6 +242,20 @@ namespace OAI_PMH.Models.OAIPMH
                             autorizacionRecordList.Add(ToRecord(autorizacion, arguments.Set, autorizacion.id.ToString(), startDate, arguments.MetadataPrefix));
                         }
                         container.Records = autorizacionRecordList;
+                        break;
+                    case "Invencion":
+                        Dictionary<string, DateTime> modifiedInvencionIds = Invention.GetModifiedInvenciones(arguments.From, _Config);
+                        List<Invencion> invencionList = new();
+                        foreach (string invencionId in modifiedInvencionIds.Keys)
+                        {
+                            invencionList.Add(Invention.GetInvenciones(invencionId, _Config));
+                        }
+                        List<Record> invencionRecordList = new();
+                        foreach (Invencion invencion in invencionList)
+                        {
+                            invencionRecordList.Add(ToRecord(invencion, arguments.Set, invencion.id, startDate, arguments.MetadataPrefix));
+                        }
+                        container.Records = invencionRecordList;
                         break;
                 }
             }
