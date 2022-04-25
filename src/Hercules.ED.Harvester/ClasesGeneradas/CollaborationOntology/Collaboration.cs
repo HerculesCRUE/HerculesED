@@ -17,6 +17,7 @@ using Gnoss.ApiWrapper.Exceptions;
 using System.Diagnostics.CodeAnalysis;
 using Feature = FeatureOntology.Feature;
 using RelationshipType = RelationshiptypeOntology.RelationshipType;
+using Person = PersonOntology.Person;
 
 namespace CollaborationOntology
 {
@@ -88,6 +89,12 @@ namespace CollaborationOntology
 			this.Vivo_start= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#start"));
 			this.Roh_relationshipTypeOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/relationshipTypeOther"));
 			this.Vcard_locality = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#locality"));
+			SemanticPropertyModel propRoh_owner = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/owner");
+			if(propRoh_owner != null && propRoh_owner.PropertyValues.Count > 0)
+			{
+				this.Roh_owner = new Person(propRoh_owner.PropertyValues[0].RelatedEntity,idiomaUsuario);
+			}
+			this.Roh_cvnCode = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/cvnCode"));
 			this.Roh_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/title"));
 		}
 
@@ -154,6 +161,12 @@ namespace CollaborationOntology
 			this.Vivo_start= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#start"));
 			this.Roh_relationshipTypeOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/relationshipTypeOther"));
 			this.Vcard_locality = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#locality"));
+			SemanticPropertyModel propRoh_owner = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/owner");
+			if(propRoh_owner != null && propRoh_owner.PropertyValues.Count > 0)
+			{
+				this.Roh_owner = new Person(propRoh_owner.PropertyValues[0].RelatedEntity,idiomaUsuario);
+			}
+			this.Roh_cvnCode = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/cvnCode"));
 			this.Roh_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/title"));
 		}
 
@@ -162,7 +175,6 @@ namespace CollaborationOntology
 		[RDFProperty("http://w3id.org/roh/participates")]
 		public  List<Organization> Roh_participates { get; set;}
 
-		[LABEL(LanguageEnum.es,"hasRegion")]
 		[RDFProperty("https://www.w3.org/2006/vcard/ns#hasRegion")]
 		public  Feature Vcard_hasRegion  { get; set;} 
 		public string IdVcard_hasRegion  { get; set;} 
@@ -170,12 +182,10 @@ namespace CollaborationOntology
 		[RDFProperty("http://w3id.org/roh/researchers")]
 		public  List<BFO_0000023> Roh_researchers { get; set;}
 
-		[LABEL(LanguageEnum.es,"hasCountryName")]
 		[RDFProperty("https://www.w3.org/2006/vcard/ns#hasCountryName")]
 		public  Feature Vcard_hasCountryName  { get; set;} 
 		public string IdVcard_hasCountryName  { get; set;} 
 
-		[LABEL(LanguageEnum.es,"relationshipType")]
 		[RDFProperty("http://w3id.org/roh/relationshipType")]
 		public  RelationshipType Roh_relationshipType  { get; set;} 
 		public string IdRoh_relationshipType  { get; set;} 
@@ -207,6 +217,14 @@ namespace CollaborationOntology
 		[RDFProperty("https://www.w3.org/2006/vcard/ns#locality")]
 		public  string Vcard_locality { get; set;}
 
+		[RDFProperty("http://w3id.org/roh/owner")]
+		[Required]
+		public  Person Roh_owner  { get; set;} 
+		public string IdRoh_owner  { get; set;} 
+
+		[RDFProperty("http://w3id.org/roh/cvnCode")]
+		public  string Roh_cvnCode { get; set;}
+
 		[RDFProperty("http://w3id.org/roh/title")]
 		public  string Roh_title { get; set;}
 
@@ -227,6 +245,8 @@ namespace CollaborationOntology
 				}
 			propList.Add(new StringOntologyProperty("roh:relationshipTypeOther", this.Roh_relationshipTypeOther));
 			propList.Add(new StringOntologyProperty("vcard:locality", this.Vcard_locality));
+			propList.Add(new StringOntologyProperty("roh:owner", this.IdRoh_owner));
+			propList.Add(new StringOntologyProperty("roh:cvnCode", this.Roh_cvnCode));
 			propList.Add(new StringOntologyProperty("roh:title", this.Roh_title));
 		}
 
@@ -426,6 +446,14 @@ namespace CollaborationOntology
 				if(this.Vcard_locality != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Collaboration_{ResourceID}_{ArticleID}",  "https://www.w3.org/2006/vcard/ns#locality", $"\"{GenerarTextoSinSaltoDeLinea(this.Vcard_locality)}\"", list, " . ");
+				}
+				if(this.IdRoh_owner != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Collaboration_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/owner", $"<{this.IdRoh_owner}>", list, " . ");
+				}
+				if(this.Roh_cvnCode != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Collaboration_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/cvnCode", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_cvnCode)}\"", list, " . ");
 				}
 				if(this.Roh_title != null)
 				{
@@ -651,6 +679,24 @@ namespace CollaborationOntology
 				if(this.Vcard_locality != null)
 				{
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "https://www.w3.org/2006/vcard/ns#locality", $"\"{GenerarTextoSinSaltoDeLinea(this.Vcard_locality).ToLower()}\"", list, " . ");
+				}
+				if(this.IdRoh_owner != null)
+				{
+					Regex regex = new Regex(@"\/items\/.+_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}");
+					string itemRegex = this.IdRoh_owner;
+					if (regex.IsMatch(itemRegex))
+					{
+						itemRegex = $"http://gnoss/{resourceAPI.GetShortGuid(itemRegex).ToString().ToUpper()}";
+					}
+					else
+					{
+						itemRegex = itemRegex.ToLower();
+					}
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/owner", $"<{itemRegex}>", list, " . ");
+				}
+				if(this.Roh_cvnCode != null)
+				{
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/cvnCode", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_cvnCode).ToLower()}\"", list, " . ");
 				}
 				if(this.Roh_title != null)
 				{

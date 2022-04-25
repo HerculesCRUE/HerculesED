@@ -15,6 +15,7 @@ using System.Globalization;
 using System.Collections;
 using Gnoss.ApiWrapper.Exceptions;
 using System.Diagnostics.CodeAnalysis;
+using Person = PersonOntology.Person;
 using LanguageLevel = LanguagelevelOntology.LanguageLevel;
 using Language = LanguageOntology.Language;
 
@@ -29,6 +30,11 @@ namespace LanguagecertificateOntology
 		public LanguageCertificate(SemanticResourceModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
 		{
 			this.mGNOSSID = pSemCmsModel.RootEntities[0].Entity.Uri;
+			SemanticPropertyModel propRoh_owner = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/owner");
+			if(propRoh_owner != null && propRoh_owner.PropertyValues.Count > 0)
+			{
+				this.Roh_owner = new Person(propRoh_owner.PropertyValues[0].RelatedEntity,idiomaUsuario);
+			}
 			SemanticPropertyModel propRoh_listeningSkill = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/listeningSkill");
 			if(propRoh_listeningSkill != null && propRoh_listeningSkill.PropertyValues.Count > 0)
 			{
@@ -55,6 +61,7 @@ namespace LanguagecertificateOntology
 				this.Roh_spokingInteractionSkill = new LanguageLevel(propRoh_spokingInteractionSkill.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
 			this.Roh_crisIdentifier = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/crisIdentifier"));
+			this.Roh_cvnCode = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/cvnCode"));
 			SemanticPropertyModel propRoh_languageOfTheCertificate = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/languageOfTheCertificate");
 			if(propRoh_languageOfTheCertificate != null && propRoh_languageOfTheCertificate.PropertyValues.Count > 0)
 			{
@@ -66,6 +73,11 @@ namespace LanguagecertificateOntology
 		{
 			this.mGNOSSID = pSemCmsModel.Entity.Uri;
 			this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
+			SemanticPropertyModel propRoh_owner = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/owner");
+			if(propRoh_owner != null && propRoh_owner.PropertyValues.Count > 0)
+			{
+				this.Roh_owner = new Person(propRoh_owner.PropertyValues[0].RelatedEntity,idiomaUsuario);
+			}
 			SemanticPropertyModel propRoh_listeningSkill = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/listeningSkill");
 			if(propRoh_listeningSkill != null && propRoh_listeningSkill.PropertyValues.Count > 0)
 			{
@@ -92,6 +104,7 @@ namespace LanguagecertificateOntology
 				this.Roh_spokingInteractionSkill = new LanguageLevel(propRoh_spokingInteractionSkill.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
 			this.Roh_crisIdentifier = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/crisIdentifier"));
+			this.Roh_cvnCode = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/cvnCode"));
 			SemanticPropertyModel propRoh_languageOfTheCertificate = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/languageOfTheCertificate");
 			if(propRoh_languageOfTheCertificate != null && propRoh_languageOfTheCertificate.PropertyValues.Count > 0)
 			{
@@ -101,6 +114,10 @@ namespace LanguagecertificateOntology
 
 		public virtual string RdfType { get { return "http://w3id.org/roh/LanguageCertificate"; } }
 		public virtual string RdfsLabel { get { return "http://w3id.org/roh/LanguageCertificate"; } }
+		[RDFProperty("http://w3id.org/roh/owner")]
+		public  Person Roh_owner  { get; set;} 
+		public string IdRoh_owner  { get; set;} 
+
 		[RDFProperty("http://w3id.org/roh/listeningSkill")]
 		public  LanguageLevel Roh_listeningSkill  { get; set;} 
 		public string IdRoh_listeningSkill  { get; set;} 
@@ -124,6 +141,9 @@ namespace LanguagecertificateOntology
 		[RDFProperty("http://w3id.org/roh/crisIdentifier")]
 		public  string Roh_crisIdentifier { get; set;}
 
+		[RDFProperty("http://w3id.org/roh/cvnCode")]
+		public  string Roh_cvnCode { get; set;}
+
 		[RDFProperty("http://w3id.org/roh/languageOfTheCertificate")]
 		[Required]
 		public  Language Roh_languageOfTheCertificate  { get; set;} 
@@ -133,12 +153,14 @@ namespace LanguagecertificateOntology
 		internal override void GetProperties()
 		{
 			base.GetProperties();
+			propList.Add(new StringOntologyProperty("roh:owner", this.IdRoh_owner));
 			propList.Add(new StringOntologyProperty("roh:listeningSkill", this.IdRoh_listeningSkill));
 			propList.Add(new StringOntologyProperty("roh:writingSkill", this.IdRoh_writingSkill));
 			propList.Add(new StringOntologyProperty("roh:speakingSkill", this.IdRoh_speakingSkill));
 			propList.Add(new StringOntologyProperty("roh:readingSkill", this.IdRoh_readingSkill));
 			propList.Add(new StringOntologyProperty("roh:spokingInteractionSkill", this.IdRoh_spokingInteractionSkill));
 			propList.Add(new StringOntologyProperty("roh:crisIdentifier", this.Roh_crisIdentifier));
+			propList.Add(new StringOntologyProperty("roh:cvnCode", this.Roh_cvnCode));
 			propList.Add(new StringOntologyProperty("roh:languageOfTheCertificate", this.IdRoh_languageOfTheCertificate));
 		}
 
@@ -179,6 +201,10 @@ namespace LanguagecertificateOntology
 			AgregarTripleALista($"{resourceAPI.GraphsUrl}items/LanguageCertificate_{ResourceID}_{ArticleID}", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", $"<http://w3id.org/roh/LanguageCertificate>", list, " . ");
 			AgregarTripleALista($"{resourceAPI.GraphsUrl}items/LanguageCertificate_{ResourceID}_{ArticleID}", "http://www.w3.org/2000/01/rdf-schema#label", $"\"http://w3id.org/roh/LanguageCertificate\"", list, " . ");
 			AgregarTripleALista($"{resourceAPI.GraphsUrl}{ResourceID}", "http://gnoss/hasEntidad", $"<{resourceAPI.GraphsUrl}items/LanguageCertificate_{ResourceID}_{ArticleID}>", list, " . ");
+				if(this.IdRoh_owner != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/LanguageCertificate_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/owner", $"<{this.IdRoh_owner}>", list, " . ");
+				}
 				if(this.IdRoh_listeningSkill != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/LanguageCertificate_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/listeningSkill", $"<{this.IdRoh_listeningSkill}>", list, " . ");
@@ -203,6 +229,10 @@ namespace LanguagecertificateOntology
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/LanguageCertificate_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/crisIdentifier", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_crisIdentifier)}\"", list, " . ");
 				}
+				if(this.Roh_cvnCode != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/LanguageCertificate_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/cvnCode", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_cvnCode)}\"", list, " . ");
+				}
 				if(this.IdRoh_languageOfTheCertificate != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/LanguageCertificate_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/languageOfTheCertificate", $"<{this.IdRoh_languageOfTheCertificate}>", list, " . ");
@@ -225,6 +255,20 @@ namespace LanguagecertificateOntology
 			AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://xmlns.com/foaf/0.1/firstName", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_crisIdentifier)}\"", list, " . ");
 			AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://gnoss/hasnombrecompleto", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_crisIdentifier)}\"", list, " . ");
 			string search = string.Empty;
+				if(this.IdRoh_owner != null)
+				{
+					Regex regex = new Regex(@"\/items\/.+_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}");
+					string itemRegex = this.IdRoh_owner;
+					if (regex.IsMatch(itemRegex))
+					{
+						itemRegex = $"http://gnoss/{resourceAPI.GetShortGuid(itemRegex).ToString().ToUpper()}";
+					}
+					else
+					{
+						itemRegex = itemRegex.ToLower();
+					}
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/owner", $"<{itemRegex}>", list, " . ");
+				}
 				if(this.IdRoh_listeningSkill != null)
 				{
 					Regex regex = new Regex(@"\/items\/.+_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}");
@@ -298,6 +342,10 @@ namespace LanguagecertificateOntology
 				if(this.Roh_crisIdentifier != null)
 				{
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/crisIdentifier", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_crisIdentifier).ToLower()}\"", list, " . ");
+				}
+				if(this.Roh_cvnCode != null)
+				{
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/cvnCode", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_cvnCode).ToLower()}\"", list, " . ");
 				}
 				if(this.IdRoh_languageOfTheCertificate != null)
 				{

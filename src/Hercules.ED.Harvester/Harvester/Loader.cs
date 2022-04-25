@@ -2,11 +2,14 @@
 using Gnoss.ApiWrapper.ApiModel;
 using Gnoss.ApiWrapper.Model;
 using Harvester.Models;
+using Harvester.Models.SGI.Autorizaciones;
+using Harvester.Models.SGI.ProteccionIndustrialIntelectual;
 using Hercules.MA.ServicioExterno.Controllers.Utilidades;
 using Newtonsoft.Json;
 using OAI_PMH.Models.SGI.Organization;
 using OAI_PMH.Models.SGI.PersonalData;
 using OAI_PMH.Models.SGI.Project;
+using ProjectauthorizationOntology;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -57,6 +60,9 @@ namespace Harvester
             ProcesarFichero(_Config, "Persona", dicPersonas);
             mResourceApi.ChangeOntoly("project");
             ProcesarFichero(_Config, "Proyecto", dicProyectos);
+            ProcesarFichero(_Config, "PRC", dicProyectos);
+            //mResourceApi.ChangeOntoly("projectauthorization");
+            //ProcesarFichero(_Config, "AutorizacionProyecto", null);
 
             string fecha = DateTime.Now.ToString("yyyy-MM-ddT00:00:00") + "Z";
             fecha = "2022-01-01T00:00:00Z";
@@ -65,6 +71,8 @@ namespace Harvester
             GuardarIdentificadores(_Config, "Persona", fecha);
             GuardarIdentificadores(_Config, "Proyecto", fecha);
             GuardarIdentificadores(_Config, "PRC", fecha, true);
+            //GuardarIdentificadores(_Config, "AutorizacionProyecto", fecha, true);
+            //GuardarIdentificadores(_Config, "Invencion", fecha, true);
 
             UpdateLastDate(_Config, fecha);
 
@@ -75,6 +83,8 @@ namespace Harvester
             mResourceApi.ChangeOntoly("project");
             ProcesarFichero(_Config, "Proyecto", dicProyectos);
             ProcesarFichero(_Config, "PRC", dicProyectos);
+            //mResourceApi.ChangeOntoly("projectauthorization");
+            //ProcesarFichero(_Config, "AutorizacionProyecto", null);
         }
 
         /// <summary>
@@ -126,7 +136,6 @@ namespace Harvester
 
                     foreach (string id in idsACargar)
                     {
-                        continue;
                         switch (pSet)
                         {
                             case "Organizacion":
@@ -276,6 +285,79 @@ namespace Harvester
                                         }
                                     }
                                 }
+
+                                // Guardamos el ID cargado.
+                                File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
+                                break;
+
+                            case "AutorizacionProyecto":
+                                // Obtención de datos en bruto.
+                                AutorizacionProyecto autorizacion = new AutorizacionProyecto();
+                                xmlResult = harvesterServices.GetRecord(id);
+
+                                if (string.IsNullOrEmpty(xmlResult))
+                                {
+                                    File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
+                                    continue;
+                                }
+
+                                xmlSerializer = new(typeof(AutorizacionProyecto));
+                                using (StringReader sr = new(xmlResult))
+                                {
+                                    autorizacion = (AutorizacionProyecto)xmlSerializer.Deserialize(sr);
+                                }
+
+                                //Cambio de modelo.TODO: Mirar propiedades.
+                                //ProjectAuthorization projectAuthOntology = CrearProyecto(proyecto);
+
+                                //resource = projectAuthOntology.ToGnossApiResource(mResourceApi, null);
+                                //if (pDicRecursosCargados.ContainsKey(projectAuthOntology.Roh_crisIdentifier))
+                                //{
+                                //    // Modificación.
+                                //    mResourceApi.ModifyComplexOntologyResource(resource, false, false);
+                                //}
+                                //else
+                                //{
+                                //    // Carga.                   
+                                //    mResourceApi.LoadComplexSemanticResource(resource, false, false);
+                                //    pDicRecursosCargados[projectAuthOntology.Roh_crisIdentifier] = resource.GnossId;
+                                //}
+
+                                // Guardamos el ID cargado.
+                                File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
+                                break;
+                            case "Invencion":
+                                // Obtención de datos en bruto.
+                                Invencion invencion = new Invencion();
+                                xmlResult = harvesterServices.GetRecord(id);
+
+                                if (string.IsNullOrEmpty(xmlResult))
+                                {
+                                    File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
+                                    continue;
+                                }
+
+                                xmlSerializer = new(typeof(Invencion));
+                                using (StringReader sr = new(xmlResult))
+                                {
+                                    invencion = (Invencion)xmlSerializer.Deserialize(sr);
+                                }
+
+                                //Cambio de modelo.TODO: Mirar propiedades.
+                                //ProjectAuthorization projectAuthOntology = CrearProyecto(proyecto);
+
+                                //resource = projectAuthOntology.ToGnossApiResource(mResourceApi, null);
+                                //if (pDicRecursosCargados.ContainsKey(projectAuthOntology.Roh_crisIdentifier))
+                                //{
+                                //    // Modificación.
+                                //    mResourceApi.ModifyComplexOntologyResource(resource, false, false);
+                                //}
+                                //else
+                                //{
+                                //    // Carga.                   
+                                //    mResourceApi.LoadComplexSemanticResource(resource, false, false);
+                                //    pDicRecursosCargados[projectAuthOntology.Roh_crisIdentifier] = resource.GnossId;
+                                //}
 
                                 // Guardamos el ID cargado.
                                 File.AppendAllText(ficheroProcesado, id + Environment.NewLine);

@@ -28,6 +28,7 @@ using HoursCreditsECTSType = HourscreditsectstypeOntology.HoursCreditsECTSType;
 using ProgramType = ProgramtypeOntology.ProgramType;
 using TeachingType = TeachingtypeOntology.TeachingType;
 using EvaluationType = EvaluationtypeOntology.EvaluationType;
+using Person = PersonOntology.Person;
 
 namespace ImpartedacademictrainingOntology
 {
@@ -156,8 +157,8 @@ namespace ImpartedacademictrainingOntology
 			this.Roh_frequency = GetNumberFloatPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/frequency"));
 			this.Vcard_locality = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#locality"));
 			this.Roh_competencies = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/competencies"));
-			this.Roh_promotedByTitle = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/promotedByTitle"));
 			this.Roh_financedByLocality = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/financedByLocality"));
+			this.Roh_promotedByTitle = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/promotedByTitle"));
 			this.Roh_callTypeOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/callTypeOther"));
 			this.Roh_modalityTeachingTypeOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/modalityTeachingTypeOther"));
 			this.Roh_evaluatedByTypeOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/evaluatedByTypeOther"));
@@ -178,6 +179,12 @@ namespace ImpartedacademictrainingOntology
 			this.Roh_center = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/center"));
 			this.Roh_programTypeOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/programTypeOther"));
 			this.Roh_department = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/department"));
+			SemanticPropertyModel propRoh_owner = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/owner");
+			if(propRoh_owner != null && propRoh_owner.PropertyValues.Count > 0)
+			{
+				this.Roh_owner = new Person(propRoh_owner.PropertyValues[0].RelatedEntity,idiomaUsuario);
+			}
+			this.Roh_cvnCode = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/cvnCode"));
 			this.Roh_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/title"));
 		}
 
@@ -301,8 +308,8 @@ namespace ImpartedacademictrainingOntology
 			this.Roh_frequency = GetNumberFloatPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/frequency"));
 			this.Vcard_locality = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#locality"));
 			this.Roh_competencies = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/competencies"));
-			this.Roh_promotedByTitle = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/promotedByTitle"));
 			this.Roh_financedByLocality = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/financedByLocality"));
+			this.Roh_promotedByTitle = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/promotedByTitle"));
 			this.Roh_callTypeOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/callTypeOther"));
 			this.Roh_modalityTeachingTypeOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/modalityTeachingTypeOther"));
 			this.Roh_evaluatedByTypeOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/evaluatedByTypeOther"));
@@ -323,6 +330,12 @@ namespace ImpartedacademictrainingOntology
 			this.Roh_center = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/center"));
 			this.Roh_programTypeOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/programTypeOther"));
 			this.Roh_department = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/department"));
+			SemanticPropertyModel propRoh_owner = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/owner");
+			if(propRoh_owner != null && propRoh_owner.PropertyValues.Count > 0)
+			{
+				this.Roh_owner = new Person(propRoh_owner.PropertyValues[0].RelatedEntity,idiomaUsuario);
+			}
+			this.Roh_cvnCode = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/cvnCode"));
 			this.Roh_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/title"));
 		}
 
@@ -434,11 +447,11 @@ namespace ImpartedacademictrainingOntology
 		[RDFProperty("http://w3id.org/roh/competencies")]
 		public  string Roh_competencies { get; set;}
 
-		[RDFProperty("http://w3id.org/roh/promotedByTitle")]
-		public  string Roh_promotedByTitle { get; set;}
-
 		[RDFProperty("http://w3id.org/roh/financedByLocality")]
 		public  string Roh_financedByLocality { get; set;}
+
+		[RDFProperty("http://w3id.org/roh/promotedByTitle")]
+		public  string Roh_promotedByTitle { get; set;}
 
 		[RDFProperty("http://w3id.org/roh/callTypeOther")]
 		public  string Roh_callTypeOther { get; set;}
@@ -500,6 +513,14 @@ namespace ImpartedacademictrainingOntology
 		[RDFProperty("http://w3id.org/roh/department")]
 		public  string Roh_department { get; set;}
 
+		[RDFProperty("http://w3id.org/roh/owner")]
+		[Required]
+		public  Person Roh_owner  { get; set;} 
+		public string IdRoh_owner  { get; set;} 
+
+		[RDFProperty("http://w3id.org/roh/cvnCode")]
+		public  string Roh_cvnCode { get; set;}
+
 		[RDFProperty("http://w3id.org/roh/title")]
 		public  string Roh_title { get; set;}
 
@@ -537,8 +558,8 @@ namespace ImpartedacademictrainingOntology
 			propList.Add(new StringOntologyProperty("roh:frequency", this.Roh_frequency.ToString()));
 			propList.Add(new StringOntologyProperty("vcard:locality", this.Vcard_locality));
 			propList.Add(new StringOntologyProperty("roh:competencies", this.Roh_competencies));
-			propList.Add(new StringOntologyProperty("roh:promotedByTitle", this.Roh_promotedByTitle));
 			propList.Add(new StringOntologyProperty("roh:financedByLocality", this.Roh_financedByLocality));
+			propList.Add(new StringOntologyProperty("roh:promotedByTitle", this.Roh_promotedByTitle));
 			propList.Add(new StringOntologyProperty("roh:callTypeOther", this.Roh_callTypeOther));
 			propList.Add(new StringOntologyProperty("roh:modalityTeachingTypeOther", this.Roh_modalityTeachingTypeOther));
 			propList.Add(new StringOntologyProperty("roh:evaluatedByTypeOther", this.Roh_evaluatedByTypeOther));
@@ -561,6 +582,8 @@ namespace ImpartedacademictrainingOntology
 			propList.Add(new StringOntologyProperty("roh:center", this.Roh_center));
 			propList.Add(new StringOntologyProperty("roh:programTypeOther", this.Roh_programTypeOther));
 			propList.Add(new StringOntologyProperty("roh:department", this.Roh_department));
+			propList.Add(new StringOntologyProperty("roh:owner", this.IdRoh_owner));
+			propList.Add(new StringOntologyProperty("roh:cvnCode", this.Roh_cvnCode));
 			propList.Add(new StringOntologyProperty("roh:title", this.Roh_title));
 		}
 
@@ -713,13 +736,13 @@ namespace ImpartedacademictrainingOntology
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ImpartedAcademicTraining_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/competencies", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_competencies)}\"", list, " . ");
 				}
-				if(this.Roh_promotedByTitle != null)
-				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ImpartedAcademicTraining_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/promotedByTitle", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_promotedByTitle)}\"", list, " . ");
-				}
 				if(this.Roh_financedByLocality != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ImpartedAcademicTraining_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/financedByLocality", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_financedByLocality)}\"", list, " . ");
+				}
+				if(this.Roh_promotedByTitle != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ImpartedAcademicTraining_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/promotedByTitle", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_promotedByTitle)}\"", list, " . ");
 				}
 				if(this.Roh_callTypeOther != null)
 				{
@@ -800,6 +823,14 @@ namespace ImpartedacademictrainingOntology
 				if(this.Roh_department != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ImpartedAcademicTraining_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/department", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_department)}\"", list, " . ");
+				}
+				if(this.IdRoh_owner != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ImpartedAcademicTraining_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/owner", $"<{this.IdRoh_owner}>", list, " . ");
+				}
+				if(this.Roh_cvnCode != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ImpartedAcademicTraining_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/cvnCode", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_cvnCode)}\"", list, " . ");
 				}
 				if(this.Roh_title != null)
 				{
@@ -1155,13 +1186,13 @@ namespace ImpartedacademictrainingOntology
 				{
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/competencies", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_competencies).ToLower()}\"", list, " . ");
 				}
-				if(this.Roh_promotedByTitle != null)
-				{
-					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/promotedByTitle", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_promotedByTitle).ToLower()}\"", list, " . ");
-				}
 				if(this.Roh_financedByLocality != null)
 				{
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/financedByLocality", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_financedByLocality).ToLower()}\"", list, " . ");
+				}
+				if(this.Roh_promotedByTitle != null)
+				{
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/promotedByTitle", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_promotedByTitle).ToLower()}\"", list, " . ");
 				}
 				if(this.Roh_callTypeOther != null)
 				{
@@ -1242,6 +1273,24 @@ namespace ImpartedacademictrainingOntology
 				if(this.Roh_department != null)
 				{
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/department", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_department).ToLower()}\"", list, " . ");
+				}
+				if(this.IdRoh_owner != null)
+				{
+					Regex regex = new Regex(@"\/items\/.+_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}");
+					string itemRegex = this.IdRoh_owner;
+					if (regex.IsMatch(itemRegex))
+					{
+						itemRegex = $"http://gnoss/{resourceAPI.GetShortGuid(itemRegex).ToString().ToUpper()}";
+					}
+					else
+					{
+						itemRegex = itemRegex.ToLower();
+					}
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/owner", $"<{itemRegex}>", list, " . ");
+				}
+				if(this.Roh_cvnCode != null)
+				{
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/cvnCode", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_cvnCode).ToLower()}\"", list, " . ");
 				}
 				if(this.Roh_title != null)
 				{
