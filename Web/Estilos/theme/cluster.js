@@ -944,11 +944,12 @@ class CargarGraficaProjectoClusterObj {
 		AjustarGraficaArania(this.dataCB, this.idContenedorCB, this.typesOcultar, this.showRelation);
 	};
 
-	CargarGraficaColaboradores = (parametros, idContenedor, mostrarCargando = false) => {
+	CargarGraficaColaboradores = (parametros, cluster, idContenedor, mostrarCargando = false) => {
 		var url = servicioExternoBaseUrl + "Cluster/DatosGraficaColaboradoresCluster";
 		var self = this;
 		var arg = {};
 		arg.pParametros = parametros;
+		arg.pCluster = cluster;
 		arg.pMax = $('#numColaboradoresCluster').val();
 		$('#' + idContenedor).empty();
 		if (mostrarCargando) {
@@ -957,7 +958,7 @@ class CargarGraficaProjectoClusterObj {
 
 		let optionsRelations = ["relation_project", "relation_document"];
 
-		$.get(url, arg, function (data) {
+		$.post(url, arg, function (data) {
 			// Establecer los valores en la variable externa
 			self.dataCB = data;
 			self.idContenedorCB = idContenedor;
@@ -1011,7 +1012,7 @@ var comportamientoPopupCluster = {
 		
 		// Iniciamos la gráfica
 		var parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro;
-		//newGrafProjClust.CargarGraficaProjectoClusterObj("", parametros, 'colaboratorsgraphCluster', true);
+		newGrafProjClust.CargarGraficaColaboradores(parametros, stepsCls.data, 'colaboratorsgraphCluster', true);
 
 		// Agregamos los ordenes
 		$('.searcherResults .h1-container').after(
@@ -1066,7 +1067,7 @@ var comportamientoPopupCluster = {
 			}
 			$('#numNodosCollaboratorsCluster').html($('#numColaboradoresCluster').val());
 			var parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro;
-			newGrafProjClust.CargarGraficaProjectoClusterObj("", parametros, 'colaboratorsgraphCluster', true);
+			newGrafProjClust.CargarGraficaColaboradores(parametros, stepsCls.data, 'colaboratorsgraphCluster', true);
 		});
 
 		$('#addNodesCollaboratorsCluster').unbind().click(function (e) {
@@ -1075,8 +1076,7 @@ var comportamientoPopupCluster = {
 			$('#numColaboradoresCluster').val((numColaboradores + 10));
 			$('#numNodosCollaboratorsCluster').html($('#numColaboradoresCluster').val());
 			var parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro;
-			newGrafProjClust.CargarGraficaProjectoClusterObj("", parametros,'colaboratorsgraph',true);
-			newGrafProjClust.CargarGraficaProjectoClusterObj("", parametros, 'colaboratorsgraphCluster', true);
+			newGrafProjClust.CargarGraficaColaboradores(parametros, stepsCls.data, 'colaboratorsgraphCluster', true);
 		});
 		//Fin métodos colaboradores
 
@@ -1495,7 +1495,13 @@ function CompletadaCargaRecursosCluster()
 						return userInt.userID!=idUser;
 					});
 				}
+
 				stepsCls.PrintPerfilesstp3();
+
+				// Iniciamos la gráfica
+				let parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro;
+				newGrafProjClust.CargarGraficaColaboradores(parametros, stepsCls.data, 'colaboratorsgraphCluster', true);
+
 			});	
 			
 		});

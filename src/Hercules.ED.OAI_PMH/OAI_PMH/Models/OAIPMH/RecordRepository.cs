@@ -215,7 +215,7 @@ namespace OAI_PMH.Models.OAIPMH
                         }
                         container.Records = prcRecordList;
                         break;
-                    case "Autorizaciob":
+                    case "Autorizacion":
                         Dictionary<string, DateTime> modifiedAutorizacionIds = Autorizaciones.GetModifiedAutorizaciones(arguments.From, _Config);
                         List<Autorizacion> autorizacionList = new();
                         foreach (string autorizacionId in modifiedAutorizacionIds.Keys)

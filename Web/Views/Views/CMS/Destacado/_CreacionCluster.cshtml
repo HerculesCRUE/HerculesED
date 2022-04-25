@@ -182,19 +182,19 @@
 				                                        <div class="dropdown-menu basic-dropdown dropdown-menu-right" aria-labelledby="dropdownRelaciones">
 				                                            <ul class="no-list-style">
 				                                                <li>
-				                                                    <a href="javascript: void(0);" rel="nofollow" class="item-dropdown activeView">
+				                                                    <a href="javascript: actualizarTypesClusterOcultar('relation_todas');" rel="nofollow" class="item-dropdown activeView">
 				                                                        <span class="textoAlternativo">@Html.Translate("RELACIONES"):</span>
 				                                                        <span class="texto">@Html.Translate("TODAS")</span>
 				                                                    </a>
 				                                                </li>
 				                                                <li>
-				                                                    <a href="javascript: void(0);" rel="nofollow" class="item-dropdown">
+				                                                    <a href="javascript: actualizarTypesClusterOcultar('relation_project');" rel="nofollow" class="item-dropdown">
 				                                                        <span class="textoAlternativo">@Html.Translate("RELACIONES"):</span>
 				                                                        <span class="texto">@Html.Translate("PROYECTOS")</span>
 				                                                    </a>
 				                                                </li>
 				                                                <li>
-				                                                    <a href="javascript: void(0);" rel="nofollow" class="item-dropdown">
+				                                                    <a href="javascript: actualizarTypesClusterOcultar('relation_document');" rel="nofollow" class="item-dropdown">
 				                                                        <span class="textoAlternativo">@Html.Translate("RELACIONES"):</span>
 				                                                        <span class="texto">@Html.Translate("DOCUMENTOS")</span>
 				                                                    </a>
@@ -210,13 +210,13 @@
 				                                        <div class="dropdown-menu basic-dropdown dropdown-menu-right" aria-labelledby="dropdownRelacionesMiembros">
 				                                            <ul class="no-list-style">
 				                                                <li>
-				                                                    <a href="javascript: void(0);" rel="nofollow" class="item-dropdown activeView">
+				                                                    <a href="javascript: newGrafProjClust.showRelation = true; newGrafProjClust.ActualizarGraficaClusterolaboradoresCluster();" rel="nofollow" class="item-dropdown activeView">
 				                                                        <span class="textoAlternativo">@Html.Translate("RELACIONES_ENTRE_MIEMBROS"):</span>
 				                                                        <span class="texto">@Html.Translate("SI")</span>
 				                                                    </a>
 				                                                </li>
 				                                                <li>
-				                                                    <a href="javascript: void(0);" rel="nofollow" class="item-dropdown">
+				                                                    <a href="javascript: newGrafProjClust.showRelation = false; newGrafProjClust.ActualizarGraficaClusterolaboradoresCluster();" rel="nofollow" class="item-dropdown">
 				                                                        <span class="textoAlternativo">@Html.Translate("RELACIONES_ENTRE_MIEMBROS"):</span>
 				                                                        <span class="texto">@Html.Translate("NO")</span>
 				                                                    </a>
@@ -372,7 +372,6 @@
 		    </div>
 		</div>
 
-
 		<div id="modal-anadir-perfil-cluster" class="modal modal-top fade modal-edicion" tabindex="-1" role="dialog">
 		    <div class="modal-dialog" role="document">
 		        <div class="modal-content">
@@ -406,6 +405,15 @@
 		        </div>
 		    </div>
 		</div>
+
+		<script type="text/javascript">
+			// Acciones a llevar a cabo en el filtrado.
+			function accionFiltrado() {
+				var parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro;
+				newGrafProjClust.CargarGraficaColaboradores(parametros, stepsCls.data, 'colaboratorsgraphCluster', true);
+		    }
+		</script>
+
 
 	}
 }
