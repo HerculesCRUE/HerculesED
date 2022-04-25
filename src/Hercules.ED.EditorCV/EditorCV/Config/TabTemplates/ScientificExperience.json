@@ -926,7 +926,7 @@
                         "property": "http://w3id.org/roh/participates",
                         "type": "auxEntity",
                         "title": {
-                          "es": "Entidad/es particpante/s"
+                          "es": "Entidad/es participante/s"
                         },
                         "multiple": true,
                         "width": 3,
@@ -941,12 +941,12 @@
                               "properties": [
                                 {
                                   "title": {
-                                    "es": "Entidad particpante"
+                                    "es": "Entidad participante"
                                   },
                                   "autocomplete": true,
                                   "required": true,
                                   "placeholder": {
-                                    "es": "Introduce la entidad particpante"
+                                    "es": "Introduce la entidad participante"
                                   },
                                   "property": "http://w3id.org/roh/organizationTitle",
                                   "autocompleteConfig": {
@@ -1853,7 +1853,7 @@
                         "property": "http://w3id.org/roh/participates",
                         "type": "auxEntity",
                         "title": {
-                          "es": "Entidad/es particpante/s"
+                          "es": "Entidad/es participante/s"
                         },
                         "multiple": true,
                         "width": 3,
@@ -1868,12 +1868,12 @@
                               "properties": [
                                 {
                                   "title": {
-                                    "es": "Entidad particpante"
+                                    "es": "Entidad participante"
                                   },
                                   "autocomplete": true,
                                   "required": true,
                                   "placeholder": {
-                                    "es": "Introduce la entidad particpante"
+                                    "es": "Introduce la entidad participante"
                                   },
                                   "property": "http://w3id.org/roh/organizationTitle",
                                   "autocompleteConfig": {
