@@ -1025,8 +1025,8 @@ var comportamientoPopupCluster = {
 						<span class="texto">${that.text_mixto}</span>
 					</a>
 					<div class="dropdown-menu basic-dropdown dropdown-menu-right">
-						<a href="javascript: void(0)" filter="searchClusterVolumen" class="item-dropdown">${that.text_mixto}</a>
-						<a href="javascript: void(0)" filter="searchClusterMixto" class="item-dropdown">${that.text_volumen}</a>
+						<a href="javascript: void(0)" filter="searchClusterMixto" class="item-dropdown">${that.text_mixto}</a>
+						<a href="javascript: void(0)" filter="searchClusterVolumen" class="item-dropdown">${that.text_volumen}</a>
 						<a href="javascript: void(0)" filter="searchClusterAjuste" class="item-dropdown">${that.text_ajuste}</a>
 					</div>
 				</div>
