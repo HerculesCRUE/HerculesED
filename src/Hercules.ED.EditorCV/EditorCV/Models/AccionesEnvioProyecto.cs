@@ -2,6 +2,7 @@
 using EditorCV.Models.ValidacionProyectos;
 using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.ApiModel;
+using Gnoss.ApiWrapper.Model;
 using Hercules.MA.ServicioExterno.Controllers.Utilidades;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -31,9 +32,10 @@ namespace EditorCV.Models
         /// <param name="pConfig">Configuración.</param>
         /// <param name="pIdProyecto">ID del recurso del proyecto.</param>
         /// <param name="pIdPersona">ID del recurso de la persona.</param>
-        public void EnvioProyecto(ConfigService pConfig, string pIdProyecto, string pIdPersona)
+        /// <param name="pIdAutorizacion">ID del recurso de la autorización.</param>
+        public void EnvioProyecto(ConfigService pConfig, string pIdProyecto, string pIdPersona, string pIdAutorizacion)
         {
-            NotificacionProyecto proyecto = CrearProyecto(pIdProyecto, pIdPersona);
+            NotificacionProyecto proyecto = CrearProyecto(pIdProyecto, pIdPersona, pIdAutorizacion);
 
             try
             {
@@ -41,11 +43,54 @@ namespace EditorCV.Models
                 client.AddDefaultHeader("Authorization", "Bearer " + GetToken(pConfig));
                 var request = new RestRequest(Method.POST);
                 request.AddJsonBody(proyecto);
+                string json = JsonConvert.SerializeObject(proyecto);
                 IRestResponse response = client.Execute(request);
             }
             catch (Exception)
             {
                 throw;
+            }
+
+            CambioEstadoEnvio(pIdProyecto);
+        }
+
+        public void CambioEstadoEnvio(string pIdProyecto)
+        {
+            // Comprobar si está el triple del estado.
+            string valorEnviado = string.Empty;
+            StringBuilder select = new StringBuilder();
+            StringBuilder where = new StringBuilder();
+
+            select.Append(mPrefijos);
+            select.Append("SELECT DISTINCT ?enviado ");
+            where.Append("WHERE { ");
+            where.Append("?s a vivo:Project. ");
+            where.Append("OPTIONAL{?s roh:validationStatusProject ?enviado. } ");
+            where.Append($@"FILTER(?s = <{pIdProyecto}>) ");
+            where.Append("} ");
+
+            SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), "project");
+
+            if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+            {
+                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                {
+                    valorEnviado = UtilidadesAPI.GetValorFilaSparqlObject(fila, "enviado");
+                }
+            }
+
+            mResourceApi.ChangeOntoly("document");
+            Guid guid = mResourceApi.GetShortGuid(pIdProyecto);
+
+            if (string.IsNullOrEmpty(valorEnviado))
+            {
+                // Inserción.
+                Insercion(guid, "http://w3id.org/roh/validationStatusProject", "PENDIENTE");
+            }
+            else
+            {
+                // Modificación.
+                Modificacion(guid, "http://w3id.org/roh/validationStatusProject", "PENDIENTE", valorEnviado);
             }
         }
 
@@ -53,15 +98,17 @@ namespace EditorCV.Models
         /// Crea el proyecto notificado para enviar a validar.
         /// </summary>
         /// <param name="pIdProyecto">ID del recurso del proyecto.</param>
-        /// <param name="pIdPersona">ID </param>
+        /// <param name="pIdPersona">ID del recurso de la persona.</param>
+        /// <param name="pIdAutorizacion">ID del recurso de la autorizacion.</param>
         /// <returns></returns>
-        public NotificacionProyecto CrearProyecto(string pIdProyecto, string pIdPersona)
+        public NotificacionProyecto CrearProyecto(string pIdProyecto, string pIdPersona, string pIdAutorizacion)
         {
             // Obtención de datos de Proyecto.
             Dictionary<string, string> dicDatosProyecto = GetDatosProyecto(pIdProyecto);
 
             NotificacionProyecto notificacion = new NotificacionProyecto();
-            notificacion.proyectoCVNId = ""; // TODO: ¿Que dato debería de haber?
+            notificacion.proyectoCVNId = pIdProyecto;
+            notificacion.autorizacionId = GetAutorizacion(pIdAutorizacion); // Obtención del crisIdentifier de la autorización.
             notificacion.solicitanteRef = GetSolicitanteRef(pIdPersona); // Obtención del crisIdentifier de la persona solicitante.
             notificacion.titulo = dicDatosProyecto["titulo"];
             notificacion.fechaInicio = dicDatosProyecto["fechaInicio"];
@@ -69,6 +116,45 @@ namespace EditorCV.Models
 
             return notificacion;
         }
+
+        /// <summary>
+        /// Inserta un triple.
+        /// </summary>
+        /// <param name="pGuid"></param>
+        /// <param name="pPropiedad"></param>
+        /// <param name="pValorNuevo"></param>
+        private void Insercion(Guid pGuid, string pPropiedad, string pValorNuevo)
+        {
+            Dictionary<Guid, List<TriplesToInclude>> dicInsercion = new Dictionary<Guid, List<TriplesToInclude>>();
+            List<TriplesToInclude> listaTriplesInsercion = new List<TriplesToInclude>();
+            TriplesToInclude triple = new TriplesToInclude();
+            triple.Predicate = pPropiedad;
+            triple.NewValue = pValorNuevo;
+            listaTriplesInsercion.Add(triple);
+            dicInsercion.Add(pGuid, listaTriplesInsercion);
+            mResourceApi.InsertPropertiesLoadedResources(dicInsercion);
+        }
+
+        /// <summary>
+        /// Modifica un triple.
+        /// </summary>
+        /// <param name="pGuid"></param>
+        /// <param name="pPropiedad"></param>
+        /// <param name="pValorNuevo"></param>
+        /// <param name="pValorAntiguo"></param>
+        private void Modificacion(Guid pGuid, string pPropiedad, string pValorNuevo, string pValorAntiguo)
+        {
+            Dictionary<Guid, List<TriplesToModify>> dicModificacion = new Dictionary<Guid, List<TriplesToModify>>();
+            List<TriplesToModify> listaTriplesModificacion = new List<TriplesToModify>();
+            TriplesToModify triple = new TriplesToModify();
+            triple.Predicate = pPropiedad;
+            triple.NewValue = pValorNuevo;
+            triple.OldValue = pValorAntiguo;
+            listaTriplesModificacion.Add(triple);
+            dicModificacion.Add(pGuid, listaTriplesModificacion);
+            mResourceApi.ModifyPropertiesLoadedResources(dicModificacion);
+        }
+
 
         /// <summary>
         /// Obtiene los datos de los Proyectos a enviar a validación.
@@ -103,7 +189,7 @@ namespace EditorCV.Models
                     if (fila.ContainsKey("fechaInicio"))
                     {
                         string fecha = "2000-01-01";
-                        if(!string.IsNullOrEmpty(UtilidadesAPI.GetValorFilaSparqlObject(fila, "fechaInicio")))
+                        if (!string.IsNullOrEmpty(UtilidadesAPI.GetValorFilaSparqlObject(fila, "fechaInicio")))
                         {
                             fecha = ConstruirFecha(UtilidadesAPI.GetValorFilaSparqlObject(fila, "fechaInicio"));
                         }
@@ -152,6 +238,36 @@ namespace EditorCV.Models
             }
 
             return string.Empty;
+        }
+
+        /// <summary>
+        /// Obtiene el ID de la autorización.
+        /// </summary>
+        /// <param name="pIdAutorizacion">ID del recurso de la autorización.</param>
+        /// <returns>Identificador de la autorización.</returns>
+        public int GetAutorizacion(string pIdAutorizacion)
+        {
+            StringBuilder select = new StringBuilder(), where = new StringBuilder();
+
+            select.Append(mPrefijos);
+            select.Append("SELECT DISTINCT ?crisIdentifier ");
+            where.Append("WHERE { ");
+            where.Append("?s a roh:ProjectAuthorization. ");
+            where.Append("?s roh:crisIdentifier ?crisIdentifier. ");
+            where.Append($@"FILTER(?s = <{pIdAutorizacion}>) ");
+            where.Append("} ");
+
+            SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), "projectauthorization");
+
+            if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+            {
+                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                {
+                    return Int32.Parse(UtilidadesAPI.GetValorFilaSparqlObject(fila, "crisIdentifier"));
+                }
+            }
+
+            return 0;
         }
 
         /// <summary>
