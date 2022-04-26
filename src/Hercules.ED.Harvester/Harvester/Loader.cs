@@ -269,14 +269,14 @@ namespace Harvester
 
                                 CreacionAuxiliaresProyecto(proyecto, dicProyectos, dicPersonas, dicOrganizaciones);
 
+                                //Si no me llega el cris identifier o los datos obligatorios salto a la siguiente
+                                if (string.IsNullOrEmpty(proyecto.Id) && string.IsNullOrEmpty(proyecto.Titulo))
+                                {
+                                    continue;
+                                }
+
                                 // Cambio de modelo. TODO: Mirar propiedades.
                                 ProjectOntology.Project projectOntology = CrearProyecto(proyecto, dicProyectos, dicPersonas, dicOrganizaciones);
-
-                                //Si no me llega el cris identifier o los datos obligatorios salto a la siguiente
-                                //if (string.IsNullOrEmpty(projectOntology.Roh_crisIdentifier) && string.IsNullOrEmpty(projectOntology.Roh_title))
-                                //{
-                                //    continue;
-                                //}
 
                                 //resource = projectOntology.ToGnossApiResource(mResourceApi, null);
                                 //if (pDicRecursosCargados.ContainsKey(projectOntology.Roh_crisIdentifier))
@@ -350,7 +350,8 @@ namespace Harvester
                                     try
                                     {
                                         autorizacion = (Autorizacion)xmlSerializer.Deserialize(sr);
-                                    }catch (Exception)
+                                    }
+                                    catch (Exception)
                                     {
                                         continue;
                                     }
@@ -767,11 +768,28 @@ namespace Harvester
         public static ProjectAuthorization CrearAutorizacion(Autorizacion pAutorizacionProyecto)
         {
             ProjectAuthorization autorizacion = new ProjectAuthorization();
+            Persona persona = new Persona();
             autorizacion.Roh_crisIdentifier = pAutorizacionProyecto.id.ToString();
             autorizacion.Roh_title = pAutorizacionProyecto.titulo;
             autorizacion.IdRoh_owner = GetPersonGnossId(pAutorizacionProyecto.solicitanteRef);
 
-            if (!string.IsNullOrEmpty(autorizacion.Roh_crisIdentifier) && !string.IsNullOrEmpty(autorizacion.Roh_title) && !string.IsNullOrEmpty(autorizacion.IdRoh_owner))
+            if (string.IsNullOrEmpty(autorizacion.IdRoh_owner))
+            {
+                //Obtengo los datos de la persona del SGI
+                persona = ObtenerPersona(pAutorizacionProyecto.solicitanteRef);
+
+                //Creo la persona en BBDD
+                PersonOntology.Person personOntology = CrearPersona(persona);
+
+                ComplexOntologyResource resource = personOntology.ToGnossApiResource(mResourceApi, null);
+
+                // Carga.                   
+                //mResourceApi.LoadComplexSemanticResource(resource, false, false);
+                //pDicRecursosCargados[personOntology.Roh_crisIdentifier] = resource.GnossId;//TODO necesario incluirla en diccionario?
+            }
+
+            if (!string.IsNullOrEmpty(autorizacion.Roh_crisIdentifier) && !string.IsNullOrEmpty(autorizacion.Roh_title) 
+                && !string.IsNullOrEmpty(autorizacion.IdRoh_owner))
             {
                 return autorizacion;
             }
@@ -803,6 +821,18 @@ namespace Harvester
             }
 
             return string.Empty;
+        }
+
+        private static Persona ObtenerPersona(string personaRef)
+        {
+            Persona persona = new Persona();
+            string person = harvesterServices.GetRecord("Persona_" + personaRef);
+            XmlSerializer xmlSerializer = new(typeof(Persona));
+            using (StringReader sr = new(person))
+            {
+                persona = (Persona)xmlSerializer.Deserialize(sr);
+            }
+            return persona;
         }
 
         public static ProjectOntology.Project CrearProyecto(Proyecto pDatos, Dictionary<string, Tuple<string, string>> dicProyectos,
@@ -839,16 +869,10 @@ namespace Harvester
                     }
                     else
                     {
-                        PersonOntology.Person nuevaPersona = new PersonOntology.Person();
-                        Persona persona = new Persona();
+                        PersonOntology.Person nuevaPersona = new PersonOntology.Person();                        
 
                         //Pido los datos de la persona para insertarla
-                        string person = harvesterServices.GetRecord("Persona_" + item.PersonaRef);
-                        XmlSerializer xmlSerializer = new(typeof(Persona));
-                        using (StringReader sr = new(person))
-                        {
-                            persona = (Persona)xmlSerializer.Deserialize(sr);
-                        }
+                        Persona persona = ObtenerPersona(item.PersonaRef);
 
                         //Si la persona no tiene nombre no la inserto
                         if (!string.IsNullOrEmpty(persona.Nombre))
