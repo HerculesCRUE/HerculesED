@@ -7,7 +7,7 @@ namespace OAI_PMH.Models.SGI.ActividadDocente
     {
         public string Id { get; set; }
         public string TituloTrabajo { get; set; }
-        public DateTime FechaDefensa { get; set; }
+        public DateTime? FechaDefensa { get; set; }
         public string Alumno { get; set; }
         public Entidad EntidadRealizacion { get; set; }
         public string CiudadEntidadRealizacion { get; set; }
@@ -17,8 +17,8 @@ namespace OAI_PMH.Models.SGI.ActividadDocente
         public string CalificacionObtenida { get; set; }
         public Director CoDirectorTesis { get; set; }
         public bool? DoctoradoEuropeo { get; set; }
-        public DateTime FechaMencionDoctoradoEuropeo { get; set; }
+        public DateTime? FechaMencionDoctoradoEuropeo { get; set; }
         public bool? MencionCalidad { get; set; }
-        public DateTime FechaMencionCalidad { get; set; }
+        public DateTime? FechaMencionCalidad { get; set; }
     }
 }

@@ -1025,8 +1025,8 @@ var comportamientoPopupCluster = {
 						<span class="texto">${that.text_mixto}</span>
 					</a>
 					<div class="dropdown-menu basic-dropdown dropdown-menu-right">
-						<a href="javascript: void(0)" filter="searchClusterVolumen" class="item-dropdown">${that.text_mixto}</a>
-						<a href="javascript: void(0)" filter="searchClusterMixto" class="item-dropdown">${that.text_volumen}</a>
+						<a href="javascript: void(0)" filter="searchClusterMixto" class="item-dropdown">${that.text_mixto}</a>
+						<a href="javascript: void(0)" filter="searchClusterVolumen" class="item-dropdown">${that.text_volumen}</a>
 						<a href="javascript: void(0)" filter="searchClusterAjuste" class="item-dropdown">${that.text_ajuste}</a>
 					</div>
 				</div>
@@ -1318,9 +1318,10 @@ class ModalSearchTags {
 	}
 }
 
+
 function CompletadaCargaRecursosCluster()
 {	
-	if(stepsCls!=null && stepsCls.data!=null)
+	if(typeof stepsCls != 'undefined' && stepsCls!=null && stepsCls.data!=null)
 	{
 		$('#clusterListUsers article.investigador h2.resource-title').attr('tagert','_blank');
 		stepsCls.data.pPersons=$('#clusterListUsers article.investigador').toArray().map(e => {return $(e).attr('id')});
@@ -1495,13 +1496,7 @@ function CompletadaCargaRecursosCluster()
 						return userInt.userID!=idUser;
 					});
 				}
-
 				stepsCls.PrintPerfilesstp3();
-
-				// Iniciamos la gráfica
-				let parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro;
-				newGrafProjClust.CargarGraficaColaboradores(parametros, stepsCls.data, 'colaboratorsgraphCluster', true);
-
 			});	
 			
 		});
@@ -1512,7 +1507,7 @@ function CompletadaCargaRecursosCluster()
 
 function CompletadaCargaFacetasCluster()
 {	
-	if(stepsCls!=null && stepsCls.data!=null)
+	if(typeof stepsCls != 'undefined' && stepsCls!=null && stepsCls.data!=null)
 	{
 		if($('#out_roh_profiles').length==0)
 		{
@@ -1521,8 +1516,13 @@ function CompletadaCargaFacetasCluster()
 			stepsCls.data.profiles.forEach(function(perfil, index) {
 					let idProfile= perfil.entityID;
 					let nameProfile= perfil.name;
+					let style="";
+					if(buscadorPersonalizado.profile==idProfile)
+					{
+						style='style="font-weight: 700!important;"';
+					}
 					liPerfiles+=`<li>
-										<a rel="nofollow" href="javascript: void(0);" class="facetaperfil con-subfaceta ocultarSubFaceta" profile="${idProfile}">
+										<a rel="nofollow" ${style} href="javascript: void(0);" class="facetaperfil con-subfaceta ocultarSubFaceta" profile="${idProfile}">
 											<span class="textoFaceta">${nameProfile}</span>
 										</a>
 									</li>`;
@@ -1541,11 +1541,43 @@ function CompletadaCargaFacetasCluster()
 			//Añadimos el comporamiento a la faceta
 			$('.facetedSearch a.facetaperfil')
 				.unbind()
-				.click(function (e) {		
-					buscadorPersonalizado.profile=$(this).attr('profile');
-					buscadorPersonalizado.filtro=buscadorPersonalizado.search+'='+comportamientoPopupCluster.workCOProfiles(stepsCls.data)[buscadorPersonalizado.profile];
+				.click(function (e) {	
+					if(buscadorPersonalizado.profile==$(this).attr('profile'))
+					{
+						buscadorPersonalizado.profile=null;
+						buscadorPersonalizado.filtro=buscadorPersonalizado.search+'='+comportamientoPopupCluster.workCO(stepsCls.data);
+					}
+					else
+					{
+						buscadorPersonalizado.profile=$(this).attr('profile');
+						buscadorPersonalizado.filtro=buscadorPersonalizado.search+'='+comportamientoPopupCluster.workCOProfiles(stepsCls.data)[buscadorPersonalizado.profile];
+					}
 					FiltrarPorFacetas(ObtenerHash2());
 				});
+		}
+		if(buscadorPersonalizado.profile!=null)
+		{
+			if($('#panFiltros li.profile').length==0)
+			{
+				let liPerfil='';
+				stepsCls.data.profiles.forEach(function(perfil, index) {
+					let idProfile= perfil.entityID;
+					if(buscadorPersonalizado.profile==idProfile)
+					{
+						liPerfil+=`<li class="profile">
+										${perfil.name}
+										<a rel="nofollow" class="remove facetaprofile" profile="idProfile" href="javascript: void(0);">eliminar</a>
+									</li>`;
+					}					
+				});
+				$('#panFiltros ul').prepend(liPerfil);
+				//Añadimos el comporamiento a la faceta
+				$('#panFiltros .profile a').unbind().click(function (e) {	
+					buscadorPersonalizado.profile=null;
+					buscadorPersonalizado.filtro=buscadorPersonalizado.search+'='+comportamientoPopupCluster.workCO(stepsCls.data);
+					FiltrarPorFacetas(ObtenerHash2());
+				});
+			}
 		}
 	}
 }

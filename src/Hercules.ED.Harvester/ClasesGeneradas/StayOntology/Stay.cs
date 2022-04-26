@@ -19,6 +19,7 @@ using Feature = FeatureOntology.Feature;
 using OrganizationType = OrganizationtypeOntology.OrganizationType;
 using Organization = OrganizationOntology.Organization;
 using StayGoal = StaygoalOntology.StayGoal;
+using Person = PersonOntology.Person;
 
 namespace StayOntology
 {
@@ -154,6 +155,12 @@ namespace StayOntology
 			this.Roh_center = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/center"));
 			this.Roh_fundedByLocality = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/fundedByLocality"));
 			this.Roh_entityTypeOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/entityTypeOther"));
+			SemanticPropertyModel propRoh_owner = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/owner");
+			if(propRoh_owner != null && propRoh_owner.PropertyValues.Count > 0)
+			{
+				this.Roh_owner = new Person(propRoh_owner.PropertyValues[0].RelatedEntity,idiomaUsuario);
+			}
+			this.Roh_cvnCode = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/cvnCode"));
 			this.Roh_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/title"));
 		}
 
@@ -284,6 +291,12 @@ namespace StayOntology
 			this.Roh_center = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/center"));
 			this.Roh_fundedByLocality = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/fundedByLocality"));
 			this.Roh_entityTypeOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/entityTypeOther"));
+			SemanticPropertyModel propRoh_owner = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/owner");
+			if(propRoh_owner != null && propRoh_owner.PropertyValues.Count > 0)
+			{
+				this.Roh_owner = new Person(propRoh_owner.PropertyValues[0].RelatedEntity,idiomaUsuario);
+			}
+			this.Roh_cvnCode = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/cvnCode"));
 			this.Roh_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/title"));
 		}
 
@@ -292,22 +305,18 @@ namespace StayOntology
 		[RDFProperty("http://w3id.org/roh/unescoPrimary")]
 		public  List<CategoryPath> Roh_unescoPrimary { get; set;}
 
-		[LABEL(LanguageEnum.es,"hasCountryName")]
 		[RDFProperty("https://www.w3.org/2006/vcard/ns#hasCountryName")]
 		public  Feature Vcard_hasCountryName  { get; set;} 
 		public string IdVcard_hasCountryName  { get; set;} 
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/fundedByType")]
 		[RDFProperty("http://w3id.org/roh/fundedByType")]
 		public  OrganizationType Roh_fundedByType  { get; set;} 
 		public string IdRoh_fundedByType  { get; set;} 
 
-		[LABEL(LanguageEnum.es,"fundedBy")]
 		[RDFProperty("http://w3id.org/roh/fundedBy")]
 		public  Organization Roh_fundedBy  { get; set;} 
 		public string IdRoh_fundedBy  { get; set;} 
 
-		[LABEL(LanguageEnum.es,"hasRegion")]
 		[RDFProperty("http://w3id.org/roh/fundedByHasRegion")]
 		public  Feature Roh_fundedByHasRegion  { get; set;} 
 		public string IdRoh_fundedByHasRegion  { get; set;} 
@@ -315,12 +324,10 @@ namespace StayOntology
 		[RDFProperty("http://w3id.org/roh/unescoTertiary")]
 		public  List<CategoryPath> Roh_unescoTertiary { get; set;}
 
-		[LABEL(LanguageEnum.es,"goals")]
 		[RDFProperty("http://w3id.org/roh/goals")]
 		public  StayGoal Roh_goals  { get; set;} 
 		public string IdRoh_goals  { get; set;} 
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/entityType")]
 		[RDFProperty("http://w3id.org/roh/entityType")]
 		public  OrganizationType Roh_entityType  { get; set;} 
 		public string IdRoh_entityType  { get; set;} 
@@ -328,17 +335,14 @@ namespace StayOntology
 		[RDFProperty("http://w3id.org/roh/unescoSecondary")]
 		public  List<CategoryPath> Roh_unescoSecondary { get; set;}
 
-		[LABEL(LanguageEnum.es,"hasRegion")]
 		[RDFProperty("https://www.w3.org/2006/vcard/ns#hasRegion")]
 		public  Feature Vcard_hasRegion  { get; set;} 
 		public string IdVcard_hasRegion  { get; set;} 
 
-		[LABEL(LanguageEnum.es,"hasCountryName")]
 		[RDFProperty("http://w3id.org/roh/fundedByHasCountryName")]
 		public  Feature Roh_fundedByHasCountryName  { get; set;} 
 		public string IdRoh_fundedByHasCountryName  { get; set;} 
 
-		[LABEL(LanguageEnum.es,"entity")]
 		[RDFProperty("http://w3id.org/roh/entity")]
 		public  Organization Roh_entity  { get; set;} 
 		public string IdRoh_entity  { get; set;} 
@@ -403,6 +407,14 @@ namespace StayOntology
 		[RDFProperty("http://w3id.org/roh/entityTypeOther")]
 		public  string Roh_entityTypeOther { get; set;}
 
+		[RDFProperty("http://w3id.org/roh/owner")]
+		[Required]
+		public  Person Roh_owner  { get; set;} 
+		public string IdRoh_owner  { get; set;} 
+
+		[RDFProperty("http://w3id.org/roh/cvnCode")]
+		public  string Roh_cvnCode { get; set;}
+
 		[RDFProperty("http://w3id.org/roh/title")]
 		public  string Roh_title { get; set;}
 
@@ -441,6 +453,8 @@ namespace StayOntology
 			propList.Add(new StringOntologyProperty("roh:center", this.Roh_center));
 			propList.Add(new StringOntologyProperty("roh:fundedByLocality", this.Roh_fundedByLocality));
 			propList.Add(new StringOntologyProperty("roh:entityTypeOther", this.Roh_entityTypeOther));
+			propList.Add(new StringOntologyProperty("roh:owner", this.IdRoh_owner));
+			propList.Add(new StringOntologyProperty("roh:cvnCode", this.Roh_cvnCode));
 			propList.Add(new StringOntologyProperty("roh:title", this.Roh_title));
 		}
 
@@ -719,6 +733,14 @@ namespace StayOntology
 				if(this.Roh_entityTypeOther != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Stay_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/entityTypeOther", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_entityTypeOther)}\"", list, " . ");
+				}
+				if(this.IdRoh_owner != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Stay_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/owner", $"<{this.IdRoh_owner}>", list, " . ");
+				}
+				if(this.Roh_cvnCode != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Stay_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/cvnCode", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_cvnCode)}\"", list, " . ");
 				}
 				if(this.Roh_title != null)
 				{
@@ -1059,6 +1081,24 @@ namespace StayOntology
 				if(this.Roh_entityTypeOther != null)
 				{
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/entityTypeOther", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_entityTypeOther).ToLower()}\"", list, " . ");
+				}
+				if(this.IdRoh_owner != null)
+				{
+					Regex regex = new Regex(@"\/items\/.+_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}");
+					string itemRegex = this.IdRoh_owner;
+					if (regex.IsMatch(itemRegex))
+					{
+						itemRegex = $"http://gnoss/{resourceAPI.GetShortGuid(itemRegex).ToString().ToUpper()}";
+					}
+					else
+					{
+						itemRegex = itemRegex.ToLower();
+					}
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/owner", $"<{itemRegex}>", list, " . ");
+				}
+				if(this.Roh_cvnCode != null)
+				{
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/cvnCode", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_cvnCode).ToLower()}\"", list, " . ");
 				}
 				if(this.Roh_title != null)
 				{

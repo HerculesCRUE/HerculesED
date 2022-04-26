@@ -47,7 +47,6 @@ namespace GrantOntology
 		public virtual string RdfsLabel { get { return "http://w3id.org/roh/CategoryPath"; } }
 		public OntologyEntity Entity { get; set; }
 
-		[LABEL(LanguageEnum.es,"categoryNode")]
 		[RDFProperty("http://w3id.org/roh/categoryNode")]
 		[MinLength(1)]
 		public  List<Concept> Roh_categoryNode { get; set;}
