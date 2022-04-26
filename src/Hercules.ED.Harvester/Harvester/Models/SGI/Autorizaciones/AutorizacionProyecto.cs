@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Harvester.Models.SGI.Autorizaciones
 {
-    public class AutorizacionProyecto : SGI_Base
+    public class Autorizacion : SGI_Base
     {
         public int id { get; set; }
         public string solicitanteRef { get; set; }

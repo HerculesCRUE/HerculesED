@@ -70,8 +70,8 @@ namespace Harvester
             mResourceApi.ChangeOntoly("project");
             ProcesarFichero(_Config, "Proyecto", dicOrganizaciones, dicProyectos, dicPersonas);
             ProcesarFichero(_Config, "PRC", dicProyectos);
-        //mResourceApi.ChangeOntoly("projectauthorization");
-        //ProcesarFichero(_Config, "AutorizacionProyecto", null);
+            mResourceApi.ChangeOntoly("projectauthorization");
+            ProcesarFichero(_Config, "AutorizacionProyecto", null);
 
         //TODO eliminar
         Testing:
@@ -84,8 +84,8 @@ namespace Harvester
             GuardarIdentificadores(_Config, "Persona", fecha);
             GuardarIdentificadores(_Config, "Proyecto", fecha);
             //GuardarIdentificadores(_Config, "PRC", fecha, true);
-            //GuardarIdentificadores(_Config, "AutorizacionProyecto", fecha, true);
-            //GuardarIdentificadores(_Config, "Invencion", fecha, true);
+            GuardarIdentificadores(_Config, "AutorizacionProyecto", fecha);
+            //GuardarIdentificadores(_Config, "Invencion", fecha);
 
             //Actualizo la última fecha de carga
             UpdateLastDate(_Config, fecha);
@@ -98,8 +98,8 @@ namespace Harvester
             mResourceApi.ChangeOntoly("project");
             ProcesarFichero(_Config, "Proyecto", dicOrganizaciones, dicProyectos, dicPersonas);
             //ProcesarFichero(_Config, "PRC", dicProyectos);
-            //mResourceApi.ChangeOntoly("projectauthorization");
-            //ProcesarFichero(_Config, "AutorizacionProyecto", null);
+            mResourceApi.ChangeOntoly("projectauthorization");
+            ProcesarFichero(_Config, "AutorizacionProyecto", null);
         }
 
         /// <summary>
@@ -335,7 +335,7 @@ namespace Harvester
 
                             case "AutorizacionProyecto":
                                 // Obtención de datos en bruto.
-                                AutorizacionProyecto autorizacion = new AutorizacionProyecto();
+                                Autorizacion autorizacion = new Autorizacion();
                                 xmlResult = harvesterServices.GetRecord(id);
 
                                 if (string.IsNullOrEmpty(xmlResult))
@@ -344,15 +344,22 @@ namespace Harvester
                                     continue;
                                 }
 
-                                xmlSerializer = new(typeof(AutorizacionProyecto));
+                                xmlSerializer = new(typeof(Autorizacion));
                                 using (StringReader sr = new(xmlResult))
                                 {
-                                    autorizacion = (AutorizacionProyecto)xmlSerializer.Deserialize(sr);
+                                    try
+                                    {
+                                        autorizacion = (Autorizacion)xmlSerializer.Deserialize(sr);
+                                    }catch (Exception)
+                                    {
+                                        continue;
+                                    }
                                 }
 
-                                //Cambio de modelo.TODO: Mirar propiedades.
-                                //ProjectAuthorization projectAuthOntology = CrearProyecto(proyecto);
+                                // Cambio de modelo.
+                                ProjectAuthorization projectAuthOntology = CrearAutorizacion(autorizacion);
 
+                                // TODO: Hacer tema del diccionario.
                                 //resource = projectAuthOntology.ToGnossApiResource(mResourceApi, null);
                                 //if (pDicRecursosCargados.ContainsKey(projectAuthOntology.Roh_crisIdentifier))
                                 //{
@@ -756,6 +763,48 @@ namespace Harvester
             organization.Roh_title = pDatos.Nombre;
             return organization;
         }
+
+        public static ProjectAuthorization CrearAutorizacion(Autorizacion pAutorizacionProyecto)
+        {
+            ProjectAuthorization autorizacion = new ProjectAuthorization();
+            autorizacion.Roh_crisIdentifier = pAutorizacionProyecto.id.ToString();
+            autorizacion.Roh_title = pAutorizacionProyecto.titulo;
+            autorizacion.IdRoh_owner = GetPersonGnossId(pAutorizacionProyecto.solicitanteRef);
+
+            if (!string.IsNullOrEmpty(autorizacion.Roh_crisIdentifier) && !string.IsNullOrEmpty(autorizacion.Roh_title) && !string.IsNullOrEmpty(autorizacion.IdRoh_owner))
+            {
+                return autorizacion;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public static string GetPersonGnossId(string pCrisIdentifier)
+        {
+            SparqlObject resultadoQuery = null;
+            StringBuilder select = new StringBuilder(), where = new StringBuilder();
+
+            // Consulta sparql.
+            select.Append("SELECT ?s ");
+            where.Append("WHERE { ");
+            where.Append($@"?s <http://w3id.org/roh/crisIdentifier> '{pCrisIdentifier}'. ");
+            where.Append("} ");
+
+            resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), "person");
+
+            if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+            {
+                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                {
+                    return fila["s"].value;
+                }
+            }
+
+            return string.Empty;
+        }
+
         public static ProjectOntology.Project CrearProyecto(Proyecto pDatos, Dictionary<string, Tuple<string, string>> dicProyectos,
             Dictionary<string, Tuple<string, string>> dicPersonas, Dictionary<string, Tuple<string, string>> dicOrganizaciones)
         {
