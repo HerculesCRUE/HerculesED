@@ -45,6 +45,12 @@ namespace EditorCV.Models
                 request.AddJsonBody(proyecto);
                 string json = JsonConvert.SerializeObject(proyecto);
                 IRestResponse response = client.Execute(request);
+
+                if ((int)response.StatusCode != 200)
+                {
+                    throw new Exception();
+                }
+
             }
             catch (Exception)
             {
@@ -154,7 +160,6 @@ namespace EditorCV.Models
             dicModificacion.Add(pGuid, listaTriplesModificacion);
             mResourceApi.ModifyPropertiesLoadedResources(dicModificacion);
         }
-
 
         /// <summary>
         /// Obtiene los datos de los Proyectos a enviar a validación.

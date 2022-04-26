@@ -418,7 +418,10 @@ namespace EditorCV.Models
                                     }
                                 }
 
-                                PRC.campos.Add(campo);
+                                if (!string.IsNullOrEmpty(campo.codigoCVN) && campo.valores != null && campo.valores.Any())
+                                {
+                                    PRC.campos.Add(campo);
+                                }
                             }
                         }
                     }
@@ -523,7 +526,10 @@ namespace EditorCV.Models
                                     }
                                 }
 
-                                PRC.campos.Add(campo);
+                                if (!string.IsNullOrEmpty(campo.codigoCVN) && campo.valores != null && campo.valores.Any())
+                                {
+                                    PRC.campos.Add(campo);
+                                }
 
                                 //ÑAPA
                                 //campo = new CampoProduccionCientifica();
@@ -563,6 +569,11 @@ namespace EditorCV.Models
                 var request = new RestRequest(Method.POST);
                 request.AddJsonBody(PRC);
                 IRestResponse response = client.Execute(request);
+
+                if ((int)response.StatusCode != 200)
+                {
+                    throw new Exception();
+                }
             }
             catch (Exception)
             {
