@@ -54,9 +54,9 @@ namespace Harvester
             //Dictionary<string, string> dicOrganizaciones = GetEntityBBDD("http://xmlns.com/foaf/0.1/Organization", "organization");
             //Dictionary<string, string> dicPersonas = GetEntityBBDD("http://xmlns.com/foaf/0.1/Person", "person");
             //Dictionary<string, string> dicProyectos = GetEntityBBDD("http://vivoweb.org/ontology/core#Project", "project");
-            Dictionary<string, string> dicOrganizaciones = new Dictionary<string, string>();
-            Dictionary<string, string> dicPersonas = new Dictionary<string, string>();
-            Dictionary<string, string> dicProyectos = new Dictionary<string, string>();
+            Dictionary<string, Tuple<string, string>> dicOrganizaciones = new Dictionary<string, Tuple<string, string>>();
+            Dictionary<string, Tuple<string, string>> dicPersonas = new Dictionary<string, Tuple<string, string>>();
+            Dictionary<string, Tuple<string, string>> dicProyectos = new Dictionary<string, Tuple<string, string>>();
 
 
             //TODO eliminar
@@ -70,8 +70,8 @@ namespace Harvester
             mResourceApi.ChangeOntoly("project");
             ProcesarFichero(_Config, "Proyecto", dicOrganizaciones, dicProyectos, dicPersonas);
             ProcesarFichero(_Config, "PRC", dicProyectos);
-            //mResourceApi.ChangeOntoly("projectauthorization");
-            //ProcesarFichero(_Config, "AutorizacionProyecto", null);
+        //mResourceApi.ChangeOntoly("projectauthorization");
+        //ProcesarFichero(_Config, "AutorizacionProyecto", null);
 
         //TODO eliminar
         Testing:
@@ -126,8 +126,8 @@ namespace Harvester
         /// <param name="pConfig"></param>
         /// <param name="pSet"></param>
         /// <param name="pDicRecursosCargados"></param>
-        public void ProcesarFichero(ReadConfig pConfig, string pSet, [Optional] Dictionary<string, string> dicOrganizaciones,
-            [Optional] Dictionary<string, string> dicProyectos, [Optional] Dictionary<string, string> dicPersonas)
+        public void ProcesarFichero(ReadConfig pConfig, string pSet, [Optional] Dictionary<string, Tuple<string, string>> dicOrganizaciones,
+            [Optional] Dictionary<string, Tuple<string, string>> dicProyectos, [Optional] Dictionary<string, Tuple<string, string>> dicPersonas)
         {
             string directorioPendientes = $@"{pConfig.GetLogCargas()}/{pSet}/pending/";
             string directorioProcesados = $@"{pConfig.GetLogCargas()}/{pSet}/processed/";
@@ -416,8 +416,8 @@ namespace Harvester
             }
         }
 
-        private void CreacionAuxiliaresProyecto(Proyecto proyecto, Dictionary<string, string> dicProyectos,
-            Dictionary<string, string> dicPersonas, Dictionary<string, string> dicOrganizaciones)
+        private void CreacionAuxiliaresProyecto(Proyecto proyecto, Dictionary<string, Tuple<string, string>> dicProyectos,
+            Dictionary<string, Tuple<string, string>> dicPersonas, Dictionary<string, Tuple<string, string>> dicOrganizaciones)
         {
             string record = harvesterServices.GetRecord("Proyecto_" + proyecto.Id);
             List<string> listaOrganizaciones = new List<string>();
@@ -426,10 +426,9 @@ namespace Harvester
             //listaOrganizaciones.AddRange(proyecto.EntidadesConvocantes.Select(x => x.EntidadRef).ToList());
             listaOrganizaciones.AddRange(proyecto.EntidadesFinanciadoras.Select(x => x.EntidadRef).ToList());
 
-            Dictionary<string, string> dicBBDDProy = GetEntityByCRIS("http://vivoweb.org/ontology/core#Project", "project", new List<string>() { proyecto.Id });
-            Dictionary<string, string> dicBBDDPers = GetEntityByCRIS("http://xmlns.com/foaf/0.1/Person", "person", proyecto.Equipo.Select(x => x.PersonaRef).ToList());
-            Dictionary<string, string> dicBBDDOrg = GetEntityByCRIS("http://xmlns.com/foaf/0.1/Organization", "organization", listaOrganizaciones);
-
+            dicProyectos = GetEntityByCRIS("http://vivoweb.org/ontology/core#Project", "project", new List<string>() { proyecto.Id });
+            dicPersonas = GetEntityByCRIS("http://xmlns.com/foaf/0.1/Person", "person", proyecto.Equipo.Select(x => x.PersonaRef).ToList());
+            dicOrganizaciones = GetEntityByCRIS("http://xmlns.com/foaf/0.1/Organization", "organization", listaOrganizaciones);
 
             XmlSerializer xmlSerializer = null;
             Proyecto project = new Proyecto();
@@ -439,8 +438,6 @@ namespace Harvester
             {
                 project = (Proyecto)xmlSerializer.Deserialize(sr);
             }
-
-
         }
 
         private Dictionary<string, string> GetValues(string pIdRecurso)
@@ -605,16 +602,16 @@ namespace Harvester
             return dicResultados;
         }
 
-        private Dictionary<string, string> GetEntityByCRIS(string pRdfType, string pOntology, List<string> lista)
+        private Dictionary<string, Tuple<string, string>> GetEntityByCRIS(string pRdfType, string pOntology, List<string> lista)
         {
-            Dictionary<string, string> dicResultados = new Dictionary<string, string>();
+            Dictionary<string, Tuple<string, string>> dicResultados = new Dictionary<string, Tuple<string, string>>();
 
             int limit = 10000;
             int offset = 0;
             while (true)
             {
                 SparqlObject resultadoQuery = null;
-                string select = "SELECT ?s ?crisIdentifier ";
+                string select = "SELECT DISTINCT ?s ?crisIdentifier ?nombrePersona";
                 string filtroProject = $@"strends(?crisIdentifier, '|{string.Join("') OR  strends(?crisIdentifier , '|", lista)}')";//TODO - eliminar por el general
                 string filtroGeneral = $@"?crisIdentifier in ('{string.Join("', '", lista)}') ";
 
@@ -622,6 +619,7 @@ namespace Harvester
                 string where = $@"WHERE {{
     ?s a <{pRdfType}> .
     ?s <http://w3id.org/roh/crisIdentifier> ?crisIdentifier . 
+    OPTIONAL{{ ?s <http://xmlns.com/foaf/0.1/name> ?nombrePersona }}
     FILTER(
         {filtro}
     )
@@ -636,8 +634,13 @@ namespace Harvester
                     foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
                     {
                         string id = fila["crisIdentifier"].value;
-                        string nombre = fila["s"].value;
-                        dicResultados.Add(id, nombre);
+                        string identificador = fila["s"].value;
+                        string nombrePersona = "";
+                        if (fila.ContainsKey("nombrePersona"))
+                        {
+                            nombrePersona = fila["nombrePersona"].value;
+                        }
+                        dicResultados.Add(id, new Tuple<string, string>(identificador, nombrePersona));
                     }
 
                     if (resultadoQuery.results.bindings.Count < limit)
@@ -736,7 +739,7 @@ namespace Harvester
             // TODO: Posible cambio Treelogic
             if (pDatos.Vinculacion != null && pDatos.Vinculacion.Departamento != null && !string.IsNullOrEmpty(pDatos.Vinculacion.Departamento.Id))
             {
-                persona.IdVivo_departmentOrSchool = $@"http://gnoss.com/items/department_{pDatos.Vinculacion.Departamento.Id}";
+                persona.IdVivo_departmentOrSchool = $@"http://gnoss.com/items/department_{pDatos.Vinculacion.Departamento.Id}";//TODO
             }
             if (pDatos.Vinculacion != null && pDatos.Vinculacion.CategoriaProfesional != null && !string.IsNullOrEmpty(pDatos.Vinculacion.CategoriaProfesional.Nombre))
             {
@@ -753,8 +756,8 @@ namespace Harvester
             organization.Roh_title = pDatos.Nombre;
             return organization;
         }
-        public static ProjectOntology.Project CrearProyecto(Proyecto pDatos, Dictionary<string, string> dicProyectos,
-            Dictionary<string, string> dicPersonas, Dictionary<string, string> dicOrganizaciones)
+        public static ProjectOntology.Project CrearProyecto(Proyecto pDatos, Dictionary<string, Tuple<string, string>> dicProyectos,
+            Dictionary<string, Tuple<string, string>> dicPersonas, Dictionary<string, Tuple<string, string>> dicOrganizaciones)
         {
             ProjectOntology.Project project = new ProjectOntology.Project();
             project.Roh_crisIdentifier = pDatos.Id;
@@ -783,7 +786,7 @@ namespace Harvester
                     BFO.Rdf_comment = orden;
                     if (dicPersonas.ContainsKey(item.PersonaRef))
                     {
-                        BFO.IdRoh_roleOf = dicPersonas[item.PersonaRef];
+                        BFO.IdRoh_roleOf = dicPersonas[item.PersonaRef].Item1;
                     }
                     else
                     {
@@ -813,8 +816,8 @@ namespace Harvester
                             nuevaPersona.Roh_isIPProjectHistorically = false;
 
                             //mResourceApi.LoadComplexSemanticResource(nuevaPersona, false, false);
-                            dicPersonas[nuevaPersona.Roh_crisIdentifier] = "";//TODO //nuevaPersona.GnossId;
-                            BFO.IdRoh_roleOf = dicPersonas[item.PersonaRef];
+                            dicPersonas[nuevaPersona.Roh_crisIdentifier] = new Tuple<string, string>("", "");//TODO //nuevaPersona.GnossId;
+                            BFO.IdRoh_roleOf = dicPersonas[item.PersonaRef].Item1;
                         }
                     }
 
@@ -835,17 +838,27 @@ namespace Harvester
                 project.Roh_researchersNumber = orden;
             }
 
-            ////TODO - si se añaden el resto de entidades la inserción debería ser previa de manera general
-            //if (!dicOrganizaciones.ContainsKey(entidadFinanciadora.Id))
-            //{
-            //    ProjectOntology.OrganizationAux organizationAux = new ProjectOntology.OrganizationAux();
-            //    organizationAux.Roh_organizationTitle = entidadFinanciadora.EntidadRef;
+            //Añado las entidades financiadoras que no existan en BBDD
+            foreach (ProyectoEntidadFinanciadora entidadFinanciadora in pDatos.EntidadesFinanciadoras)
+            {
+                //TODO - si se añaden el resto de entidades la inserción debería ser previa de manera general
+                if (!dicOrganizaciones.ContainsKey(entidadFinanciadora.Id))
+                {
+                    ProjectOntology.OrganizationAux organizationAux = new ProjectOntology.OrganizationAux();
+                    Empresa organizacion = new Empresa();
+                    organizationAux.Roh_organizationTitle = entidadFinanciadora.EntidadRef;
 
-            //    organizationAux.IdRoh_organization = dicOrganizaciones[entidadFinanciadora.Id];
-            //}
-
-            //project.Roh_grantedBy = organizaciones;
-
+                    string org = harvesterServices.GetRecord("Organization_" + entidadFinanciadora.EntidadRef);
+                    XmlSerializer xmlSerializer = new(typeof(Empresa));
+                    using (StringReader sr = new(org))
+                    {
+                        organizacion = (Empresa)xmlSerializer.Deserialize(sr);
+                    }
+                    organizationAux.Roh_organizationTitle = organizacion.Nombre;
+                    organizationAux.IdRoh_organization = dicOrganizaciones[entidadFinanciadora.Id].Item1;
+                }
+                //project.Roh_grantedBy = organizaciones;
+            }
 
             //TODO - revisar
             double porcentajeSubvencion = 0;
@@ -853,7 +866,7 @@ namespace Harvester
             double porcentajeMixto = 0;
             List<ProjectOntology.OrganizationAux> organizaciones = new List<ProjectOntology.OrganizationAux>();
             foreach (ProyectoEntidadFinanciadora entidadFinanciadora in pDatos.EntidadesFinanciadoras)
-            {                
+            {
                 //ProjectOntology.OrganizationAux organizacion = new ProjectOntology.OrganizationAux();
                 //organizacion.Roh_organizationTitle = entidadFinanciadora.EntidadRef;//TODO
                 //TODO ? string entFinanciadora = harvesterServices.GetRecord("Organizacion_" + entidadFinanciadora.EntidadRef);
