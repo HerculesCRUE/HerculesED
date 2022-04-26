@@ -38,7 +38,13 @@ namespace Harvester
             listaIdsOrdenados.Sort();
 
             // Guardado de los IDs.
-            File.WriteAllLines(pConfig.GetLogCargas() + $@"/{pSet}/pending/{pSet}_{pFecha.Replace(":", "-")}.txt", listaIdsOrdenados);
+            string directorio = pConfig.GetLogCargas() + $@"/{pSet}/pending/";
+            if (!Directory.Exists(directorio))
+            {
+                Directory.CreateDirectory(directorio);
+            }
+
+            File.WriteAllLines(directorio + $@"{pSet}_{pFecha.Replace(":", "-")}.txt", listaIdsOrdenados);
 
             return listaIdsOrdenados;
         }
@@ -57,7 +63,12 @@ namespace Harvester
             listaIdsOrdenados.Sort();
 
             // Guardado de los IDs.
-            File.WriteAllLines(pConfig.GetLogCargas() + $@"/{pSet}/pending/{pSet}_{pFecha.Replace(":", "-")}.txt", listaIdsOrdenados);
+            string directorio = pConfig.GetLogCargas() + $@"/{pSet}/pending/";
+            if (!Directory.Exists(directorio))
+            {
+                Directory.CreateDirectory(directorio);
+            }
+            File.WriteAllLines(directorio + $@"{pSet}_{pFecha.Replace(":", "-")}.txt", listaIdsOrdenados);
 
             return listaIdsOrdenados;
         }
