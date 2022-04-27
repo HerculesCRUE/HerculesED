@@ -7,6 +7,7 @@ using Harvester.Models.SGI.ProteccionIndustrialIntelectual;
 using Hercules.MA.ServicioExterno.Controllers.Utilidades;
 using Newtonsoft.Json;
 using OAI_PMH.Models.SGI;
+using OAI_PMH.Models.SGI.Grupos;
 using OAI_PMH.Models.SGI.Organization;
 using OAI_PMH.Models.SGI.PersonalData;
 using OAI_PMH.Models.SGI.Project;
@@ -73,6 +74,9 @@ namespace Harvester
             ProcesarFichero(_Config, "PRC", dicProyectos);
             mResourceApi.ChangeOntoly("projectauthorization");
             ProcesarFichero(_Config, "AutorizacionProyecto", null);
+            mResourceApi.ChangeOntoly("group");
+            ProcesarFichero(_Config, "Grupo", null);
+            //TODO: Invencion
 
         //TODO eliminar
         Testing:
@@ -87,6 +91,7 @@ namespace Harvester
             GuardarIdentificadores(_Config, "PRC", fecha, true);
             GuardarIdentificadores(_Config, "AutorizacionProyecto", fecha);
             GuardarIdentificadores(_Config, "Invencion", fecha);
+            GuardarIdentificadores(_Config, "Grupo", fecha);
 
             //Actualizo la última fecha de carga
             UpdateLastDate(_Config, fecha);
@@ -101,6 +106,9 @@ namespace Harvester
             ProcesarFichero(_Config, "PRC", dicProyectos);
             mResourceApi.ChangeOntoly("projectauthorization");
             ProcesarFichero(_Config, "AutorizacionProyecto", null);
+            mResourceApi.ChangeOntoly("group");
+            ProcesarFichero(_Config, "Grupo", null);
+            //TODO: Invencion
         }
 
         /// <summary>
@@ -409,6 +417,42 @@ namespace Harvester
                             using (StringReader sr = new(xmlResult))
                             {
                                 invencion = (Invencion)xmlSerializer.Deserialize(sr);
+                            }
+
+                            //Cambio de modelo.TODO: Mirar propiedades.
+                            //ProjectAuthorization projectAuthOntology = CrearProyecto(proyecto);
+
+                            //resource = projectAuthOntology.ToGnossApiResource(mResourceApi, null);
+                            //if (pDicRecursosCargados.ContainsKey(projectAuthOntology.Roh_crisIdentifier))
+                            //{
+                            //    // Modificación.
+                            //    mResourceApi.ModifyComplexOntologyResource(resource, false, false);
+                            //}
+                            //else
+                            //{
+                            //    // Carga.                   
+                            //    mResourceApi.LoadComplexSemanticResource(resource, false, false);
+                            //    pDicRecursosCargados[projectAuthOntology.Roh_crisIdentifier] = resource.GnossId;
+                            //}
+
+                            // Guardamos el ID cargado.
+                            File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
+                            break;
+                        case "Grupo":
+                            // Obtención de datos en bruto.
+                            Grupo grupo = new Grupo();
+                            xmlResult = harvesterServices.GetRecord(id);
+
+                            if (string.IsNullOrEmpty(xmlResult))
+                            {
+                                File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
+                                continue;
+                            }
+
+                            xmlSerializer = new(typeof(Invencion));
+                            using (StringReader sr = new(xmlResult))
+                            {
+                                grupo = (Grupo)xmlSerializer.Deserialize(sr);
                             }
 
                             //Cambio de modelo.TODO: Mirar propiedades.
