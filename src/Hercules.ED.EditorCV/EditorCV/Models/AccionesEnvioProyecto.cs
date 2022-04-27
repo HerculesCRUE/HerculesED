@@ -46,11 +46,10 @@ namespace EditorCV.Models
                 string json = JsonConvert.SerializeObject(proyecto);
                 IRestResponse response = client.Execute(request);
 
-                if ((int)response.StatusCode != 200)
+                if ((int)response.StatusCode < 200 || (int)response.StatusCode >= 300)
                 {
                     throw new Exception();
                 }
-
             }
             catch (Exception)
             {
@@ -71,7 +70,7 @@ namespace EditorCV.Models
             select.Append("SELECT DISTINCT ?enviado ");
             where.Append("WHERE { ");
             where.Append("?s a vivo:Project. ");
-            where.Append("OPTIONAL{?s roh:validationStatusProject ?enviado. } ");
+            where.Append("OPTIONAL{?s roh:validationStatusProject ?enviado. } "); // TODO: Falta meter propiedad en el modelo.
             where.Append($@"FILTER(?s = <{pIdProyecto}>) ");
             where.Append("} ");
 

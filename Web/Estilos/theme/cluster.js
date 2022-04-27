@@ -2,12 +2,14 @@ const uriLoadTaxonomies = "Cluster/GetThesaurus"
 const uriSaveCluster = "Cluster/SaveCluster"
 const uriSearchTags = "Cluster/searchTags"
 const uriLoadProfiles = "Cluster/loadProfiles"
+const uriLoadClst = "Cluster/LoadCluster"
 
 var servicioExternoBaseUrl="";
 
 var urlLT = "";
 var urlSC ="";
 var urlSTAGS = "";
+var urlLoadClst ="";
 var urlCargarPerfiles = "";
 
 $(document).ready(function () {
@@ -15,6 +17,7 @@ $(document).ready(function () {
 	urlLT = new URL(servicioExternoBaseUrl +  uriLoadTaxonomies);
 	urlSC = new URL(servicioExternoBaseUrl +  uriSaveCluster);
 	urlSTAGS = new URL(servicioExternoBaseUrl +  uriSearchTags);
+	urlLoadClst = new URL(servicioExternoBaseUrl +  uriLoadClst);
 	urlCargarPerfiles = new URL(servicioExternoBaseUrl +  uriLoadProfiles);
 });
 
@@ -62,6 +65,7 @@ class StepsCluster {
 		// Información para el guardado 
 		this.userId = document.getElementById('inpt_usuarioID').value
 		this.clusterId = undefined
+		this.data = undefined
 		this.communityShortName = this.modalCrearCluster.data('cshortName')
 		this.communityUrl = this.modalCrearCluster.data('comUrl')
 		this.communityKey = this.modalCrearCluster.data('comKey')
@@ -86,6 +90,12 @@ class StepsCluster {
 	 */
 	init() {
 		var _self = this
+		var currentUrl = new URL(window.location)
+		this.clusterId = currentUrl.searchParams.get("id")
+		if (this.clusterId) {
+			this.loadCluster()
+		}
+
 		// Fill taxonomies data
 		this.getDataTaxonomies().then((data) => {
 			_self.fillDataTaxonomies(data);
@@ -93,6 +103,23 @@ class StepsCluster {
 		})
 
 		this.topicsM = new ModalSearchTags()
+	}
+
+	loadCluster() {
+		this.callLoadCluster().then((res) => {
+			this.data = res
+			console.log(res)
+		});
+	}
+
+	callLoadCluster() {
+
+		urlLoadClst.searchParams.set('pIdClusterId', this.clusterId.split('_')[1]);
+		return new Promise((resolve, reject) => {
+			$.get(urlLoadClst.toString(), function (res) {
+				resolve(res)
+			});
+		})
 	}
 	
 	/**
@@ -434,9 +461,9 @@ class StepsCluster {
 		urlSC.searchParams.set('pIdGnossUser', this.userId)
 		// urlSC.searchParams.set('pIdGnossComSName', this.communityShortName)
 		return new Promise((resolve) => {
-
-			this.postCall(urlSC, this.data).then((data) => {
-				_self.clusterId = data
+			console.log("this.data saveInit",this.data)
+			this.postCall(urlSC, this.data).then((rdata) => {
+				_self.clusterId = rdata
 				_self.startStep3()
 				resolve(true)
 			}).catch(err => {
@@ -454,11 +481,32 @@ class StepsCluster {
 	postCall(url, theParams) {
 		let _self = this
 		return new Promise((resolve) => {
-			$.post(url.toString(), theParams, function(data) {
-				resolve(data)
-			}).fail(function(err) {
-				resolve(err);
-			})
+
+			$.ajax({
+				url: url.toString(),
+				type: "POST",
+				dataType: "json",
+				crossDomain: true,
+				contentType: "application/json; charset=utf-8",
+				data: JSON.stringify(theParams),
+				traditional: true,
+				headers: {
+					"accept": "application/json",
+					"Access-Control-Allow-Origin":"*"
+				},
+				success: function(rdata) {
+					resolve(rdata)
+				},
+				failure: function(err) {
+					resolve(err);
+				}
+			});
+
+			// $.post(url.toString(), theParams, function(rdata) {
+			// 	resolve(rdata)
+			// }).fail(function(err) {
+			// 	resolve(err);
+			// })
 		})
 	}
 
