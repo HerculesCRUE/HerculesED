@@ -1098,8 +1098,8 @@ namespace EditorCV.Models
                 List<string> propiedadesMultiidiomaConfiguradas = new List<string>();
                 foreach (ItemEditSectionRowProperty proEdit in pListaPropiedadesMultiidiomaConfiguradas)
                 {
-                    string valorPropiedadIdiomaBase = GetPropValues(pId, "http://vivoweb.org/ontology/core#relatedBy@@@" + proEdit.property, pData).FirstOrDefault();                    
-                    if(string.IsNullOrEmpty(valorPropiedadIdiomaBase))
+                    string valorPropiedadIdiomaBase = GetPropValues(pId, "http://vivoweb.org/ontology/core#relatedBy@@@" + proEdit.property, pData).FirstOrDefault();
+                    if (string.IsNullOrEmpty(valorPropiedadIdiomaBase))
                     {
                         continue;
                     }
@@ -1111,7 +1111,7 @@ namespace EditorCV.Models
                     {
                         string propiedadDependencia = proEdit.dependency.property;
                         if (!string.IsNullOrEmpty(propiedadDependencia))
-                        {   
+                        {
                             if (!string.IsNullOrEmpty(proEdit.dependency.propertyValue))
                             {
                                 string propiedadValorDependencia = proEdit.dependency.propertyValue.Replace("{GraphsUrl}", mResourceApi.GraphsUrl);
@@ -1271,6 +1271,31 @@ namespace EditorCV.Models
                 }
             }
 
+            //Añadimos el combo de autorizaciones de proyecto con las autorizaciones de la persona que no esten asignadas a algún proyecto
+            Dictionary<string, string> comboAutorizacionesProyecto = new Dictionary<string, string>() { { "", "-" } };
+            if (pPresentationEdit.sections.Exists(x => x.rows.Exists(y => y.properties.Exists(z => z.type == DataTypeEdit.projectauthorization))))
+            {
+                string person = UtilityCV.GetPersonFromCV(pCVId);
+                string select = $@"select ?s ?nombre from <{mResourceApi.GraphsUrl}project.owl>";
+                string where = $@"  where
+                                    {{
+                                        ?s a <http://w3id.org/roh/ProjectAuthorization>.
+                                        ?s <http://w3id.org/roh/title> ?nombre.
+                                        ?s <http://w3id.org/roh/owner> <{person}>.
+                                        MINUS
+                                        {{
+                                            ?proy a <http://vivoweb.org/ontology/core#Project>.
+                                            ?proy <http://w3id.org/roh/projectAuthorization> ?s.
+                                            FILTER(?proy !=<{pId}>)
+                                        }}
+                                    }}";
+                SparqlObject respuesta = mResourceApi.VirtuosoQuery(select, where, "projectauthorization");
+                foreach (Dictionary<string, SparqlObject.Data> fila in respuesta.results.bindings)
+                {
+                    comboAutorizacionesProyecto[fila["s"].value] = fila["nombre"].value;
+                }
+            }
+
             List<string> listaTesaurosConfig = GetEditThesaurus(pPresentationEdit.sections.SelectMany(x => x.rows).SelectMany(x => x.properties).ToList());
             Dictionary<string, List<ThesaurusItem>> tesauros = GetTesauros(listaTesaurosConfig, pLang);
 
@@ -1287,7 +1312,7 @@ namespace EditorCV.Models
                 EntityEditSection entityEditSection = new EntityEditSection()
                 {
                     title = UtilityCV.GetTextLang(pLang, itemEditSection.title),
-                    rows = GetRowsEdit(pId, itemEditSection.rows, data, combos, combosDependency, tesauros, pLang, pPresentationEdit.graph)
+                    rows = GetRowsEdit(pId, itemEditSection.rows, data, combos, comboAutorizacionesProyecto, combosDependency, tesauros, pLang, pPresentationEdit.graph)
                 };
                 entityEdit.sections.Add(entityEditSection);
             }
@@ -1320,10 +1345,11 @@ namespace EditorCV.Models
         /// <param name="pItemEditSectionRows">Filas de edición configuradas</param>
         /// <param name="pData">Datos de la entidad</param>        
         /// <param name="pCombos">Combos</param>
+        /// <param name="pComboAutorizacionesProyectos">Combo con las autorizaciones de proyectos</param>
         /// <param name="pLang">Idioma</param>
         /// <param name="pGraph">Grafo de la entidad</param>
         /// <returns></returns>
-        private List<EntityEditSectionRow> GetRowsEdit(string pId, List<ItemEditSectionRow> pItemEditSectionRows, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> pData, Dictionary<ItemEditSectionRowPropertyCombo, Dictionary<string, string>> pCombos, Dictionary<ItemEditSectionRowPropertyCombo, Dictionary<string, string>> pCombosDependency, Dictionary<string, List<ThesaurusItem>> pTesauros, string pLang, string pGraph)
+        private List<EntityEditSectionRow> GetRowsEdit(string pId, List<ItemEditSectionRow> pItemEditSectionRows, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> pData, Dictionary<ItemEditSectionRowPropertyCombo, Dictionary<string, string>> pCombos, Dictionary<string, string> pComboAutorizacionesProyectos, Dictionary<ItemEditSectionRowPropertyCombo, Dictionary<string, string>> pCombosDependency, Dictionary<string, List<ThesaurusItem>> pTesauros, string pLang, string pGraph)
         {
             List<EntityEditSectionRow> entityEditSectionRows = new List<EntityEditSectionRow>();
             foreach (ItemEditSectionRow itemEditSectionRow in pItemEditSectionRows)
@@ -1336,7 +1362,7 @@ namespace EditorCV.Models
                 {
                     if (string.IsNullOrEmpty(itemEditSectionRowProperty.compossed))
                     {
-                        EntityEditSectionRowProperty entityEditSectionRowProperty = GetPropertiesEdit(pId, itemEditSectionRowProperty, pData, pCombos, pCombosDependency, pTesauros, pLang, pGraph);
+                        EntityEditSectionRowProperty entityEditSectionRowProperty = GetPropertiesEdit(pId, itemEditSectionRowProperty, pData, pCombos, pComboAutorizacionesProyectos, pCombosDependency, pTesauros, pLang, pGraph);
                         entityEditSectionRow.properties.Add(entityEditSectionRowProperty);
                     }
                 }
@@ -1352,10 +1378,11 @@ namespace EditorCV.Models
         /// <param name="pItemEditSectionRowProperty">Propiedad de edición configuradas</param>
         /// <param name="pData">Datos de la entidad</param>        
         /// <param name="pCombos">Combos</param>
+        /// <param name="pComboAutorizacionesProyectos">Combo con las autorizaciones de proyectos</param>
         /// <param name="pLang">Idioma</param>
         /// <param name="pGraph">Grafo de la entidad</param>
         /// <returns></returns>
-        private EntityEditSectionRowProperty GetPropertiesEdit(string pId, ItemEditSectionRowProperty pItemEditSectionRowProperty, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> pData, Dictionary<ItemEditSectionRowPropertyCombo, Dictionary<string, string>> pCombos, Dictionary<ItemEditSectionRowPropertyCombo, Dictionary<string, string>> pCombosDependency, Dictionary<string, List<ThesaurusItem>> pTesauros, string pLang, string pGraph)
+        private EntityEditSectionRowProperty GetPropertiesEdit(string pId, ItemEditSectionRowProperty pItemEditSectionRowProperty, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> pData, Dictionary<ItemEditSectionRowPropertyCombo, Dictionary<string, string>> pCombos, Dictionary<string, string> pComboAutorizacionesProyectos, Dictionary<ItemEditSectionRowPropertyCombo, Dictionary<string, string>> pCombosDependency, Dictionary<string, List<ThesaurusItem>> pTesauros, string pLang, string pGraph)
         {
             if (pItemEditSectionRowProperty.type == DataTypeEdit.auxEntityAuthorList)
             {
@@ -1449,15 +1476,15 @@ namespace EditorCV.Models
 
 
 
-                entityEditSectionRowProperty.entityAuxData.rows = GetRowsEdit(null, rowsEdit, pData, pCombos, pCombosDependency, pTesauros, pLang, pGraph);
+                entityEditSectionRowProperty.entityAuxData.rows = GetRowsEdit(null, rowsEdit, pData, pCombos, pComboAutorizacionesProyectos, pCombosDependency, pTesauros, pLang, pGraph);
                 entityEditSectionRowProperty.entityAuxData.titles = new Dictionary<string, EntityEditRepresentativeProperty>();
                 entityEditSectionRowProperty.entityAuxData.properties = new Dictionary<string, List<EntityEditRepresentativeProperty>>();
                 foreach (string id in entityEditSectionRowProperty.values)
                 {
-                    entityEditSectionRowProperty.entityAuxData.entities.Add(id, GetRowsEdit(id, rowsEdit, pData, pCombos, pCombosDependency, pTesauros, pLang, pGraph));
+                    entityEditSectionRowProperty.entityAuxData.entities.Add(id, GetRowsEdit(id, rowsEdit, pData, pCombos, pComboAutorizacionesProyectos, pCombosDependency, pTesauros, pLang, pGraph));
                     if (!string.IsNullOrEmpty(entityEditSectionRowProperty.entityAuxData.propertyOrder))
                     {
-                        string orden = GetPropertiesEdit(id, new ItemEditSectionRowProperty() { property = entityEditSectionRowProperty.entityAuxData.propertyOrder }, pData, pCombos, pCombosDependency, pTesauros, pLang, pGraph).values.FirstOrDefault();
+                        string orden = GetPropertiesEdit(id, new ItemEditSectionRowProperty() { property = entityEditSectionRowProperty.entityAuxData.propertyOrder }, pData, pCombos, pComboAutorizacionesProyectos, pCombosDependency, pTesauros, pLang, pGraph).values.FirstOrDefault();
                         int.TryParse(orden, out int ordenInt);
                         entityEditSectionRowProperty.entityAuxData.childsOrder[id] = ordenInt;
                     }
@@ -1628,6 +1655,10 @@ namespace EditorCV.Models
                             entityEditSectionRowProperty.comboDependency = new ComboDependency { parent = pItemEditSectionRowProperty.combo.dependency.propertyValue, parentDependency = parentDependency };
                         }
                     }
+                }else if(pItemEditSectionRowProperty.type==DataTypeEdit.projectauthorization)
+                {
+                    entityEditSectionRowProperty.type = "selectCombo";
+                    entityEditSectionRowProperty.comboValues = pComboAutorizacionesProyectos;
                 }
 
                 if (pItemEditSectionRowProperty.autocompleteConfig != null)
@@ -1693,12 +1724,12 @@ namespace EditorCV.Models
                             }
                         }
                     };
-                    entityEditSectionRowProperty.entityAuxData.rows = GetRowsEdit(null, rowsEdit, pData, pCombos, pCombosDependency, pTesauros, pLang, pGraph);
+                    entityEditSectionRowProperty.entityAuxData.rows = GetRowsEdit(null, rowsEdit, pData, pCombos, pComboAutorizacionesProyectos, pCombosDependency, pTesauros, pLang, pGraph);
                     entityEditSectionRowProperty.entityAuxData.titles = new Dictionary<string, EntityEditRepresentativeProperty>();
                     entityEditSectionRowProperty.entityAuxData.properties = new Dictionary<string, List<EntityEditRepresentativeProperty>>();
                     foreach (string id in entityEditSectionRowProperty.values)
                     {
-                        entityEditSectionRowProperty.entityAuxData.entities.Add(id, GetRowsEdit(id, rowsEdit, pData, pCombos, pCombosDependency, pTesauros, pLang, pGraph));
+                        entityEditSectionRowProperty.entityAuxData.entities.Add(id, GetRowsEdit(id, rowsEdit, pData, pCombos, pComboAutorizacionesProyectos, pCombosDependency, pTesauros, pLang, pGraph));
                     }
                     return entityEditSectionRowProperty;
                 }
@@ -1708,15 +1739,15 @@ namespace EditorCV.Models
                     if (pItemEditSectionRowProperty.auxEntityData != null && pItemEditSectionRowProperty.auxEntityData.rows != null && pItemEditSectionRowProperty.auxEntityData.rows.Count > 0)
                     {
                         entityEditSectionRowProperty.entityAuxData.entities = new Dictionary<string, List<EntityEditSectionRow>>();
-                        entityEditSectionRowProperty.entityAuxData.rows = GetRowsEdit(null, pItemEditSectionRowProperty.auxEntityData.rows, pData, pCombos, pCombosDependency, pTesauros, pLang, pGraph);
+                        entityEditSectionRowProperty.entityAuxData.rows = GetRowsEdit(null, pItemEditSectionRowProperty.auxEntityData.rows, pData, pCombos, pComboAutorizacionesProyectos, pCombosDependency, pTesauros, pLang, pGraph);
                         entityEditSectionRowProperty.entityAuxData.titles = new Dictionary<string, EntityEditRepresentativeProperty>();
                         entityEditSectionRowProperty.entityAuxData.properties = new Dictionary<string, List<EntityEditRepresentativeProperty>>();
                         foreach (string id in entityEditSectionRowProperty.values)
                         {
-                            entityEditSectionRowProperty.entityAuxData.entities.Add(id, GetRowsEdit(id, pItemEditSectionRowProperty.auxEntityData.rows, pData, pCombos, pCombosDependency, pTesauros, pLang, pGraph));
+                            entityEditSectionRowProperty.entityAuxData.entities.Add(id, GetRowsEdit(id, pItemEditSectionRowProperty.auxEntityData.rows, pData, pCombos, pComboAutorizacionesProyectos, pCombosDependency, pTesauros, pLang, pGraph));
                             if (!string.IsNullOrEmpty(entityEditSectionRowProperty.entityAuxData.propertyOrder))
                             {
-                                string orden = GetPropertiesEdit(id, new ItemEditSectionRowProperty() { property = entityEditSectionRowProperty.entityAuxData.propertyOrder }, pData, pCombos, pCombosDependency, pTesauros, pLang, pGraph).values.FirstOrDefault();
+                                string orden = GetPropertiesEdit(id, new ItemEditSectionRowProperty() { property = entityEditSectionRowProperty.entityAuxData.propertyOrder }, pData, pCombos, pComboAutorizacionesProyectos, pCombosDependency, pTesauros, pLang, pGraph).values.FirstOrDefault();
                                 int.TryParse(orden, out int ordenInt);
                                 entityEditSectionRowProperty.entityAuxData.childsOrder[id] = ordenInt;
                             }

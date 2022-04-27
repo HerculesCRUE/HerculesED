@@ -62,7 +62,10 @@ namespace EditorCV.Models.API.Templates
         //Entidad con autocompletar
         entityautocomplete,
         //Booleano
-        boolean
+        boolean,
+        //Autorización de proyecto
+        projectauthorization
+
     }
 
 }
