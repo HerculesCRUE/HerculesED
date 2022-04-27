@@ -30,18 +30,20 @@ namespace OAI_PMH.Services
                     if (diff.TotalSeconds < 1800)
                     {
                         accessToken = RefreshToken(pConfig);
+                        lastUpdate = DateTime.UtcNow;
                     }
                     else
                     {
                         accessToken = GetToken(pConfig);
+                        lastUpdate = DateTime.UtcNow;
                     }
                 }
             }
             else
             {
                 accessToken = GetToken(pConfig);
+                lastUpdate = DateTime.UtcNow;
             }
-            lastUpdate = DateTime.UtcNow;
             return accessToken;
         }
 
