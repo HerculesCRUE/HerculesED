@@ -41,6 +41,7 @@ namespace OAI_PMH.Services
             {
                 accessToken = GetToken(pConfig);
             }
+            lastUpdate = DateTime.UtcNow;
             return accessToken;
         }
 
