@@ -104,7 +104,6 @@ namespace OAI_PMH.Services
             var json = JObject.Parse(result);
             accessToken = json["access_token"].ToString();
             refreshToken = json["refresh_token"].ToString();
-            lastUpdate = DateTime.UtcNow;
 
             return accessToken;
         }
