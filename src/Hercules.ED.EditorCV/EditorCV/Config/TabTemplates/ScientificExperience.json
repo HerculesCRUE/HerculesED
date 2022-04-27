@@ -181,6 +181,19 @@
                     "properties": [
                       {
                         "title": {
+                          "es": "Autorización del proyecto"
+                        },
+                        "property": "http://w3id.org/roh/projectAuthorization",
+                        "required": false,
+                        "type": "projectauthorization",
+                        "width": 3
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
                           "es": "Nombre del proyecto"
                         },
                         "placeholder": {
@@ -531,7 +544,7 @@
                                   "dependency": {
                                     "property": "http://w3id.org/roh/organizationTitle",
                                     "propertyValue": "*"
-                                  },                                  
+                                  },
                                   "type": "selectCombo",
                                   "width": 1
                                 },
@@ -603,7 +616,7 @@
                                     "property": {
                                       "property": "http://www.geonames.org/ontology#name"
                                     }
-                                  },                                  
+                                  },
                                   "type": "selectCombo",
                                   "width": 1
                                 }
@@ -708,7 +721,7 @@
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
                           }
-                        },                        
+                        },
                         "type": "selectCombo",
                         "width": 1
                       }
@@ -728,7 +741,7 @@
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
                           }
-                        },                        
+                        },
                         "type": "selectCombo",
                         "width": 1
                       },
@@ -770,7 +783,7 @@
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
                           }
-                        },                        
+                        },
                         "type": "selectCombo",
                         "width": 1
                       },
@@ -805,7 +818,7 @@
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
                           }
-                        },                        
+                        },
                         "type": "selectCombo",
                         "width": 1
                       },
@@ -914,7 +927,7 @@
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
                           }
-                        },                        
+                        },
                         "type": "selectCombo",
                         "width": 1
                       }
@@ -1324,7 +1337,7 @@
                         "dependency": {
                           "property": "http://w3id.org/roh/conductedByTitle",
                           "propertyValue": "*"
-                        },                       
+                        },
                         "type": "selectCombo",
                         "width": 1
                       },
@@ -1372,7 +1385,7 @@
                           "property": {
                             "property": "http://www.geonames.org/ontology#name"
                           }
-                        },                       
+                        },
                         "type": "selectCombo",
                         "width": 1
                       },
@@ -1396,7 +1409,7 @@
                           "property": {
                             "property": "http://www.geonames.org/ontology#name"
                           }
-                        },                        
+                        },
                         "type": "selectCombo",
                         "width": 1
                       }
@@ -1503,7 +1516,7 @@
                                   "dependency": {
                                     "property": "http://w3id.org/roh/organizationTitle",
                                     "propertyValue": "*"
-                                  },                                 
+                                  },
                                   "type": "selectCombo",
                                   "width": 1
                                 },
@@ -1551,7 +1564,7 @@
                                     "property": {
                                       "property": "http://www.geonames.org/ontology#name"
                                     }
-                                  },                                 
+                                  },
                                   "type": "selectCombo",
                                   "width": 1
                                 },
@@ -1575,7 +1588,7 @@
                                     "property": {
                                       "property": "http://www.geonames.org/ontology#name"
                                     }
-                                  },                                 
+                                  },
                                   "type": "selectCombo",
                                   "width": 1
                                 }
@@ -1630,7 +1643,7 @@
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
                           }
-                        },                        
+                        },
                         "type": "selectCombo",
                         "width": 1
                       }
@@ -1692,7 +1705,7 @@
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
                           }
-                        },                        
+                        },
                         "type": "selectCombo",
                         "width": 1
                       }
@@ -1712,7 +1725,7 @@
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
                           }
-                        },                        
+                        },
                         "type": "selectCombo",
                         "width": 1
                       },
@@ -1754,7 +1767,7 @@
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
                           }
-                        },                        
+                        },
                         "type": "selectCombo",
                         "width": 1
                       },
@@ -1900,7 +1913,7 @@
           }
         }
       }
-    },    
+    },
     {
       "rdftype": "http://w3id.org/roh/RelatedPatent",
       "property": "http://w3id.org/roh/patents",
@@ -3261,7 +3274,7 @@
                           "property": {
                             "property": "http://purl.org/dc/elements/1.1/title"
                           }
-                        },                        
+                        },
                         "type": "selectCombo",
                         "width": 1
                       }
@@ -3305,7 +3318,7 @@
                         "dependency": {
                           "property": "http://w3id.org/roh/affiliatedOrganizationTitle",
                           "propertyValue": "*"
-                        },                        
+                        },
                         "type": "selectCombo",
                         "width": 1
                       },
@@ -3403,7 +3416,7 @@
                           "property": {
                             "property": "http://www.geonames.org/ontology#name"
                           }
-                        },                       
+                        },
                         "type": "selectCombo",
                         "width": 1
                       },
@@ -3427,7 +3440,7 @@
                           "property": {
                             "property": "http://www.geonames.org/ontology#name"
                           }
-                        },                       
+                        },
                         "type": "selectCombo",
                         "width": 1
                       }
