@@ -24,7 +24,7 @@ namespace OAI_PMH.Services
                 idList = response.Content[1..^1].Split(',').ToList();
                 foreach (string id in idList)
                 {
-                    idDictionary.Add("Autorizacion_" + id, DateTime.UtcNow);
+                    idDictionary.Add("AutorizacionProyecto_" + id, DateTime.UtcNow);
                 }
             }
             return idDictionary;
@@ -33,7 +33,7 @@ namespace OAI_PMH.Services
         public static Autorizacion GetAutorizacion(string id, ConfigService pConfig)
         {
             string accessToken = Token.CheckToken(pConfig);
-            string identifier = id.Replace("\"", "");
+            string identifier = id.Split("_")[1];
             RestClient client = new(pConfig.GetUrlBaseAutorizacion() + "autorizaciones/" + identifier);
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
             var request = new RestRequest(Method.GET);

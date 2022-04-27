@@ -1,8 +1,6 @@
 ﻿using OAI_PMH.Controllers;
 using OAI_PMH.Models.SGI;
-using OAI_PMH.Models.SGI.ActividadDocente;
 using OAI_PMH.Models.SGI.Autorizacion;
-using OAI_PMH.Models.SGI.FormacionAcademica;
 using OAI_PMH.Models.SGI.Organization;
 using OAI_PMH.Models.SGI.PersonalData;
 using OAI_PMH.Models.SGI.ProduccionCientifica;
@@ -253,7 +251,7 @@ namespace OAI_PMH.Models.OAIPMH
                         List<Record> invencionRecordList = new();
                         foreach (Invencion invencion in invencionList)
                         {
-                            invencionRecordList.Add(ToRecord(invencion, arguments.Set, invencion.id, startDate, arguments.MetadataPrefix));
+                            invencionRecordList.Add(ToRecord(invencion, arguments.Set, invencion.id.ToString(), startDate, arguments.MetadataPrefix));
                         }
                         container.Records = invencionRecordList;
                         break;
