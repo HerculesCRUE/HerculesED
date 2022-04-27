@@ -76,9 +76,9 @@
 
                                                         @if (profile.researchers.Count > 0) {
                                                             <ul>
-                                                            @foreach (User user in profile.researchers) 
+                                                            @foreach (User user in profile.researchers.Distinct()) 
                                                             {
-                                                                if (user.id != "" && user.name != "")
+                                                                if (user.id != "" && user.name != "" && !user.id.StartsWith("http://gnoss"))
                                                                 {
                                                                     string url =Comunidad.Url+
                                                                     "/"+Html.GetText("URLSEM", "RECURSO")+"/"+ Es.Riam.Util.UtilCadenas.EliminarCaracteresUrlSem(user.name)+"/"+user.id;
@@ -172,7 +172,8 @@
             this.title = fila["title"].ToString();
         }
 
-        public void AddPerfil (System.Data.DataRow fila) {
+        public void AddPerfil (System.Data.DataRow fila) 
+        {
             Perfil nperfil = new();
             nperfil.researchers = new();
             try
