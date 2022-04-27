@@ -25,9 +25,16 @@ namespace OAI_PMH.Services
             if (lastUpdate != default)
             {
                 TimeSpan diff = DateTime.UtcNow.Subtract(lastUpdate);
-                if (diff.TotalSeconds > 300 && diff.TotalSeconds < 1800)
+                if (diff.TotalSeconds > 300)
                 {
-                    accessToken = RefreshToken(pConfig);
+                    if (diff.TotalSeconds < 1800)
+                    {
+                        accessToken = RefreshToken(pConfig);
+                    }
+                    else
+                    {
+                        accessToken = GetToken(pConfig);
+                    }
                 }
             }
             else
@@ -51,7 +58,7 @@ namespace OAI_PMH.Services
                     while (true)
                     {
                         try
-                        {                            
+                        {
                             response = await httpClient.SendAsync(request);
                             break;
                         }
