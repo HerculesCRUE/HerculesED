@@ -189,6 +189,8 @@ namespace Harvester
                             //Si no me llega el cris identifier o los datos obligatorios salto a la siguiente
                             if (string.IsNullOrEmpty(empresaOntology.Roh_crisIdentifier) && string.IsNullOrEmpty(empresaOntology.Roh_title))
                             {
+                                // Guardamos el ID cargado.
+                                File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
                                 continue;
                             }
 
@@ -238,6 +240,8 @@ namespace Harvester
                             if (string.IsNullOrEmpty(personOntology.Roh_crisIdentifier) && string.IsNullOrEmpty(personOntology.Foaf_name)
                                 && string.IsNullOrEmpty(personOntology.Foaf_firstName) && string.IsNullOrEmpty(personOntology.Foaf_lastName))
                             {
+                                // Guardamos el ID cargado.
+                                File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
                                 continue;
                             }
 
@@ -281,6 +285,8 @@ namespace Harvester
                             //Si no me llega el cris identifier o los datos obligatorios salto a la siguiente
                             if (string.IsNullOrEmpty(proyecto.Id) && string.IsNullOrEmpty(proyecto.Titulo))
                             {
+                                // Guardamos el ID cargado.
+                                File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
                                 continue;
                             }
 
@@ -699,6 +705,18 @@ namespace Harvester
                     persona.Vcard_email.Add(item.email);
                 }
             }
+            if (!string.IsNullOrEmpty(pDatos.DatosContacto.PaisContacto.Nombre) || !string.IsNullOrEmpty(pDatos.DatosContacto.ComAutonomaContacto.Nombre)
+                || !string.IsNullOrEmpty(pDatos.DatosContacto.CiudadContacto) || !string.IsNullOrEmpty(pDatos.DatosContacto.CodigoPostalContacto)
+                || !string.IsNullOrEmpty(pDatos.DatosContacto.DireccionContacto))
+            {
+                string direccionContacto = string.IsNullOrEmpty(pDatos.DatosContacto.DireccionContacto) ? "" : pDatos.DatosContacto.DireccionContacto;
+                direccionContacto += string.IsNullOrEmpty(pDatos.DatosContacto.CodigoPostalContacto) ? "" : ", " + pDatos.DatosContacto.CodigoPostalContacto;
+                direccionContacto += string.IsNullOrEmpty(pDatos.DatosContacto.CiudadContacto) ? "" : ", " + pDatos.DatosContacto.CiudadContacto;
+                direccionContacto += string.IsNullOrEmpty(pDatos.DatosContacto.ProvinciaContacto.Nombre) ? "" : ", " + pDatos.DatosContacto.ProvinciaContacto.Nombre;
+                direccionContacto += string.IsNullOrEmpty(pDatos.DatosContacto.PaisContacto.Nombre) ? "" : ", " + pDatos.DatosContacto.PaisContacto.Nombre;
+
+                persona.Vcard_address = direccionContacto;
+            }
             if (pDatos.DatosContacto.Telefonos != null && pDatos.DatosContacto.Telefonos.Any())
             {
                 persona.Vcard_hasTelephone = new List<string>();
@@ -712,20 +730,16 @@ namespace Harvester
                 persona.Roh_isActive = pDatos.Activo.Value;
             }
             // TODO: Posible cambio Treelogic
-            if (pDatos.Vinculacion != null && pDatos.Vinculacion.Departamento != null && !string.IsNullOrEmpty(pDatos.Vinculacion.Departamento.Id))
+            if (!string.IsNullOrEmpty(pDatos.Vinculacion?.Departamento?.Id))
             {
                 persona.IdVivo_departmentOrSchool = $@"http://gnoss.com/items/department_{pDatos.Vinculacion.Departamento.Id}";//TODO
             }
-            if (pDatos.Vinculacion != null && pDatos.Vinculacion.CategoriaProfesional != null && !string.IsNullOrEmpty(pDatos.Vinculacion.CategoriaProfesional.Nombre))
+            if (!string.IsNullOrEmpty(pDatos.Vinculacion?.CategoriaProfesional?.Nombre))
             {
                 //Cargo en la universidad
                 persona.Roh_hasPosition = pDatos.Vinculacion.CategoriaProfesional.Nombre;
             }
 
-            if (!string.IsNullOrEmpty(pDatos.Vinculacion?.AreaConocimiento?.Nombre))
-            {
-                //persona.Roh_lineResearch.Add(pDatos.Vinculacion.AreaConocimiento.Nombre);
-            }
             persona.Roh_lastUpdatedDate = DateTime.UtcNow;
 
             return persona;
@@ -844,8 +858,7 @@ namespace Harvester
             //Añado el tipo de proyecto en caso de ser no competitivo
             if (project.IdRoh_scientificExperienceProject.Equals(mResourceApi.GraphsUrl + "items/scientificexperienceproject_SEP2"))
             {
-                //TODO - check el id es la url
-                string projectType = mResourceApi.GraphsUrl + "items /projecttype_";
+                string projectType = mResourceApi.GraphsUrl + "items/projecttype_";
                 project.IdRoh_projectType = (bool)pDatos.CoordinadorExterno ? projectType + "875" : projectType + "876";
             }
 
@@ -856,10 +869,6 @@ namespace Harvester
             if (!string.IsNullOrEmpty(pDatos.Observaciones))
             {
                 project.Vivo_description = pDatos.Observaciones;
-            }
-            if (!string.IsNullOrEmpty(pDatos.Acronimo))
-            {
-                //project.Vivo_abbreviation = pDatos.Acronimo;
             }
             //TODO -revisar
             if (pDatos.Equipo != null && pDatos.Equipo.Any())
@@ -931,7 +940,7 @@ namespace Harvester
                     Empresa organizacion = new Empresa();
                     organizationAux.Roh_organizationTitle = entidadFinanciadora.EntidadRef;
 
-                    string org = harvesterServices.GetRecord("Organization_" + entidadFinanciadora.EntidadRef);
+                    string org = harvesterServices.GetRecord("Organizacion_" + entidadFinanciadora.EntidadRef);
                     XmlSerializer xmlSerializer = new(typeof(Empresa));
                     using (StringReader sr = new(org))
                     {
