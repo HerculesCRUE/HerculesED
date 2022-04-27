@@ -284,7 +284,7 @@ namespace EditorCV.Models
             string dia = pFechaSparql.Substring(6, 2);
             string mes = pFechaSparql.Substring(4, 2);
             string anyo = pFechaSparql.Substring(0, 4);
-            return $@"{anyo}-{mes}-{dia}";
+            return $@"{anyo}-{mes}-{dia}T00:00:00Z";
         }
 
         /// <summary>
