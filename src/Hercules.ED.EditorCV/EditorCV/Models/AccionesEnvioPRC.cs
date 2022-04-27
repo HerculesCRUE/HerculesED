@@ -199,8 +199,8 @@ namespace EditorCV.Models
                     string crisIdentifier = UtilidadesAPI.GetValorFilaSparqlObject(fila, "crisIdentifier");
                     if (!string.IsNullOrEmpty(crisIdentifier))
                     {
-                        PRC.proyectos = new List<float>() { float.Parse(140012 + "") };
-                        //PRC.proyectos = new List<float>() { float.Parse(crisIdentifier) };
+                        //PRC.proyectos = new List<float>() { float.Parse(140012 + "") };
+                        PRC.proyectos = new List<float>() { float.Parse(crisIdentifier) };
                     }
                 }
             }
@@ -344,6 +344,8 @@ namespace EditorCV.Models
 
                 select.Append(mPrefijos);
                 select.Append("SELECT DISTINCT ?title ?issued ?type ?supportType ?numVol ?paginas ?doi ?handle ?pmid ?openAccess ");
+                where.Append("FROM <http://gnoss.com/documentformat.owl> ");
+                where.Append("FROM <http://gnoss.com/publicationtype.owl> ");
                 where.Append("WHERE { ");
                 where.Append("?s a bibo:Document. ");
                 where.Append("?s roh:title ?title. ");
@@ -418,7 +420,10 @@ namespace EditorCV.Models
                                     }
                                 }
 
-                                PRC.campos.Add(campo);
+                                if (!string.IsNullOrEmpty(campo.codigoCVN) && campo.valores != null && campo.valores.Any())
+                                {
+                                    PRC.campos.Add(campo);
+                                }
                             }
                         }
                     }
@@ -460,10 +465,14 @@ namespace EditorCV.Models
                 where = new StringBuilder();
 
                 select.Append(mPrefijos);
-                select.Append("SELECT DISTINCT ?title ?fechaCelebracion ?fechaFinalizacion ?tipoEvento ?geographicFocus ?presentedAt ?publicationVenueText ?doi ?handle ?pmid ?isbn ?issn ?participationType ");
+                select.Append("SELECT DISTINCT ?title ?type ?supportType ?fechaCelebracion ?fechaFinalizacion ?tipoEvento ?geographicFocus ?presentedAt ?publicationVenueText ?doi ?handle ?pmid ?isbn ?issn ?participationType ");
+                where.Append("FROM <http://gnoss.com/documentformat.owl> ");
+                where.Append("FROM <http://gnoss.com/publicationtype.owl> ");
                 where.Append("WHERE { ");
                 where.Append("?s a bibo:Document. ");
                 where.Append("?s roh:title ?title. ");
+                where.Append("OPTIONAL{?s dc:type ?pubTypeAux. ?pubTypeAux dc:identifier ?type. } ");
+                where.Append("OPTIONAL{?s roh:supportType ?supType. ?supType dc:identifier ?supportType. } ");
                 where.Append("OPTIONAL{?s roh:presentedAtStart ?fechaCelebracion. } ");
                 where.Append("OPTIONAL{?s roh:presentedAtEnd ?fechaFinalizacion. } ");
                 where.Append("OPTIONAL{?s roh:presentedAtType ?tipoEventoAux. ?tipoEventoAux dc:identifier ?tipoEvento. } ");
@@ -523,13 +532,10 @@ namespace EditorCV.Models
                                     }
                                 }
 
-                                PRC.campos.Add(campo);
-
-                                //ÑAPA
-                                //campo = new CampoProduccionCientifica();
-                                //campo.codigoCVN = "060.010.020.000";
-                                //campo.valores = new List<string>() { "020" };
-                                //PRC.campos.Add(campo);
+                                if (!string.IsNullOrEmpty(campo.codigoCVN) && campo.valores != null && campo.valores.Any())
+                                {
+                                    PRC.campos.Add(campo);
+                                }
                             }
                         }
                     }
@@ -563,6 +569,11 @@ namespace EditorCV.Models
                 var request = new RestRequest(Method.POST);
                 request.AddJsonBody(PRC);
                 IRestResponse response = client.Execute(request);
+
+                if ((int)response.StatusCode < 200 || (int)response.StatusCode >= 300)
+                {
+                    throw new Exception();
+                }
             }
             catch (Exception)
             {
@@ -678,6 +689,7 @@ namespace EditorCV.Models
         private void RellenarDiccionarioCongresos()
         {
             dicPropiedadesCongresos.Add("title", "060.010.020.030");
+            dicPropiedadesCongresos.Add("type", "060.010.010.010");
             dicPropiedadesCongresos.Add("supportType", "060.010.010.070");
             dicPropiedadesCongresos.Add("fechaCelebracion", "060.010.020.190");
             dicPropiedadesCongresos.Add("fechaFinalizacion", "060.010.020.380");
