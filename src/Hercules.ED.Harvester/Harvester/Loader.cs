@@ -475,6 +475,32 @@ namespace Harvester
                             File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
                             break;
 
+                            xmlSerializer = new(typeof(Invencion));
+                            using (StringReader sr = new(xmlResult))
+                            {
+                                grupo = (Grupo)xmlSerializer.Deserialize(sr);
+                            }
+
+                            //Cambio de modelo.TODO: Mirar propiedades.
+                            //ProjectAuthorization projectAuthOntology = CrearProyecto(proyecto);
+
+                            //resource = projectAuthOntology.ToGnossApiResource(mResourceApi, null);
+                            //if (pDicRecursosCargados.ContainsKey(projectAuthOntology.Roh_crisIdentifier))
+                            //{
+                            //    // Modificación.
+                            //    mResourceApi.ModifyComplexOntologyResource(resource, false, false);
+                            //}
+                            //else
+                            //{
+                            //    // Carga.                   
+                            //    mResourceApi.LoadComplexSemanticResource(resource, false, false);
+                            //    pDicRecursosCargados[projectAuthOntology.Roh_crisIdentifier] = resource.GnossId;
+                            //}
+
+                            // Guardamos el ID cargado.
+                            File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
+                            break;
+
                     }
 
                     // Borra el fichero.
