@@ -184,7 +184,7 @@ namespace Harvester
                             //CreacionAuxiliarOrganizacion(organization.Id);
 
                             // Cambio de modelo. TODO: Mirar propiedades.
-                            OrganizationOntology.Organization empresaOntology = CrearOrganizacion(organization);
+                            OrganizationOntology.Organization empresaOntology = CrearOrganizacionOntology(organization);
 
                             //Si no me llega el cris identifier o los datos obligatorios salto a la siguiente
                             if (string.IsNullOrEmpty(empresaOntology.Roh_crisIdentifier) && string.IsNullOrEmpty(empresaOntology.Roh_title))
@@ -705,19 +705,19 @@ namespace Harvester
                     persona.Vcard_email.Add(item.email);
                 }
             }
-            if (!string.IsNullOrEmpty(pDatos.DatosContacto.PaisContacto.Nombre) || !string.IsNullOrEmpty(pDatos.DatosContacto.ComAutonomaContacto.Nombre)
-                || !string.IsNullOrEmpty(pDatos.DatosContacto.CiudadContacto) || !string.IsNullOrEmpty(pDatos.DatosContacto.CodigoPostalContacto)
-                || !string.IsNullOrEmpty(pDatos.DatosContacto.DireccionContacto))
+            if (!string.IsNullOrEmpty(pDatos.DatosContacto?.PaisContacto?.Nombre) || !string.IsNullOrEmpty(pDatos.DatosContacto?.ComAutonomaContacto?.Nombre)
+                || !string.IsNullOrEmpty(pDatos.DatosContacto?.CiudadContacto) || !string.IsNullOrEmpty(pDatos.DatosContacto?.CodigoPostalContacto)
+                || !string.IsNullOrEmpty(pDatos.DatosContacto?.DireccionContacto))
             {
-                string direccionContacto = string.IsNullOrEmpty(pDatos.DatosContacto.DireccionContacto) ? "" : pDatos.DatosContacto.DireccionContacto;
-                direccionContacto += string.IsNullOrEmpty(pDatos.DatosContacto.CodigoPostalContacto) ? "" : ", " + pDatos.DatosContacto.CodigoPostalContacto;
-                direccionContacto += string.IsNullOrEmpty(pDatos.DatosContacto.CiudadContacto) ? "" : ", " + pDatos.DatosContacto.CiudadContacto;
-                direccionContacto += string.IsNullOrEmpty(pDatos.DatosContacto.ProvinciaContacto.Nombre) ? "" : ", " + pDatos.DatosContacto.ProvinciaContacto.Nombre;
-                direccionContacto += string.IsNullOrEmpty(pDatos.DatosContacto.PaisContacto.Nombre) ? "" : ", " + pDatos.DatosContacto.PaisContacto.Nombre;
+                string direccionContacto = string.IsNullOrEmpty(pDatos.DatosContacto?.DireccionContacto) ? "" : pDatos.DatosContacto.DireccionContacto;
+                direccionContacto += string.IsNullOrEmpty(pDatos.DatosContacto?.CodigoPostalContacto) ? "" : ", " + pDatos.DatosContacto.CodigoPostalContacto;
+                direccionContacto += string.IsNullOrEmpty(pDatos.DatosContacto?.CiudadContacto) ? "" : ", " + pDatos.DatosContacto.CiudadContacto;
+                direccionContacto += string.IsNullOrEmpty(pDatos.DatosContacto?.ProvinciaContacto?.Nombre) ? "" : ", " + pDatos.DatosContacto.ProvinciaContacto.Nombre;
+                direccionContacto += string.IsNullOrEmpty(pDatos.DatosContacto?.PaisContacto?.Nombre) ? "" : ", " + pDatos.DatosContacto.PaisContacto.Nombre;
 
                 persona.Vcard_address = direccionContacto;
             }
-            if (pDatos.DatosContacto.Telefonos != null && pDatos.DatosContacto.Telefonos.Any())
+            if (pDatos.DatosContacto?.Telefonos != null && pDatos.DatosContacto.Telefonos.Any())
             {
                 persona.Vcard_hasTelephone = new List<string>();
                 foreach (string item in pDatos.DatosContacto.Telefonos)
@@ -741,10 +741,10 @@ namespace Harvester
             }
 
             persona.Roh_lastUpdatedDate = DateTime.UtcNow;
-
+            //TODO insertar en BBDD y asignar gnossid
             return persona;
         }
-        public static OrganizationOntology.Organization CrearOrganizacion(Empresa pDatos)
+        public static OrganizationOntology.Organization CrearOrganizacionOntology(Empresa pDatos)
         {
             OrganizationOntology.Organization organization = new OrganizationOntology.Organization();
             organization.Roh_crisIdentifier = pDatos.Id;
@@ -752,6 +752,76 @@ namespace Harvester
             organization.Roh_title = pDatos.Nombre;
 
             return organization;
+        }
+
+        private static OrganizationOntology.Organization CrearEntidadGestora(string entidadGestoraID)
+        {
+            OrganizationOntology.Organization organization = new OrganizationOntology.Organization();
+            Empresa empresa = new Empresa();
+            string emp = harvesterServices.GetRecord("Organizacion_" + entidadGestoraID);
+            XmlSerializer xmlSerializer = new(typeof(Empresa));
+            using (StringReader sr = new(emp))
+            {
+                empresa = (Empresa)xmlSerializer.Deserialize(sr);
+            }
+            organization.Roh_crisIdentifier = entidadGestoraID;
+            organization.Roh_title = empresa.Nombre;
+
+            //TODO insertar
+
+            return organization;
+        }
+
+        private static string CrearEntidadConvocante(string entidadConvocanteID)
+        {
+            OrganizationOntology.Organization organization = new OrganizationOntology.Organization();
+            Empresa empresa = new Empresa();
+            string emp = harvesterServices.GetRecord("Organizacion_" + entidadConvocanteID);
+            XmlSerializer xmlSerializer = new(typeof(Empresa));
+            using (StringReader sr = new(emp))
+            {
+                empresa = (Empresa)xmlSerializer.Deserialize(sr);
+            }
+            organization.Roh_crisIdentifier = entidadConvocanteID;
+            organization.Roh_isSynchronized = true;//TODO
+            organization.Roh_title = empresa.Nombre;
+
+            //TODO insertar
+
+
+            ProjectOntology.OrganizationAux organizationAux = new ProjectOntology.OrganizationAux();
+            organizationAux.Roh_organization = organization;//TODO - comprobar o cambiar por identificador al añadir
+            organizationAux.Roh_organizationTitle = empresa.Nombre;
+            organizationAux.Vcard_locality = empresa.DatosContacto?.Direccion;
+            //TODO insertar
+
+            return organizationAux.GNOSSID;//TODO asignar si no se autoasigna
+        }
+
+        private static string CrearEntidadFinanciadora(string entidadFinanciadoraID)
+        {
+            OrganizationOntology.Organization organization = new OrganizationOntology.Organization();
+            Empresa empresa = new Empresa();
+            string emp = harvesterServices.GetRecord("Organizacion_" + entidadFinanciadoraID);
+            XmlSerializer xmlSerializer = new(typeof(Empresa));
+            using (StringReader sr = new(emp))
+            {
+                empresa = (Empresa)xmlSerializer.Deserialize(sr);
+            }
+            organization.Roh_crisIdentifier = entidadFinanciadoraID;
+            organization.Roh_isSynchronized = true;//TODO
+            organization.Roh_title = empresa.Nombre;
+
+            //TODO insertar
+
+
+            ProjectOntology.OrganizationAux organizationAux = new ProjectOntology.OrganizationAux();
+            organizationAux.Roh_organization = organization;//TODO - comprobar o cambiar por identificador al añadir
+            organizationAux.Roh_organizationTitle = empresa.Nombre;
+            organizationAux.Vcard_locality = empresa.DatosContacto?.Direccion;
+            //TODO insertar
+
+            return organizationAux.GNOSSID;//TODO asignar si no se autoasigna
         }
 
         public static ProjectAuthorization CrearAutorizacion(Autorizacion pAutorizacionProyecto)
@@ -845,6 +915,15 @@ namespace Harvester
             }
         }
 
+        private Tuple<string, string, string> RestarFechas(DateTime fechaInicio, DateTime fechaFin)
+        {
+            int total = (fechaFin - fechaInicio).Days;
+            int anios = total / 365;
+            int meses = (total - (365 * anios)) / 30;
+            int dias = (total - (365 * anios) - (30 * meses));
+            return new Tuple<string, string, string>(anios.ToString(), meses.ToString(), dias.ToString());
+        }
+
         public static ProjectOntology.Project CrearProyecto(Proyecto pDatos,
             Dictionary<string, Tuple<string, string>> dicPersonas, Dictionary<string, Tuple<string, string>> dicOrganizaciones)
         {
@@ -856,7 +935,8 @@ namespace Harvester
             TipoProyecto(project, pDatos);
 
             //Añado el tipo de proyecto en caso de ser no competitivo
-            if (project.IdRoh_scientificExperienceProject.Equals(mResourceApi.GraphsUrl + "items/scientificexperienceproject_SEP2"))
+            if (project.IdRoh_scientificExperienceProject.Equals(mResourceApi.GraphsUrl + "items/scientificexperienceproject_SEP2")
+                && pDatos.CoordinadorExterno != null)
             {
                 string projectType = mResourceApi.GraphsUrl + "items/projecttype_";
                 project.IdRoh_projectType = (bool)pDatos.CoordinadorExterno ? projectType + "875" : projectType + "876";
@@ -890,21 +970,10 @@ namespace Harvester
                         //Pido los datos de la persona para insertarla
                         Persona persona = ObtenerPersona(item.PersonaRef);
 
-                        nuevaPersona = CrearPersona(persona);
                         //Si la persona no tiene nombre no la inserto
                         if (!string.IsNullOrEmpty(persona.Nombre))
                         {
-                            //TODO - cambiar por el metodo crear persona 
-                            nuevaPersona.Foaf_name = persona.Nombre + " " + persona.Apellidos;
-                            nuevaPersona.Foaf_firstName = persona.Nombre;
-                            nuevaPersona.Foaf_lastName = persona.Apellidos;
-                            nuevaPersona.Roh_isActive = persona.Activo != null ? (bool)persona.Activo : false;
-                            nuevaPersona.Roh_crisIdentifier = persona.Id;
-                            //TODO - ¿isIP?
-                            nuevaPersona.Roh_isIPGroupActually = false;
-                            nuevaPersona.Roh_isIPGroupHistorically = false;
-                            nuevaPersona.Roh_isIPProjectActually = item.RolProyecto.RolPrincipal;//TODO - check
-                            nuevaPersona.Roh_isIPProjectHistorically = false;
+                            nuevaPersona = CrearPersona(persona);
 
                             //mResourceApi.LoadComplexSemanticResource(nuevaPersona, false, false);
                             dicPersonas[nuevaPersona.Roh_crisIdentifier] = new Tuple<string, string>("", "");//TODO //nuevaPersona.GnossId;
@@ -932,28 +1001,32 @@ namespace Harvester
             //Añado las entidades financiadoras que no existan en BBDD
             foreach (ProyectoEntidadFinanciadora entidadFinanciadora in pDatos.EntidadesFinanciadoras)
             {
-                //TODO - si se añaden el resto de entidades la inserción debería ser previa de manera general
                 if (!dicOrganizaciones.ContainsKey(entidadFinanciadora.Id))
                 {
-                    //TODO metodo crearproyecto/empresa
-                    ProjectOntology.OrganizationAux organizationAux = new ProjectOntology.OrganizationAux();
-                    Empresa organizacion = new Empresa();
-                    organizationAux.Roh_organizationTitle = entidadFinanciadora.EntidadRef;
-
-                    string org = harvesterServices.GetRecord("Organizacion_" + entidadFinanciadora.EntidadRef);
-                    XmlSerializer xmlSerializer = new(typeof(Empresa));
-                    using (StringReader sr = new(org))
-                    {
-                        organizacion = (Empresa)xmlSerializer.Deserialize(sr);
-                    }
-                    organizationAux.Roh_organizationTitle = organizacion.Nombre;
-                    organizationAux.IdRoh_organization = dicOrganizaciones[entidadFinanciadora.Id].Item1;
-
-                    //TODO -comprobar null
-                    project.Roh_participates.Add(organizationAux);
-
+                    CrearEntidadFinanciadora(entidadFinanciadora.EntidadRef);
                 }
                 //project.Roh_grantedBy = organizaciones;
+            }
+
+            //Añado las entidades gestoras que no existan en BBDD
+            foreach (ProyectoEntidadGestora entidadGestora in pDatos.EntidadesGestoras)
+            {
+                if (!dicOrganizaciones.ContainsKey(entidadGestora.Id))
+                {
+                    OrganizationOntology.Organization organizacion = CrearEntidadGestora(entidadGestora.EntidadRef);
+                    project.Roh_conductedByTitle = organizacion.Roh_title;
+                    project.IdRoh_conductedBy = organizacion.GNOSSID;
+                }
+            }
+
+            //Añado las entidades participación que no existan en BBDD
+            foreach (ProyectoEntidadConvocante entidadConvocante in pDatos.EntidadesConvocantes)
+            {
+                if (!dicOrganizaciones.ContainsKey(entidadConvocante.Id))
+                {
+                    CrearEntidadConvocante(entidadConvocante.Id);
+                }
+                //project.Roh_participates = organizaciones;
             }
 
             //TODO - revisar
@@ -1017,14 +1090,7 @@ namespace Harvester
             }
 
             project.Roh_relevantResults = pDatos.Contexto?.ResultadosPrevistos;
-
-            //TODO
-            foreach (ProyectoEntidadConvocante entidadConvocante in pDatos.EntidadesConvocantes)
-            {
-                //project.Roh_isSupportedBy
-            }
             project.Roh_projectCode = pDatos.CodigoExterno;
-            //project.IdRoh_scientificExperienceProject
 
             // TODO
 
