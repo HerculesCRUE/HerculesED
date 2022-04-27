@@ -46,11 +46,10 @@ namespace EditorCV.Models
                 string json = JsonConvert.SerializeObject(proyecto);
                 IRestResponse response = client.Execute(request);
 
-                if ((int)response.StatusCode != 200)
+                if ((int)response.StatusCode < 200 || (int)response.StatusCode >= 300)
                 {
                     throw new Exception();
                 }
-
             }
             catch (Exception)
             {
