@@ -6,6 +6,7 @@ using Harvester.Models.SGI.Autorizaciones;
 using Harvester.Models.SGI.ProteccionIndustrialIntelectual;
 using Hercules.MA.ServicioExterno.Controllers.Utilidades;
 using Newtonsoft.Json;
+using OAI_PMH.Models.SGI;
 using OAI_PMH.Models.SGI.Organization;
 using OAI_PMH.Models.SGI.PersonalData;
 using OAI_PMH.Models.SGI.Project;
@@ -915,12 +916,12 @@ namespace Harvester
             }
         }
 
-        private Tuple<string, string, string> RestarFechas(DateTime fechaInicio, DateTime fechaFin)
+        public static Tuple<string, string, string> RestarFechas(DateTime fechaInicio, DateTime fechaFin)
         {
             int total = (fechaFin - fechaInicio).Days;
             int anios = total / 365;
             int meses = (total - (365 * anios)) / 30;
-            int dias = (total - (365 * anios) - (30 * meses));
+            int dias = total - (365 * anios) - (30 * meses);
             return new Tuple<string, string, string>(anios.ToString(), meses.ToString(), dias.ToString());
         }
 
@@ -1083,10 +1084,20 @@ namespace Harvester
             if (pDatos.FechaFinDefinitiva != null)
             {
                 project.Vivo_end = Convert.ToDateTime(pDatos.FechaFinDefinitiva);
+                
+                Tuple<string, string, string> duration = RestarFechas(Convert.ToDateTime(pDatos.FechaInicio), Convert.ToDateTime(pDatos.FechaFinDefinitiva));
+                project.Roh_durationYears = duration.Item1;
+                project.Roh_durationMonths = duration.Item2;
+                project.Roh_durationDays = duration.Item3;
             }
             else
             {
                 project.Vivo_end = pDatos.FechaFin != null ? Convert.ToDateTime(pDatos.FechaFin) : null;
+
+                Tuple<string, string, string> duration = RestarFechas(Convert.ToDateTime(pDatos.FechaInicio), Convert.ToDateTime(pDatos.FechaFinDefinitiva));
+                project.Roh_durationYears = duration.Item1;
+                project.Roh_durationMonths = duration.Item2;
+                project.Roh_durationDays = duration.Item3;
             }
 
             project.Roh_relevantResults = pDatos.Contexto?.ResultadosPrevistos;
