@@ -15,7 +15,7 @@ namespace OAI_PMH.Services
             string accessToken = Token.CheckToken(pConfig);
             Dictionary<string, DateTime> idDictionary = new();
             List<string> idList = new();
-            RestClient client = new(pConfig.GetUrlBaseInvenciones() + "invenciones?q=fechaModificacion=ge=\"" + from + "\"");
+            RestClient client = new(pConfig.GetUrlBaseInvenciones() + "invenciones/modificados-ids?q=fechaModificacion=ge=\"" + from + "\"");
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);
@@ -51,6 +51,6 @@ namespace OAI_PMH.Services
             {
                 return null;
             }
-        }
+        }        
     }
 }

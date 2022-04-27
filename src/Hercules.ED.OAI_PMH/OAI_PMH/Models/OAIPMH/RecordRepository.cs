@@ -1,6 +1,7 @@
 ﻿using OAI_PMH.Controllers;
 using OAI_PMH.Models.SGI;
 using OAI_PMH.Models.SGI.Autorizacion;
+using OAI_PMH.Models.SGI.GruposInvestigacion;
 using OAI_PMH.Models.SGI.Organization;
 using OAI_PMH.Models.SGI.PersonalData;
 using OAI_PMH.Models.SGI.ProduccionCientifica;
@@ -63,6 +64,10 @@ namespace OAI_PMH.Models.OAIPMH
                 case "Invencion":
                     Invencion invencion = Invention.GetInvenciones(identifier, _Config);
                     record = ToRecord(invencion, set, identifier, date, metadataPrefix);
+                    break;
+                case "Grupo":
+                    Grupo grupo = InvestigationGroup.GetGrupos(identifier, _Config);
+                    record = ToRecord(grupo, set, identifier, date, metadataPrefix);
                     break;
                 default:
                     break;
@@ -170,6 +175,15 @@ namespace OAI_PMH.Models.OAIPMH
                         }
                         container.Records = invencionRecordList;
                         break;
+                    case "Grupo":
+                        Dictionary<string, DateTime> modifiedGrupoIds = InvestigationGroup.GetModifiedGrupos(arguments.From, _Config);
+                        List<Record> grupoRecordList = new();
+                        foreach (string grupoId in modifiedGrupoIds.Keys)
+                        {
+                            grupoRecordList.Add(ToIdentifiersRecord("Grupo", grupoId, modifiedGrupoIds[grupoId]));
+                        }
+                        container.Records = grupoRecordList;
+                        break;
                 }
             }
             else
@@ -254,6 +268,20 @@ namespace OAI_PMH.Models.OAIPMH
                             invencionRecordList.Add(ToRecord(invencion, arguments.Set, invencion.id.ToString(), startDate, arguments.MetadataPrefix));
                         }
                         container.Records = invencionRecordList;
+                        break;
+                    case "Grupo":
+                        Dictionary<string, DateTime> modifiedGrupoIds = InvestigationGroup.GetModifiedGrupos(arguments.From, _Config);
+                        List<Grupo> grupoList = new();
+                        foreach (string grupoId in modifiedGrupoIds.Keys)
+                        {
+                            grupoList.Add(InvestigationGroup.GetGrupos(grupoId, _Config));
+                        }
+                        List<Record> grupoRecordList = new();
+                        foreach (Grupo grupo in grupoList)
+                        {
+                            grupoRecordList.Add(ToRecord(grupo, arguments.Set, grupo.id.ToString(), startDate, arguments.MetadataPrefix));
+                        }
+                        container.Records = grupoRecordList;
                         break;
                 }
             }

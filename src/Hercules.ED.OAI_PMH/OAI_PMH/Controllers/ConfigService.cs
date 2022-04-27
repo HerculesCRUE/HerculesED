@@ -25,6 +25,7 @@ namespace OAI_PMH.Controllers
         private string UrlBaseProduccionCientifica { get; set; }
         private string UrlBaseAutorizacion { get; set; }
         private string UrlBaseInvenciones { get; set; }
+        private string UrlBaseGrupos { get; set; }
 
         /// <summary>
         /// Constructor.
@@ -308,6 +309,31 @@ namespace OAI_PMH.Controllers
             }
 
             return UrlBaseInvenciones;
+        }
+
+        /// <summary>
+        /// Obtiene la URL base del API de obtención de Grupos que ha sido configurada.
+        /// </summary>
+        /// <returns></returns>
+        public string GetUrlBaseGrupos()
+        {
+            if (string.IsNullOrEmpty(UrlBaseGrupos))
+            {
+                string connectionString = string.Empty;
+                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                if (environmentVariables.Contains("UrlBaseGrupos"))
+                {
+                    connectionString = environmentVariables["UrlBaseGrupos"] as string;
+                }
+                else
+                {
+                    connectionString = configuracion["UrlBaseGrupos"];
+                }
+
+                UrlBaseGrupos = connectionString;
+            }
+
+            return UrlBaseGrupos;
         }
 
         /// <summary>
