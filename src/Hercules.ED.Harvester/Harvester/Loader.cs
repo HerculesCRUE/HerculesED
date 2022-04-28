@@ -819,8 +819,8 @@ namespace Harvester
         {
             OrganizationOntology.Organization organization = new OrganizationOntology.Organization();
             organization.Roh_crisIdentifier = pDatos.Id;
-            organization.Roh_isSynchronized = true;//TODO - eliminar
             organization.Roh_title = pDatos.Nombre;
+            organization.Vcard_locality = pDatos.DatosContacto?.Direccion;
 
             return organization;
         }
@@ -837,6 +837,7 @@ namespace Harvester
             }
             organization.Roh_crisIdentifier = entidadGestoraID;
             organization.Roh_title = empresa.Nombre;
+            organization.Vcard_locality = empresa.DatosContacto?.Direccion;
 
             //TODO insertar
 
@@ -854,14 +855,15 @@ namespace Harvester
                 empresa = (Empresa)xmlSerializer.Deserialize(sr);
             }
             organization.Roh_crisIdentifier = entidadConvocanteID;
-            organization.Roh_isSynchronized = true;//TODO
             organization.Roh_title = empresa.Nombre;
+            organization.Vcard_locality = empresa.DatosContacto?.Direccion;
 
             //TODO insertar
 
 
             ProjectOntology.OrganizationAux organizationAux = new ProjectOntology.OrganizationAux();
             organizationAux.Roh_organization = organization;//TODO - comprobar o cambiar por identificador al añadir
+            //organizationAux.IdRoh_organization = organization.GNOSSID;
             organizationAux.Roh_organizationTitle = empresa.Nombre;
             organizationAux.Vcard_locality = empresa.DatosContacto?.Direccion;
             //TODO insertar
@@ -880,14 +882,15 @@ namespace Harvester
                 empresa = (Empresa)xmlSerializer.Deserialize(sr);
             }
             organization.Roh_crisIdentifier = entidadFinanciadoraID;
-            organization.Roh_isSynchronized = true;//TODO
             organization.Roh_title = empresa.Nombre;
+            organization.Vcard_locality = empresa.DatosContacto?.Direccion;
 
             //TODO insertar
 
 
             ProjectOntology.OrganizationAux organizationAux = new ProjectOntology.OrganizationAux();
             organizationAux.Roh_organization = organization;//TODO - comprobar o cambiar por identificador al añadir
+            //organizationAux.IdRoh_organization = organization.GNOSSID;
             organizationAux.Roh_organizationTitle = empresa.Nombre;
             organizationAux.Vcard_locality = empresa.DatosContacto?.Direccion;
             //TODO insertar
@@ -900,7 +903,7 @@ namespace Harvester
             ProjectAuthorization autorizacion = new ProjectAuthorization();
             Persona persona = new Persona();
             autorizacion.Roh_crisIdentifier = pAutorizacionProyecto.id.ToString();
-            autorizacion.Roh_title = pAutorizacionProyecto.titulo;
+            autorizacion.Roh_title = pAutorizacionProyecto.tituloProyecto;
             autorizacion.IdRoh_owner = GetPersonGnossId(pAutorizacionProyecto.solicitanteRef);
 
             if (string.IsNullOrEmpty(autorizacion.IdRoh_owner))
@@ -1146,28 +1149,32 @@ namespace Harvester
                 project.Roh_monetaryAmount = (float)cuantiaTotal;
             }
 
-            //TODO - revisar
             project.Vivo_start = pDatos.FechaInicio != null ? Convert.ToDateTime(pDatos.FechaInicio) : null;
-
             //Si está informada la FechaFinDefinitiva prevalecerá sobre la FechaFin y será la considerada como fecha de finalización del proyecto,
             //independientemente de que sea mayor o menor que la fecha de fin inicial.
             if (pDatos.FechaFinDefinitiva != null)
             {
                 project.Vivo_end = Convert.ToDateTime(pDatos.FechaFinDefinitiva);
-                
-                Tuple<string, string, string> duration = RestarFechas(Convert.ToDateTime(pDatos.FechaInicio), Convert.ToDateTime(pDatos.FechaFinDefinitiva));
-                project.Roh_durationYears = duration.Item1;
-                project.Roh_durationMonths = duration.Item2;
-                project.Roh_durationDays = duration.Item3;
+
+                if (pDatos.FechaInicio != null)
+                {
+                    Tuple<string, string, string> duration = RestarFechas(Convert.ToDateTime(pDatos.FechaInicio), Convert.ToDateTime(pDatos.FechaFinDefinitiva));
+                    project.Roh_durationYears = duration.Item1;
+                    project.Roh_durationMonths = duration.Item2;
+                    project.Roh_durationDays = duration.Item3;
+                }
             }
             else
             {
                 project.Vivo_end = pDatos.FechaFin != null ? Convert.ToDateTime(pDatos.FechaFin) : null;
 
-                Tuple<string, string, string> duration = RestarFechas(Convert.ToDateTime(pDatos.FechaInicio), Convert.ToDateTime(pDatos.FechaFinDefinitiva));
-                project.Roh_durationYears = duration.Item1;
-                project.Roh_durationMonths = duration.Item2;
-                project.Roh_durationDays = duration.Item3;
+                if (pDatos.FechaInicio != null)
+                {
+                    Tuple<string, string, string> duration = RestarFechas(Convert.ToDateTime(pDatos.FechaInicio), Convert.ToDateTime(pDatos.FechaFin));
+                    project.Roh_durationYears = duration.Item1;
+                    project.Roh_durationMonths = duration.Item2;
+                    project.Roh_durationDays = duration.Item3;
+                }
             }
 
             project.Roh_relevantResults = pDatos.Contexto?.ResultadosPrevistos;
