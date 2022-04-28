@@ -538,21 +538,6 @@ class StepsCluster {
 					}
 				);
 		})		
-		
-		/*
-		// Set the url parameters
-		urlSC.searchParams.set('pIdGnossUser', this.userId)
-		// urlSC.searchParams.set('pIdGnossComSName', this.communityShortName)
-		return new Promise((resolve) => {
-			console.log("this.data saveInit",this.data)
-			this.postCall(urlSC, this.data).then((rdata) => {
-				_self.clusterId = rdata
-				_self.startStep3()
-				resolve(true)
-			}).catch(err => {
-				resolve(false)
-			}) 
-		})*/
 
 	}
 
@@ -1137,13 +1122,11 @@ class CargarGraficaProjectoClusterObj {
 		AjustarGraficaArania(this.dataCB, this.idContenedorCB, this.typesOcultar, this.showRelation);
 	};
 
-	CargarGraficaColaboradores = (parametros, cluster, idContenedor, mostrarCargando = false) => {
+	CargarGraficaColaboradores = (cluster, idContenedor, mostrarCargando = false) => {
 		var url = servicioExternoBaseUrl + "Cluster/DatosGraficaColaboradoresCluster";
 		var self = this;
 		var arg = {};
-		arg.pParametros = parametros;
 		arg.pCluster = cluster;
-		arg.pMax = $('#numColaboradoresCluster').val();
 		$('#' + idContenedor).empty();
 		if (mostrarCargando) {
 			MostrarUpdateProgress();
@@ -1250,28 +1233,6 @@ var comportamientoPopupCluster = {
 		this.text_volumen = this.printitem.data('volumen')
 		this.text_ajuste = this.printitem.data('ajuste')
 		this.text_mixto = this.printitem.data('mixto')
-
-		//Métodos colaboradores
-		$('#removeNodesCollaboratorsCluster').unbind().click(function (e) {
-			e.preventDefault();
-			var numColaboradores = parseInt($('#numColaboradoresCluster').val());
-			if (numColaboradores > 10) {
-				$('#numColaboradoresCluster').val((numColaboradores - 10));
-			}
-			$('#numNodosCollaboratorsCluster').html($('#numColaboradoresCluster').val());
-			var parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro;
-			newGrafProjClust.CargarGraficaColaboradores(parametros, stepsCls.data, 'colaboratorsgraphCluster', true);
-		});
-
-		$('#addNodesCollaboratorsCluster').unbind().click(function (e) {
-			e.preventDefault();
-			var numColaboradores = parseInt($('#numColaboradoresCluster').val());
-			$('#numColaboradoresCluster').val((numColaboradores + 10));
-			$('#numNodosCollaboratorsCluster').html($('#numColaboradoresCluster').val());
-			var parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro;
-			newGrafProjClust.CargarGraficaColaboradores(parametros, stepsCls.data, 'colaboratorsgraphCluster', true);
-		});
-		//Fin métodos colaboradores
 
 		return;
 	},
@@ -1516,6 +1477,9 @@ function CompletadaCargaRecursosCluster()
 {	
 	if(typeof stepsCls != 'undefined' && stepsCls!=null && stepsCls.data!=null)
 	{
+		newGrafProjClust.CargarGraficaColaboradores(parametros, stepsCls.data, 'colaboratorsgraphCluster', true);
+		
+		
 		$('#clusterListUsers article.investigador h2.resource-title').attr('tagert','_blank');
 		stepsCls.data.pPersons=$('#clusterListUsers article.investigador').toArray().map(e => {return $(e).attr('id')});
 		$.post(urlCargarPerfiles, stepsCls.data, function(data) {
