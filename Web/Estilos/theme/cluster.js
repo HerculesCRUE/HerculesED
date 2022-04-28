@@ -130,8 +130,7 @@ class StepsCluster {
 
 			// Fill section 2
 			this.data.profiles.forEach(profile => {
-				// profile.entityID = profile.entityID.split('_')[1]
-				profile.shortEntityID = profile.entityID.split('_')[1]
+				profile.shortEntityID = profile.entityID.split('_')[2]
 
 				// Crea el perfil
 				this.addPerfilSearch(profile).then(nameId => {
