@@ -59,7 +59,7 @@ namespace Harvester
             Dictionary<string, Tuple<string, string>> dicOrganizaciones = new Dictionary<string, Tuple<string, string>>();
             Dictionary<string, Tuple<string, string>> dicPersonas = new Dictionary<string, Tuple<string, string>>();
             Dictionary<string, Tuple<string, string>> dicProyectos = new Dictionary<string, Tuple<string, string>>();
-
+            IniciacionDiccionarios(ref dicProyectos, ref dicPersonas, ref dicOrganizaciones);
 
             //TODO eliminar
             goto Testing;
@@ -164,6 +164,28 @@ namespace Harvester
                 }
                 idsACargar.Sort();
 
+                //if (idsACargar.Count > 0)
+                //{
+                //    string tipo = idsACargar.First().Split("_")[0];
+                //    List<string> ids = new List<string>();
+                //    switch (tipo)
+                //    {
+                //        case "Organizacion":
+                //            ids = dicOrganizaciones.Select(x => tipo+("_")+x.Key).ToList();
+                //            idsACargar = idsACargar.Except(ids).ToList();
+                //            break;
+                //        case "Persona":
+                //            ids = dicPersonas.Select(x => tipo+("_")+x.Key).ToList();
+                //            idsACargar = idsACargar.Except(ids).ToList();
+                //            break;
+                //        case "Proyecto":
+                //            //TODO ids = dicProyectos.Select(x => tipo+("_")+x.Key).ToList();
+                //            ids = dicProyectos.Select(x => tipo+("_")+x.Key.Split("|")[1]).ToList();
+                //            idsACargar = idsACargar.Except(ids).ToList();
+                //            break;
+                //    }
+                //}
+
                 string xmlResult = string.Empty;
                 XmlSerializer xmlSerializer = null;
                 ComplexOntologyResource resource = null;
@@ -189,8 +211,6 @@ namespace Harvester
                             {
                                 organization = (Empresa)xmlSerializer.Deserialize(sr);
                             }
-
-                            //CreacionAuxiliarOrganizacion(organization.Id);
 
                             // Cambio de modelo. TODO: Mirar propiedades.
                             OrganizationOntology.Organization empresaOntology = CrearOrganizacionOntology(organization);
@@ -509,10 +529,34 @@ namespace Harvester
             }
         }
 
+        private void IniciacionDiccionarios(ref Dictionary<string, Tuple<string, string>> dicProyectos,
+           ref Dictionary<string, Tuple<string, string>> dicPersonas, ref Dictionary<string, Tuple<string, string>> dicOrganizaciones)
+        {
+            dicProyectos = new Dictionary<string, Tuple<string, string>>();
+            Dictionary<string, string> dicProyectosAux = GetEntityBBDD("http://vivoweb.org/ontology/core#Project", "project");
+            foreach (KeyValuePair<string, string> keyValue in dicProyectosAux)
+            {
+                dicProyectos.Add(keyValue.Key, new Tuple<string, string>(keyValue.Value, ""));
+            }
+
+            dicPersonas = new Dictionary<string, Tuple<string, string>>();
+            Dictionary<string, string> dicPersonasAux = GetEntityBBDD("http://xmlns.com/foaf/0.1/Person", "person");
+            foreach (KeyValuePair<string, string> keyValue in dicPersonasAux)
+            {
+                dicPersonas.Add(keyValue.Key, new Tuple<string, string>(keyValue.Value, ""));
+            }
+
+            dicOrganizaciones = new Dictionary<string, Tuple<string, string>>();
+            Dictionary<string, string> dicOrganizacionesAux = GetEntityBBDD("http://xmlns.com/foaf/0.1/Organization", "organization");
+            foreach (KeyValuePair<string, string> keyValue in dicOrganizacionesAux)
+            {
+                dicOrganizaciones.Add(keyValue.Key, new Tuple<string, string>(keyValue.Value, ""));
+            }
+        }
+
         private void CreacionAuxiliaresProyecto(Proyecto proyecto, Dictionary<string, Tuple<string, string>> dicProyectos,
             Dictionary<string, Tuple<string, string>> dicPersonas, Dictionary<string, Tuple<string, string>> dicOrganizaciones)
         {
-            string record = harvesterServices.GetRecord("Proyecto_" + proyecto.Id);
             List<string> listaOrganizaciones = new List<string>();
             //TODO
             //listaOrganizaciones.AddRange(proyecto.EntidadesGestoras.Select(x => x.EntidadRef).ToList());
@@ -522,16 +566,6 @@ namespace Harvester
             dicProyectos = GetEntityByCRIS("http://vivoweb.org/ontology/core#Project", "project", new List<string>() { proyecto.Id });
             dicPersonas = GetEntityByCRIS("http://xmlns.com/foaf/0.1/Person", "person", proyecto.Equipo.Select(x => x.PersonaRef).ToList());
             dicOrganizaciones = GetEntityByCRIS("http://xmlns.com/foaf/0.1/Organization", "organization", listaOrganizaciones);
-
-            //TODO - eliminar?
-            //XmlSerializer xmlSerializer = null;
-            //Proyecto project = new Proyecto();
-
-            //xmlSerializer = new(typeof(Proyecto));
-            //using (StringReader sr = new(record))
-            //{
-            //    project = (Proyecto)xmlSerializer.Deserialize(sr);
-            //}
         }
 
         private Dictionary<string, string> GetValues(string pIdRecurso)
@@ -726,14 +760,14 @@ namespace Harvester
 
                     foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
                     {
-                        string id = fila["crisIdentifier"].value;
+                        string crisId = fila["crisIdentifier"].value;
                         string identificador = fila["s"].value;
                         string nombrePersona = "";
                         if (fila.ContainsKey("nombrePersona"))
                         {
                             nombrePersona = fila["nombrePersona"].value;
                         }
-                        dicResultados.Add(id, new Tuple<string, string>(identificador, nombrePersona));
+                        dicResultados.Add(crisId, new Tuple<string, string>(identificador, nombrePersona));
                     }
 
                     if (resultadoQuery.results.bindings.Count < limit)
