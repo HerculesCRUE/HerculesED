@@ -260,8 +260,6 @@ namespace Harvester
                                 persona = (Persona)xmlSerializer.Deserialize(sr);
                             }
 
-                            //TODO CreacionAuxiliarPersona();
-
                             // Cambio de modelo. TODO: Mirar propiedades.
                             PersonOntology.Person personOntology = CrearPersona(persona);
 
@@ -278,13 +276,13 @@ namespace Harvester
                             if (dicPersonas.ContainsKey(personOntology.Roh_crisIdentifier))
                             {
                                 // Modificación.
-                                //mResourceApi.ModifyComplexOntologyResource(resource, false, false);
+                                mResourceApi.ModifyComplexOntologyResource(resource, false, false);
                             }
                             else
                             {
                                 // Carga.                   
-                                //mResourceApi.LoadComplexSemanticResource(resource, false, false);
-                                //pDicRecursosCargados[personOntology.Roh_crisIdentifier] = resource.GnossId;
+                                mResourceApi.LoadComplexSemanticResource(resource, false, false);
+                                dicPersonas[personOntology.Roh_crisIdentifier] = new Tuple<string, string>(resource.GnossId, "");
                             }
 
                             // Guardamos el ID cargado.
@@ -322,18 +320,18 @@ namespace Harvester
                             // Cambio de modelo. TODO: Mirar propiedades.
                             ProjectOntology.Project projectOntology = CrearProyecto(proyecto, dicPersonas: dicPersonas, dicOrganizaciones: dicOrganizaciones);
 
-                            //resource = projectOntology.ToGnossApiResource(mResourceApi, null);
-                            //if (pDicRecursosCargados.ContainsKey(projectOntology.Roh_crisIdentifier))
-                            //{
-                            //    // Modificación.
-                            //    mResourceApi.ModifyComplexOntologyResource(resource, false, false);
-                            //}
-                            //else
-                            //{
-                            //    // Carga.                   
-                            //    mResourceApi.LoadComplexSemanticResource(resource, false, false);
-                            //    pDicRecursosCargados[projectOntology.Roh_crisIdentifier] = resource.GnossId;
-                            //}
+                            resource = projectOntology.ToGnossApiResource(mResourceApi, null);
+                            if (dicProyectos.ContainsKey(projectOntology.Roh_crisIdentifier))
+                            {
+                                // Modificación.
+                                //    mResourceApi.ModifyComplexOntologyResource(resource, false, false);
+                            }
+                            else
+                            {
+                                // Carga.                   
+                                //    mResourceApi.LoadComplexSemanticResource(resource, false, false);
+                                //    pDicRecursosCargados[projectOntology.Roh_crisIdentifier] = resource.GnossId;
+                            }
 
                             // Guardamos el ID cargado.
                             File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
@@ -494,33 +492,6 @@ namespace Harvester
                             // Guardamos el ID cargado.
                             File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
                             break;
-
-                            xmlSerializer = new(typeof(Invencion));
-                            using (StringReader sr = new(xmlResult))
-                            {
-                                grupo = (Grupo)xmlSerializer.Deserialize(sr);
-                            }
-
-                            //Cambio de modelo.TODO: Mirar propiedades.
-                            //ProjectAuthorization projectAuthOntology = CrearProyecto(proyecto);
-
-                            //resource = projectAuthOntology.ToGnossApiResource(mResourceApi, null);
-                            //if (pDicRecursosCargados.ContainsKey(projectAuthOntology.Roh_crisIdentifier))
-                            //{
-                            //    // Modificación.
-                            //    mResourceApi.ModifyComplexOntologyResource(resource, false, false);
-                            //}
-                            //else
-                            //{
-                            //    // Carga.                   
-                            //    mResourceApi.LoadComplexSemanticResource(resource, false, false);
-                            //    pDicRecursosCargados[projectAuthOntology.Roh_crisIdentifier] = resource.GnossId;
-                            //}
-
-                            // Guardamos el ID cargado.
-                            File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
-                            break;
-
                     }
 
                     // Borra el fichero.
@@ -785,6 +756,7 @@ namespace Harvester
             return dicResultados;
         }
 
+        //TODO
         public static PersonOntology.Person CrearPersona(Persona pDatos)
         {
             PersonOntology.Person persona = new PersonOntology.Person();
@@ -846,7 +818,8 @@ namespace Harvester
             }
 
             persona.Roh_lastUpdatedDate = DateTime.UtcNow;
-            //TODO insertar en BBDD y asignar gnossid
+            //insertar en BBDD y asignar gnossid
+
             return persona;
         }
         public static OrganizationOntology.Organization CrearOrganizacionOntology(Empresa pDatos)
@@ -859,6 +832,7 @@ namespace Harvester
             return organization;
         }
 
+        //TODO
         private static OrganizationOntology.Organization CrearEntidadGestora(string entidadGestoraID)
         {
             OrganizationOntology.Organization organization = new OrganizationOntology.Organization();
@@ -873,11 +847,12 @@ namespace Harvester
             organization.Roh_title = empresa.Nombre;
             organization.Vcard_locality = empresa.DatosContacto?.Direccion;
 
-            //TODO insertar
+            //insertar
 
             return organization;
         }
 
+        //TODO
         private static string CrearEntidadConvocante(string entidadConvocanteID)
         {
             OrganizationOntology.Organization organization = new OrganizationOntology.Organization();
@@ -892,19 +867,20 @@ namespace Harvester
             organization.Roh_title = empresa.Nombre;
             organization.Vcard_locality = empresa.DatosContacto?.Direccion;
 
-            //TODO insertar
-
+            //insertar
 
             ProjectOntology.OrganizationAux organizationAux = new ProjectOntology.OrganizationAux();
-            organizationAux.Roh_organization = organization;//TODO - comprobar o cambiar por identificador al añadir
+            organizationAux.Roh_organization = organization;
+            //comprobar o cambiar por identificador al añadir
             //organizationAux.IdRoh_organization = organization.GNOSSID;
             organizationAux.Roh_organizationTitle = empresa.Nombre;
             organizationAux.Vcard_locality = empresa.DatosContacto?.Direccion;
-            //TODO insertar
+            //insertar
 
-            return organizationAux.GNOSSID;//TODO asignar si no se autoasigna
+            return organizationAux.GNOSSID;//asignar si no se autoasigna
         }
 
+        //TODO
         private static string CrearEntidadFinanciadora(string entidadFinanciadoraID)
         {
             OrganizationOntology.Organization organization = new OrganizationOntology.Organization();
@@ -919,15 +895,15 @@ namespace Harvester
             organization.Roh_title = empresa.Nombre;
             organization.Vcard_locality = empresa.DatosContacto?.Direccion;
 
-            //TODO insertar
-
+            //insertar
 
             ProjectOntology.OrganizationAux organizationAux = new ProjectOntology.OrganizationAux();
-            organizationAux.Roh_organization = organization;//TODO - comprobar o cambiar por identificador al añadir
+            organizationAux.Roh_organization = organization;
+            //comprobar o cambiar por identificador al añadir
             //organizationAux.IdRoh_organization = organization.GNOSSID;
             organizationAux.Roh_organizationTitle = empresa.Nombre;
             organizationAux.Vcard_locality = empresa.DatosContacto?.Direccion;
-            //TODO insertar
+            //insertar
 
             return organizationAux.GNOSSID;//TODO asignar si no se autoasigna
         }
@@ -952,7 +928,7 @@ namespace Harvester
 
                 // Carga.                   
                 //mResourceApi.LoadComplexSemanticResource(resource, false, false);
-                //dicAutorizacion[personOntology.Roh_crisIdentifier] = resource.GnossId;//TODO necesario incluirla en diccionario?
+                //dicAutorizacion[personOntology.Roh_crisIdentifier] = resource.GnossId;//necesario incluirla en diccionario?
             }
 
             if (!string.IsNullOrEmpty(autorizacion.Roh_crisIdentifier) && !string.IsNullOrEmpty(autorizacion.Roh_title)
@@ -1038,6 +1014,7 @@ namespace Harvester
             ProjectOntology.Project project = new ProjectOntology.Project();
             project.Roh_crisIdentifier = pDatos.Id;
             project.Roh_isValidated = true;
+            //project.validationStatusProject
             //project.Roh_isSynchronized = true;
 
             TipoProyecto(project, pDatos);
