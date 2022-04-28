@@ -7,7 +7,6 @@
 
   <ItemGroup>
     <Folder Include="Config\" />
-    <Folder Include="Utilidades\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,9 +25,17 @@
     <None Update="Config\OAuthV3.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Utilidades\paises.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Utilidades\prefijos.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Utilidades\regiones.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties config_4appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>
