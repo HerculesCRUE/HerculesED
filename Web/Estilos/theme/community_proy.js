@@ -235,7 +235,6 @@ comportamientoFacetasPopUp.config= function () {
 	['bibo:authorList@@@rdf:member@@@foaf:name', 'Busca por nombre o apellido de la persona', "Search by person's name or surname", true],
 	['vivo:freeTextKeyword@@@roh:title', 'Busca por nombre de la etiqueta', "Search by tag's name", true],
 	['vivo:hasPublicationVenue', 'Busca por nombre de la revista', "Search by journal's name", true],
-	['roh:hasKnowledgeArea@@@roh:categoryNode', 'Busca por área de conocimiento', "Search by knowledge area", true],
 	['bibo:authorList@@@rdf:member@@@roh:hasKnowledgeArea@@@roh:categoryNode', 'Busca por tópicos', "Search by topics", true],
 	['vivo:departmentOrSchool@@@dc:title', 'Busca por departamento', "Search by department", true],
 	['vivo:relates@@@roh:title','Busca por grupos de investigación','Search by research group',true],
@@ -268,7 +267,8 @@ comportamientoFacetasPopUp.config= function () {
 	});	
 
 	this.facetasConPopUpCategorias = [
-		['roh:hasKnowledgeArea@@@roh:categoryNode', 'Busca por nombre de la categoría', "Search by category name", true]//Categorias
+		['roh:hasKnowledgeArea@@@roh:categoryNode', 'Busca por nombre de la categoría', "Search by category name", true],
+		['vivo:hasResearchArea@@@roh:categoryNode', 'Busca por nombre de la categoría', "Search by category name", true]//Categorias
         ];
 	for (i = 0; i < this.facetasConPopUpCategorias.length; i++) {
 		var faceta = this.facetasConPopUpCategorias[i][0];
