@@ -1093,7 +1093,7 @@ class StepsCluster {
 			return $(htmlProfile);
 		})
 		this.perfilesStep3.find('.panel-group.pmd-accordion').remove();
-		this.perfilesStep3.append(profiles)
+		this.perfilesStep3.append(profiles);
 	}
 
 	removeSelectedUserFromProfile(idProfile, idUser) {
@@ -1116,12 +1116,20 @@ class StepsCluster {
 // Clase para las trabajar en las gráficas de los colaboradores en el cluster
 class CargarGraficaProjectoClusterObj {
 	dataCB = {};
+	dataSE = {};
 	idContenedorCB = "";
+	idContenedorSE = "";
 	typesOcultar = [];
-	showRelation = true;
+	typesOcultarSE = [];
+	showRelation = true;	
+	showRelationSE = true;
 
 	actualizarGraficaColaboradores = () => {
 		AjustarGraficaArania(this.dataCB, this.idContenedorCB, this.typesOcultar, this.showRelation);
+	};
+	
+	actualizarGraficaSeleccionados = () => {
+		AjustarGraficaArania(this.dataSE, this.idContenedorSE, this.typesOcultarSE, this.showRelationSE);
 	};
 
 	CargarGraficaColaboradores = (cluster, idContenedor, mostrarCargando = false) => {
@@ -1133,7 +1141,7 @@ class CargarGraficaProjectoClusterObj {
 		}
 
 		let optionsRelations = ["relation_project", "relation_document"];
-
+		cluster.seleccionados=false;
 		$.post(url, cluster, function (data) {
 			// Establecer los valores en la variable externa
 			self.dataCB = data;
@@ -1144,9 +1152,29 @@ class CargarGraficaProjectoClusterObj {
 				OcultarUpdateProgress();
 			}
 		});
-
 	};
+	
+	CargarGraficaSeleccionados = (cluster, idContenedor, mostrarCargando = false) => {
+		var url = servicioExternoBaseUrl + "Cluster/DatosGraficaColaboradoresCluster";
+		var self = this;
+		$('#' + idContenedor).empty();
+		if (mostrarCargando) {
+			MostrarUpdateProgress();
+		}
 
+		let optionsRelations = ["relation_project", "relation_document"];
+		cluster.seleccionados=true;
+		$.post(url, cluster, function (data) {
+			// Establecer los valores en la variable externa
+			self.dataSE = data;
+			self.idContenedorSE = idContenedor;
+
+			self.actualizarGraficaSeleccionados();
+			if (mostrarCargando) {
+				OcultarUpdateProgress();
+			}
+		});
+	};
 };
 
 // Creamos un nuevo objeto
@@ -1161,6 +1189,15 @@ function actualizarTypesClusterOcultar(type) {
 		newGrafProjClust.typesOcultar = [type];
 	}
 	newGrafProjClust.actualizarGraficaColaboradores();
+}
+
+function actualizarTypesClusterOcultarSE(type) {
+	if (type == "relation_todas") {
+		newGrafProjClust.typesOcultarSE = [];
+	} else {
+		newGrafProjClust.typesOcultarSE = [type];
+	}
+	newGrafProjClust.actualizarGraficaSeleccionados();
 }
 
 
@@ -1219,6 +1256,13 @@ var comportamientoPopupCluster = {
 			FiltrarPorFacetas(ObtenerHash2());
 		});
 
+		//Enganchamos comportamiento grafica seleccionados
+		$('#seleccionados-cluster-tab').unbind().click(function (e) {			
+			e.preventDefault();
+			newGrafProjClust.CargarGraficaSeleccionados(stepsCls.data, 'selectedgraphCluster', true);
+		});
+
+		
 
 		return;
 	},
