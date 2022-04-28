@@ -130,7 +130,8 @@ class StepsCluster {
 
 			// Fill section 2
 			this.data.profiles.forEach(profile => {
-				profile.entityID = profile.entityID.split('_')[1]
+				// profile.entityID = profile.entityID.split('_')[1]
+				profile.shortEntityID = profile.entityID.split('_')[1]
 
 				// Crea el perfil
 				this.addPerfilSearch(profile).then(nameId => {
@@ -159,7 +160,7 @@ class StepsCluster {
 
 				// Editamos los IDs de los usuarios
 				profile.users.forEach(user => {
-					user.userID = user.userID.split('_')[1]
+					user.shortUserID = user.userID.split('_')[1]
 				})
 			})
 		});
@@ -281,9 +282,9 @@ class StepsCluster {
 			inputsTopicsProf.each((i, e) => {profTags.push(e.value)})
 
 			// Buscar si es un objeto actualizado
-			if (this.data.profiles && this.data.profiles.find(prf => prf.entityID == $(e).data('profileid')))
+			if (this.data.profiles && this.data.profiles.find(prf => prf.shortEntityID == $(e).data('profileid')))
 			{
-				let profile = this.data.profiles.find(prf => prf.entityID === $(e).data('profileid'))
+				let profile = this.data.profiles.find(prf => prf.shortEntityID === $(e).data('profileid'))
 				profile.terms = profTerms
 				profile.tags = profTags
 				profilesObjets.push(profile)
@@ -292,6 +293,7 @@ class StepsCluster {
 					"name": $(e).data('name'),
 					"terms": profTerms,
 					"tags": profTags,
+					"shortEntityID":$(e).data('profileid'),
 					"entityID":$(e).data('profileid')
 				})
 			}
@@ -538,21 +540,6 @@ class StepsCluster {
 					}
 				);
 		})		
-		
-		/*
-		// Set the url parameters
-		urlSC.searchParams.set('pIdGnossUser', this.userId)
-		// urlSC.searchParams.set('pIdGnossComSName', this.communityShortName)
-		return new Promise((resolve) => {
-			console.log("this.data saveInit",this.data)
-			this.postCall(urlSC, this.data).then((rdata) => {
-				_self.clusterId = rdata
-				_self.startStep3()
-				resolve(true)
-			}).catch(err => {
-				resolve(false)
-			}) 
-		})*/
 
 	}
 
@@ -889,7 +876,7 @@ class StepsCluster {
 				profileId = guidGenerator()
 			} else {
 				name = profileObj.name
-				profileId = profileObj.entityID
+				profileId = profileObj.shortEntityID
 			}
 			this.modalPerfil.modal('hide')
 			this.inputPerfil.val("") // Set the name empty
@@ -1054,7 +1041,7 @@ class StepsCluster {
                             <div class="acciones-wrap">
                                 <ul class="no-list-style">
                                     <li>
-                                        <a href="javascript:stepsCls.removeSelectedUserFromProfile('`+e.entityID+`', '`+user.userID+`')" class="texto-gris-claro">
+                                        <a href="javascript:stepsCls.removeSelectedUserFromProfile('`+e.shortEntityID+`', '`+user.shortUserID+`')" class="texto-gris-claro">
                                             Eliminar
                                             <span class="material-icons-outlined">delete</span>
                                         </a>
@@ -1112,11 +1099,11 @@ class StepsCluster {
 	removeSelectedUserFromProfile(idProfile, idUser) {
 
 		let currentProfile = stepsCls.data.profiles.filter(function (perfilInt) {
-			return perfilInt.entityID==idProfile;
+			return perfilInt.shortEntityID==idProfile;
 		})[0];
 
 		currentProfile.users=currentProfile.users.filter(function (userInt) {
-			return userInt.userID!=idUser;
+			return userInt.shortUserID!=idUser;
 		});
 
 		document.getElementById(idUser + '-' +idProfile).checked = false
@@ -1137,13 +1124,9 @@ class CargarGraficaProjectoClusterObj {
 		AjustarGraficaArania(this.dataCB, this.idContenedorCB, this.typesOcultar, this.showRelation);
 	};
 
-	CargarGraficaColaboradores = (parametros, cluster, idContenedor, mostrarCargando = false) => {
+	CargarGraficaColaboradores = (cluster, idContenedor, mostrarCargando = false) => {
 		var url = servicioExternoBaseUrl + "Cluster/DatosGraficaColaboradoresCluster";
 		var self = this;
-		var arg = {};
-		arg.pParametros = parametros;
-		arg.pCluster = cluster;
-		arg.pMax = $('#numColaboradoresCluster').val();
 		$('#' + idContenedor).empty();
 		if (mostrarCargando) {
 			MostrarUpdateProgress();
@@ -1151,7 +1134,7 @@ class CargarGraficaProjectoClusterObj {
 
 		let optionsRelations = ["relation_project", "relation_document"];
 
-		$.post(url, arg, function (data) {
+		$.post(url, cluster, function (data) {
 			// Establecer los valores en la variable externa
 			self.dataCB = data;
 			self.idContenedorCB = idContenedor;
@@ -1203,10 +1186,6 @@ var comportamientoPopupCluster = {
 		// Iniciar el listado de usuarios
 		buscadorPersonalizado.init($('#INVESTIGADORES').val(), "#clusterListUsers", "searchClusterMixto=" + paramsCl, null, "profiles=" + JSON.stringify(profiles) + "|viewmode=cluster|rdf:type=person", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
 		
-		// Iniciamos la gráfica
-		var parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro;
-		newGrafProjClust.CargarGraficaColaboradores(parametros, stepsCls.data, 'colaboratorsgraphCluster', true);
-
 		// Agregamos los ordenes
 		$('.searcherResults .h1-container').after(
 		`<div class="acciones-listado acciones-listado-buscador">
@@ -1251,28 +1230,6 @@ var comportamientoPopupCluster = {
 		this.text_ajuste = this.printitem.data('ajuste')
 		this.text_mixto = this.printitem.data('mixto')
 
-		//Métodos colaboradores
-		$('#removeNodesCollaboratorsCluster').unbind().click(function (e) {
-			e.preventDefault();
-			var numColaboradores = parseInt($('#numColaboradoresCluster').val());
-			if (numColaboradores > 10) {
-				$('#numColaboradoresCluster').val((numColaboradores - 10));
-			}
-			$('#numNodosCollaboratorsCluster').html($('#numColaboradoresCluster').val());
-			var parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro;
-			newGrafProjClust.CargarGraficaColaboradores(parametros, stepsCls.data, 'colaboratorsgraphCluster', true);
-		});
-
-		$('#addNodesCollaboratorsCluster').unbind().click(function (e) {
-			e.preventDefault();
-			var numColaboradores = parseInt($('#numColaboradoresCluster').val());
-			$('#numColaboradoresCluster').val((numColaboradores + 10));
-			$('#numNodosCollaboratorsCluster').html($('#numColaboradoresCluster').val());
-			var parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro;
-			newGrafProjClust.CargarGraficaColaboradores(parametros, stepsCls.data, 'colaboratorsgraphCluster', true);
-		});
-		//Fin métodos colaboradores
-
 		return;
 	},
 
@@ -1301,7 +1258,7 @@ var comportamientoPopupCluster = {
 		stepsCls.data.profiles.forEach(function(perfil, index) {
 			let terms = (perfil.terms.length) ? perfil.terms.map(itm => '<' + itm + '>').join(',') : "<>"
 			let tags = (perfil.tags.length) ? perfil.tags.map(itm => "'" + itm + "'").join(',') : "''"
-			dicPerfiles[perfil.entityID]=terms + '@@@' + tags
+			dicPerfiles[perfil.shortEntityID]=terms + '@@@' + tags
 		});
 		return dicPerfiles;
 	},
@@ -1515,9 +1472,12 @@ class ModalSearchTags {
 function CompletadaCargaRecursosCluster()
 {	
 	if(typeof stepsCls != 'undefined' && stepsCls!=null && stepsCls.data!=null)
-	{
+	{		
 		$('#clusterListUsers article.investigador h2.resource-title').attr('tagert','_blank');
 		stepsCls.data.pPersons=$('#clusterListUsers article.investigador').toArray().map(e => {return $(e).attr('id')});
+		
+		newGrafProjClust.CargarGraficaColaboradores(stepsCls.data, 'colaboratorsgraphCluster', true);
+		
 		$.post(urlCargarPerfiles, stepsCls.data, function(data) {
 			$('article.investigador .user-perfil').remove();
 			for (const [idperson, datospersona] of Object.entries(data)) {
@@ -1525,7 +1485,12 @@ function CompletadaCargaRecursosCluster()
 				for (const [idProfile, score] of Object.entries(datospersona)) {
 					if(score.numPublicaciones>0)
 					{
-						let nombrePerfil=stepsCls.data.profiles.filter(function (item) {return item.entityID ==idProfile;})[0].name;
+						let idProfileEdit = idProfile
+						if (idProfile.includes('http://gnoss.com/items')) {
+							idProfileEdit = idProfile.split('_')[1]
+						}
+						let nombrePerfil = stepsCls.data.profiles.filter(function (item) {return item.shortEntityID ==idProfileEdit;})[0].name;
+						
 						let publicationsPercent = score.numPublicaciones/score.numPublicacionesTotal*100
 
 
@@ -1564,8 +1529,8 @@ function CompletadaCargaRecursosCluster()
 						htmlPerfiles+=`	<div class="perfil-wrap">
 								        <div class="custom-wrap">
 								            <div class="custom-control custom-checkbox">
-								                <input type="checkbox" class="custom-control-input" id="${idperson}-${idProfile}">
-								                <label class="custom-control-label" for="${idperson}-${idProfile}">
+								                <input type="checkbox" class="custom-control-input" id="${idperson}-${idProfileEdit}">
+								                <label class="custom-control-label" for="${idperson}-${idProfileEdit}">
 								                    ${nombrePerfil}
 								                </label>
 								            </div>
@@ -1646,12 +1611,12 @@ function CompletadaCargaRecursosCluster()
 			let repintar = false
 			//Marcamos como checkeados los correspondientes
 			stepsCls.data.profiles.forEach(function(perfil, index) {
-				let idProfile= perfil.entityID;
+				let idProfile= perfil.shortEntityID;
 				if(perfil.users!=null)
 				{
 					perfil.users.forEach(function(user, index) {
-						var elementUser = $('#'+user.userID)
-						$('#'+user.userID+'-'+idProfile).prop('checked', true);
+						var elementUser = $('#'+user.shortUserID)
+						$('#'+user.shortUserID+'-'+idProfile).prop('checked', true);
 
 						// Obtenemos los datos del usuario por primera vez si es "editar cluster"
 						if (stepsCls.editDataSave) {
@@ -1686,13 +1651,13 @@ function CompletadaCargaRecursosCluster()
 				let idUser=id.substring(0,36);
 				let idProfileSmall=id.substring(37);					
 				let perfil=stepsCls.data.profiles.filter(function (perfilInt) {
-					return perfilInt.entityID==idProfileSmall;
+					return perfilInt.shortEntityID==idProfileSmall;
 				})[0];
 				if(this.checked) {
 					let elementUser = $(this).closest('.resource.investigador')
 					let user = {}
 					let arrInfo = []
-					user.userID = idUser
+					user.shortUserID = idUser
 					user.name = elementUser.find('h2.resource-title').text().trim()
 
 					// Obtener la descripción
@@ -1711,7 +1676,7 @@ function CompletadaCargaRecursosCluster()
 				}else
 				{
 					perfil.users=perfil.users.filter(function (userInt) {
-						return userInt.userID!=idUser;
+						return userInt.shortUserID!=idUser;
 					});
 				}
 				stepsCls.PrintPerfilesstp3();
@@ -1732,7 +1697,7 @@ function CompletadaCargaFacetasCluster()
 			//Creamos la faceta
 			let liPerfiles='';
 			stepsCls.data.profiles.forEach(function(perfil, index) {
-				let idProfile= perfil.entityID;
+				let idProfile= perfil.shortEntityID;
 				let nameProfile= perfil.name;
 				let style="";
 				if(buscadorPersonalizado.profile==idProfile)
@@ -1779,7 +1744,7 @@ function CompletadaCargaFacetasCluster()
 			{
 				let liPerfil='';
 				stepsCls.data.profiles.forEach(function(perfil, index) {
-					let idProfile= perfil.entityID;
+					let idProfile= perfil.shortEntityID;
 					if(buscadorPersonalizado.profile==idProfile)
 					{
 						liPerfil+=`<li class="profile">
