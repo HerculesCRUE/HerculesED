@@ -810,8 +810,7 @@ namespace Harvester
             return mResourceApi.GraphsUrl + "items/feature_ADM1_" + Utilidades.Utilidades.dicRegiones[region];
         }
 
-        private static List<AcademicdegreeOntology.AcademicDegree> CrearPosgrado(Persona pDatos, Dictionary<string, Tuple<string, string>> dicOrganizaciones,
-            Dictionary<string, Tuple<string, string>> dicPersonas)
+        private static List<AcademicdegreeOntology.AcademicDegree> CrearPosgrado(Persona pDatos, Dictionary<string, Tuple<string, string>> dicOrganizaciones)
         {
             List<AcademicdegreeOntology.AcademicDegree> listaPosgrado = new List<AcademicdegreeOntology.AcademicDegree>();
             AcademicdegreeOntology.AcademicDegree academicDegree = new AcademicdegreeOntology.AcademicDegree();
@@ -917,6 +916,126 @@ namespace Harvester
 
             return listadoDoctorados;
         }
+
+
+        private static List<AcademicdegreeOntology.AcademicDegree> CrearFormacionEspecializada(Persona pDatos, Dictionary<string, Tuple<string, string>> dicOrganizaciones,
+           Dictionary<string, Tuple<string, string>> dicPersonas)
+        {
+            List<AcademicdegreeOntology.AcademicDegree> listaFormacionEspecializada = new List<AcademicdegreeOntology.AcademicDegree>();
+            AcademicdegreeOntology.AcademicDegree academicDegree = new AcademicdegreeOntology.AcademicDegree();
+            foreach (OAI_PMH.Models.SGI.FormacionAcademica.FormacionEspecializada formacionEspecializada in pDatos.FormacionEspecializada)
+            {
+                //TODO academicDegree.IdRoh_formationActivityType = 
+                academicDegree.Roh_title = formacionEspecializada.NombreTitulo;
+                academicDegree.IdVcard_hasCountryName = IdentificadorPais(formacionEspecializada.PaisEntidadTitulacion.Id);
+                academicDegree.IdVcard_hasRegion = IdentificadorRegion(formacionEspecializada.CcaaRegionEntidadTitulacion.Id);
+                academicDegree.Vcard_locality = formacionEspecializada.CiudadEntidadTitulacion;
+                academicDegree.Roh_goals = formacionEspecializada.Objetivos;
+                academicDegree.Roh_durationHours = formacionEspecializada.DuracionTitulacion;
+                academicDegree.Vivo_end = formacionEspecializada.FechaTitulacion;
+                //Entidad titulacion
+                academicDegree.IdRoh_conductedBy = dicOrganizaciones[formacionEspecializada.EntidadTitulacion.EntidadRef].Item1;
+
+                //Responsable
+                //academicDegree.Roh_trainerNick = formacionEspecializada.ResponsableFormacion;
+
+
+                listaFormacionEspecializada.Add(academicDegree);
+            }
+            return listaFormacionEspecializada;
+        }
+
+        private static List<ThesissupervisionOntology.ThesisSupervision> CrearTesis(Persona pDatos, Dictionary<string, Tuple<string, string>> dicOrganizaciones,
+           Dictionary<string, Tuple<string, string>> dicPersonas)
+        {
+            List<ThesissupervisionOntology.ThesisSupervision> listaTesis = new List<ThesissupervisionOntology.ThesisSupervision>();
+            ThesissupervisionOntology.ThesisSupervision thesisSupervision = new ThesissupervisionOntology.ThesisSupervision();
+            foreach (OAI_PMH.Models.SGI.ActividadDocente.Tesis tesis in pDatos.Tesis)
+            {
+                //TODO thesisSupervision.IdRoh_projectCharacterType = tesis.TipoProyecto;
+                thesisSupervision.Roh_title = tesis.TituloTrabajo;
+                thesisSupervision.IdVcard_hasCountryName = IdentificadorPais(tesis.PaisEntidadRealizacion.Id);
+                thesisSupervision.IdVcard_hasRegion = IdentificadorRegion(tesis.CcaaRegionEntidadRealizacion.Id);
+                thesisSupervision.Vcard_locality = tesis.CiudadEntidadRealizacion;
+                thesisSupervision.Dct_issued = tesis.FechaDefensa;
+                thesisSupervision.Roh_qualification = tesis.CalificacionObtenida;
+                thesisSupervision.Roh_europeanDoctorateDate = tesis.FechaMencionDoctoradoEuropeo;
+                thesisSupervision.Roh_qualityMention = tesis.MencionCalidad != null ? (bool)tesis.MencionCalidad : false;
+                thesisSupervision.Roh_europeanDoctorate = tesis.DoctoradoEuropeo != null ? (bool)tesis.DoctoradoEuropeo : false;
+                thesisSupervision.Roh_qualityMentionDate = tesis.FechaMencionCalidad;
+
+                //Palabras clave
+
+
+                //Entidad realizacion
+                thesisSupervision.IdRoh_promotedBy = dicOrganizaciones[tesis.EntidadRealizacion.EntidadRef].Item1;
+
+                //Alumno TODO
+                thesisSupervision.Roh_studentNick = tesis.Alumno;
+
+                //Codirectores
+                //thesisSupervision.cod = dicPersonas[tesis.CoDirectorTesis.PersonaRef].Item1;
+
+                listaTesis.Add(thesisSupervision);
+            }
+            return listaTesis;
+        }
+
+        private static List<ImpartedacademictrainingOntology.ImpartedAcademicTraining> CrearFormacionAcademicaImpartida(Persona pDatos, Dictionary<string, Tuple<string, string>> dicOrganizaciones,
+           Dictionary<string, Tuple<string, string>> dicPersonas)
+        {
+            List<ImpartedacademictrainingOntology.ImpartedAcademicTraining> listaFormacionAcademicaImpartida = new List<ImpartedacademictrainingOntology.ImpartedAcademicTraining>();
+            ImpartedacademictrainingOntology.ImpartedAcademicTraining academicTraining = new ImpartedacademictrainingOntology.ImpartedAcademicTraining();
+            foreach (OAI_PMH.Models.SGI.ActividadDocente.FormacionAcademicaImpartida formacionAcademica in pDatos.FormacionAcademicaImpartida)
+            {
+                //TODO academicTraining.IdRoh_teachingType = ;
+                academicTraining.IdVcard_hasCountryName = IdentificadorPais(formacionAcademica.PaisEntidadRealizacion.Id);
+                academicTraining.IdVcard_hasRegion = IdentificadorRegion(formacionAcademica.CcaaRegionEntidadRealizacion.Id);
+                academicTraining.Vcard_locality = formacionAcademica.CiudadEntidadRealizacion;
+                academicTraining.Roh_department = formacionAcademica.Departamento;
+                //TODO academicTraining.IdRoh_programType = ;
+                academicTraining.Roh_teaches = formacionAcademica.NombreAsignaturaCurso;
+                //TODO academicTraining.IdRoh_modalityTeachingType = ;
+                //TODO academicTraining.IdRoh_courseType = ;
+                academicTraining.Roh_course = formacionAcademica.Curso;
+                //TODO academicTraining.Roh_hoursCreditsECTSType = formacionAcademica.ects;
+                //TODO academicTraining.Roh_numberECTSHours = formacionAcademica.ects;
+                //TODO academicTraining.IdVcard_hasLanguage = ;
+                academicTraining.Roh_frequency = (float?)formacionAcademica.FrecuenciaActividad;
+                academicTraining.Roh_competencies = formacionAcademica.Competencias;
+                academicTraining.Roh_professionalCategory = formacionAcademica.CategoriaProfesional;
+                //TODO academicTraining.Roh_qualification = formacionAcademica.calificacion;
+                //TODO academicTraining.Roh_maxQualification = formacionAcademica.maxcalificacion;
+                //TODO academicTraining.IdRoh_evaluatedByHasCountryName = IdentificadorPais(formacionAcademica.EntidadEvaluacion.pais.id);
+                //TODO academicTraining.evaluatedregion = IdentificadorRegion(formacionAcademica.EntidadEvaluacion.region.id);
+                //TODO academicTraining.Roh_evaluatedByLocality = formacionAcademica.;
+                //TODO academicTraining.IdRoh_evaluationType = ; 
+                //TODO academicTraining.IdRoh_financedByHasCountryName = IdentificadorPais(formacionAcademica.EntidadFinanciadora);
+                //TODO academicTraining.IdRoh_financedByHasRegion = IdentificadorRegion(formacionAcademica.EntidadFinanciadora);
+                //TODO academicTraining.Roh_financedByLocality = ;
+                //academicTraining.IdRoh_callType = ;
+                //academicTraining.IdVivo_geographicFocus = ;
+                //academicTraining.Roh_center = formacionAcademica.facultad;
+                academicTraining.Vivo_start = formacionAcademica.FechaInicio;
+                academicTraining.Vivo_end = formacionAcademica.FechaFinalizacion;
+
+                //Titulacion universitaria
+                academicTraining.Roh_title = formacionAcademica.TitulacionUniversitaria;
+
+                //Entidad realizacion
+                //academicTraining.IdRoh_promotedBy = dicOrganizaciones[formacionAcademica.EntidadRealizacion];
+
+                //Entidad financiadora
+                //academicTraining.IdRoh_financedBy = dicOrganizaciones[formacionAcademica.EntidadFinanciadora];
+
+                //Entidad evaluacion
+                academicTraining.IdRoh_evaluatedBy = dicOrganizaciones[formacionAcademica.EntidadRealizacion.EntidadRef].Item1;
+
+                listaFormacionAcademicaImpartida.Add(academicTraining);
+            }
+            return listaFormacionAcademicaImpartida;
+        }
+
         public static OrganizationOntology.Organization CrearOrganizacionOntology(Empresa pDatos)
         {
             OrganizationOntology.Organization organization = new OrganizationOntology.Organization();
