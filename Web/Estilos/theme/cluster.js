@@ -519,7 +519,27 @@ class StepsCluster {
 	saveInit() {
 
 		var _self = this
-
+		this.data.pIdGnossUser=this.userId;
+		
+		return new Promise((resolve) => {
+			console.log("this.data saveInit",this.data);
+			
+			$.post(urlSC, this.data)
+				.done(
+					function (rdata) {
+						_self.clusterId = rdata
+						_self.startStep3()
+						resolve(true)
+					}
+				)
+				.fail(
+					function (xhr, status, error) {
+						resolve(false)
+					}
+				);
+		})		
+		
+		/*
 		// Set the url parameters
 		urlSC.searchParams.set('pIdGnossUser', this.userId)
 		// urlSC.searchParams.set('pIdGnossComSName', this.communityShortName)
@@ -532,7 +552,7 @@ class StepsCluster {
 			}).catch(err => {
 				resolve(false)
 			}) 
-		})
+		})*/
 
 	}
 
