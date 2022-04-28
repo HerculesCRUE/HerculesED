@@ -200,49 +200,12 @@
 				                                                </li>
 				                                            </ul>
 				                                        </div>
-				                                    </div>
-				                                    <div class="relaciones-miembros dropdown dropdown-select">
-				                                        <a href="#" class="dropdown-toggle btn btn-outline-grey" role="button" id="dropdownRelacionesMiembros" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-				                                            @Html.Translate("RELACIONES_ENTRE_MIEMBROS"):
-				                                            <span class="texto">Sí</span>
-				                                        </a>
-				                                        <div class="dropdown-menu basic-dropdown dropdown-menu-right" aria-labelledby="dropdownRelacionesMiembros">
-				                                            <ul class="no-list-style">
-				                                                <li>
-				                                                    <a href="javascript: newGrafProjClust.showRelation = true; newGrafProjClust.ActualizarGraficaClusterolaboradoresCluster();" rel="nofollow" class="item-dropdown activeView">
-				                                                        <span class="textoAlternativo">@Html.Translate("RELACIONES_ENTRE_MIEMBROS"):</span>
-				                                                        <span class="texto">@Html.Translate("SI")</span>
-				                                                    </a>
-				                                                </li>
-				                                                <li>
-				                                                    <a href="javascript: newGrafProjClust.showRelation = false; newGrafProjClust.ActualizarGraficaClusterolaboradoresCluster();" rel="nofollow" class="item-dropdown">
-				                                                        <span class="textoAlternativo">@Html.Translate("RELACIONES_ENTRE_MIEMBROS"):</span>
-				                                                        <span class="texto">@Html.Translate("NO")</span>
-				                                                    </a>
-				                                                </li>
-				                                            </ul>
-				                                        </div>
-				                                    </div>
+				                                    </div>				                                    
 				                                </div>
 				                            </div>
 				                        </div>
 				                        <div class="col col-12 col-grafo-title font-weight-bold">
 				                            <div class="grafico-wrap">
-				                                <div></div>
-				                                <div class="graph-controls">
-				                                    <ul class="no-list-style d-flex align-items-center">
-				                                        <li class="control remove-control" id="removeNodesCollaboratorsCluster">
-				                                            <span class="material-icons">remove</span>
-				                                        </li>
-				                                        <li class="control text-control">
-				                                            <span id="numNodosCollaboratorsCluster">10</span> @Html.Translate("NODOS")
-				                                        </li>
-				                                        <li class="control add-control" id="addNodesCollaboratorsCluster">
-				                                            <span class="material-icons">add</span>
-				                                        </li>
-				                                    </ul>
-				                                </div>
-				                                <input type="hidden" id="numColaboradoresCluster" value="10" />
 				                                <div class="wrapCol" id="colaboratorsgraphCluster" style="width: 100%; height: 400px;"></div>
 				                            </div>
 				                        </div>                                                    
@@ -261,13 +224,43 @@
 				                        <div class="col col-12 col-section-title font-weight-bold">
 				                            <div class="wrapCol">
 				                                <p>@Html.Translate("GRAFO_RELACIONES_INVESTIGADORES_SELECCIONADOS")</p>
+												<div class="acciones-grafo">
+													<div class="relaciones dropdown dropdown-select">
+														<a href="#" class="dropdown-toggle btn btn-outline-grey" role="button" id="dropdownRelaciones" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+															@Html.Translate("RELACIONES"):
+															<span class="texto">@Html.Translate("TODAS")</span>
+														</a>
+														<div class="dropdown-menu basic-dropdown dropdown-menu-right" aria-labelledby="dropdownRelaciones">
+															<ul class="no-list-style">
+																<li>
+																	<a href="javascript: actualizarTypesClusterOcultar('relation_todas');" rel="nofollow" class="item-dropdown activeView">
+																		<span class="textoAlternativo">@Html.Translate("RELACIONES"):</span>
+																		<span class="texto">@Html.Translate("TODAS")</span>
+																	</a>
+																</li>
+																<li>
+																	<a href="javascript: actualizarTypesClusterOcultar('relation_project');" rel="nofollow" class="item-dropdown">
+																		<span class="textoAlternativo">@Html.Translate("RELACIONES"):</span>
+																		<span class="texto">@Html.Translate("PROYECTOS")</span>
+																	</a>
+																</li>
+																<li>
+																	<a href="javascript: actualizarTypesClusterOcultar('relation_document');" rel="nofollow" class="item-dropdown">
+																		<span class="textoAlternativo">@Html.Translate("RELACIONES"):</span>
+																		<span class="texto">@Html.Translate("DOCUMENTOS")</span>
+																	</a>
+																</li>
+															</ul>
+														</div>
+													</div>				                                    
+												</div>
 				                            </div>
 				                        </div>
-				                        <div class="col col-12 col-grafo">
-				                            <div class="wrapCol">
-				                                <p>aqui iria el grafo</p>
-				                            </div>
-				                        </div>
+				                        <div class="col col-12 col-grafo-title font-weight-bold">
+											<div class="grafico-wrap">
+												<div class="wrapCol" id="colaboratorsgraphCluster" style="width: 100%; height: 400px;"></div>
+											</div>
+										</div>  
 				                        <div class="col col-12 col-section-title font-weight-bold">
 				                            <div class="wrapCol">
 				                                <p>@Html.Translate("LISTADO_INVETIGADORES_SELECCIONADOS")</p>
@@ -404,15 +397,6 @@
 		        </div>
 		    </div>
 		</div>
-
-		<script type="text/javascript">
-			// Acciones a llevar a cabo en el filtrado.
-			function accionFiltrado() {
-				var parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro;
-				newGrafProjClust.CargarGraficaColaboradores(parametros, stepsCls.data, 'colaboratorsgraphCluster', true);
-		    }
-		</script>
-
 
 	}
 }
