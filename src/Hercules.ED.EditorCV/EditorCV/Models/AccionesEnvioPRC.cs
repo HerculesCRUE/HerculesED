@@ -199,8 +199,8 @@ namespace EditorCV.Models
                     string crisIdentifier = UtilidadesAPI.GetValorFilaSparqlObject(fila, "crisIdentifier");
                     if (!string.IsNullOrEmpty(crisIdentifier))
                     {
-                        //PRC.proyectos = new List<float>() { float.Parse(140012 + "") };
-                        PRC.proyectos = new List<float>() { float.Parse(crisIdentifier) };
+                        PRC.proyectos = new List<float>() { float.Parse(140012 + "") };
+                        //PRC.proyectos = new List<float>() { float.Parse(crisIdentifier) };
                     }
                 }
             }
@@ -565,9 +565,10 @@ namespace EditorCV.Models
             try
             {
                 RestClient client = new(pConfig.GetUrlProduccionCientifica());
-                client.AddDefaultHeader("Authorization", "Bearer " + GetToken(pConfig));
+                client.AddDefaultHeader("Authorization", "Bearer " + GetTokenCSP(pConfig));
                 var request = new RestRequest(Method.POST);
                 request.AddJsonBody(PRC);
+                string jsonString = Newtonsoft.Json.JsonConvert.SerializeObject(PRC);
                 IRestResponse response = client.Execute(request);
 
                 if ((int)response.StatusCode < 200 || (int)response.StatusCode >= 300)
@@ -709,15 +710,15 @@ namespace EditorCV.Models
         /// Obtención del token.
         /// </summary>
         /// <returns></returns>
-        private string GetToken(ConfigService pConfig)
+        private string GetTokenCSP(ConfigService pConfig)
         {
             // TODO: Sacar a archivo de configuración.
             Uri url = new Uri(pConfig.GetUrlToken());
             var content = new FormUrlEncodedContent(new[]
             {
                 new KeyValuePair<string, string>("client_id", "front"),
-                new KeyValuePair<string, string>("username", pConfig.GetUsernameESB()),
-                new KeyValuePair<string, string>("password", pConfig.GetPasswordESB()),
+                new KeyValuePair<string, string>("username", pConfig.GetUsernameEsbCsp()),
+                new KeyValuePair<string, string>("password", pConfig.GetPasswordEsbCsp()),
                 new KeyValuePair<string, string>("grant_type", "password")
             });
 

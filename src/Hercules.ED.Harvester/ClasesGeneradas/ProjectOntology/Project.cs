@@ -21,6 +21,7 @@ using Group = GroupOntology.Group;
 using GeographicRegion = GeographicregionOntology.GeographicRegion;
 using Person = PersonOntology.Person;
 using Organization = OrganizationOntology.Organization;
+using ProjectAuthorization = ProjectauthorizationOntology.ProjectAuthorization;
 using ProjectType = ProjecttypeOntology.ProjectType;
 using ProjectModality = ProjectmodalityOntology.ProjectModality;
 using ScientificExperienceProject = ScientificexperienceprojectOntology.ScientificExperienceProject;
@@ -133,6 +134,11 @@ namespace ProjectOntology
 			{
 				this.Vcard_hasRegion = new Feature(propVcard_hasRegion.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
+			SemanticPropertyModel propRoh_projectAuthorization = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/projectAuthorization");
+			if(propRoh_projectAuthorization != null && propRoh_projectAuthorization.PropertyValues.Count > 0)
+			{
+				this.Roh_projectAuthorization = new ProjectAuthorization(propRoh_projectAuthorization.PropertyValues[0].RelatedEntity,idiomaUsuario);
+			}
 			this.Roh_hasKnowledgeArea = new List<CategoryPath>();
 			SemanticPropertyModel propRoh_hasKnowledgeArea = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/hasKnowledgeArea");
 			if(propRoh_hasKnowledgeArea != null && propRoh_hasKnowledgeArea.PropertyValues.Count > 0)
@@ -172,6 +178,7 @@ namespace ProjectOntology
 			this.Roh_relevantResults = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/relevantResults"));
 			this.Roh_peopleYearNumber = GetNumberFloatPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/peopleYearNumber"));
 			this.Roh_creditPercentage = GetNumberFloatPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/creditPercentage"));
+			this.Roh_validationStatusProject = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/validationStatusProject"));
 			this.Roh_geographicFocusOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/geographicFocusOther"));
 			this.Roh_publicationsNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/publicationsNumber"));
 			this.Roh_durationDays = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/durationDays"));
@@ -301,6 +308,11 @@ namespace ProjectOntology
 			{
 				this.Vcard_hasRegion = new Feature(propVcard_hasRegion.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
+			SemanticPropertyModel propRoh_projectAuthorization = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/projectAuthorization");
+			if(propRoh_projectAuthorization != null && propRoh_projectAuthorization.PropertyValues.Count > 0)
+			{
+				this.Roh_projectAuthorization = new ProjectAuthorization(propRoh_projectAuthorization.PropertyValues[0].RelatedEntity,idiomaUsuario);
+			}
 			this.Roh_hasKnowledgeArea = new List<CategoryPath>();
 			SemanticPropertyModel propRoh_hasKnowledgeArea = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/hasKnowledgeArea");
 			if(propRoh_hasKnowledgeArea != null && propRoh_hasKnowledgeArea.PropertyValues.Count > 0)
@@ -340,6 +352,7 @@ namespace ProjectOntology
 			this.Roh_relevantResults = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/relevantResults"));
 			this.Roh_peopleYearNumber = GetNumberFloatPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/peopleYearNumber"));
 			this.Roh_creditPercentage = GetNumberFloatPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/creditPercentage"));
+			this.Roh_validationStatusProject = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/validationStatusProject"));
 			this.Roh_geographicFocusOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/geographicFocusOther"));
 			this.Roh_publicationsNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/publicationsNumber"));
 			this.Roh_durationDays = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/durationDays"));
@@ -411,6 +424,10 @@ namespace ProjectOntology
 		public  Feature Vcard_hasRegion  { get; set;} 
 		public string IdVcard_hasRegion  { get; set;} 
 
+		[RDFProperty("http://w3id.org/roh/projectAuthorization")]
+		public  ProjectAuthorization Roh_projectAuthorization  { get; set;} 
+		public string IdRoh_projectAuthorization  { get; set;} 
+
 		[RDFProperty("http://w3id.org/roh/hasKnowledgeArea")]
 		public  List<CategoryPath> Roh_hasKnowledgeArea { get; set;}
 
@@ -439,6 +456,9 @@ namespace ProjectOntology
 
 		[RDFProperty("http://w3id.org/roh/creditPercentage")]
 		public  float? Roh_creditPercentage { get; set;}
+
+		[RDFProperty("http://w3id.org/roh/validationStatusProject")]
+		public  string Roh_validationStatusProject { get; set;}
 
 		[RDFProperty("http://w3id.org/roh/geographicFocusOther")]
 		public  string Roh_geographicFocusOther { get; set;}
@@ -519,6 +539,7 @@ namespace ProjectOntology
 			propList.Add(new ListStringOntologyProperty("roh:members", this.IdsRoh_members));
 			propList.Add(new StringOntologyProperty("roh:conductedBy", this.IdRoh_conductedBy));
 			propList.Add(new StringOntologyProperty("vcard:hasRegion", this.IdVcard_hasRegion));
+			propList.Add(new StringOntologyProperty("roh:projectAuthorization", this.IdRoh_projectAuthorization));
 			propList.Add(new StringOntologyProperty("roh:projectType", this.IdRoh_projectType));
 			propList.Add(new StringOntologyProperty("roh:modality", this.IdRoh_modality));
 			propList.Add(new StringOntologyProperty("roh:mixedPercentage", this.Roh_mixedPercentage.ToString()));
@@ -526,6 +547,7 @@ namespace ProjectOntology
 			propList.Add(new StringOntologyProperty("roh:relevantResults", this.Roh_relevantResults));
 			propList.Add(new StringOntologyProperty("roh:peopleYearNumber", this.Roh_peopleYearNumber.ToString()));
 			propList.Add(new StringOntologyProperty("roh:creditPercentage", this.Roh_creditPercentage.ToString()));
+			propList.Add(new StringOntologyProperty("roh:validationStatusProject", this.Roh_validationStatusProject));
 			propList.Add(new StringOntologyProperty("roh:geographicFocusOther", this.Roh_geographicFocusOther));
 			propList.Add(new StringOntologyProperty("roh:publicationsNumber", this.Roh_publicationsNumber.ToString()));
 			propList.Add(new StringOntologyProperty("roh:durationDays", this.Roh_durationDays));
@@ -875,6 +897,10 @@ namespace ProjectOntology
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Project_{ResourceID}_{ArticleID}",  "https://www.w3.org/2006/vcard/ns#hasRegion", $"<{this.IdVcard_hasRegion}>", list, " . ");
 				}
+				if(this.IdRoh_projectAuthorization != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Project_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/projectAuthorization", $"<{this.IdRoh_projectAuthorization}>", list, " . ");
+				}
 				if(this.IdRoh_projectType != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Project_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/projectType", $"<{this.IdRoh_projectType}>", list, " . ");
@@ -902,6 +928,10 @@ namespace ProjectOntology
 				if(this.Roh_creditPercentage != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Project_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/creditPercentage", $"{this.Roh_creditPercentage.Value.ToString(new CultureInfo("en-US"))}", list, " . ");
+				}
+				if(this.Roh_validationStatusProject != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Project_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/validationStatusProject", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_validationStatusProject)}\"", list, " . ");
 				}
 				if(this.Roh_geographicFocusOther != null)
 				{
@@ -1410,6 +1440,20 @@ namespace ProjectOntology
 					}
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "https://www.w3.org/2006/vcard/ns#hasRegion", $"<{itemRegex}>", list, " . ");
 				}
+				if(this.IdRoh_projectAuthorization != null)
+				{
+					Regex regex = new Regex(@"\/items\/.+_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}");
+					string itemRegex = this.IdRoh_projectAuthorization;
+					if (regex.IsMatch(itemRegex))
+					{
+						itemRegex = $"http://gnoss/{resourceAPI.GetShortGuid(itemRegex).ToString().ToUpper()}";
+					}
+					else
+					{
+						itemRegex = itemRegex.ToLower();
+					}
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/projectAuthorization", $"<{itemRegex}>", list, " . ");
+				}
 				if(this.IdRoh_projectType != null)
 				{
 					Regex regex = new Regex(@"\/items\/.+_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}");
@@ -1457,6 +1501,10 @@ namespace ProjectOntology
 				if(this.Roh_creditPercentage != null)
 				{
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/creditPercentage", $"{this.Roh_creditPercentage.Value.ToString(new CultureInfo("en-US"))}", list, " . ");
+				}
+				if(this.Roh_validationStatusProject != null)
+				{
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/validationStatusProject", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_validationStatusProject).ToLower()}\"", list, " . ");
 				}
 				if(this.Roh_geographicFocusOther != null)
 				{

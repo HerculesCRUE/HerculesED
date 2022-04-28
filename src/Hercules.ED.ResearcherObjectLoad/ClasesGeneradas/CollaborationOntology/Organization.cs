@@ -60,22 +60,18 @@ namespace CollaborationOntology
 		public virtual string RdfsLabel { get { return "http://w3id.org/roh/Organization"; } }
 		public OntologyEntity Entity { get; set; }
 
-		[LABEL(LanguageEnum.es,"hasRegion")]
 		[RDFProperty("https://www.w3.org/2006/vcard/ns#hasRegion")]
 		public  Feature Vcard_hasRegion  { get; set;} 
 		public string IdVcard_hasRegion  { get; set;} 
 
-		[LABEL(LanguageEnum.es,"hasCountryName")]
 		[RDFProperty("https://www.w3.org/2006/vcard/ns#hasCountryName")]
 		public  Feature Vcard_hasCountryName  { get; set;} 
 		public string IdVcard_hasCountryName  { get; set;} 
 
-		[LABEL(LanguageEnum.es,"organization")]
 		[RDFProperty("http://w3id.org/roh/organization")]
 		public  Organization Roh_organization  { get; set;} 
 		public string IdRoh_organization  { get; set;} 
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/organizationType")]
 		[RDFProperty("http://w3id.org/roh/organizationType")]
 		public  OrganizationType Roh_organizationType  { get; set;} 
 		public string IdRoh_organizationType  { get; set;} 

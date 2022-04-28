@@ -10,8 +10,10 @@ namespace EditorCV.Controllers
         public static IConfigurationRoot configuracion;
 
         // Credenciales
-        private string usernameESB { get; set; }
-        private string passwordESB { get; set; }
+        private string usernameESBcsp { get; set; }
+        private string passwordESBcsp { get; set; }
+        private string usernameESBprc { get; set; }
+        private string passwordESBprc { get; set; }
 
         // URLs
         private string urlThematicEnrichment { get; set; }
@@ -32,50 +34,100 @@ namespace EditorCV.Controllers
         /// Obtiene el usuario necesario para la conexión con el ESB.
         /// </summary>
         /// <returns>Usuario.</returns>
-        public string GetUsernameESB()
+        public string GetUsernameEsbCsp()
         {
-            if (string.IsNullOrEmpty(usernameESB))
+            if (string.IsNullOrEmpty(usernameESBcsp))
             {
                 string connectionString = string.Empty;
                 IDictionary environmentVariables = Environment.GetEnvironmentVariables();
-                if (environmentVariables.Contains("username_esb"))
+                if (environmentVariables.Contains("username_esb_csp"))
                 {
-                    connectionString = environmentVariables["username_esb"] as string;
+                    connectionString = environmentVariables["username_esb_csp"] as string;
                 }
                 else
                 {
-                    connectionString = configuracion["username_esb"];
+                    connectionString = configuracion["username_esb_csp"];
                 }
 
-                usernameESB = connectionString;
+                usernameESBcsp = connectionString;
             }
 
-            return usernameESB;
+            return usernameESBcsp;
         }
 
         /// <summary>
         /// Obtiene el password necesario para la conexión con el ESB.
         /// </summary>
         /// <returns>Password.</returns>
-        public string GetPasswordESB()
+        public string GetPasswordEsbCsp()
         {
-            if (string.IsNullOrEmpty(passwordESB))
+            if (string.IsNullOrEmpty(passwordESBcsp))
             {
                 string connectionString = string.Empty;
                 IDictionary environmentVariables = Environment.GetEnvironmentVariables();
-                if (environmentVariables.Contains("password_esb"))
+                if (environmentVariables.Contains("password_esb_csp"))
                 {
-                    connectionString = environmentVariables["password_esb"] as string;
+                    connectionString = environmentVariables["password_esb_csp"] as string;
                 }
                 else
                 {
-                    connectionString = configuracion["password_esb"];
+                    connectionString = configuracion["password_esb_csp"];
                 }
 
-                passwordESB = connectionString;
+                passwordESBcsp = connectionString;
             }
 
-            return passwordESB;
+            return passwordESBcsp;
+        }
+
+        /// <summary>
+        /// Obtiene el usuario necesario para la conexión con el ESB.
+        /// </summary>
+        /// <returns>Usuario.</returns>
+        public string GetUsernameEsbPrc()
+        {
+            if (string.IsNullOrEmpty(usernameESBprc))
+            {
+                string connectionString = string.Empty;
+                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                if (environmentVariables.Contains("username_esb_prc"))
+                {
+                    connectionString = environmentVariables["username_esb_prc"] as string;
+                }
+                else
+                {
+                    connectionString = configuracion["username_esb_prc"];
+                }
+
+                usernameESBprc = connectionString;
+            }
+
+            return usernameESBprc;
+        }
+
+        /// <summary>
+        /// Obtiene el password necesario para la conexión con el ESB.
+        /// </summary>
+        /// <returns>Password.</returns>
+        public string GetPasswordEsbPrc()
+        {
+            if (string.IsNullOrEmpty(passwordESBprc))
+            {
+                string connectionString = string.Empty;
+                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                if (environmentVariables.Contains("password_esb_prc"))
+                {
+                    connectionString = environmentVariables["password_esb_prc"] as string;
+                }
+                else
+                {
+                    connectionString = configuracion["password_esb_prc"];
+                }
+
+                passwordESBprc = connectionString;
+            }
+
+            return passwordESBprc;
         }
 
         /// <summary>

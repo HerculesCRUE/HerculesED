@@ -58,15 +58,12 @@ namespace MaindocumentOntology
 		[RDFProperty("http://w3id.org/roh/impactCategory")]
 		public  List<ImpactCategory> Roh_impactCategory { get; set;}
 
-		[LABEL(LanguageEnum.es,"Fuente de impacto, otros")]
 		[RDFProperty("http://w3id.org/roh/impactSourceOther")]
 		public  string Roh_impactSourceOther { get; set;}
 
-		[LABEL(LanguageEnum.es,"Índice de impacto en año de publicación")]
 		[RDFProperty("http://w3id.org/roh/impactIndexInYear")]
 		public  float Roh_impactIndexInYear { get; set;}
 
-		[LABEL(LanguageEnum.es,"Año del índice de impacto")]
 		[RDFProperty("http://w3id.org/roh/year")]
 		public  int Roh_year { get; set;}
 

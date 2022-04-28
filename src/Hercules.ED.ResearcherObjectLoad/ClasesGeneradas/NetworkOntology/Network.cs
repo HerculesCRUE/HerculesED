@@ -18,6 +18,7 @@ using System.Diagnostics.CodeAnalysis;
 using Feature = FeatureOntology.Feature;
 using Organization = OrganizationOntology.Organization;
 using OrganizationType = OrganizationtypeOntology.OrganizationType;
+using Person = PersonOntology.Person;
 
 namespace NetworkOntology
 {
@@ -93,6 +94,12 @@ namespace NetworkOntology
 			this.Roh_crisIdentifier = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/crisIdentifier"));
 			this.Roh_selectionEntityTypeOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/selectionEntityTypeOther"));
 			this.Roh_members = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/members"));
+			SemanticPropertyModel propRoh_owner = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/owner");
+			if(propRoh_owner != null && propRoh_owner.PropertyValues.Count > 0)
+			{
+				this.Roh_owner = new Person(propRoh_owner.PropertyValues[0].RelatedEntity,idiomaUsuario);
+			}
+			this.Roh_cvnCode = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/cvnCode"));
 			this.Roh_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/title"));
 		}
 
@@ -163,41 +170,40 @@ namespace NetworkOntology
 			this.Roh_crisIdentifier = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/crisIdentifier"));
 			this.Roh_selectionEntityTypeOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/selectionEntityTypeOther"));
 			this.Roh_members = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/members"));
+			SemanticPropertyModel propRoh_owner = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/owner");
+			if(propRoh_owner != null && propRoh_owner.PropertyValues.Count > 0)
+			{
+				this.Roh_owner = new Person(propRoh_owner.PropertyValues[0].RelatedEntity,idiomaUsuario);
+			}
+			this.Roh_cvnCode = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/cvnCode"));
 			this.Roh_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/title"));
 		}
 
 		public virtual string RdfType { get { return "http://w3id.org/roh/Network"; } }
 		public virtual string RdfsLabel { get { return "http://w3id.org/roh/Network"; } }
-		[LABEL(LanguageEnum.es,"hasRegion")]
 		[RDFProperty("http://w3id.org/roh/selectionEntityHasRegion")]
 		public  Feature Roh_selectionEntityHasRegion  { get; set;} 
 		public string IdRoh_selectionEntityHasRegion  { get; set;} 
 
-		[LABEL(LanguageEnum.es,"participates")]
 		[RDFProperty("http://w3id.org/roh/participates")]
 		public  List<Organization> Roh_participates { get; set;}
 
-		[LABEL(LanguageEnum.es,"hasRegion")]
 		[RDFProperty("https://www.w3.org/2006/vcard/ns#hasRegion")]
 		public  Feature Vcard_hasRegion  { get; set;} 
 		public string IdVcard_hasRegion  { get; set;} 
 
-		[LABEL(LanguageEnum.es,"http://w3id.org/roh/selectionEntityType")]
 		[RDFProperty("http://w3id.org/roh/selectionEntityType")]
 		public  OrganizationType Roh_selectionEntityType  { get; set;} 
 		public string IdRoh_selectionEntityType  { get; set;} 
 
-		[LABEL(LanguageEnum.es,"hasCountryName")]
 		[RDFProperty("https://www.w3.org/2006/vcard/ns#hasCountryName")]
 		public  Feature Vcard_hasCountryName  { get; set;} 
 		public string IdVcard_hasCountryName  { get; set;} 
 
-		[LABEL(LanguageEnum.es,"selectionEntity")]
 		[RDFProperty("http://w3id.org/roh/selectionEntity")]
 		public  Organization Roh_selectionEntity  { get; set;} 
 		public string IdRoh_selectionEntity  { get; set;} 
 
-		[LABEL(LanguageEnum.es,"hasCountryName")]
 		[RDFProperty("http://w3id.org/roh/selectionEntityHasCountryName")]
 		public  Feature Roh_selectionEntityHasCountryName  { get; set;} 
 		public string IdRoh_selectionEntityHasCountryName  { get; set;} 
@@ -208,49 +214,47 @@ namespace NetworkOntology
 		[RDFProperty("http://w3id.org/roh/selectionEntityTitle")]
 		public  string Roh_selectionEntityTitle { get; set;}
 
-		[LABEL(LanguageEnum.es,"durationMonths")]
 		[RDFProperty("http://w3id.org/roh/durationMonths")]
 		public  string Roh_durationMonths { get; set;}
 
-		[LABEL(LanguageEnum.es,"durationDays")]
 		[RDFProperty("http://w3id.org/roh/durationDays")]
 		public  string Roh_durationDays { get; set;}
 
-		[LABEL(LanguageEnum.es,"start")]
 		[RDFProperty("http://vivoweb.org/ontology/core#start")]
 		public  DateTime? Vivo_start { get; set;}
 
 		[RDFProperty("http://w3id.org/roh/organizationTypeOther")]
 		public  string Roh_organizationTypeOther { get; set;}
 
-		[LABEL(LanguageEnum.es,"locality")]
 		[RDFProperty("https://www.w3.org/2006/vcard/ns#locality")]
 		public  string Vcard_locality { get; set;}
 
-		[LABEL(LanguageEnum.es,"performedTasks")]
 		[RDFProperty("http://w3id.org/roh/performedTasks")]
 		public  string Roh_performedTasks { get; set;}
 
-		[LABEL(LanguageEnum.es,"durationYears")]
 		[RDFProperty("http://w3id.org/roh/durationYears")]
 		public  string Roh_durationYears { get; set;}
 
-		[LABEL(LanguageEnum.es,"identification")]
 		[RDFProperty("http://w3id.org/roh/identification")]
 		public  string Roh_identification { get; set;}
 
-		[LABEL(LanguageEnum.es,"crisIdentifier")]
 		[RDFProperty("http://w3id.org/roh/crisIdentifier")]
 		public  string Roh_crisIdentifier { get; set;}
 
 		[RDFProperty("http://w3id.org/roh/selectionEntityTypeOther")]
 		public  string Roh_selectionEntityTypeOther { get; set;}
 
-		[LABEL(LanguageEnum.es,"members")]
 		[RDFProperty("http://w3id.org/roh/members")]
 		public  int? Roh_members { get; set;}
 
-		[LABEL(LanguageEnum.es,"title")]
+		[RDFProperty("http://w3id.org/roh/owner")]
+		[Required]
+		public  Person Roh_owner  { get; set;} 
+		public string IdRoh_owner  { get; set;} 
+
+		[RDFProperty("http://w3id.org/roh/cvnCode")]
+		public  string Roh_cvnCode { get; set;}
+
 		[RDFProperty("http://w3id.org/roh/title")]
 		public  string Roh_title { get; set;}
 
@@ -279,6 +283,8 @@ namespace NetworkOntology
 			propList.Add(new StringOntologyProperty("roh:crisIdentifier", this.Roh_crisIdentifier));
 			propList.Add(new StringOntologyProperty("roh:selectionEntityTypeOther", this.Roh_selectionEntityTypeOther));
 			propList.Add(new StringOntologyProperty("roh:members", this.Roh_members.ToString()));
+			propList.Add(new StringOntologyProperty("roh:owner", this.IdRoh_owner));
+			propList.Add(new StringOntologyProperty("roh:cvnCode", this.Roh_cvnCode));
 			propList.Add(new StringOntologyProperty("roh:title", this.Roh_title));
 		}
 
@@ -436,6 +442,14 @@ namespace NetworkOntology
 				if(this.Roh_members != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Network_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/members", $"{this.Roh_members.Value.ToString()}", list, " . ");
+				}
+				if(this.IdRoh_owner != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Network_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/owner", $"<{this.IdRoh_owner}>", list, " . ");
+				}
+				if(this.Roh_cvnCode != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Network_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/cvnCode", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_cvnCode)}\"", list, " . ");
 				}
 				if(this.Roh_title != null)
 				{
@@ -643,6 +657,24 @@ namespace NetworkOntology
 				if(this.Roh_members != null)
 				{
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/members", $"{this.Roh_members.Value.ToString()}", list, " . ");
+				}
+				if(this.IdRoh_owner != null)
+				{
+					Regex regex = new Regex(@"\/items\/.+_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}");
+					string itemRegex = this.IdRoh_owner;
+					if (regex.IsMatch(itemRegex))
+					{
+						itemRegex = $"http://gnoss/{resourceAPI.GetShortGuid(itemRegex).ToString().ToUpper()}";
+					}
+					else
+					{
+						itemRegex = itemRegex.ToLower();
+					}
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/owner", $"<{itemRegex}>", list, " . ");
+				}
+				if(this.Roh_cvnCode != null)
+				{
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/cvnCode", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_cvnCode).ToLower()}\"", list, " . ");
 				}
 				if(this.Roh_title != null)
 				{

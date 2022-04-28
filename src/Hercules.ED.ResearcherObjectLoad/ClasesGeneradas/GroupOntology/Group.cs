@@ -18,6 +18,7 @@ using System.Diagnostics.CodeAnalysis;
 using Organization = OrganizationOntology.Organization;
 using OrganizationType = OrganizationtypeOntology.OrganizationType;
 using Feature = FeatureOntology.Feature;
+using Person = PersonOntology.Person;
 
 namespace GroupOntology
 {
@@ -95,6 +96,18 @@ namespace GroupOntology
 					if(propValue.RelatedEntity!=null){
 						BFO_0000023 vivo_relates = new BFO_0000023(propValue.RelatedEntity,idiomaUsuario);
 						this.Vivo_relates.Add(vivo_relates);
+					}
+				}
+			}
+			this.Roh_members = new List<Person>();
+			SemanticPropertyModel propRoh_members = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/members");
+			if(propRoh_members != null && propRoh_members.PropertyValues.Count > 0)
+			{
+				foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_members.PropertyValues)
+				{
+					if(propValue.RelatedEntity!=null){
+						Person roh_members = new Person(propValue.RelatedEntity,idiomaUsuario);
+						this.Roh_members.Add(roh_members);
 					}
 				}
 			}
@@ -202,6 +215,18 @@ namespace GroupOntology
 					}
 				}
 			}
+			this.Roh_members = new List<Person>();
+			SemanticPropertyModel propRoh_members = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/members");
+			if(propRoh_members != null && propRoh_members.PropertyValues.Count > 0)
+			{
+				foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_members.PropertyValues)
+				{
+					if(propValue.RelatedEntity!=null){
+						Person roh_members = new Person(propValue.RelatedEntity,idiomaUsuario);
+						this.Roh_members.Add(roh_members);
+					}
+				}
+			}
 			this.Roh_relevantResults = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/relevantResults"));
 			SemanticPropertyModel propRoh_lineResearch = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/lineResearch");
 			this.Roh_lineResearch = new List<string>();
@@ -264,6 +289,11 @@ namespace GroupOntology
 
 		[RDFProperty("http://vivoweb.org/ontology/core#relates")]
 		public  List<BFO_0000023> Vivo_relates { get; set;}
+
+		[LABEL(LanguageEnum.es,"Persona")]
+		[RDFProperty("http://w3id.org/roh/members")]
+		public  List<Person> Roh_members { get; set;}
+		public List<string> IdsRoh_members { get; set;}
 
 		[RDFProperty("http://w3id.org/roh/relevantResults")]
 		public  string Roh_relevantResults { get; set;}
@@ -339,6 +369,7 @@ namespace GroupOntology
 			propList.Add(new StringOntologyProperty("roh:affiliatedOrganizationType", this.IdRoh_affiliatedOrganizationType));
 			propList.Add(new StringOntologyProperty("vcard:hasCountryName", this.IdVcard_hasCountryName));
 			propList.Add(new StringOntologyProperty("vcard:hasRegion", this.IdVcard_hasRegion));
+			propList.Add(new ListStringOntologyProperty("roh:members", this.IdsRoh_members));
 			propList.Add(new StringOntologyProperty("roh:relevantResults", this.Roh_relevantResults));
 			propList.Add(new ListStringOntologyProperty("roh:lineResearch", this.Roh_lineResearch));
 			propList.Add(new StringOntologyProperty("roh:publicationsNumber", this.Roh_publicationsNumber.ToString()));
@@ -583,6 +614,13 @@ namespace GroupOntology
 				if(this.IdVcard_hasRegion != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Group_{ResourceID}_{ArticleID}",  "https://www.w3.org/2006/vcard/ns#hasRegion", $"<{this.IdVcard_hasRegion}>", list, " . ");
+				}
+				if(this.IdsRoh_members != null)
+				{
+					foreach(var item2 in this.IdsRoh_members)
+					{
+						AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Group_{ResourceID}_{ArticleID}", "http://w3id.org/roh/members", $"<{item2}>", list, " . ");
+					}
 				}
 				if(this.Roh_relevantResults != null)
 				{
@@ -902,6 +940,23 @@ namespace GroupOntology
 						itemRegex = itemRegex.ToLower();
 					}
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "https://www.w3.org/2006/vcard/ns#hasRegion", $"<{itemRegex}>", list, " . ");
+				}
+				if(this.IdsRoh_members != null)
+				{
+					foreach(var item2 in this.IdsRoh_members)
+					{
+					Regex regex = new Regex(@"\/items\/.+_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}");
+					string itemRegex = item2;
+					if (regex.IsMatch(itemRegex))
+					{
+						itemRegex = $"http://gnoss/{resourceAPI.GetShortGuid(itemRegex).ToString().ToUpper()}";
+					}
+					else
+					{
+						itemRegex = itemRegex.ToLower();
+					}
+						AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://w3id.org/roh/members", $"<{itemRegex}>", list, " . ");
+					}
 				}
 				if(this.Roh_relevantResults != null)
 				{
