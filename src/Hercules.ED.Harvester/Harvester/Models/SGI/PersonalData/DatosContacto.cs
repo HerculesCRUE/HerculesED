@@ -12,10 +12,7 @@ namespace OAI_PMH.Models.SGI.PersonalData
         public ComunidadAutonoma ComAutonomaContacto { get; set; }
         public Provincia ProvinciaContacto { get; set; }
         public string CiudadContacto { get; set; }
-        public TipoVia TipoViaContacto { get; set; }
-        public string NombreViaContacto { get; set; }
-        public string NumeroViaContacto { get; set; }
-        public string AmpliacionDireccionContacto { get; set; }
+        public string DireccionContacto { get; set; }
         public string CodigoPostalContacto { get; set; }
         public List<Email> Emails { get; set; }
         public List<string> Telefonos { get; set; }

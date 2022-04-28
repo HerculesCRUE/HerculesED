@@ -42,9 +42,11 @@ namespace EditorCV.Models
                 RestClient client = new(pConfig.GetUrlEnvioProyecto());
                 client.AddDefaultHeader("Authorization", "Bearer " + GetToken(pConfig));
                 var request = new RestRequest(Method.POST);
-                request.AddJsonBody(proyecto);
-                string json = JsonConvert.SerializeObject(proyecto);
+                request.AddJsonBody(proyecto);                
                 IRestResponse response = client.Execute(request);
+
+                // Respuesta en JSON
+                // string json = JsonConvert.SerializeObject(proyecto);
 
                 if ((int)response.StatusCode < 200 || (int)response.StatusCode >= 300)
                 {
@@ -113,6 +115,7 @@ namespace EditorCV.Models
 
             NotificacionProyecto notificacion = new NotificacionProyecto();
             notificacion.proyectoCVNId = pIdProyecto;
+            //notificacion.proyectoCVNId = mResourceApi.GetShortGuid(pIdProyecto).ToString();
             notificacion.autorizacionId = GetAutorizacion(pIdAutorizacion); // Obtención del crisIdentifier de la autorización.
             notificacion.solicitanteRef = GetSolicitanteRef(pIdPersona); // Obtención del crisIdentifier de la persona solicitante.
             notificacion.titulo = dicDatosProyecto["titulo"];
@@ -284,7 +287,7 @@ namespace EditorCV.Models
             string dia = pFechaSparql.Substring(6, 2);
             string mes = pFechaSparql.Substring(4, 2);
             string anyo = pFechaSparql.Substring(0, 4);
-            return $@"{anyo}-{mes}-{dia}";
+            return $@"{anyo}-{mes}-{dia}T00:00:00Z";
         }
 
         /// <summary>
