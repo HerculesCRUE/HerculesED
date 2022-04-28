@@ -66,6 +66,7 @@ class StepsCluster {
 		this.userId = document.getElementById('inpt_usuarioID').value
 		this.clusterId = undefined
 		this.data = undefined
+		this.editDataSave = undefined
 		this.communityShortName = this.modalCrearCluster.data('cshortName')
 		this.communityUrl = this.modalCrearCluster.data('comUrl')
 		this.communityKey = this.modalCrearCluster.data('comKey')
@@ -89,26 +90,78 @@ class StepsCluster {
 	 * Método que inicia el funcionamiento funcionalidades necesarias para el creador de clusters
 	 */
 	init() {
+
 		var _self = this
-		var currentUrl = new URL(window.location)
-		this.clusterId = currentUrl.searchParams.get("id")
-		if (this.clusterId) {
-			this.loadCluster()
-		}
 
 		// Fill taxonomies data
 		this.getDataTaxonomies().then((data) => {
 			_self.fillDataTaxonomies(data);
 			_self.dataTaxonomies = data['researcharea'];
+
+			// Check if we need load the cluster (after the taxonomies are loaded)
+			var currentUrl = new URL(window.location)
+			_self.clusterId = currentUrl.searchParams.get("id")
+			if (_self.clusterId) {
+				// Load the cluster
+				_self.loadCluster()
+			}
 		})
+
 
 		this.topicsM = new ModalSearchTags()
 	}
 
+	/**
+	 * Método que carga el clusters indicado e inicializa los datos con los parámetros indicados
+	 */
 	loadCluster() {
+		var _self = this
 		this.callLoadCluster().then((res) => {
 			this.data = res
-			console.log(res)
+			this.editDataSave = res
+			var nameInput = document.getElementById('nombreclusterinput')
+			var descInput = document.getElementById('txtDescripcion')
+			var selectTerms = this.modalCrearCluster.find('#cluster-modal-sec1-tax-wrapper')
+
+			// Fill section 1
+			nameInput.value = this.data.name
+			descInput.value = this.data.description
+			this.saveAreasTematicasEvent(selectTerms, this.data.terms)
+
+			// Fill section 2
+			this.data.profiles.forEach(profile => {
+				profile.entityID = profile.entityID.split('_')[1]
+
+				// Crea el perfil
+				this.addPerfilSearch(profile).then(nameId => {
+
+					// Carga las áreas temáticas
+					selectTerms = $('#modal-seleccionar-area-tematica-' + nameId)
+
+					let timer = setTimeout(function () {
+						if (selectTerms.length !== 0)
+						{
+							_self.saveAreasTematicasEvent(selectTerms, profile.terms)
+							clearTimeout(timer)
+						}
+					}, 100);
+
+					// carga los tags
+					let selectTags = $('#modal-seleccionar-tags-' + nameId)
+					let timerTerms = setTimeout(function () {
+						if (selectTerms.length !== 0)
+						{
+							_self.saveTAGS(selectTags, profile.tags)
+							clearTimeout(timerTerms)
+						}
+					}, 100);
+				})
+
+				// Editamos los IDs de los usuarios
+				profile.users.forEach(user => {
+					user.userID = user.userID.split('_')[1]
+				})
+			})
 		});
 	}
 
@@ -193,6 +246,7 @@ class StepsCluster {
 		inputsTermsItms.each((i, e) => {terms.push(e.value)})
 
 		this.data = {
+			...this.data,
 			entityID: _self.clusterId,
 			name,
 			description,
@@ -218,7 +272,7 @@ class StepsCluster {
 			let termsSec = $(e).find('.terms-items')
 			let inputsTermsProf = termsSec.find('input')
 			let profTerms = []
-			inputsTermsProf.each((i, e) => {profTerms.push(e.value)})
+			inputsTermsProf.each((i, el) => {profTerms.push(el.value)})
 
 
 			let topicsSec = $(e).find('.tags-items')
@@ -226,12 +280,21 @@ class StepsCluster {
 			let profTags = []
 			inputsTopicsProf.each((i, e) => {profTags.push(e.value)})
 
-			profilesObjets.push({
-				"name": $(e).data('name'),
-				"terms": profTerms,
-				"tags": profTags,
-				"entityID":$(e).attr('profileid')
-			})
+			// Buscar si es un objeto actualizado
+			if (this.data.profiles && this.data.profiles.find(prf => prf.entityID == $(e).data('profileid')))
+			{
+				let profile = this.data.profiles.find(prf => prf.entityID === $(e).data('profileid'))
+				profile.terms = profTerms
+				profile.tags = profTags
+				profilesObjets.push(profile)
+			} else {
+				profilesObjets.push({
+					"name": $(e).data('name'),
+					"terms": profTerms,
+					"tags": profTags,
+					"entityID":$(e).data('profileid')
+				})
+			}
 		})
 
 		// Set the post data
@@ -534,15 +597,20 @@ class StepsCluster {
 
 				dataJson.forEach(e => {
 					let item = document.getElementById(e)
-					item.checked = true
+					
+					if (item) {
+						item.checked = true
+						// Comprueba si tiene padre para establecerlo con habilitado.
+						let parentId = item.getAttribute('data-parentid')
+						if (parentId.length > 0) {
+							parentId = (parentId.length > 0) ? parentId.split('/').pop() : parentId
 
-					// Comprueba si tiene padre para establecerlo con habilitado.
-					let parentId = item.getAttribute('data-parentid')
-					if (parentId.length > 0) {
-						parentId = (parentId.length > 0) ? parentId.split('/').pop() : parentId
-
-						_self.selectParent(parentId)
+							_self.selectParent(parentId)
+						}
+					} else {
+						console.log ("item no existe: #", e)
 					}
+
 				})
 			}
 
@@ -550,7 +618,7 @@ class StepsCluster {
 			// Muestra el modal de las áreas temáticas
 			this.modalAreasTematicas.modal('show')
 
-			this.saveAreasTematicas(relItem)
+			this.saveAreasTematicasEvent(relItem)
 		}
 	}
 
@@ -662,47 +730,87 @@ class StepsCluster {
 
 	/**
 	 * Método que genera el evento para añadir las áreas temáticas selecciondas en el popup
-	 * @param relItem, elemento relacionado para indicar dónde deben de guardarse las areas temátcias seleccionadas
+	 * @param relItem, elemento relacionado para indicar dónde deben de guardarse las areas temáticas seleccionadas
+	 * @param data, array con las areas temáticas seleccionadas
 	 */
-	saveAreasTematicas(relItem) {
+	saveAreasTematicasEvent(relItem, data = null) {
 
-		// Evento para cuando se seleccione guardar las áreas temáticas
-		this.btnSaveAT.off('click').on('click', (e) => {
-			e.preventDefault()
 
-			// Oculta el modal de las áreas temáticas
-			this.modalAreasTematicas.modal('hide')
-
-			// Selecciona y establece el contenedor de las areas temáticas
-			// let relItem = $('#' + $(item).data("rel"))
+		if (data != null) {
+			// Entra aquí por primera vez si el cluster ha sido guardado
 
 			let htmlResWrapper = $('<div class="tag-list mb-4 d-inline"></div>')
 
 			let htmlRes = ''
-			let arrayItems = [] // Array para guardar los items que se van a usar
-			this.divTesArbol.find('input.at-input').each((i, e) => {
-				if (e.checked) {
-					htmlRes += '<div class="tag" title="' + $(e).data('name') + '" data-id="' + $(e).data('id') + '">\
-						<div class="tag-wrap">\
-							<span class="tag-text">' + $(e).data('name') + '</span>\
-							<span class="tag-remove material-icons">close</span>\
-						</div>\
-						<input type="hidden" value="' + $(e).data('id') + '">\
-					</div>'
-					arrayItems.push(e.id)
-				}
+			let dataWithNames = [];
+
+			if (this.dataTaxonomies != null) {
+				data.forEach(id => {
+					dataWithNames.push({id, name: this.dataTaxonomies.find(e => e.id == id).name})
+				})
+			}
+
+			let arrayRes = []
+			dataWithNames.forEach(e => {
+				htmlRes += '<div class="tag" title="' + e.name + '" data-id="' + e.id.split('/').pop() + '">\
+					<div class="tag-wrap">\
+						<span class="tag-text">' + e.name + '</span>\
+						<span class="tag-remove material-icons">close</span>\
+					</div>\
+					<input type="hidden" value="' + e.id.split('/').pop() + '">\
+				</div>'
+				arrayRes.push(e.id.split('/').pop())
 			})
 
 			htmlResWrapper.append(htmlRes)
-
 			relItem.html(htmlResWrapper)
 
 			// Se añade un json para saber qué categorías se han seleccionado
-			relItem.data('jsondata', arrayItems)
+			relItem.data('jsondata', arrayRes)
 
-			this.deleteAreasTematicas(relItem)
+			this.deleteAreasTematicasEvent(relItem)
 
-		})
+		} else {
+
+			// Evento para cuando se seleccione guardar las áreas temáticas desde el popup
+			this.btnSaveAT.off('click').on('click', (e) => {
+				e.preventDefault()
+
+				// Oculta el modal de las áreas temáticas
+				this.modalAreasTematicas.modal('hide')
+
+				// Selecciona y establece el contenedor de las areas temáticas
+				// let relItem = $('#' + $(item).data("rel"))
+
+				let htmlResWrapper = $('<div class="tag-list mb-4 d-inline"></div>')
+
+				let htmlRes = ''
+				let arrayItems = [] // Array para guardar los items que se van a usar
+				this.divTesArbol.find('input.at-input').each((i, e) => {
+					if (e.checked) {
+						htmlRes += '<div class="tag" title="' + $(e).data('name') + '" data-id="' + $(e).data('id') + '">\
+							<div class="tag-wrap">\
+								<span class="tag-text">' + $(e).data('name') + '</span>\
+								<span class="tag-remove material-icons">close</span>\
+							</div>\
+							<input type="hidden" value="' + $(e).data('id') + '">\
+						</div>'
+						arrayItems.push(e.id)
+					}
+				})
+
+				htmlResWrapper.append(htmlRes)
+
+				relItem.html(htmlResWrapper)
+
+				// Se añade un json para saber qué categorías se han seleccionado
+				relItem.data('jsondata', arrayItems)
+
+				this.deleteAreasTematicasEvent(relItem)
+
+			})
+		}
+
 	}
 
 
@@ -710,7 +818,7 @@ class StepsCluster {
 	 * Método que elimina las áreas temáticas del arbol y del listado
 	 * @param relItem, contenedor donde se encuentran las áreas temáticas seleccionadas
 	 */
-	deleteAreasTematicas(relItem) {
+	deleteAreasTematicasEvent(relItem) {
 
 		// Selecciona la áreas temáticas seleccionadas dentro de selector
 		let tagsItems = relItem.find('.tag-wrap');
@@ -745,70 +853,87 @@ class StepsCluster {
 
 	/**
 	 * Método que añade un perfil nuevo en el segundo paso
+	 * @param name, Nombre opcional para crear un perfil guardado en el cluster que se está cargando
+	 * @return string, devuelve un string con el id del profile generado
 	 */
-	addPerfilSearch() {
+	addPerfilSearch(profileObj = null) {
 
-		// Get the name
-		let name = this.inputPerfil.val()
-		this.modalPerfil.modal('hide')
-		this.inputPerfil.val("") // Set the name empty
+		return new Promise((resolve, reject) => {
 
-		// Get the image user url
-		let imgUser = this.modalCrearCluster.data('imguser')
+			let name = "";
+			let profileId = "";
 
-		// Set The item id
-		let nameId = name.replace(/[^a-z0-9_]+/gi, '-').replace(/^-|-$/g, '').toLowerCase()
-		let rand = Math.random() * (100000 - 10000) + 10000
-		nameId = nameId + rand.toFixed()
+			if (profileObj == null) {
+				// Get the name
+				name = this.inputPerfil.val()
+				profileId = guidGenerator()
+			} else {
+				name = profileObj.name
+				profileId = profileObj.entityID
+			}
+			this.modalPerfil.modal('hide')
+			this.inputPerfil.val("") // Set the name empty
 
-		// Get the panel item
-		let panel = this.clusterAccordionPerfil.find('.panel')
+			// Get the image user url
+			let imgUser = this.modalCrearCluster.data('imguser')
 
-		// 
-		let item = `<div class="panel-heading" role="tab" id="`+ nameId +`-tab">
-				<p class="panel-title">
-					<a class="perfil" data-toggle="collapse" data-parent="#accordion_cluster" href="#`+ nameId +`" aria-expanded="true" aria-controls="`+ nameId +`" data-expandable="false">
-						<span class="material-icons">keyboard_arrow_down</span>
-						<img src="`+ imgUser +`" alt="person">
-						<span class="texto">`+ name +`</span>
+			// Set The item id
+			let nameId = name.replace(/[^a-z0-9_]+/gi, '-').replace(/^-|-$/g, '').toLowerCase()
+			let rand = Math.random() * (100000 - 10000) + 10000
+			nameId = nameId + rand.toFixed()
+
+			// Get the panel item
+			let panel = this.clusterAccordionPerfil.find('.panel')
+
+			// 
+			let item = `<div class="panel-heading" role="tab" id="`+ nameId +`-tab">
+					<p class="panel-title">
+						<a class="perfil" data-toggle="collapse" data-parent="#accordion_cluster" href="#`+ nameId +`" aria-expanded="true" aria-controls="`+ nameId +`" data-expandable="false">
+							<span class="material-icons">keyboard_arrow_down</span>
+							<img src="`+ imgUser +`" alt="person">
+							<span class="texto">`+ name +`</span>
+						</a>
+					</p>
+					<a href="javascript:void(0)" onclick="stepsCls.deletePerfil('`+ nameId +`-tab', '`+ nameId +`')" class="btn btn-outline-grey eliminar">
+						` + this.eliminarText + `
+						<span class="material-icons-outlined">delete</span>
 					</a>
-				</p>
-				<a href="javascript:void(0)" onclick="stepsCls.deletePerfil('`+ nameId +`-tab', '`+ nameId +`')" class="btn btn-outline-grey eliminar">
-					` + this.eliminarText + `
-					<span class="material-icons-outlined">delete</span>
-				</a>
-			</div>
-			<div profileid="`+guidGenerator()+`" id="`+ nameId +`" data-name="`+ name +`" class="panel-collapse collapse show" role="tabpanel" aria-labelledby="`+ nameId +`-tab">
-				<div class="panel-body">
-
-					<!-- Areas temáticas -->
-					<div class="form-group mb-5 edit-etiquetas terms-items">
-						<label class="control-label d-block">`+ this.areasTematicasText +`</label>
-						<div class="autocompletar autocompletar-tags form-group" id="modal-seleccionar-area-tematica-`+ nameId +`">
-							<div class="tag-list mb-4 d-inline"></div> 
-						</div>
-						<a class="btn btn-outline-primary" href="javascript: void(0)">
-							<span class="material-icons" onclick="stepsCls.setAreasTematicas(this)" data-rel="modal-seleccionar-area-tematica-`+ nameId +`">add</span>
-						</a>
-					</div>
-					<!-- -->
-
-					<!-- Tópicos -->
-					<div class="form-group mb-5 edit-etiquetas tags-items">
-						<label class="control-label d-block">` + this.descriptoresEspecificosText + `</label>
-						<div class="autocompletar autocompletar-tags form-group" id="modal-seleccionar-tags-`+ nameId +`">
-							<div class="tag-list mb-4 d-inline"></div> 
-						</div>
-						<a class="btn btn-outline-primary" href="javascript: void(0)">
-							<span class="material-icons" data-rel="modal-seleccionar-tags-`+ nameId +`" onclick="stepsCls.loadModalTopics(this)">add</span>
-						</a>
-					</div>
-					<!-- -->
-
 				</div>
-			</div>`
+				<div data-profileid="`+profileId+`" id="`+ nameId +`" data-name="`+ name +`" class="panel-collapse collapse show" role="tabpanel" aria-labelledby="`+ nameId +`-tab">
+					<div class="panel-body">
 
-		panel.append(item)
+						<!-- Areas temáticas -->
+						<div class="form-group mb-5 edit-etiquetas terms-items">
+							<label class="control-label d-block">`+ this.areasTematicasText +`</label>
+							<div class="autocompletar autocompletar-tags form-group" id="modal-seleccionar-area-tematica-`+ nameId +`">
+								<div class="tag-list mb-4 d-inline"></div> 
+							</div>
+							<a class="btn btn-outline-primary" href="javascript: void(0)">
+								<span class="material-icons" onclick="stepsCls.setAreasTematicas(this)" data-rel="modal-seleccionar-area-tematica-`+ nameId +`">add</span>
+							</a>
+						</div>
+						<!-- -->
+
+						<!-- Tópicos -->
+						<div class="form-group mb-5 edit-etiquetas tags-items">
+							<label class="control-label d-block">` + this.descriptoresEspecificosText + `</label>
+							<div class="autocompletar autocompletar-tags form-group" id="modal-seleccionar-tags-`+ nameId +`">
+								<div class="tag-list mb-4 d-inline"></div> 
+							</div>
+							<a class="btn btn-outline-primary" href="javascript: void(0)">
+								<span class="material-icons" data-rel="modal-seleccionar-tags-`+ nameId +`" onclick="stepsCls.loadModalTopics(this)">add</span>
+							</a>
+						</div>
+						<!-- -->
+
+					</div>
+				</div>`
+
+			panel.append(item)
+
+			resolve(nameId)
+		})
+
 	}
 
 
@@ -1496,27 +1621,52 @@ function CompletadaCargaRecursosCluster()
 					$('#'+idperson).data('numPublicacionesTotal', Object.values(datospersona)[0].numPublicacionesTotal);
 					$('#'+idperson).data('ipNumber', Object.values(datospersona)[0].ipNumber);
 				} catch (e) { }
-			}	
+			}
 
-			
+			let repintar = false
 			//Marcamos como checkeados los correspondientes
 			stepsCls.data.profiles.forEach(function(perfil, index) {
 				let idProfile= perfil.entityID;
 				if(perfil.users!=null)
 				{
 					perfil.users.forEach(function(user, index) {
+						var elementUser = $('#'+user.userID)
 						$('#'+user.userID+'-'+idProfile).prop('checked', true);
+
+						// Obtenemos los datos del usuario por primera vez si es "editar cluster"
+						if (stepsCls.editDataSave) {
+							if (user.info == undefined) 
+							{
+								repintar = true;
+							}
+							// Obtener la descripción
+							let arrInfo = []
+							elementUser.find('.middle-wrap > .content-wrap > .list-wrap li').each((i, elem) => {
+								arrInfo.push($(elem).text().trim())
+							})
+							user.info = arrInfo.join(', ')
+							// Obtenemos el número de publicaciones totales y el nº de veces investigador principal
+							user.numPublicacionesTotal = elementUser.data('numPublicacionesTotal')
+							user.ipNumber = elementUser.data('ipNumber')
+							if(perfil.users==null)					
+							{
+								perfil.users=[];
+							}	
+						}
 					});					
 				}
 			});
+			if (repintar) {
+				stepsCls.PrintPerfilesstp3();
+			}
 			
 			//Enganchamos el chek de los chekbox	
 			$('.perfil-wrap .custom-control-input').change(function() {
 				let id=$(this).attr('id');
 				let idUser=id.substring(0,36);
-				let idProfile=id.substring(37);					
+				let idProfileSmall=id.substring(37);					
 				let perfil=stepsCls.data.profiles.filter(function (perfilInt) {
-					return perfilInt.entityID==idProfile;
+					return perfilInt.entityID==idProfileSmall;
 				})[0];
 				if(this.checked) {
 					let elementUser = $(this).closest('.resource.investigador')
@@ -1562,26 +1712,26 @@ function CompletadaCargaFacetasCluster()
 			//Creamos la faceta
 			let liPerfiles='';
 			stepsCls.data.profiles.forEach(function(perfil, index) {
-					let idProfile= perfil.entityID;
-					let nameProfile= perfil.name;
-					let style="";
-					if(buscadorPersonalizado.profile==idProfile)
-					{
-						style='style="font-weight: 700!important;"';
-					}
-					liPerfiles+=`<li>
-										<a rel="nofollow" ${style} href="javascript: void(0);" class="facetaperfil con-subfaceta ocultarSubFaceta" profile="${idProfile}">
-											<span class="textoFaceta">${nameProfile}</span>
-										</a>
-									</li>`;
-				});
+				let idProfile= perfil.entityID;
+				let nameProfile= perfil.name;
+				let style="";
+				if(buscadorPersonalizado.profile==idProfile)
+				{
+					style='style="font-weight: 700!important;"';
+				}
+				liPerfiles+=`<li>
+						<a rel="nofollow" ${style} href="javascript: void(0);" class="facetaperfil con-subfaceta ocultarSubFaceta" profile="${idProfile}">
+							<span class="textoFaceta">${nameProfile}</span>
+						</a>
+					</li>`;
+			});
 			let htmlPerfiles=`<div id="out_roh_profiles">
 					<div id="in_roh_profiles">
 						<div class="box " id="roh_profiles">
 							<span class="faceta-title">TODO perfiles</span>
-								<ul class="listadoFacetas">
-									${liPerfiles}
-								</ul>
+							<ul class="listadoFacetas">
+								${liPerfiles}
+							</ul>
 						</div>
 					</div>
 				</div>`;
