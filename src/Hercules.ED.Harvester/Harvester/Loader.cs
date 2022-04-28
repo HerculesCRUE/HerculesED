@@ -60,6 +60,8 @@ namespace Harvester
             Dictionary<string, Tuple<string, string>> dicPersonas = new Dictionary<string, Tuple<string, string>>();
             Dictionary<string, Tuple<string, string>> dicProyectos = new Dictionary<string, Tuple<string, string>>();
             IniciacionDiccionarios(ref dicProyectos, ref dicPersonas, ref dicOrganizaciones);
+            Utilidades.Utilidades.IniciadorDiccionarioPaises();
+            Utilidades.Utilidades.IniciadorDiccionarioRegion();
 
             //TODO eliminar
             goto Testing;
@@ -76,7 +78,7 @@ namespace Harvester
             ProcesarFichero(_Config, "AutorizacionProyecto", null);
             mResourceApi.ChangeOntoly("group");
             ProcesarFichero(_Config, "Grupo", null);
-            //TODO: Invencion
+        //TODO: Invencion
 
         //TODO eliminar
         Testing:
@@ -96,7 +98,7 @@ namespace Harvester
             //Actualizo la última fecha de carga
             UpdateLastDate(_Config, fecha);
 
-            ////Proceso los ficheros
+            //Proceso los ficheros
             mResourceApi.ChangeOntoly("organization");
             ProcesarFichero(_Config, "Organizacion", dicOrganizaciones: dicOrganizaciones);
             mResourceApi.ChangeOntoly("person");
@@ -164,28 +166,6 @@ namespace Harvester
                 }
                 idsACargar.Sort();
 
-                //if (idsACargar.Count > 0)
-                //{
-                //    string tipo = idsACargar.First().Split("_")[0];
-                //    List<string> ids = new List<string>();
-                //    switch (tipo)
-                //    {
-                //        case "Organizacion":
-                //            ids = dicOrganizaciones.Select(x => tipo+("_")+x.Key).ToList();
-                //            idsACargar = idsACargar.Except(ids).ToList();
-                //            break;
-                //        case "Persona":
-                //            ids = dicPersonas.Select(x => tipo+("_")+x.Key).ToList();
-                //            idsACargar = idsACargar.Except(ids).ToList();
-                //            break;
-                //        case "Proyecto":
-                //            //TODO ids = dicProyectos.Select(x => tipo+("_")+x.Key).ToList();
-                //            ids = dicProyectos.Select(x => tipo+("_")+x.Key.Split("|")[1]).ToList();
-                //            idsACargar = idsACargar.Except(ids).ToList();
-                //            break;
-                //    }
-                //}
-
                 string xmlResult = string.Empty;
                 XmlSerializer xmlSerializer = null;
                 ComplexOntologyResource resource = null;
@@ -227,16 +207,14 @@ namespace Harvester
                             if (dicOrganizaciones.ContainsKey(empresaOntology.Roh_crisIdentifier))
                             {
                                 // Modificación.
-                                //mResourceApi.ModifyComplexOntologyResource(resource, false, false);
+                                mResourceApi.ModifyComplexOntologyResource(resource, false, false);
                             }
                             else
                             {
                                 // Carga.                   
-                                //mResourceApi.LoadComplexSemanticResource(resource, false, false);
-                                //pDicRecursosCargados[empresaOntology.Roh_crisIdentifier] = resource.GnossId;
+                                mResourceApi.LoadComplexSemanticResource(resource, false, false);
+                                dicOrganizaciones[empresaOntology.Roh_crisIdentifier] = new Tuple<string, string>(resource.GnossId, "");
                             }
-
-
 
                             // Guardamos el ID cargado.
                             File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
@@ -822,6 +800,123 @@ namespace Harvester
 
             return persona;
         }
+
+        private static string IdentificadorPais(string pais)
+        {
+            return mResourceApi.GraphsUrl + "items/feature_PCLD_" + Utilidades.Utilidades.dicPaises[pais];
+        }
+        private static string IdentificadorRegion(string region)
+        {
+            return mResourceApi.GraphsUrl + "items/feature_ADM1_" + Utilidades.Utilidades.dicRegiones[region];
+        }
+
+        private static List<AcademicdegreeOntology.AcademicDegree> CrearPosgrado(Persona pDatos, Dictionary<string, Tuple<string, string>> dicOrganizaciones,
+            Dictionary<string, Tuple<string, string>> dicPersonas)
+        {
+            List<AcademicdegreeOntology.AcademicDegree> listaPosgrado = new List<AcademicdegreeOntology.AcademicDegree>();
+            AcademicdegreeOntology.AcademicDegree academicDegree = new AcademicdegreeOntology.AcademicDegree();
+            foreach (OAI_PMH.Models.SGI.FormacionAcademica.Posgrado posgrado in pDatos.Posgrado)
+            {
+                //TODO academicDegree.IdRoh_formationActivityType = mResourceApi.GraphsUrl + "items/formationtype_" + posgrado.TipoFormacionHomologada.Id;
+                academicDegree.IdVcard_hasCountryName = IdentificadorPais(posgrado.PaisEntidadTitulacion.Id);
+                academicDegree.IdVcard_hasRegion = IdentificadorRegion(posgrado.CcaaRegionEntidadTitulacion.Id);
+                academicDegree.Vcard_locality = posgrado.CiudadEntidadTitulacion;
+                academicDegree.Dct_issued = posgrado.FechaTitulacion;
+                academicDegree.Roh_qualification = posgrado.CalificacionObtenida;
+                academicDegree.Roh_approvedDegree = posgrado.TituloHomologado != null ? (bool)posgrado.TituloHomologado : false;
+                academicDegree.Roh_approvedDate = posgrado.FechaHomologacion;
+                //Titulacion posgrado
+                academicDegree.Roh_title = posgrado.NombreTituloPosgrado;
+
+                //Entidad Titulacion
+                academicDegree.IdRoh_conductedBy = dicOrganizaciones[posgrado.EntidadTitulacion.EntidadRef].Item1;
+            }
+
+            return listaPosgrado;
+        }
+
+        private static List<AcademicdegreeOntology.AcademicDegree> CrearCiclos(Persona pDatos, Dictionary<string, Tuple<string, string>> dicOrganizaciones)
+        {
+            List<AcademicdegreeOntology.AcademicDegree> listaCiclos = new List<AcademicdegreeOntology.AcademicDegree>();
+            AcademicdegreeOntology.AcademicDegree academicDegree = new AcademicdegreeOntology.AcademicDegree();
+            foreach (OAI_PMH.Models.SGI.FormacionAcademica.Ciclos ciclo in pDatos.Ciclos)
+            {
+                academicDegree.IdVcard_hasCountryName = IdentificadorPais(ciclo.PaisEntidadTitulacion.Id);
+                academicDegree.IdVcard_hasRegion = IdentificadorRegion(ciclo.CcaaRegionEntidadTitulacion.Id);
+                academicDegree.Vcard_locality = ciclo.CiudadEntidadTitulacion;
+                academicDegree.Dct_issued = ciclo.FechaTitulacion;
+                //TODO academicDegree.IdRoh_mark = mResourceApi.GraphsUrl + "items/qualificationtype_" + ciclo.NotaMediaExpediente;
+                academicDegree.Roh_approvedDate = ciclo.FechaHomologacion;
+                academicDegree.Roh_approvedDegree = ciclo.TituloHomologado != null ? (bool)ciclo.TituloHomologado : false;
+
+                //Tipo titulacion
+
+                //Premio
+                //TODO academicDegree.IdRoh_prize = mResourceApi.GraphsUrl + "items/prizetype_" + ciclo.Premio.Id;
+
+                //Titulacion
+                academicDegree.Roh_title = ciclo.NombreTitulo;
+
+                //Titulo Extranjero
+                academicDegree.Roh_foreignTitle = ciclo.TituloExtranjero;
+
+                //Entidad titulacion
+                academicDegree.IdRoh_conductedBy = dicOrganizaciones[ciclo.EntidadTitulacion.EntidadRef].Item1;
+
+                listaCiclos.Add(academicDegree);
+            }
+            return listaCiclos;
+        }
+
+        private static List<AcademicdegreeOntology.AcademicDegree> CrearDoctorados(Persona pDatos, Dictionary<string, Tuple<string, string>> dicOrganizaciones,
+            Dictionary<string, Tuple<string, string>> dicPersonas)
+        {
+            List<AcademicdegreeOntology.AcademicDegree> listadoDoctorados = new List<AcademicdegreeOntology.AcademicDegree>();
+            AcademicdegreeOntology.AcademicDegree academicDegree = new AcademicdegreeOntology.AcademicDegree();
+            foreach (OAI_PMH.Models.SGI.FormacionAcademica.Doctorados doctorado in pDatos.Doctorados)
+            {
+                academicDegree.Roh_deaDate = doctorado.FechaTitulacionDEA;
+                academicDegree.IdVcard_hasCountryName = IdentificadorPais(doctorado.PaisEntidadTitulacion.Id);
+                academicDegree.IdVcard_hasRegion = IdentificadorRegion(doctorado.CcaaRegionEntidadTitulacion.Id);
+                academicDegree.Vcard_locality = doctorado.CiudadEntidadTitulacion;
+                academicDegree.Dct_issued = doctorado.FechaTitulacion;
+                academicDegree.Roh_thesisTitle = doctorado.TituloTesis;
+                academicDegree.Roh_qualification = doctorado.CalificacionObtenida;
+                academicDegree.Roh_qualityMention = doctorado.MencionCalidad != null ? (bool)doctorado.MencionCalidad : false;
+
+                //Programa doctorado
+                academicDegree.Roh_title = doctorado.ProgramaDoctorado;
+
+                //Entidad titulacion
+                academicDegree.IdRoh_conductedBy = dicOrganizaciones[doctorado.EntidadTitulacion.EntidadRef].Item1;
+
+                //Entidad titulacion DEA
+                academicDegree.IdRoh_deaEntity = dicOrganizaciones[doctorado.EntidadTitulacionDEA.EntidadRef].Item1;
+
+                //Director tesis
+                //TODO metodo cargar datos persona
+                //academicDegree.Roh_directorName = dicPersonas[doctorado.DirectorTesis].Item1;
+
+                //Codirectores
+                //academicDegree.Roh_codirector.Add = dicPersonas[doctorado.CoDirectorTesis].Item1;
+
+                //Doctorado UE
+                academicDegree.Roh_europeanDoctorate = doctorado.DoctoradoEuropeo != null ? (bool)doctorado.DoctoradoEuropeo : false;
+                academicDegree.Roh_europeanDoctorateDate = doctorado.FechaMencionDoctoradoEuropeo;
+
+                //Premio extraordinario
+                academicDegree.Roh_doctorExtraordinaryAward = doctorado.PremioExtraordinarioDoctor != null ? (bool)doctorado.PremioExtraordinarioDoctor : false;
+                academicDegree.Roh_doctorExtraordinaryAwardDate = doctorado.FechaPremioExtraordinarioDoctor;
+
+                //Titulo homologado
+                academicDegree.Roh_approvedDegree = doctorado.TituloHomologado != null ? (bool)doctorado.TituloHomologado : false;
+                academicDegree.Roh_approvedDate = doctorado.FechaHomologacion;
+
+                listadoDoctorados.Add(academicDegree);
+            }
+
+            return listadoDoctorados;
+        }
         public static OrganizationOntology.Organization CrearOrganizacionOntology(Empresa pDatos)
         {
             OrganizationOntology.Organization organization = new OrganizationOntology.Organization();
@@ -1014,12 +1109,12 @@ namespace Harvester
             ProjectOntology.Project project = new ProjectOntology.Project();
             project.Roh_crisIdentifier = pDatos.Id;
             project.Roh_isValidated = true;
-            //project.validationStatusProject
-            //project.Roh_isSynchronized = true;
+            project.Roh_validationStatusProject = "validado";
 
             TipoProyecto(project, pDatos);
 
             //Añado el tipo de proyecto en caso de ser no competitivo
+            // 875 - Coordinación, 876 - Cooperación
             if (project.IdRoh_scientificExperienceProject.Equals(mResourceApi.GraphsUrl + "items/scientificexperienceproject_SEP2")
                 && pDatos.CoordinadorExterno != null)
             {
@@ -1075,6 +1170,7 @@ namespace Harvester
                     {
                         BFO.Vivo_end = Convert.ToDateTime(item.FechaFin);
                     }
+                    //grado contribucion (CVN_PARTICIPATION_B) insertado en CV
                     project.Vivo_relates.Add(BFO);
                     orden++;
                 }
