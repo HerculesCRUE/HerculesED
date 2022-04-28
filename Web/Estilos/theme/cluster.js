@@ -168,10 +168,12 @@ class StepsCluster {
 
 	callLoadCluster() {
 
-		urlLoadClst.searchParams.set('pIdClusterId', this.clusterId.split('_')[1]);
+		urlLoadClst.searchParams.set('pIdClusterId', this.clusterId);
 		return new Promise((resolve, reject) => {
+			MostrarUpdateProgress();
 			$.get(urlLoadClst.toString(), function (res) {
-				resolve(res)
+				resolve(res);
+				OcultarUpdateProgress();
 			});
 		})
 	}
@@ -529,9 +531,10 @@ class StepsCluster {
 			$.post(urlSC, this.data)
 				.done(
 					function (rdata) {
-						_self.clusterId = rdata
-						_self.startStep3()
-						resolve(true)
+						_self.clusterId = rdata;
+						_self.data.entityID=rdata;
+						_self.startStep3();
+						resolve(true);
 					}
 				)
 				.fail(
@@ -764,7 +767,7 @@ class StepsCluster {
 						<span class="tag-text">' + e.name + '</span>\
 						<span class="tag-remove material-icons">close</span>\
 					</div>\
-					<input type="hidden" value="' + e.id.split('/').pop() + '">\
+					<input type="hidden" value="' + e.id + '">\
 				</div>'
 				arrayRes.push(e.id.split('/').pop())
 			})
