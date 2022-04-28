@@ -1127,8 +1127,6 @@ class CargarGraficaProjectoClusterObj {
 	CargarGraficaColaboradores = (cluster, idContenedor, mostrarCargando = false) => {
 		var url = servicioExternoBaseUrl + "Cluster/DatosGraficaColaboradoresCluster";
 		var self = this;
-		var arg = {};
-		arg.pCluster = cluster;
 		$('#' + idContenedor).empty();
 		if (mostrarCargando) {
 			MostrarUpdateProgress();
@@ -1136,7 +1134,7 @@ class CargarGraficaProjectoClusterObj {
 
 		let optionsRelations = ["relation_project", "relation_document"];
 
-		$.post(url, arg, function (data) {
+		$.post(url, cluster, function (data) {
 			// Establecer los valores en la variable externa
 			self.dataCB = data;
 			self.idContenedorCB = idContenedor;
@@ -1188,10 +1186,6 @@ var comportamientoPopupCluster = {
 		// Iniciar el listado de usuarios
 		buscadorPersonalizado.init($('#INVESTIGADORES').val(), "#clusterListUsers", "searchClusterMixto=" + paramsCl, null, "profiles=" + JSON.stringify(profiles) + "|viewmode=cluster|rdf:type=person", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
 		
-		// Iniciamos la gráfica
-		var parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro;
-		newGrafProjClust.CargarGraficaColaboradores(parametros, stepsCls.data, 'colaboratorsgraphCluster', true);
-
 		// Agregamos los ordenes
 		$('.searcherResults .h1-container').after(
 		`<div class="acciones-listado acciones-listado-buscador">
@@ -1478,12 +1472,12 @@ class ModalSearchTags {
 function CompletadaCargaRecursosCluster()
 {	
 	if(typeof stepsCls != 'undefined' && stepsCls!=null && stepsCls.data!=null)
-	{
-		newGrafProjClust.CargarGraficaColaboradores(parametros, stepsCls.data, 'colaboratorsgraphCluster', true);
-		
-		
+	{		
 		$('#clusterListUsers article.investigador h2.resource-title').attr('tagert','_blank');
 		stepsCls.data.pPersons=$('#clusterListUsers article.investigador').toArray().map(e => {return $(e).attr('id')});
+		
+		newGrafProjClust.CargarGraficaColaboradores(stepsCls.data, 'colaboratorsgraphCluster', true);
+		
 		$.post(urlCargarPerfiles, stepsCls.data, function(data) {
 			$('article.investigador .user-perfil').remove();
 			for (const [idperson, datospersona] of Object.entries(data)) {
