@@ -136,7 +136,7 @@ class StepsCluster {
 				this.addPerfilSearch(profile).then(nameId => {
 
 					// Carga las áreas temáticas
-					selectTerms = $('#modal-seleccionar-area-tematica-' + nameId)
+					let selectTerms = $('#modal-seleccionar-area-tematica-' + nameId)
 
 					let timer = setTimeout(function () {
 						if (selectTerms.length !== 0)
@@ -305,8 +305,15 @@ class StepsCluster {
 			...this.data,
 			profiles: profilesObjets
 		}
-
-		return (this.data.profiles.length > 0 && this.data.profiles[0].name != undefined && this.data.profiles[0].name.length > 0 && this.data.profiles[0].terms.length > 0)
+		
+		let existenPerfiles=this.data.profiles.length > 0;
+		let nombresCorrectos=this.data.profiles.every(function (item) {
+			return  item.name !=undefined;
+		});
+		let categoriasCorrectas=this.data.profiles.every(function (item) {
+			return  item.terms!=undefined && item.terms.length>0;
+		});
+		return existenPerfiles && nombresCorrectos && categoriasCorrectas;
 	}
 
 	/**
@@ -1531,10 +1538,7 @@ function CompletadaCargaRecursosCluster()
 				for (const [idProfile, score] of Object.entries(datospersona)) {
 					if(score.numPublicaciones>0)
 					{
-						let idProfileEdit = idProfile
-						if (idProfile.includes('http://gnoss.com/items')) {
-							idProfileEdit = idProfile.split('_')[1]
-						}
+						let idProfileEdit = idProfile;
 						let nombrePerfil = stepsCls.data.profiles.filter(function (item) {return item.shortEntityID ==idProfileEdit;})[0].name;
 						
 						let publicationsPercent = score.numPublicaciones/score.numPublicacionesTotal*100
