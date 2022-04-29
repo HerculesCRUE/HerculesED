@@ -1539,7 +1539,7 @@ function CompletadaCargaRecursosCluster()
 					if(score.numPublicaciones>0)
 					{
 						let idProfileEdit = idProfile;
-						let nombrePerfil = stepsCls.data.profiles.filter(function (item) {return item.shortEntityID ==idProfileEdit;})[0].name;
+						let nombrePerfil = stepsCls.data.profiles.filter(function (item) {return item.shortEntityID ==idProfileEdit || item.entityID ==idProfileEdit;})[0].name;
 						
 						let publicationsPercent = score.numPublicaciones/score.numPublicacionesTotal*100
 
