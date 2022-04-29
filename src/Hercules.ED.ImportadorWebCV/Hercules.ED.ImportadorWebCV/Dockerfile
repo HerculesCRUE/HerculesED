@@ -10,16 +10,34 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
-COPY ["Hercules.ED.ImportadorWebCV.csproj", ""]
+COPY ["Hercules.ED.DisambiguationEngine/Hercules.ED.DisambiguationEngine.csproj", "./Hercules.ED.DisambiguationEngine/"]
+COPY ["Hercules.ED.ImportadorWebCV/Hercules.ED.ImportadorWebCV.csproj", "./Hercules.ED.ImportadorWebCV/"]
 RUN dotnet restore "./Hercules.ED.ImportadorWebCV.csproj"
+
 COPY . .
 WORKDIR "/src/."
-RUN dotnet build "Hercules.ED.ImportadorWebCV.csproj" -c Release -o /app/build
+RUN dotnet build "Hercules.ED.ImportadorWebCV/Hercules.ED.ImportadorWebCV.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "Hercules.ED.ImportadorWebCV.csproj" -c Release -o /app/publish
+RUN dotnet publish "Hercules.ED.ImportadorWebCV/Hercules.ED.ImportadorWebCV.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "Hercules.ED.ImportadorWebCV.dll"]
+
+#FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
+#WORKDIR /src
+#COPY ["Hercules.ED.ImportadorWebCV.csproj", ""]
+#RUN dotnet restore "./Hercules.ED.ImportadorWebCV.csproj"
+#COPY . .
+#WORKDIR "/src/."
+#RUN dotnet build "Hercules.ED.ImportadorWebCV.csproj" -c Release -o /app/build
+
+#FROM build AS publish
+#RUN dotnet publish "Hercules.ED.ImportadorWebCV.csproj" -c Release -o /app/publish
+
+#FROM base AS final
+#WORKDIR /app
+#COPY --from=publish /app/publish .
+#ENTRYPOINT ["dotnet", "Hercules.ED.ImportadorWebCV.dll"]
