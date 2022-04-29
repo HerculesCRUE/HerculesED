@@ -166,10 +166,10 @@ class StepsCluster {
 	}
 
 	callLoadCluster() {
-
+		MostrarUpdateProgress();
 		urlLoadClst.searchParams.set('pIdClusterId', this.clusterId);
 		return new Promise((resolve, reject) => {
-			MostrarUpdateProgress();
+			
 			$.get(urlLoadClst.toString(), function (res) {
 				resolve(res);
 				OcultarUpdateProgress();
@@ -1268,8 +1268,6 @@ var comportamientoPopupCluster = {
 			newGrafProjClust.CargarGraficaSeleccionados(stepsCls.data, 'selectedgraphCluster', true);
 		});
 
-		
-
 		return;
 	},
 	config: function () {
@@ -1710,6 +1708,7 @@ function CompletadaCargaRecursosCluster()
 					});
 				}
 				stepsCls.PrintPerfilesstp3();
+				newGrafProjClust.CargarGraficaColaboradores(stepsCls.data, 'colaboratorsgraphCluster', true);
 			});	
 			
 		});
