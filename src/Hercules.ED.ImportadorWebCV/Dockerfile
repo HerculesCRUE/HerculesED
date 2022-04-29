@@ -10,9 +10,11 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
+#COPY ["EditorCV.csproj", ""]
+#RUN dotnet restore "./EditorCV.csproj"
 COPY ["Hercules.ED.DisambiguationEngine/Hercules.ED.DisambiguationEngine.csproj", "./Hercules.ED.DisambiguationEngine/"]
 COPY ["Hercules.ED.ImportadorWebCV/Hercules.ED.ImportadorWebCV.csproj", "./Hercules.ED.ImportadorWebCV/"]
-RUN dotnet restore "./Hercules.ED.ImportadorWebCV.csproj"
+RUN dotnet restore "./Hercules.ED.ImportadorWebCV/Hercules.ED.ImportadorWebCV.csproj"
 
 COPY . .
 WORKDIR "/src/."
