@@ -434,6 +434,7 @@ namespace Harvester
                             // Guardamos el ID cargado.
                             File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
                             break;
+
                         case "Grupo":
                             // Obtención de datos en bruto.
                             Grupo grupo = new Grupo();
@@ -1562,6 +1563,21 @@ namespace Harvester
             }
         }
 
+        public static GroupOntology.Group CrearGrupo(Grupo grupo)
+        {
+            GroupOntology.Group groupOntology = new GroupOntology.Group();
+            groupOntology.Roh_title = grupo.nombre;
+            groupOntology.Roh_normalizedCode = grupo.codigo;
+            groupOntology.Roh_foundationDate = grupo.fechaInicio;
+            Tuple<string,string,string> duracion = RestarFechas(grupo.fechaInicio, grupo.fechaFin);
+            groupOntology.Roh_durationYears = duracion.Item1;
+            groupOntology.Roh_durationMonths = duracion.Item2;
+            groupOntology.Roh_durationDays = duracion.Item3;
+            //groupOntology.Roh_hasKnowledgeArea = grupo.palabrasClave;
+
+            return groupOntology;
+        }
+
         public static string GetPersonGnossId(string pCrisIdentifier)
         {
             SparqlObject resultadoQuery = null;
@@ -1619,6 +1635,12 @@ namespace Harvester
             }
         }
 
+        /// <summary>
+        /// Obtiene los años, meses y dias entre la fecha de inicio y de fin
+        /// </summary>
+        /// <param name="fechaInicio"></param>
+        /// <param name="fechaFin"></param>
+        /// <returns></returns>
         public static Tuple<string, string, string> RestarFechas(DateTime fechaInicio, DateTime fechaFin)
         {
             int total = (fechaFin - fechaInicio).Days;
