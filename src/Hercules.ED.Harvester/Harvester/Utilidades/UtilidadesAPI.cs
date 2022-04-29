@@ -607,5 +607,11 @@ namespace Hercules.MA.ServicioExterno.Controllers.Utilidades
             Guid idCorto = pRsourceApi.GetShortGuid(pIdOntologia);
             return $@"http://gnoss/{idCorto.ToString().ToUpper()}";
         }
+
+        public static string NombreOrganizacion(string gnossId)
+        {
+            string select = "";
+            string where = "";
+        }
     }
 }
