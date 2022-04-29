@@ -75,9 +75,9 @@ namespace Harvester
             ProcesarFichero(_Config, "Proyecto", dicOrganizaciones, dicProyectos, dicPersonas);
             ProcesarFichero(_Config, "PRC", dicProyectos);
             mResourceApi.ChangeOntoly("projectauthorization");
-            ProcesarFichero(_Config, "AutorizacionProyecto", null);
+            ProcesarFichero(_Config, "AutorizacionProyecto");
             mResourceApi.ChangeOntoly("group");
-            ProcesarFichero(_Config, "Grupo", null);
+            ProcesarFichero(_Config, "Grupo");
         //TODO: Invencion
 
         //TODO eliminar
@@ -107,9 +107,9 @@ namespace Harvester
             ProcesarFichero(_Config, "Proyecto", dicOrganizaciones, dicProyectos, dicPersonas);
             ProcesarFichero(_Config, "PRC", dicProyectos);
             mResourceApi.ChangeOntoly("projectauthorization");
-            ProcesarFichero(_Config, "AutorizacionProyecto", null);
-            mResourceApi.ChangeOntoly("group");
-            ProcesarFichero(_Config, "Grupo", null);
+            ProcesarFichero(_Config, "AutorizacionProyecto");
+            //mResourceApi.ChangeOntoly("group");
+            //ProcesarFichero(_Config, "Grupo");
             //TODO: Invencion
         }
 
