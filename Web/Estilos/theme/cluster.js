@@ -130,14 +130,13 @@ class StepsCluster {
 
 			// Fill section 2
 			this.data.profiles.forEach(profile => {
-				// profile.entityID = profile.entityID.split('_')[1]
-				profile.shortEntityID = profile.entityID.split('_')[1]
+				profile.shortEntityID = profile.entityID.split('_')[2]
 
 				// Crea el perfil
 				this.addPerfilSearch(profile).then(nameId => {
 
 					// Carga las áreas temáticas
-					selectTerms = $('#modal-seleccionar-area-tematica-' + nameId)
+					let selectTerms = $('#modal-seleccionar-area-tematica-' + nameId)
 
 					let timer = setTimeout(function () {
 						if (selectTerms.length !== 0)
@@ -167,11 +166,13 @@ class StepsCluster {
 	}
 
 	callLoadCluster() {
-
-		urlLoadClst.searchParams.set('pIdClusterId', this.clusterId.split('_')[1]);
+		MostrarUpdateProgress();
+		urlLoadClst.searchParams.set('pIdClusterId', this.clusterId);
 		return new Promise((resolve, reject) => {
+			
 			$.get(urlLoadClst.toString(), function (res) {
-				resolve(res)
+				resolve(res);
+				OcultarUpdateProgress();
 			});
 		})
 	}
@@ -304,8 +305,15 @@ class StepsCluster {
 			...this.data,
 			profiles: profilesObjets
 		}
-
-		return (this.data.profiles.length > 0 && this.data.profiles[0].name != undefined && this.data.profiles[0].name.length > 0 && this.data.profiles[0].terms.length > 0)
+		
+		let existenPerfiles=this.data.profiles.length > 0;
+		let nombresCorrectos=this.data.profiles.every(function (item) {
+			return  item.name !=undefined;
+		});
+		let categoriasCorrectas=this.data.profiles.every(function (item) {
+			return  item.terms!=undefined && item.terms.length>0;
+		});
+		return existenPerfiles && nombresCorrectos && categoriasCorrectas;
 	}
 
 	/**
@@ -529,9 +537,10 @@ class StepsCluster {
 			$.post(urlSC, this.data)
 				.done(
 					function (rdata) {
-						_self.clusterId = rdata
-						_self.startStep3()
-						resolve(true)
+						_self.clusterId = rdata;
+						_self.data.entityID=rdata;
+						_self.startStep3();
+						resolve(true);
 					}
 				)
 				.fail(
@@ -540,21 +549,6 @@ class StepsCluster {
 					}
 				);
 		})		
-		
-		/*
-		// Set the url parameters
-		urlSC.searchParams.set('pIdGnossUser', this.userId)
-		// urlSC.searchParams.set('pIdGnossComSName', this.communityShortName)
-		return new Promise((resolve) => {
-			console.log("this.data saveInit",this.data)
-			this.postCall(urlSC, this.data).then((rdata) => {
-				_self.clusterId = rdata
-				_self.startStep3()
-				resolve(true)
-			}).catch(err => {
-				resolve(false)
-			}) 
-		})*/
 
 	}
 
@@ -779,7 +773,7 @@ class StepsCluster {
 						<span class="tag-text">' + e.name + '</span>\
 						<span class="tag-remove material-icons">close</span>\
 					</div>\
-					<input type="hidden" value="' + e.id.split('/').pop() + '">\
+					<input type="hidden" value="' + e.id + '">\
 				</div>'
 				arrayRes.push(e.id.split('/').pop())
 			})
@@ -1108,7 +1102,7 @@ class StepsCluster {
 			return $(htmlProfile);
 		})
 		this.perfilesStep3.find('.panel-group.pmd-accordion').remove();
-		this.perfilesStep3.append(profiles)
+		this.perfilesStep3.append(profiles);
 	}
 
 	removeSelectedUserFromProfile(idProfile, idUser) {
@@ -1120,9 +1114,6 @@ class StepsCluster {
 		currentProfile.users=currentProfile.users.filter(function (userInt) {
 			return userInt.shortUserID!=idUser;
 		});
-
-		document.getElementById(idUser + '-' +idProfile).checked = false
-
 		this.PrintPerfilesstp3();
 	}
 }
@@ -1131,29 +1122,33 @@ class StepsCluster {
 // Clase para las trabajar en las gráficas de los colaboradores en el cluster
 class CargarGraficaProjectoClusterObj {
 	dataCB = {};
+	dataSE = {};
 	idContenedorCB = "";
+	idContenedorSE = "";
 	typesOcultar = [];
-	showRelation = true;
+	typesOcultarSE = [];
+	showRelation = true;	
+	showRelationSE = true;
 
 	actualizarGraficaColaboradores = () => {
 		AjustarGraficaArania(this.dataCB, this.idContenedorCB, this.typesOcultar, this.showRelation);
 	};
+	
+	actualizarGraficaSeleccionados = () => {
+		AjustarGraficaArania(this.dataSE, this.idContenedorSE, this.typesOcultarSE, this.showRelationSE);
+	};
 
-	CargarGraficaColaboradores = (parametros, cluster, idContenedor, mostrarCargando = false) => {
+	CargarGraficaColaboradores = (cluster, idContenedor, mostrarCargando = false) => {
 		var url = servicioExternoBaseUrl + "Cluster/DatosGraficaColaboradoresCluster";
 		var self = this;
-		var arg = {};
-		arg.pParametros = parametros;
-		arg.pCluster = cluster;
-		arg.pMax = $('#numColaboradoresCluster').val();
 		$('#' + idContenedor).empty();
 		if (mostrarCargando) {
 			MostrarUpdateProgress();
 		}
 
 		let optionsRelations = ["relation_project", "relation_document"];
-
-		$.post(url, arg, function (data) {
+		cluster.seleccionados=false;
+		$.post(url, cluster, function (data) {
 			// Establecer los valores en la variable externa
 			self.dataCB = data;
 			self.idContenedorCB = idContenedor;
@@ -1163,9 +1158,29 @@ class CargarGraficaProjectoClusterObj {
 				OcultarUpdateProgress();
 			}
 		});
-
 	};
+	
+	CargarGraficaSeleccionados = (cluster, idContenedor, mostrarCargando = false) => {
+		var url = servicioExternoBaseUrl + "Cluster/DatosGraficaColaboradoresCluster";
+		var self = this;
+		$('#' + idContenedor).empty();
+		if (mostrarCargando) {
+			MostrarUpdateProgress();
+		}
 
+		let optionsRelations = ["relation_project", "relation_document"];
+		cluster.seleccionados=true;
+		$.post(url, cluster, function (data) {
+			// Establecer los valores en la variable externa
+			self.dataSE = data;
+			self.idContenedorSE = idContenedor;
+
+			self.actualizarGraficaSeleccionados();
+			if (mostrarCargando) {
+				OcultarUpdateProgress();
+			}
+		});
+	};
 };
 
 // Creamos un nuevo objeto
@@ -1180,6 +1195,15 @@ function actualizarTypesClusterOcultar(type) {
 		newGrafProjClust.typesOcultar = [type];
 	}
 	newGrafProjClust.actualizarGraficaColaboradores();
+}
+
+function actualizarTypesClusterOcultarSE(type) {
+	if (type == "relation_todas") {
+		newGrafProjClust.typesOcultarSE = [];
+	} else {
+		newGrafProjClust.typesOcultarSE = [type];
+	}
+	newGrafProjClust.actualizarGraficaSeleccionados();
 }
 
 
@@ -1205,10 +1229,6 @@ var comportamientoPopupCluster = {
 		// Iniciar el listado de usuarios
 		buscadorPersonalizado.init($('#INVESTIGADORES').val(), "#clusterListUsers", "searchClusterMixto=" + paramsCl, null, "profiles=" + JSON.stringify(profiles) + "|viewmode=cluster|rdf:type=person", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
 		
-		// Iniciamos la gráfica
-		var parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro;
-		newGrafProjClust.CargarGraficaColaboradores(parametros, stepsCls.data, 'colaboratorsgraphCluster', true);
-
 		// Agregamos los ordenes
 		$('.searcherResults .h1-container').after(
 		`<div class="acciones-listado acciones-listado-buscador">
@@ -1242,6 +1262,11 @@ var comportamientoPopupCluster = {
 			FiltrarPorFacetas(ObtenerHash2());
 		});
 
+		//Enganchamos comportamiento grafica seleccionados
+		$('#seleccionados-cluster-tab').unbind().click(function (e) {			
+			e.preventDefault();
+			newGrafProjClust.CargarGraficaSeleccionados(stepsCls.data, 'selectedgraphCluster', true);
+		});
 
 		return;
 	},
@@ -1252,28 +1277,6 @@ var comportamientoPopupCluster = {
 		this.text_volumen = this.printitem.data('volumen')
 		this.text_ajuste = this.printitem.data('ajuste')
 		this.text_mixto = this.printitem.data('mixto')
-
-		//Métodos colaboradores
-		$('#removeNodesCollaboratorsCluster').unbind().click(function (e) {
-			e.preventDefault();
-			var numColaboradores = parseInt($('#numColaboradoresCluster').val());
-			if (numColaboradores > 10) {
-				$('#numColaboradoresCluster').val((numColaboradores - 10));
-			}
-			$('#numNodosCollaboratorsCluster').html($('#numColaboradoresCluster').val());
-			var parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro;
-			newGrafProjClust.CargarGraficaColaboradores(parametros, stepsCls.data, 'colaboratorsgraphCluster', true);
-		});
-
-		$('#addNodesCollaboratorsCluster').unbind().click(function (e) {
-			e.preventDefault();
-			var numColaboradores = parseInt($('#numColaboradoresCluster').val());
-			$('#numColaboradoresCluster').val((numColaboradores + 10));
-			$('#numNodosCollaboratorsCluster').html($('#numColaboradoresCluster').val());
-			var parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro;
-			newGrafProjClust.CargarGraficaColaboradores(parametros, stepsCls.data, 'colaboratorsgraphCluster', true);
-		});
-		//Fin métodos colaboradores
 
 		return;
 	},
@@ -1517,9 +1520,12 @@ class ModalSearchTags {
 function CompletadaCargaRecursosCluster()
 {	
 	if(typeof stepsCls != 'undefined' && stepsCls!=null && stepsCls.data!=null)
-	{
+	{		
 		$('#clusterListUsers article.investigador h2.resource-title').attr('tagert','_blank');
 		stepsCls.data.pPersons=$('#clusterListUsers article.investigador').toArray().map(e => {return $(e).attr('id')});
+		
+		newGrafProjClust.CargarGraficaColaboradores(stepsCls.data, 'colaboratorsgraphCluster', true);
+		
 		$.post(urlCargarPerfiles, stepsCls.data, function(data) {
 			$('article.investigador .user-perfil').remove();
 			for (const [idperson, datospersona] of Object.entries(data)) {
@@ -1527,11 +1533,12 @@ function CompletadaCargaRecursosCluster()
 				for (const [idProfile, score] of Object.entries(datospersona)) {
 					if(score.numPublicaciones>0)
 					{
-						let idProfileEdit = idProfile
-						if (idProfile.includes('http://gnoss.com/items')) {
-							idProfileEdit = idProfile.split('_')[1]
+						let idProfileEdit = idProfile;
+						if(idProfileEdit.length!=36)
+						{
+							idProfileEdit=idProfileEdit.split('_')[2]
 						}
-						let nombrePerfil = stepsCls.data.profiles.filter(function (item) {return item.shortEntityID ==idProfileEdit;})[0].name;
+						let nombrePerfil = stepsCls.data.profiles.filter(function (item) {return item.shortEntityID ==idProfileEdit || item.entityID ==idProfileEdit;})[0].name;
 						
 						let publicationsPercent = score.numPublicaciones/score.numPublicacionesTotal*100
 
@@ -1659,27 +1666,6 @@ function CompletadaCargaRecursosCluster()
 					perfil.users.forEach(function(user, index) {
 						var elementUser = $('#'+user.shortUserID)
 						$('#'+user.shortUserID+'-'+idProfile).prop('checked', true);
-
-						// Obtenemos los datos del usuario por primera vez si es "editar cluster"
-						if (stepsCls.editDataSave) {
-							if (user.info == undefined) 
-							{
-								repintar = true;
-							}
-							// Obtener la descripción
-							let arrInfo = []
-							elementUser.find('.middle-wrap > .content-wrap > .list-wrap li').each((i, elem) => {
-								arrInfo.push($(elem).text().trim())
-							})
-							user.info = arrInfo.join(', ')
-							// Obtenemos el número de publicaciones totales y el nº de veces investigador principal
-							user.numPublicacionesTotal = elementUser.data('numPublicacionesTotal')
-							user.ipNumber = elementUser.data('ipNumber')
-							if(perfil.users==null)					
-							{
-								perfil.users=[];
-							}	
-						}
 					});					
 				}
 			});
@@ -1691,9 +1677,9 @@ function CompletadaCargaRecursosCluster()
 			$('.perfil-wrap .custom-control-input').change(function() {
 				let id=$(this).attr('id');
 				let idUser=id.substring(0,36);
-				let idProfileSmall=id.substring(37);					
+				let idProfile=id.substring(37);					
 				let perfil=stepsCls.data.profiles.filter(function (perfilInt) {
-					return perfilInt.shortEntityID==idProfileSmall;
+					return perfilInt.shortEntityID==idProfile || perfilInt.entityID==idProfile ;
 				})[0];
 				if(this.checked) {
 					let elementUser = $(this).closest('.resource.investigador')
@@ -1722,6 +1708,7 @@ function CompletadaCargaRecursosCluster()
 					});
 				}
 				stepsCls.PrintPerfilesstp3();
+				newGrafProjClust.CargarGraficaColaboradores(stepsCls.data, 'colaboratorsgraphCluster', true);
 			});	
 			
 		});
