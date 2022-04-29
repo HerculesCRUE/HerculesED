@@ -1,10 +1,12 @@
 using Hercules.ED.ImportadorWebCV.Controllers;
+using Hercules.ED.ImportadorWebCV.Middlewares;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using System.Collections.Generic;
 
 namespace Hercules.ED.ImportadorWebCV
 {
@@ -47,10 +49,23 @@ namespace Hercules.ED.ImportadorWebCV
 
             app.UseAuthorization();
 
+            // Middleware.
+            app.UseMiddleware(typeof(ErrorHandlingMiddleware));
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
+
+            app.UseSwagger(c =>
+            {
+                c.PreSerializeFilters.Add((swaggerDoc, httpReq) => swaggerDoc.Servers = new List<OpenApiServer>
+                      {
+                        new OpenApiServer { Url = $"/importadorcv"},
+                        new OpenApiServer { Url = $"/" }
+                      });
+            });
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("v1/swagger.json", "ImportadorCV v1"));
         }
     }
 }
