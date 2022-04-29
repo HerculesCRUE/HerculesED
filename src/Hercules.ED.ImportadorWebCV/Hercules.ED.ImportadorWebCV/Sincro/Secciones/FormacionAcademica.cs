@@ -633,9 +633,9 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (!string.IsNullOrEmpty(item.GetElementoPorIDCampo<CvnItemBeanCvnTitleBean>("020.010.030.020")?.Name))
                     {
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                               new Property(Variables.Generico.codigoCVN, "020.010.030.000"),
-                               new Property(Variables.Generico.personaCVN, mPersonID)
-                           ));
+                            new Property(Variables.Generico.codigoCVN, "020.010.030.000"),
+                            new Property(Variables.Generico.personaCVN, mPersonID)
+                        ));
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                             new Property(Variables.FormacionAcademica.otraFormacionTipoFormacion, item.GetTipoFormacion("020.010.030.010")),
                             new Property(Variables.FormacionAcademica.otraFormacionPaisEntidadTitulacion, item.GetPaisPorIDCampo("020.010.030.040")),
