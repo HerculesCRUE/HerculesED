@@ -810,13 +810,32 @@ namespace Harvester
             return mResourceApi.GraphsUrl + "items/feature_ADM1_" + Utilidades.Utilidades.dicRegiones[region];
         }
 
+        private static string NombreEmpresa(string id)
+        {
+            // Obtención de datos en bruto.
+            Empresa organization = new Empresa();
+            string xmlResult = harvesterServices.GetRecord(id);
+
+            if (string.IsNullOrEmpty(xmlResult))
+            {
+                return "";
+            }
+
+            XmlSerializer xmlSerializer = new(typeof(Empresa));
+            using (StringReader sr = new(xmlResult))
+            {
+                organization = (Empresa)xmlSerializer.Deserialize(sr);
+            }
+            return organization.Nombre;
+        }
+
         private static List<AcademicdegreeOntology.AcademicDegree> CrearPosgrado(Persona pDatos, Dictionary<string, Tuple<string, string>> dicOrganizaciones)
         {
             List<AcademicdegreeOntology.AcademicDegree> listaPosgrado = new List<AcademicdegreeOntology.AcademicDegree>();
             AcademicdegreeOntology.AcademicDegree academicDegree = new AcademicdegreeOntology.AcademicDegree();
             foreach (OAI_PMH.Models.SGI.FormacionAcademica.Posgrado posgrado in pDatos.Posgrado)
             {
-                //TODO academicDegree.IdRoh_formationActivityType = mResourceApi.GraphsUrl + "items/formationtype_" + posgrado.TipoFormacionHomologada.Id;
+                academicDegree.IdRoh_formationActivityType = FormationType(posgrado.TipoFormacionHomologada.Nombre);
                 academicDegree.IdVcard_hasCountryName = IdentificadorPais(posgrado.PaisEntidadTitulacion.Id);
                 academicDegree.IdVcard_hasRegion = IdentificadorRegion(posgrado.CcaaRegionEntidadTitulacion.Id);
                 academicDegree.Vcard_locality = posgrado.CiudadEntidadTitulacion;
@@ -828,10 +847,121 @@ namespace Harvester
                 academicDegree.Roh_title = posgrado.NombreTituloPosgrado;
 
                 //Entidad Titulacion
+                academicDegree.Roh_conductedByTitle = NombreEmpresa(posgrado.EntidadTitulacion.EntidadRef);
                 academicDegree.IdRoh_conductedBy = dicOrganizaciones[posgrado.EntidadTitulacion.EntidadRef].Item1;
             }
 
             return listaPosgrado;
+        }
+
+        /// <summary>
+        /// Tipo de formación
+        /// </summary>
+        /// <param name="tipoFormacion"></param>
+        /// <returns></returns>
+        private static string FormationType(string tipoFormacion)
+        {
+            string id = mResourceApi.GraphsUrl + "items/formationtype_";
+            switch (tipoFormacion)
+            {
+                case "Master":
+                    id += "034";
+                    break;
+                case "Posgrado":
+                    id += "050";
+                    break;
+                case "Extensión universitaria":
+                    id += "178";
+                    break;
+                case "Especialidad":
+                    id += "179";
+                    break;
+                default:
+                    return null;
+            }
+            return id;
+        }
+
+        /// <summary>
+        /// Premio
+        /// </summary>
+        /// <param name="premio"></param>
+        /// <returns></returns>
+        private static string PrizeType(string premio)
+        {
+            string id = mResourceApi.GraphsUrl + "items/prizetype_";
+            switch (premio)
+            {
+                case "Premio extraordinario de licenciatura":
+                    id += "000";
+                    break;
+                case "Premio fin de carrera":
+                    id += "010";
+                    break;
+                case "Texto de otros":
+                    id += "OTHERS";
+                    break;
+                default:
+                    return null;
+            }
+            return id;
+        }
+
+        /// <summary>
+        /// Tipo de titulación
+        /// </summary>
+        /// <param name="tipoTitulacion"></param>
+        /// <returns></returns>
+        private static string UniversityDegreeType(string tipoTitulacion)
+        {
+            string id = mResourceApi.GraphsUrl + "items/universitydegreetype_";
+            switch (tipoTitulacion)
+            {
+                case "Doctor":
+                    id += "940";
+                    break;
+                case "Titulado medio":
+                    id += "950";
+                    break;
+                case "Titulado superior":
+                    id += "960";
+                    break;
+                case "Texto de otros":
+                    id += "OTHERS";
+                    break;
+                default:
+                    return null;
+            }
+            return id;
+        }
+
+        //TODO -comprobar confluence
+        /// <summary>
+        /// Tipo nota media expediente
+        /// </summary>
+        /// <param name="qualificationType"></param>
+        /// <returns></returns>
+        private static string QualificationType(string qualificationType)
+        {
+            string id = mResourceApi.GraphsUrl + "items/qualificationtype_";
+            switch (qualificationType)
+            {
+                case "Aprobado":
+                    id += "000";
+                    break;
+                case "Notable":
+                    id += "010";
+                    break;
+                case "Sobresaliente":
+                    id += "020";
+                    break;
+                case "Matrícula de Honor":
+                    id += "030";
+                    break;
+                default:
+                    return null;
+            }
+            return id;
         }
 
         private static List<AcademicdegreeOntology.AcademicDegree> CrearCiclos(Persona pDatos, Dictionary<string, Tuple<string, string>> dicOrganizaciones)
@@ -844,14 +974,15 @@ namespace Harvester
                 academicDegree.IdVcard_hasRegion = IdentificadorRegion(ciclo.CcaaRegionEntidadTitulacion.Id);
                 academicDegree.Vcard_locality = ciclo.CiudadEntidadTitulacion;
                 academicDegree.Dct_issued = ciclo.FechaTitulacion;
-                //TODO academicDegree.IdRoh_mark = mResourceApi.GraphsUrl + "items/qualificationtype_" + ciclo.NotaMediaExpediente;
+                //TODO academicDegree.IdRoh_mark = QualificationType(ciclo.NotaMediaExpediente);
                 academicDegree.Roh_approvedDate = ciclo.FechaHomologacion;
                 academicDegree.Roh_approvedDegree = ciclo.TituloHomologado != null ? (bool)ciclo.TituloHomologado : false;
 
                 //Tipo titulacion
+                //academicDegree.IdRoh_universityDegreeType = UniversityDegreeType(ciclo.tit);
 
                 //Premio
-                //TODO academicDegree.IdRoh_prize = mResourceApi.GraphsUrl + "items/prizetype_" + ciclo.Premio.Id;
+                academicDegree.IdRoh_prize = PrizeType(ciclo.Premio.Id);
 
                 //Titulacion
                 academicDegree.Roh_title = ciclo.NombreTitulo;
@@ -917,6 +1048,33 @@ namespace Harvester
             return listadoDoctorados;
         }
 
+        /// <summary>
+        /// Tipo de formación
+        /// </summary>
+        /// <param name="formationActivityType"></param>
+        /// <returns></returns>
+        private static string FormationActivityType(string formationActivityType)
+        {
+            string id = mResourceApi.GraphsUrl + "items/formationactivitytype_";
+            switch (formationActivityType)
+            {
+                case "Curso":
+                    id += "011";
+                    break;
+                case "Prácticas":
+                    id += "051";
+                    break;
+                case "Estancias":
+                    id += "184";
+                    break;
+                case "Texto de otros":
+                    id += "OTHERS";
+                    break;
+                default:
+                    return null;
+            }
+            return id;
+        }
 
         private static List<AcademicdegreeOntology.AcademicDegree> CrearFormacionEspecializada(Persona pDatos, Dictionary<string, Tuple<string, string>> dicOrganizaciones,
            Dictionary<string, Tuple<string, string>> dicPersonas)
@@ -925,7 +1083,7 @@ namespace Harvester
             AcademicdegreeOntology.AcademicDegree academicDegree = new AcademicdegreeOntology.AcademicDegree();
             foreach (OAI_PMH.Models.SGI.FormacionAcademica.FormacionEspecializada formacionEspecializada in pDatos.FormacionEspecializada)
             {
-                //TODO academicDegree.IdRoh_formationActivityType = 
+                academicDegree.IdRoh_formationActivityType = FormationActivityType(formacionEspecializada.TipoFormacion.Nombre);
                 academicDegree.Roh_title = formacionEspecializada.NombreTitulo;
                 academicDegree.IdVcard_hasCountryName = IdentificadorPais(formacionEspecializada.PaisEntidadTitulacion.Id);
                 academicDegree.IdVcard_hasRegion = IdentificadorRegion(formacionEspecializada.CcaaRegionEntidadTitulacion.Id);
@@ -933,16 +1091,48 @@ namespace Harvester
                 academicDegree.Roh_goals = formacionEspecializada.Objetivos;
                 academicDegree.Roh_durationHours = formacionEspecializada.DuracionTitulacion;
                 academicDegree.Vivo_end = formacionEspecializada.FechaTitulacion;
+
                 //Entidad titulacion
+                academicDegree.Roh_conductedByTitle = NombreEmpresa(formacionEspecializada.EntidadTitulacion.EntidadRef);
                 academicDegree.IdRoh_conductedBy = dicOrganizaciones[formacionEspecializada.EntidadTitulacion.EntidadRef].Item1;
 
                 //Responsable
                 //academicDegree.Roh_trainerNick = formacionEspecializada.ResponsableFormacion;
 
-
                 listaFormacionEspecializada.Add(academicDegree);
             }
             return listaFormacionEspecializada;
+        }
+
+        /// <summary>
+        /// Tipo de trabajo dirigido
+        /// </summary>
+        /// <param name="projectCharacterType"></param>
+        /// <returns></returns>
+        private static string ProjectCharacterType(string projectCharacterType)
+        {
+            string id = mResourceApi.GraphsUrl + "items/projectcharactertype_";
+            switch (projectCharacterType)
+            {
+                case "Proyecto de fin de carrera":
+                    id += "055";
+                    break;
+                case "Tesina":
+                    id += "066";
+                    break;
+                case "Tesis Doctoral":
+                    id += "067";
+                    break;
+                case "Trabajo conducente a la obtención de DEA":
+                    id += "071";
+                    break;
+                case "Texto de otros":
+                    id += "OTHERS";
+                    break;
+                default:
+                    return null;
+            }
+            return id;
         }
 
         private static List<ThesissupervisionOntology.ThesisSupervision> CrearTesis(Persona pDatos, Dictionary<string, Tuple<string, string>> dicOrganizaciones,
@@ -952,7 +1142,7 @@ namespace Harvester
             ThesissupervisionOntology.ThesisSupervision thesisSupervision = new ThesissupervisionOntology.ThesisSupervision();
             foreach (OAI_PMH.Models.SGI.ActividadDocente.Tesis tesis in pDatos.Tesis)
             {
-                //TODO thesisSupervision.IdRoh_projectCharacterType = tesis.TipoProyecto;
+                thesisSupervision.IdRoh_projectCharacterType = ProjectCharacterType(tesis.TipoProyecto.Nombre);
                 thesisSupervision.Roh_title = tesis.TituloTrabajo;
                 thesisSupervision.IdVcard_hasCountryName = IdentificadorPais(tesis.PaisEntidadRealizacion.Id);
                 thesisSupervision.IdVcard_hasRegion = IdentificadorRegion(tesis.CcaaRegionEntidadRealizacion.Id);
@@ -965,10 +1155,11 @@ namespace Harvester
                 thesisSupervision.Roh_qualityMentionDate = tesis.FechaMencionCalidad;
 
                 //Palabras clave
-
+                //TODO ?
 
                 //Entidad realizacion
                 thesisSupervision.IdRoh_promotedBy = dicOrganizaciones[tesis.EntidadRealizacion.EntidadRef].Item1;
+                thesisSupervision.Roh_promotedByTitle = NombreEmpresa(tesis.EntidadRealizacion.EntidadRef);
 
                 //Alumno TODO
                 thesisSupervision.Roh_studentNick = tesis.Alumno;
@@ -981,6 +1172,218 @@ namespace Harvester
             return listaTesis;
         }
 
+        /// <summary>
+        /// Tipo de labor docente
+        /// </summary>
+        /// <param name="teachingtype"></param>
+        /// <returns></returns>
+        private static string TeachingType(string teachingtype)
+        {
+            string id = mResourceApi.GraphsUrl + "items/teachingtype_";
+            switch (teachingtype)
+            {
+                case "Docencia internacional":
+                    id += "014";
+                    break;
+                case "Docencia oficial":
+                    id += "015";
+                    break;
+                case "Docencia no oficial":
+                    id += "016";
+                    break;
+                default:
+                    return null;
+            }
+            return id;
+        }
+
+        /// <summary>
+        /// Tipo de trabajo de programa.
+        /// </summary>
+        /// <param name="programType"></param>
+        /// <returns></returns>
+        private static string ProgramType(string programType)
+        {
+            string id = mResourceApi.GraphsUrl + "items/programtype_";
+            switch (programType)
+            {
+                case "Arquitectura":
+                    id += "020";
+                    break;
+                case "Arquitectura técnica":
+                    id += "030";
+                    break;
+                case "Diplomatura":
+                    id += "240";
+                    break;
+                case "Doctorado":
+                    id += "250";
+                    break;
+                case "Ingeniería":
+                    id += "420";
+                    break;
+                case "Ingeniería Técnica":
+                    id += "430";
+                    break;
+                case "Licenciatura":
+                    id += "470";
+                    break;
+                case "Máster oficial":
+                    id += "480";
+                    break;
+                case "Texto de otros":
+                    id += "OTHERS";
+                    break;
+                default:
+                    return null;
+            }
+            return id;
+        }
+
+        /// <summary>
+        /// Tipo de docencia
+        /// </summary>
+        /// <param name="modalityTeachingType"></param>
+        /// <returns></returns>
+        private static string ModalityTeachingType(string modalityTeachingType)
+        {
+            string id = mResourceApi.GraphsUrl + "items/modalityteachingtype_";
+            switch (modalityTeachingType)
+            {
+                case "Clínico":
+                    id += "060";
+                    break;
+                case "Prácticas de Laboratorio":
+                    id += "700";
+                    break;
+                case "Práctica (Aula-Problemas)":
+                    id += "705";
+                    break;
+                case "Teórica presencial":
+                    id += "840";
+                    break;
+                case "Virtual":
+                    id += "860";
+                    break;
+                case "Texto de otros":
+                    id += "OTHERS";
+                    break;
+                default:
+                    return null;
+            }
+            return id;
+        }
+
+        /// <summary>
+        /// Tipo de asignatura
+        /// </summary>
+        /// <param name="courseType"></param>
+        /// <returns></returns>
+        private static string CourseType(string courseType)
+        {
+            string id = mResourceApi.GraphsUrl + "items/coursetype_";
+            switch (courseType)
+            {
+                case "Troncal":
+                    id += "000";
+                    break;
+                case "Optativa":
+                    id += "020";
+                    break;
+                case "Obligatoria":
+                    id += "010";
+                    break;
+                case "Libre configuración":
+                    id += "030";
+                    break;
+                case "Doctorado/a":
+                    id += "050";
+                    break;
+                case "Texto de otros":
+                    id += "OTHERS";
+                    break;
+                default:
+                    return null;
+            }
+            return id;
+        }
+
+        /// <summary>
+        /// hourscreditsectstype_" + hoursCreditsECTSType
+        /// </summary>
+        /// <param name="hoursCreditsECTSType"></param>
+        /// <returns></returns>
+        private static string HoursCreditsECTSType(string hoursCreditsECTSType)
+        {
+            return mResourceApi.GraphsUrl + "items/hourscreditsectstype_" + hoursCreditsECTSType;
+        }
+
+        /// <summary>
+        /// language_" + language
+        /// </summary>
+        /// <param name="language"></param>
+        /// <returns></returns>
+        private static string Language(string language)
+        {
+            return mResourceApi.GraphsUrl + "items/language_" + language;
+        }
+        
+        /// <summary>
+        /// Tipo de convocatoria
+        /// </summary>
+        /// <param name="courseType"></param>
+        /// <returns></returns>
+        private static string CallType(string callType)
+        {
+            string id = mResourceApi.GraphsUrl + "items/calltype_";
+            switch (callType)
+            {
+                case "Competitivo":
+                    id += "1040";
+                    break;
+                case "No competitivo":
+                    id += "1050";
+                    break;
+                case "Texto de otros":
+                    id += "OTHERS";
+                    break;
+                default:
+                    return null;
+            }
+            return id;
+        }
+
+        /// <summary>
+        /// Tipo del ámbito geográfico
+        /// </summary>
+        /// <param name="geographicRegion"></param>
+        /// <returns></returns>
+        private static string GeographicRegion(string geographicRegion)
+        {
+            string id = mResourceApi.GraphsUrl + "items/geographicregion_";
+            switch (geographicRegion)
+            {
+                case "Autonómica":
+                    id += "000";
+                    break;
+                case "Internacional no UE":
+                    id += "030";
+                    break;
+                case "Nacional":
+                    id += "010";
+                    break;
+                case "Unión Europea":
+                    id += "020";
+                    break;
+                case "Texto de otros":
+                    id += "OTHERS";
+                    break;
+                default:
+                    return null;
+            }
+            return id;
+        }
+
         private static List<ImpartedacademictrainingOntology.ImpartedAcademicTraining> CrearFormacionAcademicaImpartida(Persona pDatos, Dictionary<string, Tuple<string, string>> dicOrganizaciones,
            Dictionary<string, Tuple<string, string>> dicPersonas)
         {
@@ -988,33 +1391,33 @@ namespace Harvester
             ImpartedacademictrainingOntology.ImpartedAcademicTraining academicTraining = new ImpartedacademictrainingOntology.ImpartedAcademicTraining();
             foreach (OAI_PMH.Models.SGI.ActividadDocente.FormacionAcademicaImpartida formacionAcademica in pDatos.FormacionAcademicaImpartida)
             {
-                //TODO academicTraining.IdRoh_teachingType = ;
+                academicTraining.IdRoh_teachingType = TeachingType(formacionAcademica.TipoDocente.Nombre);
                 academicTraining.IdVcard_hasCountryName = IdentificadorPais(formacionAcademica.PaisEntidadRealizacion.Id);
                 academicTraining.IdVcard_hasRegion = IdentificadorRegion(formacionAcademica.CcaaRegionEntidadRealizacion.Id);
                 academicTraining.Vcard_locality = formacionAcademica.CiudadEntidadRealizacion;
                 academicTraining.Roh_department = formacionAcademica.Departamento;
-                //TODO academicTraining.IdRoh_programType = ;
+                academicTraining.IdRoh_programType = ProgramType(formacionAcademica.TipoPrograma.Nombre);
                 academicTraining.Roh_teaches = formacionAcademica.NombreAsignaturaCurso;
-                //TODO academicTraining.IdRoh_modalityTeachingType = ;
-                //TODO academicTraining.IdRoh_courseType = ;
+                academicTraining.IdRoh_modalityTeachingType = ModalityTeachingType(formacionAcademica.TipoDocencia.Nombre);
+                academicTraining.IdRoh_courseType = CourseType(formacionAcademica.TipoAsignatura.Nombre);
                 academicTraining.Roh_course = formacionAcademica.Curso;
-                //TODO academicTraining.Roh_hoursCreditsECTSType = formacionAcademica.ects;
-                //TODO academicTraining.Roh_numberECTSHours = formacionAcademica.ects;
-                //TODO academicTraining.IdVcard_hasLanguage = ;
+                //TODO academicTraining.Roh_hoursCreditsECTSType = HoursCreditsECTSType(formacionAcademica.ects);
+                //academicTraining.Roh_numberECTSHours = formacionAcademica.ects;
+                academicTraining.IdVcard_hasLanguage = Language(formacionAcademica.Idioma);
                 academicTraining.Roh_frequency = (float?)formacionAcademica.FrecuenciaActividad;
                 academicTraining.Roh_competencies = formacionAcademica.Competencias;
                 academicTraining.Roh_professionalCategory = formacionAcademica.CategoriaProfesional;
-                //TODO academicTraining.Roh_qualification = formacionAcademica.calificacion;
-                //TODO academicTraining.Roh_maxQualification = formacionAcademica.maxcalificacion;
-                //TODO academicTraining.IdRoh_evaluatedByHasCountryName = IdentificadorPais(formacionAcademica.EntidadEvaluacion.pais.id);
-                //TODO academicTraining.evaluatedregion = IdentificadorRegion(formacionAcademica.EntidadEvaluacion.region.id);
-                //TODO academicTraining.Roh_evaluatedByLocality = formacionAcademica.;
-                //TODO academicTraining.IdRoh_evaluationType = ; 
-                //TODO academicTraining.IdRoh_financedByHasCountryName = IdentificadorPais(formacionAcademica.EntidadFinanciadora);
-                //TODO academicTraining.IdRoh_financedByHasRegion = IdentificadorRegion(formacionAcademica.EntidadFinanciadora);
-                //TODO academicTraining.Roh_financedByLocality = ;
-                //academicTraining.IdRoh_callType = ;
-                //academicTraining.IdVivo_geographicFocus = ;
+                //academicTraining.Roh_qualification = formacionAcademica.calificacion;
+                //academicTraining.Roh_maxQualification = formacionAcademica.maxcalificacion;
+                //academicTraining.IdRoh_evaluatedByHasCountryName = IdentificadorPais(formacionAcademica.EntidadEvaluacion.pais.id);
+                //academicTraining.evaluatedregion = IdentificadorRegion(formacionAcademica.EntidadEvaluacion.region.id);
+                //academicTraining.Roh_evaluatedByLocality = formacionAcademica.EntidadEvaluacion.ciudad;
+                //academicTraining.IdRoh_evaluationType = EvaluationType(formacionAcademica.TipoEvaluacion) ; 
+                //academicTraining.IdRoh_financedByHasCountryName = IdentificadorPais(formacionAcademica.EntidadFinanciadora);
+                //academicTraining.IdRoh_financedByHasRegion = IdentificadorRegion(formacionAcademica.EntidadFinanciadora);
+                //academicTraining.Roh_financedByLocality = formacionAcademica.EntidadFinanciadora.ciudad;
+                //academicTraining.IdRoh_callType = CallType(formacionAcademica.TipoConvocatoria);
+                academicTraining.IdVivo_geographicFocus = GeographicRegion(formacionAcademica.AmbitoGeografico);
                 //academicTraining.Roh_center = formacionAcademica.facultad;
                 academicTraining.Vivo_start = formacionAcademica.FechaInicio;
                 academicTraining.Vivo_end = formacionAcademica.FechaFinalizacion;
@@ -1023,13 +1426,16 @@ namespace Harvester
                 academicTraining.Roh_title = formacionAcademica.TitulacionUniversitaria;
 
                 //Entidad realizacion
-                //academicTraining.IdRoh_promotedBy = dicOrganizaciones[formacionAcademica.EntidadRealizacion];
+                academicTraining.IdRoh_promotedBy = dicOrganizaciones[formacionAcademica.EntidadRealizacion.EntidadRef].Item1;
+                academicTraining.Roh_promotedByTitle = NombreEmpresa(formacionAcademica.EntidadRealizacion.EntidadRef);
 
                 //Entidad financiadora
-                //academicTraining.IdRoh_financedBy = dicOrganizaciones[formacionAcademica.EntidadFinanciadora];
+                //academicTraining.IdRoh_financedBy = dicOrganizaciones[formacionAcademica.EntidadFinanciadora.EntidadRef].Item1;
+                //academicTraining.Roh_financedByTitle =  NombreEmpresa(formacionAcademica.EntidadFinanciadora);
 
                 //Entidad evaluacion
-                academicTraining.IdRoh_evaluatedBy = dicOrganizaciones[formacionAcademica.EntidadRealizacion.EntidadRef].Item1;
+                //academicTraining.IdRoh_evaluatedBy = dicOrganizaciones[formacionAcademica.EntidadEvaluacion.EntidadRef].Item1;
+                //academicTraining.Roh_evaluatedByTitle =  NombreEmpresa(formacionAcademica.EntidadEvaluacion.EntidadRef);
 
                 listaFormacionAcademicaImpartida.Add(academicTraining);
             }
@@ -1258,28 +1664,27 @@ namespace Harvester
                 {
                     ProjectOntology.BFO_0000023 BFO = new ProjectOntology.BFO_0000023();
                     BFO.Rdf_comment = orden;
-                    if (dicPersonas.ContainsKey(item.PersonaRef))
-                    {
-                        BFO.IdRoh_roleOf = dicPersonas[item.PersonaRef].Item1;
-                    }
-                    else
-                    {
-                        PersonOntology.Person nuevaPersona = new PersonOntology.Person();
+                    //if (dicPersonas.ContainsKey(item.PersonaRef))
+                    //{
+                    BFO.IdRoh_roleOf = dicPersonas[item.PersonaRef].Item1;
+                    //}
+                    //else
+                    //{
+                    //    PersonOntology.Person nuevaPersona = new PersonOntology.Person();
 
-                        //Pido los datos de la persona para insertarla
-                        Persona persona = ObtenerPersona(item.PersonaRef);
+                    //    //Pido los datos de la persona para insertarla
+                    //    Persona persona = ObtenerPersona(item.PersonaRef);
 
-                        //Si la persona no tiene nombre no la inserto
-                        if (!string.IsNullOrEmpty(persona.Nombre))
-                        {
-                            nuevaPersona = CrearPersona(persona);
+                    //    //Si la persona no tiene nombre no la inserto
+                    //    if (!string.IsNullOrEmpty(persona.Nombre))
+                    //    {
+                    //        nuevaPersona = CrearPersona(persona);
 
-                            //mResourceApi.LoadComplexSemanticResource(nuevaPersona, false, false);
-                            dicPersonas[nuevaPersona.Roh_crisIdentifier] = new Tuple<string, string>("", "");//TODO //nuevaPersona.GnossId;
-                            BFO.IdRoh_roleOf = dicPersonas[item.PersonaRef].Item1;
-                        }
-                    }
-
+                    //        //mResourceApi.LoadComplexSemanticResource(nuevaPersona, false, false);
+                    //        dicPersonas[nuevaPersona.Roh_crisIdentifier] = new Tuple<string, string>("", "");//TODO //nuevaPersona.GnossId;
+                    //        BFO.IdRoh_roleOf = dicPersonas[item.PersonaRef].Item1;
+                    //    }
+                    //}                    
                     BFO.Roh_isIP = item.RolProyecto.RolPrincipal;
                     if (!string.IsNullOrEmpty(item.FechaInicio))
                     {

@@ -734,10 +734,9 @@ namespace ImportadorWebCV.Sincro.Secciones
         {
             //Entidad a modificar
             Entity entityBBDD = GetLoadedEntity(equivalencias[idXML], graph);
-
             //Modificamos si no está bloqueada
             //TODO meter propiedad de validación para documentos
-            if (!entityBBDD.properties.Where(x => x.prop.Equals("http://w3id.org/roh/crisIdentifier")).Any()
+            if (entityBBDD != null && !entityBBDD.properties.Where(x => x.prop.Equals("http://w3id.org/roh/crisIdentifier")).Any()
                 && !entityBBDD.properties.Where(x => x.prop.Equals("http://w3id.org/roh/isValidated") && x.values.Contains("true")).Any())
             {
                 entityBBDD.propTitle = propTitle;
