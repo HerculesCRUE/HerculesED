@@ -718,7 +718,7 @@
     var depuracion = false; // TODO:
 
     const localUrlBase = "https://localhost:44347/";
-    const servicioExternoBaseUrl = "@Html.GetBaseUrlContent()/";
+    const servicioExternoBaseUrlLcl = "@Html.GetBaseUrlContent()/";
 
     const urlBase = "@Html.GetBaseUrl()";
     if (urlBase.includes("localhost") || urlBase.includes("depuracion")) {
@@ -728,7 +728,7 @@
 
     // Datos gráfica publicaciones.
     function CargarGraficaPublicaciones(parametros, idContenedor) {
-        var url = servicioExternoBaseUrl + "servicioexterno/Hercules/DatosGraficaPublicaciones"
+        var url = servicioExternoBaseUrlLcl + "servicioexterno/Hercules/DatosGraficaPublicaciones"
         if (depuracion) {
             url = localUrlBase + "Hercules/DatosGraficaPublicaciones"
         }
@@ -742,7 +742,7 @@
 
     // Datos gráfica proyectos.
     function CargarGraficaProyectos(parametros, idContenedorAnios, idContenedorMiembros, idContenedorAmbito) {
-        var url = servicioExternoBaseUrl + "servicioexterno/Hercules/DatosGraficaProyectos"
+        var url = servicioExternoBaseUrlLcl + "servicioexterno/Hercules/DatosGraficaProyectos"
         if (depuracion) {
             url = localUrlBase + "Hercules/DatosGraficaProyectos"
         }
@@ -770,7 +770,7 @@
         };
 
         CargarGraficaColaboradores = (pIdGrupo, parametros, idContenedor, mostrarCargando = false) => {
-            var url = servicioExternoBaseUrl + "servicioexterno/Hercules/DatosGraficaColaboradoresGrupo";
+            var url = servicioExternoBaseUrlLcl + "servicioexterno/Hercules/DatosGraficaColaboradoresGrupo";
             if (depuracion) {
                 url = localUrlBase + "Hercules/DatosGraficaColaboradoresGrupo";
             }
@@ -822,7 +822,7 @@
 
     // Datos gráfica miembros.
     function CargarGraficaMiembros(pIdGrupo, parametros, idContenedor) {
-        var url = servicioExternoBaseUrl + "servicioexterno/Hercules/DatosGraficaMiembrosGrupo"
+        var url = servicioExternoBaseUrlLcl + "servicioexterno/Hercules/DatosGraficaMiembrosGrupo"
         if (depuracion) {
             url = localUrlBase + "Hercules/DatosGraficaMiembrosGrupo"
         }
@@ -837,7 +837,7 @@
 
     // Datos gráfica áreas temáticas
     function CargarGraficaAreasTematicas(pIdGrupo, idContenedor) {
-        var url = servicioExternoBaseUrl + "servicioexterno/Hercules/DatosGraficaAreasTematicas"
+        var url = servicioExternoBaseUrlLcl + "servicioexterno/Hercules/DatosGraficaAreasTematicas"
         if (depuracion) {
             url = localUrlBase + "Hercules/DatosGraficaAreasTematicas"
         }
@@ -853,7 +853,7 @@
 
     // Datos gráfica áreas temáticas
     function CargarGraficaAreasTematicasArania(pIdGrupo, idContenedor) {
-        var url = servicioExternoBaseUrl + "servicioexterno/Hercules/DatosGraficaAreasTematicasArania"
+        var url = servicioExternoBaseUrlLcl + "servicioexterno/Hercules/DatosGraficaAreasTematicasArania"
         if (depuracion) {
             url = localUrlBase + "Hercules/DatosGraficaAreasTematicasArania"
         }
@@ -873,7 +873,7 @@
 
     // Datos gráfica colaboradores externos.
     function CargarGraficaColaboradores(pIdGrupo, parametros, idContenedor, mostrarCargando = false) {
-        var url = servicioExternoBaseUrl + "servicioexterno/Hercules/DatosGraficaColaboradoresGrupo"
+        var url = servicioExternoBaseUrlLcl + "servicioexterno/Hercules/DatosGraficaColaboradoresGrupo"
         if (depuracion) {
             url = localUrlBase + "Hercules/DatosGraficaColaboradoresGrupo"
         }
@@ -998,8 +998,8 @@
                 $('#numColaboradores').val((numColaboradores + 10));
                 $('#numNodosCollaborators').html($('#numColaboradores').val());
                 var parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro;
-                 CargarGraficaColaboradores("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros,'colaboratorsgraph',true);
-                 newGrafProj.CargarGraficaColaboradores("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros, 'colaboratorsgraph', true);
+                CargarGraficaColaboradores("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros,'colaboratorsgraph',true);
+                newGrafProj.CargarGraficaColaboradores("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros, 'colaboratorsgraph', true);
             });
             //Fin métodos colaboradores
 
