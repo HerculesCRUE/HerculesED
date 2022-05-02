@@ -33,6 +33,7 @@ namespace Utils
                                     ?s <http://w3id.org/roh/cvOf> ?person .
                                     FILTER(?s=<{pCVID}>)
                                 }}";
+            throw new Exception(System.IO.File.ReadAllText($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config\configOAuth\OAuthV3.config"));
             SparqlObject resultData = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
             foreach (Dictionary<string, Data> fila in resultData.results.bindings)
             {
