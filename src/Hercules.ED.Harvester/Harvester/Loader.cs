@@ -238,16 +238,6 @@ namespace Harvester
                                 persona = (Persona)xmlSerializer.Deserialize(sr);
                             }
 
-                            //TODO testing
-                            if (persona.Posgrado?.Count == 0 && persona.Ciclos?.Count == 0 &&
-                                persona.Doctorados?.Count == 0)
-                            {
-                                continue;
-                            }
-                            else
-                            {
-                                string s = "";
-                            }
 
                             // Cambio de modelo. TODO: Mirar propiedades.
                             PersonOntology.Person personOntology = CrearPersona(persona);
