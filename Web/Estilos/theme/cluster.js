@@ -67,9 +67,10 @@ class StepsCluster {
 		this.clusterId = undefined
 		this.data = undefined
 		this.editDataSave = undefined
-		this.communityShortName = this.modalCrearCluster.data('cshortName')
-		this.communityUrl = this.modalCrearCluster.data('comUrl')
-		this.communityKey = this.modalCrearCluster.data('comKey')
+		this.communityShortName = $(this.modalCrearCluster).data('cshortname')
+		this.communityUrl = $(this.modalCrearCluster).data('comurl')
+		this.communityResourceUrl = this.communityUrl + '/' + $(this.modalCrearCluster).data('urlrecurso')
+		this.communityKey = $(this.modalCrearCluster).data('comkey')
 
 		// Tags
 		this.topicsM = undefined
@@ -203,6 +204,10 @@ class StepsCluster {
 				case 3:
 				try {
 					continueStep = await this.saveInit()
+					if (continueStep) {
+						var urlCom = this.communityResourceUrl+"/"+ this.data.name.replace(/[^a-z0-9_]+/gi, '-').replace(/^-|-$/g, '').toLowerCase() +"/"+ this.clusterId.split('_')[1];
+						window.location = urlCom;
+					}
 				} catch(err) {
 					// this.errorDiv.show()
 					this.errorDivServer.show()
@@ -532,7 +537,6 @@ class StepsCluster {
 		this.data.pIdGnossUser=this.userId;
 		
 		return new Promise((resolve) => {
-			console.log("this.data saveInit",this.data);
 			
 			$.post(urlSC, this.data)
 				.done(
@@ -1342,9 +1346,11 @@ class ModalSearchTags {
 		this.inputSearch = this.modal.find('#tagsSearchModalCluster')
 		this.results = this.modal.find('.ac_results')
 		this.resultsUl = this.results.find('ul')
+		this.addedTags = []
 		this.timeWaitingForUserToType = 750; // Esperar 0.75 segundos a si el usuario ha dejado de escribir para iniciar búsqueda
 		this.tagsWrappper = this.modal.find('.tags ul')
-		this.ignoreKeysToBuscador = [37, 38, 39, 40, 46, 8, 32, 91, 17, 18, 20, 36, 18, 27];
+		// this.ignoreKeysToBuscador = [37, 38, 39, 40, 46, 8, 32, 91, 17, 18, 20, 36, 18, 27];
+		this.ignoreKeysToBuscador = [37, 38, 39, 40, 8, 32, 91, 17, 18, 20, 36, 18, 27];
 
 		// Inicializa la funcionalidad del buscador de TAGS
 		this.inputSearchEnter()
@@ -1445,16 +1451,20 @@ class ModalSearchTags {
 	 * @param texto, texto del tag a añadir
 	 */
 	addTag(texto) {
+		var _self = this
 		let item = $(`<li>
 						<a href="javascript: void(0);">
 							<span class="texto">` + texto + `</span>
 						</a>
-						<span class="material-icons cerrar">close</span>
+						<span class="material-icons cerrar" data-texto="` + texto + `">close</span>
 					</li>`)
 		this.tagsWrappper.append(item)
+		this.addedTags.push(texto)
 		
 		item.off('click').on('click', '.cerrar', function(e) {
+			let texto = $(this).data('texto')
 			let li = $(this).parent().remove()
+			_self.addedTags = _self.addedTags.filter(txt => txt != texto)
 		})
 	}
 
@@ -1505,12 +1515,13 @@ class ModalSearchTags {
 	 * @return promise (array) con la lista de resultados 
 	 */
 	searchCall (inputVal) {
+		var _self = this
 		// Set the url parameters
 		urlSTAGS.searchParams.set('tagInput', inputVal)
 
 		return new Promise((resolve) => {
 			$.get(urlSTAGS.toString(), function (data) {
-				resolve(data)
+				resolve(data.filter(itm => !_self.addedTags.includes(itm)))
 			});
 		})
 	}
