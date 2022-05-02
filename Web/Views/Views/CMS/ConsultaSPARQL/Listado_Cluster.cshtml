@@ -29,89 +29,94 @@
         }
     }
 
-
-    <div class="row">
-        <div class="col col-12 col-breadcrumb">
-            <ul>
-                <li>
-                    <a href="@Comunidad.Url">Home</a>
-                </li>
-                <li>
-                    @Model.Title
-                </li>
-            </ul>
-        </div>
-        <div class="col col-12 col-xl-9 header-listado">
-            <div class="h1-container">
-                <h1>@Model.Title <span class="numResultados">@listaClusters.Count</span></h1>
+    @if (!IdentidadActual.IsGuestUser)
+    {
+        <div class="row">
+            <div class="col col-12 col-breadcrumb">
+                <ul>
+                    <li>
+                        <a href="@Comunidad.Url">Home</a>
+                    </li>
+                    <li>
+                        @Model.Title
+                    </li>
+                </ul>
             </div>
-        </div>
-        <div class="col col-12 col-xl-9 col-contenido">
-            <div class="wrapCol">
-                <div class="resource-list listView resource-list-cluster">
-                    <div class="resource-list-wrap">
+            <div class="col col-12 col-xl-9 header-listado">
+                <div class="h1-container">
+                    <h1>@Model.Title <span class="numResultados">@listaClusters.Count</span></h1>
+                </div>
+            </div>
+            <div class="col col-12 col-xl-9 col-contenido">
+                <div class="wrapCol">
+                    <div class="resource-list listView resource-list-cluster">
+                        <div class="resource-list-wrap">
 
 
-                        @foreach (Cluster cluster in listaClusters)
-                        {
-                            <article class="resource cluster">
-                                <div class="wrap">
-                                    <div class="middle-wrap">
-                                        <div class="title-wrap">
-                                            <h2 class="resource-title">
-                                                <a href="@Comunidad.Url/nuevo-cluster?id=@cluster.id" target="_blank">@cluster.title</a>
-                                            </h2>
-                                        </div>
-                                        <div class="content-wrap">
-                                            <div class="description-wrap counted">
-                                                <div class="list-wrap">
-                                                    <ul>
-                                                        <li class="font-weight-bold">@cluster.fecha</li>
-                                                    </ul>
-                                                </div>
-                                                @foreach (Perfil profile in cluster.profiles) 
-                                                {
-                                                    <div class="list-wrap authors">
-                                                        <div class="label">@profile.title</div>
-
-                                                        @if (profile.researchers.Count > 0) {
-                                                            <ul>
-                                                            @foreach (User user in profile.researchers.Distinct()) 
-                                                            {
-                                                                if (user.id != "" && user.name != "" && !user.id.StartsWith("http://gnoss"))
-                                                                {
-                                                                    string url =Comunidad.Url+
-                                                                    "/"+Html.GetText("URLSEM", "RECURSO")+"/"+ Es.Riam.Util.UtilCadenas.EliminarCaracteresUrlSem(user.name)+"/"+user.id;
-                                                                    <li>
-                                                                        <a href="@url" target="_blank">@user.name</a>
-                                                                    </li>    
-                                                                }
-                                                                    
-                                                            }
-                                                            </ul>
-                                                        }
-                                                        
+                            @foreach (Cluster cluster in listaClusters)
+                            {
+                                <article class="resource cluster">
+                                    <div class="wrap">
+                                        <div class="middle-wrap">
+                                            <div class="title-wrap">
+                                                <h2 class="resource-title">
+                                                    @{
+                                                        string urlCom =Comunidad.Url+"/"+Html.GetText("URLSEM", "RECURSO")+"/"+ Es.Riam.Util.UtilCadenas.EliminarCaracteresUrlSem(cluster.title)+"/"+cluster.id.Split('_')[1];
+                                                    }
+                                                    <a href="@urlCom" target="_blank">@cluster.title</a>
+                                                </h2>
+                                            </div>
+                                            <div class="content-wrap">
+                                                <div class="description-wrap counted">
+                                                    <div class="list-wrap">
+                                                        <ul>
+                                                            <li class="font-weight-bold">@cluster.fecha</li>
+                                                        </ul>
                                                     </div>
-                                                }
-                                                <div class="desc" style="overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; text-overflow: ellipsis;">
-                                                    <p>@cluster.description</p>
+                                                    @foreach (Perfil profile in cluster.profiles) 
+                                                    {
+                                                        <div class="list-wrap authors">
+                                                            <div class="label">@profile.title</div>
+
+                                                            @if (profile.researchers.Count > 0) {
+                                                                <ul>
+                                                                @foreach (User user in profile.researchers.Distinct()) 
+                                                                {
+                                                                    if (user.id != "" && user.name != "" && !user.id.StartsWith("http://gnoss"))
+                                                                    {
+                                                                        string url =Comunidad.Url+
+                                                                        "/"+Html.GetText("URLSEM", "RECURSO")+"/"+ Es.Riam.Util.UtilCadenas.EliminarCaracteresUrlSem(user.name)+"/"+user.id;
+                                                                        <li>
+                                                                            <a href="@url" target="_blank">@user.name</a>
+                                                                        </li>    
+                                                                    }
+                                                                        
+                                                                }
+                                                                </ul>
+                                                            }
+                                                            
+                                                        </div>
+                                                    }
+                                                    <div class="desc" style="overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; text-overflow: ellipsis;">
+                                                        <p>@cluster.description</p>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </article>
+                                </article>
 
-                        }
+                            }
 
+                        </div>
                     </div>
+                    @*<div class="cargando">
+                        <p class="loading">Cargando resultados...</p>
+                    </div>*@
                 </div>
-                @*<div class="cargando">
-                    <p class="loading">Cargando resultados...</p>
-                </div>*@
             </div>
         </div>
-    </div>
+    }
 
 
 }
