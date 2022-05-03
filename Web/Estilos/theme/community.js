@@ -576,6 +576,32 @@ var comportamientoVerMasVerMenosTags = {
     }
 };
 
+var edicionListaAutorCV = {
+    init: function () {
+        this.config();
+        this.comportamiento();
+    },
+    config: function () {
+        this.formulario = $('.formulario-datos-experiencia');
+        this.collapse_lista_autores = this.formulario.find('#collapse-lista-autores');
+        this.collapse_autores = this.formulario.find('#collapse-autores');
+    },
+    comportamiento: function () {
+        var that = this;
+        this.collapse_lista_autores.find('.collapse-toggle').off('click').on('click', function () {
+            if (that.collapse_lista_autores.hasClass('show')) {
+                that.collapse_lista_autores.collapse('hide');
+            }
+        });
+
+        this.collapse_autores.find('.collapse-toggle').off('click').on('click', function () {
+            if (that.collapse_autores.hasClass('show')) {
+                that.collapse_lista_autores.collapse('show');
+            }
+        });
+    }
+};
+
 var operativaFormularioAutor = {
     init: function () {
         this.config();
@@ -686,6 +712,60 @@ var operativaFormularioTesauro = {
     }
 };
 
+var operativaFormularioProduccionCientifica = {
+    init: function () {
+        this.config();
+        this.formPublicacion();
+        this.formProyecto();
+        this.modal();
+    },
+    config: function () {
+        this.modal_prod_cientifica = $('#modal-enviar-produccion-cientifica');
+        this.formularioPublicacion = this.modal_prod_cientifica.find('.formulario-publicacion');
+        this.formularioProyecto = this.modal_prod_cientifica.find('.formulario-proyecto');
+        this.resourceList = this.formularioProyecto.find('.resource-list');
+    },
+    formPublicacion: function () {
+        var that = this;
+        this.formularioPublicacion.find('.btn').off('click').on('click', function () {
+            that.modal_prod_cientifica.find('.modal-body > .alert').hide();
+            that.formularioPublicacion.hide();
+            that.formularioProyecto.show();
+        });
+    },
+    formProyecto: function () {
+        var that = this;
+        that.formularioProyecto.find('> .alert').hide();
+        this.formularioProyecto.find('.btn').off('click').on('click', function () {
+            if (that.resourceList.find('.resource .form-check-input').is(':checked')) {
+                that.formularioProyecto.find('> .alert').hide();
+                $(this).attr('data-dismiss', 'modal');
+                mostrarNotificacion('success', 'La publicaciÃ³n permanecerÃ¡ bloqueada hasta que se resuelva el procedimiento');
+            } else {
+                that.formularioProyecto.find('> .alert').show();
+                $(this).addClass('disabled');
+            }
+        });
+
+        this.resourceList.find('.resource .form-check-inline').on('change', function () {
+            that.formularioProyecto.find('.btn').removeClass('disabled');
+        });
+    },
+    modal: function () {
+        var that = this;
+        this.modal_prod_cientifica.on('hide.bs.modal', function () {
+            // Status initial
+            that.modal_prod_cientifica.find('.modal-body > .alert').show();
+            that.formularioPublicacion.show();
+            that.formularioPublicacion.find('.resource .form-check-input').prop('checked', false);
+            that.formularioProyecto.hide();
+            that.formularioProyecto.find('> .alert').hide();
+            that.formularioProyecto.find('.btn').removeClass('disabled').attr('data-dismiss', '');
+            that.formularioProyecto.find('.resource .form-check-input').prop('checked', false);
+        });
+    }
+};
+
 var comportamientoTopicosCV = {
     init: function () {
         $('#modal-anadir-topicos').on('show.bs.modal', function () {
@@ -712,7 +792,7 @@ var mostrarFichaCabeceraFixed = {
         if (this.contenido.length < 1) return;
         const position = this.contenido.position().top;
         $(window).scroll(function (e) {
-            var scroll = $(window).scrollTop();
+            var scroll = $(window).scrollTop() + 20;
             if(scroll >= position) {
                 body.addClass('cabecera-ficha-fixed');
                 return;
@@ -1021,6 +1101,9 @@ var operativaModalSeleccionarTemas = {
 
         $('#modal-seleccionar-area-tematica').on('hide.bs.modal', function () {
             $('#modal-crear-cluster').modal('show');
+
+            // Close arbol
+            $('.boton-desplegar').removeClass('mostrar-hijos');
         });
     }
 };
@@ -1062,8 +1145,10 @@ $(function () {
         iniciarComportamientoImagenUsuario.init();
         operativaFormularioAutor.init();
         operativaFormularioTesauro.init();
+        operativaFormularioProduccionCientifica.init();
         comportamientoTopicosCV.init();
         tooltipsCV.init();
+        edicionListaAutorCV.init();
     }
 
     if (body.hasClass('edicionCluster')) {

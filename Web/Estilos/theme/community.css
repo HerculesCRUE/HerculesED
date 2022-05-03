@@ -352,6 +352,8 @@ header .row .col.col02 .col-buscador form .btn-filtrar-movil { border: 0; color:
 .form-check-input::after { content: ''; display: block; height: 12px; width: 12px; border-radius: 8px; position: relative; }
 .form-check-input:checked::after { background-color: var(--c-texto); top: 1px; left: 1px; }
 .form-check-input:checked + .form-check-label { color: #616161; }
+
+.form-actions.top { position: absolute; top: 0; right: 0; padding: 0; }
 /**/
 
 
@@ -401,6 +403,7 @@ header .row .col.col02 .col-buscador form .btn-filtrar-movil { border: 0; color:
 
 .edicionCluster .header-listado .h1-container h1 { font-size: 1.333rem; font-weight: 700; color: var(--c-texto); }
 
+.edicionCluster .formulario-edicion { position: relative; }
 .edicionCluster .formulario-edicion > div { justify-content: space-between; }
 .edicionCluster .formulario-edicion .botonera .btn { height: 50px; margin-bottom: 3px; }
 
@@ -518,6 +521,11 @@ header .row .col.col02 .col-buscador form .btn-filtrar-movil { border: 0; color:
 @media (max-width: 575px) {
     .edicionCluster .formulario-edicion .botonera .btn { height: 38px; }
 }
+/**/
+
+
+/* MODAL TOPICOS */
+#modal-anadir-topicos .formulario-edicion .form-group .control-label { line-height: 38px; }
 /**/
 
 
