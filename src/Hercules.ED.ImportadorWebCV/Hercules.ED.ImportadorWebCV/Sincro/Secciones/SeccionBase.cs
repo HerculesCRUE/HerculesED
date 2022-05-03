@@ -18,7 +18,7 @@ namespace ImportadorWebCV.Sincro.Secciones
 {
     public abstract class SeccionBase
     {
-        protected static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config\configOAuth\OAuthV3.config");
+        protected static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/configOAuth/OAuthV3.config");
         protected cvnRootResultBean mCvn { get; set; }
         protected string mCvID { get; set; }
         protected string mPersonID { get; set; }
@@ -545,6 +545,12 @@ namespace ImportadorWebCV.Sincro.Secciones
                         {
                             continue;
                         }
+                        //Compruebo que la persona propietaria de la notificación está en BBDD
+                        if (!equivalencias.Where(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key.Contains("_"))
+                        {
+                            continue;
+                        }
+
                         Notification notificacion = new Notification();
                         notificacion.IdRoh_trigger = idPersona;
                         notificacion.Roh_tabPropertyCV = "http://w3id.org/roh/scientificActivity";
@@ -574,6 +580,12 @@ namespace ImportadorWebCV.Sincro.Secciones
                         {
                             continue;
                         }
+                        //Compruebo que la persona propietaria de la notificación está en BBDD
+                        if (!equivalencias.Where(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key.Contains("_"))
+                        {
+                            continue;
+                        }
+
                         Notification notificacion = new Notification();
                         notificacion.IdRoh_trigger = idPersona;
                         notificacion.Roh_tabPropertyCV = "http://w3id.org/roh/scientificActivity";

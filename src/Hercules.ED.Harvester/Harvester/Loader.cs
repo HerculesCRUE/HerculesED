@@ -238,6 +238,7 @@ namespace Harvester
                                 persona = (Persona)xmlSerializer.Deserialize(sr);
                             }
 
+
                             // Cambio de modelo. TODO: Mirar propiedades.
                             PersonOntology.Person personOntology = CrearPersona(persona);
 
@@ -453,9 +454,9 @@ namespace Harvester
                             }
 
                             //Cambio de modelo.TODO: Mirar propiedades.
-                            //ProjectAuthorization projectAuthOntology = CrearProyecto(proyecto);
+                            GroupOntology.Group group = CrearGrupo(grupo);
 
-                            //resource = projectAuthOntology.ToGnossApiResource(mResourceApi, null);
+                            resource = group.ToGnossApiResource(mResourceApi, null);
                             //if (pDicRecursosCargados.ContainsKey(projectAuthOntology.Roh_crisIdentifier))
                             //{
                             //    // Modificación.
@@ -992,6 +993,7 @@ namespace Harvester
                 academicDegree.Roh_foreignTitle = ciclo.TituloExtranjero;
 
                 //Entidad titulacion
+                academicDegree.Roh_conductedByTitle = NombreEmpresa(ciclo.EntidadTitulacion.EntidadRef);
                 academicDegree.IdRoh_conductedBy = dicOrganizaciones[ciclo.EntidadTitulacion.EntidadRef].Item1;
 
                 listaCiclos.Add(academicDegree);
@@ -1019,9 +1021,11 @@ namespace Harvester
                 academicDegree.Roh_title = doctorado.ProgramaDoctorado;
 
                 //Entidad titulacion
+                academicDegree.Roh_conductedByTitle = NombreEmpresa(doctorado.EntidadTitulacion.EntidadRef);
                 academicDegree.IdRoh_conductedBy = dicOrganizaciones[doctorado.EntidadTitulacion.EntidadRef].Item1;
 
                 //Entidad titulacion DEA
+                academicDegree.Roh_deaEntityTitle = NombreEmpresa(doctorado.EntidadTitulacionDEA.EntidadRef);
                 academicDegree.IdRoh_deaEntity = dicOrganizaciones[doctorado.EntidadTitulacionDEA.EntidadRef].Item1;
 
                 //Director tesis
@@ -1162,8 +1166,11 @@ namespace Harvester
                 thesisSupervision.IdRoh_promotedBy = dicOrganizaciones[tesis.EntidadRealizacion.EntidadRef].Item1;
                 thesisSupervision.Roh_promotedByTitle = NombreEmpresa(tesis.EntidadRealizacion.EntidadRef);
 
-                //Alumno TODO
-                thesisSupervision.Roh_studentNick = tesis.Alumno;
+                //Alumno TODO - check
+                Persona alumno = ObtenerPersona(tesis.Alumno);
+                thesisSupervision.Roh_studentName = alumno.Nombre;
+                thesisSupervision.Roh_studentFirstSurname = alumno.Apellidos;
+                thesisSupervision.Roh_studentNick = alumno.Nombre + " " + alumno.Apellidos;
 
                 //Codirectores
                 //thesisSupervision.cod = dicPersonas[tesis.CoDirectorTesis.PersonaRef].Item1;
@@ -1316,7 +1323,19 @@ namespace Harvester
         /// <returns></returns>
         private static string HoursCreditsECTSType(string hoursCreditsECTSType)
         {
-            return mResourceApi.GraphsUrl + "items/hourscreditsectstype_" + hoursCreditsECTSType;
+            string id = mResourceApi.GraphsUrl + "items/hourscreditsectstype_";
+            switch (hoursCreditsECTSType)
+            {
+                case "Creditos":
+                    id += "000";
+                    break;
+                case "No competitivo":
+                    id += "010";
+                    break;
+                default:
+                    return null;
+            }
+            return id;
         }
 
         /// <summary>
@@ -1328,7 +1347,7 @@ namespace Harvester
         {
             return mResourceApi.GraphsUrl + "items/language_" + language;
         }
-        
+
         /// <summary>
         /// Tipo de convocatoria
         /// </summary>
@@ -1402,8 +1421,8 @@ namespace Harvester
                 academicTraining.IdRoh_modalityTeachingType = ModalityTeachingType(formacionAcademica.TipoDocencia.Nombre);
                 academicTraining.IdRoh_courseType = CourseType(formacionAcademica.TipoAsignatura.Nombre);
                 academicTraining.Roh_course = formacionAcademica.Curso;
-                //TODO academicTraining.Roh_hoursCreditsECTSType = HoursCreditsECTSType(formacionAcademica.ects);
-                //academicTraining.Roh_numberECTSHours = formacionAcademica.ects;
+                academicTraining.IdRoh_hoursCreditsECTSType = HoursCreditsECTSType(formacionAcademica.TipoHorasCreditos.Nombre);
+                academicTraining.Roh_numberECTSHours = formacionAcademica.NumHorasCreditos != null ? (float?)formacionAcademica.NumHorasCreditos : null;
                 academicTraining.IdVcard_hasLanguage = Language(formacionAcademica.Idioma);
                 academicTraining.Roh_frequency = (float?)formacionAcademica.FrecuenciaActividad;
                 academicTraining.Roh_competencies = formacionAcademica.Competencias;
@@ -1441,6 +1460,62 @@ namespace Harvester
                 listaFormacionAcademicaImpartida.Add(academicTraining);
             }
             return listaFormacionAcademicaImpartida;
+        }
+
+        private static List<ImpartedcoursesseminarsOntology.ImpartedCoursesSeminars> CrearSeminariosCursos(Persona pDatos, Dictionary<string, Tuple<string, string>> dicOrganizaciones,
+           Dictionary<string, Tuple<string, string>> dicPersonas)
+        {
+            List<ImpartedcoursesseminarsOntology.ImpartedCoursesSeminars> listaSeminariosCursos = new List<ImpartedcoursesseminarsOntology.ImpartedCoursesSeminars>();
+            ImpartedcoursesseminarsOntology.ImpartedCoursesSeminars impartedCourses = new ImpartedcoursesseminarsOntology.ImpartedCoursesSeminars();
+            foreach (OAI_PMH.Models.SGI.ActividadDocente.SeminariosCursos seminariosCursos in pDatos.SeminariosCursos)
+            {
+                //TODO impartedCourses.Roh_eventType = EventType(semianrioscursos.tipoevento);
+                impartedCourses.Roh_title = seminariosCursos.NombreEvento;
+                //impartedCourses.IdVcard_hasCountryName = IdentificadorPais(seminariosCursos.paisentidadorganizadora);
+                //impartedCourses.IdVcard_hasRegion = IdentificadorRegion(seminariosCursos.region);
+                impartedCourses.Vcard_locality = seminariosCursos.CiudadEntidadOrganizacionEvento;
+                impartedCourses.Roh_goals = seminariosCursos.ObjetivosCurso;
+                impartedCourses.Roh_targetProfile = seminariosCursos.PerfilDestinatarios;
+                impartedCourses.IdVcard_hasLanguage = seminariosCursos.Idioma;
+                impartedCourses.Vivo_start = seminariosCursos.FechaTitulacion;
+                //impartedCourses.Roh_durationHours = seminariosCursos.horasimpartidas;
+                impartedCourses.IdRoh_participationType = seminariosCursos.TipoParticipacion.Nombre;
+                impartedCourses.Roh_correspondingAuthor = seminariosCursos.AutorCorrespondencia != null ? (bool)seminariosCursos.AutorCorrespondencia : false;
+
+                //Entidad orgnaizadora
+                impartedCourses.Roh_promotedByTitle = NombreEmpresa(seminariosCursos.EntidadOrganizacionEvento.EntidadRef);
+                impartedCourses.IdRoh_promotedBy = dicOrganizaciones[seminariosCursos.EntidadOrganizacionEvento.EntidadRef].Item1;
+
+                //ISBN
+                impartedCourses.Roh_isbn = seminariosCursos.ISBN;
+
+                //ISSN
+                impartedCourses.Bibo_issn = seminariosCursos.ISSN;
+
+                //IDPublicacion
+                //impartedCourses.Bibo_handle = seminariosCursos.IdentificadoresPublicacion.
+                //impartedCourses.Bibo_doi = ;
+                //impartedCourses.Bibo_pmid = ;
+
+
+                listaSeminariosCursos.Add(impartedCourses);
+            }
+            return listaSeminariosCursos;
+        }
+
+        private static List<AccreditationOntology.Accreditation> CrearSexenios(Persona pDatos)
+        {
+            List<AccreditationOntology.Accreditation> listaSexenios = new List<AccreditationOntology.Accreditation>();
+            if (pDatos.Sexenios != null)
+            {
+                AccreditationOntology.Accreditation sexenio = new AccreditationOntology.Accreditation();
+                sexenio.Roh_recognizedPeriods = Convert.ToInt32(pDatos.Sexenios.Numero);
+                sexenio.IdVcard_hasCountryName = IdentificadorPais(pDatos.Sexenios.PaisRef);
+
+                listaSexenios.Add(sexenio);
+            }
+
+            return listaSexenios;
         }
 
         public static OrganizationOntology.Organization CrearOrganizacionOntology(Empresa pDatos)
@@ -1569,7 +1644,7 @@ namespace Harvester
             groupOntology.Roh_title = grupo.nombre;
             groupOntology.Roh_normalizedCode = grupo.codigo;
             groupOntology.Roh_foundationDate = grupo.fechaInicio;
-            Tuple<string,string,string> duracion = RestarFechas(grupo.fechaInicio, grupo.fechaFin);
+            Tuple<string, string, string> duracion = RestarFechas(grupo.fechaInicio, grupo.fechaFin);
             groupOntology.Roh_durationYears = duracion.Item1;
             groupOntology.Roh_durationMonths = duracion.Item2;
             groupOntology.Roh_durationDays = duracion.Item3;
@@ -1686,10 +1761,10 @@ namespace Harvester
                 {
                     ProjectOntology.BFO_0000023 BFO = new ProjectOntology.BFO_0000023();
                     BFO.Rdf_comment = orden;
-                    //if (dicPersonas.ContainsKey(item.PersonaRef))
-                    //{
-                    BFO.IdRoh_roleOf = dicPersonas[item.PersonaRef].Item1;
-                    //}
+                    if (dicPersonas.ContainsKey(item.PersonaRef))
+                    {
+                        BFO.IdRoh_roleOf = dicPersonas[item.PersonaRef].Item1;
+                    }
                     //else
                     //{
                     //    PersonOntology.Person nuevaPersona = new PersonOntology.Person();
@@ -1794,7 +1869,7 @@ namespace Harvester
             {
                 foreach (ProyectoAnualidadResumen anualidadResumen in pDatos.ResumenAnualidades)
                 {
-                    if (anualidadResumen.Presupuestar.Equals("true"))//TODO - contamos con el dato de presupuestar?
+                    if (anualidadResumen.Presupuestar != null && (bool)anualidadResumen.Presupuestar)//TODO - contamos con el dato de presupuestar?
                     {
                         cuantiaTotal += anualidadResumen.TotalGastosConcedido;
                     }
