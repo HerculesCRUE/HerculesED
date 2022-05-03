@@ -81,13 +81,8 @@
                                             <p class="dropdown-title">Acciones</p>
                                             <ul class="no-list-style">
                                                 <li>
-                                                    <a class="item-dropdown">
-                                                        <span class="texto">Añadir áreas de conocimiento</span>
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a class="item-dropdown">
-                                                        <span class="texto">Añadir etiquetas</span>
+                                                    <a class="item-dropdown" href="javascript: void(0)" data-toggle="modal" data-target="#modal-eliminar-cluster-confirmacion">
+                                                        <span class="texto">Borrar</span>
                                                     </a>
                                                 </li>
                                             </ul>
@@ -371,7 +366,32 @@
             </div>
         </div>
     </div>
+
+    <div id="modal-eliminar-cluster-confirmacion" class="modal modal-top fade modal-edicion" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <p class="modal-title"><span class="material-icons">delete</span>@Html.Translate("BORRAR_CLUSTER")</p>
+                    <span class="material-icons cerrar" data-dismiss="modal" aria-label="Close">close</span>
+                </div>
+                <div class="modal-body">
+                    <div class="formulario-edicion">
+                        <div class="custom-form-row">
+                            <div class="form-group full-group">
+                                <label class="control-label d-block">@Html.Translate("CONFIRMACION_BORRAR_CLUSTER")</label>
+                                <div class="form-actions">
+                                    <a href="javascript: borrarCluster()" class="btn btn-primary uppercase">@Html.Translate("BORRAR")</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 }
+
+
 
 
 
@@ -390,8 +410,6 @@
     }
 
     const persons = [@Html.Raw(String.Join(", ", persons.Select(p => '"' + p.Value.GNOSSID.Split('_')[1].ToUpper() + '"')))]
-    console.log("persons", persons)
-
 
 
     // Clase para las trabajar en las gráficas de los colaboradores en el cluster
@@ -501,6 +519,20 @@
     }
 
 
+    // Datos gráfica áreas temáticas
+    function borrarCluster() {
+        var url = servicioExternoBaseUrlLcl + "servicioexterno/Cluster/borrarCluster"
+        if (depuracion) {
+            url = localUrlBase + "Cluster/borrarCluster"
+        }
+        var arg = {};
+        arg.id = "@pCluster.GNOSSID"
+        $.get(url, arg, function (data) {
+            window.location = "@Comunidad.Url/@Html.Translate("CLUSTER_URL")"
+        });
+    }
+
+
 
     // Comportamiento página proyecto
     var comportamientoPaginaDocumento = {
@@ -546,9 +578,6 @@
             //CargarGraficaCitas("@pCluster.GNOSSID.Split('_')[1].ToUpper()", parametros);
         }
     }
-
-
-
 
 </script>
 
