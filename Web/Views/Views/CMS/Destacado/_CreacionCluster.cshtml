@@ -82,7 +82,7 @@
 				                    <!-- Areas temáticas -->
 				                    <div class="panel-body mb-5 edit-etiquetas pl-0">
 				                        <div class="form-group">
-				                            <label class="control-label d-block">@Html.Translate("TEMAS_INVESTIGACION") *</label>
+				                            <label class="control-label d-block">@Html.Translate("AREAS_TEMATICAS") *</label>
 				                            <div class="autocompletar autocompletar-tags form-group" id="cluster-modal-sec1-tax-wrapper">
 				                                <span class="tag-list mb-4">
 				                                </span>
@@ -304,7 +304,7 @@
 		                    <div class="form-group">
 		                        <label class="control-label">@Html.Translate("AREAS_TEMATICAS")</label>
 		                    </div>
-		                    <div id="panDesplegableSelCat">
+		                    <div id="panDesplegableSelCat" class="mt-4">
 		                        <ul class="nav nav-tabs d-none" id="myTab" role="tablist">
 		                            <li class="nav-item">
 		                                <a class="nav-link active" id="ver-arbol-tab" data-toggle="tab" href="#ver-arbol" role="tab" aria-controls="ver-arbol" aria-selected="true">@Html.Translate("ARBOL")</a>
@@ -323,7 +323,7 @@
 		                            </div>
 		                        </div>
 		                    </div>
-		                    <div class="form-actions">
+		                    <div class="form-actions top">
 		                        <a href="javascript:void(0)" class="btn btn-primary pmd-ripple-effect btnsave">@Html.Translate("GUARDAR")</a>
 		                    </div>
 		                </div>
@@ -332,9 +332,9 @@
 		    </div>
 		</div>
 
-		<div id="modal-anadir-topicos-cluster" data-backdrop="static"  class="modal modal-top fade" tabindex="-1" role="dialog">
+		<div id="modal-anadir-topicos-cluster" data-backdrop="static"  class="modal modal-top fade modal-anadir-topicos" tabindex="-1" role="dialog">
 		    <div class="modal-dialog" role="document">
-		        <div class="modal-content">
+		        <div class="modal-content modal-content-height">
 		            <div class="modal-header">
 		                <p class="modal-title"><span class="material-icons">label</span>@Html.Translate("ANADIR_DESCRIPTORES_ESPECIFICOS")</p>
 		                <span class="material-icons cerrar" data-dismiss="modal" aria-label="Close">close</span>
@@ -355,7 +355,7 @@
 		                        <ul>
 		                        </ul>
 		                    </div>
-		                    <div class="form-actions">
+		                    <div class="form-actions top">
 		                        <a href="javascript: void(0);" class="btn btn-primary uppercase btnclosemodal" data-dismiss="modal">@Html.Translate("GUARDAR")</a>
 		                    </div>
 		                </div>
@@ -377,27 +377,16 @@
 		                        <div class="form-group full-group">
 		                            <label class="control-label d-block">@Html.Translate("ANADIR_PERFIL")</label>
 		                            <input placeholder="Introduce o selecciona un perfil" type="text" name="perfilname" id="input-anadir-perfil" class="form-control not-outline">
-		                            <div class="ac_results" style="position: absolute;width: 100%;display: none;">
-		                                <ul>
-		                                    <li class="ac_even">data</li>
-		                                    <li class="ac_odd">Linked data</li>
-		                                    <li class="ac_even">World data</li>
-		                                    <li class="ac_odd">Metadata</li>
-		                                    <li class="ac_even">Linked data</li>
-		                                    <li class="ac_odd">Learning object data</li>
-		                                </ul>
-		                            </div>
 		                        </div>
 		                    </div>
-		                    <div class="form-actions">
-		                        <a href="javascript: stepsCls.addPerfilSearch()" class="btn btn-primary uppercase">Guardar</a>
+		                    <div class="form-actions top">
+		                        <a href="javascript: stepsCls.addPerfilSearch()" class="btn btn-primary uppercase">@Html.Translate("GUARDAR")</a>
 		                    </div>
 		                </div>
 		            </div>
 		        </div>
 		    </div>
 		</div>
-
 	}
 }
 
