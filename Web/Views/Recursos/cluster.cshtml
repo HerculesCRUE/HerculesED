@@ -119,12 +119,12 @@
                 @if (pCluster.Roh_clusterPerfil != null && pCluster.Roh_clusterPerfil.Count > 0)
                 {
                     <div class="list-wrap tags">
-                        <div class="label">@Html.Translate("AREAS_INVESTIGACION")</div>
+                        <div class="label">@Html.Translate("AREAS_TEMATICAS")</div>
                         <ul>
 
                             @{
                                 int contadorAreaConocimiento = 0;
-                                foreach (var knowArea in pCluster.Roh_hasKnowledgeArea)
+                                foreach (CategoryPath knowArea in pCluster.Roh_hasKnowledgeArea)
                                 {
 
                                     foreach (Concept area in knowArea.Roh_categoryNode)
@@ -176,7 +176,7 @@
                     tags.Distinct().ToList();
                 }
 
-                <div class="list-wrap tags">
+                <!-- <div class="list-wrap tags">
                     <div class="label">@Html.Translate("TEMAS_INVESTIGACION")</div>
                     <ul>
 
@@ -212,7 +212,7 @@
                             <a href="javascript: void(0);" class="ver-menos" style="display: none;">@Html.Translate("VER_MENOS")</a>
                         </p>
                     }
-                </div>
+                </div> -->
             </div>
             <div class="contenido-ficha">
                 <div class="tab-paneles-ficha">
@@ -358,48 +358,9 @@
                                     </div>
                                 </div>
                                 <div class="col col-12 col-chart mb-5">
-                                    <div class="wrapCol" id="topics-graph">
+                                    <div class="wrapCol" id="topicsgraph">
                                         <div class="chart-wrap">
-                                            <canvas id="chart-publicaciones" class="js-chart" width="0" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;"></canvas>
-                                            <script>
-                                                var ctx = document.getElementById('chart-publicaciones');
-                                                var parent = ctx.parentElement;
-                                                var width = parent.offsetWidth;
-                                                ctx.setAttribute('width', width);
-                                                var myChart = new Chart(ctx, {
-                                                type: 'bar',
-                                                data: {
-                                                labels: ['Computer Science', 'Human–computer interaction', 'Augmented reality', 'Visualization', 'Multimedia', 'Mobile device', 'Tema de investigación'],
-                                                datasets: [{
-                                                label: 'Publicaciones',
-                                                data: [12, 19, 3, 5, 2, 3, 1],
-                                                backgroundColor: [
-                                                '#6cafe3',
-                                                '#6cafe3',
-                                                '#6cafe3',
-                                                '#6cafe3',
-                                                '#6cafe3',
-                                                '#6cafe3',
-                                                '#6cafe3',
-                                                ],
-                                                borderColor: [
-                                                '#6cafe3',
-                                                '#6cafe3',
-                                                '#6cafe3',
-                                                '#6cafe3',
-                                                '#6cafe3',
-                                                '#6cafe3',
-                                                '#6cafe3',
-                                                ],
-                                                borderWidth: 1
-                                                }
-                                                ]
-                                                },
-                                                options: {
-                                                indexAxis: 'y',
-                                                }
-                                                });
-                                            </script>
+                                            
                                         </div>
                                     </div>
                                 </div>
@@ -528,17 +489,13 @@
 
 
     // Datos gráfica áreas temáticas
-    function CargarGraficaAreasTematicas(pIdGrupo, idContenedor) {
-        var url = servicioExternoBaseUrlLcl + "servicioexterno/Hercules/DatosGraficaAreasTematicas"
+    function CargarGraficaAreasTematicas(personas, idContenedor) {
+        var url = servicioExternoBaseUrlLcl + "servicioexterno/Cluster/DatosGraficaAreasTematicasCluster"
         if (depuracion) {
-            url = localUrlBase + "Hercules/DatosGraficaAreasTematicas"
+            url = localUrlBase + "Cluster/DatosGraficaAreasTematicasCluster"
         }
         var arg = {};
-        arg.pId = pIdGrupo;
-        arg.pType = 'person';
-        arg.pAnioInicio = $('#inicioAreas').val();
-        arg.pAnioFin = $('#finAreas').val();
-        $.get(url, arg, function (data) {
+        $.post(url, personas, function (data) {
             PintarGraficaAreasTematicas(data, idContenedor);
         });
     }
@@ -566,7 +523,7 @@
             $('#temas-investigacion-tab').unbind().click(function (e) {
                 e.preventDefault();
                 that.tabActive = "topics";
-                CargarGraficaAreasTematicas("@pCluster.GNOSSID.Split('_')[1].ToUpper()", "chart-publicaciones");
+                CargarGraficaAreasTematicas({pPersons: persons}, "topicsgraph");
             });
             return;
         }
