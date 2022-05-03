@@ -62,3 +62,7 @@
     top: -77px;
     right: 0;
 }
+
+.modal-anadir-topicos .formulario-edicion .form-group .control-label {
+    line-height: 38px;
+}
