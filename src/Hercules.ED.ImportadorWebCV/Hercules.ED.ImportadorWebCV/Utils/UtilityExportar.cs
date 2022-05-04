@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using Utils;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
 namespace ExportadorWebCV.Utils
@@ -65,6 +66,12 @@ where {{
 
         public static void AddCvnItemBeanCvnString(CvnItemBean itemBean, string section, string property, string code, Entity entity)
         {
+            //Compruebo si el codigo pasado está bien formado
+            if (Utility.CodigoIncorrecto(code))
+            {
+                return;
+            }
+
             if (entity.properties.Where(x => EliminarRDF(x.prop).StartsWith(section)).Count() > 0 &&
                 entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property)).Count() > 0)
             {
@@ -79,6 +86,12 @@ where {{
 
         public static void AddDireccion(CvnItemBean itemBean, string section, string property, string code, Entity entity)
         {
+            //Compruebo si el codigo pasado está bien formado
+            if (Utility.CodigoIncorrecto(code))
+            {
+                return;
+            }
+
             if (entity.properties.Where(x => EliminarRDF(x.prop).StartsWith(section)).Count() > 0 &&
                 entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property)).Count() > 0)
             {
@@ -93,6 +106,12 @@ where {{
 
         public static void AddCvnItemBeanCvnFamilyNameBean(CvnItemBean itemBean, string section, List<string> property, string code, Entity entity)
         {
+            //Compruebo si el codigo pasado está bien formado
+            if (Utility.CodigoIncorrecto(code))
+            {
+                return;
+            }
+
             if (property.Count != 2)
             {
                 return;
@@ -141,6 +160,12 @@ where {{
         /// <param name="entity"></param>
         public static void AddCvnItemBeanNumericValue(CvnItemBean itemBean, string section, string property, string code, Entity entity)
         {
+            //Compruebo si el codigo pasado está bien formado
+            if (Utility.CodigoIncorrecto(code))
+            {
+                return;
+            }
+
             if (entity.properties.Where(x => EliminarRDF(x.prop).StartsWith(section)).Count() > 0 &&
                 entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property)).Count() > 0)
             {
@@ -162,6 +187,12 @@ where {{
         /// <param name="entity"></param>
         public static void AddCvnItemBeanCvnRichText(CvnItemBean itemBean, string value, string code, [Optional] string secciones)
         {
+            //Compruebo si el codigo pasado está bien formado
+            if (Utility.CodigoIncorrecto(code))
+            {
+                return;
+            }
+
             CvnItemBeanCvnRichText richText = new CvnItemBeanCvnRichText();
             richText.Code = code;
             richText.Value = value;
@@ -171,6 +202,12 @@ where {{
 
         public static void AddCvnItemBeanCvnAuthorBean(CvnItemBean itemBean, string property, string code, Entity entity, [Optional] string secciones)
         {
+            //Compruebo si el codigo pasado está bien formado
+            if (Utility.CodigoIncorrecto(code))
+            {
+                return;
+            }
+
             CvnItemBeanCvnAuthorBean authorBean = new CvnItemBeanCvnAuthorBean();
             authorBean.Code = code;
 
@@ -179,6 +216,12 @@ where {{
 
         public static void AddCvnItemBeanCvnBoolean(CvnItemBean itemBean, string property, string code, Entity entity, [Optional] string secciones)
         {
+            //Compruebo si el codigo pasado está bien formado
+            if (Utility.CodigoIncorrecto(code))
+            {
+                return;
+            }
+
             CvnItemBeanCvnBoolean cvnBoolean = new CvnItemBeanCvnBoolean();
             cvnBoolean.Code = code;
 
@@ -187,6 +230,12 @@ where {{
 
         public static void AddCvnItemBeanCvnCodeGroup(CvnItemBean itemBean, string property, string code, Entity entity, [Optional] string secciones)
         {
+            //Compruebo si el codigo pasado está bien formado
+            if (Utility.CodigoIncorrecto(code))
+            {
+                return;
+            }
+
             CvnItemBeanCvnCodeGroup codeGroup = new CvnItemBeanCvnCodeGroup();
             codeGroup.Code = code;
 
@@ -203,6 +252,12 @@ where {{
 
         public static void AddCvnItemBeanCvnDuration(CvnItemBean itemBean, string property, string code, Entity entity, [Optional] string secciones)
         {
+            //Compruebo si el codigo pasado está bien formado
+            if (Utility.CodigoIncorrecto(code))
+            {
+                return;
+            }
+
             CvnItemBeanCvnDuration duration = new CvnItemBeanCvnDuration();
             duration.Code = code;
 
@@ -211,6 +266,12 @@ where {{
 
         public static void AddCvnItemBeanCvnEntityBean(CvnItemBean itemBean, string property, string code, Entity entity, [Optional] string secciones)
         {
+            //Compruebo si el codigo pasado está bien formado
+            if (Utility.CodigoIncorrecto(code))
+            {
+                return;
+            }
+
             CvnItemBeanCvnEntityBean entityBean = new CvnItemBeanCvnEntityBean();
             entityBean.Code = code;
 
@@ -219,6 +280,12 @@ where {{
 
         public static void AddCvnItemBeanCvnPageBean(CvnItemBean itemBean, string property, string code, Entity entity, [Optional] string secciones)
         {
+            //Compruebo si el codigo pasado está bien formado
+            if (Utility.CodigoIncorrecto(code))
+            {
+                return;
+            }
+
             CvnItemBeanCvnPageBean pageBean = new CvnItemBeanCvnPageBean();
             pageBean.Code = code;
 
@@ -227,22 +294,52 @@ where {{
 
         public static void AddCvnItemBeanCvnTitleBean(CvnItemBean itemBean, string property, string code, Entity entity, [Optional] string secciones)
         {
+            //Compruebo si el codigo pasado está bien formado
+            if (Utility.CodigoIncorrecto(code))
+            {
+                return;
+            }
+
             CvnItemBeanCvnTitleBean titleBean = new CvnItemBeanCvnTitleBean();
             titleBean.Code = code;
 
             itemBean.Items.Add(titleBean);
         }
 
-        public static void AddCvnItemBeanCvnVolumeBean(CvnItemBean itemBean, string property, string code, Entity entity, [Optional] string secciones)
+        public static void AddCvnItemBeanCvnVolumeBean(CvnItemBean itemBean, string seccion, string property, string code, Entity entity, [Optional] string secciones)
         {
+            //Compruebo si el codigo pasado está bien formado
+            if (Utility.CodigoIncorrecto(code))
+            {
+                return;
+            }
+
             CvnItemBeanCvnVolumeBean volumeBean = new CvnItemBeanCvnVolumeBean();
             volumeBean.Code = code;
 
             itemBean.Items.Add(volumeBean);
         }
 
+        /// <summary>
+        /// Inserta en <paramref name="entity"/> el PhoneBean con propiedad <paramref name="property"/> de <paramref name="itemBean"/>,
+        /// con las propiedades:
+        ///  "http://w3id.org/roh/hasExtension" -> Extension,
+        ///  "http://w3id.org/roh/hasInternationalCode" -> InternationalCode,
+        ///  "https://www.w3.org/2006/vcard/ns#hasValue" -> Number.
+        /// </summary>
+        /// <param name="itemBean"></param>
+        /// <param name="property"></param>
+        /// <param name="code"></param>
+        /// <param name="entity"></param>
+        /// <param name="secciones"></param>
         public static void AddCvnItemBeanCvnPhoneBean(CvnItemBean itemBean, string property, string code, Entity entity, [Optional] string secciones)
         {
+            //Compruebo si el codigo pasado está bien formado
+            if (Utility.CodigoIncorrecto(code))
+            {
+                return;
+            }
+
             CvnItemBeanCvnPhoneBean phone = new CvnItemBeanCvnPhoneBean();
             phone.Code = code;
 
@@ -263,7 +360,7 @@ where {{
         }
 
         /// <summary>
-        /// Inserta en <paramref name="entity"/> el con propiedad <paramref name="property"/> de <paramref name="itemBean"/>,
+        /// Inserta en <paramref name="entity"/> el PhotoBean con propiedad <paramref name="property"/> de <paramref name="itemBean"/>,
         /// Debe estar Concatenado por @@@, el valor del tipo debe encontrarse entre "/" y ";", los bytes de la imagen 
         /// deben estar despues de la primera ",".
         /// </summary>
@@ -274,6 +371,12 @@ where {{
         /// <param name="entity"></param>
         public static void AddCvnItemBeanCvnPhotoBean(CvnItemBean itemBean, string section, string property, string code, Entity entity)
         {
+            //Compruebo si el codigo pasado está bien formado
+            if (Utility.CodigoIncorrecto(code))
+            {
+                return;
+            }
+
             if (entity.properties.Where(x => EliminarRDF(x.prop).StartsWith(section)).Count() > 0 &&
                 entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property)).Count() > 0)
             {
@@ -291,7 +394,7 @@ where {{
         }
 
         /// <summary>
-        /// Inserta en <paramref name="entity"/> el con propiedad <paramref name="property"/> de <paramref name="itemBean"/>,
+        /// Inserta en <paramref name="entity"/> el DateDayMonthYear con propiedad <paramref name="property"/> de <paramref name="itemBean"/>,
         /// Debe tener formato de fecha GNOSS "yyyMMddHHmmSS" y estar concatenado por "@@@"
         /// </summary>
         /// <param name="itemBean"></param>
@@ -301,6 +404,12 @@ where {{
         /// <param name="entity"></param>
         public static void AddCvnItemBeanCvnDateDayMonthYear(CvnItemBean itemBean, string section, string property, string code, Entity entity)
         {
+            //Compruebo si el codigo pasado está bien formado
+            if (Utility.CodigoIncorrecto(code))
+            {
+                return;
+            }
+
             if (entity.properties.Where(x => EliminarRDF(x.prop).StartsWith(section)).Count() > 0 &&
                 entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property)).Count() > 0)
             {
@@ -326,6 +435,11 @@ where {{
 
         public static void AddCvnItemBeanCvnExternalPKBean(CvnItemBean itemBean, string section, string property, string code, Entity entity)
         {
+            //Compruebo si el codigo pasado está bien formado
+            if(Utility.CodigoIncorrecto(code)){
+                return;
+            }
+
             if (entity.properties.Where(x => EliminarRDF(x.prop).StartsWith(section)).Count() > 0 &&
                 entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property)).Count() > 0)
             {
