@@ -27,6 +27,9 @@
     SemanticResourceModel semCmsModel = Model.SemanticFrom;
     GnossOCBase.LanguageEnum idiomaUsuario = (GnossOCBase.LanguageEnum)Enum.Parse(typeof(GnossOCBase.LanguageEnum), Html.GetUtilIdiomas().LanguageCode.ToLower());
     Cluster pCluster = new Cluster(semCmsModel, idiomaUsuario);
+
+    Dictionary<string, Person> persons = new();
+    Dictionary<string, List<string>> userPerfil = new();
 }
 
 <div class="col col-12 col-breadcrumb">
@@ -78,13 +81,8 @@
                                             <p class="dropdown-title">Acciones</p>
                                             <ul class="no-list-style">
                                                 <li>
-                                                    <a class="item-dropdown">
-                                                        <span class="texto">Añadir áreas de conocimiento</span>
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a class="item-dropdown">
-                                                        <span class="texto">Añadir etiquetas</span>
+                                                    <a class="item-dropdown" href="javascript: void(0)" data-toggle="modal" data-target="#modal-eliminar-cluster-confirmacion">
+                                                        <span class="texto">Borrar</span>
                                                     </a>
                                                 </li>
                                             </ul>
@@ -116,43 +114,46 @@
                 @if (pCluster.Roh_clusterPerfil != null && pCluster.Roh_clusterPerfil.Count > 0)
                 {
                     <div class="list-wrap tags">
-                        <div class="label">@Html.Translate("AREAS_INVESTIGACION")</div>
+                        <div class="label">@Html.Translate("AREAS_TEMATICAS")</div>
                         <ul>
 
                             @{
                                 int contadorAreaConocimiento = 0;
-                                foreach (ClusterPerfil perfil in pCluster.Roh_clusterPerfil)
+                                foreach (CategoryPath knowArea in pCluster.Roh_hasKnowledgeArea)
                                 {
 
-                                    foreach (CategoryPath areas in perfil.Roh_hasKnowledgeArea)
+                                    foreach (Concept area in knowArea.Roh_categoryNode)
                                     {
-                                        foreach (Concept area in areas.Roh_categoryNode)
+                                        if (area != null && !string.IsNullOrEmpty(area.Skos_prefLabel) && contadorAreaConocimiento < 3)
                                         {
-                                            
-                                            if (area != null && !string.IsNullOrEmpty(area.Skos_prefLabel) && contadorAreaConocimiento < 3)
-                                            {
-                                                contadorAreaConocimiento++;
-                                                <li>
-                                                    <a href="@Comunidad.Url/@Html.Translate("CLUSTER_URL")?roh:hasKnowledgeArea@("@@@")roh:categoryNode=@area.GNOSSID">
-                                                        <span about="@area.GNOSSID" property="@area.GetPropertyURI(nameof(area.Skos_prefLabel))" class="texto">@area.Skos_prefLabel</span>
-                                                    </a>
-                                                </li>
-                                            }
-                                            else if (area != null && !string.IsNullOrEmpty(area.Skos_prefLabel))
-                                            {
-                                                contadorAreaConocimiento++;
-                                                <li class="ocultar" style="display: none;">
-                                                    <a href="@Comunidad.Url/@Html.Translate("CLUSTER_URL")?roh:hasKnowledgeArea@("@@@")roh:categoryNode=@area.GNOSSID">
-                                                        <span about="@area.GNOSSID" property="@area.GetPropertyURI(nameof(area.Skos_prefLabel))" class="texto">@area.Skos_prefLabel</span>
-                                                    </a>
-                                                </li>
-                                            }
-                                            
+                                            contadorAreaConocimiento++;
+                                            <li>
+                                                <a href="@Comunidad.Url/@Html.Translate("CLUSTER_URL")?roh:hasKnowledgeArea@("@@@")roh:categoryNode=@area.GNOSSID">
+                                                    <span about="@area.GNOSSID" property="@area.GetPropertyURI(nameof(area.Skos_prefLabel))" class="texto">@area.Skos_prefLabel</span>
+                                                </a>
+                                            </li>
                                         }
+                                        else if (area != null && !string.IsNullOrEmpty(area.Skos_prefLabel))
+                                        {
+                                            contadorAreaConocimiento++;
+                                            <li class="ocultar" style="display: none;">
+                                                <a href="@Comunidad.Url/@Html.Translate("CLUSTER_URL")?roh:hasKnowledgeArea@("@@@")roh:categoryNode=@area.GNOSSID">
+                                                    <span about="@area.GNOSSID" property="@area.GetPropertyURI(nameof(area.Skos_prefLabel))" class="texto">@area.Skos_prefLabel</span>
+                                                </a>
+                                            </li>
+                                        }
+                                            
                                     }
                                 }
                             }
                         </ul>
+                        @if (contadorAreaConocimiento > 3)
+                        {
+                            <p class="moreResults">
+                                <a href="javascript: void(0);" class="ver-mas" style="display: flex;">@Html.Translate("VER_MAS")</a>
+                                <a href="javascript: void(0);" class="ver-menos" style="display: none;">@Html.Translate("VER_MENOS")</a>
+                            </p>
+                        }
                     </div>
 
                 }
@@ -170,7 +171,7 @@
                     tags.Distinct().ToList();
                 }
 
-                <div class="list-wrap tags">
+                <!-- <div class="list-wrap tags">
                     <div class="label">@Html.Translate("TEMAS_INVESTIGACION")</div>
                     <ul>
 
@@ -206,7 +207,7 @@
                             <a href="javascript: void(0);" class="ver-menos" style="display: none;">@Html.Translate("VER_MENOS")</a>
                         </p>
                     }
-                </div>
+                </div> -->
             </div>
             <div class="contenido-ficha">
                 <div class="tab-paneles-ficha">
@@ -215,8 +216,7 @@
                             @pCluster.Roh_title
                         </div>
                         @{
-                            Dictionary<string, Person> persons = new();
-                            Dictionary<string, List<string>> userPerfil = new();
+                            
                             foreach (var perfil in pCluster.Roh_clusterPerfil)
                             {
 
@@ -261,8 +261,8 @@
                                     </div>
                                 </div>
                                 <div class="col col-12 col-grafo mb-5">
-                                    <div class="wrapCol">
-                                        aquí iría el grafo
+                                    <div class="wrapCol" id="colaboratorsgraph" style="height: 500px;">
+                                        
                                     </div>
                                 </div>
                                 <div class="col col-12 col-contenido derecha">
@@ -305,9 +305,9 @@
                                                                                         <span> @person.Value.Roh_hasRole.Roh_title, </span>
                                                                                     }
 
-                                                                                    if (person.Value.Vivo_departmentOrSchool != null && !string.IsNullOrEmpty(person.Value.Vivo_departmentOrSchool.Dc_title[idiomaUsuario]) && !string.IsNullOrEmpty(person.Key))
+                                                                                    if (person.Value.Vivo_departmentOrSchool != null && !string.IsNullOrEmpty(person.Value.Vivo_departmentOrSchool.Dc_title) && !string.IsNullOrEmpty(person.Key))
                                                                                     {
-                                                                                        <span about="@person.Key" property="@person.Value.GetPropertyURI(nameof(person.Value.Vivo_departmentOrSchool.Dc_title))">@person.Value.Vivo_departmentOrSchool.Dc_title[idiomaUsuario]</span>
+                                                                                        <span about="@person.Key" property="@person.Value.GetPropertyURI(nameof(person.Value.Vivo_departmentOrSchool.Dc_title))">@person.Value.Vivo_departmentOrSchool.Dc_title</span>
 
                                                                                     }
                                                                                 }
@@ -322,9 +322,9 @@
                                                             {
                                                                 <div class="publicaciones-wrap" about="@person.Key" property="@person.Value.GetPropertyURI(nameof(person.Value.Roh_publicationsNumber))">@person.Value.Roh_publicationsNumber</div>
                                                             } else {
-                                                                <div class="publicaciones-wrap"></div>
+                                                                <div class="publicaciones-wrap">0</div>
                                                             }
-                                                            <div class="principal-wrap"></div>
+                                                            <div class="principal-wrap">0</div>
                                                         </div>
                                                     </article>
                                                 }
@@ -337,7 +337,7 @@
                         </div>
                         <div class="tab-pane fade" id="temas-investigacion-panel" role="tabpanel" aria-labelledby="temas-investigacion-tab">
                             <div class="row">
-                                <div class="col col-12 col-section-title font-weight-bold">
+                                @* <div class="col col-12 col-section-title font-weight-bold">
                                     <div class="wrapCol">
                                         <p>Evolución temporal publicaciones</p>
                                     </div>
@@ -346,57 +346,41 @@
                                     <div class="wrapCol">
                                         aquí iría el grafo
                                     </div>
-                                </div>
+                                </div> *@
                                 <div class="col col-12 col-section-title font-weight-bold">
                                     <div class="wrapCol">
                                         <p>Distribución principales temas de investigación</p>
                                     </div>
                                 </div>
                                 <div class="col col-12 col-chart mb-5">
-                                    <div class="wrapCol">
+                                    <div class="wrapCol" id="topicsgraph">
                                         <div class="chart-wrap">
-                                            <canvas id="chart-publicaciones" class="js-chart" width="0" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;"></canvas>
-                                            <script>
-                                                var ctx = document.getElementById('chart-publicaciones');
-                                                var parent = ctx.parentElement;
-                                                var width = parent.offsetWidth;
-                                                ctx.setAttribute('width', width);
-                                                var myChart = new Chart(ctx, {
-                                                type: 'bar',
-                                                data: {
-                                                labels: ['Computer Science', 'Human–computer interaction', 'Augmented reality', 'Visualization', 'Multimedia', 'Mobile device', 'Tema de investigación'],
-                                                datasets: [{
-                                                label: 'Publicaciones',
-                                                data: [12, 19, 3, 5, 2, 3, 1],
-                                                backgroundColor: [
-                                                '#6cafe3',
-                                                '#6cafe3',
-                                                '#6cafe3',
-                                                '#6cafe3',
-                                                '#6cafe3',
-                                                '#6cafe3',
-                                                '#6cafe3',
-                                                ],
-                                                borderColor: [
-                                                '#6cafe3',
-                                                '#6cafe3',
-                                                '#6cafe3',
-                                                '#6cafe3',
-                                                '#6cafe3',
-                                                '#6cafe3',
-                                                '#6cafe3',
-                                                ],
-                                                borderWidth: 1
-                                                }
-                                                ]
-                                                },
-                                                options: {
-                                                indexAxis: 'y',
-                                                }
-                                                });
-                                            </script>
+                                            
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-eliminar-cluster-confirmacion" class="modal modal-top fade modal-edicion" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <p class="modal-title"><span class="material-icons">delete</span>@Html.Translate("BORRAR_CLUSTER")</p>
+                    <span class="material-icons cerrar" data-dismiss="modal" aria-label="Close">close</span>
+                </div>
+                <div class="modal-body">
+                    <div class="formulario-edicion">
+                        <div class="custom-form-row">
+                            <div class="form-group full-group">
+                                <label class="control-label d-block">@Html.Translate("CONFIRMACION_BORRAR_CLUSTER")</label>
+                                <div class="form-actions">
+                                    <a href="javascript: borrarCluster()" class="btn btn-primary uppercase">@Html.Translate("BORRAR")</a>
                                 </div>
                             </div>
                         </div>
@@ -410,273 +394,144 @@
 
 
 
+
+
 <!-- JAVASCRIPT -->
 <script type="text/javascript">
-    var depuracion = false;
-    const localUrlBase = "https://localhost:44321/";
 
-    // Datos cabeceras de las fichas.
-    var url = "http://serviciosedma.gnoss.com/servicioexterno/Hercules/GetDatosCabeceraDocumento"
-    if (depuracion) {
-        url = localUrlBase + "Hercules/GetDatosCabeceraDocumento"
+    var depuracion = false
+
+    const localUrlBase = "https://localhost:44347/"
+    const servicioExternoBaseUrlLcl = "@Html.GetBaseUrlContent()/"
+
+    const urlBase = "@Html.GetBaseUrl()"
+    if (urlBase.includes("localhost") || urlBase.includes("depuracion")) {
+        depuracion = true;
     }
-    var arg = {};
-    arg.pIdDocumento = "@pCluster.GNOSSID";
-    $.get(url, arg, function (data) {
-        $("#relacionados-tab div div.data").text(data["numRelacionados"]);
-    });
+
+    const persons = [@Html.Raw(String.Join(", ", persons.Select(p => '"' + p.Value.GNOSSID.Split('_')[1].ToUpper() + '"')))]
 
 
-    // Datos gráfica referencias.
-    function CargarGraficaReferencias(pIdDocumento, parametros) {
-        var url = "http://serviciosedma.gnoss.com/servicioexterno/Hercules/DatosGraficaReferencias"
+    // Clase para las trabajar en las gráficas de los colaboradores en el cluster
+    class CargarGraficaProjectoObj {
+        dataCB = {};
+        dataSE = {};
+        idContenedorCB = "";
+        idContenedorSE = "";
+        typesOcultar = [];
+        typesOcultarSE = [];
+        showRelation = true;    
+        showRelationSE = true;
+
+        actualizarGraficaColaboradores = () => {
+            AjustarGraficaArania(this.dataCB, this.idContenedorCB, this.typesOcultar, this.showRelation);
+        };
+        
+        actualizarGraficaSeleccionados = () => {
+            AjustarGraficaArania(this.dataSE, this.idContenedorSE, this.typesOcultarSE, this.showRelationSE);
+        };
+
+        CargarGraficaColaboradores = (cluster, idContenedor, mostrarCargando = false) => {
+            var url = servicioExternoBaseUrlLcl + "servicioexterno/Cluster/DatosGraficaColaboradoresCluster";
+            var self = this;
+            $('#' + idContenedor).empty();
+            if (mostrarCargando) {
+                MostrarUpdateProgress();
+            }
+
+            let optionsRelations = ["relation_project", "relation_document"];
+            cluster.seleccionados=false;
+            $.post(url, cluster, function (data) {
+                // Establecer los valores en la variable externa
+                self.dataCB = data;
+                self.idContenedorCB = idContenedor;
+
+                self.actualizarGraficaColaboradores();
+                if (mostrarCargando) {
+                    OcultarUpdateProgress();
+                }
+            });
+        };
+        
+        CargarGraficaSeleccionados = (cluster, idContenedor, mostrarCargando = false) => {
+            var url = servicioExternoBaseUrlLcl + "servicioexterno/Cluster/DatosGraficaColaboradoresCluster";
+            var self = this;
+            $('#' + idContenedor).empty();
+            if (mostrarCargando) {
+                MostrarUpdateProgress();
+            }
+
+            let optionsRelations = ["relation_project", "relation_document"];
+            cluster.seleccionados=true;
+            $.post(url, cluster, function (data) {
+                // Establecer los valores en la variable externa
+                self.dataSE = data;
+                self.idContenedorSE = idContenedor;
+
+                self.actualizarGraficaSeleccionados();
+                if (mostrarCargando) {
+                    OcultarUpdateProgress();
+                }
+            });
+        };
+    };
+
+    // Creamos un nuevo objeto
+    var newGrafProj = new CargarGraficaProjectoObj();
+
+
+    // Función a la que se llama para seleccionar qué elementos de las relaciones mostrar
+    function actualizarTypesOcultar(type) {
+        if (type == "relation_todas") {
+            newGrafProj.typesOcultar = [];
+        } else {
+            newGrafProj.typesOcultar = [type];
+        }
+        newGrafProj.actualizarGraficaColaboradores();
+    }
+
+    function actualizarTypesOcultarSE(type) {
+        if (type == "relation_todas") {
+            newGrafProj.typesOcultarSE = [];
+        } else {
+            newGrafProj.typesOcultarSE = [type];
+        }
+        newGrafProj.actualizarGraficaSeleccionados();
+    }
+
+
+    // función para actualizar la gráfica de colaboradores
+    function ActualizarGraficaClusterolaboradores(typesOcultar = [], showRelation = true) {
+        AjustarGraficaArania(dataCB, idContenedorCB, typesOcultar, showRelation);
+    }
+
+
+    // Datos gráfica áreas temáticas
+    function CargarGraficaAreasTematicas(personas, idContenedor) {
+        var url = servicioExternoBaseUrlLcl + "servicioexterno/Cluster/DatosGraficaAreasTematicasCluster"
         if (depuracion) {
-            url = localUrlBase + "Hercules/DatosGraficaReferencias"
+            url = localUrlBase + "Cluster/DatosGraficaAreasTematicasCluster"
         }
         var arg = {};
-        arg.pIdDocumento = pIdDocumento;
-        arg.pParametros = parametros;
-        $('#graficaBuscadorReferencias').empty();
-        $.get(url, arg, function (data) {
-            $('#graficaBuscadorReferencias').empty();
-
-            var cy = window.cy = cytoscape({
-                // Contenedor
-                container: document.getElementById('graficaBuscadorReferencias'),
-                // Layout
-                layout: {
-                    name: 'cose',
-                    idealEdgeLength: 100,
-                    nodeOverlap: 20,
-                    refresh: 20,
-                    padding: 30,
-                    randomize: false,
-                    componentSpacing: 100,
-                    nodeRepulsion: 400000,
-                    edgeElasticity: 100,
-                    nestingFactor: 5,
-                    gravity: 80,
-                    numIter: 1000,
-                    initialTemp: 200,
-                    coolingFactor: 0.95,
-                    minTemp: 1.0
-
-                }, pan: { x: 350, y: 50 },
-                // Estilos
-                style: [{
-                    "selector": "node",
-                    "style": {
-
-                        "width": "mapData(score, 0, 25, 30, 70)",
-                        "height": "mapData(score, 0, 25, 30, 70)",
-                        "content": "data(name)",
-                        "font-size": "12px",
-                        "font-family": 'Roboto',
-                        "font-color": "#999999",
-                        "background-color": "#c2c2c2",
-
-                        "text-outline-width": "0px",
-
-                        "overlay-padding": "6px",
-                        "z-index": "10"
-                    }
-                }, {
-                    "selector": "edge",
-                    "style": {
-                        "curve-style": "haystack",
-                        "haystack-radius": "0.5",
-                        "opacity": "0.4",
-                        "line-color": "#E1E1E1",
-                        "width": "mapData(weight, 0, 10, 0, 10)",
-                        "overlay-padding": "1px",
-                        "font-family": 'Arial Black',
-                        "font-color": 'black'
-                    }
-                }],
-                // Datos
-                elements: data
-            });
-            cy.zoomingEnabled(false);
-
-            var array = []
-            var nodos = cy.nodes()
-
-            //Quita el nombre de la publicación.
-            array.push(nodos[0]._private.data.name);
-            cy.nodes()[0]._private.data.name = "";
-
-            cy.nodes()[0].style({
-                'border-width': '2px',
-                'border-color': 'black',
-                'shape': 'circle'
-            });
-
-            var f = cy.nodes().length
-
-            for (i = 1; i < cy.nodes().length; i++) { //starts loop
-                array.push(nodos[i]._private.data.name);
-                //cy.nodes()[i]._private.data.name="";
-                cy.nodes()[i].style({
-                    'background-color': 'white',
-                    'background-image': 'https://cdn.iconscout.com/icon/free/png-256/user-1648810-1401302.png',
-                    'background-fit': 'cover',
-                    'border-width': '2px',
-                    'border-color': 'rgb(4,184,209)',
-                    'shape': 'circle'
-                })
-            };
-
-            cy.on('mouseover', 'edges', function (event) {
-                $('#numRelaciones').text('(' + event.target.id().split("~")[2] + ')');
-            });
-
-            cy.on('click', 'node', function (e) {
-                e = e.target;
-                var indice = cy.nodes().indexOf(e)
-                if (e._private.data.name === "") {
-                    e._private.data.name = array[indice]
-                    //nodo proyect.
-                    if (indice === 0) {
-                        e.style('border-color', 'rgb(12,121,212)')
-                    }
-                    else {
-                        e.style('border-color', 'rgb(4,184,209)')
-                    }
-                }
-                else {
-                    e._private.data.name = ""
-                    if (indice == 0) e.style('border-color', 'black');
-                    else e.style('border-color', 'grey');
-                }
-            })
+        $.post(url, personas, function (data) {
+            PintarGraficaAreasTematicas(data, idContenedor);
         });
     }
 
 
-    // Datos gráfica citas.
-    //function CargarGraficaCitas(pIdDocumento, parametros) {
-    //    var url = "http://serviciosedma.gnoss.com/servicioexterno/Hercules/DatosGraficaCitas"
-    //    if (depuracion) {
-    //        url = localUrlBase + "Hercules/DatosGraficaCitas"
-    //    }
-    //    var arg = {};
-    //    arg.pIdDocumento = pIdDocumento;
-    //    arg.pParametros = parametros;
-    //    $('#graficaBuscadorCitas').empty();
-    //    $.get(url, arg, function (data) {
-    //        $('#graficaBuscadorCitas').empty();
+    // Datos gráfica áreas temáticas
+    function borrarCluster() {
+        var url = servicioExternoBaseUrlLcl + "servicioexterno/Cluster/borrarCluster"
+        if (depuracion) {
+            url = localUrlBase + "Cluster/borrarCluster"
+        }
+        var arg = {};
+        arg.id = "@pCluster.GNOSSID"
+        $.get(url, arg, function (data) {
+            window.location = "@Comunidad.Url/@Html.Translate("CLUSTER_URL")"
+        });
+    }
 
-    //        var cy = window.cy = cytoscape({
-    //            // Contenedor
-    //            container: document.getElementById('graficaBuscadorCitas'),
-    //            // Layout
-    //            layout: {
-    //                name: 'cose',
-    //                idealEdgeLength: 100,
-    //                nodeOverlap: 20,
-    //                refresh: 20,
-    //                padding: 30,
-    //                randomize: false,
-    //                componentSpacing: 100,
-    //                nodeRepulsion: 400000,
-    //                edgeElasticity: 100,
-    //                nestingFactor: 5,
-    //                gravity: 80,
-    //                numIter: 1000,
-    //                initialTemp: 200,
-    //                coolingFactor: 0.95,
-    //                minTemp: 1.0
-
-    //            }, pan: { x: 350, y: 50 },
-    //            // Estilos
-    //            style: [{
-    //                "selector": "node",
-    //                "style": {
-
-    //                    "width": "mapData(score, 0, 25, 30, 70)",
-    //                    "height": "mapData(score, 0, 25, 30, 70)",
-    //                    "content": "data(name)",
-    //                    "font-size": "12px",
-    //                    "font-family": 'Roboto',
-    //                    "font-color": "#999999",
-    //                    "background-color": "#c2c2c2",
-
-    //                    "text-outline-width": "0px",
-
-    //                    "overlay-padding": "6px",
-    //                    "z-index": "10"
-    //                }
-    //            }, {
-    //                "selector": "edge",
-    //                "style": {
-    //                    "curve-style": "haystack",
-    //                    "haystack-radius": "0.5",
-    //                    "opacity": "0.4",
-    //                    "line-color": "#E1E1E1",
-    //                    "width": "mapData(weight, 0, 10, 0, 10)",
-    //                    "overlay-padding": "1px",
-    //                    "font-family": 'Arial Black',
-    //                    "font-color": 'black'
-    //                }
-    //            }],
-    //            // Datos
-    //            elements: data
-    //        });
-    //        cy.zoomingEnabled(false);
-
-    //        var array = []
-    //        var nodos = cy.nodes()
-
-    //        //Quita el nombre de la publicación.
-    //        array.push(nodos[0]._private.data.name);
-    //        cy.nodes()[0]._private.data.name = "";
-
-    //        cy.nodes()[0].style({
-    //            'border-width': '2px',
-    //            'border-color': 'black',
-    //            'shape': 'circle'
-    //        });
-
-    //        var f = cy.nodes().length
-
-    //        for (i = 1; i < cy.nodes().length; i++) { //starts loop
-    //            array.push(nodos[i]._private.data.name);
-    //            //cy.nodes()[i]._private.data.name="";
-    //            cy.nodes()[i].style({
-    //                'background-color': 'white',
-    //                'background-image': 'https://cdn.iconscout.com/icon/free/png-256/user-1648810-1401302.png',
-    //                'background-fit': 'cover',
-    //                'border-width': '2px',
-    //                'border-color': 'rgb(4,184,209)',
-    //                'shape': 'circle'
-    //            })
-    //        };
-
-    //        cy.on('mouseover', 'edges', function (event) {
-    //            $('#numRelaciones').text('(' + event.target.id().split("~")[2] + ')');
-    //        });
-
-    //        cy.on('click', 'node', function (e) {
-    //            e = e.target;
-    //            var indice = cy.nodes().indexOf(e)
-    //            if (e._private.data.name === "") {
-    //                e._private.data.name = array[indice]
-    //                //nodo proyect.
-    //                if (indice === 0) {
-    //                    e.style('border-color', 'rgb(12,121,212)')
-    //                }
-    //                else {
-    //                    e.style('border-color', 'rgb(4,184,209)')
-    //                }
-    //            }
-    //            else {
-    //                e._private.data.name = ""
-    //                if (indice == 0) e.style('border-color', 'black');
-    //                else e.style('border-color', 'grey');
-    //            }
-    //        })
-    //    });
-    //}
 
 
     // Comportamiento página proyecto
@@ -684,29 +539,24 @@
         tabActive: null,
         init: function () {
             this.config();
-            $('#relacionados-tab').click();
+            $('#participantes-tab').click();
             return;
         },
         config: function () {
             var that = this;
 
-            $('#relacionados-tab').unbind().click(function (e) {
+            $('#participantes-tab').unbind().click(function (e) {
                 e.preventDefault();
-                that.tabActive = "relacionados";
-                buscadorPersonalizado.init("@Html.Translate("RELACIONADOS")", "#contenedorBuscadorRelacionados", "searchRelacionadosDocumento=@pCluster.GNOSSID.Split('_')[1].ToUpper()", "", "rdf:type=document", "@Comunidad.Url", "@Comunidad.Key.ToString()", function() {
-                    $('#panNumResultados').hide();
-                });
+                that.tabActive = "participantes";
+                var parametros = ObtenerHash2() + '&' + buscadorPersonalizado.filtro
+                newGrafProj.CargarGraficaColaboradores({pPersons: persons}, 'colaboratorsgraph', true)
             });
-            //$('#citas-tab').unbind().click(function (e) {
-            //    e.preventDefault();
-            //    that.tabActive = "citas";
-            //    buscadorPersonalizado.init("@Html.Translate("CITAS")", "#contenedorBuscadorCitas", "bibo:cites=http://gnoss/@pCluster.GNOSSID.Split('_')[1].ToUpper()", "dct:issued", "rdf:type=document", "@Comunidad.Url", "@Comunidad.Key.ToString()");
-            //});
-            //$('#referencias-tab').unbind().click(function (e) {
-            //    e.preventDefault();
-            //    that.tabActive = "referencias";
-            //    buscadorPersonalizado.init("@Html.Translate("REFERENCIAS")", "#contenedorBuscadorReferencias", "searchReferenciasDocumento=@pCluster.GNOSSID.Split('_')[1].ToUpper()", "dct:issued", "rdf:type=document", "@Comunidad.Url", "@Comunidad.Key.ToString()");
-            //});
+
+            $('#temas-investigacion-tab').unbind().click(function (e) {
+                e.preventDefault();
+                that.tabActive = "topics";
+                CargarGraficaAreasTematicas({pPersons: persons}, "topicsgraph");
+            });
             return;
         }
     };
@@ -728,9 +578,6 @@
             //CargarGraficaCitas("@pCluster.GNOSSID.Split('_')[1].ToUpper()", parametros);
         }
     }
-
-
-
 
 </script>
 
@@ -1054,8 +901,7 @@
             }
             this.Vivo_description = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#description"));
             var item0 = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/dc/terms/issued"));
-            if(item0.HasValue)
-            {
+            if(item0.HasValue){
                 this.Dct_issued = item0.Value;
             }
             this.Roh_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/title"));
@@ -1096,8 +942,7 @@
             }
             this.Vivo_description = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#description"));
             var item1 = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/dc/terms/issued"));
-            if(item1.HasValue)
-            {
+            if(item1.HasValue){
                 this.Dct_issued = item1.Value;
             }
             this.Roh_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/title"));
@@ -1407,7 +1252,7 @@
             {
                 this.Vivo_departmentOrSchool = new Department(propVivo_departmentOrSchool.PropertyValues[0].RelatedEntity, idiomaUsuario);
             }
-            
+
             this.Vivo_hasResearchArea = new List<CategoryPath>();
             SemanticPropertyModel propVivo_hasResearchArea = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#hasResearchArea");
             if (propVivo_hasResearchArea != null && propVivo_hasResearchArea.PropertyValues.Count > 0)
@@ -1622,23 +1467,15 @@
         {
             this.mGNOSSID = pSemCmsModel.Entity.Uri;
             this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
-            this.Dc_title = new Dictionary<LanguageEnum, string>();
-            this.Dc_title.Add(idiomaUsuario, GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/dc/elements/1.1/title")));
-
+            this.Dc_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/dc/elements/1.1/title"));
             this.Dc_identifier = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/dc/elements/1.1/identifier"));
         }
 
-        public virtual string RdfType
-        {
-            get { return "http://vivoweb.org/ontology/core#Department"; }
-        }
-        public virtual string RdfsLabel
-        {
-            get { return "http://vivoweb.org/ontology/core#Department"; }
-        }
+        public virtual string RdfType { get { return "http://vivoweb.org/ontology/core#Department"; } }
+        public virtual string RdfsLabel { get { return "http://vivoweb.org/ontology/core#Department"; } }
         [LABEL(LanguageEnum.es, "http://purl.org/dc/elements/1.1/title")]
         [RDFProperty("http://purl.org/dc/elements/1.1/title")]
-        public Dictionary<LanguageEnum, string> Dc_title { get; set; }
+        public string Dc_title { get; set; }
 
         [LABEL(LanguageEnum.es, "http://purl.org/dc/elements/1.1/identifier")]
         [RDFProperty("http://purl.org/dc/elements/1.1/identifier")]
