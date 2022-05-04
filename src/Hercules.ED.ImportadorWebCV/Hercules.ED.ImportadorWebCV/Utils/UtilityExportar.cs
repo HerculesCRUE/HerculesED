@@ -160,7 +160,7 @@ where {{
         /// <param name="value"></param>
         /// <param name="code"></param>
         /// <param name="entity"></param>
-        public static void AddCvnItemBeanCvnRichText(CvnItemBean itemBean, string value, string code, [Optional] string section)
+        public static void AddCvnItemBeanCvnRichText(CvnItemBean itemBean, string value, string code, [Optional] string secciones)
         {
             CvnItemBeanCvnRichText richText = new CvnItemBeanCvnRichText();
             richText.Code = code;
@@ -169,7 +169,77 @@ where {{
             itemBean.Items.Add(richText);
         }
 
-        public static void AddCvnItemBeanCvnPhoneBean(CvnItemBean itemBean, string property, string code, Entity entity, [Optional] string section)
+        public static void AddCvnItemBeanCvnAuthorBean(CvnItemBean itemBean, string property, string code, Entity entity, [Optional] string secciones)
+        {
+            CvnItemBeanCvnAuthorBean authorBean = new CvnItemBeanCvnAuthorBean();
+            authorBean.Code = code;
+
+            itemBean.Items.Add(authorBean);
+        }
+
+        public static void AddCvnItemBeanCvnBoolean(CvnItemBean itemBean, string property, string code, Entity entity, [Optional] string secciones)
+        {
+            CvnItemBeanCvnBoolean cvnBoolean = new CvnItemBeanCvnBoolean();
+            cvnBoolean.Code = code;
+
+            itemBean.Items.Add(cvnBoolean);
+        }
+
+        public static void AddCvnItemBeanCvnCodeGroup(CvnItemBean itemBean, string property, string code, Entity entity, [Optional] string secciones)
+        {
+            CvnItemBeanCvnCodeGroup codeGroup = new CvnItemBeanCvnCodeGroup();
+
+            itemBean.Items.Add(codeGroup);
+        }
+
+        public static void AddCvnItemBeanCvnDouble(CvnItemBean itemBean, string property, string code, Entity entity, [Optional] string secciones)
+        {
+            CvnItemBeanCvnDouble cvnDouble = new CvnItemBeanCvnDouble();
+
+            itemBean.Items.Add(cvnDouble);
+        }
+
+        public static void AddCvnItemBeanCvnDuration(CvnItemBean itemBean, string property, string code, Entity entity, [Optional] string secciones)
+        {
+            CvnItemBeanCvnDuration duration = new CvnItemBeanCvnDuration();
+            duration.Code = code;
+
+            itemBean.Items.Add(duration);
+        }
+
+        public static void AddCvnItemBeanCvnEntityBean(CvnItemBean itemBean, string property, string code, Entity entity, [Optional] string secciones)
+        {
+            CvnItemBeanCvnEntityBean entityBean = new CvnItemBeanCvnEntityBean();
+            entityBean.Code = code;
+
+            itemBean.Items.Add(entityBean);
+        }
+
+        public static void AddCvnItemBeanCvnPageBean(CvnItemBean itemBean, string property, string code, Entity entity, [Optional] string secciones)
+        {
+            CvnItemBeanCvnPageBean pageBean = new CvnItemBeanCvnPageBean();
+            pageBean.Code = code;
+
+            itemBean.Items.Add(pageBean);
+        }
+
+        public static void AddCvnItemBeanCvnTitleBean(CvnItemBean itemBean, string property, string code, Entity entity, [Optional] string secciones)
+        {
+            CvnItemBeanCvnTitleBean titleBean = new CvnItemBeanCvnTitleBean();
+            titleBean.Code = code;
+
+            itemBean.Items.Add(titleBean);
+        }
+
+        public static void AddCvnItemBeanCvnVolumeBean(CvnItemBean itemBean, string property, string code, Entity entity, [Optional] string secciones)
+        {
+            CvnItemBeanCvnVolumeBean volumeBean = new CvnItemBeanCvnVolumeBean();
+            volumeBean.Code = code;
+
+            itemBean.Items.Add(volumeBean);
+        }
+
+        public static void AddCvnItemBeanCvnPhoneBean(CvnItemBean itemBean, string property, string code, Entity entity, [Optional] string secciones)
         {
             CvnItemBeanCvnPhoneBean phone = new CvnItemBeanCvnPhoneBean();
             phone.Code = code;
