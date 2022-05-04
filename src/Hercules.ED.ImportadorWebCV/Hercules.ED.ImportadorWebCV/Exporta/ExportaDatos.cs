@@ -32,6 +32,7 @@ namespace ImportadorWebCV.Exporta
             {
                 itemBean.Items = new List<CVNObject>();
             }
+
             UtilityExportar.AddCvnItemBeanCvnString(itemBean, seccion, UtilityExportar.EliminarRDF(Variables.DatosIdentificacion.nombre), "000.010.000.020", entity);
             UtilityExportar.AddCvnItemBeanCvnFamilyNameBean(itemBean, seccion,
                 new List<string>() { UtilityExportar.EliminarRDF(Variables.DatosIdentificacion.primerApellido),
