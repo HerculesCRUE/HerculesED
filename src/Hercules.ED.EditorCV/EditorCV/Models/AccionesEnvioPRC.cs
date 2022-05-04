@@ -612,12 +612,12 @@ namespace EditorCV.Models
             if (string.IsNullOrEmpty(valorEnviado))
             {
                 // Inserción.
-                Insercion(guid, "http://w3id.org/roh/validationStatusPRC", "PENDIENTE");
+                Insercion(guid, "http://w3id.org/roh/validationStatusPRC", "pendiente");
             }
             else
             {
                 // Modificación.
-                Modificacion(guid, "http://w3id.org/roh/validationStatusPRC", "PENDIENTE", valorEnviado);
+                Modificacion(guid, "http://w3id.org/roh/validationStatusPRC", "pendiente", valorEnviado);
             }
             #endregion
         }
