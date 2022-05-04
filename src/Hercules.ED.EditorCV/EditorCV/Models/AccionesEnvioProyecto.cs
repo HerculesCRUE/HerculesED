@@ -88,12 +88,12 @@ namespace EditorCV.Models
             if (string.IsNullOrEmpty(valorEnviado))
             {
                 // Inserción.
-                Insercion(guid, "http://w3id.org/roh/validationStatusProject", "PENDIENTE");
+                Insercion(guid, "http://w3id.org/roh/validationStatusProject", "pendiente");
             }
             else
             {
                 // Modificación.
-                Modificacion(guid, "http://w3id.org/roh/validationStatusProject", "PENDIENTE", valorEnviado);
+                Modificacion(guid, "http://w3id.org/roh/validationStatusProject", "pendiente", valorEnviado);
             }
         }
 

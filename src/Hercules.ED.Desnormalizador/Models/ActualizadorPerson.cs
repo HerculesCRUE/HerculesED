@@ -176,6 +176,80 @@ namespace DesnormalizadorHercules.Models
         }
 
         /// <summary>
+        /// Actualizamos en la propiedad http://w3id.org/roh/ipNumber de las http://xmlns.com/foaf/0.1/Person el nº de proyectos en los que ha sido IP
+        /// No tiene dependencias
+        /// </summary>
+        /// <param name="pPersons">IDs de las personas</param>
+        public void ActualizarNumeroIPProyectos(List<string> pPersons = null)
+        {
+            //Eliminamos los duplicados
+            EliminarDuplicados("person", "http://xmlns.com/foaf/0.1/Person", "http://w3id.org/roh/ipNumber");
+
+            List<string> filters = new List<string>();
+            if (pPersons != null && pPersons.Count > 0)
+            {
+                filters.Add($" FILTER(?person in (<{string.Join(">,<", pPersons)}>))");
+            }
+            else
+            {
+                filters.Add("");
+            }
+
+            foreach (string filter in filters)
+            {
+
+                //Actualizamos los datos
+                while (true)
+                {
+                    int limit = 500;
+                    //TODO eliminar from
+                    String select = @"select * where{select ?person  ?numIPCargados ?numIPACargar  from <http://gnoss.com/project.owl> ";
+                    String where = @$"where{{
+                            ?person a <http://xmlns.com/foaf/0.1/Person>.
+                            {filter}
+                            OPTIONAL
+                            {{
+                              ?person <http://w3id.org/roh/ipNumber> ?numIPCargadosAux. 
+                              BIND(xsd:int( ?numIPCargadosAux) as  ?numIPCargados)
+                            }}
+                            {{
+                              select ?person count(distinct ?proy) as ?numIPACargar
+                              Where{{
+                                ?person a <http://xmlns.com/foaf/0.1/Person>.
+                                OPTIONAL{{
+			                        ?proy a <http://vivoweb.org/ontology/core#Project>.
+			                        ?proy <http://w3id.org/roh/isValidated> 'true'.
+                                    ?proy <http://vivoweb.org/ontology/core#relates> ?listprojauth.
+                                    ?listprojauth <http://w3id.org/roh/roleOf> ?person.
+                                    ?listprojauth <http://w3id.org/roh/isIP> 'true'.
+		                        }}
+                              }}Group by ?person 
+                            }}
+                            FILTER(?numIPCargados!= ?numIPACargar OR !BOUND(?numIPCargados) )
+                            }}}} limit {limit}";
+                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
+
+                    Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
+                    {
+                        string person = fila["person"].value;
+                        string numIPACargar = fila["numIPACargar"].value;
+                        string numIPCargados = "";
+                        if (fila.ContainsKey("numIPCargados"))
+                        {
+                            numIPCargados = fila["numIPCargados"].value;
+                        }
+                        ActualizadorTriple(person, "http://w3id.org/roh/ipNumber", numIPCargados, numIPACargar);
+                    });
+
+                    if (resultado.results.bindings.Count != limit)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Actualizamos en la propiedad http://w3id.org/roh/projectsNumber de las http://xmlns.com/foaf/0.1/Person el nº de proyectos validados
         /// Depende de ActualizadorProject.ActualizarMiembros
         /// </summary>
@@ -914,7 +988,7 @@ namespace DesnormalizadorHercules.Models
                         string datoActual = "";
                         if (fila.ContainsKey("datoActual"))
                         {
-                            datoActual = fila["datoCargar"].value;
+                            datoActual = fila["datoActual"].value;
                         }
                         ActualizadorTriple(person, "http://w3id.org/roh/isIPGroupActually", datoActual, datoCargar);
                     });
@@ -990,7 +1064,7 @@ namespace DesnormalizadorHercules.Models
                         string datoActual = "";
                         if (fila.ContainsKey("datoActual"))
                         {
-                            datoActual = fila["datoCargar"].value;
+                            datoActual = fila["datoActual"].value;
                         }
                         ActualizadorTriple(person, "http://w3id.org/roh/isIPGroupHistorically", datoActual, datoCargar);
                     });
@@ -1073,7 +1147,7 @@ namespace DesnormalizadorHercules.Models
                         string datoActual = "";
                         if (fila.ContainsKey("datoActual"))
                         {
-                            datoActual = fila["datoCargar"].value;
+                            datoActual = fila["datoActual"].value;
                         }
                         ActualizadorTriple(person, "http://w3id.org/roh/isIPProjectActually", datoActual, datoCargar);
                     });
@@ -1149,7 +1223,7 @@ namespace DesnormalizadorHercules.Models
                         string datoActual = "";
                         if (fila.ContainsKey("datoActual"))
                         {
-                            datoActual = fila["datoCargar"].value;
+                            datoActual = fila["datoActual"].value;
                         }
                         ActualizadorTriple(person, "http://w3id.org/roh/isIPProjectHistorically", datoActual, datoCargar);
                     });

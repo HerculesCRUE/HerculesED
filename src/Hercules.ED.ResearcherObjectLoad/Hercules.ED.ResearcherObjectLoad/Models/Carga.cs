@@ -39,7 +39,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
         public const string REVISTA_JOURNAL = "Journal";
         public const string REVISTA_BOOK = "Book";
 
-        public const int MAX_INTENTOS = 100;
+        public const int MAX_INTENTOS = 10;
         public const int NUM_HILOS = 6;
         #endregion
 
@@ -767,8 +767,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                         //Cargamos las notificaciones
                         List<NotificationOntology.Notification> notificacionesCargar = notificaciones.ToList();
                         mResourceApi.ChangeOntoly("notification");
-                        //TODO cambiar parallel
-                        Parallel.ForEach(notificacionesCargar, new ParallelOptions { MaxDegreeOfParallelism = 1 }, notificacion =>
+                        Parallel.ForEach(notificacionesCargar, new ParallelOptions { MaxDegreeOfParallelism = NUM_HILOS }, notificacion =>
                         {
                             ComplexOntologyResource recursoCargar = notificacion.ToGnossApiResource(mResourceApi);
                             int numIntentos = 0;

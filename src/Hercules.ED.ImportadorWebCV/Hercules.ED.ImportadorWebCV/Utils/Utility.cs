@@ -207,6 +207,16 @@ namespace Utils
         }
 
         /// <summary>
+        /// Dado un codigo devuelve si el formato es invalido
+        /// </summary>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>True si el formato es invalido</returns>
+        public static bool CodigoIncorrecto(string codigo)
+        {
+            return !CodigoCorrecto(codigo);
+        }
+
+        /// <summary>
         /// Dado un codigo y su longitud contando los puntos
         /// Devuelve si es formato del codigo es valido
         /// </summary>

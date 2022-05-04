@@ -56,7 +56,20 @@ namespace Hercules.ED.UpdateKeywords
             where.Append("?s roh:getKeyWords 'true'. ");
             where.Append("} ");
 
-            resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), "document");
+
+            while (true)
+            {
+                try
+                {
+                    resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), "document");
+                    break;
+                }
+                catch (Exception)
+                {
+                    Thread.Sleep(10000);
+                }
+            }
+
             if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Any())
             {
                 foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
@@ -87,7 +100,19 @@ namespace Hercules.ED.UpdateKeywords
             where.Append("MINUS { ?freeTextKeyword roh:keyWordConcept ?keywordConcept. }");
             where.Append("} ");
 
-            resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), "document");
+            while (true)
+            {
+                try
+                {
+                    resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), "document");
+                    break;
+                }
+                catch (Exception)
+                {
+                    Thread.Sleep(10000);
+                }
+            }
+
             if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Any())
             {
                 foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
@@ -133,7 +158,19 @@ namespace Hercules.ED.UpdateKeywords
             where.Append($@"?s roh:url '{pUrl}'. ");
             where.Append("} ");
 
-            resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), "keywordconcept");
+            while (true)
+            {
+                try
+                {
+                    resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), "keywordconcept");
+                    break;
+                }
+                catch (Exception)
+                {
+                    Thread.Sleep(10000);
+                }
+            }
+
             if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Any())
             {
                 return resultadoQuery.results.bindings[0]["s"].value;
@@ -285,19 +322,35 @@ namespace Hercules.ED.UpdateKeywords
             return id;
         }
 
-        public void ModificarKeyword(string pIdRecurso, string pKeyword)
+        public void ModificarKeyword(string idDocumento, string pPredicado, string pIdRecurso, string pKeyword)
         {
-            Guid guid = mResourceApi.GetShortGuid(pIdRecurso);
+            Guid guid = mResourceApi.GetShortGuid(idDocumento);
             Dictionary<Guid, List<TriplesToInclude>> dicInclude = new Dictionary<Guid, List<TriplesToInclude>>();
             List<TriplesToInclude> listaTriplesInclude = new List<TriplesToInclude>();
 
             TriplesToInclude triple = new TriplesToInclude();
-            triple.Predicate = "http://w3id.org/roh/keyWordConcept";
-            triple.NewValue = pKeyword;
+            triple.Predicate = $@"http://vivoweb.org/ontology/core#freeTextKeyword|http://w3id.org/roh/keyWordConcept";
+            triple.NewValue = pIdRecurso + "|" + pKeyword;
             listaTriplesInclude.Add(triple);
 
             dicInclude.Add(guid, listaTriplesInclude);
             mResourceApi.InsertPropertiesLoadedResources(dicInclude);
+        }
+
+        public void ModificarGetKeywordDocument(string idDocumento)
+        {
+            Guid guid = mResourceApi.GetShortGuid(idDocumento);
+            Dictionary<Guid, List<TriplesToModify>> dicInclude = new Dictionary<Guid, List<TriplesToModify>>();
+            List<TriplesToModify> listaTriplesModificacion = new List<TriplesToModify>();
+
+            TriplesToModify triple = new TriplesToModify();
+            triple.Predicate = $@"http://w3id.org/roh/getKeyWords";
+            triple.NewValue = "false";
+            triple.OldValue = "true";
+            listaTriplesModificacion.Add(triple);
+
+            dicInclude.Add(guid, listaTriplesModificacion);
+            mResourceApi.ModifyPropertiesLoadedResources(dicInclude);
         }
 
         public void BorrarGetKeywordProperty(string pIdRecurso)
@@ -525,7 +578,7 @@ namespace Hercules.ED.UpdateKeywords
             int numIntentos = 0;
 
             Exception exception = null;
-            while (responseArray == null && numIntentos < 5)
+            while (responseArray == null && numIntentos < 3)
             {
                 numIntentos++;
                 try
@@ -540,7 +593,7 @@ namespace Hercules.ED.UpdateKeywords
             }
             if (exception != null)
             {
-                throw exception;
+                return dicResultados;
             }
 
             string jsonRespuesta = System.Text.Encoding.UTF8.GetString(responseArray);
@@ -602,7 +655,7 @@ namespace Hercules.ED.UpdateKeywords
             int numIntentos = 0;
 
             Exception exception = null;
-            while (responseArray == null && numIntentos < 5)
+            while (responseArray == null && numIntentos < 3)
             {
                 numIntentos++;
                 try
@@ -617,7 +670,7 @@ namespace Hercules.ED.UpdateKeywords
             }
             if (exception != null)
             {
-                throw exception;
+                return dicResultados;
             }
 
             string jsonRespuesta = System.Text.Encoding.UTF8.GetString(responseArray);
@@ -892,7 +945,9 @@ namespace Hercules.ED.UpdateKeywords
         public string GetTGT()
         {
             // Petición.
-            string result = String.Empty;
+            string result = string.Empty;
+            string data = string.Empty;
+
             while (true)
             {
                 Uri url = new Uri(_Configuracion.GetUrlTGT());
@@ -901,22 +956,23 @@ namespace Hercules.ED.UpdateKeywords
                 new KeyValuePair<string, string>("apikey", _Configuracion.GetApiKey())
                 });
 
-                result = httpCall(url.ToString(), "POST", pBody: body).Result;
-
-                if (string.IsNullOrEmpty(result))
+                try
                 {
-                    Thread.Sleep(30000);
+                    result = httpCall(url.ToString(), "POST", pBody: body).Result;
+                    HtmlDocument doc = new HtmlDocument();
+                    doc.LoadHtml(result);
+                    data = doc.DocumentNode.SelectSingleNode("//form").GetAttributeValue("action", "");
                 }
-                else
+                catch (Exception)
+                {
+                    Thread.Sleep(10000);
+                }
+
+                if (!string.IsNullOrEmpty(data))
                 {
                     break;
                 }
             }
-
-            // Obtención del dato del HTML de respuesta.
-            HtmlDocument doc = new HtmlDocument();
-            doc.LoadHtml(result);
-            string data = doc.DocumentNode.SelectSingleNode("//form").GetAttributeValue("action", "");
 
             // TGT.
             return data.Substring(data.LastIndexOf('/') + 1);
@@ -937,7 +993,20 @@ namespace Hercules.ED.UpdateKeywords
             });
 
             // Ticket.
-            return httpCall(url.ToString(), "POST", pBody: body).Result;
+            string result = string.Empty;
+            while (true)
+            {
+                try
+                {
+                    result = httpCall(url.ToString(), "POST", pBody: body).Result;
+                    break;
+                }
+                catch (Exception)
+                {
+                    Thread.Sleep(10000);
+                }
+            }
+            return result;
         }
 
         /// <summary>
@@ -951,7 +1020,15 @@ namespace Hercules.ED.UpdateKeywords
         {
             // Petición.
             Uri url = new Uri($@"{_Configuracion.GetUrlSNOMED()}/{pMeshId}?targetSource=SNOMEDCT_US&ticket={pST}");
-            string result = httpCall(url.ToString(), "GET").Result;
+            string result = string.Empty;
+            try
+            {
+                result = httpCall(url.ToString(), "GET").Result;
+            }
+            catch (Exception e)
+            {
+                return;
+            }
 
             // Obtención del dato del JSON de respuesta.
             try
