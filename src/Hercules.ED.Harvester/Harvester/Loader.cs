@@ -1797,7 +1797,7 @@ namespace Harvester
                 }
 
                 //Indico el número de investigadores ? TODO
-                project.Roh_researchersNumber = orden;
+                project.Roh_researchersNumber = pDatos.Equipo.Select(x=>x.PersonaRef).GroupBy(x=>x).Count();
             }
 
             //Añado las entidades financiadoras que no existan en BBDD
@@ -1878,11 +1878,16 @@ namespace Harvester
             }
 
             project.Vivo_start = pDatos.FechaInicio != null ? Convert.ToDateTime(pDatos.FechaInicio) : null;
+
             //Si está informada la FechaFinDefinitiva prevalecerá sobre la FechaFin y será la considerada como fecha de finalización del proyecto,
             //independientemente de que sea mayor o menor que la fecha de fin inicial.
+            //Añado la fecha de finalizacion si el proyecto es de tipo competitivo.
+            if (project.IdRoh_scientificExperienceProject.Equals(mResourceApi.GraphsUrl + "items/scientificexperienceproject_SEP1")){
+                project.Vivo_end = pDatos.FechaFinDefinitiva != null ? Convert.ToDateTime(pDatos.FechaFinDefinitiva) : Convert.ToDateTime(pDatos.FechaFin);
+            }
+
             if (pDatos.FechaFinDefinitiva != null)
             {
-                project.Vivo_end = Convert.ToDateTime(pDatos.FechaFinDefinitiva);
 
                 if (pDatos.FechaInicio != null)
                 {
@@ -1894,7 +1899,6 @@ namespace Harvester
             }
             else
             {
-                project.Vivo_end = pDatos.FechaFin != null ? Convert.ToDateTime(pDatos.FechaFin) : null;
 
                 if (pDatos.FechaInicio != null)
                 {
