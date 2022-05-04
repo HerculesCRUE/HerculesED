@@ -188,6 +188,7 @@ where {{
         public static void AddCvnItemBeanCvnCodeGroup(CvnItemBean itemBean, string property, string code, Entity entity, [Optional] string secciones)
         {
             CvnItemBeanCvnCodeGroup codeGroup = new CvnItemBeanCvnCodeGroup();
+            codeGroup.Code = code;
 
             itemBean.Items.Add(codeGroup);
         }
@@ -195,6 +196,7 @@ where {{
         public static void AddCvnItemBeanCvnDouble(CvnItemBean itemBean, string property, string code, Entity entity, [Optional] string secciones)
         {
             CvnItemBeanCvnDouble cvnDouble = new CvnItemBeanCvnDouble();
+            cvnDouble.Code = code;
 
             itemBean.Items.Add(cvnDouble);
         }
