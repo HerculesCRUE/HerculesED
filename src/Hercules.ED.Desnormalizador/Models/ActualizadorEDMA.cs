@@ -43,6 +43,7 @@ namespace DesnormalizadorHercules.Models
                 //Persona sin dependencias
                 actualizadorPersonas.ActualizarNumeroPublicacionesValidadas();
                 actualizadorPersonas.ActualizarPertenenciaLineas();
+                //depende de doc
                 actualizadorPersonas.ActualizarAreasPersonas();
                 actualizadorPersonas.ActualizarIPGruposActuales(); 
                 actualizadorPersonas.ActualizarIPGruposHistoricos();
@@ -55,6 +56,7 @@ namespace DesnormalizadorHercules.Models
                 actualizadorPersonas.ActualizarNumeroProyectosValidados();
                 actualizadorPersonas.ActualizarNumeroProyectosPublicos();
                 actualizadorPersonas.ActualizarNumeroAreasTematicas();
+                actualizadorPersonas.ActualizarNumeroIPProyectos();
 
                 //Grupo sin dependencias                
                 actualizadorGrupos.ActualizarGruposValidados();
@@ -107,14 +109,14 @@ namespace DesnormalizadorHercules.Models
                 //TODO agregar la fuente para el factor de impacto
                 actualizadorDocument.ActualizarIndicesImpacto();
                 //actualizadorDocument.ActualizarIndiceImpacto();
-                
+
                 //TODO hacer bien
                 //actualizadorDocument.ActualizarCuartil();
 
                 //Dependen únicamente del CV
-                
 
-                
+
+
                 //Otras dependencias
 
 
@@ -124,12 +126,12 @@ namespace DesnormalizadorHercules.Models
 
 
 
-
+                //TODO desnormalizar unmnero de IP
 
                 //TODO nombres org
 
 
-
+                actualizadorCV.ModificarElementosCV();
 
 
 
