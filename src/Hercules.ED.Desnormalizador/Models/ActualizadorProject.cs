@@ -124,15 +124,17 @@ namespace DesnormalizadorHercules.Models
                 while (true)
                 {
                     int limit = 500;
-                    String select = @"select * where{select distinct ?project ?person ?comment ?nick ?ip  ";
+                    //TODO from
+                    String select = @"select * where{select distinct ?project ?person ?comment ?nick ?nombre ?ip  from <http://gnoss.com/person.owl>";
                     String where = @$"where{{
                                     {filter}
                                     {{
-                                        select distinct ?project ?person ?comment ?nick ?ip
+                                        select distinct ?project ?person ?comment ?nick ?nombre ?ip
                                         Where{{
                                             ?project a <http://vivoweb.org/ontology/core#Project>.
                                             ?project <http://vivoweb.org/ontology/core#relates> ?member.    
                                             ?member <http://w3id.org/roh/roleOf> ?person.                                            
+                                            ?person <http://xmlns.com/foaf/0.1/name> ?nombre.                                            
                                             ?member <http://w3id.org/roh/isIP> ?ip.
                                             OPTIONAL{{?member <http://www.w3.org/1999/02/22-rdf-syntax-ns#comment> ?comment.}}
                                             OPTIONAL{{?member <http://xmlns.com/foaf/0.1/nick> ?nick.}}
@@ -178,7 +180,7 @@ namespace DesnormalizadorHercules.Models
                 while (true)
                 {
                     int limit = 500;
-                    String select = @"select * where{select distinct ?project ?propPersonAux ?personAux  ";
+                    String select = @"select * where{select distinct ?project ?propPersonAux ?personAux  from <http://gnoss.com/person.owl> ";
                     String where = @$"where{{
                                     {filter}
                                     {{

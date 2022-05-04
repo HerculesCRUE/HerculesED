@@ -713,35 +713,40 @@ namespace DesnormalizadorHercules.Models
                     //Añadimos grupos
                     int limit = 500;
                     //TODO eliminar from
-                    String select = @"SELECT * WHERE{select distinct ?cv ?scientificExperience ?group from <http://gnoss.com/group.owl> from <http://gnoss.com/person.owl> ";
+                    String select = @"SELECT * WHERE{select distinct ?cv ?idSection ?item 
+                                        'http://w3id.org/roh/RelatedGroup' as ?rdfTypeAux 
+                                        'http://w3id.org/roh/scientificExperience' as ?sectionProperty
+                                        'http://w3id.org/roh/groups' as ?auxProperty
+                    from <http://gnoss.com/group.owl> from <http://gnoss.com/person.owl> ";
                     String where = @$"where{{
                                     {filter} 
                                     {{
                                         #DESEABLES                                        
                                         ?person a <http://xmlns.com/foaf/0.1/Person>.                                            
-                                        ?group a <http://xmlns.com/foaf/0.1/Group>.
-                                        ?group <http://w3id.org/roh/isValidated> 'true'.
+                                        ?item a <http://xmlns.com/foaf/0.1/Group>.
+                                        ?item <http://w3id.org/roh/isValidated> 'true'.
+                                        ?item <http://w3id.org/roh/crisIdentifier> ?crisIdentifier.
                                         ?cv a <http://w3id.org/roh/CV>.
                                         ?cv <http://w3id.org/roh/cvOf> ?person.
-                                        ?cv <http://w3id.org/roh/scientificExperience> ?scientificExperience.       
-                                        ?group <http://vivoweb.org/ontology/core#relates> ?rol.
+                                        ?cv <http://w3id.org/roh/scientificExperience> ?idSection.       
+                                        ?item <http://vivoweb.org/ontology/core#relates> ?rol.
                                         ?rol <http://w3id.org/roh/roleOf> ?person.
                                     }}
                                     MINUS
                                     {{
                                         #ACTUALES
                                         ?person a <http://xmlns.com/foaf/0.1/Person>.                                            
-                                        ?group a <http://xmlns.com/foaf/0.1/Group>.
-                                        ?group <http://w3id.org/roh/isValidated> 'true'.
+                                        ?item a <http://xmlns.com/foaf/0.1/Group>.
+                                        ?item <http://w3id.org/roh/isValidated> 'true'.
                                         ?cv a <http://w3id.org/roh/CV>.
                                         ?cv <http://w3id.org/roh/cvOf> ?person.
-                                        ?cv <http://w3id.org/roh/scientificExperience> ?scientificExperience.
-                                        ?scientificExperience <http://w3id.org/roh/groups> ?item.
-                                        ?item <http://vivoweb.org/ontology/core#relatedBy> ?group.
+                                        ?cv <http://w3id.org/roh/scientificExperience> ?idSection.
+                                        ?idSection <http://w3id.org/roh/groups> ?auxSection.
+                                        ?auxSection <http://vivoweb.org/ontology/core#relatedBy> ?item.
                                     }}
                                 }}}}order by desc(?cv) limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
-                    InsertarItemsCV(resultado, "http://w3id.org/roh/RelatedGroup", "http://w3id.org/roh/scientificExperience", "http://w3id.org/roh/groups", "group", "scientificExperience", true);
+                    InsertarItemsCV(resultado);
 
                     if (resultado.results.bindings.Count != limit)
                     {
@@ -754,7 +759,10 @@ namespace DesnormalizadorHercules.Models
                     //Elminamos grupos
                     int limit = 500;
                     //TODO eliminar from 
-                    String select = @"SELECT * WHERE{select distinct ?cv ?scientificExperience ?group ?item from <http://gnoss.com/group.owl> from <http://gnoss.com/person.owl> ";
+                    String select = @"SELECT * WHERE{select distinct ?cv ?idSection ?auxEntity 
+                                        'http://w3id.org/roh/scientificExperience' as ?sectionProperty
+                                        'http://w3id.org/roh/groups' as ?auxProperty      
+                                        ?group from <http://gnoss.com/group.owl> from <http://gnoss.com/person.owl> ";
                     String where = @$"where{{
                                     {filter}                                    
                                     {{
@@ -764,9 +772,9 @@ namespace DesnormalizadorHercules.Models
                                         ?group <http://w3id.org/roh/isValidated> 'true'.
                                         ?cv a <http://w3id.org/roh/CV>.
                                         ?cv <http://w3id.org/roh/cvOf> ?person.
-                                        ?cv <http://w3id.org/roh/scientificExperience> ?scientificExperience.
-                                        ?scientificExperience <http://w3id.org/roh/groups> ?item.
-                                        ?item <http://vivoweb.org/ontology/core#relatedBy> ?group.                                
+                                        ?cv <http://w3id.org/roh/scientificExperience> ?idSection.
+                                        ?idSection <http://w3id.org/roh/groups> ?auxEntity.
+                                        ?auxEntity <http://vivoweb.org/ontology/core#relatedBy> ?group.                                
                                     }}
                                     MINUS
                                     {{
@@ -776,18 +784,297 @@ namespace DesnormalizadorHercules.Models
                                         ?group <http://w3id.org/roh/isValidated> 'true'.
                                         ?cv a <http://w3id.org/roh/CV>.
                                         ?cv <http://w3id.org/roh/cvOf> ?person.
-                                        ?cv <http://w3id.org/roh/scientificExperience> ?scientificExperience.       
+                                        ?cv <http://w3id.org/roh/scientificExperience> ?idSection.       
                                         ?group <http://vivoweb.org/ontology/core#relates> ?rol.
                                         ?rol <http://w3id.org/roh/roleOf> ?person.
                                     }}
                                 }}}}order by desc(?cv) limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
-                    EliminarItemsCV(resultado, "http://w3id.org/roh/scientificExperience", "http://w3id.org/roh/groups", "item", "scientificExperience");
+                    EliminarItemsCV(resultado);
                     if (resultado.results.bindings.Count != limit)
                     {
                         break;
                     }
                 }
+            }
+        }
+
+        public class CVSection
+        {
+            /// <summary>
+            /// Códifo de CVN
+            /// </summary>
+            public string cvnCode { get; set; }
+            /// <summary>
+            /// Grafo de la entidad
+            /// </summary>
+            public string graph { get; set; }
+            /// <summary>
+            /// rdf:type de la entidad
+            /// </summary>
+            public string rdfType { get; set; }
+            /// <summary>
+            /// rdf:type de la entidad auxiliar
+            /// </summary>
+            public string rdfTypeAux { get; set; }
+            /// <summary>
+            /// Propiedad que apunta a la sección
+            /// </summary>
+            public string sectionProperty { get; set; }
+            /// <summary>
+            /// Propiedad que apunta de la sección a la entidad auxiliar
+            /// </summary>
+            public string itemProperty { get; set; }
+            public CVSection(string pCvnCode, string pGraph, string pRdfType, string pSectionProperty, string pItemProperty, string pRdfTypeAux)
+            {
+                cvnCode = pCvnCode;
+                graph = pGraph;
+                rdfType = pRdfType;
+                sectionProperty = pSectionProperty;
+                itemProperty = pItemProperty;
+                rdfTypeAux = pRdfTypeAux;
+            }
+        }
+
+
+        public void ModificarElementosCV(List<string> pPersons = null, List<string> pCVs = null)
+        {
+            List<CVSection> listaSecciones = new List<CVSection>();
+
+            //Situación profesional actual
+            listaSecciones.Add(new CVSection("010.010.000.000", "position", "http://vivoweb.org/ontology/core#Position", "http://w3id.org/roh/professionalSituation", "http://w3id.org/roh/currentProfessionalSituation", "http://w3id.org/roh/RelatedCurrentProfessionalSituation"));
+            //Cargos y actividades desempeñados con anterioridad
+            listaSecciones.Add(new CVSection("010.020.000.000", "position", "http://vivoweb.org/ontology/core#Position", "http://w3id.org/roh/professionalSituation", "http://w3id.org/roh/previousPositions", "http://w3id.org/roh/RelatedPreviousPositions"));
+
+            //Estudios de 1º y 2º ciclo, y antiguos ciclos
+            listaSecciones.Add(new CVSection("020.010.010.000", "academicdegree", "http://vivoweb.org/ontology/core#AcademicDegree", "http://w3id.org/roh/qualifications", "http://w3id.org/roh/firstSecondCycles", "http://w3id.org/roh/RelatedFirstSecondCycles"));
+            //Doctorados
+            listaSecciones.Add(new CVSection("020.010.020.000", "academicdegree", "http://vivoweb.org/ontology/core#AcademicDegree", "http://w3id.org/roh/qualifications", "http://w3id.org/roh/doctorates", "http://w3id.org/roh/RelatedDoctorates"));
+            //Conocimiento de idiomas
+            listaSecciones.Add(new CVSection("020.060.000.000", "languagecertificate", "http://w3id.org/roh/LanguageCertificate", "http://w3id.org/roh/qualifications", "http://w3id.org/roh/languageSkills", "http://w3id.org/roh/RelatedLanguageSkills"));
+            //Otra formación universitaria de posgrado
+            listaSecciones.Add(new CVSection("020.010.030.000", "academicdegree", "http://vivoweb.org/ontology/core#AcademicDegree", "http://w3id.org/roh/qualifications", "http://w3id.org/roh/postgraduates", "http://w3id.org/roh/RelatedPostGraduates"));
+            //Formación especializada
+            listaSecciones.Add(new CVSection("020.020.000.000", "academicdegree", "http://vivoweb.org/ontology/core#AcademicDegree", "http://w3id.org/roh/qualifications", "http://w3id.org/roh/specialisedTraining", "http://w3id.org/roh/RelatedSpecialisedTrainings"));
+            //Cursos y semin. mejora docente
+            listaSecciones.Add(new CVSection("020.050.000.000", "academicdegree", "http://vivoweb.org/ontology/core#AcademicDegree", "http://w3id.org/roh/qualifications", "http://w3id.org/roh/coursesAndSeminars", "http://w3id.org/roh/RelatedCoursesAndSeminars"));
+
+            //Dirección tesis y/o proyectos
+            listaSecciones.Add(new CVSection("030.040.000.000", "thesissupervision", "http://w3id.org/roh/ThesisSupervision", "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/thesisSupervisions", "http://w3id.org/roh/RelatedThesisSupervisions"));
+            //Formación académica impartida
+            listaSecciones.Add(new CVSection("030.010.000.000", "impartedacademictraining", "http://w3id.org/roh/ImpartedAcademicTraining", "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/impartedAcademicTrainings", "http://w3id.org/roh/RelatedImpartedAcademicTrainings"));
+            //Tutorías académicas
+            listaSecciones.Add(new CVSection("030.050.000.000", "tutorship", "http://w3id.org/roh/Tutorship", "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/academicTutorials", "http://w3id.org/roh/RelatedAcademicTutorials"));
+            //Cursos y semin. impartidos
+            listaSecciones.Add(new CVSection("030.060.000.000", "impartedcoursesseminars", "http://w3id.org/roh/ImpartedCoursesSeminars", "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/impartedCoursesSeminars", "http://w3id.org/roh/RelatedImpartedCoursesSeminars"));
+            //Publicaciones docentes
+            listaSecciones.Add(new CVSection("030.070.000.000", "teachingpublication", "http://w3id.org/roh/TeachingPublication", "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/teachingPublications", "http://w3id.org/roh/RelatedTeachingPublications"));
+            //Participac. proyectos innov. docente
+            listaSecciones.Add(new CVSection("030.080.000.000", "teachingproject", "http://w3id.org/roh/TeachingProject", "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/teachingProjects", "http://w3id.org/roh/RelatedTeachingProjects"));
+            //Participac. congresos formac. docente
+            listaSecciones.Add(new CVSection("030.090.000.000", "teachingcongress", "http://w3id.org/roh/TeachingCongress", "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/teachingCongress", "http://w3id.org/roh/RelatedTeachingCongress"));
+            //Premios innov. docente
+            listaSecciones.Add(new CVSection("060.030.080.000", "accreditation", "http://w3id.org/roh/Accreditation", "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/teachingInnovationAwardsReceived", "http://w3id.org/roh/RelatedTeachingInnovationAwardsReceived"));
+            //Otras actividades
+            listaSecciones.Add(new CVSection("030.100.000.000", "activity", "http://w3id.org/roh/Activity", "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/otherActivities", "http://w3id.org/roh/RelatedOtherActivities"));
+            //Aportaciones relevantes
+            listaSecciones.Add(new CVSection("030.110.000.000", "activity", "http://w3id.org/roh/Activity", "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/mostRelevantContributions", "http://w3id.org/roh/RelatedMostRelevantContributions"));
+
+            //Propiedad industrial e intelectual
+            listaSecciones.Add(new CVSection("050.030.010.000", "patent", "http://purl.org/ontology/bibo/Patent", "http://w3id.org/roh/scientificExperience", "http://w3id.org/roh/patents", "http://w3id.org/roh/RelatedPatent"));
+            //Obras artísticas dirigidas
+            listaSecciones.Add(new CVSection("050.020.030.000", "supervisedartisticproject", "http://w3id.org/roh/SupervisedArtisticProject", "http://w3id.org/roh/scientificExperience", "http://w3id.org/roh/supervisedArtisticProjects", "http://w3id.org/roh/RelatedSupervisedArtisticProject"));
+            //Resultados tecnológicos
+            listaSecciones.Add(new CVSection("050.030.020.000", "technologicalresult", "http://w3id.org/roh/TechnologicalResult", "http://w3id.org/roh/scientificExperience", "http://w3id.org/roh/technologicalResults", "http://w3id.org/roh/RelatedTechnologicalResult"));
+
+            //Comités científicos, técnicos y/o asesores
+            listaSecciones.Add(new CVSection("060.020.010.000", "committee", "http://w3id.org/roh/Committee", "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/committees", "http://w3id.org/roh/RelatedCommittee"));
+            //Organiz. activ. I+D+i
+            listaSecciones.Add(new CVSection("060.020.030.000", "activity", "http://w3id.org/roh/Activity", "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/activitiesOrganization", "http://w3id.org/roh/RelatedActivityOrganization"));
+            //Gestión I+D+i
+            listaSecciones.Add(new CVSection("060.020.040.000", "activity", "http://w3id.org/roh/Activity", "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/activitiesManagement", "http://w3id.org/roh/RelatedActivityManagement"));
+            //Producción científica
+            listaSecciones.Add(new CVSection("060.010.000.000", "scientificproduction", "http://w3id.org/roh/ScientificProduction", "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/scientificProduction", "http://w3id.org/roh/RelatedScientificProduction"));
+            //Otras actividades divulgación
+            listaSecciones.Add(new CVSection("060.010.040.000", "activity", "http://w3id.org/roh/Activity", "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/otherDisseminationActivities", "http://w3id.org/roh/RelatedOtherDisseminationActivity"));
+            //Foros y comités
+            listaSecciones.Add(new CVSection("060.020.050.000", "activity", "http://w3id.org/roh/Activity", "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/forums", "http://w3id.org/roh/RelatedForum"));
+            //Evaluación y revisión de proyectos y artículos de I+D+i
+            listaSecciones.Add(new CVSection("060.020.060.000", "activity", "http://w3id.org/roh/Activity", "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/researchEvaluations", "http://w3id.org/roh/RelatedResearchEvaluation"));
+            //Estancias en centros I+D+i
+            listaSecciones.Add(new CVSection("060.010.050.000", "stay", "http://w3id.org/roh/Stay", "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/stays", "http://w3id.org/roh/RelatedStay"));
+            //Ayudas y becas obtenidas
+            listaSecciones.Add(new CVSection("060.030.010.000", "grant", "http://vivoweb.org/ontology/core#Grant", "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/grants", "http://w3id.org/roh/RelatedGrant"));
+            //Otros modos de colaboración
+            listaSecciones.Add(new CVSection("060.020.020.000", "collaboration", "http://w3id.org/roh/Collaboration", "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/otherCollaborations", "http://w3id.org/roh/RelatedOtherCollaboration"));
+            //Sdades. Científicas y Asoc. Profesionales
+            listaSecciones.Add(new CVSection("060.030.020.000", "society", "http://w3id.org/roh/Society", "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/societies", "http://w3id.org/roh/RelatedSociety"));
+            //Consejos editoriales
+            listaSecciones.Add(new CVSection("060.030.030.000", "council", "http://w3id.org/roh/Council", "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/councils", "http://w3id.org/roh/RelatedCouncil"));
+            //Redes de cooperación
+            listaSecciones.Add(new CVSection("060.030.040.000", "network", "http://w3id.org/roh/Network", "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/networks", "http://w3id.org/roh/RelatedNetwork"));
+            //Premios, menciones y distinc.
+            listaSecciones.Add(new CVSection("060.030.050.000", "accreditation", "http://w3id.org/roh/Accreditation", "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/prizes", "http://w3id.org/roh/RelatedPrize"));
+            //Otras distinc. carrera profes./empr.
+            listaSecciones.Add(new CVSection("060.030.060.000", "accreditation", "http://w3id.org/roh/Accreditation", "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/otherDistinctions", "http://w3id.org/roh/RelatedOtherDistinction"));
+            //Períodos activ. investigadora
+            listaSecciones.Add(new CVSection("060.030.070.000", "accreditation", "http://w3id.org/roh/Accreditation", "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/researchActivityPeriods", "http://w3id.org/roh/RelatedResearchActivityPeriod"));
+            //Acreditaciones/reconocimientos
+            listaSecciones.Add(new CVSection("060.030.090.000", "accreditation", "http://w3id.org/roh/Accreditation", "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/obtainedRecognitions", "http://w3id.org/roh/RelatedObtainedRecognition"));
+            //Resumen de otros méritos
+            listaSecciones.Add(new CVSection("060.030.100.000", "accreditation", "http://w3id.org/roh/Accreditation", "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/otherAchievements", "http://w3id.org/roh/RelatedOtherAchievement"));
+
+
+
+
+
+            List<string> filters = new List<string>();
+            if (pPersons != null && pPersons.Count > 0)
+            {
+                filters.Add($" FILTER(?person in (<{string.Join(">,<", pPersons)}>))");
+            }
+            else if (pCVs != null && pCVs.Count > 0)
+            {
+                filters.Add($" FILTER(?cv in (<{string.Join(">,<", pCVs)}>))");
+            }
+            else
+            {
+                filters.Add("");
+            }
+
+            List<string> querySectionsAniadir = new List<string>();
+            List<string> querySectionsEliminar = new List<string>();
+            foreach (CVSection section in listaSecciones)
+            {
+                string querySectionAniadir = $@"
+                                    {{
+                                        {{
+                                            #DESEABLES
+                                            select distinct ?person ?cv ?idSection 
+                                            '{section.rdfTypeAux}' as ?rdfTypeAux 
+                                            ?item 
+                                            '{section.sectionProperty}' as ?sectionProperty   
+                                            '{section.itemProperty}' as ?auxProperty   
+                                            ?crisIdentifier
+                                            Where
+                                            {{
+                                                ?person a <http://xmlns.com/foaf/0.1/Person>.                                            
+                                                ?item a <{section.rdfType}>.
+                                                ?item <http://w3id.org/roh/cvnCode> ""{section.cvnCode }"".
+                                                ?cv a <http://w3id.org/roh/CV>.
+                                                ?cv <http://w3id.org/roh/cvOf> ?person.
+                                                ?cv <{section.sectionProperty}> ?idSection.
+                                                ?item <http://w3id.org/roh/owner> ?person.
+                                                OPTIONAL{{?item <http://w3id.org/roh/crisIdentifier> ?crisIdentifier.}}
+                                            }}
+                                        }}
+                                        MINUS
+                                        {{
+                                            #ACTUALES
+                                            ?person a <http://xmlns.com/foaf/0.1/Person>.      
+                                            ?cv a <http://w3id.org/roh/CV>.
+                                            ?cv <http://w3id.org/roh/cvOf> ?person.
+                                            ?cv <{section.sectionProperty}> ?idSection.
+                                            ?idSection <{section.itemProperty}> ?auxEntity.
+                                            ?auxEntity <http://vivoweb.org/ontology/core#relatedBy> ?item.        
+                                        }}
+                                    }}";
+                querySectionsAniadir.Add(querySectionAniadir);
+
+                string querySectionEliminar = $@"
+                                    {{
+                                        {{
+                                            #ACTUALES                                            
+                                            select distinct ?person ?cv ?idSection ?auxEntity '{section.sectionProperty}' as ?sectionProperty  '{section.itemProperty}' as ?auxProperty  ?item
+                                            Where
+                                            {{
+                                                ?person a <http://xmlns.com/foaf/0.1/Person>.         
+                                                ?cv a <http://w3id.org/roh/CV>.
+                                                ?cv <http://w3id.org/roh/cvOf> ?person.
+                                                ?cv <{section.sectionProperty}> ?idSection.
+                                                ?idSection <{section.itemProperty}> ?auxEntity.
+                                                ?auxEntity <http://vivoweb.org/ontology/core#relatedBy> ?item.  
+                                            }}
+                                        }}
+                                        MINUS
+                                        {{
+                                            #DESEABLES
+                                            ?person a <http://xmlns.com/foaf/0.1/Person>.                                            
+                                            ?item a <{section.rdfType}>.
+                                            ?item <http://w3id.org/roh/cvnCode> ""{section.cvnCode }"".
+                                            ?cv a <http://w3id.org/roh/CV>.
+                                            ?cv <http://w3id.org/roh/cvOf> ?person.
+                                            ?cv <{section.sectionProperty}> ?idSection.
+                                            ?item <http://w3id.org/roh/owner> ?person.
+                                        }}
+                                    }}";
+                querySectionsEliminar.Add(querySectionEliminar);
+            }
+
+            foreach (string filter in filters)
+            {
+                while (true)
+                {
+
+                    //Añadimos items
+                    int limit = 500;
+                    //TODO eliminar from
+                    String select = @$"select distinct ?cv ?idSection ?rdfTypeAux ?item ?sectionProperty ?auxProperty ?crisIdentifier from <http://gnoss.com/person.owl> from <http://gnoss.com/{string.Join(".owl> from <http://gnoss.com/", listaSecciones.Select(x => x.graph))}.owl> ";
+                    String where = @$"where{{
+                                    {filter}
+                                    {string.Join("UNION", querySectionsAniadir)}
+                                }}order by desc(?cv) limit {limit}";
+                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+                    InsertarItemsCV(resultado);
+                    if (resultado.results.bindings.Count != limit)
+                    {
+                        break;
+                    }
+                }
+
+                while (true)
+                {
+                    //Eliminamos items
+                    int limit = 500;
+                    //TODO eliminar from
+                    String select = @$"select distinct ?cv ?idSection ?auxEntity ?sectionProperty ?auxProperty from <http://gnoss.com/person.owl> from <http://gnoss.com/{string.Join(".owl> from <http://gnoss.com/", listaSecciones.Select(x => x.graph))}.owl> ";
+                    String where = @$"where{{
+                                    {filter}
+                                    {string.Join("UNION", querySectionsEliminar)}
+                                }}order by desc(?cv) limit {limit}";
+                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+                    EliminarItemsCV(resultado);
+                    if (resultado.results.bindings.Count != limit)
+                    {
+                        break;
+                    }
+                }
+
+                //while (true)
+                //{
+                //    //Elminamos duplicados
+                //    int limit = 500;
+                //    //TODO eliminar from
+                //    String select = @"SELECT * WHERE{select distinct ?cv (group_concat(?item;separator="";"") as ?items) count(?item) as ?numItems  ?document from <http://gnoss.com/document.owl> from <http://gnoss.com/person.owl> ";
+                //    String where = @$"where{{
+                //                    {filter}                                    
+                //                    {{
+                //                        ?person a <http://xmlns.com/foaf/0.1/Person>.                                            
+                //                        ?document a <http://purl.org/ontology/bibo/Document>.
+                //                        ?cv a <http://w3id.org/roh/CV>.
+                //                        ?cv <http://w3id.org/roh/cvOf> ?person.
+                //                        ?cv <http://w3id.org/roh/scientificActivity> ?scientificActivity.
+                //                        ?scientificActivity ?p ?item.
+                //                        ?item <http://vivoweb.org/ontology/core#relatedBy> ?document.
+                //                    }}
+                //                }}}}GROUP BY ?cv ?document HAVING (?numItems > 1)  order by desc(?cv) limit {limit}";
+                //    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+                //    EliminarDocumentosDuplicadosCV(resultado);
+                //    if (resultado.results.bindings.Count != limit)
+                //    {
+                //        break;
+                //    }
+                //}
             }
         }
 
@@ -1534,35 +1821,45 @@ namespace DesnormalizadorHercules.Models
         /// Inserta items en un CV
         /// </summary>
         /// <param name="pDatosCargar">Datos</param>
-        /// <param name="pRdfType">rdf:type de la entidad auxiliar principal</param>
-        /// <param name="pSectionProperty">propiedad de la sección</param>
-        /// <param name="pProperty">propiedad que apunta a la entidad</param>
-        /// <param name="pVarEntity">variable en la que está la entidad</param>
-        /// <param name="pVarSection">variable en la que está la sección</param>
-        /// <param name="pPublic">indica si se carga como público o como privado</param>
-        private void InsertarItemsCV(SparqlObject pDatosCargar, string pRdfType, string pSectionProperty, string pProperty, string pVarEntity, string pVarSection, bool pPublic)
+        private void InsertarItemsCV(SparqlObject pDatosCargar)
         {
+            //cv-->Identificador del CV
+            //idSection-->Identificador de la sección del CV
+            //rdfTypeAux-->RdfType de la auxiliar
+            //item-->Entidad a añadir
+            //sectionProperty-->Propiedad que apunta a la sección
+            //auxProperty-->Propiedad que apunta de la sección a la auxiliar
+            //crisIdentifier-->Identificador (opcional) si tiene valor es público
+
             Dictionary<Guid, List<TriplesToInclude>> triplesToInclude = new();
             foreach (Dictionary<string, SparqlObject.Data> fila in pDatosCargar.results.bindings)
             {
                 string cv = fila["cv"].value;
-                string section = fila[pVarSection].value;
-                string entity = fila[pVarEntity].value;
+                string section = fila["idSection"].value;
+                string entity = fila["item"].value;
 
                 //Obtenemos la auxiliar en la que cargar la entidad     
-                string rdfTypePrefix = AniadirPrefijo(pRdfType);
+                string rdfTypePrefix = AniadirPrefijo(fila["rdfTypeAux"].value);
                 rdfTypePrefix = rdfTypePrefix.Substring(rdfTypePrefix.IndexOf(":") + 1);
                 string idNewAux = mResourceApi.GraphsUrl + "items/" + rdfTypePrefix + "_" + mResourceApi.GetShortGuid(cv) + "_" + Guid.NewGuid();
                 List<TriplesToInclude> listaTriples = new();
                 string idEntityAux = section + "|" + idNewAux;
 
                 //Privacidad                  
-                string predicadoPrivacidad = pSectionProperty + "|" + pProperty + "|http://w3id.org/roh/isPublic";
-                TriplesToInclude tr2 = new(idEntityAux + "|" + pPublic.ToString().ToLower(), predicadoPrivacidad);
-                listaTriples.Add(tr2);
+                string predicadoPrivacidad = fila["sectionProperty"].value + "|" + fila["auxProperty"].value + "|http://w3id.org/roh/isPublic";
+                if (fila.ContainsKey("crisIdentifier") && !string.IsNullOrEmpty(fila["crisIdentifier"].value))
+                {
+                    TriplesToInclude tr2 = new(idEntityAux + "|true", predicadoPrivacidad);
+                    listaTriples.Add(tr2);
+                }
+                else
+                {
+                    TriplesToInclude tr2 = new(idEntityAux + "|false", predicadoPrivacidad);
+                    listaTriples.Add(tr2);
+                }
 
                 //Entidad
-                string predicadoEntidad = pSectionProperty + "|" + pProperty + "|http://vivoweb.org/ontology/core#relatedBy";
+                string predicadoEntidad = fila["sectionProperty"].value + "|" + fila["auxProperty"].value + "|http://vivoweb.org/ontology/core#relatedBy";
                 TriplesToInclude tr1 = new(idEntityAux + "|" + entity, predicadoEntidad);
                 listaTriples.Add(tr1);
 
@@ -1587,21 +1884,23 @@ namespace DesnormalizadorHercules.Models
         /// Elimina items de un CV
         /// </summary>
         /// <param name="pDatosCargar">Datos</param>
-        /// <param name="pSectionProperty">propiedad de la sección</param>
-        /// <param name="pProperty">propiedad que apunta a la entidad</param>
-        /// <param name="pVarItem">variable en la que está el ítem</param>
-        /// <param name="pVarSection">variable en la que está la sección</param>
-        private void EliminarItemsCV(SparqlObject pDatosCargar, string pSectionProperty, string pProperty, string pVarItem, string pVarSection)
+        private void EliminarItemsCV(SparqlObject pDatosCargar)
         {
+            //cv-->Identificador del CV
+            //idSection-->Identificador de la sección del CV
+            //auxEntity-->Entidad auxiliar a eliminar
+            //sectionProperty-->Propiedad que apunta a la sección
+            //auxProperty-->Propiedad que apunta de la sección a la auxiliar
+
             Dictionary<Guid, List<RemoveTriples>> triplesToDelete = new();
             foreach (Dictionary<string, SparqlObject.Data> fila in pDatosCargar.results.bindings)
             {
                 string cv = fila["cv"].value;
-                string section = fila[pVarSection].value;
-                string item = fila[pVarItem].value;
+                string section = fila["idSection"].value;
+                string item = fila["auxEntity"].value;
 
                 RemoveTriples removeTriple = new();
-                removeTriple.Predicate = pSectionProperty + "|" + pProperty;
+                removeTriple.Predicate = fila["sectionProperty"].value + "|" + fila["auxProperty"].value;
                 removeTriple.Value = section + "|" + item;
                 Guid idCV = mResourceApi.GetShortGuid(cv);
                 if (triplesToDelete.ContainsKey(idCV))

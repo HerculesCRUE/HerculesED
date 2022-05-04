@@ -379,6 +379,12 @@ namespace DesnormalizadorHercules.Models
                         t.Predicate = propMiembro + "|http://xmlns.com/foaf/0.1/nick";
                         t.NewValue = idAux + "|" + fila["nick"].value;
                         triples[guid].Add(t);
+                    }else if (fila.ContainsKey("nombre"))
+                    {
+                        TriplesToInclude t = new();
+                        t.Predicate = propMiembro + "|http://xmlns.com/foaf/0.1/nick";
+                        t.NewValue = idAux + "|" + fila["nombre"].value;
+                        triples[guid].Add(t);
                     }
                 }
                 var resultado = mResourceApi.InsertPropertiesLoadedResources(triples);
