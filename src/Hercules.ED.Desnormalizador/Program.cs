@@ -40,6 +40,7 @@ namespace DesnormalizadorHercules
 
         private static void CrearPersonas()
         {
+
             //Antonio Skaremta-->skarmeta22
             //Manuel Campos-->manuel-camp2
             //Francisco Esquembre-->francisco-es
@@ -59,6 +60,41 @@ namespace DesnormalizadorHercules
             string rutaOauth = $@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/OAuthV3.config";
             UserApi userApi = new UserApi(rutaOauth);
             ResourceApi resourceApi = new ResourceApi(rutaOauth);
+
+            /*
+            List<RemoveTriples> triplesRemove = new();
+            
+                triplesRemove.Add(new RemoveTriples()
+                {
+                    Predicate = "http://w3id.org/roh/ORCID",
+                    Value = "0000-0001-5844-4163"
+                });
+            if (triplesRemove.Count > 0)
+            {
+                var resultadox = resourceApi.DeletePropertiesLoadedResources(new Dictionary<Guid, List<Gnoss.ApiWrapper.Model.RemoveTriples>>() { { resourceApi.GetShortGuid("http://gnoss.com/items/Person_6b4f5547-1691-48c0-a42e-8b8c59733eda_7ebe180a-d766-461c-8aa9-b1f215eab90d>"), triplesRemove } });
+            }*/
+
+            List<string> notificaciones = resourceApi.VirtuosoQuery("select *", $@"where
+                                                                                            {{
+                                                                                                ?s a <http://w3id.org/roh/Notification>
+                                                                                            }}", "notification").results.bindings.Select(x=>x["s"].value).ToList();
+
+            foreach(string id in notificaciones)
+            {
+                try
+                {
+                    Guid id2 = resourceApi.GetShortGuid(id);
+                    if (id2 != Guid.Empty)
+                    {
+                        resourceApi.PersistentDelete(id2);
+                    }
+                }catch(Exception)
+                {
+                    List<string> ids = new List<string>() { id };
+                    resourceApi.DeleteSecondaryEntitiesList(ref ids);
+                }
+            }
+
 
             //Antonio Skaremta 28710458
             AltaUsuarioGnoss("Antonio", "Skarmeta", "antonio--skarmeta@pruebagnoss.com", "skarmeta22", "28710458", "AdrianSaavedra-GNOSS", "12070100");
