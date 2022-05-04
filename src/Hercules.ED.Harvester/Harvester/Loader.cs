@@ -142,8 +142,8 @@ namespace Harvester
         public void ProcesarFichero(ReadConfig pConfig, string pSet, [Optional] Dictionary<string, Tuple<string, string>> dicOrganizaciones,
             [Optional] Dictionary<string, Tuple<string, string>> dicProyectos, [Optional] Dictionary<string, Tuple<string, string>> dicPersonas)
         {
-            string directorioPendientes = $@"{pConfig.GetLogCargas()}/{pSet}/pending/";
-            string directorioProcesados = $@"{pConfig.GetLogCargas()}/{pSet}/processed/";
+            string directorioPendientes = $@"{pConfig.GetLogCargas()}\{pSet}\pending\";
+            string directorioProcesados = $@"{pConfig.GetLogCargas()}\{pSet}\processed\";
 
             if (!Directory.Exists(directorioPendientes))
             {
