@@ -1,5 +1,6 @@
 ﻿using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.ApiModel;
+using Gnoss.ApiWrapper.Model;
 using Hercules.ED.UpdateKeywords.Models;
 using System;
 using System.Collections.Generic;
@@ -33,7 +34,7 @@ namespace Hercules.ED.UpdateKeywords
                     List<string> listaAux = new List<string>() { etiquetaTag.Value };                    
                     Dictionary<string, string> dicResultados = utilKeywords.SelectDataMesh(listaAux.ToArray(), true);
 
-                    // 2.- Si no se ha encontrado resultado y el término contiene más de una palabra...                    
+                    //2.- Si no se ha encontrado resultado y el término contiene más de una palabra...
                     if (dicResultados.Count() != 1 && etiquetaTag.Value.Contains(" "))
                     {
                         // 2.1.- Buscamos por el término en "All fragments".
@@ -41,47 +42,47 @@ namespace Hercules.ED.UpdateKeywords
 
                         // Si la etiqueta tiene más de 3 palabras, la consideramos inválida para esta búsqueda
                         // debido al excesivo tamaño de la query. TODO: ¿Hacerlo en dos peticiones?
-                        if (partes.Count() <= 3)
-                        {
+                        //if (partes.Count() <= 3)
+                        //{
                             dicResultados = ConsultarDatos(utilKeywords, partes);
-                        }
+                        //}
 
                         // 2.2.- Buscamos por combinación de palabras en "All fragments" en el caso que tenga más de dos.
-                        if (dicResultados.Count() != 1 && partes.Count() >= 2)
-                        {
-                            for (int i = 0; i < partes.Length; i++)
-                            {
-                                string parte1 = partes[i];
-                                if (utilKeywords.preposicionesEng.Contains(parte1) || utilKeywords.preposicionesEsp.Contains(parte1))
-                                {
-                                    continue;
-                                }
+                        //if (dicResultados.Count() != 1 && partes.Count() >= 2)
+                        //{
+                        //    for (int i = 0; i < partes.Length; i++)
+                        //    {
+                        //        string parte1 = partes[i];
+                        //        if (utilKeywords.preposicionesEng.Contains(parte1) || utilKeywords.preposicionesEsp.Contains(parte1))
+                        //        {
+                        //            continue;
+                        //        }
 
-                                for (int x = i + 1; x < partes.Length; x++)
-                                {
-                                    string parte2 = partes[x];
-                                    if (utilKeywords.preposicionesEng.Contains(parte2) || utilKeywords.preposicionesEsp.Contains(parte2))
-                                    {
-                                        continue;
-                                    }
+                        //        for (int x = i + 1; x < partes.Length; x++)
+                        //        {
+                        //            string parte2 = partes[x];
+                        //            if (utilKeywords.preposicionesEng.Contains(parte2) || utilKeywords.preposicionesEsp.Contains(parte2))
+                        //            {
+                        //                continue;
+                        //            }
 
-                                    List<string> lista = new List<string>() { parte1, parte2 };
-                                    string[] arrayParte = lista.ToArray();
+                        //            List<string> lista = new List<string>() { parte1, parte2 };
+                        //            string[] arrayParte = lista.ToArray();
 
-                                    dicResultados = ConsultarDatos(utilKeywords, arrayParte);
+                        //            dicResultados = ConsultarDatos(utilKeywords, arrayParte);
 
-                                    if (dicResultados.Count() == 1)
-                                    {
-                                        break;
-                                    }
-                                }
+                        //            if (dicResultados.Count() == 1)
+                        //            {
+                        //                break;
+                        //            }
+                        //        }
 
-                                if (dicResultados.Count() == 1)
-                                {
-                                    break;
-                                }
-                            }
-                        }
+                        //        if (dicResultados.Count() == 1)
+                        //        {
+                        //            break;
+                        //        }
+                        //    }
+                        //}
                     }
 
                     // Obtencón de información de SNOMED.
@@ -125,12 +126,12 @@ namespace Hercules.ED.UpdateKeywords
                     foreach (DataConcept tag in listaMesh)
                     {
                         string idRecursoMesh = utilKeywords.CargarDataConceptCompleto(tag, dicIds);
-                        utilKeywords.ModificarKeyword(idEtiquetaAux, idRecursoMesh);
+                        utilKeywords.ModificarKeyword(id, "http://w3id.org/roh/keyWordConcept", idEtiquetaAux, idRecursoMesh);
                     }
                 }
 
                 // Borrar triple de obtención de etiquetas.
-                utilKeywords.BorrarGetKeywordProperty(id);
+                utilKeywords.ModificarGetKeywordDocument(id);
             }
         }
 
