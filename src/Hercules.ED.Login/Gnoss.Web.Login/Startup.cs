@@ -10,6 +10,8 @@ using Es.Riam.Gnoss.UtilServiciosWeb;
 using Es.Riam.OpenReplication;
 using Es.Riam.Util;
 using Gnoss.Web.Login;
+using ITfoxtec.Identity.Saml2;
+using ITfoxtec.Identity.Saml2.Schemas.Metadata;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -59,6 +61,26 @@ namespace Gnoss.Web.Login
             services.AddScoped(typeof(VirtuosoAD));
             services.AddScoped(typeof(UtilServicios));
             services.AddScoped<IServicesUtilVirtuosoAndReplication, ServicesVirtuosoAndBidirectionalReplicationOpen>();
+
+            services.Configure<Saml2Configuration>(Configuration.GetSection("Saml2"));
+            services.Configure<Saml2Configuration>(saml2Configuration =>
+            {
+                saml2Configuration.AllowedAudienceUris.Add(saml2Configuration.Issuer);
+                var entityDescriptor = new EntityDescriptor();
+                entityDescriptor.ReadIdPSsoDescriptorFromUrl(new Uri(Configuration["Saml2:IdPMetadata"]));
+                if (entityDescriptor.IdPSsoDescriptor != null)
+                {
+                    saml2Configuration.SingleSignOnDestination = entityDescriptor.IdPSsoDescriptor.SingleSignOnServices.First(x => x.Binding == new Uri("urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect")).Location;
+                    saml2Configuration.SingleLogoutDestination = entityDescriptor.IdPSsoDescriptor.SingleLogoutServices.First().Location;
+                    saml2Configuration.SignatureValidationCertificates.AddRange(entityDescriptor.IdPSsoDescriptor.SigningCertificates);
+                }
+                else
+                {
+                    throw new Exception("IdPSsoDescriptor not loaded from metadata.");
+                }
+            });
+
+
             services.AddCors(options =>
             {
                 options.AddPolicy(name: "_myAllowSpecificOrigins",
@@ -147,14 +169,7 @@ namespace Gnoss.Web.Login
             }
             var entity = sp.GetService<EntityContext>();
             LoggingService.RUTA_DIRECTORIO_ERROR = Path.Combine(mEnvironment.ContentRootPath, "logs");
-            //TODO Javier
-            //BaseAD.LeerConfiguracionConexion(mGestorParametrosAplicacion.ListaConfiguracionBBDD.Where(confBBDD=>confBBDD.TipoConexion.Equals((short)TipoConexion.SQLServer)).ToList());
 
-            //TODO Javier
-            //BaseCL.LeerConfiguracionCache(mGestorParametrosAplicacion.ListaConfiguracionBBDD.Where(confBBDD => confBBDD.TipoConexion.Equals((short)TipoConexion.Redis)).ToList()); 
-
-            //TODO Javier
-            //BaseAD.LeerConfiguracionConexion(mGestorParametrosAplicacion.ListaConfiguracionBBDD.Where(confBBDD => confBBDD.TipoConexion.Equals((short)TipoConexion.Virtuoso)).ToList());
 
             EstablecerDominioCache(entity);
 
@@ -179,7 +194,7 @@ namespace Gnoss.Web.Login
             }
 
             app.UseHttpsRedirection();
-
+            app.UseStaticFiles();
             app.UseRouting();
             app.UseCors();            
             app.UseAuthorization();
