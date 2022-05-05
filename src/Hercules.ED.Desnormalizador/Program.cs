@@ -74,7 +74,7 @@ namespace DesnormalizadorHercules
                 var resultadox = resourceApi.DeletePropertiesLoadedResources(new Dictionary<Guid, List<Gnoss.ApiWrapper.Model.RemoveTriples>>() { { resourceApi.GetShortGuid("http://gnoss.com/items/Person_6b4f5547-1691-48c0-a42e-8b8c59733eda_7ebe180a-d766-461c-8aa9-b1f215eab90d>"), triplesRemove } });
             }*/
 
-            List<string> notificaciones = resourceApi.VirtuosoQuery("select *", $@"where
+            /*List<string> notificaciones = resourceApi.VirtuosoQuery("select *", $@"where
                                                                                             {{
                                                                                                 ?s a <http://w3id.org/roh/Notification>
                                                                                             }}", "notification").results.bindings.Select(x=>x["s"].value).ToList();
@@ -93,7 +93,7 @@ namespace DesnormalizadorHercules
                     List<string> ids = new List<string>() { id };
                     resourceApi.DeleteSecondaryEntitiesList(ref ids);
                 }
-            }
+            }*/
 
 
             //Antonio Skaremta 28710458
@@ -127,8 +127,23 @@ namespace DesnormalizadorHercules
             //Maria Antonia Cardenas Viedma
             AltaUsuarioGnoss("Maria", "Cardenas", "Maria---Cardenas@pruebagnoss.com", "maria-carden", "26476225", "", "");
 
+            //Elena Garcia Barriocanal
+            AltaUsuarioGnoss("Elena", "Garcia Barriocanal", "elena--garcia@pruebagnoss.com", "elena-garcia", "11335577992468", "", "");
 
+            //Miguel Ángel Sicilia
+            AltaUsuarioGnoss("Miguel Angel", "Sicilia", "miguel--sicilia@pruebagnoss.com", "miguel-angel", "224466880013579", "", "");
 
+            //Marçal Mora Cantallops
+            AltaUsuarioGnoss("Marcal", "Mora Cantallops", "marcal--mora@pruebagnoss.com", "marcal-mora-", "113355112223334", "", "");
+
+            //Juan Manuel Dodero
+            AltaUsuarioGnoss("Juan", "Manuel Dodero", "juan--manuel@pruebagnoss.com", "juan-manuel-", "31256195", "", "");
+
+            //Andres Muñoz Ortega
+            AltaUsuarioGnoss("Andres", "Munoz Ortega", "andres--munoz@pruebagnoss.com", "andres-munoz", "48466315", "", "");
+
+            //Daniela Fernandez
+            AltaUsuarioGnoss("Daniela", "Fernandez", "daniela--fernandez@pruebagnoss.com", "daniela-fern", "113636170221114", "", "");
         }
 
         public static User AltaUsuarioGnoss(string pNombre, string pApellidos, string pEmail, string pNombreCorto,string pID, string pUsuarioGitHub,string pUsuarioFigShare)

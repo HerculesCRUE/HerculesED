@@ -1120,6 +1120,22 @@ namespace DesnormalizadorHercules.Models
                         {
                             lastName = fila["lastName"].value;
                         }
+                        string[] nameSplit = name.Split(' ');
+                        if(string.IsNullOrEmpty(firstName))
+                        {
+                            firstName = nameSplit[0];
+                        }
+                        if (string.IsNullOrEmpty(lastName))
+                        {
+                            if(nameSplit.Count()>1)
+                            {
+                                lastName = nameSplit[1];
+                            }else
+                            {
+                                lastName = nameSplit[0];
+                            }
+                            
+                        }
                         CV cv = new();
                         if (listaCV.ContainsKey(person))
                         {
