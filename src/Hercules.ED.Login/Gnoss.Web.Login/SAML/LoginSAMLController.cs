@@ -53,7 +53,7 @@ namespace Gnoss.Web.Login.SAML
         {
             if (!string.IsNullOrEmpty(returnUrl))
             {
-                if (User != null)
+                if (User != null && User.Claims.Count() > 0)
                 {
                     //Loguear
                     return new RedirectResult(LoguearUsuario(User, returnUrl,token));
@@ -61,7 +61,7 @@ namespace Gnoss.Web.Login.SAML
                 else
                 {
                     //Si no hay usuario redirigimos al login 
-                    Response.Redirect(Url.Content("~/Auth/Login") + "?returnUrl=" + returnUrl);
+                    Response.Redirect(Url.Content("~/Auth/Login") + "?returnUrl=" + returnUrl +"&token="+ token);
                 }
             }
 
@@ -88,17 +88,14 @@ namespace Gnoss.Web.Login.SAML
                                         ?person a <http://xmlns.com/foaf/0.1/Person>.
                                         ?person <https://www.w3.org/2006/vcard/ns#email> '{email}'.
                         }}", "person").results.bindings.FirstOrDefault()?["person"].value;
-
-            //TODO
-            string UrlServicioLoginGnoss = ""; //_ConfigService.GetUrlServicioLoginGnoss(); ;
-            string UrlComunidadGnoss = ""; //_ConfigService.GetCommunityURL();
-            string UrlLogout = UrlComunidadGnoss+"/desconectar";
+            
+            string UrlLogout = pReturnUrl + "/"+ UtilIdiomas.GetText("URLSEM","DESCONECTAR");
 
             if (string.IsNullOrEmpty(person))
             {
                 //No existe ninguna persona aociada al correo
                 mCommunityApi.Log.Info("Redirigir a la home");
-                return UrlComunidadGnoss;//UrlComunidadGnoss;                    
+                return pReturnUrl;              
             }
             else
             {
@@ -155,8 +152,6 @@ namespace Gnoss.Web.Login.SAML
                 base.LoguearUsuario(filaUsuario.UsuarioID, mPersonaID, mNombreCorto, mLogin, mIdioma);
 
                 return EnviarCookies(url.Scheme+"://"+url.Host, pReturnUrl, pToken);
-                //mCommunityApi.Log.Info($"{UrlServicioLoginGnoss}/externallogin.aspx?loginToken={loginToken}&redirect={HttpUtility.UrlEncode(pReturnUrl)}&logout={HttpUtility.UrlEncode(logoutUrl)}");                
-                //return $"{UrlServicioLoginGnoss}/externallogin.aspx?loginToken={loginToken}&redirect={HttpUtility.UrlEncode(pReturnUrl)}&logout={HttpUtility.UrlEncode(logoutUrl)}";
             }
         }
 
