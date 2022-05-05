@@ -62,7 +62,8 @@ namespace Gnoss.Web.Login.SAML
                 {
                     //Si no hay usuario redirigimos al login                     
                     var x = HttpContext.Request;
-                    Response.Redirect(Url.Content($"~{HttpContext.Request.Path.ToString().Replace("/loginsaml", "")}/Auth/Login") + "?returnUrl=" + returnUrl +"&token="+ token);
+                    Response.Redirect("http://"+HttpContext.Request.PathBase.ToString() +"/"+ HttpContext.Request.PathBase.ToString());
+                    Response.Redirect(Url.Content(@"~/Auth/Login") + "?returnUrl=" + returnUrl +"&token="+ token);
                     
                 }
             }
