@@ -35,7 +35,7 @@ namespace Hercules.ED.UpdateKeywords
                     Dictionary<string, string> dicResultados = utilKeywords.SelectDataMesh(listaAux.ToArray(), true);
 
                     //2.- Si no se ha encontrado resultado y el término contiene más de una palabra...
-                    if (dicResultados.Count() != 1 && etiquetaTag.Value.Contains(" "))
+                    if (dicResultados.Count() == 0 && etiquetaTag.Value.Contains(" "))
                     {
                         // 2.1.- Buscamos por el término en "All fragments".
                         string[] partes = etiquetaTag.Value.Split(" ");
