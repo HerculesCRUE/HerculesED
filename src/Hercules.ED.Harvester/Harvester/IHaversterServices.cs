@@ -43,6 +43,7 @@ namespace Harvester
             }
 
             WebRequest wrGETURL = WebRequest.Create(uri);
+            wrGETURL.Timeout = 900000;
             Stream stream = wrGETURL.GetResponse().GetResponseStream();
 
             XDocument XMLresponse = XDocument.Load(stream);

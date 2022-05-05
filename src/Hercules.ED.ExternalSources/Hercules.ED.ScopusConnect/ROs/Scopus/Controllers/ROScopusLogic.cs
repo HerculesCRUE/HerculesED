@@ -121,7 +121,11 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                     Root objInicial = JsonConvert.DeserializeObject<Root>(info_publication);
                     List<Publication> nuevas = info.getListPublicatio(objInicial, date);
                     sol.AddRange(nuevas);
-                    cardinalidad = objInicial.SearchResults.entry.Count;
+                    cardinalidad = 0;
+                    if (objInicial.SearchResults.entry != null)
+                    {
+                        cardinalidad = objInicial.SearchResults.entry.Count;
+                    }
                 }
             }
             return sol;

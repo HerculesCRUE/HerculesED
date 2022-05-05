@@ -45,6 +45,7 @@ class StepsCluster {
 		this.modalCrearClusterStep3 = this.modalCrearCluster.find("#wrapper-crear-cluster-step3")
 		this.clusterAccordionPerfil = this.modalCrearCluster.find("#accordion_cluster")
 		this.errorDiv = this.modalCrearCluster.find("#error-modal-cluster")
+		this.errorDivStep2 = this.modalCrearCluster.find("#error-modal-cluster-step2")
 		this.errorDivServer = this.modalCrearCluster.find("#error-modal-server-cluster")
 		this.perfilesStep3 = this.modalCrearClusterStep3.find("#perfiles-stp3-result-cluster")
 
@@ -77,6 +78,9 @@ class StepsCluster {
 
 		// Textos obtenido de los 'data-'
 		this.eliminarText = this.modalCrearCluster.data("eliminartext")
+		this.editarClusterText = this.modalCrearCluster.data("editarcluster")
+		this.AnadirOtroPerfilText = this.modalCrearCluster.data("addotherprofile")
+		this.AnadirNuevoPerfilText = this.modalCrearCluster.data("addnewprofile")
 		this.areasTematicasText = this.modalCrearCluster.data("areastematicastext")
 		this.descriptoresEspecificosText = this.modalCrearCluster.data("descriptoresespecificostext")
 
@@ -123,6 +127,8 @@ class StepsCluster {
 			var nameInput = document.getElementById('nombreclusterinput')
 			var descInput = document.getElementById('txtDescripcion')
 			var selectTerms = this.modalCrearCluster.find('#cluster-modal-sec1-tax-wrapper')
+
+			$('h1').text(this.editarClusterText)
 
 			// Fill section 1
 			nameInput.value = this.data.name
@@ -187,6 +193,7 @@ class StepsCluster {
 		if (pos > 0 && this.step > pos) {
 
 			this.errorDiv.hide()
+			this.errorDivStep2.hide()
 			this.errorDivServer.hide()
 			this.setStep(pos)
 
@@ -199,7 +206,9 @@ class StepsCluster {
 				break;
 				case 2:
 				continueStep = this.checkContinue2()
-				_self.startStep3()
+				if (continueStep) {
+					_self.startStep3()
+				}
 				break;
 				case 3:
 				try {
@@ -219,12 +228,28 @@ class StepsCluster {
 
 			if (continueStep && this.step > (pos - 2)) {
 				this.errorDiv.hide()
+				this.errorDivStep2.hide()
 				this.errorDivServer.hide()
 				this.setStep(pos)
 			} else {
-				this.errorDiv.show()
+				if (this.step == 2) {
+					this.errorDivStep2.show()
+				} else {
+					this.errorDiv.show()
+				}
 				window.location.hash = '#' + this.errorDiv.attr('id')
 			}
+		}
+	}
+
+	checkNumberProfiles() {
+
+		let panel = this.clusterAccordionPerfil.find('.panel .panel-heading')
+
+		if (panel.length > 0) {
+			this.modalCrearCluster.find("#wrapper-crear-cluster-step2-add-profile").text(this.AnadirOtroPerfilText + ' *')
+		} else {
+			this.modalCrearCluster.find("#wrapper-crear-cluster-step2-add-profile").text(this.AnadirNuevoPerfilText + ' *')
 		}
 	}
 
@@ -234,6 +259,7 @@ class StepsCluster {
 	deletePerfil(head1, head2) {
 		$('#' + head1).remove()
 		$('#' + head2).remove()
+		this.checkNumberProfiles()
 		// $(item).parent().parent().remove()
 	}
 
@@ -315,8 +341,10 @@ class StepsCluster {
 		let nombresCorrectos=this.data.profiles.every(function (item) {
 			return  item.name !=undefined;
 		});
+
+		// Comprueba si las etiquetas o las categorías están rellenos
 		let categoriasCorrectas=this.data.profiles.every(function (item) {
-			return  item.terms!=undefined && item.terms.length>0;
+			return  item.terms!=undefined && item.terms.length>0 || item.tags!=undefined && item.tags.length>0;
 		});
 		return existenPerfiles && nombresCorrectos && categoriasCorrectas;
 	}
@@ -830,7 +858,6 @@ class StepsCluster {
 
 			})
 		}
-
 	}
 
 
@@ -951,6 +978,7 @@ class StepsCluster {
 
 			panel.append(item)
 
+			this.checkNumberProfiles()
 			resolve(nameId)
 		})
 
@@ -994,7 +1022,6 @@ class StepsCluster {
 		$(this.stepsCircle[this.step - 1]).addClass("active")
 		$(this.stepsContent[this.step - 1]).addClass("show")
 		$(this.stepsText[this.step - 1]).addClass("current")
-
 	}
 
 	startStep3() { 
