@@ -15,6 +15,74 @@ $(document).ready(function () {
 	montarTooltipCode.init();
 });
 
+function enlazarFiltrosBusqueda() {
+    // Cambiado por nuevo Front
+    /*$('.limpiarfiltros')
+    .unbind()
+    .click(function (e) {
+        LimpiarFiltros();
+        e.preventDefault();
+    });*/
+
+    // Permitir borrar filtros de búsqueda
+    $("#divFiltros")
+    .unbind()
+    .on('click', '.limpiarfiltros', function (event) {
+            LimpiarFiltros();
+            event.preventDefault();
+    });
+    $("#panFiltros")
+        .unbind()
+        .on('click', '.limpiarfiltros', function (event) {
+            LimpiarFiltros();
+            event.preventDefault();
+    });
+          
+    $('.panelOrdenContenedor select.filtro')
+    .unbind()
+        .change(function (e) {            
+        AgregarFiltro('ordenarPor', $(this).val(), true);
+    });
+
+    // Configurar la selecci�n de ordenaci�n de los resultados al pulsar en "Ordenado por"    
+    $("#panel-orderBy a.item-dropdown")
+        // En ordenación, no mostraba el icono seleccionado ya que lo "desmontaba".
+        .unbind('.ordenar')
+        .bind('click.ordenar',function (e) {                    
+            var orderBy = $(this).attr("data-orderBy");
+            var filtroOrder = $(this).attr("data-order");
+            const concatFilterAndOrder = orderBy + "|" + filtroOrder.split("|")[1];
+            AgregarFiltro('ordenarPor', concatFilterAndOrder, true);
+    });
+
+    // Orden Ascedente o Descedente
+    $('#panel-orderAscDesc a.item-dropdown')
+        .click(function (e) {
+            var filtro = $(this).attr("data-order");
+            AgregarFiltro(filtro.split('|')[0], filtro.split('|')[1], false);
+            //e.preventDefault();
+        });
+
+    $('.panelOrdenContenedor a.filtroV2')
+    .unbind()
+    .click(function (e) {
+        var filtro = $(this).attr("name");
+        AgregarFiltro(filtro.split('-')[0], filtro.split('-')[1], false);
+        e.preventDefault();
+    });
+    $('.paginadorResultados a.filtro')
+    .unbind()
+    .click(function (e) {
+        var filtro = $(this).attr("name");
+        AgregarFiltro(filtro.split('|')[0], filtro.split('|')[1], false);
+
+        if (typeof searchAnalitics != 'undefined') {
+            searchAnalitics.pageSearch(filtro.split('|')[1]);
+        }
+        e.preventDefault();
+    });
+}
+
 function comportamientoCargaFacetasComunidad() {	
 	comportamientoFacetasPopUp.init();	
 	plegarSubFacetas.init();
