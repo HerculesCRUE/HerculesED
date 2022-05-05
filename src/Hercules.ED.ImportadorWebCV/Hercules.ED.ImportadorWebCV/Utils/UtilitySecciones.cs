@@ -128,7 +128,7 @@ namespace Utils
             string select = $@"select distinct ?nombre ?organizacion";
             string where = $@"where {{ 
                                 ?organizacion <http://w3id.org/roh/title> ?nombre  
-                                FILTER(ucase(?nombre)=""{nombreOrganizacion.ToUpper()}"")
+                                FILTER(ucase(?nombre)=""{nombreOrganizacion.ToUpper().Replace("\"","\\\"")}"")
                             }}  LIMIT 1";
 
             SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, "organization");
