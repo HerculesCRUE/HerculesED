@@ -994,7 +994,7 @@ namespace DesnormalizadorHercules.Models
         }
 
         /// <summary>
-        /// Actualizamos en la propiedad http://w3id.org/roh/members de los http://xmlns.com/foaf/0.1/Group
+        /// Actualizamos en la propiedad http://w3id.org/roh/membersGroup de los http://xmlns.com/foaf/0.1/Group
         /// todos los miembros del grupo 
         /// Depende de ActualizadorGroup.ActualizarMiembros
         /// </summary>
@@ -1031,11 +1031,11 @@ namespace DesnormalizadorHercules.Models
                                     MINUS
                                     {{
                                         ?group a <http://xmlns.com/foaf/0.1/Group>.
-                                        ?group <http://w3id.org/roh/members> ?person.
+                                        ?group <http://w3id.org/roh/membersGroup> ?person.
                                     }}
                                 }}}}order by desc(?group) limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "group");
-                    InsercionMultiple(resultado.results.bindings, "http://w3id.org/roh/members", "group", "person");
+                    InsercionMultiple(resultado.results.bindings, "http://w3id.org/roh/membersGroup", "group", "person");
                     if (resultado.results.bindings.Count != limit)
                     {
                         break;
@@ -1051,7 +1051,7 @@ namespace DesnormalizadorHercules.Models
                                     {filter}
                                     {{         
                                         ?group a <http://xmlns.com/foaf/0.1/Group>.
-                                        ?group <http://w3id.org/roh/members> ?person.                                                      
+                                        ?group <http://w3id.org/roh/membersGroup> ?person.                                                      
                                     }}
                                     MINUS
                                     {{
@@ -1065,7 +1065,7 @@ namespace DesnormalizadorHercules.Models
                                     }}
                                 }}}}order by desc(?group) limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "group");
-                    EliminacionMultiple(resultado.results.bindings, "http://w3id.org/roh/members", "group", "person");
+                    EliminacionMultiple(resultado.results.bindings, "http://w3id.org/roh/membersGroup", "group", "person");
                     if (resultado.results.bindings.Count != limit)
                     {
                         break;

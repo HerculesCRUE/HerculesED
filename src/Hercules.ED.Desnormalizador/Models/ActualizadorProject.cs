@@ -731,7 +731,7 @@ namespace DesnormalizadorHercules.Models
 
 
         /// <summary>
-        /// Actualizamos en la propiedad http://w3id.org/roh/members de los http://vivoweb.org/ontology/core#Project
+        /// Actualizamos en la propiedad http://w3id.org/roh/membersProject de los http://vivoweb.org/ontology/core#Project
         /// todos los miembros del proyecto 
         /// Depende de ActualizadorProject.ActualizarMiembros
         /// </summary>
@@ -768,11 +768,11 @@ namespace DesnormalizadorHercules.Models
                                     MINUS
                                     {{
                                         ?project a <http://vivoweb.org/ontology/core#Project>.
-                                        ?project <http://w3id.org/roh/members> ?person.
+                                        ?project <http://w3id.org/roh/membersProject> ?person.
                                     }}
                                 }}}}order by desc(?project) limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "project");
-                    InsercionMultiple(resultado.results.bindings, "http://w3id.org/roh/members", "project", "person");
+                    InsercionMultiple(resultado.results.bindings, "http://w3id.org/roh/membersProject", "project", "person");
                     if (resultado.results.bindings.Count != limit)
                     {
                         break;
@@ -788,7 +788,7 @@ namespace DesnormalizadorHercules.Models
                                     {filter}
                                     {{         
                                         ?project a <http://vivoweb.org/ontology/core#Project>.
-                                        ?project <http://w3id.org/roh/members> ?person.                                                      
+                                        ?project <http://w3id.org/roh/membersProject> ?person.                                                      
                                     }}
                                     MINUS
                                     {{
@@ -802,7 +802,7 @@ namespace DesnormalizadorHercules.Models
                                     }}
                                 }}}}order by desc(?project) limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "project");
-                    EliminacionMultiple(resultado.results.bindings, "http://w3id.org/roh/members", "project", "person");
+                    EliminacionMultiple(resultado.results.bindings, "http://w3id.org/roh/membersProject", "project", "person");
                     if (resultado.results.bindings.Count != limit)
                     {
                         break;
