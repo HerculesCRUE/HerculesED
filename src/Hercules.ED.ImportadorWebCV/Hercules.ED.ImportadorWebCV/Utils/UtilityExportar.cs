@@ -436,7 +436,8 @@ where {{
         public static void AddCvnItemBeanCvnExternalPKBean(CvnItemBean itemBean, string section, string property, string code, Entity entity)
         {
             //Compruebo si el codigo pasado está bien formado
-            if(Utility.CodigoIncorrecto(code)){
+            if (Utility.CodigoIncorrecto(code))
+            {
                 return;
             }
 
