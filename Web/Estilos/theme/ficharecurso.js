@@ -70,14 +70,14 @@ var buscadorPersonalizado = {
 				{
 					txtOrderDefecto=order.name;
 					htmlEnlacesOrder+=`
-								<a class="item-dropdown activeView" data-orderby="${order.orderby}" data-order="${order.order}">
+								<a class="item-dropdown activeView" data-orderby="${order.orderby}" data-order="orden|desc">
 																	<span class="material-icons">swap_vert</span>
 																	<span class="texto">${order.name}</span> 
 																</a>`;
 				}else
 				{
 					htmlEnlacesOrder+=`
-								<a class="item-dropdown" data-orderby="${order.orderby}" data-order="${order.order}">
+								<a class="item-dropdown" data-orderby="${order.orderby}" data-order="orden|desc">
 																	<span class="material-icons">swap_vert</span>
 																	<span class="texto">${order.name}</span> 
 																</a>`;
@@ -142,6 +142,7 @@ var buscadorPersonalizado = {
 								</div>
 							</div>`;
 		$(this.contenedor).append(hmltBuscador);
+		accionDropdownSelect.init();
 		callback();
 	}
 }
