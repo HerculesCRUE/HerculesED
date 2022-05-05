@@ -233,12 +233,12 @@ comportamientoFacetasPopUp.config= function () {
 	var that = this;
 	this.facetasConPopUp = [
 	['bibo:authorList@@@rdf:member@@@foaf:name', 'Busca por nombre o apellido de la persona', "Search by person's name or surname", true],
-	['vivo:freeTextKeyword@@@roh:title', 'Busca por nombre de la etiqueta', "Search by tag's name", true],
 	['vivo:hasPublicationVenue', 'Busca por nombre de la revista', "Search by journal's name", true],
 	['bibo:authorList@@@rdf:member@@@roh:hasKnowledgeArea@@@roh:categoryNode', 'Busca por tópicos', "Search by topics", true],
 	['vivo:departmentOrSchool@@@dc:title', 'Busca por departamento', "Search by department", true],
 	['vivo:relates@@@roh:title','Busca por grupos de investigación','Search by research group',true],
-	['roh:lineResearch','Busca por línea de investigación','Search by research line',true]
+	['roh:lineResearch','Busca por línea de investigación','Search by research line',true],
+	['vivo:hasPublicationVenue@@@roh:title','Busca por revista','Search by journal',true]
 	
 	];
 	//TODO textos
