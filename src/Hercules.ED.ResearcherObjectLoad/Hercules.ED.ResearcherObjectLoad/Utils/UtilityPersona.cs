@@ -327,7 +327,8 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                                 {
                                     StringBuilder sbUnion = new StringBuilder();
                                     sbUnion.AppendLine("				?personID <http://xmlns.com/foaf/0.1/name> ?name.");
-                                    sbUnion.AppendLine($@"				?name bif:contains ""'{word}'"" BIND({score} as ?num) ");
+                                    sbUnion.AppendLine($@"				{FilterWordComplete(word,"name")} BIND({score} as ?num) ");
+                                    //sbUnion.AppendLine($@"				?name bif:contains ""'{word}'"" BIND({score} as ?num) ");
                                     unions.Add(sbUnion.ToString());
                                 }
                             }
@@ -379,6 +380,24 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
             }
 
             return diccionarioPersonas;
+        }
+
+        public static string FilterWordComplete(string pWord, string pVar)
+        {
+            Dictionary<string, string> listaReemplazos = new Dictionary<string, string>();
+            listaReemplazos["a"] = "aáàä";
+            listaReemplazos["e"] = "eéèë";
+            listaReemplazos["i"] = "iíìï";
+            listaReemplazos["o"] = "oóòö";
+            listaReemplazos["u"] = "uúùü";
+            listaReemplazos["n"] = "nñ";
+            listaReemplazos["c"] = "cç";
+            foreach (string caracter in listaReemplazos.Keys)
+            {
+                pWord = pWord.Replace(caracter, $"[{listaReemplazos[caracter]}]");
+            }
+            string filter = @$"FILTER ( regex(?{pVar},""(^| ){pWord}($| )"", ""i""))";
+            return filter;
         }
 
         /// <summary>
