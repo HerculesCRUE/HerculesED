@@ -61,7 +61,7 @@ namespace Gnoss.Web.Login.SAML
                 else
                 {
                     //Si no hay usuario redirigimos al login 
-                    RedirectToAction("Auth", "Login", new { returnUrl = returnUrl, token = token });
+                    return RedirectToAction("Login", "Auth", new { returnUrl = returnUrl, token = token });
                 }
             }
 
