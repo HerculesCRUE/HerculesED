@@ -57,7 +57,7 @@ namespace Gnoss.Web.Login.SAML
             HttpContext.Session.Set("aaa", a);
             byte[] b;
             HttpContext.Session.TryGetValue("aaa",out b);
-            mResourceApi.Log.Info("asdasd:"b[0].ToString());
+            mResourceApi.Log.Info("asdasd:"+b[0].ToString());
 
 
 
