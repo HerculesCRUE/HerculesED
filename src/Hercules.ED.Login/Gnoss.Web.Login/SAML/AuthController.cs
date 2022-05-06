@@ -31,7 +31,7 @@ namespace Gnoss.Web.Login.SAML
         [Route("Login")]
         public IActionResult Login(string returnUrl = null, string token = null)
         {
-            mResourceApi.Log.Error($"Login SAML Intento de login returnUrl: {returnUrl} token: {token}");
+            mResourceApi.Log.Info($"Login SAML Intento de login returnUrl: {returnUrl} token: {token}");
             var binding = new Saml2RedirectBinding();
             binding.SetRelayStateQuery(new Dictionary<string, string> { { relayStateReturnUrl, returnUrl ?? Url.Content("~/") },{ "token",token} });
 
