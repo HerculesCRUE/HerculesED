@@ -12,7 +12,7 @@ using ImportadorWebCV;
 using System.Runtime.InteropServices;
 using ExportadorWebCV.Utils;
 
-namespace Hercules.ED.ImportadorWebCV.Exporta.Secciones.SituacionProfesionalSubclases
+namespace ImportadorWebCV.Exporta.Secciones.SituacionProfesionalSubclases
 {
     public class CargosActividades : SeccionBase
     {

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Hercules.ED.ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
+namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
 {
     public class CursosSeminarios:SeccionBase
     {
