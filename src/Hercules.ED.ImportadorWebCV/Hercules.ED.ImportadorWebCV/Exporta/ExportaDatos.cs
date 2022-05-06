@@ -20,7 +20,7 @@ namespace ImportadorWebCV.Exporta
             this.cvn = cvn;
         }
 
-        public void ExportaDatosIdentificacion(Entity entity, [Optional] List<string> secciones, [Optional] bool preimportar)
+        public void ExportaDatosIdentificacion(Entity entity, [Optional] List<string> secciones, [Optional] bool preexportar)
         {
             string seccion = "http://w3id.org/roh/personalData";
             List<CvnItemBean> listado = new List<CvnItemBean>();
@@ -84,10 +84,10 @@ namespace ImportadorWebCV.Exporta
             UtilityExportar.AniadirItems(cvn, listado);
         }
 
-        public void ExportaSituacionProfesional(Entity entity, [Optional] List<string> secciones, [Optional] bool preimportar)
+        public void ExportaSituacionProfesional(Entity entity, [Optional] List<string> secciones, [Optional] bool preexportar)
         {
-            string seccion = "http://w3id.org/roh/professionalSituation";
-            List<CvnItemBean> listado = new List<CvnItemBean>();
+            //string seccion = "http://w3id.org/roh/professionalSituation";
+            //List<CvnItemBean> listado = new List<CvnItemBean>();
 
             SituacionProfesionalActual situacionProfesional = new SituacionProfesionalActual(cvn,cvID);
             situacionProfesional.ExportaSituacionProfesional(entity);
@@ -95,11 +95,11 @@ namespace ImportadorWebCV.Exporta
             CargosActividades cargosActividades = new CargosActividades(cvn,cvID);
             cargosActividades.ExportaCargosActividades(entity);
 
-            //Añado en el cvnRootResultBean los items que forman parte del listado
-            UtilityExportar.AniadirItems(cvn, listado);
+            ////Añado en el cvnRootResultBean los items que forman parte del listado
+            //UtilityExportar.AniadirItems(cvn, listado);
         }
 
-        public void ExportaFormacionAcademica(Entity entity, [Optional] List<string> secciones, [Optional] bool preimportar)
+        public void ExportaFormacionAcademica(Entity entity, [Optional] List<string> secciones, [Optional] bool preexportar)
         {
             string seccion = "http://w3id.org/roh/qualifications";
             List<CvnItemBean> listado = new List<CvnItemBean>();
@@ -109,7 +109,7 @@ namespace ImportadorWebCV.Exporta
             //Añado en el cvnRootResultBean los items que forman parte del listado
             UtilityExportar.AniadirItems(cvn, listado);
         }
-        public void ExportaActividadDocente(Entity entity, [Optional] List<string> secciones, [Optional] bool preimportar)
+        public void ExportaActividadDocente(Entity entity, [Optional] List<string> secciones, [Optional] bool preexportar)
         {
             string seccion = "http://w3id.org/roh/teachingExperience";
             List<CvnItemBean> listado = new List<CvnItemBean>();
@@ -120,7 +120,7 @@ namespace ImportadorWebCV.Exporta
             //Añado en el cvnRootResultBean los items que forman parte del listado
             UtilityExportar.AniadirItems(cvn, listado);
         }
-        public void ExportaExperienciaCientificaTecnologica(Entity entity, [Optional] List<string> secciones, [Optional] bool preimportar)
+        public void ExportaExperienciaCientificaTecnologica(Entity entity, [Optional] List<string> secciones, [Optional] bool preexportar)
         {
             string seccion = "http://w3id.org/roh/scientificExperience";
             List<CvnItemBean> listado = new List<CvnItemBean>();
@@ -129,7 +129,7 @@ namespace ImportadorWebCV.Exporta
             //Añado en el cvnRootResultBean los items que forman parte del listado
             UtilityExportar.AniadirItems(cvn, listado);
         }
-        public void ExportaActividadCientificaTecnologiaca(Entity entity, [Optional] List<string> secciones, [Optional] bool preimportar)
+        public void ExportaActividadCientificaTecnologica(Entity entity, [Optional] List<string> secciones, [Optional] bool preexportar)
         {
             string seccion = "http://w3id.org/roh/scientificActivity";
 
@@ -140,7 +140,7 @@ namespace ImportadorWebCV.Exporta
             UtilityExportar.AniadirItems(cvn, listado);
         }
 
-        public void ExportaTextoLibre(Entity entity, [Optional] List<string> secciones, [Optional] bool preimportar)
+        public void ExportaTextoLibre(Entity entity, [Optional] List<string> secciones, [Optional] bool preexportar)
         {
             string propResumenLibre = UtilityExportar.EliminarRDF(entity.properties.Where(x => x.prop.EndsWith(Variables.TextoLibre.resumenLibre)).Select(x => x.prop).FirstOrDefault());
             string propResumenTFG = UtilityExportar.EliminarRDF(entity.properties.Where(x => x.prop.EndsWith(Variables.TextoLibre.b1DescripcionTFG)).Select(x => x.prop).FirstOrDefault());
