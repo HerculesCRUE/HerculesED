@@ -31,7 +31,8 @@ namespace Gnoss.Web.Login.SAML
         [Route("Login")]
         public IActionResult Login(string returnUrl = null, string token = null)
         {
-            mResourceApi.Log.Info($"Login SAML Intento de login returnUrl: {returnUrl} token: {token}");
+            mResourceApi.Log.Info($"AuthController Intento de login returnUrl: {returnUrl} token: {token}");
+            mResourceApi.Log.Info($"AuthController Config: {Newtonsoft.Json.JsonConvert.SerializeObject(config)}");
             var binding = new Saml2RedirectBinding();
             binding.SetRelayStateQuery(new Dictionary<string, string> { { relayStateReturnUrl, returnUrl ?? Url.Content("~/") },{ "token",token} });
 
@@ -42,6 +43,7 @@ namespace Gnoss.Web.Login.SAML
         [Route("AssertionConsumerService")]
         public async Task<IActionResult> AssertionConsumerService()
         {
+            mResourceApi.Log.Info($"AuthController AssertionConsumerService");
             var binding = new Saml2PostBinding();
             var saml2AuthnResponse = new Saml2AuthnResponse(config);
 
