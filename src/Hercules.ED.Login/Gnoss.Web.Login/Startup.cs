@@ -11,6 +11,7 @@ using Es.Riam.OpenReplication;
 using Es.Riam.Util;
 using Gnoss.Web.Login;
 using ITfoxtec.Identity.Saml2;
+using ITfoxtec.Identity.Saml2.MvcCore.Configuration;
 using ITfoxtec.Identity.Saml2.Schemas.Metadata;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -181,6 +182,8 @@ namespace Gnoss.Web.Login
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Gnoss.Web.Login", Version = "v1" });
             });
+
+            services.AddSaml2();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
