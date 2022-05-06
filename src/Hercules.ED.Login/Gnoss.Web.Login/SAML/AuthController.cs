@@ -1,4 +1,6 @@
-﻿using ITfoxtec.Identity.Saml2;
+﻿extern alias ApiWrapper;
+
+using ITfoxtec.Identity.Saml2;
 using ITfoxtec.Identity.Saml2.Schemas;
 using ITfoxtec.Identity.Saml2.MvcCore;
 using System.Collections.Generic;
@@ -8,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Security.Authentication;
 using System;
+using ApiWrapper::Gnoss.ApiWrapper;
 
 namespace Gnoss.Web.Login.SAML
 {
@@ -15,6 +18,7 @@ namespace Gnoss.Web.Login.SAML
     [Route("Auth")]
     public class AuthController : Controller
     {
+        private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/configOAuth/OAuthV3.config");
         const string relayStateReturnUrl = "ReturnUrl";
         private Saml2Configuration config;
 
@@ -27,6 +31,7 @@ namespace Gnoss.Web.Login.SAML
         [Route("Login")]
         public IActionResult Login(string returnUrl = null, string token = null)
         {
+            mResourceApi.Log.Error($"Login SAML Intento de login returnUrl: {returnUrl} token: {token}");
             var binding = new Saml2RedirectBinding();
             binding.SetRelayStateQuery(new Dictionary<string, string> { { relayStateReturnUrl, returnUrl ?? Url.Content("~/") },{ "token",token} });
 
