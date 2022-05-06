@@ -5,17 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Exporta\**" />
-    <Content Remove="Exporta\**" />
-    <EmbeddedResource Remove="Exporta\**" />
-    <None Remove="Exporta\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Include="Exporta\ExportaDatos.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="GnossApiWrapper.NetCore" Version="1.0.8" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
     <PackageReference Include="System.ServiceModel.Http" Version="4.9.0" />
@@ -23,6 +12,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Hercules.ED.DisambiguationEngine\Hercules.ED.DisambiguationEngine\Hercules.ED.DisambiguationEngine.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Exporta\Secciones\ActividadCientificaSubclases\" />
+    <Folder Include="Exporta\Secciones\ActividadDocenteSubclases\" />
+    <Folder Include="Exporta\Secciones\ExperienciaCientificaSubclases\" />
+    <Folder Include="Exporta\Secciones\FormacionAcademicaSubclases\" />
   </ItemGroup>
 
 </Project>

@@ -38,10 +38,10 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
         public ActionResult Exportar([FromHeader][Required] string pCVID, [FromHeader][Optional] List<string> secciones)
         {
             ExportaDatos exporta = new ExportaDatos(_cvn, pCVID);
-            Entity entity = exporta.GetLoadedEntity(pCVID,"curriculumvitae");
+            Entity entity = exporta.GetLoadedEntity(pCVID, "curriculumvitae");
 
             exporta.ExportaDatosIdentificacion(entity, secciones);
-            exporta.ExportaFormacionAcademica(entity, secciones);
+            exporta.ExportaSituacionProfesional(entity, secciones);
             //exporta.ExportaFormacionAcademica(entity, secciones);
             //exporta.ExportaActividadDocente(entity, secciones);
             //exporta.ExportaExperienciaCientificaTecnologica(entity, secciones);
