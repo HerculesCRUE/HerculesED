@@ -42,6 +42,7 @@ namespace Gnoss.Web.Login.SAML
         [Route("AssertionConsumerService")]
         public async Task<IActionResult> AssertionConsumerService()
         {
+            return Redirect("https://edma.gnoss.com/comunidad/hercules");
             mResourceApi.Log.Info($"10.-AuthController AssertionConsumerService");
             var binding = new Saml2PostBinding();
             var saml2AuthnResponse = new Saml2AuthnResponse(config);
