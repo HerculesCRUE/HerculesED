@@ -86,11 +86,11 @@ namespace ImportadorWebCV.Exporta
 
         public void ExportaSituacionProfesional(Entity entity, [Optional] List<string> secciones, [Optional] bool preexportar)
         {
-            //string seccion = "http://w3id.org/roh/professionalSituation";
+            string seccion = "http://w3id.org/roh/professionalSituation";
             //List<CvnItemBean> listado = new List<CvnItemBean>();
 
             SituacionProfesionalActual situacionProfesional = new SituacionProfesionalActual(cvn,cvID);
-            situacionProfesional.ExportaSituacionProfesional(entity);
+            situacionProfesional.ExportaSituacionProfesional(entity, seccion);
 
             CargosActividades cargosActividades = new CargosActividades(cvn,cvID);
             cargosActividades.ExportaCargosActividades(entity);
