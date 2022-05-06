@@ -1034,17 +1034,27 @@
 
             $('#publicaciones-tab').unbind().click(function (e) {
                 e.preventDefault();
-                that.tabActive = "publicaciones";
+                that.tabActive = "publicaciones";				
+				buscadorPersonalizado.orders=[];
+				buscadorPersonalizado.orders[0]={"name":"@Html.Translate("FECHA_DESCENDENTE")","orderby":"dct:issued|desc"};
+				buscadorPersonalizado.orders[1]={"name":"@Html.Translate("FECHA_ASCENDENTE")","orderby":"dct:issued|asc"};
+				buscadorPersonalizado.orders[2]={"name":"@Html.Translate("NUMERO_CITAS")","orderby":"roh:citationCount|desc"};
                 buscadorPersonalizado.init("@Html.Translate("PUBLICACIONES")", "#contenedorBuscadorPublicaciones", "searchPublicacionesPublicasPerson=http://gnoss/@pPerson.GNOSSID.Split('_')[1].ToUpper()", "dct:issued", "rdf:type=document", "@Comunidad.Url", "@Comunidad.Key.ToString()");
             });
             $('#proyectos-tab').unbind().click(function (e) {
                 e.preventDefault();
                 that.tabActive = "proyectos";
+				buscadorPersonalizado.orders=[];
+				buscadorPersonalizado.orders[0]={"name":"@Html.Translate("FECHA_INICIO_DESCENDENTE")","orderby":"vivo:start|desc"};
+				buscadorPersonalizado.orders[1]={"name":"@Html.Translate("FECHA_INICIO_ASCENDENTE")","orderby":"vivo:start|asc"};
+				buscadorPersonalizado.orders[2]={"name":"@Html.Translate("FECHA_FIN_DESCENDENTE")","orderby":"vivo:end|desc"};				
+				buscadorPersonalizado.orders[2]={"name":"@Html.Translate("FECHA_FIN_ASCENDENTE")","orderby":"vivo:end|asc"};
                 buscadorPersonalizado.init("Proyectos", "#contenedorBuscadorProyectos", "searchProyectosPublicosPerson=http://gnoss/@pPerson.GNOSSID.Split('_')[1].ToUpper()", "", "rdf:type=project", "@Comunidad.Url", "@Comunidad.Key.ToString()");
             });
 			$('#otros-tab').unbind().click(function (e) {
                 e.preventDefault();
                 that.tabActive = "researchobjects";
+				buscadorPersonalizado.orders=null;
                 buscadorPersonalizado.init("@Html.Translate("OTROS_RESULTADOS")", "#contenedorBuscadorResearchObjects", "searchResearchObjectsPublicosPerson=http://gnoss/@pPerson.GNOSSID.Split('_')[1].ToUpper()", "dct:issued", "rdf:type=researchobject", "@Comunidad.Url", "@Comunidad.Key.ToString()");
             });
             $('#topics-tab').unbind().click(function (e) {
@@ -1056,6 +1066,7 @@
             $('#colaboraciones-tab').unbind().click(function (e) {
                 e.preventDefault();
                 that.tabActive = "colaboradores";
+				buscadorPersonalizado.orders=null;
                 buscadorPersonalizado.init("Colaboradores", "#contenedorBuscadorColaboradores", "searchColaboradoresPersonPublic=http://gnoss/@pPerson.GNOSSID.Split('_')[1].ToUpper()", "", "rdf:type=person", "@Comunidad.Url", "@Comunidad.Key.ToString()");
             });
             return;
@@ -1070,7 +1081,18 @@
     // Acciones a llevar a cabo en el filtrado.
     function accionFiltrado() {
         console.log("ejectuado: ", comportamientoPaginaInvestigador.tabActive);
-        var parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro;
+		var hash2=ObtenerHash2();		
+		var filtrosArray = hash2.split('&');
+
+		hash2='';
+		for (var i = 0; i < filtrosArray.length; i++) {
+			if(filtrosArray[i].indexOf('ordenarPor=')!=0 && filtrosArray[i].indexOf('orden=')!=0)
+			{
+				hash2+=filtrosArray[i] + '&';
+			}
+		}				
+		
+        var parametros = hash2 + "&" + buscadorPersonalizado.filtro;
         if (comportamientoPaginaInvestigador.tabActive == "publicaciones") {
             CargarGraficaPublicaciones(parametros,'publicaciongraph');
         }

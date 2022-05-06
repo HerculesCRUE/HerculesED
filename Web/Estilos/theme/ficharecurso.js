@@ -5,6 +5,7 @@ var buscadorPersonalizado = {
 	contenedor: null,
 	filtro: null,
 	orden:null,
+	orders:null,
 	init: function (nombreelemento, contenedor, filtro, orden, parametrosadicionales, urlcomunidad, idcomunidad, callback = () => {}) {
 		this.nombreelemento = nombreelemento;
 		this.contenedor = contenedor;
@@ -59,6 +60,50 @@ var buscadorPersonalizado = {
 		$('.searcherTitle').remove();
 		$('.searcherFacets').remove();
 		$('.searcherResults').remove();
+		var ordersHtml="";
+		if(this.orders!=null)
+		{
+			var txtOrderDefecto="";
+			var htmlEnlacesOrder="";
+			this.orders.forEach((order, i) => {
+				if(i==0)
+				{
+					txtOrderDefecto=order.name;
+					htmlEnlacesOrder+=`
+								<a class="item-dropdown activeView" data-orderby="${order.orderby}" data-order="orden|desc">
+																	<span class="material-icons">swap_vert</span>
+																	<span class="texto">${order.name}</span> 
+																</a>`;
+				}else
+				{
+					htmlEnlacesOrder+=`
+								<a class="item-dropdown" data-orderby="${order.orderby}" data-order="orden|desc">
+																	<span class="material-icons">swap_vert</span>
+																	<span class="texto">${order.name}</span> 
+																</a>`;
+				}
+				
+			})
+			
+			
+			ordersHtml=`
+						<div class="acciones-listado">
+											<div class="wrap">
+												<!-- Filtros de ordenación -->
+													<div id="panel-orderBy" class="ordenar dropdown dropdown-select">
+														<a class="dropdown-toggle active" data-toggle="dropdown" aria-expanded="false">
+															<span class="material-icons">swap_vert</span>
+															<span class="texto">${txtOrderDefecto}</span>
+														</a>
+
+														<div class="dropdown-menu basic-dropdown dropdown-menu-right" style="will-change: transform;">
+															${htmlEnlacesOrder}	
+														</div>
+													</div>
+											</div>
+										</div>`;
+		}
+		
 		var hmltBuscador = `
 							<div class="col col-12 col-xl-3 col-facetas col-lateral izquierda searcherFacets">
 								<div class="wrapCol">
@@ -77,7 +122,8 @@ var buscadorPersonalizado = {
 										<!-- Número de resultados -->
 										<div class="h1-container">
 											<h1>${that.nombreelemento} <span id="panNumResultados" class="numResultados"></span></h1>
-										</div>
+										</div>		
+										${ordersHtml}
 										<!-- Etiquetas de filtros -->
 										<div class="etiquetas" id="panFiltros">
 											<ul class="facetedSearch tags" id="panListadoFiltros">
@@ -96,6 +142,7 @@ var buscadorPersonalizado = {
 								</div>
 							</div>`;
 		$(this.contenedor).append(hmltBuscador);
+		accionDropdownSelect.init();
 		callback();
 	}
 }
@@ -785,7 +832,9 @@ function PintarGraficaAreasTematicas(data,idContenedor) {
 
 //Sobreescribimos FiltrarPorFacetas para que coja el filtro por defecto (y el orden)
 function FiltrarPorFacetas(filtro, callback = () => {}) {
-	filtro += "|" + buscadorPersonalizado.filtro;
+	if (buscadorPersonalizado.filtro != null) {
+		filtro += "|" + buscadorPersonalizado.filtro;
+	}
 	if (buscadorPersonalizado.orden != null) {
 		filtro += "|ordenarPor=" + buscadorPersonalizado.orden;
 	}
@@ -793,6 +842,44 @@ function FiltrarPorFacetas(filtro, callback = () => {}) {
 		accionFiltrado(ObtenerHash2());
 	}
 	return FiltrarPorFacetasGenerico(filtro);
+}
+
+function VerFaceta(faceta, controlID) {
+    if (document.getElementById(controlID + '_aux') == null) {
+        $('#' + controlID).parent().html($('#' + controlID).parent().html() + '<div style="display:none;" id="' + controlID + '_aux' + '"></div>');
+        $('#' + controlID + '_aux').html($('#' + controlID).html());
+
+        var filtros = ObtenerHash2();
+
+        if (typeof (filtroDePag) != 'undefined' && filtroDePag != '') {
+            if (filtros != '') {
+                filtros = filtroDePag + '|' + filtros;
+            }
+            else {
+                filtros = filtroDePag;
+            }
+        }
+		if (buscadorPersonalizado.filtro != null) {
+			filtros += "|" + buscadorPersonalizado.filtro;
+		}
+		if (buscadorPersonalizado.orden != null) {
+			filtros += "|ordenarPor=" + buscadorPersonalizado.orden;
+		}
+        MontarFacetas(filtros, false, -1, '#' + controlID, faceta + '|vermas');
+    }
+    else {
+        var htmlAux = $('#' + controlID + '_aux').html();
+        $('#' + controlID + '_aux').html($('#' + controlID).html());
+        $('#' + controlID).html(htmlAux);
+        if (enlazarJavascriptFacetas) {
+            enlazarFacetasBusqueda();
+        }
+        else {
+            enlazarFacetasNoBusqueda();
+        }
+        CompletadaCargaFacetas();
+    }
+    return false;
 }
 
 //Limpia los filtros y engancha el comportamineto del popup
