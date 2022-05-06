@@ -14,17 +14,32 @@ namespace ExportadorWebCV.Utils
 {
     public class UtilityExportar
     {
-        public static List<Tuple<string, string>> GetDatos(ResourceApi pResourceApi, string pCVID)
+        public static List<string> GetListadoEntidades(ResourceApi pResourceApi, List<string> propiedadesItem, string pCVID)
         {
-            string select = $@"select distinct ?prop ?o";
-            string where = $@"
-where {{
-    ?cv <http://w3id.org/roh/personalData> ?personalData . 
-    ?personalData ?prop ?o
-    FILTER(?cv =<{pCVID}>)
-}}";
+            //Compruebo que no es nulo y que tiene 1 o más valores
+            if (propiedadesItem == null) { return null; }
+            if (propiedadesItem.Count == 0) { return null; }
 
-            List<Tuple<string, string>> listaResultado = new List<Tuple<string, string>>();
+            string select = $@"select distinct *";
+            string where = "where {";
+            
+            if (propiedadesItem.Count == 1)
+            {
+                where += $@" ?cv <{propiedadesItem[0]}> ?item ";
+            }
+            if (propiedadesItem.Count > 1)
+            {
+                where += $@" ?cv <{propiedadesItem[0]}> ?prop1 . ";
+                for (int i = 1; i < propiedadesItem.Count - 1; i++)
+                {
+                    where += $@" ?prop{i} <{propiedadesItem[i]}> ?prop{i + 1} . ";
+                }
+                where += $@" ?prop{propiedadesItem.Count - 1} <{propiedadesItem[propiedadesItem.Count - 1]}> ?item ";
+            }
+            where += "}";
+
+
+            List<string> listaResultado = new List<string>();
 
             SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
             if (resultData.results.bindings.Count == 0)
@@ -33,7 +48,7 @@ where {{
             }
             foreach (Dictionary<string, Data> fila in resultData.results.bindings)
             {
-                listaResultado.Add(new Tuple<string, string>(fila["prop"].value, fila["o"].value));
+                listaResultado.Add(fila["item"].value);
             }
 
             return listaResultado;
