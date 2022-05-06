@@ -198,6 +198,7 @@ namespace Gnoss.Web.Login
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
+            app.UseSaml2();
             app.UseCors();            
             app.UseAuthorization();
             app.UseGnossMiddleware();
