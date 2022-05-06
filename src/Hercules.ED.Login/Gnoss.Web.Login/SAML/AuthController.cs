@@ -59,7 +59,7 @@ namespace Gnoss.Web.Login.SAML
             var relayStateQuery = binding.GetRelayStateQuery();
             var returnUrl = relayStateQuery.ContainsKey(relayStateReturnUrl) ? relayStateQuery[relayStateReturnUrl] : Url.Content("~/");
             mResourceApi.Log.Info("Redirect: " + returnUrl);
-            return Redirect(returnUrl);
+            return Redirect("http://www.google.es");
         }
 
         [HttpGet, HttpPost]
