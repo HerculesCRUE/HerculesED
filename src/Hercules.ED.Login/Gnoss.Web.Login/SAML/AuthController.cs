@@ -62,7 +62,7 @@ namespace Gnoss.Web.Login.SAML
                 var returnUrl = relayStateQuery.ContainsKey(relayStateReturnUrl) ? relayStateQuery[relayStateReturnUrl] : Url.Content("~/");
             }catch(Exception ex)
             {
-                mResourceApi.Log.Error(ex.Message);
+                mResourceApi.Log.Error(ex.StackTrace +"|"+ ex.Message);
             }
             return Redirect("");
             //return Redirect(returnUrl);
