@@ -51,8 +51,7 @@ namespace Gnoss.Web.Login
             services.AddSession(options =>
             {
                 options.IdleTimeout = TimeSpan.FromSeconds(10);
-                options.Cookie.HttpOnly = true;
-                options.Cookie.IsEssential = true;
+                options.Cookie.HttpOnly = false;
             });
             services.AddMvc();
             services.AddControllers();
