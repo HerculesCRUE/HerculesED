@@ -24,7 +24,7 @@ namespace ImportadorWebCV.Exporta.Secciones.SituacionProfesionalSubclases
         {
         }
 
-        public void ExportaCargosActividades(Entity entity, [Optional] List<string> secciones, [Optional] bool preimportar)
+        public void ExportaCargosActividades(Entity entity, string seccion, [Optional] List<string> secciones, [Optional] bool preimportar)
         {
             List<CvnItemBean> listado = new List<CvnItemBean>();
             List<string> listadoIdentificadores = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
