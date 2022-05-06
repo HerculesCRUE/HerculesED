@@ -40,10 +40,10 @@ namespace DesnormalizadorHercules.Models
                 actualizadorCV.ModificarGrupos();
                 actualizadorCV.ModificarProyectos();
 
-                //Persona sin dependencias
-                actualizadorPersonas.ActualizarNumeroPublicacionesValidadas();
+                //Persona sin dependencias                
                 actualizadorPersonas.ActualizarPertenenciaLineas();
                 //depende de doc
+                actualizadorPersonas.ActualizarNumeroPublicacionesValidadas();
                 actualizadorPersonas.ActualizarAreasPersonas();
                 actualizadorPersonas.ActualizarIPGruposActuales(); 
                 actualizadorPersonas.ActualizarIPGruposHistoricos();
