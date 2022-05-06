@@ -51,6 +51,7 @@ namespace Gnoss.Web.Login.SAML
         [HttpGet, HttpPost]
         public IActionResult Index(string returnUrl = null,string token=null)
         {
+            mResourceApi.Log.Error($"LoginSAMLController Intento de login returnUrl: {returnUrl} token: {token}");
             if (!string.IsNullOrEmpty(returnUrl))
             {
                 if (User != null && User.Claims.Count() > 0)
