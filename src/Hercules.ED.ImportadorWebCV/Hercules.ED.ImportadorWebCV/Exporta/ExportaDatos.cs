@@ -1,5 +1,4 @@
 ﻿using ExportadorWebCV.Utils;
-using Hercules.ED.ImportadorWebCV.Exporta.Secciones;
 using ImportadorWebCV.Exporta.Secciones;
 using ImportadorWebCV.Exporta.Secciones.SituacionProfesionalSubclases;
 using Models;
