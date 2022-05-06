@@ -64,9 +64,5 @@ namespace Gnoss.Web.Login
         {
             return app.UseMiddleware<GnossMiddleware>();
         }
-        public static IApplicationBuilder UseErrorGnossMidleware(this IApplicationBuilder app)
-        {
-            return app.UseMiddleware<ErrorMiddleware>();
-        }
     }
 }

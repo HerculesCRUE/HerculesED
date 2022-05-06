@@ -14,11 +14,4 @@
     <ProjectReference Include="..\..\Hercules.ED.DisambiguationEngine\Hercules.ED.DisambiguationEngine\Hercules.ED.DisambiguationEngine.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Exporta\Secciones\ActividadCientificaSubclases\" />
-    <Folder Include="Exporta\Secciones\ActividadDocenteSubclases\" />
-    <Folder Include="Exporta\Secciones\ExperienciaCientificaSubclases\" />
-    <Folder Include="Exporta\Secciones\FormacionAcademicaSubclases\" />
-  </ItemGroup>
-
 </Project>

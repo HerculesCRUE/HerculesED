@@ -7,7 +7,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
-namespace Hercules.ED.ImportadorWebCV.Exporta.Secciones.SituacionProfesionalSubclases
+namespace ImportadorWebCV.Exporta.Secciones.SituacionProfesionalSubclases
 {
     public class SituacionProfesionalActual : SeccionBase
     {
