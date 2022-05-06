@@ -51,16 +51,18 @@ namespace Gnoss.Web.Login.SAML
         [HttpGet, HttpPost]
         public IActionResult Index(string returnUrl = null,string token=null)
         {
-            mResourceApi.Log.Info($"LoginSAMLController Intento de login returnUrl: {returnUrl} token: {token}");
+            mResourceApi.Log.Info($"0.-LoginSAMLController Intento de login returnUrl: {returnUrl} token: {token}");
             if (!string.IsNullOrEmpty(returnUrl))
             {
                 if (User != null && User.Claims.Count() > 0)
                 {
+                    mResourceApi.Log.Info($"1.-LoginSAMLController Intento de login returnUrl: {returnUrl} token: {token}");
                     //Loguear
                     return new RedirectResult(LoguearUsuario(User, returnUrl,token));
                 }
                 else
                 {
+                    mResourceApi.Log.Info($"2.-LoginSAMLController Intento de login returnUrl: {returnUrl} token: {token}");
                     //Si no hay usuario redirigimos al login
                     Response.Redirect(Url.Content(@"~/login/Auth/Login") + "?returnUrl=" + returnUrl +"&token="+ token);
                     
@@ -76,11 +78,11 @@ namespace Gnoss.Web.Login.SAML
             //TODO coger de claims
             email = "skarmeta@um.es";
 
-            mCommunityApi.Log.Info("numClaims:" + pUser.Claims.ToList());
+            mCommunityApi.Log.Info("3.-numClaims:" + pUser.Claims.ToList());
 
             foreach (Claim claim in pUser.Claims.ToList())
             {
-                mCommunityApi.Log.Info("CLAIM TYPE: '" + claim.Type + "' CLAIMVALUE: '" + claim.Value.Trim().ToLower() + "'");
+                mCommunityApi.Log.Info("4.-CLAIM TYPE: '" + claim.Type + "' CLAIMVALUE: '" + claim.Value.Trim().ToLower() + "'");
                 //TODO claims                
             }
 
@@ -96,12 +98,12 @@ namespace Gnoss.Web.Login.SAML
             if (string.IsNullOrEmpty(person))
             {
                 //No existe ninguna persona aociada al correo
-                mCommunityApi.Log.Info("Redirigir a la home");
+                mCommunityApi.Log.Info("5.-Redirigir a la home");
                 return pReturnUrl;              
             }
             else
             {
-                mCommunityApi.Log.Info("LOGUEAMOS");
+                mCommunityApi.Log.Info("6.-LOGUEAMOS");
                 //Comprobamos si existe usuario para la persona
                 string user = mResourceApi.VirtuosoQuery("select ?user", @$"where{{
                                         <{person}> <http://w3id.org/roh/gnossUser> ?user.
@@ -135,8 +137,8 @@ namespace Gnoss.Web.Login.SAML
                 }
 
                 string logoutUrl = UrlLogout;
-                mCommunityApi.Log.Info("logoutUrl:" + logoutUrl);
-                mCommunityApi.Log.Info("urlRedirect:" + pReturnUrl);
+                mCommunityApi.Log.Info("7.-logoutUrl:" + logoutUrl);
+                mCommunityApi.Log.Info("8.-urlRedirect:" + pReturnUrl);
                 Uri url = new Uri(pReturnUrl);
 
                 PersonaCN personaCN = new PersonaCN(mEntityContext, mLoggingService, mConfigService, mServicesUtilVirtuosoAndReplication);
