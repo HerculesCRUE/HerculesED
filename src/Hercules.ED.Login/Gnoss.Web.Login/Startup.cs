@@ -47,153 +47,26 @@ namespace Gnoss.Web.Login
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddMvc();
-            //services.AddControllers();
-            //services.AddHttpContextAccessor();
-            //services.AddScoped(typeof(UtilTelemetry));
-            //services.AddScoped(typeof(Usuario));
-            //services.AddScoped(typeof(UtilPeticion));
-            //services.AddScoped(typeof(Conexion));
-            //services.AddScoped(typeof(UtilGeneral));
-            //services.AddScoped(typeof(LoggingService));
-            //services.AddScoped(typeof(RedisCacheWrapper));
-            //services.AddScoped(typeof(Configuracion));
-            //services.AddScoped(typeof(GnossCache));
-            //services.AddScoped(typeof(VirtuosoAD));
-            //services.AddScoped(typeof(UtilServicios));
-            //services.AddScoped<IServicesUtilVirtuosoAndReplication, ServicesVirtuosoAndBidirectionalReplicationOpen>();
-
-            //services.Configure<Saml2Configuration>(Configuration.GetSection("Saml2"));
-            //services.Configure<Saml2Configuration>(saml2Configuration =>
-            //{
-            //    saml2Configuration.AllowedAudienceUris.Add(saml2Configuration.Issuer);
-            //    var entityDescriptor = new EntityDescriptor();
-            //    entityDescriptor.ReadIdPSsoDescriptorFromUrl(new Uri(Configuration["Saml2:IdPMetadata"]));
-            //    if (entityDescriptor.IdPSsoDescriptor != null)
-            //    {
-            //        saml2Configuration.SingleSignOnDestination = entityDescriptor.IdPSsoDescriptor.SingleSignOnServices.First(x => x.Binding == new Uri("urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect")).Location;
-            //        saml2Configuration.SingleLogoutDestination = entityDescriptor.IdPSsoDescriptor.SingleLogoutServices.First().Location;
-            //        saml2Configuration.SignatureValidationCertificates.AddRange(entityDescriptor.IdPSsoDescriptor.SigningCertificates);
-            //    }
-            //    else
-            //    {
-            //        throw new Exception("IdPSsoDescriptor not loaded from metadata.");
-            //    }
-            //});
-
-
-            //services.AddCors(options =>
-            //{
-            //    options.AddPolicy(name: "_myAllowSpecificOrigins",
-            //    builder =>
-            //    {
-            //        builder.AllowAnyOrigin();
-            //        builder.AllowAnyHeader();
-            //        builder.AllowAnyMethod();
-            //    });
-            //});
-            //string bdType = "";
-            //IDictionary environmentVariables = Environment.GetEnvironmentVariables();
-            //if (environmentVariables.Contains("connectionType"))
-            //{
-            //    bdType = environmentVariables["connectionType"] as string;
-            //}
-            //else
-            //{
-            //    bdType = Configuration.GetConnectionString("connectionType");
-            //}
-            //if (bdType.Equals("2"))
-            //{
-            //    services.AddScoped(typeof(DbContextOptions<EntityContext>));
-            //    services.AddScoped(typeof(DbContextOptions<EntityContextBASE>));
-            //}
-            //services.AddSingleton(typeof(ConfigService));
-            //services.AddSingleton<ILoggerFactory, LoggerFactory>();
-
-            //Conexion.ServicioWeb = true;
-            //string acid = "";
-            //if (environmentVariables.Contains("acid"))
-            //{
-            //    acid = environmentVariables["acid"] as string;
-            //}
-            //else
-            //{
-            //    acid = Configuration.GetConnectionString("acid");
-            //}
-            //string baseConnection = "";
-            //if (environmentVariables.Contains("base"))
-            //{
-            //    baseConnection = environmentVariables["base"] as string;
-            //}
-            //else
-            //{
-            //    baseConnection = Configuration.GetConnectionString("base");
-            //}
-            //if (bdType.Equals("0"))
-            //{
-            //    services.AddDbContext<EntityContext>(options =>
-            //            options.UseSqlServer(acid)
-            //            );
-            //    services.AddDbContext<EntityContextBASE>(options =>
-            //            options.UseSqlServer(baseConnection)
-
-            //            );
-            //}
-            //else if (bdType.Equals("2"))
-            //{
-            //    services.AddDbContext<EntityContext, EntityContextPostgres>(opt =>
-            //    {
-            //        var builder = new NpgsqlDbContextOptionsBuilder(opt);
-            //        builder.SetPostgresVersion(new Version(9, 6));
-            //        opt.UseNpgsql(acid);
-
-            //    });
-            //    services.AddDbContext<EntityContextBASE, EntityContextBASEPostgres>(opt =>
-            //    {
-            //        var builder = new NpgsqlDbContextOptionsBuilder(opt);
-            //        builder.SetPostgresVersion(new Version(9, 6));
-            //        opt.UseNpgsql(baseConnection);
-
-            //    });
-            //}
-
-            //var sp = services.BuildServiceProvider();
-
-            //// Resolve the services from the service provider
-            //var configService = sp.GetService<ConfigService>();
-
-
-            //string configLogStash = configService.ObtenerLogStashConnection();
-            //if (!string.IsNullOrEmpty(configLogStash))
-            //{
-            //    LoggingService.InicializarLogstash(configLogStash);
-            //}
-            //var entity = sp.GetService<EntityContext>();
-            //LoggingService.RUTA_DIRECTORIO_ERROR = Path.Combine(mEnvironment.ContentRootPath, "logs");
-
-            //EstablecerDominioCache(entity);
-
-            //CargarIdiomasPlataforma(configService);
-
-            //ConfigurarApplicationInsights(configService);
-
-            //services.AddSwaggerGen(c =>
-            //{
-            //    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Gnoss.Web.Login", Version = "v1" });
-            //});
-
-            //services.AddSaml2();
-
-            services.AddControllersWithViews();
-
-            services.AddRazorPages();
+            services.AddMvc();
+            services.AddControllers();
+            services.AddHttpContextAccessor();
+            services.AddScoped(typeof(UtilTelemetry));
+            services.AddScoped(typeof(Usuario));
+            services.AddScoped(typeof(UtilPeticion));
+            services.AddScoped(typeof(Conexion));
+            services.AddScoped(typeof(UtilGeneral));
+            services.AddScoped(typeof(LoggingService));
+            services.AddScoped(typeof(RedisCacheWrapper));
+            services.AddScoped(typeof(Configuracion));
+            services.AddScoped(typeof(GnossCache));
+            services.AddScoped(typeof(VirtuosoAD));
+            services.AddScoped(typeof(UtilServicios));
+            services.AddScoped<IServicesUtilVirtuosoAndReplication, ServicesVirtuosoAndBidirectionalReplicationOpen>();
 
             services.Configure<Saml2Configuration>(Configuration.GetSection("Saml2"));
-
             services.Configure<Saml2Configuration>(saml2Configuration =>
             {
                 saml2Configuration.AllowedAudienceUris.Add(saml2Configuration.Issuer);
-
                 var entityDescriptor = new EntityDescriptor();
                 entityDescriptor.ReadIdPSsoDescriptorFromUrl(new Uri(Configuration["Saml2:IdPMetadata"]));
                 if (entityDescriptor.IdPSsoDescriptor != null)
@@ -209,74 +82,129 @@ namespace Gnoss.Web.Login
             });
 
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: "_myAllowSpecificOrigins",
+                builder =>
+                {
+                    builder.AllowAnyOrigin();
+                    builder.AllowAnyHeader();
+                    builder.AllowAnyMethod();
+                });
+            });
+            string bdType = "";
+            IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+            if (environmentVariables.Contains("connectionType"))
+            {
+                bdType = environmentVariables["connectionType"] as string;
+            }
+            else
+            {
+                bdType = Configuration.GetConnectionString("connectionType");
+            }
+            if (bdType.Equals("2"))
+            {
+                services.AddScoped(typeof(DbContextOptions<EntityContext>));
+                services.AddScoped(typeof(DbContextOptions<EntityContextBASE>));
+            }
+            services.AddSingleton(typeof(ConfigService));
+            services.AddSingleton<ILoggerFactory, LoggerFactory>();
+
+            Conexion.ServicioWeb = true;
+            string acid = "";
+            if (environmentVariables.Contains("acid"))
+            {
+                acid = environmentVariables["acid"] as string;
+            }
+            else
+            {
+                acid = Configuration.GetConnectionString("acid");
+            }
+            string baseConnection = "";
+            if (environmentVariables.Contains("base"))
+            {
+                baseConnection = environmentVariables["base"] as string;
+            }
+            else
+            {
+                baseConnection = Configuration.GetConnectionString("base");
+            }
+            if (bdType.Equals("0"))
+            {
+                services.AddDbContext<EntityContext>(options =>
+                        options.UseSqlServer(acid)
+                        );
+                services.AddDbContext<EntityContextBASE>(options =>
+                        options.UseSqlServer(baseConnection)
+
+                        );
+            }
+            else if (bdType.Equals("2"))
+            {
+                services.AddDbContext<EntityContext, EntityContextPostgres>(opt =>
+                {
+                    var builder = new NpgsqlDbContextOptionsBuilder(opt);
+                    builder.SetPostgresVersion(new Version(9, 6));
+                    opt.UseNpgsql(acid);
+
+                });
+                services.AddDbContext<EntityContextBASE, EntityContextBASEPostgres>(opt =>
+                {
+                    var builder = new NpgsqlDbContextOptionsBuilder(opt);
+                    builder.SetPostgresVersion(new Version(9, 6));
+                    opt.UseNpgsql(baseConnection);
+
+                });
+            }
+
+            var sp = services.BuildServiceProvider();
+
+            // Resolve the services from the service provider
+            var configService = sp.GetService<ConfigService>();
+
+
+            string configLogStash = configService.ObtenerLogStashConnection();
+            if (!string.IsNullOrEmpty(configLogStash))
+            {
+                LoggingService.InicializarLogstash(configLogStash);
+            }
+            var entity = sp.GetService<EntityContext>();
+            LoggingService.RUTA_DIRECTORIO_ERROR = Path.Combine(mEnvironment.ContentRootPath, "logs");
+
+            EstablecerDominioCache(entity);
+
+            CargarIdiomasPlataforma(configService);
+
+            ConfigurarApplicationInsights(configService);
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Gnoss.Web.Login", Version = "v1" });
+            });
+
             services.AddSaml2();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            //if (env.IsDevelopment())
-            //{
-            //    app.UseDeveloperExceptionPage();
-            //    app.UseSwagger();
-            //    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Gnoss.Web.Login v1"));
-            //}
-
-            //app.UseHttpsRedirection();
-            //app.UseStaticFiles();
-            //app.UseRouting();
-            //app.UseSaml2();
-            //app.UseCors();            
-            //app.UseAuthorization();
-            //app.UseGnossMiddleware();
-            //app.UseEndpoints(endpoints =>
-            //{
-            //    endpoints.MapControllers();
-            //});
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Gnoss.Web.Login v1"));
             }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
+
             app.UseHttpsRedirection();
-            IDictionary environmentVariables = Environment.GetEnvironmentVariables();
-            string proxy = "";
-            if (environmentVariables.Contains("Proxy"))
-            {
-                proxy = environmentVariables["Proxy"] as string;
-            }
-            else
-            {
-                proxy = Configuration["Proxy"];
-            }
-            app.UsePathBase(proxy);
-            app.Use((context, next) =>
-            {
-                context.Request.PathBase = proxy;
-                return next();
-            });
-
             app.UseStaticFiles();
-
             app.UseRouting();
-
             app.UseSaml2();
-
+            app.UseCors();            
             app.UseAuthorization();
-
+            app.UseGnossMiddleware();
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapRazorPages();
-
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllers();
             });
         }
 
