@@ -24,7 +24,7 @@ namespace DesnormalizadorHercules.Models
 
         /// <summary>
         /// Actualizamos en la propiedad http://w3id.org/roh/publicationsNumber de las http://xmlns.com/foaf/0.1/Person el nº de publicaciones validadas
-        /// No tiene dependencias
+        /// Depende de ActualizadorDocument.ActualizarDocumentosValidados
         /// </summary>
         /// <param name="pPersons">IDs de las personas</param>
         public void ActualizarNumeroPublicacionesValidadas(List<string> pPersons = null)
