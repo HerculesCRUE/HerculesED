@@ -64,7 +64,7 @@
                                         </div>
 										<div>
 											@{											
-												string urlLoginSAML = Html.GetUrlActionLogin().Replace("/login?", "/loginsaml?");
+												string urlLoginSAML = Html.GetUrlActionLogin().Replace("/login?", "/loginsaml?").Replace("http://", "https://");
 												urlLoginSAML += "&returnUrl=" + Comunidad.Url;
 											}
 											<a href="@urlLoginSAML">Login CAS</a>
