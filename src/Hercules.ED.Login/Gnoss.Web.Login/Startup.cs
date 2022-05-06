@@ -201,6 +201,7 @@ namespace Gnoss.Web.Login
             app.UseSaml2();
             app.UseCors();            
             app.UseAuthorization();
+            app.UseSession();
             app.UseGnossMiddleware();
             app.UseEndpoints(endpoints =>
             {
