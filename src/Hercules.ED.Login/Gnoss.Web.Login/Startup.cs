@@ -171,7 +171,6 @@ namespace Gnoss.Web.Login
             var entity = sp.GetService<EntityContext>();
             LoggingService.RUTA_DIRECTORIO_ERROR = Path.Combine(mEnvironment.ContentRootPath, "logs");
 
-
             EstablecerDominioCache(entity);
 
             CargarIdiomasPlataforma(configService);
