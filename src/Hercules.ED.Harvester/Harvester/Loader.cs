@@ -143,7 +143,7 @@ namespace Harvester
             [Optional] Dictionary<string, Tuple<string, string>> dicProyectos, [Optional] Dictionary<string, Tuple<string, string>> dicPersonas)
         {
             string directorioPendientes = $@"{pConfig.GetLogCargas()}\{pSet}\pending\";
-            string directorioProcesados = $@"{pConfig.GetLogCargas()}\{pSet}\processed\";
+            string directorioProcesados = $@"{pConfig.GetLogCargas()}\{pSet}\processed";
 
             if (!Directory.Exists(directorioPendientes))
             {
@@ -156,7 +156,7 @@ namespace Harvester
 
             foreach (string fichero in Directory.EnumerateFiles(directorioPendientes))
             {
-                string ficheroProcesado = directorioProcesados + fichero.Substring(fichero.LastIndexOf("/"));
+                string ficheroProcesado = directorioProcesados + fichero.Substring(fichero.LastIndexOf("\\"));
                 List<string> idsACargar = File.ReadAllLines(fichero).ToList();
 
                 if (File.Exists(ficheroProcesado))
