@@ -53,8 +53,8 @@ namespace Gnoss.Web.Login.SAML
                 throw new AuthenticationException($"SAML Response status: {saml2AuthnResponse.Status}");
             }
 
-            //binding.Unbind(Request.ToGenericHttpRequest(), saml2AuthnResponse);
-            //await saml2AuthnResponse.CreateSession(HttpContext, lifetime: new TimeSpan(0, 0, 5), claimsTransform: (claimsPrincipal) => ClaimsTransform.Transform(claimsPrincipal));
+            //binding.Unbind(Request.ToGenericHttpRequest(), saml2AuthnResponse);            
+            await saml2AuthnResponse.CreateSession(HttpContext, lifetime: new TimeSpan(1, 0, 5), claimsTransform: (claimsPrincipal) => ClaimsTransform.Transform(claimsPrincipal));
 
             var relayStateQuery = binding.GetRelayStateQuery();
             var returnUrl = relayStateQuery.ContainsKey(relayStateReturnUrl) ? relayStateQuery[relayStateReturnUrl] : Url.Content("~/");
