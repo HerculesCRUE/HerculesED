@@ -32,7 +32,7 @@ namespace Gnoss.Web.Login
 
         protected string ObtenerRutaTraza()
         {
-            string ruta = Path.Combine(mEnv.ContentRootPath, "trazas");
+            string ruta = Path.Combine(mEnv.ContentRootPath, "logs");
 
             if (!Directory.Exists(ruta))
             {

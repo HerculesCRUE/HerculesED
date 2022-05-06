@@ -11,6 +11,7 @@ using Es.Riam.OpenReplication;
 using Es.Riam.Util;
 using Gnoss.Web.Login;
 using ITfoxtec.Identity.Saml2;
+using ITfoxtec.Identity.Saml2.MvcCore.Configuration;
 using ITfoxtec.Identity.Saml2.Schemas.Metadata;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -46,6 +47,12 @@ namespace Gnoss.Web.Login
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDistributedMemoryCache();
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromSeconds(10);
+                options.Cookie.HttpOnly = false;
+            });
             services.AddMvc();
             services.AddControllers();
             services.AddHttpContextAccessor();
@@ -170,7 +177,6 @@ namespace Gnoss.Web.Login
             var entity = sp.GetService<EntityContext>();
             LoggingService.RUTA_DIRECTORIO_ERROR = Path.Combine(mEnvironment.ContentRootPath, "logs");
 
-
             EstablecerDominioCache(entity);
 
             CargarIdiomasPlataforma(configService);
@@ -181,6 +187,8 @@ namespace Gnoss.Web.Login
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Gnoss.Web.Login", Version = "v1" });
             });
+
+            services.AddSaml2();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -192,12 +200,13 @@ namespace Gnoss.Web.Login
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Gnoss.Web.Login v1"));
             }
-
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
+            app.UseSaml2();
             app.UseCors();            
             app.UseAuthorization();
+            app.UseSession();
             app.UseGnossMiddleware();
             app.UseEndpoints(endpoints =>
             {
