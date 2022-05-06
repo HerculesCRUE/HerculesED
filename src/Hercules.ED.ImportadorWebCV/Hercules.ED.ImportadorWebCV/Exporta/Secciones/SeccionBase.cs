@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using Utils;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
-namespace Hercules.ED.ImportadorWebCV.Exporta.Secciones
+namespace ImportadorWebCV.Exporta.Secciones
 {
     public class SeccionBase
     {
