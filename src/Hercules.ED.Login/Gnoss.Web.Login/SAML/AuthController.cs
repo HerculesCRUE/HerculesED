@@ -52,12 +52,18 @@ namespace Gnoss.Web.Login.SAML
             {
                 throw new AuthenticationException($"SAML Response status: {saml2AuthnResponse.Status}");
             }
-            byte[] a = new byte[4];
-            a[0] = 1;
-            HttpContext.Session.Set("aaa", a);
-            byte[] b;
-            HttpContext.Session.TryGetValue("aaa",out b);
-            mResourceApi.Log.Info("asdasd:"+b[0].ToString());
+            try
+            {
+                byte[] a = new byte[4];
+                a[0] = 1;
+                HttpContext.Session.Set("aaa", a);
+                byte[] b;
+                HttpContext.Session.TryGetValue("aaa", out b);
+                mResourceApi.Log.Info("asdasd:" + b[0].ToString());
+            }catch(Exception ex)
+            {
+                mResourceApi.Log.Info("aaaaaaaaaaaaa: " + ex.Message+"|"+ex.StackTrace);
+            }
 
 
 
