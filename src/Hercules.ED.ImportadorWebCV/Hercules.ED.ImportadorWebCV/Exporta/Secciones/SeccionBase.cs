@@ -136,18 +136,6 @@ namespace Hercules.ED.ImportadorWebCV.Exporta.Secciones
                 listaEntidades.Add(pId, entity);
             }
 
-            //if (listResult.Count > 0 && listResult.ContainsKey(pId))
-            //{
-            //    Entity entity = new Entity()
-            //    {
-            //        id = pId,
-            //        ontology = pGraph,
-            //        rdfType = listResult[pId].First(x => x["p"].value == "http://www.w3.org/1999/02/22-rdf-syntax-ns#type")["o"].value,
-            //        properties = new List<Entity.Property>()
-            //    };
-            //    GetLoadedEntity(pId, "", "", ref entity, listResult);
-            //    return entity;
-            //}
             return listaEntidades;
         }
 
