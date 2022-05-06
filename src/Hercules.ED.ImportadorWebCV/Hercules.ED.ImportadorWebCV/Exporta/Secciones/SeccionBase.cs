@@ -95,10 +95,13 @@ namespace Hercules.ED.ImportadorWebCV.Exporta.Secciones
                 bool cargar = true;
                 while (cargar)
                 {
-                    string selectID = "select * where{ select distinct ?s ?p ?o";
+                    string selectID = "select * where{ select distinct ?s ?p ?o ?q ?w";
                     string whereID = $@"where{{
         ?x <http://gnoss/hasEntidad> ?s . 
         ?s ?p ?o .
+        OPTIONAL{{
+            ?o ?q ?w .
+        }}
         FILTER(?s in (<{string.Join(">,<", listadoId)}>))
     }}
     order by desc(?s) desc(?p) desc(?o)
@@ -123,7 +126,7 @@ namespace Hercules.ED.ImportadorWebCV.Exporta.Secciones
             {
                 throw;
             }
-            foreach(string pId in listadoId)
+            foreach (string pId in listadoId)
             {
                 Entity entity = new Entity()
                 {
@@ -156,10 +159,45 @@ namespace Hercules.ED.ImportadorWebCV.Exporta.Secciones
                 string s = prop["s"].value;
                 string p = prop["p"].value;
                 string o = prop["o"].value;
+                string q = "";
+                string w = "";
+                if (prop.ContainsKey("q") && prop.ContainsKey("w"))
+                {
+                    q = prop["q"].value;
+                    w = prop["w"].value;
+                }
 
                 string rdfType = pListResult[pId].First(x => x["p"].value == "http://www.w3.org/1999/02/22-rdf-syntax-ns#type")["o"].value;
                 if (s == pId && p != "http://www.w3.org/2000/01/rdf-schema#label" && p != "http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
                 {
+                    string qPropAcumuladoAux = "";
+                    string wObjAcumuladoAux = "";
+                    if (!string.IsNullOrEmpty(q) && q != "http://www.w3.org/2000/01/rdf-schema#label"
+                        && q != "http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
+                    {
+                        qPropAcumuladoAux = pPropAcumulado;
+                        if (string.IsNullOrEmpty(pPropAcumulado))
+                        {
+                            qPropAcumuladoAux += p;
+                        }
+                        if (!string.IsNullOrEmpty(qPropAcumuladoAux))
+                        {
+                            qPropAcumuladoAux += "@@@" + rdfType + "|";
+                        }
+                        qPropAcumuladoAux += q;
+
+                        wObjAcumuladoAux = pObjAcumulado;
+                        if (string.IsNullOrEmpty(pObjAcumulado))
+                        {
+                            wObjAcumuladoAux += o;
+                        }
+                        if (!string.IsNullOrEmpty(wObjAcumuladoAux))
+                        {
+                            wObjAcumuladoAux += "@@@";
+                        }
+                        wObjAcumuladoAux += w;
+                    }
+
                     string pPropAcumuladoAux = pPropAcumulado;
                     if (!string.IsNullOrEmpty(pPropAcumulado))
                     {
@@ -178,13 +216,31 @@ namespace Hercules.ED.ImportadorWebCV.Exporta.Secciones
                     }
                     else
                     {
-                        Entity.Property property = pEntity.properties.FirstOrDefault(x => x.prop == pPropAcumuladoAux);
-                        if (property == null)
+                        if (!string.IsNullOrEmpty(wObjAcumuladoAux))
                         {
-                            property = new Entity.Property(pPropAcumuladoAux, new List<string>());
-                            pEntity.properties.Add(property);
+                            Entity.Property property = pEntity.properties.FirstOrDefault(x => x.prop == qPropAcumuladoAux);
+                            if (property == null)
+                            {
+                                property = new Entity.Property(qPropAcumuladoAux, new List<string>());
+                                pEntity.properties.Add(property);
+                            }
+                            property.values.Add(wObjAcumuladoAux);
                         }
-                        property.values.Add(pObjAcumuladoAux);
+                        else if (pObjAcumuladoAux.Split("@@@").Last().Split("_").Count() > 2 && 
+                            Guid.TryParse(pObjAcumuladoAux.Split("@@@").Last().Split("_")[1], out Guid res)) 
+                        { 
+                            //No inserto nada
+                        }
+                        else
+                        {
+                            Entity.Property property = pEntity.properties.FirstOrDefault(x => x.prop == pPropAcumuladoAux);
+                            if (property == null)
+                            {
+                                property = new Entity.Property(pPropAcumuladoAux, new List<string>());
+                                pEntity.properties.Add(property);
+                            }
+                            property.values.Add(pObjAcumuladoAux);
+                        }
                     }
                 }
             }
