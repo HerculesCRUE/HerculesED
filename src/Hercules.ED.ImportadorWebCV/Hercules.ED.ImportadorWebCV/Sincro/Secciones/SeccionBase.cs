@@ -821,7 +821,17 @@ namespace ImportadorWebCV.Sincro.Secciones
             }
             //Creamos el recurso que no pertenece al CV
             ComplexOntologyResource resource = ToGnossApiResource(pUpdatedEntity);
-            string result = mResourceApi.LoadComplexSemanticResource(resource, false, true);
+            string result = "";
+            int numIntentos = 0;
+            while (!resource.Uploaded)
+            {
+                numIntentos++;
+                if (numIntentos > 5)
+                {
+                    break;
+                }
+                result=mResourceApi.LoadComplexSemanticResource(resource);
+            }
 
             //Obtenemos la auxiliar en la que cargar la entidad
             SparqlObject tab = mResourceApi.VirtuosoQuery("select *", "where{<" + pCvID + "> ?s ?o. ?o a <" + pRdfTypeTab + "> }", "curriculumvitae");
