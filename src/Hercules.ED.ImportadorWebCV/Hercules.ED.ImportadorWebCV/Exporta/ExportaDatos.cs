@@ -26,7 +26,6 @@ namespace ImportadorWebCV.Exporta
         public void ExportaDatosIdentificacion(Entity entity, [Optional] List<string> secciones, [Optional] bool preexportar)
         {
             string seccion = "http://w3id.org/roh/personalData";
-            //List<CvnItemBean> listado = new List<CvnItemBean>();
 
             DatosIdentificacion datosIdentificacion = new DatosIdentificacion(cvn,cvID);
             datosIdentificacion.ExportaDatosIdentificacion(entity, seccion);
@@ -35,7 +34,6 @@ namespace ImportadorWebCV.Exporta
         public void ExportaSituacionProfesional(Entity entity, [Optional] List<string> secciones, [Optional] bool preexportar)
         {
             string seccion = "http://w3id.org/roh/professionalSituation";
-            //List<CvnItemBean> listado = new List<CvnItemBean>();
 
             SituacionProfesionalActual situacionProfesional = new SituacionProfesionalActual(cvn,cvID);
             situacionProfesional.ExportaSituacionProfesional(entity, seccion);
@@ -43,14 +41,11 @@ namespace ImportadorWebCV.Exporta
             CargosActividades cargosActividades = new CargosActividades(cvn,cvID);
             cargosActividades.ExportaCargosActividades(entity, seccion);
 
-            ////Añado en el cvnRootResultBean los items que forman parte del listado
-            //UtilityExportar.AniadirItems(cvn, listado);
         }
 
         public void ExportaFormacionAcademica(Entity entity, [Optional] List<string> secciones, [Optional] bool preexportar)
         {
             string seccion = "http://w3id.org/roh/qualifications";
-            List<CvnItemBean> listado = new List<CvnItemBean>();
 
             EstudiosCiclos estudiosCiclos = new EstudiosCiclos(cvn, cvID);
             estudiosCiclos.ExportaEstudiosCiclos(entity, seccion);
@@ -69,42 +64,44 @@ namespace ImportadorWebCV.Exporta
 
             ConocimientoIdiomas conocimientoIdiomas = new ConocimientoIdiomas(cvn, cvID);
             conocimientoIdiomas.ExportaConocimientoIdiomas(entity, seccion);
-
-            //Añado en el cvnRootResultBean los items que forman parte del listado
-            UtilityExportar.AniadirItems(cvn, listado);
         }
         public void ExportaActividadDocente(Entity entity, [Optional] List<string> secciones, [Optional] bool preexportar)
         {
             string seccion = "http://w3id.org/roh/teachingExperience";
-            List<CvnItemBean> listado = new List<CvnItemBean>();
 
             AportacionesRelevantes aportacionesRelevantes = new AportacionesRelevantes(cvn, cvID);
+            aportacionesRelevantes.ExportaAportacionesRelevantes(entity,seccion);
 
             CursosSeminarios cursosSeminarios = new CursosSeminarios(cvn, cvID);
+            cursosSeminarios.ExportaCursosSeminarios(entity, seccion);
 
             DireccionTesis direccionTesis = new DireccionTesis(cvn, cvID);
+            direccionTesis.ExportaDireccionTesis(entity, seccion);
 
             FormacionAcademicaSubclase formacionAcademica = new FormacionAcademicaSubclase(cvn, cvID);
+            formacionAcademica.ExportaFormacionAcademica(entity, seccion);
 
             OtrasActividades otrasActividades = new OtrasActividades(cvn, cvID);
+            otrasActividades.ExportaOtrasActividades(entity, seccion);
 
             ParticipacionCongresosFormacionDocente participacionCongresos = new ParticipacionCongresosFormacionDocente(cvn, cvID);
+            participacionCongresos.ExportaParticipacionCongresos(entity, seccion);
 
             ParticipacionProyectosInnovacionDocente participacionProyectos = new ParticipacionProyectosInnovacionDocente(cvn, cvID);
+            participacionProyectos.ExportaParticipacionProyectos(entity, seccion);
 
             PremiosInnovacionDocente premiosInnovacionDocente = new PremiosInnovacionDocente(cvn, cvID);
+            premiosInnovacionDocente.ExportaPremiosInnovacionDocente(entity, seccion);
 
             PublicacionesDocentes publicacionesDocentes = new PublicacionesDocentes(cvn, cvID);
+            publicacionesDocentes.ExportaPublicacionesDocentes(entity, seccion);
 
             TutoriasAcademicas tutoriasAcademicas = new TutoriasAcademicas(cvn, cvID);
-
-            //Añado en el cvnRootResultBean los items que forman parte del listado
-            UtilityExportar.AniadirItems(cvn, listado);
+            tutoriasAcademicas.ExportaTutoriasAcademicas(entity, seccion);
         }
         public void ExportaExperienciaCientificaTecnologica(Entity entity, [Optional] List<string> secciones, [Optional] bool preexportar)
         {
             string seccion = "http://w3id.org/roh/scientificExperience";
-            List<CvnItemBean> listado = new List<CvnItemBean>();
 
             Contratos contratos = new Contratos(cvn, cvID);
 
@@ -118,26 +115,20 @@ namespace ImportadorWebCV.Exporta
 
             ResultadosTecnologicos resultadosTecnologicos = new ResultadosTecnologicos(cvn, cvID);
 
-            //Añado en el cvnRootResultBean los items que forman parte del listado
-            UtilityExportar.AniadirItems(cvn, listado);
         }
         public void ExportaActividadCientificaTecnologica(Entity entity, [Optional] List<string> secciones, [Optional] bool preexportar)
         {
             string seccion = "http://w3id.org/roh/scientificActivity";
-            List<CvnItemBean> listado = new List<CvnItemBean>();
 
 
 
 
-            //Añado en el cvnRootResultBean los items que forman parte del listado
-            UtilityExportar.AniadirItems(cvn, listado);
         }
 
         public void ExportaTextoLibre(Entity entity, [Optional] List<string> secciones, [Optional] bool preexportar)
         {
             TextoLibre textoLibre = new TextoLibre(cvn, cvID);
             textoLibre.ExportaTextoLibre(entity);
-
         }
     }
 }
