@@ -56,14 +56,19 @@ namespace ImportadorWebCV.Exporta
             estudiosCiclos.ExportaEstudiosCiclos(entity, seccion);
 
             Doctorados doctorados = new Doctorados(cvn, cvID);
+            doctorados.ExportaDoctorados(entity, seccion);
 
             OtraFormacionPosgrado otraFormacionPosgrado = new OtraFormacionPosgrado(cvn, cvID);
+            otraFormacionPosgrado.ExportaOtraFormacionPosgrado(entity, seccion);
 
             FormacionEspecializada formacionEspecializada = new FormacionEspecializada(cvn, cvID);
+            formacionEspecializada.ExportaFormacionEspecializada(entity, seccion);
 
             CursosMejoraDocente cursosMejora = new CursosMejoraDocente(cvn, cvID);
+            cursosMejora.ExportaCursosMejoraDocente(entity, seccion);
 
             ConocimientoIdiomas conocimientoIdiomas = new ConocimientoIdiomas(cvn, cvID);
+            conocimientoIdiomas.ExportaConocimientoIdiomas(entity, seccion);
 
             //Añado en el cvnRootResultBean los items que forman parte del listado
             UtilityExportar.AniadirItems(cvn, listado);
