@@ -53,6 +53,7 @@ namespace ImportadorWebCV.Exporta
             List<CvnItemBean> listado = new List<CvnItemBean>();
 
             EstudiosCiclos estudiosCiclos = new EstudiosCiclos(cvn, cvID);
+            estudiosCiclos.ExportaEstudiosCiclos(entity, seccion);
 
             Doctorados doctorados = new Doctorados(cvn, cvID);
 
