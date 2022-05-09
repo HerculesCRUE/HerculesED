@@ -42,7 +42,7 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
 
             exporta.ExportaDatosIdentificacion(entity, secciones);
             exporta.ExportaSituacionProfesional(entity, secciones);
-            //exporta.ExportaFormacionAcademica(entity, secciones);
+            exporta.ExportaFormacionAcademica(entity, secciones);
             //exporta.ExportaActividadDocente(entity, secciones);
             //exporta.ExportaExperienciaCientificaTecnologica(entity, secciones);
             //exporta.ExportaActividadCientificaTecnologiaca(entity, secciones);
