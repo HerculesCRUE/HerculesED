@@ -16,16 +16,11 @@ namespace ImportadorWebCV.Exporta.Secciones
 
         public void ExportaDatosIdentificacion(Entity entity, string seccion)
         {
-
             CvnItemBean itemBean = new CvnItemBean()
             {
-                Code = "000.010.000.000"
+                Code = "000.010.000.000",
+                Items = new List<CVNObject>()
             };
-
-            if (itemBean.Items == null)
-            {
-                itemBean.Items = new List<CVNObject>();
-            }
 
             UtilityExportar.AddCvnItemBeanCvnString(itemBean, seccion, UtilityExportar.EliminarRDF(Variables.DatosIdentificacion.nombre), "000.010.000.020", entity);
             UtilityExportar.AddCvnItemBeanCvnFamilyNameBean(itemBean, seccion,
