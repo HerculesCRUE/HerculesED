@@ -2,8 +2,11 @@
 using Gnoss.ApiWrapper.ApiModel;
 using ImportadorWebCV;
 using Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -11,7 +14,7 @@ using Utils;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
 namespace ExportadorWebCV.Utils
-{
+{   
     public class UtilityExportar
     {
         public static List<string> GetListadoEntidades(ResourceApi pResourceApi, List<string> propiedadesItem, string pCVID)
@@ -437,6 +440,41 @@ namespace ExportadorWebCV.Utils
             }
         }
 
+        public static void AddCvnItemBeanCvnDurationHours(CvnItemBean itemBean, string code, Entity entity, [Optional] string secciones)
+        {
+            //Compruebo si el codigo pasado está bien formado
+            if (Utility.CodigoIncorrecto(code))
+            {
+                return;
+            }
+
+            CvnItemBeanCvnDuration duration = new CvnItemBeanCvnDuration();
+            duration.Code = code;
+            string duracion = "PT";
+
+            string horas = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith("http://w3id.org/roh/durationHours")).Count() != 0 ?
+                entity.properties.Where(x => EliminarRDF(x.prop).EndsWith("http://w3id.org/roh/durationHours")).Select(x => x.values)?.FirstOrDefault().FirstOrDefault()
+                : null;
+            if (!string.IsNullOrEmpty(horas))
+            {
+                duracion += horas + "H";
+            }
+
+
+            //si no hay datos insertados pongo la cadena a vacia
+            if (duracion.Equals("PT"))
+            {
+                duracion = "";
+            }
+            duration.Value = !string.IsNullOrEmpty(duracion) ? duracion : null;
+
+            //Añado si no es nulo
+            if (duration.Value != null)
+            {
+                itemBean.Items.Add(duration);
+            }
+        }
+
         public static void AddCvnItemBeanCvnEntityBean(CvnItemBean itemBean, string propertyName, string code, Entity entity, [Optional] string secciones)
         {
             //Compruebo si el codigo pasado está bien formado
@@ -469,6 +507,26 @@ namespace ExportadorWebCV.Utils
             pageBean.Code = code;
 
             itemBean.Items.Add(pageBean);
+        }
+
+        public static void AddLanguage(CvnItemBean itemBean, string propertyIdentification, string code, Entity entity, [Optional] string secciones) 
+        {
+            //Compruebo si el codigo pasado está bien formado
+            if (Utility.CodigoIncorrecto(code))
+            {
+                return;
+            }
+
+            if(Comprobar(entity.properties.Where(x => x.prop.Equals("http://w3id.org/roh/languageOfTheCertificate"))))
+            {
+                CultureInfo cultureInfo = new CultureInfo(entity.properties.Where(x => x.prop.Equals("http://w3id.org/roh/languageOfTheCertificate")).First()
+                    .values.First().Split("_").Last());
+
+                CvnItemBeanCvnTitleBean titleBean = new CvnItemBeanCvnTitleBean();
+                titleBean.Code = code;
+                titleBean.Name = cultureInfo.EnglishName;
+                titleBean.Identification = cultureInfo.Name;
+            }
         }
 
         public static void AddCvnItemBeanCvnTitleBean(CvnItemBean itemBean, string propertyIdentification, string propertyName, string code, Entity entity, [Optional] string secciones)
