@@ -44,7 +44,7 @@ function enlazarFiltrosBusqueda() {
         AgregarFiltro('ordenarPor', $(this).val(), true);
     });
 
-    // Configurar la selecci�n de ordenaci�n de los resultados al pulsar en "Ordenado por"    
+    // Configurar la selección de ordenación de los resultados al pulsar en "Ordenado por"    
     $("#panel-orderBy a.item-dropdown")
         // En ordenación, no mostraba el icono seleccionado ya que lo "desmontaba".
         .unbind('.ordenar')
@@ -742,7 +742,43 @@ var MontarResultadosScroll = {
     }
 }
 
-montarTooltip.montarTooltips= function () {
+montarTooltip.lanzar = function (elem, title, classes) {
+	if (title != undefined) 
+	{
+        elem.tooltip({
+            html: true,
+            placement: 'bottom',
+            template: '<div class="tooltip ' + classes + '" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
+            title: title
+        }).on('mouseenter', function () {
+            // console.log('enter')
+            var _this = this;
+            // $(this).tooltip('show');
+            $('.tooltip').on('mouseenter', function () {
+                $(this).tooltip('show');
+            }).on('mouseleave', function () {
+                $(this).tooltip('hide')
+            })
+        }).on('mouseleave', function () {
+            // console.log('leave')
+            var _this = this;
+            setTimeout(function () {
+                if ($('.tooltip:hover').length < 0) {
+                    // console.log('hover')
+                    $(_this).tooltip("hide")
+                }
+                $('.tooltip').on('mouseleave', function () {
+                    //console.log('leave')
+                    $(_this).tooltip("hide");
+                });
+            });
+        });
+	}
+    this.comportamiento(elem);
+};
+
+
+tooltipsAccionesRecursos.getTooltipQuotes= function () {
 	var that = this;	
 	this.quotes.each(function () {
 			console.log("toltipFN(montarTooltip)");
@@ -816,6 +852,19 @@ montarTooltip.montarTooltips= function () {
 					template: '<div class="tooltip background-blanco citas" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
 					title: html
 				});
+			} else {
+				$(this).tooltip({
+					html: true,
+					placement: 'bottom',
+					template: '<div class="tooltip background-blanco citas" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
+					title: `<p class="tooltip-title">Fuente de citas</p>
+		                <span class="material-icons cerrar">close</span>
+		                <ul class="no-list-style">
+		                    <li>
+		                        <span class="texto">No hay datos</span>
+		                    </li>
+		                </ul>`
+				});
 			}
 	});
 }
@@ -824,6 +873,7 @@ montarTooltip.montarTooltips= function () {
 var montarTooltipCode = {
 	// Init the function
     init: function () {
+    	console.log("montarTooltipCode custom entrado")
         this.config();
         this.comportamiento();
     },
