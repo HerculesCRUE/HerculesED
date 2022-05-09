@@ -103,7 +103,7 @@ namespace Gnoss.Web.Login.SAML
             {
                 //No existe ninguna persona aociada al correo
                 mCommunityApi.Log.Info("5.-Redirigir a la página avisando de que no existe ningún usuario con ese correo");
-                return pReturnUrl+"/noexiste?email="+email;
+                return pReturnUrl+"/notexistsmail?email="+email;
             }
             else
             {
