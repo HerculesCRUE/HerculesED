@@ -11,6 +11,7 @@ using Microsoft.Extensions.Options;
 using System.Security.Authentication;
 using System;
 using ApiWrapper::Gnoss.ApiWrapper;
+using Gnoss.Web.Login.Open.SAML;
 
 namespace Gnoss.Web.Login.SAML
 {
@@ -56,7 +57,7 @@ namespace Gnoss.Web.Login.SAML
             }
 
             //binding.Unbind(Request.ToGenericHttpRequest(), saml2AuthnResponse);            
-            await saml2AuthnResponse.CreateSession(HttpContext, lifetime: new TimeSpan(0, 0, 20), claimsTransform: (claimsPrincipal) => ClaimsTransform.Transform(claimsPrincipal));
+            await saml2AuthnResponse.CreateSession(HttpContext, lifetime: new TimeSpan(0, 0, 5), claimsTransform: (claimsPrincipal) => ClaimsTransform.Transform(claimsPrincipal));
 
             var relayStateQuery = binding.GetRelayStateQuery();
 
@@ -74,5 +75,6 @@ namespace Gnoss.Web.Login.SAML
             var saml2LogoutRequest = await new Saml2LogoutRequest(config, User).DeleteSession(HttpContext);
             return binding.Bind(saml2LogoutRequest).ToActionResult();
         }
+
     }
 }

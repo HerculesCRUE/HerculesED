@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Gnoss.Web.Login.SAML
+namespace Gnoss.Web.Login.Open.SAML
 {
     public class ConfigServiceSAML
     {

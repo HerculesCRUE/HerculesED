@@ -31,6 +31,7 @@ using Es.Riam.Util;
 using ApiWrapper::Gnoss.ApiWrapper;
 using ApiWrapper::Gnoss.ApiWrapper.ApiModel;
 using ApiWrapper::Gnoss.ApiWrapper.Model;
+using Gnoss.Web.Login.Open.SAML;
 
 namespace Gnoss.Web.Login.SAML
 {
@@ -101,8 +102,8 @@ namespace Gnoss.Web.Login.SAML
             if (string.IsNullOrEmpty(person))
             {
                 //No existe ninguna persona aociada al correo
-                mCommunityApi.Log.Info("5.-Redirigir a la home");
-                return pReturnUrl;              
+                mCommunityApi.Log.Info("5.-Redirigir a la página avisando de que no existe ningún usuario con ese correo");
+                return pReturnUrl+"/notexistsmail?email="+email;
             }
             else
             {
