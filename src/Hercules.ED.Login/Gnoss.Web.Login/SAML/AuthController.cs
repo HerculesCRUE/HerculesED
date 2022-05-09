@@ -74,5 +74,6 @@ namespace Gnoss.Web.Login.SAML
             var saml2LogoutRequest = await new Saml2LogoutRequest(config, User).DeleteSession(HttpContext);
             return binding.Bind(saml2LogoutRequest).ToActionResult();
         }
+
     }
 }
