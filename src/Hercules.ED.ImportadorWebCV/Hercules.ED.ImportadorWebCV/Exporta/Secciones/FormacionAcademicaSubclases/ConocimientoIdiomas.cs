@@ -46,8 +46,6 @@ namespace ImportadorWebCV.Exporta.Secciones.FormacionAcademicaSubclases
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.FormacionAcademica.conocimientoIdiomasExpresionEscrita),
                     "020.060.000.160", keyValue.Value);
 
-
-
                 listado.Add(itemBean);
             }
 
