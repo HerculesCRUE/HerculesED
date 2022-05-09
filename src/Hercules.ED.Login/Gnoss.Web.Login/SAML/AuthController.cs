@@ -54,12 +54,13 @@ namespace Gnoss.Web.Login.SAML
             }
 
             //binding.Unbind(Request.ToGenericHttpRequest(), saml2AuthnResponse);            
-            await saml2AuthnResponse.CreateSession(HttpContext, lifetime: new TimeSpan(1, 0, 5), claimsTransform: (claimsPrincipal) => ClaimsTransform.Transform(claimsPrincipal));
+            await saml2AuthnResponse.CreateSession(HttpContext, lifetime: new TimeSpan(0, 0, 20), claimsTransform: (claimsPrincipal) => ClaimsTransform.Transform(claimsPrincipal));
 
             var relayStateQuery = binding.GetRelayStateQuery();
-            var returnUrl = relayStateQuery.ContainsKey(relayStateReturnUrl) ? relayStateQuery[relayStateReturnUrl] : Url.Content("~/");
-            mResourceApi.Log.Info("Redirect: " + returnUrl);
-            return Redirect(returnUrl);
+
+            string token = relayStateQuery["token"];
+            string returnUrl = relayStateQuery["ReturnUrl"];
+            return Redirect(Url.Content(@"~/LoginSAML") + "?returnUrl=" + returnUrl + "&token=" + token);
         }
 
         [HttpGet, HttpPost]
