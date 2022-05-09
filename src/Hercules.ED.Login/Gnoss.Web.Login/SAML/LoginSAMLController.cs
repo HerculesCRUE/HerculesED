@@ -76,7 +76,7 @@ namespace Gnoss.Web.Login.SAML
 
         private string LoguearUsuario(ClaimsPrincipal pUser,string pReturnUrl,string pToken)
         {
-            string email = "skarmeta@um.es";
+            string email = "";
 
             mCommunityApi.Log.Info("3.-numClaims:" + pUser.Claims.ToList());
 
@@ -86,7 +86,7 @@ namespace Gnoss.Web.Login.SAML
                 mCommunityApi.Log.Info("4.-CLAIM TYPE: '" + claim.Type + "' CLAIMVALUE: '" + claim.Value.Trim().ToLower() + "'");
                 if(claim.Type== "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")
                 {
-                    //email = claim.Value.Trim();
+                    email = claim.Value.Trim();
                 }            
             }
 
