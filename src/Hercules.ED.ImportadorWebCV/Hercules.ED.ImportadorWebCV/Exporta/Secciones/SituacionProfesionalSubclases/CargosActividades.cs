@@ -31,6 +31,13 @@ namespace ImportadorWebCV.Exporta.Secciones.SituacionProfesionalSubclases
             Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntity(listadoIdentificadores, graph);
             foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesSP)
             {
+                CvnItemBean itemBean = new CvnItemBean()
+                {
+                    Code = "010.020.000.000",
+                    Items = new List<CVNObject>()
+                };
+
+                UtilityExportar.AddCvnItemBeanCvnDuration(itemBean, "010.020.000.190", keyValue.Value);
                 //listado.add(item)
             }
 
