@@ -11,6 +11,7 @@ using Microsoft.Extensions.Options;
 using System.Security.Authentication;
 using System;
 using ApiWrapper::Gnoss.ApiWrapper;
+using Gnoss.Web.Login.Open.SAML;
 
 namespace Gnoss.Web.Login.SAML
 {
