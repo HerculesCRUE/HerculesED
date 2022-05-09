@@ -10,6 +10,7 @@ using Es.Riam.Gnoss.UtilServiciosWeb;
 using Es.Riam.OpenReplication;
 using Es.Riam.Util;
 using Gnoss.Web.Login;
+using Gnoss.Web.Login.Open.SAML;
 using Gnoss.Web.Login.SAML;
 using ITfoxtec.Identity.Saml2;
 using ITfoxtec.Identity.Saml2.MvcCore.Configuration;
