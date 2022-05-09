@@ -9,7 +9,7 @@ namespace ImportadorWebCV.Exporta.Secciones
 {
     public class DatosIdentificacion : SeccionBase
     {
-        public DatosIdentificacion(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
+        public DatosIdentificacion(cvnRootResultBean mCvn, string cvID) : base(mCvn, cvID)
         {
 
         }
@@ -71,7 +71,7 @@ namespace ImportadorWebCV.Exporta.Secciones
             UtilityExportar.AddCvnItemBeanCvnExternalPKBean(itemBean, seccion, UtilityExportar.EliminarRDF(Variables.DatosIdentificacion.otroIdentificador), "000.010.000.260", entity);
 
             //Añado en el cvnRootResultBean los items que forman parte del listado
-            UtilityExportar.AniadirItems(base.mCvn, new List<CvnItemBean>() { itemBean });
+            UtilityExportar.AniadirItems(mCvn, new List<CvnItemBean>() { itemBean });
         }
     }
 }
