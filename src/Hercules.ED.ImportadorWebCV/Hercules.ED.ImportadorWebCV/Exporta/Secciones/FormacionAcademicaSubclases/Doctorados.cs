@@ -52,7 +52,8 @@ namespace ImportadorWebCV.Exporta.Secciones.FormacionAcademicaSubclases
 
                 //Programa doctorado
                 UtilityExportar.AddCvnItemBeanCvnTitleBean(itemBean, UtilityExportar.EliminarRDF(Variables.FormacionAcademica.doctoradosProgramaDoctorado),
-                     UtilityExportar.EliminarRDF(Variables.FormacionAcademica.doctoradosProgramaDoctoradoNombre), "020.010.020.010", keyValue.Value);
+                     UtilityExportar.EliminarRDF(Variables.FormacionAcademica.doctoradosProgramaDoctoradoNombre),
+                     "020.010.020.010", keyValue.Value);
 
                 //Entidad titulación
                 UtilityExportar.AddCvnItemBeanCvnEntityBean(itemBean, UtilityExportar.EliminarRDF(Variables.FormacionAcademica.doctoradosEntidadTitulacionNombre),
@@ -102,7 +103,12 @@ namespace ImportadorWebCV.Exporta.Secciones.FormacionAcademicaSubclases
                 UtilityExportar.AddCvnItemBeanCvnDateDayMonthYear(itemBean, UtilityExportar.EliminarRDF(Variables.FormacionAcademica.doctoradosFechaHomologacion),
                     "020.010.020.250", keyValue.Value);
 
+
+                listado.Add(itemBean);
             }
+
+            //Añado en el cvnRootResultBean los items que forman parte del listado
+            UtilityExportar.AniadirItems(mCvn, listado);
         }
     }
 }
