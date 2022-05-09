@@ -99,6 +99,25 @@ namespace ExportadorWebCV.Utils
             }
         }
 
+        public static void AddCvnItemBeanCvnString(CvnItemBean itemBean, string property, string code, Entity entity)
+        {
+            //Compruebo si el codigo pasado está bien formado
+            if (Utility.CodigoIncorrecto(code))
+            {
+                return;
+            }
+
+            if (entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property)).Count() > 0)
+            {
+                itemBean.Items.Add(new CvnItemBeanCvnString()
+                {
+                    Code = code,
+                    Value = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property))
+                        .Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("_").Last()
+                });
+            }
+        }
+
         public static void AddDireccion(CvnItemBean itemBean, string section, string property, string code, Entity entity)
         {
             //Compruebo si el codigo pasado está bien formado
@@ -240,7 +259,14 @@ namespace ExportadorWebCV.Utils
             CvnItemBeanCvnBoolean cvnBoolean = new CvnItemBeanCvnBoolean();
             cvnBoolean.Code = code;
 
-            itemBean.Items.Add(cvnBoolean);
+            //Añado si se inserta valor
+            if (Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property))))
+            {
+                cvnBoolean.Value = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property))
+                        .Select(x => x.values).FirstOrDefault().FirstOrDefault().ToLower().Equals("true") ? true : false;
+
+                itemBean.Items.Add(cvnBoolean);
+            }
         }
 
         public static void AddCvnItemBeanCvnCodeGroup(CvnItemBean itemBean, string property, string code, Entity entity, [Optional] string secciones)
@@ -328,7 +354,12 @@ namespace ExportadorWebCV.Utils
             CvnItemBeanCvnEntityBean entityBean = new CvnItemBeanCvnEntityBean();
             entityBean.Code = code;
 
-            itemBean.Items.Add(entityBean);
+            //Añado si se inserta valor
+            if (Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property)))) {
+                entityBean.Name = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property)).Select(x => x.values).FirstOrDefault().FirstOrDefault();
+
+                itemBean.Items.Add(entityBean);
+            }            
         }
 
         public static void AddCvnItemBeanCvnPageBean(CvnItemBean itemBean, string property, string code, Entity entity, [Optional] string secciones)
@@ -345,7 +376,7 @@ namespace ExportadorWebCV.Utils
             itemBean.Items.Add(pageBean);
         }
 
-        public static void AddCvnItemBeanCvnTitleBean(CvnItemBean itemBean, string property, string code, Entity entity, [Optional] string secciones)
+        public static void AddCvnItemBeanCvnTitleBean(CvnItemBean itemBean, string propertyIdentification, string propertyName, string code, Entity entity, [Optional] string secciones)
         {
             //Compruebo si el codigo pasado está bien formado
             if (Utility.CodigoIncorrecto(code))
@@ -355,8 +386,19 @@ namespace ExportadorWebCV.Utils
 
             CvnItemBeanCvnTitleBean titleBean = new CvnItemBeanCvnTitleBean();
             titleBean.Code = code;
+            titleBean.Identification = Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(propertyIdentification))) 
+                ? entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(propertyIdentification)).Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("_").Last()
+                : null;
+            titleBean.Name = Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(propertyName)))
+                ? entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(propertyName)).Select(x => x.values).FirstOrDefault().FirstOrDefault()
+                : null;
 
-            itemBean.Items.Add(titleBean);
+
+            //Añado si se inserta valor
+            if (!string.IsNullOrEmpty(titleBean.Name) || !string.IsNullOrEmpty(titleBean.Identification))
+            {
+                itemBean.Items.Add(titleBean);
+            }
         }
 
         public static void AddCvnItemBeanCvnVolumeBean(CvnItemBean itemBean, string seccion, string property, string code, Entity entity, [Optional] string secciones)
@@ -409,7 +451,11 @@ namespace ExportadorWebCV.Utils
                 .Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("@@@").Last()
                 : null;
 
-            itemBean.Items.Add(phone);
+            if (!string.IsNullOrEmpty(phone.Extension) || !string.IsNullOrEmpty(phone.InternationalCode)
+                || !string.IsNullOrEmpty(phone.Number)) 
+            {
+                itemBean.Items.Add(phone); 
+            }
         }
 
         /// <summary>
@@ -468,6 +514,36 @@ namespace ExportadorWebCV.Utils
             {
                 string gnossDate = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property))
                     .Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("@@@")[1];
+
+                string anio = gnossDate.Substring(0, 4);
+                string mes = gnossDate.Substring(4, 2);
+                string dia = gnossDate.Substring(6, 2);
+                string hora = gnossDate.Substring(8, 2);
+                string minuto = gnossDate.Substring(10, 2);
+                string segundos = gnossDate.Substring(12, 2);
+                string fecha = anio + "-" + mes + "-" + dia + "T" + hora + ":" + minuto + ":" + segundos + "+01:00";
+
+                DateTime fechaDateTime = DateTime.Parse(fecha);
+                itemBean.Items.Add(new CvnItemBeanCvnDateDayMonthYear()
+                {
+                    Code = code,
+                    Value = fechaDateTime
+                });
+            }
+        }
+
+        public static void AddCvnItemBeanCvnDateDayMonthYear(CvnItemBean itemBean, string property, string code, Entity entity)
+        {
+            //Compruebo si el codigo pasado está bien formado
+            if (Utility.CodigoIncorrecto(code))
+            {
+                return;
+            }
+
+            if (entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property)).Count() > 0)
+            {
+                string gnossDate = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property))
+                    .Select(x => x.values).FirstOrDefault().FirstOrDefault();
 
                 string anio = gnossDate.Substring(0, 4);
                 string mes = gnossDate.Substring(4, 2);
