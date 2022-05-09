@@ -31,6 +31,7 @@ using Es.Riam.Util;
 using ApiWrapper::Gnoss.ApiWrapper;
 using ApiWrapper::Gnoss.ApiWrapper.ApiModel;
 using ApiWrapper::Gnoss.ApiWrapper.Model;
+using Gnoss.Web.Login.Open.SAML;
 
 namespace Gnoss.Web.Login.SAML
 {
@@ -41,11 +42,12 @@ namespace Gnoss.Web.Login.SAML
         private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/configOAuth/OAuthV3.config");
         private static readonly CommunityApi mCommunityApi = new CommunityApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/configOAuth/OAuthV3.config");
         private static readonly UserApi mUserApi = new UserApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/configOAuth/OAuthV3.config");
+        readonly ConfigServiceSAML mConfigServiceSAML;
 
-        public LoginSAMLController(LoggingService loggingService, IHttpContextAccessor httpContextAccessor, EntityContext entityContext, ConfigService configService, RedisCacheWrapper redisCacheWrapper, GnossCache gnossCache, VirtuosoAD virtuosoAD, IHostingEnvironment env, EntityContextBASE entityContextBASE, IServicesUtilVirtuosoAndReplication servicesUtilVirtuosoAndReplication)
+        public LoginSAMLController(LoggingService loggingService, IHttpContextAccessor httpContextAccessor, EntityContext entityContext, ConfigService configService, RedisCacheWrapper redisCacheWrapper, GnossCache gnossCache, VirtuosoAD virtuosoAD, IHostingEnvironment env, EntityContextBASE entityContextBASE, IServicesUtilVirtuosoAndReplication servicesUtilVirtuosoAndReplication, ConfigServiceSAML configServiceSAML)
              : base(loggingService, httpContextAccessor, entityContext, configService, redisCacheWrapper, gnossCache, virtuosoAD, env, entityContextBASE, servicesUtilVirtuosoAndReplication)
         {
-
+            mConfigServiceSAML = configServiceSAML;
         }
 
         [HttpGet, HttpPost]
@@ -64,7 +66,7 @@ namespace Gnoss.Web.Login.SAML
                 {
                     mResourceApi.Log.Info($"2.-LoginSAMLController Intento de login returnUrl: {returnUrl} token: {token}");
                     //Si no hay usuario redirigimos al login
-                    Response.Redirect(Url.Content(@"~/login/Auth/Login") + "?returnUrl=" + returnUrl +"&token="+ token);
+                    Response.Redirect(Url.Content(@$"~/{mConfigServiceSAML.GetUrlServiceInDomain()}Auth/Login") + "?returnUrl=" + returnUrl +"&token="+ token);
                     
                 }
             }
@@ -100,8 +102,8 @@ namespace Gnoss.Web.Login.SAML
             if (string.IsNullOrEmpty(person))
             {
                 //No existe ninguna persona aociada al correo
-                mCommunityApi.Log.Info("5.-Redirigir a la home");
-                return pReturnUrl;              
+                mCommunityApi.Log.Info("5.-Redirigir a la página avisando de que no existe ningún usuario con ese correo");
+                return pReturnUrl+"/notexistsmail?email="+email;
             }
             else
             {

@@ -11,6 +11,7 @@ using Microsoft.Extensions.Options;
 using System.Security.Authentication;
 using System;
 using ApiWrapper::Gnoss.ApiWrapper;
+using Gnoss.Web.Login.Open.SAML;
 
 namespace Gnoss.Web.Login.SAML
 {
@@ -21,10 +22,12 @@ namespace Gnoss.Web.Login.SAML
         private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/configOAuth/OAuthV3.config");
         const string relayStateReturnUrl = "ReturnUrl";
         private Saml2Configuration config;
+        readonly ConfigServiceSAML mConfigServiceSAML;
 
-        public AuthController(IOptions<Saml2Configuration> configAccessor)
+        public AuthController(IOptions<Saml2Configuration> configAccessor, ConfigServiceSAML configServiceSAML)
         {
             config = configAccessor.Value;
+            mConfigServiceSAML = configServiceSAML;
         }
 
         [HttpGet, HttpPost]
@@ -54,13 +57,13 @@ namespace Gnoss.Web.Login.SAML
             }
 
             //binding.Unbind(Request.ToGenericHttpRequest(), saml2AuthnResponse);            
-            await saml2AuthnResponse.CreateSession(HttpContext, lifetime: new TimeSpan(0, 0, 20), claimsTransform: (claimsPrincipal) => ClaimsTransform.Transform(claimsPrincipal));
+            await saml2AuthnResponse.CreateSession(HttpContext, lifetime: new TimeSpan(0, 0, 5), claimsTransform: (claimsPrincipal) => ClaimsTransform.Transform(claimsPrincipal));
 
             var relayStateQuery = binding.GetRelayStateQuery();
 
             string token = relayStateQuery["token"];
             string returnUrl = relayStateQuery["ReturnUrl"];
-            return Redirect(Url.Content(@"~/LoginSAML") + "?returnUrl=" + returnUrl + "&token=" + token);
+            return Redirect(Url.Content(@$"~/{mConfigServiceSAML.GetUrlServiceInDomain()}LoginSAML") + "?returnUrl=" + returnUrl + "&token=" + token);
         }
 
         [HttpGet, HttpPost]
@@ -72,5 +75,6 @@ namespace Gnoss.Web.Login.SAML
             var saml2LogoutRequest = await new Saml2LogoutRequest(config, User).DeleteSession(HttpContext);
             return binding.Bind(saml2LogoutRequest).ToActionResult();
         }
+
     }
 }

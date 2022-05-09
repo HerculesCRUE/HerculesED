@@ -10,6 +10,8 @@ using Es.Riam.Gnoss.UtilServiciosWeb;
 using Es.Riam.OpenReplication;
 using Es.Riam.Util;
 using Gnoss.Web.Login;
+using Gnoss.Web.Login.Open.SAML;
+using Gnoss.Web.Login.SAML;
 using ITfoxtec.Identity.Saml2;
 using ITfoxtec.Identity.Saml2.MvcCore.Configuration;
 using ITfoxtec.Identity.Saml2.Schemas.Metadata;
@@ -108,6 +110,7 @@ namespace Gnoss.Web.Login
                 services.AddScoped(typeof(DbContextOptions<EntityContextBASE>));
             }
             services.AddSingleton(typeof(ConfigService));
+            services.AddSingleton(typeof(ConfigServiceSAML));
             services.AddSingleton<ILoggerFactory, LoggerFactory>();
 
             Conexion.ServicioWeb = true;
