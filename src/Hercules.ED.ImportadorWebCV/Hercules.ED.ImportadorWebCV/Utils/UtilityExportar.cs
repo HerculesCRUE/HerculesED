@@ -234,7 +234,7 @@ namespace ExportadorWebCV.Utils
             itemBean.Items.Add(richText);
         }
 
-        public static void AddCvnItemBeanCvnAuthorBean(CvnItemBean itemBean, string property, string code, Entity entity, [Optional] string secciones)
+        public static void AddCvnItemBeanCvnAuthorBean(CvnItemBean itemBean, Dictionary<string, string> properties, string code, Entity entity, [Optional] string secciones)
         {
             //Compruebo si el codigo pasado está bien formado
             if (Utility.CodigoIncorrecto(code))
@@ -245,7 +245,101 @@ namespace ExportadorWebCV.Utils
             CvnItemBeanCvnAuthorBean authorBean = new CvnItemBeanCvnAuthorBean();
             authorBean.Code = code;
 
+            CvnItemBeanCvnAuthorBeanCvnFamilyNameBean familyNameBean = new CvnItemBeanCvnAuthorBeanCvnFamilyNameBean();
+            familyNameBean.Code = code;
+
+            familyNameBean.FirstFamilyName = Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["PrimerApellido"])))
+                ? entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["PrimerApellido"])).Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("_").Last()
+                : null;
+            familyNameBean.SecondFamilyName = Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["SegundoApellido"])))
+                ? entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["SegundoApellido"])).Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("_").Last()
+                : null;
+            if (!string.IsNullOrEmpty(familyNameBean.FirstFamilyName) && !string.IsNullOrEmpty(familyNameBean.SecondFamilyName))
+            {
+                authorBean.CvnFamilyNameBean = familyNameBean;
+            }
+            authorBean.GivenName = Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["Nombre"])))
+                ? entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["Nombre"])).Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("_").Last()
+                : null;
+            authorBean.Signature = Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["Firma"])))
+                ? entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["Firma"])).Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("_").Last()
+                : null;
+
             itemBean.Items.Add(authorBean);
+        }
+
+        public static void AddCvnItemBeanCvnAuthorBeanList(CvnItemBean itemBean, Dictionary<string, string> properties, string code, Entity entity, [Optional] string secciones)
+        {
+            //Compruebo si el codigo pasado está bien formado
+            if (Utility.CodigoIncorrecto(code))
+            {
+                return;
+            }
+
+            Dictionary<Tuple<string, string>, string> diccionarioCodirectores = new Dictionary<Tuple<string, string>, string>();
+
+            if (Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["PrimerApellido"]))))
+            {
+                List<string> listaPrimerApellido = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["PrimerApellido"])).Select(x => x.values).FirstOrDefault();
+                ListarCodirectores(listaPrimerApellido, diccionarioCodirectores, "PrimerApellido");
+            }
+            if (Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["SegundoApellido"]))))
+            {
+                List<string> listaSegundoApellido = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["SegundoApellido"])).Select(x => x.values).FirstOrDefault();
+                ListarCodirectores(listaSegundoApellido, diccionarioCodirectores, "SegundoApellido");
+            }
+            if (Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["Nombre"]))))
+            {
+                List<string> listaNombre = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["Nombre"])).Select(x => x.values).FirstOrDefault();
+                ListarCodirectores(listaNombre, diccionarioCodirectores, "Nombre");
+            }
+            if (Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["Firma"]))))
+            {
+                List<string> listaFirma = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["Firma"])).Select(x => x.values).FirstOrDefault();
+                ListarCodirectores(listaFirma, diccionarioCodirectores, "Firma");
+            }
+
+            List<IGrouping<string, KeyValuePair<Tuple<string, string>, string>>> listadoCodirectores = diccionarioCodirectores
+                .GroupBy(x => x.Key.Item1).ToList();
+            for (int i = 0; i < listadoCodirectores.Count; i++)
+            {
+                var keyValuePair = listadoCodirectores.ElementAt(i).Select(x => new KeyValuePair<Tuple<string, string>, string>(x.Key, x.Value));
+
+                CvnItemBeanCvnAuthorBean authorBean = new CvnItemBeanCvnAuthorBean();
+                authorBean.Code = code;
+
+                CvnItemBeanCvnAuthorBeanCvnFamilyNameBean familyNameBean = new CvnItemBeanCvnAuthorBeanCvnFamilyNameBean();
+                familyNameBean.Code = code;
+
+                if (keyValuePair.Any())
+                {
+                    familyNameBean.FirstFamilyName = keyValuePair.Where(x => x.Key.Item2.Equals("PrimerApellido")).Select(x => x.Value).FirstOrDefault();
+                    familyNameBean.SecondFamilyName = keyValuePair.Where(x => x.Key.Item2.Equals("SegundoApellido")).Select(x => x.Value).FirstOrDefault();
+                    authorBean.GivenName = keyValuePair.Where(x => x.Key.Item2.Equals("Nombre")).Select(x => x.Value).FirstOrDefault();
+                    authorBean.Signature = keyValuePair.Where(x => x.Key.Item2.Equals("Firma")).Select(x => x.Value).FirstOrDefault();
+                }
+                //Si no hay valores no añado
+                if (!string.IsNullOrEmpty(familyNameBean.FirstFamilyName) && !string.IsNullOrEmpty(familyNameBean.SecondFamilyName))
+                {
+                    authorBean.CvnFamilyNameBean = familyNameBean;
+                }
+
+                itemBean.Items.Add(authorBean);
+            }
+        }
+
+
+        private static void ListarCodirectores(List<string> listado, Dictionary<Tuple<string, string>, string> diccionario, string nombrePropiedad)
+        {
+            foreach (string dato in listado)
+            {
+                string identificador = dato.Split("@@@").First().Split("_").Last();
+                string valor = dato.Split("@@@").Last();
+                if (!string.IsNullOrEmpty(identificador) && !string.IsNullOrEmpty(valor))
+                {
+                    diccionario.TryAdd(new Tuple<string, string>(identificador, nombrePropiedad), valor);
+                }
+            }
         }
 
         public static void AddCvnItemBeanCvnBoolean(CvnItemBean itemBean, string property, string code, Entity entity, [Optional] string secciones)
@@ -343,7 +437,7 @@ namespace ExportadorWebCV.Utils
             }
         }
 
-        public static void AddCvnItemBeanCvnEntityBean(CvnItemBean itemBean, string property, string code, Entity entity, [Optional] string secciones)
+        public static void AddCvnItemBeanCvnEntityBean(CvnItemBean itemBean, string propertyName, string code, Entity entity, [Optional] string secciones)
         {
             //Compruebo si el codigo pasado está bien formado
             if (Utility.CodigoIncorrecto(code))
@@ -355,11 +449,12 @@ namespace ExportadorWebCV.Utils
             entityBean.Code = code;
 
             //Añado si se inserta valor
-            if (Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property)))) {
-                entityBean.Name = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property)).Select(x => x.values).FirstOrDefault().FirstOrDefault();
+            if (Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(propertyName))))
+            {
+                entityBean.Name = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(propertyName)).Select(x => x.values).FirstOrDefault().FirstOrDefault();
 
                 itemBean.Items.Add(entityBean);
-            }            
+            }
         }
 
         public static void AddCvnItemBeanCvnPageBean(CvnItemBean itemBean, string property, string code, Entity entity, [Optional] string secciones)
@@ -386,7 +481,7 @@ namespace ExportadorWebCV.Utils
 
             CvnItemBeanCvnTitleBean titleBean = new CvnItemBeanCvnTitleBean();
             titleBean.Code = code;
-            titleBean.Identification = Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(propertyIdentification))) 
+            titleBean.Identification = Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(propertyIdentification)))
                 ? entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(propertyIdentification)).Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("_").Last()
                 : null;
             titleBean.Name = Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(propertyName)))
@@ -452,9 +547,9 @@ namespace ExportadorWebCV.Utils
                 : null;
 
             if (!string.IsNullOrEmpty(phone.Extension) || !string.IsNullOrEmpty(phone.InternationalCode)
-                || !string.IsNullOrEmpty(phone.Number)) 
+                || !string.IsNullOrEmpty(phone.Number))
             {
-                itemBean.Items.Add(phone); 
+                itemBean.Items.Add(phone);
             }
         }
 
