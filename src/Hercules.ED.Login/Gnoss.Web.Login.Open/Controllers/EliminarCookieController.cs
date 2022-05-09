@@ -6,6 +6,7 @@ using Es.Riam.Gnoss.CL;
 using Es.Riam.Gnoss.Util.Configuracion;
 using Es.Riam.Gnoss.Util.General;
 using Es.Riam.Web.Util;
+using Gnoss.Web.Login.Open.SAML;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -22,10 +23,11 @@ namespace Gnoss.Web.Login
     [Route("[controller]")]
     public class EliminarCookieController : ControllerBaseLogin
     {
-
-        public EliminarCookieController(LoggingService loggingService, IHttpContextAccessor httpContextAccessor, EntityContext entityContext, ConfigService configService, RedisCacheWrapper redisCacheWrapper, GnossCache gnossCache, VirtuosoAD virtuosoAD, IHostingEnvironment env, EntityContextBASE entityContextBASE, IServicesUtilVirtuosoAndReplication servicesUtilVirtuosoAndReplication)
+        readonly ConfigServiceSAML mConfigServiceSAML;
+        public EliminarCookieController(LoggingService loggingService, IHttpContextAccessor httpContextAccessor, EntityContext entityContext, ConfigService configService, RedisCacheWrapper redisCacheWrapper, GnossCache gnossCache, VirtuosoAD virtuosoAD, IHostingEnvironment env, EntityContextBASE entityContextBASE, IServicesUtilVirtuosoAndReplication servicesUtilVirtuosoAndReplication, ConfigServiceSAML configServiceSAML)
             : base(loggingService, httpContextAccessor, entityContext, configService, redisCacheWrapper, gnossCache, virtuosoAD, env, entityContextBASE, servicesUtilVirtuosoAndReplication)
         {
+            mConfigServiceSAML = configServiceSAML;
         }
 
         #region Métodos de eventos
@@ -132,18 +134,19 @@ namespace Gnoss.Web.Login
                 hayIframes = EliminarCookieRestoDominios(dominioPeticion);
             }
 
-            if ((Request.Query.ContainsKey("redirect") || Request.Headers.ContainsKey("redirect") )&& !hayIframes)
-            {
-                if (Request.Headers.ContainsKey("redirect"))
-                {
-                    Response.Redirect(Request.Headers["redirect"]);
-                }
-                else if (Request.Query.ContainsKey("redirect"))
-                {
-                    Response.Redirect(Request.Query["redirect"]);
-                }
+            Response.Redirect(Url.Content(@$"~/{mConfigServiceSAML.GetUrlServiceInDomain()}Auth/Logout"));
+            //if ((Request.Query.ContainsKey("redirect") || Request.Headers.ContainsKey("redirect") )&& !hayIframes)
+            //{
+            //    if (Request.Headers.ContainsKey("redirect"))
+            //    {
+            //        Response.Redirect(Request.Headers["redirect"]);
+            //    }
+            //    else if (Request.Query.ContainsKey("redirect"))
+            //    {
+            //        Response.Redirect(Request.Query["redirect"]);
+            //    }
                 
-            }
+            //}
         }
 
         #endregion
