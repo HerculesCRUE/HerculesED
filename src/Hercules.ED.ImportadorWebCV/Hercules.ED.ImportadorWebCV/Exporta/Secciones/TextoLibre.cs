@@ -10,7 +10,7 @@ namespace ImportadorWebCV.Exporta.Secciones
     public class TextoLibre : SeccionBase
     {
 
-        public TextoLibre(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
+        public TextoLibre(cvnRootResultBean mCvn, string cvID) : base(mCvn, cvID)
         {
 
         }
@@ -53,7 +53,7 @@ namespace ImportadorWebCV.Exporta.Secciones
             listado.Add(itemBean);
 
             //Añado en el cvnRootResultBean los items que forman parte del listado
-            UtilityExportar.AniadirItems(cvn, listado);
+            UtilityExportar.AniadirItems(mCvn, listado);
         }
     }
 }
