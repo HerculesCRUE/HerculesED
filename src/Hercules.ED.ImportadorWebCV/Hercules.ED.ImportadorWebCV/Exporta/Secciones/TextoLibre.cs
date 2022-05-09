@@ -24,13 +24,9 @@ namespace ImportadorWebCV.Exporta.Secciones
             List<CvnItemBean> listado = new List<CvnItemBean>();
             CvnItemBean itemBean = new CvnItemBean()
             {
-                Code = "070.000.000.000"
+                Code = "070.000.000.000",
+                Items = new List<CVNObject>()
             };
-
-            if (itemBean.Items == null)
-            {
-                itemBean.Items = new List<CVNObject>();
-            }
 
             //Selecciono el ultimo valor que se corresponde a la propiedad en caso de que esta exista.
             string resumenLibre = UtilityExportar.Comprobar(entity.properties.Where(x => UtilityExportar.EliminarRDF(x.prop).EndsWith(propResumenLibre))) && !string.IsNullOrEmpty(propResumenLibre) ?
