@@ -22,7 +22,7 @@ namespace ExportadorWebCV.Utils
 
             string select = $@"select distinct *";
             string where = "where {";
-            
+
             if (propiedadesItem.Count == 1)
             {
                 where += $@" ?cv <{propiedadesItem[0]}> ?item ";
@@ -36,7 +36,7 @@ namespace ExportadorWebCV.Utils
                 }
                 where += $@" ?prop{propiedadesItem.Count - 1} <{propiedadesItem[propiedadesItem.Count - 1]}> ?item ";
             }
-            where += "}";
+            where += $"FILTER(?cv=<{pCVID}>) }}";
 
 
             List<string> listaResultado = new List<string>();
@@ -265,7 +265,7 @@ namespace ExportadorWebCV.Utils
             itemBean.Items.Add(cvnDouble);
         }
 
-        public static void AddCvnItemBeanCvnDuration(CvnItemBean itemBean, string property, string code, Entity entity, [Optional] string secciones)
+        public static void AddCvnItemBeanCvnDuration(CvnItemBean itemBean, string code, Entity entity, [Optional] string secciones)
         {
             //Compruebo si el codigo pasado está bien formado
             if (Utility.CodigoIncorrecto(code))
@@ -275,8 +275,46 @@ namespace ExportadorWebCV.Utils
 
             CvnItemBeanCvnDuration duration = new CvnItemBeanCvnDuration();
             duration.Code = code;
+            string duracion = "P";
+            if (entity.properties.Where(x => EliminarRDF(x.prop).Contains("http://w3id.org/roh/duration")).Any())
+            {
+                string anio = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith("http://w3id.org/roh/durationYears")).Count() != 0 ?
+                    entity.properties.Where(x => EliminarRDF(x.prop).EndsWith("http://w3id.org/roh/durationYears")).Select(x => x.values)?.FirstOrDefault().FirstOrDefault()
+                    : null;
+                if (!string.IsNullOrEmpty(anio))
+                {
+                    duracion += anio + "Y";
+                }
 
-            itemBean.Items.Add(duration);
+                string mes = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith("http://w3id.org/roh/durationMonths")).Count() != 0
+                    ? entity.properties.Where(x => EliminarRDF(x.prop).EndsWith("http://w3id.org/roh/durationMonths")).Select(x => x.values)?.FirstOrDefault().FirstOrDefault()
+                    : null;
+                if (!string.IsNullOrEmpty(mes))
+                {
+                    duracion += mes + "M";
+                }
+
+                string dia = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith("http://w3id.org/roh/durationDays")).Count() != 0 ?
+                    entity.properties.Where(x => EliminarRDF(x.prop).EndsWith("http://w3id.org/roh/durationDays")).Select(x => x.values)?.FirstOrDefault().FirstOrDefault()
+                    : null;
+                if (!string.IsNullOrEmpty(dia))
+                {
+                    duracion += dia + "D";
+                }
+            }
+
+            //si no hay datos insertados pongo la cadena a vacia
+            if (duracion.Equals("P"))
+            {
+                duracion = "";
+            }
+            duration.Value = !string.IsNullOrEmpty(duracion) ? duracion : null;
+
+            //Añado si no es nulo
+            if (duration.Value != null)
+            {
+                itemBean.Items.Add(duration);
+            }
         }
 
         public static void AddCvnItemBeanCvnEntityBean(CvnItemBean itemBean, string property, string code, Entity entity, [Optional] string secciones)

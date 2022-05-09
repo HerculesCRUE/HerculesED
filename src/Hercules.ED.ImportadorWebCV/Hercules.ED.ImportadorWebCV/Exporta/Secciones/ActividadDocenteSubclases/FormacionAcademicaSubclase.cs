@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
 {
-    public class CursosSeminarios:SeccionBase
+    public class FormacionAcademicaSubclase:SeccionBase
     {
-        public CursosSeminarios(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
+        public FormacionAcademicaSubclase(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
 
         }

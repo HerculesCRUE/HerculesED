@@ -12,7 +12,7 @@ using ImportadorWebCV;
 using System.Runtime.InteropServices;
 using ExportadorWebCV.Utils;
 
-namespace Hercules.ED.ImportadorWebCV.Exporta.Secciones.SituacionProfesionalSubclases
+namespace ImportadorWebCV.Exporta.Secciones.SituacionProfesionalSubclases
 {
     public class CargosActividades : SeccionBase
     {
@@ -24,13 +24,20 @@ namespace Hercules.ED.ImportadorWebCV.Exporta.Secciones.SituacionProfesionalSubc
         {
         }
 
-        public void ExportaCargosActividades(Entity entity, [Optional] List<string> secciones, [Optional] bool preimportar)
+        public void ExportaCargosActividades(Entity entity, string seccion, [Optional] List<string> secciones, [Optional] bool preimportar)
         {
             List<CvnItemBean> listado = new List<CvnItemBean>();
             List<string> listadoIdentificadores = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
             Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntity(listadoIdentificadores, graph);
             foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesSP)
             {
+                CvnItemBean itemBean = new CvnItemBean()
+                {
+                    Code = "010.020.000.000",
+                    Items = new List<CVNObject>()
+                };
+
+                UtilityExportar.AddCvnItemBeanCvnDuration(itemBean, "010.020.000.190", keyValue.Value);
                 //listado.add(item)
             }
 
