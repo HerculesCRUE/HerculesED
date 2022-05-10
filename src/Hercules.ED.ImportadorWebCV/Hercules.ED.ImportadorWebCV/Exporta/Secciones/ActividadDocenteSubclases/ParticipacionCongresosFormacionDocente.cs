@@ -76,8 +76,8 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
                     "030.090.000.240", keyValue.Value);
 
                 Dictionary<string, string> propiedadesPagIniPagFin = new Dictionary<string, string>();
-                propiedadesVolNum.Add("PaginaInicial", UtilityExportar.EliminarRDF(Variables.ActividadDocente.participaCongresosPagIniPublicacion));
-                propiedadesVolNum.Add("PaginaFinal", UtilityExportar.EliminarRDF(Variables.ActividadDocente.participaCongresosPagFinalPublicacion));
+                propiedadesPagIniPagFin.Add("PaginaInicial", UtilityExportar.EliminarRDF(Variables.ActividadDocente.participaCongresosPagIniPublicacion));
+                propiedadesPagIniPagFin.Add("PaginaFinal", UtilityExportar.EliminarRDF(Variables.ActividadDocente.participaCongresosPagFinalPublicacion));
                 UtilityExportar.AddCvnItemBeanCvnPageBean(itemBean, propiedadesPagIniPagFin,
                     "030.090.000.250", keyValue.Value);
 
@@ -91,6 +91,8 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
                     "030.090.000.300", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.participaCongresosURLPublicacion),
                     "030.090.000.310", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnExternalPKBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.participaCongresosDepositoLegalPublicacion),
+                   "030.090.000.320", keyValue.Value);
                 //TODO Depositolegal externalpk
                 UtilityExportar.AddCvnItemBeanCvnDurationHours(itemBean,
                     "030.090.000.350", keyValue.Value);
