@@ -131,6 +131,8 @@ namespace ImportadorWebCV.Exporta
             EstanciasIDI estanciasIDI = new EstanciasIDI(cvn, cvID);
             estanciasIDI.ExportaEstanciasIDI(entity, seccion);
 
+            SociedadesAsociaciones sociedadesAsociaciones = new SociedadesAsociaciones(cvn, cvID);
+            sociedadesAsociaciones.ExportaSociedadesAsociaciones(entity, seccion);
 
             Consejos consejos = new Consejos(cvn, cvID);
             consejos.ExportaConsejos(entity, seccion);
