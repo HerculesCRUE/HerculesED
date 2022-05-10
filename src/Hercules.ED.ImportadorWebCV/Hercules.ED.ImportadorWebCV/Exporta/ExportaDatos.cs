@@ -126,6 +126,9 @@ namespace ImportadorWebCV.Exporta
             PremiosMenciones premiosMenciones = new PremiosMenciones(cvn, cvID);
             premiosMenciones.ExportaPremiosMenciones(entity, seccion);
 
+            AyudaBecas ayudaBecas = new AyudaBecas(cvn, cvID);
+            ayudaBecas.ExportaAyudaBecas(entity, seccion);
+
             AcreditacionesReconocimientos acreditacionesReconocimientos = new AcreditacionesReconocimientos(cvn, cvID);
             acreditacionesReconocimientos.ExportaAcreditacionesReconocimientos(entity, seccion);
             EstanciasIDI estanciasIDI = new EstanciasIDI(cvn, cvID);
