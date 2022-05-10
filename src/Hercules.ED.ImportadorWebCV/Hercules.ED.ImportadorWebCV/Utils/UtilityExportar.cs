@@ -133,8 +133,8 @@ namespace ExportadorWebCV.Utils
                 return;
             }
 
-            List<string> listaPalabrasClave = Comprobar(entity.properties.Where(x => x.prop.Equals(property))) ?
-                    entity.properties.Where(x => x.prop.Equals(property)).Select(x => x.values).FirstOrDefault()
+            List<string> listaPalabrasClave = Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(property))) ?
+                    entity.properties.Where(x => EliminarRDF(x.prop).Equals(property)).Select(x => x.values).FirstOrDefault()
                     : null;
             if(listaPalabrasClave == null)
             {
