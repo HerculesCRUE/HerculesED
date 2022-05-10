@@ -39,7 +39,7 @@ namespace ImportadorWebCV.Exporta
             SituacionProfesionalActual situacionProfesional = new SituacionProfesionalActual(cvn,cvID);
             situacionProfesional.ExportaSituacionProfesional(entity, seccion);
 
-            CargosActividades cargosActividades = new CargosActividades(cvn,cvID);
+            CargosActividades cargosActividades = new CargosActividades(cvn, cvID);
             cargosActividades.ExportaCargosActividades(entity, seccion);
 
         }
@@ -120,10 +120,19 @@ namespace ImportadorWebCV.Exporta
         public void ExportaActividadCientificaTecnologica(Entity entity, [Optional] List<string> secciones, [Optional] bool preexportar)
         {
             string seccion = "http://w3id.org/roh/scientificActivity";
+            RedesCooperacion redesCooperacion = new RedesCooperacion(cvn, cvID);
+            redesCooperacion.ExportaRedesCooperacion(entity, seccion);
 
+            PremiosMenciones premiosMenciones = new PremiosMenciones(cvn, cvID);
+            premiosMenciones.ExportaPremiosMenciones(entity, seccion);
+
+            AcreditacionesReconocimientos acreditacionesReconocimientos = new AcreditacionesReconocimientos(cvn, cvID);
+            acreditacionesReconocimientos.ExportaAcreditacionesReconocimientos(entity, seccion);
             EstanciasIDI estanciasIDI = new EstanciasIDI(cvn, cvID);
             estanciasIDI.ExportaEstanciasIDI(entity, seccion);
 
+            OtrosMeritos otrosMeritos = new OtrosMeritos(cvn, cvID);
+            otrosMeritos.ExportaOtrosMeritos(entity, seccion);
 
         }
 
