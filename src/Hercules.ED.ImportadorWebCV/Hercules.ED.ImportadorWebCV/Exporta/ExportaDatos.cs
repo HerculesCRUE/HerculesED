@@ -128,6 +128,8 @@ namespace ImportadorWebCV.Exporta
 
             AcreditacionesReconocimientos acreditacionesReconocimientos = new AcreditacionesReconocimientos(cvn, cvID);
             acreditacionesReconocimientos.ExportaAcreditacionesReconocimientos(entity, seccion);
+            EstanciasIDI estanciasIDI = new EstanciasIDI(cvn, cvID);
+            estanciasIDI.ExportaEstanciasIDI(entity, seccion);
 
             OtrosMeritos otrosMeritos = new OtrosMeritos(cvn, cvID);
             otrosMeritos.ExportaOtrosMeritos(entity, seccion);
