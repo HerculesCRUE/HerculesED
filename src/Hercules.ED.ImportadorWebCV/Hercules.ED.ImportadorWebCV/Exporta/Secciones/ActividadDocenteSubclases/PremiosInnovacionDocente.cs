@@ -31,16 +31,26 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
                     Items = new List<CVNObject>()
                 };
 
-                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.otrasActividadesDescripcion),
-                    "030.010.000.010", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.premiosInnovaNombre),
+                    "060.030.080.010", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.premiosInnovaPaisEntidadConcesionaria),
+                    "060.030.080.020", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.premiosInnovaCCAAEntidadConcesionaria),
+                    "060.030.080.030", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.premiosInnovaCiudadEntidadConcesionaria),
+                    "060.030.080.110", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.premiosInnovaPropuestaDe),
+                    "060.030.080.090", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnDateDayMonthYear(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.premiosInnovaFechaConcesion),
+                    "060.030.080.100", keyValue.Value);
 
-                //Entidad organizadora
-                UtilityExportar.AddCvnItemBeanCvnEntityBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.otrasActividadesEntidadOrganizadoraNombre),
-                    "030.010.000.070", keyValue.Value);
-                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.otrasActividadesTipoEntidadOrganizadora),
-                    "030.010.000.090", keyValue.Value);
-                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.otrasActividadesTipoEntidadOrganizadoraOtros),
-                    "030.010.000.100", keyValue.Value);
+                //Entidad concesionaria
+                UtilityExportar.AddCvnItemBeanCvnEntityBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.premiosInnovaEntidadConcesionariaNombre),
+                    "060.030.080.050", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.premiosInnovaTipoEntidadConcesionaria),
+                    "060.030.080.070", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.premiosInnovaTipoEntidadConcesionaria),
+                    "060.030.080.080", keyValue.Value);
 
                 listado.Add(itemBean);
             }
