@@ -97,8 +97,8 @@ namespace ImportadorWebCV.Exporta
             PublicacionesDocentes publicacionesDocentes = new PublicacionesDocentes(cvn, cvID);
             publicacionesDocentes.ExportaPublicacionesDocentes(entity, seccion);
 
-            //TutoriasAcademicas tutoriasAcademicas = new TutoriasAcademicas(cvn, cvID);
-            //tutoriasAcademicas.ExportaTutoriasAcademicas(entity, seccion);
+            TutoriasAcademicas tutoriasAcademicas = new TutoriasAcademicas(cvn, cvID);
+            tutoriasAcademicas.ExportaTutoriasAcademicas(entity, seccion);
         }
         public void ExportaExperienciaCientificaTecnologica(Entity entity, [Optional] List<string> secciones, [Optional] bool preexportar)
         {
