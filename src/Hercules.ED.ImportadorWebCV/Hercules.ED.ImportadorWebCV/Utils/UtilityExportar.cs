@@ -399,6 +399,10 @@ namespace ExportadorWebCV.Utils
         {
             CvnItemBeanCvnDouble cvnDouble = new CvnItemBeanCvnDouble();
             cvnDouble.Code = code;
+            if (value.Contains("."))
+            {
+                value.Replace(".", ",");
+            }
             cvnDouble.Value = Convert.ToDecimal(value);
 
             itemBean.Items.Add(cvnDouble);
