@@ -64,7 +64,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
                 string NumeroECTS = UtilityExportar.Comprobar(keyValue.Value.properties.Where(x => x.prop.Equals(Variables.ActividadDocente.formacionAcademicaNumeroECTS))) ?
                     keyValue.Value.properties.Where(x => x.prop.Equals(Variables.ActividadDocente.formacionAcademicaNumeroECTS)).Select(x => x.values).FirstOrDefault().FirstOrDefault()
                     : null;
-                if (string.IsNullOrEmpty(NumeroECTS))
+                if (!string.IsNullOrEmpty(NumeroECTS))
                 {
                     UtilityExportar.AddCvnItemBeanCvnDouble(itemBean, "030.010.000.220", NumeroECTS);
                 }
@@ -75,7 +75,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
                 string frecuenciaAsignatura = UtilityExportar.Comprobar(keyValue.Value.properties.Where(x => x.prop.Equals(Variables.ActividadDocente.formacionAcademicaFrecuenciaAsignatura))) ?
                     keyValue.Value.properties.Where(x => x.prop.Equals(Variables.ActividadDocente.formacionAcademicaFrecuenciaAsignatura)).Select(x => x.values)?.FirstOrDefault().FirstOrDefault()
                     : null;
-                if (string.IsNullOrEmpty(frecuenciaAsignatura))
+                if (!string.IsNullOrEmpty(frecuenciaAsignatura))
                 {
                     UtilityExportar.AddCvnItemBeanCvnDouble(itemBean, "030.010.000.240", frecuenciaAsignatura);
                 }
