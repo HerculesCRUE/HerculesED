@@ -395,10 +395,11 @@ namespace ExportadorWebCV.Utils
             itemBean.Items.Add(codeGroup);
         }
 
-        public static void AddCvnItemBeanCvnDouble(CvnItemBean itemBean, string property, string code, Entity entity, [Optional] string secciones)
+        public static void AddCvnItemBeanCvnDouble(CvnItemBean itemBean, string code, string value, [Optional] string secciones)
         {
             CvnItemBeanCvnDouble cvnDouble = new CvnItemBeanCvnDouble();
             cvnDouble.Code = code;
+            cvnDouble.Value = Convert.ToInt32(value);
 
             itemBean.Items.Add(cvnDouble);
         }
@@ -541,6 +542,28 @@ namespace ExportadorWebCV.Utils
                 titleBean.Code = code;
                 titleBean.Name = cultureInfo.EnglishName;
                 titleBean.Identification = cultureInfo.Name;
+            }
+        }
+
+        public static void AddCvnItemBeanCvnTitleBean(CvnItemBean itemBean, string propertyName, string code, Entity entity, [Optional] string secciones)
+        {
+            //Compruebo si el codigo pasado está bien formado
+            if (Utility.CodigoIncorrecto(code))
+            {
+                return;
+            }
+
+            CvnItemBeanCvnTitleBean titleBean = new CvnItemBeanCvnTitleBean();
+            titleBean.Code = code;
+            titleBean.Name = Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(propertyName)))
+                ? entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(propertyName)).Select(x => x.values).FirstOrDefault().FirstOrDefault()
+                : null;
+
+
+            //Añado si se inserta valor
+            if (!string.IsNullOrEmpty(titleBean.Name) || !string.IsNullOrEmpty(titleBean.Identification))
+            {
+                itemBean.Items.Add(titleBean);
             }
         }
 
