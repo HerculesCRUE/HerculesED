@@ -131,6 +131,9 @@ namespace ImportadorWebCV.Exporta
             EstanciasIDI estanciasIDI = new EstanciasIDI(cvn, cvID);
             estanciasIDI.ExportaEstanciasIDI(entity, seccion);
 
+            PeriodosActividad periodosActividad = new PeriodosActividad(cvn, cvID);
+            periodosActividad.ExportaPeriodosActividad(entity, seccion);
+
             OtrosMeritos otrosMeritos = new OtrosMeritos(cvn, cvID);
             otrosMeritos.ExportaOtrosMeritos(entity, seccion);
 
