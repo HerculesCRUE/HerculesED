@@ -78,26 +78,26 @@ namespace ImportadorWebCV.Exporta
             DireccionTesis direccionTesis = new DireccionTesis(cvn, cvID);
             direccionTesis.ExportaDireccionTesis(entity, seccion);
 
-            FormacionAcademicaSubclase formacionAcademica = new FormacionAcademicaSubclase(cvn, cvID);
-            formacionAcademica.ExportaFormacionAcademica(entity, seccion);
+            //FormacionAcademicaSubclase formacionAcademica = new FormacionAcademicaSubclase(cvn, cvID);
+            //formacionAcademica.ExportaFormacionAcademica(entity, seccion);
 
-            OtrasActividades otrasActividades = new OtrasActividades(cvn, cvID);
-            otrasActividades.ExportaOtrasActividades(entity, seccion);
+            //OtrasActividades otrasActividades = new OtrasActividades(cvn, cvID);
+            //otrasActividades.ExportaOtrasActividades(entity, seccion);
 
-            ParticipacionCongresosFormacionDocente participacionCongresos = new ParticipacionCongresosFormacionDocente(cvn, cvID);
-            participacionCongresos.ExportaParticipacionCongresos(entity, seccion);
+            //ParticipacionCongresosFormacionDocente participacionCongresos = new ParticipacionCongresosFormacionDocente(cvn, cvID);
+            //participacionCongresos.ExportaParticipacionCongresos(entity, seccion);
 
-            ParticipacionProyectosInnovacionDocente participacionProyectos = new ParticipacionProyectosInnovacionDocente(cvn, cvID);
-            participacionProyectos.ExportaParticipacionProyectos(entity, seccion);
+            //ParticipacionProyectosInnovacionDocente participacionProyectos = new ParticipacionProyectosInnovacionDocente(cvn, cvID);
+            //participacionProyectos.ExportaParticipacionProyectos(entity, seccion);
 
-            PremiosInnovacionDocente premiosInnovacionDocente = new PremiosInnovacionDocente(cvn, cvID);
-            premiosInnovacionDocente.ExportaPremiosInnovacionDocente(entity, seccion);
+            //PremiosInnovacionDocente premiosInnovacionDocente = new PremiosInnovacionDocente(cvn, cvID);
+            //premiosInnovacionDocente.ExportaPremiosInnovacionDocente(entity, seccion);
 
-            PublicacionesDocentes publicacionesDocentes = new PublicacionesDocentes(cvn, cvID);
-            publicacionesDocentes.ExportaPublicacionesDocentes(entity, seccion);
+            //PublicacionesDocentes publicacionesDocentes = new PublicacionesDocentes(cvn, cvID);
+            //publicacionesDocentes.ExportaPublicacionesDocentes(entity, seccion);
 
-            TutoriasAcademicas tutoriasAcademicas = new TutoriasAcademicas(cvn, cvID);
-            tutoriasAcademicas.ExportaTutoriasAcademicas(entity, seccion);
+            //TutoriasAcademicas tutoriasAcademicas = new TutoriasAcademicas(cvn, cvID);
+            //tutoriasAcademicas.ExportaTutoriasAcademicas(entity, seccion);
         }
         public void ExportaExperienciaCientificaTecnologica(Entity entity, [Optional] List<string> secciones, [Optional] bool preexportar)
         {
