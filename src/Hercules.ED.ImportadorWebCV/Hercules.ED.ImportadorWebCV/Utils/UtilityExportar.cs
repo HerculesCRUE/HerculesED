@@ -117,6 +117,38 @@ namespace ExportadorWebCV.Utils
             });
         }
 
+        /// <summary>
+        /// Inserta las palabras clave de propiedad <paramref name="property"/> en <paramref name="itemBean"/>.
+        /// La palabra clave se seleccionará del ultimo valor al separar por "_"
+        /// </summary>
+        /// <param name="itemBean"></param>
+        /// <param name="property"></param>
+        /// <param name="code"></param>
+        /// <param name="entity"></param>
+        public static void AddCvnItemBeanCvnKeyword(CvnItemBean itemBean, string property, string code, Entity entity)
+        {
+            //Compruebo si el codigo pasado está bien formado
+            if (Utility.CodigoIncorrecto(code))
+            {
+                return;
+            }
+
+            List<string> listaPalabrasClave = Comprobar(entity.properties.Where(x => x.prop.Equals(property))) ?
+                    entity.properties.Where(x => x.prop.Equals(property)).Select(x => x.values).FirstOrDefault()
+                    : null;
+            if(listaPalabrasClave == null)
+            {
+                return;
+            }
+
+            foreach (string palabraClave in listaPalabrasClave)
+            {
+                string identificador = palabraClave.Split("_").Last();
+                AddCvnItemBeanCvnStringSimple(itemBean, code, identificador);
+            }
+        }
+
+
         public static void AddCvnItemBeanCvnString(CvnItemBean itemBean, string property, string code, Entity entity)
         {
             //Compruebo si el codigo pasado está bien formado
@@ -202,7 +234,7 @@ namespace ExportadorWebCV.Utils
         }
 
         /// <summary>
-        /// Inserta en <paramref name="entity"/> el con propiedad <paramref name="property"/> de <paramref name="itemBean"/>,
+        /// Inserta en <paramref name="entity"/> con propiedad <paramref name="property"/> de <paramref name="itemBean"/>,
         /// Debe estar Concatenado por "_", y se seleccionará el ultimo valor de la concatenación de "_"
         /// </summary>
         /// <param name="itemBean"></param>
