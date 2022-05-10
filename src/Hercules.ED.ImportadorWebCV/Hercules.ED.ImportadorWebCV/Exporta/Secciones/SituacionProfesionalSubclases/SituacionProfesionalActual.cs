@@ -26,12 +26,82 @@ namespace ImportadorWebCV.Exporta.Secciones.SituacionProfesionalSubclases
             Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntity(listadoIdentificadores, graph);
             foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesSP)
             {
-                //listado.add(item)
+                CvnItemBean itemBean = new CvnItemBean();
+                itemBean.Code = "010.010.000.000";
+                if (itemBean.Items == null)
+                {
+                    itemBean.Items = new List<CVNObject>();
+                }
+                UtilityExportar.AddCvnItemBeanCvnBoolean(itemBean, UtilityExportar.EliminarRDF(Variables.SituacionProfesional.situacionProfesionalGestionDocente),
+                    "010.010.000.010", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnEntityBean(itemBean, UtilityExportar.EliminarRDF(Variables.SituacionProfesional.situacionProfesionalFacultadEscuela),
+                    "010.010.000.060", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnEntityBean(itemBean, UtilityExportar.EliminarRDF(Variables.SituacionProfesional.situacionProfesionalDepartamento),
+                   "010.010.000.080", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.SituacionProfesional.situacionProfesionalCiudadEntidadEmpleadora),
+                    "010.010.000.100", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.SituacionProfesional.situacionProfesionalPaisEntidadEmpleadora),
+                    "010.010.000.110", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.SituacionProfesional.situacionProfesionalCCAAEntidadEmpleadora),
+                   "010.010.000.120", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.SituacionProfesional.situacionProfesionalCategoriaProfesional),
+                    "010.010.000.170", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnDateDayMonthYear(itemBean, UtilityExportar.EliminarRDF(Variables.SituacionProfesional.situacionProfesionalFechaInicio),
+                    "010.010.000.180", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.SituacionProfesional.situacionProfesionalModalidadContrato),
+                    "010.010.000.190", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.SituacionProfesional.situacionProfesionalModalidadContratoOtros),
+                    "010.010.000.200", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.SituacionProfesional.situacionProfesionalRegimenDedicacion),
+                    "010.010.000.210", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.SituacionProfesional.situacionProfesionalFuncionesDesempeñadas),
+                    "010.010.000.250", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.SituacionProfesional.situacionProfesionalInteresDocencia),
+                    "010.010.000.280", keyValue.Value);
+                // Ambito actividad gestion
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.SituacionProfesional.situacionProfesionalAmbitoActividadGestion),
+                    "010.010.000.290", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.SituacionProfesional.situacionProfesionalAmbitoActividadGestionOtros),
+                    "010.010.000.300", keyValue.Value);
+                // Palabras clave
+                UtilityExportar.AddCvnItemBeanCvnKeyword(itemBean, UtilityExportar.EliminarRDF(Variables.SituacionProfesional.situacionProfesionalPalabrasClave),
+                    "010.010.000.260", keyValue.Value);
+                // Entidad empleadora
+                UtilityExportar.AddCvnItemBeanCvnEntityBean(itemBean, UtilityExportar.EliminarRDF(Variables.SituacionProfesional.situacionProfesionalEntidadEmpleadoraNombre),
+                    "010.010.000.020", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.SituacionProfesional.situacionProfesionalTipoEntidadEmpleadora),
+                    "010.010.000.040", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.SituacionProfesional.situacionProfesionalTipoEntidadEmpleadoraOtros),
+                    "010.010.000.050", keyValue.Value);
+                // Telefono
+                string propTelefono = Variables.SituacionProfesional.situacionProfesionalFijoNumero.Split("@@@").FirstOrDefault();
+                if (!string.IsNullOrEmpty(propTelefono))
+                {
+                    UtilityExportar.AddCvnItemBeanCvnPhoneBean(itemBean, propTelefono, "010.010.000.140", keyValue.Value);
+                }
+                // Fax
+                string propFax = Variables.SituacionProfesional.situacionProfesionalFaxNumero.Split("@@@").FirstOrDefault();
+                if (!string.IsNullOrEmpty(propFax))
+                {
+                    UtilityExportar.AddCvnItemBeanCvnPhoneBean(itemBean, propFax, "010.010.000.150", keyValue.Value);
+                }
+                // Cod Unesco TODO
+
+                // Correo electronico
+                List<string> listadoCorreos = UtilityExportar.Comprobar(keyValue.Value.properties.Where(x => x.prop.Equals(Variables.SituacionProfesional.situacionProfesionalCorreoElectronico))) ?
+                    keyValue.Value.properties.Where(x => x.prop.Equals(Variables.SituacionProfesional.situacionProfesionalCorreoElectronico)).Select(x => x.values).FirstOrDefault()
+                    : null;
+                // Si hay algún correo, guardo los correos concatenados con ';' en un string. En caso contrario guardo null.
+                string correos = (listadoCorreos != null && listadoCorreos.Any()) ? string.Join(";", listadoCorreos) : null;
+                if (!string.IsNullOrEmpty(correos))
+                {
+                    UtilityExportar.AddCvnItemBeanCvnStringSimple(itemBean, "010.010.000.160", correos);
+                }
+                listado.Add(itemBean);
             }
 
-
             //Añado en el cvnRootResultBean los items que forman parte del listado
-            //UtilityExportar.AniadirItems(mCvn, listaEntidadesSP.Select(x=>x.Value));
+            UtilityExportar.AniadirItems(mCvn, listado);
         }
     }
 }
