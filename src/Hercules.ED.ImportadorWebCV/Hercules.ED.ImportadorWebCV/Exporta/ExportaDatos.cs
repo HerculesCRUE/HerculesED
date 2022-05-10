@@ -1,5 +1,6 @@
 ﻿using ExportadorWebCV.Utils;
 using ImportadorWebCV.Exporta.Secciones;
+using ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases;
 using ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases;
 using ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases;
 using ImportadorWebCV.Exporta.Secciones.FormacionAcademicaSubclases;
@@ -120,7 +121,8 @@ namespace ImportadorWebCV.Exporta
         {
             string seccion = "http://w3id.org/roh/scientificActivity";
 
-
+            EstanciasIDI estanciasIDI = new EstanciasIDI(cvn, cvID);
+            estanciasIDI.ExportaEstanciasIDI(entity, seccion);
 
 
         }
