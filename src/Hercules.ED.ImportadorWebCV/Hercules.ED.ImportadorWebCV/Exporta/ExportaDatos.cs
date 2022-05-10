@@ -91,8 +91,8 @@ namespace ImportadorWebCV.Exporta
             ParticipacionProyectosInnovacionDocente participacionProyectos = new ParticipacionProyectosInnovacionDocente(cvn, cvID);
             participacionProyectos.ExportaParticipacionProyectos(entity, seccion);
 
-            //PremiosInnovacionDocente premiosInnovacionDocente = new PremiosInnovacionDocente(cvn, cvID);
-            //premiosInnovacionDocente.ExportaPremiosInnovacionDocente(entity, seccion);
+            PremiosInnovacionDocente premiosInnovacionDocente = new PremiosInnovacionDocente(cvn, cvID);
+            premiosInnovacionDocente.ExportaPremiosInnovacionDocente(entity, seccion);
 
             //PublicacionesDocentes publicacionesDocentes = new PublicacionesDocentes(cvn, cvID);
             //publicacionesDocentes.ExportaPublicacionesDocentes(entity, seccion);
