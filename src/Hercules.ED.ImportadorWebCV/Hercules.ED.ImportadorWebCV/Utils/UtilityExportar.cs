@@ -401,7 +401,7 @@ namespace ExportadorWebCV.Utils
             cvnDouble.Code = code;
             if (value.Contains("."))
             {
-                value.Replace(".", ",");
+                value = value.Replace(".", ",");
             }
             cvnDouble.Value = Convert.ToDecimal(value);
 
