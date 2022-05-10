@@ -515,7 +515,7 @@ namespace ExportadorWebCV.Utils
             }
         }
 
-        public static void AddCvnItemBeanCvnPageBean(CvnItemBean itemBean, string property, string code, Entity entity, [Optional] string secciones)
+        public static void AddCvnItemBeanCvnPageBean(CvnItemBean itemBean, Dictionary<string,string> propPagIniPagFin, string code, Entity entity, [Optional] string secciones)
         {
             //Compruebo si el codigo pasado está bien formado
             if (Utility.CodigoIncorrecto(code))
@@ -525,6 +525,16 @@ namespace ExportadorWebCV.Utils
 
             CvnItemBeanCvnPageBean pageBean = new CvnItemBeanCvnPageBean();
             pageBean.Code = code;
+            if (Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(propPagIniPagFin["PaginaInicial"]))))
+            {
+                pageBean.InitialPage = entity.properties.Where(x => EliminarRDF(x.prop).Equals(propPagIniPagFin["PaginaInicial"]))
+                            .Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("_").Last();
+            }
+            if (Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(propPagIniPagFin["PaginaFinal"]))))
+            {
+                pageBean.FinalPage = entity.properties.Where(x => EliminarRDF(x.prop).Equals(propPagIniPagFin["PaginaFinal"]))
+                            .Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("_").Last();
+            }
 
             itemBean.Items.Add(pageBean);
         }
@@ -596,7 +606,7 @@ namespace ExportadorWebCV.Utils
             }
         }
 
-        public static void AddCvnItemBeanCvnVolumeBean(CvnItemBean itemBean, string seccion, string property, string code, Entity entity, [Optional] string secciones)
+        public static void AddCvnItemBeanCvnVolumeBean(CvnItemBean itemBean, Dictionary<string, string> propVolNum, string code, Entity entity, [Optional] string secciones)
         {
             //Compruebo si el codigo pasado está bien formado
             if (Utility.CodigoIncorrecto(code))
@@ -606,6 +616,16 @@ namespace ExportadorWebCV.Utils
 
             CvnItemBeanCvnVolumeBean volumeBean = new CvnItemBeanCvnVolumeBean();
             volumeBean.Code = code;
+            if (Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(propVolNum["Numero"]))))
+            {
+                volumeBean.Number = entity.properties.Where(x => EliminarRDF(x.prop).Equals(propVolNum["Numero"]))
+                            .Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("_").Last();
+            }
+            if (Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(propVolNum["Volumen"]))))
+            {
+                volumeBean.Volume = entity.properties.Where(x => EliminarRDF(x.prop).Equals(propVolNum["Volumen"]))
+                            .Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("_").Last();
+            }
 
             itemBean.Items.Add(volumeBean);
         }
