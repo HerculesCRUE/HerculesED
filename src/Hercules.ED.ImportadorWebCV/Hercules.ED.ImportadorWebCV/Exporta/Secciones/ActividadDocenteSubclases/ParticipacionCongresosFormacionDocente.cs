@@ -93,7 +93,6 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
                     "030.090.000.310", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnExternalPKBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.participaCongresosDepositoLegalPublicacion),
                    "030.090.000.320", keyValue.Value);
-                //TODO Depositolegal externalpk
                 UtilityExportar.AddCvnItemBeanCvnDurationHours(itemBean,
                     "030.090.000.350", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnDateDayMonthYear(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.participaCongresosFechaInicioPublicacion),
@@ -112,8 +111,14 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
                     "030.090.000.110", keyValue.Value);
 
                 //ISBN
+                UtilityExportar.AddCvnItemBeanCvnExternalPKBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.participaCongresosISBNPublicacion),
+                   "030.090.000.180", keyValue.Value);
+
                 //ISSN
-                //ID publicacion
+                UtilityExportar.AddCvnItemBeanCvnExternalPKBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.participaCongresosISSNPublicacion),
+                   "030.090.000.180", keyValue.Value);
+
+                //ID publicacion -TODO  listado
 
                 listado.Add(itemBean);
             }
