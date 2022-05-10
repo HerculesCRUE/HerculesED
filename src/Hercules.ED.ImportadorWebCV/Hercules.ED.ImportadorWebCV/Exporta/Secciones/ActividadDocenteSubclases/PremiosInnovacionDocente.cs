@@ -27,16 +27,12 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
             {
                 CvnItemBean itemBean = new CvnItemBean()
                 {
-                    Code = "030.010.000.000",
+                    Code = "060.030.080.000",
                     Items = new List<CVNObject>()
                 };
 
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.otrasActividadesDescripcion),
                     "030.010.000.010", keyValue.Value);
-
-                //Palabras clave
-                UtilityExportar.AddCvnItemBeanCvnKeyword(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.otrasActividadesPalabrasClave),
-                    "030.010.000.", keyValue.Value);
 
                 //Entidad organizadora
                 UtilityExportar.AddCvnItemBeanCvnEntityBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.otrasActividadesEntidadOrganizadoraNombre),
