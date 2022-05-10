@@ -91,11 +91,11 @@ namespace ImportadorWebCV.Exporta
             ParticipacionProyectosInnovacionDocente participacionProyectos = new ParticipacionProyectosInnovacionDocente(cvn, cvID);
             participacionProyectos.ExportaParticipacionProyectos(entity, seccion);
 
-            //PremiosInnovacionDocente premiosInnovacionDocente = new PremiosInnovacionDocente(cvn, cvID);
-            //premiosInnovacionDocente.ExportaPremiosInnovacionDocente(entity, seccion);
+            PremiosInnovacionDocente premiosInnovacionDocente = new PremiosInnovacionDocente(cvn, cvID);
+            premiosInnovacionDocente.ExportaPremiosInnovacionDocente(entity, seccion);
 
-            //PublicacionesDocentes publicacionesDocentes = new PublicacionesDocentes(cvn, cvID);
-            //publicacionesDocentes.ExportaPublicacionesDocentes(entity, seccion);
+            PublicacionesDocentes publicacionesDocentes = new PublicacionesDocentes(cvn, cvID);
+            publicacionesDocentes.ExportaPublicacionesDocentes(entity, seccion);
 
             //TutoriasAcademicas tutoriasAcademicas = new TutoriasAcademicas(cvn, cvID);
             //tutoriasAcademicas.ExportaTutoriasAcademicas(entity, seccion);
@@ -135,6 +135,18 @@ namespace ImportadorWebCV.Exporta
             acreditacionesReconocimientos.ExportaAcreditacionesReconocimientos(entity, seccion);
             EstanciasIDI estanciasIDI = new EstanciasIDI(cvn, cvID);
             estanciasIDI.ExportaEstanciasIDI(entity, seccion);
+
+            SociedadesAsociaciones sociedadesAsociaciones = new SociedadesAsociaciones(cvn, cvID);
+            sociedadesAsociaciones.ExportaSociedadesAsociaciones(entity, seccion);
+
+            Consejos consejos = new Consejos(cvn, cvID);
+            consejos.ExportaConsejos(entity, seccion);
+
+            OtrasDistinciones otrasDistinciones = new OtrasDistinciones(cvn, cvID);
+            otrasDistinciones.ExportaOtrasDistinciones(entity, seccion);
+
+            PeriodosActividad periodosActividad = new PeriodosActividad(cvn, cvID);
+            periodosActividad.ExportaPeriodosActividad(entity, seccion);
 
             OtrosMeritos otrosMeritos = new OtrosMeritos(cvn, cvID);
             otrosMeritos.ExportaOtrosMeritos(entity, seccion);
