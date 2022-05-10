@@ -399,7 +399,7 @@ namespace ExportadorWebCV.Utils
         {
             CvnItemBeanCvnDouble cvnDouble = new CvnItemBeanCvnDouble();
             cvnDouble.Code = code;
-            cvnDouble.Value = Convert.ToInt32(value);
+            cvnDouble.Value = Convert.ToDecimal(value);
 
             itemBean.Items.Add(cvnDouble);
         }
