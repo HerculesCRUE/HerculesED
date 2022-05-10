@@ -14,7 +14,7 @@ using Utils;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
 namespace ExportadorWebCV.Utils
-{   
+{
     public class UtilityExportar
     {
         public static List<string> GetListadoEntidades(ResourceApi pResourceApi, List<string> propiedadesItem, string pCVID)
@@ -100,6 +100,21 @@ namespace ExportadorWebCV.Utils
                         .Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("@@@")[1]
                 });
             }
+        }
+
+        public static void AddCvnItemBeanCvnStringSimple(CvnItemBean itemBean, string code, string value)
+        {
+            //Compruebo si el codigo pasado está bien formado
+            if (Utility.CodigoIncorrecto(code))
+            {
+                return;
+            }
+
+            itemBean.Items.Add(new CvnItemBeanCvnString()
+            {
+                Code = code,
+                Value = value
+            });
         }
 
         public static void AddCvnItemBeanCvnString(CvnItemBean itemBean, string property, string code, Entity entity)
@@ -509,7 +524,7 @@ namespace ExportadorWebCV.Utils
             itemBean.Items.Add(pageBean);
         }
 
-        public static void AddLanguage(CvnItemBean itemBean, string propertyIdentification, string code, Entity entity, [Optional] string secciones) 
+        public static void AddLanguage(CvnItemBean itemBean, string propertyIdentification, string code, Entity entity, [Optional] string secciones)
         {
             //Compruebo si el codigo pasado está bien formado
             if (Utility.CodigoIncorrecto(code))
@@ -517,7 +532,7 @@ namespace ExportadorWebCV.Utils
                 return;
             }
 
-            if(Comprobar(entity.properties.Where(x => x.prop.Equals("http://w3id.org/roh/languageOfTheCertificate"))))
+            if (Comprobar(entity.properties.Where(x => x.prop.Equals("http://w3id.org/roh/languageOfTheCertificate"))))
             {
                 CultureInfo cultureInfo = new CultureInfo(entity.properties.Where(x => x.prop.Equals("http://w3id.org/roh/languageOfTheCertificate")).First()
                     .values.First().Split("_").Last());
