@@ -515,7 +515,7 @@ namespace ExportadorWebCV.Utils
             }
         }
 
-        public static void AddCvnItemBeanCvnPageBean(CvnItemBean itemBean, Dictionary<string,string> propPagIniPagFin, string code, Entity entity, [Optional] string secciones)
+        public static void AddCvnItemBeanCvnPageBean(CvnItemBean itemBean, Dictionary<string, string> propPagIniPagFin, string code, Entity entity, [Optional] string secciones)
         {
             //Compruebo si el codigo pasado está bien formado
             if (Utility.CodigoIncorrecto(code))
@@ -776,6 +776,70 @@ namespace ExportadorWebCV.Utils
                 });
             }
         }
+        public static void AddCvnItemBeanCvnExternalPKBean(CvnItemBean itemBean, string property, string code, Entity entity)
+        {
+            //Compruebo si el codigo pasado está bien formado
+            if (Utility.CodigoIncorrecto(code))
+            {
+                return;
+            }
+
+            if (entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property)).Count() > 0)
+            {
+                CvnItemBeanCvnExternalPKBean externalPKBean = new CvnItemBeanCvnExternalPKBean();
+                externalPKBean.Code = code;
+
+                if (property.Contains("http://w3id.org/roh/otherIds"))
+                {
+                    externalPKBean.Type = "OTHERS";
+                    externalPKBean.Value = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property))
+                        .Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("@@@").Last();
+                    externalPKBean.Others = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith("http://purl.org/dc/elements/1.1/title"))
+                        .Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("@@@").Last();
+                    itemBean.Items.Add(externalPKBean);
+                    return;
+                }
+
+                //Añado el tipo si se corresponde con uno de los validos, sino salgo sin añadir
+                switch (property)
+                {
+                    case "http://w3id.org/roh/ORCID":
+                        externalPKBean.Type = "140";
+                        break;
+                    case "http://vivoweb.org/ontology/core#scopusId":
+                        externalPKBean.Type = "150";
+                        break;
+                    case "http://vivoweb.org/ontology/core#researcherId":
+                        externalPKBean.Type = "160";
+                        break;
+                    case "http://w3id.org/roh/legalDeposit":
+                        externalPKBean.Type = "030";
+                        break;
+                    case "http://w3id.org/roh/isbn":
+                        externalPKBean.Type = "020";
+                        break;
+                    case "http://purl.org/ontology/bibo/issn":
+                        externalPKBean.Type = "010";
+                        break;
+                    case "http://purl.org/ontology/bibo/doi":
+                        externalPKBean.Type = "040";
+                        break;
+                    case "http://purl.org/ontology/bibo/handle":
+                        externalPKBean.Type = "120";
+                        break;
+                    case "http://purl.org/ontology/bibo/pmid":
+                        externalPKBean.Type = "130";
+                        break;
+                    default:
+                        return;
+                }
+
+                externalPKBean.Value = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property))
+                    .Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("@@@").Last();
+
+                itemBean.Items.Add(externalPKBean);
+            }
+        }
 
         public static void AddCvnItemBeanCvnExternalPKBean(CvnItemBean itemBean, string section, string property, string code, Entity entity)
         {
@@ -826,4 +890,5 @@ namespace ExportadorWebCV.Utils
         }
 
     }
+
 }
