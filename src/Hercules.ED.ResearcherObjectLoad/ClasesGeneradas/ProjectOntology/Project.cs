@@ -17,9 +17,9 @@ using Gnoss.ApiWrapper.Exceptions;
 using System.Diagnostics.CodeAnalysis;
 using Feature = FeatureOntology.Feature;
 using OrganizationType = OrganizationtypeOntology.OrganizationType;
+using Person = PersonOntology.Person;
 using Group = GroupOntology.Group;
 using GeographicRegion = GeographicregionOntology.GeographicRegion;
-using Person = PersonOntology.Person;
 using Organization = OrganizationOntology.Organization;
 using ProjectAuthorization = ProjectauthorizationOntology.ProjectAuthorization;
 using ProjectType = ProjecttypeOntology.ProjectType;
@@ -71,6 +71,18 @@ namespace ProjectOntology
 					}
 				}
 			}
+			this.Roh_membersProject = new List<Person>();
+			SemanticPropertyModel propRoh_membersProject = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/membersProject");
+			if(propRoh_membersProject != null && propRoh_membersProject.PropertyValues.Count > 0)
+			{
+				foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_membersProject.PropertyValues)
+				{
+					if(propValue.RelatedEntity!=null){
+						Person roh_membersProject = new Person(propValue.RelatedEntity,idiomaUsuario);
+						this.Roh_membersProject.Add(roh_membersProject);
+					}
+				}
+			}
 			this.Roh_isProducedBy = new List<Group>();
 			SemanticPropertyModel propRoh_isProducedBy = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isProducedBy");
 			if(propRoh_isProducedBy != null && propRoh_isProducedBy.PropertyValues.Count > 0)
@@ -87,18 +99,6 @@ namespace ProjectOntology
 			if(propVivo_geographicFocus != null && propVivo_geographicFocus.PropertyValues.Count > 0)
 			{
 				this.Vivo_geographicFocus = new GeographicRegion(propVivo_geographicFocus.PropertyValues[0].RelatedEntity,idiomaUsuario);
-			}
-			this.Roh_members = new List<Person>();
-			SemanticPropertyModel propRoh_members = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/members");
-			if(propRoh_members != null && propRoh_members.PropertyValues.Count > 0)
-			{
-				foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_members.PropertyValues)
-				{
-					if(propValue.RelatedEntity!=null){
-						Person roh_members = new Person(propValue.RelatedEntity,idiomaUsuario);
-						this.Roh_members.Add(roh_members);
-					}
-				}
 			}
 			this.Roh_researchers = new List<PersonAux>();
 			SemanticPropertyModel propRoh_researchers = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/researchers");
@@ -182,7 +182,7 @@ namespace ProjectOntology
 			this.Roh_geographicFocusOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/geographicFocusOther"));
 			this.Roh_publicationsNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/publicationsNumber"));
 			this.Roh_durationDays = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/durationDays"));
-			this.Vivo_start= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#start"));
+			this.Vivo_start = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#start"));
 			this.Vcard_locality = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#locality"));
 			this.Roh_conductedByTitle = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/conductedByTitle"));
 			this.Roh_grantsPercentage = GetNumberFloatPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/grantsPercentage"));
@@ -195,7 +195,7 @@ namespace ProjectOntology
 			this.Roh_conductedByTypeOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/conductedByTypeOther"));
 			this.Roh_durationYears = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/durationYears"));
 			this.Roh_crisIdentifier = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/crisIdentifier"));
-			this.Vivo_end= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#end"));
+			this.Vivo_end = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#end"));
 			this.Roh_monetaryAmount = GetNumberFloatPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/monetaryAmount"));
 			this.Roh_collaboratorsNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/collaboratorsNumber"));
 			SemanticPropertyModel propRoh_scientificExperienceProject = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/scientificExperienceProject");
@@ -245,6 +245,18 @@ namespace ProjectOntology
 					}
 				}
 			}
+			this.Roh_membersProject = new List<Person>();
+			SemanticPropertyModel propRoh_membersProject = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/membersProject");
+			if(propRoh_membersProject != null && propRoh_membersProject.PropertyValues.Count > 0)
+			{
+				foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_membersProject.PropertyValues)
+				{
+					if(propValue.RelatedEntity!=null){
+						Person roh_membersProject = new Person(propValue.RelatedEntity,idiomaUsuario);
+						this.Roh_membersProject.Add(roh_membersProject);
+					}
+				}
+			}
 			this.Roh_isProducedBy = new List<Group>();
 			SemanticPropertyModel propRoh_isProducedBy = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isProducedBy");
 			if(propRoh_isProducedBy != null && propRoh_isProducedBy.PropertyValues.Count > 0)
@@ -261,18 +273,6 @@ namespace ProjectOntology
 			if(propVivo_geographicFocus != null && propVivo_geographicFocus.PropertyValues.Count > 0)
 			{
 				this.Vivo_geographicFocus = new GeographicRegion(propVivo_geographicFocus.PropertyValues[0].RelatedEntity,idiomaUsuario);
-			}
-			this.Roh_members = new List<Person>();
-			SemanticPropertyModel propRoh_members = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/members");
-			if(propRoh_members != null && propRoh_members.PropertyValues.Count > 0)
-			{
-				foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_members.PropertyValues)
-				{
-					if(propValue.RelatedEntity!=null){
-						Person roh_members = new Person(propValue.RelatedEntity,idiomaUsuario);
-						this.Roh_members.Add(roh_members);
-					}
-				}
 			}
 			this.Roh_researchers = new List<PersonAux>();
 			SemanticPropertyModel propRoh_researchers = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/researchers");
@@ -356,7 +356,7 @@ namespace ProjectOntology
 			this.Roh_geographicFocusOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/geographicFocusOther"));
 			this.Roh_publicationsNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/publicationsNumber"));
 			this.Roh_durationDays = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/durationDays"));
-			this.Vivo_start= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#start"));
+			this.Vivo_start = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#start"));
 			this.Vcard_locality = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#locality"));
 			this.Roh_conductedByTitle = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/conductedByTitle"));
 			this.Roh_grantsPercentage = GetNumberFloatPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/grantsPercentage"));
@@ -369,7 +369,7 @@ namespace ProjectOntology
 			this.Roh_conductedByTypeOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/conductedByTypeOther"));
 			this.Roh_durationYears = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/durationYears"));
 			this.Roh_crisIdentifier = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/crisIdentifier"));
-			this.Vivo_end= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#end"));
+			this.Vivo_end = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#end"));
 			this.Roh_monetaryAmount = GetNumberFloatPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/monetaryAmount"));
 			this.Roh_collaboratorsNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/collaboratorsNumber"));
 			SemanticPropertyModel propRoh_scientificExperienceProject = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/scientificExperienceProject");
@@ -397,6 +397,11 @@ namespace ProjectOntology
 		[RDFProperty("http://w3id.org/roh/mainResearchers")]
 		public  List<PersonAux> Roh_mainResearchers { get; set;}
 
+		[LABEL(LanguageEnum.es,"Persona")]
+		[RDFProperty("http://w3id.org/roh/membersProject")]
+		public  List<Person> Roh_membersProject { get; set;}
+		public List<string> IdsRoh_membersProject { get; set;}
+
 		[RDFProperty("http://w3id.org/roh/isProducedBy")]
 		public  List<Group> Roh_isProducedBy { get; set;}
 		public List<string> IdsRoh_isProducedBy { get; set;}
@@ -404,11 +409,6 @@ namespace ProjectOntology
 		[RDFProperty("http://vivoweb.org/ontology/core#geographicFocus")]
 		public  GeographicRegion Vivo_geographicFocus  { get; set;} 
 		public string IdVivo_geographicFocus  { get; set;} 
-
-		[LABEL(LanguageEnum.es,"Persona")]
-		[RDFProperty("http://w3id.org/roh/members")]
-		public  List<Person> Roh_members { get; set;}
-		public List<string> IdsRoh_members { get; set;}
 
 		[RDFProperty("http://w3id.org/roh/researchers")]
 		public  List<PersonAux> Roh_researchers { get; set;}
@@ -534,9 +534,9 @@ namespace ProjectOntology
 			base.GetProperties();
 			propList.Add(new StringOntologyProperty("vcard:hasCountryName", this.IdVcard_hasCountryName));
 			propList.Add(new StringOntologyProperty("roh:conductedByType", this.IdRoh_conductedByType));
+			propList.Add(new ListStringOntologyProperty("roh:membersProject", this.IdsRoh_membersProject));
 			propList.Add(new ListStringOntologyProperty("roh:isProducedBy", this.IdsRoh_isProducedBy));
 			propList.Add(new StringOntologyProperty("vivo:geographicFocus", this.IdVivo_geographicFocus));
-			propList.Add(new ListStringOntologyProperty("roh:members", this.IdsRoh_members));
 			propList.Add(new StringOntologyProperty("roh:conductedBy", this.IdRoh_conductedBy));
 			propList.Add(new StringOntologyProperty("vcard:hasRegion", this.IdVcard_hasRegion));
 			propList.Add(new StringOntologyProperty("roh:projectAuthorization", this.IdRoh_projectAuthorization));
@@ -871,6 +871,13 @@ namespace ProjectOntology
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Project_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/conductedByType", $"<{this.IdRoh_conductedByType}>", list, " . ");
 				}
+				if(this.IdsRoh_membersProject != null)
+				{
+					foreach(var item2 in this.IdsRoh_membersProject)
+					{
+						AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Project_{ResourceID}_{ArticleID}", "http://w3id.org/roh/membersProject", $"<{item2}>", list, " . ");
+					}
+				}
 				if(this.IdsRoh_isProducedBy != null)
 				{
 					foreach(var item2 in this.IdsRoh_isProducedBy)
@@ -881,13 +888,6 @@ namespace ProjectOntology
 				if(this.IdVivo_geographicFocus != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Project_{ResourceID}_{ArticleID}",  "http://vivoweb.org/ontology/core#geographicFocus", $"<{this.IdVivo_geographicFocus}>", list, " . ");
-				}
-				if(this.IdsRoh_members != null)
-				{
-					foreach(var item2 in this.IdsRoh_members)
-					{
-						AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Project_{ResourceID}_{ArticleID}", "http://w3id.org/roh/members", $"<{item2}>", list, " . ");
-					}
 				}
 				if(this.IdRoh_conductedBy != null)
 				{
@@ -1364,6 +1364,23 @@ namespace ProjectOntology
 					}
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/conductedByType", $"<{itemRegex}>", list, " . ");
 				}
+				if(this.IdsRoh_membersProject != null)
+				{
+					foreach(var item2 in this.IdsRoh_membersProject)
+					{
+					Regex regex = new Regex(@"\/items\/.+_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}");
+					string itemRegex = item2;
+					if (regex.IsMatch(itemRegex))
+					{
+						itemRegex = $"http://gnoss/{resourceAPI.GetShortGuid(itemRegex).ToString().ToUpper()}";
+					}
+					else
+					{
+						itemRegex = itemRegex.ToLower();
+					}
+						AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://w3id.org/roh/membersProject", $"<{itemRegex}>", list, " . ");
+					}
+				}
 				if(this.IdsRoh_isProducedBy != null)
 				{
 					foreach(var item2 in this.IdsRoh_isProducedBy)
@@ -1394,23 +1411,6 @@ namespace ProjectOntology
 						itemRegex = itemRegex.ToLower();
 					}
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://vivoweb.org/ontology/core#geographicFocus", $"<{itemRegex}>", list, " . ");
-				}
-				if(this.IdsRoh_members != null)
-				{
-					foreach(var item2 in this.IdsRoh_members)
-					{
-					Regex regex = new Regex(@"\/items\/.+_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}");
-					string itemRegex = item2;
-					if (regex.IsMatch(itemRegex))
-					{
-						itemRegex = $"http://gnoss/{resourceAPI.GetShortGuid(itemRegex).ToString().ToUpper()}";
-					}
-					else
-					{
-						itemRegex = itemRegex.ToLower();
-					}
-						AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://w3id.org/roh/members", $"<{itemRegex}>", list, " . ");
-					}
 				}
 				if(this.IdRoh_conductedBy != null)
 				{
@@ -1618,86 +1618,12 @@ namespace ProjectOntology
 			return list;
 		}
 
-		public override KeyValuePair<Guid, string> ToAcidData(ResourceApi resourceAPI)
-		{
 
-			//Insert en la tabla Documento
-			string tags = "";
-			foreach(string tag in tagList)
-			{
-				tags += $"{tag}, ";
-			}
-			if (!string.IsNullOrEmpty(tags))
-			{
-				tags = tags.Substring(0, tags.LastIndexOf(','));
-			}
-			string titulo = $"{this.Roh_title.Replace("\r\n", "").Replace("\n", "").Replace("\r", "").Replace("\"", "\"\"").Replace("'", "''").Replace("|", "#PIPE#")}";
-			string descripcion = $"{this.Roh_title.Replace("\r\n", "").Replace("\n", "").Replace("\r", "").Replace("\"", "\"\"").Replace("'", "''").Replace("|", "#PIPE#")}";
-			string tablaDoc = $"'{titulo}', '{descripcion}', '{resourceAPI.GraphsUrl}', '{tags}'";
-			KeyValuePair<Guid, string> valor = new KeyValuePair<Guid, string>(ResourceID, tablaDoc);
-
-			return valor;
-		}
-
-		protected List<object> ObtenerObjetosDePropiedad(object propiedad)
-		{
-			List<object> lista = new List<object>();
-			if(propiedad is IList)
-			{
-				foreach (object item in (IList)propiedad)
-				{
-					lista.Add(item);
-				}
-			}
-			else
-			{
-				lista.Add(propiedad);
-			}
-			return lista;
-		}
-		protected List<string> ObtenerStringDePropiedad(object propiedad)
-		{
-			List<string> lista = new List<string>();
-			if (propiedad is IList)
-			{
-				foreach (string item in (IList)propiedad)
-				{
-					lista.Add(item);
-				}
-			}
-			else if (propiedad is IDictionary)
-			{
-				foreach (object key in ((IDictionary)propiedad).Keys)
-				{
-					if (((IDictionary)propiedad)[key] is IList)
-					{
-						List<string> listaValores = (List<string>)((IDictionary)propiedad)[key];
-						foreach(string valor in listaValores)
-						{
-							lista.Add(valor);
-						}
-					}
-					else
-					{
-					lista.Add((string)((IDictionary)propiedad)[key]);
-					}
-				}
-			}
-			else if (propiedad is string)
-			{
-				lista.Add((string)propiedad);
-			}
-			return lista;
-		}
 		public override string GetURI(ResourceApi resourceAPI)
 		{
 			return $"{resourceAPI.GraphsUrl}items/ProjectOntology_{ResourceID}_{ArticleID}";
 		}
 
-		private string GenerarTextoSinSaltoDeLinea(string pTexto)
-		{
-			return pTexto.Replace("\r\n", " ").Replace("\n", " ").Replace("\r", " ").Replace("\"", "\\\"");
-		}
 
 		internal void AddResourceTitle(ComplexOntologyResource resource)
 		{
@@ -1709,21 +1635,7 @@ namespace ProjectOntology
 			resource.Description = this.Roh_title;
 		}
 
-		private void AgregarTripleALista(string pSujeto, string pPredicado, string pObjeto, List<string> pLista, string pDatosExtra)
-		{
-			if(!string.IsNullOrEmpty(pObjeto) && !pObjeto.Equals("\"\"") && !pObjeto.Equals("<>"))
-			{
-				pLista.Add($"<{pSujeto}> <{pPredicado}> {pObjeto}{pDatosExtra}");
-			} 
-		} 
 
-		private void AgregarTags(List<string> pListaTriples)
-		{
-			foreach(string tag in tagList)
-			{
-				AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://rdfs.org/sioc/types#Tag", tag.ToLower(), pListaTriples, " . ");
-			}
-		}
 
 
 	}

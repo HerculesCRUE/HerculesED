@@ -41,8 +41,8 @@ namespace GroupOntology
 					}
 				}
 			}
-			this.Vivo_start= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#start"));
-			this.Vivo_end= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#end"));
+			this.Vivo_start = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#start"));
+			this.Vivo_end = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#end"));
 			this.Foaf_nick = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/nick"));
 			SemanticPropertyModel propRoh_roleOf = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/roleOf");
 			if(propRoh_roleOf != null && propRoh_roleOf.PropertyValues.Count > 0)
@@ -109,79 +109,11 @@ namespace GroupOntology
 
 
 
-		protected List<object> ObtenerObjetosDePropiedad(object propiedad)
-		{
-			List<object> lista = new List<object>();
-			if(propiedad is IList)
-			{
-				foreach (object item in (IList)propiedad)
-				{
-					lista.Add(item);
-				}
-			}
-			else
-			{
-				lista.Add(propiedad);
-			}
-			return lista;
-		}
-		protected List<string> ObtenerStringDePropiedad(object propiedad)
-		{
-			List<string> lista = new List<string>();
-			if (propiedad is IList)
-			{
-				foreach (string item in (IList)propiedad)
-				{
-					lista.Add(item);
-				}
-			}
-			else if (propiedad is IDictionary)
-			{
-				foreach (object key in ((IDictionary)propiedad).Keys)
-				{
-					if (((IDictionary)propiedad)[key] is IList)
-					{
-						List<string> listaValores = (List<string>)((IDictionary)propiedad)[key];
-						foreach(string valor in listaValores)
-						{
-							lista.Add(valor);
-						}
-					}
-					else
-					{
-					lista.Add((string)((IDictionary)propiedad)[key]);
-					}
-				}
-			}
-			else if (propiedad is string)
-			{
-				lista.Add((string)propiedad);
-			}
-			return lista;
-		}
-
-		private string GenerarTextoSinSaltoDeLinea(string pTexto)
-		{
-			return pTexto.Replace("\r\n", " ").Replace("\n", " ").Replace("\r", " ").Replace("\"", "\\\"");
-		}
 
 
 
-		private void AgregarTripleALista(string pSujeto, string pPredicado, string pObjeto, List<string> pLista, string pDatosExtra)
-		{
-			if(!string.IsNullOrEmpty(pObjeto) && !pObjeto.Equals("\"\"") && !pObjeto.Equals("<>"))
-			{
-				pLista.Add($"<{pSujeto}> <{pPredicado}> {pObjeto}{pDatosExtra}");
-			} 
-		} 
 
-		private void AgregarTags(List<string> pListaTriples)
-		{
-			foreach(string tag in tagList)
-			{
-				AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://rdfs.org/sioc/types#Tag", tag.ToLower(), pListaTriples, " . ");
-			}
-		}
+
 
 
 	}

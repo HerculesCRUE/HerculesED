@@ -24,10 +24,10 @@ using FormationType = FormationtypeOntology.FormationType;
 using PrizeType = PrizetypeOntology.PrizeType;
 using StayGoal = StaygoalOntology.StayGoal;
 using PostgradeDegree = PostgradedegreeOntology.PostgradeDegree;
-using Person = PersonOntology.Person;
 using Organization = OrganizationOntology.Organization;
 using FormationActivityType = FormationactivitytypeOntology.FormationActivityType;
 using UniversityDegreeType = UniversitydegreetypeOntology.UniversityDegreeType;
+using Person = PersonOntology.Person;
 
 namespace AcademicdegreeOntology
 {
@@ -90,22 +90,17 @@ namespace AcademicdegreeOntology
 			{
 				this.Roh_postgradeDegree = new PostgradeDegree(propRoh_postgradeDegree.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
-			this.Roh_codirector = new List<Person>();
+			this.Roh_codirector = new List<PersonAux>();
 			SemanticPropertyModel propRoh_codirector = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/codirector");
 			if(propRoh_codirector != null && propRoh_codirector.PropertyValues.Count > 0)
 			{
 				foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_codirector.PropertyValues)
 				{
 					if(propValue.RelatedEntity!=null){
-						Person roh_codirector = new Person(propValue.RelatedEntity,idiomaUsuario);
+						PersonAux roh_codirector = new PersonAux(propValue.RelatedEntity,idiomaUsuario);
 						this.Roh_codirector.Add(roh_codirector);
 					}
 				}
-			}
-			SemanticPropertyModel propRoh_owner = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/owner");
-			if(propRoh_owner != null && propRoh_owner.PropertyValues.Count > 0)
-			{
-				this.Roh_owner = new Person(propRoh_owner.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
 			SemanticPropertyModel propRoh_conductedBy = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/conductedBy");
 			if(propRoh_conductedBy != null && propRoh_conductedBy.PropertyValues.Count > 0)
@@ -133,15 +128,15 @@ namespace AcademicdegreeOntology
 				this.Roh_universityDegreeType = new UniversityDegreeType(propRoh_universityDegreeType.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
 			this.Roh_thesisTitle = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/thesisTitle"));
-			this.Roh_directorNick = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/directorNick"));
 			this.Roh_trainerSecondSurname = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/trainerSecondSurname"));
-			this.Roh_doctorExtraordinaryAwardDate= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/doctorExtraordinaryAwardDate"));
+			this.Roh_directorNick = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/directorNick"));
+			this.Roh_doctorExtraordinaryAwardDate = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/doctorExtraordinaryAwardDate"));
 			this.Roh_directorSecondSurname = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/directorSecondSurname"));
 			this.Roh_durationDays = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/durationDays"));
 			this.Roh_trainerNick = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/trainerNick"));
 			this.Roh_targetProfile = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/targetProfile"));
 			this.Roh_formationActivityTypeOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/formationActivityTypeOther"));
-			this.Roh_europeanDoctorateDate= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/europeanDoctorateDate"));
+			this.Roh_europeanDoctorateDate = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/europeanDoctorateDate"));
 			this.Roh_goals = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/goals"));
 			this.Roh_directorName = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/directorName"));
 			this.Roh_trainerName = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/trainerName"));
@@ -150,28 +145,33 @@ namespace AcademicdegreeOntology
 			this.Roh_prizeOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/prizeOther"));
 			this.Roh_europeanDoctorate= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/europeanDoctorate"));
 			this.Roh_conductedByTitle = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/conductedByTitle"));
-			this.Roh_cvnCode = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/cvnCode"));
-			this.Roh_approvedDate= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/approvedDate"));
+			this.Roh_approvedDate = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/approvedDate"));
 			this.Roh_trainerFirstSurname = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/trainerFirstSurname"));
 			this.Roh_qualification = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/qualification"));
 			this.Roh_universityDegreeTypeOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/universityDegreeTypeOther"));
-			this.Roh_deaDate= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/deaDate"));
+			this.Roh_deaDate = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/deaDate"));
 			this.Roh_durationMonths = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/durationMonths"));
 			this.Roh_stayGoalOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/stayGoalOther"));
 			this.Roh_conductedByTypeOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/conductedByTypeOther"));
 			this.Roh_fundingProgram = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/fundingProgram"));
 			this.Roh_durationYears = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/durationYears"));
-			this.Dct_issued= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/dc/terms/issued"));
+			this.Dct_issued = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/dc/terms/issued"));
 			this.Roh_doctorExtraordinaryAward= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/doctorExtraordinaryAward"));
 			this.Roh_directorFirstSurname = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/directorFirstSurname"));
 			this.Roh_crisIdentifier = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/crisIdentifier"));
-			this.Vivo_end= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#end"));
+			this.Vivo_end = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#end"));
 			this.Roh_center = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/center"));
 			this.Roh_qualityMention= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/qualityMention"));
 			this.Roh_deaEntityTitle = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/deaEntityTitle"));
 			this.Roh_durationHours = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/durationHours"));
 			this.Roh_approvedDegree= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/approvedDegree"));
 			this.Roh_foreignTitle = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/foreignTitle"));
+			SemanticPropertyModel propRoh_owner = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/owner");
+			if(propRoh_owner != null && propRoh_owner.PropertyValues.Count > 0)
+			{
+				this.Roh_owner = new Person(propRoh_owner.PropertyValues[0].RelatedEntity,idiomaUsuario);
+			}
+			this.Roh_cvnCode = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/cvnCode"));
 			this.Roh_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/title"));
 		}
 
@@ -229,22 +229,17 @@ namespace AcademicdegreeOntology
 			{
 				this.Roh_postgradeDegree = new PostgradeDegree(propRoh_postgradeDegree.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
-			this.Roh_codirector = new List<Person>();
+			this.Roh_codirector = new List<PersonAux>();
 			SemanticPropertyModel propRoh_codirector = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/codirector");
 			if(propRoh_codirector != null && propRoh_codirector.PropertyValues.Count > 0)
 			{
 				foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_codirector.PropertyValues)
 				{
 					if(propValue.RelatedEntity!=null){
-						Person roh_codirector = new Person(propValue.RelatedEntity,idiomaUsuario);
+						PersonAux roh_codirector = new PersonAux(propValue.RelatedEntity,idiomaUsuario);
 						this.Roh_codirector.Add(roh_codirector);
 					}
 				}
-			}
-			SemanticPropertyModel propRoh_owner = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/owner");
-			if(propRoh_owner != null && propRoh_owner.PropertyValues.Count > 0)
-			{
-				this.Roh_owner = new Person(propRoh_owner.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
 			SemanticPropertyModel propRoh_conductedBy = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/conductedBy");
 			if(propRoh_conductedBy != null && propRoh_conductedBy.PropertyValues.Count > 0)
@@ -272,15 +267,15 @@ namespace AcademicdegreeOntology
 				this.Roh_universityDegreeType = new UniversityDegreeType(propRoh_universityDegreeType.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
 			this.Roh_thesisTitle = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/thesisTitle"));
-			this.Roh_directorNick = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/directorNick"));
 			this.Roh_trainerSecondSurname = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/trainerSecondSurname"));
-			this.Roh_doctorExtraordinaryAwardDate= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/doctorExtraordinaryAwardDate"));
+			this.Roh_directorNick = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/directorNick"));
+			this.Roh_doctorExtraordinaryAwardDate = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/doctorExtraordinaryAwardDate"));
 			this.Roh_directorSecondSurname = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/directorSecondSurname"));
 			this.Roh_durationDays = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/durationDays"));
 			this.Roh_trainerNick = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/trainerNick"));
 			this.Roh_targetProfile = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/targetProfile"));
 			this.Roh_formationActivityTypeOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/formationActivityTypeOther"));
-			this.Roh_europeanDoctorateDate= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/europeanDoctorateDate"));
+			this.Roh_europeanDoctorateDate = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/europeanDoctorateDate"));
 			this.Roh_goals = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/goals"));
 			this.Roh_directorName = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/directorName"));
 			this.Roh_trainerName = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/trainerName"));
@@ -289,28 +284,33 @@ namespace AcademicdegreeOntology
 			this.Roh_prizeOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/prizeOther"));
 			this.Roh_europeanDoctorate= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/europeanDoctorate"));
 			this.Roh_conductedByTitle = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/conductedByTitle"));
-			this.Roh_cvnCode = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/cvnCode"));
-			this.Roh_approvedDate= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/approvedDate"));
+			this.Roh_approvedDate = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/approvedDate"));
 			this.Roh_trainerFirstSurname = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/trainerFirstSurname"));
 			this.Roh_qualification = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/qualification"));
 			this.Roh_universityDegreeTypeOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/universityDegreeTypeOther"));
-			this.Roh_deaDate= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/deaDate"));
+			this.Roh_deaDate = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/deaDate"));
 			this.Roh_durationMonths = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/durationMonths"));
 			this.Roh_stayGoalOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/stayGoalOther"));
 			this.Roh_conductedByTypeOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/conductedByTypeOther"));
 			this.Roh_fundingProgram = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/fundingProgram"));
 			this.Roh_durationYears = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/durationYears"));
-			this.Dct_issued= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/dc/terms/issued"));
+			this.Dct_issued = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/dc/terms/issued"));
 			this.Roh_doctorExtraordinaryAward= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/doctorExtraordinaryAward"));
 			this.Roh_directorFirstSurname = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/directorFirstSurname"));
 			this.Roh_crisIdentifier = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/crisIdentifier"));
-			this.Vivo_end= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#end"));
+			this.Vivo_end = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#end"));
 			this.Roh_center = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/center"));
 			this.Roh_qualityMention= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/qualityMention"));
 			this.Roh_deaEntityTitle = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/deaEntityTitle"));
 			this.Roh_durationHours = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/durationHours"));
 			this.Roh_approvedDegree= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/approvedDegree"));
 			this.Roh_foreignTitle = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/foreignTitle"));
+			SemanticPropertyModel propRoh_owner = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/owner");
+			if(propRoh_owner != null && propRoh_owner.PropertyValues.Count > 0)
+			{
+				this.Roh_owner = new Person(propRoh_owner.PropertyValues[0].RelatedEntity,idiomaUsuario);
+			}
+			this.Roh_cvnCode = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/cvnCode"));
 			this.Roh_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/title"));
 		}
 
@@ -359,11 +359,7 @@ namespace AcademicdegreeOntology
 		public string IdRoh_postgradeDegree  { get; set;} 
 
 		[RDFProperty("http://w3id.org/roh/codirector")]
-		public  List<Person> Roh_codirector { get; set;}
-
-		[RDFProperty("http://w3id.org/roh/owner")]
-		public  Person Roh_owner  { get; set;} 
-		public string IdRoh_owner  { get; set;} 
+		public  List<PersonAux> Roh_codirector { get; set;}
 
 		[LABEL(LanguageEnum.es,"http://w3id.org/roh/conductedBy")]
 		[RDFProperty("http://w3id.org/roh/conductedBy")]
@@ -390,11 +386,11 @@ namespace AcademicdegreeOntology
 		[RDFProperty("http://w3id.org/roh/thesisTitle")]
 		public  string Roh_thesisTitle { get; set;}
 
-		[RDFProperty("http://w3id.org/roh/directorNick")]
-		public  string Roh_directorNick { get; set;}
-
 		[RDFProperty("http://w3id.org/roh/trainerSecondSurname")]
 		public  string Roh_trainerSecondSurname { get; set;}
+
+		[RDFProperty("http://w3id.org/roh/directorNick")]
+		public  string Roh_directorNick { get; set;}
 
 		[RDFProperty("http://w3id.org/roh/doctorExtraordinaryAwardDate")]
 		public  DateTime? Roh_doctorExtraordinaryAwardDate { get; set;}
@@ -440,9 +436,6 @@ namespace AcademicdegreeOntology
 
 		[RDFProperty("http://w3id.org/roh/conductedByTitle")]
 		public  string Roh_conductedByTitle { get; set;}
-
-		[RDFProperty("http://w3id.org/roh/cvnCode")]
-		public  string Roh_cvnCode { get; set;}
 
 		[RDFProperty("http://w3id.org/roh/approvedDate")]
 		public  DateTime? Roh_approvedDate { get; set;}
@@ -507,6 +500,14 @@ namespace AcademicdegreeOntology
 		[RDFProperty("http://w3id.org/roh/foreignTitle")]
 		public  string Roh_foreignTitle { get; set;}
 
+		[RDFProperty("http://w3id.org/roh/owner")]
+		[Required]
+		public  Person Roh_owner  { get; set;} 
+		public string IdRoh_owner  { get; set;} 
+
+		[RDFProperty("http://w3id.org/roh/cvnCode")]
+		public  string Roh_cvnCode { get; set;}
+
 		[RDFProperty("http://w3id.org/roh/title")]
 		public  string Roh_title { get; set;}
 
@@ -524,15 +525,14 @@ namespace AcademicdegreeOntology
 			propList.Add(new StringOntologyProperty("roh:prize", this.IdRoh_prize));
 			propList.Add(new StringOntologyProperty("roh:stayGoal", this.IdRoh_stayGoal));
 			propList.Add(new StringOntologyProperty("roh:postgradeDegree", this.IdRoh_postgradeDegree));
-			propList.Add(new StringOntologyProperty("roh:owner", this.IdRoh_owner));
 			propList.Add(new StringOntologyProperty("roh:conductedBy", this.IdRoh_conductedBy));
 			propList.Add(new StringOntologyProperty("vcard:hasRegion", this.IdVcard_hasRegion));
 			propList.Add(new StringOntologyProperty("roh:formationActivityType", this.IdRoh_formationActivityType));
 			propList.Add(new StringOntologyProperty("roh:deaEntity", this.IdRoh_deaEntity));
 			propList.Add(new StringOntologyProperty("roh:universityDegreeType", this.IdRoh_universityDegreeType));
 			propList.Add(new StringOntologyProperty("roh:thesisTitle", this.Roh_thesisTitle));
-			propList.Add(new StringOntologyProperty("roh:directorNick", this.Roh_directorNick));
 			propList.Add(new StringOntologyProperty("roh:trainerSecondSurname", this.Roh_trainerSecondSurname));
+			propList.Add(new StringOntologyProperty("roh:directorNick", this.Roh_directorNick));
 			if (this.Roh_doctorExtraordinaryAwardDate.HasValue){
 				propList.Add(new DateOntologyProperty("roh:doctorExtraordinaryAwardDate", this.Roh_doctorExtraordinaryAwardDate.Value));
 				}
@@ -552,7 +552,6 @@ namespace AcademicdegreeOntology
 			propList.Add(new StringOntologyProperty("roh:prizeOther", this.Roh_prizeOther));
 			propList.Add(new BoolOntologyProperty("roh:europeanDoctorate", this.Roh_europeanDoctorate));
 			propList.Add(new StringOntologyProperty("roh:conductedByTitle", this.Roh_conductedByTitle));
-			propList.Add(new StringOntologyProperty("roh:cvnCode", this.Roh_cvnCode));
 			if (this.Roh_approvedDate.HasValue){
 				propList.Add(new DateOntologyProperty("roh:approvedDate", this.Roh_approvedDate.Value));
 				}
@@ -582,6 +581,8 @@ namespace AcademicdegreeOntology
 			propList.Add(new StringOntologyProperty("roh:durationHours", this.Roh_durationHours.ToString()));
 			propList.Add(new BoolOntologyProperty("roh:approvedDegree", this.Roh_approvedDegree));
 			propList.Add(new StringOntologyProperty("roh:foreignTitle", this.Roh_foreignTitle));
+			propList.Add(new StringOntologyProperty("roh:owner", this.IdRoh_owner));
+			propList.Add(new StringOntologyProperty("roh:cvnCode", this.Roh_cvnCode));
 			propList.Add(new StringOntologyProperty("roh:title", this.Roh_title));
 		}
 
@@ -589,12 +590,12 @@ namespace AcademicdegreeOntology
 		{
 			base.GetEntities();
 			if(Roh_codirector!=null){
-				foreach(Person prop in Roh_codirector){
+				foreach(PersonAux prop in Roh_codirector){
 					prop.GetProperties();
 					prop.GetEntities();
-					OntologyEntity entityPerson = new OntologyEntity("http://xmlns.com/foaf/0.1/Person", "http://xmlns.com/foaf/0.1/Person", "roh:codirector", prop.propList, prop.entList);
-				entList.Add(entityPerson);
-				prop.Entity= entityPerson;
+					OntologyEntity entityPersonAux = new OntologyEntity("http://w3id.org/roh/PersonAux", "http://w3id.org/roh/PersonAux", "roh:codirector", prop.propList, prop.entList);
+				entList.Add(entityPersonAux);
+				prop.Entity= entityPersonAux;
 				}
 			}
 		} 
@@ -636,29 +637,29 @@ namespace AcademicdegreeOntology
 			{
 			foreach(var item0 in this.Roh_codirector)
 			{
-				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Person_{ResourceID}_{item0.ArticleID}", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", $"<http://xmlns.com/foaf/0.1/Person>", list, " . ");
-				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Person_{ResourceID}_{item0.ArticleID}", "http://www.w3.org/2000/01/rdf-schema#label", $"\"http://xmlns.com/foaf/0.1/Person\"", list, " . ");
-				AgregarTripleALista($"{resourceAPI.GraphsUrl}{ResourceID}", "http://gnoss/hasEntidad", $"<{resourceAPI.GraphsUrl}items/Person_{ResourceID}_{item0.ArticleID}>", list, " . ");
-				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/AcademicDegree_{ResourceID}_{ArticleID}", "http://w3id.org/roh/codirector", $"<{resourceAPI.GraphsUrl}items/Person_{ResourceID}_{item0.ArticleID}>", list, " . ");
+				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/PersonAux_{ResourceID}_{item0.ArticleID}", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", $"<http://w3id.org/roh/PersonAux>", list, " . ");
+				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/PersonAux_{ResourceID}_{item0.ArticleID}", "http://www.w3.org/2000/01/rdf-schema#label", $"\"http://w3id.org/roh/PersonAux\"", list, " . ");
+				AgregarTripleALista($"{resourceAPI.GraphsUrl}{ResourceID}", "http://gnoss/hasEntidad", $"<{resourceAPI.GraphsUrl}items/PersonAux_{ResourceID}_{item0.ArticleID}>", list, " . ");
+				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/AcademicDegree_{ResourceID}_{ArticleID}", "http://w3id.org/roh/codirector", $"<{resourceAPI.GraphsUrl}items/PersonAux_{ResourceID}_{item0.ArticleID}>", list, " . ");
 				if(item0.Foaf_familyName != null)
 				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Person_{ResourceID}_{item0.ArticleID}",  "http://xmlns.com/foaf/0.1/familyName", $"\"{GenerarTextoSinSaltoDeLinea(item0.Foaf_familyName)}\"", list, " . ");
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/PersonAux_{ResourceID}_{item0.ArticleID}",  "http://xmlns.com/foaf/0.1/familyName", $"\"{GenerarTextoSinSaltoDeLinea(item0.Foaf_familyName)}\"", list, " . ");
 				}
 				if(item0.Roh_secondFamilyName != null)
 				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Person_{ResourceID}_{item0.ArticleID}",  "http://w3id.org/roh/secondFamilyName", $"\"{GenerarTextoSinSaltoDeLinea(item0.Roh_secondFamilyName)}\"", list, " . ");
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/PersonAux_{ResourceID}_{item0.ArticleID}",  "http://w3id.org/roh/secondFamilyName", $"\"{GenerarTextoSinSaltoDeLinea(item0.Roh_secondFamilyName)}\"", list, " . ");
 				}
 				if(item0.Foaf_nick != null)
 				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Person_{ResourceID}_{item0.ArticleID}",  "http://xmlns.com/foaf/0.1/nick", $"\"{GenerarTextoSinSaltoDeLinea(item0.Foaf_nick)}\"", list, " . ");
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/PersonAux_{ResourceID}_{item0.ArticleID}",  "http://xmlns.com/foaf/0.1/nick", $"\"{GenerarTextoSinSaltoDeLinea(item0.Foaf_nick)}\"", list, " . ");
 				}
 				if(item0.Foaf_firstName != null)
 				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Person_{ResourceID}_{item0.ArticleID}",  "http://xmlns.com/foaf/0.1/firstName", $"\"{GenerarTextoSinSaltoDeLinea(item0.Foaf_firstName)}\"", list, " . ");
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/PersonAux_{ResourceID}_{item0.ArticleID}",  "http://xmlns.com/foaf/0.1/firstName", $"\"{GenerarTextoSinSaltoDeLinea(item0.Foaf_firstName)}\"", list, " . ");
 				}
 				if(item0.Rdf_comment != null)
 				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Person_{ResourceID}_{item0.ArticleID}",  "http://www.w3.org/1999/02/22-rdf-syntax-ns#comment", $"{item0.Rdf_comment.ToString()}", list, " . ");
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/PersonAux_{ResourceID}_{item0.ArticleID}",  "http://www.w3.org/1999/02/22-rdf-syntax-ns#comment", $"{item0.Rdf_comment.ToString()}", list, " . ");
 				}
 			}
 			}
@@ -702,10 +703,6 @@ namespace AcademicdegreeOntology
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/AcademicDegree_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/postgradeDegree", $"<{this.IdRoh_postgradeDegree}>", list, " . ");
 				}
-				if(this.IdRoh_owner != null)
-				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/AcademicDegree_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/owner", $"<{this.IdRoh_owner}>", list, " . ");
-				}
 				if(this.IdRoh_conductedBy != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/AcademicDegree_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/conductedBy", $"<{this.IdRoh_conductedBy}>", list, " . ");
@@ -730,13 +727,13 @@ namespace AcademicdegreeOntology
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/AcademicDegree_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/thesisTitle", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_thesisTitle)}\"", list, " . ");
 				}
-				if(this.Roh_directorNick != null)
-				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/AcademicDegree_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/directorNick", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_directorNick)}\"", list, " . ");
-				}
 				if(this.Roh_trainerSecondSurname != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/AcademicDegree_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/trainerSecondSurname", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_trainerSecondSurname)}\"", list, " . ");
+				}
+				if(this.Roh_directorNick != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/AcademicDegree_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/directorNick", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_directorNick)}\"", list, " . ");
 				}
 				if(this.Roh_doctorExtraordinaryAwardDate != null)
 				{
@@ -797,10 +794,6 @@ namespace AcademicdegreeOntology
 				if(this.Roh_conductedByTitle != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/AcademicDegree_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/conductedByTitle", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_conductedByTitle)}\"", list, " . ");
-				}
-				if(this.Roh_cvnCode != null)
-				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/AcademicDegree_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/cvnCode", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_cvnCode)}\"", list, " . ");
 				}
 				if(this.Roh_approvedDate != null)
 				{
@@ -886,6 +879,14 @@ namespace AcademicdegreeOntology
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/AcademicDegree_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/foreignTitle", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_foreignTitle)}\"", list, " . ");
 				}
+				if(this.IdRoh_owner != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/AcademicDegree_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/owner", $"<{this.IdRoh_owner}>", list, " . ");
+				}
+				if(this.Roh_cvnCode != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/AcademicDegree_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/cvnCode", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_cvnCode)}\"", list, " . ");
+				}
 				if(this.Roh_title != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/AcademicDegree_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/title", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_title)}\"", list, " . ");
@@ -912,26 +913,26 @@ namespace AcademicdegreeOntology
 			{
 			foreach(var item0 in this.Roh_codirector)
 			{
-				AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://w3id.org/roh/codirector", $"<{resourceAPI.GraphsUrl}items/person_{ResourceID}_{item0.ArticleID}>", list, " . ");
+				AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://w3id.org/roh/codirector", $"<{resourceAPI.GraphsUrl}items/personaux_{ResourceID}_{item0.ArticleID}>", list, " . ");
 				if(item0.Foaf_familyName != null)
 				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/person_{ResourceID}_{item0.ArticleID}",  "http://xmlns.com/foaf/0.1/familyName", $"\"{GenerarTextoSinSaltoDeLinea(item0.Foaf_familyName).ToLower()}\"", list, " . ");
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/personaux_{ResourceID}_{item0.ArticleID}",  "http://xmlns.com/foaf/0.1/familyName", $"\"{GenerarTextoSinSaltoDeLinea(item0.Foaf_familyName).ToLower()}\"", list, " . ");
 				}
 				if(item0.Roh_secondFamilyName != null)
 				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/person_{ResourceID}_{item0.ArticleID}",  "http://w3id.org/roh/secondFamilyName", $"\"{GenerarTextoSinSaltoDeLinea(item0.Roh_secondFamilyName).ToLower()}\"", list, " . ");
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/personaux_{ResourceID}_{item0.ArticleID}",  "http://w3id.org/roh/secondFamilyName", $"\"{GenerarTextoSinSaltoDeLinea(item0.Roh_secondFamilyName).ToLower()}\"", list, " . ");
 				}
 				if(item0.Foaf_nick != null)
 				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/person_{ResourceID}_{item0.ArticleID}",  "http://xmlns.com/foaf/0.1/nick", $"\"{GenerarTextoSinSaltoDeLinea(item0.Foaf_nick).ToLower()}\"", list, " . ");
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/personaux_{ResourceID}_{item0.ArticleID}",  "http://xmlns.com/foaf/0.1/nick", $"\"{GenerarTextoSinSaltoDeLinea(item0.Foaf_nick).ToLower()}\"", list, " . ");
 				}
 				if(item0.Foaf_firstName != null)
 				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/person_{ResourceID}_{item0.ArticleID}",  "http://xmlns.com/foaf/0.1/firstName", $"\"{GenerarTextoSinSaltoDeLinea(item0.Foaf_firstName).ToLower()}\"", list, " . ");
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/personaux_{ResourceID}_{item0.ArticleID}",  "http://xmlns.com/foaf/0.1/firstName", $"\"{GenerarTextoSinSaltoDeLinea(item0.Foaf_firstName).ToLower()}\"", list, " . ");
 				}
 				if(item0.Rdf_comment != null)
 				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/person_{ResourceID}_{item0.ArticleID}",  "http://www.w3.org/1999/02/22-rdf-syntax-ns#comment", $"{item0.Rdf_comment.ToString()}", list, " . ");
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/personaux_{ResourceID}_{item0.ArticleID}",  "http://www.w3.org/1999/02/22-rdf-syntax-ns#comment", $"{item0.Rdf_comment.ToString()}", list, " . ");
 				}
 			}
 			}
@@ -1075,20 +1076,6 @@ namespace AcademicdegreeOntology
 					}
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/postgradeDegree", $"<{itemRegex}>", list, " . ");
 				}
-				if(this.IdRoh_owner != null)
-				{
-					Regex regex = new Regex(@"\/items\/.+_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}");
-					string itemRegex = this.IdRoh_owner;
-					if (regex.IsMatch(itemRegex))
-					{
-						itemRegex = $"http://gnoss/{resourceAPI.GetShortGuid(itemRegex).ToString().ToUpper()}";
-					}
-					else
-					{
-						itemRegex = itemRegex.ToLower();
-					}
-					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/owner", $"<{itemRegex}>", list, " . ");
-				}
 				if(this.IdRoh_conductedBy != null)
 				{
 					Regex regex = new Regex(@"\/items\/.+_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}");
@@ -1163,13 +1150,13 @@ namespace AcademicdegreeOntology
 				{
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/thesisTitle", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_thesisTitle).ToLower()}\"", list, " . ");
 				}
-				if(this.Roh_directorNick != null)
-				{
-					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/directorNick", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_directorNick).ToLower()}\"", list, " . ");
-				}
 				if(this.Roh_trainerSecondSurname != null)
 				{
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/trainerSecondSurname", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_trainerSecondSurname).ToLower()}\"", list, " . ");
+				}
+				if(this.Roh_directorNick != null)
+				{
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/directorNick", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_directorNick).ToLower()}\"", list, " . ");
 				}
 				if(this.Roh_doctorExtraordinaryAwardDate != null)
 				{
@@ -1230,10 +1217,6 @@ namespace AcademicdegreeOntology
 				if(this.Roh_conductedByTitle != null)
 				{
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/conductedByTitle", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_conductedByTitle).ToLower()}\"", list, " . ");
-				}
-				if(this.Roh_cvnCode != null)
-				{
-					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/cvnCode", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_cvnCode).ToLower()}\"", list, " . ");
 				}
 				if(this.Roh_approvedDate != null)
 				{
@@ -1319,6 +1302,24 @@ namespace AcademicdegreeOntology
 				{
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/foreignTitle", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_foreignTitle).ToLower()}\"", list, " . ");
 				}
+				if(this.IdRoh_owner != null)
+				{
+					Regex regex = new Regex(@"\/items\/.+_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}");
+					string itemRegex = this.IdRoh_owner;
+					if (regex.IsMatch(itemRegex))
+					{
+						itemRegex = $"http://gnoss/{resourceAPI.GetShortGuid(itemRegex).ToString().ToUpper()}";
+					}
+					else
+					{
+						itemRegex = itemRegex.ToLower();
+					}
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/owner", $"<{itemRegex}>", list, " . ");
+				}
+				if(this.Roh_cvnCode != null)
+				{
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/cvnCode", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_cvnCode).ToLower()}\"", list, " . ");
+				}
 				if(this.Roh_title != null)
 				{
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/title", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_title).ToLower()}\"", list, " . ");
@@ -1337,86 +1338,12 @@ namespace AcademicdegreeOntology
 			return list;
 		}
 
-		public override KeyValuePair<Guid, string> ToAcidData(ResourceApi resourceAPI)
-		{
 
-			//Insert en la tabla Documento
-			string tags = "";
-			foreach(string tag in tagList)
-			{
-				tags += $"{tag}, ";
-			}
-			if (!string.IsNullOrEmpty(tags))
-			{
-				tags = tags.Substring(0, tags.LastIndexOf(','));
-			}
-			string titulo = $"{this.Roh_title.Replace("\r\n", "").Replace("\n", "").Replace("\r", "").Replace("\"", "\"\"").Replace("'", "''").Replace("|", "#PIPE#")}";
-			string descripcion = $"{this.Roh_title.Replace("\r\n", "").Replace("\n", "").Replace("\r", "").Replace("\"", "\"\"").Replace("'", "''").Replace("|", "#PIPE#")}";
-			string tablaDoc = $"'{titulo}', '{descripcion}', '{resourceAPI.GraphsUrl}', '{tags}'";
-			KeyValuePair<Guid, string> valor = new KeyValuePair<Guid, string>(ResourceID, tablaDoc);
-
-			return valor;
-		}
-
-		protected List<object> ObtenerObjetosDePropiedad(object propiedad)
-		{
-			List<object> lista = new List<object>();
-			if(propiedad is IList)
-			{
-				foreach (object item in (IList)propiedad)
-				{
-					lista.Add(item);
-				}
-			}
-			else
-			{
-				lista.Add(propiedad);
-			}
-			return lista;
-		}
-		protected List<string> ObtenerStringDePropiedad(object propiedad)
-		{
-			List<string> lista = new List<string>();
-			if (propiedad is IList)
-			{
-				foreach (string item in (IList)propiedad)
-				{
-					lista.Add(item);
-				}
-			}
-			else if (propiedad is IDictionary)
-			{
-				foreach (object key in ((IDictionary)propiedad).Keys)
-				{
-					if (((IDictionary)propiedad)[key] is IList)
-					{
-						List<string> listaValores = (List<string>)((IDictionary)propiedad)[key];
-						foreach(string valor in listaValores)
-						{
-							lista.Add(valor);
-						}
-					}
-					else
-					{
-					lista.Add((string)((IDictionary)propiedad)[key]);
-					}
-				}
-			}
-			else if (propiedad is string)
-			{
-				lista.Add((string)propiedad);
-			}
-			return lista;
-		}
 		public override string GetURI(ResourceApi resourceAPI)
 		{
 			return $"{resourceAPI.GraphsUrl}items/AcademicdegreeOntology_{ResourceID}_{ArticleID}";
 		}
 
-		private string GenerarTextoSinSaltoDeLinea(string pTexto)
-		{
-			return pTexto.Replace("\r\n", " ").Replace("\n", " ").Replace("\r", " ").Replace("\"", "\\\"");
-		}
 
 		internal void AddResourceTitle(ComplexOntologyResource resource)
 		{
@@ -1428,21 +1355,7 @@ namespace AcademicdegreeOntology
 			resource.Description = this.Roh_title;
 		}
 
-		private void AgregarTripleALista(string pSujeto, string pPredicado, string pObjeto, List<string> pLista, string pDatosExtra)
-		{
-			if(!string.IsNullOrEmpty(pObjeto) && !pObjeto.Equals("\"\"") && !pObjeto.Equals("<>"))
-			{
-				pLista.Add($"<{pSujeto}> <{pPredicado}> {pObjeto}{pDatosExtra}");
-			} 
-		} 
 
-		private void AgregarTags(List<string> pListaTriples)
-		{
-			foreach(string tag in tagList)
-			{
-				AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://rdfs.org/sioc/types#Tag", tag.ToLower(), pListaTriples, " . ");
-			}
-		}
 
 
 	}

@@ -77,15 +77,15 @@ namespace GrantOntology
 			this.Roh_entityTitle = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/entityTitle"));
 			this.Roh_durationMonths = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/durationMonths"));
 			this.Roh_durationDays = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/durationDays"));
-			this.Roh_conferralDate= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/conferralDate"));
-			this.Vivo_start= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#start"));
+			this.Roh_conferralDate = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/conferralDate"));
+			this.Vivo_start = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#start"));
 			this.Roh_aimsOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/aimsOther"));
 			this.Roh_awardingEntityTitle = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/awardingEntityTitle"));
 			this.Vcard_locality = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#locality"));
 			this.Roh_durationYears = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/durationYears"));
 			this.Roh_awardingEntityTypeOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/awardingEntityTypeOther"));
 			this.Roh_crisIdentifier = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/crisIdentifier"));
-			this.Vivo_end= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#end"));
+			this.Vivo_end = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#end"));
 			this.Roh_center = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/center"));
 			this.Roh_monetaryAmount = GetNumberFloatPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/monetaryAmount"));
 			SemanticPropertyModel propRoh_owner = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/owner");
@@ -146,15 +146,15 @@ namespace GrantOntology
 			this.Roh_entityTitle = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/entityTitle"));
 			this.Roh_durationMonths = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/durationMonths"));
 			this.Roh_durationDays = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/durationDays"));
-			this.Roh_conferralDate= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/conferralDate"));
-			this.Vivo_start= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#start"));
+			this.Roh_conferralDate = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/conferralDate"));
+			this.Vivo_start = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#start"));
 			this.Roh_aimsOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/aimsOther"));
 			this.Roh_awardingEntityTitle = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/awardingEntityTitle"));
 			this.Vcard_locality = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#locality"));
 			this.Roh_durationYears = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/durationYears"));
 			this.Roh_awardingEntityTypeOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/awardingEntityTypeOther"));
 			this.Roh_crisIdentifier = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/crisIdentifier"));
-			this.Vivo_end= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#end"));
+			this.Vivo_end = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#end"));
 			this.Roh_center = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/center"));
 			this.Roh_monetaryAmount = GetNumberFloatPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/monetaryAmount"));
 			SemanticPropertyModel propRoh_owner = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/owner");
@@ -657,86 +657,11 @@ namespace GrantOntology
 			return list;
 		}
 
-		public override KeyValuePair<Guid, string> ToAcidData(ResourceApi resourceAPI)
-		{
-
-			//Insert en la tabla Documento
-			string tags = "";
-			foreach(string tag in tagList)
-			{
-				tags += $"{tag}, ";
-			}
-			if (!string.IsNullOrEmpty(tags))
-			{
-				tags = tags.Substring(0, tags.LastIndexOf(','));
-			}
-			string titulo = $"{this.Roh_title.Replace("\r\n", "").Replace("\n", "").Replace("\r", "").Replace("\"", "\"\"").Replace("'", "''").Replace("|", "#PIPE#")}";
-			string descripcion = $"{this.Roh_title.Replace("\r\n", "").Replace("\n", "").Replace("\r", "").Replace("\"", "\"\"").Replace("'", "''").Replace("|", "#PIPE#")}";
-			string tablaDoc = $"'{titulo}', '{descripcion}', '{resourceAPI.GraphsUrl}', '{tags}'";
-			KeyValuePair<Guid, string> valor = new KeyValuePair<Guid, string>(ResourceID, tablaDoc);
-
-			return valor;
-		}
-
-		protected List<object> ObtenerObjetosDePropiedad(object propiedad)
-		{
-			List<object> lista = new List<object>();
-			if(propiedad is IList)
-			{
-				foreach (object item in (IList)propiedad)
-				{
-					lista.Add(item);
-				}
-			}
-			else
-			{
-				lista.Add(propiedad);
-			}
-			return lista;
-		}
-		protected List<string> ObtenerStringDePropiedad(object propiedad)
-		{
-			List<string> lista = new List<string>();
-			if (propiedad is IList)
-			{
-				foreach (string item in (IList)propiedad)
-				{
-					lista.Add(item);
-				}
-			}
-			else if (propiedad is IDictionary)
-			{
-				foreach (object key in ((IDictionary)propiedad).Keys)
-				{
-					if (((IDictionary)propiedad)[key] is IList)
-					{
-						List<string> listaValores = (List<string>)((IDictionary)propiedad)[key];
-						foreach(string valor in listaValores)
-						{
-							lista.Add(valor);
-						}
-					}
-					else
-					{
-					lista.Add((string)((IDictionary)propiedad)[key]);
-					}
-				}
-			}
-			else if (propiedad is string)
-			{
-				lista.Add((string)propiedad);
-			}
-			return lista;
-		}
 		public override string GetURI(ResourceApi resourceAPI)
 		{
 			return $"{resourceAPI.GraphsUrl}items/GrantOntology_{ResourceID}_{ArticleID}";
 		}
 
-		private string GenerarTextoSinSaltoDeLinea(string pTexto)
-		{
-			return pTexto.Replace("\r\n", " ").Replace("\n", " ").Replace("\r", " ").Replace("\"", "\\\"");
-		}
 
 		internal void AddResourceTitle(ComplexOntologyResource resource)
 		{
@@ -748,21 +673,7 @@ namespace GrantOntology
 			resource.Description = this.Roh_title;
 		}
 
-		private void AgregarTripleALista(string pSujeto, string pPredicado, string pObjeto, List<string> pLista, string pDatosExtra)
-		{
-			if(!string.IsNullOrEmpty(pObjeto) && !pObjeto.Equals("\"\"") && !pObjeto.Equals("<>"))
-			{
-				pLista.Add($"<{pSujeto}> <{pPredicado}> {pObjeto}{pDatosExtra}");
-			} 
-		} 
 
-		private void AgregarTags(List<string> pListaTriples)
-		{
-			foreach(string tag in tagList)
-			{
-				AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://rdfs.org/sioc/types#Tag", tag.ToLower(), pListaTriples, " . ");
-			}
-		}
 
 
 	}
