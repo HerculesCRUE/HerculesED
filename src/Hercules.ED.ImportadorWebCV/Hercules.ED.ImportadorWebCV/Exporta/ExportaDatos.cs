@@ -128,6 +128,9 @@ namespace ImportadorWebCV.Exporta
             ForosComites forosComites = new ForosComites(cvn, cvID);
             forosComites.ExportaForosComites(entity, seccion);
 
+            OrganizacionesIDI organizacionesIDI = new OrganizacionesIDI(cvn, cvID);
+            organizacionesIDI.ExportaOrganizacionesIDI(entity, seccion);
+
             RedesCooperacion redesCooperacion = new RedesCooperacion(cvn, cvID);
             redesCooperacion.ExportaRedesCooperacion(entity, seccion);
 
