@@ -31,6 +31,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     Code = "060.010.020.000",
                     Items = new List<CVNObject>()
                 };
+            }
         }
 
     }
