@@ -151,6 +151,9 @@ namespace ImportadorWebCV.Exporta
             EvalRevIDI evalRevIDI = new EvalRevIDI(cvn, cvID);
             evalRevIDI.ExportaEvalRevIDI(entity, seccion);
 
+            ComitesCTA comitesCTA = new ComitesCTA(cvn, cvID);
+            comitesCTA.ExportaComitesCTA(entity, seccion);
+
             SociedadesAsociaciones sociedadesAsociaciones = new SociedadesAsociaciones(cvn, cvID);
             sociedadesAsociaciones.ExportaSociedadesAsociaciones(entity, seccion);
 

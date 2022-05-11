@@ -99,9 +99,11 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                 // ISBN
                 UtilityExportar.AddCvnItemBeanCvnExternalPKBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosJornSemPubISBN),
                     "060.010.030.290", keyValue.Value);
+
                 // ISSN
                 UtilityExportar.AddCvnItemBeanCvnExternalPKBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosJornSemPubISSN),
                     "060.010.030.290", keyValue.Value);
+
                 // Entidad organizadora
                 UtilityExportar.AddCvnItemBeanCvnEntityBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosJornSemEntidadOrganizadoraNombre),
                     "060.010.030.080", keyValue.Value);
