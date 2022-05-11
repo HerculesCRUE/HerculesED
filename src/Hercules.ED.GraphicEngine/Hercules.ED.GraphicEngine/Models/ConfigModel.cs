@@ -8,7 +8,13 @@ namespace Hercules.ED.GraphicEngine.Models
         public string filtro { get; set; }
         public string identificador { get; set; }
         public List<Grafica> graficas { get; set; }
-        public List<Faceta> facetas { get; set; }
+        public List<FacetaConf> facetas { get; set; }
+    }
+
+    public class FacetaConf
+    {
+        public Dictionary<string, string> nombre { get; set; }
+        public string filtro { get; set; }
     }
 
     public class Grafica
@@ -32,12 +38,6 @@ namespace Hercules.ED.GraphicEngine.Models
     {
         public string yAxisID { get; set; }
         public string posicion { get; set; }
-    }
-
-    public class Faceta
-    {
-        public Dictionary<string, string> nombre { get; set; }
-        public string filtro { get; set; }
     }
 
     public class Dimension
