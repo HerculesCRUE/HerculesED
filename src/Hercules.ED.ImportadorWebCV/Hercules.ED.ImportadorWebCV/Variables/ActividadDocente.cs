@@ -8,11 +8,11 @@
         public const string direccionTesisTipoProyecto = "http://w3id.org/roh/projectCharacterType";
         public const string direccionTesisTipoProyectoOtros = "http://w3id.org/roh/projectCharacterTypeOther";
         public const string direccionTesisTituloTrabajo = "http://w3id.org/roh/title";
-        public const string direccionTesisCodirectorTesisOrden = "http://w3id.org/roh/codirector@@@http://xmlns.com/foaf/0.1/Person|http://www.w3.org/1999/02/22-rdf-syntax-ns#comment";
-        public const string direccionTesisCodirectorTesisFirma = "http://w3id.org/roh/codirector@@@http://xmlns.com/foaf/0.1/Person|http://xmlns.com/foaf/0.1/nick";
-        public const string direccionTesisCodirectorTesisNombre = "http://w3id.org/roh/codirector@@@http://xmlns.com/foaf/0.1/Person|http://xmlns.com/foaf/0.1/firstName";
-        public const string direccionTesisCodirectorTesisPrimerApellido = "http://w3id.org/roh/codirector@@@http://xmlns.com/foaf/0.1/Person|http://xmlns.com/foaf/0.1/familyName";
-        public const string direccionTesisCodirectorTesisSegundoApellido = "http://w3id.org/roh/codirector@@@http://xmlns.com/foaf/0.1/Person|http://w3id.org/roh/secondFamilyName";
+        public const string direccionTesisCodirectorTesisOrden = "http://w3id.org/roh/codirector@@@http://w3id.org/roh/Person|http://www.w3.org/1999/02/22-rdf-syntax-ns#comment";
+        public const string direccionTesisCodirectorTesisFirma = "http://w3id.org/roh/codirector@@@http://w3id.org/roh/PersonAux|http://xmlns.com/foaf/0.1/nick";
+        public const string direccionTesisCodirectorTesisNombre = "http://w3id.org/roh/codirector@@@http://w3id.org/roh/PersonAux|http://xmlns.com/foaf/0.1/firstName";
+        public const string direccionTesisCodirectorTesisPrimerApellido = "http://w3id.org/roh/codirector@@@http://w3id.org/roh/PersonAux|http://xmlns.com/foaf/0.1/familyName";
+        public const string direccionTesisCodirectorTesisSegundoApellido = "http://w3id.org/roh/codirector@@@http://w3id.org/roh/PersonAux|http://w3id.org/roh/secondFamilyName";
         public const string direccionTesisPaisEntidadRealizacion = "https://www.w3.org/2006/vcard/ns#hasCountryName";
         public const string direccionTesisCCAAEntidadRealizacion = "https://www.w3.org/2006/vcard/ns#hasRegion";
         public const string direccionTesisCiudadEntidadRealizacion = "https://www.w3.org/2006/vcard/ns#locality";
@@ -137,11 +137,11 @@
         /// </summary>
         public const string publicacionDocenteNombre = "http://w3id.org/roh/title";
         public const string publicacionDocentePerfilDestinatario = "http://w3id.org/roh/targetProfile";
-        public const string publicacionDocenteAutorFirma = "http://purl.org/ontology/bibo/authorList@@@http://xmlns.com/foaf/0.1/Person|http://xmlns.com/foaf/0.1/nick";
-        public const string publicacionDocenteAutorNombre = "http://purl.org/ontology/bibo/authorList@@@http://xmlns.com/foaf/0.1/Person|http://xmlns.com/foaf/0.1/firstName";
-        public const string publicacionDocenteAutorOrden = "http://purl.org/ontology/bibo/authorList@@@http://xmlns.com/foaf/0.1/Person|http://www.w3.org/1999/02/22-rdf-syntax-ns#comment";
-        public const string publicacionDocenteAutorPrimerApellido = "http://purl.org/ontology/bibo/authorList@@@http://xmlns.com/foaf/0.1/Person|http://xmlns.com/foaf/0.1/familyName";
-        public const string publicacionDocenteAutorSegundoApellido = "http://purl.org/ontology/bibo/authorList@@@http://xmlns.com/foaf/0.1/Person|http://w3id.org/roh/secondFamilyName";
+        public const string publicacionDocenteAutorFirma = "http://purl.org/ontology/bibo/authorList@@@http://w3id.org/roh/PersonAux|http://xmlns.com/foaf/0.1/nick";
+        public const string publicacionDocenteAutorNombre = "http://purl.org/ontology/bibo/authorList@@@http://w3id.org/roh/PersonAux|http://xmlns.com/foaf/0.1/firstName";
+        public const string publicacionDocenteAutorOrden = "http://purl.org/ontology/bibo/authorList@@@http://w3id.org/roh/PersonAux|http://www.w3.org/1999/02/22-rdf-syntax-ns#comment";
+        public const string publicacionDocenteAutorPrimerApellido = "http://purl.org/ontology/bibo/authorList@@@http://w3id.org/roh/PersonAux|http://xmlns.com/foaf/0.1/familyName";
+        public const string publicacionDocenteAutorSegundoApellido = "http://purl.org/ontology/bibo/authorList@@@http://w3id.org/roh/PersonAux|http://w3id.org/roh/secondFamilyName";
         public const string publicacionDocentePosicionFirma = "http://w3id.org/roh/signaturePosition";
         public const string publicacionDocenteFechaElaboracion = "http://purl.org/dc/terms/issued";
         public const string publicacionDocenteTipologiaSoporte = "http://w3id.org/roh/supportType";
